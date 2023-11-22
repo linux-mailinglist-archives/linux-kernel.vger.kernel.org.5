@@ -2,408 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4F17F3AF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70157F3AF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbjKVBAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:00:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        id S235001AbjKVBAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjKVBAJ (ORCPT
+        with ESMTP id S231307AbjKVBAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:00:09 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A321593;
-        Tue, 21 Nov 2023 17:00:04 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM0OF2A019663;
-        Wed, 22 Nov 2023 00:59:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=at4TJKe5/xTv1ywl/HVRKfJ6QkWba3i5SVFbw7qSANo=;
- b=DP+Ij6jz6i7SWdlWX2Ycn3q9vhHTRIYEMS9vWJ6rdqsytUWjTZBUZffecATHIkFMym9o
- MZqXRc9zEyTrMtS4synjiLtqe8u0jNa5XSnm9F/5ohvsiNI/9rn5u/AWyt74kQhTK7cP
- cxFSV0ASYwmHkJvsIEJBKC8Nky2ADlGCWpCl2ND7bPW2jLYoyTgd5CqnuOXgc4Mf1wG1
- Uk4L2mGDUbiK+MWJ+XWzffwZ4EEUnA510q3Zf+a1b5/cv5WbWHNg2k7+5GRNL/5NMR9K
- cZPz54natW2awGiiwjDAoN+wXPYmUmo7Zs7r8r1fY/b5EzF5Xk4wsvONR0X1mGXXOl6L FQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uh477gccj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Nov 2023 00:59:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AM0xWJ9008877
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Nov 2023 00:59:32 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
- 2023 16:59:31 -0800
-Message-ID: <191a3d1a-bcd3-4e0d-360d-61c1c2a61147@quicinc.com>
-Date:   Tue, 21 Nov 2023 16:59:30 -0800
+        Tue, 21 Nov 2023 20:00:15 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B573E199
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:00:11 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40859dee28cso33205225e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:00:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1700614810; x=1701219610; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7z/Ncze8VsxsQV1/X1aHBHLUuutXLztntTa5pi1dYLs=;
+        b=RC2EL6F5X7lwgIY/nWSO438Mq/MuoWSvG6hDsB4jeubmsjh4fM/yY06uxFOdlikVvE
+         KpRNYqiKHceHvxhtaLC1xJRqb7TBmLY4abEeya0s3Ai9p8bBrONPAVeNS8YfxTbiU2Jc
+         Y1vvAAusBYtBs5ouYrqezB6mpgQjSYnoYlsfm956OIp37qOAecbUrt0SdwPQSBBBQttG
+         dFCf8AKNWkueGRvS0Ip1+AnSNsf+hk9D4utd0fbSFEoD+KoHdSLBJZLdAX36yHfd8cCh
+         iKC19BYsULHSd3j3JkXayYdsho046FC0drigacJn/VYEaDqyjQlrHukDHhwIq86RgK/Z
+         4guw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700614810; x=1701219610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7z/Ncze8VsxsQV1/X1aHBHLUuutXLztntTa5pi1dYLs=;
+        b=k3cc0w4yg9U9Eu26UJxo+REwkNm2YusB9wTkeOWi12M8iZREk7F+W/1XK7dngm78sB
+         7I8L2Qje9rwN8wtKxPL9jVGCcU/BCtTwlY/h/Dfem6or59OXT9JWcVwj60aipLNlgtIw
+         w/X9ETmWJMy7DFLWV2OSiCIutCIDrk52vdmGVy6zORa3ecwq0EgbMR/Q5FyuQuTjPSQY
+         lQFMLOMI+13eVi4ofHXtFhx6Vlo89oWI5OGjNSEvNSQLtkE53G8vdLsQi7e4AUVQGO6V
+         PhShNUhFlcj6uRzRB3ylgBN5Y2kIcs1uL5ZQ963QE1ZYU8Z8Ftgi9ncoKYTsgkBGF15V
+         JY4g==
+X-Gm-Message-State: AOJu0YygP6k4LlIYS8A7Ss8yuL8zu9YiIr6qzOS1jQ03PaAIP+9SDXtu
+        LXYlw+TJWbHzfsIqq3qUM3wl3g==
+X-Google-Smtp-Source: AGHT+IGWfqttaUh7V6lCiHLkEQqnJfYw1U5++qE0LNe7r9fT0KxEwUqIRkLzKCuyF/8jxNnoVwJbzw==
+X-Received: by 2002:a5d:56c4:0:b0:32d:9a8f:6245 with SMTP id m4-20020a5d56c4000000b0032d9a8f6245mr341419wrw.68.1700614810074;
+        Tue, 21 Nov 2023 17:00:10 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id l26-20020a05600c1d1a00b004067e905f44sm377388wms.9.2023.11.21.17.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 17:00:09 -0800 (PST)
+Message-ID: <85e84d97-af6d-47e7-b188-0ee000c4ee8c@arista.com>
+Date:   Wed, 22 Nov 2023 01:00:03 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/msm/dpu: Fix encoder CRC to account for CTM
- enablement
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/7] net/tcp: Reset TCP-AO cached keys on listen() syscall
 Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>
-CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        <freedreno@lists.freedesktop.org>,
-        "Jeykumar Sankaran" <quic_jeykumar@quicinc.com>,
-        Kalyan Thota <quic_kalyant@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        Arnaud Vrac <rawoul@gmail.com>,
-        <dri-devel@lists.freedesktop.org>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        "Sean Paul" <sean@poorly.run>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231023221250.116500-1-robdclark@gmail.com>
- <CAA8EJpqVL5U7yaZsG5F=q7EFP1bsApySdjycywox6cZUd8JqdA@mail.gmail.com>
- <CAF6AEGvbKjHYU6qv4v3017DguEye23yMoYvTbEo=JZ+QW3=Atg@mail.gmail.com>
- <CAA8EJprRdezFBP=+aBinA-=tbTGWPcj-izOthA=cbehes0UYng@mail.gmail.com>
- <d003384d-3b4b-da05-f4b7-8497749fc843@quicinc.com>
- <dd928ef1-e329-37e0-d383-444a64ef2bc5@quicinc.com>
- <CAF6AEGuxoSaX67iYuhWiaoPQMwh_ggE0ZGbgmLZ-QhmS4FYxtg@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAF6AEGuxoSaX67iYuhWiaoPQMwh_ggE0ZGbgmLZ-QhmS4FYxtg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+References: <20231121020111.1143180-1-dima@arista.com>
+ <20231121020111.1143180-5-dima@arista.com>
+ <CANn89i+xvBQY5HLXNkjW0o9R4SX1hqRisJnr54ZqwuOpEJdHeA@mail.gmail.com>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <CANn89i+xvBQY5HLXNkjW0o9R4SX1hqRisJnr54ZqwuOpEJdHeA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: crbydftlUTBVoJVWlAu6jMsxM9b4MI50
-X-Proofpoint-GUID: crbydftlUTBVoJVWlAu6jMsxM9b4MI50
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_16,2023-11-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311220004
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/21/2023 4:27 PM, Rob Clark wrote:
-> On Tue, Nov 21, 2023 at 4:41 PM Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+On 11/21/23 08:18, Eric Dumazet wrote:
+> On Tue, Nov 21, 2023 at 3:01 AM Dmitry Safonov <dima@arista.com> wrote:
 >>
+>> TCP_LISTEN sockets are not connected to any peer, so having
+>> current_key/rnext_key doesn't make sense.
 >>
->>
->> On 10/24/2023 12:01 PM, Abhinav Kumar wrote:
->>>
->>>
->>> On 10/23/2023 4:03 PM, Dmitry Baryshkov wrote:
->>>> On Tue, 24 Oct 2023 at 01:36, Rob Clark <robdclark@gmail.com> wrote:
->>>>>
->>>>> On Mon, Oct 23, 2023 at 3:30 PM Dmitry Baryshkov
->>>>> <dmitry.baryshkov@linaro.org> wrote:
->>>>>>
->>>>>> On Tue, 24 Oct 2023 at 01:12, Rob Clark <robdclark@gmail.com> wrote:
->>>>>>>
->>>>>>> From: Rob Clark <robdclark@chromium.org>
->>>>>>>
->>>>>>> Seems like we need to pick INPUT_SEL=1 when CTM is enabled.  But not
->>>>>>> otherwise.
->>>>>>>
->>>>>>> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
->>>>>>> ---
->>>
->>> I cannot find anything in the docs which suggest this solution is correct.
->>>
->>> Different blocks in the DPU pipeline have their own CRC (MISR) registers
->>> like LM, intf etc.
->>>
->>> We dont need to change INPUT_SEL to tell DPU from which pipeline to take
->>> the CRC from as each of them have their own registers.
->>>
->>> INPUT_SEL is controlling whether the CRC needs to be calculated over the
->>> entire display timings or only the active pixels. I am unable to tell at
->>> the moment why this is making a difference in this use-case.
->>>
->>> Since I am unable to find any documentation proving this solution is
->>> correct so far, unfortunately I would hold this back till then.
->>>
->>> We will investigate this issue and report our findings on this thread on
->>> how to proceed.
->>>
->>
->> Alright, we debugged and also found some more answers.
->>
->> The correct solution is indeed to set INPUT_SEL = 1 but let me explain
->> why and what should be the correct way.
->>
->> INPUT_SEL was indeed telling whether to compute CRC over active pixels
->> or active pixels + timings like I wrote before but this behavior changed
->> since some chipsets.
->>
->> Now, INPUT_SEL = 0 means compute CRC *only* over timings and not the
->> active area (and not display + timings like before) and like mentioned
->> before this has nothing to do with what is the input to the CRC. Not
->> covering the active area will not change the CRC at all as Rob reported
->> but its not specific to CTM.
->>
->> Which means we should have been setting INPUT_SEL=1 whenever we use INTF
->> CRC irrespective of whether CTM is used or not.
->>
->> What this also means is INTF CRC was not working correctly at all so far
->> irrespecive of CTM or not because it was always computing CRC only on
->> the timings (non-active area).
->>
->> This was not caught so far because it looks like IGT's
->> kms_pipe_crc_basic test which was used to validate this only compares
->> CRC between two frames of the same content to match if they were equal
->> and not changing contents and comparing like kms_plane does. It will
->> pass as CRC would not have changed.
->>
->> Now coming to the fix, the reset value of this register INTF_MISR_CTRL
->> already sets the INPUT_SEL bit (or unsets it) correctly based on
->> whichever DPU version is used so we should just change the
->> dpu_hw_setup_misr() to a read on the register followed by ORing the
->> required bits without touching INPUT_SEL and write.
->>
->> That will address this issue and also cover version control since the
->> expected value of this bit has changed across DPU revisions.
+>> The userspace may falter over this issue by setting current or rnext
+>> TCP-AO key before listen() syscall. setsockopt(TCP_AO_DEL_KEY) doesn't
+>> allow removing a key that is in use (in accordance to RFC 5925), so
+>> it might be inconvenient to have keys that can be destroyed only with
+>> listener socket.
 > 
-> Ok, thanks for following up on this.  Mind posting a patch to
-> supersede this one?
+> I think this is the wrong way to solve this issue. listen() should not
+> mess with anything else than socket state.
 > 
-> BR,
-> -R
+>>
+>> Fixes: 4954f17ddefc ("net/tcp: Introduce TCP_AO setsockopt()s")
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+[..]
+>> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+>> index fb81de10d332..a08d1266344f 100644
+>> --- a/net/ipv4/af_inet.c
+>> +++ b/net/ipv4/af_inet.c
+>> @@ -200,6 +200,7 @@ int __inet_listen_sk(struct sock *sk, int backlog)
+>>          * we can only allow the backlog to be adjusted.
+>>          */
+>>         if (old_state != TCP_LISTEN) {
+>> +               tcp_ao_listen(sk);
 > 
+> Ouch...
+> 
+> Please add your hook in tcp_disconnect() instead of this layering violation.
+> 
+> I think you missed the fact that applications can call listen(fd,
+> backlog) multiple times,
+> if they need to dynamically adjust backlog.
 
-Yup, we will.
+Hmm, unsure, I've probably failed at describing the issue or failing to
+understand your reply :-)
 
-Thanks
+Let me try again:
+1. sk = socket(AF_*, SOCK_STREAM, IPPROTO_TCP)
+2. setsockopt(sk, TCP_AO_ADD_KEY, ...) - adding a key to use later
+3. setsockopt(sk, IPPROTO_TCP, TCP_AO_INFO, set_current=1) - could be
+   done straight on adding a key at (2), but for an example, explicitely
+4.a. connect(sk, peer) - all as expected, the current key will be the
+     one that is used for SYN (and ending ACK if the peer doesn't
+     request to switch)
+4.b  listen(sk, ...) - userspace shoots itself in foot: the current_key
+     has no usage on TCP_LISTEN, so it just "hangs" as a pointer until
+     the socket gets destroyed.
 
-Abhinav
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    | 2 +-
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 4 ++--
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h | 3 ++-
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c | 4 ++--
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h | 2 +-
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   | 2 +-
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 5 ++++-
->>>>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 3 ++-
->>>>>>>    8 files changed, 15 insertions(+), 10 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
->>>>>>> index 2b83a13b3aa9..d93a92ffd5df 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
->>>>>>> @@ -134,7 +134,7 @@ static void dpu_crtc_setup_encoder_misr(struct
->>>>>>> drm_crtc *crtc)
->>>>>>>           struct drm_encoder *drm_enc;
->>>>>>>
->>>>>>>           drm_for_each_encoder_mask(drm_enc, crtc->dev,
->>>>>>> crtc->state->encoder_mask)
->>>>>>> -               dpu_encoder_setup_misr(drm_enc);
->>>>>>> +               dpu_encoder_setup_misr(drm_enc, !!crtc->state->ctm);
->>>>>>>    }
->>>>>>>
->>>>>>>    static int dpu_crtc_set_crc_source(struct drm_crtc *crtc, const
->>>>>>> char *src_name)
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>>>>> index b0a7908418ed..12ee7acb5ea6 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>>>>> @@ -241,7 +241,7 @@ int dpu_encoder_get_crc_values_cnt(const struct
->>>>>>> drm_encoder *drm_enc)
->>>>>>>           return num_intf;
->>>>>>>    }
->>>>>>>
->>>>>>> -void dpu_encoder_setup_misr(const struct drm_encoder *drm_enc)
->>>>>>> +void dpu_encoder_setup_misr(const struct drm_encoder *drm_enc,
->>>>>>> bool has_ctm)
->>>>>>>    {
->>>>>>>           struct dpu_encoder_virt *dpu_enc;
->>>>>>>
->>>>>>> @@ -255,7 +255,7 @@ void dpu_encoder_setup_misr(const struct
->>>>>>> drm_encoder *drm_enc)
->>>>>>>                   if (!phys->hw_intf || !phys->hw_intf->ops.setup_misr)
->>>>>>>                           continue;
->>>>>>>
->>>>>>> -               phys->hw_intf->ops.setup_misr(phys->hw_intf, true, 1);
->>>>>>> +               phys->hw_intf->ops.setup_misr(phys->hw_intf, true,
->>>>>>> 1, has_ctm);
->>>>>>>           }
->>>>>>>    }
->>>>>>>
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>>>>>> index 4c05fd5e9ed1..510783b2fb24 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>>>>>> @@ -169,8 +169,9 @@ int dpu_encoder_get_crc_values_cnt(const struct
->>>>>>> drm_encoder *drm_enc);
->>>>>>>    /**
->>>>>>>     * dpu_encoder_setup_misr - enable misr calculations
->>>>>>>     * @drm_enc:    Pointer to previously created drm encoder structure
->>>>>>> + * @has_ctm:    Is CTM enabled
->>>>>>>     */
->>>>>>> -void dpu_encoder_setup_misr(const struct drm_encoder *drm_encoder);
->>>>>>> +void dpu_encoder_setup_misr(const struct drm_encoder *drm_encoder,
->>>>>>> bool has_ctm);
->>>>>>>
->>>>>>>    /**
->>>>>>>     * dpu_encoder_get_crc - get the crc value from interface blocks
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>>>>> index e8b8908d3e12..cb06f80cc671 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>>>>> @@ -318,9 +318,9 @@ static u32 dpu_hw_intf_get_line_count(struct
->>>>>>> dpu_hw_intf *intf)
->>>>>>>           return DPU_REG_READ(c, INTF_LINE_COUNT);
->>>>>>>    }
->>>>>>>
->>>>>>> -static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf, bool
->>>>>>> enable, u32 frame_count)
->>>>>>> +static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf, bool
->>>>>>> enable, u32 frame_count, bool has_ctm)
->>>>>>>    {
->>>>>>> -       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, enable,
->>>>>>> frame_count);
->>>>>>> +       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, enable,
->>>>>>> frame_count, has_ctm);
->>>>>>
->>>>>> I'm not sure about the dpu_encoder and dpu_hw_intf interfaces. But
->>>>>> dpu_hw_setup_misr definitely needs the `u8 input_sel` parameter
->>>>>> instead of `bool has_ctm`.
->>>>>
->>>>> That seems a bit premature without knowing what the other values are.
->>>>> (And I also question a bit the whole abstraction layer thing if it is
->>>>> taking directly register bitfield enum's..)
->>>>
->>>> dpu_hw_intf and especially dpu_hw_util are not real abstractions. I
->>>> always viewed them as useful low-level helpers.
->>>>
->>>> I think that has_ctm is valid at the dpu_encoder level, which selects
->>>> which input to use. on the lower levels has_ctm doesn't make sense.
->>>> IOW dpu_hw_setup_misr can be used to setup MISR for other blocks,
->>>> where CTM doesn't exist.
->>>>
->>>>>
->>>>> BR,
->>>>> -R
->>>>>
->>>>>> Most likely, I'd use u8 for dpu_hw_intf operation too.
->>>>>>
->>>>>> Could you please adjust?
->>>>>>
->>>>>>>    }
->>>>>>>
->>>>>>>    static int dpu_hw_intf_collect_misr(struct dpu_hw_intf *intf, u32
->>>>>>> *misr_value)
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>>>>> index c539025c418b..95aafc4cf58e 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>>>>> @@ -95,7 +95,7 @@ struct dpu_hw_intf_ops {
->>>>>>>
->>>>>>>           void (*bind_pingpong_blk)(struct dpu_hw_intf *intf,
->>>>>>>                           const enum dpu_pingpong pp);
->>>>>>> -       void (*setup_misr)(struct dpu_hw_intf *intf, bool enable,
->>>>>>> u32 frame_count);
->>>>>>> +       void (*setup_misr)(struct dpu_hw_intf *intf, bool enable,
->>>>>>> u32 frame_count, bool has_ctm);
->>>>>>>           int (*collect_misr)(struct dpu_hw_intf *intf, u32
->>>>>>> *misr_value);
->>>>>>>
->>>>>>>           // Tearcheck on INTF since DPU 5.0.0
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>>>>> index d1c3bd8379ea..2efe29396c6a 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>>>>> @@ -83,7 +83,7 @@ static void dpu_hw_lm_setup_border_color(struct
->>>>>>> dpu_hw_mixer *ctx,
->>>>>>>
->>>>>>>    static void dpu_hw_lm_setup_misr(struct dpu_hw_mixer *ctx, bool
->>>>>>> enable, u32 frame_count)
->>>>>>>    {
->>>>>>> -       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, enable,
->>>>>>> frame_count);
->>>>>>> +       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, enable,
->>>>>>> frame_count, false);
->>>>>>>    }
->>>>>>>
->>>>>>>    static int dpu_hw_lm_collect_misr(struct dpu_hw_mixer *ctx, u32
->>>>>>> *misr_value)
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>>>>> index 9d2273fd2fed..528b8439209f 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>>>>> @@ -483,7 +483,7 @@ void _dpu_hw_setup_qos_lut(struct
->>>>>>> dpu_hw_blk_reg_map *c, u32 offset,
->>>>>>>
->>>>>>>    void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c,
->>>>>>>                   u32 misr_ctrl_offset,
->>>>>>> -               bool enable, u32 frame_count)
->>>>>>> +               bool enable, u32 frame_count, bool has_ctm)
->>>>>>>    {
->>>>>>>           u32 config = 0;
->>>>>>>
->>>>>>> @@ -496,6 +496,9 @@ void dpu_hw_setup_misr(struct
->>>>>>> dpu_hw_blk_reg_map *c,
->>>>>>>                   config = (frame_count & MISR_FRAME_COUNT_MASK) |
->>>>>>>                           MISR_CTRL_ENABLE | MISR_CTRL_FREE_RUN_MASK;
->>>>>>>
->>>>>>> +               if (!has_ctm)
->>>>>>> +                       config |= 1 << 24;
->>>>>>
->>>>>> Please define MISR_CTRL_INPUT_SEL instead.
->>>>>>
->>>>>>> +
->>>>>>>                   DPU_REG_WRITE(c, misr_ctrl_offset, config);
->>>>>>>           } else {
->>>>>>>                   DPU_REG_WRITE(c, misr_ctrl_offset, 0);
->>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>>>>> index 1f6079f47071..e42d9d00e40e 100644
->>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>>>>> @@ -360,7 +360,8 @@ void _dpu_hw_setup_qos_lut(struct
->>>>>>> dpu_hw_blk_reg_map *c, u32 offset,
->>>>>>>    void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c,
->>>>>>>                   u32 misr_ctrl_offset,
->>>>>>>                   bool enable,
->>>>>>> -               u32 frame_count);
->>>>>>> +               u32 frame_count,
->>>>>>> +               bool has_ctm);
->>>>>>>
->>>>>>>    int dpu_hw_collect_misr(struct dpu_hw_blk_reg_map *c,
->>>>>>>                   u32 misr_ctrl_offset,
->>>>>>> --
->>>>>>> 2.41.0
->>>>>>>
->>>>>>
->>>>>>
->>>>>> --
->>>>>> With best wishes
->>>>>> Dmitry
->>>>
->>>>
->>>>
+An alternative fix would be to make setsockopt(TCP_AO_DEL_KEY) remove a
+key even if it's current_key on TCP_LISTEN, re-setting that to NULL.
+
+Now as I described, somewhat feeling like the alternative fix sounds
+better. Will proceed with that for v2.
+
+Thanks,
+             Dmitry
+
