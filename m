@@ -2,252 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC997F4A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645947F4A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344369AbjKVPeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
+        id S231830AbjKVPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbjKVPe0 (ORCPT
+        with ESMTP id S229634AbjKVPZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:34:26 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E5C19AE
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:46 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32dc9ff4a8fso4331599f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700667225; x=1701272025; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=UuQvOTpszbnl9xc14Mv8OCjwyDXBhMf4cf+TfzzFh8s=;
-        b=M+fdnRMSfbREYLsxZySK1YDhCykXVPOf34aVZwtskZQgVjM2SA57gTtv7dg2nbMgTE
-         9rqOEHr6tKLIaZndEXfdta+yvSqso1SlBaK5aZAbmARqUxBsqRUaCObXCKflb7jJsPEA
-         0O2t/7V5H/TR8KekQBkblQODbVxZqFxacTi5LfsSNA5JqtAfWqBfhlGLprgT7LuH9qDW
-         NKr2QISYzrRBxvCj2jLUT3WqZEFOGvjQdnpMezHMN6IoiEUCKATDGnqbiecDCpDjmJbl
-         fkF97B27Oecuk/q9JUbUDWj2N6TJaSOzsmBJE/BWebx2ttm3RRbsuVuE86CkVDfHx7QI
-         5cOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700667225; x=1701272025;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UuQvOTpszbnl9xc14Mv8OCjwyDXBhMf4cf+TfzzFh8s=;
-        b=a8ALzxIfcFOvcOcSrVepEZrUgodkhGyCEPgSrLYYzJ8I4acHdLU4iQIfupccpznvNH
-         O7qg7JjEU75WamoS9Gwk6S0P/wLfGOIhuou/WqiNWp4rF5l0lGyXYODbEjH1/QZulHzV
-         kBeuYiQuWUnpBoLpYfoixhk4r5enVS43m9o6Ta0pdo2b5vjQMK4yK9OPTwu8stVf7EL0
-         eMCB1J5zTCuHe/9bX+zVxZMdAIxdZX4d5X2F0MYo9SEBUoA59ljivE7h9a9ZXqgjQsSw
-         zPjGry7BqPPmMg4qkGr6LxyLl4sOdIgHNyUv3mSNQtomxF/r24EilZDq6ouNVSZNzBS8
-         Dpuw==
-X-Gm-Message-State: AOJu0YzTiIgYbCcABNhi+kfmhMQB1DxCVCcFXLW/J5BBNAdpi5cz6yEa
-        lpSYYtvG/pxuEnojYHWOBoVYEA==
-X-Google-Smtp-Source: AGHT+IGRjDRpoRtRtIfGUdaJ+t+pi8yzkvfovHszDmXGHtyXVw/hFFAzNajS8qufz+N2FTEE3zfaGg==
-X-Received: by 2002:a5d:620c:0:b0:332:c2ae:ca1e with SMTP id y12-20020a5d620c000000b00332c2aeca1emr1673659wru.62.1700667224696;
-        Wed, 22 Nov 2023 07:33:44 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:d0a1:9a3c:4f4b:fa20])
-        by smtp.gmail.com with ESMTPSA id e16-20020a5d65d0000000b00332cc7c3aaasm5969561wrw.21.2023.11.22.07.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 07:33:44 -0800 (PST)
-References: <20231117125919.1696980-1-jbrunet@baylibre.com>
- <20231117125919.1696980-3-jbrunet@baylibre.com>
- <170040994064.269288.960284011884896046.robh@kernel.org>
- <4608012c-059f-4d6a-914b-e85ad0c32ff0@linaro.org>
- <1j5y1wg3sb.fsf@starbuckisacylon.baylibre.com>
- <2e7a65da-5c1d-4dd4-ac69-7559a53afdf3@linaro.org>
- <1j1qckg21u.fsf@starbuckisacylon.baylibre.com>
- <94e69281-93e1-41cd-9cf5-81cbbc15572c@linaro.org>
- <1jwmu9et6j.fsf@starbuckisacylon.baylibre.com>
- <2bbc2031-89d7-42e9-828e-068fa06eabf4@linaro.org>
-User-agent: mu4e 1.10.7; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, neil.armstrong@linaro.org,
-        Rob Herring <robh@kernel.org>,
-        JunYi Zhao <junyi.zhao@amlogic.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v2 2/6] dt-bindings: pwm: amlogic: add new compatible
- for meson8 pwm type
-Date:   Wed, 22 Nov 2023 16:23:25 +0100
-In-reply-to: <2bbc2031-89d7-42e9-828e-068fa06eabf4@linaro.org>
-Message-ID: <1jo7flerag.fsf@starbuckisacylon.baylibre.com>
+        Wed, 22 Nov 2023 10:25:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516C8F9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:25:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDBDC433C7;
+        Wed, 22 Nov 2023 15:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700666753;
+        bh=+aMtF9o/I+2Y/BQkCHJeGkWK7rYW/+sp7CQq2jIm2wk=;
+        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
+        b=rqOjTSYrhOIq0Uu+k2isGwQOOGyM6ANvDLEZMM0uU02tjCjNqKilNrOyjg9V3zbcR
+         2wJyT6PoX2uxn6R1pzDz/611Orm5nnE/bO2j7y6m3ftLPQtSeyPbrtJbCjDmkqWBr8
+         C+Qkzimr0sK+w/tvtIrpiIwIm0JPWzb7Ri5tWrdEkI/SpYE0mo/tFVgBKkUCxyNfoO
+         O30/qhVzrQYpafqLcOYBE0Tz2R7YlvnClf4vOGitVwPBvvzCs2qvAZBVhwguz2r9Fg
+         Q4Ca6Ul1jKxRpWTKoEgCkCpHvrQEykFH+W99e5vxU7a/3IUeciQei4qZtd186QlvI2
+         J/Ix20Kg7qjoA==
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1cf52e5e07eso7316975ad.0;
+        Wed, 22 Nov 2023 07:25:52 -0800 (PST)
+X-Gm-Message-State: AOJu0YyGUOBl8mybuYfe0kgf69I0KHDY3KbMnLdNA++Sgc9615lHNRWZ
+        oVZAEjkYR+2DiN0At9WBEjQjl87d0ag/MFR5TkA=
+X-Google-Smtp-Source: AGHT+IFuaX1vlFLiWY1su1XZ/dCeNdLqMXHHIn0JR9kAzO60/vRWQflUQCRJ0HY1dUAaBB8PlTlXErykm9YbN2wf+YI=
+X-Received: by 2002:a17:90b:2684:b0:27d:2d2f:9ca2 with SMTP id
+ pl4-20020a17090b268400b0027d2d2f9ca2mr8585449pjb.24.1700666752477; Wed, 22
+ Nov 2023 07:25:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231105233630.3927502-1-jonas@kwiboo.se> <39d991e9-6afd-4207-ad09-e342a6c02485@xs4all.nl>
+ <c35c91be-a931-47e8-b5e8-5a4a83c841da@kwiboo.se> <82f81f63-3dfa-42fe-8744-63f36d73bb77@xs4all.nl>
+In-Reply-To: <82f81f63-3dfa-42fe-8744-63f36d73bb77@xs4all.nl>
+Reply-To: wens@kernel.org
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Wed, 22 Nov 2023 23:25:41 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66PHCo1aEdEv3UCVLC_b7SodTuveqn7XWdOyCmaLSiWMg@mail.gmail.com>
+Message-ID: <CAGb2v66PHCo1aEdEv3UCVLC_b7SodTuveqn7XWdOyCmaLSiWMg@mail.gmail.com>
+Subject: Re: [PATCH 0/9] media: rkvdec: Add HEVC backend
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alex Bee <knaerzche@gmail.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 22, 2023 at 11:23=E2=80=AFPM Hans Verkuil <hverkuil-cisco@xs4al=
+l.nl> wrote:
+>
+> On 09/11/2023 18:44, Jonas Karlman wrote:
+> > Hi Hans,
+> >
+> > On 2023-11-07 14:49, Hans Verkuil wrote:
+> >> Hi Jonas,
+> >>
+> >> On 06/11/2023 00:36, Jonas Karlman wrote:
+> >>> This series add a HEVC backend to the Rockchip Video Decoder driver.
+> >>>
+> >>> A version of this HEVC backend has been in use by the LibreELEC distr=
+o
+> >>> for the past 3+ years [1]. It was initially created based on a copy o=
+f
+> >>> the H264 backend, unstable HEVC uAPI controls and a cabac table + sca=
+ling
+> >>> matrix functions shamelessly copied 1:1 from the Rockchip mpp library=
+.
+> >>>
+> >>> It has since then been extended to use the stable HEVC uAPI controls =
+and
+> >>> improved opon e.g. to include support for rk3288 and fix decoding iss=
+ues
+> >>> by Alex Bee and Nicolas Dufresne.
+> >>>
+> >>> The version submitted in this series is based on the code currently u=
+sed
+> >>> by the LibreELEC distro, excluding hard/soft reset, and with cabac ta=
+ble
+> >>> and scaling matrix functions picked from Sebastian Fricke prior serie=
+s
+> >>> to add a HEVC backend [2].
+> >>>
+> >>> Big thanks to Alex Bee, Nicolas Dufresne and Sebastian Fricke for mak=
+ing
+> >>> this series possible!
+> >>
+> >> I ran this series through smatch and found these two issues:
+> >>
+> >> drivers/staging/media/rkvdec/rkvdec-hevc.c: In function 'transpose_and=
+_flatten_matrices':
+> >> drivers/staging/media/rkvdec/rkvdec-hevc.c:429:83: warning: variable '=
+new_value' set but not used [-Wunused-but-set-variable]
+> >>   429 |         int i, j, row, x_offset, matrix_offset, rot_index, y_o=
+ffset, matrix_size, new_value;
+> >>       |                                                               =
+                    ^~~~~~~~~
+> >> drivers/staging/media/rkvdec/rkvdec-hevc.c:756 rkvdec_hevc_run_preambl=
+e() error: we previously assumed 'ctrl' could be null (see line 755)
+> >
+> > Thanks, will fix in v2.
+> >
+> >>
+> >> Also, this series drops the HEVC part from the TODO file, but
+> >> I wonder if the last remaining item is still valid:
+> >>
+> >> * Evaluate introducing a helper to consolidate duplicated
+> >>   code in rkvdec_request_validate and cedrus_request_validate.
+> >>   The helper needs to the driver private data associated with
+> >>   the videobuf2 queue, from a media request.
+> >>
+> >> It doesn't look like there is much duplicate code at all. It is certai=
+nly not
+> >> something that prevents this driver from moving out of staging.
+> >
+> > I agree, if this is still valid it is not something that should prevent
+> > this driver from moving out of staging.
+> >
+> > There is however one remaining feature/issue that is not listed in TODO=
+.
+> >
+> > In certain situations the hw block may need a reset after there has bee=
+n
+> > a decoding error, especially after a hevc decoding error. Decoding can
+> > typically be re-started with successful result after a short pm
+> > autosuspend timeout.
+> >
+> > We do have a soft/hard reset implementation in LibreELEC-distro,
+> > excluded it from this series because reset is typically not needed, and
+> > I think the reset code need some rework to be upstream ready.
+> >
+> > Would missing hard reset support be a reason for keeping this driver
+> > in staging?
+>
+> I think Nicolas would be better placed to comment on that. If it is not
+> considered a blocker, shouldn't there at least be a patch adding comments
+> at the relevant place describing this issue? That way it is at least
+> documented as a known issue.
 
-On Wed 22 Nov 2023 at 16:04, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+FWIW Hantro on i.MX8MM doesn't either.
 
-> On 22/11/2023 15:34, Jerome Brunet wrote:
->> 
->> On Wed 22 Nov 2023 at 09:37, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
->> 
->>> On 20/11/2023 11:04, Jerome Brunet wrote:
->>>>>>>>>    .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 36 +++++++++++++++++--
->>>>>>>>>    1 file changed, 34 insertions(+), 2 deletions(-)
->>>>>>>>>
->>>>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>>>>>>
->>>>>>>
->>>>>>> I'm puzzled, isn't it recommended to have a per-soc compatible now ?
->>>
->>> Yes, it is.
->>>
->>>>>> I have specifically addressed this matter in the description,
->>>>>> haven't I ? What good would it do in this case ?
->>>
->>> There is nothing about compatible naming in commit msg.
->> 
->> Krzysztof, the whole commit desciption is explanation about why a new
->> compatible is introduced. I don't understand this comment.
->> 
->>>
->>>>>
->>>>> Yes you did but I was asked for the last year+ that all new compatible
->>>>> should be soc specific (while imprecise, in our care soc family should be ok),
->>>>> with a possible semi-generic callback with an IP version or a first soc
->>>>> implementing the IP.
->>>>>
->>>>>> Plus the definition of a SoC is very vague. One could argue that
->>>>>> the content of the list bellow are vaguely defined families. Should we
->>>>>> add meson8b, gxl, gxm, sm1 ? ... or even the actual SoC reference ?
->>>>>> This list gets huge for no reason.
->>>>>
->>>>> I think in our case soc family is reasonable since they share same silicon
->>>>> design.
->>>>>
->>>>>> We know all existing PWM of this type are the same. We have been using
->>>>>> them for years. It is not a new support we know nothing about.
->>>>>>
->>>>>>>
->>>>>>> I thought something like:
->>>>>>> - items:
->>>>>>>      - enum:
->>>>>>>          - amlogic,gxbb-pwm
->>>>>>>          - amlogic,axg-pwm
->>>>>>>          - amlogic,g12a-pwm
->>>>>>>      - const: amlogic,pwm-v1
->>>>>> I'm not sure I understand what you are suggesting here.
->>>>>> Adding a "amlogic,pwm-v1" for the obsolete compatible ? No amlogic DT
->>>>>> has that and I'm working to remove this type, so I don't get the point.
->>>>>>
->>>>>>>
->>>>>>> should be preferred instead of a single amlogic,meson8-pwm-v2 ?
->>>>>> This is named after the first SoC supporting the type.
->>>>>> Naming it amlogic,pwm-v2 would feel weird with the s4 coming after.
->>>>>> Plus the doc specifically advise against this type of names.
->>>>>
->>>>> The -v2 refers to a pure software/dt implementation versioning and not
->>>>> an HW version, so I'm puzzled and I requires DT maintainers advice here.
->>>>>
->>>>> Yes meson8b is the first "known" platform, even if I'm pretty sure meson6 has
->>>
->>> Yes, this should be SoC-based compatible, unless you have clear
->>> versioning scheme by SoC/IP block vendor. You named it not a HW version,
->>> which kind of answers to the "unless" case - that's not hardware version.
->>>
->> 
->> This is specifically the point of the comment in commit description.
->> We know all the PWMs compatible are the same HW (version) as one found
->> in the meson8b.
->> 
->> It is certain that adding more compatible, listing all the SoC, will be
->> useless. I can do it if you insist.
->
-> The docs you references insist on that, so yeah, I insist as well.
->
->> 
->>>>
->>>> This is not my point. I picked this name because I have to pick a
->>>> specific device based one. Not because it is actually the first or
->>>> not. I don't see a problem with meson6 being compatible with
->>>> meson8-pwm-v2, if that ever comes along.
->>>
->>> No, the point is not to use "v2". Use SoC compatibles.
->> 
->> It is a SoC compatible. The second one.
->
-> "v2" is not the soc. I assume meson8 is one specific SoC, right? Because
-> elinux says it is a *family*:
-> https://elinux.org/Amlogic/SoCs
->
+ChenYu
 
-It is a family. yes
-
+> Regards,
 >
->> 
->> The first one, as explained in the description was describing the driver
->> more that the HW.
->> 
->> Changing the way clock are passed from DT to the driver would be break
->> user of the old compatible. So a new compatible is introduced. I believe
->> this is recommended way to introduce incompatible binding changes.
+>         Hans
 >
-> The way is not to introduce incompatible changes. Your way is also not
-> good as it breaks other users of DTS.
+> >
+> > Regards,
+> > Jonas
+> >
+> >>
+> >> Regards,
+> >>
+> >>      Hans
+> >>
+> >>>
+> >>> Patch 1 add the new HEVC backend.
+> >>> Patch 2-3 add variants support to the driver.
+> >>> Patch 4 add support for a rk3288 variant.
+> >>> Patch 5 add a rk3328 variant to work around hw quirks.
+> >>> Patch 6-7 add device tree node for rk3288.
+> >>> Patch 8-9 extend vdec node reg size to include cache/perf registers.
+> >>>
+> >>> This was tested on a ROCK Pi 4 (RK3399) and Rock64 (RK3328):
+> >>>
+> >>>   v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+> >>>   ...
+> >>>   Total for rkvdec device /dev/video1: 46, Succeeded: 46, Failed: 0, =
+Warnings: 0
+> >>>
+> >>>   Running test suite JCT-VC-HEVC_V1 with decoder FFmpeg-H.265-V4L2-re=
+quest
+> >>>   ...
+> >>>   Ran 135/147 tests successfully
+> >>>
+> >>>   Running test suite JCT-VC-MV-HEVC with decoder FFmpeg-H.265-V4L2-re=
+quest
+> >>>   ...
+> >>>   Ran 9/9 tests successfully
+> >>>
+> >>> And on a TinkerBoard (RK3288):
+> >>>
+> >>>   v4l2-compliance 1.24.1, 32 bits, 32-bit time_t
+> >>>   ...
+> >>>   Total for rkvdec device /dev/video3: 47, Succeeded: 47, Failed: 0, =
+Warnings: 0
+> >>>
+> >>>   Running test suite JCT-VC-HEVC_V1 with decoder FFmpeg-H.265-V4L2-re=
+quest
+> >>>   ...
+> >>>   Ran 137/147 tests successfully
+> >>>
+> >>>   Running test suite JCT-VC-MV-HEVC with decoder FFmpeg-H.265-V4L2-re=
+quest
+> >>>   ...
+> >>>   Ran 9/9 tests successfully
+> >>>
+> >>> This series depend on the following series:
+> >>> - media: rkvdec: Add H.264 High 10 and 4:2:2 profile support [3]
+> >>>
+> >>> To fully runtime test this series you need above series and ffmpeg
+> >>> patches from [4], this series and its depends is also available at [5=
+].
+> >>>
+> >>> Full summary of fluster run can be found at [6].
+> >>>
+> >>> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Ro=
+ckchip/patches/linux/default/linux-2000-v4l2-wip-rkvdec-hevc.patch
+> >>> [2] https://lore.kernel.org/linux-media/20230101-patch-series-v2-6-2-=
+rc1-v2-0-fa1897efac14@collabora.com/
+> >>> [3] https://lore.kernel.org/linux-media/20231105165521.3592037-1-jona=
+s@kwiboo.se/
+> >>> [4] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-n6.1-dev/
+> >>> [5] https://github.com/Kwiboo/linux-rockchip/commits/linuxtv-rkvdec-h=
+evc-v1/
+> >>> [6] https://gist.github.com/Kwiboo/4c0ed87774dede44ce6838451a1ec93d
+> >>>
+> >>> Regards,
+> >>> Jonas
+> >>>
+> >>> Alex Bee (5):
+> >>>   media: rkvdec: Add variants support
+> >>>   media: rkvdec: Add RK3288 variant
+> >>>   media: rkvdec: Disable QoS for HEVC and VP9 on RK3328
+> >>>   ARM: dts: rockchip: Add vdec node for RK3288
+> >>>   arm64: dts: rockchip: Expand reg size of vdec node for RK3399
+> >>>
+> >>> Jonas Karlman (4):
+> >>>   media: rkvdec: Add HEVC backend
+> >>>   media: rkvdec: Implement capability filtering
+> >>>   media: dt-bindings: rockchip,vdec: Add RK3288 compatible
+> >>>   arm64: dts: rockchip: Expand reg size of vdec node for RK3328
+> >>>
+> >>>  .../bindings/media/rockchip,vdec.yaml         |    4 +-
+> >>>  arch/arm/boot/dts/rockchip/rk3288.dtsi        |   17 +-
+> >>>  arch/arm64/boot/dts/rockchip/rk3328.dtsi      |    2 +-
+> >>>  arch/arm64/boot/dts/rockchip/rk3399.dtsi      |    6 +-
+> >>>  drivers/staging/media/rkvdec/Makefile         |    2 +-
+> >>>  drivers/staging/media/rkvdec/TODO             |    7 -
+> >>>  .../staging/media/rkvdec/rkvdec-hevc-data.c   | 1848 +++++++++++++++=
+++
+> >>>  drivers/staging/media/rkvdec/rkvdec-hevc.c    |  823 ++++++++
+> >>>  drivers/staging/media/rkvdec/rkvdec-regs.h    |    3 +
+> >>>  drivers/staging/media/rkvdec/rkvdec-vp9.c     |   10 +
+> >>>  drivers/staging/media/rkvdec/rkvdec.c         |  180 +-
+> >>>  drivers/staging/media/rkvdec/rkvdec.h         |   15 +
+> >>>  12 files changed, 2886 insertions(+), 31 deletions(-)
+> >>>  create mode 100644 drivers/staging/media/rkvdec/rkvdec-hevc-data.c
+> >>>  create mode 100644 drivers/staging/media/rkvdec/rkvdec-hevc.c
+> >>>
+> >>
+> >
 >
->> 
->> v2 here denote a new interface version, nothing to do with HW
->> versioning. I happy to pick something else to denote this.
 >
-> Sorry, then it is not a SoC-based compatible.
->
->> 
->>>
->>>>
->>>> I think the binding here satisfy the rule that it should be specific,
->>>> and the intent that goes with it:
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/writing-bindings.rst?h=v6.7-rc2#n42
->>>>
->>>>> the same pwm architecture, this is why "amlogic,pwm-v1" as fallback seems more
->>>>> reasonable and s4 and later pwm could use the "amlogic,pwm-v2"
->>>>> fallback.
->>>>
->>>> That is not how understand this:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/writing-bindings.rst?h=v6.7-rc2#n82
->>>>
->>>
->>> Again, where the "v2" is defined? Where is any document explaining the
->>> mapping between version blocks and SoC parts? Why do you list here only
->>> major version? Blocks almost always have also minor (e.g. v2.0).
->> 
->> Again, v2 does has nothing to do with the HW. Never wrote it was.
->> The HW remains the same.
->
-> Don't add compatibles which are not related to HW, but represent
-> software versioning. Software does not matter for the bindings.
-
-What I did I explicitly what is recommended in Grant's presentation from
-2013. 10y old, but I assume slide 10 "Making an incompatible update" is
-still valid.
-
-https://elinux.org/images/1/1e/DT_Binding_Process_glikely_ksummit_2013_10_28.pdf
-
-Breaking the ABI of the old compatible would break all boards which use
-u-boot DT and pass it to the kernel, because the meaning of the clock
-property would change.
-
-Doing things has suggested in this slide, and this patch, allows every
-device to continue to work properly, whether the DT given is the one
-shipped with u-boot (using the old compatible for now) or the kernel.
-
->
-> That's a clear NAK.
->
-> Best regards,
-> Krzysztof
-
