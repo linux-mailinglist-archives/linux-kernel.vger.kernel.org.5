@@ -2,84 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 881267F3E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AB27F3E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbjKVGla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        id S234851AbjKVGn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:43:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjKVGl2 (ORCPT
+        with ESMTP id S230061AbjKVGn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:41:28 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5965A97
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:41:24 -0800 (PST)
-Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SZs3k4b9CzRjZZ;
-        Wed, 22 Nov 2023 14:37:06 +0800 (CST)
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Wed, 22 Nov 2023 14:41:21 +0800
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap
- space
-To:     Michal Hocko <mhocko@suse.com>
-References: <20231121090624.1814733-1-liushixin2@huawei.com>
- <ZVyp5eETLTT0PCYj@tiehlicka>
-CC:     Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <32fe518a-e962-14ae-badc-719390386db9@huawei.com>
-Date:   Wed, 22 Nov 2023 14:41:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 22 Nov 2023 01:43:26 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EEAF9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:43:22 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so85844571fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:43:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700635401; x=1701240201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/uRNxGcgpOf3kB+VZZJCqD3x4MZNwnwcErCoCSbGzaE=;
+        b=R9dffkDIJVdZLFiyfhAsMXlySD/tZlYWzFVxij0E4/5bORt3O4nBWUf704z3ITXxs0
+         xKmlvW0EUbkzUBKbKj7sKv9/0gQF0Fwq4guL3iQ5wyDz5vX5AbRP7B499WdLw0+F+Tb9
+         YAoeo34N0HlosCK5kbFICFu36j2O0P12d69nKdBOn1C2Dn2WcFon0P0Nv7nbtn9ENRwN
+         dKEa/h7OuZM5iGOHqBNHuviOODjbgG/uiYLaec/5aYdFXo04B8DZ9M8OrBODhPxLpKqY
+         Dt2W0L5Gr0yVHhAcgSdkmwYPBSe3pRvImWQ0jBWNYqPVQY7mhHA6BvtfXt7rb6Ls7ix0
+         Zyxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700635401; x=1701240201;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/uRNxGcgpOf3kB+VZZJCqD3x4MZNwnwcErCoCSbGzaE=;
+        b=taiuNJWgQI8gsD+6EOhkYIPoGNV/CEknWy6p5GjZ++UWqcFwrSKnt8l/syArK8FCVl
+         SwWtahpzhte++VNlgxPMTofiuC0ZpTfWtCbUAEUCfZtRw76Sgg7Tf2wIjLH8ke1wl3v8
+         V7uBDhJFotGQ5u/K9xMVwMB781Xze3dX9B/TKqd7ykpAhYjjc9OrGghS/Bo3BWsljD0C
+         gXup8tcBz3aeFUoB9qLaqoIbR5Hpvd1mhYHBKOcv7LQMK/W/dyFC61Kiau021pPCodYe
+         0TMsYtjapdSOH83Qjg0tmqS/r/sa2+IeSXtZFE+8wuWPlFQnTFBeKAPeYZRqAuNRkw6/
+         suiQ==
+X-Gm-Message-State: AOJu0YybpmaYhOEltVVDPnHxOCwufG5wAPeFFCVwgkhMoMLMdHJtjLkn
+        I5fGyTUAFpQtAsj/ZCTmASeMzcJ6jUBpKUagzMY=
+X-Google-Smtp-Source: AGHT+IGSUqKgWEL+EYO/kobnJgdaq8c8AP53UBRrYJkvO09xGuE3mMLoFP9slL9nLe+LjIgFiNa0ZRd/A7hy6P+p0Y8=
+X-Received: by 2002:a2e:98d5:0:b0:2c5:174b:9a53 with SMTP id
+ s21-20020a2e98d5000000b002c5174b9a53mr842521ljj.26.1700635400512; Tue, 21 Nov
+ 2023 22:43:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ZVyp5eETLTT0PCYj@tiehlicka>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemd200004.china.huawei.com (7.185.36.141)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <CAJD7tkYXcQkTZkUnAz89dR0O1YmEUr29UFeg3142t6Y09aaSpg@mail.gmail.com>
+In-Reply-To: <CAJD7tkYXcQkTZkUnAz89dR0O1YmEUr29UFeg3142t6Y09aaSpg@mail.gmail.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Wed, 22 Nov 2023 14:43:02 +0800
+Message-ID: <CAMgjq7DgHvcU6gTWhzPY8By8DCx5TzYViKaiuSSxh-zofuV1HQ@mail.gmail.com>
+Subject: Re: [PATCH 00/24] Swapin path refactor for optimization and bugfix
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/11/21 21:00, Michal Hocko wrote:
-> On Tue 21-11-23 17:06:24, Liu Shixin wrote:
+Yosry Ahmed <yosryahmed@google.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=8821=E6=
+=97=A5=E5=91=A8=E4=BA=8C 03:18=E5=86=99=E9=81=93=EF=BC=9A
 >
-> However, in swapcache_only mode, the scan count still increased when scan
-> non-swapcache pages because there are large number of non-swapcache pages
-> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
-> is skipped and do not count, the scan of pages in isolate_lru_folios() can
-> eventually lead to hung task, just as Sachin reported [2].
-> I find this paragraph really confusing! I guess what you meant to say is
-> that a real swapcache_only is problematic because it can end up not
-> making any progress, correct? 
-This paragraph is going to explain why checking swapcache_only after scan += nr_pages;
+> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
+rote:
+> >
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > This series tries to unify and clean up the swapin path, fixing a few
+> > issues with optimizations:
+> >
+> > 1. Memcg leak issue: when a process that previously swapped out some
+> >    migrated to another cgroup, and the origianl cgroup is dead. If we
+> >    do a swapoff, swapped in pages will be accounted into the process
+> >    doing swapoff instead of the new cgroup. This will allow the process
+> >    to use more memory than expect easily.
+> >
+> >    This can be easily reproduced by:
+> >    - Setup a swap.
+> >    - Create memory cgroup A, B and C.
+> >    - Spawn process P1 in cgroup A and make it swap out some pages.
+> >    - Move process P1 to memory cgroup B.
+> >    - Destroy cgroup A.
+> >    - Do a swapoff in cgroup C
+> >    - Swapped in pages is accounted into cgroup C.
+> >
+> >    This patch will fix it make the swapped in pages accounted in cgroup=
+ B.
+> >
 >
-> AFAIU you have addressed that problem by making swapcache_only anon LRU
-> specific, right? That would be certainly more robust as you can still
-> reclaim from file LRUs. I cannot say I like that because swapcache_only
-> is a bit confusing and I do not think we want to grow more special
-> purpose reclaim types. Would it be possible/reasonable to instead put
-> swapcache pages on the file LRU instead?
-It looks like a good idea, but I'm not sure if it's possible. I can try it, is there anything to
-pay attention to?
+> I guess this only works for anonymous memory and not shmem, right?
 
-Thanks,
+Hi Yosry,
 
+Yes, this patch only changed the charge target for anon page.
+
+>
+> I think tying memcg charges to a process is not something we usually
+> do. Charging the pages to the memcg of the faulting process if the
+> previous owner is dead makes sense, it's essentially recharging the
+> memory to the new owner. Swapoff is indeed a special case, since the
+> faulting process is not the new owner, but an admin process or so. I
+> am guessing charging to the new memcg of the previous owner might make
+> sense in this case, but it is a change of behavior.
+
+After discuss with others I also found this is a controversial issue,
+will send separate series for this, I think it needs more discuss.
