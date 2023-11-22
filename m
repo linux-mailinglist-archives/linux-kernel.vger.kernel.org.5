@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0E97F3EE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F16B7F3EE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbjKVH3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S230142AbjKVHcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjKVH3D (ORCPT
+        with ESMTP id S229931AbjKVHcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:29:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F469D1;
-        Tue, 21 Nov 2023 23:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xKzadQBp86OPkvjkpX1NPj8LtoV9+7VhbqtkMJ7c0p8=; b=R6YRWtxaLw6jG2S3GfiNe5UL1W
-        19YrMm3BTQIFpje67cz9XGp2xu4KuwhFCVHLKcNW2+0JoczOf/E8SKNVh5osjmP34/iXSvALyTC82
-        OkXvMx5oCWyGdg8JPzbGfB40hjvB7m0gJNPgFMzY2VlSP8ZC2B4eY2V3vD1lJMrNl2qR1juBD73Si
-        cNtjziHq1vutkQd2+v0taG733jkz2D8q7Et5FUwa0YdwWe1ASzGoVkn2/7j0YcVA/JQJfSwGHWamy
-        qhtwVIRX6jaRKN0iZ/3Obpbc+oS9n3xHzMp3jmHjRQJQQ0QIS5wZEoOjF5+X78OgOHMDwIdUIT752
-        eZZU8d+A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r5hfM-000uPI-0t;
-        Wed, 22 Nov 2023 07:28:56 +0000
-Date:   Tue, 21 Nov 2023 23:28:56 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     ming.lei@redhat.com, axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v3 2/3] block: introduce new field bd_flags in
- block_device
-Message-ID: <ZV2tuLCH2cPXxQ30@infradead.org>
-References: <20231122103103.1104589-1-yukuai1@huaweicloud.com>
- <20231122103103.1104589-3-yukuai1@huaweicloud.com>
+        Wed, 22 Nov 2023 02:32:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC56B10C;
+        Tue, 21 Nov 2023 23:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700638358; x=1732174358;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DTy+5s+titJCRb9lM2czn3EeHfdmnHbjASYVMkfVbec=;
+  b=M2VURbOhZIpzE2HZy2yKTEnpKzkonXg7FdWw86h5gMVGzSh42ZOg9r2f
+   QbMNEKISUQB0F3gBw3ZQZm8Cno+aSZByoy99eS6lf7djEfC4o0KwshhCu
+   MKBFJAeYIyI3uvNfCX5YGoEooP7V3P6ruA0P8XWsuWSpWted9fCH289h+
+   DUsplrHfHfLgPI3V4tzGaDNwbZ+iuqIqZHLOFNJfSdGGjgGuPk8JTER+H
+   6YlTFQjXqqWXzY3J/Vs4SxkvBSUs/KenpoINc+DAD1NGflifM+ily/BKg
+   b64ADLYBzJkOzZDS+p4JE4a4JB26+5qFFevN4aSgBepUoQsUth9Et7ypi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="389154275"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="389154275"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 23:32:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="832924702"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="832924702"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Nov 2023 23:32:36 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 476DD2A2; Wed, 22 Nov 2023 09:32:35 +0200 (EET)
+Date:   Wed, 22 Nov 2023 09:32:35 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Sanath S <Sanath.S@amd.com>
+Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        stable@vger.kernel.org
+Subject: Re: [Patch v2] thunderbolt: Add quirk to reset downstream port
+Message-ID: <20231122073235.GU1074920@black.fi.intel.com>
+References: <20231122050639.19651-1-Sanath.S@amd.com>
+ <20231122060316.GT1074920@black.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231122103103.1104589-3-yukuai1@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231122060316.GT1074920@black.fi.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	if (partno && bdev_flagged(disk->part0, BD_FLAG_HAS_SUBMIT_BIO))
-> +		bdev_set_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
->  	else
-> +		bdev_clear_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
+On Wed, Nov 22, 2023 at 08:03:16AM +0200, Mika Westerberg wrote:
+> also please make it a separate function, tb_port_reset() following the
+> similar tb_port_unlock() and friends. With the matching kernel-doc and
+> everything.
+> 
+> > +			val = val | PORT_CS_19_DPR;
+> > +			ret = tb_port_write(port, &val, TB_CFG_PORT,
+> > +					port->cap_usb4 + PORT_CS_19, 1);
+> 
+> Since it is using cap_usb4 you probably need to make usb4_port_reset()
+> as well that gets called from tb_port_reset() (try to make it as simple
+> as possible though).
 
-While the block layer has a bit of history of using wrappers for
-testing, setting and clearing flags, I have to say I always find them
-rather confusing when reading the code.
-
-> +#define BD_FLAG_READ_ONLY	0 /* read-only-policy */
-
-I know this is copied from the existing field, but can you expand
-it a bit?
-
-> +#define BD_FLAG_WRITE_HOLDER	1
-> +#define BD_FLAG_HAS_SUBMIT_BIO	2
-> +#define BD_FLAG_MAKE_IT_FAIL	3
-
-And also write comments for these. 
-
-> +
->  struct block_device {
->  	sector_t		bd_start_sect;
->  	sector_t		bd_nr_sectors;
-> @@ -44,10 +49,8 @@ struct block_device {
->  	struct request_queue *	bd_queue;
->  	struct disk_stats __percpu *bd_stats;
->  	unsigned long		bd_stamp;
-> -	bool			bd_read_only;	/* read-only policy */
-> +	unsigned short		bd_flags;
-
-I suspect you really need an unsigned long and atomic bit ops here.
-Even a lock would probably not work on alpha as it could affect
-the other fields in the same 32-bit alignment.
-
+Also please make sure it follows the CM guide 7.2 "Downstream Port Reset
+and Change of Link Parameters" so that it observes the 10ms delay and
+such.
