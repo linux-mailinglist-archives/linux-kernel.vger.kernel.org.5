@@ -2,185 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCCA7F494F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114077F4962
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344260AbjKVOtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
+        id S1344119AbjKVOwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbjKVOtl (ORCPT
+        with ESMTP id S1344255AbjKVOv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:49:41 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15B119D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:49:34 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 36ADA1F385;
-        Wed, 22 Nov 2023 14:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700664573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kq4fxvPRD3+OAsCP745uuOIslKd+n71GOa7alH4nMCE=;
-        b=U6b9LWRbsjHW7H4M2bMLBt1dNaWPoEtqn+VEFumm3hzQC3pFxyTHbK1o8+jMJjLHu3ges3
-        0f831xeKBhHtlUA3GWiiNiPYj1QbwH96b3uV35HeOH5AlEl+PBidEBk6rd2nnpx2taMOii
-        a9wWv5jdlcS4ywUitEEXKTQPhGKQ/bk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700664573;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kq4fxvPRD3+OAsCP745uuOIslKd+n71GOa7alH4nMCE=;
-        b=YXw5P8+TxQHa5tDxeU/lV5qni6HtBmE6hyYifqyfBvD0lsqaN4qC3eT2QbwdQD5z563RMQ
-        MmM2AKJa/mw+RnDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 305D513461;
-        Wed, 22 Nov 2023 14:49:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OtDIC/0UXmWQEgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 22 Nov 2023 14:49:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A911AA07DC; Wed, 22 Nov 2023 15:49:32 +0100 (CET)
-Date:   Wed, 22 Nov 2023 15:49:32 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengming Zhou <chengming.zhou@linux.dev>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        jack@suse.cz, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Hellwig <hch@lst.de>, shr@devkernel.io,
-        neilb@suse.de, Michal Hocko <mhocko@suse.com>
-Subject: Re: Question: memcg dirty throttle caused by low per-memcg dirty
- thresh
-Message-ID: <20231122144932.m44oiw5lufwkc5pw@quack3>
-References: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
-MIME-Version: 1.0
+        Wed, 22 Nov 2023 09:51:57 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2045.outbound.protection.outlook.com [40.107.244.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9055F1B8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:51:51 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ceoLE+r2xhpdXYQ2cE3ayxaK1BW2EWirUUffiKEfOoyOVQ24PFKVJ0iHV/gfemHAlaLxLp4akszDPkdqxqKkXR/an7rH883y5qe/md6cfmsQ03apx5WoF7t4YkKT9ziQLQ9xL/X69hQoY3GafObc0GnM+z4um8VhJzJ0IPpxbhZKOExix6m+my6PZupn5DmODWWJJ1I97EX4nrvD0L8vPHfpWbFsEyxZR0iK4oODLkkymdVZF461UG1RDn5y2Lt8OYrYEI6qEw4SN6GnDmKOgTWrr/H2L4wuCk9DOKOCth8cy41getmnIug52KhjC8q6qWZlhaxIhw5u4YFTDvjhTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s25QxNYVtawiJ3VaNYfhl/cCyvp1Fu1181QznpXnxak=;
+ b=EOo0huaa1JsRXxYM9W3q8I3FqMzUQQ8fX/nLhBoTrFRzyJWr6A+nL8hrSgZ0+nHnH94FKxuEgoJbdBnBd1n3lbaGzbHCA2d8/Hua0/jAB7iQ3Or3F2DHVrABY796aiAfpIRfJMmNPYHK9WdUSQGSp29yQscLgf9JBVT4EuwOYzqqjPMi7poCKeTXvFwfjj3yyVqG6y8jQRmBBzF+DgZ38ABZm6iDqstViOKG0X1AVeKBwu1yyMhd+kI7e23bKY3QeWRFPGfwiyP3j5V5S0ko/qsH+lXoOVbUyN6mJrMQl4y5PD2XDLbI91p2RanjQideJnaNy1vJZkzkND7DnRg6IQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s25QxNYVtawiJ3VaNYfhl/cCyvp1Fu1181QznpXnxak=;
+ b=J0clCN2n+3ZH6dibxy+3kka1HoqeIK/fuh29OEyNnRV71uQJRqKc36b7pn0bWa0b13ZFRUa++5KsS0CLEVJydp/sIuOioMr6rg9aoEHO4/EZCiIvgN/W5O3JYAFNvO8oZeGqrWX2kMwxRKVnxDGgyeRc1pIfnGAEV4O9+Ltb/4DN80CIaNKI+3fkr3C0ArgFpnTPBjFmE/rl3k/epnRzHhbs6otM6PCObnjWz8VsVlZvIqDQFOkCNdnJVY4FXezHXZhn0hxaEI1mTlbsqkX7zLDgQqsObYhclFqQQbCRByTJYJ0xT/8x+AGOQMC2Yrs6SgE+B+nJNq5gk+wLBx9Oag==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN0PR12MB6174.namprd12.prod.outlook.com (2603:10b6:208:3c5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
+ 2023 14:51:48 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7002.027; Wed, 22 Nov 2023
+ 14:51:47 +0000
+Date:   Wed, 22 Nov 2023 10:51:46 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        James Houghton <jthoughton@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH RFC 00/12] mm/gup: Unify hugetlb, part 2
+Message-ID: <20231122145146.GN6083@nvidia.com>
+References: <20231116012908.392077-1-peterx@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.80
-X-Spamd-Result: default: False [-7.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231116012908.392077-1-peterx@redhat.com>
+X-ClientProxiedBy: SN1PR12CA0108.namprd12.prod.outlook.com
+ (2603:10b6:802:21::43) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB6174:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8738efca-cc10-4878-6f63-08dbeb6a8d88
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: prVvL3PgEPXFTW76Uhq4nIsjrWM6g7T3JPYi1b0WE9IEEUfHEvXEJBE/3TvC2pDljHRkiKlrUvzj/QyexveWOraWMRuGfte4Dn6LJrBxDPGo7leecEBxatVATclUinJ6I+pRQhgFauB3r6KK8/bzHclXTehBoFC22A3QseX+FJZs82GUHcOpxm/1pzUU1/fwXEwKRFJ/ckJCvRMCJgZP/094F3PUUsOCYxXvtYzn6HxQmXkfpIDBdbJm2ikazpuABkOo0DcMV3k/Zxavs0mIoXn9vcvyXTnjDxWE5fHoatTL4WzsFgku06wqJhsbxbh/a8BIGV10roQNRdlOUDX5OhonrIhxmE/ALdBWY6kJuolfX/FyPYFoExr0JeNCAK6esfHdCsWLiSerGxpVfhLgSkWf8650dnAUiqzsVXH7gWMMjaNrcdECieS9A29BgkT4GwlhWOdxNw4QOBVAFWCVQfM8nSWvIMPHYto2NjT2TknzVZH1GaVoT4NvQa5DhVgg0GmhxDKoxdcADKw049WHOe5ag3LMy9rHTi46RyyGHRBgGk9P7DOcdPuMz52TBLppMcq9WU3jJ5rZKvWlQ7j3orEEkX8+LCnhv23/Omc5+1M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(346002)(366004)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(7416002)(5660300002)(2906002)(8936002)(4326008)(316002)(41300700001)(66946007)(66476007)(8676002)(66556008)(54906003)(966005)(6486002)(6506007)(478600001)(26005)(2616005)(1076003)(6512007)(6916009)(83380400001)(38100700002)(86362001)(36756003)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SqHUqgTpfVCfwLKinqDEw0rzGUk+VT6TkklKF/YHSeUasqIJEHTHtI38o6FH?=
+ =?us-ascii?Q?qEt1FuNsFS9lNmVdMhFqdJJSvSH1Q6JpgamLc1gVDfFveoyCl92gL0QQh5wL?=
+ =?us-ascii?Q?a+RnGKW3cCHTHYOJ3+B4LrpLVepTdIcsQv6T2hdXST82mj7eveffTZiAjrOL?=
+ =?us-ascii?Q?uUXvTKS7hRpSTGc6B+5eBJsaRrnVmb6tKktKZSQE8qQw+jBxmoyFkGNon2Xk?=
+ =?us-ascii?Q?EuCKEv7QQ7+Lu877NY3H9sywsjJQ9+M76Ih9mBU6RcXhZA8HfxJNY2W2cmJU?=
+ =?us-ascii?Q?znTCYmM3iQJroSGI3ju8XO7hFN8lSJ3QD/p7jNr9KgAqGk73cEuDuKYZvibG?=
+ =?us-ascii?Q?gEWptzXQKTUq95/RonptYhLJCMjmso0f0exkxdmzEEN0b1hr+Fpj3L02fi3i?=
+ =?us-ascii?Q?e8Z3YR++ojHXh5YYwa4QQ+9/jYXHfkVawM59U8jp/R/ayPG9wvh0GfKtswe5?=
+ =?us-ascii?Q?u24EMTxPRlG59gJzuCwwJCJN91weoaIFhklpyT5BVSnwguetnroGm6Qq2Mey?=
+ =?us-ascii?Q?s+J4fSdajytzxvFG/tAXBMVNcP+W3+3iyaWg5NIZKuHR2aias1oWHH2+9gMe?=
+ =?us-ascii?Q?scfI60R7vGHssQbYAX/sgFUa8l/NQqsS16JUTn7z+yH+K4gnhRTiwLT40XLx?=
+ =?us-ascii?Q?wJIAEsNWJk6hYLdKeEIw2y4ETPfjh9PKS0mzWZKEM+1litY8yF2T9mu9cndl?=
+ =?us-ascii?Q?UWbGjA7OnN8ajw5HqZ0+f7MyqzUamzl/+lZSijKW2GNgNjdoBQPq5tcN8Mti?=
+ =?us-ascii?Q?NZZ8d9ob+hhPmOH5EFsLV0uxR/nnGpK996O3bFmt8gLT3b6+H7hRsnJTSbdn?=
+ =?us-ascii?Q?FQDfd6EXK5VMq32lB9ExXMXL8GrH4d808CEl04TA1o9fD6EYa5UTomyjcmoZ?=
+ =?us-ascii?Q?HZqkH1JfxVGdKLNlwXFwlfBGzVvG83MK/uDcepF7sA5CzfXSS05653ffsNIy?=
+ =?us-ascii?Q?LY5hRScurxD4nyjImc7RvZ0YpcSxQ8s/DboSdXMgN3GLO/hjms6AZLMVIXYh?=
+ =?us-ascii?Q?uVGMI4scIMDlLLNKA/hn6JJJw8pY1INDvpxCkZY3LpOH5l1RNT4sPo/th7wF?=
+ =?us-ascii?Q?jwA5JvcH1MrIKQ/5g/SsaQf/YXPql20ohcV+1OXUY2VO4mSM+JP+pvclWf85?=
+ =?us-ascii?Q?jFzUxxkXogGSt1Uc/P8OW37hX4J5zgj3L2fsiqvrt0KqfBEGQtNk81hCnvxI?=
+ =?us-ascii?Q?4Uctw+vtqedgDuv4d2Ua9JLI4frLvPVMcyouMNxiByw/MgGIgfMQcxtPBmC1?=
+ =?us-ascii?Q?/LLXDYdocYh7NUIkupHWSvT7ACmcmr3mo07kqH3rUzMobP7dBSZj9WMh+/gA?=
+ =?us-ascii?Q?+mWHu0TF1yMQi+g4WGtUQnPvpl8pCJBQiv/K0vLMw03E4AGUSoJ0wVThu+lf?=
+ =?us-ascii?Q?rA+u/DyNWdeGVCknODRO6yHt2dztD1qZ1H59Fq/Kpv9i5jr/XMLSSBp1c55c?=
+ =?us-ascii?Q?FL7js25ylaVYUXL1gC8t1FbfPasRSXEv+ysa6IJNNqVOOgqoiMsVXqqbEc0Z?=
+ =?us-ascii?Q?vSGkeDYWdUhmEVd/AfOXSPkrarHV9rWINzZmOjKorJ7Adg3WSeQEGISqTobx?=
+ =?us-ascii?Q?q21y33x3x5n3NiM0pKzpVmVgMT9azDzfgoU4Qrkv?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8738efca-cc10-4878-6f63-08dbeb6a8d88
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 14:51:47.8098
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dPbNH4co4CDqJojZtrmuOeuprJQNv9KR6Mir3f/VCfmVJ6t/IqhH9UchhPNhnGnc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6174
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Wed, Nov 15, 2023 at 08:28:56PM -0500, Peter Xu wrote:
+> This patchset is in RFC stage. It's mostly because it is only yet tested on
+> x86_64 in a VM.  Not even compile tested on PPC or any other archs, it
+> means at least the hugepd patch (patch 11) is mostly untested, or even not
+> compile tested.  Before doing that, I'd like to collect any information
+> from high level.
+> 
+> If anyone would like to provide any testing either over hugepd or CONT_PMD
+> / CONT_PTE on ARM (before I reach there..), or RISCV over 64K Svnapot,
+> that'll be very much appreciated.  I'm copying PPC, ARM, RISCV list for
+> that.  It can be as simple as "./run_vmtests.sh -t gup_test -a" for now,
+> making sure hugetlb pages can be allocated along the way; the non-hugetlb
+> gup tests will guaranteed to be covered more or less, I suppose.
+> 
+> In summary, this is a continuous work for previous series:
+> 
+> https://lore.kernel.org/all/20230628215310.73782-1-peterx@redhat.com
+> 
+> And this more or less is my current take to move one more small step
+> towards merging hugetlb code into generic mm code, as much as we can.
+> 
+> That part-1 series dropped follow_hugetlb_page().  The plan of this one is
+> to further drops hugetlb_follow_page_mask().  The hugetlb GUP will use the
+> same code path for generic mm after whole set applied.
+> 
+> It means the generic code will need to at least understand hugepd, and
+> that's already done like so in fast-gup.  Fortunately it seems that's the
+> only major thing I need to teach GUP to share the common path for now
+> besides normal huge PxD entries.  Non-gup can be more challenging, but
+> that's a question for later.
 
-On Wed 22-11-23 17:38:25, Chengming Zhou wrote:
-> Sorry to bother you, we encountered a problem related to the memcg dirty
-> throttle after migrating from cgroup v1 to v2, so want to ask for some
-> comments or suggestions.
-> 
-> 1. Problem
-> 
-> We have the "containerd" service running under system.slice, with
-> its memory.max set to 5GB. It will be constantly throttled in the
-> balance_dirty_pages() since the memcg has dirty memory more than
-> the memcg dirty thresh.
-> 
-> We haven't this problem on cgroup v1, because cgroup v1 doesn't have
-> the per-memcg writeback and per-memcg dirty thresh. Only the global
-> dirty thresh will be checked in balance_dirty_pages().
+This is great, I looked through quickly and didn't have any profound remarks
 
-As Michal writes, if you allow too many memcg pages to become dirty, you
-might be facing issues with page reclaim so there are actually good reasons
-why you want amount of dirty pages in each memcg reasonably limited. Also
-generally increasing number of available dirty pages beyond say 1GB is not
-going to bring any benefit in the overall writeback performance. It may
-still be useful in case you generate a lot of (or large) temporary files
-which get quickly deleted and thus with high enough dirty limit they don't
-have to be written to the disk at all. Similarly if the generation of dirty
-data is very bursty (i.e. you generate a lot of dirty data in a short while
-and then don't dirty anything for a long time), having higher dirty limit
-may be useful. What is your usecase that you think you'll benefit from
-higher dirty limit?
-
-> 2. Thinking
-> 
-> So we wonder if we can support the per-memcg dirty thresh interface?
-> Now the memcg dirty thresh is just calculated from memcg max * ratio,
-> which can be set from /proc/sys/vm/dirty_ratio.
-> 
-> We have to set it to 60 instead of the default 20 to workaround now,
-> but worry about the potential side effects.
-> 
-> If we can support the per-memcg dirty thresh interface, we can set
-> some containers to a much higher dirty_ratio, especially for hungry
-> dirtier workloads like "containerd".
-
-As Michal wrote, if this ought to be configurable per memcg, then
-configuring dirty amount directly in bytes may be more sensible.
-
-> 3. Solution?
-> 
-> But we could't think of a good solution to support this. The current
-> memcg dirty thresh is calculated from a complex rule:
-> 
-> 	memcg dirty thresh = memcg avail * dirty_ratio
-> 
-> memcg avail is from combination of: memcg max/high, memcg files
-> and capped by system-wide clean memory excluding the amount being used
-> in the memcg.
-> 
-> Although we may find a way to calculate the per-memcg dirty thresh,
-> we can't use it directly, since we still need to calculate/distribute
-> dirty thresh to the per-wb dirty thresh share.
-> 
-> R - A - B
->     \-- C
-> 
-> For example, if we know the dirty thresh of A, but wb is in C, we
-> have no way to distribute the dirty thresh shares to the wb in C.
-> 
-> But we have to get the dirty thresh of the wb in C, since we need it
-> to control throttling process of the wb in balance_dirty_pages().
-> 
-> I may have missed something above, but the problem seems clear IMHO.
-> Looking forward to any comment or suggestion.
-
-I'm not sure I follow what is the problem here. In balance_dirty_pages() we
-have global dirty threshold (tracked in gdtc) and memcg dirty threshold
-(tracked in mdtc). This can get further scaled down based on the device
-throughput (that is the difference between 'thresh' and 'wb_thresh') but
-that is independent of the way mdtc->thresh is calculated. So if we provide
-a different way of calculating mdtc->thresh, technically everything should
-keep working as is.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Jason
