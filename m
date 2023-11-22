@@ -2,105 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5119D7F4E1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864AC7F4E2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbjKVRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:18:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
+        id S1343972AbjKVRTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232077AbjKVRSx (ORCPT
+        with ESMTP id S231793AbjKVRTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:18:53 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6836F1B2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:18:49 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507a55302e0so10076818e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700673527; x=1701278327; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qBb7uvDdpiPhPtfYhGAJokE68U5HdEwFTqReQh4emMQ=;
-        b=S9t4hjh0IGkvOECUN5WpW86UWyFg2iOL1PRLQZRAmsEGyRsDTjPQWlesYlhoxHKzml
-         BLyPCxoOGb00HQ+eQP6gxFNjEWph6CZurjyjZngR0Q8v84mQPzuiHxz4Ff1EOAcVI4yt
-         cvJ+NExGeOI9+tJNvvrO/GryWx8OVq0KSHTPuW17eSgFcRKixMr6tx917dI/pUuHFSwM
-         FE+ZMW7e4j6kV5Ky43Tegug2H6F6x1G+w7UARods5EwRPu7R+7/39CuZ/bFRMkbVhNNN
-         ttC//uNeXdLZbY0BHDg4QK/NifL+1bcn6LlNKsGVGdxqlu4MYEly+1Ca1WOaqoGfSXNb
-         YsEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673527; x=1701278327;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qBb7uvDdpiPhPtfYhGAJokE68U5HdEwFTqReQh4emMQ=;
-        b=ehR5OmY7b0PKdJZ0GLueJg9Y6b1ApE2W2gnezdz/zcMcDZw90YgqT+fJYaMVFMuIh9
-         51kU5ggcLiYKpFmF2zab7pqmoKdQtVYC9g7gseHFKkDnHV6TihB/9/XGIu+JDPVhRSLw
-         b/XUAXkla0draFUnHGsy7XmUvMFtCB8vsUJS3ChxAyfQgUs9/rZ7tMx4CdjG/vKmZIfK
-         jJUmt8M/visE4n5aRhdSf0xy6Ixqhrnen1zraTyukf5KT9agK7tmiJmkrXEdekXlm5CM
-         BhpLjZvbq40vDBddlNHgNVfVA+CqB5oNzOFmPE5Rs3UxgAKAnSzcsG0xX6QYiKcpgyNw
-         ieOQ==
-X-Gm-Message-State: AOJu0Yzs0M5QsGgw9GwK4I4b/nfso1GsHv8+euU2mcVAG3Htnar2qsEX
-        FRSk/XIolUJ8dMzIu48NJ9YiDQ==
-X-Google-Smtp-Source: AGHT+IE7Lpl8F22WVyua+nXBTNkuJNuj346aRbY/a56nH2yZhpl0Y/3GTRWDi4MXCF7jUctLK5UgqA==
-X-Received: by 2002:a19:4359:0:b0:508:11f5:8953 with SMTP id m25-20020a194359000000b0050811f58953mr2099727lfj.26.1700673527381;
-        Wed, 22 Nov 2023 09:18:47 -0800 (PST)
-Received: from [172.30.204.227] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a1-20020a19ca01000000b005091492ac3fsm1922005lfg.175.2023.11.22.09.18.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 09:18:46 -0800 (PST)
-Message-ID: <ebed123a-f952-4269-bf2c-0c0cd7d6e049@linaro.org>
-Date:   Wed, 22 Nov 2023 18:18:44 +0100
+        Wed, 22 Nov 2023 12:19:30 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EA9C83;
+        Wed, 22 Nov 2023 09:19:26 -0800 (PST)
+Received: from [192.168.2.39] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BF0E720B74C0;
+        Wed, 22 Nov 2023 09:19:21 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF0E720B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1700673565;
+        bh=3LZ9zzeuLYlI71EPLuHTSgdCNU++nYBhxEZHJbsDSlY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FNbbciuyWCaA9TZyyEjX7d7DkZgEQKBFsmxLo1LiA3Jvi+6vHmrWZOH1gV+NeKDDb
+         awySjemfomgKj1xLIpgE4rr02YE7Le1qQnjEgZqb1n9SSbtUzvywHYQp/Eh9EIIvna
+         vUDSo7AuFhfJhv42JxDDyPmWaLsJVvg8qBnw4i+E=
+Message-ID: <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
+Date:   Wed, 22 Nov 2023 18:19:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] arm64: dts: qcom: sm6115: align mem timer size cells
- with bindings
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231111164229.63803-1-krzysztof.kozlowski@linaro.org>
- <20231111164229.63803-4-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231111164229.63803-4-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-hyperv@vger.kernel.org, stefan.bader@canonical.com,
+        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
+        cascardo@canonical.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, sashal@kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/11/23 17:42, Krzysztof Kozlowski wrote:
-> Commit 70d1e09ebf19 ("arm64: dts: qcom: sm6115: Use 64 bit addressing")
-> converted all addresses to 64-bit addressing, but the ARMv7 memory
-> mapped architected timer bindings expect sizes up to 32-bit.  Keep
-> 64-bit addressing but change size of memory mapping to 32-bit
-> (size-cells=1) and adjust the ranges to match this.
+On 22/11/2023 18:01, Jeremi Piotrowski wrote:
+> Check for additional CPUID bits to identify TDX guests running with Trust
+> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
+> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
 > 
-> This fixes dtbs_check warnings like:
+> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is visible
+> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
+> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
+> aware mechanisms for what's left. So currently such guests do not have
+> X86_FEATURE_TDX_GUEST set.
 > 
->    sm6115p-lenovo-j606f.dtb: timer@f120000: #size-cells:0:0: 1 was expected
+> We want the kernel to have X86_FEATURE_TDX_GUEST set for all TDX guests so we
+> need to check these additional CPUID bits, but we skip further initialization
+> in the function as we aren't guaranteed access to TDX module calls.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+> Cc: <stable@vger.kernel.org> # v6.5+
+> Signed-off-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
 > ---
+>  arch/x86/coco/tdx/tdx.c    | 29 ++++++++++++++++++++++++++---
+>  arch/x86/include/asm/tdx.h |  3 +++
+>  2 files changed, 29 insertions(+), 3 deletions(-)
 > 
-> I hope I got the ranges right. Not tested on hardware.
-> ---
-Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index 1d6b863c42b0..c7bbbaaf654d 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/export.h>
+>  #include <linux/io.h>
+>  #include <asm/coco.h>
+> +#include <asm/hyperv-tlfs.h>
+>  #include <asm/tdx.h>
+>  #include <asm/vmx.h>
+>  #include <asm/insn.h>
+> @@ -37,6 +38,8 @@
+>  
+>  #define TDREPORT_SUBTYPE_0	0
+>  
+> +bool tdx_partitioning_active;
+> +
+>  /* Called from __tdx_hypercall() for unrecoverable failure */
+>  noinstr void __tdx_hypercall_failed(void)
+>  {
+> @@ -757,19 +760,38 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+>  	return true;
+>  }
+>  
+> +
+> +static bool early_is_hv_tdx_partitioning(void)
+> +{
+> +	u32 eax, ebx, ecx, edx;
+> +	cpuid(HYPERV_CPUID_ISOLATION_CONFIG, &eax, &ebx, &ecx, &edx);
+> +	return eax & HV_PARAVISOR_PRESENT &&
+> +	       (ebx & HV_ISOLATION_TYPE) == HV_ISOLATION_TYPE_TDX;
+> +}
+> +
+>  void __init tdx_early_init(void)
+>  {
+>  	u64 cc_mask;
+>  	u32 eax, sig[3];
+>  
+>  	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
+> -
+> -	if (memcmp(TDX_IDENT, sig, sizeof(sig)))
+> -		return;
+> +	if (memcmp(TDX_IDENT, sig, sizeof(sig))) {
+> +		tdx_partitioning_active = early_is_hv_tdx_partitioning();
+> +		if (!tdx_partitioning_active)
+> +			return;
+> +	}
 
-Konrad
+Hi Borislav,
+
+Just wanted to run another option by you. Instead of checking the CPUID here we
+could accomplish the same result by doing _this_ in the hyperv cc init:
+
+diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+index 8c6bf07f7d2b..705794642d34 100644
+--- a/arch/x86/hyperv/ivm.c
++++ b/arch/x86/hyperv/ivm.c
+@@ -595,6 +595,8 @@ void __init hv_vtom_init(void)
+ #endif
+ 
+ 	case HV_ISOLATION_TYPE_TDX:
++		setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
++		tdx_partitioning_active = true;
+ 		cc_vendor = CC_VENDOR_INTEL;
+ 		break;
+ 
+
+Which approach do you prefer?
+
+Thanks,
+Jeremi
+
+>  
+>  	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+>  
+>  	cc_vendor = CC_VENDOR_INTEL;
+> +
+> +	/*
+> +	 * Need to defer cc_mask and page visibility callback initializations
+> +	 * to a TD-partitioning aware implementation.
+> +	 */
+> +	if (tdx_partitioning_active)
+> +		goto exit;
+> +
+>  	tdx_parse_tdinfo(&cc_mask);
+>  	cc_set_mask(cc_mask);
+>  
+> @@ -820,5 +842,6 @@ void __init tdx_early_init(void)
+>  	 */
+>  	x86_cpuinit.parallel_bringup = false;
+>  
+> +exit:
+>  	pr_info("Guest detected\n");
+>  }
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index 603e6d1e9d4a..fe22f8675859 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -52,6 +52,7 @@ bool tdx_early_handle_ve(struct pt_regs *regs);
+>  
+>  int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport);
+>  
+> +extern bool tdx_partitioning_active;
+>  #else
+>  
+>  static inline void tdx_early_init(void) { };
+> @@ -71,6 +72,8 @@ static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
+>  {
+>  	return -ENODEV;
+>  }
+> +
+> +#define tdx_partitioning_active false
+>  #endif /* CONFIG_INTEL_TDX_GUEST && CONFIG_KVM_GUEST */
+>  #endif /* !__ASSEMBLY__ */
+>  #endif /* _ASM_X86_TDX_H */
+
