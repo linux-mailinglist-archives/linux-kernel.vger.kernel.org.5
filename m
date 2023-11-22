@@ -2,149 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9487F4F5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C96F7F4F62
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbjKVSYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        id S1344138AbjKVSYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjKVSYE (ORCPT
+        with ESMTP id S1344071AbjKVSY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:24:04 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71098A2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:24:00 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9e1021dbd28so1756166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:24:00 -0800 (PST)
+        Wed, 22 Nov 2023 13:24:28 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89BDA2;
+        Wed, 22 Nov 2023 10:24:24 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c876f1e44dso1147541fa.0;
+        Wed, 22 Nov 2023 10:24:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700677439; x=1701282239; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xcTbVqLUq6L5R8g/rIxmqMgVN8do6r2gYkvFAci0xO4=;
-        b=Qnaji43rJCq8QHfSjt71CZf4YR0DApUyU4CySv5PO+kKhqzHLvauJSHeCVDC2gZUuQ
-         teFGVCcMPEEyF2ylVa+FMx1VVbVjftIBtcKSkqb1dPkfy1twCnJzlXN3W/rm0tzM6zP1
-         WGiVCqYbA6tO8IPPDdElssctjQAKxpyhR1zOl0z7y5YbFDFl9omLjnqVT4E7MrHsl+Rh
-         pz6lpnJzC90E+3R0ESkQZjushAr0Xrfwn03uTNGyJGqMb6CY45nboN/S6HbAYIlplTK/
-         4HMd4f57Zt989tRDL6rXC1gB9CFnooVk2Af/Ir7uHko/Fi1yYRkN8hxYoyMLlVUuXO4r
-         IUkQ==
+        d=gmail.com; s=20230601; t=1700677463; x=1701282263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZqSoai9pFK0GqresiQ3Tq3Y3O3t4JmiFmz/3QD+TGg=;
+        b=gMPbJWOhswn5ISVbGiAK1ZoPpQfLNltxl3xPh5Y1dw7c6YC6mLGb3LccFU/ouYcBc1
+         qKFg1RcuUmA0fvE+Zbqzpz2EQy9kFqFkAw3Gc+pGPn4q3BPUTyeWsJly9AH5TFQ/haWR
+         /o6Y3tNvOjtYDebO8j0d21D3HpKgMSEe2bqt5KDVgMXIfbMzGZzRzvwF+cwTWW1E26Il
+         MtDGYMynA+9swiHNksRnuW/S0q+BCwpDFwNDk/TopWBJq88beIgEJDfAaKRSJtnEjq/v
+         o+kwo05couMQZowmXcrNnNXEo6rituMManWa10gauE/bJk1KnITwO3d+TN16MPXsLAP1
+         jJwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700677439; x=1701282239;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xcTbVqLUq6L5R8g/rIxmqMgVN8do6r2gYkvFAci0xO4=;
-        b=aJvUmB5/U1OfungoP9yr4E/39KwqMFd2XGxHQQzqM3NiPBbztITUunto3LGYT2yLNx
-         7PqNKEqg3I1vmk4AgKS7TYqoowJMmBayVHBH8RNJ1QHNkfKFh6UJDkvo6KItu9HhF8co
-         hGbvYvRTcHeHEF1Cs74+zV1N5167+4wLgTR4t85/PMGmWzn7P2yJ3NXaanNoJkntht5S
-         rdZURuw9XRkp/Zj3HcQtgnhPIvMQxcVbLtwK+5CSRl2FQgZ5z22Xx+V292lUUMxW5xP/
-         YOwR4vpkZTLdwPeYHZy0QoW54eic9ufLo7cMmUtHQPzMfJrXBfxfPVBLZzkc8FtBk8fX
-         bXuQ==
-X-Gm-Message-State: AOJu0Ywy6gDjWMK1gK7B/H1c/uJiPi8lS4qfFe3lld4YWsnrDfLA8Jhi
-        13B/qBbp2SmR7GvBgj0ycjainw==
-X-Google-Smtp-Source: AGHT+IF0SktCYHqhzf/uNhsfvT3oezl4yUBnVcwTrrXqp+SXgqeJWERRNj7HOQNPCaZuJXBp8yH5ew==
-X-Received: by 2002:a17:906:20d8:b0:a01:c0c6:1413 with SMTP id c24-20020a17090620d800b00a01c0c61413mr1950385ejc.12.1700677438919;
-        Wed, 22 Nov 2023 10:23:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id g24-20020a1709061c9800b0098884f86e41sm52488ejh.123.2023.11.22.10.23.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:23:58 -0800 (PST)
-Message-ID: <0194aa17-a69c-4ea9-89e1-d746d2561313@linaro.org>
-Date:   Wed, 22 Nov 2023 19:23:56 +0100
+        d=1e100.net; s=20230601; t=1700677463; x=1701282263;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pZqSoai9pFK0GqresiQ3Tq3Y3O3t4JmiFmz/3QD+TGg=;
+        b=JJeyuORkNbBqq1/EDfqYxKF08DHm1a0wzu5oqTDkwGpqFhHHA912fRO6pKejWXDSyu
+         Fm7pVA3b7NDZ/Rjd8eV45fuM80WKL7/XelyW0BSDyJLiQ0zx0csdCxN5Te5XllrWuaFG
+         JFGGrtzrG2Cnlq7HeQqjUuyZk6XY4brK+0jD3x/08OiDlv/HGWr1eX0K5noAq142yUtb
+         IixWlPfwTl3pYJDNJUUhqJ/eHR/znJFVDJBPFXpap0jmI1CEew//nnVLX+8/1Ony6BQO
+         ud2jTAuZRj6juxfOrmcVJE5xeckaOQOmkxBZO/V2LMrBrjPM/fek14NceBNvFRCFGVxc
+         VXoA==
+X-Gm-Message-State: AOJu0Yz9e3lX0dR9tOUraB228OFrTJo0Zbl2Tw2SeVzw7POJUpQn+FlQ
+        +SSvEAtaAAbi/PSLWFGnqsg=
+X-Google-Smtp-Source: AGHT+IEdXztrfEOfr2tODY/5p4eV//O7lSRUCCr4vRo1zq1D8sIg0ukQ4XcMXDtJo1WCQTaJ0w3pkQ==
+X-Received: by 2002:a2e:a9a6:0:b0:2c5:8a4:9e6f with SMTP id x38-20020a2ea9a6000000b002c508a49e6fmr2531940ljq.37.1700677462609;
+        Wed, 22 Nov 2023 10:24:22 -0800 (PST)
+Received: from localhost ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id f16-20020a2e9510000000b002bc3fbe9fd5sm11819ljh.55.2023.11.22.10.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 10:24:21 -0800 (PST)
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
+        Aleksandar Rikalo <arikalo@gmail.com>,
+        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
+        Chao-ying Fu <cfu@wavecomp.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Yinglu Yang <yangyinglu@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] MIPS: mm: Fix some memory-related issues
+Date:   Wed, 22 Nov 2023 21:23:58 +0300
+Message-ID: <20231122182419.30633-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: defconfig: Enable configs for
- MT8195-Cherry-Tomato Chromebook
-Content-Language: en-US
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     kernel@collabora.com, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122181335.535498-1-nfraprado@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122181335.535498-1-nfraprado@collabora.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 19:13, Nícolas F. R. A. Prado wrote:
-> Enable missing configs needed to boot the MT8195-Cherry-Tomato
-> Chromebook with full support on the defconfig.
-> 
-> The configs enabled bring in support for the DSP and sound card,
-> display, thermal sensor and keyboard backlight.
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> 
+Just recently I've rebased my MIPS32-related work from kernel 6.5-rc4 onto
+the latest kernel 6.7-rc1 and immediately got into a bootup-time
+mm-related bug (see patches 3-5 in this series). After fixing it I decided
+it was time to submit for review the generic MIPS code fixes which I have
+been collecting in my local repo for the last year. I was going to submit
+them a bit later after I finished working on a patchset with my SoC
+arch-specific changes, but since it was getting bigger and bigger, it
+turned to be reasonable to spill out the generic part of series right away
+especially seeing it might get to be useful in the most recent kernel.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+So this series starts with the MIPS-specific dmi_early_remap()
+implementation fix. It is utilized by the DMI driver in the framework of
+the dmi_setup() method, which is called at the very early boot stage - in
+setup_arch((). No VM available at that stage which is required for the
+ioremap_cache() to properly work. Thus it was a mistake to have the
+dmi_early_remap() macro-function defined as ioremap_cache(). It should
+have been ioremap_uc() in first place.
 
+After that goes a fix for the high-memory zone PFNs calculation procedure
+on MIPS. It turned out that after some not that recent commit the
+IO-memory PFNs got to the high-memory even though they were directly
+reachable, thus should have been left in the normal zone.
 
-Best regards,
-Krzysztof
+Then a series of fixes for the recently discovered mm-bug is presented.
+Any attempt to re-map the IO-memory with the cached attribute caused the
+bootup procedure to crash with the "Unhandled kernel unaligned access"
+message. After some digging I found out that the problem was in the
+uninitialized IO-memory pages. Please see the patch "mips: Fix max_mapnr
+being uninitialized on early stages" description for the detailed
+explanation of the problem and suggested fix. Afterwards I submitted
+several cleanup patches for the MIPS/mm and generic mm code.
+
+The patchset is closed with a small improvement which sets the MIPS
+board/machine name to the dump-stack module in order to print
+arch-personalized oopses in the same way as it's done on ARM, ARM64,
+RISC-V, etc.
+
+That's it for today.) Thanks for review in advance. Any tests are very
+welcome.
+
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
+Cc: Aleksandar Rikalo <arikalo@gmail.com>
+Cc: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
+Cc: Chao-ying Fu <cfu@wavecomp.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Yinglu Yang <yangyinglu@loongson.cn>,
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (7):
+  mips: dmi: Fix early remap on MIPS32
+  mips: Fix incorrect max_low_pfn adjustment
+  mips: Fix max_mapnr being uninitialized on early stages
+  mips: Optimize max_mapnr init procedure
+  mm/mm_init.c: Extend init unavailable range doc info
+  mm/mm_init.c: Append '\n' to the unavailable ranges log-message
+  mips: Set dump-stack arch description
+
+ arch/mips/include/asm/dmi.h |  2 +-
+ arch/mips/kernel/prom.c     |  2 ++
+ arch/mips/kernel/setup.c    |  4 ++--
+ arch/mips/mm/init.c         | 16 +++++++++-------
+ mm/mm_init.c                |  3 ++-
+ 5 files changed, 16 insertions(+), 11 deletions(-)
+
+-- 
+2.42.1
 
