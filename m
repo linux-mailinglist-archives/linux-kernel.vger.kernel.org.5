@@ -2,196 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF70D7F53AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7B67F53AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344604AbjKVWrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1344581AbjKVWrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344572AbjKVWri (ORCPT
+        with ESMTP id S1344461AbjKVWrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:47:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90C9D40
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:47:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8338C433C8;
-        Wed, 22 Nov 2023 22:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700693253;
-        bh=tirI9jsS9I0Ud4YA2mWLBGFR/GeO4TdPnDgDvqDAWOM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dHYYuw2Wf0mGECKQiIvqxUVhZPskvK0mCYfcFhSgc0GheH7K4LDEEx/OLTMgXZC6b
-         dQRfBZQJEAiyh7mObHD9Z+6o+FgJuRXhzWT3+yzlzJOdlG+0oPL27TzHtMwsNifDXh
-         FHRzr/VHPAErPKMr0Rn9jSrdRrTswxZyTyzUtrXDEMtuGcYKROKjBJlhE5SnI8W8ID
-         Co8i1z550dK8PYv1WvnvxqTjIx274e0N4gL/9e5vz6si9j7+WlZy/Z4djJmXpl/H0D
-         wCPmwHkR/mj/Ty3H36D5p3FunNWHvVlgf+icJrtHBlreSQJHpm3EVMyOiXlKzMU5tU
-         VdoGWdkEuzk1Q==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-nvme@lists.infradead.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] nvme: tcp: fix compile-time checks for TLS mode
-Date:   Wed, 22 Nov 2023 23:47:19 +0100
-Message-Id: <20231122224719.4042108-4-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231122224719.4042108-1-arnd@kernel.org>
-References: <20231122224719.4042108-1-arnd@kernel.org>
+        Wed, 22 Nov 2023 17:47:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7529DA4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IWi/mPYc+5VVJ/OP+S1Nqnn3N83YU8SmRAzoFvaiXKI=; b=r5jdkUefHHN6LxYNty1XggVyDb
+        V3zDgl0CPbjMFrWxDzvDqpHvVWGWrSwDXB3nXCHsCKiFqSASjP6b/Z+rBhqwP5O75Ae1BFXcbFxaI
+        K3j1zOqMkY8v8YK/wm7meghg0/AKaptiY39m0MIjmtYnTbsrqWPDopROndxRdkoA6ajcGwigugXZc
+        z29EPqTTLI5GMGrscFxpxCzEx5HVCJzCLbWGwKjytuZs8vMOv6R0pNvWh6CulsCOQ5+9TPSVMwkTc
+        NH0sts5Z93YqWkdwsr2A6M1TW6zUArGnQ8UVX6I3+R3DSBxEpkx2yky9ygFyg+BjX3lgdjTDyjp8G
+        H/3KZOgg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5w0J-003Elb-19;
+        Wed, 22 Nov 2023 22:47:31 +0000
+Message-ID: <4a67b4bb-d211-4726-8f43-d3f159127dd9@infradead.org>
+Date:   Wed, 22 Nov 2023 14:47:30 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] bootconfig: Apply early options from embedded config
+Content-Language: en-US
+To:     Petr Malat <oss@malat.biz>, linux-kernel@vger.kernel.org
+Cc:     mhiramat@kernel.org, paulmck@kernel.org, rostedt@goodmis.org
+References: <20231121231342.193646-1-oss@malat.biz>
+ <20231121231342.193646-3-oss@malat.biz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231121231342.193646-3-oss@malat.biz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi--
 
-When CONFIG_NVME_KEYRING is enabled as a loadable module, but the TCP
-host code is built-in, it fails to link:
+On 11/21/23 15:13, Petr Malat wrote:
+> Eliminate all allocations in embedded config handling to allow calling
+> it from arch_setup and applying early options.
+> 
+> Config stored in initrd can't be used for early options, because initrd
+> is set up after early options are processed.
+> 
+> Add this information to the documentation and also to the option
+> description.
+> 
+> Signed-off-by: Petr Malat <oss@malat.biz>
+> ---
+>  Documentation/admin-guide/bootconfig.rst |   3 +
+>  init/Kconfig                             |   4 +-
+>  init/main.c                              | 141 ++++++++++++++++++-----
+>  lib/bootconfig.c                         |  20 +++-
+>  4 files changed, 132 insertions(+), 36 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
+> index 91339efdcb54..fb085f696f9b 100644
+> --- a/Documentation/admin-guide/bootconfig.rst
+> +++ b/Documentation/admin-guide/bootconfig.rst
+> @@ -161,6 +161,9 @@ Boot Kernel With a Boot Config
+>  There are two options to boot the kernel with bootconfig: attaching the
+>  bootconfig to the initrd image or embedding it in the kernel itself.
+>  
+> +Early options may be specified only in the embedded bootconfig, because
+> +they are processed before the initrd.
+> +
 
-arm-linux-gnueabi-ld: drivers/nvme/host/tcp.o: in function `nvme_tcp_setup_ctrl':
-tcp.c:(.text+0x1940): undefined reference to `nvme_tls_psk_default'
+I'm confused by which options are early options. Are they specified or
+described somewhere?
+How does a user know which options are "early" options?
 
-The problem is that the compile-time conditionals are inconsistent here,
-using a mix of #ifdef CONFIG_NVME_TCP_TLS, IS_ENABLED(CONFIG_NVME_TCP_TLS)
-and IS_ENABLED(CONFIG_NVME_KEYRING) checks, with CONFIG_NVME_KEYRING
-controlling whether the implementation is actually built.
 
-Change it to use IS_ENABLED(CONFIG_NVME_KEYRING) checks consistently,
-which should help readability and make it less error-prone. Combining
-it with the check for the ctrl->opts->tls flag lets the compiler drop
-all the TLS code in configurations without this feature, which also
-helps runtime behavior in addition to avoiding the link failure.
+>  Attaching a Boot Config to Initrd
+>  ---------------------------------
+>  
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 9161d2dbad0c..04de756c935e 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1310,7 +1310,9 @@ config BOOT_CONFIG
+>  	  Extra boot config allows system admin to pass a config file as
+>  	  complemental extension of kernel cmdline when booting.
+>  	  The boot config file must be attached at the end of initramfs
+> -	  with checksum, size and magic word.
+> +	  with checksum, size and magic word. Note that early options may
+> +	  be specified in the embedded bootconfig only. Early options
+> +	  specified in initrd bootconfig will not be applied.
+>  	  See <file:Documentation/admin-guide/bootconfig.rst> for details.
+>  
+>  	  If unsure, say Y.
+> diff --git a/init/main.c b/init/main.c
+> index 0cd738f7f0cf..9aac59673a3a 100644
+> --- a/init/main.c
+> +++ b/init/main.c
 
-To make it possible for the compiler to build the dead code, both
-the tls_handshake_timeout variable and the TLS specific members
-of nvme_tcp_queue need to be moved out of the #ifdef block as well,
-but at least the former of these gets optimized out again.
+[]
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/nvme/host/tcp.c | 31 ++++++++++++++-----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+> +
+> +static int __init setup_boot_config_early(void)
+>  {
+>  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+> -	const char *msg, *initrd_data;
+> -	int pos, ret;
+> -	size_t initrd_size, embeded_size = 0;
+> -	char *err, *embeded_data = NULL;
+> +	static int prev_rtn __initdata;
+> +	struct xbc_node *root, *knode, *vnode;
+> +	char *embeded_data, *err;
+> +	const char *val, *msg;
+> +	size_t embeded_size;
+> +	int ret, pos;
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 89661a9cf850..ee7aa8478cfb 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -36,11 +36,11 @@ static int so_priority;
- module_param(so_priority, int, 0644);
- MODULE_PARM_DESC(so_priority, "nvme tcp socket optimize priority");
- 
--#ifdef CONFIG_NVME_TCP_TLS
- /*
-  * TLS handshake timeout
-  */
- static int tls_handshake_timeout = 10;
-+#ifdef CONFIG_NVME_TCP_TLS
- module_param(tls_handshake_timeout, int, 0644);
- MODULE_PARM_DESC(tls_handshake_timeout,
- 		 "nvme TLS handshake timeout in seconds (default 10)");
-@@ -161,10 +161,8 @@ struct nvme_tcp_queue {
- 	struct ahash_request	*snd_hash;
- 	__le32			exp_ddgst;
- 	__le32			recv_ddgst;
--#ifdef CONFIG_NVME_TCP_TLS
- 	struct completion       tls_complete;
- 	int                     tls_err;
--#endif
- 	struct page_frag_cache	pf_cache;
- 
- 	void (*state_change)(struct sock *);
-@@ -207,6 +205,14 @@ static inline int nvme_tcp_queue_id(struct nvme_tcp_queue *queue)
- 	return queue - queue->ctrl->queues;
- }
- 
-+static inline bool nvme_tcp_tls(struct nvme_ctrl *ctrl)
-+{
-+	if (!IS_ENABLED(CONFIG_NVME_TCP_TLS))
-+		return 0;
-+
-+	return ctrl->opts->tls;
-+}
-+
- static inline struct blk_mq_tags *nvme_tcp_tagset(struct nvme_tcp_queue *queue)
- {
- 	u32 queue_idx = nvme_tcp_queue_id(queue);
-@@ -1412,7 +1418,7 @@ static int nvme_tcp_init_connection(struct nvme_tcp_queue *queue)
- 	memset(&msg, 0, sizeof(msg));
- 	iov.iov_base = icresp;
- 	iov.iov_len = sizeof(*icresp);
--	if (queue->ctrl->ctrl.opts->tls) {
-+	if (nvme_tcp_tls(&queue->ctrl->ctrl)) {
- 		msg.msg_control = cbuf;
- 		msg.msg_controllen = sizeof(cbuf);
- 	}
-@@ -1424,7 +1430,7 @@ static int nvme_tcp_init_connection(struct nvme_tcp_queue *queue)
- 		goto free_icresp;
- 	}
- 	ret = -ENOTCONN;
--	if (queue->ctrl->ctrl.opts->tls) {
-+	if (nvme_tcp_tls(&queue->ctrl->ctrl)) {
- 		ctype = tls_get_record_type(queue->sock->sk,
- 					    (struct cmsghdr *)cbuf);
- 		if (ctype != TLS_RECORD_TYPE_DATA) {
-@@ -1548,7 +1554,6 @@ static void nvme_tcp_set_queue_io_cpu(struct nvme_tcp_queue *queue)
- 	queue->io_cpu = cpumask_next_wrap(n - 1, cpu_online_mask, -1, false);
- }
- 
--#ifdef CONFIG_NVME_TCP_TLS
- static void nvme_tcp_tls_done(void *data, int status, key_serial_t pskid)
- {
- 	struct nvme_tcp_queue *queue = data;
-@@ -1625,14 +1630,6 @@ static int nvme_tcp_start_tls(struct nvme_ctrl *nctrl,
- 	}
- 	return ret;
- }
--#else
--static int nvme_tcp_start_tls(struct nvme_ctrl *nctrl,
--			      struct nvme_tcp_queue *queue,
--			      key_serial_t pskid)
--{
--	return -EPROTONOSUPPORT;
--}
--#endif
- 
- static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl, int qid,
- 				key_serial_t pskid)
-@@ -1759,7 +1756,7 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl, int qid,
- 	}
- 
- 	/* If PSKs are configured try to start TLS */
--	if (pskid) {
-+	if (IS_ENABLED(CONFIG_NVME_TCP_TLS) && pskid) {
- 		ret = nvme_tcp_start_tls(nctrl, queue, pskid);
- 		if (ret)
- 			goto err_init_connect;
-@@ -1916,7 +1913,7 @@ static int nvme_tcp_alloc_admin_queue(struct nvme_ctrl *ctrl)
- 	int ret;
- 	key_serial_t pskid = 0;
- 
--	if (ctrl->opts->tls) {
-+	if (nvme_tcp_tls(ctrl)) {
- 		if (ctrl->opts->tls_key)
- 			pskid = key_serial(ctrl->opts->tls_key);
- 		else
-@@ -1949,7 +1946,7 @@ static int __nvme_tcp_alloc_io_queues(struct nvme_ctrl *ctrl)
- {
- 	int i, ret;
- 
--	if (ctrl->opts->tls && !ctrl->tls_key) {
-+	if (nvme_tcp_tls(ctrl) && !ctrl->tls_key) {
- 		dev_err(ctrl->device, "no PSK negotiated\n");
- 		return -ENOKEY;
- 	}
+It hurts my eyes to see "embeded" here.
+
+Thanks.
 -- 
-2.39.2
-
+~Randy
