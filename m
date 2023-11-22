@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB117F4459
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47887F445B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbjKVKxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:53:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        id S235008AbjKVKyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbjKVKxt (ORCPT
+        with ESMTP id S231461AbjKVKyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:53:49 -0500
-Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEE992
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:53:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap5-20230908; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IRLAbCze70rcXY5T2JejioYRFHEx7GCXD/81d6GGbbM=; b=FvukDxAYqR4gFcEGZzhrPO/6UT
-        gpeCGrfjPsr0DCjdwGwCOeRoBrD9L8ZUrSSH2xuZRTnk7IeKBj5dJDiBD3w/xp76viNt53vYs9jTW
-        R8lT/5V3cgKru10etZo33jlZ8Q2DRztTD8JC65NcR5FZAAkmbPuHZlqkaqvvrr4ve/m5HdgPltCwc
-        jZlGHgBcKkURbY4jQJdXZa/HovfgaNPz9WuuCkoWkt6uc6JbIpZjXS4eQy+oKZm1251qAweCThdPq
-        PUhq0oZ1F32pY75cxyBKgtSs/QlFcn1yBITKmXJjploVQ4pKkxjmxQeGMPZBuDJPxBp78WHuoyNxD
-        llbDax2g==;
-Received: from [167.98.27.226] (helo=rainbowdash)
-        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1r5krT-004Fjf-KJ; Wed, 22 Nov 2023 10:53:40 +0000
-Received: from ben by rainbowdash with local (Exim 4.97)
-        (envelope-from <ben@rainbowdash>)
-        id 1r5krT-000000014q4-36Zv;
-        Wed, 22 Nov 2023 10:53:39 +0000
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com,
-        Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH] lockdep: make variable check_consistency static
-Date:   Wed, 22 Nov 2023 10:53:36 +0000
-Message-Id: <20231122105336.256919-1-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.37.2.352.g3c44437643
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: srv_ts003@codethink.com
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 22 Nov 2023 05:54:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0700ED8;
+        Wed, 22 Nov 2023 02:54:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700650453; x=1732186453;
+  h=from:to:cc:subject:date:message-id;
+  bh=L6bHYCHdpbaSIiykCkw+XvZL0tDlt0dAm6zfnBSOkH4=;
+  b=R701NI3FN2a/a53VP7VD5zOpFbAB2cPL4WBcvOlBOrKYcWlfE6rgIfja
+   13myN08Xj0sbAP8W09WXVZY7f3bSnXALrBsS+RD717sof98JtMy+jcQwA
+   O+DWBV6q6i63ol/HWHp/q9MMa0Qu3TCGyWk7rUNw+5DPqzekrjUVD1u1a
+   fc8QNQcxXhaWWZHcF++9mUiG7j3nVJQiybS849k5Ulob4AVkgDH+FSnvk
+   xlq0svEzeikqmbhZLv9aj+nxdWPkk0pGuHA2eLB1lv7qHxJbWQ3VGG5qj
+   6eG+9OaDzAghZAc0+Ye/kjXr6DTRv1WO5ZuCoc3gxRLSotyH9FuCO5MrO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="372207210"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="372207210"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 02:54:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="8393146"
+Received: from inlubt0316.iind.intel.com ([10.191.20.213])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Nov 2023 02:54:10 -0800
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v1] pinctrl: intel: use the correct _PM_OPS() export macro
+Date:   Wed, 22 Nov 2023 16:24:01 +0530
+Message-Id: <20231122105401.11006-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable check_consistency is not used outside of this
-file so make it static to fix the following sparse warning:
+Since we don't have runtime PM handles here, we should be using
+EXPORT_NS_GPL_DEV_SLEEP_PM_OPS() macro, so that the compiler can
+discard it in case CONFIG_PM_SLEEP=n.
 
-kernel/locking/lockdep.c:1148:5: warning: symbol 'check_consistency' was not declared. Should it be static?
-
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Fixes: b10a74b5c0c1 ("pinctrl: intel: Provide Intel pin control wide PM ops structure")
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- kernel/locking/lockdep.c | 2 +-
+ drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index e85b5ad3e206..73aeee69ebd1 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1145,7 +1145,7 @@ static bool __check_data_structures(void)
- 	return true;
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 2367c2747a83..d6f29e6faab7 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1879,7 +1879,7 @@ static int intel_pinctrl_resume_noirq(struct device *dev)
+ 	return 0;
  }
  
--int check_consistency = 0;
-+static int check_consistency = 0;
- module_param(check_consistency, int, 0644);
+-EXPORT_NS_GPL_DEV_PM_OPS(intel_pinctrl_pm_ops, PINCTRL_INTEL) = {
++EXPORT_NS_GPL_DEV_SLEEP_PM_OPS(intel_pinctrl_pm_ops, PINCTRL_INTEL) = {
+ 	NOIRQ_SYSTEM_SLEEP_PM_OPS(intel_pinctrl_suspend_noirq, intel_pinctrl_resume_noirq)
+ };
  
- static void check_data_structures(void)
+
+base-commit: c5860e4a2737a8b29dc426c800d01c5be6aad811
 -- 
-2.37.2.352.g3c44437643
+2.17.1
 
