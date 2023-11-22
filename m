@@ -2,113 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC53F7F51C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2B27F51E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344021AbjKVUgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        id S231602AbjKVUr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 15:47:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjKVUgV (ORCPT
+        with ESMTP id S231429AbjKVUrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:36:21 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28396112
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:36:16 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a02cc476581so17880466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700685374; x=1701290174; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MTFW+4h4lZJz6rbXAaizRdJw1t8O20ELX/WfD27HXjM=;
-        b=iL7k/MxKz93XWTxiuAXIXhZe6aGQGrmJ1K9ihaq2M2Jwsj85MoNk1Ctw6X7/Lcd4eg
-         9WSw61PsrjB33WlFl6eOEP2jf3NfkLcO3Hdq6LjrLV68cAdjThJpxlcIV7iHaaqE8nXI
-         SCXKXqxjF+Isd0/ypOeHHZI+sq6IZe9yF9oPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700685374; x=1701290174;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MTFW+4h4lZJz6rbXAaizRdJw1t8O20ELX/WfD27HXjM=;
-        b=K+I4PnmPFkZzsrSJRFa3hgbPhdTQv7tK++8O8+MEJC7ugUkv3qW5dn+M0tztdsOuPO
-         lc78smP3TASNCd5lAsKDHnLXunOHRpvlbLJvwZgxPum+VQUYcOJ4OTx+pN0PCpJabYIo
-         aJ1TQ2A+h5SpG0LHvcbe6P5r7p/cIh6vM2y3jMktZDqYuiqqBRluLZnlrxwkA5myO/bB
-         AAmHMfGbU6Xg/GgtLU0UVlbDsD68pLBxrlMjeqHnEVk5pAG6S8ZmgEZUWoK3BQ6YKyUF
-         f9NytY5zzweU7YclQdCMEKXhT1iBvThDzMnmnW6VyGf6KR/n75HE6BswGUMcNe2y3dqP
-         ymwg==
-X-Gm-Message-State: AOJu0Yx3opxyj+Al/lDrTii5mtRLEak9CplG6EY6STZn+o4k5jNM8avk
-        1NhGANqtesEZ6+jMuscEutR4sffHv+sf8+CqGjM0vHSJ
-X-Google-Smtp-Source: AGHT+IFl986I2y9LwjiOnpeE1oOtrACTnv167fXyNA5xGMXk+PbLI7Gqm3LspDNRuykGyZkQKpoyGg==
-X-Received: by 2002:a17:906:292:b0:9e6:bcd2:14b5 with SMTP id 18-20020a170906029200b009e6bcd214b5mr959842ejf.46.1700685374308;
-        Wed, 22 Nov 2023 12:36:14 -0800 (PST)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id v3-20020a1709067d8300b00977cad140a8sm180580ejo.218.2023.11.22.12.36.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 12:36:13 -0800 (PST)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so290669a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:36:12 -0800 (PST)
-X-Received: by 2002:a05:6402:34c5:b0:548:615c:33aa with SMTP id
- w5-20020a05640234c500b00548615c33aamr2977402edc.20.1700685372660; Wed, 22 Nov
- 2023 12:36:12 -0800 (PST)
+        Wed, 22 Nov 2023 15:47:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8912811F
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:47:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE42C433C7;
+        Wed, 22 Nov 2023 20:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700686039;
+        bh=iOGqsjNrxAouz3AJJHZo7n5yudWeQ8nrq1vq3zxtsBE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JTZKN5o8vBbSuTJ3zDm40Y+bDC/o4pO62dv6Qdw7wjjfuIvXz850E2mN4N0glDyAQ
+         I24R1FewFREzbe6rsAaoxOszJT3HRAS9FwQcOgcd7p5330hxLb25O+yIbsQjwCTtsn
+         +UFBAeZhqin2ubNn0OiBQfTXJ3vuEL5ciC2berJUgxbcBx4Aia14ioQrjV7DiaUVSR
+         st50n8JxEhvGIa27YvK0jqgESrKFfDzRghsbGqbgZ3ITGcJLSxCRtKlTKGWtCMUBqj
+         XpnKWid20FYJZBoiCILBrxO3xwRpU60BIQ28102Xv1iodp9t4T9w+AQKOUaZTyPQCD
+         Ac2OW6LMM00DQ==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2c874286f4dso13653841fa.0;
+        Wed, 22 Nov 2023 12:47:19 -0800 (PST)
+X-Gm-Message-State: AOJu0YzNuFrwlviDvPvddGrRdGaDalVIHy/mfWHxVn2LmdnpHuqkbVYK
+        7/OccFJZzvNVT1vxx0DuCC4GpJp5X2i1XwC4KQ==
+X-Google-Smtp-Source: AGHT+IGTjq0mZD9i+eUzTXzP28Wi1Bo+2Bm1FI9n8vEQBS5kPkO5fcu9os4HymBwAvrwCsgVBASyxd59bRZr+JZsdyc=
+X-Received: by 2002:a05:6512:3e20:b0:509:4792:25eb with SMTP id
+ i32-20020a0565123e2000b00509479225ebmr249053lfv.17.1700686037339; Wed, 22 Nov
+ 2023 12:47:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info> <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
- <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info> <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
- <e1ca042c-de1d-4fe3-ad69-51d147b1fe0b@leemhuis.info> <20231122155758.GEZV4lBgtZyzsP5Z4V@fat_crate.local>
-In-Reply-To: <20231122155758.GEZV4lBgtZyzsP5Z4V@fat_crate.local>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Nov 2023 12:35:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiV+NM+jLKbSj_Ej9RaXpu4akWV03G_wXyTSHZhArq1tg@mail.gmail.com>
-Message-ID: <CAHk-=wiV+NM+jLKbSj_Ej9RaXpu4akWV03G_wXyTSHZhArq1tg@mail.gmail.com>
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to CONFIG_MICROCODE_AMD)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
-        hpa@zytor.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
+References: <20231107105025.1480561-1-billy_tsai@aspeedtech.com>
+ <20231107105025.1480561-3-billy_tsai@aspeedtech.com> <20231108182135.GA2698015-robh@kernel.org>
+ <SG2PR06MB33655734700697E8F6FD0D1B8BB2A@SG2PR06MB3365.apcprd06.prod.outlook.com>
+In-Reply-To: <SG2PR06MB33655734700697E8F6FD0D1B8BB2A@SG2PR06MB3365.apcprd06.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 22 Nov 2023 13:47:04 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqL=2-dD5yFWWDDHu1svcCF-EMZqcYz92Pr7L5ntppNQVA@mail.gmail.com>
+Message-ID: <CAL_JsqL=2-dD5yFWWDDHu1svcCF-EMZqcYz92Pr7L5ntppNQVA@mail.gmail.com>
+Subject: Re: [PATCH RESEND v10 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM
+ TACH Control
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "naresh.solanki@9elements.com" <naresh.solanki@9elements.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 at 07:58, Borislav Petkov <bp@alien8.de> wrote:
+On Mon, Nov 13, 2023 at 8:11=E2=80=AFPM Billy Tsai <billy_tsai@aspeedtech.c=
+om> wrote:
 >
-> IMO, yes, we should not break userspace but dracut is special. And it
-> parses willy nilly kernel internals which are not ABI to begin with.
+> > > Document the compatible for aspeed,ast2600-pwm-tach device, which can
+> > > support up to 16 PWM outputs and 16 fan tach input.
+> > >
+> > > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> > > ---
+> > >  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 69 +++++++++++++++++=
+++
+> > >  1 file changed, 69 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6=
+-pwm-tach.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-ta=
+ch.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> > > new file mode 100644
+> > > index 000000000000..c615fb10705c
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> > > @@ -0,0 +1,69 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +# Copyright (C) 2023 Aspeed, Inc.
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: ASPEED G6 PWM and Fan Tach controller
+> > > +
+> > > +maintainers:
+> > > +  - Billy Tsai <billy_tsai@aspeedtech.com>
+> > > +
+> > > +description: |
+> > > +  The ASPEED PWM controller can support up to 16 PWM outputs.
+> > > +  The ASPEED Fan Tacho controller can support up to 16 fan tach inpu=
+t.
+> > > +  They are independent hardware blocks, which are different from the
+> > > +  previous version of the ASPEED chip.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - aspeed,ast2600-pwm-tach
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  clocks:
+> > > +    maxItems: 1
+> > > +
+> > > +  resets:
+> > > +    maxItems: 1
+> > > +
+> > > +  "#pwm-cells":
+> > > +    const: 3
+> > > +
+> > > +patternProperties:
+> > > +  "^fan-[0-9]+$":
+> > > +    $ref: fan-common.yaml#
+> > > +    unevaluatedProperties: false
+> > > +    required:
+> > > +      - tach-ch
+> > > +
+> > > +required:
+> > > +  - reg
+> > > +  - clocks
+> > > +  - resets
+> > > +  - "#pwm-cells"
+> > > +  - compatible
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/clock/aspeed-clock.h>
+> > > +    pwm_tach: pwm-tach-controller@1e610000 {
+> > > +      compatible =3D "aspeed,ast2600-pwm-tach";
+> > > +      reg =3D <0x1e610000 0x100>;
+> > > +      clocks =3D <&syscon ASPEED_CLK_AHB>;
+> > > +      resets =3D <&syscon ASPEED_RESET_PWM>;
+> > > +      #pwm-cells =3D <3>;
+> > > +
+> > > +      fan-0 {
+>
+> > I assume there's a PWM connection here? How do you know which PWM? You
+> > said the tach channel is independent, so it is not that.
+>
+> > It should not be 0 from 'fan-0' because that's just a meaningless index=
+.
+>
+> > You either need 'pwms' here or you can use 'reg' and the reg value is
+> > the PWM channel.
+>
+> Hi Rob, this binding is used to export the PWM provider and the Fan monit=
+or (i.e., Tach).
+> If the user wants to add the PWM connection for the fan, it can be done a=
+s follows:
+>
+> fan0: pwm-fan0 {
+>         compatible =3D "pwm-fan";
+>         pwms =3D <&pwm_tach 0 40000 0>;
+>         cooling-min-state =3D <0>;
+>         cooling-max-state =3D <3>;
+>         #cooling-cells =3D <2>;
+>         cooling-levels =3D <0 15 128 255>;
+> };
+>
+> This will reuse the existing PWM fan driver (e.g., pwm-fan.c).
 
-I don't think the "dracut is special" is the thing that matters.
+I'm confused now. So what are the child nodes you have? You are
+defining the fan in 2 places? The "pwm-fan" driver supports a tach via
+an interrupt, so how would this work in your case?
 
-The real issue is that hey, if dracut in its incompetence doesn't
-include the microcode on the initrd, that doesn't really matter much.
-It's fairly easily fixable, and at worst it will mean that we end up
-having CPU mitigations that aren't optimal. Since most of those are BS
-anyway, it really doesn't seem critical.
-
-Sure, it's a "regression" in that you don't get the microcode update
-included, but from a user perspective things should still continue to
-work.
-
-End result: this seems to be pretty solidly a distro issue.
-
-IOW, the whole "users are the only thing that matters" pretty much
-means that it's a non-issue. Things continued to work, to the point
-that I'm actually surprised anybody even noticed.
-
-That said, I don't think some ELF note is the fix either. I think we
-might as well leave it at CONFIG_MICROCODE. Maybe add a note in the
-kernel Kconfig that this thing matters for dracut.
-
-Dracut also checks for CONFIG_ACPI_INITRD_TABLE_OVERRIDE. It's a
-similar "normal users don't care".
-
-              Linus
+Rob
