@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A327F4E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0587F4E96
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjKVRmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S232477AbjKVRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVRmC (ORCPT
+        with ESMTP id S230377AbjKVRmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:42:02 -0500
+        Wed, 22 Nov 2023 12:42:55 -0500
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964EDDD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:41:58 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 81ED03200AAB;
-        Wed, 22 Nov 2023 12:41:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 22 Nov 2023 12:41:58 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6274DD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:42:51 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id A70CA3200AB8;
+        Wed, 22 Nov 2023 12:42:50 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 22 Nov 2023 12:42:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
         cc:cc:content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1700674917; x=1700761317; bh=yS
-        FRnjVXIn+mbgngaY9ZSCV315yJK2CgStdUpd2vf9c=; b=mecjN16jsUyEDNK8LN
-        YJLDmsYwT0YrpMgokzQbmPzkdtogNjHbqHYSmZlFtbHd3Rt69TskDvXyDTcEruIp
-        /cds067BfaGr5e9CXiJs9EvgojAdzJmpNQgFU5wCFB35ravobaEtpF2pMgFd64Ab
-        oq1lsoYhPESycURCNiwDRUmZF70Y46rbzPHsN03pBwzOJLud5NHzPhcsIoc+qxP2
-        xW0fRe0InPoN3yJAMwNtivIYw2TOKdVwZn0jkCuG1zwi0G6enAPOysOX9grJTC3f
-        We3i8HZIDI1YGxu5wE3XXGRNDz9MW17zcyJvHKkcTReLUuq/wYstxjYhcD1/qF8m
-        Jphw==
+        :subject:subject:to:to; s=fm2; t=1700674970; x=1700761370; bh=4q
+        GVKYT1B7qwrlgMwXg0Fed9QuLJAWFc+73xVSblvWc=; b=yjVY1zX/CNOjDgaikV
+        KsgA6T4ZmG6zmYW2MMeR1ZglSZzQgqh+6Ntz9UCLSsXneW2/rJBZbKYMdTPBnKey
+        wymd4Do69W+xJLCgu6xVkpPDVIMSvX3+LtafOwrX4NrILQgnxd89WMe963gaMQXI
+        NpD4DmIYzsDF1YcUx3nH5+jwncBy971m1TkuQuFw26OoDPLO/6ftlP0NgD9MYBR8
+        B+tJ0uRkvmZys8qPDBInOMnLVsgdhCfCgJ+pQcSyAvza0EVB0ZRp01tVHESvJP93
+        ynPiftFjFJIPjkqMNnjhJUa/iuJikG0AkIAwGv2J2wjfldOKrNQQVcljCFfpOcCA
+        ebKQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700674917; x=1700761317; bh=ySFRnjVXIn+mb
-        gngaY9ZSCV315yJK2CgStdUpd2vf9c=; b=1ahuRQDZnBXsgsS05WBrfYgD7IJWe
-        fu2h/8MRZM/gsebqOGAbh4xlxttUHZOgPkepUpzN7p+gDkZqTOEBxAg1z1rgPxgf
-        1KE6ZEPG3i3TJZaclmgdOr4a9CzndeMSadQAAveZTngHtKUc1187HwylFmTACd5i
-        OBlQyz4kToABKZD0LYMifnvxsTkUtHEgJuqZ0WighKuRydvtCZ8k1EGNHcVwFMgM
-        i2D8S+3z58xcPFMRcMkoc5FuY+ICr+dxZPSyD1DihAXJPSpPG+N/sXi+B5euRPs3
-        Gjyh8e9wia+PGLq2vKJ8ueTMkeAktQh1tgeiAUPk+CCAxAMLDLqQJ6fgg==
-X-ME-Sender: <xms:ZD1eZXDWhjOFbIgIiIwB47NJANw3MvcDvBY7wiDo1ZxVioxAhy9LGg>
-    <xme:ZD1eZdgJSCynpBxX-AOj0R30E1kjE9kh3J5_-UDPuyltzwBh94wrbDa_BVT6khg1C
-    TXHdICAkNe0cAhuekM>
-X-ME-Received: <xmr:ZD1eZSmZBO44WZCAOcR9B59l8e3zEvn_BOx2InB192bc9PElJjDWAwfE>
+        :x-sasl-enc; s=fm1; t=1700674970; x=1700761370; bh=4qGVKYT1B7qwr
+        lgMwXg0Fed9QuLJAWFc+73xVSblvWc=; b=QB6J1++lSADjwDoB6VBvueQz7pYTh
+        l3pptE8/mpJrECczilynFgu8hI5KmXWbYqlnE7SqNpf6RTB3gro3vCb6U6gjzNIo
+        aREz4e1jSSydgYiZUstUb3EeLG/mF8Ht1k5yu2k65m5YYGFLmvDkRgYK+FGn3ohj
+        QdwVdqc+L1rekzylds7NrO+Gww6tekCcLKL5FTg4BakG5OFt5D0MesuBXboFioSN
+        63kw8K2rr9LQ0oROIlhWd7UQwwIM9+8xjsgafl3Rxe2bY71v0FZzx7VMh5H4yw8A
+        /arBxIKldQ9zpx1y0clQjLyImIKpIOrciK25nev74S4sYaG7iQ/7OzsKA==
+X-ME-Sender: <xms:mj1eZWzskVSaneH9uakMf_rmGLV8Mu2WeSfdzjdhfM7rrmgyB2tuFA>
+    <xme:mj1eZSTOEADKjYP6UUU0usCEyCnh321nwgGlBmcY3hQvtIE58jJMahNSPJ1tQpH8M
+    3YDo0P2ych61Hw8Xnc>
+X-ME-Received: <xmr:mj1eZYV17FgD3LT1o_YYSwkIoVC-V8LIOYvozOlGSrwJqm-FOhIbE8CI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddtudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
     fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
     htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
-    geeutdenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hshhhrseguvghvkhgvrhhnvghlrdhioh
-X-ME-Proxy: <xmx:ZD1eZZx4P359OA9CXRq5mZCI7qt1vcNgRFMhX7eUOsppIsXhE0-dbQ>
-    <xmx:ZD1eZcRGdntUhYCq0R47UZjHv7xztw4p3krqVA71BbFiRMRIaXYENQ>
-    <xmx:ZD1eZcbVhorKk8uNyS0xZBgtmTOzKYVx37jJeZU2VJ4rUTBCyB6QZg>
-    <xmx:ZT1eZRJH3Dcxxp30LhuARhq59spH_yr_LXU9Si1UtsXPLQUHjG2r_A>
+X-ME-Proxy: <xmx:mj1eZcjzwj-MqWKv-iibuyoqEUhMqsZGnNHWxFrmH4ILGAS_0BOw8Q>
+    <xmx:mj1eZYBAq7V4NyOToJ5bsjgMxW4EZLaiWtqjx2W4CYLalkFLVPawGA>
+    <xmx:mj1eZdISxCydl8WfDxYDvg9WdBwKXAvlEqe4AnKBeZxABdjAXlWtiw>
+    <xmx:mj1eZX6auqfVb8_6_J2KpOS29EujKcMeDuFWsQ1TeGN41MQNvzBBBg>
 Feedback-ID: i84614614:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Nov 2023 12:41:53 -0500 (EST)
+ 22 Nov 2023 12:42:48 -0500 (EST)
 References: <20231028000945.2428830-1-shr@devkernel.io>
  <20231028000945.2428830-3-shr@devkernel.io>
- <b90ba995-5485-4dd3-974b-02453e67686d@redhat.com>
+ <724f61a5-4d02-4232-ae8f-71f55e73186a@redhat.com>
 User-agent: mu4e 1.10.3; emacs 29.1
 From:   Stefan Roesch <shr@devkernel.io>
 To:     David Hildenbrand <david@redhat.com>
 Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
         riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [PATCH v2 2/4] mm/ksm: add sysfs knobs for advisor
-Date:   Wed, 22 Nov 2023 09:41:16 -0800
-In-reply-to: <b90ba995-5485-4dd3-974b-02453e67686d@redhat.com>
-Message-ID: <87y1epr8gx.fsf@devkernel.io>
+Date:   Wed, 22 Nov 2023 09:42:16 -0800
+In-reply-to: <724f61a5-4d02-4232-ae8f-71f55e73186a@redhat.com>
+Message-ID: <87ttpdr8fe.fsf@devkernel.io>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -100,56 +100,8 @@ David Hildenbrand <david@redhat.com> writes:
 >> - advisor_min_pages: 500 (default)
 >> - advisor_max_pages: 30000 (default)
 >> - advisor_target_scan_time: 200 (default in seconds)
->> The new values will take effect on the next scan round.
->> Signed-off-by: Stefan Roesch <shr@devkernel.io>
->> ---
->>   mm/ksm.c | 154 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 154 insertions(+)
->> diff --git a/mm/ksm.c b/mm/ksm.c
->> index e18fecfb359d..042ecaeb0beb 100644
->> --- a/mm/ksm.c
->> +++ b/mm/ksm.c
->> @@ -351,6 +351,14 @@ static void init_advisor(void)
->>   	advisor_ctx.cpu_time = 0;
->>   }
 >
+> Is there a way we can avoid exposing advisor_min_pages/advisor_max_pages and
+> just have this internal e.g., as defines?
 >
-> [...]
->
->>    * Use previous scan time if available, otherwise use current scan time as an
->>    * approximation for the previous scan time.
->> @@ -3719,6 +3727,146 @@ static ssize_t smart_scan_store(struct kobject *kobj,
->>   }
->>   KSM_ATTR(smart_scan);
->>   +static ssize_t advisor_mode_show(struct kobject *kobj,
->> +				 struct kobj_attribute *attr, char *buf)
->> +{
->> +	return sysfs_emit(buf, "%u\n", ksm_advisor);
->> +}
->> +
->> +static ssize_t advisor_mode_store(struct kobject *kobj,
->> +				  struct kobj_attribute *attr, const char *buf,
->> +				  size_t count)
->> +{
->> +	unsigned int mode;
->> +	int err;
->> +
->> +	err = kstrtouint(buf, 10, &mode);
->> +	if (err)
->> +		return -EINVAL;
->> +	if (mode > KSM_ADVISOR_LAST)
->> +		return -EINVAL;
->> +
->> +	/* Set advisor default values */
->> +	ksm_advisor = mode;
->> +	init_advisor();
->> +	set_advisor_defaults();
->> +
->> +	return count;
->
-> Can we instead use human-readable strings?
->
-> "none" and "scan-time" should be clearer.
->
-
-I'll change the interface to use strings instead of numbers.
+Yes, we can.
