@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 899107F486B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8B87F486D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344204AbjKVOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        id S1344274AbjKVOBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:01:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235123AbjKVOAp (ORCPT
+        with ESMTP id S1343965AbjKVOBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:00:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F63DA9;
-        Wed, 22 Nov 2023 06:00:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE673C433C8;
-        Wed, 22 Nov 2023 14:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700661641;
-        bh=CKpWtcakXU6WLfkLUYMnK2MftqPDlyVQofJh5L4ipog=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BfQB384hXCtGbDq3OEp+k+dC8Y95OtcvnToRFARS3SDWJ6KN61NI6F7znWBpzVRZy
-         blYNyv3BkMn8/fMRiDzO1wyob3LYygCpQVnZmCWxpglAOIy6qZeHz6EWpbcx6oEnOQ
-         ZD1UymrrTktDwQAdyHxQf0fDGf8zTfossoLSeTUZ6pjaVE/PjBDNbDLRKOPWYc+CRb
-         2hKNctjCDvzK9jCLYwIjwa14u6LOKRZpaQ5fRQhowQWJhI4nHVL83nQSoBQmUEpRzJ
-         XLCy/aOL44CWepHZTKNk0rkoBdAVTaeY3706+7M2UJUp/16I81Xi0ZCKrlm+l+vLC9
-         NR+fFXfKYY1/g==
-Date:   Wed, 22 Nov 2023 15:00:29 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
-        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
-        codalist@coda.cs.cmu.edu
-Subject: Re: [PATCH v2 0/4] sysctl: Remove sentinel elements from fs dir
-Message-ID: <20231122-undifferenziert-weitschuss-a5d8cc56fbd1@brauner>
-References: <20231121-jag-sysctl_remove_empty_elem_fs-v2-0-39eab723a034@samsung.com>
+        Wed, 22 Nov 2023 09:01:06 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291B5A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:01:01 -0800 (PST)
+Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sb2pS07YNzMnLj;
+        Wed, 22 Nov 2023 21:56:15 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 22 Nov 2023 22:00:58 +0800
+From:   Peng Zhang <zhangpeng362@huawei.com>
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <fengwei.yin@intel.com>, <ying.huang@intel.com>,
+        <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
+        <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
+        ZhangPeng <zhangpeng362@huawei.com>
+Subject: [RFC PATCH] mm: filemap: avoid unnecessary major faults in filemap_fault()
+Date:   Wed, 22 Nov 2023 22:00:52 +0800
+Message-ID: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231121-jag-sysctl_remove_empty_elem_fs-v2-0-39eab723a034@samsung.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000020.china.huawei.com (7.193.23.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks fine,
-Acked-by: Christian Brauner <brauner@kernel.org>
+From: ZhangPeng <zhangpeng362@huawei.com>
+
+The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+in application, which leading to an unexpected performance issue[1].
+
+This caused by temporarily cleared pte during a read/modify/write update
+of the pte, eg, do_numa_page()/change_pte_range().
+
+For the data segment of the user-mode program, the global variable area
+is a private mapping. After the pagecache is loaded, the private anonymous
+page is generated after the COW is triggered. Mlockall can lock COW pages
+(anonymous pages), but the original file pages cannot be locked and may
+be reclaimed. If the global variable (private anon page) is accessed when
+vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+
+At this time, the original private file page may have been reclaimed.
+If the page cache is not available at this time, a major fault will be
+triggered and the file will be read, causing additional overhead.
+
+Fix this by rechecking the pte by holding ptl in filemap_fault() before
+triggering a major fault.
+
+[1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+
+Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ mm/filemap.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 71f00539ac00..bb5e6a2790dc 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 			mapping_locked = true;
+ 		}
+ 	} else {
++		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
++						  vmf->address, &vmf->ptl);
++		if (ptep) {
++			/*
++			 * Recheck pte with ptl locked as the pte can be cleared
++			 * temporarily during a read/modify/write update.
++			 */
++			if (unlikely(!pte_none(ptep_get(ptep))))
++				ret = VM_FAULT_NOPAGE;
++			pte_unmap_unlock(ptep, vmf->ptl);
++			if (unlikely(ret))
++				return ret;
++		}
++
+ 		/* No page in the page cache at all */
+ 		count_vm_event(PGMAJFAULT);
+ 		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+-- 
+2.25.1
+
