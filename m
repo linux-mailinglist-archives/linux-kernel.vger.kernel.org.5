@@ -2,99 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110DC7F5287
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CFC7F529F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbjKVVZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S232067AbjKVVbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:31:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbjKVVZN (ORCPT
+        with ESMTP id S229513AbjKVVbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:25:13 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150CF1A4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:25:09 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7b063a6420dso7043739f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:25:09 -0800 (PST)
+        Wed, 22 Nov 2023 16:31:16 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FC51A4;
+        Wed, 22 Nov 2023 13:31:12 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cf6af8588fso1917155ad.0;
+        Wed, 22 Nov 2023 13:31:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700688308; x=1701293108; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OK4yjGOQCQ1Of5MUW9eg8KxwFZFuyIMn1rGG5EPO/5s=;
-        b=o3ms0IWuFUo90hh2SYWVNSjQjcAmVRiY71xmHKlwRjTNy62wmRBTrYtefHtQPahxTu
-         RVjjJHbvW1/t/OG3PJ7VfQBKPYjqw6hSW8LRKaXyN2rSwWy7xFcnJ6SH2dGUPqjxLJfn
-         dNYnFQNR2wbMrNtxbUikkhMXi6AvQW+yGFqFb5MEv6QJBioVVrSzuK8suCHbiFwj1QNo
-         HoBMoDV8+DZhFOpwp14GZBS3KBOiUaZzvTpvqZF0+z7ah1piiEpfX310CDs8wdThLsgN
-         Xjgl4Zt5jFUxvTX8ZDk9WcQdDZHx6sqYH/bx2iJoMwf8FTftQuQ+kfeHu2CbmwjNKGpQ
-         ObLw==
+        d=gmail.com; s=20230601; t=1700688671; x=1701293471; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T8YHcJrVA3B+7BnFIZDKn+9VseQtxV3EDqLRBy0nrns=;
+        b=ntADCO52YtfU9Ay4pXk2kO8EsKzo8ru6sncQi/EPni5ilXwMlJNXPKRVZQOv+dUM7Z
+         VOPAuhNCLuEoPp0nHDca06lyzMufoeF00lZLycn+F4jTg+xArCVmK29I426D+A330hBo
+         nhcakz3rDG64zsMvbPrXqkvnGaMMpd+PdGa2m5I5G7C6sdly0TY/PqWy/oqoyXGaJV+U
+         8shUBQ9xwL4MXPquBymLz2an/i6OJ3LGoynNG/koWnHrXdlzKY259ZOSz57bvK6ItA/P
+         IZDG30spBgSDUkKYdqMODjp4r3WdZ13uh9BNFz67Q5mPGiR6yTA9rMU/Vb+iPD4qmZNU
+         WhDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700688308; x=1701293108;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OK4yjGOQCQ1Of5MUW9eg8KxwFZFuyIMn1rGG5EPO/5s=;
-        b=VoCrDwyD1W7HxkmbU/gLUVmRl7UNTxTuilzT17kuRrJrNCUV204kUueD0Zkep/1u5E
-         1sqYYSZiPKN7m2b/EN0Q627HJE+tc6d5hzdW7iDFZrYvrTUy+3yrbowJsGJlGrkEL90X
-         zf+jWEqXGgKNE6Giu3+CsiG1VY7MktQ2VNe6en9BhhcKKNciIgCvMKqKObxXVnGlzXsq
-         TC0RCK7aoucxymXYRgZXVJDE2u+XlUvIID8fGZT5o3jXQXUS/tkBLZZCRh3D6dMCTF4a
-         yBJ+pycQP9kuL9QR8SbqS3DfLFulk+xIo6FEZLTCb+C02RD/R6N65hjZzWVyb3igXjSd
-         T/gw==
-X-Gm-Message-State: AOJu0YyN2rhD5pjblJ9uD/6B11Q43Mbmfeb5o6hSTKlRsJZE85UDCb7X
-        cSOPA9dFyuK6dMkmvR6p3CZ3l4bSac0M9YIthm0=
-X-Google-Smtp-Source: AGHT+IGfqWQCALQ2sbl53cSx59NR6o3lXjdDQ8ypxQCzXrbtIkKuIukuNRzmX3tbmVN1WRYaJX1GYQ==
-X-Received: by 2002:a6b:e217:0:b0:785:d5d4:9f26 with SMTP id z23-20020a6be217000000b00785d5d49f26mr719339ioc.9.1700688308378;
-        Wed, 22 Nov 2023 13:25:08 -0800 (PST)
-Received: from localhost.localdomain (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.gmail.com with ESMTPSA id i3-20020a6bf403000000b007a66df53f71sm3591812iog.38.2023.11.22.13.25.07
+        d=1e100.net; s=20230601; t=1700688671; x=1701293471;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8YHcJrVA3B+7BnFIZDKn+9VseQtxV3EDqLRBy0nrns=;
+        b=tl9cN1VoS1EJDgJ0IwFNva7+MTQ+sPLvhRpwYt57fOf2FypTRWdfoKjI/xonGr5DVn
+         Cysdm3Qoo0fHo2RQUd+55imPCrkv8XRR5NdW/7Y9E8PBalpLiSuzbaJEa28HmkmSiQql
+         i3FF4RUFaU8vbZlzhd9R1BEUFGMzuImcM1JxOTcqPSVn7HYktZtS7aKhIkPG28FgU+AA
+         DaQ6og6DGNkOLzwUr4hSQR1MW1Ye1h1gnCmnLUbmHFMofRYgEPShQox1efyJEqoEvAdx
+         XjtIvKCgNyW62CFYXwAUrS0NJy/4iI+99UYk0UhxQQQ1o3xofWWTHftOy3uJnG7WQLB3
+         oDIw==
+X-Gm-Message-State: AOJu0Yy24aU/7SW3/FTkgjQd1wqLSVaAy4r+wHltXCoCS1b6hV3vkaS4
+        +McNLqSDO/9im7BLrqrtdfA=
+X-Google-Smtp-Source: AGHT+IHMpg50GDCHwxIzCQw+0Xu3Qk1HhYDZWqMBovoQdAPUyBcR0iK37BF2NuSlokSb3jjoQ3/KiQ==
+X-Received: by 2002:a17:903:1207:b0:1cc:53d1:10b8 with SMTP id l7-20020a170903120700b001cc53d110b8mr4168520plh.50.1700688671321;
+        Wed, 22 Nov 2023 13:31:11 -0800 (PST)
+Received: from r13-u19.micron.com ([165.225.243.112])
+        by smtp.gmail.com with ESMTPSA id jl13-20020a170903134d00b001c736746d33sm134845plb.217.2023.11.22.13.31.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 13:25:08 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
-        quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
-        quic_subashab@quicinc.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: ipa: fix one GSI register field width
-Date:   Wed, 22 Nov 2023 15:25:04 -0600
-Message-Id: <20231122212504.714276-1-elder@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 22 Nov 2023 13:31:10 -0800 (PST)
+Date:   Wed, 22 Nov 2023 15:31:05 -0600
+From:   Vinicius Petrucci <vpetrucci@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, minchan@kernel.org,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        Jonathan.Cameron@huawei.com, aneesh.kumar@linux.ibm.com,
+        gregory.price@memverge.com, ying.huang@intel.com,
+        dan.j.williams@intel.com, hezhongkun.hzk@bytedance.com,
+        fvdl@google.com, surenb@google.com, rientjes@google.com,
+        hannes@cmpxchg.org, mhocko@suse.com, Hasan.Maruf@amd.com,
+        jgroves@micron.com, ravis.opensrc@micron.com,
+        sthanneeru@micron.com, emirakhur@micron.com,
+        vtavarespetr@micron.com
+Subject: [RFC PATCH] mm/mbind: Introduce process_mbind() syscall for external
+ memory binding
+Message-ID: <ZV5zGROLefrsEcHJ@r13-u19.micron.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The width of the R_LENGTH field of the EV_CH_E_CNTXT_1 GSI register
-is 24 bits (not 20 bits) starting with IPA v5.0.  Fix this.
+From: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
 
-Fixes: 627659d542c5 ("net: ipa: add IPA v5.0 GSI register definitions")
-Signed-off-by: Alex Elder <elder@linaro.org>
+This patch introduces `process_mbind()` to enable a userspace orchestrator with 
+an understanding of another process's memory layout to alter its memory policy. 
+As system memory configurations become more and more complex (e.g., DDR+HBM+CXL memories), 
+such a userspace orchestrator can explore more advanced techniques to guide memory placement
+to individual NUMA nodes across memory tiers. This allows for a more efficient allocation of 
+memory resources, leading to enhanced application performance.
+
+Alternatively, there are existing methods such as LD_PRELOAD (https://pmem.io/memkind/) or
+syscall_intercept (https://github.com/pmem/syscall_intercept), but these techniques, beyond the
+lack of portability/universality, can lead to system incompatibility issues, inconsistency in
+application behavior, potential risks due to global system-wide settings, and increased
+complexity in implementation.
+
+The concept of an external entity that understands the layout of another process's VM 
+is already present with `process_madvise()`. Thus, it seems reasonable to introduce 
+the `process_mbind` variant of `mbind`. The implementation framework of `process_mbind()` 
+is akin to `process_madvise()`. It uses pidfd of an external process to direct the memory 
+policy and supports a vector of memory address ranges.
+
+The general use case here is similar to the prior RFC `pidfd_set_mempolicy()` 
+(https://lore.kernel.org/linux-mm/20221010094842.4123037-1-hezhongkun.hzk@bytedance.com/), 
+but offers a more fine-grained external control by binding specific memory regions 
+(say, heap data structures) to specific NUMA nodes. Another concrete use case was described 
+by a prior work showing up to 2X runtime improvement (compared to AutoNUMA tiering) using
+memory object/region-based memory placement for workloads with irregular access patterns
+such as graph analytics: https://iiswc.org/iiswc2022/IISWC2022_42.pdf
+
+The proposed API is as follows:
+
+long process_mbind(int pidfd, 
+                const struct iovec *iovec, 
+                unsigned long vlen, 
+                unsigned long mode, 
+                const unsigned long *nmask,
+                unsigned int flags);
+
+The `pidfd` argument is used to select the process that is identified by the PID file 
+descriptor provided in pidfd. (See pidofd_open(2) for more information)
+
+The pointer `iovec` points to an array of iovec structures (as described in <sys/uio.h>):
+
+struct iovec {
+    void *iov_base;         /* starting address of region */
+    size_t iov_len;         /* size of region (in bytes) */
+};
+
+The `iovec` defines memory regions that start at the address (iov_base) and 
+have a size measured in bytes (iov_len).
+
+The `vlen` indicates the quantity of elements contained in iovec.
+
+Please note the initial `maxnode` parameter from `mbind` was omitted 
+to ensure the API doesn't exceed 6 arguments. Instead, the constant 
+MAX_NUMNODES was utilized.
+
+Please see the mbind(2) man page for more details about other's arguments.
+
+Additionally, it is worth noting the following:
+- Using a vector of address ranges as an argument in `process_mbind` provides more 
+flexibility than the original `mbind` system call, even when invoked from a current
+or local process.
+- In contrast to `move_pages`, which requires an array of fixed-size pages,
+`process_mbind` (with flags MPOL_MF_MOVE*) offers a more convinient and flexible page
+migration capability on a per object or region basis.
+- Similar to `process_madvise`, manipulating the memory binding of external processes
+necessitates `CAP_SYS_NICE` and `PTRACE_MODE_READ_FSCREDS` checks (refer to ptrace(2)).
+
+Suggested-by: Frank van der Linden <fvdl@google.com>
+Signed-off-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+Signed-off-by: Hasan Al Maruf <Hasan.Maruf@amd.com>
 ---
- drivers/net/ipa/reg/gsi_reg-v5.0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ include/linux/syscalls.h               |  4 ++
+ include/uapi/asm-generic/unistd.h      |  4 +-
+ kernel/sys_ni.c                        |  1 +
+ mm/mempolicy.c                         | 86 +++++++++++++++++++++++++-
+ 5 files changed, 92 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ipa/reg/gsi_reg-v5.0.c b/drivers/net/ipa/reg/gsi_reg-v5.0.c
-index d7b81a36d673b..145eb0bd096d6 100644
---- a/drivers/net/ipa/reg/gsi_reg-v5.0.c
-+++ b/drivers/net/ipa/reg/gsi_reg-v5.0.c
-@@ -78,7 +78,7 @@ REG_STRIDE_FIELDS(EV_CH_E_CNTXT_0, ev_ch_e_cntxt_0,
- 		  0x0001c000 + 0x12000 * GSI_EE_AP, 0x80);
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 8cb8bf68721c..9d9db49a3242 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -378,6 +378,7 @@
+ 454	common	futex_wake		sys_futex_wake
+ 455	common	futex_wait		sys_futex_wait
+ 456	common	futex_requeue		sys_futex_requeue
++457	common	process_mbind		sys_process_mbind
  
- static const u32 reg_ev_ch_e_cntxt_1_fmask[] = {
--	[R_LENGTH]					= GENMASK(19, 0),
-+	[R_LENGTH]					= GENMASK(23, 0),
- };
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index fd9d12de7e92..def5250ed625 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -816,6 +816,10 @@ asmlinkage long sys_mbind(unsigned long start, unsigned long len,
+ 				const unsigned long __user *nmask,
+ 				unsigned long maxnode,
+ 				unsigned flags);
++asmlinkage long sys_process_mbind(int pidfd, const struct iovec __user *vec,
++				size_t vlen, unsigned long mode,
++				const unsigned long __user *nmask,
++				unsigned flags);
+ asmlinkage long sys_get_mempolicy(int __user *policy,
+ 				unsigned long __user *nmask,
+ 				unsigned long maxnode,
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index 756b013fb832..9ed2c91940d6 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -828,9 +828,11 @@ __SYSCALL(__NR_futex_wake, sys_futex_wake)
+ __SYSCALL(__NR_futex_wait, sys_futex_wait)
+ #define __NR_futex_requeue 456
+ __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
++#define __NR_process_mbind 457
++__SYSCALL(__NR_process_mbind, sys_process_mbind)
  
- REG_STRIDE_FIELDS(EV_CH_E_CNTXT_1, ev_ch_e_cntxt_1,
+ #undef __NR_syscalls
+-#define __NR_syscalls 457
++#define __NR_syscalls 458
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+index e1a6e3c675c0..cc5cb5ae3ae7 100644
+--- a/kernel/sys_ni.c
++++ b/kernel/sys_ni.c
+@@ -187,6 +187,7 @@ COND_SYSCALL(process_madvise);
+ COND_SYSCALL(process_mrelease);
+ COND_SYSCALL(remap_file_pages);
+ COND_SYSCALL(mbind);
++COND_SYSCALL(process_mbind);
+ COND_SYSCALL(get_mempolicy);
+ COND_SYSCALL(set_mempolicy);
+ COND_SYSCALL(migrate_pages);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 10a590ee1c89..91ee300fa728 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1215,11 +1215,10 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
+ }
+ #endif
+ 
+-static long do_mbind(unsigned long start, unsigned long len,
++static long do_mbind(struct mm_struct *mm, unsigned long start, unsigned long len,
+ 		     unsigned short mode, unsigned short mode_flags,
+ 		     nodemask_t *nmask, unsigned long flags)
+ {
+-	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma, *prev;
+ 	struct vma_iterator vmi;
+ 	struct migration_mpol mmpol;
+@@ -1465,10 +1464,84 @@ static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
+ 	return 0;
+ }
+ 
++static long kernel_mbind_process(int pidfd, const struct iovec __user *vec,
++		size_t vlen, unsigned long mode,
++		const unsigned long __user *nmask, unsigned int flags)
++{
++	ssize_t ret;
++	struct iovec iovstack[UIO_FASTIOV];
++	struct iovec *iov = iovstack;
++	struct iov_iter iter;
++	struct task_struct *task;
++	struct mm_struct *mm;
++	unsigned int f_flags;
++	unsigned short mode_flags;
++	int lmode = mode;
++	unsigned long maxnode = MAX_NUMNODES;
++	int err;
++	nodemask_t nodes;
++
++	err = sanitize_mpol_flags(&lmode, &mode_flags);
++	if (err)
++		goto out;
++
++	err = get_nodes(&nodes, nmask, maxnode);
++	if (err)
++		goto out;
++
++	ret = import_iovec(ITER_DEST, vec, vlen, ARRAY_SIZE(iovstack),
++			&iov, &iter);
++	if (ret < 0)
++		goto out;
++
++	task = pidfd_get_task(pidfd, &f_flags);
++	if (IS_ERR(task)) {
++		ret = PTR_ERR(task);
++		goto free_iov;
++	}
++
++	/* From process_madvise: Require PTRACE_MODE_READ
++	 * to avoid leaking ASLR metadata. */
++	mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
++	if (IS_ERR_OR_NULL(mm)) {
++		ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
++		goto release_task;
++	}
++
++	/* From process_madvise: Require CAP_SYS_NICE for
++	 * influencing process performance. */
++	if (!capable(CAP_SYS_NICE)) {
++		ret = -EPERM;
++		goto release_mm;
++	}
++
++	while (iov_iter_count(&iter)) {
++		unsigned long start = untagged_addr(
++				(unsigned long)iter_iov_addr(&iter));
++		unsigned long len = iter_iov_len(&iter);
++
++		ret = do_mbind(mm, start, len, lmode, mode_flags,
++				&nodes, flags);
++		if (ret < 0)
++			break;
++		iov_iter_advance(&iter, iter_iov_len(&iter));
++	}
++
++release_mm:
++	mmput(mm);
++release_task:
++	put_task_struct(task);
++free_iov:
++	kfree(iov);
++out:
++	return ret;
++}
++
+ static long kernel_mbind(unsigned long start, unsigned long len,
+ 			 unsigned long mode, const unsigned long __user *nmask,
+ 			 unsigned long maxnode, unsigned int flags)
+ {
++	struct mm_struct *mm = current->mm;
+ 	unsigned short mode_flags;
+ 	nodemask_t nodes;
+ 	int lmode = mode;
+@@ -1483,7 +1556,7 @@ static long kernel_mbind(unsigned long start, unsigned long len,
+ 	if (err)
+ 		return err;
+ 
+-	return do_mbind(start, len, lmode, mode_flags, &nodes, flags);
++	return do_mbind(mm, start, len, lmode, mode_flags, &nodes, flags);
+ }
+ 
+ SYSCALL_DEFINE4(set_mempolicy_home_node, unsigned long, start, unsigned long, len,
+@@ -1553,6 +1626,13 @@ SYSCALL_DEFINE4(set_mempolicy_home_node, unsigned long, start, unsigned long, le
+ 	return err;
+ }
+ 
++SYSCALL_DEFINE6(process_mbind, int, pidfd, const struct iovec __user *, vec,
++		size_t, vlen, unsigned long, mode,
++		const unsigned long __user *, nmask, unsigned int, flags)
++{
++	return kernel_mbind_process(pidfd, vec, vlen, mode, nmask, flags);
++}
++
+ SYSCALL_DEFINE6(mbind, unsigned long, start, unsigned long, len,
+ 		unsigned long, mode, const unsigned long __user *, nmask,
+ 		unsigned long, maxnode, unsigned int, flags)
 -- 
-2.34.1
+2.41.0
 
