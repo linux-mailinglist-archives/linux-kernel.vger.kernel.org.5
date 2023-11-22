@@ -2,256 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2C97F4FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB3B7F4FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344090AbjKVSe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S1344050AbjKVSe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344284AbjKVSe0 (ORCPT
+        with ESMTP id S231478AbjKVSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:34:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A438F10C1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:34:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700678060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CSq4Z/8e2pXUHkDOJ7PPcDe9XGNiH9I/kXRfecMzXmE=;
-        b=dtMb3Pm1aDoYmhwNN/aBkTL4w4mk3iT8ube4dLsNmBbuJETQNPkr/gWXnQqWf5C1PfknuE
-        Apb5S5fZ8cwhYyeKAcpKeJZOMFo+VYdTxRATND/fZ54+Jf5HGEGFnjXHLWBK0lJFlSP74k
-        1wK4AHrA3mXsU478CdzmDEEdoQ7LU8Y=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-RrQkknhuOYiYeKWjQ__N3g-1; Wed, 22 Nov 2023 13:34:19 -0500
-X-MC-Unique: RrQkknhuOYiYeKWjQ__N3g-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50aa6be164bso4747104e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:34:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700678058; x=1701282858;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSq4Z/8e2pXUHkDOJ7PPcDe9XGNiH9I/kXRfecMzXmE=;
-        b=akPDlc9RzyLxLef5Q+uQZHPlTlCi1DJJRLuVIudKbxkaF4eHfzpgQzvhfCyMxO950k
-         Kd/OcN9EN0PsUQ7VkHBEN/FNNEbzFPfhvNxgvg+nBgPXyf6PE1wJI68s0fclDP642943
-         uDLd/XIp+jilOSDPGJ2qPrArlHOrWD75h3KetA4A1K6QsWsQg2yzCWlBYCn2ER154BYg
-         6JOm4c1oCgDWyg0jX8miIi7XcO4KYGiuOeaIN0yDue7beEvtmu0b1wFZNkERALDt6B7P
-         QAzc4rFjaFYkz5sl2Ut9G9vptWujOXy0yg+BfATdZhr3HnTzH5NeKIiV+ODAAwrTkggW
-         loEg==
-X-Gm-Message-State: AOJu0Yx0ig52xWqVUTtVnPRObuFrZotnl51zTh5ynOgMEkoBSriN1EG0
-        T+7OIC1CqqCPP0h1orO+n9uNZ7v1Cida4wC/gWnic8IsFFxZubpQ8Oupvj5E+mH3obW9ttUSdad
-        lFkXcTiWiDh25h1akHVoVG6BS
-X-Received: by 2002:a05:6512:3b21:b0:507:c763:27b7 with SMTP id f33-20020a0565123b2100b00507c76327b7mr3162720lfv.40.1700678057735;
-        Wed, 22 Nov 2023 10:34:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFh59WQluakgPfC165eV+EpD7wmuDkQBJLEXSCOkuN9LT5IrE4iptKGqLO7vhOdGJJyfRH1LA==
-X-Received: by 2002:a05:6512:3b21:b0:507:c763:27b7 with SMTP id f33-20020a0565123b2100b00507c76327b7mr3162697lfv.40.1700678057297;
-        Wed, 22 Nov 2023 10:34:17 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id r18-20020aa7cfd2000000b0053f10da1105sm68825edy.87.2023.11.22.10.34.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:34:16 -0800 (PST)
-Message-ID: <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
-Date:   Wed, 22 Nov 2023 19:34:15 +0100
+        Wed, 22 Nov 2023 13:34:54 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A31D50;
+        Wed, 22 Nov 2023 10:34:51 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMIT5KW019590;
+        Wed, 22 Nov 2023 10:34:42 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=0GqnSZpL4E/OI68ZnBo58kjUaFbXjIqAqR9BlWTLW7g=;
+ b=c/Ibi1n+X3/JmOHutygyBnb1iitVpUMCXTlGzyxZBU73au8WxltZRRk4IiKgU8K+K11W
+ Bh/HiQ0zXZ395CcASz3D8AHjhOVmh1VZ0zv12WyUpzvfchu6nkJRFsBhr4aAOpexCHAu
+ pcH2rKuAe5U5xOjrnts5rbvPFhR3p4s465Fc9uzLSZpxJ+vTyq8EuL1gf044LlVgT1B4
+ QJx9HkGYr9HEO62FeSfZYez7pUo9ENZBOXbiG+gLomzUSVU699+BC8zstyKuRrcrethZ
+ ZkzSY9Ugi19tUvq9kr5RSrXjIRfXa5IRbA9LraywLpc4Tj0cBsQFS0ae+Z2NhNC2H/O9 PQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uhpxn00ut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 10:34:42 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 22 Nov
+ 2023 10:34:39 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 22 Nov 2023 10:34:39 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 8B3203F7040;
+        Wed, 22 Nov 2023 10:34:39 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <konguyen@redhat.com>, <jesse.brandeburg@intel.com>,
+        <sumang@marvell.com>, Shinas Rasheed <srasheed@marvell.com>
+Subject: [PATCH net-next v2 0/2] Get max rx packet length and solve
+Date:   Wed, 22 Nov 2023 10:34:33 -0800
+Message-ID: <20231122183435.2510656-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Content-Language: en-US, nl
-To:     Werner Sembach <wse@tuxedocomputers.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
-        Jelle van der Waa <jelle@vdwaa.nl>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        linux-input@vger.kernel.org, ojeda@kernel.org,
-        linux-leds@vger.kernel.org
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: QKQM7XTY9JWB2nlUHbrxiNRER0mQ8uvK
+X-Proofpoint-GUID: QKQM7XTY9JWB2nlUHbrxiNRER0mQ8uvK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_13,2023-11-22_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Werner,
+Patchsets which resolve observed style issues in control net
+source files, and also implements get mtu control net api
+to fetch max mtu value from firmware
 
-On 11/21/23 14:29, Werner Sembach wrote:
-> 
-> Am 21.11.23 um 13:20 schrieb Hans de Goede:
->> Hi Werner,
->>
->> On 11/21/23 12:33, Werner Sembach wrote:
->>> Hi,
->>>
->>> Am 20.11.23 um 21:52 schrieb Pavel Machek:
->>>> Hi!
->>>>
->>>>>>> So... a bit of rationale. The keyboard does not really fit into the
->>>>>>> LED subsystem; LEDs are expected to be independent ("hdd led") and not
->>>>>>> a matrix of them.
->>>>>> Makes sense.
->>>>>>
->>>>>>> We do see various strange displays these days -- they commonly have
->>>>>>> rounded corners and holes in them. I'm not sure how that's currently
->>>>>>> supported, but I believe it is reasonable to view keyboard as a
->>>>>>> display with slightly weird placing of pixels.
->>>>>>>
->>>>>>> Plus, I'd really like to play tetris on one of those :-).
->>>>>>>
->>>>>>> So, would presenting them as auxdisplay be acceptable? Or are there
->>>>>>> better options?
->>>>>> It sounds like a fair use case -- auxdisplay are typically simple
->>>>>> character-based or small graphical displays, e.g. 128x64, that may not
->>>>>> be a "main" / usual screen as typically understood, but the concept is
->>>>>> a bit fuzzy and we are a bit of a catch-all.
->>>>>>
->>>>>> And "keyboard backlight display with a pixel/color per-key" does not
->>>>>> sound like a "main" screen, and having some cute effects displayed
->>>>>> there are the kind of thing that one could do in the usual small
->>>>>> graphical ones too. :)
->>>>>>
->>>>>> But if somebody prefers to create new categories (or subcategories
->>>>>> within auxdisplay) to hold these, that could be nice too (in the
->>>>>> latter case, I would perhaps suggest reorganizing all of the existing
->>>>>> ones while at it).
->>>>> One could also reasonably make the argument that controlling the
->>>>> individual keyboard key backlights should be part of the input
->>>>> subsystem. It's not a display per se. (Unless you actually have small
->>>>> displays on the keycaps, and I think that's a thing too.)
->>>> While it would not be completely crazy to do that... I believe the
->>>> backlight is more of a display and less of a keyboard. Plus input
->>>> subystem is very far away from supporting this, and we had no input
->>>> from input people here.
->>>>
->>>> I don't think LED subsystem is right place for this, and I believe
->>>> auxdisplay makes slightly more sense than input.
->>>>
->>>> Unless someone steps up, I'd suggest Werner tries to implement this as
->>>> an auxdisplay. [And yes, this will not be simple task. RGB on LED is
->>>> different from RGB on display. But there are other LED displays, so
->>>> auxdisplay should handle this. Plus pixels are really funnily
->>>> shaped. But displays with missing pixels -- aka holes for camera --
->>>> are common in phones, and I believe we'll get variable pixel densities
->>>> -- less dense over camera -- too. So displays will have to deal with
->>>> these in the end.]
->>> Another idea I want to throw in the mix:
->>>
->>> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
->>>
->>> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
->> That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
->>
->> That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
-> 
-> I would suggest a simple "enable" entry. Default is 1. When set to 0 the kernel driver no longer does anything.
+Changes:
+V2:
+  - Introduced a patch to resolve style issues as mentioned in V1
+  - Removed OCTEP_MAX_MTU macro, as it is redundant.
 
-I'm not in favor of using "enable" as sysfs attribute for this,
-I would like to see a more descriptive name, how about:
+V1: https://lore.kernel.org/all/20231121191224.2489474-1-srasheed@marvell.com/
 
-"disable_kernel_kbd_backlight_support"
+Shinas Rasheed (2):
+  octeon_ep: Solve style issues in control net files
+  octeon_ep: get max rx packet length from firmware
 
-And then maybe also have the driver actually unregister
-the LED class device ?
+ .../ethernet/marvell/octeon_ep/octep_config.h |   2 -
+ .../marvell/octeon_ep/octep_ctrl_net.c        |  42 ++++--
+ .../marvell/octeon_ep/octep_ctrl_net.h        | 125 +++++++++++-------
+ .../ethernet/marvell/octeon_ep/octep_main.c   |  10 +-
+ 4 files changed, 113 insertions(+), 66 deletions(-)
 
-Or just make the support inactive when writing 1 to
-this and allow re-enabling it by writing 0?
-
-> Questions:
-> 
-> - Should the driver try to reset the settings to boot default? Or just leave the device in the current state? With the former I could see issues that they keyboard is flashing when changing from kernelspace control to userspace control. With the later the burden on bringing the device to a know state lies with the userspace driver.
-
-My vote would go to leave the state as is. Even if the hw
-does not support state readback, then the userspace code
-can readback the state before writing 1 to
-"disable_kernel_kbd_backlight_support"
-
-> - Should this be a optional entry that only shows up on drivers supporting it, or could this implemented in a generic way affecting all current led entries?
-
-IMHO this should be optional. If we go with the variant
-where writing 1 to "disable_kernel_kbd_backlight_support"
-just disables support and 0 re-enables it then I guess
-we could have support for this in the LED-core, enabled
-by a flag set by the driver.
-
-If we go with unregistering the led class device,
-then this needs to be mostly handled in the driver.
-
-Either way the kernel driver should know about this even
-if it is mostly handled in the LED core so that e.g.
-it does not try to restore settings on resume from suspend.
-
-> - I guess UPower integration for the userspace driver could be archived with https://www.kernel.org/doc/html/latest/leds/uleds.html however this limited to brightness atm, so when accent colors actually come to UPower this would also need some expansion to be able to pass a preferred color to the userspace driver (regardless of what that driver is then doing with that information).
-
-Using uleds is an interesting suggestion, but upower atm
-does not support LED class kbd_backlight devices getting
-hot-plugged. It only scans for them once at boot.
-
-Jelle van der Waa (a colleague of mine, added to the Cc)
-has indicated he is interested in maybe working on fixing
-this upower short-coming as a side project, once his
-current side-projects are finished.
-
-> On a different note: This approach does currently not cover the older EC controlled 3 zone keyboards from clevo. Here only the kernel has access access to the device so the kernel driver has to expose all functionality somehow. Should this be done by an arbitrarily designed platform device?
-
-Interesting question, this reminds there was a discussion
-about how to handle zoned keyboards using plain LED class
-APIs here:
-
-https://lore.kernel.org/linux-leds/544484b9-c0ac-2fd0-1f41-8fa94cb94d4b@redhat.com/
-
-Basically the idea discussed there is to create
-separate multi-color LED sysfs devices for each zone,
-using :rgb:kbd_zoned_backlight-xxx as postfix, e.g. :
-
- :rgb:kbd_zoned_backlight-left
- :rgb:kbd_zoned_backlight-middle
- :rgb:kbd_zoned_backlight-right
- :rgb:kbd_zoned_backlight-wasd
-
-As postfixes for the 4 per zone LED class devices
-and then teach upower to just treat this as
-a single kbd-backlight for the existing upower
-DBUS API and maybe later extend the DBUS API.
-
-Would something like this work for the Clevo
-case you are describing?
-
-Unfortunately this was never implemented but
-I think that for simple zoned backlighting
-this still makes sense. Where as for per key
-controllable backlighting as mention in
-$subject I do believe that just using hidraw
-access directly from userspace is best.
-
-Regards,
-
-Hans
-
-
+-- 
+2.25.1
 
