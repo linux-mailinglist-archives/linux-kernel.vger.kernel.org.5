@@ -2,140 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E74AE7F4FCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194017F4FD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbjKVSn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
+        id S1343732AbjKVSpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjKVSn5 (ORCPT
+        with ESMTP id S231354AbjKVSpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:43:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89636D4A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:43:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D504C433C9;
-        Wed, 22 Nov 2023 18:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700678633;
-        bh=greUwhHcleCvGLrnawmrLUpL+REUxW++4IRcRnG562U=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=hIPC4ajBO65xrq6JuXjfcKUm7Pfv1fseVp7plx2+m732Gh4eEFy5KzaeZS89aQYF+
-         Tfj419WjKQa6Td8bn6LA5RIqUS0TjYn4e5uayBn2bvYp6q5k578w3Rx2v1M+nPnP5Z
-         QDokseuGXFwiBkfaxZrJ/TBee/r6SXUrGw3Ms26oJ9uzyZKKkvQ4acFjUAR6zfqZPO
-         JSH5UUtvvJXgf3mBWGsvnPZj6+VyOFZrqIiwQ9TujrDwSHkfeIMdYdP5a6ZKobRzlX
-         h0TbKp2gMQAOWjcWdDGs4te3u8pCv4eiJc4/32IXxMSdhkuNP3O/cvlxa59vFsXT6+
-         Q+w/lk3zOSp8w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AFDDACE0C41; Wed, 22 Nov 2023 10:43:52 -0800 (PST)
-Date:   Wed, 22 Nov 2023 10:43:52 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     sfr@canb.auug.org.au, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [BUG] RCU CPU stall warning (heads up)
-Message-ID: <fc50b62c-813b-45e6-ad7b-227cbd0415ba@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        Wed, 22 Nov 2023 13:45:14 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F56A92;
+        Wed, 22 Nov 2023 10:45:09 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 97D56120059;
+        Wed, 22 Nov 2023 21:45:07 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 97D56120059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700678707;
+        bh=ouwssWigHzD9ZWYCMHXO2ZFvdiQcVgz6nUBBI0g8ycU=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=GbuXmbSao/6h56W/EQ+mMC6rblliv5TV0Tr/Pi0M8VEDZx//QJsnQummWUKXRR94W
+         R5oyDN92V2s6ZVZv9k/CJ86lKC++MKqen0+7YuT16DZGsY3rkdgm+6dH4lpVHoW2bi
+         8uiG3jXzssmhFDFKfCbqZqx1dr4Ph0DHzdCmq+bL7dtPIm+OUcumHUwEwdnWroT1jC
+         HHvvjImhtCjcvl9+5N9B6if/143dsA24gMKT1GbKas7lrCjbhYViAial87dvR44rrp
+         QisOWdjMRrTEMCle12jV4GFhBcOrQ06b1eCaV/J9i8VTA0DOKq9El9M79Q6wiM1Q6G
+         9FaazNaIFqA2g==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 22 Nov 2023 21:45:07 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
+ 2023 21:45:07 +0300
+Date:   Wed, 22 Nov 2023 21:45:02 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Viacheslav Bocharov <adeep@lexina.in>
+CC:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [DMARC error][DKIM error] [PATCH 5/5] arm64: dts: meson: add dts
+ links to secure-monitor for soc driver in a1, axg, gx, g12
+Message-ID: <20231122184502.x4rxzvgmoaxbmhlr@CAB-WSD-L081021>
+References: <20231122125643.1717160-1-adeep@lexina.in>
+ <20231122125643.1717160-6-adeep@lexina.in>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231122125643.1717160-6-adeep@lexina.in>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lists.infradead.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/22 18:12:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/22 18:12:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hello Viacheslav,
 
-Just FYI for the moment.
+On Wed, Nov 22, 2023 at 03:56:43PM +0300, Viacheslav Bocharov wrote:
+> Add links to secure-monitor in soc driver section for A1, AXG, GX, G12
+> Amlogic family.
+> 
+> Signed-off-by: Viacheslav Bocharov <adeep@lexina.in>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-a1.dtsi         | 1 +
+>  arch/arm64/boot/dts/amlogic/meson-axg.dtsi        | 1 +
+>  arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 1 +
+>  arch/arm64/boot/dts/amlogic/meson-gx.dtsi         | 1 +
+>  4 files changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+> index 648e7f49424f..449b328d62b1 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+> @@ -407,6 +407,7 @@ hwrng: rng@5118 {
+>  			sec_AO: ao-secure@5a20 {
+>  				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+>  				reg = <0x0 0x5a20 0x0 0x140>;
+> +				secure-monitor = <&sm>;
 
-I hit the following three times out of 15 ten-hour TREE03 rcutorture
-runs on next-20231121, which suggests an MTBF of about 50 hours.  This is
-new over the past week or so.
+I suppose it's better and more consistent to use the same hierarchy
+pattern as Secure PWRC uses: to be a child of Secure Monitor.
 
-The symptom is that the RCU grace-period kthread is marked as running
-("R"), but remains stuck in schedule() for the remainder of the run.
+Please see the example below from meson-a1.dtsi:
 
-My next steps will be to retry on today's -next, and if that reproduces
-the bug, attempt to bisect.
 
-But I figured that I should send this out on the off-chance that it is
-a known problem.
+	sm: secure-monitor {
+		compatible = "amlogic,meson-gxbb-sm";
 
-						Thanx, Paul
+		pwrc: power-controller {
+			compatible = "amlogic,meson-a1-pwrc";
+			#power-domain-cells = <1>;
+		};
+	};
 
-[  456.859071] rcu-torture: rtc: 0000000002666dc0 ver: 14234 tfle: 0 rta: 14235 rtaf: 0 rtf: 14225 rtmbe: 0 rtmbkf: 0/10105 rtbe: 0 rtbke: 0 rtbf: 0 rtb: 39 nt: 792049 onoff: 324/324:329/330 18,4182:5,9107 84652:154698 (HZ=1000) barrier: 1987/1988:0 read-exits: 416 nocb-toggles: 0:0
-[  456.865422] rcu-torture: Reader Pipe:  1075314187 71402 0 0 0 0 0 0 0 0 0
-[  456.867182] rcu-torture: Reader Batch:  1075090167 295422 0 0 0 0 0 0 0 0 0
-[  456.868930] rcu-torture: Free-Block Circulation:  14234 14233 14232 14231 14230 14229 14228 14227 14226 14225 0
-[  464.018060] rcu: INFO: rcu_preempt self-detected stall on CPU
-[  464.019191] rcu: 	11-...!: (1 GPs behind) idle=b41c/0/0x1 softirq=0/0 fqs=88
-[  464.020489] rcu: 	(t=21003 jiffies g=302741 q=71371 ncpus=11)
-[  464.021549] rcu: rcu_preempt kthread starved for 20595 jiffies! g302741 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-[  464.023457] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-[  464.025117] rcu: RCU grace-period kthread stack dump:
-[  464.026030] task:rcu_preempt     state:R  running task     stack:14896 pid:14    tgid:14    ppid:2      flags:0x00004000
-[  464.028032] Call Trace:
-[  464.028507]  <TASK>
-[  464.028900]  __schedule+0x306/0x880
-[  464.029559]  schedule+0x2b/0xb0
-[  464.030139]  schedule_timeout+0x86/0x160
-[  464.030857]  ? __pfx_process_timeout+0x10/0x10
-[  464.031673]  rcu_gp_fqs_loop+0x12a/0x5f0
-[  464.032406]  ? __pfx_rcu_gp_kthread+0x10/0x10
-[  464.033207]  rcu_gp_kthread+0x191/0x240
-[  464.033905]  kthread+0xd3/0x100
-[  464.034494]  ? __pfx_kthread+0x10/0x10
-[  464.035189]  ret_from_fork+0x2f/0x50
-[  464.035837]  ? __pfx_kthread+0x10/0x10
-[  464.036534]  ret_from_fork_asm+0x1a/0x30
-[  464.037264]  </TASK>
-[  464.037665] rcu: Stack dump where RCU GP kthread last ran:
-[  464.038671] Sending NMI from CPU 11 to CPUs 0:
-[  464.039507] NMI backtrace for cpu 0 skipped: idling at default_idle+0xf/0x20
-[  464.040505] CPU: 11 PID: 0 Comm: swapper/11 Not tainted 6.7.0-rc2-next-20231121 #7188
-[  464.042806] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[  464.044842] RIP: 0010:default_idle+0xf/0x20
-[  464.045618] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa eb 07 0f 00 2d 03 a8 36 00 fb f4 <fa> c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-[  464.048992] RSP: 0000:ffffac70400fbef0 EFLAGS: 00000202
-[  464.049952] RAX: ffff9d381f4c0000 RBX: ffff9d380124c740 RCX: 0000000000000000
-[  464.051264] RDX: 4000000000000000 RSI: ffffffffb4afa83b RDI: 000000000c18b414
-[  464.052557] RBP: 000000000000000b R08: 000000000c18b414 R09: 0000000000000000
-[  464.053856] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-[  464.055169] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[  464.056463] FS:  0000000000000000(0000) GS:ffff9d381f4c0000(0000) knlGS:0000000000000000
-[  464.057936] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  464.058988] CR2: 0000000000000000 CR3: 000000000204e000 CR4: 00000000000006f0
-[  464.060314] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  464.061607] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  464.062907] Call Trace:
-[  464.063378]  <IRQ>
-[  464.063754]  ? rcu_dump_cpu_stacks+0xf1/0x150
-[  464.064629]  ? rcu_sched_clock_irq+0x56e/0xee0
-[  464.065450]  ? __kmem_cache_alloc_node+0x44/0x1e0
-[  464.066316]  ? rcu_torture_timer+0x4e/0x80
-[  464.067063]  ? __pfx_rcu_torture_timer+0x10/0x10
-[  464.067910]  ? kvm_sched_clock_read+0x11/0x20
-[  464.068713]  ? sched_clock+0x10/0x30
-[  464.069395]  ? sched_clock_cpu+0xf/0x190
-[  464.070116]  ? update_process_times+0x45/0x70
-[  464.070907]  ? tick_nohz_highres_handler+0xb6/0xe0
-[  464.071790]  ? __pfx_tick_nohz_highres_handler+0x10/0x10
-[  464.072772]  ? __hrtimer_run_queues+0x10d/0x2a0
-[  464.073606]  ? hrtimer_interrupt+0xfe/0x240
-[  464.074386]  ? __sysvec_apic_timer_interrupt+0x53/0x140
-[  464.075353]  ? sysvec_apic_timer_interrupt+0x6b/0x80
-[  464.076270]  </IRQ>
-[  464.076655]  <TASK>
-[  464.077040]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  464.078021]  ? default_idle+0xf/0x20
-[  464.078692]  default_idle_call+0x2d/0xe0
-[  464.079420]  do_idle+0x180/0x1c0
-[  464.080021]  cpu_startup_entry+0x24/0x30
-[  464.080756]  start_secondary+0xf7/0x100
-[  464.081479]  secondary_startup_64_no_verify+0x178/0x17b
-[  464.082445]  </TASK>
+>  				amlogic,has-chip-id;
+>  			};
+>  
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+> index a49aa62e3f9f..6e80bdc525e5 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+> @@ -1660,6 +1660,7 @@ mux {
+>  			sec_AO: ao-secure@140 {
+>  				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+>  				reg = <0x0 0x140 0x0 0x140>;
+> +				secure-monitor = <&sm>;
+>  				amlogic,has-chip-id;
+>  			};
+>  
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+> index ff68b911b729..0a6b703b0dc0 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+> @@ -2026,6 +2026,7 @@ cec_AO: cec@100 {
+>  			sec_AO: ao-secure@140 {
+>  				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+>  				reg = <0x0 0x140 0x0 0x140>;
+> +				secure-monitor = <&sm>;
+>  				amlogic,has-chip-id;
+>  			};
+>  
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+> index 2673f0dbafe7..656e08b3d872 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+> @@ -471,6 +471,7 @@ cec_AO: cec@100 {
+>  			sec_AO: ao-secure@140 {
+>  				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+>  				reg = <0x0 0x140 0x0 0x140>;
+> +				secure-monitor = <&sm>;
+>  				amlogic,has-chip-id;
+>  			};
+>  
+> -- 
+> 2.34.1
+> 
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+
+-- 
+Thank you,
+Dmitry
