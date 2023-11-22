@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440BE7F3D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3557F3DAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbjKVFgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
+        id S229926AbjKVFl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjKVFgo (ORCPT
+        with ESMTP id S229498AbjKVFl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:36:44 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF14D12A
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:36:39 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so4885352a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:36:39 -0800 (PST)
+        Wed, 22 Nov 2023 00:41:56 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D5B185;
+        Tue, 21 Nov 2023 21:41:53 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-548f6f3cdc9so2474634a12.2;
+        Tue, 21 Nov 2023 21:41:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700631399; x=1701236199; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OPmH0R/ZGatN6+UwwJY3MEok1l+rZDRi+gW+Psbpgp4=;
-        b=em2DzhAjzA6+M6CAZujzfRwbEZCqdGSRYk74aXSfvrwfC9i0A5Oyz+J+5tXb6LB8dK
-         pb1g2PGElnuo2VdvsfPqhH/zL4esxIz8rbH83DzmAT67TQcpdWYKKVZUIut7hb1C1Dbk
-         SSU7+oZWwp6PD3mXy/vhPNk2gTDZAD15xboH/Ew9BYswQvTRf1/GEiDSNQyn9VaGj5b4
-         uApyRPYUw0IJVUcMc8WuX08ZPTfmQ8+6n3cXr8qZCA5fJ6k/UaM5+Ibswq/4Y3EzKHvu
-         R9g/W7fzIJjmilMuHgWda6NsgQYaM4/F5jzzQu3bTAx4UkOXhFHVQUVBoyK2tkqx17Ww
-         LxCg==
+        d=gmail.com; s=20230601; t=1700631711; x=1701236511; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/aZqmcfYBbrAwHfQxSijXcVr/4Fn8eCufnaWHNVSYUo=;
+        b=aeLGbfb0HMdvORo2L05IAWuHypYYkYV0hHu6ycMbS5E6QuFOmpWSMhjZdojuYfseuF
+         C8Hy38BXlYXuMjLYcPvsLvMz6eecSpXj6lr6/SoSyD6Vj+fin0WDKisb4MyGjAZ0T5Il
+         Jxf6RMVg8EPAqBZVF4NbBEY4fb8csAl/fL4Kdasmd4ScIRn5ub+0HatdYOwrcbpLvPPB
+         tbnnKzifIMs0xCN74jIKLyLC8EEnE/Ylr9EhFhiK8TF+oNQK1aeg6PNSJhwFe5GkM4Wo
+         IbWyIOV/8P317669Cty4H/q+GD0aPIAinSyn0Rr4G59GNP0G6Hn/TbyUCTu+gNtcaJtr
+         09pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700631399; x=1701236199;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OPmH0R/ZGatN6+UwwJY3MEok1l+rZDRi+gW+Psbpgp4=;
-        b=ChS7SK93vUZE03VaEx/Ao6iYWWpSH8SQQHFtqmedhgPMpXQTcOg84+q/M34f2Fc0C0
-         0DN3LeKm2O+E7CnSNf3KoCdaweSeQ+ZS73w0zliHwCdCfYXS7BGvSiuOP2DirU22HnDQ
-         eOEgeyy4Y30bcVQmkTjdqwRUNPGVMo3xRjY9akNbiU42WSGkX4wibomHlk1+LL6IGNVP
-         cm900Ft4Qu/XtaqMiiUFA2tJ5H0USNXdF6h9VlIgCybPiOUqotUlyKlQz1L0cThui+Wh
-         8SfAKcsDtimeJLRMCnLgYH7g/9yvQ3MLKm/w4hb8qkAXAPpglaCRbZ7WggynCYgZMyTh
-         wt+Q==
-X-Gm-Message-State: AOJu0Yw0fRqk3NgXbSWdINomEOsQGvUh9lDuPOltVXmDkxsXDNfzImM2
-        BE6igz+OzVBb8ePAnDhNKQB3nw==
-X-Google-Smtp-Source: AGHT+IE67Eq9oO1uEot/zjxOXNvgyCk21nCZbXVKotApAyu3bet6Avb8lU17DWWWT9joNIuvOnZhJw==
-X-Received: by 2002:a05:6a20:8f1d:b0:17a:e941:b0a3 with SMTP id b29-20020a056a208f1d00b0017ae941b0a3mr1395905pzk.39.1700631399364;
-        Tue, 21 Nov 2023 21:36:39 -0800 (PST)
-Received: from [157.82.205.15] ([157.82.205.15])
-        by smtp.gmail.com with ESMTPSA id gj13-20020a17090b108d00b002839a4f65c5sm454781pjb.30.2023.11.21.21.36.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 21:36:39 -0800 (PST)
-Message-ID: <664003d3-aadb-4938-80f6-67fab1c9dcdd@daynix.com>
-Date:   Wed, 22 Nov 2023 14:36:32 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>
-References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
- <20231015141644.260646-2-akihiko.odaki@daynix.com>
- <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
- <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
- <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
- <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
- <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
- <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
- <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
- <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
- <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com>
- <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
- <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
- <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
-Content-Language: en-US
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1700631711; x=1701236511;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/aZqmcfYBbrAwHfQxSijXcVr/4Fn8eCufnaWHNVSYUo=;
+        b=Th3yzdbHMQzCi/2du/l3Wh5EGze0E/vQBCyC4+1ZrHZ1fZbC8NFAKL1fwD/1nKog97
+         8b6WZ3PA3DZZlNME31vqZG9WOZs5LQlupEWWv04NgjWyGSmwOigJXgO2SSmvjbxvJ/tw
+         NinqdVTTeqLVBO8pTc+cKZoUpWvdIVVMXUE+MNNMq3fZqjg2DUxsngE/HWPl/d64Qkjb
+         /txH91VMqUjebp1W/g7sYCnXMRt9k2t8QFn+tFpLTW0pDvcbI3ow8SbFwroxt4N7CNKy
+         E1WyX0atEBsYmWOUpCEBsGD0vnLua/w9aGUhhznxI57xjqISuXF+3Hu3zI6jU6eyMkBP
+         SoIw==
+X-Gm-Message-State: AOJu0YyapdWm1xPpJ+l88HQqAghQnaS7OC1OhHG7QSCG2OVe38ySl38w
+        +XJkr1zPPVmGCua0XSNMWkSar8fguJ4=
+X-Google-Smtp-Source: AGHT+IEImB9WEU8Dff7wAmw0uyKQ6unSKzYjR8guFrN7so2VrCSOyEM6eY2QufNTE5ftsjeRLo6A7g==
+X-Received: by 2002:a17:906:4119:b0:a03:a857:c6e0 with SMTP id j25-20020a170906411900b00a03a857c6e0mr507265ejk.77.1700631711167;
+        Tue, 21 Nov 2023 21:41:51 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:14bb:d13c:65e3:46bf])
+        by smtp.gmail.com with ESMTPSA id r15-20020a1709067fcf00b00985ed2f1584sm6132440ejs.187.2023.11.21.21.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 21:41:50 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: add section MIPS BAIKAL-T1 SOC DRIVERS
+Date:   Wed, 22 Nov 2023 06:41:42 +0100
+Message-Id: <20231122054142.31322-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 14:25, Song Liu wrote:
-> On Mon, Nov 20, 2023 at 12:05 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
->>
->> On 2023/11/20 6:02, Song Liu wrote:
-> [...]
->>>> In contrast, our intended use case is more like a normal application.
->>>> So, for example, a user may download a container and run QEMU (including
->>>> the BPF program) installed in the container. As such, it is nice if the
->>>> ABI is stable across kernel releases, but it is not guaranteed for
->>>> kfuncs. Such a use case is already covered with the eBPF steering
->>>> program so I want to maintain it if possible.
->>>
->>> TBH, I don't think stability should be a concern for kfuncs used by QEMU.
->>> Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
->>> bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
->>> be supported.
->>
->> Documentation/bpf/kfuncs.rst still says:
->>   > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
->>   > of the strict stability restrictions associated with kernel <-> user
->>   > UAPIs.
->>
->> Is it possible to change the statement like as follows:
->> "Most kfuncs provide a kernel <-> kernel API, and thus are not bound by
->> any of the strict stability restrictions associated with kernel <-> user
->> UAPIs. kfuncs that have same stability restrictions associated with
->> UAPIs are exceptional, and must be carefully reviewed by subsystem (and
->> BPF?) maintainers as any other UAPIs are."
-> 
-> I am afraid this is against the intention to not guarantee UAPI-level stability
-> for kfuncs.
+In recent years, a number of drivers for the MIPS Baikal-T1 SoC have been
+added to the kernel tree, but there is no dedicated MAINTAINERS section for
+this SoC.
 
-Is it possible to ensure that a QEMU binary with the eBPF program 
-included works on different kernel versions without UAPI-level stability 
-then? Otherwise, I think we need to think of the minimal UAPI addition 
-that exposes the feature I propose, and the two options I presented 
-first are the candidates of such: the stable BPF change or tuntap 
-interface change.
+As all of the code has been contributed by Serge Semin, let us assume he is
+still the active maintainer for this code rather than marking it orphan.
 
-Regards,
-Akihiko Odaki
+Add a new section MIPS BAIKAL-T1 SOC DRIVERS in MAINTAINERS.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ MAINTAINERS | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9613c9c3cc97..820f1ab1ee80 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14474,6 +14474,19 @@ F:	arch/mips/
+ F:	drivers/platform/mips/
+ F:	include/dt-bindings/mips/
+ 
++MIPS BAIKAL-T1 SOC DRIVERS
++M:	Serge Semin <Sergey.Semin@baikalelectronics.ru>
++S:	Maintained
++F:	Documentation/hwmon/bt1-pvt.rst
++F:	drivers/ata/ahci_dwc.c
++F:	drivers/bus/bt1-*.c
++F:	drivers/clk/baikal-t1/
++F:	drivers/hwmon/bt1-pvt.[ch]
++F:	drivers/memory/bt1-l2-ctl.c
++F:	drivers/mtd/maps/physmap-bt1-rom.[ch]
++F:	drivers/pci/controller/dwc/pcie-bt1.c
++F:	drivers/spi/spi-dw-bt1.c
++
+ MIPS BOSTON DEVELOPMENT BOARD
+ M:	Paul Burton <paulburton@kernel.org>
+ L:	linux-mips@vger.kernel.org
+-- 
+2.17.1
+
