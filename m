@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C437F4312
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890827F4316
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343746AbjKVKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:02:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
+        id S1343750AbjKVKEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235393AbjKVKCn (ORCPT
+        with ESMTP id S231174AbjKVKEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:02:43 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3E5D62
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:02:37 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 49CBB21907;
-        Wed, 22 Nov 2023 10:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1700647356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V8UXEq4tG3CrvcnhAyz5zGu6O+LKydPLS1VtSC8nRHw=;
-        b=nmnKKEyemWfQTDRXkITM5LIaTg5DlCCv+QKEyJ9vjx/Oy7fEYU67YOosnuamLdKXrMi6wY
-        rVhDixsmsmj1NmxQjJg5SeZhvCV/N7Ru6goNgBiReXpVfwbcajbDRq1Agx3jWx3PBarm/H
-        fomFDLdRmK6VCEFIq9oe3wLUKTNJYoc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0DDBE13461;
-        Wed, 22 Nov 2023 10:02:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gdvOOrvRXWXTCQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 22 Nov 2023 10:02:35 +0000
-Date:   Wed, 22 Nov 2023 11:02:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Chengming Zhou <chengming.zhou@linux.dev>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        jack@suse.cz, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Hellwig <hch@lst.de>, shr@devkernel.io, neilb@suse.de
-Subject: Re: Question: memcg dirty throttle caused by low per-memcg dirty
- thresh
-Message-ID: <ZV3Ru1BmHaU_uW7b@tiehlicka>
-References: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
+        Wed, 22 Nov 2023 05:04:14 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336B1112
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:04:10 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548d4fc9579so1306223a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:04:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700647448; x=1701252248; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w7f1ry+FDQqkAZW/rR9a28DSHUlK9OY3DwH31gg9Q84=;
+        b=sBCC7xiNkfyEG8JlnBE/0g0t7PulTT9t1ymXEDpuL78gflcB6u3WRe6NXck0C7O43U
+         G65xD96m2/yx8eG39BodNbJ3bye040Ec1NbP67yLjS50io5AGsGWuHa7sfbTb4V2m+pO
+         IyODIcJgZdcIJhsV5Njc9IqKDfy6CojpVEckqb94ut9XfSmjoTZEQiHmV/eiqkSG7WG4
+         +jsuMqPLURly21xL1Vkb7BG+OAz3OgXWS8arvn1oOrp/pTHpqoLWlRvcEm4u3n/ZjDw6
+         HTWqryItaXHoWqDpvpxRuBqzao130fUYECv6guih1Rsql2meC7v1t4wlfN0VPI7S+LkL
+         5vUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700647448; x=1701252248;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w7f1ry+FDQqkAZW/rR9a28DSHUlK9OY3DwH31gg9Q84=;
+        b=OJBKaATUcRz8+vPH734299wnUA8qV4vKS9BGhQZbfghhEqgonYxiqy4Xe3WFMh/FCT
+         5mp9DeQ49THXIx1oJIpdMBn25N6U32u3rlEcsrjG3RFM/tO8cCQtu3MWQYf/Tfb16OI2
+         qVJzM2JYO4B8K0OItrVZ7CL2Wis2DdyEEx2SHpGa0TJYZhyEctkdmd+X8TAFI4fByrqs
+         A0N3QW1Vz8w5m85gAplXqhbmKqmaOoZzyyY9aDVqEq31S9DgyO46hAo6V70+d8Y8UZqa
+         gHJoTwHV1vLP6FiIiEhseIaBkGKibae2EXS9KiuPRiGfXXaI0ZoHbo4CAsy7oqA2Erj1
+         Lo5A==
+X-Gm-Message-State: AOJu0YxCHbrN476HTmH5U3FhBcfftJSPaNe2TWc0M8N7BdEX72gHk2QZ
+        xScZ1YR37xexVhyVfvBzG4Hc0w==
+X-Google-Smtp-Source: AGHT+IEgDMMola5hcl3sRGIjNkZchAYK9E5xjDjIMJIUVE72GkCxvOD3iYG8i8XcduQFgvMtPwfE7w==
+X-Received: by 2002:a05:6402:341:b0:543:5dd9:a72 with SMTP id r1-20020a056402034100b005435dd90a72mr1795722edw.1.1700647448634;
+        Wed, 22 Nov 2023 02:04:08 -0800 (PST)
+Received: from [127.0.1.1] ([86.123.99.122])
+        by smtp.gmail.com with ESMTPSA id o9-20020a509b09000000b0053deb97e8e6sm6110456edi.28.2023.11.22.02.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 02:04:08 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/7] phy: qcom: Add register offsets for v6 and v7
+Date:   Wed, 22 Nov 2023 12:03:52 +0200
+Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.60
-X-Spamd-Result: default: False [-1.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[28.26%]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAjSXWUC/x2NQQ6CMBBFr0Jm7SR0DNh4FeOilKltUgp2oGoId
+ 7ea/M37i/d2EM6BBa7NDplLkDCnCurUgPUmPRjDWBmopbNSRLj4Dz43E+08TVj636jFcsHEL5y
+ dE14FOx470lZr1xNU1WCEccgmWV9laYuxnktmF97/9u1+HF+P3xBriwAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1529; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=7uNpWvfhMS/e7VHo0mKgiRBZNnLydquBiQsmtLr7VSc=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlXdINHHIs4ath05z+8Hs8g1gW0X3hAEI4sNFPy
+ +DU07jxd2eJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZV3SDQAKCRAbX0TJAJUV
+ VlmPD/9x+2g6mcKduypmeUFwCUL0yc/3rSOtxmr7QHSCkyLIOWBeVRU+XUgyjhn/NxUW339dn7m
+ 4+5wgGSjhqibxtG2bG0fLHbRhwDTPG7lChFSCQf/oHqK5S4kDO+kSf1RYUgGPtWgD076y+I7/F7
+ 8e9t0OnbriPw015DPoxGz45pI5iA/vEDjm8GP9fLWJhZeREaI5dwv/gOp3emf2HxA0PjbnW2rnK
+ +xv4qXmHpO4yBUF++OVCYwt5dguoHHUsHfy3a8Oljd/lkAZ3sAp85/X4Y09Az+y+/QxXuKIqe6O
+ V0eHoM0Y7QruLAxmDZX6zq+jxVI75LIwbsFCcAfu93z9bjz6ZPgECyTZz8NRc8TQNkNujwIYMxd
+ taSHQFu3A5a4+iaCwk7/TTkuuIAHAc/OCQKYpQOLhq+ZuhkD21KnDAp+nEeCWvQX5d7Nm3YsQmI
+ Lhr485G4J1UvVb8LZ0Gn/WSUyJNaQ4JbwCnzr3FMo3Arb9wGl344U4d8Ol2z0osgMK4jgCIxRlc
+ dlu+tKZfE4f9cOIAnj2Hmwqsi8Vf8FYZv6+65YNwsxonDxbGykgydbdpvkaeX1GlCvcZV1NX615
+ AaG2kTM7WEV6dDZmX+IspFA1f8qL/zbCiv3N2c84tPhYTN8yxk1cgBhTUcSuRxqVJOHK76dsBYB
+ AyvULfIMouyi2vA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-11-23 17:38:25, Chengming Zhou wrote:
-> Hello all,
-> 
-> Sorry to bother you, we encountered a problem related to the memcg dirty
-> throttle after migrating from cgroup v1 to v2, so want to ask for some
-> comments or suggestions.
-> 
-> 1. Problem
-> 
-> We have the "containerd" service running under system.slice, with
-> its memory.max set to 5GB. It will be constantly throttled in the
-> balance_dirty_pages() since the memcg has dirty memory more than
-> the memcg dirty thresh.
-> 
-> We haven't this problem on cgroup v1, because cgroup v1 doesn't have
-> the per-memcg writeback and per-memcg dirty thresh. Only the global
-> dirty thresh will be checked in balance_dirty_pages().
+This patchset adds some missing register offsets for the v6 and v6.20,
+as well as the new v7 ones. These register offsets are used by the
+new Qualcomm Snapdragon X Elite (X1E80100) platform.
 
-Yes, v1 didn't have any sensible IO throttling and so we had to rely on
-ugly hack to wait for writeback to finish from the memcg memory reclaim
-path.  This is really suboptimal because it makes memcg reclaim stalls
-hard to predict. So it is essentially only a poor's man OOM prevention.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Abel Vesa (7):
+      phy: qcom-qmp: qserdes-com: Add some more v6 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add some more v6.20 register offsets
+      phy: qcom-qmp: pcs: Add v7 register offsets
+      phy: qcom-qmp: pcs-usb: Add v7 register offsets
+      phy: qcom-qmp: qserdes-com: Add v7 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add V6 N4 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
 
-V2 on the other hand has memcg aware dirty memory throttling which is a
-much better solution as it throttles at the moment when the memory is
-being dirtied.
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h     | 31 ++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h         | 28 +++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |  5 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v7.h | 86 ++++++++++++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6.h    |  1 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h |  4 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_n4.h | 51 +++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    | 78 ++++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  6 ++
+ 9 files changed, 290 insertions(+)
+---
+base-commit: 07b677953b9dca02928be323e2db853511305fa9
+change-id: 20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-5ed528c88f62
 
-Why do you consider that to be a problem? Constant throttling as you
-suggest might be a result of the limit being too small?
-
-> 
-> 2. Thinking
-> 
-> So we wonder if we can support the per-memcg dirty thresh interface?
-> Now the memcg dirty thresh is just calculated from memcg max * ratio,
-> which can be set from /proc/sys/vm/dirty_ratio.
-
-In general I would recommend using dirty_bytes instead as the ratio
-doesn't scall all that great on larger systems.
- 
-> We have to set it to 60 instead of the default 20 to workaround now,
-> but worry about the potential side effects.
-> 
-> If we can support the per-memcg dirty thresh interface, we can set
-> some containers to a much higher dirty_ratio, especially for hungry
-> dirtier workloads like "containerd".
-
-But why would you want that? If you allow heavy writers to dirty a lot
-of memory then flushing that to the backing store will take more time.
-That could starve small writers as well because they could end up queued
-behind huge amount of data to be flushed.
-
-I am no expert on the writeback so others could give you a better
-arguments but from my POV the dirty data flushing and throttling is
-mostly a global mechanism to optmize the IO pattern and is a function of
-storage much more than workload specific. If you heavy writer hits
-throttling too much then either the limit is too low or you should stard
-background flushing earlier.
-
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Abel Vesa <abel.vesa@linaro.org>
+
