@@ -2,93 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F7A7F532C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8B67F5339
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344631AbjKVWSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:18:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S1344673AbjKVWS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:18:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbjKVWSA (ORCPT
+        with ESMTP id S1344624AbjKVWSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:18:00 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADA71B5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:17:54 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db401df7735so359413276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:17:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700691474; x=1701296274; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
-        b=4hjMcBVLM8zQ0o7ckWNrtY5BsbegukXIEDCvOawcAjUnR1XZjDCORBx8DRNRNpcLGJ
-         rOYRo1YK1VQ2y0xyZgScQZyb9rLYqzZOdgDtDkghSXkXdkKxJ1HtozUHmVoQlTxztPqK
-         kfOhbHSin5lmjeY12WuVf3III/SL6gBe6BSXI/YQ3KWRvnMIzEozhG1LYLLMFfbbv0Jq
-         ECkYybq5VMDleTKLyzIh94t5LKbB+K2jpi6OvcJJJrWqJhj5bT4OCTe2UNqnJgtJGYUO
-         7Jc+PqUsyTYlSgXIsMOQgTwV6uQKHFkFZagr5e5Tj13O5S9UO71JOWXdU+tIYBbkJVpA
-         bzZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691474; x=1701296274;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
-        b=tx2gfQ48maydJ7ILIV13LvF0AQTDP5G1csEKzOI2uqGIVS47Qx9LuE/hZalnLvO2hG
-         UsMrX1y15jz5raNdWMjbG1QmiL9o7cdR9DCND8gsaQFlSMaqMO6IUk/JObDhoy8iukha
-         Ot3H6iJN3Y9cZiUY2P1sYxsHhU95ulYDYRrN/FiIXznex7WsBieNWK3I8r8KV+51WXTY
-         rebf5whL/4bWvupyIAuby4iQpVaGf/TOuovdQ+nMLwtAp+TKif95LJDqRb2kzaNgmEnG
-         BnhRKWaIEvCFDAUxwE3WmxzOrdyFebAiCiw0scdorEIvQrwU/B+6ZYiGWD+shFy/Xw8f
-         E5UQ==
-X-Gm-Message-State: AOJu0YxBjKBKA708c9/J0vgVgzJHw0by237gg5C3fUr3lbe3ZoMCPnMv
-        oP+xA6WAfo+UMwdLwikXZRVP1dQgQWPfO54=
-X-Google-Smtp-Source: AGHT+IEWzYwUAnR9oEjMHGBr1ZPorbK5SniZIIxjSugb5DV844aPwk+jzNuLEfBvJKKK7SIXsJ76dKbPGg3skas=
-X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
- (user=jsperbeck job=sendgmr) by 2002:a25:d844:0:b0:dae:292e:68de with SMTP id
- p65-20020a25d844000000b00dae292e68demr106468ybg.6.1700691474042; Wed, 22 Nov
- 2023 14:17:54 -0800 (PST)
-Date:   Wed, 22 Nov 2023 22:17:52 +0000
-In-Reply-To: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
-Mime-Version: 1.0
-References: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231122221752.781022-1-jsperbeck@google.com>
-Subject: [PATCH] platform/x86: intel_telemetry: Fix kernel doc descriptions
-From:   John Sperbeck <jsperbeck@google.com>
-To:     tip-bot2@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        peterz@infradead.org, rui.zhang@intel.com, tglx@linutronix.de,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 22 Nov 2023 17:18:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D8D40
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:18:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08027C433C7;
+        Wed, 22 Nov 2023 22:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700691498;
+        bh=ws1Ff4m0CKCCq0jXhgKcjSJUFMraCUT/nm4UVOCqQhg=;
+        h=From:To:Subject:Date:From;
+        b=MnRtUw8X3gSrnR4ewx0D7eQFlF/xgxYpOjxKQacMBWCSRCV7x723FAvZoKflnETfq
+         k+C0t093EYIm5mFUewviwcIDElWj3mtj8tBpgPmK64TPlpRBT2u5Lps79fcjl3A17M
+         rHfNpZgdL7OXmTveLM+bMatiiXCWA60N5nrKywoSSRe1EmUjYjp7/kc+ZiKoD95d26
+         EPY9qyqkrPnBBjJIHlOrrxakF21t/DOoB9qyFIq66giwOXxXcqBCmbZllXVKIzvRW+
+         qiQbnu8oRCFX60z4egRwlG+IpKoKk0gwfYTsRtibdEZYYJ0nflIA0HVaCg4kZoTVtS
+         R1CkMfn9JsCjg==
+From:   deller@kernel.org
+To:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org,
+        linux-arch@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 0/4] Section alignment issues?
+Date:   Wed, 22 Nov 2023 23:18:10 +0100
+Message-ID: <20231122221814.139916-1-deller@kernel.org>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have a platform with both LOCAL_APIC and LOCAL_X2APIC entries for
-each CPU.  However, the ids for the LOCAL_APIC entries are all
-invalid ids of 255, so they have always been skipped in acpi_parse_lapic()
-by this code from f3bf1dbe64b6 ("x86/acpi: Prevent LAPIC id 0xff from being
-accounted"):
+From: Helge Deller <deller@gmx.de>
 
-    /* Ignore invalid ID */
-    if (processor->id == 0xff)
-            return 0;
+While working on the 64-bit parisc kernel, I noticed that the __ksymtab[]
+table was not correctly 64-bit aligned in many modules.
+The following patches do fix some of those issues in the generic code.
 
-With the change in this thread, the return value of 0 means that the
-'count' variable in acpi_parse_entries_array() is incremented.  The
-positive return value means that 'has_lapic_cpus' is set, even though
-no entries were actually matched.  Then, when the MADT is iterated
-with acpi_parse_x2apic(), the x2apic entries with ids less than 255
-are skipped and most of my CPUs aren't recognized.
+But further investigation shows that multiple sections in the kernel and in
+modules are possibly not correctly aligned, and thus may lead to performance
+degregations at runtime (small on x86, huge on parisc, sparc and others which
+need exception handlers). Sometimes wrong alignments may also be simply hidden
+by the linker or kernel module loader which pulls in the sections by luck with
+a correct alignment (e.g. because the previous section was aligned already).
 
-I think the original version of this change was okay for this case in
-https://lore.kernel.org/lkml/87pm4bp54z.ffs@tglx/T/
+An objdump on a x86 module shows e.g.:
 
-P.S. I could be convinced that the MADT for my platform is somewhat
-ill-formed and that I'm relying on pre-existing behavior.  I'm not
-well-versed enough in the topic to know for sure.
+./kernel/net/netfilter/nf_log_syslog.ko:     file format elf64-x86-64
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .text         00001fdf  0000000000000000  0000000000000000  00000040  2**4
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  1 .init.text    000000f6  0000000000000000  0000000000000000  00002020  2**4
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  2 .exit.text    0000005c  0000000000000000  0000000000000000  00002120  2**4
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  3 .rodata.str1.8 000000dc  0000000000000000  0000000000000000  00002180  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .rodata.str1.1 0000030a  0000000000000000  0000000000000000  0000225c  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  5 .rodata       000000b0  0000000000000000  0000000000000000  00002580  2**5
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  6 .modinfo      0000019e  0000000000000000  0000000000000000  00002630  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  7 .return_sites 00000034  0000000000000000  0000000000000000  000027ce  2**0
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+  8 .call_sites   0000029c  0000000000000000  0000000000000000  00002802  2**0
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+
+In this example I believe the ".return_sites" and ".call_sites" should have
+an alignment of at least 32-bit (4 bytes).
+
+On other architectures or modules other sections like ".altinstructions" or
+"__ex_table" may show up wrongly instead.
+
+In general I think it would be beneficial to search for wrong alignments at
+link time, and maybe at runtime.
+
+The patch at the end of this cover letter
+- adds compile time checks to the "modpost" tool, and
+- adds a runtime check to the kernel module loader at runtime.
+And it will possibly show false positives too (!!!)
+I do understand that some of those sections are not performce critical
+and thus any alignment is OK.
+
+The modpost patch will emit at compile time such warnings (on x86-64 kernel build):
+
+WARNING: modpost: vmlinux: section .initcall7.init (type 1, flags 2) has alignment of 1, expected at least 4.
+Maybe you need to add ALIGN() to the modules.lds file (or fix modpost) ?
+WARNING: modpost: vmlinux: section .altinstructions (type 1, flags 2) has alignment of 1, expected at least 2.
+WARNING: modpost: vmlinux: section .initcall6.init (type 1, flags 2) has alignment of 1, expected at least 4.
+WARNING: modpost: vmlinux: section .initcallearly.init (type 1, flags 2) has alignment of 1, expected at least 4.
+WARNING: modpost: vmlinux: section .rodata.cst2 (type 1, flags 18) has alignment of 2, expected at least 64.
+WARNING: modpost: vmlinux: section .static_call_tramp_key (type 1, flags 2) has alignment of 1, expected at least 8.
+WARNING: modpost: vmlinux: section .con_initcall.init (type 1, flags 2) has alignment of 1, expected at least 8.
+WARNING: modpost: vmlinux: section __bug_table (type 1, flags 3) has alignment of 1, expected at least 4.
+...
+
+while the kernel module loader may show at runtime:
+
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d08d2, section=.retpoline_sites possibly not correctly aligned.
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d0bae, section=.ibt_endbr_seal possibly not correctly aligned.
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d0be6, section=.orc_unwind possibly not correctly aligned.
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d12a6, section=.orc_unwind_ip possibly not correctly aligned.
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d178c, section=.note.Linux possibly not correctly aligned.
+** WARNING **:   module: efivarfs, dest=0xffffffffc02d17bc, section=.orc_header possibly not correctly aligned.
+** WARNING **:   module: xt_addrtype, dest=0xffffffffc01ef18a, size=0x00000020, section=.return_sites
+
+My questions:
+- Am I wrong with my analysis?
+- What does people see on other architectures?
+- Does it make sense to add a compile- and runtime-check, like the patch below, to the kernel?
+
+Helge
+
+---
+
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] MODPOST: Detect and report possible section alignment issues
+
+IMPORTANT: THIS PATCH IS NOT INTENDED TO BE APPLIED !!!!
+
+The main idea here is to check at compile time (during modpost run) and at
+runtime (when loading a module) if the sections in kernel modules (and
+vmlinux) are correctly aligned in memory and report if a wrong alignment is
+suspected.
+
+It WILL report false positives. Many section names still need to be added to
+the various tables.
+But even at this stage it gives some insight at the various possibly wrong
+section alignments.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 98fedfdb8db5..88201d6b0c17 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2277,6 +2277,10 @@ static int move_module(struct module *mod, struct load_info *info)
+ 				ret = -ENOEXEC;
+ 				goto out_enomem;
+ 			}
++			if (((uintptr_t)dest) & (BITS_PER_LONG/8 - 1)) {
++				printk("** WARNING **: \tmodule: %s, dest=0x%lx, section=%s possibly not correctly aligned.\n",
++					mod->name, (long)dest, info->secstrings + shdr->sh_name);
++			}
+ 			memcpy(dest, (void *)shdr->sh_addr, shdr->sh_size);
+ 		}
+ 		/*
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index 739402f45509..2add144a05e3 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -49,6 +49,8 @@ modpost-args =										\
+ 	$(if $(KBUILD_NSDEPS),-d $(MODULES_NSDEPS))					\
+ 	$(if $(CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS)$(KBUILD_NSDEPS),-N)	\
+ 	$(if $(findstring 1, $(KBUILD_EXTRA_WARN)),-W)					\
++	$(if $(CONFIG_64BIT),-6)							\
++	$(if $(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS),-R)					\
+ 	-o $@
+
+ modpost-deps := $(MODPOST)
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index cb6406f485a9..70c69db6a17c 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -43,6 +43,10 @@ static bool ignore_missing_files;
+ /* If set to 1, only warn (instead of error) about missing ns imports */
+ static bool allow_missing_ns_imports;
+
++/* is target a 64-bit platform and has it prel32 relocation support? */
++static bool target_64bit;
++static bool target_prel32_relocations;
++
+ static bool error_occurred;
+
+ static bool extra_warn;
+@@ -1493,6 +1497,76 @@ static void check_sec_ref(struct module *mod, struct elf_info *elf)
+ 	}
+ }
+
++/**
++ * Check alignment of sections in modules.
++ **/
++static void check_sec_alignment(struct module *mod, struct elf_info *elf)
++{
++	/* sections that may use PREL32 relocations and only need 4-byte alignment */
++	static const char *const prel32_sec_list[] = {
++		"__tracepoints_ptrs",
++		"__ksymtab",
++		"__bug_table",
++		".smp_locks",
++		NULL
++	};
++	/* sections that are fine with any/1-byte alignment */
++	static const char *const byte_sec_list[] = {
++		".modinfo",
++		".init.ramfs",
++		NULL
++	};
++	/* sections with special alignment */
++	static struct { int align; const char *name; } const special_list[] = {
++		{ 64,	".rodata.cst2" },
++		{ 0,	NULL }
++	};
++
++	int i;
++
++	/* ignore vmlinux for now? */
++	// if (mod->is_vmlinux) return;
++
++	/* Walk through all sections */
++	for (i = 0; i < elf->num_sections; i++) {
++		Elf_Shdr *sechdr = &elf->sechdrs[i];
++		const char *sec = sech_name(elf, sechdr);
++		const char *modname = mod->name;
++		const int is_shalign = sechdr->sh_addralign;
++		int should_shalign;
++		int k;
++
++		/* ignore some sections */
++		if ((sechdr->sh_type == SHT_NULL) ||
++		    !(sechdr->sh_flags & SHF_ALLOC))
++			continue;
++
++		/* default alignment is 8 for 64-bit and 4 for 32-bit targets * */
++		should_shalign = target_64bit ? 8 : 4;
++		if (match(sec, prel32_sec_list))
++			should_shalign = target_prel32_relocations ? 4 : should_shalign;
++		else if (strstr(sec, "text")) /* assume text segments to be 4-byte aligned */
++			should_shalign = 4;
++		else if (match(sec, byte_sec_list)) /* any alignment is OK. */
++			continue;
++		else {
++			/* search in list with special alignment */
++			k = 0;
++			while (special_list[k].align && strstarts(sec, special_list[k].name)) {
++				should_shalign = special_list[k].align;
++				break;
++			}
++		}
++
++		if (is_shalign  >= should_shalign)
++			continue;
++
++		warn("%s: section %s (type %d, flags %lu) has alignment of %d, expected at least %d.\n"
++		     "Maybe you need to add ALIGN() to the modules.lds file (or fix modpost) ?\n",
++		     modname, sec, sechdr->sh_type, sechdr->sh_flags, is_shalign, should_shalign);
++	}
++}
++
+ static char *remove_dot(char *s)
+ {
+ 	size_t n = strcspn(s, ".");
+@@ -1653,6 +1727,8 @@ static void read_symbols(const char *modname)
+ 		handle_moddevtable(mod, &info, sym, symname);
+ 	}
+
++	check_sec_alignment(mod, &info);
++
+ 	check_sec_ref(mod, &info);
+
+ 	if (!mod->is_vmlinux) {
+@@ -2183,7 +2259,7 @@ int main(int argc, char **argv)
+ 	LIST_HEAD(dump_lists);
+ 	struct dump_list *dl, *dl2;
+
+-	while ((opt = getopt(argc, argv, "ei:MmnT:to:au:WwENd:")) != -1) {
++	while ((opt = getopt(argc, argv, "ei:MmnT:to:au:WwENd:6R")) != -1) {
+ 		switch (opt) {
+ 		case 'e':
+ 			external_module = true;
+@@ -2232,6 +2308,12 @@ int main(int argc, char **argv)
+ 		case 'd':
+ 			missing_namespace_deps = optarg;
+ 			break;
++		case '6':
++			target_64bit = true;
++			break;
++		case 'R':
++			target_prel32_relocations = true;
++			break;
+ 		default:
+ 			exit(1);
+ 		}
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 70c69db6a17c..b09ab081dc03 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -1510,15 +1510,24 @@ static void check_sec_alignment(struct module *mod, struct elf_info *elf)
+ 		".smp_locks",
+ 		NULL
+ 	};
+-	/* sections that are fine with any/1-byte alignment */
++	/* sections that are fine with any alignment */
+ 	static const char *const byte_sec_list[] = {
+ 		".modinfo",
+ 		".init.ramfs",
+ 		NULL
+ 	};
+-	/* sections with special alignment */
++	/* sections with special given minimal alignment. Checked with
++	 * startswith(). */
+ 	static struct { int align; const char *name; } const special_list[] = {
+ 		{ 64,	".rodata.cst2" },
++		{ 2,	".altinstructions" }, /* at least on x86 */
++		{ 1,	".altinstr_replacement" },
++		{ 1,	".altinstr_aux" },
++		{ 4,	".call_sites" },
++		{ 4,	".return_sites" },
++		{ 1,	".note.Linux" },	/* correct? */
++		{ 4,	"__ex_table" },
++		{ 4,	".initcall" },		/* at least 4 ? */
+ 		{ 0,	NULL }
+ 	};
+
+@@ -1545,16 +1554,17 @@ static void check_sec_alignment(struct module *mod, struct elf_info *elf)
+ 		should_shalign = target_64bit ? 8 : 4;
+ 		if (match(sec, prel32_sec_list))
+ 			should_shalign = target_prel32_relocations ? 4 : should_shalign;
+-		else if (strstr(sec, "text")) /* assume text segments to be 4-byte aligned */
+-			should_shalign = 4;
+ 		else if (match(sec, byte_sec_list)) /* any alignment is OK. */
+ 			continue;
++		else if (strstr(sec, "text")) /* assume text segments to be 4-byte aligned */
++			should_shalign = 4;
+ 		else {
+ 			/* search in list with special alignment */
+-			k = 0;
+-			while (special_list[k].align && strstarts(sec, special_list[k].name)) {
+-				should_shalign = special_list[k].align;
+-				break;
++			for (k = 0; special_list[k].align; k++) {
++				if (strstarts(sec, special_list[k].name)) {
++					should_shalign = special_list[k].align;
++					break;
++				}
+ 			}
+ 		}
+
+Helge Deller (4):
+  linux/export: Fix alignment for 64-bit ksymtab entries
+  modules: Ensure 64-bit alignment on __ksymtab_* sections
+  vmlinux.lds.h: Fix alignment for __ksymtab*, __kcrctab_* and
+    .pci_fixup sections
+  modules: Add missing entry for __ex_table
+
+ include/asm-generic/vmlinux.lds.h | 5 +++++
+ include/linux/export-internal.h   | 5 ++++-
+ scripts/module.lds.S              | 9 +++++----
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+-- 
+2.41.0
+
