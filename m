@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466E07F4A7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F987F4A79
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343847AbjKVPd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
+        id S1344445AbjKVPdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344433AbjKVPdO (ORCPT
+        with ESMTP id S1344374AbjKVPdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:33:14 -0500
+        Wed, 22 Nov 2023 10:33:15 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFBA10E3;
-        Wed, 22 Nov 2023 07:32:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E940C433CB;
-        Wed, 22 Nov 2023 15:32:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1128910E4;
+        Wed, 22 Nov 2023 07:32:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D33F2C433CD;
+        Wed, 22 Nov 2023 15:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667172;
-        bh=B/bJkVlPR23vUesozPLfwxv3id4Wa8uPw0GU0TIH/SI=;
+        s=k20201202; t=1700667173;
+        bh=cpaY/yV5WXyg9YEkeW49vlb9lDNYl17fwLO5WtfKdaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k0FvZwdJtOdrZ3aBG9e6Mp56kOKvzGZpLp+sYrzJQYUT6M7ChU5DVhL8l9yPWtcEM
-         moehMS8tHVF98qpJHGxxq7Pq29qT1APcVt7LzuA2jCuzBIfd9oyZueaoUonfJeDPKg
-         CYVpXNMhTmEkBUfXl9egwU8tIWTfbC9KXfxMMvQtzGK6+qKizQ3KkG9qkKvZkXOXtW
-         2J7ks71Nrbjq+maWiPc9PkLelXwCj6YAQjWVf6P5RBjeVSyYdkMCHxlKulIXdF4XRq
-         Vf5rIzAlhflZEl/Q/guGLCQiZJ73OJGO19v6h1V42khZxwUbjD51EAq0ruDtqUzwtN
-         p3eEkqCS52k2g==
+        b=HZqnYWg5A6oihjt485DLEacJvfJVSLWbvjNnUuqwvCkvFKTfejc18yeeNVh8sGViM
+         48MlpIfbMVVFujNPJylr0wSImecgsvYNlj93CQECCSd48dPCw57+8VZgKizI082XS7
+         1bqQGKDnqlt8viMLwuAdZcfXqO7B9fVjZ/Ha2IGXXdqZiF5stDzsiFCSy9gfzoxSOM
+         Nv7KpWgmZTy5GoyDR5l7/MmaxfYDaCVWpDeHvpEuHVZ/PLMTyR5j6BJELr7JzkqHRl
+         faA98HdGcbXdKpS0k0Bc7a+R05eT1h6uMQrL578ZO87GX8CKAi8lMb3bUlR02+K4dm
+         Zvw4JcBJtme5Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, deller@gmx.de,
-        ndesaulniers@google.com
-Subject: [PATCH AUTOSEL 6.6 12/17] linux/export: clean up the IA-64 KSYM_FUNC macro
-Date:   Wed, 22 Nov 2023 10:31:41 -0500
-Message-ID: <20231122153212.852040-12-sashal@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 13/17] kconfig: fix memory leak from range properties
+Date:   Wed, 22 Nov 2023 10:31:42 -0500
+Message-ID: <20231122153212.852040-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153212.852040-1-sashal@kernel.org>
 References: <20231122153212.852040-1-sashal@kernel.org>
@@ -55,38 +52,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 9e0be3f50c0e8517d0238b62409c20bcb8cd8785 ]
+[ Upstream commit ae1eff0349f2e908fc083630e8441ea6dc434dc0 ]
 
-With commit cf8e8658100d ("arch: Remove Itanium (IA-64) architecture"),
-there is no need to keep the IA-64 definition of the KSYM_FUNC macro.
+Currently, sym_validate_range() duplicates the range string using
+xstrdup(), which is overwritten by a subsequent sym_calc_value() call.
+It results in a memory leak.
 
-Clean up the IA-64 definition of the KSYM_FUNC macro.
+Instead, only the pointer should be copied.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Below is a test case, with a summary from Valgrind.
+
+[Test Kconfig]
+
+  config FOO
+          int "foo"
+          range 10 20
+
+[Test .config]
+
+  CONFIG_FOO=0
+
+[Before]
+
+  LEAK SUMMARY:
+     definitely lost: 3 bytes in 1 blocks
+     indirectly lost: 0 bytes in 0 blocks
+       possibly lost: 0 bytes in 0 blocks
+     still reachable: 17,465 bytes in 21 blocks
+          suppressed: 0 bytes in 0 blocks
+
+[After]
+
+  LEAK SUMMARY:
+     definitely lost: 0 bytes in 0 blocks
+     indirectly lost: 0 bytes in 0 blocks
+       possibly lost: 0 bytes in 0 blocks
+     still reachable: 17,462 bytes in 20 blocks
+          suppressed: 0 bytes in 0 blocks
+
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/export-internal.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ scripts/kconfig/symbol.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/export-internal.h b/include/linux/export-internal.h
-index 45fca09b23194..69501e0ec239f 100644
---- a/include/linux/export-internal.h
-+++ b/include/linux/export-internal.h
-@@ -50,9 +50,7 @@
- 	    "	.previous"						"\n"	\
- 	)
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 0572330bf8a78..a76925b46ce63 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -122,9 +122,9 @@ static long long sym_get_range_val(struct symbol *sym, int base)
+ static void sym_validate_range(struct symbol *sym)
+ {
+ 	struct property *prop;
++	struct symbol *range_sym;
+ 	int base;
+ 	long long val, val2;
+-	char str[64];
  
--#ifdef CONFIG_IA64
--#define KSYM_FUNC(name)		@fptr(name)
--#elif defined(CONFIG_PARISC) && defined(CONFIG_64BIT)
-+#if defined(CONFIG_PARISC) && defined(CONFIG_64BIT)
- #define KSYM_FUNC(name)		P%name
- #else
- #define KSYM_FUNC(name)		name
+ 	switch (sym->type) {
+ 	case S_INT:
+@@ -140,17 +140,15 @@ static void sym_validate_range(struct symbol *sym)
+ 	if (!prop)
+ 		return;
+ 	val = strtoll(sym->curr.val, NULL, base);
+-	val2 = sym_get_range_val(prop->expr->left.sym, base);
++	range_sym = prop->expr->left.sym;
++	val2 = sym_get_range_val(range_sym, base);
+ 	if (val >= val2) {
+-		val2 = sym_get_range_val(prop->expr->right.sym, base);
++		range_sym = prop->expr->right.sym;
++		val2 = sym_get_range_val(range_sym, base);
+ 		if (val <= val2)
+ 			return;
+ 	}
+-	if (sym->type == S_INT)
+-		sprintf(str, "%lld", val2);
+-	else
+-		sprintf(str, "0x%llx", val2);
+-	sym->curr.val = xstrdup(str);
++	sym->curr.val = range_sym->curr.val;
+ }
+ 
+ static void sym_set_changed(struct symbol *sym)
 -- 
 2.42.0
 
