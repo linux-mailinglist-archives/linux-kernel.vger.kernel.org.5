@@ -2,161 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B967F3FD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142087F3FD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjKVINO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
+        id S234981AbjKVIN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjKVINM (ORCPT
+        with ESMTP id S231239AbjKVIN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:13:12 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E12D62
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:13:08 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b2c8e91afso7315525e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:13:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1700640786; x=1701245586; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FzPPKXZyEg7qy/J2H0aK0NbgOULhdPKN22jDT3Q9NdY=;
-        b=GxN2U02XTGK2f/fxYTGLt4FajNNnbvLcTMoB6YpqWRA/MvELw10CHbVHiITgo07/TZ
-         I91B8yUW/sUsDWBWJwcKS1hqq0GTRal3+SjdYRh0caZFOc+mxWIrR0ITMSIYIO7cqGpl
-         ysFLmPiXTuk9s0RrbzfdG6vIX9cmHQcuHRH36TBqpZVgyryGt0n6ZEj998DVo5eOCnTT
-         HLll+cForxVNYCtxwlZqdK6MKZRnIfQBW+1ujkLnamwiHiXsahyhiD9jPbLLX572ASlV
-         mVNpck35SYPNftW2wjq99x5JlcmB1f0b9oQAZxBBtpvQu+vL0wbL1oxfJfOU3QMaJtX2
-         CSRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700640786; x=1701245586;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FzPPKXZyEg7qy/J2H0aK0NbgOULhdPKN22jDT3Q9NdY=;
-        b=UxjCtuuvot1hIJZJLn1Dkbc0uw8yT6wFQX+nJaoE6bVSWvRTCrVXwWkwTqzNI7MJ6t
-         fPCLiUnw6EtmwkvKK2jeBz+xH7+L1vQoi8uey/bInZ9SZKc4RPOgwCSHkNVN8JewB688
-         sdZ0NtIhCE1TNLjX3RXQ4uHsTK+0EXXc15vazSB4sTpjrKouL9I9jmPPGLlZN3hhOeaK
-         IHm3WSrTjrCbchpIxBc2T5tOp/8SubmAaafejLwbEU8Otii27vtklRBJ4XOaAiimDZjc
-         19xtzy6I8oW4NiXzuEj9y37abiYLzo9HAiA7ynhp28EXoMONbE7MJnHgFh/vxXGNRLDe
-         TQ9g==
-X-Gm-Message-State: AOJu0YxHMNZH1HIa4CpTTZTatsjLS5Z3nKdyLeXjqfOrd1iU9vgetgdZ
-        IV0+EW/ylHK3KqK9ccWh2LKxqQ==
-X-Google-Smtp-Source: AGHT+IHPZfaDHkxQULB/N6YwAHSW77gMAbzbjK0nZaSfLb1EK8uIfrnvGjJE9KnZqt2r7I6qEwdCDQ==
-X-Received: by 2002:a05:600c:4e89:b0:405:e492:8aef with SMTP id f9-20020a05600c4e8900b00405e4928aefmr832641wmq.40.1700640786547;
-        Wed, 22 Nov 2023 00:13:06 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id az39-20020a05600c602700b0040596352951sm1364960wmb.5.2023.11.22.00.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 00:13:05 -0800 (PST)
-Date:   Wed, 22 Nov 2023 09:13:04 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 2/9] KVM: selftests: Unify the makefile rule for split
- targets
-Message-ID: <20231122-b471122622059496906801c1@orel>
-References: <cover.1694421911.git.haibo1.xu@intel.com>
- <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
- <20231003-d44206f71d0b22e539833697@orel>
- <CAJve8o=Q74U0Z3PayrzY7heNc0qeTw5VYS+tdkpm=aJdefQEbQ@mail.gmail.com>
+        Wed, 22 Nov 2023 03:13:27 -0500
+Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70072D62;
+        Wed, 22 Nov 2023 00:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codethink.co.uk; s=imap5-20230908; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/fB6eIZmKADlx9vmc7Mv1MvPBKVxtn07LHNUeWpfWWc=; b=E3cta5dn9d1WrfPbb+Hndx4N1r
+        nuU3JUcFGuqHkH8JNDR24YWXdgVr1S+yBiAHby0aAZTFmf4sK4Ff2LBoYOMTA3bDFppkoDl3QXNfs
+        fMwLRV/DWzIrNgH8QiZDB7HtbKpVY51x57a16n8VBEVnUGYnRjp8MxhfkuyT4uJhYlSjTg20lsqVN
+        5MIiTYbdK0IiC6qM8GuqzbiDo03cWqAPQsEtnH1XwtlV263zrmT46K63aH1tir/oE9EsmbhsWtiRO
+        QQYiRmk7sT53vZ+WDIUWLHxwpVgRPci35xkJWFQsnH9a06wbHNn9AVVACLX9DC38fC+D6HYH2+2t8
+        /gIhQ6/Q==;
+Received: from [167.98.27.226] (helo=rainbowdash)
+        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1r5iMH-004AEH-TG; Wed, 22 Nov 2023 08:13:18 +0000
+Received: from ben by rainbowdash with local (Exim 4.97)
+        (envelope-from <ben@rainbowdash>)
+        id 1r5iMH-00000000boe-42Oz;
+        Wed, 22 Nov 2023 08:13:17 +0000
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] bpf: declare bpf_sk_storage_get_cg_sock_proto
+Date:   Wed, 22 Nov 2023 08:13:17 +0000
+Message-Id: <20231122081317.145355-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.37.2.352.g3c44437643
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8o=Q74U0Z3PayrzY7heNc0qeTw5VYS+tdkpm=aJdefQEbQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Sender: srv_ts003@codethink.com
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 10:58:57AM +0800, Haibo Xu wrote:
-> On Tue, Oct 3, 2023 at 6:28 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> >
-> > On Thu, Sep 14, 2023 at 09:36:56AM +0800, Haibo Xu wrote:
-> > > A separate makefile rule was used for split targets which was added
-> > > in patch(KVM: arm64: selftests: Split get-reg-list test code). This
-> > > could be avoided by minor changes to the recipes of current rule.
-> > >
-> > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > > ---
-> > >  tools/testing/selftests/kvm/Makefile | 6 ++----
-> > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > > index a3bb36fb3cfc..7972269e8c5f 100644
-> > > --- a/tools/testing/selftests/kvm/Makefile
-> > > +++ b/tools/testing/selftests/kvm/Makefile
-> > > @@ -249,13 +249,10 @@ TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
-> > >  -include $(TEST_DEP_FILES)
-> > >
-> > >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
-> > > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) $(LDLIBS) -o $@
-> > > +     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
-> > >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
-> > >       $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
-> > >
-> > > -$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
-> > > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
-> > > -
-> > >  EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLIT_TESTS_OBJS) cscope.*
-> > >
-> > >  x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
-> > > @@ -274,6 +271,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
-> > >  x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
-> > >  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
-> > >  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
-> > > +$(SPLIT_TESTS_TARGETS): $(OUTPUT)/%: $(ARCH_DIR)/%.o
-> > >
-> > >  cscope: include_paths = $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) include lib ..
-> > >  cscope:
-> > > --
-> > > 2.34.1
-> > >
-> >
-> > I just noticed that with and without this patch we're building the
-> > arch-specific part in tools/testing/selftests/kvm/riscv even when we have
-> > an $(OUTPUT) directory (e.g. O=build). Those build artifacts should be in
-> > build/kselftest/kvm/riscv instead.
-> >
-> 
-> Thanks for pointing it out. I will have a look in next week!
->
+The bpf_sk_storage_get_cg_sock_proto struct is exported from
+net/core/bpf_sk_storage.c but is not decalred in any header
+file. Fix the following sparse warning by adding it to the
+include/net/bpf_sk_storage.h header:
 
-Hi Haibo,
+net/core/bpf_sk_storage.c:334:29: warning: symbol 'bpf_sk_storage_get_cg_sock_proto' was not declared. Should it be static
 
-Paolo just fixed this
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+---
+ include/net/bpf_sk_storage.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://lore.kernel.org/all/20231121165631.1170797-1-pbonzini@redhat.com/
+diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
+index 2926f1f00d65..043155810822 100644
+--- a/include/net/bpf_sk_storage.h
++++ b/include/net/bpf_sk_storage.h
+@@ -22,6 +22,7 @@ extern const struct bpf_func_proto bpf_sk_storage_get_proto;
+ extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
+ extern const struct bpf_func_proto bpf_sk_storage_get_tracing_proto;
+ extern const struct bpf_func_proto bpf_sk_storage_delete_tracing_proto;
++extern const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto;
+ 
+ struct bpf_local_storage_elem;
+ struct bpf_sk_storage_diag;
+-- 
+2.37.2.352.g3c44437643
 
-Thanks,
-drew
