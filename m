@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885617F3F5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3411F7F3F62
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjKVH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S230413AbjKVIAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjKVH7c (ORCPT
+        with ESMTP id S229995AbjKVIAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:59:32 -0500
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5F1F9;
-        Tue, 21 Nov 2023 23:59:22 -0800 (PST)
-X-UUID: 07c160b4890d11eea33bb35ae8d461a2-20231122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=tjhi/K/EhvYr1Lx5fBNjjJus9/yYhqhMddT4+MH2T8E=;
-        b=Sz7JGNi9zi1lbC7Ih3tFU3dTOb7sTARIsQm+QBhpdMWSPzXrI5X+8YdSH2MuqQLgDo+on+D4HbTrhXN0STojaXiKqi5KxGZPg+Lh0CLmNFp9OGk+Q0UvOJJKvB5jFnq9CVugLNKyZ0c6IiaqS8g9TI0i1DAQQmQFdE+9j9W/XGg=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:612889fe-36b5-4ab4-bb20-16dd71dc5a26,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:364b77b,CLOUDID:5668d1fc-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 07c160b4890d11eea33bb35ae8d461a2-20231122
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <chris.feng@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1814399489; Wed, 22 Nov 2023 15:59:15 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 22 Nov 2023 15:59:12 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 22 Nov 2023 15:59:11 +0800
-From:   Chris Feng <chris.feng@mediatek.com>
-To:     <rafael@kernel.org>, <pavel@ucw.cz>, <len.brown@intel.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@kernel.org>, <hua.yang@mediatek.com>,
-        <ting.wang@mediatek.com>, <liang.lu@mediatek.com>,
-        <chetan.kumar@mediatek.com>, Chris Feng <chris.feng@mediatek.com>
-Subject: [PATCH v3] PM: hibernate: Avoid missing wakeup events during hibernation
-Date:   Wed, 22 Nov 2023 15:59:08 +0800
-Message-ID: <20231122075908.160929-1-chris.feng@mediatek.com>
-X-Mailer: git-send-email 2.17.0
+        Wed, 22 Nov 2023 03:00:31 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A099D
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rG9CnI6rb1E9NFvnbYt1RG2l2gXTlO1XMx7PoiRe2Ec=; b=PCtBrTBvxv7SOp8UE5vFdvbfF0
+        P5NaPlXmpvqNViNINDPdipO0w9S7846a/jfPx/chfTBwwTwYjneEH25vRgUw635dBIYYVnMCDmiM6
+        OeTvKWjvS5RPTRtLFJM8VWWVC1A3xvPIQ+lpajb19q+Chh4kjK5j81FkX1DAOmUYdLz8CY2/xQjU/
+        eHO+ESOk90z7nvlFOUb/rkbJstkzzg3x3vrH7Vvfk96TWlMZ6TRu1MnpeRKEUoHL7WMK53ciD/Y6Q
+        bdvOGQ2aAG+0OYv9E7rZOWLEOZLfUmhAOJwT7XbQn2p/6gB5NGOg/D88uulBsscSZ7PfrfCGM1nAw
+        u/zzeo7A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5i9o-000z5V-1I;
+        Wed, 22 Nov 2023 08:00:24 +0000
+Date:   Wed, 22 Nov 2023 00:00:24 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
+ hugepd processing
+Message-ID: <ZV21GCbG48nTLDzn@infradead.org>
+References: <20231116012908.392077-1-peterx@redhat.com>
+ <20231116012908.392077-7-peterx@redhat.com>
+ <ZVsYMMJpmFV2T/Zc@infradead.org>
+ <ZVzT5_3Zn-Y-6xth@x1n>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.234600-8.000000
-X-TMASE-MatchedRID: gLdsEUOy0hNOgDDV7TiL3UhwlOfYeSqxuCESrx7wlnJ/y29NnT7OA7CQ
-        uJto3I58h3AZ1hceMeKIgaYq5OQMhaiQBIWNRE3ZVU3yVpaj3QzuHZGuwo6K7fgnJH5vm2+gYxq
-        mcULrxeZTE8AzcnZBquJQGiBsCtAIbeOSMcxEZ1oD2WXLXdz+Afi4nVERfgwdCqIJhrrDy28fmy
-        nNioMIj+6/aJF7n+8kHwkV/eq61IT8a7PjRR3cpB3EEAbn+GRbD+LwVja9M4GbKItl61J/yZ+in
-        TK0bC9eKrauXd3MZDVOqcOm3C2NvWGVNMXvAToyRMPuRSWTPC2P1OL0DXy7dsMXgUZVMVkywL6S
-        xPpr1/I=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.234600-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 96CFFA4DD65CA6BAF5318E2350D26575DE99F8A2725B33BB71843DF87C8AACBE2000:8
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZVzT5_3Zn-Y-6xth@x1n>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wakeup events that occur in the hibernation process's
-hibernation_platform_enter() cannot wake up the system. Although the
-current hibernation framework will execute part of the recovery process
-after a wakeup event occurs, it ultimately performs a shutdown operation
-because the system does not check the return value of
-hibernation_platform_enter(). In short, if a wakeup event occurs before
-putting the system into the final low-power state, it will be missed.
+On Tue, Nov 21, 2023 at 10:59:35AM -0500, Peter Xu wrote:
+> > What prevents us from ever using hugepd with file mappings?  I think
+> > it would naturally fit in with how large folios for the pagecache work.
+> > 
+> > So keeping this check and generalizing it seems like the better idea to
+> > me.
+> 
+> But then it means we're still keeping that dead code for fast-gup even if
+> we know that fact..  Or do we have a plan to add that support very soon, so
+> this code will be destined to add back?
 
-To solve this problem, check the return value of
-hibernation_platform_enter(). When it returns -EAGAIN or -EBUSY (indicate
-the occurrence of a wakeup event), execute the hibernation recovery
-process, discard the previously saved image, and ultimately return to the
-working state.
+The question wasn't mean retorical - we support arbitrary power of two
+sized folios for the pagepage, what prevents us from using hugepd with
+them right now?
 
-Signed-off-by: Chris Feng <chris.feng@mediatek.com>
----
-[PATCH v2]:
- - Execute the hibernation recovery process and return to the working state
-   when the return value of the function hibernation_platform_enter() is
-   -EAGAIN or -EBUSY. Both of the two values may indicate the occurrence of
-   a wakeup event.
-[PATCH v3]:
- - Use pr_info instead of pr_err, fix undeclared function 'swsusp_unmark'
-   build error, refine commit and printing message.
----
- kernel/power/hibernate.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> The other option is I can always add a comment above gup_huge_pd()
+> explaining this special bit, so that when someone is adding hugepd support
+> to file large folios we'll hopefully not forget it?  But then that
+> generalization work will only happen when the code will be needed.
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 8d35b9f9aaa3..fb3b63e178b0 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -642,9 +642,9 @@ int hibernation_platform_enter(void)
-  */
- static void power_down(void)
- {
--#ifdef CONFIG_SUSPEND
- 	int error;
- 
-+#ifdef CONFIG_SUSPEND
- 	if (hibernation_mode == HIBERNATION_SUSPEND) {
- 		error = suspend_devices_and_enter(mem_sleep_current);
- 		if (error) {
-@@ -667,7 +667,15 @@ static void power_down(void)
- 		kernel_restart(NULL);
- 		break;
- 	case HIBERNATION_PLATFORM:
--		hibernation_platform_enter();
-+		error = hibernation_platform_enter();
-+		if (error == -EAGAIN || error == -EBUSY) {
-+#ifdef CONFIG_SUSPEND
-+			swsusp_unmark();
-+#endif
-+			events_check_enabled = false;
-+			pr_info("Hibernation process aborted due to detected wakeup event.\n");
-+			return;
-+		}
- 		fallthrough;
- 	case HIBERNATION_SHUTDOWN:
- 		if (kernel_can_power_off())
--- 
-2.17.0
+If dropping the check is the right thing for now (and I think the ppc
+maintainers and willy as the large folio guy might have a more useful
+opinions than I do), leaving a comment in would be very useful.
 
