@@ -2,158 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EFB7F5189
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB96A7F518D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbjKVUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:24:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
+        id S1343867AbjKVUZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 15:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjKVUYe (ORCPT
+        with ESMTP id S231488AbjKVUZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:24:34 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61B31BD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:24:29 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c873cf9f74so2679761fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:24:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700684668; x=1701289468; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pa4PSx1bqwHUNtr2jOQTdwbCw2lGoLr2aW9SF4QV68E=;
-        b=trJZ9rCtBBkRyoW5ItepmGgU4L9zF4BIn6Jin5AdJegD6zRDhSheOjEmmOBTGnwvct
-         lbIB4p0pYlxttSLzDTBxw1YahC1CsTQok0XRB3mGcOKT60/z5Hjas28wV5fY6AOqoR5H
-         NYdwlwGyltCWdTn7ANOjAP3YCA8rwmpEBeAA6iHuyhKhYCcGigvhaP1Ws9nmVWk11iKB
-         UBF+tPS9moJRHWhpYaH54zSfk2vS9xlZw+v7qQSFKcZLsVCqheChyBndgv1dCFyDv4ew
-         ZSeV8pFFlghK2AnvOIsFm+GurSSeVe+Bi+3u59vXVjW9NsjUdcIsI52pXGR4sxU6J3kq
-         qjAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700684668; x=1701289468;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pa4PSx1bqwHUNtr2jOQTdwbCw2lGoLr2aW9SF4QV68E=;
-        b=LM2qeFzV3JRnAtxPFPrIgy/3MZtB6eU1S0MbOs7mwTNiUpnOHkAlfuk1Ha2IL5wrWc
-         6jfKaCyGTTRbJkCo9DdO7w5KavuWK5SA4ybMWT8x1E54loR2V/Lv0mofzyl7JJxJ3YJV
-         gEbHG2qSouktHBD2zEvomAi1fPTzdd4SVz/xraGp/+0gfyEI/SnAa2PZ0/8bzksTrul0
-         hW9Rx2t9WU2hS4wM/4gsSxH4+JW/4SAPGTzeJtTFkSO9SMBXb1zOj74GCciggoa0Mrax
-         gn4pN7tmgpZkyrGovBv5HZikkMYpVu9eVkjHzewfW9WDAFPq7pxwPrFJQ+gQtA+XI+98
-         n45A==
-X-Gm-Message-State: AOJu0YxckKF+OAR1H5oT1oM4u3dAmtc4HTvDLlL3yYMKge/9zILZt+xr
-        txTt7SAFFVENQj8NMPABbxMBBQ==
-X-Google-Smtp-Source: AGHT+IHCqJnqmqruquEzZmPUrGzbkNt3QnbrS5s9HB1QFQs8oQy4JStcei9zVZVifxLEVasGTNqeiw==
-X-Received: by 2002:a2e:920b:0:b0:2c5:23e3:ed11 with SMTP id k11-20020a2e920b000000b002c523e3ed11mr2713058ljg.30.1700684667938;
-        Wed, 22 Nov 2023 12:24:27 -0800 (PST)
-Received: from [172.30.204.74] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id f27-20020a2eb5bb000000b002b9f03729e2sm42821ljn.36.2023.11.22.12.24.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 12:24:27 -0800 (PST)
-Message-ID: <f18b6552-bf8d-4826-969a-a0de60bd0ad3@linaro.org>
-Date:   Wed, 22 Nov 2023 21:24:24 +0100
+        Wed, 22 Nov 2023 15:25:29 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC64F199;
+        Wed, 22 Nov 2023 12:25:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4DBhnIaq1EuuzQ+as3EmfJ24JzGlngTHmqpQ4GCvkbU=; b=DfST4YxDW7K0t4LERKTLAx4/ZN
+        Qvf41P9/Vfgcjt7kpxXGockIDBhAxJSF8pXxPYGUOL6DGHaToxBKasWGJ/XhHcIEmQawASmXWDw8G
+        EIJw4MFTIM1RfG5wFpbLUFWdKr6JTfJY+Wi7eAJcNiH4iNSrPcnSXZPngvKbY7HTW0KyLsdv6+ADj
+        PyJoRExy3FCnsd+TnaTIIFUznmKt9W9SHxMJXHNYamwnEO6bEhTdVcpKVLmUoyI8JtJGZz9RHm5QR
+        476BG1PzrBHmRIYccC08+o1khuqT9cEm3eaH+4EpcPC1AoOd28dvXGf2rV1YEX+x1/ous550sLWR5
+        HiiLb75Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44360)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r5tme-0000jv-1t;
+        Wed, 22 Nov 2023 20:25:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r5tme-0005UX-Ss; Wed, 22 Nov 2023 20:25:16 +0000
+Date:   Wed, 22 Nov 2023 20:25:16 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [net-next PATCH] net: phy: aquantia: drop wrong endianness
+ conversion for addr and CRC
+Message-ID: <ZV5jrF6+e3ClCmX6@shell.armlinux.org.uk>
+References: <20231122170813.1222-1-ansuelsmth@gmail.com>
+ <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
+ <655e4025.df0a0220.50550.3d70@mx.google.com>
+ <ZV5OPr5ee2x/yMCQ@shell.armlinux.org.uk>
+ <655e5ca8.5d0a0220.119f1.0f01@mx.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/9] net: mdio: ipq4019: configure CMN PLL clock for
- ipq5332
-Content-Language: en-US
-To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robert.marko@sartura.hr
-Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_srichara@quicinc.com
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-5-quic_luoj@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231115032515.4249-5-quic_luoj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <655e5ca8.5d0a0220.119f1.0f01@mx.google.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/15/23 04:25, Luo Jie wrote:
-> The reference clock of CMN PLL block is selectable, the internal
-> 48MHZ is used by default.
+On Wed, Nov 22, 2023 at 08:55:17PM +0100, Christian Marangi wrote:
+> On Wed, Nov 22, 2023 at 06:53:50PM +0000, Russell King (Oracle) wrote:
+> > On Wed, Nov 22, 2023 at 06:53:39PM +0100, Christian Marangi wrote:
+> > > On Wed, Nov 22, 2023 at 05:24:33PM +0000, Russell King (Oracle) wrote:
+> > > > On Wed, Nov 22, 2023 at 06:08:13PM +0100, Christian Marangi wrote:
+> > > > > On further testing on BE target with kernel test robot, it was notice
+> > > > > that the endianness conversion for addr and CRC in fw_load_memory was
+> > > > > wrong and actually not needed. Values in define doesn't get converted
+> > > > > and are passed as is and hardcoded values are already in what the PHY
+> > > > > require, that is LE.
+> > > > > 
+> > > > > Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
+> > > > > _swab32 instead, the word is taked from firmware and is always LE, the
+> > > > 
+> > > >                                taken
+> > > > 
+> > > > > mailbox will emit a BE CRC hence the word needs to be always swapped and
+> > > > > the endianness of the host needs to be ignored.
+> > > > 
+> > > > I'm not convinced. If the firmware is a bytestream (as most "files" are)
+> > > > then for val = get_unaligned((u32 *)ptr), where ptr is an array of u8:
+> > > > 
+> > > > ptr[0]	ptr[1]	ptr[2]	ptr[3]	val on LE	val on BE
+> > > > 0x01	0x02	0x03	0x04	0x04030201	0x01020304
+> > > > 
+> > > > So, endianness matters here, and I think as Jakub already suggested, you
+> > > > need to use get_unaligned_le32().
+> > > >
+> > > 
+> > > So they DO get converted to the HOST endian on reading the firmware from
+> > > an nvmem cell or a filesystem?
+> > 
+> > I don't like "converted". It's *not* a conversion. It's a fundamental
+> > property of accessing memory using different sizes of access.
+> > 
+> > As I attempted to explain above, if you have a file, and byte 0
+> > contains 0xAA, byte 1 of the file contains 0xBB, byte 2 contains
+> > 0xCC, and byte 3 contains 0xDD, then if you read that file byte by
+> > byte, you will get 0xAA, then 0xBB, then 0xCC and then 0xDD.
+> > 
+> > If you map that file into memory, e.g. in userspace, using mmap(),
+> > or allocating memory and reading four bytes into memory, and access
+> > it using bytes, then at offset 0, you will find 0xAA, offset 1 will
+> > be 0xBB, etc.
+> > 
+> > The problems with endianness start when you move away from byte
+> > access.
+> > 
+> > If you use 16-bit accessors, then, a little endian machine is defined
+> > that a 16-bit load from memory will result in the first byte being put
+> > into the LSB of the 16-bit value, and the second byte will be put into
+> > the MSB of the 16-bit value. So that would be 0xBBAA. However, on a big
+> > endian machine, a 16-bit load will result in the first byte being put
+> > into the MSB of the 16-bit value, and the second byte will be put into
+> > the LSB of that value - meaning the 16-bit value will be 0xAABB.
+> > 
+> > The second 16-bit value uses the next two bytes, and the order at which
+> > these two bytes are placed into the 16-bit value reflects the same as
+> > the first two bytes. So LE will be 0xDDCC and BE would be 0xCCDD.
+> > 
+> > The same "swapping" happens with 32-bit, but of course instead of just
+> > two bytes, it covers four bytes. On LE, a 32-bit access will give
+> > 0xDDCCBBAA. On BE, that will be 0xAABBCCDD.
+> > 
+> > Again, this is not to do with any kind of "conversion" happening in
+> > software. It's a property of how the memory subsystem inside the CPU
+> > works.
+> > 
+> > > Again this is really dumping raw data from the read file directly to the
+> > > mailbox. Unless phy_write does some conversion internally, but in that
+> > > case how does it know what endian is the PHY internally?
+> > 
+> > phy_write() does *no* conversion. The MDIO bus defines that a 16-bit
+> > register value will be transferred, and the MDIO bus specifies that
+> > bit 15 will be sent first, followed by subsequent bits down to bit 0.
+> > 
+> > The access to the hardware to make this happen is required to ensure
+> > that the value passed to phy_write() and read using phy_read() will
+> > reflect this. So, if one does this:
+> > 
+> > 	val = phy_read(phydev, 0);
+> > 
+> > 	for (i = 15; i >= 0; i--)
+> > 		printk("%u", !!(val & BIT(i)));
+> > 
+> > 	printk("\n");
+> > 
+> > This will give you the stream of bits in the _order_ that they appeared
+> > on the MDIO bus when phy_read() accessed. Doing the same with a value
+> > to be written will produce the bits in the same value that they will
+> > be placed on the MDIO bus.
+> > 
+> > So, this means that if the BMCR contains 0x1234 in the PHY, phy_read()
+> > will return 0x1234. Passing 0x1234 into phy_write() will write 0x1234
+> > in that register. The host endian is entirely irrelevant here.
+> >
 > 
-> The output clock of CMN PLL block is for providing the clock
-> source of ethernet device(such as qca8084), there are 1 X 25MHZ
-> and 3 x 50MHZ output clocks available.
+> Thanks a lot for the clarification. And sorry for misusing the word
+> conversion.
 > 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
->   drivers/net/mdio/mdio-ipq4019.c | 81 ++++++++++++++++++++++++++++++++-
->   1 file changed, 80 insertions(+), 1 deletion(-)
+> > > > I would make this explicit:
+> > > > 
+> > > > 		u8 crc_data[4];
+> > > > 
+> > > > 		...
+> > > > 
+> > > > 		/* CRC is calculated using BE order */
+> > > > 		crc_data[0] = word >> 24;
+> > > > 		crc_data[1] = word >> 16;
+> > > > 		crc_data[2] = word >> 8;
+> > > > 		crc_data[3] = word;
+> > > > 
+> > > > 		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
+> > > > 
+> > > > which will be (a) completely unambiguous, and (b) completely
+> > > > independent of the host endianness.
+> > > 
+> > > But isn't this exactly what is done with ___constant_swab32 ?
+> > > __swab32 should not change if the HOST is BE or LE.
+> > 
+> > Let try again to make this clear. If one has this code:
+> > 
+> > 		u32 word = 0x01020304;
+> > 		u8 *ptr;
+> > 		int i;
+> > 
+> > 		ptr = (u8 *)&word;
+> > 
+> > 		for (i = 0; i < 4; i++)
+> > 			printk(" %02x", ptr[i]);
+> > 		printk("\n");
+> > 
+> > Then, on a:
+> > - LE machine, this will print " 04 03 02 01"
+> > - BE machine, this will print " 01 02 03 04"
+> > 
+> > Now, if you look at the definition of crc_ccitt_false(), it is
+> > defined to do:
+> > 
+> >         while (len--)
+> >                 crc = crc_ccitt_false_byte(crc, *buffer++);
+> > 
+> > So, on a LE machine, this will feed the above bytes in the order of
+> > 0x04, 0x03, 0x02, 0x01 in a LE machine, and 0x01, 0x02, 0x03, 0x04
+> > on a BE machine.
+> > 
 > 
-> diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-> index 93ae4684de31..ca9cda98d1f8 100644
-> --- a/drivers/net/mdio/mdio-ipq4019.c
-> +++ b/drivers/net/mdio/mdio-ipq4019.c
-> @@ -43,6 +43,13 @@
->   /* Maximum SOC PCS(uniphy) number on IPQ platform */
->   #define ETH_LDO_RDY_CNT				3
->   
-> +#define CMN_PLL_REFERENCE_CLOCK			0x784
-> +#define CMN_PLL_REFCLK_INDEX			GENMASK(3, 0)
-> +#define CMN_PLL_REFCLK_EXTERNAL			BIT(9)
-> +
-> +#define CMN_PLL_POWER_ON_AND_RESET		0x780
-> +#define CMN_ANA_EN_SW_RSTN			BIT(6)
-> +
->   enum mdio_clk_id {
->   	MDIO_CLK_MDIO_AHB,
->   	MDIO_CLK_UNIPHY0_AHB,
-> @@ -54,6 +61,7 @@ enum mdio_clk_id {
->   
->   struct ipq4019_mdio_data {
->   	void __iomem *membase;
-> +	void __iomem *cmn_membase;
->   	void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
->   	struct clk *clk[MDIO_CLK_CNT];
->   	struct gpio_descs *reset_gpios;
-> @@ -227,12 +235,73 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
->   	return 0;
->   }
->   
-> +/* For the CMN PLL block, the reference clock can be configured according to
-> + * the device tree property "cmn_ref_clk", the internal 48MHZ is used by default
-> + * on the ipq533 platform.
-> + *
-> + * The output clock of CMN PLL block is provided to the MDIO slave devices,
-> + * threre are 4 CMN PLL output clocks (1x25MHZ + 3x50MHZ) enabled by default.
-> + *
-> + * such as the output 50M clock for the qca8084 PHY.
-> + */
-> +static void ipq_cmn_clock_config(struct mii_bus *bus)
-> +{
-> +	u32 reg_val;
-> +	const char *cmn_ref_clk;
-> +	struct ipq4019_mdio_data *priv = bus->priv;
-> +
-> +	if (priv && priv->cmn_membase) {
-> +		reg_val = readl(priv->cmn_membase + CMN_PLL_REFERENCE_CLOCK);
-> +		reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL | CMN_PLL_REFCLK_INDEX);
-> +
-> +		/* Select reference clock source */
-> +		cmn_ref_clk = of_get_property(bus->parent->of_node, "cmn_ref_clk", NULL);
-> +		if (!cmn_ref_clk) {
-> +			/* Internal 48MHZ selected by default */
-> +			reg_val |= FIELD_PREP(CMN_PLL_REFCLK_INDEX, 7);
-> +		} else {
-> +			if (!strcmp(cmn_ref_clk, "external_25MHz"))
-As pointed out by others, such string properties won't go through
+> So it's really a problem of setting u8 in word and the order they are
+> read in the system.
 
-Konrad
+Correct.
+
+> The first get_unaligned has to be changed to get_unaligned_le32 based on
+> how the data are treated from passing from an u8 to u32.
+
+Yes.
+
+I'm going to use the term "bytestream", abbreviated to just stream, to
+represent the firmware that you are going to upload, because that's
+essentially what all files are.
+
+ the first byte of the stream to appear in bits 7:0 of
+   VEND1_GLOBAL_MAILBOX_INTERFACE6
+
+ the second byte of the stream to appear in bits 15:8 of
+   VEND1_GLOBAL_MAILBOX_INTERFACE6
+
+ the third byte of the stream to appear in bits 7:0 of
+   VEND1_GLOBAL_MAILBOX_INTERFACE5
+
+ the forth byte of the stream to appear in bits 15:8 of
+   VEND1_GLOBAL_MAILBOX_INTERFACE5
+
+and this to repeat over subsequent groups of four bytes in the stream.
+
+This will be achieved by reading the stream using 32-bit little endian
+accesses using get_unaligned_le32(), and then as you are already doing,
+splitting them up into two 16-bit quantities.
+
+> For LE this doesn't matter but for BE they needs to be swapped as this
+> is what mailbox expect.
+
+Correct.
+
+> For CRC. Would something like this work?
+> 
+> Define u8 crc_data[4];
+> 
+> *crc_data = (__force u32)cpu_to_be32(word);
+
+That won't do what you want, it will only write the first byte.
+
+> crc = crc_ccitt_false(crc, crc_data, sizeof(word));
+
+The point of explicitly assigning each byte is to ensure that it's
+obvious that we'll get the right result. If we try to write a 32-bit
+value, then we're getting right back into the "how does _this_ CPU
+map a 32-bit value to indivudual bytes" endianness problem.
+
+The advantage of writing it out as bytes into a u8 array is that from
+a code readability point of view, it's all laid out in plain sight
+exactly which part of the 32-bit value ends up where and the order in
+which the crc function is going to read those bytes - and it is
+independent of whatever the endianess of the host architecture.
+
+> Using u8 array should keep the correct order no matter the endian and
+> cpu_to_be32 should correctly swap the word if needed. (in a BE HOST data
+> should already be in the right order and in LE has to be swapped right?)
+
+If you are absolutely certain that each group of four bytes in the
+source bytestream need to be provided to the CRC function in the
+reverse order to which they appear in the file.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
