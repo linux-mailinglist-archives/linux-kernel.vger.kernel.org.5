@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA497F4EDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1587F4EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343765AbjKVSB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:01:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        id S235097AbjKVSNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVSBz (ORCPT
+        with ESMTP id S231478AbjKVSNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:01:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A9F101
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:01:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0567C433C8;
-        Wed, 22 Nov 2023 18:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700676111;
-        bh=DWUiekk1hXft3g2yCopiERCaH6fhza4b69cZTvVcpdY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nQIgQnzE8sTuB2DQUrkEMhm03hfOt5YWmPcs0VsVDtftb/G48o6iBHxOmw20lS9be
-         DaegCqg2DP/BsE/B8n4Bo+08u4yNMfJ8CJZdfsFovhf9u6eORI5FRqev+i/kIJABSs
-         GZsh+6A2/E5VqM1izplteYHYi4FC5E8h+MfoSvq+GeA6WFIEPfaujwnXieIQ9O93h+
-         KEIamZvzC6GMENp4JuTC654m+8q97bu1fSkLR/gDkS6e8f7uXGn/yXa96YxBqVf2Og
-         yntLYbTY6uMkbWuXOV003GzruNZm1V1isg/X+YMlt9/NiKwv651heL0bAY2ffsPmEP
-         rqsT4iPbYwSSA==
-Date:   Wed, 22 Nov 2023 10:01:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
+        Wed, 22 Nov 2023 13:13:16 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A189E;
+        Wed, 22 Nov 2023 10:13:10 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 4D52210005F;
+        Wed, 22 Nov 2023 21:13:05 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4D52210005F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700676785;
+        bh=Wfscbi3n28k0DaUHI1H1o3BRIqMYiUsGUp1uuO0MbWg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Iyp+Jk4hXAS1Z9tpvSicSlDO/XQhPwahs4oltBt0UZu4a44nEmrMkf6FPCK2Yu3Jc
+         SbCj2cTv03PQX2mxfgwLuT1iZL+dqbZej91faNc4Riwvhr7Ae0ZY1dqAlmxNYoBHQu
+         fa1OQeHplBioYvDl9sjIU+MUi+yP2VKKp2KO4wDqFCpeBHEwjEF5K/0rX9Y7jFoPKU
+         VU4xcshbez2j4JAXQyRsXxC/9Iu4UCY/vih6+r7tO0thQpdX49QDNzmqe9nlBSkso6
+         P6S2sh6e2jfpWb9ApnSP17u39RaWnAEkG9xdb6P5bqmS2u0VZAEjs2gzQ4H4Ubcw3e
+         VABGOljRKe+AA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 22 Nov 2023 21:13:05 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 22 Nov 2023 21:13:04 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231122100142.338a2092@kernel.org>
-In-Reply-To: <20231122165517.5cqqfor3zjqgyoow@skbuf>
-References: <20231120190023.ymog4yb2hcydhmua@skbuf>
-        <20231120115839.74ee5492@kernel.org>
-        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
-        <20231120133737.70dde657@kernel.org>
-        <20231120220549.cvsz2ni3wj7mcukh@skbuf>
-        <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
-        <20231121094354.635ee8cd@kernel.org>
-        <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
-        <20231122140850.li2mvf6tpo3f2fhh@skbuf>
-        <20231122085000.79f2d14c@kernel.org>
-        <20231122165517.5cqqfor3zjqgyoow@skbuf>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [RFC PATCH v3 0/3] send credit update during setting SO_RCVLOWAT
+Date:   Wed, 22 Nov 2023 21:05:07 +0300
+Message-ID: <20231122180510.2297075-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;git.kernel.org:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2;lore.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/22 17:13:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/22 17:13:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,29 +88,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 18:55:17 +0200 Vladimir Oltean wrote:
-> > Well, ethtool has been the catch all for a lot of random things
-> > for the longest time. The question is whether we want to extend
-> > ETHTOOL_GET_TS_INFO or add a third API somewhere else. And if we
-> > do - do we also duplicate the functionality of ETHTOOL_GET_TS_INFO
-> > (i.e. getting capabilities)?
-> > 
-> > My vote is that keeping it in ethtool is less bad than 3rd API.  
-> 
-> With SIOCSHWTSTAMP also implemented by CAN (and presumably also by
-> wireless in the future), I do wonder whether ethtool is the right place
-> for the netlink conversion.
+Hello,
 
-ethtool currently provides the only way we have to configure ring
-length, ring count, RSS, UDP tunnels etc.
+                               DESCRIPTION
 
-It's a matter of taste, IMO ethtool is a bit of a lost cause already
-and keeping things together (ethtool already has TS_INFO) is cleaner
-than spreading them around.
+This patchset fixes old problem with hungup of both rx/tx sides and adds
+test for it. This happens due to non-default SO_RCVLOWAT value and
+deferred credit update in virtio/vsock. Link to previous old patchset:
+https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
 
-> I wouldn't suggest duplicating ETHTOOL_GET_TS_INFO towards the netdev
-> netlink family.
+Here is what happens step by step:
 
-FTR so far the netdev family is all about SW configuration. We should
-probably keep it that way, so it doesn't become ginormous. It's easy
-enough to create a new family, if needed.
+                                  TEST
+
+                            INITIAL CONDITIONS
+
+1) Vsock buffer size is 128KB.
+2) Maximum packet size is also 64KB as defined in header (yes it is
+   hardcoded, just to remind about that value).
+3) SO_RCVLOWAT is default, e.g. 1 byte.
+
+
+                                 STEPS
+
+            SENDER                              RECEIVER
+1) sends 128KB + 1 byte in a
+   single buffer. 128KB will
+   be sent, but for 1 byte
+   sender will wait for free
+   space at peer. Sender goes
+   to sleep.
+
+
+2)                                     reads 64KB, credit update not sent
+3)                                     sets SO_RCVLOWAT to 64KB + 1
+4)                                     poll() -> wait forever, there is
+                                       only 64KB available to read.
+
+So in step 4) receiver also goes to sleep, waiting for enough data or
+connection shutdown message from the sender. Idea to fix it is that rx
+kicks tx side to continue transmission (and may be close connection)
+when rx changes number of bytes to be woken up (e.g. SO_RCVLOWAT) and
+this value is bigger than number of available bytes to read.
+
+I've added small test for this, but not sure as it uses hardcoded value
+for maximum packet length, this value is defined in kernel header and
+used to control deferred credit update. And as this is not available to
+userspace, I can't control test parameters correctly (if one day this
+define will be changed - test may become useless). 
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=18de1e517ed37ebaf33e771e46faf052e966e163
+
+Link to v1:
+https://lore.kernel.org/netdev/20231108072004.1045669-1-avkrasnov@salutedevices.com/
+Link to v2:
+https://lore.kernel.org/netdev/20231119204922.2251912-1-avkrasnov@salutedevices.com/
+
+Changelog:
+v1 -> v2:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * New patch is added as 0001 - it removes return from SO_RCVLOWAT set
+   callback in 'af_vsock.c' when transport callback is set - with that
+   we can set 'sk_rcvlowat' only once in 'af_vsock.c' and in future do
+   not copy-paste it to every transport. It was discussed in v1.
+ * See per-patch changelog after ---.
+v2 -> v3:
+ * See changelog after --- in 0003 only (0001 and 0002 still same).
+
+Arseniy Krasnov (3):
+  vsock: update SO_RCVLOWAT setting callback
+  virtio/vsock: send credit update during setting SO_RCVLOWAT
+  vsock/test: SO_RCVLOWAT + deferred credit update test
+
+ drivers/vhost/vsock.c                   |   2 +
+ include/linux/virtio_vsock.h            |   1 +
+ net/vmw_vsock/af_vsock.c                |   9 +-
+ net/vmw_vsock/virtio_transport.c        |   2 +
+ net/vmw_vsock/virtio_transport_common.c |  28 +++++
+ net/vmw_vsock/vsock_loopback.c          |   2 +
+ tools/testing/vsock/vsock_test.c        | 142 ++++++++++++++++++++++++
+ 7 files changed, 184 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
