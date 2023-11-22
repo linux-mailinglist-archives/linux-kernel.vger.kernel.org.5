@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB9E7F4D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7617F4D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344034AbjKVQlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S1343850AbjKVQwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343644AbjKVQlL (ORCPT
+        with ESMTP id S231708AbjKVQwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:41:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB7E10EC;
-        Wed, 22 Nov 2023 08:41:05 -0800 (PST)
+        Wed, 22 Nov 2023 11:52:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FDED40;
+        Wed, 22 Nov 2023 08:51:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700671264; x=1732207264;
+  t=1700671916; x=1732207916;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=3nCf9Nawx9DZLMwtP7gm5hKJWHmWiIVjJbmiWUav9q4=;
-  b=Mzv8ibZ7wU2K+chK3WVkXM3uXSfRbrl5TPviLDsVA8GSAHPJvZ4APCcr
-   P9KE/Dcx0nLm0WTMGpsbBw7lPyrAdZsDx681mr5y8EoVOiywD5W2tj+hP
-   UJxKTdv+hYa8AzxzJUFf+dbXYwav5Xc8Unyh4DXDQ8JaPQg0GWU78mT7f
-   045NHekltEOLJKuQgg5NHfcwTBYeW7HdL7vw54+xfHc46CHJlHjjhW85G
-   Q9Pol6mBWWvH6gaa7zuaTdB8v83H+EbjJWpn4OAsDt+x2PP6aL3fL8QYX
-   MUoOzdByVUnZbZTJjSl9+Dn2AuyEhjkxluOw9VmWqFSNh+dJlIUHaFU8n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456414286"
+  bh=d7RiC36q0FYTd81POcZES8vkSbp1GvRz+YFDhzV1grg=;
+  b=QkMJVAU1GXt43bNVeFNBoWhjaSdVIy3l/C5431XVNDl51yJOx+Xy6+Hb
+   RAj3lKxUYP2Gt70wiTI4MvMpv/A8hjlFAkwNnLirA2r5jxkJyFZcGo0+J
+   GbZ5nWmRM90/AwxTMvHCUB+EMp3MR+YePseu1JRGlUeQZPFrOkFwWcCCj
+   F7wKQCiKlkguux46+QGJfZGzQ0Bqz9BtMtRZ7MNNaKKfhxGrFz4uJ3k3K
+   a2P5A4blETTfrms0Fs6uZgQ2IdXHouMQpmVtOMe+6T2AxCXz2h2cF/1FJ
+   R6X/iT3TD8MK5BgBdHUf5I1503Hu6a2o5aJO9UBRydhaMEdR1ByFHbYYQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5233367"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="456414286"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:41:04 -0800
+   d="scan'208";a="5233367"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:51:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="884681574"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="910887970"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="884681574"
+   d="scan'208";a="910887970"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Nov 2023 08:40:55 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 22 Nov 2023 08:51:16 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4D097560; Wed, 22 Nov 2023 18:40:45 +0200 (EET)
+        id 5B248592; Wed, 22 Nov 2023 18:40:45 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v1 07/17] pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
-Date:   Wed, 22 Nov 2023 18:35:39 +0200
-Message-ID: <20231122164040.2262742-8-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 08/17] pinctrl: core: Embed struct pingroup into struct group_desc
+Date:   Wed, 22 Nov 2023 18:35:40 +0200
+Message-ID: <20231122164040.2262742-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
 References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
@@ -93,50 +93,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of PINCTRL_GROUP_DESC() instead of open coding it.
+struct group_desc is a particular version of the struct pingroup
+with associated opaque data. Start switching pin control core and
+drivers to use it explicitly.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/mediatek/pinctrl-moore.h | 7 +------
- drivers/pinctrl/mediatek/pinctrl-paris.h | 7 +------
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ drivers/pinctrl/core.c | 15 ++++++++++++---
+ drivers/pinctrl/core.h |  5 +++++
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-moore.h b/drivers/pinctrl/mediatek/pinctrl-moore.h
-index e1b4b82b9d3d..22ef1ffbcdcb 100644
---- a/drivers/pinctrl/mediatek/pinctrl-moore.h
-+++ b/drivers/pinctrl/mediatek/pinctrl-moore.h
-@@ -38,12 +38,7 @@
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index c0354ea0597a..981e2e375a39 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -559,7 +559,10 @@ const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
+ 	if (!group)
+ 		return NULL;
+ 
+-	return group->name;
++	if (group->name)
++		return group->name;
++
++	return group->grp.name;
+ }
+ EXPORT_SYMBOL_GPL(pinctrl_generic_get_group_name);
+ 
+@@ -585,8 +588,14 @@ int pinctrl_generic_get_group_pins(struct pinctrl_dev *pctldev,
+ 		return -EINVAL;
  	}
  
- #define PINCTRL_PIN_GROUP(name, id)			\
--	{						\
--		name,					\
--		id##_pins,				\
--		ARRAY_SIZE(id##_pins),			\
--		id##_funcs,				\
--	}
-+	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), id##_funcs)
+-	*pins = group->pins;
+-	*num_pins = group->num_pins;
++	if (group->pins) {
++		*pins = group->pins;
++		*num_pins = group->num_pins;
++		return 0;
++	}
++
++	*pins = group->grp.pins;
++	*num_pins = group->grp.npins;
  
- int mtk_moore_pinctrl_probe(struct platform_device *pdev,
- 			    const struct mtk_pin_soc *soc);
-diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.h b/drivers/pinctrl/mediatek/pinctrl-paris.h
-index 8762ac599329..f208a904c4a8 100644
---- a/drivers/pinctrl/mediatek/pinctrl-paris.h
-+++ b/drivers/pinctrl/mediatek/pinctrl-paris.h
-@@ -50,12 +50,7 @@
- 	}
+ 	return 0;
+ }
+diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
+index 179948e44016..7a21af2b437e 100644
+--- a/drivers/pinctrl/core.h
++++ b/drivers/pinctrl/core.h
+@@ -194,14 +194,18 @@ struct pinctrl_maps {
  
- #define PINCTRL_PIN_GROUP(name, id)			\
--	{						\
--		name,					\
--		id##_pins,				\
--		ARRAY_SIZE(id##_pins),			\
--		id##_funcs,				\
--	}
-+	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), id##_funcs)
+ #ifdef CONFIG_GENERIC_PINCTRL_GROUPS
  
- int mtk_paris_pinctrl_probe(struct platform_device *pdev);
- 
++#include <linux/pinctrl/pinctrl.h>
++
+ /**
+  * struct group_desc - generic pin group descriptor
++ * @grp: generic data of the pin group (name and pins)
+  * @name: name of the pin group
+  * @pins: array of pins that belong to the group
+  * @num_pins: number of pins in the group
+  * @data: pin controller driver specific data
+  */
+ struct group_desc {
++	struct pingroup grp;
+ 	const char *name;
+ 	int *pins;
+ 	int num_pins;
+@@ -211,6 +215,7 @@ struct group_desc {
+ /* Convenience macro to define a generic pin group descriptor */
+ #define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
+ (struct group_desc) {						\
++	.grp = PINCTRL_PINGROUP(_name, _pins, _num_pins),	\
+ 	.name = _name,						\
+ 	.pins = _pins,						\
+ 	.num_pins = _num_pins,					\
 -- 
 2.43.0.rc1.1.gbec44491f096
 
