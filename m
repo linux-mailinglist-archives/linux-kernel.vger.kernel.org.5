@@ -2,194 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99887F4AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD0B7F4AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344508AbjKVPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S1344371AbjKVPgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:36:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235293AbjKVPej (ORCPT
+        with ESMTP id S1344411AbjKVPfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:34:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A83F212D;
-        Wed, 22 Nov 2023 07:34:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700667240; x=1732203240;
-  h=subject:from:to:cc:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7Y9Z3YK8/R4dJKnxWdN1ttjo2dFNQU8UOECE2bBDFfA=;
-  b=UwwmMxtgNsBqK/pdtnyIz01Z9Y75YkgPapNxa2AQJCz8YTX9yo4ZrINX
-   TNLoOSvC3wgGKR73ThLeWgTOoTbuw85HSsUsY4VRYLY2ONqjb++E3bqra
-   IKN2sOrl3A6Yyhczjtz5ryWYkzWfq/QBOa44uXRdYChlETmdhxsyyeN5w
-   1zjA9xpBtiE/fSh4rGJSVMzOEjCnZlzn/M62iJMF6kxUY4RuvfCY/GQBs
-   TfIZgMXGcsl3I4SX7R7LkYKp2Vwgo5wvZQ6H1EeRnPV1AcvVyIgDC88IX
-   G8mYVngO2DsDrFo2JYuH7mDYBDt4YjyqMojUrsc9/5rZ/wZgvnPwKvzhF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="377104703"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="377104703"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:33:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="770645824"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="770645824"
-Received: from tshtalsx-mobl.gar.corp.intel.com (HELO [192.168.1.177]) ([10.213.178.236])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:33:53 -0800
-Subject: [PATCH v3] acpi: Fix ARM32 platforms compile issue introduced by
- fw_table changes
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     linus.walleij@linaro.org, rafael@kernel.org
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
-        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
-        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        cfsworks@gmail.com
-Date:   Wed, 22 Nov 2023 08:33:53 -0700
-Message-ID: <170066723324.2477261.2506149141979712937.stgit@djiang5-mobl3>
-User-Agent: StGit/1.5
+        Wed, 22 Nov 2023 10:35:48 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E2E2718;
+        Wed, 22 Nov 2023 07:34:12 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5pEq-00068f-Ii; Wed, 22 Nov 2023 16:34:04 +0100
+Message-ID: <e1ca042c-de1d-4fe3-ad69-51d147b1fe0b@leemhuis.info>
+Date:   Wed, 22 Nov 2023 16:34:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to
+ CONFIG_MICROCODE_AMD)
+Content-Language: en-US, de-DE
+To:     Borislav Petkov <bp@alien8.de>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
+        hpa@zytor.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+ <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+ <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
+ <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700667252;7abc7ff4;
+X-HE-SMSGID: 1r5pEq-00068f-Ii
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus reported that:
-After commit a103f46633fd the kernel stopped compiling for
-several ARM32 platforms that I am building with a bare metal
-compiler. Bare metal compilers (arm-none-eabi-) don't
-define __linux__.
+Preface: considered CCing Linus here, as it's quite possible that I'm
+wrong, as every situation is somewhat different. If anybody disagrees
+with what I bring up below to hopefully clarify things thus please do me
+a favor an CC Linus so he can clarify things.
 
-This is because the header <acpi/platform/acenv.h> is now
-in the include path for <linux/irq.h>:
+Ohh, and sorry for being a PITA. I hate that, but when it comes to
+regressions disagreements often happen, as all those discussions linked
+at the end of https://docs.kernel.org/process/handling-regressions.html
+illustrate.
 
-  CC      arch/arm/kernel/irq.o
-  CC      kernel/sysctl.o
-  CC      crypto/api.o
-In file included from ../include/acpi/acpi.h:22,
-                 from ../include/linux/fw_table.h:29,
-                 from ../include/linux/acpi.h:18,
-                 from ../include/linux/irqchip.h:14,
-                 from ../arch/arm/kernel/irq.c:25:
-../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
-  218 | #error Unknown target environment
-      |  ^~~~~
+On 22.11.23 12:58, Borislav Petkov wrote:
+> On Wed, Nov 22, 2023 at 10:15:42AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> [1] unless you fiddle with things obviously internal; not sure if this
+>> case would qualify for him, but somehow I doubt it -- but I might be
+>> wrong there.
+> 
+> Well, think about it - by that logic, if CONFIG_* items are an ABI, we
+> will never ever be able to change any of them. [...]
 
-The issue is caused by the introducing of splitting out the ACPI code to
-support the new generic fw_table code.
+Can't follow your logic (or the one from Lukas in the other reply), as
+what's an ABI (or an API) is afaik not the important factor when it
+comes to the "no regressions" rule: you can change things (including
+ABIs or APIs) all you want, as long as nothing breaks. To quote Linus from
+https://lore.kernel.org/all/CAHk-=wiVi7mSrsMP=fLXQrXK_UimybW=ziLOwSzFTtoXUacWVQ@mail.gmail.com/
 
-Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
-the linux/mutex.h. Remove the two includes in fw_table.h. Replace
-linux/fw_table.h include in fw_table.c with linux/acpi.h.
+```
+The rules about regressions have never been about any kind of
+documented behavior, or where the code lives.
 
-Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
-Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
-Closes: https://lore.kernel.org/linux-acpi/20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org/
-Reported-by: Linus Walleij <linus.walleij@linaro.org>
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-v3:
-- Drop fw_table.h in fw_table.c since acpi.h already included. (Rafael)
-v2:
-- Remove linux/acpi.h include as well in fw_table.h. (Sam)
----
- include/linux/acpi.h     |   22 +++++++++++-----------
- include/linux/fw_table.h |    3 ---
- lib/fw_table.c           |    2 +-
- 3 files changed, 12 insertions(+), 15 deletions(-)
+The rules about regressions are always about "breaks user workflow".
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 54189e0e5f41..4db54e928b36 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -15,7 +15,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/property.h>
- #include <linux/uuid.h>
--#include <linux/fw_table.h>
- 
- struct irq_domain;
- struct irq_domain_ops;
-@@ -25,22 +24,13 @@ struct irq_domain_ops;
- #endif
- #include <acpi/acpi.h>
- 
--#ifdef CONFIG_ACPI_TABLE_LIB
--#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
--#define __init_or_acpilib
--#define __initdata_or_acpilib
--#else
--#define EXPORT_SYMBOL_ACPI_LIB(x)
--#define __init_or_acpilib __init
--#define __initdata_or_acpilib __initdata
--#endif
--
- #ifdef	CONFIG_ACPI
- 
- #include <linux/list.h>
- #include <linux/dynamic_debug.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/fw_table.h>
- 
- #include <acpi/acpi_bus.h>
- #include <acpi/acpi_drivers.h>
-@@ -48,6 +38,16 @@ struct irq_domain_ops;
- #include <acpi/acpi_io.h>
- #include <asm/acpi.h>
- 
-+#ifdef CONFIG_ACPI_TABLE_LIB
-+#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-+#define __init_or_acpilib
-+#define __initdata_or_acpilib
-+#else
-+#define EXPORT_SYMBOL_ACPI_LIB(x)
-+#define __init_or_acpilib __init
-+#define __initdata_or_acpilib __initdata
-+#endif
-+
- static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
- {
- 	return adev ? adev->handle : NULL;
-diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-index ff8fa58d5818..ca49947f0a77 100644
---- a/include/linux/fw_table.h
-+++ b/include/linux/fw_table.h
-@@ -25,9 +25,6 @@ struct acpi_subtable_proc {
- 	int count;
- };
- 
--#include <linux/acpi.h>
--#include <acpi/acpi.h>
--
- union acpi_subtable_headers {
- 	struct acpi_subtable_header common;
- 	struct acpi_hmat_structure hmat;
-diff --git a/lib/fw_table.c b/lib/fw_table.c
-index b51f30a28e47..294df54e33b6 100644
---- a/lib/fw_table.c
-+++ b/lib/fw_table.c
-@@ -7,7 +7,7 @@
-  *  Copyright (C) 2023 Intel Corp.
-  */
- #include <linux/errno.h>
--#include <linux/fw_table.h>
-+#include <linux/acpi.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
+The other side of the coin is that people who talk about "API
+stability" are entirely wrong. API's don't matter either. You can make
+any changes to an API you like - as long as nobody notices.
 
+Again, the regression rule is not about documentation, not about
+API's, and not about the phase of the moon.
 
+It's entirely about "we caused problems for user space that used to work".
+```
+
+>> BTW: I see that this could help preventing problems like the current one
+>> to happen in the far future. But how would that help the current
+>> situation (e.g. users that have an old dracut and updated the kernel
+>> without updating dracut)?
+> Update dracut too?
+
+To quote Linus again, this time from
+https://lore.kernel.org/lkml/CA+55aFxW7NMAMvYhkvz1UPbUTUJewRt6Yb51QAx5RtrWOwjebg@mail.gmail.com/
+
+```
+People should basically always feel like they can update their kernel
+and simply not have to worry about it.
+
+I refuse to introduce "you can only update the kernel if you also
+update that other program" kind of limitations. If the kernel used to
+work for you, the rule is that it continues to work for you.
+
+There have been exceptions, but they are few and far between,
+[...]
+But if something actually breaks, then the change must get fixed or
+reverted. And it gets fixed in the *kernel*. Not by saying "well, fix
+your user space then".
+```
+
+Are those quotes fitting to the situation at hand? Not totally sure.
+Initramfs generators might be special and we have done exceptions for
+them in the past if no other solution could be found to prevent a
+regression[1]. We'd need Linus to clarify.
+
+Ciao, Thorsten
+
+[1] maybe it's a naive idea, but can't we just avoid the problem at hand
+by adding CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL back as a
+hidden config stub and remove those in ~3 years? Yeah, ugly, but we have
+done things way more ugly than that to prevent regressions.
