@@ -2,203 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 864AC7F4E2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92367F4E88
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343972AbjKVRTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
+        id S231756AbjKVRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbjKVRTa (ORCPT
+        with ESMTP id S230398AbjKVRjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:19:30 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EA9C83;
-        Wed, 22 Nov 2023 09:19:26 -0800 (PST)
-Received: from [192.168.2.39] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BF0E720B74C0;
-        Wed, 22 Nov 2023 09:19:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF0E720B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1700673565;
-        bh=3LZ9zzeuLYlI71EPLuHTSgdCNU++nYBhxEZHJbsDSlY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FNbbciuyWCaA9TZyyEjX7d7DkZgEQKBFsmxLo1LiA3Jvi+6vHmrWZOH1gV+NeKDDb
-         awySjemfomgKj1xLIpgE4rr02YE7Le1qQnjEgZqb1n9SSbtUzvywHYQp/Eh9EIIvna
-         vUDSo7AuFhfJhv42JxDDyPmWaLsJVvg8qBnw4i+E=
-Message-ID: <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
-Date:   Wed, 22 Nov 2023 18:19:20 +0100
+        Wed, 22 Nov 2023 12:39:55 -0500
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37FF83
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:39:51 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id E60AC3200A5B;
+        Wed, 22 Nov 2023 12:39:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 22 Nov 2023 12:39:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1700674790; x=1700761190; bh=mb
+        Xk1fPQ1fXNlmJ+siwdw43FMHaaZllJuDW8mtdpSdA=; b=ZjtW5riyX0b7AO7/vn
+        XNlO+X7n8lGYWWkXRsIzeCx3CPG4PZXRKZJ5kdr2CbCeCdFb8OmSqVU9paMvsG7i
+        6PskCUikkHjp6P2E0Gbh6+abYd6OjXTWIMmsDOEsdmBfMGcUNy9y3W8SbfYLMiqU
+        yz7bUaefNN/LwKnRZrSaUQiubrMlTe5UuqBWJhmAN7zlro28aMpBFL8OJaIHQvMq
+        z1gI5kIagdnXEqBCqzF4cMio8xIfoMZbZMbbpEC/QcmD+TE4ZU1UtptDzWtBfDwi
+        GeHqpMyApW1VtfTwsg7SEsgJZzda8RHNLaV78Va3J+zALYqvQx4ZAb0KX2dP3qQo
+        MeDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700674790; x=1700761190; bh=mbXk1fPQ1fXNl
+        mJ+siwdw43FMHaaZllJuDW8mtdpSdA=; b=BSPM8oAQwOtYGvg26DINegNv0/pjM
+        S/dMn7507XKoyzxet+Omn3isgr0fGk49WuNRCgkrkpfMuj64cKXUMemZM4PsLXXP
+        j8JSk5+NhK5/3Q4uKjR3TS/Abslla6feFxrS+xRd8Q5hRtl6vKEb5kB1E9sxPxEe
+        hTS+REZ0hzVQSvoC98GY6jFCPHhOXdwRluFybzqojEMvlJFtGFY5boOuZ2fWondN
+        +48t8YEEYozotl4bKOy9ysZ1F3cCv+yKWoeHIsTW2mkcHV62rroqUvipQkeFWldO
+        8vFwJdRstg/nNBAeIP1COJJd7XGkPS/3ZVocAUt7y+418AsD/RA8pPo1w==
+X-ME-Sender: <xms:5TxeZZh_nN2rT5jujDtEDuSgTRdi_O24FxFHzzP9gvjVY3nRBeWCXQ>
+    <xme:5TxeZeD_Wq4m6gJuh2ETxTGJ8x6VgRHOTpQGbmpu3n1aeIDnFZrWvpFmc21nsjoBJ
+    JO_u37_nONBF9lmRXM>
+X-ME-Received: <xmr:5TxeZZGKghguL6iMd9zY6kJVyLudSNeU0t7MBlV8IjaPHs9E41hISGZE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
+    fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
+    htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
+    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hshhhrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:5TxeZeSxonj8pJxfzB5h4-DA-gf_Iyi3OnOktL-dL5OKUDVGDaNZmA>
+    <xmx:5TxeZWxajHsNYPgIwZBF-yTrvEEZD81R4z-EqKy7T352WZTHwlD2WQ>
+    <xmx:5TxeZU4kdjhMnoUxCrluP2HSNVjjZmo7w8VnO61oxTTGZX5-jKNaag>
+    <xmx:5jxeZdq9JAuiQwQz5AgX1KujbeJirLSh0BtcIaFlvWbv1HYkirxwMg>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Nov 2023 12:39:47 -0500 (EST)
+References: <20231028000945.2428830-1-shr@devkernel.io>
+ <20231028000945.2428830-2-shr@devkernel.io>
+ <d41ecf6d-d276-406c-a002-f4ffc9d82ef1@redhat.com>
+User-agent: mu4e 1.10.3; emacs 29.1
+From:   Stefan Roesch <shr@devkernel.io>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/4] mm/ksm: add ksm advisor
+Date:   Wed, 22 Nov 2023 09:20:25 -0800
+In-reply-to: <d41ecf6d-d276-406c-a002-f4ffc9d82ef1@redhat.com>
+Message-ID: <8734wxsn4u.fsf@devkernel.io>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-hyperv@vger.kernel.org, stefan.bader@canonical.com,
-        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
-        cascardo@canonical.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, sashal@kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        Dexuan Cui <decui@microsoft.com>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 18:01, Jeremi Piotrowski wrote:
-> Check for additional CPUID bits to identify TDX guests running with Trust
-> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
-> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
-> 
-> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is visible
-> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
-> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
-> aware mechanisms for what's left. So currently such guests do not have
-> X86_FEATURE_TDX_GUEST set.
-> 
-> We want the kernel to have X86_FEATURE_TDX_GUEST set for all TDX guests so we
-> need to check these additional CPUID bits, but we skip further initialization
-> in the function as we aren't guaranteed access to TDX module calls.
-> 
-> Cc: <stable@vger.kernel.org> # v6.5+
-> Signed-off-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-> ---
->  arch/x86/coco/tdx/tdx.c    | 29 ++++++++++++++++++++++++++---
->  arch/x86/include/asm/tdx.h |  3 +++
->  2 files changed, 29 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 1d6b863c42b0..c7bbbaaf654d 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -8,6 +8,7 @@
->  #include <linux/export.h>
->  #include <linux/io.h>
->  #include <asm/coco.h>
-> +#include <asm/hyperv-tlfs.h>
->  #include <asm/tdx.h>
->  #include <asm/vmx.h>
->  #include <asm/insn.h>
-> @@ -37,6 +38,8 @@
->  
->  #define TDREPORT_SUBTYPE_0	0
->  
-> +bool tdx_partitioning_active;
-> +
->  /* Called from __tdx_hypercall() for unrecoverable failure */
->  noinstr void __tdx_hypercall_failed(void)
->  {
-> @@ -757,19 +760,38 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
->  	return true;
->  }
->  
-> +
-> +static bool early_is_hv_tdx_partitioning(void)
-> +{
-> +	u32 eax, ebx, ecx, edx;
-> +	cpuid(HYPERV_CPUID_ISOLATION_CONFIG, &eax, &ebx, &ecx, &edx);
-> +	return eax & HV_PARAVISOR_PRESENT &&
-> +	       (ebx & HV_ISOLATION_TYPE) == HV_ISOLATION_TYPE_TDX;
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	u64 cc_mask;
->  	u32 eax, sig[3];
->  
->  	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
-> -
-> -	if (memcmp(TDX_IDENT, sig, sizeof(sig)))
-> -		return;
-> +	if (memcmp(TDX_IDENT, sig, sizeof(sig))) {
-> +		tdx_partitioning_active = early_is_hv_tdx_partitioning();
-> +		if (!tdx_partitioning_active)
-> +			return;
-> +	}
 
-Hi Borislav,
+David Hildenbrand <david@redhat.com> writes:
 
-Just wanted to run another option by you. Instead of checking the CPUID here we
-could accomplish the same result by doing _this_ in the hyperv cc init:
+> On 28.10.23 02:09, Stefan Roesch wrote:
+>> This adds the ksm advisor. The ksm advisor automatically manages the
+>> pages_to_scan setting to achieve a target scan time. The target scan
+>> time defines how many seconds it should take to scan all the candidate
+>> KSM pages. In other words the pages_to_scan rate is changed by the
+>> advisor to achieve the target scan time. The algorithm has a max and min
+>> value to:
+>> - guarantee responsiveness to changes
+>> - to avoid to spend too much CPU
+>> The respective parameters are:
+>> - ksm_advisor_target_scan_time (how many seconds a scan should take)
+>> - ksm_advisor_min_cpu (minimum value for cpu percent usage)
+>> - ksm_advisor_max_cpu (maximum value for cpu percent usage)
+>> - ksm_advisor_min_pages (minimum value for pages_to_scan per batch)
+>> - ksm_advisor_max_pages (maximum value for pages_to_scan per batch)
+>> The algorithm calculates the change value based on the target scan time
+>> and the previous scan time. To avoid pertubations an exponentially
+>> weighted moving average is applied.
+>> The advisor is managed by three main parameters: target scan time,
+>> cpu min time and cpu max time for the ksmd background thread. These
+>> parameters determine how aggresive ksmd scans.
+>> In addition there are min and max values for the pages_to_scan parameter
+>> to make sure that its initial and max values are not set too low or too
+>> high. This ensures that it is able to react to changes quickly enough.
+>> The default values are:
+>> - target scan time: 200 secs
+>> - min cpu: 15%
+>> - max cpu: 70%
+>> - min pages: 500
+>> - max pages: 30000
+>
+> Do we really need the min cpu load? The target scan time combined with the max
+> CPU load should be sufficient, no?
+>
+> Internally, we might want some sane default/min start value, but exposing that
+> to the user is questionable.
+>
+> For example, if I have exactly two possible KSM pages in the system, why should
+> my cpu dedicate 15% to scanning nothing after merging them? :)
+>
+> [...]
+>
 
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 8c6bf07f7d2b..705794642d34 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -595,6 +595,8 @@ void __init hv_vtom_init(void)
- #endif
- 
- 	case HV_ISOLATION_TYPE_TDX:
-+		setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-+		tdx_partitioning_active = true;
- 		cc_vendor = CC_VENDOR_INTEL;
- 		break;
- 
+The min cpu case is to make sure that we scan fast enough to be able to
+react fast enough to the changes in the number of pages. This helps in
+determining in how quick we want to react to changes. This helps
+especially with the startup phase of applications.
 
-Which approach do you prefer?
+We can certainly only set a default value, that is not exposed in sysfs.
 
-Thanks,
-Jeremi
+>> +/**
+>> + * struct advisor_ctx - metadata for KSM advisor
+>> + * @start_scan: start time of the current scan
+>> + * @scan_time: scan time of previous scan
+>> + * @change: change in percent to pages_to_scan parameter
+>> + * @cpu_percent: average cpu percent usage of the ksmd thread for the last scan
+>> + */
+>> +struct advisor_ctx {
+>> +	ktime_t start_scan;
+>> +	unsigned long scan_time;
+>> +	unsigned long change;
+>> +	unsigned long long cpu_time;
+>> +};
+>> +static struct advisor_ctx advisor_ctx;
+>> +
+>> +/* Define different advisor's */
+>> +enum ksm_advisor_type {
+>> +	KSM_ADVISOR_NONE,
+>> +	KSM_ADVISOR_FIRST = KSM_ADVISOR_NONE,
+>
+> Unused, better drop it. 0 is the implicit first one.
+>
+Will change it accordingly.
 
->  
->  	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
->  
->  	cc_vendor = CC_VENDOR_INTEL;
-> +
-> +	/*
-> +	 * Need to defer cc_mask and page visibility callback initializations
-> +	 * to a TD-partitioning aware implementation.
-> +	 */
-> +	if (tdx_partitioning_active)
-> +		goto exit;
-> +
->  	tdx_parse_tdinfo(&cc_mask);
->  	cc_set_mask(cc_mask);
->  
-> @@ -820,5 +842,6 @@ void __init tdx_early_init(void)
->  	 */
->  	x86_cpuinit.parallel_bringup = false;
->  
-> +exit:
->  	pr_info("Guest detected\n");
->  }
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 603e6d1e9d4a..fe22f8675859 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -52,6 +52,7 @@ bool tdx_early_handle_ve(struct pt_regs *regs);
->  
->  int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport);
->  
-> +extern bool tdx_partitioning_active;
->  #else
->  
->  static inline void tdx_early_init(void) { };
-> @@ -71,6 +72,8 @@ static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
->  {
->  	return -ENODEV;
->  }
-> +
-> +#define tdx_partitioning_active false
->  #endif /* CONFIG_INTEL_TDX_GUEST && CONFIG_KVM_GUEST */
->  #endif /* !__ASSEMBLY__ */
->  #endif /* _ASM_X86_TDX_H */
+>> +	KSM_ADVISOR_SCAN_TIME,
+>> +	KSM_ADVISOR_LAST = KSM_ADVISOR_SCAN_TIME
+>
+> Instead of "_LAST", maybe use "_COUNT" and use that when checking for valid
+> values.
+>
+> But: we likely want to store "strings" instead of magic numbers from user space
+> instead.
+>
 
+Any recommendation for the naming of the parameters when I switch to
+strings?
+
+>> +};
+>> +static enum ksm_advisor_type ksm_advisor;
+>> +
+>> +static void init_advisor(void)
+>> +{
+>> +	advisor_ctx.start_scan = 0;
+>> +	advisor_ctx.scan_time = 0;
+>> +	advisor_ctx.change = 0;
+>> +	advisor_ctx.cpu_time = 0;
+>> +}
+>
+> That should likely not be required. The values are all 0.
+>
+> If other values are ever required, they could be initialized right with the
+> variable:
+>
+> static struct advisor_ctx advisor_ctx = {
+> 	.start_scan = 0,
+> 	...
+> };
+>
+
+ok
+
+>> +
+>> +/*
+>> + * Use previous scan time if available, otherwise use current scan time as an
+>> + * approximation for the previous scan time.
+>> + */
+>> +static inline unsigned long prev_scan_time(struct advisor_ctx *ctx,
+>> +					   unsigned long scan_time)
+>> +{
+>> +	return ctx->scan_time ? ctx->scan_time : scan_time;
+>> +}
+>> +
+>> +/* Calculate exponential weighted moving average */
+>> +static unsigned long ewma(unsigned long prev, unsigned long curr)
+>> +{
+>> +	return ((100 - EWMA_WEIGHT) * prev + EWMA_WEIGHT * curr) / 100;
+>> +}
+>> +
+>> +/*
+>> + * The scan time advisor is based on the current scan rate and the target
+>> + * scan rate.
+>> + *
+>> + *      new_pages_to_scan = pages_to_scan * (scan_time / target_scan_time)
+>> + *
+>> + * To avoid pertubations it calculates a change factor of previous changes.
+>> + * A new change factor is calculated for each iteration and it uses an
+>> + * exponentially weighted moving average. The new pages_to_scan value is
+>> + * multiplied with that change factor:
+>> + *
+>> + *      new_pages_to_scan *= change facor
+>> + *
+>> + * In addition the new pages_to_scan value is capped by the max and min
+>> + * limits.
+>> + */
+>> +static void scan_time_advisor(unsigned long scan_time)
+>> +{
+>> +	unsigned int cpu_percent;
+>> +	unsigned long cpu_time;
+>> +	unsigned long cpu_time_diff;
+>> +	unsigned long cpu_time_diff_ms;
+>> +	unsigned long pages;
+>> +	unsigned long per_page_cost;
+>> +	unsigned long factor;
+>> +	unsigned long change;
+>> +	unsigned long last_scan_time;
+>> +
+>> +	cpu_time = task_sched_runtime(current);
+>> +	cpu_time_diff = cpu_time - advisor_ctx.cpu_time;
+>> +	cpu_time_diff_ms = cpu_time_diff / 1000 / 1000;
+>> +
+>> +	cpu_percent = (cpu_time_diff_ms * 100) / (scan_time * 1000);
+>> +	cpu_percent = cpu_percent ? cpu_percent : 1;
+>> +	last_scan_time = prev_scan_time(&advisor_ctx, scan_time);
+>> +
+>> +	/* Calculate scan time as percentage of target scan time */
+>> +	factor = ksm_advisor_target_scan_time * 100 / scan_time;
+>> +	factor = factor ? factor : 1;
+>> +
+>> +	/*
+>> +	 * Calculate scan time as percentage of last scan time and use
+>> +	 * exponentially weighted average to smooth it
+>> +	 */
+>> +	change = scan_time * 100 / last_scan_time;
+>> +	change = change ? change : 1;
+>> +	change = ewma(advisor_ctx.change, change);
+>> +
+>> +	/* Calculate new scan rate based on target scan rate. */
+>> +	pages = ksm_thread_pages_to_scan * 100 / factor;
+>> +	/* Update pages_to_scan by weighted change percentage. */
+>> +	pages = pages * change / 100;
+>> +
+>> +	/* Cap new pages_to_scan value */
+>> +	per_page_cost = ksm_thread_pages_to_scan / cpu_percent;
+>> +	per_page_cost = per_page_cost ? per_page_cost : 1;
+>> +
+>> +	pages = min(pages, per_page_cost * ksm_advisor_max_cpu);
+>> +	pages = max(pages, per_page_cost * ksm_advisor_min_cpu);
+>> +	pages = min(pages, ksm_advisor_max_pages);
+>> +
+>> +	/* Update advisor context */
+>> +	advisor_ctx.change = change;
+>> +	advisor_ctx.scan_time = scan_time;
+>> +	advisor_ctx.cpu_time = cpu_time;
+>> +
+>> +	ksm_thread_pages_to_scan = pages;
+>
+> While that advisor is active, we should likely disallow changing
+> ksm_thread_pages_to_scan using other means.
+>
+
+I'll add a check in the corresponding sysfs function
+
+>> +}
+>> +
+>> +static void run_advisor(void)
+>> +{
+>> +	if (ksm_advisor == KSM_ADVISOR_SCAN_TIME) {
+>> +		s64 scan_time;
+>> +
+>> +		/* Convert scan time to seconds */
+>> +		scan_time = ktime_ms_delta(ktime_get(), advisor_ctx.start_scan);
+>> +		scan_time = div_s64(scan_time, MSEC_PER_SEC);
+>> +		scan_time = scan_time ? scan_time : 1;
+>> +
+>> +		scan_time_advisor((unsigned long)scan_time);
+>> +	}
+>
+> We could have rescheduled in the meantime, right? Doesn't that mean that our CPU
+> load consumption might be wrong in some cases?
+>
+Does it matter? I'm interested how long it takes to complete the scan,
+including any scheduling.
+
+>> +}
+>> +
+>>   #ifdef CONFIG_NUMA
+>>   /* Zeroed when merging across nodes is not allowed */
+>>   static unsigned int ksm_merge_across_nodes = 1;
+>> @@ -2401,6 +2554,7 @@ static struct ksm_rmap_item *scan_get_next_rmap_item(struct page **page)
+>>     	mm_slot = ksm_scan.mm_slot;
+>>   	if (mm_slot == &ksm_mm_head) {
+>> +		advisor_ctx.start_scan = ktime_get();
+>
+> Why do that even without KSM_ADVISOR_SCAN_TIME?
+>
+> You should probably have two functions:
+>
+> ksm_advisor_start_scan() [this code, fenced by KSM_ADVISOR_SCAN_TIME]
+> ksm_advisor_stop_scan() [previous run_advisor]
+>
+I'll add the above functions.
+
+>>   		trace_ksm_start_scan(ksm_scan.seqnr, ksm_rmap_items);
+>>     		/*
+>> @@ -2558,6 +2712,8 @@ static struct ksm_rmap_item *scan_get_next_rmap_item(struct page **page)
+>>   	if (mm_slot != &ksm_mm_head)
+>>   		goto next_mm;
+>>   +	run_advisor();
+>> +
+>>   	trace_ksm_stop_scan(ksm_scan.seqnr, ksm_rmap_items);
+>>   	ksm_scan.seqnr++;
+>>   	return NULL;
+>> @@ -3603,6 +3759,7 @@ static int __init ksm_init(void)
+>>   	zero_checksum = calc_checksum(ZERO_PAGE(0));
+>>   	/* Default to false for backwards compatibility */
+>>   	ksm_use_zero_pages = false;
+>> +	init_advisor();
+>>     	err = ksm_slab_init();
+>>   	if (err)
