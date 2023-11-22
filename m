@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8607F4140
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1177F416C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343581AbjKVJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S1343501AbjKVJRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235112AbjKVJJF (ORCPT
+        with ESMTP id S235199AbjKVJQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:09:05 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B524499;
-        Wed, 22 Nov 2023 01:06:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cOCKv2++KLIuAg21SGAwrhK9OHo5VZAQ2mEiIx+oLgk=; b=LH7biDT6ND14MwCmwr5baPJRzn
-        4kmXq8bl6D4nhe/JvmNHE3z7FFNLqGTCY3lYcafHbNJEjAH3tJCYjasIiT5ITF6+bBvJwNhBc64Jk
-        zdC1swd1n/b9vAUIxjumc9gpCi+zp7CMUsDtnFDcJNFmubEzite+95TSOvjQrclG8zzPrt8iOuqVp
-        lTTxikkI1jkwsjD3pf+Evv84DxLrzuOnT0YrjmrrqkgBfn++6vo1vA5cCvjE6kFQE/PI0Rr4iiZZB
-        v1L58Jxu6cmmIbtPiOb5W3whnnjWZyyqOSBu7eX4o1xDAcy6y91y0nKow3qyF2mHkiDR+Z9nfn5m+
-        SmMrAI7w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r5jBp-0019f1-28;
-        Wed, 22 Nov 2023 09:06:33 +0000
-Date:   Wed, 22 Nov 2023 01:06:33 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kunwu Chan <chentao@kylinos.cn>
-Cc:     Christoph Hellwig <hch@infradead.org>, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jkbs@redhat.com, kunwu.chan@hotmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ipv6: Correct/silence an endian warning in
- ip6_multipath_l3_keys
-Message-ID: <ZV3EmcsEqfFuvW4P@infradead.org>
-References: <20231122071924.8302-1-chentao@kylinos.cn>
- <ZV2sWSRzZhy4klrq@infradead.org>
- <37452b03-9c24-42a7-bb4f-ed19f622f0ef@kylinos.cn>
+        Wed, 22 Nov 2023 04:16:46 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF4947A7;
+        Wed, 22 Nov 2023 01:07:12 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5jCP-0007Zc-Qq; Wed, 22 Nov 2023 10:07:09 +0100
+Message-ID: <8b1cc069-b395-401a-aeff-85dd0c1cd8b0@leemhuis.info>
+Date:   Wed, 22 Nov 2023 10:07:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37452b03-9c24-42a7-bb4f-ed19f622f0ef@kylinos.cn>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Bisected stability regression in 6.6
+Content-Language: en-US, de-DE
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux PA-RISC Mailing List <linux-parisc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sam James <sam@gentoo.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <75318812c588816e0c741b4cd094524f@matoro.tk>
+ <ZU8nGV4sg-l9-pkf@archie.me>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZU8nGV4sg-l9-pkf@archie.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700644032;d16c5ae0;
+X-HE-SMSGID: 1r5jCP-0007Zc-Qq
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 05:04:49PM +0800, Kunwu Chan wrote:
-> Hi Christoph,
-> Thanks for your reply.
-> I also can't guarantee that it's the right thing to do. Just wanted to
-> dispel this warning. If you have any better way, please let me know.
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-The most likely reason is that it needs an endianess conversion.  I
-don't know the answer either, but actually spending a few minutes
-trying to understand the code should allow you to find it out quickly.
+On 11.11.23 08:02, Bagas Sanjaya wrote:
+> On Sat, Nov 11, 2023 at 01:31:01AM -0500, matoro wrote:
+>> Hi Helge, I have bisected a regression in 6.6 which is causing userspace
+>> segfaults at a significantly increased rate in kernel 6.6. 
+> #regzbot ^introduced: 3033cd4307681c
 
-Removing a warning for it's own sake when you don't understand it is
-never a good idea.
+#regzbot fix: 5f74f820f6fc844b95f9
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
