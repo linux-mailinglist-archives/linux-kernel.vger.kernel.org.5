@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6821C7F4604
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2317F4606
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344027AbjKVMZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        id S1344056AbjKVMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjKVMZW (ORCPT
+        with ESMTP id S1344032AbjKVMZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:25:22 -0500
+        Wed, 22 Nov 2023 07:25:24 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12421993;
-        Wed, 22 Nov 2023 04:25:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEBC19B5;
+        Wed, 22 Nov 2023 04:25:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1ds4envNOT7GVq8Njfv42lyu3osqRLPlqvGgeFlsUPU=; b=q5387zE5T1HYCt8D7+i+CbRJNv
-        WgaNHTfZ2DJuEOnzyH+DiSSzJz1DWzxMMf8ZyDQnyqYTuOWtr5SqjIsB0Dj0QJECH8ym7C5AsQq3u
-        leVpf5b1VZl+ipxRZ6Q/882x7e81bfWCb/pPlUWursYAH4gafR4vTEVfoxMDgG9QbdiISVGbhbaji
-        o2NDLDfbEcw+U4LlvBi+WrjGqx/we8BVPfbj4vPvK4qxNVgzsOOest5wu3T+i4Dj1sDVC8yfDqXl5
-        lgTANOubIQ7koqyTlTka19ln2fPgc0K8PUxavzh+XQJBki4ywMoKmqpNpgvuZpU4YOwB7ykLjS9GP
-        oghgPQ6g==;
+        bh=4yQxZcgr5tbyXLsqhySHtM21+cl+TW4qxLvrjK5KfV8=; b=FZt5uqJert+RWTmjLvdUSN4g4C
+        l5fDu/9N/AiSLkPkHKq7oWBBAkH3S6B+tP2O+8uyp8jR0/lTgPsQtHW2dK9J/ZD4vqEt/yrC7hZBK
+        EnSKtIGDFHG8d9IJx2mAMPFd8xInQQt7TR26f8p5s+YRpSxRSgifUEH1Gce9jiGoNy5ggNXk0fTEK
+        2IMgQinfn7RLtnicA9+KITVka5UgG+sWlrJN30gFqhGyvhdA5ljaBPSiBrc33R1xklVuvz72DJ4eq
+        bI+q+MYCzFE6KWLJw5aEc/NatqAR2bRNL7JzIvb5BsH2ayyCzQAFotwN5AEwy/6la2cjmQIrrtyLc
+        i3Agk7CA==;
 Received: from [2001:8b0:10b:5:22b8:d80f:1c9c:f188] (helo=u3832b3a9db3152.ant.amazon.com)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r5mHm-006WkL-3b; Wed, 22 Nov 2023 12:24:54 +0000
-Message-ID: <e8beb0b9879062d6593f089b8c8c6a84485d28ad.camel@infradead.org>
-Subject: Re: [PATCH v9 04/15] KVM: pfncache: add a mark-dirty helper
+        id 1r5mHy-006WnT-Hp; Wed, 22 Nov 2023 12:25:06 +0000
+Message-ID: <c7623704c17f3ea2622b700dde525522701c02c7.camel@infradead.org>
+Subject: Re: [PATCH v9 08/15] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Paul Durrant <paul@xen.org>,
         Sean Christopherson <seanjc@google.com>,
@@ -39,12 +40,12 @@ To:     Paul Durrant <paul@xen.org>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 22 Nov 2023 12:24:53 +0000
-In-Reply-To: <20231122121822.1042-5-paul@xen.org>
+Date:   Wed, 22 Nov 2023 12:25:05 +0000
+In-Reply-To: <20231122121822.1042-9-paul@xen.org>
 References: <20231122121822.1042-1-paul@xen.org>
-         <20231122121822.1042-5-paul@xen.org>
+         <20231122121822.1042-9-paul@xen.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-4JYhdge2CoHdBvQKZDkC"
+        boundary="=-L+E6O+J944rKycuPHiXz"
 User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -59,35 +60,29 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-4JYhdge2CoHdBvQKZDkC
+--=-L+E6O+J944rKycuPHiXz
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, 2023-11-22 at 12:18 +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
 >=20
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1367,6 +1367,16 @@ int kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, =
-unsigned long len);
-> =C2=A0 */
-> =C2=A0void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc);
-> =C2=A0
-> +/**
-> + * kvm_gpc_mark_dirty - mark a cached page as dirty.
-> + *
-> + * @gpc:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gf=
-n_to_pfn_cache object.
-> + */
-> +static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mark_page_dirty_in_slot(gpc->k=
-vm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
-> +}
+> Some pfncache pages may actually be overlays on guest memory that have a
+> fixed HVA within the VMM. It's pointless to invalidate such cached
+> mappings if the overlay is moved so allow a cache to be activated directl=
+y
+> with the HVA to cater for such cases. A subsequent patch will make use
+> of this facility.
+>=20
+> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
 
-This doesn't rescind my existing ack, but it's probably worth asserting
-that gpc->lock is held here?
+I like that better now. Thank you.
 
---=-4JYhdge2CoHdBvQKZDkC
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+
+
+
+--=-L+E6O+J944rKycuPHiXz
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -179,24 +174,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIyMTIyNDUzWjAvBgkqhkiG9w0BCQQxIgQgMoQ7aczi
-XwQFC6R/O+NbYe8Vi5i/7nIcrHC2Z5kEQl0wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIyMTIyNTA1WjAvBgkqhkiG9w0BCQQxIgQgKEzp06FV
+4OKuBr5THPvQNFqOBjImU8/SjrGjFdMOEjUwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB3mCGm/+r0ydrHDZjINEWal3tE0krFeEhW
-c2JHwxNaBUX/8dlR1EmVnAfBalyhzCcU3Q+5/TI02LaIAfzv7tiwQhvhywrO3JFQYatji2ZH+xB5
-UjdlWsTV6fawawvMYWBKyWqdAb70PWHNWvSiKqi8mRhaa3UVfVGH7JcYSXVFsznCwpBIeTVzU9Vp
-uQfPk9blVC5A1z1ocLpZy8JsDNyloYdasLw6bgNnnVmsU1xhtTvHZ/Ix6zBk4gog08iYdxP4aahB
-ys6gKHgOVtIyGAm0yGoFtvhmcqrNSWqt4vB+j0tM5i70OD1GbKJIMezrG5uNvvUlfeh0O5qf+z8+
-v1QcjjEqoicOQDxGMqfbgvJYudjxyN8/b1IkA0Arp1spqjmuKGj2gKjWWDkCUMqhQIVCJoEvPV3P
-BO62lLha48d88J4gsvB7ajs239qlYrxyUjjSvc6vgWPs7LUSqccEygjtw+MKQpdFs/+/XCOrnARF
-lSguzplcX8xKfcDVWrRIBJaLP5HW1Aed1uzUSLtc9wMtcI2DXSAIBa1SwMzLMQehtjpor8lw7IaU
-u1D9v8s8+FYdwjJOAPQPiguxKr6CbsQgj6FhtLxDSesU4BRcVSjms9gnC5NGcWdMJfXvH4PnUEZN
-8iImKTLP0o/EoOaRRLWfIfJRaZa3h5ZOHncEuDw09gAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBgURgXrM5ewKc0VmdhPGVbQ0jv0OL4KkNZ
+NY0PcDywEmnzz89v4DX63Di6GuRnpkWKifI5WU3urKImMYCV+lLlyRGfwLvgRQ1HbRyNDeUylsm2
+8QA9eHKUynOAlfnBnX0oXWI5XuSPH/MHjJ1XPTmolWd38+gXuvQMjVifyAz+SmrvZsZUuC3bGzxU
+4HHI0PhCYB1sYYYwsK/CReUcTGeMfSQNLRs2qHsOOGpPWcFGoC1lyz9gxb9dEPWKJWvQajnXyb18
+wyID4Hmu2aiw3EfQFiUFfIVjRz0UWSVM6E7ePMkLPj3GP60ksQfOEMdxc6fBwWHGLcoQDSTvq1WJ
+nzz959ZrTjZd9sGs333/zG90vSitEs6Nemfcgfz7AbGzMLmhnsw0aj7Yv4dmX25IQpWr7zOnq7l7
+jPxj0alJ3FEwJ4YGl4DU3vIUJIUiIZ+UUVQwHybDqlEX19P9F+8ncFJUp1I6Eu8hgheYHxc3WJga
+uBqpF2ROH6qbJJiHnc95K87zZpsq3teejQhkncXiYgRiyTotjkD7POEsERHraqVDKGyvEiK4chwV
+DNB2lFzMbNzh86uwpXkKf7vDFfSlsrr6Sefgx9mDLKs+ZX95AM0mKJPlZQxnqehCjSjrF6wd7P20
+Z1YQoG/UXhieNOfmpOhrE4gbq48zCsP3jA5HBdgn8wAAAAAAAA==
 
 
---=-4JYhdge2CoHdBvQKZDkC--
+--=-L+E6O+J944rKycuPHiXz--
