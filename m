@@ -2,138 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797057F3B12
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D8D7F3B14
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbjKVBLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S234780AbjKVBO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjKVBLD (ORCPT
+        with ESMTP id S229464AbjKVBO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:11:03 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ED61BB;
-        Tue, 21 Nov 2023 17:10:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700615457;
-        bh=x8jTVZuJ1SIBE9Itnw2oH1Ikt8zUpUVpvR9A2GRFlCc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Lt1SgvBhbg/58EstgSIomf2ZAHMkYLO42aJUCMjYBlOFYjzvIyVLHy7/k1Otp3WnM
-         m8RSG8fUeOrhTCyMD7/HuG4/Nz5ZVwNof8il2doN74uWku4OWgucffyVgwHJr9x+JF
-         OXA5VBTt1PkqaguTTVC7I4AlBhhikZBSWF6kxq3TwDjb4ZBSukyAeNwBaS/buT9DXm
-         8Tikc8QaURw4BJoxnlfFNwxmtA6DlQiO8MmrwhjmsWPIL6unufy7Jgg7SgTARjhdsc
-         YL0CyxWL4gd2BaA6zdTpa+VCLsF+RY1zJm+pqfhts61s5LrwS3jRN5I5+MWUlRwcSI
-         caHef7Wjs+B0g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SZjqN32rVz4x7q;
-        Wed, 22 Nov 2023 12:10:56 +1100 (AEDT)
-Date:   Wed, 22 Nov 2023 12:10:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Wayne Lin <Wayne.Lin@amd.com>
-Subject: Re: linux-next: manual merge of the drm-intel tree with Linus' tree
-Message-ID: <20231122121054.0d660cd8@canb.auug.org.au>
-In-Reply-To: <20231122115137.04a33a6c@canb.auug.org.au>
-References: <20231122115137.04a33a6c@canb.auug.org.au>
+        Tue, 21 Nov 2023 20:14:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098EE199
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:14:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23AF8C433C8;
+        Wed, 22 Nov 2023 01:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700615664;
+        bh=rphzolO4qNFSWg1tDMw1cULkepLmztnO/fdyF7aCD/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nrVWFy+llDoq6D7PZjaiAXmmUgR9/2t/fPiONPKKVbSp1ki43ndsX1+mM//dArRI3
+         Ercyb0mb3CzQ0WKOE43JoMhsoS9OpGRcDGytKRRFCP+CMxPV01k2rshgGA+x/Ujagq
+         mTvwLEBrZ6NTCoc/QEM/nqWhsm5dgsQfD6olfUePK/Ser1rEPQl80RBASM8XG5PVQO
+         f4i6CRxJX+jNaY+OSmCbB/eCvsDC03m4Bz8QgmKAH4OWa2y/iOQ6awZG89h2k5UbJh
+         0zhl1vnz0yYOI6+nWUfrjudkfiS66CNcLlqJWvgSyClI5XK9kx+1yKHmiPXRiWIOv1
+         SPG+qtA42ri5g==
+Date:   Tue, 21 Nov 2023 17:14:22 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jerry Shih <jerry.shih@sifive.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
+        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
+        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
+        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
+        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated
+ AES-CBC/CTR/ECB/XTS implementations
+Message-ID: <20231122011422.GF2172@sol.localdomain>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-7-jerry.shih@sifive.com>
+ <20231102051639.GF1498@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fcudTv.a=RMzgcutdNML3A_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102051639.GF1498@sol.localdomain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fcudTv.a=RMzgcutdNML3A_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 01, 2023 at 10:16:39PM -0700, Eric Biggers wrote:
+> > +	  Architecture: riscv64 using:
+> > +	  - Zvbb vector extension (XTS)
+> > +	  - Zvkb vector crypto extension (CTR/XTS)
+> > +	  - Zvkg vector crypto extension (XTS)
+> > +	  - Zvkned vector crypto extension
+> 
+> Maybe list Zvkned first since it's the most important one in this context.
 
-Hi all,
+BTW, I'd like to extend this request to the implementation names
+(.cra_driver_name) and the names of the files as well.  I.e., instead of:
 
-On Wed, 22 Nov 2023 11:51:37 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the drm-intel tree got a conflict in:
->=20
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
->=20
-> between commit:
->=20
->   9031e0013f81 ("drm/amd/display: Fix mst hub unplug warning")
->=20
-> from Linus' tree and commit:
->=20
->   191dc43935d1 ("drm/dp_mst: Store the MST PBN divider value in fixed poi=
-nt format")
->=20
-> from the drm-intel tree.
->=20
-> I fixed it up (I just used the former) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+    aes-riscv64-zvkned
+    aes-riscv64-zvkb-zvkned
+    aes-riscv64-zvbb-zvkg-zvkned
+    sha256-riscv64-zvkb-zvknha_or_zvknhb
+    sha512-riscv64-zvkb-zvknhb
 
-Actually, the resolution I used is below.
+... we'd have:
 
---=20
-Cheers,
-Stephen Rothwell
+    aes-riscv64-zvkned
+    aes-riscv64-zvkned-zvkb
+    aes-riscv64-zvkned-zvbb-zvkg
+    sha256-riscv64-zvknha_or_zvknhb-zvkb
+    sha512-riscv64-zvknhb-zvkb
 
-diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index c7a29bb737e2,53e323b71d26..000000000000
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@@ -209,11 -210,11 +210,11 @@@ static void dm_helpers_construct_old_pa
-  			struct drm_dp_mst_atomic_payload *new_payload,
-  			struct drm_dp_mst_atomic_payload *old_payload)
-  {
- -	struct link_mst_stream_allocation_table current_link_table =3D
- -									link->mst_stream_alloc_table;
- -	struct link_mst_stream_allocation *dc_alloc;
- -	int pbn_per_slot =3D dfixed_trunc(pbn_per_slot_fp);
- -	int i;
- +	struct drm_dp_mst_atomic_payload *pos;
-- 	int pbn_per_slot =3D mst_state->pbn_div;
-++	int pbn_per_slot =3D dfixed_trunc(mst_state->pbn_div);
- +	u8 next_payload_vc_start =3D mgr->next_start_slot;
- +	u8 payload_vc_start =3D new_payload->vc_start_slot;
- +	u8 allocated_time_slots;
- =20
-  	*old_payload =3D *new_payload;
- =20
+and similarly for the cra_driver_name fields.
 
---Sig_/fcudTv.a=RMzgcutdNML3A_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I think that's much more logical.  Do you agree?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVdVR4ACgkQAVBC80lX
-0GzuPQf/VOh8+IwdxziZyUsjKcm3yIhPPVmxgtSCWsgGOC00PCVaC4L3J6ktverQ
-MSCFmxOpp0rOcTTH9EYl1J3K31SHvs2q605cIFb98W16+kaSy7lHAgBKWk/rVG93
-DgOJDlzDjQWVB94eMSkt6aVY+ydyv5K3+klmzldYfNPcP1ouZ40qrB52Ji/vyQZ3
-QwbGQ945WfedLtnbjR3uppBmNAljSYfvSvFmPpAaKSRIbLhRXOFo/354E31jSkOH
-q3sp43BhpMhKeTZ5W7zZCzxtvrVv3/wF1uGMV2fxF4eapIfvL4mlS5Z+rTNAq/3c
-gUPVx6g1mJI0WiQBVbDLgqQkeKBsfA==
-=SMFA
------END PGP SIGNATURE-----
-
---Sig_/fcudTv.a=RMzgcutdNML3A_--
+- Eric
