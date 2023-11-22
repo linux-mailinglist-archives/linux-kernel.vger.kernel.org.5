@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EC67F4590
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6447F45C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343845AbjKVMSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        id S1344204AbjKVMUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjKVMSK (ORCPT
+        with ESMTP id S1344112AbjKVMUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:18:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1700312C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:18:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FDF0C433CA;
-        Wed, 22 Nov 2023 12:18:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700655486;
-        bh=tmSdO6nisNWdPSNXgRxViOIYsBYRjANzc2daxjLNPig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=epZ3rf/oEy+7PKuqgt/KSthVqt1SOGxa27is5H21g48Thjk0I+JTj7we4G3K9YFLa
-         rCoO9/MEKiZgh1dF5Tso7aqOHoyBhsEqh50oIRSMwVElFoQBbnz4IsI/HWu7y8l/oP
-         4M1+FCwa++5sJmD6U+/rPLtNw52T3WtqYaAHb/ESMESxAsBX7f6PC+aL3M3K/qMnEL
-         zuAdqADiWCdauxyIy6luFCgjtcY4L3iOXZER5+L9DZKU8UcoV/eraJ2h9sW5en35LO
-         fv+N4HfBPgErFNPbcovoOoVaGbG+/JaAxVgkpqFEs7t4pK1AEUEQm0BYtV6o7ofQA9
-         t6S++A1natRVA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5872040094; Wed, 22 Nov 2023 09:18:03 -0300 (-03)
-Date:   Wed, 22 Nov 2023 09:18:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf MANIFEST: Add gen-sysreg for ARM SPE
-Message-ID: <ZV3xe1qVCiz5bkLP@kernel.org>
-References: <20231122022805.511839-1-irogers@google.com>
+        Wed, 22 Nov 2023 07:20:05 -0500
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F13212C;
+        Wed, 22 Nov 2023 04:19:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:To:From; bh=O6hLRXK6yeKR3L6pdrCbc5lhM310DUyC48DzYfsWYvk=; b=tZpORAkD1
+        lcnWLw/OnmyphFpsriRXatUnw457DwkIMeSpO9TOKgGUx2DJKDJ9q/8s3Wos8kTxEe5ZGTrL/WJ4W
+        5wRS6Y9gHPCxPcGegT9Vbd3yPxEswE543iuvQSxyG9mhx7yODKBehQ2+r08iMVefe6xHeW+oJ5uv2
+        sBGtTQ1A=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1r5mBn-0004vx-AU; Wed, 22 Nov 2023 12:18:43 +0000
+Received: from 54-240-197-231.amazon.com ([54.240.197.231] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1r5mBn-0004y9-04; Wed, 22 Nov 2023 12:18:43 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/15] KVM: xen: update shared_info and vcpu_info handling
+Date:   Wed, 22 Nov 2023 12:18:07 +0000
+Message-Id: <20231122121822.1042-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122022805.511839-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 21, 2023 at 06:28:05PM -0800, Ian Rogers escreveu:
-> The necessary files for generating sysreg-defs.h need adding to the
-> perf tool MANIFEST that lists the files for packaging the perf tool
-> source code. Fix for the following:
-> 
-> ```
-> $ make perf-tar-src-pkg
-> $ tar xvf perf-6.7.0-rc2.tar
-> $ cd perf-6.7.0-rc2
-> $ make -C tools/perf
-> ...
->   PERF_VERSION = 6.7.rc2.gc2d5304e6c64
-> make[3]: *** No rule to make target 'perf-6.7.0-rc2/arch/arm64/tools/gen-sysreg.awk', needed by 'perf-6.7.0-rc2/tools/arch/arm64/include/generated/asm/sysreg-defs.h'.  Stop.
-> make[2]: *** [Makefile.perf:456: arm64-sysreg-defs] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [Makefile.perf:242: sub-make] Error 2
-> make: *** [Makefile:70: all] Error 2
-> make: Leaving directory 'perf-6.7.0-rc2/tools/perf'
-> ...
-> ```
-> 
-> Fixes: e2bdd172e665 ("perf build: Generate arm64's sysreg-defs.h and add to include path")
+From: Paul Durrant <pdurrant@amazon.com>
 
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+This is a minimal update to version 8 of the series [1]. The only material
+change is in "pfncache: allow a cache to be activated with a fixed
+(userspace) HVA".
 
-Namhyung, I'm testing this together with your headers sync series + what
-is in perf-tools/tmp.perf-tools, will report results soon.
+[1] https://lore.kernel.org/kvm/20231121180223.12484-1-paul@xen.org/
 
-- Arnaldo
+Paul Durrant (15):
+  KVM: pfncache: Add a map helper function
+  KVM: pfncache: remove unnecessary exports
+  KVM: xen: mark guest pages dirty with the pfncache lock held
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+  KVM: pfncache: stop open-coding offset_in_page()
+  KVM: pfncache: include page offset in uhva and use it consistently
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: allow vcpu_info to be mapped by fixed HVA
+  KVM: selftests / xen: map shared_info using HVA rather than GFN
+  KVM: selftests / xen: re-map vcpu_info using HVA rather than GPA
+  KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  KVM: xen: split up kvm_xen_set_evtchn_fast()
+  KVM: xen: allow vcpu_info content to be 'safely' copied
 
-> ---
-> Note: the breakage is in Linus' tree and perf-tools, not yet in perf-tools-next.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/MANIFEST | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/MANIFEST b/tools/perf/MANIFEST
-> index 1da7f4b91b4f..dc42de1785ce 100644
-> --- a/tools/perf/MANIFEST
-> +++ b/tools/perf/MANIFEST
-> @@ -1,3 +1,5 @@
-> +arch/arm64/tools/gen-sysreg.awk
-> +arch/arm64/tools/sysreg
->  tools/perf
->  tools/arch
->  tools/scripts
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-> 
+ Documentation/virt/kvm/api.rst                |  53 +++-
+ arch/x86/kvm/x86.c                            |   7 +-
+ arch/x86/kvm/xen.c                            | 260 +++++++++++-------
+ include/linux/kvm_host.h                      |  38 ++-
+ include/linux/kvm_types.h                     |   8 -
+ include/uapi/linux/kvm.h                      |   9 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 +++-
+ virt/kvm/pfncache.c                           | 169 ++++++------
+ 8 files changed, 370 insertions(+), 233 deletions(-)
 
+
+base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
 -- 
+2.39.2
 
-- Arnaldo
