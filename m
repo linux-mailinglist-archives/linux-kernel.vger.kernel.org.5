@@ -2,216 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B43F7F5159
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC697F515B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjKVUOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S231648AbjKVUQz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 15:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVUOm (ORCPT
+        with ESMTP id S230225AbjKVUQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:14:42 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5C618E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:14:38 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c41e95efcbso16219466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700684075; x=1701288875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nr1DL5tfS7yVcqLu3K8sHUIKgak2PAZwUVJOppxZncw=;
-        b=AzBufSyFnMw9kRzIamQRdt9Q9+qORRHFV+wX4ZHvgtqDOeX0tyRL3qySDR4/2Tm5Uf
-         BVLCuMH0kpmtDp0o5szBioWDIAn4pRg3RJN33puRPqU4g3NL5vUf68qyOj0v5vqCxSvO
-         ojYPbSBQ8gCBruCMt8TKz/Yorli395uvWW65LFLgYf7unrNT3nUs20hRD7xHuskUR2yp
-         ADlY53m+83ScehQm5jH0v2zRbhTgUEE+Ycat8clq47HSFhmDxIq0gcRd02y3aT4Z0FIi
-         5LG5PIm5j411DGnBBReT0ltnCr8Gpt56L1LSc4s60AlUHbWmRzvlPMuHopASLsxWUPfs
-         dfTw==
+        Wed, 22 Nov 2023 15:16:54 -0500
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4571BD;
+        Wed, 22 Nov 2023 12:16:50 -0800 (PST)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1f4b29abdbcso21055fac.0;
+        Wed, 22 Nov 2023 12:16:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700684075; x=1701288875;
+        d=1e100.net; s=20230601; t=1700684210; x=1701289010;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nr1DL5tfS7yVcqLu3K8sHUIKgak2PAZwUVJOppxZncw=;
-        b=AzcAj9a+4ZAd8zOJHeIoeNo9HT6unZktU2/TeKe8KHH6WFrNTaqGUVa9lD9mYLxalu
-         ZQ+NvBL8cfx/PBEnOmu1oeFi7H/XUc/NvRIzo767mmdiYDOW89KREDjHn2dYb/KCEooe
-         B4qU+gVC99uiJLkjAryArsY6E3fLy/VM//Dmnvngsu4a6YpWP9b7oizi4zLPYyrdTaie
-         WFNRnVh9djTMIYAGfMwcpc9MJnBrfz9A8iYgIx3dvKGgq0XTHZwpSKbG7lHMLemitwFD
-         0e/d3+8iOh/nAAAyczPxoXHiEmP4dXYrEetDYeCbOL9OpJgwOTMUmWQ+4jb8grq6QiSg
-         0SgA==
-X-Gm-Message-State: AOJu0YwMuYqtdLPot2+XKW50bh3y/VNLQoPxqlhomgQqI/l7ZaH17MuY
-        wm3tQgxwsWiu7upuv9/zi8ODH0SNXvlQ6oHXsQWhew==
-X-Google-Smtp-Source: AGHT+IHbBy1vuIP1D9N/BZThCao3URRhWQAoOskMKsAuPWcwfw10Wsu0XS7bo7PRD0BcT2+AKxZUzvlww04D4RfRVBI=
-X-Received: by 2002:a17:906:4c:b0:a02:ac3d:9e97 with SMTP id
- 12-20020a170906004c00b00a02ac3d9e97mr2423326ejg.9.1700684074674; Wed, 22 Nov
- 2023 12:14:34 -0800 (PST)
+        bh=U+AKNbPfGcSitF9DQBk43/GENfS9BTVC5pjwY2CWch8=;
+        b=Bu5pFWc2ETKxL65yawgTFd7QN/bAEYfIseyHUYG/wZv4J0cEI8nhynLHfTa7QvWgpn
+         UY6i6wsyCO4nqk7poMpH3gwZFogrqI2UlMoZKhy385XeLHqUGBy6p4Gj3K26HIjo5vbT
+         SFdIwNj1diF59CY/axcaC0cN3zzJUehQvNm7WSmq2Q3+sE0ji2i2enNeYb6w7XS33RN0
+         kC1unYUAdEH+y/gchfS7wg79HZqn6UjveITZ7SmkAOqx+ySIfBe05J3oJrMx2v5sTQhu
+         ACPcVkA83B2SibqwvK88yc7xy6DPcyQ4RlnlNZDvltTwmpQLhWw2KjJeHh8qpYJawe/7
+         CM+A==
+X-Gm-Message-State: AOJu0YwBcB68LlYn0Nia3sbFrGu7yDB2adf3QhBmPUfU8N4gDfZlEFcg
+        7Zyt40jhWHNXp1YmKF13Aa/UVAfIY6EGdYP8jrKalExF
+X-Google-Smtp-Source: AGHT+IEZOuwWL+O8Ns2NywQDonavCXvBHcgdxxi2QZSHFBHwzFPNR8Ac+xre6B7/Fz+/eqIGB2UbpAfb/c6ikknz6l8=
+X-Received: by 2002:a05:6871:7a0:b0:1e9:8a7e:5893 with SMTP id
+ o32-20020a05687107a000b001e98a7e5893mr4323044oap.5.1700684209905; Wed, 22 Nov
+ 2023 12:16:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121090624.1814733-1-liushixin2@huawei.com>
- <ZVyp5eETLTT0PCYj@tiehlicka> <32fe518a-e962-14ae-badc-719390386db9@huawei.com>
- <CAJD7tkbC=Z6qAE+b6Ch5eVxNY7k0p98i_=RY0m4_3yg5C_zv+A@mail.gmail.com>
- <ZV3BWZ4ZaD5Rj_HS@tiehlicka> <ZV3TQCElHpcp0h0V@tiehlicka> <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
- <ZV3_6UH28KMt0ZDb@tiehlicka>
-In-Reply-To: <ZV3_6UH28KMt0ZDb@tiehlicka>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 22 Nov 2023 12:13:54 -0800
-Message-ID: <CAJD7tkZfxaSBW8K4kWPBCYuVQYsSj_fk054nGPqCD1Y2QODtZg@mail.gmail.com>
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Liu Shixin <liushixin2@huawei.com>, Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk> <E1r5R31-00Csyt-Jq@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r5R31-00Csyt-Jq@rmk-PC.armlinux.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 22 Nov 2023 21:16:39 +0100
+Message-ID: <CAJZ5v0iYRXh369M3XTM0V8Q9mWkAT2y+9pJMD7HMaGjgpvFEMw@mail.gmail.com>
+Subject: Re: [PATCH 05/21] ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64
+ and riscv
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 5:19=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Tue, Nov 21, 2023 at 2:44 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
 >
-> On Wed 22-11-23 02:39:15, Yosry Ahmed wrote:
-> > On Wed, Nov 22, 2023 at 2:09=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Wed 22-11-23 09:52:42, Michal Hocko wrote:
-> > > > On Tue 21-11-23 22:44:32, Yosry Ahmed wrote:
-> > > > > On Tue, Nov 21, 2023 at 10:41=E2=80=AFPM Liu Shixin <liushixin2@h=
-uawei.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 2023/11/21 21:00, Michal Hocko wrote:
-> > > > > > > On Tue 21-11-23 17:06:24, Liu Shixin wrote:
-> > > > > > >
-> > > > > > > However, in swapcache_only mode, the scan count still increas=
-ed when scan
-> > > > > > > non-swapcache pages because there are large number of non-swa=
-pcache pages
-> > > > > > > and rare swapcache pages in swapcache_only mode, and if the n=
-on-swapcache
-> > > > > > > is skipped and do not count, the scan of pages in isolate_lru=
-_folios() can
-> > > > > > > eventually lead to hung task, just as Sachin reported [2].
-> > > > > > > I find this paragraph really confusing! I guess what you mean=
-t to say is
-> > > > > > > that a real swapcache_only is problematic because it can end =
-up not
-> > > > > > > making any progress, correct?
-> > > > > > This paragraph is going to explain why checking swapcache_only =
-after scan +=3D nr_pages;
-> > > > > > >
-> > > > > > > AFAIU you have addressed that problem by making swapcache_onl=
-y anon LRU
-> > > > > > > specific, right? That would be certainly more robust as you c=
-an still
-> > > > > > > reclaim from file LRUs. I cannot say I like that because swap=
-cache_only
-> > > > > > > is a bit confusing and I do not think we want to grow more sp=
-ecial
-> > > > > > > purpose reclaim types. Would it be possible/reasonable to ins=
-tead put
-> > > > > > > swapcache pages on the file LRU instead?
-> > > > > > It looks like a good idea, but I'm not sure if it's possible. I=
- can try it, is there anything to
-> > > > > > pay attention to?
-> > > > >
-> > > > > I think this might be more intrusive than we think. Every time a =
-page
-> > > > > is added to or removed from the swap cache, we will need to move =
-it
-> > > > > between LRUs. All pages on the anon LRU will need to go through t=
-he
-> > > > > file LRU before being reclaimed. I think this might be too big of=
- a
-> > > > > change to achieve this patch's goal.
-> > > >
-> > > > TBH I am not really sure how complex that might turn out to be.
-> > > > Swapcache tends to be full of subtle issues. So you might be right =
-but
-> > > > it would be better to know _why_ this is not possible before we end=
- up
-> > > > phising for couple of swapcache pages on potentially huge anon LRU =
-to
-> > > > isolate them. Think of TB sized machines in this context.
-> > >
-> > > Forgot to mention that it is not really far fetched from comparing th=
-is
-> > > to MADV_FREE pages. Those are anonymous but we do not want to keep th=
-em
-> > > on anon LRU because we want to age them indepdendent on the swap
-> > > availability as they are just dropped during reclaim. Not too much
-> > > different from swapcache pages. There are more constrains on those bu=
-t
-> > > fundamentally this is the same problem, no?
-> >
-> > I agree it's not a first, but swap cache pages are more complicated
-> > because they can go back and forth, unlike MADV_FREE pages which
-> > usually go on a one way ticket AFAICT.
+> From: James Morse <james.morse@arm.com>
 >
-> Yes swapcache pages are indeed more complicated but most of the time
-> they just go away as well, no? MADV_FREE can be reinitiated if they are
-> written as well. So fundamentally they are not that different.
+> Neither arm64 nor riscv support physical hotadd of CPUs that were not
+> present at boot. For arm64 much of the platform description is in static
+> tables which do not have update methods. arm64 does support HOTPLUG_CPU,
+> which is backed by a firmware interface to turn CPUs on and off.
 >
-> > Also pages going into the swap
-> > cache can be much more common that MADV_FREE pages for a lot of
-> > workloads. I am not sure how different reclaim heuristics will react
-> > to such mobility between the LRUs, and the fact that all pages will
-> > now only get evicted through the file LRU. The anon LRU will
-> > essentially become an LRU that feeds the file LRU. Also, the more
-> > pages we move between LRUs, the more ordering violations we introduce,
-> > as we may put colder pages in front of hotter pages or vice versa.
+> acpi_processor_hotadd_init() and acpi_processor_remove() are for adding
+> and removing CPUs that were not present at boot. arm64 systems that do this
+> are not supported as there is currently insufficient information in the
+> platform description. (e.g. did the GICR get removed too?)
 >
-> Well, traditionally the file LRU has been maintaining page cache or
-> easily disposable pages like MADV_FREE (which can be considered a cache
-> as well). Swapcache is a form of a page cache as well.
+> arm64 currently relies on the MADT enabled flag check in map_gicc_mpidr()
+> to prevent CPUs that were not described as present at boot from being
+> added to the system. Similarly, riscv relies on the same check in
+> map_rintc_hartid(). Both architectures also rely on the weak 'always fails'
+> definitions of acpi_map_cpu() and arch_register_cpu().
+>
+> Subsequent changes will redefine ACPI_HOTPLUG_CPU as making possible
+> CPUs present. Neither arm64 nor riscv support this.
+>
+> Disable ACPI_HOTPLUG_CPU for arm64 and riscv by removing 'default y' and
+> selecting it on the other three ACPI architectures. This allows the weak
+> definitions of some symbols to be removed.
+>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-If I understand correctly, when we move the MADV_FREE pages to the
-file LRU, we don't have correct information about their relative
-ordering compared to the pages that are already in the inactive file
-LRU. IOW, we mess up the ordering of the inactive file LRU a little.
-If we add more cases of moving pages to the file LRU (for the swap
-cache), we may make it worse. I am also not sure how this works with
-MGLRU generations.
+I can apply this if it gets ACKs from the maintainers of the affected
+architectures.
 
-Keep in mind that when a page is affected with MADV_FREE, it's always
-called. On the other hand, when a page is added to the swap cache, it
-could be because it's under reclaim (cold), or it was just swapped in
-(hot). I am not sure this practically matters, just something to think
-about.
-
-It also seems like all evictions will now be done from the file LRU,
-so some heuristics (like workingset) may need to be updated
-accordingly.
-
+> ---
+> Changes since RFC:
+>  * Expanded conditions to avoid ACPI_HOTPLUG_CPU being enabled when
+>    HOTPLUG_CPU isn't.
+> Changes since RFC v3:
+>  * Dropped ia64 changes
+> ---
+>  arch/loongarch/Kconfig        |  1 +
+>  arch/x86/Kconfig              |  1 +
+>  drivers/acpi/Kconfig          |  1 -
+>  drivers/acpi/acpi_processor.c | 18 ------------------
+>  4 files changed, 2 insertions(+), 19 deletions(-)
 >
-> > All in all, I am not saying it's a bad idea or not possible, I am just
-> > saying it's probably more complicated than MADV_FREE, and adding more
-> > cases where pages move between LRUs could introduce problems (or make
-> > existing problems more visible).
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index ee123820a476..331becb2cb4f 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -5,6 +5,7 @@ config LOONGARCH
+>         select ACPI
+>         select ACPI_GENERIC_GSI if ACPI
+>         select ACPI_MCFG if ACPI
+> +       select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
+>         select ACPI_PPTT if ACPI
+>         select ACPI_SYSTEM_POWER_STATES_SUPPORT if ACPI
+>         select ARCH_BINFMT_ELF_STATE
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 3762f41bb092..dbdcfc708369 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -59,6 +59,7 @@ config X86
+>         #
+>         select ACPI_LEGACY_TABLES_LOOKUP        if ACPI
+>         select ACPI_SYSTEM_POWER_STATES_SUPPORT if ACPI
+> +       select ACPI_HOTPLUG_CPU                 if ACPI_PROCESSOR && HOTPLUG_CPU
+>         select ARCH_32BIT_OFF_T                 if X86_32
+>         select ARCH_CLOCKSOURCE_INIT
+>         select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index f819e760ff19..a3acfc750fce 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -310,7 +310,6 @@ config ACPI_HOTPLUG_CPU
+>         bool
+>         depends on ACPI_PROCESSOR && HOTPLUG_CPU
+>         select ACPI_CONTAINER
+> -       default y
 >
-> Do we want to start adding filtered anon scan for a certain type of
-> pages? Because this is the question here AFAICS. This might seem an
-> easier solution but I would argue that it is less predictable one.
-> It is not unusual that a huge anon LRU would contain only very few LRU
-> pages.
-
-I agree that it may be a problem in some situations.
-
+>  config ACPI_PROCESSOR_AGGREGATOR
+>         tristate "Processor Aggregator"
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 0f5218e361df..4fe2ef54088c 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -184,24 +184,6 @@ static void __init acpi_pcc_cpufreq_init(void) {}
 >
-> That being said, I might be missing some obvious or less obvious reasons
-> why this is completely bad idea. Swapcache is indeed subtle.
+>  /* Initialization */
+>  #ifdef CONFIG_ACPI_HOTPLUG_CPU
+> -int __weak acpi_map_cpu(acpi_handle handle,
+> -               phys_cpuid_t physid, u32 acpi_id, int *pcpu)
+> -{
+> -       return -ENODEV;
+> -}
+> -
+> -int __weak acpi_unmap_cpu(int cpu)
+> -{
+> -       return -ENODEV;
+> -}
+> -
+> -int __weak arch_register_cpu(int cpu)
+> -{
+> -       return -ENODEV;
+> -}
+> -
+> -void __weak arch_unregister_cpu(int cpu) {}
+> -
+>  static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+>  {
+>         unsigned long long sta;
 > --
-> Michal Hocko
-> SUSE Labs
+> 2.30.2
+>
