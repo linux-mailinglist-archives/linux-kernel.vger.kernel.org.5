@@ -2,245 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3905A7F4BE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD577F4BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbjKVQEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:04:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        id S1343554AbjKVQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:06:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235174AbjKVQEp (ORCPT
+        with ESMTP id S230398AbjKVQGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:04:45 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736EC11F
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:04:40 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50aba9b8955so3781e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700669078; x=1701273878; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nj+30jdiOOCg1UaHjY820RtiMj34MynXeJNrGTwqL0A=;
-        b=P21Hg/aFfOzi3tbMDwSB/VF1XmLZAS0FbVaqEPdRcpJpYFW2O9J0q4nJksegh2EIqW
-         OsvFYtLzxyl3ZKBmRPNh2+3SldOPz83puVZxCNeF+Punuf9FXSY3YMVLSa4DrZDRCDpI
-         uh7RWHQKP+WZxGKZmP/cUogBp5KcOMK6se0DL1zdxE4JguuQSRZwqgg8/VwOz6TQw96I
-         fDIY3ZXpvtzIfZ0G6OOcT/zepiTe47aWbFUoAMslk1JnIWyYFWos69gzMudc7nHGQcKe
-         DOf2meaUHCiJykJX9jknvz3KRurM+xZWQ313JK9euGZrBUQQlfxkPkJRUlqwpO1ytrGa
-         tn8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700669078; x=1701273878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nj+30jdiOOCg1UaHjY820RtiMj34MynXeJNrGTwqL0A=;
-        b=XVNCSMbgewzjN5SOl3Glr1Bcr6zfGJvctwwCwzoYU9kCDGuUsp70SLKLofC43H/Cdf
-         B95tLQZFsnGhEGKn4Z7tY+VN9yHQwSuiYGCiGgPfGgi+OOZWnavpRGB3tnh7D7Upd0LB
-         VBZ3ZmTCzn2250Rr7xwr5N6LOzjVS3Dn5AsH7MkbbUv/o0RASALlCDVJS68VJDJZ54xq
-         BkNvyubVJCSPp4bIDY8wWoHE5mIzsQCrFa1/tQEe4QvPciNBNo0ujobheUgwHEKDYfb6
-         gZx0misjbiPoNNH8HFpk0SnfWz58GUP++h6/xcjQjCGbsxWaoUcynbGOrvDvj7PdKZ+N
-         zcqg==
-X-Gm-Message-State: AOJu0YzDRiGg5mJaCdKGjovzPlUL2YlbTj5XRM5eMhD4nANCoSgabFUU
-        X973w248X2QLYqDUYsKG6jAdzyu/z5Ehasmc1P9Oyw==
-X-Google-Smtp-Source: AGHT+IHIYUVek53rAYMk/EECqSGezlgDvPNPBPmgTsRwifeiw896LVsKTisgifmKhCgNz4bvZjesbvW46vtyHZKxGRk=
-X-Received: by 2002:a05:6512:b91:b0:509:9035:a2bb with SMTP id
- b17-20020a0565120b9100b005099035a2bbmr146919lfv.2.1700669078382; Wed, 22 Nov
- 2023 08:04:38 -0800 (PST)
+        Wed, 22 Nov 2023 11:06:13 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F0E9F;
+        Wed, 22 Nov 2023 08:06:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F75zKz2uyLa5jPpB1aeIuWyYIfeWsSqMQIqAcmW0nUCdDpfiUxu75f0thG5ebvOZcpeWuI+AONmJ/4MLyBXp6Vi+TPNfXYgCTzkEstbam3DzfaWrJZ6EguL0Cweqh+DMqxOjbQKtQ8FZ+RuNiumwQc/2sV1SUDy5chFLJ6yR2NkPGxyQtmA4D+7GgO7RAfe+rF5kT2LLQNlNslAvDZ03Ths+fOERuvSZiOYCq8eBZvnLDR0t7Mycxvo4GSBvF69iltvu50/y+MGPbp7huZMu8f4tlGxm7iX17AtUrulNndfKBvqp5GADU1mnxQ/1WW4WLjK14SOv8d4NFbTQQgVGRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ssQ4Yr7Ver3oTpMBl/KrUoFjnDijHLncadph/ptPiV0=;
+ b=R5OUM3GDlMcS4O3XRPZNRLL5dd3dAlSi+58/2mjVjuCdkKkPa58m299EIhTlOMPEmXKo+yV4GE0+g3zfTlvjmp2h7oYUKxQ3DZtro3XGX/ov3V3LrbJbCMrpgos9ZB7mgt74gnQJk9dmGnPOrHYbjL02H5AzEfeC2tBFPFcm7E1UnJ4lL2cRruNP0jWIibQegbS6xolRO71QVvnlm+i8F91kYsdhxAgfomnN7d3RCvT0pKdY771dpgTR6ESL+a4DMI8zHRE/LEr+GzJztJ8LGxvJOlLcyGYfKM4RxG2PIyoIue7t/IzVi3vSgkjECV26AQV3SU2f8vx6aIeDMPsf5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ssQ4Yr7Ver3oTpMBl/KrUoFjnDijHLncadph/ptPiV0=;
+ b=R+gNuEkmsX2UjLOVK7lCldTik7/WlAkiMvPDi4+UwpRpjMSUM81l8EWTFdr8KjVJEjQGBQ3D9ciBNUzr+7e7WlkJhbdnzScPgHuAAr6B+qH8feGhL4Dhg9ya8FUhF/E8YucsGC5PwECYsYMBkL6xxlgEVaSaXCyq0a4aVYn1WGg=
+Received: from DM6PR02CA0131.namprd02.prod.outlook.com (2603:10b6:5:1b4::33)
+ by MW6PR12MB9017.namprd12.prod.outlook.com (2603:10b6:303:23b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
+ 2023 16:06:07 +0000
+Received: from DS1PEPF00017096.namprd05.prod.outlook.com
+ (2603:10b6:5:1b4:cafe::4d) by DM6PR02CA0131.outlook.office365.com
+ (2603:10b6:5:1b4::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19 via Frontend
+ Transport; Wed, 22 Nov 2023 16:06:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS1PEPF00017096.mail.protection.outlook.com (10.167.18.100) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 16:06:07 +0000
+Received: from KfdLnx23.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
+ 2023 10:06:06 -0600
+From:   Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>, <christian.koenig@amd.com>,
+        <sumit.semwal@linaro.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+Subject: [PATCH] dma-buf: Correct the documentation of name and exp_name symbols
+Date:   Wed, 22 Nov 2023 10:05:56 -0600
+Message-ID: <20231122160556.24948-1-Ramesh.Errabolu@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <86pm03z0kw.wl-maz@kernel.org> <86o7fnyvrq.wl-maz@kernel.org>
- <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com> <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
- <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com> <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
- <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com> <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
- <930bfb9a-dcbe-4385-9ae3-26e2aa14c50e@marcan.st> <ZV38z3+p2S2ETtzG@kernel.org>
- <ZV4i_lrhbOVdEpwH@FVFF77S0Q05N>
-In-Reply-To: <ZV4i_lrhbOVdEpwH@FVFF77S0Q05N>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 22 Nov 2023 08:04:26 -0800
-Message-ID: <CAP-5=fXxdt4-j7ea=3oXpqyfOQEmSRYBugzND0r+gZUd5sMi1w@mail.gmail.com>
-Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since v6.5
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Marc Zyngier <maz@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Asahi Linux <asahi@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017096:EE_|MW6PR12MB9017:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d719f19-5872-4469-ae89-08dbeb74efa6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lDhYJdv/R0P45oUCt1aSWdGZQHUUqbdA7ao1p/TFSKlEb2ZaDghmS7FXrFC/ML3ccyehRFm8BuuG2IjJsIts7lvLM1+iage75S4b1Iv7XhYb3b+VATbkBTJYu+orZevYQWgYiDr99Bn/21gjx0H6aupAb41DntrXryvuc8ue+CdDOL++qRUPIgU2R0dlbwX53+nF1r4sixgYpvB2EQiJGEilS/VP4iDvYWvd0C2JtsXQsdCVyEFCXnFbdPZKCHTRaEqf97nncZmQnP1ySBD7IvSVTTuuiBYu2/9qw8etAYFgAAHMXHq0JegYH8urcjRKwlOQOMMA+AptnP/xEo+Om/U1AyvE7Ei9A7iA8KBKcAEYc4tJwD19UajHO4SziXwrNPsT6dlHWt6GmO0iXBk918r4ABXa5l1yVEcYZjwy5PhDSWCej8dOu1Mk/iK616hrFRcucIv2xWPuZBSDtrpuSUxJsRSQanFE9Wh1X5+y6sJO/GAuqPguAeYDg3mH+6z7qSIeWa5W9ou/5JL7SHWjyw8BZl/CQxdIsWsVBvDvAbnnYpCbDDwYUyEvS28xHOIiprQO/vqRHWdhXWbFHb+g8z5z1Rg6mHV7YsYSBkIIJ9+w17y1NLp2iUw6MhpRXkqR6AHF0Z68yeqZl/QZ5Z2GMxlsNnXsZfqv4OSHiTNHroWMyRT2UbKM5C4UcitkLam5SH6bYuso8Cv/qBnrE/doiZ3A/9l3Wzq3/uxgw+zpso3TtUxRTloenMwErysbGbOAbBSxJg9D1cz0YFMORfiVE9nXsddDofoTkgO7uQep/Bw=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(82310400011)(40470700004)(36840700001)(46966006)(40480700001)(7696005)(6666004)(47076005)(82740400003)(478600001)(83380400001)(81166007)(70586007)(110136005)(316002)(70206006)(8676002)(8936002)(4326008)(36860700001)(16526019)(356005)(2616005)(426003)(26005)(336012)(86362001)(40460700003)(5660300002)(1076003)(41300700001)(36756003)(2906002)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 16:06:07.1687
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d719f19-5872-4469-ae89-08dbeb74efa6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017096.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB9017
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 7:49=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
- wrote:
->
-> On Wed, Nov 22, 2023 at 10:06:23AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Nov 22, 2023 at 12:23:27PM +0900, Hector Martin escreveu:
-> > > On 2023/11/22 1:38, Ian Rogers wrote:
-> > > > On Tue, Nov 21, 2023 at 8:15=E2=80=AFAM Mark Rutland <mark.rutland@=
-arm.com> wrote:
-> > > >> On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
-> > > >>> On Tue, Nov 21, 2023 at 8:03=E2=80=AFAM Mark Rutland <mark.rutlan=
-d@arm.com> wrote:
-> > > >>>> On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
-> > > >>>>> On Tue, Nov 21, 2023 at 7:40=E2=80=AFAM Mark Rutland <mark.rutl=
-and@arm.com> wrote:
-> > > >>>>>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
-> > > >>>>>>> On Tue, 21 Nov 2023 13:40:31 +0000,
-> > > >>>>>>> Marc Zyngier <maz@kernel.org> wrote:
-> > > >>>>>>>>
-> > > >>>>>>>> [Adding key people on Cc]
-> > > >>>>>>>>
-> > > >>>>>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
-> > > >>>>>>>> Hector Martin <marcan@marcan.st> wrote:
-> > > >>>>>>>>>
-> > > >>>>>>>>> Perf broke on all Apple ARM64 systems (tested almost everyt=
-hing), and
-> > > >>>>>>>>> according to maz also on Juno (so, probably all big.LITTLE)=
- since v6.5.
-> > > >>>>>>>>
-> > > >>>>>>>> I can confirm that at least on 6.7-rc2, perf is pretty buste=
-d on any
-> > > >>>>>>>> asymmetric ARM platform. It isn't clear what criteria is use=
-d to pick
-> > > >>>>>>>> the PMU, but nothing works anymore.
-> > > >>>>>>>>
-> > > >>>>>>>> The saving grace in my case is that Debian still ships a 6.1=
- perftool
-> > > >>>>>>>> package, but that's obviously not going to last.
-> > > >>>>>>>>
-> > > >>>>>>>> I'm happy to test potential fixes.
-> > > >>>>>>>
-> > > >>>>>>> At Mark's request, I've dumped a couple of perf (as of -rc2) =
-runs with
-> > > >>>>>>> -vvv.  And it is quite entertaining (this is taskset to an 'i=
-cestorm'
-> > > >>>>>>> CPU):
-> > > >>>>>>
-> > > >>>>>> IIUC the tool is doing the wrong thing here and overriding exp=
-licit
-> > > >>>>>> ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather =
-than events using
-> > > >>>>>> that ${pmu}'s type and event namespace.
-> > > >>>>>>
-> > > >>>>>> Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE eve=
-nts to be
-> > > >>>>>> targetted to a specific PMU, it's semantically wrong to rewrit=
-e events like
-> > > >>>>>> this since ${pmu}/${event}/ is not necessarily equivalent to a=
- similarly-named
-> > > >>>>>> PERF_COUNT_HW_${EVENT}.
-> > > >>>>>
-> > > >>>>> If you name a PMU and an event then the event should only be op=
-ened on
-> > > >>>>> that PMU, 100% agree. There's a bunch of output, but when the l=
-egacy
-> > > >>>>> cycles event is opened it appears to be because it was explicit=
-ly
-> > > >>>>> requested.
-> > > >>>>
-> > > >>>> I think you've missed that the named PMU events are being erreou=
-sly transformed
-> > > >>>> into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
-> > > >>>>
-> > > >>>>   Opening: apple_firestorm_pmu/cycles/
-> > > >>>>   ------------------------------------------------------------
-> > > >>>>   perf_event_attr:
-> > > >>>>     type                             0 (PERF_TYPE_HARDWARE)
-> > > >>>>     size                             136
-> > > >>>>     config                           0 (PERF_COUNT_HW_CPU_CYCLES=
-)
-> > > >>>>     sample_type                      IDENTIFIER
-> > > >>>>     read_format                      TOTAL_TIME_ENABLED|TOTAL_TI=
-ME_RUNNING
-> > > >>>>     disabled                         1
-> > > >>>>     inherit                          1
-> > > >>>>     enable_on_exec                   1
-> > > >>>>     exclude_guest                    1
-> > > >>>>   ------------------------------------------------------------
-> > > >>>>   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0=
-x8 =3D 4
-> > > >>>>
-> > > >>>> ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_=
-CYCLES.
-> > > >>>>
-> > > >>>> Marc said that he bisected the issue down to commit:
-> > > >>>>
-> > > >>>>   5ea8f2ccffb23983 ("perf parse-events: Support hardware events =
-as terms")
-> > > >>>>
-> > > >>>> ... so it looks like something is going wrong when the events ar=
-e being parsed,
-> > > >>>> e.g. losing the HW PMU information?
-> > > >>>
-> > > >>> Ok, I think I'm getting confused by other things. This looks like=
- the issue.
-> > > >>>
-> > > >>> I think it may be working as intended, but not how you intended :=
--) If
-> > > >>> a core PMU is listed and then a legacy event, the legacy event sh=
-ould
-> >
-> > The point is that "cycles" when prefixed with "pmu/" shouldn't be
-> > considered "cycles" as HW/0, in that setting it is "cycles" for that
-> > PMU.
->
-> Exactly.
->
-> > (but we only have "cpu_cycles" for at least the a53 and a72 PMUs I
-> > have access in a Libre Computer rockchip 3399-pc hybrid board, if we us=
-e
-> > it, then we get what we want/had before, see below):
->
-> Both Cortex-A53 and Cortex-A72 have the common PMUv3 events, so they have
-> "cpu_cycles" and "bus_cycles".
->
-> The Apple PMUs that Hector and Marc anre using don't follow the PMUv3
-> architecture, and just have a "cycles" event.
->
-> [...]
->
-> > So what we need here seems to be to translate the generic term "cycles"
-> > to "cpu_cycles" when a PMU is explicitely passed in the event name and
-> > it doesn't have "cycles" and then just retry.
->
-> I'm not sure we need to map that.
->
-> My thinking is:
->
-> * If the user asks for "cycles" without a PMU name, that should use the
->   PERF_TYPE_HARDWARE cycles event. The ARM PMUs handle that correctly whe=
-n the
->   event is directed to them.
->
-> * If the user asks for "${pmu}/cycles/", that should only use the "cycles=
-"
->   event in that PMU's namespace, not PERF_TYPE_HARDWARE.
->
-> * If we need a way so say "use the PERF_TYPE_HARDWARE cycles event on ${p=
-mu}",
->   then we should have a new syntax for that (e.g. as we have for raw even=
-ts),
->   e.g. it would be possible to have "pmu/hw:cycles/" or something like th=
-at.
->
-> That way there's no ambiguity.
+Fix the documentation of struct dma_buf members name and exp_name
+as to how these members are to be used and accessed.
 
-This would break cpu_core/LLC-load-misses/ on Intel hybrid as the
-LLC-load-misses event is legacy and not advertised in either sysfs or
-in json.
+Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+---
+ include/linux/dma-buf.h | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Thanks,
-Ian
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 3f31baa3293f..8ff4add71f88 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -343,16 +343,19 @@ struct dma_buf {
+ 	/**
+ 	 * @exp_name:
+ 	 *
+-	 * Name of the exporter; useful for debugging. See the
+-	 * DMA_BUF_SET_NAME IOCTL.
++	 * Name of the exporter; useful for debugging. Must not be NULL
+ 	 */
+ 	const char *exp_name;
+ 
+ 	/**
+ 	 * @name:
+ 	 *
+-	 * Userspace-provided name; useful for accounting and debugging,
+-	 * protected by dma_resv_lock() on @resv and @name_lock for read access.
++	 * Userspace-provided name. Default value is NULL. If not NULL,
++	 * length cannot be longer than DMA_BUF_NAME_LEN, including NIL
++	 * char. Useful for accounting and debugging. Read/Write accesses
++	 * are protected by @name_lock
++	 *
++	 * See the IOCTLs DMA_BUF_SET_NAME or DMA_BUF_SET_NAME_A/B
+ 	 */
+ 	const char *name;
+ 
+-- 
+2.34.1
 
-> Mark.
