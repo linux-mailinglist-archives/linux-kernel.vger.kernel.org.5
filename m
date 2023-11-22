@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362B07F3D30
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07AB7F3D32
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjKVFMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S229978AbjKVFPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:15:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVFMi (ORCPT
+        with ESMTP id S229498AbjKVFPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:12:38 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F46100;
-        Tue, 21 Nov 2023 21:12:34 -0800 (PST)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6ce2de8da87so3826076a34.1;
-        Tue, 21 Nov 2023 21:12:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700629953; x=1701234753;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=laDzjb5l70fg2Gskg7Mi/doMwFelucFDk++YuwSRGK4=;
-        b=pIkNcGnrKNe4K/k3BxUZeNrfGwUgYb6psvUvt7LVCbS314PownuaWxgYIt/iPMOARL
-         7xn3oRyPr3F02lheX0+sf1Ps9QKmlDiEkr3GMk7yx+0HQw/NYJmnYO5nVXR3VGEow6Ag
-         ekMMbeWg5ocMY11SHgjZezkI2ArPcgxADHVH4NgNGYbnwI1VQ6aCwEupq4aFhDdD4vQW
-         7eL/JaR9+u14ubvM5ApkUIoJhs18yM6YPNboOrTM71sgQV4ktULqCtBFwoO3z/az2CKO
-         OEkd/mf8u+3tGlxX17RHdnwYc63kXx9gop90FJe8XCLDuq1AOVW4+TLNT0wAQmviZT6V
-         aE4Q==
-X-Gm-Message-State: AOJu0Yw0W9TMq4hA5q+wWuvsSDLKlT+urierfvcSaJHmMHDYvlrJQBKT
-        71aPuGmXdEa/EAVJrCSysyc=
-X-Google-Smtp-Source: AGHT+IG1HiM0nFV+shX1uySm+RtazynHGh7WR6gWG/nDW3IM4+sAr0zheaYbTsZYQ8Juq4RZ+50g/A==
-X-Received: by 2002:a05:6870:9a96:b0:1ea:8b10:247a with SMTP id hp22-20020a0568709a9600b001ea8b10247amr1754919oab.42.1700629953556;
-        Tue, 21 Nov 2023 21:12:33 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id v1-20020aa78081000000b0065a1b05193asm8871509pff.185.2023.11.21.21.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 21:12:33 -0800 (PST)
-Date:   Wed, 22 Nov 2023 05:12:30 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Hyper-V fixes for 6.7-rc3
-Message-ID: <ZV2NvuIAgdrc1d1P@liuwe-devbox-debian-v2>
+        Wed, 22 Nov 2023 00:15:30 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7862F100;
+        Tue, 21 Nov 2023 21:15:26 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F3F6168F;
+        Tue, 21 Nov 2023 21:16:13 -0800 (PST)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 086DE3F73F;
+        Tue, 21 Nov 2023 21:15:21 -0800 (PST)
+Message-ID: <b549c537-fda7-4ffc-b371-4b04a6480f6d@arm.com>
+Date:   Wed, 22 Nov 2023 10:45:19 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [V14 0/8] arm64/perf: Enable branch stack sampling
+To:     James Clark <james.clark@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
+References: <20231114051329.327572-1-anshuman.khandual@arm.com>
+ <af04e269-d43d-0dd6-5434-3cea9c74be01@arm.com>
+Content-Language: en-US
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <af04e269-d43d-0dd6-5434-3cea9c74be01@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/14/23 22:47, James Clark wrote:
+> 
+> 
+> On 14/11/2023 05:13, Anshuman Khandual wrote:
+>> This series enables perf branch stack sampling support on arm64 platform
+>> via a new arch feature called Branch Record Buffer Extension (BRBE). All
+>> the relevant register definitions could be accessed here.
+>>
+> [...]
+>>
+>> --------------------------- Virtualisation support ------------------------
+>>
+>> - Branch stack sampling is not currently supported inside the guest (TODO)
+>>
+>> 	- FEAT_BRBE advertised as absent via clearing ID_AA64DFR0_EL1.BRBE
+>> 	- Future support in guest requires emulating FEAT_BRBE
+> 
+> If you never add support for the host looking into a guest, and you save
 
-Hi Linus,
+But that seems to be a valid use case though. Is there a particular concern
+why such capability should or could not be added for BRBE ?
 
-The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbebfa:
+> and restore all the BRBINF[n] registers, I think you might be able to
+> just let the guest do whatever it wants with BRBE and not trap and
+> emulate it? Maybe there is some edge case why that wouldn't work, but
+> it's worth thinking about.
 
-  Linux 6.6 (2023-10-29 16:31:08 -1000)
+Right, in case host tracing of the guest is not supported (although still
+wondering why it should not be), saving and restoring complete BRBE state
+i.e all system registers that can be accessed from guest, would let guest
+do what ever it wants with BRBE without requiring the trap-emulate model.
 
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20231121
-
-for you to fetch changes up to 18286883e779fb79b413a7462968ee3f6768f19c:
-
-  x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize hv_nmi_unknown() (2023-11-22 03:47:44 +0000)
-
-----------------------------------------------------------------
-hyperv-fixes for 6.7-rc3
- - One fix for the KVP daemon (Ani Sinha)
- - Fix for the detection of E820_TYPE_PRAM in a Gen2 VM (Saurabh Sengar)
- - Micro-optimization for hv_nmi_unknown() (Uros Bizjak)
-----------------------------------------------------------------
-Ani Sinha (1):
-      hv/hv_kvp_daemon: Some small fixes for handling NM keyfiles
-
-Saurabh Sengar (1):
-      x86/hyperv: Fix the detection of E820_TYPE_PRAM in a Gen2 VM
-
-Uros Bizjak (1):
-      x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize hv_nmi_unknown()
-
- arch/x86/hyperv/hv_init.c      | 25 +++++++++++++++++++++----
- arch/x86/kernel/cpu/mshyperv.c |  5 ++++-
- tools/hv/hv_kvp_daemon.c       | 20 ++++++++++++--------
- tools/hv/hv_set_ifconfig.sh    |  4 ++--
- 4 files changed, 39 insertions(+), 15 deletions(-)
+> 
+> For BRBE specifically I don't see much of a use case for hosts looking
+> into a guest, at least not like with PMU counters.
+But how is it any different from normal PMU counters ? Branch records do
+provide statistical insights into hot sections in the guest.
