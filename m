@@ -2,205 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402817F4DF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0077F4DF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343968AbjKVRNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S1343951AbjKVRNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjKVRND (ORCPT
+        with ESMTP id S231357AbjKVRNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:13:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4D6E7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:12:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558D5C433C8;
-        Wed, 22 Nov 2023 17:12:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700673177;
-        bh=HUTD8xpMc9WU9D9MA+DlhRXxHESV5HWBP+wnlIUOgnM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r/4JHaKWX3NX08PYu39vHlovyPaDQ4fHpqxslpOa4cryj6YVwAKcwiiuHxArmrcdV
-         GJ9Wr7rszHIBdkeT9R4ACDJwyNBXR5Lf2K5rpPHPep9B42hF/UB4MST18MjCBL6FUo
-         mCNNMw9eEs+zExC4meYNQNNTTCrOmAHbsAX1ERYlPOJz/j/YV4oCVM2DfROZdDyfLm
-         Tyvu+f7a/k7ab+ZdtS3CEo6U5bMCbP6nh98FrO0D2mltWAcoyhKfN3W9+e+o9WHE+4
-         lXhzYS9TME8YFp44qIilQwA/qqHt5GyHKTbeIMRcbrj+RbnrhefzlOFPG0h9XVw6j0
-         nCoeupnkIsyTw==
-Date:   Wed, 22 Nov 2023 22:42:42 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Kory Maincent <kory.maincent@bootlin.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
- setup
-Message-ID: <20231122171242.GA266396@thinkpad>
-References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
- <20231121062629.GA3315@thinkpad>
- <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
- <20231121120828.GC3315@thinkpad>
- <bqtgnsxqmvndog4jtmyy6lnj2cp4kh7c2lcwmjjqbet53vrhhn@i6fc6vxsvbam>
+        Wed, 22 Nov 2023 12:13:35 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25C41A4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:13:30 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-332ce50450dso1365809f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700673209; x=1701278009; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iREYFokOV8dvymG/8i5EmbN9PgByJeos08X2K2e+878=;
+        b=Km+f+K3KRq46AjEFJhRB1ZiEm9tNQhaDuW7vnHKuAuubVUVLVLlyuWaJPzfwvNS3w/
+         yjZCqfvDq0MrlLw4HYOldrPZUIN40+eG2jZQRWJBIhTuSOxG8d4Ee+anuFNiFUvNPCR8
+         Tr4GQjWe5ibggkRs9/+V1WLdPVwA7IsWIBsyrPT9BUaBNn5ngw4sVZLeJ4Kq5tR3t1wH
+         1pC/Xz4FBL0Ws0WZ0kW37hlbdvre8LMZHKb0Qo/im5MDw1bE9SKzSvtNeCmyXXZyT0d5
+         e+w9c255ENUFIvi9mr0IRKSI7F3zm0sCB4WTXhg0ylMUBW3hqXPXGoNLRfZAFv5GloyW
+         7U5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700673209; x=1701278009;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iREYFokOV8dvymG/8i5EmbN9PgByJeos08X2K2e+878=;
+        b=VydCO3Cut+n5Cy/4/lIKcBhlGsp5YzKmsAXYA2/p+5jsCrV4Mgx7u2ezmRPI5qfvTt
+         l20Acd2mkL7i5kDPai1V1ndTwX8DhcOd7+YH+PRHutGqT182+l8xjGkT+MomR1lclamg
+         7itN2vLb/I4fJAqyr+eho3wQ0Um2rs4knyuUSP3jW5Jw2fXf+td5n0sVDY03eo02MM4w
+         WssiIomZp6k45H7HSYjrJkgn5T2I5+ckkv1pmMyXhCYDkhklw/I9ZDlm9XRFo0ZHSNjK
+         89Kri8foN4OrQegYxJFKRh3mkmyV3U1Ir+TKntHu8dnym+xTt42LuioOR/RxyMEnom92
+         gAoA==
+X-Gm-Message-State: AOJu0YwdiFVjs9UmZTY57IA7mn2AlJ38wSrIUuBfOkMGs7InPbs47d6H
+        8ifd7J+L5V/T28HXa172vMeOxQ==
+X-Google-Smtp-Source: AGHT+IHG50GHV18iXf9NgLcNgDR5o5sNBk599jpI37YLzVcyzNoVxOG6dCer6jFfQZDfi6s6ijq21w==
+X-Received: by 2002:a5d:64e4:0:b0:332:ce3f:a370 with SMTP id g4-20020a5d64e4000000b00332ce3fa370mr2275817wri.51.1700673208904;
+        Wed, 22 Nov 2023 09:13:28 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:1dcf:36df:c2d9:af51])
+        by smtp.gmail.com with ESMTPSA id b15-20020a056000054f00b0031980294e9fsm17633839wrf.116.2023.11.22.09.13.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 09:13:28 -0800 (PST)
+Date:   Wed, 22 Nov 2023 18:13:23 +0100
+From:   Marco Elver <elver@google.com>
+To:     andrey.konovalov@linux.dev
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com, Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH RFC 00/20] kasan: save mempool stack traces
+Message-ID: <ZV42s_c3BzCAEwgu@elver.google.com>
+References: <cover.1699297309.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bqtgnsxqmvndog4jtmyy6lnj2cp4kh7c2lcwmjjqbet53vrhhn@i6fc6vxsvbam>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1699297309.git.andreyknvl@google.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 06:36:19PM +0300, Serge Semin wrote:
-> On Tue, Nov 21, 2023 at 05:38:28PM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 21, 2023 at 01:55:22PM +0300, Serge Semin wrote:
-> > > Hi Mani
-> > > 
-> > > On Tue, Nov 21, 2023 at 11:56:29AM +0530, Manivannan Sadhasivam wrote:
-> > > > On Fri, Nov 17, 2023 at 11:03:48AM +0100, Kory Maincent wrote:
-> > > > > This patch series fix the support of dw-edma HDMA NATIVE IP.
-> > > > > I can only test it in remote HDMA IP setup with single dma transfer, but
-> > > > > with these fixes it works properly.
-> > > > > 
-> > > > > Few fixes has also been added for eDMA version. Similarly to HDMA I have
-> > > > > tested only eDMA in remote setup.
-> > > > > 
-> > > > 
-> > > > Just out of curiosity, can you share how you are setting EDMA_MF_HDMA_NATIVE?
-> > > 
-> > > This topic has already been concerned on v1 (in another context
-> > > though):
-> > > https://lore.kernel.org/dmaengine/20230621151948.36125997@kmaincent-XPS-13-7390/
-> > > 
-> > > Here is the repo with the out-of-tree driver Kory said he was using
-> > > together with the kernel's version of the DW eDMA/hDMA driver:
-> > > https://github.com/Brainchip-Inc/akida_dw_edma
-> > > 
-> > 
+On Mon, Nov 06, 2023 at 09:10PM +0100, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
 > 
-> > Thanks Sergey, I missed it! But looks like we are not focusing on the HDMA
-> > integration in designware-ep.c. Have you/anyone thought about it? Was it
-> > discussed previously that I missed?
-> 
-> No. We haven't discussed that in the framework of this patchset.
-> 
-> > 
-> > HDMA is used in one of the recent Qcom SoCs (SA8775) that Qcom folks are
-> > bringing up and I'd like to have a common solution like we have for eDMA.
-> 
-> AFAICS it won't be that easy to do for HDMA. Unlike eDMA, HDMA doesn't
-> have a handy global config registers to determine the number of R/W
-> channels.  Kory also said that auto-detecting them by dummy-writing to
-> all the CH_EN registers didn't work either because all, even
-> unavailable, channels CSRs were writable. This part was discussed
-> earlier:
-> https://lore.kernel.org/lkml/20230607144014.6356a197@kmaincent-XPS-13-7390/
-> So if you don't come up with some more clever solution, then alas the
-> number of R/W channels will need to be specified by the platform
-> code/driver.
-> 
-> Regarding how to auto-detect HDMA. I can't be absolutely sure whether
-> it will work but if we assume that:
-> 1. HDMA reg-space is always unrolled (mapped over a separate reg-space),
-> 2. Lowest 16 bits of base+0x8 are RO in EDMA (DMA_CTRL_OFF) and RW in HDMA
-> (prefetch CSR),
-> then we can implement a procedure like this:
-> 
-> 1. If iATU/xDMA reg-space is specified and it's writable at the
-> xDMA-base+0x8 then it's HDMA controller and amount of channels is
-> supposed to be pre-initialized by the low-level platform driver,
-> otherwise it's eDMA and the read value can be used to determine the
-> number of channels.
-> 2. If iATU/xDMA reg-space isn't specified then the viewport-based eDMA
-> auto-detection procedure will be executed.
-> 
-> For all of that you'll need to fix the
-> dw_pcie_edma_find_chip()/dw_pcie_edma_detect() method somehow.
-> 
-> Alternatively, to keep things simple you can convert the
-> dw_pcie_edma_find_chip()/dw_pcie_edma_detect() methods to just relying
-> on the HDMA settings being fully specified by the low-level drivers.
-> 
+> This series updates KASAN to save alloc and free stack traces for
+> secondary-level allocators that cache and reuse allocations internally
+> instead of giving them back to the underlying allocator (e.g. mempool).
 
-This looks like the best possible solution at the moment. Thanks for the
-insight!
+Nice.
 
-I will post the patches together with the HDMA enablement ones.
-
-- Mani
-
-> -Serge(y)
+> As a part of this change, introduce and document a set of KASAN hooks:
 > 
-> > 
-> > - Mani
-> > 
-> > > -Serge(y)
-> > > 
-> > > > 
-> > > > - Mani
-> > > > 
-> > > > > Changes in v2:
-> > > > > - Update comments and fix typos.
-> > > > > - Removed patches that tackle hypothetical bug and then were not pertinent.
-> > > > > - Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
-> > > > > 
-> > > > > Changes in v3:
-> > > > > - Fix comment style.
-> > > > > - Split a patch in two to differ bug fix and simple harmless typo.
-> > > > > 
-> > > > > Changes in v4:
-> > > > > - Update patch git commit message.
-> > > > > - Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
-> > > > > 
-> > > > > Changes in v5:
-> > > > > - No change
-> > > > > - Rebase to mainline 6.7-rc1
-> > > > > - Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
-> > > > > 
-> > > > > Changes in v6:
-> > > > > - Fix several commit messages and comments.
-> > > > > - Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
-> > > > > 
-> > > > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > > > > ---
-> > > > > Kory Maincent (6):
-> > > > >       dmaengine: dw-edma: Fix the ch_count hdma callback
-> > > > >       dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
-> > > > >       dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
-> > > > >       dmaengine: dw-edma: Add HDMA remote interrupt configuration
-> > > > >       dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
-> > > > >       dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
-> > > > > 
-> > > > >  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
-> > > > >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
-> > > > >  drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
-> > > > >  3 files changed, 44 insertions(+), 14 deletions(-)
-> > > > > ---
-> > > > > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> > > > > change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
-> > > > > 
-> > > > > Best regards,
-> > > > > -- 
-> > > > > Köry Maincent, Bootlin
-> > > > > Embedded Linux and kernel engineering
-> > > > > https://bootlin.com
-> > > > > 
-> > > > 
-> > > > -- 
-> > > > மணிவண்ணன் சதாசிவம்
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
+> bool kasan_mempool_poison_pages(struct page *page, unsigned int order);
+> void kasan_mempool_unpoison_pages(struct page *page, unsigned int order);
+> bool kasan_mempool_poison_object(void *ptr);
+> void kasan_mempool_unpoison_object(void *ptr, size_t size);
+> 
+> and use them in the mempool code.
+> 
+> Besides mempool, skbuff and io_uring also cache allocations and already
+> use KASAN hooks to poison those. Their code is updated to use the new
+> mempool hooks.
+>
+> The new hooks save alloc and free stack traces (for normal kmalloc and
+> slab objects; stack traces for large kmalloc objects and page_alloc are
+> not supported by KASAN yet), improve the readability of the users' code,
+> and also allow the users to prevent double-free and invalid-free bugs;
+> see the patches for the details.
+> 
+> I'm posting this series as an RFC, as it has a few non-trivial-to-resolve
+> conflicts with the stack depot eviction patches. I'll rebase the series and
+> resolve the conflicts once the stack depot patches are in the mm tree.
+> 
+> Andrey Konovalov (20):
+>   kasan: rename kasan_slab_free_mempool to kasan_mempool_poison_object
+>   kasan: move kasan_mempool_poison_object
+>   kasan: document kasan_mempool_poison_object
+>   kasan: add return value for kasan_mempool_poison_object
+>   kasan: introduce kasan_mempool_unpoison_object
+>   kasan: introduce kasan_mempool_poison_pages
+>   kasan: introduce kasan_mempool_unpoison_pages
+>   kasan: clean up __kasan_mempool_poison_object
+>   kasan: save free stack traces for slab mempools
+>   kasan: clean up and rename ____kasan_kmalloc
+>   kasan: introduce poison_kmalloc_large_redzone
+>   kasan: save alloc stack traces for mempool
+>   mempool: use new mempool KASAN hooks
+>   mempool: introduce mempool_use_prealloc_only
+>   kasan: add mempool tests
+>   kasan: rename pagealloc tests
+>   kasan: reorder tests
+>   kasan: rename and document kasan_(un)poison_object_data
+>   skbuff: use mempool KASAN hooks
+>   io_uring: use mempool KASAN hook
+> 
+>  include/linux/kasan.h   | 161 +++++++-
+>  include/linux/mempool.h |   2 +
+>  io_uring/alloc_cache.h  |   5 +-
+>  mm/kasan/common.c       | 221 ++++++----
+>  mm/kasan/kasan_test.c   | 876 +++++++++++++++++++++++++++-------------
+>  mm/mempool.c            |  49 ++-
+>  mm/slab.c               |  10 +-
+>  mm/slub.c               |   4 +-
+>  net/core/skbuff.c       |  10 +-
+>  9 files changed, 940 insertions(+), 398 deletions(-)
 
--- 
-மணிவண்ணன் சதாசிவம்
+Overall LGTM and the majority of it is cleanups, so I think once the
+stack depot patches are in the mm tree, just send v1 of this series.
