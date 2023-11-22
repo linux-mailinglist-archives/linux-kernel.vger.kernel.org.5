@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D5A7F4A10
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7DB7F4A1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjKVPRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S233157AbjKVPTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:19:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjKVPRN (ORCPT
+        with ESMTP id S229634AbjKVPTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:17:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB84A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:17:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700666227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HNZF0SqnqKoxtxQfSsYiCYBkXnRbbx9Gogs3wh0979A=;
-        b=hF4nUseY1sn4eYrWfUD9lQu31uau0ThYLNQeZU+5INFaB3XmWNYCV8vwZGbeAiaqGI8/ia
-        gMM+MJcb2EEwtkuz3xPRCAnS8P2ETfq4vBGeIIJj0208McivEGVv9OChdT4t4m158Kkd0v
-        DsoMkjM4SIPtFn4ajD4UosBzd1zMBzg=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-rRhUWlTVNMGH0n9LduqBxw-1; Wed, 22 Nov 2023 10:17:04 -0500
-X-MC-Unique: rRhUWlTVNMGH0n9LduqBxw-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50aa861dcf7so4339982e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:17:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700666223; x=1701271023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNZF0SqnqKoxtxQfSsYiCYBkXnRbbx9Gogs3wh0979A=;
-        b=vXoy88B9ZCW7i9rB3GnYfZzAJ7dxLtlNQyNB3cWgIVoxjlz4SHrp8dPF7aZVRU3dLR
-         RLYQxEuC7mKUPrvaImiBs73Ui9OYlg79XM8TETG+mGj4NbRLUpwJUyDlO3AX0011ONds
-         Pwh/SWNb1dt/oVDl1MTG4ZiLbMxq+u8WPHO/miUXFBDukGUBnzFqoo2yYi2Llh+BHyLx
-         +EqcsqK0lACDTR80oc+47Cuxei9QvaEh6Oa191kBSrAjD7qcdezHaxVpxINJgqfOzshy
-         b8OG5kKdDqjjodxFr+P7hwEDWEbS1va97XxKQwDaO65pFbVxyTi3qPT0oE7khibDLxD6
-         xGxA==
-X-Gm-Message-State: AOJu0YwzVpc8NzULjmxX3wx31UD1ZogSI60lQqf3g81yXDENLXs8YU3Q
-        Inz1azdYI/f/E03mY1lO2jW5mlzyc6IOax26enLci67f3NZ/OSJNzkAxDOyAdQXwdwJqGtuEZ/T
-        xoEdplomoPbBaXbj+liIOfxg+
-X-Received: by 2002:a19:f818:0:b0:509:8e22:ae5 with SMTP id a24-20020a19f818000000b005098e220ae5mr1804412lff.60.1700666223052;
-        Wed, 22 Nov 2023 07:17:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGhNkk8osKUkuMiPV2p7kvM34eDJmsK95p+FLf/21RrBimt6NwiyXB5Qui/5kgPXgAMHMEmbw==
-X-Received: by 2002:a19:f818:0:b0:509:8e22:ae5 with SMTP id a24-20020a19f818000000b005098e220ae5mr1804397lff.60.1700666222725;
-        Wed, 22 Nov 2023 07:17:02 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id u10-20020aa7d88a000000b00548ac1f7c5esm4002104edq.64.2023.11.22.07.17.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 07:17:02 -0800 (PST)
-Message-ID: <0e3cd2e2-ea09-4772-88ed-b90a913937a0@redhat.com>
-Date:   Wed, 22 Nov 2023 16:17:01 +0100
+        Wed, 22 Nov 2023 10:19:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4EAF9;
+        Wed, 22 Nov 2023 07:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700666375; x=1732202375;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=nrNPcz4uYEQBP3pOrCUXcuO8X6G/FSLQKBhZfBz9dLY=;
+  b=WnPr6GfRsmHheX8m0dMDThH9SdbMmURgop2QVRUSnHTfuQkivH84A0t1
+   lc+YRQ2nV87kyMZ5PhHTkOrh7Excs6jGFS/xofM/urtHV4kBMLhIvg1YF
+   gVEFTOsy20Pn+yYCZ3a0AUvM63kxv2GSXq49MzmfaAS3T1NpXGd/0MHyG
+   5DH8aPv7m1cOXumvpMhYld46TIkpCZqp+oNcfN62jj09wTcEajPR8hT1h
+   LuXAbfqp+oJY4ozRFRLCITIyEab3FsYIEtaPnftYgNfGlVQORA1+U0LD9
+   pwP+0AqQNgTATs0DjAIhfs1z99yaaRKKfBL7A3LnvNKXz+B4G4tssZRi8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="390932784"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="390932784"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:19:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833052538"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="833052538"
+Received: from tjquresh-mobl.ger.corp.intel.com (HELO localhost) ([10.252.41.76])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:19:09 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] eventfd: simplify eventfd_signal()
+In-Reply-To: <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
+ <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
+Date:   Wed, 22 Nov 2023 17:19:06 +0200
+Message-ID: <877cm9n7dh.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
-Content-Language: en-US, nl
-To:     Jonathan Denose <jdenose@chromium.org>
-Cc:     linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        linux-kernel@vger.kernel.org
-References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
- <fbcf0fee-b97d-8f47-9df4-44bc1b475144@redhat.com>
- <CALNJtpUH_0+ETa+7MfKRbpc_c1TTTasUrZ4zA4V9EHb_BtAUwg@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CALNJtpUH_0+ETa+7MfKRbpc_c1TTTasUrZ4zA4V9EHb_BtAUwg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,44 +122,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Wed, 22 Nov 2023, Christian Brauner <brauner@kernel.org> wrote:
+> diff --git a/fs/eventfd.c b/fs/eventfd.c
+> index 33a918f9566c..dc9e01053235 100644
+> --- a/fs/eventfd.c
+> +++ b/fs/eventfd.c
+> @@ -74,20 +74,17 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
+>  /**
+>   * eventfd_signal - Adds @n to the eventfd counter.
 
-On 11/21/23 21:23, Jonathan Denose wrote:
-> Hello Hans,
-> 
-> On Tue, Sep 26, 2023 at 5:37 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi,
->>
->> On 9/25/23 23:33, Jonathan Denose wrote:
->>> The ThinkPad T14 Gen 1 touchpad works fine except that clicking
->>> and dragging by tapping the touchpad or depressing the touchpad
->>> do not work. Disabling PNP for controller setting discovery enables
->>> click and drag without negatively impacting other touchpad features.
->>>
->>> Signed-off-by: Jonathan Denose <jdenose@google.com>
->>
->> Thanks, patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>
->> Regards,
->>
->> Hans
-> 
-> I just wanted to double check that I haven't missed anything, has this
-> patch been applied yet?
+This still refers to @n here, and in patch 4.
 
-Dmitry unfortunately does not have a lot of time for
-reviewing / merging input subsystem patches. So AFAICT this
-has not been processed / merged yet.
+BR,
+Jani.
 
-I've just send Dmitry a friendly worded email ping for another
-patch, I've also brought this patch to his attention in
-that email.
+>   * @ctx: [in] Pointer to the eventfd context.
+> - * @n: [in] Value of the counter to be added to the eventfd internal counter.
+> - *          The value cannot be negative.
+>   *
+>   * This function is supposed to be called by the kernel in paths that do not
+>   * allow sleeping. In this function we allow the counter to reach the ULLONG_MAX
+>   * value, and we signal this as overflow condition by returning a EPOLLERR
+>   * to poll(2).
+>   *
+> - * Returns the amount by which the counter was incremented.  This will be less
+> - * than @n if the counter has overflowed.
+> + * Returns the amount by which the counter was incremented.
+>   */
+> -__u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+> +__u64 eventfd_signal(struct eventfd_ctx *ctx)
+>  {
+> -	return eventfd_signal_mask(ctx, n, 0);
+> +	return eventfd_signal_mask(ctx, 1, 0);
+>  }
+>  EXPORT_SYMBOL_GPL(eventfd_signal);
+>  
 
-Regards,
-
-Hans
-
-
+-- 
+Jani Nikula, Intel
