@@ -2,63 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABBC7F4153
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAC37F4157
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbjKVJPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S235097AbjKVJP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:15:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJPK (ORCPT
+        with ESMTP id S229631AbjKVJPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:15:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87720D50
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700644507; x=1732180507;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=RrwEo1VDHhlnf+Pa2Ly1JESTxjciztMmCHm/k/NWo+I=;
-  b=IljyKAstK43LvtP3ihmH3gkFd9kZgSd220EieD2c1uV3u3TeDqbPLDeP
-   EkdXpDwYuFrhA2aAgBfW5mRfa8H60jcarjXXdC/EwQyJjg15e+8vZRDdK
-   e2mlC+GyqxK9GhM2BUCqbXLtsIzmK9PIrhcJgYqyhZgRwCbuDvC3RXxEe
-   3rQ/U9hnr8DoUBtPt6GHeGeuzY1swdnX+U5LRfcvJG/AGMtfSZEzkBO76
-   8ZEUiJiVdJYoyKhSApVAyujyWawagQheI4+8m65v4F/yLJBz5U2ZhDer/
-   0cuZb3qj9Wztsabn0JL1WoZXsaHxAmSwnevQ4NTQeN7R738QgTmU7fIGK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5158989"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="5158989"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 01:15:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098335938"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="1098335938"
-Received: from tjquresh-mobl.ger.corp.intel.com (HELO localhost) ([10.252.41.76])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 01:14:59 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        tvrtko.ursulin@linux.intel.com, airlied@gmail.com, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Mika Kahola <mika.kahola@intel.com>
-Subject: Re: [PATCH] drm/i915/psr: Fix unsigned expression compared with zero
-In-Reply-To: <20231122085239.89046-1-jiapeng.chong@linux.alibaba.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231122085239.89046-1-jiapeng.chong@linux.alibaba.com>
-Date:   Wed, 22 Nov 2023 11:14:57 +0200
-Message-ID: <87y1eqm9ny.fsf@intel.com>
+        Wed, 22 Nov 2023 04:15:54 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCE683;
+        Wed, 22 Nov 2023 01:15:50 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5jKg-0000kn-Ox; Wed, 22 Nov 2023 10:15:42 +0100
+Message-ID: <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
+Date:   Wed, 22 Nov 2023 10:15:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to
+ CONFIG_MICROCODE_AMD)
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+To:     Borislav Petkov <bp@alien8.de>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
+        hpa@zytor.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+ <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+Content-Language: en-US, de-DE
+In-Reply-To: <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700644550;2614c532;
+X-HE-SMSGID: 1r5jKg-0000kn-Ox
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,39 +52,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023, Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
-> The entry_setup_frames is defined as u8 type, else(entry_setup_frames < 0)
-> is invalid. At the same time, the return value of function
-> intel_psr_entry_setup_frames is also of type int. so modified
-> its type to int.
->
-> ./drivers/gpu/drm/i915/display/intel_psr.c:1336:5-23: WARNING: Unsigned expression compared with zero: entry_setup_frames >= 0.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7610
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On 12.11.23 19:10, Borislav Petkov wrote:
+> On Sun, Nov 12, 2023 at 04:03:32PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> That's because dracut until the recent commit
+>> https://github.com/dracutdevs/dracut/commit/6c80408c8644a0add1907b0593eb83f90d6247b1
+>> looked for CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL in the config
+>> file to decide what to include or not.
+> 
+> They've been told a bunch of times already that grepping .config for
+> specific symbols is not how one should check whether one should add
+> microcode blobs to the initrd or not because Kconfig symbols are not an
+> ABI.
 
-There's already a patch. Mika, please follow up with it.
+Maybe, but you know how Linus sees things like this: what's considered
+an ABI/API or not is nearly[1] irrelevant - if a change breaks something
+that used to work then it needs to be fixed.
 
-https://patchwork.freedesktop.org/patch/msgid/20231116090512.480373-1-mika.kahola@intel.com
+[1] unless you fiddle with things obviously internal; not sure if this
+case would qualify for him, but somehow I doubt it -- but I might be
+wrong there.
 
-> ---
->  drivers/gpu/drm/i915/display/intel_psr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
-> index 8d180132a74b..204da50e3f28 100644
-> --- a/drivers/gpu/drm/i915/display/intel_psr.c
-> +++ b/drivers/gpu/drm/i915/display/intel_psr.c
-> @@ -1319,7 +1319,7 @@ static bool _psr_compute_config(struct intel_dp *intel_dp,
->  {
->  	struct drm_i915_private *dev_priv = dp_to_i915(intel_dp);
->  	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
-> -	u8 entry_setup_frames;
-> +	int entry_setup_frames;
->  
->  	/*
->  	 * Current PSR panels don't work reliably with VRR enabled
+> And looking at that commit, now they're grepping for CONFIG_MICROCODE.
+> And that'll break again if one day we decide to make the microcode
+> loader built in unconditionally.
+> 
+> How to fix this reliably and properly?
+> 
+> Honestly, I don't have a good idea. If we do something like this:
+> grep microcode_init System.map
+> 
+> then that makes "microode_init" ABI and we won't be able to change it
+> eva. I'd need to do some digging here...
 
--- 
-Jani Nikula, Intel
+Any progress on this?
+
+BTW: I see that this could help preventing problems like the current one
+to happen in the far future. But how would that help the current
+situation (e.g. users that have an old dracut and updated the kernel
+without updating dracut)?
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
