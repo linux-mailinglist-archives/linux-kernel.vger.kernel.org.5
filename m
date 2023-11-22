@@ -2,79 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0627F3C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BBE7F3C29
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343561AbjKVDGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
+        id S1343551AbjKVDG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:06:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343551AbjKVDGe (ORCPT
+        with ESMTP id S235046AbjKVDGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:06:34 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F7EF4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:30 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cbc8199a2aso659631b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700622390; x=1701227190; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oBSDlJJdl9cJTZEKARyFff2b3kLrE8gro26mzSoUMfg=;
-        b=kKAPHuA5bShBI1m2kdLOwPZWo8rdZdMqdWYrYnxgC8FodR0uho+MtADydgTUEbiBuN
-         8mnXYcbNH53F4H69ufumyBCjhq/Un3bEB/7P901+gV595tFRhk9NMn31GuUIMMdxBH50
-         SB1jAK05uJxHWDdSIGlB2pD00GD1/Gx+W9S3+9QWa1SxPHgBtjjSbhoez7j19sDuqlZT
-         e6q8RuL5mo6z29SGBsLAvzhEDJjqKRjLcr/y/HVvdNQUiiJ/e47Mf0Sp962coyiGqhje
-         RCtJBuaCF5R3BPbMQ6uPXJ4QrqlGjb5LT6DiOAkzu1yWzochUKd6aeBykAqp1P80eclp
-         c5jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700622390; x=1701227190;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oBSDlJJdl9cJTZEKARyFff2b3kLrE8gro26mzSoUMfg=;
-        b=NYhogTze78FWoglGmIm6ZyCHgANciqaGsxM08/9kDtV533G7bOzUbTzup1gF9WdKyM
-         EASbL4JP5gN6SRsp2Xr7OeuVOut1ugRvOsO8wTHcb6AwLYbVotXOtbY/oxr8rV4bDJVC
-         pvij6diNLdbC5adxwOpL23U4nT9ud1tuYFuUOJ9ZwBlsKSjrK9aXBWBzg2xTlLc3cNtP
-         g+yTT0cuS3S4zCfFfKAduvWWsu9qnV9jFIvLK1//t5D5eXhYSFVSXYrDYoVsgNite4PI
-         jJ46EYlagLLZeLp3GG+SmC5PPzVYt2r28M9ONE3gpUTxqwMpvia4iO0GwG9SDPR0OQ6n
-         bYRQ==
-X-Gm-Message-State: AOJu0YyDwxbASTVR9dEyCCspeQJjUWP4kGr6S41//QuWmHMJU8qfsF5g
-        FL6PKbhh2kNVi7ToD5qZL1/+ug==
-X-Google-Smtp-Source: AGHT+IGAWRMig9MTM8HwbUunWOHJsJ/tdXoUczvav4ujcqkNnMcjGyNXeyS3D3MD4r1LtBjigmKHkw==
-X-Received: by 2002:a05:6a00:98e:b0:6cb:cdd0:76f7 with SMTP id u14-20020a056a00098e00b006cbcdd076f7mr417804pfg.21.1700622390174;
-        Tue, 21 Nov 2023 19:06:30 -0800 (PST)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id s2-20020aa78282000000b006a77343b0ccsm8614917pfm.89.2023.11.21.19.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 19:06:29 -0800 (PST)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Pan Xinhui <Xinhui.Pan@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH 3/3] drm/amd/display: Support DRM_AMD_DC_FP on RISC-V
-Date:   Tue, 21 Nov 2023 19:05:15 -0800
-Message-ID: <20231122030621.3759313-4-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231122030621.3759313-1-samuel.holland@sifive.com>
-References: <20231122030621.3759313-1-samuel.holland@sifive.com>
+        Tue, 21 Nov 2023 22:06:52 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id BA44B10F1;
+        Tue, 21 Nov 2023 19:06:42 -0800 (PST)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id B38D060621C85;
+        Wed, 22 Nov 2023 11:06:31 +0800 (CST)
+Message-ID: <22c4788d-1ba4-52c7-4ddc-5a3b0ec2acb3@nfschina.com>
+Date:   Wed, 22 Nov 2023 11:06:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH] misc: mei: client.c: fix some error code problem in
+ mei_cl_write
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     tomas.winkler@intel.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        alexander.usyskin@intel.com, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+In-Reply-To: <92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,100 +46,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISC-V uses kernel_fpu_begin()/kernel_fpu_end() like several other
-architectures. Enabling hardware FP requires overriding the ISA string
-for the relevant compilation units.
+On 2023/11/20 23:03, Dan Carpenter wrote:
+> On Mon, Nov 20, 2023 at 04:53:45PM +0800, Su Hui wrote:
+>> Clang static analyzer complains that value stored to 'rets' is never
+>> read. Remove some useless code, and let 'buf_len = -EOVERFLOW' to make
+>> sure we can return '-EOVERFLOW'.
+>>
+>> mei_msg_hdr_init() return negative error code, rets should be
+>> 'PTR_ERR(mei_hdr)' rather than '-PTR_ERR(mei_hdr)'.
+>>
+>> Fixes: 0cd7c01a60f8 ("mei: add support for mei extended header.")
+>> Fixes: 8c8d964ce90f ("mei: move hbuf_depth from the mei device to the hw modules")
+>> Signed-off-by: Su Hui <suhui@nfschina.com>
+>> ---
+>>   drivers/misc/mei/client.c | 6 ++----
+>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
+>> index 9c8fc87938a7..00dac0a47da0 100644
+>> --- a/drivers/misc/mei/client.c
+>> +++ b/drivers/misc/mei/client.c
+>> @@ -2011,7 +2011,7 @@ ssize_t mei_cl_write(struct mei_cl *cl, struct mei_cl_cb *cb, unsigned long time
+>>   
+>>   	mei_hdr = mei_msg_hdr_init(cb);
+>>   	if (IS_ERR(mei_hdr)) {
+>> -		rets = -PTR_ERR(mei_hdr);
+>> +		rets = PTR_ERR(mei_hdr);
+> KTODO: write a static checker rule which complains -PTR_ERR()
+>
+> This might be complicated because there are parts of networking where
+> we store error codes as positive values.  But there is enough context in
+> this function to create some sort of warning about this code.  "Mixing
+> positive and negative error codes" perhaps?
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+Maybe add a check in checkpatch.pl is a good idea?
 
- drivers/gpu/drm/amd/display/Kconfig            | 5 ++++-
- drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c | 6 ++++--
- drivers/gpu/drm/amd/display/dc/dml/Makefile    | 6 ++++++
- drivers/gpu/drm/amd/display/dc/dml2/Makefile   | 6 ++++++
- 4 files changed, 20 insertions(+), 3 deletions(-)
+>
+> $ git grep -n '\-PTR_ERR'
+> block/partitions/core.c:574:                   disk->disk_name, p, -PTR_ERR(part));
+> drivers/infiniband/ulp/ipoib/ipoib_multicast.c:291:                        -PTR_ERR(ah));
+> drivers/misc/mei/client.c:2014:         rets = -PTR_ERR(mei_hdr);
+> drivers/net/ethernet/intel/igb/igb_main.c:8963:                 unsigned int xdp_res = -PTR_ERR(skb);
+> drivers/net/ethernet/intel/igc/igc_main.c:2639:                 unsigned int xdp_res = -PTR_ERR(skb);
+> drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:2348:                     unsigned int xdp_res = -PTR_ERR(skb);
+> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:5431:                         unsigned int xdp_res = -PTR_ERR(skb);
+> drivers/phy/sunplus/phy-sunplus-usb2.c:278:             ret = -PTR_ERR(phy);
+> drivers/scsi/libfc/fc_elsct.c:86:               switch (-PTR_ERR(fp)) {
+> drivers/scsi/libfc/fc_lport.c:1081:                  IS_ERR(fp) ? -PTR_ERR(fp) : 0, fc_lport_state(lport),
+> fs/ext4/indirect.c:1042:                                ext4_error_inode_block(inode, nr, -PTR_ERR(bh),
+> fs/jffs2/background.c:48:                       -PTR_ERR(tsk));
+> fs/ntfs/dir.c:92:                               -PTR_ERR(m));
+> fs/ntfs/dir.c:312:                              -PTR_ERR(page));
+> fs/ntfs/dir.c:643:                              -PTR_ERR(m));
+> fs/ntfs/dir.c:790:                              -PTR_ERR(page));
+> fs/ntfs/index.c:141:                            -PTR_ERR(m));
+> fs/ntfs/index.c:268:                            -PTR_ERR(page));
+> fs/ntfs/mft.c:162:      ntfs_error(ni->vol->sb, "Failed with error code %lu.", -PTR_ERR(m));
+> fs/ntfs/mft.c:289:                              "mft record, error code %ld.", -PTR_ERR(m));
+> net/ipv6/af_inet6.c:852:                        WRITE_ONCE(sk->sk_err_soft, -PTR_ERR(dst));
+> net/ipv6/inet6_connection_sock.c:123:           WRITE_ONCE(sk->sk_err_soft, -PTR_ERR(dst));
+> tools/lib/bpf/libbpf.c:10044:           errno = -PTR_ERR(ptr);
+> tools/lib/bpf/libbpf_internal.h:520:            errno = -PTR_ERR(ret);
+> tools/testing/selftests/bpf/prog_tests/btf_dump.c:59:           err = -PTR_ERR(btf);
+> tools/testing/selftests/bpf/prog_tests/sk_lookup.c:483:         errno = -PTR_ERR(link);
+>
+> Quite a few of those were in printks and it might be an opportunity to
+> use %pe to print the ENOMEM etc strings instead of the number.
 
-diff --git a/drivers/gpu/drm/amd/display/Kconfig b/drivers/gpu/drm/amd/display/Kconfig
-index 901d1961b739..49b33b2f6701 100644
---- a/drivers/gpu/drm/amd/display/Kconfig
-+++ b/drivers/gpu/drm/amd/display/Kconfig
-@@ -8,7 +8,10 @@ config DRM_AMD_DC
- 	depends on BROKEN || !CC_IS_CLANG || ARM64 || RISCV || SPARC64 || X86_64
- 	select SND_HDA_COMPONENT if SND_HDA_CORE
- 	# !CC_IS_CLANG: https://github.com/ClangBuiltLinux/linux/issues/1752
--	select DRM_AMD_DC_FP if (X86 || LOONGARCH || (PPC64 && ALTIVEC) || (ARM64 && KERNEL_MODE_NEON && !CC_IS_CLANG))
-+	select DRM_AMD_DC_FP if ARM64 && KERNEL_MODE_NEON && !CC_IS_CLANG
-+	select DRM_AMD_DC_FP if PPC64 && ALTIVEC
-+	select DRM_AMD_DC_FP if RISCV && FPU
-+	select DRM_AMD_DC_FP if LOONGARCH || X86
- 	help
- 	  Choose this option if you want to use the new display engine
- 	  support for AMDGPU. This adds required support for Vega and
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-index 4ae4720535a5..834dca0396f1 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-@@ -35,6 +35,8 @@
- #include <asm/neon.h>
- #elif defined(CONFIG_LOONGARCH)
- #include <asm/fpu.h>
-+#elif defined(CONFIG_RISCV)
-+#include <asm/switch_to.h>
- #endif
- 
- /**
-@@ -89,7 +91,7 @@ void dc_fpu_begin(const char *function_name, const int line)
- 	depth = __this_cpu_inc_return(fpu_recursion_depth);
- 
- 	if (depth == 1) {
--#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
-+#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
- 		kernel_fpu_begin();
- #elif defined(CONFIG_PPC64)
- 		if (cpu_has_feature(CPU_FTR_VSX_COMP))
-@@ -122,7 +124,7 @@ void dc_fpu_end(const char *function_name, const int line)
- 
- 	depth = __this_cpu_dec_return(fpu_recursion_depth);
- 	if (depth == 0) {
--#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
-+#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
- 		kernel_fpu_end();
- #elif defined(CONFIG_PPC64)
- 		if (cpu_has_feature(CPU_FTR_VSX_COMP))
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index ea7d60f9a9b4..5c8f840ef323 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -43,6 +43,12 @@ dml_ccflags := -mfpu=64
- dml_rcflags := -msoft-float
- endif
- 
-+ifdef CONFIG_RISCV
-+include $(srctree)/arch/riscv/Makefile.isa
-+# Remove V from the ISA string, like in arch/riscv/Makefile, but keep F and D.
-+dml_ccflags := -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)([^v_]*)v?/\1\2/')
-+endif
-+
- ifdef CONFIG_CC_IS_GCC
- ifneq ($(call gcc-min-version, 70100),y)
- IS_OLD_GCC = 1
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-index acff3449b8d7..15ad6e3a2173 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-@@ -42,6 +42,12 @@ dml2_ccflags := -mfpu=64
- dml2_rcflags := -msoft-float
- endif
- 
-+ifdef CONFIG_RISCV
-+include $(srctree)/arch/riscv/Makefile.isa
-+# Remove V from the ISA string, like in arch/riscv/Makefile, but keep F and D.
-+dml2_ccflags := -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)([^v_]*)v?/\1\2/')
-+endif
-+
- ifdef CONFIG_CC_IS_GCC
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
--- 
-2.42.0
+I will try sending some patch for this.
+
+Thanks for your suggestions.
+
+Su Hui
 
