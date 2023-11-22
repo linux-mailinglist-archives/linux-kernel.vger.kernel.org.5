@@ -2,57 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3227F3BA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B486A7F3BAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343522AbjKVCOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        id S1343521AbjKVCSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjKVCOg (ORCPT
+        with ESMTP id S229850AbjKVCS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:14:36 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA91298;
-        Tue, 21 Nov 2023 18:14:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700619270;
-        bh=jMhp3OO1OuD6ZqqAsOzECGZ72/P154caojLkXwRL41U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LT5DOMUGm6oxoBluIfXnUbTw906Ry0buC3EaQQnVidLlrMLljA2K40T2xlof4w/Ag
-         sHlnqbuLOtBbNeMAbIizkhafQEnta+dd7I8DQazbOL60zdUsWaB0X0U22xto88mjoR
-         dykM7PJNh4DPm70zxYi+QbTX8SqsxcXpmU2Uhwv03hf5biTxjvrJVNRjoLS3jJYx9o
-         6ovPPqQkk27PyjdBDCdAIZ1So3AXyRSHI6M1QIL7ECGuL8dlMBwUvGKc9e2LhyHlTd
-         4XMyeh6A1UsNJUI+oljCmwjRr26EqQU7eDsekA33LwPZaw7jX3fnJlelBLFa6ZaMmz
-         aOYz2AOtzsIHQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SZlDj1X1Mz4xSQ;
-        Wed, 22 Nov 2023 13:14:29 +1100 (AEDT)
-Date:   Wed, 22 Nov 2023 13:14:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     KVM <kvm@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kvm tree
-Message-ID: <20231122131428.599f2931@canb.auug.org.au>
+        Tue, 21 Nov 2023 21:18:28 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E79098;
+        Tue, 21 Nov 2023 18:18:24 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27ff83feb29so5385233a91.3;
+        Tue, 21 Nov 2023 18:18:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700619504; x=1701224304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=f2JtVvzSXcsMJHs5Fa1LRlSKTAhVxx38CLFocbX7yRI=;
+        b=JPgel1P1PdSaVZ2W4epIyUtmPGcXX8rCxNJ3iuuSf+dwBW7j1N1K3hVAmrc/WcxikL
+         4MTHXhO+bdQ7FfI+vAl8bldvfkbjwFte0s0ZwHVzaDv5w8AOWW1n6d4vot4V5hypYfAB
+         Tt5O5nl6pEaCZ5D+zObkTqODtOPe7NZk2S2XQh7pWiNbZMzsXIzXpZ0e91NiW03YEloX
+         lQgLARM9IUsMUplTa1bE5NDpsEyBt8IEEQYKZtnNVEJ/G5Gp5YRXYOgmu1IbKccbwLKO
+         p2WiXOPAOC3Kpd97tJ5fqarww4r2wwzwRfWiPajkPM6YOyC9naY42aHAteSjGosgY6LZ
+         gvcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700619504; x=1701224304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f2JtVvzSXcsMJHs5Fa1LRlSKTAhVxx38CLFocbX7yRI=;
+        b=Hs7EgCgsO/74gTclSes4RX0Z5mmrzNwHqe0eNlBIziyWDU7s6v1YbO+NADQZbkYalS
+         DGO+7r6lIxVT7oGNiqbWsBWc1eIXR7hsYtnqXSYEEqiBW44zceW+vUo/2dpkSIQRJ56Q
+         5im/3b1UFTXStxG+fF92xefO1Xmo9HiL+Kiyx/eSyPnwT5SAL4xJ2iFSJM3wkTVDUFGb
+         onnMV+ow7GsBYyNs/9Fd7xQU5dA94wNnHiXuHmd5tDRClYdTXNmP253V7g1fFwCCQdXa
+         8zxbBj6CXYqLLgTA3mL20slQJEdC83T/Ozb3CmrSbjUL8AHdOfwbTxoISNynt8Bw7XPD
+         WSdA==
+X-Gm-Message-State: AOJu0YxHgx+A3YGCtipax8zaFpK6dM3Q5okJ+PLYhnFmDswmVGinXnfE
+        41/ASwnwpMwMZkzsc3uQgtY=
+X-Google-Smtp-Source: AGHT+IHULoe6pvKvjGIj978pG/KK+sCwsp4P07vJ0QP8owy3lQgUNgmTBcg4tQiLtn7mpUJHV9y5Cg==
+X-Received: by 2002:a17:90a:1e:b0:283:2932:e90c with SMTP id 30-20020a17090a001e00b002832932e90cmr1280050pja.12.1700619503724;
+        Tue, 21 Nov 2023 18:18:23 -0800 (PST)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:da69])
+        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001cf5c99a62esm4863700ple.117.2023.11.21.18.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 18:18:23 -0800 (PST)
+Date:   Tue, 21 Nov 2023 18:18:17 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, davem@davemloft.net, dsahern@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        samitolvanen@google.com, keescook@chromium.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+        llvm@lists.linux.dev, jpoimboe@kernel.org, joao@overdrivepizza.com,
+        mark.rutland@arm.com
+Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com>
+References: <20231120144642.591358648@infradead.org>
+ <20231120154948.708762225@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GLQFgBlUXh5M6MunK=g/i._";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120154948.708762225@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,122 +84,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GLQFgBlUXh5M6MunK=g/i._
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 20, 2023 at 03:46:44PM +0100, Peter Zijlstra wrote:
+> +
+> +#ifdef CONFIG_CFI_CLANG
+> +struct bpf_insn;
+> +
+> +extern unsigned int bpf_func_proto(const void *ctx,
+> +				   const struct bpf_insn *insn);
 
-Hi all,
+To make it more obvious what is going on could you rename it to
+__bpf_prog_runX()
+and add a comment that its prototype should match exactly
+bpf interpreters created by DEFINE_BPF_PROG_RUN() macro,
+otherwise cfi will explode.
 
-After merging the kvm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+> +
+> +__ADDRESSABLE(bpf_func_proto);
+> +
+> +asm (
+> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+> +"	.type	cfi_bpf_hash,@object				\n"
+> +"	.globl	cfi_bpf_hash					\n"
+> +"	.p2align	2, 0x0					\n"
+> +"cfi_bpf_hash:							\n"
+> +"	.long	__kcfi_typeid_bpf_func_proto			\n"
 
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c: In function 'kvm_gmem_punch_h=
-ole':
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c:100:58: error: 'struct address=
-_space' has no member named 'private_list'; did you mean 'i_private_list'?
-  100 |         struct list_head *gmem_list =3D &inode->i_mapping->private_=
-list;
-      |                                                          ^~~~~~~~~~=
-~~
-      |                                                          i_private_=
-list
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c: In function 'kvm_gmem_error_f=
-olio':
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c:273:49: error: 'struct address=
-_space' has no member named 'private_list'; did you mean 'i_private_list'?
-  273 |         struct list_head *gmem_list =3D &mapping->private_list;
-      |                                                 ^~~~~~~~~~~~
-      |                                                 i_private_list
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c: In function '__kvm_gmem_creat=
-e':
-arch/x86/kvm/../../../virt/kvm/guest_memfd.c:373:51: error: 'struct address=
-_space' has no member named 'private_list'; did you mean 'i_private_list'?
-  373 |         list_add(&gmem->entry, &inode->i_mapping->private_list);
-      |                                                   ^~~~~~~~~~~~
-      |                                                   i_private_list
+Took me some time to grok this.
+Cannot you use __CFI_TYPE() macro here ?
 
-Caused by commit
+> +"	.size	cfi_bpf_hash, 4					\n"
+> +"	.popsection						\n"
+> +);
+> +#endif
+...
+> +static int emit_fineibt(u8 **pprog)
+> +{
+> +	u8 *prog = *pprog;
+> +
+> +	EMIT_ENDBR();
+> +	EMIT3_off32(0x41, 0x81, 0xea, cfi_bpf_hash);
+> +	EMIT2(0x74, 0x07);
+> +	EMIT2(0x0f, 0x0b);
+> +	EMIT1(0x90);
+> +	EMIT_ENDBR_POISON();
 
-  a7800aa80ea4 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific=
- backing memory")
+Please add comments what this asm does. No one can read hex.
 
-interacting with commit
+> +
+> +	*pprog = prog;
+> +	return 16;
 
-  488e2eea5100 ("fs: Rename mapping private members")
+16 means "the caller of this code will jump to endbr_poison", right?
 
-from the vfs-brauner tree.
+> +}
+> +
+> +static int emit_kcfi(u8 **pprog)
+> +{
+> +	u8 *prog = *pprog;
+> +	int offset = 5;
+> +
+> +	EMIT1_off32(0xb8, cfi_bpf_hash);
 
-I have applied the following merge fix patch.
+and here too.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 22 Nov 2023 13:10:06 +1100
-Subject: [PATCH] fix up for "KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for gu=
-est-specific backing memory"
+> +#ifdef CONFIG_CALL_PADDING
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	EMIT1(0x90);
+> +	offset += 11;
+> +#endif
+> +	EMIT_ENDBR();
+> +
+> +	*pprog = prog;
+> +	return offset;
 
-interacting with "fs: Rename mapping private members" from the vfs-brauner
-tree.
+5 or 16 would mean "jump to endbr" ?
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- virt/kvm/guest_memfd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> +}
+> +
+> +static int emit_cfi(u8 **pprog)
+> +{
+> +	u8 *prog = *pprog;
+> +	int offset = 0;
+> +
+> +	switch (cfi_mode) {
+> +	case CFI_FINEIBT:
+> +		offset = emit_fineibt(&prog);
+> +		break;
+> +
+> +	case CFI_KCFI:
+> +		offset = emit_kcfi(&prog);
+> +		break;
+> +
+> +	default:
+> +		EMIT_ENDBR();
+> +		break;
+> +	}
+> +
+> +	*pprog = prog;
+> +	return offset;
+> +}
+> +
+>  /*
+>   * Emit x86-64 prologue code for BPF program.
+>   * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
+>   * while jumping to another program
+>   */
+> -static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+> -			  bool tail_call_reachable, bool is_subprog,
+> -			  bool is_exception_cb)
+> +static int emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+> +			 bool tail_call_reachable, bool is_subprog,
+> +			 bool is_exception_cb)
+>  {
+>  	u8 *prog = *pprog;
+> +	int offset;
+>  
+> +	offset = emit_cfi(&prog);
 
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index 451435123fe7..16d58806e913 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -97,7 +97,7 @@ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem=
-, pgoff_t start,
-=20
- static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t=
- len)
- {
--	struct list_head *gmem_list =3D &inode->i_mapping->private_list;
-+	struct list_head *gmem_list =3D &inode->i_mapping->i_private_list;
- 	pgoff_t start =3D offset >> PAGE_SHIFT;
- 	pgoff_t end =3D (offset + len) >> PAGE_SHIFT;
- 	struct kvm_gmem *gmem;
-@@ -270,7 +270,7 @@ static int kvm_gmem_migrate_folio(struct address_space =
-*mapping,
- static int kvm_gmem_error_folio(struct address_space *mapping,
- 		struct folio *folio)
- {
--	struct list_head *gmem_list =3D &mapping->private_list;
-+	struct list_head *gmem_list =3D &mapping->i_private_list;
- 	struct kvm_gmem *gmem;
- 	pgoff_t start, end;
-=20
-@@ -370,7 +370,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t si=
-ze, u64 flags)
- 	kvm_get_kvm(kvm);
- 	gmem->kvm =3D kvm;
- 	xa_init(&gmem->bindings);
--	list_add(&gmem->entry, &inode->i_mapping->private_list);
-+	list_add(&gmem->entry, &inode->i_mapping->i_private_list);
-=20
- 	fd_install(fd, file);
- 	return fd;
---=20
-2.40.1
+I'm not sure doing cfi_bpf_hash check in JITed code is completely solving the problem.
+From bpf_dispatcher_*_func() calling into JITed will work,
+but this emit_prologue() is doing the same job for all bpf progs.
+Some bpf progs call each other directly and indirectly.
+bpf_dispatcher_*_func() -> JITed_BPF_A -> JITed_BPF_B.
+A into B can be a direct call (which cfi doesn't care about) and
+indirect via emit_bpf_tail_call_indirect()->emit_indirect_jump().
+Should we care about fineibt/kcfi there too?
 
---=20
-Cheers,
-Stephen Rothwell
+>  	/* BPF trampoline can be made to work without these nops,
+>  	 * but let's waste 5 bytes for now and optimize later
+>  	 */
+> -	EMIT_ENDBR();
+>  	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+>  	prog += X86_PATCH_SIZE;
+>  	if (!ebpf_from_cbpf) {
+> @@ -357,6 +426,8 @@ static void emit_prologue(u8 **pprog, u3
+>  	if (tail_call_reachable)
+>  		EMIT1(0x50);         /* push rax */
+>  	*pprog = prog;
+> +
+> +	return offset;
+>  }
+>  
+>  static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
+> @@ -1083,8 +1154,8 @@ static int do_jit(struct bpf_prog *bpf_p
+>  	bool tail_call_seen = false;
+>  	bool seen_exit = false;
+>  	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
+> -	int i, excnt = 0;
+>  	int ilen, proglen = 0;
+> +	int i, excnt = 0;
+>  	u8 *prog = temp;
+>  	int err;
+>  
+> @@ -1094,9 +1165,12 @@ static int do_jit(struct bpf_prog *bpf_p
+>  	/* tail call's presence in current prog implies it is reachable */
+>  	tail_call_reachable |= tail_call_seen;
+>  
+> -	emit_prologue(&prog, bpf_prog->aux->stack_depth,
+> -		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
+> -		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
+> +	ctx->prog_offset = emit_prologue(&prog, bpf_prog->aux->stack_depth,
+> +					 bpf_prog_was_classic(bpf_prog),
+> +					 tail_call_reachable,
+> +					 bpf_is_subprog(bpf_prog),
+> +					 bpf_prog->aux->exception_cb);
+> +
+>  	/* Exception callback will clobber callee regs for its own use, and
+>  	 * restore the original callee regs from main prog's stack frame.
+>  	 */
+> @@ -2935,9 +3009,9 @@ struct bpf_prog *bpf_int_jit_compile(str
+>  			jit_data->header = header;
+>  			jit_data->rw_header = rw_header;
+>  		}
+> -		prog->bpf_func = (void *)image;
+> +		prog->bpf_func = (void *)image + ctx.prog_offset;
 
---Sig_/GLQFgBlUXh5M6MunK=g/i._
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I don't understand this.
+prog->bpf_func is the main entry point. Everything jumps there.
+Are you trying to skip all of cfi code in the prologue and let
+xdp_dispatcher jump to endbr or endbr_poison (depending on fineibt vs kcfi) ?
+Then what is the point of earlier asm bits?
+Is it a some clang thing that knows to offset indirect jump by
+exactly that many hard coded bytes ?
+Something in the clang does ptr -= 16 in case of fineibt and just
+jumps there ? and ptr -= 5 for kcfi ?
 
------BEGIN PGP SIGNATURE-----
+If so, please add a giant comment explaining that.
+No one should be reverse engineering such intricate details.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVdZAQACgkQAVBC80lX
-0Gy7+wf8COi5Jx/3jUo0LmfleOMMQZcluv5ylZ8f9gfVZsxnt9C7gMoNVkAHzup0
-u1IY0VZss3/exLMzL6TOKOCQlzub5qmMkYdL7HD9YzKrbwU/EFm3nX2r60RsATc6
-fCWtDRcEludWMQemnW4ZiWKXylD7Nj4o4IReIVqdDDs98R7JnHwMRBB7bwSGe8Jx
-ZdijsunCXPehjZRcIOjUs452+ELXnF8f+JDc9nSkOe8PBEz9rhpv0iaHUnHV1/uE
-V651+TLvK5gcgXiz8lZesr3O2tSuXck6fyAbT3s8bXTjmNr6dnV6rZbzhWhUC5vm
-mtQltBcVO7y6wvxwfKNWlgwpa65RLg==
-=nvCs
------END PGP SIGNATURE-----
+>  		prog->jited = 1;
+> -		prog->jited_len = proglen;
+> +		prog->jited_len = proglen - ctx.prog_offset; // XXX?
 
---Sig_/GLQFgBlUXh5M6MunK=g/i._--
+jited_len is used later to cover the whole generated code.
+See bpf_prog_ksym_set_addr():
+        prog->aux->ksym.start = (unsigned long) prog->bpf_func;
+        prog->aux->ksym.end   = prog->aux->ksym.start + prog->jited_len;
+we definitely want ksym [start, end] to cover every useful byte
+of JITed code in case IRQ happens on that byte.
+Without covering cfi prologue the stack dump will be wrong for that frame.
+I guess if xdp_dispatcher with fineibt=on jumps into prog->bpf_func - 16
+and IRQ fires we don't care that much about accurate stack of last frame ?
+I guess it's acceptable, but a comment is necessary.
