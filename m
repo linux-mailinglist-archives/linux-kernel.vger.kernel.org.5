@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDE17F4ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EC67F4ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344443AbjKVPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        id S1344570AbjKVPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344481AbjKVPfn (ORCPT
+        with ESMTP id S1344523AbjKVPgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:35:43 -0500
+        Wed, 22 Nov 2023 10:36:00 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F791739;
-        Wed, 22 Nov 2023 07:34:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD1FC433D9;
-        Wed, 22 Nov 2023 15:34:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A13A1FF9;
+        Wed, 22 Nov 2023 07:34:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E4FFC43391;
+        Wed, 22 Nov 2023 15:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667262;
-        bh=6Sbtg7aRv49DECKFT2CS/PIA6JaOYMTfSjqMHYNkqek=;
+        s=k20201202; t=1700667267;
+        bh=mr81ezehLemTvgIgiEO/DegCCDj4ACKiftPeOfszEJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rlBUWD7kVOX0vLWg25qQmyydGJLGVEGcNXOpzwBgWOe+L9fJQW/gkREo1F9Qq+31z
-         WxO+dRQIGqeiUwyeNB6I6ujf0HsbAHGIK58ow78DhAIH6tUpYiwMSYV+8iOYs/Sf4e
-         fRdr5WfAS6YmU6N5Z9jUm+puxS+bB25xdGHNZNdRRGmoJcUkVUmjd9cJ2whoRFk2gY
-         3+XjVT/EQEzQAewl+wrsClc+LkLZABlVwl7tjttIxmxHllDAvw2hnpBCEvmrBqZxIZ
-         eeuDBCFrQa+Pmw6c/3LFClExxeQUiOJkpIFCCsmMwpJkHK+9KwKtSBM3QAQcT6yTzL
-         4ez8wxkT/Poqg==
+        b=M7krRVi4RhCKRBXwho2cmLQUZ4+cLT3Q25enwbseQ8jl6Uhj787dxJUcWEUueDWl8
+         fLandjjlLZtNCjU2VvOsws9VYJQ1jlMooaVdp4HMz5Ntt5qcIIEg1vuhtRe+yc1k0w
+         Omwcwpm0bCVam/KqQjhhwcCky9GJR4rnb3x01u/WAOjUJSE9lvHrXTaf7jWS2ZCXLY
+         a8D1/wGahiNZqxIspKa9KGDusvvDcorSEuc1TxbFibLmuYwgMIkDiXSYAUaj4O1clU
+         aSBA50rFZaMyaCPGiaj57YERb5ztNX/CyuV02alEmEEEm6mLAv5Rr+hATuhRkwrcj8
+         LjMkcaM9MN77Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Victor Lu <victorchengchi.lu@amd.com>,
-        Samir Dhume <samir.dhume@amd.com>,
+Cc:     Le Ma <le.ma@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
         Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Hawking.Zhang@amd.com, tao.zhou1@amd.com, le.ma@amd.com,
-        Felix.Kuehling@amd.com, srinivasan.shanmugam@amd.com,
-        yifan1.zhang@amd.com, amd-gfx@lists.freedesktop.org,
+        Felix.Kuehling@amd.com, lijo.lazar@amd.com,
+        rajneesh.bhardwaj@amd.com, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 12/15] drm/amdgpu: Do not program VF copy regs in mmhub v1.8 under SRIOV (v2)
-Date:   Wed, 22 Nov 2023 10:33:14 -0500
-Message-ID: <20231122153340.852434-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 13/15] drm/amdgpu: finalizing mem_partitions at the end of GMC v9 sw_fini
+Date:   Wed, 22 Nov 2023 10:33:15 -0500
+Message-ID: <20231122153340.852434-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153340.852434-1-sashal@kernel.org>
 References: <20231122153340.852434-1-sashal@kernel.org>
@@ -59,46 +57,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Victor Lu <victorchengchi.lu@amd.com>
+From: Le Ma <le.ma@amd.com>
 
-[ Upstream commit 0288603040c38ccfeb5342f34a52673366d90038 ]
+[ Upstream commit bdb72185d310fc8049c7ea95221d640e9e7165e5 ]
 
-MC_VM_AGP_* registers should not be programmed by guest driver.
+The valid num_mem_partitions is required during ttm pool fini,
+thus move the cleanup at the end of the function.
 
-v2: move early return outside of loop
-
-Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
-Reviewed-by: Samir Dhume <samir.dhume@amd.com>
+Signed-off-by: Le Ma <le.ma@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
-index 5e8b493f86995..e68ffc1b7a095 100644
---- a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
-+++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
-@@ -130,6 +130,9 @@ static void mmhub_v1_8_init_system_aperture_regs(struct amdgpu_device *adev)
- 	uint64_t value;
- 	int i;
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 67e669e0141cc..00c719b93c76e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -2211,8 +2211,6 @@ static int gmc_v9_0_sw_fini(void *handle)
  
-+	if (amdgpu_sriov_vf(adev))
-+		return;
+ 	if (adev->ip_versions[GC_HWIP][0] == IP_VERSION(9, 4, 3))
+ 		amdgpu_gmc_sysfs_fini(adev);
+-	adev->gmc.num_mem_partitions = 0;
+-	kfree(adev->gmc.mem_partitions);
+ 
+ 	amdgpu_gmc_ras_fini(adev);
+ 	amdgpu_gem_force_release(adev);
+@@ -2226,6 +2224,9 @@ static int gmc_v9_0_sw_fini(void *handle)
+ 	amdgpu_bo_free_kernel(&adev->gmc.pdb0_bo, NULL, &adev->gmc.ptr_pdb0);
+ 	amdgpu_bo_fini(adev);
+ 
++	adev->gmc.num_mem_partitions = 0;
++	kfree(adev->gmc.mem_partitions);
 +
- 	inst_mask = adev->aid_mask;
- 	for_each_inst(i, inst_mask) {
- 		/* Program the AGP BAR */
-@@ -139,9 +142,6 @@ static void mmhub_v1_8_init_system_aperture_regs(struct amdgpu_device *adev)
- 		WREG32_SOC15(MMHUB, i, regMC_VM_AGP_TOP,
- 			     adev->gmc.agp_end >> 24);
+ 	return 0;
+ }
  
--		if (amdgpu_sriov_vf(adev))
--			return;
--
- 		/* Program the system aperture low logical page number. */
- 		WREG32_SOC15(MMHUB, i, regMC_VM_SYSTEM_APERTURE_LOW_ADDR,
- 			min(adev->gmc.fb_start, adev->gmc.agp_start) >> 18);
 -- 
 2.42.0
 
