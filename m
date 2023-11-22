@@ -2,263 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C527F44DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A43D7F44BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbjKVLYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
+        id S230504AbjKVLOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVLYS (ORCPT
+        with ESMTP id S1343577AbjKVKko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:24:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856DE18C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:24:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700652252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FKyJjqN4yB5dEQXOJ/hPSQkG+aJnTkBN/bXtW33LM8I=;
-        b=WhRgNPUeEmwUO6ffrhg7weAaLvJBy75e1AKHL6qNQREv1RcXKGVuKbQJUU72aJOICq09Tz
-        RL92vL+f1CetEbXF0aFAoGGNDa4qHlH9NKxgJ+0Hxar/Ix1d7awdXfYfW8OO9NLHwP53Qf
-        ntmhvQyCrpWMjy/batcSRVNmP14JK2g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-UYTsx_zkOiKtykoe-8kyvA-1; Wed, 22 Nov 2023 06:24:09 -0500
-X-MC-Unique: UYTsx_zkOiKtykoe-8kyvA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2700C8007B3;
-        Wed, 22 Nov 2023 11:24:09 +0000 (UTC)
-Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFA5B40C6EBB;
-        Wed, 22 Nov 2023 11:24:08 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-        id CB4E2400DEE3E; Tue, 21 Nov 2023 10:35:21 -0300 (-03)
-Date:   Tue, 21 Nov 2023 10:35:21 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 0/2] mm: too_many_isolated can stall due to out of sync
- VM counters
-Message-ID: <ZVyyGfEBmN5+Df0L@tpad>
-References: <20231113233420.446465795@redhat.com>
- <ZVMtuYLviLYqAI7x@tiehlicka>
- <ZVNnjVdeNblG1l8t@tpad>
- <ZVNsMVPJ5y8C_hBC@tiehlicka>
+        Wed, 22 Nov 2023 05:40:44 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67449D8;
+        Wed, 22 Nov 2023 02:40:40 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40842752c6eso33497995e9.1;
+        Wed, 22 Nov 2023 02:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700649639; x=1701254439; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BWEJ4p5oF5My5H+DDjkWQZxD7K1sIs4EyPFQ443g1H4=;
+        b=VWsJGUBb8EBUm7ej/c0zQFMab/O4pQVtVTH3ZO6dBlC5zXXR27p48vhEF+dc8vdd6e
+         n7ZbG8XwSV6jKq1ez93v06NkFMq6y3rIDeXHlw5wWly7i/ugi36b7vsDj7d8/cwmF9fm
+         1etZnxnFnYAvv0vnrYcGd/Qj8seRnl8qBSTF70LrSxFwbZGWd1KNOEML4QcUCIKizwPB
+         IeHnF4MOEc/U0ZuztamO6GIsCpghJie8j50cus5HdxExkT+I0RXX9sEcDgAiKD0mRoZ0
+         amgM1nKvRejltW3X1diangbnSe3sDapVGqZ6l6Uh9qt1/pRZ0aEQxkyVI0UxJ8VH8UlG
+         rkFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700649639; x=1701254439;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BWEJ4p5oF5My5H+DDjkWQZxD7K1sIs4EyPFQ443g1H4=;
+        b=YWx1OLXxT3eQvWYu9LngtdA562hDAL87BammzKZFpNVgJevoIEhRqH/XPrVCy9KH2s
+         0cmG7Y+r5Oy10bKn7/IpHHbcNqWWkj/bs5SHdVwL4xviiq3Jv0OxJqbv6QnmE43kgfHh
+         8UR50wVu94sxWGaNpHG8APkbEW0Z20xkuoRjY1mLeqClrBeVrXHHkfKogH92rCJydZQ7
+         fyyf+jecJIOqF6yWHf8Syhjrk72pXZWAsSqvu8iENygAZUhBhL8nSsh6H/NRV5fSdSHc
+         8I5P+9y2bVHx60dl9slMX+FkIacul82sRKrhfEPUeDPI0vaLiDQa2Ndd/wWHMERd+fcn
+         IeBw==
+X-Gm-Message-State: AOJu0Yx31RlObvdde5flVCXR2dtJJz34Pnd7lBq08Y/Ld6KLK3KhvnXu
+        jIY0APzRvTkxlN/48WsG2KuD5nx2DLA=
+X-Google-Smtp-Source: AGHT+IF6GNB6My6d4ckpfPXb5FpSvJHkY8U2dwMLOBnvWWoqEBHBNpcSvcG+3C2flxq0ONjc8hSHRg==
+X-Received: by 2002:a05:600c:4f44:b0:40b:2a7a:fb11 with SMTP id m4-20020a05600c4f4400b0040b2a7afb11mr1346905wmq.25.1700649638494;
+        Wed, 22 Nov 2023 02:40:38 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id o13-20020a05600c4fcd00b004094e565e71sm1781756wmq.23.2023.11.22.02.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 02:40:37 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scripts/spelling.txt: add more spellings to spelling.txt
+Date:   Wed, 22 Nov 2023 10:40:37 +0000
+Message-Id: <20231122104037.1770749-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVNsMVPJ5y8C_hBC@tiehlicka>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 01:46:41PM +0100, Michal Hocko wrote:
-> On Tue 14-11-23 09:26:53, Marcelo Tosatti wrote:
-> > Hi Michal,
-> > 
-> > On Tue, Nov 14, 2023 at 09:20:09AM +0100, Michal Hocko wrote:
-> > > On Mon 13-11-23 20:34:20, Marcelo Tosatti wrote:
-> > > > A customer reported seeing processes hung at too_many_isolated,
-> > > > while analysis indicated that the problem occurred due to out
-> > > > of sync per-CPU stats (see below).
-> > > > 
-> > > > Fix is to use node_page_state_snapshot to avoid the out of stale values.
-> > > > 
-> > > > 2136 static unsigned long
-> > > >     2137 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
-> > > >     2138                      struct scan_control *sc, enum lru_list lru)
-> > > >     2139 {
-> > > >     :
-> > > >     2145         bool file = is_file_lru(lru);
-> > > >     :
-> > > >     2147         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-> > > >     :
-> > > >     2150         while (unlikely(too_many_isolated(pgdat, file, sc))) {
-> > > >     2151                 if (stalled)
-> > > >     2152                         return 0;
-> > > >     2153
-> > > >     2154                 /* wait a bit for the reclaimer. */
-> > > >     2155                 msleep(100);   <--- some processes were sleeping here, with pending SIGKILL.
-> > > >     2156                 stalled = true;
-> > > >     2157
-> > > >     2158                 /* We are about to die and free our memory. Return now. */
-> > > >     2159                 if (fatal_signal_pending(current))
-> > > >     2160                         return SWAP_CLUSTER_MAX;
-> > > >     2161         }
-> > > > 
-> > > > msleep() must be called only when there are too many isolated pages:
-> > > 
-> > > What do you mean here?
-> > 
-> > That msleep() must not be called when
-> > 
-> > isolated > inactive
-> > 
-> > is false.
-> 
-> Well, but the code is structured in a way that this is simply true.
-> too_many_isolated might be false positive because it is a very loose
-> interface and the number of isolated pages can fluctuate depending on
-> the number of direct reclaimers.
+Some of the more common spelling mistakes and typos that I've found while
+fixing up spelling mistakes in the kernel over the past couple of
+releases.
 
-OK
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ scripts/spelling.txt | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
->  
-> > > >     2019 static int too_many_isolated(struct pglist_data *pgdat, int file,
-> > > >     2020                 struct scan_control *sc)
-> > > >     2021 {
-> > > >     :
-> > > >     2030         if (file) {
-> > > >     2031                 inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
-> > > >     2032                 isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
-> > > >     2033         } else {
-> > > >     :
-> > > >     2046         return isolated > inactive;
-> > > > 
-> > > > The return value was true since:
-> > > > 
-> > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
-> > > >     $8 = {
-> > > >       counter = 1
-> > > >     }
-> > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
-> > > >     $9 = {
-> > > >       counter = 2
-> > > > 
-> > > > while per_cpu stats had:
-> > > > 
-> > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
-> > > >     $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
-> > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
-> > > >     $86 = 0xffff00917fcc32e0
-> > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-> > > >     $87 = -1 '\377'
-> > > > 
-> > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
-> > > >     $89 = 0xffff00917fe032e0
-> > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-> > > >     $91 = -1 '\377'
-> > > 
-> > > This doesn't really tell much. How much out of sync they really are
-> > > cumulatively over all cpus?
-> > 
-> > This is the cumulative value over all CPUs (offsets for other CPUs 
-> > have been omitted since they are zero).
-> 
-> OK, so that means the NR_ISOLATED_FILE is 0 while NR_INACTIVE_FILE is 1,
-> correct? If that is the case then the value is indeed outdated but it
-> also means that the NR_INACTIVE_FILE is so small that all but 1 (resp. 2
-> as kswapd is never throttled) reclaimers will be stalled anyway. So does
-> the exact snapshot really help? 
-
-By looking at the data:
-
- >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
- >     $8 = {
- >       counter = 1
- >     }
- >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
- >     $9 = {
- >       counter = 2
- > 
- > while per_cpu stats had:
- > 
- >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
- >     $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
- >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
- >     $86 = 0xffff00917fcc32e0
- >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
- >     $87 = -1 '\377'
- > 
- >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
- >     $89 = 0xffff00917fe032e0
- >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
- >     $91 = -1 '\377'
-
-Actual-Value = Global-Counter + CPU0.delta + CPU1.delta + ... + CPUn.delta
-
-Nr-Isolated-File = Nr-Isolated-Global + CPU0.delta-isolated + CPU1.delta-isolated + ... + CPUn.delta-isolated
-Nr-Inactive-File = Nr-Inactive-Global + CPU0.delta-inactive + CPU1.delta-inactive + ... + CPUn.delta-inactive
-
-With outdated values: 
-====================
-
-Nr-Isolated-File = 2
-Nr-Inactive-File = 1
-
-Therefore isolated > inactive, since 2 > 1.
-
-Without outdated values (snapshot):
-==================================
-
-Nr-Isolated-File = 2 - 1 - 1 = 0
-Nr-Inactive-File = 1
-
-> Do you have any means to reproduce this
-> behavior and see that the patch actually changed the behavior?
-
-No, because its not easy to test patches on the system where this was
-reproduced.
-
-However, the calculations above seem pretty unambiguous, showing that
-the snapshot would fix the problem.
-
-> [...]
-> 
-> > > With a very low NR_FREE_PAGES and many contending allocation the system
-> > > could be easily stuck in reclaim. What are other reclaim
-> > > characteristics? 
-> > 
-> > I can ask. What information in particular do you want to know?
-> 
-> When I am dealing with issues like this I heavily rely on /proc/vmstat
-> counters and pgscan, pgsteal counters to see whether there is any
-> progress over time.
-
-I understand your desire for additional data, can try to grab it 
-(or create a synthetic configuration where this problem is
-reproducible).
-
-However, given the calculations above, it is clear that one problem is the 
-out of sync counters. Don't you agree?
-
-> > > Is the direct reclaim successful? 
-> > 
-> > Processes are stuck in too_many_isolated (unnecessarily). What do you mean when you ask
-> > "Is the direct reclaim successful", precisely?
-> 
-> With such a small LRU list it is quite likely that many processes will
-> be competing over last pages on the list while rest will be throttled
-> because there is nothing to reclaim. It is quite possible that all
-> reclaimers will be waiting for a single reclaimer (either kswapd or
-> other direct reclaimer).
-
-Sure, but again, the calculations above show that processes are stuck
-on too_many_isolated (and the proposed fix will address that situation).
-
->  I would like to understand whether the system
-> is stuck in unproductive state where everybody just waits until the
-> counter is synced or everything just progress very slowly because of the
-> small LRU. 
-
-OK.
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 855c4863124b..edec60d39bbf 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -26,6 +26,7 @@ accelaration||acceleration
+ accelearion||acceleration
+ acceleratoin||acceleration
+ accelleration||acceleration
++accelrometer||accelerometer
+ accesing||accessing
+ accesnt||accent
+ accessable||accessible
+@@ -137,6 +138,7 @@ anniversery||anniversary
+ annoucement||announcement
+ anomolies||anomalies
+ anomoly||anomaly
++anonynous||anonymous
+ anway||anyway
+ aplication||application
+ appearence||appearance
+@@ -267,6 +269,7 @@ cadidate||candidate
+ cahces||caches
+ calender||calendar
+ calescing||coalescing
++calibraiton||calibration
+ calle||called
+ callibration||calibration
+ callled||called
+@@ -288,6 +291,7 @@ capabitilies||capabilities
+ capablity||capability
+ capatibilities||capabilities
+ capapbilities||capabilities
++captuer||capture
+ caputure||capture
+ carefuly||carefully
+ cariage||carriage
+@@ -340,6 +344,7 @@ comminucation||communication
+ commited||committed
+ commiting||committing
+ committ||commit
++commmand||command
+ commnunication||communication
+ commoditiy||commodity
+ comsume||consume
+@@ -406,6 +411,7 @@ continious||continuous
+ continous||continuous
+ continously||continuously
+ continueing||continuing
++contiuous||continuous
+ contraints||constraints
+ contruct||construct
+ contol||control
+@@ -757,6 +763,7 @@ hardward||hardware
+ havind||having
+ heirarchically||hierarchically
+ heirarchy||hierarchy
++heirachy||hierarchy
+ helpfull||helpful
+ hearbeat||heartbeat
+ heterogenous||heterogeneous
+@@ -1199,6 +1206,7 @@ priting||printing
+ privilaged||privileged
+ privilage||privilege
+ priviledge||privilege
++priviledged||privileged
+ priviledges||privileges
+ privleges||privileges
+ probaly||probably
+@@ -1251,6 +1259,7 @@ purgable||purgeable
+ pwoer||power
+ queing||queuing
+ quering||querying
++querrying||querying
+ queus||queues
+ randomally||randomly
+ raoming||roaming
+@@ -1324,6 +1333,7 @@ reseting||resetting
+ reseved||reserved
+ reseverd||reserved
+ resizeable||resizable
++resonable||reasonable
+ resotre||restore
+ resouce||resource
+ resouces||resources
+@@ -1427,6 +1437,7 @@ sliped||slipped
+ softwade||software
+ softwares||software
+ soley||solely
++soluation||solution
+ souce||source
+ speach||speech
+ specfic||specific
+@@ -1458,6 +1469,7 @@ standart||standard
+ standy||standby
+ stardard||standard
+ staticly||statically
++statisitcs||statistics
+ statuss||status
+ stoped||stopped
+ stoping||stopping
+@@ -1548,6 +1560,7 @@ threds||threads
+ threee||three
+ threshhold||threshold
+ thresold||threshold
++throtting||throttling
+ throught||through
+ tansition||transition
+ trackling||tracking
+@@ -1571,6 +1584,7 @@ tranasction||transaction
+ tranceiver||transceiver
+ tranfer||transfer
+ tranmission||transmission
++tranport||transport
+ transcevier||transceiver
+ transciever||transceiver
+ transferd||transferred
+-- 
+2.39.2
 
