@@ -2,213 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC057F4797
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FCD7F4796
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344109AbjKVNTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:19:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
+        id S1344086AbjKVNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:19:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344098AbjKVNTd (ORCPT
+        with ESMTP id S1343961AbjKVNTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:19:33 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365B01A5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:19:29 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5cbbe2cba33so16136177b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700659168; x=1701263968; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vB3h17ZiZ1W4dA7P94tMnhpktj3v+3WDCq3z7CXQplU=;
-        b=Um7ABIw75/7Zu3kE8hojnBlSlnTXIKIykW86iovazp6BwkDpkOUMOSgtpbKeVoGkdV
-         Ywz8rSaTv22fikUJyychvl9sDWuDsMmgPgxDvi5QpJ8rbw4CVlKJGnPQF5OkSrsBE+iW
-         DJuAr8NfdV6SwJwogoYlQwtbTR+sZP5eheq2E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700659168; x=1701263968;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vB3h17ZiZ1W4dA7P94tMnhpktj3v+3WDCq3z7CXQplU=;
-        b=koFw9CJVo1L1HbLHtxAkTYCqpzulbJH2sKQILjfoDS8iQNoAQ2UTIgXgf+W9/XyLXg
-         DMNTouisr00VeZ918eYhkWQSJr8aQC23ShL2r3LiTJEEURYBKsS1Yo1fA6lkkGuUJJac
-         Tjs1qcLQf14ADqbt5pxcvwgedpIgWD1wIC2gaW9xbY1B5etiz25/MjO0ALnVumU+wqk/
-         zZ92Bp6axP/8KAeNW0Uo75sViuTHvFVOm4NY6XfE79GBKx8w0jd42K64Dwed2RuTs482
-         wPKzyou6dcJUBcIauBm5ae3Xv8WrcrtL5VlSiQnSbqvF4Nc25rsuxP6cxtEkZeEjSuGk
-         v25g==
-X-Gm-Message-State: AOJu0Yzn+JJFm0PtT8SZ7c8Q4NOoUsvm/vDX6305oKbILJHbOBoNfW6X
-        1+9dJmTj5rJG7AziNOeiWqU28aN2hPbtZ3FUYYc/yA==
-X-Google-Smtp-Source: AGHT+IG40KkPAgtM+mYO9x30FI6sqZXQ6lrHnyP4mTumJncSPHmhCLGipcixU2m+iAmH2ymCR3S6Cw==
-X-Received: by 2002:a81:798f:0:b0:5cc:a937:e with SMTP id u137-20020a81798f000000b005cca937000emr937875ywc.19.1700659168067;
-        Wed, 22 Nov 2023 05:19:28 -0800 (PST)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id en15-20020a05690c2b8f00b005cab0d7b0f1sm1769368ywb.6.2023.11.22.05.19.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 05:19:27 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-db048181cd3so6611167276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:19:27 -0800 (PST)
-X-Received: by 2002:a25:6605:0:b0:da3:ab41:33c6 with SMTP id
- a5-20020a256605000000b00da3ab4133c6mr1946922ybc.65.1700659167137; Wed, 22 Nov
- 2023 05:19:27 -0800 (PST)
+        Wed, 22 Nov 2023 08:19:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDC9191;
+        Wed, 22 Nov 2023 05:19:21 -0800 (PST)
+Date:   Wed, 22 Nov 2023 13:19:17 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1700659158;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fojc2VGWk1Ppqi8igArbeVREM67+3gzH2X7O+KyEs7k=;
+        b=FjIv3wsBdmz322hgPdMxAW+a5y4fN/TVKc+BWVWixWsXrZUI4rWFAPupAWIYjzLtCsrA+Z
+        blS6cNGTXxEuexwvSf4S1FXU6DrigqkAqGH0kgAOSv3ggGWq7xeAcBFOqPG35ya0MmQ9NZ
+        0Zbz/hr0NmuBfavLXlPYIoWBs17POcov/7AKO0GlCpwctjplIIOFpDdADRPDDbmwf/2QL2
+        2qeyj/6GnGJE98RhQsh2VS1Pge+JmuDQeFcPeOOehYs6wMyHNI03NiZtAPG41gY4WFDN1X
+        AW0D4E1hufW+hGbcJ9GKFOp+Evbk02OyIKKqC1bJvcjk7lPDKoxKJB0rAtUu4g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1700659158;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fojc2VGWk1Ppqi8igArbeVREM67+3gzH2X7O+KyEs7k=;
+        b=zd2H1Kgc54bbiw4/o7TA002G2AAU8tVmRos8O//v1EqEM/STHsUgKCQcVNFfB45Ue/uKV3
+        4iaOo39zXxdU4yBw==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] time: Make sysfs_get_uname() function visible in header
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        u.kleine-koenig@pengutronix.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231108125843.3806765-5-arnd@kernel.org>
+References: <20231108125843.3806765-5-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20231106-uvc-event-v3-1-c2d2fdaa2e2c@chromium.org> <995f8f26-ed20-44d2-a76a-e354fc68d65e@xs4all.nl>
-In-Reply-To: <995f8f26-ed20-44d2-a76a-e354fc68d65e@xs4all.nl>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 22 Nov 2023 14:19:14 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvniNQOfQ1a3o33UPf4roEa4-EOE=1ggHrwumpyNsxR5g@mail.gmail.com>
-Message-ID: <CANiDSCvniNQOfQ1a3o33UPf4roEa4-EOE=1ggHrwumpyNsxR5g@mail.gmail.com>
-Subject: Re: [PATCH v3] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Esker Wong <esker@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <170065915799.398.1839657355059760928.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+The following commit has been merged into the timers/core branch of tip:
 
-On Tue, 21 Nov 2023 at 11:37, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> Hi Ricardo,
->
-> Sorry, I missed the whole discussion for the v2 patch. I've now read it and
-> will reply here.
->
-> On 11/6/23 12:00, Ricardo Ribalda wrote:
-> > Add support for the frame_sync event, so user-space can become aware
-> > earlier of new frames.
+Commit-ID:     a89299c40911ee29c6ec4fb66f9c598cd947265b
+Gitweb:        https://git.kernel.org/tip/a89299c40911ee29c6ec4fb66f9c598cd94=
+7265b
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Wed, 08 Nov 2023 13:58:25 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 22 Nov 2023 14:12:10 +01:00
 
-Will fix the description in the next version thanks!
+time: Make sysfs_get_uname() function visible in header
 
+This function is defined globally in clocksource.c and used conditionally
+in clockevent.c, which the declaration hidden when clockevent support
+is disabled. This causes a harmless warning in the definition:
 
->
-> I don't think this describes why you want this. Specifically, you want to use
-> this to measure latency inside the driver between the arrival of the first USB
-> packet and the time the buffer is dequeued.
->
-> And this is presumably meant for debugging/measuring, but not for normal
-> capturing. Right?
->
-> Based on the discussion it looks like everyone is OK with this for the BULK
-> case, and V4L2_EVENT_FRAME_SYNC makes sense to me there. You want to see the
-> sequence number in the event, and the description of the event matches what
-> happens.
->
-> The problem is the ISOC case where it is debatable if this adds anything.
->
-> Perhaps in the ISOC case this event shouldn't be supported? Unless you can
-> show that it does provide useful information in the ISOC case. I didn't see
-> that in the v2 discussion, but I might have missed it.
+kernel/time/clocksource.c:1324:9: warning: no previous prototype for 'sysfs_g=
+et_uname' [-Wmissing-prototypes]
+ 1324 | ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt)
 
-There are the following times
-- t_exposure: Time when the exposure happens. We can get it from
-v4l2_buffer.timestamp based on the hw timestamp
-- t_usb_first: Time when the first usb frame arrives at the usb host.
-We cannot get it (or better said.. I do not know how to get it)
-- t_urb: Time when the first urb is processed by the driver.
-Implemented as V4L2_EVENT_FRAME_SYNC in this driver
-- t_dqbuf: Time when the buffer can be dequeded by userspace.
-Implemented a timestamp in userspace when the syscall finishes.
+Move the declaration out of the #ifdef so it is always visible.
 
-What we would like to measure is (t_dqbuf-t_usb_first), but we cannot
-obtain t_usb_first.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20231108125843.3806765-5-arnd@kernel.org
 
-(t_urb-t_usb_first) is relatively small so it can be ignored: For ISO
-the max we have measured is 1.8 msec vs 31 msec (t_dqbuf-t_urb)
-(t_urb-t_usb_first) is also always constant. If you are measuring
-trends, you do not care about an offset.
+---
+ kernel/time/tick-internal.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-There are two proposed alternatives to this patch:
-- that we use (t_dqbuf-t_exposure), but that measurement is dependent
-on the exposure time, so we cannot use that measurement.
-- use ftrace: but we will have to use different userspace methods for
-every driver, which defeats the purpose of V4L2_EVENT_FRAME_SYNC, and
-the metric will be as "bad" as the current proposal.
-
-If you are curious you can take a look at a trace here:
-https://ui.perfetto.dev/#!/?s=061a0fb7ebb0333e5dcbe35f487c18980e8e00a6e1b227c98d5e2569163924e0
-
-Thanks!
-
-
->
-> Regards,
->
->         Hans
->
-> >
-> > Suggested-by: Esker Wong <esker@chromium.org>
-> > Tested-by: Esker Wong <esker@chromium.org>
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> > We have measured a latency of around 30msecs between frame sync
-> > and dqbuf.
-> > ---
-> > Changes in v3:
-> > - Sent wrong patch as v2 sorry :S
-> > - Link to v2: https://lore.kernel.org/r/20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org
-> >
-> > Changes in v2:
-> > - Suggested by Laurent. Split sequence++ and event init.
-> > - Link to v1: https://lore.kernel.org/r/20231020-uvc-event-v1-1-3baa0e9f6952@chromium.org
-> > ---
-> >  drivers/media/usb/uvc/uvc_v4l2.c  | 2 ++
-> >  drivers/media/usb/uvc/uvc_video.c | 7 +++++++
-> >  2 files changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> > index f4988f03640a..9f3fb5fd2375 100644
-> > --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> > @@ -1352,6 +1352,8 @@ static int uvc_ioctl_subscribe_event(struct v4l2_fh *fh,
-> >       switch (sub->type) {
-> >       case V4L2_EVENT_CTRL:
-> >               return v4l2_event_subscribe(fh, sub, 0, &uvc_ctrl_sub_ev_ops);
-> > +     case V4L2_EVENT_FRAME_SYNC:
-> > +             return v4l2_event_subscribe(fh, sub, 0, NULL);
-> >       default:
-> >               return -EINVAL;
-> >       }
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index 28dde08ec6c5..6a9410133908 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -1073,9 +1073,16 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
-> >        * that discontinuous sequence numbers always indicate lost frames.
-> >        */
-> >       if (stream->last_fid != fid) {
-> > +             struct v4l2_event event = {
-> > +                     .type = V4L2_EVENT_FRAME_SYNC,
-> > +             };
-> > +
-> >               stream->sequence++;
-> >               if (stream->sequence)
-> >                       uvc_video_stats_update(stream);
-> > +
-> > +             event.u.frame_sync.frame_sequence = stream->sequence;
-> > +             v4l2_event_queue(&stream->vdev, &event);
-> >       }
-> >
-> >       uvc_video_clock_decode(stream, buf, data, len);
-> >
-> > ---
-> > base-commit: ce55c22ec8b223a90ff3e084d842f73cfba35588
-> > change-id: 20231020-uvc-event-d3d1bbbdcb2f
-> >
-> > Best regards,
->
-
-
---
-Ricardo Ribalda
+diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+index 649f2b4..481b7ab 100644
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -56,7 +56,6 @@ extern int clockevents_program_event(struct clock_event_dev=
+ice *dev,
+ 				     ktime_t expires, bool force);
+ extern void clockevents_handle_noop(struct clock_event_device *dev);
+ extern int __clockevents_update_freq(struct clock_event_device *dev, u32 fre=
+q);
+-extern ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt);
+=20
+ /* Broadcasting support */
+ # ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+@@ -197,3 +196,5 @@ void hrtimers_resume_local(void);
+ #else
+ #define JIFFIES_SHIFT	8
+ #endif
++
++extern ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt);
