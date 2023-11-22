@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B27347F3D5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBEE7F3D5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbjKVFba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:31:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S229934AbjKVFez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234641AbjKVFbR (ORCPT
+        with ESMTP id S229498AbjKVFey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:31:17 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2085.outbound.protection.outlook.com [40.107.96.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB5C1BC;
-        Tue, 21 Nov 2023 21:31:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YsRJW9tDxwQSwFc9w9nNYBvNj92ckrummSjd9NzgP0g8BNk9qbORBNL8FaAX5n4mXAw8BiVx/Vb/9os5ESLSxtB/KBeCvd+xrtBVSyXGVftnxZTLsyoR7Jww6/aJzKwesjnOl9drsrMBd73JCpEOKdu43fpz3Z1ET9PX8E0gznLNZ/dRfB2xxZxBfrggpkpm8l2P8haWDzjd9vMApW1cMGdcwfbMCHh1rJuUieY2xAsPCaDp0zdeai4ju4ynGt9ON+PdiEK8wk8mqKLqMZboV3M9FhmFobpECSoQv3kj7Fk1RJqQkfHOJadoWqnhEN/mnjYqACo6VMs4Ohd/uOdHzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vTw4SoSSLjZh8+v4JCagfM9/lx9KlKg4pAxKEQ2dA0A=;
- b=kLxZMRO/qR6xsFajevf5cUF0DWORBGOJeikwk7X/0/Em0VWoniaicoVSA0VBRjPJOZy5hJ+5vtP0jiyegL6V7X0lBWAzfKBnsFS1mFnx/wrNdVJgGVHwxK1V9z2tiFOK5J+LqmrmizGpQ2RnoSHfksBhKddM4Y1v99Byhgb7j/V89x9okEhdp322Hk5yMA3OluNp7v8/fc9YDkvINb6w48mVFIGqrnCxkjEM0D/RX8kV+eVyk+OofkZdYmaao6lCCs6z+DtNhmjTGaLbs+HT6gnw2sUV4SDQFBUTo1Kqd3FVSi8+q8ziClGfpJ7ie9aUgffgfQccChRax4KbgSvZEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTw4SoSSLjZh8+v4JCagfM9/lx9KlKg4pAxKEQ2dA0A=;
- b=Om6VUEwTe/wjIzJgNhGasGVcZtU/Lx+UuXe515283eh5NNbkyByA8kfvVI5zLsGYGtvnj1D8oEE+5lmJA7eyYVAIswGc7tQDfg0wv29iSdTOYtqOez7oWYrUAe0nMYWOHMR0XA6Xyxn62RDTfcKcMyToTUDg/J7r4oep8wEDibo=
-Received: from MN2PR05CA0060.namprd05.prod.outlook.com (2603:10b6:208:236::29)
- by SJ1PR12MB6121.namprd12.prod.outlook.com (2603:10b6:a03:45c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 05:31:09 +0000
-Received: from BL6PEPF0001AB4B.namprd04.prod.outlook.com
- (2603:10b6:208:236:cafe::e9) by MN2PR05CA0060.outlook.office365.com
- (2603:10b6:208:236::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18 via Frontend
- Transport; Wed, 22 Nov 2023 05:31:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4B.mail.protection.outlook.com (10.167.242.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 05:31:09 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
- 2023 23:31:07 -0600
-From:   Nava kishore Manne <nava.kishore.manne@amd.com>
-To:     <mdf@kernel.org>, <hao.wu@intel.com>, <yilun.xu@intel.com>,
-        <trix@redhat.com>, <sumit.semwal@linaro.org>,
-        <christian.koenig@amd.com>, <linux-fpga@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-Subject: [RFC 2/2] fpga: versal: Use the scatterlist interface
-Date:   Wed, 22 Nov 2023 11:00:35 +0530
-Message-ID: <20231122053035.3758124-3-nava.kishore.manne@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231122053035.3758124-1-nava.kishore.manne@amd.com>
-References: <20231122053035.3758124-1-nava.kishore.manne@amd.com>
+        Wed, 22 Nov 2023 00:34:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDC090
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:34:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EEB3C433CC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700631290;
+        bh=+oyhJw+7WDNmz+8BB3oZ+9jML7VR1PCueTIj1yyeSJE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S7dQz6c8HTOaMWHw0+v8POXeHHNgESqqp6IZQSFG8+JBaOa4iVFm60usbgE64pLoz
+         Qlunhv0YUWMetRsAv+7LcuJJYdskWp/gG8FftvYsRYG8NfzopVqFNVtvgOQS8h8DKE
+         GCTMOJ51R2jYnqT3/BEM9MX7e+fFis6y7mf1B2Q2cO8Gcrl7KNX8tjITyZKsBXXlyo
+         d0A4rjvrDc3p1TtDNXyk2oohsoMsa017+Hg4i86F8yVt+zPOdoBvMnxAk22JWlILHg
+         Cy/v0lSPgHbC25txAI07W7824PU4LL4UtwggSy/xgk3NB6/Qgprt3/yLW+hFGgqRUV
+         jXbHBNjgZbSxg==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1f9460cb66cso1577193fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:34:49 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw8zSvW3+mMvRIMeSDJGDoT4XdYMcpIttIcMTByzkqOccgL4Eum
+        pmo/3LZvX2UWBk2MQknPPCcrcnvTUh+eltLcaaAkFg==
+X-Google-Smtp-Source: AGHT+IFx1OBet7WELnVj3mLYddyu1QmnNSMWiKQ+4A9WFcAMSYkIoxEBRkjJKPTTYeaaUfvmaHZMc5SVjs66MkcFvzo=
+X-Received: by 2002:a05:6870:470b:b0:1ef:b649:cbd0 with SMTP id
+ b11-20020a056870470b00b001efb649cbd0mr1594597oaq.52.1700631289206; Tue, 21
+ Nov 2023 21:34:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4B:EE_|SJ1PR12MB6121:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6e237e2-dc7b-424d-b4a5-08dbeb1c3b63
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JwjNquiUm35KZMw693YQBgtiGD8W5B/2gXSBxriH2FTqDpp4Hvez2QjxAU81g4dOLrzk7UrNv4R1i7j+9t/ovpxDJwCxfyVA/Kfj7LvkShbfwiVsHM3xPD59IaecnrGpRdRumlewZzYenIFSx6usRY6mTPYwrzq87UVu8QhknrhTHAx7ne7RfrBtspw6J9dm6etP+EAWiYp0E3J6CIvfGvaNKVNa0KGf3zYv+qjYjM4C0lbjEDbV1Bru+z8DS9k1gY45tE38FLSRbcJ+clYB4WShPMqvmHJ9Mey6HgV0TgZn9kBeAXW4cSOHkL8sifsCTi4PZvJZfhNpBB/nilAWZc2obXAv6asnBvq1z3r6oi/B4wIbqy3yIDPV4PQUsF4nJvnbLxwVO6bao5clyWxOSKMV8FdEuaJQmDEatgNwzkaeByAqD305iJE/bgTeIxVbKkzPWcAbJBoC+rKnU1qL9uO/Q8ulzHefGcGYop3jsZShVFlxOr4ILfn0WNZoWOfMUB5iQfckX6uXedMPpiFDlHWcw3UUPiXE/C+gM45gdpyGa66wR+lpjX2IXmH8AKP8/tcMwbYfbag6/LCJfceErvwde7oSbAuy33ds/KWWXnKBpe0FkJXDa1HBHTAeUvwGWRMq52fT28H7aPo87P4PS1/CBCdShvsK3g2+bBVeAP3Jgbb5qWVxGx+yfQS7SgIiPS6YgMM9h8VnoiCkYsPx/8EiqeyZqdwhwmdnR3PYV1Y+kw2u+rxbkQOrF3d+YBevaL544ERzkE6PEQMJGihVrNzt+9o35spmsdOSaSCkyZk=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(376002)(346002)(396003)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(40470700004)(36840700001)(46966006)(7416002)(5660300002)(2906002)(41300700001)(8936002)(70586007)(110136005)(316002)(8676002)(6666004)(40480700001)(478600001)(70206006)(2616005)(26005)(1076003)(83380400001)(16526019)(426003)(336012)(40460700003)(36860700001)(921008)(47076005)(81166007)(356005)(86362001)(103116003)(82740400003)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 05:31:09.0590
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6e237e2-dc7b-424d-b4a5-08dbeb1c3b63
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4B.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6121
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-24-ryncsn@gmail.com>
+ <87msv8c1xy.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAMgjq7Ahh2HVA0ym2t0UdX=FYQ52mrKXDueK5GeNK9=2h+adwQ@mail.gmail.com>
+In-Reply-To: <CAMgjq7Ahh2HVA0ym2t0UdX=FYQ52mrKXDueK5GeNK9=2h+adwQ@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Tue, 21 Nov 2023 21:34:37 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOahJMXu0ds8j9XHV81eSknVitvvWmvW4J-O_i=H-ON0g@mail.gmail.com>
+Message-ID: <CAF8kJuOahJMXu0ds8j9XHV81eSknVitvvWmvW4J-O_i=H-ON0g@mail.gmail.com>
+Subject: Re: [PATCH 23/24] swap: fix multiple swap leak when after cgroup migrate
+To:     Kairui Song <ryncsn@gmail.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows drivers to request the Configuration image
-be loaded from dma-able continuous buffer to avoid
-needless memory pressure and delays due to multiple
-copies.
+Hi Kairui,
 
-Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
----
- drivers/fpga/versal-fpga.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Mon, Nov 20, 2023 at 3:17=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> Huang, Ying <ying.huang@intel.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=8820=E6=
+=97=A5=E5=91=A8=E4=B8=80 15:37=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Kairui Song <ryncsn@gmail.com> writes:
+> >
+> > > From: Kairui Song <kasong@tencent.com>
+> > >
+> > > When a process which previously swapped some memory was moved to
+> > > another cgroup, and the cgroup it previous in is dead, then swapped i=
+n
+> > > pages will be leaked into rootcg. Previous commits fixed the bug for
+> > > no readahead path, this commit fix the same issue for readahead path.
+> > >
+> > > This can be easily reproduced by:
+> > > - Setup a SSD or HDD swap.
+> > > - Create memory cgroup A, B and C.
+> > > - Spawn process P1 in cgroup A and make it swap out some pages.
+> > > - Move process P1 to memory cgroup B.
+> > > - Destroy cgroup A.
+> > > - Do a swapoff in cgroup C
+> > > - Swapped in pages is accounted into cgroup C.
+> > >
+> > > This patch will fix it make the swapped in pages accounted in cgroup =
+B.
+> >
+> > Accroding to "Memory Ownership" section of
+> > Documentation/admin-guide/cgroup-v2.rst,
+> >
+> > "
 
-diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
-index 3710e8f01be2..bf4fb4426417 100644
---- a/drivers/fpga/versal-fpga.c
-+++ b/drivers/fpga/versal-fpga.c
-@@ -19,6 +19,18 @@ static int versal_fpga_ops_write_init(struct fpga_manager *mgr,
- 	return 0;
- }
- 
-+static int versal_fpga_ops_write_sg(struct fpga_manager *mgr,
-+				    struct sg_table *sgt)
-+{
-+	dma_addr_t dma_addr;
-+	int ret;
-+
-+	dma_addr = sg_dma_address(sgt->sgl);
-+	ret = zynqmp_pm_load_pdi(PDI_SRC_DDR, dma_addr);
-+
-+	return ret;
-+}
-+
- static int versal_fpga_ops_write(struct fpga_manager *mgr,
- 				 const char *buf, size_t size)
- {
-@@ -40,6 +52,7 @@ static int versal_fpga_ops_write(struct fpga_manager *mgr,
- static const struct fpga_manager_ops versal_fpga_ops = {
- 	.write_init = versal_fpga_ops_write_init,
- 	.write = versal_fpga_ops_write,
-+	.write_sg = versal_fpga_ops_write_sg,
- };
- 
- static int versal_fpga_probe(struct platform_device *pdev)
--- 
-2.25.1
+> > A memory area is charged to the cgroup which instantiated it and stays
+> > charged to the cgroup until the area is released.  Migrating a process
+> > to a different cgroup doesn't move the memory usages that it
+> > instantiated while in the previous cgroup to the new cgroup.
+> > "
+> >
+> > Because we don't move the charge when we move a task from one cgroup to
+> > another.  It's controversial which cgroup should be charged to.
+> > According to the above document, it's acceptable to charge to the cgrou=
+p
+> > C (cgroup where swapoff happens).
+>
+> Hi Ying, thank you very much for the info!
+>
+> It is controversial indeed, just the original behavior is kind of
+> counter-intuitive.
+>
+> Image if there are cgroup P1, and its child cgroup C1 C2. If a process
+> swapped out some memory in C1 then moved to C2, and C1 is dead.
+> On swapoff the charge will be moved out of P1...
+>
+> And swapoff often happen on some unlimited cgroup or some cgroup for
+> management agent.
+>
+> If P1 have a memory limit, it can breech the limit easily, we will see
+> a process that never leave P1 having a much higher RSS that P1/C1/C2's
+> limit.
+> And if there is a limit for the management agent cgroup, the agent
+> will be OOM instead of OOM in P1.
 
+I think I will reply to another similar email.
+
+If you want OOM in P1, you can have an admin program. fork and execute
+a new process, add the new process into P1, then swap off from that
+new process.
+
+>
+> Simply moving a process between the child cgroup of the same parent
+> cgroup won't cause such issue, thing get weird when swapoff is
+> involved.
+>
+> Or maybe we should try to be compatible, and introduce a sysctl or
+> cmdline for this?
+
+If the above suggestion works, then you don't need to change swap off?
+
+If you still want to change the charging model. I like to see the
+bigger picture, what rules it follows and how it works in other
+situations.
+
+Chris
