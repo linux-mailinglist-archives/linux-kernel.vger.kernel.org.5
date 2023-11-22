@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779B27F5311
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32957F530A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344629AbjKVWMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S1344568AbjKVWMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344631AbjKVWMt (ORCPT
+        with ESMTP id S231392AbjKVWMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:12:49 -0500
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AC61BD;
-        Wed, 22 Nov 2023 14:12:45 -0800 (PST)
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-359c1f42680so876265ab.2;
-        Wed, 22 Nov 2023 14:12:45 -0800 (PST)
+        Wed, 22 Nov 2023 17:12:43 -0500
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDDCB9;
+        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-35937f2fadeso858685ab.2;
+        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691165; x=1701295965;
+        d=1e100.net; s=20230601; t=1700691159; x=1701295959;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=shYyO58BPes3ozOUzmFhahNxoCiZTriaHChWVdh269w=;
-        b=omMUj/9PmI/bVj2XUQJZ0AiwhwX9qoa4nFEKbAlgSRZPyU42S9f74UBXRARR0Zwgy7
-         NhhtmoTYfDCV4LFD0ZUSVs3jJZOl2dhE/j5O2/AenNl+BILKH3ztmQhJyVY585bqa3p0
-         BXnnjjOGdo8yavzG4tuE/ErJntQJU4t72nx2zpbW9nlWKGEEIF3n/exxSY6u7qoRL+z8
-         DdRBIM/uEZ5sQyc19qWeKZ9WwJ3zotIioH3xgQrmwRfua7R18PF7D+M+rXAPQ20+l683
-         wZMx6aIt8eqCeSMQeqHsAblCfUbHEQVtreyuJYsEnk200iq2h8hbsSdJSJKXOoUoNkTf
-         CgGQ==
-X-Gm-Message-State: AOJu0YxRiXpIsAFED8Bxeb0izCY+RvV/Vf7+VqEUygUbR4UuLWODM+yp
-        lxW/gfGhfK5pzvh7FNsXqZwV0nMDpw==
-X-Google-Smtp-Source: AGHT+IFMJzsEvpbSktexSSdFIfR9OaWDnu0zBfHOB7Y/r6iYkYi/TaZpUgTAHm5TMgYN9AvcD7iJ5A==
-X-Received: by 2002:a05:6e02:603:b0:357:704a:8699 with SMTP id t3-20020a056e02060300b00357704a8699mr3547266ils.8.1700691165100;
-        Wed, 22 Nov 2023 14:12:45 -0800 (PST)
+        bh=oQrmqAZcdIuXmqszFM5kR+KdU7shYUbjsm44jbecVtk=;
+        b=HmmXPwzc50joKTkOWtAw3+vfvwRiCJwUxb66bn0t0RkrnwXrWSRk3c6b5Shvdoh2sU
+         1Ws/58s/BN2eTAn9XZvjg6u01uhbmcGAOH7EnsT+kTbG2DIzyuyoxcgEUpJSXFmnJePk
+         QQFX+2Kc5fgSuinpVmNBN0WU84ER/oosxaKkNnMFeDluUotIq3Bd6gjBQR3ybPRhwEjb
+         3YjUYSLEYZ36hbpwG01KySCr8IpTslGHW3dGY/IF9WMA4uRhuAgeCglzQNyCJgSACRSa
+         P63Vid7B+ctDcka/yhDiQzEvFAXyWjeYu/OLlYTrWUwkdQoXBUUVmXBRHUsORX3WYomF
+         TyAA==
+X-Gm-Message-State: AOJu0YwUMbJYNNiUHMB89pLYoBA7II/J2cjO01l4lvOT9QyA4sONZp2z
+        KAWDU3LqmPgemTxsBpStKA==
+X-Google-Smtp-Source: AGHT+IGj21a13xz1WqdS/H6Nqa3rnnJqU98fDkeH4YoBfe8sZRN0UwRgSamoEKVV6rR3nWw7fbCw5w==
+X-Received: by 2002:a92:c5cb:0:b0:35b:110f:8127 with SMTP id s11-20020a92c5cb000000b0035b110f8127mr3639999ilt.26.1700691159445;
+        Wed, 22 Nov 2023 14:12:39 -0800 (PST)
 Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id em4-20020a0566384da400b0045b4a059a57sm91639jab.44.2023.11.22.14.12.43
+        by smtp.gmail.com with ESMTPSA id y17-20020a056e02119100b0035b19b773b8sm159259ili.59.2023.11.22.14.12.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 14:12:44 -0800 (PST)
-Received: (nullmailer pid 2753840 invoked by uid 1000);
+        Wed, 22 Nov 2023 14:12:38 -0800 (PST)
+Received: (nullmailer pid 2753842 invoked by uid 1000);
         Wed, 22 Nov 2023 22:12:33 -0000
 From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 22 Nov 2023 15:12:34 -0700
-Subject: [PATCH v2 3/4] riscv: dts: Always enable extra W=1 warnings
+Date:   Wed, 22 Nov 2023 15:12:35 -0700
+Subject: [PATCH v2 4/4] arm/arm64: dts: samsung: Always enable extra W=1
+ warnings
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-dtc-warnings-v2-3-bd4087325392@kernel.org>
+Message-Id: <20231122-dtc-warnings-v2-4-bd4087325392@kernel.org>
 References: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
 In-Reply-To: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
@@ -77,26 +78,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As all RISC-V .dts files are W=1 clean, enable the W=1 warnings all the
-time.
+Samsung platforms are clean of W=1 dtc warnings, so enable the warnings
+by default. This way submitters don't have to remember to run a W=1
+build of the .dts files and the grumpiness of the maintainers can be
+reduced.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/riscv/boot/dts/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+v2:
+ - Use new variable name
+---
+ arch/arm/boot/dts/samsung/Makefile  | 3 +++
+ arch/arm64/boot/dts/exynos/Makefile | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index 72030fd727af..a7b17e0ac8c8 100644
---- a/arch/riscv/boot/dts/Makefile
-+++ b/arch/riscv/boot/dts/Makefile
+diff --git a/arch/arm/boot/dts/samsung/Makefile b/arch/arm/boot/dts/samsung/Makefile
+index 7becf36656b1..fffc5c45d441 100644
+--- a/arch/arm/boot/dts/samsung/Makefile
++++ b/arch/arm/boot/dts/samsung/Makefile
 @@ -1,4 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0
 +
-+export KBUILD_EXTRA_WARN_DTC=1
++KBUILD_EXTRA_WARN_DTC=1
 +
- subdir-y += allwinner
- subdir-y += canaan
- subdir-y += microchip
+ dtb-$(CONFIG_ARCH_EXYNOS3) += \
+ 	exynos3250-artik5-eval.dtb \
+ 	exynos3250-monk.dtb \
+diff --git a/arch/arm64/boot/dts/exynos/Makefile b/arch/arm64/boot/dts/exynos/Makefile
+index 6e4ba69268e5..9cb188ef470d 100644
+--- a/arch/arm64/boot/dts/exynos/Makefile
++++ b/arch/arm64/boot/dts/exynos/Makefile
+@@ -1,4 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
++
++KBUILD_EXTRA_WARN_DTC=1
++
+ dtb-$(CONFIG_ARCH_EXYNOS) += \
+ 	exynos5433-tm2.dtb		\
+ 	exynos5433-tm2e.dtb		\
 
 -- 
 2.42.0
