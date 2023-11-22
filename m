@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69167F5209
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E647C7F5211
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbjKVVFl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 16:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S232185AbjKVVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVVFj (ORCPT
+        with ESMTP id S230377AbjKVVJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:05:39 -0500
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E6998
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:05:35 -0800 (PST)
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso221098b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:05:35 -0800 (PST)
+        Wed, 22 Nov 2023 16:09:05 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F10D1A4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:09:01 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9fffa4c4f43so24387566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:09:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700687339; x=1701292139; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DjZ3A9RnpMc/0GPOf8DzrpfaMDka4vJ8RxujHh4ePRw=;
+        b=TyL8aRoSG8W7XCbwEkgeGlsgn+vGank7QpQhJ5G48NdXyNih9MMcRA91/5NySZ3aCU
+         ZEKXp/p+5UqVZCAS99U+93rWr2AUxe3FEu7R52AgXJ90GGAAQ8l7ZPTHDtS/u5eje6JD
+         ZMjwHuwJI+xxgVUvknlTs+KDvQBcfAgXAIj40=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700687135; x=1701291935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gV2f2BqWkrSB7nwLoOeLKdwbe6EE3dlzzcRDVp/tu6I=;
-        b=Nys+EPQMqKJ3+07RaRyo8eRo4Qop7GGhSNA0xLwGI4Cb9wikASRnchB+4okkyJKIDV
-         tWUwnxU4Yp2+nMbhMUSucQrF0vzKmJIjMzuXaHNJaQ6HM1B5QgB9VVw1ZWZTWKDFaqFt
-         BY3Ver3wamkeBckNJvVfug99EW0P2/3OQmzOAE+ovgpzLqDt2lD84cDrssRIpicUxFiT
-         9aNATcyqoV1/5pRcLqL0DxZthklJXECqdqQGQNBzwY/GkNNKOUrTi0rERjEXIVLEVi9W
-         10RAIgfcmg0rdAa4C7CaQQ24lIzOZ4O+x4lk9PUUn5mPNWSXdCUnmAFCc18pJv5oyCPJ
-         eHFQ==
-X-Gm-Message-State: AOJu0Yxj9Pz7RCIygsTJF2Ph8a5DIkpwTEq8/7N25lIXJb8xwhUqnj0z
-        pXMN5KFrJxPLDdVqJ77ZeVFs8yd9NmLs1aw4P7c=
-X-Google-Smtp-Source: AGHT+IFsxXjlsTR8neJh0lpYk/pH87F6rcV1lKTPQHhEm7yfh63RSV6tst+ZEg8BWr8kKbkicJTz0FmFGJhEvtW8ZrU=
-X-Received: by 2002:a05:6a21:191:b0:18b:3d8f:1495 with SMTP id
- le17-20020a056a21019100b0018b3d8f1495mr3994511pzb.33.1700687135149; Wed, 22
- Nov 2023 13:05:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700687339; x=1701292139;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DjZ3A9RnpMc/0GPOf8DzrpfaMDka4vJ8RxujHh4ePRw=;
+        b=PdGuG1YCPUXkG88sco7zKvWoasIcSTyyaqgZlEvSDwkzBAlnwLvyfSLqdy+0TEXWmd
+         g0I6HvLvOw+sAeREPcvQKYktqnkeEkclN4Be54YHGcim8oN65SNIchjNIgFLgOKAug7Y
+         4JP/oLZpvG2QjZcV2FAHXj1vcRP+MIEmA7kn9BYWwHjyeB+UKaIKUau+VA009RjQzrM9
+         WaHkVXmQzg+hPmPwD391o5b6jDE4mHde1MAlJqzwxC8NdWnNifqdv/Fu3KTIBcK59rOy
+         +eeJJS985dM4BWcMHBx9luaN3ro6ji3ew7WweqUUQNtEt06B/GypZFXP9JdfxNPS7ovy
+         w+ug==
+X-Gm-Message-State: AOJu0YwvcFJrbIrnvm0ImMqxT+YARL7z+xg/zigfow5XDWcS335FZZOB
+        wMlA6f3EbkIWTodei/mqT6MLIy5i+obc/wuL75iPRlHH
+X-Google-Smtp-Source: AGHT+IHt8IuB/xYA6vUIxi17WgUp6M03hfI65AHIOjAsoD3V9UXubxe9DyD34IFRT+UNCq2m1hZp8A==
+X-Received: by 2002:a17:907:371:b0:a02:9700:bf53 with SMTP id rs17-20020a170907037100b00a029700bf53mr2402562ejb.46.1700687339642;
+        Wed, 22 Nov 2023 13:08:59 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170906328d00b009a193a5acffsm211903ejw.121.2023.11.22.13.08.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 13:08:59 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so279956a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:08:58 -0800 (PST)
+X-Received: by 2002:aa7:d050:0:b0:53e:1825:be81 with SMTP id
+ n16-20020aa7d050000000b0053e1825be81mr2626539edo.21.1700687338666; Wed, 22
+ Nov 2023 13:08:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20231122022154.12772-1-CruzZhao@linux.alibaba.com>
-In-Reply-To: <20231122022154.12772-1-CruzZhao@linux.alibaba.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 22 Nov 2023 13:05:24 -0800
-Message-ID: <CAM9d7chVZRKUSmXmZS4OyokKfLKp4h8K8RLWehYRpAs5Z4jsbg@mail.gmail.com>
-Subject: Re: [PATCH] perf: ignore exited thread when synthesize thread map
-To:     Cruz Zhao <CruzZhao@linux.alibaba.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        kprateek.nayak@amd.com, linux-kernel@vger.kernel.org
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info> <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+ <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info> <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
+ <e1ca042c-de1d-4fe3-ad69-51d147b1fe0b@leemhuis.info> <20231122155758.GEZV4lBgtZyzsP5Z4V@fat_crate.local>
+ <CAHk-=wiV+NM+jLKbSj_Ej9RaXpu4akWV03G_wXyTSHZhArq1tg@mail.gmail.com> <20231122205135.GGZV5p157mBi6RYUNs@fat_crate.local>
+In-Reply-To: <20231122205135.GGZV5p157mBi6RYUNs@fat_crate.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Nov 2023 13:08:41 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh03jMZRAxHFTkv0h9dZ6TmiqukzcHd4RTx7ijia_prsg@mail.gmail.com>
+Message-ID: <CAHk-=wh03jMZRAxHFTkv0h9dZ6TmiqukzcHd4RTx7ijia_prsg@mail.gmail.com>
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to CONFIG_MICROCODE_AMD)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
+        hpa@zytor.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 22 Nov 2023 at 12:51, Borislav Petkov <bp@alien8.de> wrote:
+>
+> My only worry here is that we're making a precedent and basically saying
+> that it is ok for tools to grep .config to figure out what is supported
+> by the kernel. And then other tools might follow.
 
-On Tue, Nov 21, 2023 at 6:22 PM Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
->
-> When synthesize thread map, some threads in thread map may have
-> already exited, so that __event__synthesize_thread() returns -1
-> and the synthesis breaks. However, It will not have any effect
-> if we just ignore the exited thread. So just ignore it and continue.
+Yes, I agree that it's not optimal, but I would hate to have some odd
+"let's add another ELF note" churn too, for (presumably) increasingly
+obscure reasons.
 
-Looks ok.  But I guess you want to do the same for the leader
-thread below as well.
+It looks like dracut has been doing this forever, and in fact back in
+2015 apparently had the exact same issue (that never made it to kernel
+developers, or at least not to me), when the kernel
+CONFIG_MICROCODE_xyz_EARLY config went away, and became just
+CONFIG_MICROCODE_xyz.
 
-Thanks,
-Namhyung
+The whole "check kernel config" in dracut seems to go back to 2014, so
+it's been that way for almost a decade by now.
 
->
-> Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
-> ---
->  tools/perf/util/synthetic-events.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> index a0579c7d7b9e..43ad2298a933 100644
-> --- a/tools/perf/util/synthetic-events.c
-> +++ b/tools/perf/util/synthetic-events.c
-> @@ -866,14 +866,16 @@ int perf_event__synthesize_thread_map(struct perf_tool *tool,
->
->         err = 0;
->         for (thread = 0; thread < threads->nr; ++thread) {
-> +               /*
-> +                * We may race with exiting thread, so don't stop just because
-> +                * one thread couldn't be synthesized.
-> +                */
->                 if (__event__synthesize_thread(comm_event, mmap_event,
->                                                fork_event, namespaces_event,
->                                                perf_thread_map__pid(threads, thread), 0,
->                                                process, tool, machine,
-> -                                              needs_mmap, mmap_data)) {
-> -                       err = -1;
-> -                       break;
-> -               }
-> +                                              needs_mmap, mmap_data))
-> +                       continue;
->
->                 /*
->                  * comm.pid is set to thread group id by
-> --
-> 2.39.3
->
+Honestly, I think the right approach may be to just remove the check
+again from dracut entirely - the intent seems to be to make the initrd
+smaller when people don't support microcode updates, but does that
+ever actually *happen*?
+
+There are dracut command lines, like "--early-microcode" and
+"--no-early-microcode", so people who really want to save space could
+just force it that way. Doing the CONFIG_xyz check seems broken.
+
+But that's for the dracut people to worry about.
+
+I guess we on the kernel side could help with "make install" etc, but
+we've (intentionally) tried to insulate us from distros having
+distro-specific installkernel scripts, so we don't really haev a good
+way to pass information down to the installkernel side.
+
+It *would* make sense if we just had some actual arguments we might
+pass down. Right now we just do
+
+        exec "${file}" "${KERNELRELEASE}" "${KBUILD_IMAGE}" System.map
+"${INSTALL_PATH}"
+
+so basically the only argument we pass down is that INSTALL_PATH
+(which is just "/boot" by default).
+
+            Linus
