@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE847F4BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA4E7F4BAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjKVPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
+        id S1344434AbjKVPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjKVPxG (ORCPT
+        with ESMTP id S229634AbjKVPyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:53:06 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC80F9A;
-        Wed, 22 Nov 2023 07:53:02 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c887d1fb8fso35620481fa.0;
-        Wed, 22 Nov 2023 07:53:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700668381; x=1701273181; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RlnRw7VYfGh/cCRGjlDuIvXRCgYuMpmQluWY6EzpRsc=;
-        b=CKtrTajcBTHMRpwYT/eNKAatl2bPV8Qa1d6EcIhA2ZvF6a+6k2Vn+LTMCcVeVpHRaO
-         +J/xM2Ihj0ahC9zggDE+l3dDqrFZtkqtFn4ntYxq45MAoBudDLaOLfOLnR8Xf8VtrVrA
-         hGzJc1g7tDkbYOyPbJs3nq40OgIcUZwjHsKpknzIkJPQ0kytwcIpduajyNMbZ53bdZR9
-         es8MhUfCZscwX5eclMF2V9ui1XWLbebsswODLr4/i2Sg+bUOx0zak6UNXH3cMYKwB6p7
-         k81ylnkH7Rg09B151LPZsRGjMvhUELclobyAdoawoNQhxmqCh6/L8gEaDfD+Ym7s4CrG
-         K4FA==
+        Wed, 22 Nov 2023 10:54:21 -0500
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3283F9A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:54:16 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a02d91ab195so250190066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:54:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700668381; x=1701273181;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RlnRw7VYfGh/cCRGjlDuIvXRCgYuMpmQluWY6EzpRsc=;
-        b=v3IffwPnFKx/Dv0vLcwdVZa1BrE7wn6wIAERAwTpa8+8AwIIG0sDonAoQLBEeF/3MF
-         nXsknDVQC2JSE8qrML61Wckz0S/L9X7gm1AdMm0T2xxD66DdbqBy5pv4kKmbjcS5yxmh
-         mOHmaJmWuSSxAoVCP0FCWkWUBcMoftqri5fVhUTpHZvEpF/llaMgYOvUWhQ8jvucEVHs
-         WkCcSaq98yiIv7jZvQrR78y9pZl4/RQEmzlJtXVOjjVVuLxacHQOlZ3utEXB0Sg7SugT
-         5uQooNA8vPRJjuNDQc6R7sBEauf0jwtQ/xZu6BmqNm9QwbwKYapGopTA3VBl4GZ78xfv
-         ro9Q==
-X-Gm-Message-State: AOJu0YxnPO/EQ8p4FYqFlnxTuKNNi9InG4cVHxVETa3seeBK2iTxvQ3C
-        Uv6Nt6z2oG0gezhjmzGEZzE=
-X-Google-Smtp-Source: AGHT+IFxxizTMfU6YJC1kLyZxdTbNn/EvI77c+LoUT4/bo2vkbNsRST8rq7e6SpabpbCLPSerqoZJQ==
-X-Received: by 2002:a2e:9b4b:0:b0:2c8:7665:adb0 with SMTP id o11-20020a2e9b4b000000b002c87665adb0mr2021685ljj.46.1700668380812;
-        Wed, 22 Nov 2023 07:53:00 -0800 (PST)
-Received: from [10.95.134.92] (54-240-197-234.amazon.com. [54.240.197.234])
-        by smtp.gmail.com with ESMTPSA id m3-20020a05600c4f4300b0040b297fce5fsm2622058wmq.10.2023.11.22.07.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 07:53:00 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <b2728518-f490-4dab-a7c5-fba607352a48@xen.org>
-Date:   Wed, 22 Nov 2023 15:52:58 +0000
+        d=1e100.net; s=20230601; t=1700668454; x=1701273254;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=88zGKO0u2d1EqGTMiuipUFLdoa0y0OnWP5heo1AegpM=;
+        b=G8N+p07f/3XGUC7+C6ikArOhn4djOJjPk/mKaXzr2vF7i8T0wW5ZxQwTbu/75x4bY/
+         MisrlfhaaJVB5L4t+rM5E0fflB79i1rhklJjwWgKc5hGKvG6xe34TEJJ/QG9y1CfhfIN
+         2aeknUj7P8yRdhqSFmchnjaLvCJMlY5yBFeqS3v6q1sblf16pvOnBNsjGN+4rZrNQkWr
+         h4wFyMuEvrBEQYUnX5uXJ+xdngAj1gm8yRFopeHbdOWnQL+9BX1++M1jGenzRZ61+4vW
+         e+4HOL1ROy7piAgmORfObEye2Ghdpd8rOw21O4kRaOp/kNCa1d+vBE2kO7UnYQhrT7cs
+         cvxA==
+X-Gm-Message-State: AOJu0YwuCXs1WNaByiRKk25ZFNVcmI0jHg0TUKaAapfNmULwmrhgn9Rq
+        I0z2LOWmeDtfvQJHkhqZJbs=
+X-Google-Smtp-Source: AGHT+IHKtwVbEBFJt56M5j6JgEXxkGkuL+8xdA4PplrV+YA6mxTLAf9rCeo3ZDGz47WEufD4IMwZeQ==
+X-Received: by 2002:a17:906:60c:b0:9fd:1e2c:bd8a with SMTP id s12-20020a170906060c00b009fd1e2cbd8amr1794436ejb.50.1700668454416;
+        Wed, 22 Nov 2023 07:54:14 -0800 (PST)
+Received: from gmail.com (fwdproxy-cln-117.fbsv.net. [2a03:2880:31ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i22-20020a1709063c5600b009e6b6681da7sm6860125ejg.94.2023.11.22.07.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 07:54:13 -0800 (PST)
+Date:   Wed, 22 Nov 2023 07:54:11 -0800
+From:   Breno Leitao <leitao@debian.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, leit@meta.com,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sven Joachim <svenjoac@gmx.de>, Ian Kent <raven@themaw.net>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jinghao Jia <jinghao@linux.ibm.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v6 10/13] x86/bugs: Rename RETHUNK to MITIGATION_RETHUNK
+Message-ID: <ZV4kI2mu6fBVcZn9@gmail.com>
+References: <20231121160740.1249350-1-leitao@debian.org>
+ <20231121160740.1249350-11-leitao@debian.org>
+ <da12ea3e-8fef-49d4-aea1-40a46a5ae056@citrix.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v8 07/15] KVM: pfncache: include page offset in uhva and
- use it consistently
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231121180223.12484-1-paul@xen.org>
- <20231121180223.12484-8-paul@xen.org>
- <ZV3Bwghwz63LmgMu@yilunxu-OptiPlex-7050>
- <b6b864e500cbb38f76739fcfb4dcc6e9c6705d0b.camel@infradead.org>
- <ZV4PyvTBOohiRyLS@yilunxu-OptiPlex-7050>
- <7a038a4c2ae4387fb366f6c2e9b1ce512f5345bc.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <7a038a4c2ae4387fb366f6c2e9b1ce512f5345bc.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <da12ea3e-8fef-49d4-aea1-40a46a5ae056@citrix.com>
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 15:42, David Woodhouse wrote:
-> On Wed, 2023-11-22 at 22:27 +0800, Xu Yilun wrote:
->> On Wed, Nov 22, 2023 at 09:12:18AM +0000, David Woodhouse wrote:
->>> On Wed, 2023-11-22 at 16:54 +0800, Xu Yilun wrote:
->>>>
->>>>> @@ -259,13 +258,25 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
->>>>>                          ret = -EFAULT;
->>>>>                          goto out;
->>>>>                  }
->>>>> +
->>>>> +               hva_change = true;
->>>>> +       } else {
->>>>> +               /*
->>>>> +                * No need to do any re-mapping if the only thing that has
->>>>> +                * changed is the page offset. Just page align it to allow the
->>>>> +                * new offset to be added in.
->>>>
->>>> I don't understand how the uhva('s offset) could be changed when both gpa and
->>>> slot are not changed. Maybe I have no knowledge of xen, but in later
->>>> patch you said your uhva would never change...
->>>
->>> It doesn't change on a normal refresh with kvm_gpc_refresh(), which is
->>> just for revalidation after memslot changes or MMU invalidation.
->>>
->>> But it can change if the gpc is being reinitialized with a new address
->>> (perhaps because the guest has made another hypercall to set the
->>> address, etc.)
->>>
->>> That new address could happen to be in the *same* page as the previous
->>
->> In this case, the lower bits of new gpa should be different to gpc->gpa,
->> so will hit "if (gpc->gpa != gpa ...)" branch.
+Hello Andrew,
+
+On Tue, Nov 21, 2023 at 09:39:47PM +0000, Andrew Cooper wrote:
+> On 21/11/2023 4:07 pm, Breno Leitao wrote:
+> > CPU mitigations config entries are inconsistent, and names are hard to
+> > related. There are concrete benefits for both users and developers of
+> > having all the mitigation config options living in the same config
+> > namespace.
+> >
+> > The mitigation options should have consistency and start with
+> > MITIGATION.
+> >
+> > Rename the Kconfig entry from RETHUNK to MITIGATION_RETHUNK.
+> >
+> > Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
 > 
-> I think that 'if (gpc->gpa != gpa); branch is also gratuitously
-> refreshing when it doesn't need to; it only needs to refresh if the
-> *aligned* gpas don't match.
+> (I'm CC'd on only this single patch so I can't see what's going on, but)
 > 
+> Really?� Rethunk[sic] isn't a mitigation.� It's just a compiler
+> transformation for return instructions upon which various mitigations
+> depend.
 
-I did look at that but decided that gfn_to_hva_memslot() was 
-sufficiently lightweight that it was not really worth optimising.
+The MITIGATION namespace is not only for mitigation, but, for "features"
+that are available with the only purpose of mitigating speculative
+hardware vulnerability. The original suggested namespace was "MITIGATE",
+and then it would make no sense for RETHUNK, since, we are not
+mitigating RETHUNK per se. Please check the discussion here:
 
-> But it was like that already, so I won't heckle Paul any further :)
+ https://lore.kernel.org/all/20231011044252.42bplzjsam3qsasz@treble/
 
-I appreciate it! :-)
+That said, the way the x86 Kconfig is organized today, CONFIG_RETHUNK is
+very focused in solving a mitigations problem, thus, the MITIGATION_
+namespace has been added to it.
 
-   Paul
+For instance, CONFIG_RETHUNK is inside the SPECULATION_MITIGATIONS,
+thus, it is only enabled if SPECULATION_MITIGATIONS is set.
+
+  menuconfig SPECULATION_MITIGATIONS
+  bool "Mitigations for speculative execution vulnerabilities"
+
+	config RETHUNK
+		bool "Enable return-thunks"
+		depends on MITIGATION_RETPOLINE && CC_HAS_RETURN_THUNK
+		help
+		  Compile the kernel with the return-thunks compiler option to guard
+		  against kernel-to-user data leaks by avoiding return speculation.
+		  Requires a compiler with -mfunction-return=thunk-extern
+		  support for full protection. The kernel may run slower.
+
+  endif
+
+Thanks for the feedback.
