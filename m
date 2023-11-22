@@ -2,122 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779207F3C33
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5647F3C34
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343546AbjKVDJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
+        id S1343568AbjKVDJz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 22:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVDJs (ORCPT
+        with ESMTP id S235037AbjKVDJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:09:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA5912C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:09:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED9AEC433C9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700622585;
-        bh=qdLHRBoKEw4gFMfVFRwpwvnicE8hhhtpNM9aNH2gRU8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LzatzLY3wlxZBHabO1rjpjtfU3YxyoAswVHzrdW5Ns4NECFXf6w551ldjkuXp4iOJ
-         xa38LiMC6Xjq+Td4ZN35aSjZWwY1tXzjmrVeLNLZFdq3YkjFp1cuzRyK5qZIXEHBUC
-         upZzb96Cqv6nYzenxdTkaJqNFTszJFRiLu/kBg7pUMMKEiajN8UNikf58VENrwT6Y/
-         p4+VwMv194wWxbMBzH3AWs3pO+XNA8YFDG7cSZ4954sxDjz5+e3xcXie3dkuqUKXI+
-         6MVkLPRkkz+dcQX7Zo6XlUqo24IyvqZxaGXXshXp8wvEt6S8Yysu5wI158E0LZUq1g
-         qZG98CkzKU3Tw==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f066fc2a2aso2977974fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:09:44 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx+bzXkGeeSldHq0kTSTpl8GI2LCBl7IrRwtj8thbVGVMVW6bo9
-        D9xUnxeAw7OW2DIX06/cVWtukhoLyy9WzEN6FH0=
-X-Google-Smtp-Source: AGHT+IHCfjburBQ1UdmjywweePttcXq8IzEtQKzgns2nPfAmlJiNNiQj6TYBr2fVJWJRAVnlcJyJRUk5V/ku2eUIpJU=
-X-Received: by 2002:a05:6870:8e0b:b0:1f9:5ae9:bb6e with SMTP id
- lw11-20020a0568708e0b00b001f95ae9bb6emr1378749oab.32.1700622584238; Tue, 21
- Nov 2023 19:09:44 -0800 (PST)
+        Tue, 21 Nov 2023 22:09:52 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA8BF4;
+        Tue, 21 Nov 2023 19:09:44 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 5E58424DB84;
+        Wed, 22 Nov 2023 11:09:36 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 22 Nov
+ 2023 11:09:36 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 22 Nov
+ 2023 11:09:30 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Nikita Shubin" <n.shubin@yadro.com>
+CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+Subject: [PATCH v4] perf vendor events riscv: add StarFive Dubhe-90 JSON file
+Date:   Wed, 22 Nov 2023 11:09:08 +0800
+Message-ID: <20231122030908.2981502-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231120232332.4100288-1-masahiroy@kernel.org>
- <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely> <87bkbnsa5r.fsf@kernel.org>
-In-Reply-To: <87bkbnsa5r.fsf@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 22 Nov 2023 12:09:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
-Message-ID: <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
-To:     "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 6:55=E2=80=AFPM Aneesh Kumar K.V
-<aneesh.kumar@kernel.org> wrote:
->
-> "Nicholas Piggin" <npiggin@gmail.com> writes:
->
-> > On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
-> >> crtsavres.o is linked to modules. However, as explained in commit
-> >> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
-> >> and always-y"), 'make modules' does not build extra-y.
-> >>
-> >> For example, the following command fails:
-> >>
-> >>   $ make ARCH=3Dpowerpc LLVM=3D1 KBUILD_MODPOST_WARN=3D1 mrproper ps3_=
-defconfig modules
-> >>     [snip]
-> >>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
-> >>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such fil=
-e or directory
-> >>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/c=
-ell/spufs/spufs.ko] Error 1
-> >>   make[2]: *** [Makefile:1844: modules] Error 2
-> >>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: __=
-build_one_by_one] Error 2
-> >>   make: *** [Makefile:234: __sub-make] Error 2
-> >>
-> >
-> > Thanks. Is this the correct Fixes tag?
-> >
-> > Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux")
-> >
->
-> I am finding a different commit ID:
->
-> commit baa25b571a168aff5a13bfdc973f1229e2b12b63
-> Author: Nicholas Piggin <npiggin@gmail.com>
-> Date:   Fri May 12 01:56:49 2017 +1000
->
->     powerpc/64: Do not link crtsavres.o in vmlinux
->
->     The 64-bit linker creates save/restore functions on demand with final
->     links, so vmlinux does not require crtsavres.o.
->
->
-> -aneesh
+Similar to StarFive's Dubhe-80, Dubhe-90 supports raw event id
+0x00 - 0x22. Reuse Dubhe-80 firmware and common json file.
+The raw events are enabled through PMU node of DT binding.
+Besides raw event, add standard RISC-V firmware events to
+support monitoring of firmware event.
 
+Example of PMU DT node:
+pmu {
+	compatible = "riscv,pmu";
+	riscv,raw-event-to-mhpmcounters =
+		/* Event ID 1-31 */
+		<0x00 0x00 0xFFFFFFFF 0xFFFFFFE0 0x00007FF8>,
+		/* Event ID 32-33 */
+		<0x00 0x20 0xFFFFFFFF 0xFFFFFFFE 0x00007FF8>,
+		/* Event ID 34 */
+		<0x00 0x22 0xFFFFFFFF 0xFFFFFF22 0x00007FF8>;
+};
 
+Perf stat output:
+[root@user]# perf stat -a \
+	-e access_mmu_stlb \
+	-e miss_mmu_stlb \
+	-e access_mmu_pte_c \
+	-e rob_flush \
+	-e btb_prediction_miss \
+	-e itlb_miss \
+	-e sync_del_fetch_g \
+	-e icache_miss \
+	-e bpu_br_retire \
+	-e bpu_br_miss \
+	-e ret_ins_retire \
+	-e ret_ins_miss \
+	-- openssl speed rsa2048
+Doing 2048 bits private rsa's for 10s: 39 2048 bits private RSA's in
+10.03s
+Doing 2048 bits public rsa's for 10s: 1469 2048 bits public RSA's in
+9.47s
+version: 3.0.10
+built on: Tue Aug  1 13:47:24 2023 UTC
+options: bn(64,64)
+CPUINFO: N/A
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.257179s 0.006447s      3.9    155.1
 
-Yeah, I think the correct tag is:
+ Performance counter stats for 'system wide':
 
+           3112882      access_mmu_stlb
+             10550      miss_mmu_stlb
+             18251      access_mmu_pte_c
+            274765      rob_flush
+          22470560      btb_prediction_miss
+           3035839      itlb_miss
+         643549060      sync_del_fetch_g
+            133013      icache_miss
+          62982796      bpu_br_retire
+            287548      bpu_br_miss
+           8935910      ret_ins_retire
+              8308      ret_ins_miss
 
-Fixes: baa25b571a16 ("powerpc/64: Do not link crtsavres.o in vmlinux")
+      20.656182600 seconds time elapsed
 
+Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+---
+Changelog:
+v3 -> v4:
+- Reuse common and firmware json file from starfive/dubhe-80.
+- Rebase against latest perf-tools-next
+- Update commit message to reflect the above changes.
+v2 -> v3:
+- Add standard RISC-V firmware event
+- Update commit message to reflect addition of standard
+  RISC-V firmware event.
+v1 -> v2:
+- Rename 'Starfive Dubhe' to 'StarFive Dubhe-90' in commit message.
+- Rename 'starfive/dubhe' pmu-events folder to 'starfive/dubhe-90'
+- Update MARCHID to 0x80000000db000090 in mapfile.csv
+---
+ tools/perf/pmu-events/arch/riscv/mapfile.csv | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Best Regards
-Masahiro Yamada
+diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+index ee61e26f90cd..56b03138d46a 100644
+--- a/tools/perf/pmu-events/arch/riscv/mapfile.csv
++++ b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+@@ -15,4 +15,4 @@
+ #
+ #MVENDORID-MARCHID-MIMPID,Version,Filename,EventType
+ 0x489-0x8000000000000007-0x[[:xdigit:]]+,v1,sifive/u74,core
+-0x67e-0x80000000db000080-0x[[:xdigit:]]+,v1,starfive/dubhe-80,core
++0x67e-0x80000000db0000[89]0-0x[[:xdigit:]]+,v1,starfive/dubhe-80,core
+-- 
+2.25.1
+
