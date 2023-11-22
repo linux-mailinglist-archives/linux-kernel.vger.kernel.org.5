@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B79E7F3FE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3247F3FE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbjKVIQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:16:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
+        id S234984AbjKVIRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:17:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjKVIQf (ORCPT
+        with ESMTP id S231267AbjKVIRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:16:35 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F5D1BB;
-        Wed, 22 Nov 2023 00:16:29 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 7327760859;
-        Wed, 22 Nov 2023 08:15:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1700640989;
-        bh=iwEe8AChNtrIiZ7XKdpROYcuo5U7nwfBFHt7j6A3wdA=;
+        Wed, 22 Nov 2023 03:17:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617BFA4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:17:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A7E0C433C7;
+        Wed, 22 Nov 2023 08:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700641054;
+        bh=t/49KUB9MGEsCs1/F2RgCFFrkf6Q4Z0X9hderngc+dw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ui2Yfvh7LyuXcYTSk07DZ43XbcDuV7/Iqan6N4V5EXikxAZ4zYYzZBJtnZshDqu/x
-         FYVLFo7fdIgEGlL8b/SxEvWGKW+HFnSbenPQhJXryaviKCLW9Xh+EdyHs/hHxMvTWk
-         /pMiUO+4TmdVIN/0Qt7TtehHI0vwNOEtli1+zfTiHW5f/IDcKLoalZuJWNVOikUg94
-         YcyHJKLTt2a+pKjgKOYbH68caZ4qFT8AoGSuZxi3jbdrvK9nX+81KCmN/Pl2aU1yEx
-         4UAaGn6e0c9vwsjWCbmLw2gbSMjyzpijBR0RIrpxwk0da/mWnUbH8ZKIUP0bpW2bFE
-         KamNaZBtG5lcQ==
-Date:   Wed, 22 Nov 2023 10:15:54 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] serial: core: Move console character device
- handling from printk
-Message-ID: <20231122081554.GG5169@atomide.com>
-References: <20231121113203.61341-1-tony@atomide.com>
- <20231121113203.61341-4-tony@atomide.com>
- <20231122070353.GF5169@atomide.com>
+        b=CmPcxdgQdYDZ8WmevM6jFWzkSDozri7uLw2yfDDYFOFUPxH1ucRTo9gh3YfWKH+pN
+         Dq2U/sYxIIathvFknmrM5Pe8hrWf/23nTlR9aeIYYwckMkxR2m61bmOX1xp22xPoeM
+         gI6Iv4C/Wf0T3vOaL230HNd3pF9CdyE+3GDIqVsumkoPvFiukM4JNk+xq4PiwXuz50
+         oeI/fPjS1pipQCEWZJo2azse4dDWzYDlyQdxUblA1iuPkVQ6NZ05+Ep3ndBKZrE8MJ
+         R7U3iz0vOw5v3JdTBR2L/cZhE0KZpe3Hw49F2kyfoot0YN2lRAhGpNqF92tv+Di3RF
+         6Bn7Gggjw4Hfg==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5iQe-0005tx-1M;
+        Wed, 22 Nov 2023 09:17:48 +0100
+Date:   Wed, 22 Nov 2023 09:17:48 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Victor Fragoso <victorffs@hotmail.com>,
+        Lars Melin <larsm17@gmail.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] USB: serial: option: add Fibocom L7xx modules
+Message-ID: <ZV25LMQmNjBeucH2@hovoldconsulting.com>
+References: <39dd187fe27244f28fa729ce134d9d130147f2e1.camel@hotmail.com>
+ <77b61923-b0df-4120-be19-4442e84fa118@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122070353.GF5169@atomide.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <77b61923-b0df-4120-be19-4442e84fa118@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [231122 09:04]:
-> * Tony Lindgren <tony@atomide.com> [700101 02:00]:
-> > -	__add_preferred_console(buf, idx, options, brl_options, true);
-> >  	return 1;
+On Wed, Nov 22, 2023 at 09:48:43AM +0700, Lars Melin wrote:
+> On 11/22/2023 4:05, Victor Fragoso wrote:
+> > Add support for Fibocom L716-EU module series.
+
+> > Changes since v1:
+> >   - Removed non-essential VID/PID to work with L716-EU tested module.
+> >   - Added device entry comment according to tested module/modes.
+> >   - Added according to VID/PID order
+> >   - Commit message improved with more information about module ports.
+
+> thanks, looks much better now
 > 
-> Looks like this can't be dropped yet. We need to keep it for the
-> brl_options. I'll change it to return early if brl_options is NULL.
+> Reviewed-by: Lars Melin <larsm17@gmail.com>
 
-Looks like we can drop the parsing from printk :) In console_setup()
-we can call console_opt_save() after _braille_console_setup(), and
-then save also the brl_options for the port.
+Thanks for the update and for the review. Now applied.
 
-Regards,
-
-Tony
+Johan
