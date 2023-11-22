@@ -2,105 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0CD7F492F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F637F4928
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344274AbjKVOnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S232091AbjKVOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbjKVOm5 (ORCPT
+        with ESMTP id S231896AbjKVOmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:42:57 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6257112;
-        Wed, 22 Nov 2023 06:42:53 -0800 (PST)
-Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 79BB66EF;
-        Wed, 22 Nov 2023 15:42:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700664139;
-        bh=wDApJOipWXJ+xO5p79TRPJampy6N0curdFUvhOlG9C8=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=spfS8koB6mCbx7EhQk1ISAX2p3QSybUi0pbr19778oBsJflJ0yThy5u5r5t71CLZQ
-         jEoucs1JkhRIbFdu3ilEeFBOLfaQKl4kSvtxdS9OHr0UIfA5g85pk+oPu+3aLkV6Mi
-         IdwjQOMOFsNsAswnIfMz7SvJ9PN4f4djMHyIMcfY=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 22 Nov 2023 16:42:23 +0200
-Subject: [PATCH 2/2] media: rkisp1: Fix memory leaks in
- rkisp1_isp_unregister()
+        Wed, 22 Nov 2023 09:42:53 -0500
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958C1C1;
+        Wed, 22 Nov 2023 06:42:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-rkisp-fixes-v1-2-1958af371e39@ideasonboard.com>
-References: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
-In-Reply-To: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
-To:     Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1700664166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n9l7CzXN6LlS38rZFFq0Nxp8PK7NYDm9aN5Wn+Z/Buw=;
+        b=x7SQ/I1HOiWc0cwQ6er9JxVxd2di1ktX2ld6tiwKekdklOtdP54pycvx1s1KAVhfCqW8l6
+        t/Y88WRMV20TDY6M4PWiDDHKuWXTh/o5K/9QKplNCSBk0NkOuo8ZkUqFO2cDjC4v3QNQuU
+        BwShho8epg3KI/PenQJo79YnPUu+R5FsDbEhsGaGkkCZXxko8ucAKfY1trKhy7YQjxBAL4
+        BTtM9VWeoaMsWlb7MqndqTur+5yM39vgYLrKyvgk/hsyd6RN8H5cQz82mq6Shd+ZQfQnTj
+        GkqNjDCurBsMM2KsjG+Z6g7/s3ejsd+j727Gtm81FLFE0bqKtMSaw+fL3L7cqg==
+Date:   Wed, 22 Nov 2023 15:42:46 +0100
+From:   Dragan Simic <dsimic@manjaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Michal Simek <michal.simek@amd.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        wens@kernel.org,
+        =?UTF-8?Q?Rafa?= =?UTF-8?Q?=C5=82_Mi=C5=82ecki?= 
+        <zajec5@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
         Heiko Stuebner <heiko@sntech.de>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Yichong Zhong <zyc@rock-chips.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Allon Huang <allon.huang@rock-chips.com>,
-        Jeffy Chen <jeffy.chen@rock-chips.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=818;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=wDApJOipWXJ+xO5p79TRPJampy6N0curdFUvhOlG9C8=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlXhNmgT8hYQq0m2LhNw8VE3d0LARdJLpZ7YXOc
- 3uaZhEN2WmJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZV4TZgAKCRD6PaqMvJYe
- 9WGNEACKacCv9FjzmAG3l2lCX0fir2y+MhLqtxC1Jsnj7YopQk4rTwfSQzZXg9PEfiy2f4fSflN
- 28bMxNG9sr34UIWHOBeyNAxD2Xb8AN3cuok6AIj991pdsMcA88h8nWxb72fnXGu3AzAyx/HtTOz
- r5qdofYP2p4eu2JfBNVAOaVaiUw6xIbO2c52fm2GFjGjSEhgQtLBGBNiyrMlBlLlcGwSVnDUJpx
- ajoy3/UItSDX+EJYmf15AxlDNIjuki7C/WgkczFq/keNxOyOBZ1O+PC5tf3Ku8FiIw15sK7VxiC
- jm5YurJpFkCawaNvDTtAbnjbw3HEQp40cuj/gSfw/fuA6SwtVJKYbTmHEluebdyheBmzwuR+tZf
- lwbZQNLpmhVuSU1JoLsu18A6TD47IiCmwx0UPhOlaMWmL7L2XS6iknsBGqg2aYbXzb/fmMqzm3x
- Q1wRCbiLENJS+sJs3jc07Tahuvvo1dvAMUpqChhx4ffxljxXuIlqq+ki7ANcf6BfA2b3hs7ahaw
- 35p1vtea7ygv0vwaPGPRt65L8EIagUeZVJuL4o6r3DKhL+ll0FPZb32rjn6J9onvNmcuVFfD5dj
- RMIO+y/lGcJFpQVnsHFoJuxq1dBSQCITMzxc0ACIGuWMrPpWIIwgNppHEtOXb+MLiSgv/tqOg3d
- BRwiyZMnnVf5m8A==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+In-Reply-To: <CAL_JsqKkOjBHrJ0WELq3JnJDqgtA=mdF+EtAxHSCGqZMQ9tuSQ@mail.gmail.com>
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com>
+ <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
+ <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
+ <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org>
+ <58a9caacc1226c7c3a2bdfe73ef1791f@manjaro.org>
+ <cc4c789c-b595-41eb-b543-9e03549c6e61@amd.com>
+ <CAMuHMdWm-gRPHeHyuX3_eR+9chJEw3iiZwCNBnoiRPHzoMAs6w@mail.gmail.com>
+ <808270d3-2274-4fb7-a397-38538503b67c@amd.com>
+ <CAL_JsqKkOjBHrJ0WELq3JnJDqgtA=mdF+EtAxHSCGqZMQ9tuSQ@mail.gmail.com>
+Message-ID: <f9dcdd519c0bbd29838a75113fef0645@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing call to v4l2_subdev_cleanup() to fix memory leak.
+On 2023-11-22 15:34, Rob Herring wrote:
+> On Wed, Nov 22, 2023 at 1:57 AM Michal Simek <michal.simek@amd.com> 
+> wrote:
+>> On 11/22/23 09:53, Geert Uytterhoeven wrote:
+>> > On Wed, Nov 22, 2023 at 9:50 AM Michal Simek <michal.simek@amd.com> wrote:
+>> >> On 11/22/23 09:29, Dragan Simic wrote:
+>> >>> On 2023-11-22 09:21, Krzysztof Kozlowski wrote:
+>> >>>> On 22/11/2023 09:09, Chen-Yu Tsai wrote:
+>> >>>>> On Wed, Nov 22, 2023 at 4:05 PM Krzysztof Kozlowski
+>> >>>>> <krzysztof.kozlowski@linaro.org> wrote:
+>> >>>>>>
+>> >>>>>> On 21/11/2023 14:50, Rafał Miłecki wrote:
+>> >>>>>>>> +Order of Properties in Device Node
+>> >>>>>>>> +----------------------------------
+>> >>>>>>>> +
+>> >>>>>>>> +Following order of properties in device nodes is preferred:
+>> >>>>>>>> +
+>> >>>>>>>> +1. compatible
+>> >>>>>>>> +2. reg
+>> >>>>>>>> +3. ranges
+>> >>>>>>>> +4. Standard/common properties (defined by common bindings, e.g. without
+>> >>>>>>>> +   vendor-prefixes)
+>> >>>>>>>> +5. Vendor-specific properties
+>> >>>>>>>> +6. status (if applicable)
+>> >>>>>>>> +7. Child nodes, where each node is preceded with a blank line
+>> >>>>>>>> +
+>> >>>>>>>> +The "status" property is by default "okay", thus it can be omitted.
+>> >>>>>>>
+>> >>>>>>> I think it would really help to include position of #address-cells and
+>> >>>>>>> #size-cells here. In some files I saw them above "compatible" that seems
+>> >>>>>>> unintuitive. Some prefer putting them at end which I think makes sense
+>> >>>>>>> as they affect children nodes.
+>> >>>>>>>
+>> >>>>>>> Whatever you choose it'd be just nice to have things consistent.
+>> >>>>>>
+>> >>>>>> This is a standard/common property, thus it goes to (4) above.
+>> >>>>>
+>> >>>>> It's probably a mix, but AFAIK a lot of the device trees in tree have
+>> >>>>> #*-cells after "status". In some cases they are added in the board
+>> >>>>> .dts files, not the chip/module .dtsi files.
+>> >>>>
+>> >>>> Existing DTS is not a good example :)
+>> >>>>
+>> >>>>>
+>> >>>>> +1 that it makes sense at the end as they affect child nodes.
+>> >>>>
+>> >>>> I still insist that status must be the last, because:
+>> >>>> 1. Many SoC nodes have address/size cells but do not have any children
+>> >>>> (I2C, SPI), so we put useless information at the end.
+>> >>>> 2. Status should be the final information to say whether the node is
+>> >>>> ready or is not. I read the node, check properties and then look at the end:
+>> >>>> a. Lack of status means it is ready.
+>> >>>> b. status=disabled means device still needs board resources/customization
+>> >>>
+>> >>> I agree with the "status" belonging to the very end, because it's both logical
+>> >>> and much more readable.  Also, "status" is expected to be modified in the
+>> >>> dependent DT files, which makes it kind of volatile and even more deserving to
+>> >>> be placed last.
+>> >>
+>> >> I am just curious if having status property at the end won't affect
+>> >> execution/boot up time. Not sure how it is done in Linux but in U-Boot at least
+>> >> (we want to have DTs in sync between Linux and U-Boot) of_find_property is
+>> >> pretty much big loop over all properties. And status property defined at the end
+>> >> means going over all of them to find it out to if device is present.
+>> >> Not sure if Linux works in the same way but at least of_get_property is done in
+>> >> the same way.
+>> >
+>> > As the default is "okay", you have to loop over all properties anyway.
+>> 
+>> No doubt if you don't define status property that you need to loop 
+>> over all of
+>> them. We normally describe the whole SOC with pretty much all IPs 
+>> status =
+>> disabled and then in board file we are changing it to okay based on 
+>> what it is
+>> actually wired out.
+>> It means on our systems all nodes have status properties. If you have 
+>> it at
+>> first you don't need to go over all.
+> 
+> Order in the source and order in the OS are independent. If checking
+> status needs to be optimized, then we could just put it first in the
+> property list or make the state a field in struct device_node. But
+> provide some data that it matters first.
 
-Fixes: 2cce0a369dbd ("media: rkisp1: isp: Use V4L2 subdev active state")
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 1 +
- 1 file changed, 1 insertion(+)
+That's exactly what I plan to do, i.e. to perform some benchmarks before 
+and after, to see does it actually matter to the point where introducing 
+the changes is worth it.
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-index 88ca8b2283b7..45d1ab96fc6e 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-@@ -933,6 +933,7 @@ void rkisp1_isp_unregister(struct rkisp1_device *rkisp1)
- 		return;
- 
- 	v4l2_device_unregister_subdev(&isp->sd);
-+	v4l2_subdev_cleanup(&isp->sd);
- 	media_entity_cleanup(&isp->sd.entity);
- }
- 
-
--- 
-2.34.1
-
+> I've had this idea to randomize the order nodes are processed so
+> there's no reliance on the DT order. Maybe I need the same on
+> properties...
