@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8911D7F4B7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180877F4B75
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235192AbjKVPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        id S1344662AbjKVPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235191AbjKVPod (ORCPT
+        with ESMTP id S235301AbjKVPoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:44:33 -0500
+        Wed, 22 Nov 2023 10:44:37 -0500
 Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA1B26B9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:24 -0800 (PST)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1cf61cbe570so35990465ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0202130
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:25 -0800 (PST)
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1cc1397321fso86175145ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700667804; x=1701272604;
+        d=1e100.net; s=20230601; t=1700667805; x=1701272605;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CFtPKhGMv7Zp9VrcApbcd7/gxkt/GNlZA4pzGmzIan8=;
-        b=LHrH8TsFdSq+IKr80v60fWxIS5d2cM3SxhXyP9L6BBmGxN5miLOlqg9f3tBxClM5i0
-         M7XkGqp3gN4OtJJQ2V62TTIuu7wsgJ/ym8p5ZWwiH8TtI8cvdaAt+rFm2IDnYM6IXCEL
-         o3TPwIij6xrRIQ85k6FrzgURHXlV8R8Y7k81N5mnCbuO185NaLQZkBY/oVb1Wynr1ZNf
-         Zd+5f9cdAaYsyS70IL/fmYAZDTGXCf8SWew4VDtMBTAStfawr3YvlrqXcPEWwXqzjqW2
-         byjsDx31QoxLRk9fsijDNv0I/xqULHQ5u6bqplnAc6r98qNlRYOOVlgLtucnTmQ9lVLE
-         Ywqg==
-X-Gm-Message-State: AOJu0YyVs4kuief+oByrZ9pPpLVtPi4ztJh4wRVnZG69bO/J4ZcCL+kx
-        /gi7Dq7ZxWt2TZlie9/K5Y5/6IOcMqkgEgF9W6AY3gIg0h/v
-X-Google-Smtp-Source: AGHT+IEEUVismXgXQPXvJLbbHx9YueCHRh2KYjXyV83BjC6BUyockrT+FCGd/iWadtfdDaLPRHxLNfKsAoUnBPg4posJAtd+c1Ll
+        bh=waG/5+O/zx2kA6SEedS1bMAXL1Zr5koVLUlbk6mlw4I=;
+        b=FK4xHMARIDefgINwoDbqCuiKYpGGdee+/S+npmdzLajlMmQB41xSSvVYh2Jvw8b46K
+         P+LxgsDyLBvugIoJ92f82F792Fligh9/ZuoBfjUFSyUWqGpuQerE44H3cp2x+7P+rPWP
+         G5ln+OY47c7N75nPy1fyiMc22XnUC7Fid+EX9vfXo2Xzh6W872V90QqWfvwhFg+su2Eq
+         v0O3a1qeecHVeGqLT0zoRy9nB0FtAE0nYuqdNBLjnYii1ySX5Ip3AvZLgfMUU73qR78e
+         xODW+AqTItCbkqASoA+hmQ346Kd3HAlIHzQip6qmjRsACqU6GwOIiBOusB93WIPeZVSS
+         tctA==
+X-Gm-Message-State: AOJu0Yyou5Oss1t9CgBiT+a60MaNV70TCTVmPRiPJpAFevpMJ8XFQDhF
+        hV4Vkp488qGAwCQKmyL86k1wFFt0kpuA0sfd36KDvOiDK1Xl
+X-Google-Smtp-Source: AGHT+IGl3Mc/G+M0NqtbGbw+dWGYiGHdoaTt5r/HDLcJnlfqHEeWM5f7BxAHMapCrg5PR6tijog2B4fMKdE6qCc8S29DPKepfiw7
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:18f:b0:1cf:5085:cfa1 with SMTP id
- z15-20020a170903018f00b001cf5085cfa1mr727262plg.13.1700667803849; Wed, 22 Nov
- 2023 07:43:23 -0800 (PST)
-Date:   Wed, 22 Nov 2023 07:43:23 -0800
+X-Received: by 2002:a17:903:2352:b0:1cf:6910:3ba4 with SMTP id
+ c18-20020a170903235200b001cf69103ba4mr667867plh.0.1700667804792; Wed, 22 Nov
+ 2023 07:43:24 -0800 (PST)
+Date:   Wed, 22 Nov 2023 07:43:24 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000545a26060abf943b@google.com>
-Subject: [syzbot] [mptcp?] KMSAN: uninit-value in mptcp_incoming_options
-From:   syzbot <syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martineau@kernel.org,
-        matthieu.baerts@tessares.net, matttbe@kernel.org,
-        mptcp@lists.linux.dev, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000062c5dc060abf9415@google.com>
+Subject: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
+From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,114 +59,148 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c2d5304e6c64 Merge tag 'platform-drivers-x86-v6.7-2' of gi..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1536e3d4e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e32016b84cf917ca
-dashboard link: https://syzkaller.appspot.com/bug?extid=b834a6b2decad004cfa1
+HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1774144f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=60bfed6b415fbd1fbb87
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11469724e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13934aaf680000
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143ee4a0e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c28ca0e80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/23ea827adf3b/disk-c2d5304e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0f964ac588f5/vmlinux-c2d5304e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b061be889285/bzImage-c2d5304e.xz
+disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com
+Reported-by: syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com
 
-=====================================================
-BUG: KMSAN: uninit-value in mptcp_incoming_options+0xc93/0x3a80 net/mptcp/options.c:1197
- mptcp_incoming_options+0xc93/0x3a80 net/mptcp/options.c:1197
- tcp_data_queue+0xb4/0x7f20 net/ipv4/tcp_input.c:5141
- tcp_rcv_established+0x1132/0x2600 net/ipv4/tcp_input.c:6155
- tcp_v4_do_rcv+0x8a8/0xff0 net/ipv4/tcp_ipv4.c:1906
- tcp_v4_rcv+0x4ce0/0x51a0 net/ipv4/tcp_ipv4.c:2329
- ip_protocol_deliver_rcu+0x264/0x1300 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x2b8/0x440 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_local_deliver+0x21f/0x490 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:461 [inline]
- ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_rcv+0x476/0x770 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core net/core/dev.c:5529 [inline]
- __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5643
- process_backlog+0x480/0x8b0 net/core/dev.c:5971
- __napi_poll+0xe3/0x970 net/core/dev.c:6533
- napi_poll net/core/dev.c:6602 [inline]
- net_rx_action+0x884/0x16d0 net/core/dev.c:6735
- __do_softirq+0x1b7/0x7c3 kernel/softirq.c:553
- do_softirq+0x9a/0xf0 kernel/softirq.c:454
- __local_bh_enable_ip+0x99/0xa0 kernel/softirq.c:381
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:817 [inline]
- __dev_queue_xmit+0x24ff/0x5130 net/core/dev.c:4373
- dev_queue_xmit include/linux/netdevice.h:3112 [inline]
- neigh_hh_output include/net/neighbour.h:526 [inline]
- neigh_output include/net/neighbour.h:540 [inline]
- ip_finish_output2+0x14be/0x1b40 net/ipv4/ip_output.c:235
- __ip_finish_output+0x266/0x720
- ip_finish_output+0x4b/0x550 net/ipv4/ip_output.c:323
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_output+0x15f/0x3e0 net/ipv4/ip_output.c:433
- dst_output include/net/dst.h:451 [inline]
- ip_local_out net/ipv4/ip_output.c:129 [inline]
- __ip_queue_xmit+0x1c02/0x1e00 net/ipv4/ip_output.c:535
- ip_queue_xmit+0x60/0x80 net/ipv4/ip_output.c:549
- __tcp_transmit_skb+0x3b26/0x4c40 net/ipv4/tcp_output.c:1462
- tcp_transmit_skb net/ipv4/tcp_output.c:1480 [inline]
- tcp_write_xmit+0x3e0f/0x8940 net/ipv4/tcp_output.c:2792
- __tcp_push_pending_frames+0xc4/0x380 net/ipv4/tcp_output.c:2977
- tcp_push+0x755/0x7a0 net/ipv4/tcp.c:736
- mptcp_push_release net/mptcp/protocol.c:1489 [inline]
- __mptcp_push_pending+0x8bc/0xde0 net/mptcp/protocol.c:1624
- mptcp_sendmsg+0x1e90/0x2300 net/mptcp/protocol.c:1890
- inet_sendmsg+0x105/0x190 net/ipv4/af_inet.c:847
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmmsg+0x3c4/0x950 net/socket.c:2724
- __do_sys_sendmmsg net/socket.c:2753 [inline]
- __se_sys_sendmmsg net/socket.c:2750 [inline]
- __x64_sys_sendmmsg+0xbc/0x120 net/socket.c:2750
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+==================================================================
+BUG: KASAN: slab-use-after-free in __lock_acquire+0x114/0x75e8 kernel/locking/lockdep.c:5004
+Read of size 8 at addr ffff0000d553e0b0 by task kworker/u5:3/6271
 
-Uninit was stored to memory at:
- mptcp_parse_option net/mptcp/options.c:110 [inline]
- mptcp_get_options+0x2d86/0x2e60 net/mptcp/options.c:396
- mptcp_incoming_options+0x124/0x3a80 net/mptcp/options.c:1139
- tcp_data_queue+0xb4/0x7f20 net/ipv4/tcp_input.c:5141
- tcp_rcv_established+0x1132/0x2600 net/ipv4/tcp_input.c:6155
- tcp_v4_do_rcv+0x8a8/0xff0 net/ipv4/tcp_ipv4.c:1906
- tcp_v4_rcv+0x4ce0/0x51a0 net/ipv4/tcp_ipv4.c:2329
- ip_protocol_deliver_rcu+0x264/0x1300 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x2b8/0x440 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_local_deliver+0x21f/0x490 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:461 [inline]
- ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_rcv+0x476/0x770 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core net/core/dev.c:5529 [inline]
- __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5643
- process_backlog+0x480/0x8b0 net/core/dev.c:5971
- __napi_poll+0xe3/0x970 net/core/dev.c:6533
- napi_poll net/core/dev.c:6602 [inline]
- net_rx_action+0x884/0x16d0 net/core/dev.c:6735
- __do_softirq+0x1b7/0x7c3 kernel/softirq.c:553
+CPU: 1 PID: 6271 Comm: kworker/u5:3 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: hci0 hci_cmd_sync_work
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x174/0x514 mm/kasan/report.c:475
+ kasan_report+0xd8/0x138 mm/kasan/report.c:588
+ __asan_report_load8_noabort+0x20/0x2c mm/kasan/report_generic.c:381
+ __lock_acquire+0x114/0x75e8 kernel/locking/lockdep.c:5004
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x48/0x60 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ __lock_sock+0x170/0x2d4 net/core/sock.c:2960
+ lock_sock_nested+0xa4/0x11c net/core/sock.c:3510
+ lock_sock include/net/sock.h:1720 [inline]
+ sco_conn_ready net/bluetooth/sco.c:1268 [inline]
+ sco_connect_cfm+0x140/0x948 net/bluetooth/sco.c:1359
+ hci_connect_cfm include/net/bluetooth/hci_core.h:1935 [inline]
+ hci_conn_failed+0x17c/0x2c0 net/bluetooth/hci_conn.c:1251
+ hci_abort_conn_sync+0x688/0xe38 net/bluetooth/hci_sync.c:5428
+ abort_conn_sync+0x5c/0x8c net/bluetooth/hci_conn.c:2910
+ hci_cmd_sync_work+0x1cc/0x34c net/bluetooth/hci_sync.c:306
+ process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
 
-Local variable mp_opt created at:
- mptcp_incoming_options+0x9b/0x3a80 net/mptcp/options.c:1116
- tcp_data_queue+0xb4/0x7f20 net/ipv4/tcp_input.c:5141
+Allocated by task 8151:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
+ kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1026 [inline]
+ __kmalloc+0xcc/0x1b8 mm/slab_common.c:1039
+ kmalloc include/linux/slab.h:603 [inline]
+ sk_prot_alloc+0xc4/0x1f0 net/core/sock.c:2090
+ sk_alloc+0x44/0x3f4 net/core/sock.c:2143
+ bt_sock_alloc+0x4c/0x32c net/bluetooth/af_bluetooth.c:148
+ sco_sock_alloc net/bluetooth/sco.c:495 [inline]
+ sco_sock_create+0xbc/0x31c net/bluetooth/sco.c:526
+ bt_sock_create+0x14c/0x248 net/bluetooth/af_bluetooth.c:132
+ __sock_create+0x43c/0x884 net/socket.c:1569
+ sock_create net/socket.c:1620 [inline]
+ __sys_socket_create net/socket.c:1657 [inline]
+ __sys_socket+0x134/0x340 net/socket.c:1708
+ __do_sys_socket net/socket.c:1722 [inline]
+ __se_sys_socket net/socket.c:1720 [inline]
+ __arm64_sys_socket+0x7c/0x94 net/socket.c:1720
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
 
-CPU: 0 PID: 5031 Comm: syz-executor376 Not tainted 6.7.0-rc2-syzkaller-00014-gc2d5304e6c64 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-=====================================================
+Freed by task 8151:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
+ kasan_save_free_info+0x38/0x5c mm/kasan/generic.c:522
+ ____kasan_slab_free+0x144/0x1c0 mm/kasan/common.c:236
+ __kasan_slab_free+0x18/0x28 mm/kasan/common.c:244
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x2ac/0x480 mm/slub.c:3822
+ kfree+0xb8/0x19c mm/slab_common.c:1075
+ sk_prot_free net/core/sock.c:2126 [inline]
+ __sk_destruct+0x4c0/0x770 net/core/sock.c:2218
+ sk_destruct net/core/sock.c:2233 [inline]
+ __sk_free+0x37c/0x4e8 net/core/sock.c:2244
+ sk_free+0x60/0xc8 net/core/sock.c:2255
+ sock_put include/net/sock.h:1989 [inline]
+ sco_sock_kill+0xfc/0x1b4 net/bluetooth/sco.c:426
+ sco_sock_release+0x1fc/0x2c0 net/bluetooth/sco.c:1256
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xa4/0x1e8 net/socket.c:1419
+ __fput+0x324/0x7f8 fs/file_table.c:384
+ ____fput+0x20/0x30 fs/file_table.c:412
+ task_work_run+0x230/0x2e0 kernel/task_work.c:180
+ get_signal+0x13f4/0x15ec kernel/signal.c:2668
+ do_signal arch/arm64/kernel/signal.c:1249 [inline]
+ do_notify_resume+0x3bc/0x393c arch/arm64/kernel/signal.c:1302
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
+ el0_svc+0x9c/0x158 arch/arm64/kernel/entry-common.c:679
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+The buggy address belongs to the object at ffff0000d553e000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 176 bytes inside of
+ freed 2048-byte region [ffff0000d553e000, ffff0000d553e800)
+
+The buggy address belongs to the physical page:
+page:0000000014f21d98 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x115538
+head:0000000014f21d98 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 05ffc00000000840 ffff0000c0002000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff0000d553df80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff0000d553e000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff0000d553e080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff0000d553e100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff0000d553e180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
