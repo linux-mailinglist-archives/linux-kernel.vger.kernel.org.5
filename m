@@ -2,195 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65A27F3FB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B967F3FD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbjKVIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        id S231339AbjKVINO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjKVIJR (ORCPT
+        with ESMTP id S230168AbjKVINM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:09:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF2818E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:09:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF2F1C433D9;
-        Wed, 22 Nov 2023 08:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700640552;
-        bh=PHQsh6F5XvgFUnaiWxcwLwUn3OBKs5yGFFQ41WrpYbs=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=nbJ2SK6lwZUEu6ZnwTSH+Oa/pBWa+sX/Htt/x2OReGd8JoH8z85C27DzRYTHJBlVi
-         3wDe3x5yRyGX5qAMhcpfKXHDb9VRNeNThxVKhdlyx1h9TbC6wosV8PHWzu2uTL/7Am
-         ZWlKfb6oi0Cn+Ic/KuwFQalQJhUOwrmMosWHgVwHC2Cz6C0mqCCOKTxXIRm3FodZqc
-         a5DVliVMdZJxlKjgLRaCcUtozoEbeFe5NuT8tHE9n86xS+d7H2vfDsWjbaRg0Z56Vf
-         5KU1r/sIqOWweRJ36Zhtl3j2xC4aB6yAvdaF7pTTjplwjMbpiRtNuVc7wneOEmh45p
-         iqsEGA8VNAjSA==
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28098ebd5aeso5197621a91.0;
-        Wed, 22 Nov 2023 00:09:12 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx7odvUu4zERkyhQekrKqkBcCJ348m56meZ7iw4iXyhkBSdkk6f
-        8cpOzvOaK4gnHrY+fkTLZ8IxsErmbn8YrXs/sto=
-X-Google-Smtp-Source: AGHT+IEr9UvTFqYZYbRvMse6NIITfqbwjuUq1G6lDkVVXaxwMJVX1684jPAX+uFy+o0fSjl0iAD8WjSqBj6oqY9ODoU=
-X-Received: by 2002:a17:90b:1d92:b0:27f:ecd9:6d0e with SMTP id
- pf18-20020a17090b1d9200b0027fecd96d0emr1639810pjb.34.1700640552241; Wed, 22
- Nov 2023 00:09:12 -0800 (PST)
+        Wed, 22 Nov 2023 03:13:12 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E12D62
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:13:08 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b2c8e91afso7315525e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:13:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1700640786; x=1701245586; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FzPPKXZyEg7qy/J2H0aK0NbgOULhdPKN22jDT3Q9NdY=;
+        b=GxN2U02XTGK2f/fxYTGLt4FajNNnbvLcTMoB6YpqWRA/MvELw10CHbVHiITgo07/TZ
+         I91B8yUW/sUsDWBWJwcKS1hqq0GTRal3+SjdYRh0caZFOc+mxWIrR0ITMSIYIO7cqGpl
+         ysFLmPiXTuk9s0RrbzfdG6vIX9cmHQcuHRH36TBqpZVgyryGt0n6ZEj998DVo5eOCnTT
+         HLll+cForxVNYCtxwlZqdK6MKZRnIfQBW+1ujkLnamwiHiXsahyhiD9jPbLLX572ASlV
+         mVNpck35SYPNftW2wjq99x5JlcmB1f0b9oQAZxBBtpvQu+vL0wbL1oxfJfOU3QMaJtX2
+         CSRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700640786; x=1701245586;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FzPPKXZyEg7qy/J2H0aK0NbgOULhdPKN22jDT3Q9NdY=;
+        b=UxjCtuuvot1hIJZJLn1Dkbc0uw8yT6wFQX+nJaoE6bVSWvRTCrVXwWkwTqzNI7MJ6t
+         fPCLiUnw6EtmwkvKK2jeBz+xH7+L1vQoi8uey/bInZ9SZKc4RPOgwCSHkNVN8JewB688
+         sdZ0NtIhCE1TNLjX3RXQ4uHsTK+0EXXc15vazSB4sTpjrKouL9I9jmPPGLlZN3hhOeaK
+         IHm3WSrTjrCbchpIxBc2T5tOp/8SubmAaafejLwbEU8Otii27vtklRBJ4XOaAiimDZjc
+         19xtzy6I8oW4NiXzuEj9y37abiYLzo9HAiA7ynhp28EXoMONbE7MJnHgFh/vxXGNRLDe
+         TQ9g==
+X-Gm-Message-State: AOJu0YxHMNZH1HIa4CpTTZTatsjLS5Z3nKdyLeXjqfOrd1iU9vgetgdZ
+        IV0+EW/ylHK3KqK9ccWh2LKxqQ==
+X-Google-Smtp-Source: AGHT+IHPZfaDHkxQULB/N6YwAHSW77gMAbzbjK0nZaSfLb1EK8uIfrnvGjJE9KnZqt2r7I6qEwdCDQ==
+X-Received: by 2002:a05:600c:4e89:b0:405:e492:8aef with SMTP id f9-20020a05600c4e8900b00405e4928aefmr832641wmq.40.1700640786547;
+        Wed, 22 Nov 2023 00:13:06 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id az39-20020a05600c602700b0040596352951sm1364960wmb.5.2023.11.22.00.13.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 00:13:05 -0800 (PST)
+Date:   Wed, 22 Nov 2023 09:13:04 +0100
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 2/9] KVM: selftests: Unify the makefile rule for split
+ targets
+Message-ID: <20231122-b471122622059496906801c1@orel>
+References: <cover.1694421911.git.haibo1.xu@intel.com>
+ <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
+ <20231003-d44206f71d0b22e539833697@orel>
+ <CAJve8o=Q74U0Z3PayrzY7heNc0qeTw5VYS+tdkpm=aJdefQEbQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
- <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com> <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
-In-Reply-To: <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Wed, 22 Nov 2023 16:09:00 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
-Message-ID: <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8o=Q74U0Z3PayrzY7heNc0qeTw5VYS+tdkpm=aJdefQEbQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 4:05=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Sun, Oct 08, 2023 at 10:58:57AM +0800, Haibo Xu wrote:
+> On Tue, Oct 3, 2023 at 6:28 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> >
+> > On Thu, Sep 14, 2023 at 09:36:56AM +0800, Haibo Xu wrote:
+> > > A separate makefile rule was used for split targets which was added
+> > > in patch(KVM: arm64: selftests: Split get-reg-list test code). This
+> > > could be avoided by minor changes to the recipes of current rule.
+> > >
+> > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index a3bb36fb3cfc..7972269e8c5f 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -249,13 +249,10 @@ TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
+> > >  -include $(TEST_DEP_FILES)
+> > >
+> > >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> > > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) $(LDLIBS) -o $@
+> > > +     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
+> > >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+> > >       $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+> > >
+> > > -$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
+> > > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
+> > > -
+> > >  EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLIT_TESTS_OBJS) cscope.*
+> > >
+> > >  x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
+> > > @@ -274,6 +271,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
+> > >  x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
+> > >  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
+> > >  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
+> > > +$(SPLIT_TESTS_TARGETS): $(OUTPUT)/%: $(ARCH_DIR)/%.o
+> > >
+> > >  cscope: include_paths = $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) include lib ..
+> > >  cscope:
+> > > --
+> > > 2.34.1
+> > >
+> >
+> > I just noticed that with and without this patch we're building the
+> > arch-specific part in tools/testing/selftests/kvm/riscv even when we have
+> > an $(OUTPUT) directory (e.g. O=build). Those build artifacts should be in
+> > build/kselftest/kvm/riscv instead.
+> >
+> 
+> Thanks for pointing it out. I will have a look in next week!
 >
-> On 21/11/2023 14:50, Rafa=C5=82 Mi=C5=82ecki wrote:
-> >> +Order of Nodes
-> >> +--------------
-> >> +
-> >> +1. Nodes within any bus, thus using unit addresses for children, shal=
-l be
-> >> +   ordered incrementally by unit address.
-> >> +   Alternatively for some sub-architectures, nodes of the same type c=
-an be
-> >> +   grouped together (e.g. all I2C controllers one after another even =
-if this
-> >> +   breaks unit address ordering).
-> >> +
-> >> +2. Nodes without unit addresses should be ordered alpha-numerically b=
-y the node
-> >> +   name.  For a few types of nodes, they can be ordered by the main p=
-roperty
-> >> +   (e.g. pin configuration states ordered by value of "pins" property=
-).
-> >> +
-> >> +3. When extending nodes in the board DTS via &label, the entries shou=
-ld be
-> >> +   ordered alpha-numerically.
-> >
-> > Just an idea. Would that make (more) sense to make &label-like entries
-> > match order of nodes in included .dts(i)?
-> >
-> > Adventages:
-> > 1. We keep unit address incremental order that is unlikely to change
-> >
-> > Disadventages:
-> > 1. More difficult to verify
->
-> Rob also proposed this and I believe above disadvantage here is crucial.
-> If you add new SoC with board DTS you are fine. But if you add only new
-> board, the order of entries look random in the diff hunk. Reviewer must
-> open SoC DTSI to be able to review the patch with board DTS.
->
-> If review is tricky and we do not have tool to perform it automatically,
-> I am sure submissions will have disordered board DTS.
->
-> >
-> >
-> >> +Example::
-> >> +
-> >> +    // SoC DTSI
-> >> +
-> >> +    / {
-> >> +            cpus {
-> >> +                    // ...
-> >> +            };
-> >> +
-> >> +            psci {
-> >> +                    // ...
-> >> +            };
-> >> +
-> >> +            soc@ {
-> >> +                    dma: dma-controller@10000 {
-> >> +                            // ...
-> >> +                    };
-> >> +
-> >> +                    clk: clock-controller@80000 {
-> >> +                            // ...
-> >> +                    };
-> >> +            };
-> >> +    };
-> >> +
-> >> +    // Board DTS
-> >> +
-> >> +    &clk {
-> >> +            // ...
-> >> +    };
-> >> +
-> >> +    &dma {
-> >> +            // ...
-> >> +    };
-> >> +
-> >> +
-> >> +Order of Properties in Device Node
-> >> +----------------------------------
-> >> +
-> >> +Following order of properties in device nodes is preferred:
-> >> +
-> >> +1. compatible
-> >> +2. reg
-> >> +3. ranges
-> >> +4. Standard/common properties (defined by common bindings, e.g. witho=
-ut
-> >> +   vendor-prefixes)
-> >> +5. Vendor-specific properties
-> >> +6. status (if applicable)
-> >> +7. Child nodes, where each node is preceded with a blank line
-> >> +
-> >> +The "status" property is by default "okay", thus it can be omitted.
-> >
-> > I think it would really help to include position of #address-cells and
-> > #size-cells here. In some files I saw them above "compatible" that seem=
-s
-> > unintuitive. Some prefer putting them at end which I think makes sense
-> > as they affect children nodes.
-> >
-> > Whatever you choose it'd be just nice to have things consistent.
->
-> This is a standard/common property, thus it goes to (4) above.
 
-It's probably a mix, but AFAIK a lot of the device trees in tree have
-#*-cells after "status". In some cases they are added in the board
-.dts files, not the chip/module .dtsi files.
+Hi Haibo,
 
-+1 that it makes sense at the end as they affect child nodes.
+Paolo just fixed this
 
-ChenYu
+https://lore.kernel.org/all/20231121165631.1170797-1-pbonzini@redhat.com/
+
+Thanks,
+drew
