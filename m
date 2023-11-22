@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EFB7F41E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828827F4245
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235230AbjKVJms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:42:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S235356AbjKVJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:45:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbjKVJmi (ORCPT
+        with ESMTP id S1343729AbjKVJpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:42:38 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109D2D54;
-        Wed, 22 Nov 2023 01:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=EQ4smjqMqmMfalcMGUhJfWa7OYmkCqYHNTOX5D4CJKg=; b=XiML8zb5vTPJVbD1Yp652UL5fn
-        G+HecxK3KyFjdQ3dQeJv0tduaxjhSD0O6UQtIu5px+GhiQxt53IyMHOMQq2w+RhZ6MHzJRJbM1ZWU
-        JzA/VxQoKj7UheMYljEMkH9BNJ/GMpsQvI3TzXK2HS81DZ9nEYJP8knlwJ5EUX2htVlG3rFWq8XDI
-        Qnd3JpoeD0Ic9ruBosaH11UE1Wr062SegIFXufj24oq4YCcy7KQnzNl5mlh2Q5E/4yB/86NoSv9vJ
-        jfbRiUCC12OYmSHA/ufO6scak/zE+QIETtw9NeGBQu0xr7Z+NhJKrv9MGT5gaNMm3/VA85GK7mVD0
-        JjF8sDUw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56008)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r5jkV-0008Gf-0D;
-        Wed, 22 Nov 2023 09:42:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r5jkW-00055U-SH; Wed, 22 Nov 2023 09:42:24 +0000
+        Wed, 22 Nov 2023 04:45:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D54110CF
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:44:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB45FC43142;
+        Wed, 22 Nov 2023 09:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700646277;
+        bh=701JTF9Jvt7MHb4vzhbZhtT7BBJBuznNuW3VQeP4Dqk=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=lBBiPkfs1bDvDwjHk4OkCK/FLfl/DjbD4UXXRmnc6yFzF5zap9dV3IJ72+bcXHLdR
+         tUb7tOWPLx3jyiV+kFx1gYyjX76ecQ9jUUhXAFPxP3MT9oDHjvRaYtVWbg7PEzj2xv
+         35tvDg3WO/auArFeFCucrYnv98XyP7Q9zZVWus1BTU9i5jNDTO6JUUSp7efT6qfpp4
+         kNbXvyIW8LgU9/jn09Puy6NA0jHcD+6ZD9V3T6NpokLSw8zrlewKqnApU8DlaGUI11
+         e86Pgu50Yp02rHLvXaKF0MTkm15a2boO2lGqfFFeQz6uJtO+40YZewfERRgzR+47r4
+         AeAJJBAkAlg+A==
+From:   Mark Brown <broonie@kernel.org>
 Date:   Wed, 22 Nov 2023 09:42:24 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v5 2/3] net: dsa: microchip: ksz8: Add function
- to configure ports with integrated PHYs
-Message-ID: <ZV3NAPB/MX3R4b2q@shell.armlinux.org.uk>
-References: <20231122092545.2895635-1-o.rempel@pengutronix.de>
- <20231122092545.2895635-3-o.rempel@pengutronix.de>
+Subject: [PATCH v7 14/39] KVM: arm64: Manage GCS registers for guests
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122092545.2895635-3-o.rempel@pengutronix.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231122-arm64-gcs-v7-14-201c483bd775@kernel.org>
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+In-Reply-To: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5364; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=701JTF9Jvt7MHb4vzhbZhtT7BBJBuznNuW3VQeP4Dqk=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlXc0BfEgkkRq/SykifBOr7DH7c9OzUQTfc3qa1
+ neFhSoEgA+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZV3NAQAKCRAk1otyXVSH
+ 0MFTB/9Zui5cCedvHBD+Vs/u3hLqGSWuJf2lHM51ej/6t6eS1XaHSrFKXdLgTCQYE9smlvcGNQo
+ r4+cJ9fLfz1oQl0jGvRlS6Bnx2jTNrWGGdnFhMgZDfO5xrvSpRjjmXpk3+SRnO4OjVVSGfdAnRS
+ yHzmj/yQQSFe0bfTWBWitkGKeJJcQe/vtDdswlJP2slDDHoCFndFuD21dGsTA+oBvEwSrtNAK0b
+ chDLJDM+svT3/5T0sbV2cWltxUQ5VLZFcpuat5k1Z3WG1YZbg5zH+e+q2CPy36NMutNgtGWpmOV
+ 9/jMEPsWOhkDS2qH1SdZl7RFJHJybmOLGPChu233YdOu3sod
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,34 +86,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 10:25:44AM +0100, Oleksij Rempel wrote:
-> +	if (duplex) {
+GCS introduces a number of system registers for EL1 and EL0, on systems
+with GCS we need to context switch them and expose them to VMMs to allow
+guests to use GCS.  Traps are already disabled.
 
-Unnecessary.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ arch/arm64/include/asm/kvm_host.h          | 12 ++++++++++++
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 17 +++++++++++++++++
+ arch/arm64/kvm/sys_regs.c                  | 22 ++++++++++++++++++++++
+ 3 files changed, 51 insertions(+)
 
-> +		bool aneg_en = false;
-> +
-> +		ret = ksz_pread8(dev, port, regs[P_FORCE_CTRL], &ctrl);
-> +		if (ret)
-> +			return;
-> +
-> +		if (ksz_is_ksz88x3(dev)) {
-> +			if ((ctrl & PORT_AUTO_NEG_ENABLE))
-
-Too many parens.
-
-> +				aneg_en = true;
-
-Simpler:
-			aneg_en = ctrl & PORT_AUTO_NEG_ENABLE;
-
-> +		} else {
-> +			if (!(ctrl & PORT_AUTO_NEG_DISABLE))
-> +				aneg_en = true;
-
-Simpler:
-			aneg_en = !(ctrl & PORT_AUTO_NEG_DISABLE);
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 824f29f04916..2b09805da26a 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -401,6 +401,12 @@ enum vcpu_sysreg {
+ 	PIR_EL1,       /* Permission Indirection Register 1 (EL1) */
+ 	PIRE0_EL1,     /*  Permission Indirection Register 0 (EL1) */
+ 
++	/* Guarded Control Stack registers */
++	GCSCRE0_EL1,	/* Guarded Control Stack Control (EL0) */
++	GCSCR_EL1,	/* Guarded Control Stack Control (EL1) */
++	GCSPR_EL0,	/* Guarded Control Stack Pointer (EL0) */
++	GCSPR_EL1,	/* Guarded Control Stack Pointer (EL1) */
++
+ 	/* 32bit specific registers. */
+ 	DACR32_EL2,	/* Domain Access Control Register */
+ 	IFSR32_EL2,	/* Instruction Fault Status Register */
+@@ -1177,6 +1183,12 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+ #define kvm_vm_has_ran_once(kvm)					\
+ 	(test_bit(KVM_ARCH_FLAG_HAS_RAN_ONCE, &(kvm)->arch.flags))
+ 
++static inline bool has_gcs(void)
++{
++	return IS_ENABLED(CONFIG_ARM64_GCS) &&
++		cpus_have_final_cap(ARM64_HAS_GCS);
++}
++
+ int kvm_trng_call(struct kvm_vcpu *vcpu);
+ #ifdef CONFIG_KVM
+ extern phys_addr_t hyp_mem_base;
+diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+index bb6b571ec627..ec34d4a90717 100644
+--- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
++++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+@@ -25,6 +25,8 @@ static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
+ {
+ 	ctxt_sys_reg(ctxt, TPIDR_EL0)	= read_sysreg(tpidr_el0);
+ 	ctxt_sys_reg(ctxt, TPIDRRO_EL0)	= read_sysreg(tpidrro_el0);
++	if (has_gcs())
++		ctxt_sys_reg(ctxt, GCSPR_EL0) = read_sysreg_s(SYS_GCSPR_EL0);
+ }
+ 
+ static inline bool ctxt_has_mte(struct kvm_cpu_context *ctxt)
+@@ -62,6 +64,12 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+ 	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg_par();
+ 	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
+ 
++	if (has_gcs()) {
++		ctxt_sys_reg(ctxt, GCSPR_EL1)	= read_sysreg_el1(SYS_GCSPR);
++		ctxt_sys_reg(ctxt, GCSCR_EL1)	= read_sysreg_el1(SYS_GCSCR);
++		ctxt_sys_reg(ctxt, GCSCRE0_EL1)	= read_sysreg_s(SYS_GCSCRE0_EL1);
++	}
++
+ 	if (ctxt_has_mte(ctxt)) {
+ 		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
+ 		ctxt_sys_reg(ctxt, TFSRE0_EL1) = read_sysreg_s(SYS_TFSRE0_EL1);
+@@ -95,6 +103,8 @@ static inline void __sysreg_restore_user_state(struct kvm_cpu_context *ctxt)
+ {
+ 	write_sysreg(ctxt_sys_reg(ctxt, TPIDR_EL0),	tpidr_el0);
+ 	write_sysreg(ctxt_sys_reg(ctxt, TPIDRRO_EL0),	tpidrro_el0);
++	if (has_gcs())
++		write_sysreg_s(ctxt_sys_reg(ctxt, GCSPR_EL0), SYS_GCSPR_EL0);
+ }
+ 
+ static inline void __sysreg_restore_el1_state(struct kvm_cpu_context *ctxt)
+@@ -138,6 +148,13 @@ static inline void __sysreg_restore_el1_state(struct kvm_cpu_context *ctxt)
+ 	write_sysreg(ctxt_sys_reg(ctxt, PAR_EL1),	par_el1);
+ 	write_sysreg(ctxt_sys_reg(ctxt, TPIDR_EL1),	tpidr_el1);
+ 
++	if (has_gcs()) {
++		write_sysreg_el1(ctxt_sys_reg(ctxt, GCSPR_EL1),	SYS_GCSPR);
++		write_sysreg_el1(ctxt_sys_reg(ctxt, GCSCR_EL1),	SYS_GCSCR);
++		write_sysreg_s(ctxt_sys_reg(ctxt, GCSCRE0_EL1),
++			       SYS_GCSCRE0_EL1);
++	}
++
+ 	if (ctxt_has_mte(ctxt)) {
+ 		write_sysreg_el1(ctxt_sys_reg(ctxt, TFSR_EL1), SYS_TFSR);
+ 		write_sysreg_s(ctxt_sys_reg(ctxt, TFSRE0_EL1), SYS_TFSRE0_EL1);
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index 4735e1b37fb3..300719f82dd1 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1876,6 +1876,23 @@ static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+ 	.visibility = mte_visibility,		\
+ }
+ 
++static unsigned int gcs_visibility(const struct kvm_vcpu *vcpu,
++				   const struct sys_reg_desc *rd)
++{
++	if (has_gcs())
++		return 0;
++
++	return REG_HIDDEN;
++}
++
++#define GCS_REG(name) {				\
++	SYS_DESC(SYS_##name),			\
++	.access = undef_access,			\
++	.reset = reset_unknown,			\
++	.reg = name,				\
++	.visibility = gcs_visibility,		\
++}
++
+ static unsigned int el2_visibility(const struct kvm_vcpu *vcpu,
+ 				   const struct sys_reg_desc *rd)
+ {
+@@ -2223,6 +2240,10 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	PTRAUTH_KEY(APDB),
+ 	PTRAUTH_KEY(APGA),
+ 
++	GCS_REG(GCSCR_EL1),
++	GCS_REG(GCSPR_EL1),
++	GCS_REG(GCSCRE0_EL1),
++
+ 	{ SYS_DESC(SYS_SPSR_EL1), access_spsr},
+ 	{ SYS_DESC(SYS_ELR_EL1), access_elr},
+ 
+@@ -2309,6 +2330,7 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	{ SYS_DESC(SYS_SMIDR_EL1), undef_access },
+ 	{ SYS_DESC(SYS_CSSELR_EL1), access_csselr, reset_unknown, CSSELR_EL1 },
+ 	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
++	GCS_REG(GCSPR_EL0),
+ 	{ SYS_DESC(SYS_SVCR), undef_access },
+ 
+ 	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.39.2
+
