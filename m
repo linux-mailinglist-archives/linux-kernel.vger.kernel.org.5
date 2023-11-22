@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5837F527C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110DC7F5287
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjKVVU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S1343940AbjKVVZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344185AbjKVVUl (ORCPT
+        with ESMTP id S231535AbjKVVZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:20:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D5CD47
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:20:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7866AC433C7;
-        Wed, 22 Nov 2023 21:20:35 +0000 (UTC)
-Date:   Wed, 22 Nov 2023 16:20:51 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nick Lowell <nicholas.lowell@gmail.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Nicholas Lowell <nlowell@lexmark.com>
-Subject: Re: [PATCH v2] trace: tracing_event_filter: fast path when no
- subsystem filters
-Message-ID: <20231122162051.661981fe@gandalf.local.home>
-In-Reply-To: <CAFEqNJ3PE6_u-q41Jw=-p7PrNBLT0Lr_n87WiY_2UctOJrDmZA@mail.gmail.com>
-References: <20231002144149.1325-1-Nicholas.Lowell@gmail.com>
-        <20231003223003.675bd888@gandalf.local.home>
-        <CAFEqNJ2=rt5KaDaAah1t8gGbLViW7VZEDq+81drvuWUz4CKR2w@mail.gmail.com>
-        <20231004105339.5f948a96@gandalf.local.home>
-        <CAFEqNJ3PE6_u-q41Jw=-p7PrNBLT0Lr_n87WiY_2UctOJrDmZA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 22 Nov 2023 16:25:13 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150CF1A4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:25:09 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7b063a6420dso7043739f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700688308; x=1701293108; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OK4yjGOQCQ1Of5MUW9eg8KxwFZFuyIMn1rGG5EPO/5s=;
+        b=o3ms0IWuFUo90hh2SYWVNSjQjcAmVRiY71xmHKlwRjTNy62wmRBTrYtefHtQPahxTu
+         RVjjJHbvW1/t/OG3PJ7VfQBKPYjqw6hSW8LRKaXyN2rSwWy7xFcnJ6SH2dGUPqjxLJfn
+         dNYnFQNR2wbMrNtxbUikkhMXi6AvQW+yGFqFb5MEv6QJBioVVrSzuK8suCHbiFwj1QNo
+         HoBMoDV8+DZhFOpwp14GZBS3KBOiUaZzvTpvqZF0+z7ah1piiEpfX310CDs8wdThLsgN
+         Xjgl4Zt5jFUxvTX8ZDk9WcQdDZHx6sqYH/bx2iJoMwf8FTftQuQ+kfeHu2CbmwjNKGpQ
+         ObLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700688308; x=1701293108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OK4yjGOQCQ1Of5MUW9eg8KxwFZFuyIMn1rGG5EPO/5s=;
+        b=VoCrDwyD1W7HxkmbU/gLUVmRl7UNTxTuilzT17kuRrJrNCUV204kUueD0Zkep/1u5E
+         1sqYYSZiPKN7m2b/EN0Q627HJE+tc6d5hzdW7iDFZrYvrTUy+3yrbowJsGJlGrkEL90X
+         zf+jWEqXGgKNE6Giu3+CsiG1VY7MktQ2VNe6en9BhhcKKNciIgCvMKqKObxXVnGlzXsq
+         TC0RCK7aoucxymXYRgZXVJDE2u+XlUvIID8fGZT5o3jXQXUS/tkBLZZCRh3D6dMCTF4a
+         yBJ+pycQP9kuL9QR8SbqS3DfLFulk+xIo6FEZLTCb+C02RD/R6N65hjZzWVyb3igXjSd
+         T/gw==
+X-Gm-Message-State: AOJu0YyN2rhD5pjblJ9uD/6B11Q43Mbmfeb5o6hSTKlRsJZE85UDCb7X
+        cSOPA9dFyuK6dMkmvR6p3CZ3l4bSac0M9YIthm0=
+X-Google-Smtp-Source: AGHT+IGfqWQCALQ2sbl53cSx59NR6o3lXjdDQ8ypxQCzXrbtIkKuIukuNRzmX3tbmVN1WRYaJX1GYQ==
+X-Received: by 2002:a6b:e217:0:b0:785:d5d4:9f26 with SMTP id z23-20020a6be217000000b00785d5d49f26mr719339ioc.9.1700688308378;
+        Wed, 22 Nov 2023 13:25:08 -0800 (PST)
+Received: from localhost.localdomain (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
+        by smtp.gmail.com with ESMTPSA id i3-20020a6bf403000000b007a66df53f71sm3591812iog.38.2023.11.22.13.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 13:25:08 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
+        quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
+        quic_subashab@quicinc.com, elder@kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: ipa: fix one GSI register field width
+Date:   Wed, 22 Nov 2023 15:25:04 -0600
+Message-Id: <20231122212504.714276-1-elder@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 16:37:35 -0400
-Nick Lowell <nicholas.lowell@gmail.com> wrote:
+The width of the R_LENGTH field of the EV_CH_E_CNTXT_1 GSI register
+is 24 bits (not 20 bits) starting with IPA v5.0.  Fix this.
 
-Sorry, I was traveling when this was sent, and I missed it.
+Fixes: 627659d542c5 ("net: ipa: add IPA v5.0 GSI register definitions")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/reg/gsi_reg-v5.0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/ipa/reg/gsi_reg-v5.0.c b/drivers/net/ipa/reg/gsi_reg-v5.0.c
+index d7b81a36d673b..145eb0bd096d6 100644
+--- a/drivers/net/ipa/reg/gsi_reg-v5.0.c
++++ b/drivers/net/ipa/reg/gsi_reg-v5.0.c
+@@ -78,7 +78,7 @@ REG_STRIDE_FIELDS(EV_CH_E_CNTXT_0, ev_ch_e_cntxt_0,
+ 		  0x0001c000 + 0x12000 * GSI_EE_AP, 0x80);
+ 
+ static const u32 reg_ev_ch_e_cntxt_1_fmask[] = {
+-	[R_LENGTH]					= GENMASK(19, 0),
++	[R_LENGTH]					= GENMASK(23, 0),
+ };
+ 
+ REG_STRIDE_FIELDS(EV_CH_E_CNTXT_1, ev_ch_e_cntxt_1,
+-- 
+2.34.1
 
-> I really appreciate the continued feedback.  I was able to reproduce.
-> I think I'm understanding better but still need some help.
-> I am actually wondering if remove_filter_string(system->filter) should
-
-You mean to return true if filter->filter_string was not NULL?
-
-> also return bool as an OR'd input for sync.
-> Should it be something like this?
-> 
->         if (!strcmp(strstrip(filter_string), "0")) {
-> -               filter_free_subsystem_preds(dir, tr);
-> -               remove_filter_string(system->filter);
-> +              bool sync;
-
-I would just make this an int;
-
-> +
-> +              sync = filter_free_subsystem_preds(dir, tr);
-> +              sync = sync || remove_filter_string(system->filter);
-
-And then just have:
-
-		sync |= remove_filter_string(system->filter);
-
->                 filter = system->filter;
->                 system->filter = NULL;
-> -               /* Ensure all filters are no longer used */
-> -               tracepoint_synchronize_unregister();
-> +              /* If nothing was freed, we do not need to sync */
-> +              if(sync) {
-> +                      /* Ensure all filters are no longer used */
-> +                      tracepoint_synchronize_unregister();
-> +              }
->                 filter_free_subsystem_filters(dir, tr);
->                 __free_filter(filter);
->                 goto out_unlock;
-> 
-> > Maybe even pass in "sync" to the filter_free_subsystem_filters() to make
-> > sure there were nothing to be freed, and do the WARN_ON_ONCE() then.
-> >
-> >                 __free_filter(filter);
-> >                 goto out_unlock;
-> >         }
-> >
-> > -- Steve  
-> 
-> I'm not sure if I see the reasoning for the WARN_ON_ONCE() in
-> filter_free_subsystem_filters()
-> because it ends up checking the same if(!filter) just like
-> filter_free_subsystem_preds() did earlier. It doesn't
-> seem to do anything with system->filter.  I actually wonder if !sync,
-> could filter_free_subsystem_filters()
-> be skipped altogether.  Help me if I'm missing something.
-
-The point is, code always changes. It's a bug if one of the filters had
-content in filter_free_subsystem_filters() and sync is 0, hence the
-WARN_ON_ONCE() if it does.
-
-WARN_ON*()s are added to make sure the code is acting the way it is expected
-to act. Yes, it should never trigger, but if it does, we know there's a bug
-somewhere.
-
--- Steve
