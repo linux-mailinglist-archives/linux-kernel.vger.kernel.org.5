@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB677F417A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120FE7F43C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbjKVJWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:22:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
+        id S230061AbjKVK0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJWX (ORCPT
+        with ESMTP id S234981AbjKVIzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:22:23 -0500
-X-Greylist: delayed 1845 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 01:22:19 PST
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846509D;
-        Wed, 22 Nov 2023 01:22:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JRXouuJfULJtmERrHhVMLHylo3BRns26iZLKV3W5G40=; b=pLVyAniQcBnvn7qvivjxA4sSYV
-        /YYTATgl7fm7Tqt7TlQdsYOpxszP+cME/agLlQTffNWR8DCW4nhUrXNOnQOfhEL9C61g2NWtgb+3G
-        kPEyIq7WNIpW9S+1YNwFBMntL5o6VeAXyhAOCbUI8f+Uo3/3IfuJGr8nDqHiJLELAqciS76quEAi8
-        7RkaetF0MDOzhjl7dE3jsvWk4WyI2R3O8bBriuzWJa3brqN/NTAuTSIPyZ248t8tjtQYgxA12Y6zE
-        J/Itz6u0Kp1PA8n+ai+8P5ICNFFI9kiKhvMO9kR30OwnC/WYrXst2Ya/zz7oZ+jzTQLYnPyi77q1Q
-        3hahTfBg==;
-Received: from [167.98.27.226] (helo=rainbowdash)
-        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1r5ix5-003hg5-ES; Wed, 22 Nov 2023 08:51:20 +0000
-Received: from ben by rainbowdash with local (Exim 4.97)
-        (envelope-from <ben@rainbowdash>)
-        id 1r5ix6-00000000kDE-03Uz;
-        Wed, 22 Nov 2023 08:51:20 +0000
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     linux-watchdog@vger.kernel.org
-Cc:     linux@roeck-us.net, wim@linux-watchdog.org,
-        samin.guo@starfivetech.com, xingyu.wu@starfivetech.com,
-        linux-kernel@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH] watchdog: starfive: add lock annotations to fix context imbalances
-Date:   Wed, 22 Nov 2023 08:51:18 +0000
-Message-Id: <20231122085118.177589-1-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.37.2.352.g3c44437643
+        Wed, 22 Nov 2023 03:55:47 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C7D12A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:55:43 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5j1E-0004hl-4x; Wed, 22 Nov 2023 09:55:36 +0100
+Message-ID: <d002ad6f-d908-4cf6-afcf-bf0989418e72@leemhuis.info>
+Date:   Wed, 22 Nov 2023 09:55:34 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: srv_ts003@codethink.com
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regression apparently caused by commit
+ 088a40980efbc2c449b72f0f2c7ebd82f71d08e2 "ASoC: amd: acp: add pm ops support
+ for acp pci driver"
+Content-Language: en-US, de-DE
+To:     syed saba kareem <ssabakar@amd.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <87a5v8szhc.fsf@mutex.one> <ZUQssoD2rUHSYQ2v@debian.me>
+ <610d562f-0bbc-485c-ad63-9534fa4ba937@amd.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <610d562f-0bbc-485c-ad63-9534fa4ba937@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700643343;f7ed1ba3;
+X-HE-SMSGID: 1r5j1E-0004hl-4x
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary __acquires() and __releases() to the functions
-that take and release the wdt lock to avoid the following sparse
-warnings:
+On 03.11.23 14:30, syed saba kareem wrote:
+> On 11/3/23 04:41, Bagas Sanjaya wrote:
+>> On Thu, Aug 03, 2023 at 10:22:07PM +0300, Marian Postevca wrote:
+> [...]
+>>> Some help here would be welcome. Is there something missing in my
+>>> machine driver code, or
+>>> is the runtime pm handling in acp pci driver wrong?
+>>
+> We were working on some other priority tasks, will upstream the changes
+> 
+> by next week.
 
-drivers/watchdog/starfive-wdt.c:204:13: warning: context imbalance in 'starfive_wdt_unlock' - wrong count at exit
-drivers/watchdog/starfive-wdt.c:212:9: warning: context imbalance in 'starfive_wdt_lock' - unexpected unlock
+Hi syed saba kareem! Did that happen? From here it looks like it did
+not, so I assume the regression was not yet addressed. But it's easy to
+miss something, hence this mail.
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
- drivers/watchdog/starfive-wdt.c | 2 ++
- 1 file changed, 2 insertions(+)
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
-index 5f501b41faf9..49b38ecc092d 100644
---- a/drivers/watchdog/starfive-wdt.c
-+++ b/drivers/watchdog/starfive-wdt.c
-@@ -202,12 +202,14 @@ static u32 starfive_wdt_ticks_to_sec(struct starfive_wdt *wdt, u32 ticks)
- 
- /* Write unlock-key to unlock. Write other value to lock. */
- static void starfive_wdt_unlock(struct starfive_wdt *wdt)
-+	__acquires(&wdt->lock)
- {
- 	spin_lock(&wdt->lock);
- 	writel(wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
- }
- 
- static void starfive_wdt_lock(struct starfive_wdt *wdt)
-+	__releases(&wdt->lock)
- {
- 	writel(~wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
- 	spin_unlock(&wdt->lock);
--- 
-2.37.2.352.g3c44437643
-
+#regzbot poke
