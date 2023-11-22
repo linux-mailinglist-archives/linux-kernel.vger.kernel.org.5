@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B0E7F44D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1D37F44DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343669AbjKVLWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:22:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
+        id S234607AbjKVLXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343587AbjKVLWk (ORCPT
+        with ESMTP id S229806AbjKVLXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:22:40 -0500
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E582197;
-        Wed, 22 Nov 2023 03:22:37 -0800 (PST)
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7ad501cb1f9so257691639f.0;
-        Wed, 22 Nov 2023 03:22:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700652156; x=1701256956;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Zj0FMeXmZaLFHcDzJTQgipypunMiy6dY5lJGXKJ5iLE=;
-        b=Y+QKB3kQq+LhlS6Q1Sj9wX3LnpP8sbc1EdSuVGCRB0llqbfYVGda8KgIdbSNFaek3W
-         73c538E8gUDaTXKaoT4+4U4TsAhbDv8e0OMlhmYMpOGhrsRZn0fq7yBPOLdC5QorLtDR
-         7tyvSA1Jp8UjHxKLGGhINsq5qma7NcuPoEUdEIo2E70Qw46CCTZJ0UY2m6kOO2hT+Q8D
-         L4Q0wZYZNWYcIK7fw+EDleKq4gvMJwJws1SYmAl7hAFcN9yGcWjPNVx8k0TXEPCr5dOg
-         sAhh5+6qLOVMbP6h0Q505TzOmyajd9qhXbRw5zmwm+rp1KPRjmmZnhXfi/jg3ObHJ5Fk
-         LBtw==
-X-Gm-Message-State: AOJu0YyBGqgD5gygGrs1A9aCDhvw2tT37iDA7W1QrItZYfzln5qrOoQk
-        AEWoCAm31q742dF+emTSYBIKSRFtug==
-X-Google-Smtp-Source: AGHT+IE5AaMO5ccVmjeQMs+c1NmBQLPKnBYj3HiPziCiqUqVINA24WPX6yT8oPrsPk1ympBeEzcPmg==
-X-Received: by 2002:a05:6e02:1d8b:b0:359:3150:c696 with SMTP id h11-20020a056e021d8b00b003593150c696mr1942671ila.8.1700652156424;
-        Wed, 22 Nov 2023 03:22:36 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id n2-20020a92d9c2000000b0035b0b05189bsm1593415ilq.38.2023.11.22.03.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 03:22:35 -0800 (PST)
-Received: (nullmailer pid 262788 invoked by uid 1000);
-        Wed, 22 Nov 2023 11:22:34 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Wed, 22 Nov 2023 06:23:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF312A;
+        Wed, 22 Nov 2023 03:23:10 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5226945"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="5226945"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 03:23:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="857687253"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="857687253"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 03:23:07 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1r5lJv-0000000G4f6-40Kl;
+        Wed, 22 Nov 2023 13:23:03 +0200
+Date:   Wed, 22 Nov 2023 13:23:03 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5 01/39] gpio: ep93xx: split device in multiple
+Message-ID: <ZV3kl6spXpF5c6Bg@smile.fi.intel.com>
+References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
+ <20231122-ep93xx-v5-1-d59a76d5df29@maquefel.me>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     conor@kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, git@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
-        monstr@monstr.eu,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-In-Reply-To: <9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com>
-References: <281ed28bccc14e7006caf17d6cfeb2a679b0e255.1700648588.git.michal.simek@amd.com>
- <9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com>
-Message-Id: <170065215396.262656.16459426202425895063.robh@kernel.org>
-Subject: Re: [PATCH v3 2/2] dt-bindings: soc: Add new board description for
- MicroBlaze V
-Date:   Wed, 22 Nov 2023 04:22:34 -0700
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122-ep93xx-v5-1-d59a76d5df29@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 22 Nov 2023 11:23:13 +0100, Michal Simek wrote:
-> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
-> It is hardware compatible with classic MicroBlaze processor. Processor can
-> be used with standard AMD/Xilinx IPs including interrupt controller and
-> timer.
+On Wed, Nov 22, 2023 at 11:59:39AM +0300, Nikita Shubin wrote:
+> Prepare ep93xx SOC gpio to convert into device tree driver:
+> - dropped banks and legacy defines
+> - split AB IRQ and make it shared
 > 
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+> We are relying on IRQ number information A, B ports have single shared
+> IRQ, while F port have dedicated IRQ for each line.
 > 
-> Changes in v3:
-> - Add Krzysztof's ACK
-> 
-> Changes in v2:
-> - Put MicroBlaze V description to xilinx.yaml
-> - Add qemu target platform as platform used for testing.
-> 
->  Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> Also we had to split single ep93xx platform_device into multiple, one
+> for each port, without this we can't do a full working transition from
+> legacy platform code into device tree capable. All GPIO_LOOKUP were
+> change to match new chip namings.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+...
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/xilinx.yaml:137:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
+> @@ -335,9 +430,9 @@ static struct gpiod_lookup_table ep93xx_i2c_gpiod_table = {
+>  	.dev_id		= "i2c-gpio.0",
+>  	.table		= {
+>  		/* Use local offsets on gpiochip/port "G" */
+> -		GPIO_LOOKUP_IDX("G", 1, NULL, 0,
+> +		GPIO_LOOKUP_IDX("gpio-ep93xx.6", 1, NULL, 0,
+>  				GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN),
+> -		GPIO_LOOKUP_IDX("G", 0, NULL, 1,
+> +		GPIO_LOOKUP_IDX("gpio-ep93xx.6", 0, NULL, 1,
+>  				GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN),
+>  	},
 
-dtschema/dtc warnings/errors:
+Before doing this patch, please fix the bug, i.e. missing terminator entry here.
+If elsewhere the same, fix all of them at once.
 
-doc reference errors (make refcheckdocs):
+>  };
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com
+...
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+> +	gc->label = dev_name(&pdev->dev);
+> +	if (platform_irq_count(pdev) > 0) {
+> +		dev_dbg(&pdev->dev, "setting up irqs for %s\n", dev_name(&pdev->dev));
+> +		ret = ep93xx_setup_irqs(pdev, egc);
+> +		if (ret)
+> +			dev_err_probe(&pdev->dev, ret, "setup irqs failed");
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Non-fatal?
 
-pip3 install dtschema --upgrade
+>  	}
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+...
+
+This change LGTM (assuming the bug is fixed),
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
