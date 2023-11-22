@@ -1,284 +1,157 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A3F7F4EFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:13:19 +0100 (CET)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 4136A7F4EEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344317AbjKVSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
+        id S232683AbjKVSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjKVSNP (ORCPT
+        with ESMTP id S230510AbjKVSGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:13:15 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC0CA2;
-        Wed, 22 Nov 2023 10:13:10 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id A11FC120071;
-        Wed, 22 Nov 2023 21:13:06 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A11FC120071
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700676786;
-        bh=PHuX2kiU/Nw67VMyYDVUZRMzOKwEXqxibwx95TeiHrY=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=qKbbYsqcVz1eJcEhXQyiURPf5mSMbm5h5oQI+sT1NLmyNPqLwKa261XpE4pm6SeoV
-         XLKQ6NA314B2NC4a/cTzD9TdFctwL551mcgzudoYAaw3MUVSa/viTfsXYYOKEi3pSb
-         buLKdfS5BHiHGyVvMZisk9HXAFLY/UYbT8fFtjuCIgJP35ye04xlwywE/thwwcnZXS
-         Q+OY5e0MJgTjNrwoMrEY3VHHvxy034Qzfonr6hE58X1fO5ElsEeSc5GGV4q8ZUm7db
-         qFkHEhoscmj2A2scwKUdVFG5VGVPqiKfJj/C6+fOUmN+7IALVUsNa4Ct9c+6gXNeNh
-         zoN+mBSUk2d7g==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 22 Nov 2023 21:13:06 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 22 Nov 2023 21:13:06 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [RFC PATCH v3 3/3] vsock/test: SO_RCVLOWAT + deferred credit update test
-Date:   Wed, 22 Nov 2023 21:05:10 +0300
-Message-ID: <20231122180510.2297075-4-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231122180510.2297075-1-avkrasnov@salutedevices.com>
-References: <20231122180510.2297075-1-avkrasnov@salutedevices.com>
-MIME-Version: 1.0
+        Wed, 22 Nov 2023 13:06:00 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84601AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:05:55 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5bddf66ed63so62859a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1700676355; x=1701281155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sRia2Osk7RLncdx2O06OJMmemHtGkLvZU7Z5fC3vj8w=;
+        b=Br1Ehm8MwjFtEwQk56uTiJczL2IqS2ok1I5FeQOoxfaWZVn0KEMMXIf7Ylu7fvtZ1v
+         V7mCaOUSH05EgOhIZ2ONq1bfHkrMIZEgNq8XURSMPBL4SNKARZ7nSD2i+A8ppopxBb8I
+         eeng3aqjBeF4UGvjhJ3+Mh/KoaFEtBlJYrvgV6y4mPuNYOTRbZDMDoR3sbxo/lGhOVw5
+         db2ePGFogoxC85Xv5ZmiMa53Ogdi34Kd789ykR7HhnooEYxfIfGAxLWp2zH0DLN68Kdc
+         20egNJQop8GD71vtb6FAT30HqQR7kv+BBMY4yX2CuqpgiBUfaGyjFjy1SHZBAnNdCpxV
+         QKUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700676355; x=1701281155;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sRia2Osk7RLncdx2O06OJMmemHtGkLvZU7Z5fC3vj8w=;
+        b=nvJZPlqs8BvJYrtA/LLsdU6qHodWNZTdL27KbR9XDcWBKWHzH80QQzkCxasSVgVrLl
+         aBsKO2wenlFrMWdAq2AITFq9XwgoGQJFa8uxRelh16J6KSI57mSnAhyORxBr0aw8/YDa
+         00msPufjSaQALbxZyf8pmjfqTQfCqVE2Xvzl/m8zJMqr2E3mP8fRQbtqT32fgsnzqjod
+         LwICvbq5Ua0RP9m+HfP1WtcOKUFKgV4I/+YhVaPMCBUutWyusLFGuYBV7MAPm0T6nurk
+         /BzqPFQY6i9qU0GFg38G64WjwjV3yYNCausXSHtfnDA+aCsiSpV6xAofQWSE1jpvPyBP
+         mD6w==
+X-Gm-Message-State: AOJu0YyrJdSCmYR0b8e5yJc6LEu9TBbLeQQjPAs3xyZDrwDV/Bl9n4+k
+        4L5zQVVVrrKjD2KWsVnRTnhoAQ==
+X-Google-Smtp-Source: AGHT+IFuh32jvNbuYQwaf2abCwtPo2iaOyP3NbHblJ1kjKy0eGzHgihIRy7Qu5I3jl5CSAZMf+hz1w==
+X-Received: by 2002:a17:90b:3ecb:b0:280:735:bece with SMTP id rm11-20020a17090b3ecb00b002800735becemr267052pjb.16.1700676355055;
+        Wed, 22 Nov 2023 10:05:55 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id jw13-20020a170903278d00b001cf5d508246sm6186562plb.224.2023.11.22.10.05.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 10:05:53 -0800 (PST)
+Date:   Wed, 22 Nov 2023 10:05:53 -0800 (PST)
+X-Google-Original-Date: Wed, 22 Nov 2023 10:05:51 PST (-0800)
+Subject:     Re: [PATCH 12/12] RISC-V: crypto: add Zvkb accelerated ChaCha20 implementation
+In-Reply-To: <3BDE7B86-0078-4C77-A383-1C83C88E44DA@sifive.com>
+CC:     Conor Dooley <conor.dooley@microchip.com>, ebiggers@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
+        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
+        guoren@kernel.org, Bjorn Topel <bjorn@rivosinc.com>,
+        heiko@sntech.de, Ard Biesheuvel <ardb@kernel.org>,
+        phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     jerry.shih@sifive.com
+Message-ID: <mhng-1c7aec6e-c2bb-4ad3-a458-7dce3cda0475@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test which checks, that updating SO_RCVLOWAT value also sends credit
-update message. Otherwise mutual hungup may happen when receiver didn't
-send credit update and then calls 'poll()' with non default SO_RCVLOWAT
-value (e.g. waiting enough bytes to read), while sender waits for free
-space at receiver's side. Important thing is that this test relies on
-kernel's define for maximum packet size for virtio transport and this
-value is not exported to user: VIRTIO_VSOCK_MAX_PKT_BUF_SIZE (this
-define is used to control moment when to send credit update message).
-If this value or its usage will be changed in kernel - this test may
-become useless/broken.
+On Wed, 22 Nov 2023 09:37:33 PST (-0800), jerry.shih@sifive.com wrote:
+> On Nov 21, 2023, at 21:14, Conor Dooley <conor.dooley@microchip.com> wrote:
+>> On Tue, Nov 21, 2023 at 06:55:07PM +0800, Jerry Shih wrote:
+>>> Sorry, I just use my `internal` qemu with vector-crypto and rva22 patches.
+>>> 
+>>> The public qemu haven't supported rva22 profiles. Here is the qemu patch[1] for
+>>> that. But here is the discussion why the qemu doesn't export these
+>>> `named extensions`(e.g. Zicclsm).
+>>> I try to add Zicclsm in DT in the v2 patch set. Maybe we will have more discussion
+>>> about the rva22 profiles in kernel DT.
+>> 
+>> Please do, that'll be fun! Please take some time to read what the
+>> profiles spec actually defines Zicclsm fore before you send those patches
+>> though. I think you might come to find you have misunderstood what it
+>> means - certainly I did the first time I saw it!
+>
+> From the rva22 profile:
+>   This requires misaligned support for all regular load and store instructions (including
+>   scalar and ``vector``)
+>
+> The spec includes the explicit `vector` keyword.
+> So, I still think we could use Zicclsm checking for these vector-crypto implementations.
+>
+> My proposed patch is just a simple patch which only update the DT document and
+> update the isa string parser for Zicclsm. If it's still not recommend to use Zicclsm
+> checking, I will turn to use `RISCV_HWPROBE_MISALIGNED_*` instead.
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- Changelog:
- v1 -> v2:
-  * Update commit message by removing 'This patch adds XXX' manner.
-  * Update commit message by adding details about dependency for this
-    test from kernel internal define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE.
-  * Add comment for this dependency in 'vsock_test.c' where this define
-    is duplicated.
- v2 -> v3:
-  * Replace synchronization based on control TCP socket with vsock
-    data socket - this is needed to allow sender transmit data only
-    when new buffer size of receiver is visible to sender. Otherwise
-    there is race and test fails sometimes.
+IMO that's the way to go: even if these are required to be supported by 
+Zicclsm, we still need to deal with the performance implications.
 
- tools/testing/vsock/vsock_test.c | 142 +++++++++++++++++++++++++++++++
- 1 file changed, 142 insertions(+)
+>>> [1]
+>>> LINK: https://lore.kernel.org/all/d1d6f2dc-55b2-4dce-a48a-4afbbf6df526@ventanamicro.com/#t
+>>> 
+>>> I don't know whether it's a good practice to check unaligned access using
+>>> `Zicclsm`. 
+>>> 
+>>> Here is another related cpu feature for unaligned access:
+>>> RISCV_HWPROBE_MISALIGNED_*
+>>> But it looks like it always be initialized with `RISCV_HWPROBE_MISALIGNED_SLOW`[2].
+>>> It implies that linux kernel always supports unaligned access. But we have the
+>>> actual HW which doesn't support unaligned access for vector unit.
+>> 
+>> https://docs.kernel.org/arch/riscv/uabi.html#misaligned-accesses
+>> 
+>> Misaligned accesses are part of the user ABI & the hwprobe stuff for
+>> that allows userspace to figure out whether they're fast (likely
+>> implemented in hardware), slow (likely emulated in firmware) or emulated
+>> in the kernel.
+>
+> The HWPROBE_MISALIGNED_* checking function is at:
+> https://github.com/torvalds/linux/blob/c2d5304e6c648ebcf653bace7e51e0e6742e46c8/arch/riscv/kernel/cpufeature.c#L564-L647
+> The tests are all scalar. No `vector` test inside. So, I'm not sure the
+> HWPROBE_MISALIGNED_* is related to vector unit or not.
+>
+> The goal is to check whether `vector` support unaligned access or not
+> in this crypto patch.
+>
+> I haven't seen the emulated path for unaligned-vector-access in OpenSBI
+> and kernel. Is the unaligned-vector-access included in user ABI?
 
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 5b0e93f9996c..773a71260fba 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -1225,6 +1225,143 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
- 	}
- }
- 
-+#define RCVLOWAT_CREDIT_UPD_BUF_SIZE	(1024 * 128)
-+/* This define is the same as in 'include/linux/virtio_vsock.h':
-+ * it is used to decide when to send credit update message during
-+ * reading from rx queue of a socket. Value and its usage in
-+ * kernel is important for this test.
-+ */
-+#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE	(1024 * 64)
-+
-+static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opts)
-+{
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send 1 byte more than peer's buffer size. */
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE + 1;
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until peer sets needed buffer size. */
-+	recv_byte(fd, 1, 0);
-+
-+	if (send(fd, buf, buf_size, 0) != buf_size) {
-+		perror("send failed");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
-+static void test_stream_rcvlowat_def_cred_upd_server(const struct test_opts *opts)
-+{
-+	size_t recv_buf_size;
-+	struct pollfd fds;
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE;
-+
-+	if (setsockopt(fd, AF_VSOCK, SO_VM_SOCKETS_BUFFER_SIZE,
-+		       &buf_size, sizeof(buf_size))) {
-+		perror("setsockopt(SO_VM_SOCKETS_BUFFER_SIZE)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send one dummy byte here, because 'setsockopt()' above also
-+	 * sends special packet which tells sender to update our buffer
-+	 * size. This 'send_byte()' will serialize such packet with data
-+	 * reads in a loop below. Sender starts transmission only when
-+	 * it receives this single byte.
-+	 */
-+	send_byte(fd, 1, 0);
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until there will be 128KB of data in rx queue. */
-+	while (1) {
-+		ssize_t res;
-+
-+		res = recv(fd, buf, buf_size, MSG_PEEK);
-+		if (res == buf_size)
-+			break;
-+
-+		if (res <= 0) {
-+			fprintf(stderr, "unexpected 'recv()' return: %zi\n", res);
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	/* There is 128KB of data in the socket's rx queue,
-+	 * dequeue first 64KB, credit update is not sent.
-+	 */
-+	recv_buf_size = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
-+	recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+	recv_buf_size++;
-+
-+	/* Updating SO_RCVLOWAT will send credit update. */
-+	if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
-+		       &recv_buf_size, sizeof(recv_buf_size))) {
-+		perror("setsockopt(SO_RCVLOWAT)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	memset(&fds, 0, sizeof(fds));
-+	fds.fd = fd;
-+	fds.events = POLLIN | POLLRDNORM | POLLERR |
-+		     POLLRDHUP | POLLHUP;
-+
-+	/* This 'poll()' will return once we receive last byte
-+	 * sent by client.
-+	 */
-+	if (poll(&fds, 1, -1) < 0) {
-+		perror("poll");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & POLLERR) {
-+		fprintf(stderr, "'poll()' error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & (POLLIN | POLLRDNORM)) {
-+		recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+	} else {
-+		/* These flags must be set, as there is at
-+		 * least 64KB of data ready to read.
-+		 */
-+		fprintf(stderr, "POLLIN | POLLRDNORM expected\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
- static struct test_case test_cases[] = {
- 	{
- 		.name = "SOCK_STREAM connection reset",
-@@ -1335,6 +1472,11 @@ static struct test_case test_cases[] = {
- 		.run_client = test_double_bind_connect_client,
- 		.run_server = test_double_bind_connect_server,
- 	},
-+	{
-+		.name = "SOCK_STREAM virtio SO_RCVLOWAT + deferred cred update",
-+		.run_client = test_stream_rcvlowat_def_cred_upd_client,
-+		.run_server = test_stream_rcvlowat_def_cred_upd_server,
-+	},
- 	{},
- };
- 
--- 
-2.25.1
+I guess it's kind of a grey area, but I'd agrue that it is: we merged 
+support for V when the only implementation (ie, QEMU) supported 
+misaligned accesses, so we're stuck with that being the defacto 
+behavior.  As part of adding support for the K230 we'll need to then add 
+the kernel-mode vector misaligned access handlers, but that doesn't seem 
+so hard.
 
+So I'd say we should update the hwprobe docs to say that key only 
+reflects scalar accesses (or maybe even just integer accesses?  that's 
+all we're testing for) -- essentially just make the documentation match 
+the implementation, as that'll keep ABI compatibility.  Then we can add 
+a new key for vector misaligned access performance.
+
+>
+> Thanks,
+> Jerry
