@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD84F7F473F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0867F4741
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344223AbjKVM5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S1344299AbjKVM5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:57:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344255AbjKVM5H (ORCPT
+        with ESMTP id S1344226AbjKVM5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:57:07 -0500
+        Wed, 22 Nov 2023 07:57:08 -0500
 Received: from mx.msync.work (mx.msync.work [62.182.159.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B72BD52;
-        Wed, 22 Nov 2023 04:56:56 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0047A53EDA;
-        Wed, 22 Nov 2023 12:56:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6FB10D5;
+        Wed, 22 Nov 2023 04:57:02 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3F41A53EDB;
+        Wed, 22 Nov 2023 12:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
         t=1700657815; h=from:subject:date:message-id:to:mime-version:
          content-transfer-encoding:in-reply-to:references;
-        bh=9FM903o2pn21k51UZjXAT7x1wyN7v04RutSMU2fbua0=;
-        b=FtRsMvL+MGmcCxNEMbpc9Mov5zIfR/IZC+0XQKaH+0coLTkPfleeqBEp7delkJD/YmYbic
-        MwmMR5WCIi2Snr9QUmz3U/b7jc+QqBPOabXv8rXcNmTaJ7tdug+KycOa56s/izHKhJ0vFs
-        0UBd7mMlzuuJek645V0EDtpLnwBKlVAJCtfXxwZvaQVPK2prlQwYcCQC2bM9GnDLzYc8It
-        ikrlnGjun0H8qPC3Jh+DnqpLYAOAA3EksKzybeDevvqjmouTdD2iRqVjXp6r10Yxo/wTnb
-        wOZavUYZQTI2qgWQvvCRdqOgc7JKthyJXdcUvKQSl6PRFiI+tHCwqpJxfiW6rQ==
+        bh=Ulmefl5yig/F+2V9QAbbUBGE0S2hQKZ3IPeqik+z0UI=;
+        b=obnqjWRUmpCSg3j42I/4HoO5hACMJaABq0MXfrlaqopRm6vDn6C0+Mj7rsbVzWyuJB6i0R
+        rjEYNy2N5QabL5j55uL2EuFfluAXcRx1fVMIf3tqMODJ8ExoqO+oOUWxCMeB2ZZDxgXCtr
+        4WkKzmMnRlipOLOWil8NEG8ZgBUTv3Vp9hPkE7Z2lrMctIPzXeWkmdMsWZ7zhjRe10kITM
+        sUfdmvw15/XacURTXUN/K3o3z/+4tys4qR+AsvUCkT9H7A86ubeZVzxzOvPG2XDsRLwb0w
+        wCCSRyH6+5lprySgxtdAGPrpxv5NwOhk2gFWquNk4bZtT99ub8WMI+zbFJuvAg==
 From:   Viacheslav Bocharov <adeep@lexina.in>
 To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Jerome Brunet <jbrunet@baylibre.com>,
@@ -33,14 +33,16 @@ To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH 4/5] soc: amlogic: Add Amlogic secure-monitor SoC Information driver
-Date:   Wed, 22 Nov 2023 15:56:42 +0300
-Message-Id: <20231122125643.1717160-5-adeep@lexina.in>
+        devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 5/5] arm64: dts: meson: add dts links to secure-monitor for soc driver in a1, axg, gx, g12
+Date:   Wed, 22 Nov 2023 15:56:43 +0300
+Message-Id: <20231122125643.1717160-6-adeep@lexina.in>
 In-Reply-To: <20231122125643.1717160-1-adeep@lexina.in>
 References: <20231122125643.1717160-1-adeep@lexina.in>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7167; h=from:subject; bh=Ts6D5zneNK9fsa5Hu2MDyTR0sZxwo+G3SlCocMKM3Xk=; b=owGbwMvMwCHmnhFhrJcZuJTxtFoSQ2rst6OFk/eIhL8o3vqGde4k1lCRb663fsgkvn2wc4aJ6v57 WxQEOkpZGMQ4GGTFFFnCOoKm7vNYfXHiAqMDMHNYmUCGMHBxCsBE7G8y/M+XuHJ0Pccm1oDfAiFPp5 1n4g6UFjLVLfWQ2nFotdK1o2wM/2t3hOms3erEteKpG9cf9mezxNsVK5e+Oa6w9P3XM4mZpxkA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2338; h=from:subject; bh=5P5fYju1OuJiL/byEBiP3PSi5QUDOL3VUZ+An0H3Yq0=; b=owGbwMvMwCHmnhFhrJcZuJTxtFoSQ2rst6PzpSIPfZiQwrL/6Lz/Yq6reYpjji2pORTNeLc+Rj79 0t/7HaUsDGIcDLJiiixhHUFT93msvjhxgdEBmDmsTCBDGLg4BWAi50QZ/krcyUy9e1Ag4O/3OF29F6 eL570SVgi+mt7GEMu57ENL3Sagiv4ltcEzrio+it5Q/COaS7csWft72s89slNKV35d8s2VEQA=
 X-Developer-Key: i=adeep@lexina.in; a=openpgp; fpr=E2FA1A767ACB0716E02E3E7AEE36B110025A8DFA
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
@@ -53,235 +55,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic SoCs have a SoC information secure-monitor call for SoC type,
-package type, revision information and chipid.
-This patchs adds support for secure-monitor call decoding and exposing
-with the SoC bus infrastructure in addition to the previous SoC
-Information driver.
+Add links to secure-monitor in soc driver section for A1, AXG, GX, G12
+Amlogic family.
 
 Signed-off-by: Viacheslav Bocharov <adeep@lexina.in>
 ---
- drivers/soc/amlogic/Kconfig               |  10 ++
- drivers/soc/amlogic/Makefile              |   1 +
- drivers/soc/amlogic/meson-gx-socinfo-sm.c | 178 ++++++++++++++++++++++
- 3 files changed, 189 insertions(+)
- create mode 100644 drivers/soc/amlogic/meson-gx-socinfo-sm.c
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi         | 1 +
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi        | 1 +
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 1 +
+ arch/arm64/boot/dts/amlogic/meson-gx.dtsi         | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/drivers/soc/amlogic/Kconfig b/drivers/soc/amlogic/Kconfig
-index d08e398bdad4..5634ecb60478 100644
---- a/drivers/soc/amlogic/Kconfig
-+++ b/drivers/soc/amlogic/Kconfig
-@@ -26,6 +26,16 @@ config MESON_GX_SOCINFO
- 	  Say yes to support decoding of Amlogic Meson GX SoC family
- 	  information about the type, package and version.
+diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+index 648e7f49424f..449b328d62b1 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+@@ -407,6 +407,7 @@ hwrng: rng@5118 {
+ 			sec_AO: ao-secure@5a20 {
+ 				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+ 				reg = <0x0 0x5a20 0x0 0x140>;
++				secure-monitor = <&sm>;
+ 				amlogic,has-chip-id;
+ 			};
  
-+config MESON_GX_SOCINFO_SM
-+	bool "Amlogic Meson GX SoC Information driver via Secure Monitor"
-+	depends on (ARM64 && ARCH_MESON && MESON_GX_SOCINFO && MESON_SM) || COMPILE_TEST
-+	default MESON_GX_SOCINFO && MESON_SM
-+	select SOC_BUS
-+	help
-+	  Say yes to support decoding of Amlogic Meson GX SoC family
-+	  information about the type, package and version from secure
-+	  monitor call.
-+
- config MESON_MX_SOCINFO
- 	bool "Amlogic Meson MX SoC Information driver"
- 	depends on (ARM && ARCH_MESON) || COMPILE_TEST
-diff --git a/drivers/soc/amlogic/Makefile b/drivers/soc/amlogic/Makefile
-index c25f835e6a26..45d9d6f5904c 100644
---- a/drivers/soc/amlogic/Makefile
-+++ b/drivers/soc/amlogic/Makefile
-@@ -2,4 +2,5 @@
- obj-$(CONFIG_MESON_CANVAS) += meson-canvas.o
- obj-$(CONFIG_MESON_CLK_MEASURE) += meson-clk-measure.o
- obj-$(CONFIG_MESON_GX_SOCINFO) += meson-gx-socinfo.o
-+obj-$(CONFIG_MESON_GX_SOCINFO_SM) += meson-gx-socinfo-sm.o
- obj-$(CONFIG_MESON_MX_SOCINFO) += meson-mx-socinfo.o
-diff --git a/drivers/soc/amlogic/meson-gx-socinfo-sm.c b/drivers/soc/amlogic/meson-gx-socinfo-sm.c
-new file mode 100644
-index 000000000000..52bf3bce09e2
---- /dev/null
-+++ b/drivers/soc/amlogic/meson-gx-socinfo-sm.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (c) 2023 JetHome
-+ * Author: Viacheslav Bocharov <adeep@lexina.in>
-+ *
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/sys_soc.h>
-+#include <linux/bitfield.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/syscon.h>
-+
-+#include <linux/firmware/meson/meson_sm.h>
-+
-+#include "meson-gx-socinfo-internal.h"
-+
-+static char *socinfo_get_cpuid(struct device *dev, struct meson_sm_firmware *fw,
-+			       unsigned int *socinfo)
-+{
-+	char *buf;
-+	uint8_t *id_buf;
-+	int chip_id_version;
-+	int ret;
-+
-+	id_buf = devm_kzalloc(dev, SM_CHIP_ID_LENGTH, GFP_KERNEL);
-+	if (!id_buf)
-+		return NULL;
-+
-+	ret = meson_sm_call_read(fw, id_buf, SM_CHIP_ID_LENGTH, SM_GET_CHIP_ID,
-+				 2, 0, 0, 0, 0);
-+	if (ret < 0) {
-+		kfree(id_buf);
-+		return NULL;
-+	}
-+
-+	chip_id_version = *((unsigned int *)id_buf);
-+
-+	if (chip_id_version != 2) {
-+		uint8_t tmp;
-+		/**
-+		 * Legacy 12-byte chip ID read out, transform data
-+		 * to expected order format
-+		 */
-+
-+		memmove(&id_buf[SM_CHIP_ID_OFFSET + 4], &id_buf[SM_CHIP_ID_OFFSET], 12);
-+		for (int i = 0; i < 6; i++) {
-+			tmp = id_buf[i + SM_CHIP_ID_OFFSET + 4];
-+			id_buf[i + SM_CHIP_ID_OFFSET + 4] = id_buf[15 - i + SM_CHIP_ID_OFFSET];
-+			id_buf[15 - i + SM_CHIP_ID_OFFSET] = tmp;
-+		}
-+		*(uint32_t *)(id_buf + SM_CHIP_ID_OFFSET) =
-+					((*socinfo & 0xff000000)	|	// Family ID
-+					((*socinfo << 8) & 0xff0000)	|	// Chip Revision
-+					((*socinfo >> 8) & 0xff00))	|	// Package ID
-+					((*socinfo) & 0xff);			// Misc
-+	} else {
-+		*socinfo = id_buf[SM_CHIP_ID_OFFSET] << 24 |	// Family ID
-+		   id_buf[SM_CHIP_ID_OFFSET + 2] << 16 |	// Chip revision
-+		   id_buf[SM_CHIP_ID_OFFSET + 1] << 8 |		// Package ID
-+		   id_buf[SM_CHIP_ID_OFFSET + 3];		// Misc
-+	}
-+
-+	buf = kasprintf(GFP_KERNEL, "%16phN\n", &id_buf[SM_CHIP_ID_OFFSET]);
-+	kfree(id_buf);
-+
-+	return buf;
-+}
-+
-+static int meson_gx_socinfo_sm_probe(struct platform_device *pdev)
-+{
-+	struct soc_device_attribute *soc_dev_attr;
-+	struct soc_device *soc_dev;
-+	struct device_node *sm_np;
-+	struct meson_sm_firmware *fw;
-+	struct regmap *regmap;
-+	unsigned int socinfo;
-+	struct device *dev;
-+	int ret;
-+
-+	/* check if chip-id is available */
-+	if (!of_property_read_bool(pdev->dev.of_node, "amlogic,has-chip-id"))
-+		return -ENODEV;
-+
-+	/* node should be a syscon */
-+	regmap = syscon_node_to_regmap(pdev->dev.of_node);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&pdev->dev, "failed to get regmap\n");
-+		return -ENODEV;
-+	}
-+
-+	sm_np = of_parse_phandle(pdev->dev.of_node, "secure-monitor", 0);
-+	if (!sm_np) {
-+		dev_err(&pdev->dev, "no secure-monitor node found\n");
-+		return -ENODEV;
-+	}
-+
-+	fw = meson_sm_get(sm_np);
-+	of_node_put(sm_np);
-+	if (!fw)
-+		return -EPROBE_DEFER;
-+
-+	dev_err(&pdev->dev, "secure-monitor node found\n");
-+
-+	ret = regmap_read(regmap, AO_SEC_SOCINFO_OFFSET, &socinfo);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!socinfo) {
-+		dev_err(&pdev->dev, "invalid regmap chipid value\n");
-+		return -EINVAL;
-+	}
-+
-+	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
-+				    GFP_KERNEL);
-+	if (!soc_dev_attr)
-+		return -ENOMEM;
-+
-+	soc_dev_attr->serial_number = socinfo_get_cpuid(&pdev->dev, fw, &socinfo);
-+
-+	meson_gx_socinfo_prepare_soc_driver_attr(soc_dev_attr, socinfo);
-+
-+	soc_dev = soc_device_register(soc_dev_attr);
-+	if (IS_ERR(soc_dev)) {
-+		kfree(soc_dev_attr->revision);
-+		kfree_const(soc_dev_attr->soc_id);
-+		kfree(soc_dev_attr);
-+		return PTR_ERR(soc_dev);
-+	}
-+
-+	dev = soc_device_to_device(soc_dev);
-+	platform_set_drvdata(pdev, soc_dev);
-+
-+	dev_info(dev, "Amlogic Meson %s Revision %x:%x (%x:%x) Detected at SM driver %x\n",
-+			soc_dev_attr->soc_id,
-+			socinfo_to_major(socinfo),
-+			socinfo_to_minor(socinfo),
-+			socinfo_to_pack(socinfo),
-+			socinfo_to_misc(socinfo), socinfo);
-+
-+	return PTR_ERR_OR_ZERO(dev);
-+}
-+
-+
-+static int meson_gx_socinfo_sm_remove(struct platform_device *pdev)
-+{
-+	struct soc_device *soc_dev = platform_get_drvdata(pdev);
-+
-+	soc_device_unregister(soc_dev);
-+	return 0;
-+}
-+
-+static const struct of_device_id meson_gx_socinfo_match[] = {
-+	{ .compatible = "amlogic,meson-gx-ao-secure", },
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, meson_gx_socinfo_match);
-+
-+static struct platform_driver meson_gx_socinfo_driver = {
-+	.probe = meson_gx_socinfo_sm_probe,
-+	.remove	= meson_gx_socinfo_sm_remove,
-+	.driver = {
-+		.name = "meson-gx-socinfo-sm",
-+		.of_match_table = meson_gx_socinfo_match,
-+	},
-+};
-+
-+
-+module_platform_driver(meson_gx_socinfo_driver);
-+
-+MODULE_AUTHOR("Viacheslav Bocharov <adeep@lexina.in>");
-+MODULE_DESCRIPTION("Amlogic Meson GX SOC SM driver");
-+MODULE_LICENSE("GPL");
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+index a49aa62e3f9f..6e80bdc525e5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+@@ -1660,6 +1660,7 @@ mux {
+ 			sec_AO: ao-secure@140 {
+ 				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+ 				reg = <0x0 0x140 0x0 0x140>;
++				secure-monitor = <&sm>;
+ 				amlogic,has-chip-id;
+ 			};
+ 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index ff68b911b729..0a6b703b0dc0 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -2026,6 +2026,7 @@ cec_AO: cec@100 {
+ 			sec_AO: ao-secure@140 {
+ 				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+ 				reg = <0x0 0x140 0x0 0x140>;
++				secure-monitor = <&sm>;
+ 				amlogic,has-chip-id;
+ 			};
+ 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+index 2673f0dbafe7..656e08b3d872 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
+@@ -471,6 +471,7 @@ cec_AO: cec@100 {
+ 			sec_AO: ao-secure@140 {
+ 				compatible = "amlogic,meson-gx-ao-secure", "syscon";
+ 				reg = <0x0 0x140 0x0 0x140>;
++				secure-monitor = <&sm>;
+ 				amlogic,has-chip-id;
+ 			};
+ 
 -- 
 2.34.1
 
