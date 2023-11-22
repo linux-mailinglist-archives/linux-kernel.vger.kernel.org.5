@@ -2,85 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFCD7F3CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB0E7F3CAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343615AbjKVEEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 23:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        id S1343629AbjKVENG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 23:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVEEb (ORCPT
+        with ESMTP id S229498AbjKVENF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 23:04:31 -0500
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE69BC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:04:27 -0800 (PST)
-Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
-        by cmsmtp with ESMTPS
-        id 5WS2rkPYOhqFd5eTSrnrLQ; Wed, 22 Nov 2023 04:04:26 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id 5eTRrPpg511XZ5eTSrDL7Q; Wed, 22 Nov 2023 04:04:26 +0000
-X-Authority-Analysis: v=2.4 cv=Z+v/oVdA c=1 sm=1 tr=0 ts=655d7dca
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10
- a=ekcPnwKpBOpVc3CNEFsA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dZd0iL+YeL2vCrHxa0z4k0wFMO8wOysNrqRBOkXpC50=; b=T9J3YtavTgPXryHzdYBfn8NEbK
-        MZsC0I8snspER8SHGIIl+PRU31AbZrcydvx+NzsxRqk0zFcobJYsVEO1k6sLmxTI8vj6YICT3VUrB
-        9VuUJKrhgN2BSpav7JnxPPn2Z565k9AvLhZgvZ9oYoxp+cEFaaBdRq9d/kWXNRnnCVmpRp/vhWbcd
-        0qyFgaEiGyVTqJJ6iq+sD2I9cGtIRRSkK2mcu/Rz8fdn1W5WYjhuJog7FT/27a/XynunJREGDoj6z
-        pmrvpkN7QZCxpUDf4+K3ifJAGUqIv9rnl76aGf+fHoId+iQhZ+03Z6FWL5Y1g03Kc10QZMLLtcwzS
-        PhACHzEA==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48188 helo=[192.168.15.7])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1r5eTR-004DIf-17;
-        Tue, 21 Nov 2023 22:04:25 -0600
-Message-ID: <7e58f7a0-440f-4067-87e2-381f05bfce2b@embeddedor.com>
-Date:   Tue, 21 Nov 2023 22:04:17 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build warnings after merge of the kspp-gustavo tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231122144814.649823ac@canb.auug.org.au>
-Content-Language: en-US
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231122144814.649823ac@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1r5eTR-004DIf-17
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:48188
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfB074yFHE8lbO4aniJk0W3jOdGqLhmFEERDfNx9NrQRytSrwgzlVxeLu9qehrUvZNI+YhCdvAAXBYf7Ezq9dhecpXxpPlJe1uNDi866pY34zrFCaxW14
- Mq1CwokYjy+lfKHAHWU62Zab8L/h5KJ20ZNdk/LLRHHB78vwFrgllK2x15Zk5km3/2tUfcql3IOHlkiU8Df6CBiSrKzhwhkCbjIegRDgOhuscCrNsB5Ui61j
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        Tue, 21 Nov 2023 23:13:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98376195
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:13:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700626382; x=1732162382;
+  h=date:from:to:cc:subject:message-id;
+  bh=ktj2hqXqsT1jGViVzItyIZ/uO2actmZtgPXegUrGt3A=;
+  b=lybP2je96SXv7b2+9+H1qzB6quBt1MJQInRZ3mCCh/WjMyav7gryH6sa
+   NHqkHD8RlC8By6kz5Bd6EyJrAkzSx7aGjC6829eUh4LN1XTM0zQ75IDyY
+   VaW8r+aLE2NvUDiJaMPY8oLeosLzvmIn53unNHErNXTFa7ikvfNO4gxnx
+   1kTGrN0SwF2/A4eMKoPK+91TLqfWjg9ram0tx4tilDoJXUeh0cLdKX5Wb
+   A9vY8mqWhqra4FTfX2eoJ/t3cccdlOMAtpenZUghwtNQkgiiuzbj2/ua0
+   i69qD6nVobhITJXoJAxm0F263GIlh3nr3EYgY1kZny6TVUKkQja660gf9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5174389"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="5174389"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 20:13:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098265682"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="1098265682"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Nov 2023 20:12:59 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5ebh-0008d9-1U;
+        Wed, 22 Nov 2023 04:12:57 +0000
+Date:   Wed, 22 Nov 2023 12:06:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 080990aa3344123673f686cda2df0d1b0deee046
+Message-ID: <202311221202.NMtgrljA-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,30 +60,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 080990aa3344123673f686cda2df0d1b0deee046  x86/microcode: Rework early revisions reporting
 
+elapsed time: 738m
 
-On 11/21/23 21:48, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the kspp-gustavo tree, today's linux-next build (sparc64
-> defconfig) produced these warnings:
->
+configs tested: 85
+configs skipped: 139
 
-[..]
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> mm/mempolicy.c:2890:26: note: destination object 'str' of size [0, 9223372036854775807]
-> mm/mempolicy.c:2890:26: note: destination object 'str' of size [0, 9223372036854775807]
-> mm/mempolicy.c:3007:26: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
->   3007 |                 *--flags = '=';
->        |                 ~~~~~~~~~^~~~~
-> mm/mempolicy.c:2890:26: note: destination object 'str' of size [0, 9223372036854775807]
->   2890 | int mpol_parse_str(char *str, struct mempolicy **mpol)
->        |                    ~~~~~~^~~
-> 
-> This is using gcc v11.1.0
-> 
+tested configs:
+arm                                 defconfig   clang
+arm64                            allmodconfig   clang
+arm64                            allyesconfig   clang
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-011-20231122   gcc  
+i386                  randconfig-012-20231122   gcc  
+i386                  randconfig-013-20231122   gcc  
+i386                  randconfig-014-20231122   gcc  
+i386                  randconfig-015-20231122   gcc  
+i386                  randconfig-016-20231122   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                          allyesconfig   clang
+riscv                             allnoconfig   clang
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231122   clang
+x86_64       buildonly-randconfig-002-20231122   clang
+x86_64       buildonly-randconfig-003-20231122   clang
+x86_64       buildonly-randconfig-004-20231122   clang
+x86_64       buildonly-randconfig-005-20231122   clang
+x86_64       buildonly-randconfig-006-20231122   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231122   clang
+x86_64                randconfig-012-20231122   clang
+x86_64                randconfig-013-20231122   clang
+x86_64                randconfig-014-20231122   clang
+x86_64                randconfig-015-20231122   clang
+x86_64                randconfig-016-20231122   clang
+x86_64                randconfig-071-20231122   clang
+x86_64                randconfig-072-20231122   clang
+x86_64                randconfig-073-20231122   clang
+x86_64                randconfig-074-20231122   clang
+x86_64                randconfig-075-20231122   clang
+x86_64                randconfig-076-20231122   clang
+x86_64                          rhel-8.3-func   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
-This doesn't show up with more recent compilers because it was an issue in GCC.
-
---
-Gustavo
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
