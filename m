@@ -2,151 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ED37F471F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4477F4715
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343960AbjKVMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        id S1343970AbjKVMy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343894AbjKVMzZ (ORCPT
+        with ESMTP id S1343953AbjKVMyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:55:25 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B0FF10FE;
-        Wed, 22 Nov 2023 04:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tYoJA
-        rwx5aP3AfSu7ZMMs37JDWchsz6KUFhDAN1e+ZI=; b=IFd4/fQOi8uBFOx09ptdW
-        mPm6tFLamHbO0JqS4j38xofVP2JobUxg5z+ezy6P8ts4NDe0UjgujJyivzk7OMTg
-        fkZ0VHev90oXTUSG/JlVwwglsMjGy1I7wL/t5haxsUZibvv4tlM9sI9i0BvDuAXT
-        nob9OQyNawXCnvEUnZflFE=
-Received: from ProDesk.. (unknown [58.22.7.114])
-        by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wBnZSoQ+l1luPr1Dg--.53824S2;
-        Wed, 22 Nov 2023 20:54:44 +0800 (CST)
-From:   Andy Yan <andyshrk@163.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com,
-        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v2 05/12] drm/rockchip: vop2: Set YUV/RGB overlay mode
-Date:   Wed, 22 Nov 2023 20:54:38 +0800
-Message-Id: <20231122125438.3454608-1-andyshrk@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231122125316.3454268-1-andyshrk@163.com>
-References: <20231122125316.3454268-1-andyshrk@163.com>
+        Wed, 22 Nov 2023 07:54:55 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CE318D
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1700657686;
+        bh=wuIXzags+RBlDsjUweIx70S2oQNg60ItGMTYwpyF8/M=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XYRAWaNyY9Csde2AbWpecLjArnLsrn0AlVA79QjjWeODirREpWX314cVo3QIskZpN
+         m51hJ686exSXsNpE9nVqalYXaeQBoAeGC2xByBScxxgOlln9d/b7gFhnRSRnlV47W0
+         dEn7nCwXtKgxtNgyXWT/SWibxwhRvXSvf/0/OIL7vZH3/weJl0f+5S/jFLnaTGoNgJ
+         SwdL1M1rDCZ/NN63LGyaiVfYsIl5Z2GyN6U3yuJiKFg7OUuVQeoHymsns06ydgG8Nt
+         XdHE5k9dS7i02GUJxltb7eBdQeqe5XWjWbvaK+XqZUbgzkRlRvKqZQGvDcq/zC3Fw2
+         kx54DpXN6r3xQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sb1RT54M1z4xWV;
+        Wed, 22 Nov 2023 23:54:45 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
+In-Reply-To: <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
+References: <20231120232332.4100288-1-masahiroy@kernel.org>
+ <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely> <87bkbnsa5r.fsf@kernel.org>
+ <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
+Date:   Wed, 22 Nov 2023 23:54:45 +1100
+Message-ID: <87a5r6j6cq.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBnZSoQ+l1luPr1Dg--.53824S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4xCFyUKw4ftw48tw1DZFb_yoW5tFW3pw
-        n7ZryYgrWkKF4qgw1kJFyqvF4Skws2yay7Grn7Ca43uas0qryDW3Z8uas8AFsrXry7uryj
-        yrZFkrWYyF4I9r7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jo1vsUUUUU=
-X-Originating-IP: [58.22.7.114]
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBnBcwXlghlh77hgAAsp
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Yan <andy.yan@rock-chips.com>
+Masahiro Yamada <masahiroy@kernel.org> writes:
+> On Tue, Nov 21, 2023 at 6:55=E2=80=AFPM Aneesh Kumar K.V
+> <aneesh.kumar@kernel.org> wrote:
+>>
+>> "Nicholas Piggin" <npiggin@gmail.com> writes:
+>>
+>> > On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
+>> >> crtsavres.o is linked to modules. However, as explained in commit
+>> >> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
+>> >> and always-y"), 'make modules' does not build extra-y.
+>> >>
+>> >> For example, the following command fails:
+>> >>
+>> >>   $ make ARCH=3Dpowerpc LLVM=3D1 KBUILD_MODPOST_WARN=3D1 mrproper ps3=
+_defconfig modules
+>> >>     [snip]
+>> >>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
+>> >>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such fi=
+le or directory
+>> >>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/=
+cell/spufs/spufs.ko] Error 1
+>> >>   make[2]: *** [Makefile:1844: modules] Error 2
+>> >>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: _=
+_build_one_by_one] Error 2
+>> >>   make: *** [Makefile:234: __sub-make] Error 2
+>> >>
+>> >
+>> > Thanks. Is this the correct Fixes tag?
+>> >
+>> > Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux")
+>> >
+>>
+>> I am finding a different commit ID:
+>>
+>> commit baa25b571a168aff5a13bfdc973f1229e2b12b63
+>> Author: Nicholas Piggin <npiggin@gmail.com>
+>> Date:   Fri May 12 01:56:49 2017 +1000
+>>
+>>     powerpc/64: Do not link crtsavres.o in vmlinux
+>>
+>>     The 64-bit linker creates save/restore functions on demand with final
+>>     links, so vmlinux does not require crtsavres.o.
+>
+> Yeah, I think the correct tag is:
+>
+> Fixes: baa25b571a16 ("powerpc/64: Do not link crtsavres.o in vmlinux")
 
-Set overlay mode register according to the
-output mode is yuv or rgb.
+Yep, I used that when applying.
 
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
----
-
-(no changes since v1)
-
- drivers/gpu/drm/rockchip/rockchip_drm_drv.h  |  1 +
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 19 ++++++++++++++++---
- 2 files changed, 17 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
-index 3d8ab2defa1b..7a58c5c9d4ec 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
-@@ -51,6 +51,7 @@ struct rockchip_crtc_state {
- 	u32 bus_format;
- 	u32 bus_flags;
- 	int color_space;
-+	bool yuv_overlay;
- };
- #define to_rockchip_crtc_state(s) \
- 		container_of(s, struct rockchip_crtc_state, base)
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index a019cc9bbd54..b32a291c5caa 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -1612,6 +1612,8 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
- 
- 	vop2->enable_count++;
- 
-+	vcstate->yuv_overlay = is_yuv_output(vcstate->bus_format);
-+
- 	vop2_crtc_enable_irq(vp, VP_INT_POST_BUF_EMPTY);
- 
- 	polflags = 0;
-@@ -1639,7 +1641,7 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
- 	if (vop2_output_uv_swap(vcstate->bus_format, vcstate->output_mode))
- 		dsp_ctrl |= RK3568_VP_DSP_CTRL__DSP_RB_SWAP;
- 
--	if (is_yuv_output(vcstate->bus_format))
-+	if (vcstate->yuv_overlay)
- 		dsp_ctrl |= RK3568_VP_DSP_CTRL__POST_DSP_OUT_R2Y;
- 
- 	vop2_dither_setup(crtc, &dsp_ctrl);
-@@ -1948,10 +1950,12 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
- 	u16 hdisplay;
- 	u32 bg_dly;
- 	u32 pre_scan_dly;
-+	u32 ovl_ctrl;
- 	int i;
- 	struct vop2_video_port *vp0 = &vop2->vps[0];
- 	struct vop2_video_port *vp1 = &vop2->vps[1];
- 	struct vop2_video_port *vp2 = &vop2->vps[2];
-+	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
- 
- 	adjusted_mode = &vp->crtc.state->adjusted_mode;
- 	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
-@@ -1964,7 +1968,14 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
- 	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
- 	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
- 
--	vop2_writel(vop2, RK3568_OVL_CTRL, 0);
-+	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
-+	if (vcstate->yuv_overlay)
-+		ovl_ctrl |= BIT(vp->id);
-+	else
-+		ovl_ctrl &= ~BIT(vp->id);
-+
-+	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
-+
- 	port_sel = vop2_readl(vop2, RK3568_OVL_PORT_SEL);
- 	port_sel &= RK3568_OVL_PORT_SEL__SEL_PORT;
- 
-@@ -2036,9 +2047,11 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
- 		layer_sel |= RK3568_OVL_LAYER_SEL__LAYER(nlayer + ofs, 5);
- 	}
- 
-+	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
-+
- 	vop2_writel(vop2, RK3568_OVL_LAYER_SEL, layer_sel);
- 	vop2_writel(vop2, RK3568_OVL_PORT_SEL, port_sel);
--	vop2_writel(vop2, RK3568_OVL_CTRL, RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD);
-+	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
- }
- 
- static void vop2_setup_dly_for_windows(struct vop2 *vop2)
--- 
-2.34.1
-
+cheers
