@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5B97F4632
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE957F45AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344101AbjKVMad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        id S1344081AbjKVMSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:18:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343584AbjKVMaa (ORCPT
+        with ESMTP id S1344021AbjKVMSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:30:30 -0500
-Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B174D92;
-        Wed, 22 Nov 2023 04:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:References:
-        In-Reply-To:Message-Id:Date:Subject:To:From;
-        bh=CPp0Qc6lsksup1D7/LciCKmODvP2NLwil1ZR7D0Jz3s=; b=CQhJKbRt3pgU5rBJ+Vvi7X+I7D
-        BhzUIaYVj/Dxf1Nj109ocJ0OWdOTWRTOsQJipQil38bfXXkD1IuL8wEzM5KlLjsZU+tj2yqgK9dfZ
-        iU8GayAtIMOpi5M1HdWOnf48fZn9UHxekRKhPFPsWuId7rrvAIawOB3XTO5Ichu1nzuQ=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1r5mN0-0005E6-2b; Wed, 22 Nov 2023 12:30:18 +0000
-Received: from 54-240-197-231.amazon.com ([54.240.197.231] helo=REM-PW02S00X.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1r5mCp-0004y9-EI; Wed, 22 Nov 2023 12:19:47 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 15/15] KVM: xen: allow vcpu_info content to be 'safely' copied
-Date:   Wed, 22 Nov 2023 12:18:22 +0000
-Message-Id: <20231122121822.1042-16-paul@xen.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231122121822.1042-1-paul@xen.org>
-References: <20231122121822.1042-1-paul@xen.org>
+        Wed, 22 Nov 2023 07:18:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E478D4A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:18:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FB6C433C8;
+        Wed, 22 Nov 2023 12:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700655499;
+        bh=3PecfwOd2IAznuwvH/QmZLOkNifAzul2CXHZqkNhl/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYCefLpTk3Bjc88e7qGYwpRSdOgQ5hWAldH/c73Mc44vPlbj9Q76O79itu6+8dddK
+         Z5yMd/3FJ1jtmmv8w3L4ZUNVlAyHFj7MFpkxKrWMEiqGODusLKhlyNcJDRNtW7LJkB
+         jPGf/e/kq2/hCGAq03ihYr96u9NY2JPUYc2wffxeMmue+N5bZPEoRYfQ8aYqKbSoHS
+         7JBZEIZJlE+rqVCTtMLIJdUyHeVxF/MPFaaQPRatBh5v2NEkZWIThvvRE2kdc2HTms
+         J+4M4Y0hi0v4Ca7x3AwpuQr9G5FGTEizbVtIXtYoAlhS0X+Jwg/I5FsIYG39w32s0O
+         YNtys2WtFep2g==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5mBd-0000A8-2v;
+        Wed, 22 Nov 2023 13:18:33 +0100
+Date:   Wed, 22 Nov 2023 13:18:33 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Subject: Re: [PATCH 06/12] usb: dwc3: qcom: Add dwc3 core reference in driver
+ state
+Message-ID: <ZV3xmW0fDWY5-6qZ@hovoldconsulting.com>
+References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
+ <20231016-dwc3-refactor-v1-6-ab4a84165470@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016-dwc3-refactor-v1-6-ab4a84165470@quicinc.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+On Mon, Oct 16, 2023 at 08:11:14PM -0700, Bjorn Andersson wrote:
+> In the coming changes the Qualcomm DWC3 glue will be able to either
+> manage the DWC3 core as a child platform_device, or directly instantiate
+> it within its own context.
+> 
+> Introduce a reference to the dwc3 core state and make the driver
+> reference the dwc3 core either the child device or this new reference.
+> 
+> As the new member isn't assigned, and qcom->dwc_dev is assigned in all
+> current cases, the change should have no functional impact.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 100 +++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 83 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 7c810712d246..901e5050363b 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -67,7 +67,8 @@ struct dwc3_acpi_pdata {
+>  struct dwc3_qcom {
+>  	struct device		*dev;
+>  	void __iomem		*qscratch_base;
+> -	struct platform_device	*dwc_dev;
+> +	struct platform_device	*dwc_dev; /* only used when core is separate device */
+> +	struct dwc3		*dwc; /* not used when core is separate device */
 
-If the guest sets an explicit vcpu_info GPA then, for any of the first 32
-vCPUs, the content of the default vcpu_info in the shared_info page must be
-copied into the new location. Because this copy may race with event
-delivery (which updates the 'evtchn_pending_sel' field in vcpu_info) there
-needs to be a way to defer that until the copy is complete.
-Happily there is already a shadow of 'evtchn_pending_sel' in kvm_vcpu_xen
-that is used in atomic context if the vcpu_info PFN cache has been
-invalidated so that the update of vcpu_info can be deferred until the
-cache can be refreshed (on vCPU thread's the way back into guest context).
+Hmm. This quickly become really messy and hard to maintain. It may be
+fine as an intermediate step as part of this series, but why can't you
+do the conversion fully so that the Qualcomm glue driver never registers
+a core platform device? Is it just about where the core driver looks for
+DT properties?
 
-Also use this shadow if the vcpu_info cache has been *deactivated*, so that
-the VMM can safely copy the vcpu_info content and then re-activate the
-cache with the new GPA. To do this, stop considering an inactive vcpu_info
-cache as a hard error in kvm_xen_set_evtchn_fast().
-
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
----
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-
-v8:
- - Update commit comment.
-
-v6:
- - New in this version.
----
- arch/x86/kvm/xen.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index eff405eead1c..cfd5051e0800 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -1742,9 +1742,6 @@ int kvm_xen_set_evtchn_fast(struct kvm_xen_evtchn *xe, struct kvm *kvm)
- 		WRITE_ONCE(xe->vcpu_idx, vcpu->vcpu_idx);
- 	}
- 
--	if (!vcpu->arch.xen.vcpu_info_cache.active)
--		return -EINVAL;
--
- 	if (xe->port >= max_evtchn_port(kvm))
- 		return -EINVAL;
- 
--- 
-2.39.2
-
+Johan
