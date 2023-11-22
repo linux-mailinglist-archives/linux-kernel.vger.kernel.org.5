@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9BB7F4958
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCCA7F494F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344200AbjKVOvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        id S1344260AbjKVOtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343758AbjKVOvn (ORCPT
+        with ESMTP id S232793AbjKVOtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:51:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EBE19E;
-        Wed, 22 Nov 2023 06:51:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700664701; x=1732200701;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3Lp3IDM3ar4jYOzHbknAigUjAPfa74EA/HlhJuCNIfU=;
-  b=RFZTJARF7G0F4/0tmBnfccuZRtbRAgC9sUNRAVYBjn5Gy0GYQbXTH7Fl
-   AU4IGs1YEAxciute8I3PlHvJMcZs2hgTNMSNKrkAFc0LxImmN1OmVtm+X
-   qV7wVscQSNX3PSaqk5jF6KYb/mluYTiVh6aOW9rlx0CwH4JwmO7BOFMEP
-   9m55363ih+vtjNxuYg3dprwR3LRvG6K8VRnA/T9nUSt8AZ/Pb9gG25z22
-   re2zR5E3zUT3WDbCaDcYXg0IV0pwo3vtYzdkxtD7WdvUmfLWqYgAVvPcd
-   BwYJ+8vBN5/YwDNswBFnUYes4TJB1tqMMmb44i+UDAkp9SFRJZw8/dd8c
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="10729190"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="10729190"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 06:51:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="14944713"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa001.jf.intel.com with ESMTP; 22 Nov 2023 06:51:20 -0800
-Date:   Wed, 22 Nov 2023 22:49:27 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jan Kara <jack@suse.cz>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-        Benjamin LaHaise <bcrl@kvack.org>,
+        Wed, 22 Nov 2023 09:49:41 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15B119D
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:49:34 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 36ADA1F385;
+        Wed, 22 Nov 2023 14:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700664573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kq4fxvPRD3+OAsCP745uuOIslKd+n71GOa7alH4nMCE=;
+        b=U6b9LWRbsjHW7H4M2bMLBt1dNaWPoEtqn+VEFumm3hzQC3pFxyTHbK1o8+jMJjLHu3ges3
+        0f831xeKBhHtlUA3GWiiNiPYj1QbwH96b3uV35HeOH5AlEl+PBidEBk6rd2nnpx2taMOii
+        a9wWv5jdlcS4ywUitEEXKTQPhGKQ/bk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700664573;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kq4fxvPRD3+OAsCP745uuOIslKd+n71GOa7alH4nMCE=;
+        b=YXw5P8+TxQHa5tDxeU/lV5qni6HtBmE6hyYifqyfBvD0lsqaN4qC3eT2QbwdQD5z563RMQ
+        MmM2AKJa/mw+RnDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 305D513461;
+        Wed, 22 Nov 2023 14:49:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OtDIC/0UXmWQEgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 22 Nov 2023 14:49:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A911AA07DC; Wed, 22 Nov 2023 15:49:32 +0100 (CET)
+Date:   Wed, 22 Nov 2023 15:49:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        jack@suse.cz, Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] eventfd: simplify eventfd_signal()
-Message-ID: <ZV4U96z12KSi4GGw@yilunxu-OptiPlex-7050>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
- <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
+        Christoph Hellwig <hch@lst.de>, shr@devkernel.io,
+        neilb@suse.de, Michal Hocko <mhocko@suse.com>
+Subject: Re: Question: memcg dirty throttle caused by low per-memcg dirty
+ thresh
+Message-ID: <20231122144932.m44oiw5lufwkc5pw@quack3>
+References: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.80
+X-Spamd-Result: default: False [-7.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,60 +98,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 01:48:23PM +0100, Christian Brauner wrote:
-> Ever since the evenfd type was introduced back in 2007 in commit
-> e1ad7468c77d ("signal/timer/event: eventfd core") the eventfd_signal()
-> function only ever passed 1 as a value for @n. There's no point in
-> keeping that additional argument.
+Hello!
+
+On Wed 22-11-23 17:38:25, Chengming Zhou wrote:
+> Sorry to bother you, we encountered a problem related to the memcg dirty
+> throttle after migrating from cgroup v1 to v2, so want to ask for some
+> comments or suggestions.
 > 
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  arch/x86/kvm/hyperv.c                     |  2 +-
->  arch/x86/kvm/xen.c                        |  2 +-
->  drivers/accel/habanalabs/common/device.c  |  2 +-
->  drivers/fpga/dfl.c                        |  2 +-
->  drivers/gpu/drm/drm_syncobj.c             |  6 +++---
->  drivers/gpu/drm/i915/gvt/interrupt.c      |  2 +-
->  drivers/infiniband/hw/mlx5/devx.c         |  2 +-
->  drivers/misc/ocxl/file.c                  |  2 +-
->  drivers/s390/cio/vfio_ccw_chp.c           |  2 +-
->  drivers/s390/cio/vfio_ccw_drv.c           |  4 ++--
->  drivers/s390/cio/vfio_ccw_ops.c           |  6 +++---
->  drivers/s390/crypto/vfio_ap_ops.c         |  2 +-
->  drivers/usb/gadget/function/f_fs.c        |  4 ++--
->  drivers/vdpa/vdpa_user/vduse_dev.c        |  6 +++---
->  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    |  2 +-
->  drivers/vfio/pci/vfio_pci_core.c          |  6 +++---
->  drivers/vfio/pci/vfio_pci_intrs.c         | 12 ++++++------
->  drivers/vfio/platform/vfio_platform_irq.c |  4 ++--
->  drivers/vhost/vdpa.c                      |  4 ++--
->  drivers/vhost/vhost.c                     | 10 +++++-----
->  drivers/vhost/vhost.h                     |  2 +-
->  drivers/virt/acrn/ioeventfd.c             |  2 +-
->  drivers/xen/privcmd.c                     |  2 +-
->  fs/aio.c                                  |  2 +-
->  fs/eventfd.c                              |  9 +++------
->  include/linux/eventfd.h                   |  4 ++--
->  mm/memcontrol.c                           | 10 +++++-----
->  mm/vmpressure.c                           |  2 +-
->  samples/vfio-mdev/mtty.c                  |  4 ++--
->  virt/kvm/eventfd.c                        |  4 ++--
->  30 files changed, 60 insertions(+), 63 deletions(-)
+> 1. Problem
 > 
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index dd7a783d53b5..e73f88050f08 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -1872,7 +1872,7 @@ static irqreturn_t dfl_irq_handler(int irq, void *arg)
->  {
->  	struct eventfd_ctx *trigger = arg;
->  
-> -	eventfd_signal(trigger, 1);
-> +	eventfd_signal(trigger);
+> We have the "containerd" service running under system.slice, with
+> its memory.max set to 5GB. It will be constantly throttled in the
+> balance_dirty_pages() since the memcg has dirty memory more than
+> the memcg dirty thresh.
+> 
+> We haven't this problem on cgroup v1, because cgroup v1 doesn't have
+> the per-memcg writeback and per-memcg dirty thresh. Only the global
+> dirty thresh will be checked in balance_dirty_pages().
 
-For FPGA part,
+As Michal writes, if you allow too many memcg pages to become dirty, you
+might be facing issues with page reclaim so there are actually good reasons
+why you want amount of dirty pages in each memcg reasonably limited. Also
+generally increasing number of available dirty pages beyond say 1GB is not
+going to bring any benefit in the overall writeback performance. It may
+still be useful in case you generate a lot of (or large) temporary files
+which get quickly deleted and thus with high enough dirty limit they don't
+have to be written to the disk at all. Similarly if the generation of dirty
+data is very bursty (i.e. you generate a lot of dirty data in a short while
+and then don't dirty anything for a long time), having higher dirty limit
+may be useful. What is your usecase that you think you'll benefit from
+higher dirty limit?
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
+> 2. Thinking
+> 
+> So we wonder if we can support the per-memcg dirty thresh interface?
+> Now the memcg dirty thresh is just calculated from memcg max * ratio,
+> which can be set from /proc/sys/vm/dirty_ratio.
+> 
+> We have to set it to 60 instead of the default 20 to workaround now,
+> but worry about the potential side effects.
+> 
+> If we can support the per-memcg dirty thresh interface, we can set
+> some containers to a much higher dirty_ratio, especially for hungry
+> dirtier workloads like "containerd".
 
->  	return IRQ_HANDLED;
->  }
+As Michal wrote, if this ought to be configurable per memcg, then
+configuring dirty amount directly in bytes may be more sensible.
+
+> 3. Solution?
+> 
+> But we could't think of a good solution to support this. The current
+> memcg dirty thresh is calculated from a complex rule:
+> 
+> 	memcg dirty thresh = memcg avail * dirty_ratio
+> 
+> memcg avail is from combination of: memcg max/high, memcg files
+> and capped by system-wide clean memory excluding the amount being used
+> in the memcg.
+> 
+> Although we may find a way to calculate the per-memcg dirty thresh,
+> we can't use it directly, since we still need to calculate/distribute
+> dirty thresh to the per-wb dirty thresh share.
+> 
+> R - A - B
+>     \-- C
+> 
+> For example, if we know the dirty thresh of A, but wb is in C, we
+> have no way to distribute the dirty thresh shares to the wb in C.
+> 
+> But we have to get the dirty thresh of the wb in C, since we need it
+> to control throttling process of the wb in balance_dirty_pages().
+> 
+> I may have missed something above, but the problem seems clear IMHO.
+> Looking forward to any comment or suggestion.
+
+I'm not sure I follow what is the problem here. In balance_dirty_pages() we
+have global dirty threshold (tracked in gdtc) and memcg dirty threshold
+(tracked in mdtc). This can get further scaled down based on the device
+throughput (that is the difference between 'thresh' and 'wb_thresh') but
+that is independent of the way mdtc->thresh is calculated. So if we provide
+a different way of calculating mdtc->thresh, technically everything should
+keep working as is.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
