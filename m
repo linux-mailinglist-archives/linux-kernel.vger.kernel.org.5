@@ -2,270 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 561AA7F4C50
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B069A7F4C52
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjKVQ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        id S231360AbjKVQ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKVQ0F (ORCPT
+        with ESMTP id S229513AbjKVQ0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:26:05 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC758BD;
-        Wed, 22 Nov 2023 08:26:00 -0800 (PST)
-Received: from [192.168.1.103] (31.173.85.136) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 22 Nov
- 2023 19:25:49 +0300
-Subject: Re: [PATCH 13/13] net: ravb: Add runtime PM support
-To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
-        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <sergei.shtylyov@cogentembedded.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-14-claudiu.beznea.uj@bp.renesas.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <04cb07fe-cccc-774a-f14d-763ce7ae7b07@omp.ru>
-Date:   Wed, 22 Nov 2023 19:25:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 22 Nov 2023 11:26:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90431BD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:26:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CA8C433C7;
+        Wed, 22 Nov 2023 16:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700670396;
+        bh=7PgGcrTNCcmfb/c0MUXulFlbth6/ODhUpejPw9WPm88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y1gfihIVhqaEQUDUlAv/MiOMwEqTEmHv65SVx5wHp/Xe29gVCJE/fkegmTuEf5vw4
+         Ziu05Dsx4SvFYfV4W/zl1mDDEUIQAGYd22F48WYD8DtDPjKxgDRcbEuzL9ITXNhdit
+         1+kdjQyy2xQ0Khm1MRLoplr2iRNe3IJgfUhwiJDEfF9rj32fL9h5j/VU+5vNylZNx/
+         CRnV/tCNYPY4DoNd+DVqER4a4relWriwqnVn8x6Ozfym+ovB/9gWGsW938jwTP8gtq
+         oMH1MMYHPHxU22wW94JY7ApeR+yLb9RqLoD/yPtMCiDRPUnWmvO6ogpch5MgovfIbV
+         sVsHY99O4UrYw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2175940094; Wed, 22 Nov 2023 13:26:33 -0300 (-03)
+Date:   Wed, 22 Nov 2023 13:26:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Marc Zyngier <maz@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Message-ID: <ZV4rubQsiiAPoM1s@kernel.org>
+References: <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
+ <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
+ <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
+ <930bfb9a-dcbe-4385-9ae3-26e2aa14c50e@marcan.st>
+ <ZV38z3+p2S2ETtzG@kernel.org>
+ <ZV4i_lrhbOVdEpwH@FVFF77S0Q05N>
+ <CAP-5=fXxdt4-j7ea=3oXpqyfOQEmSRYBugzND0r+gZUd5sMi1w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20231120084606.4083194-14-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [31.173.85.136]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 23:48:29
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.136 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.136
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/21/2023 23:54:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 8:06:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXxdt4-j7ea=3oXpqyfOQEmSRYBugzND0r+gZUd5sMi1w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 11:46 AM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-
-> RZ/G3S supports enabling/disabling clocks for its modules (including
-> Ethernet module). For this commit adds runtime PM support which
-> relies on PM domain to enable/disable Ethernet clocks.
-
-   That's not exactly something new in RZ/G3S. The ravb driver has unconditional
-RPM calls already in the probe() and remove() methods... And the sh_eth driver
-has RPM support since 2009...
-
-> At the end of probe ravb_pm_runtime_put() is called which will turn
-
-   I'd suggest a shorter name, like ravb_rpm_put() but (looking at this function)
-it doesn't seem hardly needed...
-
-> off the Ethernet clocks (if no other request arrives at the driver).
-> After that if the interface is brought up (though ravb_open()) then
-> the clocks remain enabled until interface is brought down (operation
-> done though ravb_close()).
+Em Wed, Nov 22, 2023 at 08:04:26AM -0800, Ian Rogers escreveu:
+> On Wed, Nov 22, 2023 at 7:49 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Wed, Nov 22, 2023 at 10:06:23AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Wed, Nov 22, 2023 at 12:23:27PM +0900, Hector Martin escreveu:
+> > > > On 2023/11/22 1:38, Ian Rogers wrote:
+> > > > > On Tue, Nov 21, 2023 at 8:15 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > >> On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
+> > > > >>> On Tue, Nov 21, 2023 at 8:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > >>>> On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
+> > > > >>>>> On Tue, Nov 21, 2023 at 7:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > >>>>>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > > > >>>>>>> On Tue, 21 Nov 2023 13:40:31 +0000,
+> > > > >>>>>>> Marc Zyngier <maz@kernel.org> wrote:
+> > > > >>>>>>>>
+> > > > >>>>>>>> [Adding key people on Cc]
+> > > > >>>>>>>>
+> > > > >>>>>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
+> > > > >>>>>>>> Hector Martin <marcan@marcan.st> wrote:
+> > > > >>>>>>>>>
+> > > > >>>>>>>>> Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > > > >>>>>>>>> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > > > >>>>>>>>
+> > > > >>>>>>>> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > > > >>>>>>>> asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > > > >>>>>>>> the PMU, but nothing works anymore.
+> > > > >>>>>>>>
+> > > > >>>>>>>> The saving grace in my case is that Debian still ships a 6.1 perftool
+> > > > >>>>>>>> package, but that's obviously not going to last.
+> > > > >>>>>>>>
+> > > > >>>>>>>> I'm happy to test potential fixes.
+> > > > >>>>>>>
+> > > > >>>>>>> At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > > > >>>>>>> -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > > > >>>>>>> CPU):
+> > > > >>>>>>
+> > > > >>>>>> IIUC the tool is doing the wrong thing here and overriding explicit
+> > > > >>>>>> ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather than events using
+> > > > >>>>>> that ${pmu}'s type and event namespace.
+> > > > >>>>>>
+> > > > >>>>>> Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE events to be
+> > > > >>>>>> targetted to a specific PMU, it's semantically wrong to rewrite events like
+> > > > >>>>>> this since ${pmu}/${event}/ is not necessarily equivalent to a similarly-named
+> > > > >>>>>> PERF_COUNT_HW_${EVENT}.
+> > > > >>>>>
+> > > > >>>>> If you name a PMU and an event then the event should only be opened on
+> > > > >>>>> that PMU, 100% agree. There's a bunch of output, but when the legacy
+> > > > >>>>> cycles event is opened it appears to be because it was explicitly
+> > > > >>>>> requested.
+> > > > >>>>
+> > > > >>>> I think you've missed that the named PMU events are being erreously transformed
+> > > > >>>> into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
+> > > > >>>>
+> > > > >>>>   Opening: apple_firestorm_pmu/cycles/
+> > > > >>>>   ------------------------------------------------------------
+> > > > >>>>   perf_event_attr:
+> > > > >>>>     type                             0 (PERF_TYPE_HARDWARE)
+> > > > >>>>     size                             136
+> > > > >>>>     config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > > > >>>>     sample_type                      IDENTIFIER
+> > > > >>>>     read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > > > >>>>     disabled                         1
+> > > > >>>>     inherit                          1
+> > > > >>>>     enable_on_exec                   1
+> > > > >>>>     exclude_guest                    1
+> > > > >>>>   ------------------------------------------------------------
+> > > > >>>>   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+> > > > >>>>
+> > > > >>>> ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_CYCLES.
+> > > > >>>>
+> > > > >>>> Marc said that he bisected the issue down to commit:
+> > > > >>>>
+> > > > >>>>   5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
+> > > > >>>>
+> > > > >>>> ... so it looks like something is going wrong when the events are being parsed,
+> > > > >>>> e.g. losing the HW PMU information?
+> > > > >>>
+> > > > >>> Ok, I think I'm getting confused by other things. This looks like the issue.
+> > > > >>>
+> > > > >>> I think it may be working as intended, but not how you intended :-) If
+> > > > >>> a core PMU is listed and then a legacy event, the legacy event should
+> > >
+> > > The point is that "cycles" when prefixed with "pmu/" shouldn't be
+> > > considered "cycles" as HW/0, in that setting it is "cycles" for that
+> > > PMU.
+> >
+> > Exactly.
+> >
+> > > (but we only have "cpu_cycles" for at least the a53 and a72 PMUs I
+> > > have access in a Libre Computer rockchip 3399-pc hybrid board, if we use
+> > > it, then we get what we want/had before, see below):
+> >
+> > Both Cortex-A53 and Cortex-A72 have the common PMUv3 events, so they have
+> > "cpu_cycles" and "bus_cycles".
+> >
+> > The Apple PMUs that Hector and Marc anre using don't follow the PMUv3
+> > architecture, and just have a "cycles" event.
+> >
+> > [...]
+> >
+> > > So what we need here seems to be to translate the generic term "cycles"
+> > > to "cpu_cycles" when a PMU is explicitely passed in the event name and
+> > > it doesn't have "cycles" and then just retry.
+> >
+> > I'm not sure we need to map that.
+> >
+> > My thinking is:
+> >
+> > * If the user asks for "cycles" without a PMU name, that should use the
+> >   PERF_TYPE_HARDWARE cycles event. The ARM PMUs handle that correctly when the
+> >   event is directed to them.
+> >
+> > * If the user asks for "${pmu}/cycles/", that should only use the "cycles"
+> >   event in that PMU's namespace, not PERF_TYPE_HARDWARE.
+> >
+> > * If we need a way so say "use the PERF_TYPE_HARDWARE cycles event on ${pmu}",
+> >   then we should have a new syntax for that (e.g. as we have for raw events),
+> >   e.g. it would be possible to have "pmu/hw:cycles/" or something like that.
+> >
+> > That way there's no ambiguity.
 > 
-> If any request arrives to the driver while the interface is down the
-> clocks are enabled to serve the request and then disabled.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->  drivers/net/ethernet/renesas/ravb.h      |  1 +
->  drivers/net/ethernet/renesas/ravb_main.c | 99 ++++++++++++++++++++++--
->  2 files changed, 93 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
-> index c2d8d890031f..50f358472aab 100644
-> --- a/drivers/net/ethernet/renesas/ravb.h
-> +++ b/drivers/net/ethernet/renesas/ravb.h
-> @@ -1044,6 +1044,7 @@ struct ravb_hw_info {
->  	unsigned magic_pkt:1;		/* E-MAC supports magic packet detection */
->  	unsigned half_duplex:1;		/* E-MAC supports half duplex mode */
->  	unsigned refclk_in_pd:1;	/* Reference clock is part of a power domain. */
-> +	unsigned rpm:1;			/* Runtime PM available. */
+> This would break cpu_core/LLC-load-misses/ on Intel hybrid as the
+> LLC-load-misses event is legacy and not advertised in either sysfs or
+> in json.
 
-   No, I don't think this flag makes any sense. We should support RPM
-unconditionally...
+Indeed:
 
-[...]
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index f4634ac0c972..d70ed7e5f7f6 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -145,12 +145,41 @@ static void ravb_read_mac_address(struct device_node *np,
-[...]
-> +static void ravb_pm_runtime_put(struct ravb_private *priv)
-> +{
-> +	const struct ravb_hw_info *info = priv->info;
-> +	struct device *dev = &priv->pdev->dev;
-> +
-> +	if (!info->rpm)
-> +		return;
-> +
-> +	pm_runtime_mark_last_busy(dev);
+[root@quaco ~]# ls /sys/devices/cpu/events/
+branch-instructions  bus-cycles    cache-references  instructions  mem-stores  topdown-fetch-bubbles     topdown-recovery-bubbles.scale  topdown-slots-retired  topdown-total-slots.scale
+branch-misses        cache-misses  cpu-cycles        mem-loads     ref-cycles  topdown-recovery-bubbles  topdown-slots-issued            topdown-total-slots
+[root@quaco ~]# strace -e perf_event_open perf stat -e cpu/LLC-load-misses/ echo
+perf_event_open({type=PERF_TYPE_HW_CACHE, size=0x88 /* PERF_ATTR_SIZE_??? */, config=PERF_COUNT_HW_CACHE_RESULT_MISS<<16|PERF_COUNT_HW_CACHE_OP_READ<<8|PERF_COUNT_HW_CACHE_LL, sample_period=0, sample_type=PERF_SAMPLE_IDENTIFIER, read_format=PERF_FORMAT_TOTAL_TIME_ENABLED|PERF_FORMAT_TOTAL_TIME_RUNNING, disabled=1, inherit=1, enable_on_exec=1, precise_ip=0 /* arbitrary skid */, exclude_guest=1, ...}, 41467, -1, -1, PERF_FLAG_FD_CLOEXEC) = 3
 
-   Not very familiar with RPM... what's this for?
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=41467, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
 
-> +	pm_runtime_put_autosuspend(dev);
+ Performance counter stats for 'echo':
 
-   Why not the usual pm_runtime_put()?
+             1,015      cpu/LLC-load-misses/
 
-> +}
-> +
->  static void ravb_mdio_ctrl(struct mdiobb_ctrl *ctrl, u32 mask, int set)
->  {
->  	struct ravb_private *priv = container_of(ctrl, struct ravb_private,
->  						 mdiobb);
-> +	int ret;
-> +
-> +	ret = ravb_pm_runtime_get(priv);
-> +	if (ret < 0)
-> +		return;
->  
->  	ravb_modify(priv->ndev, PIR, mask, set ? mask : 0);
-> +
-> +	ravb_pm_runtime_put(priv);
+       0.005167119 seconds time elapsed
 
-   Hmm, does this even work? :-/ Do the MDIO bits retain the values while
-the AVB core is not clocked or even powered down?
-   Note that the sh_eth driver has RPM calls in the {read|write}_c{22?45}()
-methods which do the full register read/write while the core is powere up
-and clocked...
+       0.000821000 seconds user
+       0.004105000 seconds sys
 
-[...]
-> @@ -2064,6 +2107,11 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
->  	struct ravb_private *priv = netdev_priv(ndev);
->  	const struct ravb_hw_info *info = priv->info;
->  	struct net_device_stats *nstats, *stats0, *stats1;
-> +	int ret;
-> +
-> +	ret = ravb_pm_runtime_get(priv);
-> +	if (ret < 0)
-> +		return NULL;
 
-   Hm, sh_eth.c doesn't have any RPM calls in this method. Again, do
-the hardware counters remain valid across powering the MAC core down?
+--- SIGCHLD {si_signo=SIGCHLD, si_code=SI_USER, si_pid=41466, si_uid=0} ---
++++ exited with 0 +++
+[root@quaco ~]#
 
-[...]
-> @@ -2115,11 +2165,18 @@ static void ravb_set_rx_mode(struct net_device *ndev)
->  {
->  	struct ravb_private *priv = netdev_priv(ndev);
->  	unsigned long flags;
-> +	int ret;
-> +
-> +	ret = ravb_pm_runtime_get(priv);
-> +	if (ret < 0)
-> +		return;
+Is it difficult to before doing the current expansion to
+PERF_TYPE_HARDWARE/PERF_HW_CPU_CYCLES just check if there is an event
+with the name specified in the PMU specified, if there is, use that.
 
-   Hm, sh_eth.c doesn't have any RPM calls in this method either.
-Does changing the promiscous mode have sense for an offlined interface?
-
-[...]
-> @@ -2187,6 +2244,11 @@ static int ravb_close(struct net_device *ndev)
->  	if (info->nc_queues)
->  		ravb_ring_free(ndev, RAVB_NC);
->  
-> +	/* Note that if RPM is enabled on plaforms with ccc_gac=1 this needs to be
-
-   It's "platforms". :-)
-
-> skipped and
-
-   Overly long line?
-
-> +	 * added to suspend function after PTP is stopped.
-
-   I guess we'll have to do that because RPM is actually not RZ/G3
-specific...
-
-> +	 */
-> +	ravb_pm_runtime_put(priv);
-> +
->  	return 0;
->  }
->  
-> @@ -2636,6 +2699,12 @@ static int ravb_probe(struct platform_device *pdev)
->  	if (error)
->  		return error;
->  
-> +	info = of_device_get_match_data(&pdev->dev);
-> +
-> +	if (info->rpm) {
-> +		pm_runtime_set_autosuspend_delay(&pdev->dev, 100);
-
-   Why exactly 100 ms?
-
-> +		pm_runtime_use_autosuspend(&pdev->dev);
-> +	}
-
-   Before calling pm_runtime_enable()?
-
->  	pm_runtime_enable(&pdev->dev);
-[...]
-> @@ -2880,6 +2950,8 @@ static int ravb_probe(struct platform_device *pdev)
->  	pm_runtime_put(&pdev->dev);
->  pm_runtime_disable:
->  	pm_runtime_disable(&pdev->dev);
-> +	if (info->rpm)
-> +		pm_runtime_dont_use_autosuspend(&pdev->dev);
-
-   After calling pm_runtime_disable()?
-
-[...]
-> @@ -2908,6 +2985,8 @@ static void ravb_remove(struct platform_device *pdev)
->  			  priv->desc_bat_dma);
->  	pm_runtime_put_sync(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-> +	if (info->rpm)
-> +		pm_runtime_dont_use_autosuspend(&pdev->dev);
-
-   After calling pm_runtime_disable()?
-
-[...]
-
-MBR, Sergey
+- Arnaldo
