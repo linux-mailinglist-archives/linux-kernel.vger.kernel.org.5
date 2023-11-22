@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A35C7F4F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D40C7F4F89
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbjKVS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
+        id S235403AbjKVS3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235433AbjKVS1z (ORCPT
+        with ESMTP id S235171AbjKVS26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:27:55 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D72535A7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:26:33 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a0064353af8so231623766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:26:33 -0800 (PST)
+        Wed, 22 Nov 2023 13:28:58 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595E844B6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:27:11 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a011e9bf336so2177066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:27:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700677591; x=1701282391; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700677630; x=1701282430; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=OiLR+rs0nNSbtMnisqs3nyj0wylcnvVL0KvgsQyvHBk=;
-        b=DbWvSawqBdVwf/NkPAIUShEQlA6mE02rHpqVfDeL1RxXTDt9SAvNoFI58oONb0csEO
-         0kS1XjXhADv39WvHSJhSz/7yvXDoRpbh6gSiX11kfegNXS3QCd9hocPDzhzZBj8PsWTR
-         pzJelYQ+iuYWDZLC2A6YqLbdHCeBPyytdj8P+ssLAVUZ+gCdNwlxdn2TBLrR7NbRsA75
-         6oZ30tymWtLD1Bb5K+dyGui05m7JmCr4zTK82L+SJW0BrkzdWqyIguvfnRORnhGGKCp4
-         ki202KDYYkTWFbN4WEH5RhCsOvqxdOoNAou7qFKLIGTICUwmHjqXJQYO1UJIgNrcg2On
-         ramA==
+        bh=oEsmM/7SS4+BUtYAvCzoeGDYLUi62QW3OPX+PEsVrG8=;
+        b=bOjRkVoBxTvHJgV+xfsz1DQmuLtwaUqU4QBDo3gxMgJwwP9YHRQlP5A7huKZq12NrH
+         Uoj0FGAije0HlZHVTK181f6F+EzYKRyKlJiCZkgUbi8+U087G3Qc3ULL6nsjmDr+gh5K
+         nmQLIm9hHbgWyh4VNMMfYNLl7ZtBpmqRIbYu4CIaXCrLzloBL8AHBIacpAUfxe6AOAWs
+         F6cYyz1q6PRUMvDfqYsSwZ7Xu6fc+wxxuA5VOV7xGah9PKnC4x3e5TFFqvSFpJldRurq
+         IPY73ppyc0ytr+F1wJkgQJoBFpGqWeKCba2lWwvP0QeHtLBtK1AzXgSnH4/MAK5ehvPW
+         zrnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700677591; x=1701282391;
+        d=1e100.net; s=20230601; t=1700677630; x=1701282430;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OiLR+rs0nNSbtMnisqs3nyj0wylcnvVL0KvgsQyvHBk=;
-        b=CewpTb2nt5kqGu0GP4c+tdRmnPbyNMxg+IjYrgKNgVV5KLtpqiAGSn56g3Oo/cc0Zw
-         yCT0ZCurUV6vSYpY5Mrk6Etrm0eGMZP3t+x5pKl/xc4AItYSCr6X9f3Z6olwM19+h3ir
-         BAfTN6SXEuzsAHcuSEcaUckGsZlZviGNlY6bR9+q3trqAYc/OLlL5wPd5NivDHFTxSC7
-         UZujAtGNR17KClqXai18KcVIJtl3oo8ttQhKWsOQUr6gx0IirhSGZv0uzz7hXHrwZ6Jg
-         ydd0YCAH8ovtDEl+kWLXWwfCw34OXDepFjZxg2CsYuCI9XDglgdUIxcVd9ZtbkKR5oU+
-         LJlw==
-X-Gm-Message-State: AOJu0Yy+EcX1j4kt4uDr8SqzQu8mdn7utvZ6eA7zrAgAqb9lx4Sdt1sK
-        HflTgLSxwWnN4vW3xtorCp5WLQ==
-X-Google-Smtp-Source: AGHT+IH6q3jg2sWGzrLRpGFpQLuMHyJ2QfSMIKd/LeAX9I+3/S5nrA7l9NU5KLO8EnqTOU5RHkb+Ig==
-X-Received: by 2002:a17:907:6d01:b0:9ae:614e:4560 with SMTP id sa1-20020a1709076d0100b009ae614e4560mr366120ejc.29.1700677591683;
-        Wed, 22 Nov 2023 10:26:31 -0800 (PST)
+        bh=oEsmM/7SS4+BUtYAvCzoeGDYLUi62QW3OPX+PEsVrG8=;
+        b=l2wLRLkh6e6LFcf9uoUSIdVnu5eXC3+gH7BbFpRE8cHwFKuPmgoIKi9572XNjROzbE
+         K9SykBgS80Wm9XrPRcg0SW9MvxeW5oCGtzrkHi5r3zkdM9XaWKf8NG7IXAEds9cnANl6
+         +GEiScKC5K645ytijYGGgQ8fIZFLkHXW7ZVnr/+6k9XfolyQ80jb/hf+mXX2VpOr7AGf
+         +2PxTDK7VeajEYI5uBZrR7kiLihS4xtpDCGAeuNn7mFvR3gngKMNTq1vfn4tNJ7l2kF5
+         NbU1H0TKwLe9I61aCfKwL/B6ma5sQiRtP81jSIo3/SYWS2ASxD9wOazribK52k5sq8rm
+         8drA==
+X-Gm-Message-State: AOJu0YydDO2eKKVMn4+leIighvcgMlqmfCPVN7ucpCg7S45KpSOa9V/o
+        B+u2o4Zg6oALLDaW8jc3iRcIeQ==
+X-Google-Smtp-Source: AGHT+IF5l0K4sdu6LySO4mmqLm96VMqGJse3GZYDDjVjWN59behxw7Xkj1nQV4S6+3BCmtOhmjpdxg==
+X-Received: by 2002:a17:906:f259:b0:9fe:1681:22c7 with SMTP id gy25-20020a170906f25900b009fe168122c7mr2210636ejb.26.1700677630237;
+        Wed, 22 Nov 2023 10:27:10 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id v15-20020a1709064e8f00b009928b4e3b9fsm55929eju.114.2023.11.22.10.26.30
+        by smtp.gmail.com with ESMTPSA id v15-20020a1709064e8f00b009928b4e3b9fsm55929eju.114.2023.11.22.10.27.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:26:31 -0800 (PST)
-Message-ID: <16e57d64-4c8c-49cf-a9d7-6cdf27ace3c2@linaro.org>
-Date:   Wed, 22 Nov 2023 19:26:29 +0100
+        Wed, 22 Nov 2023 10:27:09 -0800 (PST)
+Message-ID: <58c2197d-90d0-4307-a123-a1b100fcf5a0@linaro.org>
+Date:   Wed, 22 Nov 2023 19:27:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/39] dt-bindings: dma: Add Cirrus EP93xx
+Subject: Re: [PATCH v5 12/39] dt-bindings: pwm: Add Cirrus EP93xx
 Content-Language: en-US
-To:     nikita.shubin@maquefel.me, Vinod Koul <vkoul@kernel.org>,
+To:     nikita.shubin@maquefel.me,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
- <20231122-ep93xx-v5-8-d59a76d5df29@maquefel.me>
+ <20231122-ep93xx-v5-12-d59a76d5df29@maquefel.me>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,12 +112,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122-ep93xx-v5-8-d59a76d5df29@maquefel.me>
+In-Reply-To: <20231122-ep93xx-v5-12-d59a76d5df29@maquefel.me>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,11 +128,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 22/11/2023 09:59, Nikita Shubin via B4 Relay wrote:
 > From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> Add YAML bindings for ep93xx SoC DMA.
+> Add YAML bindings for ep93xx SoC PWM.
 > 
 > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
-
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
