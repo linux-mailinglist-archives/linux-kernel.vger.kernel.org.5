@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FD27F3CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30E07F3CC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343649AbjKVEVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 23:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
+        id S229660AbjKVE2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 23:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343580AbjKVEVm (ORCPT
+        with ESMTP id S229498AbjKVE2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 23:21:42 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E84810C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:21:38 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da37522a363so5934368276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:21:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700626897; x=1701231697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WVXWPvtRBhDeG90a/ZedgAdRgWMSJ7Pm+mRwu5c61Bk=;
-        b=LIp4UK5+wVWLF5T3o8WstaWzh2Ll++NeLK7bnLZNdYp+0vXVuCuREuol78DN1E8QdW
-         dj+/MK6X3XBU3ixJmPbuDDAbupTH7uGHAhedPDx+rEa19evEqaiJt872jqqnoWO0dwBz
-         ofolIf2OZcKoDhSATk6z6eiZjn+VgmKApPmqtznsqF7BA1LGAww6T0oS1iDuIm9gyiZF
-         98CHYzROdwE95bTHnHFdS6KMVFvUfC1l5SwZDUcq3OuCYfy4KjnoQa02oRRBnn0LuM1X
-         9nov61RfuKqnjQbfE0aI1m6rhz4Q3E2j+cMW5D4LakHgqEVyu93d+wvSMd4Z6cHLYQ7D
-         GHng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700626897; x=1701231697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WVXWPvtRBhDeG90a/ZedgAdRgWMSJ7Pm+mRwu5c61Bk=;
-        b=v8Imr9zqf45KwHCueZxYYn+NnhbupI1VkaKdhHYSD7XOkNBbnwnhlSgwMJVt2p6ZWd
-         aBX5XcUj1tPVZ1zv3ip9wQ2u1/aNd0W+2peif4YCLSl7t7iF/PFYW6zh0nHPCeYdiKYj
-         0XzTqSTjB4RXoZ6VbHaPod9r/SEgmEaSiQhXaK67bk+S0EmKvAFImbWP29TyGtWN6mWv
-         YejuMy1lcwMg+EdXgD0i04Pp88agcvXbX2ms6B855FLTMfxqJ8g9VOLOzGyjHFtmi+X3
-         jMIskgilZTR0g/ezx2mTVz6brVrFVUxVx+4w1w4du2/OXlZT9UK2zH4cVp0skZHTsXrh
-         OtLQ==
-X-Gm-Message-State: AOJu0YzfPbGe2NI+AyQNwxukB9erqoS6LrK/Sye3hKbgB9fLtrK0LpIH
-        Gwn6/DcWEktl4zI7cB5rMcEWs/ylxzRP0vFgPCKW
-X-Google-Smtp-Source: AGHT+IE8nMjmv+MMpdCveL8Z01wo2xacBMBUWnBQYMDDwZPg7dC5Q9T1luKYJbPJkntVIqlYW/2qIZJDkEN2u1qQXGk=
-X-Received: by 2002:a25:9184:0:b0:d9a:401d:f5da with SMTP id
- w4-20020a259184000000b00d9a401df5damr896533ybl.51.1700626897254; Tue, 21 Nov
- 2023 20:21:37 -0800 (PST)
+        Tue, 21 Nov 2023 23:28:40 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3E810C;
+        Tue, 21 Nov 2023 20:28:36 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM3cps9004449;
+        Wed, 22 Nov 2023 04:28:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=9VQYkMcaLMIVV28dv2nGc5Put+Zl5GtxaKJ+blbPTLQ=;
+ b=g4Yj5GAairI5jb5qKCszpjROOyvtKWB/BV66+HYZ0eP4hMIXKtbVPWTeeoH6yQoMCT8Q
+ JuxivqCQ3JvAL0nNztqrPUi0+sqyxs8Ebz1vB+17qpp7hd1YLkdDye/gmcHAefddo+h1
+ 6PVIKIJoDZ3YayuCs4UKkXvsLSGU+WdXXpAbQidFJnOCBaSanNe77IXdgdyPiZg+5/up
+ G0d4oj+JiqD/6E8cRbyHXOWKAEzOK2XUmgT9j8J/itRwG8QjF1//UqU2KrQCjDg7q+3y
+ TYltmrVFzs2+9j/NB1HtQ8HXuewDHhgz6YMToRBXU494H8J6pf6+STESHG11fbMUwwi/ KA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uh477gphb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 04:28:32 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AM4SWLU027721
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 04:28:32 GMT
+Received: from hu-skakitap-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 21 Nov 2023 20:28:29 -0800
+From:   Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Satya Priya Kakitapalli" <quic_skakitap@quicinc.com>
+Subject: [PATCH] clk: qcom: gpucc-sm8150: Update the gpu_cc_pll1 config
+Date:   Wed, 22 Nov 2023 09:58:14 +0530
+Message-ID: <20231122042814.4158076-1-quic_skakitap@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231114022503.6310-1-kelvie@kelvie.ca> <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
- <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com> <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
-In-Reply-To: <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 21 Nov 2023 23:21:26 -0500
-Message-ID: <CAHC9VhQeQcEKFKWi2pvGE-DhkaccqBn9Yf_+r7JbZ2UPN+z3-g@mail.gmail.com>
-Subject: Re: [PATCH RFC] Add a lockdown_hibernate parameter
-To:     Kelvie Wong <kelvie@kelvie.ca>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: if52tZBAd9uHOj5pC-qg4QhJ8BTTme_S
+X-Proofpoint-GUID: if52tZBAd9uHOj5pC-qg4QhJ8BTTme_S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_01,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=830 clxscore=1015
+ suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311220031
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 10:07=E2=80=AFPM Kelvie Wong <kelvie@kelvie.ca> wro=
-te:
-> On Mon, 20 Nov 2023 at 13:12, Paul Moore <paul@paul-moore.com> wrote:
-> > On Mon, Nov 13, 2023 at 11:01=E2=80=AFPM Randy Dunlap <rdunlap@infradea=
-d.org> wrote:
-> > >
-> > > [add security & dhowells]
-> > >
-> > > On 11/13/23 18:23, Kelvie Wong wrote:
-> > > > This allows the user to tell the kernel that they know better (name=
-ly,
-> > > > they secured their swap properly), and that it can enable hibernati=
-on.
-> > > >
-> > > > I've been using this for about a year now, as it doesn't seem like
-> > > > proper secure hibernation was going to be implemented back then, an=
-d
-> > > > it's now been a year since I've been building my own kernels with t=
-his
-> > > > patch, so getting this upstreamed would save some CO2 from me build=
-ing
-> > > > my own kernels every upgrade.
-> > > >
-> > > > Some other not-me users have also tested the patch:
-> > > >
-> > > > https://community.frame.work/t/guide-fedora-36-hibernation-with-ena=
-bled-secure-boot-and-full-disk-encryption-fde-decrypting-over-tpm2/25474/17
-> > > >
-> > > > Signed-off-by: Kelvie Wong <kelvie@kelvie.ca>
-> >
-> > I would feel a lot better about this if there was a way to verify that
-> > the swap was protected as opposed to leaving that as a note in a doc
-> > that the majority of users will never see, read, or understand.
->
-> I'd argue that this wouldn't even be necessary if we detect the swap was
-> protected -- hibernation should just be enabled in that case without sett=
-ing
-> any parameters.
->
-> My understanding is that it was disabled waiting for this
-> functionality, and it's been
-> at least a couple of years now [1], so it looks like it's not such an
-> easy problem.
+Update the test_ctl_hi_val and test_ctl_hi1_val of gpu_cc_pll1
+as per latest HW recommendation.
 
-I've got to warn you that I have an allergic reaction to arguments
-that start with "the right solution is really hard, so let's pick the
-easier, worse solution." ;)
+Fixes: 0cef71f2ccc8 ("clk: qcom: Add graphics clock controller driver for SM8150")
+Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+---
+ drivers/clk/qcom/gpucc-sm8150.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Anyway, my argument is that the majority of users will never use this ker=
-nel
-> parameter anyway, so I think it's a fair assumption that the power users =
-that
-> *do* use this will educate themselves on why this parameter even exists.
+diff --git a/drivers/clk/qcom/gpucc-sm8150.c b/drivers/clk/qcom/gpucc-sm8150.c
+index 8422fd047493..c89a5b59ddb7 100644
+--- a/drivers/clk/qcom/gpucc-sm8150.c
++++ b/drivers/clk/qcom/gpucc-sm8150.c
+@@ -37,8 +37,8 @@ static struct alpha_pll_config gpu_cc_pll1_config = {
+ 	.config_ctl_hi_val = 0x00002267,
+ 	.config_ctl_hi1_val = 0x00000024,
+ 	.test_ctl_val = 0x00000000,
+-	.test_ctl_hi_val = 0x00000002,
+-	.test_ctl_hi1_val = 0x00000000,
++	.test_ctl_hi_val = 0x00000000,
++	.test_ctl_hi1_val = 0x00000020,
+ 	.user_ctl_val = 0x00000000,
+ 	.user_ctl_hi_val = 0x00000805,
+ 	.user_ctl_hi1_val = 0x000000d0,
+-- 
+2.25.1
 
-I guess I'm still not sold on this idea, I'm sorry.
-
---=20
-paul-moore.com
