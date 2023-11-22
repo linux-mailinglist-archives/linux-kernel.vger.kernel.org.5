@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7F57F4EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EF97F4EEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343501AbjKVSIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S230377AbjKVSIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVSIa (ORCPT
+        with ESMTP id S234713AbjKVSIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:08:30 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371511B6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:08:23 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso661241fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:08:23 -0800 (PST)
+        Wed, 22 Nov 2023 13:08:39 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A64D41;
+        Wed, 22 Nov 2023 10:08:35 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6d7f2058213so44440a34.1;
+        Wed, 22 Nov 2023 10:08:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700676501; x=1701281301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700676514; x=1701281314; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z//RucA8tE1/CYD6Q8FXMQUzE3udbcwedLzht1PJJU0=;
-        b=LyVy+TXamX5b4XO/UjHuY5l/ksKHva9nFIl7bnT/ar9v0b0DdRg0j4FbSZbspcudNq
-         2YUh41d3IEdlNZY1/FF4nPPp/WmqDjs3YiFcmXNQXLvso3G+w03kMIUKb0eDl9XIylcv
-         y3BVauTwsnuoN5KjFIJd/LEgGreyszLDd0rhTiH6+ZGya4lKgsOfiTI6gvEJ2es0IZ1q
-         ACcCofU9Xh1VGTPyH6u8bBKULwMq8my66L7jl5qpO571toBeE4r3AW5kCuBe0e3vEYzA
-         ji3g/XFkLvzq4c6W9wBE8xB1sLI6qJ2+w9mHcyXCcwqW2TRMAgRyODrg47sG+FvAf8Oe
-         nH+Q==
+        bh=x8Dku6pI5yBeQvQzTttR/loYo2QIvWg/tnPjwOl8SQg=;
+        b=F8ZHh4aOd4cownmGc5c4Gl8SC4hgNeJGkeJOW1qoYUOb2iTO6e03oiUHXR2IyJVTgq
+         ceLiUphYlFhyIwclA5dKWwyvE6JFL812vhEp6Qw1Gz03vD8QMoO8kie7qIW96i10KlFp
+         k3oxmq7bIB9C3N2ni5ountZ/P4EqnhI2aoMPVBDr6laMppm35O8jSIg5uwLuUdJik+T4
+         KCB7aD0Ra+q89OYnMVAW6JL3fcL17aenTquNovlzUhiFzbyXSWCNGuK8b6JJWWd/jdhv
+         rL0P2rwOWWWyieDIVh75/ZeZyZrVOoTG0GbUpMu56Zv+bQCR+qndQG5opc2+WjjzHI0i
+         RF1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700676501; x=1701281301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700676514; x=1701281314;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z//RucA8tE1/CYD6Q8FXMQUzE3udbcwedLzht1PJJU0=;
-        b=TvO7ZOsicXpCw49Gd9T/IN2hdegXk5vaIJ8QHlI1xupMkVgFOTb8xjWRZZY4Xpy4J9
-         Ype8RoUo+I2IbyHOB8PPbqfII2deMmTenDw1rD3YZoJE2u4WAArcEt1YqYOMPfRu91LF
-         8K8XpenTm7x0JIpv1r7aUc0L7qIm2InrGTv3rvNG6IGJDI0X6fgEhXOi4y5EH7ggatfO
-         GbmHwg/3+bSPUGbjlQIEY0R/l76rJaWSCbsAKaS7wmc5nJoUpQm1dRsVKayAHomK4RQs
-         cgj4yWpvEt5B1LNQqemXToGY3qukG1kwRqojJ2Lz+u5m7b2OhGTvWT17k3w5Sc70JQDC
-         fKsQ==
-X-Gm-Message-State: AOJu0YxDeY0E5YmcixXjv/t4b98yi6LLSjDNzM7Vj3zd/kTYimoqb0nH
-        wbwYwnIhrAjTydtJsKGD6F6RbNj4zLwuufKkAsA=
-X-Google-Smtp-Source: AGHT+IEH4JaV9faUPetkiI3Pq13W6T68SfFoLkf6MuquZjHLZ5crwlofQHtlnSF6LY+cHU+ljortfnDpM+AFlOiiSig=
-X-Received: by 2002:a2e:824f:0:b0:2c5:9e2:ed14 with SMTP id
- j15-20020a2e824f000000b002c509e2ed14mr2225732ljh.39.1700676501254; Wed, 22
- Nov 2023 10:08:21 -0800 (PST)
+        bh=x8Dku6pI5yBeQvQzTttR/loYo2QIvWg/tnPjwOl8SQg=;
+        b=na3vRHerVj54Y8HO2/DGUY703x2odaRcOV2QMRU0JOlxWSTSaemG16yAtBESE0Sk7N
+         mNgivKBFS+nF8XKr5hyhVaTlLEUgIl/eIlIzfm5XoYeHteES23DMCdcpMx2KtIKkJu1c
+         ZOjyQRhXu5J69wlclraXbI7Ef54ONsTdfQXHIsxcDaT2sPOXJw3lNPBJqZHvou8VSQUk
+         MRwsGl+Ir82NOr6MKdsp6r9pa/xHs8yPpFXnKyhpHibnISdFSuS/EhfuaBHofCMcGkiw
+         853K+Uq+3dyVvBWBfwEDzAlorgYdw0v1XVY7eFncaFWQd7mI+EaGsCyZo1xGG0OQLnkd
+         Scyw==
+X-Gm-Message-State: AOJu0Yzl3XgrnQRMA/XkRDatS81EnU6cRpslUejmdoS84m5NfauSllqX
+        YZt0I+9IJ5V7bBGSNXSfToU=
+X-Google-Smtp-Source: AGHT+IEcsrZHbaaDmbm14trm3iRPQ/jMPC+Eq+sgQc2EM7fLbyxc0tHzfuIhRzgwgflQYmX2JeG8Xw==
+X-Received: by 2002:a05:6830:1d4d:b0:6b9:3f64:4e8c with SMTP id p13-20020a0568301d4d00b006b93f644e8cmr3801997oth.9.1700676514478;
+        Wed, 22 Nov 2023 10:08:34 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id q7-20020ad44027000000b00670a8921170sm5073923qvp.112.2023.11.22.10.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 10:08:33 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 0B8EA27C0054;
+        Wed, 22 Nov 2023 13:08:33 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 22 Nov 2023 13:08:33 -0500
+X-ME-Sender: <xms:n0NeZRgTGjBg0pIFaPYQENHU8-WejmEhr-ha4Wy62lnRUpe0Wa3Plg>
+    <xme:n0NeZWDNV5p-lxm_pWz1ZfxW17XRYkJDi5RBjmFY82rVorMf-k7aT_llDoCFdj8lH
+    XhE7qOJMHWpla33ew>
+X-ME-Received: <xmr:n0NeZREKxyXn24JOyVDqGwzbWTpcHgkpbE2j2qD4jXT6OBT2icpwdzik37M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddtjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephfetvdfgtdeukedvkeeiteeiteejieehvdetheduudejvdektdekfeeg
+    vddvhedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
+    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
+    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:n0NeZWT7WTNByJkkQy-Tb4QyojNduQT0t3LNMda79u3uRb_G7yzteQ>
+    <xmx:n0NeZeyln2lcoywVlL7F_zO4jhPxOwTmIPE9HrEeg7m-sDVT-0eX-Q>
+    <xmx:n0NeZc5JgoZEdypXZCK0ldWeu2KHybgy9iGNTHwsUGUY2lpGS2aE2g>
+    <xmx:oUNeZan2_Dd24HQlmKIo2fcYVBtZSbTHbiA1Wa03UEUMdLo0UFP10WMQh4Q>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Nov 2023 13:08:30 -0500 (EST)
+Date:   Wed, 22 Nov 2023 10:08:06 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [REPOST PATCH] srcu: Use try-lock lockdep annotation for
+ NMI-safe access.
+Message-ID: <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
+References: <20231121123315.egrgopGN@linutronix.de>
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-16-ryncsn@gmail.com>
- <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
-In-Reply-To: <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Thu, 23 Nov 2023 02:08:03 +0800
-Message-ID: <CAMgjq7DsUBr4CgrJi9VKTgU3_tyrD0c5dLS_zU7akm31PQy-5g@mail.gmail.com>
-Subject: Re: [PATCH 15/24] mm/swap: avoid an duplicated swap cache lookup for
- SYNCHRONOUS_IO device
-To:     Chris Li <chrisl@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121123315.egrgopGN@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,93 +113,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8822=E6=97=A5=
-=E5=91=A8=E4=B8=89 01:18=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > When a xa_value is returned by the cache lookup, keep it to be used
-> > later for workingset refault check instead of doing the looking up agai=
-n
-> > in swapin_no_readahead.
-> >
-> > This does have a side effect of making swapoff also triggers workingset
-> > check, but should be fine since swapoff does effect the workload in man=
-y
-> > ways already.
->
-> I need to sleep on it a bit to see if this will create another problem or=
- not.
->
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/swap_state.c | 10 ++++------
-> >  1 file changed, 4 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index e057c79fb06f..51de2a0412df 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -872,7 +872,6 @@ static struct page *swapin_no_readahead(swp_entry_t=
- entry, gfp_t gfp_mask,
-> >  {
-> >         struct folio *folio;
-> >         struct page *page;
-> > -       void *shadow =3D NULL;
-> >
-> >         page =3D alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id(=
-));
-> >         folio =3D (struct folio *)page;
-> > @@ -888,10 +887,6 @@ static struct page *swapin_no_readahead(swp_entry_=
-t entry, gfp_t gfp_mask,
-> >
-> >                 mem_cgroup_swapin_uncharge_swap(entry);
-> >
-> > -               shadow =3D get_shadow_from_swap_cache(entry);
-> > -               if (shadow)
-> > -                       workingset_refault(folio, shadow);
-> > -
-> >                 folio_add_lru(folio);
-> >
-> >                 /* To provide entry to swap_readpage() */
-> > @@ -922,11 +917,12 @@ struct page *swapin_readahead(swp_entry_t entry, =
-gfp_t gfp_mask,
-> >         enum swap_cache_result cache_result;
-> >         struct swap_info_struct *si;
-> >         struct mempolicy *mpol;
-> > +       void *shadow =3D NULL;
-> >         struct folio *folio;
-> >         struct page *page;
-> >         pgoff_t ilx;
-> >
-> > -       folio =3D swap_cache_get_folio(entry, vmf, NULL);
-> > +       folio =3D swap_cache_get_folio(entry, vmf, &shadow);
-> >         if (folio) {
-> >                 page =3D folio_file_page(folio, swp_offset(entry));
-> >                 cache_result =3D SWAP_CACHE_HIT;
-> > @@ -938,6 +934,8 @@ struct page *swapin_readahead(swp_entry_t entry, gf=
-p_t gfp_mask,
-> >         if (swap_use_no_readahead(si, swp_offset(entry))) {
-> >                 page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx=
-, vmf->vma->vm_mm);
-> >                 cache_result =3D SWAP_CACHE_BYPASS;
-> > +               if (shadow)
-> > +                       workingset_refault(page_folio(page), shadow);
->
-> It is inconsistent why other flavors of readahead do not do the
-> workingset_refault here.
+On Tue, Nov 21, 2023 at 01:33:15PM +0100, Sebastian Andrzej Siewior wrote:
+> It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+> triggers a lockdep if used from NMI because lockdep expects a deadlock
+> since nothing disables NMIs while the lock is acquired.
+> 
 
-Because of the readaheads and swapcache. Every readahead pages need to
-be checked by workingset_refault with a different shadow (and so a
-different xarray entry search is needed). And since other swapin path
-need to insert page into swapcache, they will do extra xarray
-search/insert anyway so this optimization won't work.
 
-> I suggest keeping the workingset_refault in swapin_no_readahead() and
-> pass the shadow argument in.
+Thanks for reposting!
 
-That sounds good to me.
+I would add a paragraph here explaining why the commit is culprit:
+
+This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
+lockdep dependencies") annotates synchronize_srcu() as a write lock
+usage (so that srcu_read_lock(); synchronize_srcu() deadlock can be
+found), the side effect is that the lock srcu_struct now has a USED
+usage in normal contexts, so it conflicts with a USED_READ usage in NMI.
+But this shouldn't cause a real deadlock because the write lock usage
+from synchronize_srcu() is a fake one and only used for read/write
+deadlock detection.
+
+> Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+> complains if used from NMI.
+> 
+> Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+> Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> 
+> This is a repost of
+> 	https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+> 
+> Based on the discussion there I *think* this is preferred over the NMI
+> check in lock_acquire().
+> But then PeterZ also pointed out that he has a problem with
+> 	f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+> 
+> because trace_.*_rcuidle machinery. This looks okay because the _rcuidle
+> part is using SRCU and the rcu_dereference_raw() tracepoint_func is
+> using RCU + SRCU in its free part.
+> 
+
+Yeah, I think we don't have more problems (famous last words).
+
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+
+Regards,
+Boqun
+
+>  include/linux/rcupdate.h |    6 ++++++
+>  include/linux/srcu.h     |    2 +-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(stru
+>  	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+>  }
+>  
+> +static inline void rcu_try_lock_acquire(struct lockdep_map *map)
+> +{
+> +	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
+> +}
+> +
+>  static inline void rcu_lock_release(struct lockdep_map *map)
+>  {
+>  	lock_release(map, _THIS_IP_);
+> @@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
+>  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>  
+>  # define rcu_lock_acquire(a)		do { } while (0)
+> +# define rcu_try_lock_acquire(a)	do { } while (0)
+>  # define rcu_lock_release(a)		do { } while (0)
+>  
+>  static inline int rcu_read_lock_held(void)
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe
+>  
+>  	srcu_check_nmi_safety(ssp, true);
+>  	retval = __srcu_read_lock_nmisafe(ssp);
+> -	rcu_lock_acquire(&ssp->dep_map);
+> +	rcu_try_lock_acquire(&ssp->dep_map);
+>  	return retval;
+>  }
+>  
