@@ -2,188 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248947F4FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2C97F4FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjKVSeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        id S1344090AbjKVSe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbjKVSeN (ORCPT
+        with ESMTP id S1344284AbjKVSe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:34:13 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2577A197;
-        Wed, 22 Nov 2023 10:34:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kaDepRrKSatkbP7lGe4wvxw6H4f80OZDj8AvU/U2unDujwuHIbmk+YTKPoIDIzAKGlNPeqwYzPnirEYlGXRTS41QIO/J2OH02PZVZARsLY7XuZMtsMrfQ9vSnE2Shwz1pcXR7yQ3CbVcQ9Hu5xtHOtGXo5T/vf4CIWBzZRiC9nl4TpOC2T33hUY5PBMXziG0vqiTue21TVaeya5NDEJNU40X0DBUS1mcpXnIXpQOgyDUJjf8kAew6ohBy9ea03Se6rcBLlNtXnBVSC/ogAfeIZbsk+5zXcm1BWcdd9wIa8KZ6Xa9pg9baTHhDBB3WTkaXTkvhJC9wI41Y2BQiQ9BWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GIZBvDm17URAfqmu/ONCPQMqb+iziDA8Zn42KXNlYaQ=;
- b=WbHlGN2/RGP8cZA53/1R3ckHhOQDmUARuFkDV3ic6TPSj1D2Hc0+furb2FJwzquaRFklH32/KhknKN84HON0HbdcJ0jfi+TNzOGLEWWH7aWSFNylY8ufdcxjFAO6FjvgJMALxk+Xd6UuDQOtxTMm72ChCQLshZqt1gtEw3tbG4Z6dfbTmMXKo9X0cMT1u2kmN7hE1ULQS6QWpegxiyj5gqAkUVd6zHRifRMCvgZgVFfYlYZISGoXr73dfkf4lWf7zI1XrSsd+O2dDW7rklyyEY6SiPz8eUNCfw9rctfIotbu03zmU8W3DhLipzLtIYsQaBmzHHVzXfQYJYfcttoLSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GIZBvDm17URAfqmu/ONCPQMqb+iziDA8Zn42KXNlYaQ=;
- b=NchDOCD6RFEH/FtzHFh+gWmh8BjVjBDP2TdFgfDjHoc2vm7DjJdnXpasuNLvIRQXVT6CDl4xIcEpmV9i+m7+YVZ8Z0dpyVwjSskEyWHru9fmKIVXCYZRH4UvOo8bZYWVUYv6u9XVqVa4addWE/F/niQwDaMqkl/+OT+01saN8EmYKDjbE+xYOFWkl1T0IkBDpRpTbUS8gnU76sf/tqvbDR6iHMht/3J4IJwXzZ4WqnA2bd70jHax04NRmD2WvMG5bYczUzY8YgxX09muwiyhIGH+6SvcuYn5m+BhI382gWzK9UTwkuBaEENr0W3AcPk9LCuAsL8jTX6TYrCjI37vfw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by CH0PR12MB5058.namprd12.prod.outlook.com (2603:10b6:610:e1::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 18:34:06 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::44b4:6f7e:da62:fad4]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::44b4:6f7e:da62:fad4%3]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
- 18:34:06 +0000
-From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To:     Min Li <lnimi@hotmail.com>
-Cc:     richardcochran@gmail.com, lee@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH net-next v4 1/1] ptp: clockmatrix: support 32-bit
- address space
-References: <MW5PR03MB693280FDB441C89906BE044BA0B1A@MW5PR03MB6932.namprd03.prod.outlook.com>
-Date:   Wed, 22 Nov 2023 10:33:50 -0800
-In-Reply-To: <MW5PR03MB693280FDB441C89906BE044BA0B1A@MW5PR03MB6932.namprd03.prod.outlook.com>
-        (Min Li's message of "Wed, 15 Nov 2023 10:10:53 -0500")
-Message-ID: <87r0khocxd.fsf@nvidia.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0238.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::33) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+        Wed, 22 Nov 2023 13:34:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A438F10C1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:34:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700678060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSq4Z/8e2pXUHkDOJ7PPcDe9XGNiH9I/kXRfecMzXmE=;
+        b=dtMb3Pm1aDoYmhwNN/aBkTL4w4mk3iT8ube4dLsNmBbuJETQNPkr/gWXnQqWf5C1PfknuE
+        Apb5S5fZ8cwhYyeKAcpKeJZOMFo+VYdTxRATND/fZ54+Jf5HGEGFnjXHLWBK0lJFlSP74k
+        1wK4AHrA3mXsU478CdzmDEEdoQ7LU8Y=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-138-RrQkknhuOYiYeKWjQ__N3g-1; Wed, 22 Nov 2023 13:34:19 -0500
+X-MC-Unique: RrQkknhuOYiYeKWjQ__N3g-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50aa6be164bso4747104e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:34:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700678058; x=1701282858;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CSq4Z/8e2pXUHkDOJ7PPcDe9XGNiH9I/kXRfecMzXmE=;
+        b=akPDlc9RzyLxLef5Q+uQZHPlTlCi1DJJRLuVIudKbxkaF4eHfzpgQzvhfCyMxO950k
+         Kd/OcN9EN0PsUQ7VkHBEN/FNNEbzFPfhvNxgvg+nBgPXyf6PE1wJI68s0fclDP642943
+         uDLd/XIp+jilOSDPGJ2qPrArlHOrWD75h3KetA4A1K6QsWsQg2yzCWlBYCn2ER154BYg
+         6JOm4c1oCgDWyg0jX8miIi7XcO4KYGiuOeaIN0yDue7beEvtmu0b1wFZNkERALDt6B7P
+         QAzc4rFjaFYkz5sl2Ut9G9vptWujOXy0yg+BfATdZhr3HnTzH5NeKIiV+ODAAwrTkggW
+         loEg==
+X-Gm-Message-State: AOJu0Yx0ig52xWqVUTtVnPRObuFrZotnl51zTh5ynOgMEkoBSriN1EG0
+        T+7OIC1CqqCPP0h1orO+n9uNZ7v1Cida4wC/gWnic8IsFFxZubpQ8Oupvj5E+mH3obW9ttUSdad
+        lFkXcTiWiDh25h1akHVoVG6BS
+X-Received: by 2002:a05:6512:3b21:b0:507:c763:27b7 with SMTP id f33-20020a0565123b2100b00507c76327b7mr3162720lfv.40.1700678057735;
+        Wed, 22 Nov 2023 10:34:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFh59WQluakgPfC165eV+EpD7wmuDkQBJLEXSCOkuN9LT5IrE4iptKGqLO7vhOdGJJyfRH1LA==
+X-Received: by 2002:a05:6512:3b21:b0:507:c763:27b7 with SMTP id f33-20020a0565123b2100b00507c76327b7mr3162697lfv.40.1700678057297;
+        Wed, 22 Nov 2023 10:34:17 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id r18-20020aa7cfd2000000b0053f10da1105sm68825edy.87.2023.11.22.10.34.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 10:34:16 -0800 (PST)
+Message-ID: <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+Date:   Wed, 22 Nov 2023 19:34:15 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CH0PR12MB5058:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e8aff1c-dc1f-4268-db93-08dbeb899ba1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xhvu32TEbF+kBmkHQKp5UMpRNtNz7OCqhH5FXihs0uaC0ejJWaqop3QBxCzvmEKyvMxM+y2Ckznt35ncpzOENRGKRMJYZ+7pANtMgTmqw2V0mxonLAv7KfxVN9yvb8Q/C2LkraQiBc2S0M5cdB0aUBB5dB/8u4ICdTqfa4krUmRvyRD0kXa6pByYDyVi3mHaxqCtgBcLXrnjVkcIv/MoFfDXd+qf3O91CWHkuO8bCB0DHvkbgNL2GkB7yAYyz/XDWPxRC+4jOukpy7Z2RczL/XbyGPr3DLB6MR7iExP0hMM9Rq5wx9/hsLuBVPOo/Km14YYqTs/Idtd+4qKwgaLwmvzP4hq3ZjyXDL2VisXUi8jDINGZ7sLHbhQGeqFrpIJZ+hbJOoN3JHQyri3eMVhGb0HHrf6OO66H3Xe+AHolVzfqHbjwSUZqJFWvyHkXvg1CRDXxbuyydB8e1FndPduOzP4qH3ITcUFlpq8f+SOKOUhv6Sful0auyfPfeAk/FJzP6o9gH/hWp6w51B/t8qXzJTnN6Qe9TYwPyg5q+S4SPSBkmDGtUEMMnmTZBnENIVdY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(346002)(39860400002)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(8676002)(6666004)(4326008)(6506007)(86362001)(5660300002)(8936002)(45080400002)(2906002)(26005)(66476007)(66556008)(38100700002)(66946007)(36756003)(478600001)(83380400001)(6512007)(6486002)(41300700001)(316002)(2616005)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bUjhsiYmLOYaMVpo8mBOJyqNJT/4hNLdFrrFT4ifi4YAVtMQ/jBj6vTIwuO1?=
- =?us-ascii?Q?mDJyB34Hl+5JBd7t15p5IpxH18JNyf2rIgKvIoU7r+Nadk5X/Lribsx6b/Vn?=
- =?us-ascii?Q?zKI5jwWK5Q8kbGBGXryZGRALi6uqI9jeUENyQSxsV5e/Y9LBfLd8UYuclBpE?=
- =?us-ascii?Q?j0PXTQjMNkbgKoIj/KCI3rgi3yrkrDvdF8UYngXEvEZQuJ6BPQOxgA3UOptz?=
- =?us-ascii?Q?BYuxMHKNIVSWXCvRE8GS1ZEb1QkCx79/06V1X8JzHcKTsYggkLk0alyraZfd?=
- =?us-ascii?Q?bAW7QG/2qw4BlMrRjlUUJD3fL4jtF1p/9fhoR2q3AakKzaz+ro0bqtpcGN3m?=
- =?us-ascii?Q?TS2jnhUMoNV+E+v6HCb2azvnxqUR5RsC4y0GHQTH2nP+M69WHcu/mc3Bw469?=
- =?us-ascii?Q?2Uf0J+6UwNScK9xm9kF3puCji/oRzo3+WTWAQKTGDbhcCX177dDk2YMaL9Iw?=
- =?us-ascii?Q?wOjkEiJDwWxIvHcMNXJByDwGwP02r4vjbQA/KKob3c41r87pxDIIUCTG5R7s?=
- =?us-ascii?Q?OIi1z1Zs+uM64ppXSnjRw0HHBwJiXnIHxlvHyzO9+BB+C2QFgjLujPjkJNbd?=
- =?us-ascii?Q?YKBwZQHIqKklE/8Fi5EpgbUovU79pnb64EW4DedsuWe/f71CX5hzjbPXUIOZ?=
- =?us-ascii?Q?QyGXn/i9UxMg+iWoJNRkdbOAGkOuzMWmDc2HJHzudufMasOgtfIcddxthIp1?=
- =?us-ascii?Q?qZFnmm/SISKP82Nz3m8cje9wrkxwlcjsaS6rDbFFHJaA9zgKR64iRq9qelP/?=
- =?us-ascii?Q?qYIgTTu/rLLCp5hXRtTIfOowHa1rvjM7Swi9IHs0IDdhppIy1MBA8Z0daB7w?=
- =?us-ascii?Q?HiSFl6ENFEHfc0WmXdnBANEt6aWaALPQmSpWZl5XpOgCQN582bJosaRSGkVQ?=
- =?us-ascii?Q?v+65PwKmOWQegv8gjTR+oiGXic7TOwMp+KVr0rBX7b2KW2JpE8NBMpZYFt/d?=
- =?us-ascii?Q?qkhVKiltlecnzX9pk3+JGnkocnpSHN20FksFquqHQzWFzv6MAdgpz1LNe0YH?=
- =?us-ascii?Q?6OptSdySPaBL+hr3R66Zi4tQWYUkx1oyHOaKTbazIPAut9VzpA3PlLFR8T1T?=
- =?us-ascii?Q?4LnHRqi+rhWGgi8blo7XE2zUSCIXE5odu8V2Atm1oCmU2jfPQ6Dcd/VKpMTp?=
- =?us-ascii?Q?yWqSSV+QC5Es6uDHfZ9fWU3WILYRoGKXn7QSdmjMeX1zRYON11udwntSCwSC?=
- =?us-ascii?Q?h8SZMJ4zPUPA87VrrckJUCLIV4siW+hDiEETkfYXQcOG7SPBnTGn8eauVEWF?=
- =?us-ascii?Q?TXnu/P341ki3rX//50Yx36fz1OpsZhEIT2cg9Owc0jkAwDyR98OwW7QJeq6Z?=
- =?us-ascii?Q?BBie0abVWIPEacFSZhbJp2F2i2/f5M/c4dMdF+CKUftwsZ9+3YxPFDp6dCk5?=
- =?us-ascii?Q?8z9fTkkbrseaq5Dz/68PqWDYIqoULWgDgAeRuPrxeWDy+2HUEultZP6vmaFk?=
- =?us-ascii?Q?m7yKU3zJON1BVUPJRPTqQo9M9R+xOcHoJTs7o5rfKBmhpaqRSmlKrLc4Y8y+?=
- =?us-ascii?Q?OT/utx41DPvTcs0ZkYNcgPIGG2FOfifTP60PRh4BSh++mXt7iYMkseB8rZVE?=
- =?us-ascii?Q?uxjTr1+U+KZEoq67L7p4VWY+OmJd45Pc5IFWsMMulKlhiHMos8YWXcjyOlXC?=
- =?us-ascii?Q?pA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e8aff1c-dc1f-4268-db93-08dbeb899ba1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 18:34:06.0270
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fGPqNjcSDwVxE5VrJUlKdFfOO/cSYViipk0gBoyHzhDuWSFFApWRP0QHBc2uAA1rda5Xx6oJ8k1PCRuqUXlGhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5058
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Content-Language: en-US, nl
+To:     Werner Sembach <wse@tuxedocomputers.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+        Jelle van der Waa <jelle@vdwaa.nl>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        linux-input@vger.kernel.org, ojeda@kernel.org,
+        linux-leds@vger.kernel.org
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+ <ZSe1GYLplZo5fsAe@duo.ucw.cz>
+ <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
+ <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+ <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
+ <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
+ <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov, 2023 10:10:53 -0500 Min Li <lnimi@hotmail.com> wrote:
-> From: Min Li <min.li.xe@renesas.com>
->
-> We used to assume 0x2010xxxx address. Now that
-> we need to access 0x2011xxxx address, we need
-> to support read/write the whole 32-bit address space.
->
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
-> - Drop MAX_ABS_WRITE_PHASE_PICOSECONDS advised by Rahul
-> - Apply SCSR_ADDR to scrach register in idtcm_load_firmware advised by Simon
-> - Apply u32 to base in idtcm_output_enable advised by Simon
-> - Correct sync_ctrl0/1 parameter position for idtcm_write advised by Simon
->
->  drivers/ptp/ptp_clockmatrix.c    |  71 ++--
->  drivers/ptp/ptp_clockmatrix.h    |  32 +-
->  include/linux/mfd/idt8a340_reg.h | 542 ++++++++++++++++---------------
->  3 files changed, 331 insertions(+), 314 deletions(-)
->
-> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-> index f6f9d4adce04..1d5da77502e6 100644
-> --- a/drivers/ptp/ptp_clockmatrix.c
-> +++ b/drivers/ptp/ptp_clockmatrix.c
+Hi Werner,
 
-<snip>
+On 11/21/23 14:29, Werner Sembach wrote:
+> 
+> Am 21.11.23 um 13:20 schrieb Hans de Goede:
+>> Hi Werner,
+>>
+>> On 11/21/23 12:33, Werner Sembach wrote:
+>>> Hi,
+>>>
+>>> Am 20.11.23 um 21:52 schrieb Pavel Machek:
+>>>> Hi!
+>>>>
+>>>>>>> So... a bit of rationale. The keyboard does not really fit into the
+>>>>>>> LED subsystem; LEDs are expected to be independent ("hdd led") and not
+>>>>>>> a matrix of them.
+>>>>>> Makes sense.
+>>>>>>
+>>>>>>> We do see various strange displays these days -- they commonly have
+>>>>>>> rounded corners and holes in them. I'm not sure how that's currently
+>>>>>>> supported, but I believe it is reasonable to view keyboard as a
+>>>>>>> display with slightly weird placing of pixels.
+>>>>>>>
+>>>>>>> Plus, I'd really like to play tetris on one of those :-).
+>>>>>>>
+>>>>>>> So, would presenting them as auxdisplay be acceptable? Or are there
+>>>>>>> better options?
+>>>>>> It sounds like a fair use case -- auxdisplay are typically simple
+>>>>>> character-based or small graphical displays, e.g. 128x64, that may not
+>>>>>> be a "main" / usual screen as typically understood, but the concept is
+>>>>>> a bit fuzzy and we are a bit of a catch-all.
+>>>>>>
+>>>>>> And "keyboard backlight display with a pixel/color per-key" does not
+>>>>>> sound like a "main" screen, and having some cute effects displayed
+>>>>>> there are the kind of thing that one could do in the usual small
+>>>>>> graphical ones too. :)
+>>>>>>
+>>>>>> But if somebody prefers to create new categories (or subcategories
+>>>>>> within auxdisplay) to hold these, that could be nice too (in the
+>>>>>> latter case, I would perhaps suggest reorganizing all of the existing
+>>>>>> ones while at it).
+>>>>> One could also reasonably make the argument that controlling the
+>>>>> individual keyboard key backlights should be part of the input
+>>>>> subsystem. It's not a display per se. (Unless you actually have small
+>>>>> displays on the keycaps, and I think that's a thing too.)
+>>>> While it would not be completely crazy to do that... I believe the
+>>>> backlight is more of a display and less of a keyboard. Plus input
+>>>> subystem is very far away from supporting this, and we had no input
+>>>> from input people here.
+>>>>
+>>>> I don't think LED subsystem is right place for this, and I believe
+>>>> auxdisplay makes slightly more sense than input.
+>>>>
+>>>> Unless someone steps up, I'd suggest Werner tries to implement this as
+>>>> an auxdisplay. [And yes, this will not be simple task. RGB on LED is
+>>>> different from RGB on display. But there are other LED displays, so
+>>>> auxdisplay should handle this. Plus pixels are really funnily
+>>>> shaped. But displays with missing pixels -- aka holes for camera --
+>>>> are common in phones, and I believe we'll get variable pixel densities
+>>>> -- less dense over camera -- too. So displays will have to deal with
+>>>> these in the end.]
+>>> Another idea I want to throw in the mix:
+>>>
+>>> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
+>>>
+>>> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
+>> That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
+>>
+>> That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
+> 
+> I would suggest a simple "enable" entry. Default is 1. When set to 0 the kernel driver no longer does anything.
 
-> @@ -1705,7 +1720,7 @@ static s32 idtcm_getmaxphase(struct ptp_clock_info *ptp __always_unused)
->  }
->  
->  /*
-> - * Internal function for implementing support for write phase offset
-> + * Maximum absolute value for write phase offset in picoseconds
+I'm not in favor of using "enable" as sysfs attribute for this,
+I would like to see a more descriptive name, how about:
 
-This documentation comment is wrong (this is meant for
-idtcm_getmaxphase). I think you might be generating patches without
-rebasing on the latest net-next tree?
+"disable_kernel_kbd_backlight_support"
 
->   *
->   * @channel:  channel
->   * @delta_ns: delta in nanoseconds
-> @@ -1717,6 +1732,7 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
->  	u8 i;
->  	u8 buf[4] = {0};
->  	s32 phase_50ps;
-> +	s64 offset_ps;
->  
->  	if (channel->mode != PTP_PLL_MODE_WRITE_PHASE) {
->  		err = channel->configure_write_phase(channel);
-> @@ -1724,7 +1740,8 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
->  			return err;
->  	}
->  
-> -	phase_50ps = div_s64((s64)delta_ns * 1000, 50);
-> +	offset_ps = (s64)delta_ns * 1000;
-> +	phase_50ps = div_s64(offset_ps, 50);
+And then maybe also have the driver actually unregister
+the LED class device ?
 
-Sorry, I am not sure what this change has to do with 32-bit address
-space support. Seems like this was introduced due to not rebasing
-properly on top of latest changes?
+Or just make the support inactive when writing 1 to
+this and allow re-enabling it by writing 0?
 
->  
->  	for (i = 0; i < 4; i++) {
->  		buf[i] = phase_50ps & 0xff;
+> Questions:
+> 
+> - Should the driver try to reset the settings to boot default? Or just leave the device in the current state? With the former I could see issues that they keyboard is flashing when changing from kernelspace control to userspace control. With the later the burden on bringing the device to a know state lies with the userspace driver.
 
-<snip>
+My vote would go to leave the state as is. Even if the hw
+does not support state readback, then the userspace code
+can readback the state before writing 1 to
+"disable_kernel_kbd_backlight_support"
 
---
-Thanks,
+> - Should this be a optional entry that only shows up on drivers supporting it, or could this implemented in a generic way affecting all current led entries?
 
-Rahul Rameshbabu
+IMHO this should be optional. If we go with the variant
+where writing 1 to "disable_kernel_kbd_backlight_support"
+just disables support and 0 re-enables it then I guess
+we could have support for this in the LED-core, enabled
+by a flag set by the driver.
+
+If we go with unregistering the led class device,
+then this needs to be mostly handled in the driver.
+
+Either way the kernel driver should know about this even
+if it is mostly handled in the LED core so that e.g.
+it does not try to restore settings on resume from suspend.
+
+> - I guess UPower integration for the userspace driver could be archived with https://www.kernel.org/doc/html/latest/leds/uleds.html however this limited to brightness atm, so when accent colors actually come to UPower this would also need some expansion to be able to pass a preferred color to the userspace driver (regardless of what that driver is then doing with that information).
+
+Using uleds is an interesting suggestion, but upower atm
+does not support LED class kbd_backlight devices getting
+hot-plugged. It only scans for them once at boot.
+
+Jelle van der Waa (a colleague of mine, added to the Cc)
+has indicated he is interested in maybe working on fixing
+this upower short-coming as a side project, once his
+current side-projects are finished.
+
+> On a different note: This approach does currently not cover the older EC controlled 3 zone keyboards from clevo. Here only the kernel has access access to the device so the kernel driver has to expose all functionality somehow. Should this be done by an arbitrarily designed platform device?
+
+Interesting question, this reminds there was a discussion
+about how to handle zoned keyboards using plain LED class
+APIs here:
+
+https://lore.kernel.org/linux-leds/544484b9-c0ac-2fd0-1f41-8fa94cb94d4b@redhat.com/
+
+Basically the idea discussed there is to create
+separate multi-color LED sysfs devices for each zone,
+using :rgb:kbd_zoned_backlight-xxx as postfix, e.g. :
+
+ :rgb:kbd_zoned_backlight-left
+ :rgb:kbd_zoned_backlight-middle
+ :rgb:kbd_zoned_backlight-right
+ :rgb:kbd_zoned_backlight-wasd
+
+As postfixes for the 4 per zone LED class devices
+and then teach upower to just treat this as
+a single kbd-backlight for the existing upower
+DBUS API and maybe later extend the DBUS API.
+
+Would something like this work for the Clevo
+case you are describing?
+
+Unfortunately this was never implemented but
+I think that for simple zoned backlighting
+this still makes sense. Where as for per key
+controllable backlighting as mention in
+$subject I do believe that just using hidraw
+access directly from userspace is best.
+
+Regards,
+
+Hans
+
+
+
