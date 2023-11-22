@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DA47F4A8E
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3787F4A8D
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbjKVPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:34:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S1344470AbjKVPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344429AbjKVPdu (ORCPT
+        with ESMTP id S235220AbjKVPdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:33:50 -0500
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9711012A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:21 -0800 (PST)
-Message-ID: <7e3d3ff6-b453-404b-beaf-cdd23fb3e1a2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700667199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WHIfzJtlqXfq2TWLtmGo3k1rJttIf/XhAniLKFtYdwE=;
-        b=UDaSKShgQKcYx/B7S56JiFK/4D+nhiZ7wFbbEp1dd7f7WkqqkO2uJgUVLHwVG4+SI15qo/
-        Rhy2/d0t7y1k6xI9p7hDueR2D+94dsjULH3MeT8D+HfqSIGaNS6fEi377SCGwmZTUEH/Wu
-        UTuPvqKI/Fl6+rkwqkiPiCy2cO4bRz4=
-Date:   Wed, 22 Nov 2023 23:32:50 +0800
+        Wed, 22 Nov 2023 10:33:45 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A5D10C7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cc3dd21b0cso10848097b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700667192; x=1701271992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
+        b=ZotGumm18UkjuzQlhCKJy3Pu0MPvp/26g9R0vuU7+vIzkLf/zZIC/dVBFj8r4LcvQ3
+         4KcAlrI11IjyvgjUHVZYV2Q6BsxRkhpzG45d88mQqmk7WCUGLkXGGwAy8jo4UFDh9UCZ
+         B9V2M4UcNPMpSYeZ3U79QjlYVG1mTdhrIMFyBpcnGwVkABFeCF6wiGtpG4iA+mUeLnw+
+         PAe8Q7QaA7hl8meuB085PBVal2zn4uaoiRQZ7nY23xgN+SC352eIE01y7Qni55kabB+y
+         TfxaCr66ufKsreFEYtxfffAOS0RYr07Huo8yR1eO5xVk3w1Go7zcwGIvArv1ugCWqm1s
+         11Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700667192; x=1701271992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
+        b=ssJH1EbvL8YGWHIIsNfz7xqLALFtKn6ycEr3RFGSsTx45P/BthwiggNjcjAjl969of
+         g+3h84ojB0fqjDicjbDGWj/dGI6+sTSOQnwDLKCXuQRQ3ccIU5WrM+NGsaQ83Z+uV/1n
+         Bosamz9ubQZd2ruvjhhKb0TqHv6nBUX7RXCzoL69Nhw2N1MWyg1mlHU0ZcEzFYUmnwPJ
+         HWO6hOEPQY1POpRU/ye4lZCw/iT2EqfCGqxBFelOlgq7ss338C03UTlgGsesmLhI3iyg
+         UkT5aqqSLdibHWZCnLkWH2LDwK1tJz/+yDza7lK42HdLRzFeSev4SFwdYk+B4jCMM5PJ
+         dcDg==
+X-Gm-Message-State: AOJu0Yzz3HleZm7cGE0DhGCY4u+VyizWUinQ1+T7+YAvaUeoxyO9mI/h
+        YF5Z0vQc/9VqLBfdJ/usaEJpIS45ni+O9dpLFn/RKUWJ6k5iAKyb
+X-Google-Smtp-Source: AGHT+IE4G4KLm9Drcj26SIBaIAfNRfhVxN87Ha1FgM1GhfP1jQnP9+8vTA0KhZEZWso2wFxW5NqLLp8rwsJG9A9wifg=
+X-Received: by 2002:a0d:efc2:0:b0:5cb:e3a9:5e77 with SMTP id
+ y185-20020a0defc2000000b005cbe3a95e77mr2755985ywe.6.1700667192512; Wed, 22
+ Nov 2023 07:33:12 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Question: memcg dirty throttle caused by low per-memcg dirty
- thresh
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Hellwig <hch@lst.de>, shr@devkernel.io,
-        neilb@suse.de, Michal Hocko <mhocko@suse.com>
-References: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
- <20231122144932.m44oiw5lufwkc5pw@quack3>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20231122144932.m44oiw5lufwkc5pw@quack3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231121175640.9981-1-mkoutny@suse.com> <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
+ <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
+In-Reply-To: <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Wed, 22 Nov 2023 10:33:01 -0500
+Message-ID: <CAM0EoMk_OgpjV7Huh-NHF_WxkJtQYGAMY+kutsL=qD9oYthh_w@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
+        Martin Wilck <mwilck@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 22:49, Jan Kara wrote:
-> Hello!
-> 
-> On Wed 22-11-23 17:38:25, Chengming Zhou wrote:
->> Sorry to bother you, we encountered a problem related to the memcg dirty
->> throttle after migrating from cgroup v1 to v2, so want to ask for some
->> comments or suggestions.
->>
->> 1. Problem
->>
->> We have the "containerd" service running under system.slice, with
->> its memory.max set to 5GB. It will be constantly throttled in the
->> balance_dirty_pages() since the memcg has dirty memory more than
->> the memcg dirty thresh.
->>
->> We haven't this problem on cgroup v1, because cgroup v1 doesn't have
->> the per-memcg writeback and per-memcg dirty thresh. Only the global
->> dirty thresh will be checked in balance_dirty_pages().
-> 
-> As Michal writes, if you allow too many memcg pages to become dirty, you
-> might be facing issues with page reclaim so there are actually good reasons
-> why you want amount of dirty pages in each memcg reasonably limited. Also
+On Wed, Nov 22, 2023 at 5:41=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Tue, Nov 21, 2023 at 05:37:37PM -0500, Jamal Hadi Salim <jhs@mojatatu.=
+com> wrote:
+> > What's speacial about the "tcf- '' that makes it work
+> > better for filtering than existing "cls_" prefix?
+>
+> tcf-foo is an alias.
+> cls_foo is the canonical name of the kernel module.
+>
+> request_module() + blacklist (as described in modprobe.d(5)) works only
+> when calling with the alias. The actual string is not important, being
+> an alias is the crux.
+>
 
-Yes, the memcg dirty limit (20%) is good for the memcg reclaim path.
-But for some workloads (like burst dirtier) which may only create many dirty
-pages in a short time, we want its memory.max 60% can be dirtied without
-being throttled. And this is not much harmful for its memcg reclaim path.
+Thanks for the explanation.
 
-> generally increasing number of available dirty pages beyond say 1GB is not
-> going to bring any benefit in the overall writeback performance. It may
-> still be useful in case you generate a lot of (or large) temporary files
-> which get quickly deleted and thus with high enough dirty limit they don't
-> have to be written to the disk at all. Similarly if the generation of dirty
-> data is very bursty (i.e. you generate a lot of dirty data in a short while
-> and then don't dirty anything for a long time), having higher dirty limit
-> may be useful. What is your usecase that you think you'll benefit from
-> higher dirty limit?
+> > What about actions (prefix "act_") etc?
+>
+> I focused only on "cls_" for the first iteration. Do you want me to look
+> at other analogous loads?
 
-I think it's the burst dirtier in our case, and we have good performance
-improvement if we change the global dirty_ratio to 60 just for testing.
+Yes, look at act_ and sch_
 
-> 
->> 2. Thinking
->>
->> So we wonder if we can support the per-memcg dirty thresh interface?
->> Now the memcg dirty thresh is just calculated from memcg max * ratio,
->> which can be set from /proc/sys/vm/dirty_ratio.
->>
->> We have to set it to 60 instead of the default 20 to workaround now,
->> but worry about the potential side effects.
->>
->> If we can support the per-memcg dirty thresh interface, we can set
->> some containers to a much higher dirty_ratio, especially for hungry
->> dirtier workloads like "containerd".
-> 
-> As Michal wrote, if this ought to be configurable per memcg, then
-> configuring dirty amount directly in bytes may be more sensible.
-> 
-
-Yes, "memory.dirty_limit" should be more sensible than "memory.dirty_ratio".
-
->> 3. Solution?
->>
->> But we could't think of a good solution to support this. The current
->> memcg dirty thresh is calculated from a complex rule:
->>
->> 	memcg dirty thresh = memcg avail * dirty_ratio
->>
->> memcg avail is from combination of: memcg max/high, memcg files
->> and capped by system-wide clean memory excluding the amount being used
->> in the memcg.
->>
->> Although we may find a way to calculate the per-memcg dirty thresh,
->> we can't use it directly, since we still need to calculate/distribute
->> dirty thresh to the per-wb dirty thresh share.
->>
->> R - A - B
->>     \-- C
->>
->> For example, if we know the dirty thresh of A, but wb is in C, we
->> have no way to distribute the dirty thresh shares to the wb in C.
->>
->> But we have to get the dirty thresh of the wb in C, since we need it
->> to control throttling process of the wb in balance_dirty_pages().
->>
->> I may have missed something above, but the problem seems clear IMHO.
->> Looking forward to any comment or suggestion.
-> 
-> I'm not sure I follow what is the problem here. In balance_dirty_pages() we
-> have global dirty threshold (tracked in gdtc) and memcg dirty threshold
-> (tracked in mdtc). This can get further scaled down based on the device
-> throughput (that is the difference between 'thresh' and 'wb_thresh') but
-> that is independent of the way mdtc->thresh is calculated. So if we provide
-> a different way of calculating mdtc->thresh, technically everything should
-> keep working as is.
-> 
-
-Sorry for the confusion. The problem is exactly how to calculate mdtc->thresh.
-
-R - A - B
-    \-- C
-
-Case 1:
-
-Suppose the C has "memory.dirty_limit" set, should we just use it as mdtc->thresh?
-I see the current code also consider the system clean memory in mdtc_calc_avail(),
-should we also need to consider it when "memory.dirty_limit" set?
-
-Case 2:
-
-Suppose the C hasn't "memory.dirty_limit" set, but A has "memory.dirty_limit" set,
-how do we calculate the C mdtc->thresh ?
-
-Obviously we can't directly use the A "memory.dirty_limit", since it should be
-distributed to B and C ?
-
-So the problem is that I don't know how to reasonably calculate the mdtc->thresh,
-even given a memcg tree with some memcgs have "memory.dirty_limit" set. :\
-
-Thanks!
+cheers,
+jamal
+> Thanks,
+> Michal
