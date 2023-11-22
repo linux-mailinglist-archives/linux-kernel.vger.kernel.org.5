@@ -2,117 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3787F4A8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9BF7F4AA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344470AbjKVPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
+        id S1344417AbjKVPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjKVPdp (ORCPT
+        with ESMTP id S235262AbjKVPe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:33:45 -0500
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A5D10C7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cc3dd21b0cso10848097b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700667192; x=1701271992; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
-        b=ZotGumm18UkjuzQlhCKJy3Pu0MPvp/26g9R0vuU7+vIzkLf/zZIC/dVBFj8r4LcvQ3
-         4KcAlrI11IjyvgjUHVZYV2Q6BsxRkhpzG45d88mQqmk7WCUGLkXGGwAy8jo4UFDh9UCZ
-         B9V2M4UcNPMpSYeZ3U79QjlYVG1mTdhrIMFyBpcnGwVkABFeCF6wiGtpG4iA+mUeLnw+
-         PAe8Q7QaA7hl8meuB085PBVal2zn4uaoiRQZ7nY23xgN+SC352eIE01y7Qni55kabB+y
-         TfxaCr66ufKsreFEYtxfffAOS0RYr07Huo8yR1eO5xVk3w1Go7zcwGIvArv1ugCWqm1s
-         11Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700667192; x=1701271992;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
-        b=ssJH1EbvL8YGWHIIsNfz7xqLALFtKn6ycEr3RFGSsTx45P/BthwiggNjcjAjl969of
-         g+3h84ojB0fqjDicjbDGWj/dGI6+sTSOQnwDLKCXuQRQ3ccIU5WrM+NGsaQ83Z+uV/1n
-         Bosamz9ubQZd2ruvjhhKb0TqHv6nBUX7RXCzoL69Nhw2N1MWyg1mlHU0ZcEzFYUmnwPJ
-         HWO6hOEPQY1POpRU/ye4lZCw/iT2EqfCGqxBFelOlgq7ss338C03UTlgGsesmLhI3iyg
-         UkT5aqqSLdibHWZCnLkWH2LDwK1tJz/+yDza7lK42HdLRzFeSev4SFwdYk+B4jCMM5PJ
-         dcDg==
-X-Gm-Message-State: AOJu0Yzz3HleZm7cGE0DhGCY4u+VyizWUinQ1+T7+YAvaUeoxyO9mI/h
-        YF5Z0vQc/9VqLBfdJ/usaEJpIS45ni+O9dpLFn/RKUWJ6k5iAKyb
-X-Google-Smtp-Source: AGHT+IE4G4KLm9Drcj26SIBaIAfNRfhVxN87Ha1FgM1GhfP1jQnP9+8vTA0KhZEZWso2wFxW5NqLLp8rwsJG9A9wifg=
-X-Received: by 2002:a0d:efc2:0:b0:5cb:e3a9:5e77 with SMTP id
- y185-20020a0defc2000000b005cbe3a95e77mr2755985ywe.6.1700667192512; Wed, 22
- Nov 2023 07:33:12 -0800 (PST)
+        Wed, 22 Nov 2023 10:34:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B628E2100;
+        Wed, 22 Nov 2023 07:33:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA49FC433C9;
+        Wed, 22 Nov 2023 15:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700667226;
+        bh=5+/e5tq5KuWJ/VkW+PPP52Ao4aisjEYJ37b4EpqEbyw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=A3OjznV2ZAh9ekPo1xiC5goL4k3YDjbRQj7XjTKaR1hqg/bHqOE57vnBqlSGewe7o
+         /sKD8PlyFE9Wpd3hexh90WaJqb+GxhfpsYIncQKt5MuLY9gjwBJW7SPQR7y/+ik3E3
+         GhTNWNK/fLljgzbHe2tnUyWXKdxxQEfnRjQBYFaAklzscjlJ6x9J67hi/2/LPYcQol
+         fgvBlBxKB70au+IVm4EkjhQfmGQJlZxZWs9dBxYSVNfXbQGqGjb14RRae1OQfvZn2n
+         QgM5e4V+WGsHzwiAxp6XZN8Uc+KQjMv4zja3He3r2vkg7adoPuUyFilMSxmsGNRJQ3
+         SUvzfx4+FD76w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Martin Wilck <mwilck@suse.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, jejb@linux.ibm.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 01/15] scsi: sd: Fix sshdr use in sd_suspend_common()
+Date:   Wed, 22 Nov 2023 10:33:03 -0500
+Message-ID: <20231122153340.852434-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231121175640.9981-1-mkoutny@suse.com> <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
- <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
-In-Reply-To: <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Wed, 22 Nov 2023 10:33:01 -0500
-Message-ID: <CAM0EoMk_OgpjV7Huh-NHF_WxkJtQYGAMY+kutsL=qD9oYthh_w@mail.gmail.com>
-Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-        Martin Wilck <mwilck@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.12
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 5:41=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Tue, Nov 21, 2023 at 05:37:37PM -0500, Jamal Hadi Salim <jhs@mojatatu.=
-com> wrote:
-> > What's speacial about the "tcf- '' that makes it work
-> > better for filtering than existing "cls_" prefix?
->
-> tcf-foo is an alias.
-> cls_foo is the canonical name of the kernel module.
->
-> request_module() + blacklist (as described in modprobe.d(5)) works only
-> when calling with the alias. The actual string is not important, being
-> an alias is the crux.
->
+From: Mike Christie <michael.christie@oracle.com>
 
-Thanks for the explanation.
+[ Upstream commit 3b83486399a6a9feb9c681b74c21a227d48d7020 ]
 
-> > What about actions (prefix "act_") etc?
->
-> I focused only on "cls_" for the first iteration. Do you want me to look
-> at other analogous loads?
+If scsi_execute_cmd() returns < 0, it doesn't initialize the sshdr, so we
+shouldn't access the sshdr. If it returns 0, then the cmd executed
+successfully, so there is no need to check the sshdr. sd_sync_cache() will
+only access the sshdr if it's been setup because it calls
+scsi_status_is_check_condition() before accessing it. However, the
+sd_sync_cache() caller, sd_suspend_common(), does not check.
 
-Yes, look at act_ and sch_
+sd_suspend_common() is only checking for ILLEGAL_REQUEST which it's using
+to determine if the command is supported. If it's not it just ignores the
+error. So to fix its sshdr use this patch just moves that check to
+sd_sync_cache() where it converts ILLEGAL_REQUEST to success/0.
+sd_suspend_common() was ignoring that error and sd_shutdown() doesn't check
+for errors so there will be no behavior changes.
 
-cheers,
-jamal
-> Thanks,
-> Michal
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Link: https://lore.kernel.org/r/20231106231304.5694-2-michael.christie@oracle.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/sd.c | 53 ++++++++++++++++++++---------------------------
+ 1 file changed, 23 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index c4babb16dac73..1b7de2daf64a2 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -1681,24 +1681,21 @@ static unsigned int sd_check_events(struct gendisk *disk, unsigned int clearing)
+ 	return disk_changed ? DISK_EVENT_MEDIA_CHANGE : 0;
+ }
+ 
+-static int sd_sync_cache(struct scsi_disk *sdkp, struct scsi_sense_hdr *sshdr)
++static int sd_sync_cache(struct scsi_disk *sdkp)
+ {
+ 	int retries, res;
+ 	struct scsi_device *sdp = sdkp->device;
+ 	const int timeout = sdp->request_queue->rq_timeout
+ 		* SD_FLUSH_TIMEOUT_MULTIPLIER;
+-	struct scsi_sense_hdr my_sshdr;
++	struct scsi_sense_hdr sshdr;
+ 	const struct scsi_exec_args exec_args = {
+ 		.req_flags = BLK_MQ_REQ_PM,
+-		/* caller might not be interested in sense, but we need it */
+-		.sshdr = sshdr ? : &my_sshdr,
++		.sshdr = &sshdr,
+ 	};
+ 
+ 	if (!scsi_device_online(sdp))
+ 		return -ENODEV;
+ 
+-	sshdr = exec_args.sshdr;
+-
+ 	for (retries = 3; retries > 0; --retries) {
+ 		unsigned char cmd[16] = { 0 };
+ 
+@@ -1723,15 +1720,23 @@ static int sd_sync_cache(struct scsi_disk *sdkp, struct scsi_sense_hdr *sshdr)
+ 			return res;
+ 
+ 		if (scsi_status_is_check_condition(res) &&
+-		    scsi_sense_valid(sshdr)) {
+-			sd_print_sense_hdr(sdkp, sshdr);
++		    scsi_sense_valid(&sshdr)) {
++			sd_print_sense_hdr(sdkp, &sshdr);
+ 
+ 			/* we need to evaluate the error return  */
+-			if (sshdr->asc == 0x3a ||	/* medium not present */
+-			    sshdr->asc == 0x20 ||	/* invalid command */
+-			    (sshdr->asc == 0x74 && sshdr->ascq == 0x71))	/* drive is password locked */
++			if (sshdr.asc == 0x3a ||	/* medium not present */
++			    sshdr.asc == 0x20 ||	/* invalid command */
++			    (sshdr.asc == 0x74 && sshdr.ascq == 0x71))	/* drive is password locked */
+ 				/* this is no error here */
+ 				return 0;
++			/*
++			 * This drive doesn't support sync and there's not much
++			 * we can do because this is called during shutdown
++			 * or suspend so just return success so those operations
++			 * can proceed.
++			 */
++			if (sshdr.sense_key == ILLEGAL_REQUEST)
++				return 0;
+ 		}
+ 
+ 		switch (host_byte(res)) {
+@@ -3886,7 +3891,7 @@ static void sd_shutdown(struct device *dev)
+ 
+ 	if (sdkp->WCE && sdkp->media_present) {
+ 		sd_printk(KERN_NOTICE, sdkp, "Synchronizing SCSI cache\n");
+-		sd_sync_cache(sdkp, NULL);
++		sd_sync_cache(sdkp);
+ 	}
+ 
+ 	if ((system_state != SYSTEM_RESTART &&
+@@ -3907,7 +3912,6 @@ static inline bool sd_do_start_stop(struct scsi_device *sdev, bool runtime)
+ static int sd_suspend_common(struct device *dev, bool runtime)
+ {
+ 	struct scsi_disk *sdkp = dev_get_drvdata(dev);
+-	struct scsi_sense_hdr sshdr;
+ 	int ret = 0;
+ 
+ 	if (!sdkp)	/* E.g.: runtime suspend following sd_remove() */
+@@ -3916,24 +3920,13 @@ static int sd_suspend_common(struct device *dev, bool runtime)
+ 	if (sdkp->WCE && sdkp->media_present) {
+ 		if (!sdkp->device->silence_suspend)
+ 			sd_printk(KERN_NOTICE, sdkp, "Synchronizing SCSI cache\n");
+-		ret = sd_sync_cache(sdkp, &sshdr);
+-
+-		if (ret) {
+-			/* ignore OFFLINE device */
+-			if (ret == -ENODEV)
+-				return 0;
+-
+-			if (!scsi_sense_valid(&sshdr) ||
+-			    sshdr.sense_key != ILLEGAL_REQUEST)
+-				return ret;
++		ret = sd_sync_cache(sdkp);
++		/* ignore OFFLINE device */
++		if (ret == -ENODEV)
++			return 0;
+ 
+-			/*
+-			 * sshdr.sense_key == ILLEGAL_REQUEST means this drive
+-			 * doesn't support sync. There's not much to do and
+-			 * suspend shouldn't fail.
+-			 */
+-			ret = 0;
+-		}
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	if (sd_do_start_stop(sdkp->device, runtime)) {
+-- 
+2.42.0
+
