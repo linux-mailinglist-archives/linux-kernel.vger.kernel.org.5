@@ -2,150 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496177F3B29
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1D67F3B2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbjKVBUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        id S234923AbjKVBVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbjKVBUF (ORCPT
+        with ESMTP id S229464AbjKVBVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:20:05 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9FAD47
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:20:00 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32d895584f1so4384208f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:20:00 -0800 (PST)
+        Tue, 21 Nov 2023 20:21:22 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6552F199
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:21:19 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4629fac5a43so875603137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:21:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1700615999; x=1701220799; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HvyPJLsHa1UpzCT3gFYRcmMF12jLhkR+Wt3mbotrxRk=;
-        b=KumbRlB90XYBW8j7cdiG7lfmPdHCFrPGxonREYx92n57uObv+dpSrFN1MWPyH6P9bT
-         GV0T8MvT/dkPtWPBTJuV8phr6tHR83v7aZ6+49oGVX4ZLizdIgoEGyjXX5LQsHsJSNHR
-         WJ3zxWrhw4VR+gCeFRWSDo7l1hEu607aNeAVy3zITzef5OQEflMuBo1Mra4GJoIZpI2R
-         zJvvogcwIVeLgtvyqO5uZ7zGsK8IegQPL46qXpwCvqJ++ECxgckBzx8Wru6ejWNDaUdj
-         uMSxwZXTD6NG9nNsol/fb8myYhOzEj+OqW+HV704QcL/HBsP5oYpelvtZ70SGhE9f6Gm
-         LLoQ==
+        d=gmail.com; s=20230601; t=1700616078; x=1701220878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1jSDtkFwQYo0V9vh+o/S1qJObVftAqZ0HjjCO+CrpZs=;
+        b=K2pGx08zOcIiwXMVPMRGaTDL7biVp2NHkpJT8EKz6t19/Xps8/8etRB4aoDDL9ZOwA
+         94ELG06vgGS6VbOoXwh/RU3Ep+E4q5i5QXZx1jXlCOlOKsCD/Gn4LaqdzI2Mo7dEbs//
+         0qowZ4wpcG7qKEw12OEKT2Skoa/tv29EsFa+zZKgdcj01Yfv7nsO7nymOnlAcSQ8h46U
+         oR96vvFmI49rtzpjecb7HufssqMixBWJQjWkjMqWFf6ei2Us7m5mDvkpzagJ7C7Lirpe
+         m8QY+tcana9R8TS+2eQTqEszlgXNINePxsappzn6uvOXeZ7e0OWaRYkVY9aX0bHxBiEj
+         0+2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700615999; x=1701220799;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HvyPJLsHa1UpzCT3gFYRcmMF12jLhkR+Wt3mbotrxRk=;
-        b=um+DRr+FOxaCqWHOhbimDpjbaWGfi0wLmlTke610880u0HDLPQf3fEtI13pZax2Nxp
-         DshLaQ3d4H8DNDdrK2zu8IJ386VJuTn47+PPGJnHnTEahF+3Wtih+FcnVeZ/p2vcDjkl
-         wOBvELNsDCgILV82G+zXsa5NT6u246MW0kj0xY3XKm62U6g4Dj6pa1xziM0AH6VBdsOA
-         rY8mSS97Fh3Z4z5w6ojAoRTY7bnAAwekNQU4CmtLM/IHyuTz3i2pwGhnqeDin2YDiKeK
-         Og5ZG26BBs4lWgaH8c/EeSApbdMtNaQvHKKeRXSvWpPhrT0ulWG+gkBeHU7QJxszqGkR
-         gXsg==
-X-Gm-Message-State: AOJu0Yy4Dx3t3ipcUBVwzDtht6n/jiXmBTGWVJw1sG4y5vfI3PDiPOZF
-        D7UoShmxtzDGUlLFUfhQopDoJw==
-X-Google-Smtp-Source: AGHT+IHJ3uIIPfIuSkwAwBuVvZkulHL9TorT06BnqC1fY1KxSN0gT//3TraVnbvp+C8HbHOFbqTPtg==
-X-Received: by 2002:a5d:4b8b:0:b0:331:69a2:cad2 with SMTP id b11-20020a5d4b8b000000b0033169a2cad2mr441587wrt.62.1700615999272;
-        Tue, 21 Nov 2023 17:19:59 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id d8-20020adffbc8000000b003316aeb280esm14956932wrs.104.2023.11.21.17.19.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 17:19:58 -0800 (PST)
-Message-ID: <a838b389-4c0b-484d-98bd-33f8ef4c88f2@arista.com>
-Date:   Wed, 22 Nov 2023 01:19:52 +0000
+        d=1e100.net; s=20230601; t=1700616078; x=1701220878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1jSDtkFwQYo0V9vh+o/S1qJObVftAqZ0HjjCO+CrpZs=;
+        b=BZeY8yB1QRtIVLdgHE8Zjj5Z5GbitVlHyylTsTQ61xmOTbALv6+7b4yhdkPR/lkvTo
+         ORy3e3+axIFkF7+G84ghQEjiTfEPkQMtB4s+o6fF3hZ3M2d4Ij+Udr1nrzr9xiIs/FDE
+         F7liJ0OOtW+2pmN4WhE7DVDcSCqOP8zEfl7+4trm7CFoG6Yl3J/3QSa2Fq9pJe17PnB5
+         GgJm6VDCPEgBuFgZlbTKwrlBMAQKwdKQ69DKabq8Pm/kKvNf8+0JghiuVOS2bBNgPjEr
+         9SzEe6h3aO3bIm9+niHQgkcOQehOxmddFBpA/Ro5CmHXUB0nzEQS4U9HMAdrxa25/Uan
+         KGXw==
+X-Gm-Message-State: AOJu0YyEHrxwxsR9Eg+InOZt7PfKKC0Ri0l6tyYxBHHIFIJGEiKEIhQA
+        3El8ihZF4eohjsuBRrNilQfsHQBXbjX0ofRHDVU=
+X-Google-Smtp-Source: AGHT+IG2LMvK/BZf49hfutXSNQrwe9ElnGcS7qqjv7aljb0nWVvGvhjK07ml4uXR76QepU3OTwghOEGyx3dg+dxgZZY=
+X-Received: by 2002:a67:c094:0:b0:462:85e1:c46e with SMTP id
+ x20-20020a67c094000000b0046285e1c46emr1021918vsi.29.1700616078413; Tue, 21
+ Nov 2023 17:21:18 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] net/tcp: Don't store TCP-AO maclen on reqsk
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-References: <20231121020111.1143180-1-dima@arista.com>
- <20231121020111.1143180-8-dima@arista.com>
- <CANn89iK-=G7p5CMuJDjioa7+ynZRrOOpd7bK3kPzxCXzygfFCQ@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iK-=G7p5CMuJDjioa7+ynZRrOOpd7bK3kPzxCXzygfFCQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231102032330.1036151-1-chengming.zhou@linux.dev> <20231102032330.1036151-4-chengming.zhou@linux.dev>
+In-Reply-To: <20231102032330.1036151-4-chengming.zhou@linux.dev>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Wed, 22 Nov 2023 10:21:07 +0900
+Message-ID: <CAB=+i9RpyqWcv-XNp2Eg=dgbRE9EuhfMj=HOhqxOrJxq02jS1g@mail.gmail.com>
+Subject: Re: [PATCH v5 3/9] slub: Keep track of whether slub is on the
+ per-node partial list
+To:     chengming.zhou@linux.dev
+Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 08:13, Eric Dumazet wrote:
-> On Tue, Nov 21, 2023 at 3:01 AM Dmitry Safonov <dima@arista.com> wrote:
->>
->> This extra check doesn't work for a handshake when SYN segment has
->> (current_key.maclen != rnext_key.maclen). It could be amended to
->> preserve rnext_key.maclen instead of current_key.maclen, but that
->> requires a lookup on listen socket.
->>
->> Originally, this extra maclen check was introduced just because it was
->> cheap. Drop it and convert tcp_request_sock::maclen into boolean
->> tcp_request_sock::used_tcp_ao.
->>
->> Fixes: 06b22ef29591 ("net/tcp: Wire TCP-AO to request sockets")
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
->> ---
->>  include/linux/tcp.h   | 10 ++++------
->>  net/ipv4/tcp_ao.c     |  4 ++--
->>  net/ipv4/tcp_input.c  |  5 +++--
->>  net/ipv4/tcp_output.c |  9 +++------
->>  4 files changed, 12 insertions(+), 16 deletions(-)
->>
->> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
->> index 68f3d315d2e1..3af897b00920 100644
->> --- a/include/linux/tcp.h
->> +++ b/include/linux/tcp.h
->> @@ -155,6 +155,9 @@ struct tcp_request_sock {
->>         bool                            req_usec_ts;
->>  #if IS_ENABLED(CONFIG_MPTCP)
->>         bool                            drop_req;
->> +#endif
->> +#ifdef CONFIG_TCP_AO
->> +       bool                            used_tcp_ao;
-> 
-> Why adding another 8bit field here and creating a hole ?
+On Thu, Nov 2, 2023 at 12:24=E2=80=AFPM <chengming.zhou@linux.dev> wrote:
+>
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> Now we rely on the "frozen" bit to see if we should manipulate the
+> slab->slab_list, which will be changed in the following patch.
+>
+> Instead we introduce another way to keep track of whether slub is on
+> the per-node partial list, here we reuse the PG_workingset bit.
+>
+> We use __set_bit and __clear_bit directly instead of the atomic version
+> for better performance and it's safe since it's protected by the slub
+> node list_lock.
+>
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> ---
+>  mm/slub.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 03384cd965c5..eed8ae0dbaf9 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2116,6 +2116,25 @@ static void discard_slab(struct kmem_cache *s, str=
+uct slab *slab)
+>         free_slab(s, slab);
+>  }
+>
+> +/*
+> + * SLUB reuses PG_workingset bit to keep track of whether it's on
+> + * the per-node partial list.
+> + */
+> +static inline bool slab_test_node_partial(const struct slab *slab)
+> +{
+> +       return folio_test_workingset((struct folio *)slab_folio(slab));
+> +}
+> +
+> +static inline void slab_set_node_partial(struct slab *slab)
+> +{
+> +       __set_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
+> +}
+> +
+> +static inline void slab_clear_node_partial(struct slab *slab)
+> +{
+> +       __clear_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
+> +}
+> +
+>  /*
+>   * Management of partially allocated slabs.
+>   */
+> @@ -2127,6 +2146,7 @@ __add_partial(struct kmem_cache_node *n, struct sla=
+b *slab, int tail)
+>                 list_add_tail(&slab->slab_list, &n->partial);
+>         else
+>                 list_add(&slab->slab_list, &n->partial);
+> +       slab_set_node_partial(slab);
+>  }
+>
+>  static inline void add_partial(struct kmem_cache_node *n,
+> @@ -2141,6 +2161,7 @@ static inline void remove_partial(struct kmem_cache=
+_node *n,
+>  {
+>         lockdep_assert_held(&n->list_lock);
+>         list_del(&slab->slab_list);
+> +       slab_clear_node_partial(slab);
+>         n->nr_partial--;
+>  }
+>
+> @@ -4833,6 +4854,7 @@ static int __kmem_cache_do_shrink(struct kmem_cache=
+ *s)
+>
+>                         if (free =3D=3D slab->objects) {
+>                                 list_move(&slab->slab_list, &discard);
+> +                               slab_clear_node_partial(slab);
+>                                 n->nr_partial--;
+>                                 dec_slabs_node(s, node, slab->objects);
+>                         } else if (free <=3D SHRINK_PROMOTE_MAX)
+> --
 
-Sorry about it, it seems that I
-
-(1) checked with CONFIG_MPTCP=n and it seemed like a hole
-(2) was planning to unify it with other booleans under bitfileds
-(3) found that some bitfileds require protection as set not only
-    on initialization, so in the end it either should be flags+set_bit()
-    or something well-thought on (that separate bitfileds won't be
-    able to change at the same time)
-(4) decided to focus on fixing the issue, rather than doing 2 things
-    with the same patch
-
-Will fix it up for v2, thanks!
-
-> 
->>  #endif
->>         u32                             txhash;
->>         u32                             rcv_isn;
->> @@ -169,7 +172,6 @@ struct tcp_request_sock {
->>  #ifdef CONFIG_TCP_AO
->>         u8                              ao_keyid;
->>         u8                              ao_rcv_next;
->> -       u8                              maclen;
-> 
-> Just rename maclen here to  used_tcp_ao ?
-> 
->>  #endif
->>  };
->>
-
-Thanks,
-             Dmitry
-
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
