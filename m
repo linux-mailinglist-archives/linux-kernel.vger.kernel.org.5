@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44567F3E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240067F3E4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbjKVGpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:45:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
+        id S234757AbjKVGqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjKVGpQ (ORCPT
+        with ESMTP id S233460AbjKVGqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:45:16 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B783797
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:45:12 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a013d22effcso241321166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:45:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700635511; x=1701240311; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5xwyYye+wQlYnjpBJCOKYjPSHv4hsDlpq0YhFNQKNEc=;
-        b=2WkCZLXzYuuveXZ84dV9zKkCS1FevV3r5g5+QywBiN3I/bEcbwadb4MF46Z/bceZrn
-         4prNhqCytYXjrrYQhDAfEqmYAi6/9O2sBICAhol+KouaTxcLLynJWVgAiDphxjM4g92U
-         HhWr8pmCAi79QYReu9b36Sf3WFQDY+EfiaOVR1laSIxpkz2XwNdg1nPJ/Jt/MUZPgzvI
-         eZJT3cLHHW/LiXDQK/NGxVAgyLQpjnbjKrCf+5QJLtTEJG+lOSMgNSE+86zpXWeBXnzD
-         GQxNpBNfCBWatUpgzQ6H8Y6S08dR3zAspQeFVOk4w6ivA3VjEZgr5vXUbv45Di+VSVm9
-         e9XQ==
+        Wed, 22 Nov 2023 01:46:04 -0500
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF7AB9;
+        Tue, 21 Nov 2023 22:46:00 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40b2c8e91afso6874025e9.3;
+        Tue, 21 Nov 2023 22:46:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700635511; x=1701240311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5xwyYye+wQlYnjpBJCOKYjPSHv4hsDlpq0YhFNQKNEc=;
-        b=RCp1CtrTwhyYq3N3Lyb/97/dYEQzJ+0hQjLiqr3wV2zi5hzd1TCuNavO5OeP4yL//A
-         8MzEPnH2knBLISb/jJcvEIUVaD0Gb208sRMsAJSBQt0DwN0IEKDzPUVMo4hDm9SKIgst
-         KAIaMjb5wT6/23IvpwWODewc0MqQZQxoUyczwVslJhBoV/4dLw59hIplQBDuGQyDGV3W
-         3rjLp41HcKtY4jUyYCat+CJffIeCUs7aamQIUarR4Xj9a0dg+g8+Tqy2Mylxd9vrmfhb
-         DOJLxXCe912vdj3VsuKDENjui55jGiG2lKpnzbbseounQ0IwA6L3vZsEFk6tSXwMEUBR
-         LbLw==
-X-Gm-Message-State: AOJu0YwmAJdfqXvul4KYIUte/e9bQQeGhKytlFVGBX1nCcz4Vs2AK7zI
-        Hr9jmA3EzQwmBixcJCeeezEb31RMayb9pNODY5NkKA==
-X-Google-Smtp-Source: AGHT+IFeHPawSGxU4UWzIS3J233xNDbTVcl8jRgj9Wuu8H+hsttAxcgpq7Z9KOdt6bDg4cLcSsG1Tc+VOIbGpxwl+Gg=
-X-Received: by 2002:a17:907:9158:b0:9df:bc50:2513 with SMTP id
- l24-20020a170907915800b009dfbc502513mr824738ejs.65.1700635510928; Tue, 21 Nov
- 2023 22:45:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700635559; x=1701240359;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PPnxx0byxt3tXtr2JcO8E9m9VK2GynHDBhdzhLaN4sc=;
+        b=ihYvogfIPbuMUOYuVqbzrJVmOHPxmB6FE9G+6RCy5SNYDkzTVPSI5wy0jaakbf57zT
+         ozuG8Xqxorao0eNeKAhRh4/pnfhCLd64H30s5Kd/NzlzNE9bXxtVh2KUy6IvLlJrOgWz
+         sD4rNNOa1FRgflKo1d56CHe/LSVjwhwOML57p0KVU+Zn8rJz7FqhGlWZnXlMLN1mdnVM
+         TJkyYRHeyLh5R7f3TyvAP5F5PpAvCUjL5bO0ZZqAuTO8ZR6fBfrDCD+EuA7fId28M9cV
+         X1D4iAxxwhkc6g1Rej1LS6lvtbgwvJLC56rjwmC0U7zHzVk0e96qlyXUPHAcnKAsdQWg
+         sEqw==
+X-Gm-Message-State: AOJu0Yy2aQSSYlzdLVsOv40Pz39Cb0/gpYhZMUClEBimI2YLZU9rPaQz
+        MZKXDwJFTLJss8agQfg0VnjTjvpFEfs=
+X-Google-Smtp-Source: AGHT+IGsTYuQ0oGE7bQ2Fvw1chQAwfoE9QWj4l4vIisWi+Bl3gqpJaJ6HJJdO1dceiXcYjhyDpu06w==
+X-Received: by 2002:a05:600c:4ed0:b0:405:95ae:4a94 with SMTP id g16-20020a05600c4ed000b0040595ae4a94mr755336wmq.5.1700635558948;
+        Tue, 21 Nov 2023 22:45:58 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id g6-20020a05600c4ec600b0040b303d0dcfsm1080307wmq.36.2023.11.21.22.45.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 22:45:58 -0800 (PST)
+Message-ID: <bdb4cd62-2d17-4d19-b429-1232ec863456@kernel.org>
+Date:   Wed, 22 Nov 2023 07:45:58 +0100
 MIME-Version: 1.0
-References: <20231121090624.1814733-1-liushixin2@huawei.com>
- <ZVyp5eETLTT0PCYj@tiehlicka> <32fe518a-e962-14ae-badc-719390386db9@huawei.com>
-In-Reply-To: <32fe518a-e962-14ae-badc-719390386db9@huawei.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 21 Nov 2023 22:44:32 -0800
-Message-ID: <CAJD7tkbC=Z6qAE+b6Ch5eVxNY7k0p98i_=RY0m4_3yg5C_zv+A@mail.gmail.com>
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/17] tty: move locking docs out of Returns for functions
+ in tty.h
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231121092258.9334-1-jirislaby@kernel.org>
+ <20231121092258.9334-5-jirislaby@kernel.org>
+ <e74f4dfb-55f2-f997-6a70-a1b7edd11016@linux.intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <e74f4dfb-55f2-f997-6a70-a1b7edd11016@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 10:41=E2=80=AFPM Liu Shixin <liushixin2@huawei.com>=
- wrote:
->
->
-> On 2023/11/21 21:00, Michal Hocko wrote:
-> > On Tue 21-11-23 17:06:24, Liu Shixin wrote:
-> >
-> > However, in swapcache_only mode, the scan count still increased when sc=
-an
-> > non-swapcache pages because there are large number of non-swapcache pag=
-es
-> > and rare swapcache pages in swapcache_only mode, and if the non-swapcac=
-he
-> > is skipped and do not count, the scan of pages in isolate_lru_folios() =
-can
-> > eventually lead to hung task, just as Sachin reported [2].
-> > I find this paragraph really confusing! I guess what you meant to say i=
-s
-> > that a real swapcache_only is problematic because it can end up not
-> > making any progress, correct?
-> This paragraph is going to explain why checking swapcache_only after scan=
- +=3D nr_pages;
-> >
-> > AFAIU you have addressed that problem by making swapcache_only anon LRU
-> > specific, right? That would be certainly more robust as you can still
-> > reclaim from file LRUs. I cannot say I like that because swapcache_only
-> > is a bit confusing and I do not think we want to grow more special
-> > purpose reclaim types. Would it be possible/reasonable to instead put
-> > swapcache pages on the file LRU instead?
-> It looks like a good idea, but I'm not sure if it's possible. I can try i=
-t, is there anything to
-> pay attention to?
+On 21. 11. 23, 10:48, Ilpo Järvinen wrote:
+> On Tue, 21 Nov 2023, Jiri Slaby (SUSE) wrote:
+> 
+>> Both tty_kref_get() and tty_get_baud_rate() note about locking in their
+>> Return kernel-doc clause. Extract this info into a separate "Locking"
+>> paragraph -- the same as we do for other tty functions.
+>>
+>> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+>> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> ---
+>>   include/linux/tty.h | 12 +++++++-----
+>>   1 file changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/tty.h b/include/linux/tty.h
+>> index 4b6340ac2af2..7625fc98fef3 100644
+>> --- a/include/linux/tty.h
+>> +++ b/include/linux/tty.h
+...
+>> @@ -436,10 +438,10 @@ void tty_encode_baud_rate(struct tty_struct *tty, speed_t ibaud,
+>>    * tty_get_baud_rate - get tty bit rates
+>>    * @tty: tty to query
+>>    *
+>> - * Returns: the baud rate as an integer for this terminal. The termios lock
+>> - * must be held by the caller and the terminal bit flags may be updated.
+>> + * Returns: the baud rate as an integer for this terminal
+>>    *
+>> - * Locking: none
+>> + * Locking: The termios lock must be held by the caller and the terminal bit
+>> + * flags may be updated.
+> 
+> I don't think the second part about the flags really belongs here, I'd
+> keep it the description.
 
-I think this might be more intrusive than we think. Every time a page
-is added to or removed from the swap cache, we will need to move it
-between LRUs. All pages on the anon LRU will need to go through the
-file LRU before being reclaimed. I think this might be too big of a
-change to achieve this patch's goal.
+Any idea what does the part says in fact? I had not been thinking about 
+the content and now I don't understand it.
 
->
-> Thanks,
->
+thanks,
+-- 
+js
+suse labs
+
