@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034037F44A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BE77F44A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343876AbjKVLDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:03:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
+        id S1343907AbjKVLDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbjKVLC5 (ORCPT
+        with ESMTP id S1343891AbjKVLDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:02:57 -0500
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4ED9112;
-        Wed, 22 Nov 2023 03:02:44 -0800 (PST)
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-35beca6d020so1603445ab.0;
-        Wed, 22 Nov 2023 03:02:44 -0800 (PST)
+        Wed, 22 Nov 2023 06:03:03 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820B01BB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:02:56 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5cca68f6e01so2927617b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700650975; x=1701255775; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=judoGuVj96yz0cfO1+LrQgdiCfR9oKHOka9ldKzU/iQ=;
+        b=SrQwfrirV/5VWQilXkyfyRtt5jvd+FoLmuNpVWivxbn5oUnX+jRa2MOecV/oU9La3v
+         ZYH3iVBOSwd9FwY+YKEPqVMEUmxNF/GnAmWAsDKXDDwaNg6Wq8KO9yeIB4xqR1UnTmtI
+         qeHFlJmciGDxuNA9QIN3z6uAQ01dbiT7dF2/ILFTee76YpuZMFdn/cW2uTxyfY13LZrx
+         i+M9OAegEWqsVY/mULJWzRt9Qv8qOlbI9MNoAGxB2ZnsG/eayPJhGb8sUyJG/DiqG3Wb
+         EEq2G+u8yh6yu6QTI6YKdnQqNhw9NkNsm29/ccsyPGqxBC/JHEyN5Uzg2DYSuL8Fkjl3
+         gMRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700650964; x=1701255764;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=X10iSrSJiLW8LyM0talGPqTy1zkMfImzMBighRZvlwg=;
-        b=iWzQByOi5M09Ug3FgZNSmfOmFnM6y1UG6bq6KZJ8+tK+VappvulSV9pNxmTotGIyag
-         V/osHdVBIa9r/Zax/JR9OCk3IqSsvCe2pTl+ReZVr/6ZdH9bzOyLzdO2QgrhVcyMh4aH
-         pDMqJm5JWpFnSiiq2JD9kJ6lHM0gpxNa1IKYwhL22J3vaFeeKBMJ3YGF15Uk8m9osORe
-         uA3542+fQIdTCwwja5zHm9lxtbNHVMPUN45mIV4itiiS5BOLiTsCKjpUPaLYxA5A8Xxo
-         y8tv9c5T4O8wwvBS3+5SirdfIgZfOmAI65KvV3v8ejdEUwWBm3Q+a7s0cGcfHuKsY/w7
-         dWiQ==
-X-Gm-Message-State: AOJu0YxlbFvZtzWrTKICNp8+C48C5yr4hLhDpHDIUh+hNz03xyixzKLQ
-        4zioiAQqtX82H16uCsFjT5ds8MjfJA==
-X-Google-Smtp-Source: AGHT+IH2mZ0askqoBGHQkIxYGw8nOgipZAyvI9PDUQ8iF4C0cRZP3ofm99PzzhdferLm2xLxnweLXQ==
-X-Received: by 2002:a05:6e02:80e:b0:357:f41c:8bf6 with SMTP id u14-20020a056e02080e00b00357f41c8bf6mr1929799ilm.17.1700650963816;
-        Wed, 22 Nov 2023 03:02:43 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id bc23-20020a056e02009700b0035742971dd3sm3874075ilb.16.2023.11.22.03.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 03:02:43 -0800 (PST)
-Received: (nullmailer pid 116320 invoked by uid 1000);
-        Wed, 22 Nov 2023 11:02:29 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1700650975; x=1701255775;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=judoGuVj96yz0cfO1+LrQgdiCfR9oKHOka9ldKzU/iQ=;
+        b=fp6BZL5vXQcMqa8XcL3v0Npt5YDofCqbL3uUEFjvtOWfKw9RsbjMS2njmWREXDxq3Z
+         QKJCNeoDLtYdgSXwmojm22KQFOHmPlW26bqFMEP9AKwAg/JKMfGfb3IVlKpQmeaglDUA
+         wDOfVno018Y3r3umxvEO4ovVYStvru8YtgmD5cWAae5ULXMXa3Abfmxr39y/k0yx8txP
+         kRNbeX5NASrjVD0K+2v6J7qKR3taErRzOOQy4iFaxsZHNFZmxU6zv4LNfLmkjt2tv2xe
+         paezanbHqKzcUS2gAnXMfTZeFFncFXyPbOzWHNT4cttkJ+VwUPLQ9L8aBy3ieIsHNjWj
+         LYMA==
+X-Gm-Message-State: AOJu0YxyAmgq+Uel4DmopUpI/sjDgmsEWMnpOiRPkVln0Oc0BICq+Prn
+        /qY2xuUtOoNorVftr/HsHUMxapQDisJmHu/MILNG7Q==
+X-Google-Smtp-Source: AGHT+IG7QtdXMD/IbuQvfyaSezE4/wn9Rzi9wEyWCao4R2S63hXyZv7aDlf2lJ46E658E4CV4osFbPqMxC2QwFZs1R8=
+X-Received: by 2002:a81:93c4:0:b0:5a8:2037:36d9 with SMTP id
+ k187-20020a8193c4000000b005a8203736d9mr1961750ywg.25.1700650975747; Wed, 22
+ Nov 2023 03:02:55 -0800 (PST)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+References: <20231122-phy-qualcomm-eusb2-x1e80100-v1-0-ce0991161847@linaro.org>
+ <20231122-phy-qualcomm-eusb2-x1e80100-v1-1-ce0991161847@linaro.org>
+In-Reply-To: <20231122-phy-qualcomm-eusb2-x1e80100-v1-1-ce0991161847@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 22 Nov 2023 13:02:44 +0200
+Message-ID: <CAA8EJppov1ZtJvxyiXwik77bs5=dDfE_k_Wv8-DyzYtoEzvv4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom: snps-eusb2: Document the
+ X1E80100 compatible
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-In-Reply-To: <20231122-ep93xx-v5-18-d59a76d5df29@maquefel.me>
-References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
- <20231122-ep93xx-v5-18-d59a76d5df29@maquefel.me>
-Message-Id: <170065093852.115999.17127754687917725425.robh@kernel.org>
-Subject: Re: [PATCH v5 18/39] dt-bindings: mtd: Add ts7200 nand-controller
-Date:   Wed, 22 Nov 2023 04:02:29 -0700
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,39 +77,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 22 Nov 2023 11:59:56 +0300, Nikita Shubin wrote:
-> Add YAML bindings for ts7200 NAND Controller.
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+On Wed, 22 Nov 2023 at 12:28, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> Add the X1E80100 compatible to the list of supported PHYs.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
->  .../devicetree/bindings/mtd/technologic,nand.yaml  | 45 ++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
+>  Documentation/devicetree/bindings/phy/qcom,snps-eusb2-phy.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-phy.yaml
+> index 8f5d7362046c..ea1809efbf56 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-phy.yaml
+> @@ -21,6 +21,7 @@ properties:
+>                - qcom,sm8650-snps-eusb2-phy
+>            - const: qcom,sm8550-snps-eusb2-phy
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Ah, I think this answers my question for patch2. Can we instead reuse
+the existing compat string as it was done for sm8650?
 
-yamllint warnings/errors:
+>        - const: qcom,sm8550-snps-eusb2-phy
+> +      - const: qcom,x1e80100-snps-eusb2-phy
+>
+>    reg:
+>      maxItems: 1
+>
+> --
+> 2.34.1
+>
+>
 
-dtschema/dtc warnings/errors:
 
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231122-ep93xx-v5-18-d59a76d5df29@maquefel.me
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+With best wishes
+Dmitry
