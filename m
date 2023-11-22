@@ -2,196 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5707F3C79
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BB87F3C7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343581AbjKVDg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
+        id S1343593AbjKVDjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKVDgZ (ORCPT
+        with ESMTP id S229775AbjKVDjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:36:25 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0E8D1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:36:21 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5bde80aad05so4913218a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700624181; x=1701228981; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WJYNaQAAZrepl2ZxYcQuq32w1uSGi1gYODywwNvp7o0=;
-        b=I9IVZou+mln/G5lz7sEoAmv4xyJHZOg4FNUVnfL6u1pXoZ/oWmGiFwwXQksBLxyEL8
-         H1dtzHoBOnFaW2CJ85wfA5OyYVrzROzwpF5DvTBMYEjpaSni84Lo2Mm6pmfLSEwQl8UL
-         7SLgvPEjFgvRIcNTlBWmskEl3n+XiGb/RFQ8R9Exz5igaa94YDJq7tob1q0lr4lGvhVS
-         z+rCggmEkcWf1XJxCbKd341rsA0+9oq/zZCl/2lY4ux18P0eRnM6o6r6KvJi1akx3fxV
-         h0WTQwmoPVbp2YSCFG7X6z1/YdXcfPXoqCrx3xD6knzbi5z9bk1d7DkoLf1/J4uiBY7L
-         1xFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700624181; x=1701228981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WJYNaQAAZrepl2ZxYcQuq32w1uSGi1gYODywwNvp7o0=;
-        b=uz63LRl9OJqrM6+qCBQn2wNpdArmMeWW/1NwnQp5HJ91TRsznm8TFCg8P+R557EuDF
-         LYHEM719ZUn1DziQgx+oeir+VarlXEWASl3AjzpKxttmEjn7W+VJMGkm9SUY4+9asUIF
-         b6mKXL7w6LONStPZvKbmeKpbjz9Y14+CLSjVNbx/KL/QsoIbNYAEfDDCJONtGeALFTkd
-         JH8xYub3K/FVYsgNkQkTT+s7/hGXezNi6FPkUUcJ5qRv2Sy7x0Bei0aPrXjbPyAdCRvZ
-         5DA+xuZCJIkz4mlNeKW//tyDGEkq9M1gO3S17gO9KYh6EpFsVPswoXd3SrUrAZhFhOzC
-         qzcw==
-X-Gm-Message-State: AOJu0YxpVE9obtxwWtOotwy7+cYFFz/Ut3BCtm5bXnC59Egu/mwO3zup
-        sjKx6XqJfKGyFOxiFkGhsh7FNiPgtxvIUUga7AQ=
-X-Google-Smtp-Source: AGHT+IGW1CvL3fMk+EADXesb7N7kbsBPKsNqSw9Ed6EbWFpBAMADHekxE5TH/KJmblqo4vXFd5NoDcvFM33si+Lblgw=
-X-Received: by 2002:a05:6a20:914b:b0:18a:e3d9:ef5c with SMTP id
- x11-20020a056a20914b00b0018ae3d9ef5cmr1324769pzc.4.1700624181156; Tue, 21 Nov
- 2023 19:36:21 -0800 (PST)
+        Tue, 21 Nov 2023 22:39:11 -0500
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2106.outbound.protection.outlook.com [40.107.113.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2461D90
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:39:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dz49gjY15xvcr108EyrKEIA1Z0c+mVZYYEpPhmlXfU4Q18iS2gMClZxfQNJgwfTSB7UHvIiwYmF3RWeIMT6cGva5G2h0QfU6YzCOA+hVpoXrNjGeLfLSUR5VMyMuKPd4lhZfehbiC7bep4PSpV2C+C/IzL67xIgT9ikXc8/dX9H4L1ZetmOnejhg/gAgSGux1jzZk+//wtF2EpTxZYwcWfJN9VTIMe9wG/QWbjrgtWgBD3QstcoPkBftDjW7zwxbkbuzvdvAdEFzDOtzxPH0IwNLOLJnsEN9M3ZDtiihO9VbRhcCB9s8Rc4Q4GFQ2NeCjRh95UgneR2oStCVSabAhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
+ b=QkL/AhgoBwXKjo4Ipcc6UN+KW29Gphbp2QqCYYZAfhHm8Uvt6uUVmogR4vZxIvxCIr2SYNTeynmwmQtSlHE/vPhPz+//TlDzpRiEv7/pG7FfCMAoKVD4vcu5leHThImn6rg13Jmtrs+HIqCZ1IynLT30OCBkMU72iCxaXd/W7u3NUsFUmTo7F/iH1QlPxRkV9+/QT7xrirRuRCzNOaupc3wIqJEEzprlP3BxjKwZSvfm4qw9lvkJe43eEkyj5OHpnqRhC90IDAe4MQQa8J/KhAAQZbdcimMKnJIyAFQZtUCIXXCSVmv4eBV8svZpO99cIYfuzo0Qq4BlWFjD/6hDyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
+ b=lXf7M5mAlO4h9R3bG9nDnbozsLqcBpnQcXukvxdic984Kg1GJGc4QheE7NEjk3vhJA9R6x/v2GU4H/sR0Yw1x1ELGI05HkVMKZGW3CsLWFiyUUP0XQ6e8NFlzxphduL0ORdB8HTBifPVwsbG4k3yX5Bwmfd6JFOvYW5XWphfN6g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11) by TYCPR01MB11224.jpnprd01.prod.outlook.com
+ (2603:1096:400:3bf::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 03:39:02 +0000
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::16b3:a84d:faa6:4846]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::16b3:a84d:faa6:4846%6]) with mapi id 15.20.7025.017; Wed, 22 Nov 2023
+ 03:39:02 +0000
+Message-ID: <878r6qh2y1.wl-kuninori.morimoto.gx@renesas.com>
+From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iuliana.prodan@nxp.com" <iuliana.prodan@nxp.com>,
+        "shengjiu.wang@nxp.com" <shengjiu.wang@nxp.com>
+Subject: Re: [RFC PATCH] ASoC: simple-card: Use dai_id from node description
+In-Reply-To: <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
+References: <20231117163900.766996-1-daniel.baluta@oss.nxp.com>
+        <874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com>
+        <CAEnQRZBb0ZJk7aTaji-xH2jEs7QiTaoXTuS5_K-ruSaxpEnWdw@mail.gmail.com>
+        <TYCPR01MB109142FEC8F77CFFE3930456CD4B4A@TYCPR01MB10914.jpnprd01.prod.outlook.com>
+        <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
+Content-Type: text/plain; charset=US-ASCII
+Date:   Wed, 22 Nov 2023 03:39:02 +0000
+X-ClientProxiedBy: TYWP286CA0014.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:178::20) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11)
 MIME-Version: 1.0
-References: <20231120121623.119780-1-alexyonghe@tencent.com>
- <ZVuudtAtDqHqYJr8@slm.duckdns.org> <CANZk6aTS9BODJiqtDSHxwhz2dV3RmaxRautR8WZfH5aYYhcQJw@mail.gmail.com>
- <ZV0jmGSismObVncD@slm.duckdns.org>
-In-Reply-To: <ZV0jmGSismObVncD@slm.duckdns.org>
-From:   zhuangel570 <zhuangel570@gmail.com>
-Date:   Wed, 22 Nov 2023 11:36:09 +0800
-Message-ID: <CANZk6aRpPAhY_5wS-4igRwSZ5Ohv0RJJ5kgr9_M-W192nH-aVA@mail.gmail.com>
-Subject: Re: [PATCH] workqueue: Make sure that wq_unbound_cpumask is never empty
-To:     Tejun Heo <tj@kernel.org>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|TYCPR01MB11224:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60ad8021-bd38-4a28-58bb-08dbeb0c920c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lCc2ZZVSxGuRQ3nzkX4O3YXLxITo2kcB29qz+MATwnHrI+WfMEMnEvlmZqg1SAvlx6+fbU1B8GVMKybrsuAg4qa5hCXeM5IPPdHE2bGhPqXu/oZ4l5EIzCDQG3GOpb9xQHLijSIlN5V6164/udDa/O+h4/rtH4dNpDkYqlFqKW2nJnOIAb8YPl47yN0AFTtnbmLq3xP9FS7896+XT6J5krCtOgT+gQ9DyXH13A9PCAdTUlUnPmsBTFKJh0gL/EC8H3q/e4Hkj8LiJWeriyLXaQw2YEyhmzgZa1tAY91qcDxp+dD25l2iTwE8SdKRmOW3k39cJxU4/4yNJfhI94hKx56vmen7kiJh0QKyFdKd0UzK9gadeSb2Ye4JA90iPIzlS1My82mu8ZCOvg4pBv69D7LUO+eoDOfyebmA3X9IKROVGGiweGj4sM8R2V7t7FxVzZdm4z/YD//NIx7JH7q00US061M0C6Xic11fCyRwI0toLncOLQGUBZ/kwCOm0oe8N6+llvk0kNWnXJvEinDUp6BoNMZgopb31BCVoJE3BeN7jtXJyPji6tYrCm2hPrEXswy8terFySdOxnYQC7lljoXDNg7b+yjoI6SPj8Yh+mxusTlulJ2uYkL+OfcyadWD5Z8XoiX5BRh5r+/Ar1104w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(52116002)(26005)(478600001)(2616005)(6506007)(6512007)(38350700005)(38100700002)(36756003)(86362001)(8676002)(4326008)(2906002)(54906003)(66556008)(4744005)(83380400001)(5660300002)(66476007)(66946007)(41300700001)(6916009)(8936002)(316002)(6486002)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0+A/jfH3I3Hl7IiWK3aQbR5LIDNPw0gitJWSaodwCDJomGRGR0mQFZoxCybu?=
+ =?us-ascii?Q?Fyi1rKuiVsiwE6QF2xyZ0FWlyiIlIg67vxf8jQmSfkke4EXTr8oTfL1U78Xx?=
+ =?us-ascii?Q?iVG3zMw96icFUK1bIUsIEF8Ca/ewaaHrMW0bJPZ12dfKSre9xzSuz4FNgQK/?=
+ =?us-ascii?Q?HV/yqHlNCDJ/BPoplbjUw3CNQT1xzdsSafn0mAY7mM+eT8GXwjiPp9oa6t1M?=
+ =?us-ascii?Q?xGHltnu7WqLmAjw4oWD2Mf62FbEnztxgEGFtV8jid7hbj/w7b9xXc337OfS8?=
+ =?us-ascii?Q?3mv42s9kyKc3t7Ilwmpi+2oaGmehPPjdphclATll8xNIRInf/h2fjiq8HxH1?=
+ =?us-ascii?Q?wkqqu91cyuBKHeCByl7SYaTtR0hd6DBDSxFwj+bNUnOMaiMswowLsJZV2e0Q?=
+ =?us-ascii?Q?35sxdoybNTo4FpwDLpYLxhvEQI91u/hOB90weAR9ER3sNB3+azS2UP1rl0uB?=
+ =?us-ascii?Q?8NyGql85wDNr7UacBjEindMbZgJPFb4XyqKIscLJLT1NF7LTsylPSZxdRbiV?=
+ =?us-ascii?Q?vBc9JZFF/YpcWAZ2gGTUsJz7eu2xVI1rwlaMJJNqMbx/egMjs4FMxOrmXYqT?=
+ =?us-ascii?Q?gCZO4dz/gunPyi1lAZJe4HPkGjMKj7jcpdcDkkkhybvOm8g43uj/ehqs8JeK?=
+ =?us-ascii?Q?19L0x6cw0UdnR6vFjx0cOIlae27YxRFV02/kuwqgoVXkrJ2Qnde0wIKHGGDF?=
+ =?us-ascii?Q?nO+I7Ql/lWgsn98BIhWmHcEGAZLmDtlhteQLehsrI/D3mXHo1pqcyu7IFNZY?=
+ =?us-ascii?Q?cL/h5n1pZ/1Zu6JZhsrXR+k3kZqexTquh/EShR9Qb6rIWB3+SCfsWPpWMkN1?=
+ =?us-ascii?Q?ajILT3egyJSF0OXTkIorvfdTSVn2zSRYxbu3oDRsvVDGj3Xx8dko6Mu1odLZ?=
+ =?us-ascii?Q?0M+SdQJcWgDbvQMZ/E3+AaXnHM/eZHpfyJx7qcAnyKgk/mBEI9CCXsl1yeIB?=
+ =?us-ascii?Q?WOZwFSl5GlGUyKiXfVaRNkd21xJNyl+ZEWKPF7P5ddjH0l3ZAcL/Li3BVugS?=
+ =?us-ascii?Q?EdxbBYkawFmIYRbWK1Vouj9pbDdUtZrCYFM3tdAKM/nUeMhjVWB+eg5Sal+l?=
+ =?us-ascii?Q?74592KvZwLxn2tV17QQnnQprIZFezrQLQlPEBR6nbD9JOPIECursDSYb1HOG?=
+ =?us-ascii?Q?ORje4qox23rfE72iZHaCyyQeVk0CRaZftHsBMputgQorQtKH2iVluLt115Wo?=
+ =?us-ascii?Q?IQMlDXwtxZ7cUmelnkai7N6GtkADPkHlTpBgbIT6ylFCp5dq+yZyFLirBfX+?=
+ =?us-ascii?Q?mw9xJbWf66cpS82tNU0NcITJnLrKspDdALYz9k2o+nqHL3nVQTxpy95S6Fpn?=
+ =?us-ascii?Q?XOD9BZHOSYK6Idz553NxY77kzoRsntz2SsdeLZwlXoPMyt+A9RQZ+7X/OJRQ?=
+ =?us-ascii?Q?pUIEEzj+Fs8c41GL/S7dr1qevFznXgPhGSb8JXYiyKpTIHdhVqdhkmQ6+wt3?=
+ =?us-ascii?Q?m0t81evSDKVYt7H68Jb13LyhDv8i2PEeyZTsNzFqe0ldIOfCa7mBhRJgH7d4?=
+ =?us-ascii?Q?b4vBRm6YTj230GCWmWXqI8dDhxgZuo4Yla8jhQh4rul6jsmbeyzN3NSigSHQ?=
+ =?us-ascii?Q?g/JEowWfW1FujHMTXuhLF/sKIvwqH10mhqfosaDNhz5tsIms5/qwNfIkTafK?=
+ =?us-ascii?Q?dcxcNXL76iycA2qlU5dOgl8=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60ad8021-bd38-4a28-58bb-08dbeb0c920c
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 03:39:02.6892
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iglFpBPvGNWQN5OdBhB0IKb6KSBhZ20YvBCzzNrMlYdWfMZ50FmwToWEl1dkgVXL/8CoYmO1xxp+gdqmzpfGv+9uRNOuuyjduuZeltL6GwWR0c07IEi8lv9dysF2irU1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11224
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 5:39=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> During boot, depending on how the housekeeping and workqueue.unbound_cpus
-> masks are set, wq_unbound_cpumask can end up empty. Since 8639ecebc9b1
-> ("workqueue: Implement non-strict affinity scope for unbound workqueues")=
-,
-> this may end up feeding -1 as a CPU number into scheduler leading to oops=
-es.
->
->   BUG: unable to handle page fault for address: ffffffff8305e9c0
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   ...
->   Call Trace:
->    <TASK>
->    select_idle_sibling+0x79/0xaf0
->    select_task_rq_fair+0x1cb/0x7b0
->    try_to_wake_up+0x29c/0x5c0
->    wake_up_process+0x19/0x20
->    kick_pool+0x5e/0xb0
->    __queue_work+0x119/0x430
->    queue_work_on+0x29/0x30
->   ...
->
-> An empty wq_unbound_cpumask is a clear misconfiguration and already
-> disallowed once system is booted up. Let's warn on and ignore
-> unbound_cpumask restrictions which lead to no unbound cpus. While at it,
-> also remove now unncessary empty check on wq_unbound_cpumask in
-> wq_select_unbound_cpu().
->
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reported-by: Yong He <alexyonghe@tencent.com>
-> Link: http://lkml.kernel.org/r/20231120121623.119780-1-alexyonghe@tencent=
-.com
-> Fixes: 8639ecebc9b1 ("workqueue: Implement non-strict affinity scope for =
-unbound workqueues")
-> Cc: stable@vger.kernel.org # v6.6+
-> ---
-> Hello,
->
-> Yong He, zhuangel570, can you please verify that this patch makes the oop=
-s
-> go away? Waiman, this touches code that you've recently worked on. AFAICS=
-,
-> they shouldn't interact or cause conflicts. cc'ing just in case.
 
-Sure.
-I port this patch to my 6.7 branch, and the kernel could boot successfully =
-on BM
-and VM, with the same configurations, also I can see the new added warning,=
- so
-this patch solves the oops.
+Hi Daniel
 
-So, one last check, do you think we still need to check return value from
-cpumask_any_distribute() to make sure kick_pool() set a correct wake_cpu?
+> > But hmm... in your case, you need to setup 2ports, and use 2nd port
+> > is assumed approach.
+> > Why you don't setup full port ? Do you have some reason ??
+(snip)
+> Now, I want to write a DTS description where my DAI link uses
+> Component 0 (CPU) (with its DAI index 1) connected with Component 1
+> (codec) (with its DAI index 0).
 
-Tested-by: Yong He <alexyonghe@tencent.com>
+Thank you for indicating your DTS.
 
->
-> Thanks.
->
->  kernel/workqueue.c |   22 +++++++++++++++-------
->  1 file changed, 15 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 6e578f576a6f..0295291d54bc 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1684,9 +1684,6 @@ static int wq_select_unbound_cpu(int cpu)
->                 pr_warn_once("workqueue: round-robin CPU selection forced=
-, expect performance impact\n");
->         }
->
-> -       if (cpumask_empty(wq_unbound_cpumask))
-> -               return cpu;
-> -
->         new_cpu =3D __this_cpu_read(wq_rr_cpu_last);
->         new_cpu =3D cpumask_next_and(new_cpu, wq_unbound_cpumask, cpu_onl=
-ine_mask);
->         if (unlikely(new_cpu >=3D nr_cpu_ids)) {
-> @@ -6515,6 +6512,17 @@ static inline void wq_watchdog_init(void) { }
->
->  #endif /* CONFIG_WQ_WATCHDOG */
->
-> +static void __init restrict_unbound_cpumask(const char *name, const stru=
-ct cpumask *mask)
-> +{
-> +       if (!cpumask_intersects(wq_unbound_cpumask, mask)) {
-> +               pr_warn("workqueue: Restricting unbound_cpumask (%*pb) wi=
-th %s (%*pb) leaves no CPU, ignoring\n",
-> +                       cpumask_pr_args(wq_unbound_cpumask), name, cpumas=
-k_pr_args(mask));
-> +               return;
-> +       }
-> +
-> +       cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, mask);
-> +}
-> +
->  /**
->   * workqueue_init_early - early init for workqueue subsystem
->   *
-> @@ -6534,11 +6542,11 @@ void __init workqueue_init_early(void)
->         BUILD_BUG_ON(__alignof__(struct pool_workqueue) < __alignof__(lon=
-g long));
->
->         BUG_ON(!alloc_cpumask_var(&wq_unbound_cpumask, GFP_KERNEL));
-> -       cpumask_copy(wq_unbound_cpumask, housekeeping_cpumask(HK_TYPE_WQ)=
-);
-> -       cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, housekeeping_=
-cpumask(HK_TYPE_DOMAIN));
-> -
-> +       cpumask_copy(wq_unbound_cpumask, cpu_possible_mask);
-> +       restrict_unbound_cpumask("HK_TYPE_WQ", housekeeping_cpumask(HK_TY=
-PE_WQ));
-> +       restrict_unbound_cpumask("HK_TYPE_DOMAIN", housekeeping_cpumask(H=
-K_TYPE_DOMAIN));
->         if (!cpumask_empty(&wq_cmdline_cpumask))
-> -               cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, &wq_c=
-mdline_cpumask);
-> +               restrict_unbound_cpumask("workqueue.unbound_cpus", &wq_cm=
-dline_cpumask);
->
->         pwq_cache =3D KMEM_CACHE(pool_workqueue, SLAB_PANIC);
->
+So in imx8m_dai case, it has total 3 DAIs, and you want to use reg = 1.
+In such case, your DTS need to have like below, if my understanding was
+correct.
+
+	dsp: dsp@3b6e8000 {
+		ports {
+			     port@0 { reg = <0>;         endpoint { /* not used */ };  };
+			cpu: port@1 { reg = <1>; cpu_ep: endpoint { remote-endpoint = <xxx>; }; };
+			     port@2 { reg = <2>;         endpoint { /* not used */ };  };
+		};
+	};
+
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
