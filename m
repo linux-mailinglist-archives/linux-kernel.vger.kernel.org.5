@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8151D7F4E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB407F4E69
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344121AbjKVR0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S1344230AbjKVRbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:31:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234713AbjKVR0n (ORCPT
+        with ESMTP id S1344075AbjKVRb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:26:43 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC9E92
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:26:39 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-462a0e1245bso1299257137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:26:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700673998; x=1701278798; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u2shFgJTlJ9h7e3t15BYDPAUoPIZ4uMg+GRBduHwrWE=;
-        b=GaraeVTip7HJ4qr8nej5WgeJtW5xWs3FtNGgGPJUvQRMUl2q4/zwnLgEUXKsIF0h9P
-         V/aPoXYLzdt1iSb/5ojs0UOyMjpP4ftk+6aoY2qLPVqvHp2xaYLFGo3FUgcfZzvzM3xY
-         aHEAxzFMV/CsyqVjS3kYMpJe4NWsebojEr7qRyGFIASwNWhyAX7dCRNNpQtztOLiiQ3j
-         Zm34g6RPIMqGBgLntgfgbos+7uMKUoyrnMNiboN4E67x0wz0q9TvXcl9o/E8HjQtwV14
-         vd2d2WnRxYlKKs7vm280npjbAcCqTqu0WC45Np4gISUj64Y3bGUs+yJFHIuZSZdaEDXP
-         FhCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673998; x=1701278798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u2shFgJTlJ9h7e3t15BYDPAUoPIZ4uMg+GRBduHwrWE=;
-        b=gqi3DyesMgPtJpiMOe5NRQQjm4x/ayoG4X+JaH+HI2TvHiQHEPQLwBZy3MwhXjle+4
-         KSCTLyXnxYvsusTfXaxNeumGinn+cfkPV5TnbD4FnkzZghQJtCdgWqUNROws3YGbuYq1
-         gavVrcdW35Bfu+qQY32YrmW4XH94IqJEnOobQI6Luc1sVzF7SZNM1H/MgHh/ZRwGeZaG
-         WX5K6PKlKykOIPfA1jbCYIasd98UlYlHtwue4qqesTKiIfRtik8WeHbqNkC0TDeRneZB
-         fU20fWX9p8IuBlnCu79lQ/8vceIpKR2NRqLZ8bSoMFVVfQv2EuJvxsCERI8FDVkdmBRT
-         2tog==
-X-Gm-Message-State: AOJu0YzV+n/35E0dqjw7AzWXKvDoqncatFlYw9sPl2WwrsseMsLrFNju
-        9dSHczn+Wl4Csx70rgqyo1hmWaPSF5T+p1Jmlqq2BQ==
-X-Google-Smtp-Source: AGHT+IFzi7SMG/LyyZzNBXnCal5MiEtxDZ8q1iycJnu3xy9PsdGdlxKP8z69RACANGv6/CKjF+AbqWMoKIiXGT6/D9k=
-X-Received: by 2002:a67:fe5a:0:b0:462:8cc4:745 with SMTP id
- m26-20020a67fe5a000000b004628cc40745mr3170192vsr.22.1700673998778; Wed, 22
- Nov 2023 09:26:38 -0800 (PST)
+        Wed, 22 Nov 2023 12:31:28 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6909C1B1;
+        Wed, 22 Nov 2023 09:31:24 -0800 (PST)
+Received: from [192.168.1.103] (31.173.85.136) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 22 Nov
+ 2023 20:31:15 +0300
+Subject: Re: [PATCH 08/13] net: ravb: Rely on PM domain to enable refclk
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
+        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-9-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <508ff1f5-f216-f4e7-59ff-4c6ce0aad6a7@omp.ru>
+Date:   Wed, 22 Nov 2023 20:31:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20231122155916.38037-1-brgl@bgdev.pl> <480fef02-09ed-9a32-d5bb-e7114381220c@axentia.se>
- <CAMRc=Mc_KAX0QWSoL9UEwwjFCD=fHv6ydceSYwaY91C=RkURxA@mail.gmail.com> <978e008b-0787-4204-3d5f-16518f35a3c9@axentia.se>
-In-Reply-To: <978e008b-0787-4204-3d5f-16518f35a3c9@axentia.se>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 22 Nov 2023 18:26:27 +0100
-Message-ID: <CAMRc=Mfo_N75ByOGe0TRxr__ajZ0fdGmzaVu9ig4uSsyMPSOhA@mail.gmail.com>
-Subject: Re: [PATCH] eeprom: at24: use of_match_ptr()
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231120084606.4083194-9-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [31.173.85.136]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 23:48:29
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.136 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.136
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/21/2023 23:54:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 8:06:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 6:14=E2=80=AFPM Peter Rosin <peda@axentia.se> wrote=
-:
->
->
-> 2023-11-22 at 17:57, Bartosz Golaszewski wrote:
-> > On Wed, 22 Nov 2023 at 17:41, Peter Rosin <peda@axentia.se> wrote:
-> >>
-> >> Hi!
-> >>
-> >> 2023-11-22 at 16:59, Bartosz Golaszewski wrote:
-> >>> -             .of_match_table =3D at24_of_match,
-> >>> +             .of_match_table =3D of_match_ptr(at24_of_match),
-> >>
-> >> If you do that, you will need to also add #ifdef CONFIG_OF around the
-> >> at24_of_match definition, of you'll trigger a warning about an unused
-> >> const variable (for some configs). I think.
-> >>
-> >> Cheers,
-> >> Peter
-> >
-> > Nope, no warnings even with W=3D2. This is true for unused functions bu=
-t
-> > unused data structures are just silently removed.
->
-> Then I wonder what the difference is from the following?
->
-> https://lore.kernel.org/all/202311161306.opyfcoCY-lkp@intel.com/T/#m3a33d=
-c4c3221ae167563bcff70757af776cf07b1
->
-> It sure looks like the exact same pattern to me.
-> I.e. a static const struct of_device_id paired with of_match_ptr().
->
-> CHeers,
-> Peter
+On 11/20/23 11:46 AM, Claudiu wrote:
 
-Ah, we need __maybe_unused here.
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> For RZ/G3S and RZ/G2L SoCs the Ethernet's reference clock is part of the
+> Ethernet's power domain. It is controlled though CPG driver that is
+> providing the support for power domain that Ethernet belongs. Thus,
+> to be able to implement runtime PM (at least for RZ/G3S at the moment)
+> w/o the need to add clock enable/disable specific calls in runtime PM
+> ops of ravb driver and interfere with other IP specific implementations,
+> add a new variable to struct_hw_info and enable the reference clock
+> based on the value of this variable (the variable states if reference
+> clock is part of the Ethernet's power domain).
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Bart
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+MBR, Sergey
