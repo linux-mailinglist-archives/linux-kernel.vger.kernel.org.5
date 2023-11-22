@@ -2,197 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583C87F534A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9486D7F5348
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344672AbjKVWUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        id S1344669AbjKVWTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjKVWUU (ORCPT
+        with ESMTP id S233574AbjKVWTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:20:20 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0354E1A5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:20:15 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-4acb1260852so90083e0c.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:20:14 -0800 (PST)
+        Wed, 22 Nov 2023 17:19:52 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E04CE7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:19:49 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da307fb7752so339039276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700691614; x=1701296414; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PHkAYUggtPd4uMdHb4XHRFzN0AgwRbLCE5uILh47HBE=;
-        b=0oq4Yy4VCTrO2CeVXxmfG/iEO34llA3yG1K+NkFIa6hExgKMHiBR3li3OXS1oC+bC9
-         DZ/rdPiybihnNmDo8FU7UKuHUujvrxRaILBaIKhF+N7kF5i8EP4bYmN8v2DFrqUiIEXR
-         EADLj10y+npoAvx+xyEc40SA1bJKkUPIX2WFxt1T/5XM+EQDM5hFkkyB5MJQ2GQCHXqw
-         ZH51tZgws3Xh4P/cjlHhBwtqjr3Pw2ysutRPOWYmhcwUXhWOj3VWiGgcJ00jvXYu1yeZ
-         8toE8XPe9bHDp5OtBz9izNLXAs3YEXjSlwKS05YEDZcD+hZ9OcRCHTzTqEJlPUL+4EoH
-         bYcQ==
+        d=google.com; s=20230601; t=1700691588; x=1701296388; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
+        b=zhLZGpAUuA/22M6TtGTHGgS7ilS41Jy1MH6OMzs/tYtIb0rnu7PKKJQtkcLQFUKj2r
+         tXJu31m7WDO5kWi12UnGqE31cgqyQnmurs2kNufAZ/i2vzMAxb76QBkeT79NLxiuQo6+
+         A97fasyVXyuwgUAiaWEvtgWomhIJCxwr/TgQb0EEPe5A+EioK/wpVrAWTsSLJA6XVQsx
+         WIzv09c8r0RkuSPvbkZftTXYkp0rjCQY3R6Mrc8YqGx7Y21ZokQNEbv/fbgXI+9k10YO
+         KJekmRAlZOY1oqhIRrqVEzBuSv+XtIXcU0kf3pdRaLPsag/oO4QRCaWrN2Qon0FRjO7w
+         ypdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691614; x=1701296414;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PHkAYUggtPd4uMdHb4XHRFzN0AgwRbLCE5uILh47HBE=;
-        b=g41a4jSKl2MkjVIYnw4+J3qu5ychTp3NXRUpsirPUPAg2a8n3znbi0f1b3rpuWuMyB
-         BFuQD0ntHX8m3/MCuUSU6bBEPa9PhWjCpWGtc5b4mSmUEmw3tkerCdfS5BxItnIaBj5t
-         uKT8TrbLRU+qdUllWp5xkXF9eE1pR0OYCDHz5VyzLZDnVjWzKwhoerH62xhqNyE/WFb+
-         ZyZbmMFMPIdcawmdZzQZUYKL92DZrspWodFUk5rtUxOV3Ok3HxRrfecWYVCnjNhtiJIJ
-         I9EGJdJWGqo7MMMCGC6xjxGYLmmrNTqHtmxD98atIHpOAroS68FsNh7I3jVDAgD78h7H
-         nBig==
-X-Gm-Message-State: AOJu0Yza+oTloWlWrhb/cXrsUyyGwt12Xw6GG7QegJtSLEFwA7uoDLPF
-        S+L2wWXFLClBy3VPBKMUAwuUlgIqLQWT760yubTF9g==
-X-Google-Smtp-Source: AGHT+IFate+YdNASiWbkRDefRDtU7E8A6dqXpNDhx+XtpJEer5cvZlKtiKAL9dSFRVOsdEKqz7fMij15vwd/bC8YBds=
-X-Received: by 2002:a05:6122:4019:b0:4b0:8de:d09c with SMTP id
- ca25-20020a056122401900b004b008ded09cmr4901290vkb.7.1700691613877; Wed, 22
- Nov 2023 14:20:13 -0800 (PST)
-MIME-Version: 1.0
-References: <VI1P193MB0752A2F21C050D701945B62799BAA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <CANpmjNPvDhyEcc0DdxrL8hVd0rZ-J4k95R5M5AwoeSotg-HCVg@mail.gmail.com> <VI1P193MB0752E3CA6B2660860BD3923D99BAA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-In-Reply-To: <VI1P193MB0752E3CA6B2660860BD3923D99BAA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 22 Nov 2023 23:19:35 +0100
-Message-ID: <CANpmjNMejg7ekEhuuwdxpzOk5-mO+xn+qEL1qmx8ZVQG9bz_XA@mail.gmail.com>
-Subject: Re: [PATCH] kfence: Replace local_clock() with ktime_get_boot_fast_ns()
-To:     Juntong Deng <juntong.deng@outlook.com>
-Cc:     glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
+        d=1e100.net; s=20230601; t=1700691588; x=1701296388;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
+        b=mIw2hjkDgeg5Rd2izDnO/M5DvwGYHT8UZUCkQNcX+B8RFK2oFHi81TKkU95na3TsoJ
+         l6G3j3ZU29p+xHiHu4B/EJyMLKM7xYcnbxL/JHLVPBXe65XcG4dzuaPQY4PMz5CMfVe6
+         9HFAGQUNaIFckivCqETqZ7YxCVj2yDR+ArvdKD5kSkixRmT88ABeuICNO4OdQVKZNCYE
+         0QZ+W4lioHoDtFrOKNBR/SUSPLeizcMAQxFaNO1ZN6xKoOgkYXj+0F8MLb/515i/4cmw
+         XQmBO9u4rO8Egkc9eb1zGa2p/6VPj5738FkYMN2frytEzx2+rZCY244R29gks0IX3oee
+         MeHA==
+X-Gm-Message-State: AOJu0YxFjW+JHlEWeYB6OcSbBh2tzRHNRRP+LKnGz5kgIaQkKAS3Xn7Q
+        5TY4ZqaPylZvBxQ+AdeAuXxK8wVZDh7wZfc=
+X-Google-Smtp-Source: AGHT+IHSDwqtRBxMdDOnZwBq01UvhHo5RWciGN7c3Nmk1lbfhcd8KQUoKkkA0peDZ+LMczKoiDc2N2BAek7agzE=
+X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
+ (user=jsperbeck job=sendgmr) by 2002:a05:6902:1801:b0:daf:660e:9bdb with SMTP
+ id cf1-20020a056902180100b00daf660e9bdbmr101297ybb.6.1700691588594; Wed, 22
+ Nov 2023 14:19:48 -0800 (PST)
+Date:   Wed, 22 Nov 2023 22:19:47 +0000
+In-Reply-To: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
+Mime-Version: 1.0
+References: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231122221947.781812-1-jsperbeck@google.com>
+Subject: Re: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
+From:   John Sperbeck <jsperbeck@google.com>
+To:     tip-bot2@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        peterz@infradead.org, rui.zhang@intel.com, tglx@linutronix.de,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 at 22:36, Juntong Deng <juntong.deng@outlook.com> wrote:
->
-> On 2023/11/23 4:35, Marco Elver wrote:
-> > On Wed, 22 Nov 2023 at 21:01, Juntong Deng <juntong.deng@outlook.com> wrote:
-> >>
-> >> The time obtained by local_clock() is the local CPU time, which may
-> >> drift between CPUs and is not suitable for comparison across CPUs.
-> >>
-> >> It is possible for allocation and free to occur on different CPUs,
-> >> and using local_clock() to record timestamps may cause confusion.
-> >
-> > The same problem exists with printk logging.
-> >
-> >> ktime_get_boot_fast_ns() is based on clock sources and can be used
-> >> reliably and accurately for comparison across CPUs.
-> >
-> > You may be right here, however, the choice of local_clock() was
-> > deliberate: it's the same timestamp source that printk uses.
-> >
-> > Also, on systems where there is drift, the arch selects
-> > CONFIG_HAVE_UNSTABLE_SCHED_CLOCK (like on x86) and the drift is
-> > generally bounded.
-> >
-> >> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> >> ---
-> >>   mm/kfence/core.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> >> index 3872528d0963..041c03394193 100644
-> >> --- a/mm/kfence/core.c
-> >> +++ b/mm/kfence/core.c
-> >> @@ -295,7 +295,7 @@ metadata_update_state(struct kfence_metadata *meta, enum kfence_object_state nex
-> >>          track->num_stack_entries = num_stack_entries;
-> >>          track->pid = task_pid_nr(current);
-> >>          track->cpu = raw_smp_processor_id();
-> >> -       track->ts_nsec = local_clock(); /* Same source as printk timestamps. */
-> >> +       track->ts_nsec = ktime_get_boot_fast_ns();
-> >
-> > You have ignored the comment placed here - now it's no longer the same
-> > source as printk timestamps. I think not being able to correlate
-> > information from KFENCE reports with timestamps in lines from printk
-> > is worse.
-> >
-> > For now, I have to Nack: Unless you can prove that
-> > ktime_get_boot_fast_ns() can still be correlated with timestamps from
-> > printk timestamps, I think this change only trades one problem for
-> > another.
-> >
-> > Thanks,
-> > -- Marco
->
-> Honestly, the possibility of accurately matching a message in the printk
-> log by the timestamp in the kfence report is very low, since allocation
-> and free do not directly correspond to a certain event.
+I have a platform with both LOCAL_APIC and LOCAL_X2APIC entries for
+each CPU.  However, the ids for the LOCAL_APIC entries are all
+invalid ids of 255, so they have always been skipped in acpi_parse_lapic()
+by this code from f3bf1dbe64b6 ("x86/acpi: Prevent LAPIC id 0xff from being
+accounted"):
 
-It's about being able to compare the timestamps. I don't want to match
-an exact event, but be able to figure out which event happened
-before/after an allocation or free, i.e. the logical ordering of
-events.
+    /* Ignore invalid ID */
+    if (processor->id == 0xff)
+            return 0;
 
-With CONFIG_PRINTK_CALLER we can see the CPU ID in printk lines and
-are therefore able to accurately compare printk lines with information
-given by KFENCE alloc/free info.
+With the change in this thread, the return value of 0 means that the
+'count' variable in acpi_parse_entries_array() is incremented.  The
+positive return value means that 'has_lapic_cpus' is set, even though
+no entries were actually matched.  Then, when the MADT is iterated
+with acpi_parse_x2apic(), the x2apic entries with ids less than 255
+are skipped and most of my CPUs aren't recognized.
 
-> Since time drifts across CPUs, timestamps may be different even if
-> allocation and free can correspond to a certain event.
+I think the original version of this change was okay for this case in
+https://lore.kernel.org/lkml/87pm4bp54z.ffs@tglx/T/
 
-This is not a problem with CONFIG_PRINTK_CALLER.
-
-> If we really need to find the relevant printk logs by the timestamps in
-> the kfence report, all we can do is to look for messages that are within
-> a certain time range.
->
-> If we are looking for messages in a certain time range, there is not
-> much difference between local_clock() and ktime_get_boot_fast_ns().
->
-> Also, this patch is in preparation for my next patch.
->
-> My next patch is to show the PID, CPU number, and timestamp when the
-> error occurred, in this case time drift from different CPUs can
-> cause confusion.
-
-It's not quite clear how there's a dependency between this patch and a
-later patch, but generally it's good practice to send related patches
-as a patch series. That way it's easier to see what the overall
-changes are and provide feedback as a whole - as is, it's difficult to
-provide feedback.
-
-However, from what you say this information is already given.
-dump_stack_print_info() shows this - e.g this bit here is printed by
-where the error occurred:
-
-| CPU: 0 PID: 484 Comm: kunit_try_catch Not tainted 5.13.0-rc3+ #7
-| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2
-04/01/2014
-
-And if the printk log has timestamps, then these lines are prefixed
-with the timestamp where the error occurred.
-
-> For example, use-after-free caused by a subtle race condition, in which
-> the time between the free and the error occur will be very close.
->
-> Time drift from different CPUs may cause it to appear in the report that
-> the error timestamp precedes the free timestamp.
-
-That doesn't matter. I recommend that you go through a hypothetical
-debugging scenario:
-1. We are not interested in the absolute timings of events, but the
-logical ordering between them.
-
-2. The logical ordering of events is inherent from how KFENCE
-operates: an error _always_ follows an allocation and/or free. From a
-debugging point of view, the timestamps do not have any value here.
-
-3. The timestamps _do_ add value when trying to figure out the logical
-ordering between allocation, free, or the erroneous access _with
-other_ events in the system. A stream of other events is always shown
-in the kernel log (printk). Other streams of events can be obtained
-via e.g. ftrace (which also uses local_clock(), see
-kernel/trace/trace_clock.c).
-
-So, the timestamp that KFENCE should show is the one that most likely
-allows us to deduce the logical ordering with other events in the
-system.
+P.S. I could be convinced that the MADT for my platform is somewhat
+ill-formed and that I'm relying on pre-existing behavior.  I'm not
+well-versed enough in the topic to know for sure.
