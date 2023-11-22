@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 378567F4DBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD68B7F4DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343867AbjKVRET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S1343647AbjKVRE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjKVRES (ORCPT
+        with ESMTP id S231345AbjKVRE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:04:18 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B4F09F;
-        Wed, 22 Nov 2023 09:04:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3199CFEC;
-        Wed, 22 Nov 2023 09:05:01 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF95E3F73F;
-        Wed, 22 Nov 2023 09:04:12 -0800 (PST)
-Date:   Wed, 22 Nov 2023 17:04:10 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 5/7] coresight: tmc: Move ACPI support from AMBA driver
- to platform driver
-Message-ID: <ZV40itsgT5OSJmdC@bogus>
-References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
- <20231027072943.3418997-6-anshuman.khandual@arm.com>
+        Wed, 22 Nov 2023 12:04:57 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF9E11F;
+        Wed, 22 Nov 2023 09:04:53 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AMH4ZQL112193;
+        Wed, 22 Nov 2023 11:04:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700672675;
+        bh=Aux+7eojx+Fb63WPK91qxLrk6ZvM6nCAXtH2OgSbbbA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=HsqmTlLjG9kom2HsRRQitcKY5oYlPJ1VUIycsyhPLYk9r5RcmKDCzasFmRlaNMVeL
+         uAx70YOtoSZKwfes4SYuZx/2+LPfaaORvMBK8yPo25f4pqX8YkAVZpi5v499BPImnd
+         ASP2xulKogf3wVHZb6H85w33L1OVcJHQdBGqzouM=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AMH4ZPF006683
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Nov 2023 11:04:35 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 22
+ Nov 2023 11:04:35 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 22 Nov 2023 11:04:35 -0600
+Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AMH4Vqc124276;
+        Wed, 22 Nov 2023 11:04:32 -0600
+Message-ID: <522e57a5-20bb-48c4-ac55-15e92ad1a6e2@ti.com>
+Date:   Wed, 22 Nov 2023 22:34:31 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027072943.3418997-6-anshuman.khandual@arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] dt-bindings: dma: ti: k3-*: Add descriptions for
+ register regions
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231122154238.815781-1-vigneshr@ti.com>
+ <20231122154238.815781-2-vigneshr@ti.com>
+ <ac4011c6-980f-483b-97e9-da0e1fd4ca61@linaro.org>
+Content-Language: en-US
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <ac4011c6-980f-483b-97e9-da0e1fd4ca61@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 12:59:41PM +0530, Anshuman Khandual wrote:
-> Add support for the tmc devices in the platform driver, which can then be
-> used on ACPI based platforms. This change would now allow runtime power
-> management for ACPI based systems. The driver would try to enable the APB
-> clock if available.
+
+
+On 22/11/23 21:49, Krzysztof Kozlowski wrote:
+> On 22/11/2023 16:42, Vignesh Raghavendra wrote:
+>> In preparation for introducing more register regions, add description
+>> for existing register regions so that its easier to map reg-names to
+>> that of SoC Documentations/TRMs.
+>>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> ---
+>>  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 26 +++++++++++--------
+>>  .../devicetree/bindings/dma/ti/k3-pktdma.yaml |  6 ++++-
+>>  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  5 +++-
+>>  3 files changed, 24 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+>> index 4ca300a42a99..b5444800b036 100644
+>> --- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+>> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+>> @@ -35,14 +35,6 @@ properties:
+>>        - ti,am64-dmss-bcdma
+>>        - ti,j721s2-dmss-bcdma-csi
+>>  
+>> -  reg:
+>> -    minItems: 3
+>> -    maxItems: 5
+>> -
+>> -  reg-names:
+>> -    minItems: 3
+>> -    maxItems: 5
 > 
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  drivers/acpi/arm64/amba.c                     |   2 -
->  .../hwtracing/coresight/coresight-tmc-core.c  | 127 +++++++++++++++---
->  drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
->  3 files changed, 113 insertions(+), 17 deletions(-)
+> Why do you remove properties from top-level? You shouldn't. We expect
+> there to have widest constrains. This is not explained in commit msg and
+> really not justified looking at further diff hunks.
+> 
 
-[...]
+Sorry, I didn't realize having top-level constraints is a requirement
+and thought individual compatibles enforcing that actual constraints is
+sufficient. Will add these back in v3.
 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 7ec5365e2b64..618bc0b7a1a5 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-
-[...]
-
-> @@ -573,9 +579,9 @@ static void tmc_shutdown(struct amba_device *adev)
->  	spin_unlock_irqrestore(&drvdata->spinlock, flags);
->  }
->  
-> -static void tmc_remove(struct amba_device *adev)
-> +static void __tmc_remove(struct device *dev)
->  {
-> -	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> +	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
->  
->  	/*
->  	 * Since misc_open() holds a refcount on the f_ops, which is
-> @@ -586,6 +592,11 @@ static void tmc_remove(struct amba_device *adev)
->  	coresight_unregister(drvdata->csdev);
->  }
->  
-> +static void tmc_remove(struct amba_device *adev)
-> +{
-> +	__tmc_remove(&adev->dev);
-> +}
-> +
->  static const struct amba_id tmc_ids[] = {
->  	CS_AMBA_ID(0x000bb961),
->  	/* Coresight SoC 600 TMC-ETR/ETS */
-> @@ -613,6 +624,92 @@ static struct amba_driver tmc_driver = {
->  
->  module_amba_driver(tmc_driver);
->  
-> +static int tmc_platform_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	struct tmc_drvdata *drvdata;
-> +	int ret = 0;
-> +
-> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-> +	if (!drvdata)
-> +		return -ENOMEM;
-> +
-> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
-> +	if (IS_ERR(drvdata->pclk))
-> +		return -ENODEV;
-> +
-
---->8
-> +	if (res) {
-> +		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(drvdata->base)) {
-> +			clk_put(drvdata->pclk);
-> +			return PTR_ERR(drvdata->base);
-> +		}
-> +	}
-> +
----
-
-You need drop the above hunk as _tmc_probe() already takes care of that.
-This is the root cause for the issue I reported in the other thread. Also
-sorry for the confusion, I had to refer to coresight-tmc-core.c and post
-the patch to unify module_init/exit but completely mixed up the file/patch
-and referred coresight-tpiu-core.c instead as that patch was dealing with
-it.
+> Best regards,
+> Krzysztof
+> 
 
 -- 
-Regards,
-Sudeep
+Regards
+Vignesh
