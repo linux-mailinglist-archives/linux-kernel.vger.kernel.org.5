@@ -1,242 +1,168 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C4D7F4EEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:08:15 +0100 (CET)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7F57F4EEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbjKVSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        id S1343501AbjKVSIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjKVSHJ (ORCPT
+        with ESMTP id S230377AbjKVSIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:07:09 -0500
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAB51B3;
-        Wed, 22 Nov 2023 10:07:05 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 12BDD3200AE3;
-        Wed, 22 Nov 2023 13:07:03 -0500 (EST)
-Received: from imap52 ([10.202.2.102])
-  by compute3.internal (MEProxy); Wed, 22 Nov 2023 13:07:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1700676423; x=1700762823; bh=D3ODkAsZ40xdTxpV02osQJ56S329xCPjg4P
-        uzXonPT8=; b=rIMm0JKEtDtYeRFuAtCwmycbz4njOMNfIW23uySwhBBTcgmJR/r
-        AR+UJCpo7Q9ur5wf8eoUFJNIahu1d+3HSwGuEtXzaKGrNZPi+xjiVpLpiQ2nk2nP
-        C7U3mwoOQgrzIirWiY7JXIuQUG8+mrLSEekw5yUmlW9Nz+A8OA962yedsQAVoQbd
-        jIAOv/uOjGqbFa5jdJcxf6nDEGXjDrNbh5dCsZmVEVlEb0PeyagLqNXZYuHRFbUv
-        fpf32CfGsopjwIAozrGdK6iuYVrdqs5QdJBC/o62ixE1t+9vSvUn3PE5OxcYMKsZ
-        qAk1nbIe9f7wTWZDjve1PbwovAxDQ8mx6Xg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1700676423; x=1700762823; bh=D3ODkAsZ40xdTxpV02osQJ56S329xCPjg4P
-        uzXonPT8=; b=JACtxRnkKYxyYX30Adu06DCNvVH2Mjyj6fpTSCGppQ79jB5Y3oC
-        ctDQvIUUGx73Behb7A+QOPtNBaDC8rRE7ubGpBl3fJqlgt8WmNviswUFMoH/qYfo
-        mcg0V9bWWfkZGvkN/c6W27IICta2VLxH61xyubvplK3T0+bDZBuX23aRSKShhT4a
-        3YWBlq8iUnTlWg4R00iA+y2TgFqSWbY/FeonmG/lz8IY3bmVuagMwPQxYmsdSAp9
-        1Ory5lgWR5dQsOJ8eYOSYv7FQcUmNvwOF+ZNffGvwhV/lHB6n4KQmTbzncjcTlZ7
-        Tpk+eTVlmOM/i8DnFWm/ecXWhdC7G91i/5g==
-X-ME-Sender: <xms:RkNeZSpFBrPPnTqDyY_Uy71xdp38iKlZyJZieUnxyh13SI7oJITpEA>
-    <xme:RkNeZQpLfVKoQuqD7CAf0bWxcV4M9_DFJw3GQdG-d6na0JIEP4qEF0FfXn-c-ifjl
-    eF8CTvZX_MGjjSl9HI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    ofgrrhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvg
-    gssgdrtggrqeenucggtffrrghtthgvrhhnpefhfeegudeftefgteelgfekgfdvjeelleev
-    gffhjeffhfdtiedtjeefkedvuefgkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdr
-    tggr
-X-ME-Proxy: <xmx:RkNeZXNHXIFh6b6urMMVEvt-Ckhv7Dh0vpAgHbZDulWidyMAzVycJQ>
-    <xmx:RkNeZR4qY9k00S4ioYA_h6mxfBzXbho-Tiny2iHEgmfaNWVhp_277w>
-    <xmx:RkNeZR6n-7qqnpKuUxav7dBlOs9hFHe7nYtQKHjcPLnW9LqmeMR2cQ>
-    <xmx:R0NeZbkIiCcbMNb-aV5MHw_uAqwJ4VjGsFDMXBtHQAnW11OZO_734g>
-Feedback-ID: ibe194615:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 629ADC6008B; Wed, 22 Nov 2023 13:07:02 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Wed, 22 Nov 2023 13:08:30 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371511B6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:08:23 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso661241fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700676501; x=1701281301; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z//RucA8tE1/CYD6Q8FXMQUzE3udbcwedLzht1PJJU0=;
+        b=LyVy+TXamX5b4XO/UjHuY5l/ksKHva9nFIl7bnT/ar9v0b0DdRg0j4FbSZbspcudNq
+         2YUh41d3IEdlNZY1/FF4nPPp/WmqDjs3YiFcmXNQXLvso3G+w03kMIUKb0eDl9XIylcv
+         y3BVauTwsnuoN5KjFIJd/LEgGreyszLDd0rhTiH6+ZGya4lKgsOfiTI6gvEJ2es0IZ1q
+         ACcCofU9Xh1VGTPyH6u8bBKULwMq8my66L7jl5qpO571toBeE4r3AW5kCuBe0e3vEYzA
+         ji3g/XFkLvzq4c6W9wBE8xB1sLI6qJ2+w9mHcyXCcwqW2TRMAgRyODrg47sG+FvAf8Oe
+         nH+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700676501; x=1701281301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z//RucA8tE1/CYD6Q8FXMQUzE3udbcwedLzht1PJJU0=;
+        b=TvO7ZOsicXpCw49Gd9T/IN2hdegXk5vaIJ8QHlI1xupMkVgFOTb8xjWRZZY4Xpy4J9
+         Ype8RoUo+I2IbyHOB8PPbqfII2deMmTenDw1rD3YZoJE2u4WAArcEt1YqYOMPfRu91LF
+         8K8XpenTm7x0JIpv1r7aUc0L7qIm2InrGTv3rvNG6IGJDI0X6fgEhXOi4y5EH7ggatfO
+         GbmHwg/3+bSPUGbjlQIEY0R/l76rJaWSCbsAKaS7wmc5nJoUpQm1dRsVKayAHomK4RQs
+         cgj4yWpvEt5B1LNQqemXToGY3qukG1kwRqojJ2Lz+u5m7b2OhGTvWT17k3w5Sc70JQDC
+         fKsQ==
+X-Gm-Message-State: AOJu0YxDeY0E5YmcixXjv/t4b98yi6LLSjDNzM7Vj3zd/kTYimoqb0nH
+        wbwYwnIhrAjTydtJsKGD6F6RbNj4zLwuufKkAsA=
+X-Google-Smtp-Source: AGHT+IEH4JaV9faUPetkiI3Pq13W6T68SfFoLkf6MuquZjHLZ5crwlofQHtlnSF6LY+cHU+ljortfnDpM+AFlOiiSig=
+X-Received: by 2002:a2e:824f:0:b0:2c5:9e2:ed14 with SMTP id
+ j15-20020a2e824f000000b002c509e2ed14mr2225732ljh.39.1700676501254; Wed, 22
+ Nov 2023 10:08:21 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <ca976ed9-24c5-4c2f-95bf-3deaf1ad0dbc@app.fastmail.com>
-In-Reply-To: <36bb8aaf-643c-4736-abe5-e5a911f24aa1@app.fastmail.com>
-References: <mpearson-lenovo@squebb.ca>
- <20231113165453.6335-1-mpearson-lenovo@squebb.ca>
- <c8a025e-2da2-693f-aa94-679aba79827b@linux.intel.com>
- <36bb8aaf-643c-4736-abe5-e5a911f24aa1@app.fastmail.com>
-Date:   Wed, 22 Nov 2023 13:06:42 -0500
-From:   "Mark Pearson" <mpearson-lenovo@squebb.ca>
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Hans de Goede" <hdegoede@redhat.com>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        "Limonciello, Mario" <mario.limonciello@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] platform/x86: Add support for improved performance mode
-Content-Type: text/plain;charset=utf-8
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-16-ryncsn@gmail.com>
+ <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
+In-Reply-To: <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Thu, 23 Nov 2023 02:08:03 +0800
+Message-ID: <CAMgjq7DsUBr4CgrJi9VKTgU3_tyrD0c5dLS_zU7akm31PQy-5g@mail.gmail.com>
+Subject: Re: [PATCH 15/24] mm/swap: avoid an duplicated swap cache lookup for
+ SYNCHRONOUS_IO device
+To:     Chris Li <chrisl@kernel.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, Nov 13, 2023, at 12:15 PM, Mark Pearson wrote:
-> Thanks Ilpo,
+Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8822=E6=97=A5=
+=E5=91=A8=E4=B8=89 01:18=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Mon, Nov 13, 2023, at 11:59 AM, Ilpo J=C3=A4rvinen wrote:
->> On Mon, 13 Nov 2023, Mark Pearson wrote:
->>
->>> Some new Thinkpads have a new improved performance mode available.
->>> Add support to make this mode usable.
->>>=20
->>> To avoid having to create a new profile, just use the improved perfo=
-rmance
->>> mode in place of the existing performance mode, when available.
->>>=20
->>> Tested on P14s AMD G4 AMD.
->>>=20
->>> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
->>> ---
->>> Changes in v2: updated implementation for DYTC_UP_SUPPORT define
->>> Changes in v3:=20
->>>  - Add in missing BIT for define, somehow lost in previous commit
->>>  - Cosmetic clean-ups
->>>=20
->>>  drivers/platform/x86/thinkpad_acpi.c | 28 +++++++++++++++++++++++++=
-+++
->>>  1 file changed, 28 insertions(+)
->>>=20
->>> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform=
-/x86/thinkpad_acpi.c
->>> index ad460417f901..3a9d2cc71b6a 100644
->>> --- a/drivers/platform/x86/thinkpad_acpi.c
->>> +++ b/drivers/platform/x86/thinkpad_acpi.c
->>> @@ -10136,6 +10136,7 @@ static struct ibm_struct proxsensor_driver_d=
-ata =3D {
->>> =20
->>>  #define DYTC_CMD_SET          1 /* To enable/disable IC function mo=
-de */
->>>  #define DYTC_CMD_MMC_GET      8 /* To get current MMC function and =
-mode */
->>> +#define DYTC_CMD_UP_CAP     0xA /* To get Ultra-performance capabil=
-ity */
->>>  #define DYTC_CMD_RESET    0x1ff /* To reset back to default */
->>> =20
->>>  #define DYTC_CMD_FUNC_CAP     3 /* To get DYTC capabilities */
->>> @@ -10152,6 +10153,7 @@ static struct ibm_struct proxsensor_driver_d=
-ata =3D {
->>> =20
->>>  #define DYTC_FUNCTION_STD     0  /* Function =3D 0, standard mode */
->>>  #define DYTC_FUNCTION_CQL     1  /* Function =3D 1, lap mode */
->>> +#define DYTC_FUNCTION_TMS     9  /* Function =3D 9, TMS mode */
->>>  #define DYTC_FUNCTION_MMC     11 /* Function =3D 11, MMC mode */
->>>  #define DYTC_FUNCTION_PSC     13 /* Function =3D 13, PSC mode */
->>>  #define DYTC_FUNCTION_AMT     15 /* Function =3D 15, AMT mode */
->>> @@ -10163,11 +10165,14 @@ static struct ibm_struct proxsensor_driver=
-_data =3D {
->>>  #define DYTC_MODE_MMC_LOWPOWER 3  /* Low power mode */
->>>  #define DYTC_MODE_MMC_BALANCE  0xF  /* Default mode aka balanced */
->>>  #define DYTC_MODE_MMC_DEFAULT  0  /* Default mode from MMC_GET, aka=
- balanced */
->>> +#define DYTC_NOMODE            0xF  /* When Function does not have =
-a mode */
->>> =20
->>>  #define DYTC_MODE_PSC_LOWPOWER 3  /* Low power mode */
->>>  #define DYTC_MODE_PSC_BALANCE  5  /* Default mode aka balanced */
->>>  #define DYTC_MODE_PSC_PERFORM  7  /* High power mode aka performanc=
-e */
->>> =20
->>> +#define DYTC_UP_SUPPORT    BIT(8)  /* Ultra-performance (TMS) mode =
-support */
->>> +
->>>  #define DYTC_ERR_MASK       0xF  /* Bits 0-3 in cmd result are the =
-error result */
->>>  #define DYTC_ERR_SUCCESS      1  /* CMD completed successful */
->>> =20
->>> @@ -10185,6 +10190,7 @@ static enum platform_profile_option dytc_cur=
-rent_profile;
->>>  static atomic_t dytc_ignore_event =3D ATOMIC_INIT(0);
->>>  static DEFINE_MUTEX(dytc_mutex);
->>>  static int dytc_capabilities;
->>> +static bool dytc_ultraperf_cap;
->>>  static bool dytc_mmc_get_available;
->>>  static int profile_force;
->>> =20
->>> @@ -10355,6 +10361,17 @@ static int dytc_profile_set(struct platform=
-_profile_handler *pprof,
->>>  	if (err)
->>>  		goto unlock;
->>> =20
->>> +	/* Set TMS mode appropriately (enable for performance), if availab=
-le */
->>> +	if (dytc_ultraperf_cap) {
->>> +		int cmd;
->>> +
->>> +		cmd =3D DYTC_SET_COMMAND(DYTC_FUNCTION_TMS, DYTC_NOMODE,
->>> +				       profile =3D=3D PLATFORM_PROFILE_PERFORMANCE);
->>> +		err =3D dytc_command(cmd, &output);
->>> +		if (err)
->>> +			return err;
->>> +	}
->>> +
->>>  	if (dytc_capabilities & BIT(DYTC_FC_MMC)) {
->>>  		if (profile =3D=3D PLATFORM_PROFILE_BALANCED) {
->>>  			/*
->>> @@ -10429,6 +10446,7 @@ static struct platform_profile_handler dytc_=
-profile =3D {
->>>  static int tpacpi_dytc_profile_init(struct ibm_init_struct *iibm)
->>>  {
->>>  	int err, output;
->>> +	int cmd;
->>> =20
->>>  	/* Setup supported modes */
->>>  	set_bit(PLATFORM_PROFILE_LOW_POWER, dytc_profile.choices);
->>> @@ -10484,6 +10502,16 @@ static int tpacpi_dytc_profile_init(struct =
-ibm_init_struct *iibm)
->>>  		dbg_printk(TPACPI_DBG_INIT, "No DYTC support available\n");
->>>  		return -ENODEV;
->>>  	}
->>> +	err =3D dytc_command(DYTC_CMD_UP_CAP, &output);
->>
->> Hmm, are you missing error handling here?
->>
-> Doh....yes, it should check that. My bad.
+> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
+rote:
+> >
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > When a xa_value is returned by the cache lookup, keep it to be used
+> > later for workingset refault check instead of doing the looking up agai=
+n
+> > in swapin_no_readahead.
+> >
+> > This does have a side effect of making swapoff also triggers workingset
+> > check, but should be fine since swapoff does effect the workload in man=
+y
+> > ways already.
 >
-> I'll hold off a day or two on the next patch so I'm not spamming the=20
-> list in case there is other feedback, and do a fix for that.=20
-> I don't want the driver to error out on this - but it shouldn't check=20
-> (and potentially enable) the feature if that register read fails. I=20
-> will go and double check on some older platforms too as a sanity check.
+> I need to sleep on it a bit to see if this will create another problem or=
+ not.
 >
-> Thanks for the review.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > ---
+> >  mm/swap_state.c | 10 ++++------
+> >  1 file changed, 4 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+> > index e057c79fb06f..51de2a0412df 100644
+> > --- a/mm/swap_state.c
+> > +++ b/mm/swap_state.c
+> > @@ -872,7 +872,6 @@ static struct page *swapin_no_readahead(swp_entry_t=
+ entry, gfp_t gfp_mask,
+> >  {
+> >         struct folio *folio;
+> >         struct page *page;
+> > -       void *shadow =3D NULL;
+> >
+> >         page =3D alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id(=
+));
+> >         folio =3D (struct folio *)page;
+> > @@ -888,10 +887,6 @@ static struct page *swapin_no_readahead(swp_entry_=
+t entry, gfp_t gfp_mask,
+> >
+> >                 mem_cgroup_swapin_uncharge_swap(entry);
+> >
+> > -               shadow =3D get_shadow_from_swap_cache(entry);
+> > -               if (shadow)
+> > -                       workingset_refault(folio, shadow);
+> > -
+> >                 folio_add_lru(folio);
+> >
+> >                 /* To provide entry to swap_readpage() */
+> > @@ -922,11 +917,12 @@ struct page *swapin_readahead(swp_entry_t entry, =
+gfp_t gfp_mask,
+> >         enum swap_cache_result cache_result;
+> >         struct swap_info_struct *si;
+> >         struct mempolicy *mpol;
+> > +       void *shadow =3D NULL;
+> >         struct folio *folio;
+> >         struct page *page;
+> >         pgoff_t ilx;
+> >
+> > -       folio =3D swap_cache_get_folio(entry, vmf, NULL);
+> > +       folio =3D swap_cache_get_folio(entry, vmf, &shadow);
+> >         if (folio) {
+> >                 page =3D folio_file_page(folio, swp_offset(entry));
+> >                 cache_result =3D SWAP_CACHE_HIT;
+> > @@ -938,6 +934,8 @@ struct page *swapin_readahead(swp_entry_t entry, gf=
+p_t gfp_mask,
+> >         if (swap_use_no_readahead(si, swp_offset(entry))) {
+> >                 page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx=
+, vmf->vma->vm_mm);
+> >                 cache_result =3D SWAP_CACHE_BYPASS;
+> > +               if (shadow)
+> > +                       workingset_refault(page_folio(page), shadow);
+>
+> It is inconsistent why other flavors of readahead do not do the
+> workingset_refault here.
 
-Just an update, as it's taking me longer to get what I thought would be =
-the final version of this patch done.
+Because of the readaheads and swapcache. Every readahead pages need to
+be checked by workingset_refault with a different shadow (and so a
+different xarray entry search is needed). And since other swapin path
+need to insert page into swapcache, they will do extra xarray
+search/insert anyway so this optimization won't work.
 
-I did some regression testing on other platforms, as a sanity check, and=
- found on the Z16 G1 that it is reporting this feature as supported, but=
- unfortunately it doesn't work (it switches to low power mode)
+> I suggest keeping the workingset_refault in swapin_no_readahead() and
+> pass the shadow argument in.
 
-This is a FW issue so I'm asking the FW team for clarification on why I'=
-m seeing this, why it isn't working, and how to fix it.=20
-This is going to take some time unfortunately, so this patch will be del=
-ayed a bit. Apologies to anybody waiting for this improvement.
-
-Thanks
-Mark
+That sounds good to me.
