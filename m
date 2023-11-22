@@ -2,195 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635517F490D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1287F490E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbjKVOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:35:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
+        id S1344140AbjKVOfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbjKVOfR (ORCPT
+        with ESMTP id S1344148AbjKVOfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:35:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BA2195
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:35:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B75C433C8;
-        Wed, 22 Nov 2023 14:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700663713;
-        bh=RtXHVojQdii9cypheSJBX00LBuWCbe8gFyZ642oQe6A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dBFU2Dem3EzGCXV3Q3tedWG2zrS20A/bGvbdoBmedPEANbbwkpNzyl/M4HioweVGb
-         BZ3fnadm47uAvJY3apn3f989uSWYz5ONRfJ1zS+0gls0LHlGnFiJSqXSkPoPBYtg+F
-         lWoW4L18wsGteiHC0Wr/scISvN7KVWVMMxPT/v1vjBH7G3Knl2QSRkRYbyiN3zVi+p
-         fApO8YOj9xhU5chPpIASR5ijXN/I55LBw+v6S0lJ3o2wcnXinboeFMs+SkErTCpNri
-         NglxMF0ZEATv4ho4vVWQTGGOToZKxW2gEZn+y/bvi6tY+VPWnPcKdl0sAZVpxKjRyP
-         Lyz/wtrvTtYYQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-507a62d4788so9689216e87.0;
-        Wed, 22 Nov 2023 06:35:13 -0800 (PST)
-X-Gm-Message-State: AOJu0YyFSrBT4Jg2PKqPlGk+YANH9sMuiP1rL2066+rtI8Djy+akMQpl
-        AGKkQSN5J/wpAM0/WQGAnEnttdKMIKteMmHWCA==
-X-Google-Smtp-Source: AGHT+IEQBg+DK/D3DTxQm+IxmEnOEyd8FYRneZs7dFyJFZUQ30Vu7QNpAPavUGMN4n7otiuBSo5YrTBJtBD/XnkZObs=
-X-Received: by 2002:a05:6512:3c8f:b0:509:2b81:fc40 with SMTP id
- h15-20020a0565123c8f00b005092b81fc40mr2616195lfv.9.1700663711762; Wed, 22 Nov
- 2023 06:35:11 -0800 (PST)
+        Wed, 22 Nov 2023 09:35:19 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFE919E;
+        Wed, 22 Nov 2023 06:35:15 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AMBtvdR027576;
+        Wed, 22 Nov 2023 08:35:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=2
+        zg8Vph7JyQ3lMnAhTy3DJBjNy3k2aXpTzfCZyGUxXs=; b=GSnja0FiYrWY/+tBo
+        9zC2lpuI9g1rZ+LOUkQAoV7/QLP5QP0a/DjaWMZx/dRiEaO/rXUYWpy8PlnOO3iK
+        QHGzLwydZRolt/KtNqUGMQveA55jD1vEUw8Ysw8hTBMkDW+il4u/9Aezcb9H/8MW
+        ee2AyVVsybni/Jo7EDksMMk+fv1O/2scd2qwSZnZu8RQlJWF1k3mlWZsznlIDz5U
+        9e48HXs53KgdAbxZH5M1SL/WDvzG3nUlxvOAJSLb4Budu+dDH/9BlRIpGS1vPEYA
+        07hOwqFuEBNgPck94X/40FH6/mDjGYOcIxsZobhZjti4gxgCELts0NLmCplkvs5Q
+        zYU3A==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uetjpcjyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 08:35:02 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 22 Nov
+ 2023 14:35:00 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Wed, 22 Nov 2023 14:35:00 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A92B015B6;
+        Wed, 22 Nov 2023 14:35:00 +0000 (UTC)
+From:   Maciej Strozek <mstrozek@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek <mstrozek@opensource.cirrus.com>
+Subject: [PATCH v4] ASoC: cs43130: Allow driver to work without IRQ connection
+Date:   Wed, 22 Nov 2023 14:34:59 +0000
+Message-ID: <20231122143459.26861-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
- <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com> <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
- <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
- <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org> <58a9caacc1226c7c3a2bdfe73ef1791f@manjaro.org>
- <cc4c789c-b595-41eb-b543-9e03549c6e61@amd.com> <CAMuHMdWm-gRPHeHyuX3_eR+9chJEw3iiZwCNBnoiRPHzoMAs6w@mail.gmail.com>
- <808270d3-2274-4fb7-a397-38538503b67c@amd.com>
-In-Reply-To: <808270d3-2274-4fb7-a397-38538503b67c@amd.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 22 Nov 2023 07:34:59 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqKkOjBHrJ0WELq3JnJDqgtA=mdF+EtAxHSCGqZMQ9tuSQ@mail.gmail.com>
-Message-ID: <CAL_JsqKkOjBHrJ0WELq3JnJDqgtA=mdF+EtAxHSCGqZMQ9tuSQ@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dragan Simic <dsimic@manjaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        wens@kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: uP51HNjBvecpsM2cMKHTZ3OfXw42q43p
+X-Proofpoint-ORIG-GUID: uP51HNjBvecpsM2cMKHTZ3OfXw42q43p
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 1:57=E2=80=AFAM Michal Simek <michal.simek@amd.com>=
- wrote:
->
-> Hi Geert,
->
-> On 11/22/23 09:53, Geert Uytterhoeven wrote:
-> > Hi Michal,
-> >
-> > On Wed, Nov 22, 2023 at 9:50=E2=80=AFAM Michal Simek <michal.simek@amd.=
-com> wrote:
-> >> On 11/22/23 09:29, Dragan Simic wrote:
-> >>> On 2023-11-22 09:21, Krzysztof Kozlowski wrote:
-> >>>> On 22/11/2023 09:09, Chen-Yu Tsai wrote:
-> >>>>> On Wed, Nov 22, 2023 at 4:05=E2=80=AFPM Krzysztof Kozlowski
-> >>>>> <krzysztof.kozlowski@linaro.org> wrote:
-> >>>>>>
-> >>>>>> On 21/11/2023 14:50, Rafa=C5=82 Mi=C5=82ecki wrote:
-> >>>>>>>> +Order of Properties in Device Node
-> >>>>>>>> +----------------------------------
-> >>>>>>>> +
-> >>>>>>>> +Following order of properties in device nodes is preferred:
-> >>>>>>>> +
-> >>>>>>>> +1. compatible
-> >>>>>>>> +2. reg
-> >>>>>>>> +3. ranges
-> >>>>>>>> +4. Standard/common properties (defined by common bindings, e.g.=
- without
-> >>>>>>>> +   vendor-prefixes)
-> >>>>>>>> +5. Vendor-specific properties
-> >>>>>>>> +6. status (if applicable)
-> >>>>>>>> +7. Child nodes, where each node is preceded with a blank line
-> >>>>>>>> +
-> >>>>>>>> +The "status" property is by default "okay", thus it can be omit=
-ted.
-> >>>>>>>
-> >>>>>>> I think it would really help to include position of #address-cell=
-s and
-> >>>>>>> #size-cells here. In some files I saw them above "compatible" tha=
-t seems
-> >>>>>>> unintuitive. Some prefer putting them at end which I think makes =
-sense
-> >>>>>>> as they affect children nodes.
-> >>>>>>>
-> >>>>>>> Whatever you choose it'd be just nice to have things consistent.
-> >>>>>>
-> >>>>>> This is a standard/common property, thus it goes to (4) above.
-> >>>>>
-> >>>>> It's probably a mix, but AFAIK a lot of the device trees in tree ha=
-ve
-> >>>>> #*-cells after "status". In some cases they are added in the board
-> >>>>> .dts files, not the chip/module .dtsi files.
-> >>>>
-> >>>> Existing DTS is not a good example :)
-> >>>>
-> >>>>>
-> >>>>> +1 that it makes sense at the end as they affect child nodes.
-> >>>>
-> >>>> I still insist that status must be the last, because:
-> >>>> 1. Many SoC nodes have address/size cells but do not have any childr=
-en
-> >>>> (I2C, SPI), so we put useless information at the end.
-> >>>> 2. Status should be the final information to say whether the node is
-> >>>> ready or is not. I read the node, check properties and then look at =
-the end:
-> >>>> a. Lack of status means it is ready.
-> >>>> b. status=3Ddisabled means device still needs board resources/custom=
-ization
-> >>>
-> >>> I agree with the "status" belonging to the very end, because it's bot=
-h logical
-> >>> and much more readable.  Also, "status" is expected to be modified in=
- the
-> >>> dependent DT files, which makes it kind of volatile and even more des=
-erving to
-> >>> be placed last.
-> >>
-> >> I am just curious if having status property at the end won't affect
-> >> execution/boot up time. Not sure how it is done in Linux but in U-Boot=
- at least
-> >> (we want to have DTs in sync between Linux and U-Boot) of_find_propert=
-y is
-> >> pretty much big loop over all properties. And status property defined =
-at the end
-> >> means going over all of them to find it out to if device is present.
-> >> Not sure if Linux works in the same way but at least of_get_property i=
-s done in
-> >> the same way.
-> >
-> > As the default is "okay", you have to loop over all properties anyway.
->
-> No doubt if you don't define status property that you need to loop over a=
-ll of
-> them. We normally describe the whole SOC with pretty much all IPs status =
-=3D
-> disabled and then in board file we are changing it to okay based on what =
-it is
-> actually wired out.
-> It means on our systems all nodes have status properties. If you have it =
-at
-> first you don't need to go over all.
+Add a polling mechanism that will keep the driver operational even in
+absence of physical IRQ connection. If IRQ line is detected, the driver
+will continue working as usual, in case of missing IRQ line it will
+fallback to the polling mechanism introduced in this change.
+This will support users which choose not to connect an IRQ line as it
+is not critical to part's operation.
 
-Order in the source and order in the OS are independent. If checking
-status needs to be optimized, then we could just put it first in the
-property list or make the state a field in struct device_node. But
-provide some data that it matters first.
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+V3 -> V4:
+	- Removed unnecesary else and indentation
+	- Changed cs43130_wait_for_completion return codes and updated callers accordingly
+	- Changed approach for checking for presence of IRQ connection: see if client->irq equals 0
+	  which seems to be a standard way of checking it used by other drivers (instead of
+	  inspecting devm_request_threaded_irq error code)
+V2 -> V3: Amended changelog message and subject line
+V1 -> V2: Add changelog message
 
-I've had this idea to randomize the order nodes are processed so
-there's no reliance on the DT order. Maybe I need the same on
-properties...
+ sound/soc/codecs/cs43130.c | 91 +++++++++++++++++++++++++++-----------
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 65 insertions(+), 27 deletions(-)
 
-Rob
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 02e7f45b9208..bd51bb5b6f14 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -326,6 +326,40 @@ static int cs43130_set_pll(struct snd_soc_component *component, int pll_id, int
+ 	return ret;
+ }
+
++static int cs43130_wait_for_completion(struct cs43130_private *cs43130, struct completion *to_poll,
++					int time)
++{
++	int stickies, offset, flag, ret;
++
++	if (cs43130->has_irq_line) {
++		ret = wait_for_completion_timeout(to_poll, msecs_to_jiffies(time));
++		if (ret == 0)
++			return -ETIMEDOUT;
++		else
++			return 0; // Discard number of jiffies left till timeout and return success
++	}
++
++	if (to_poll == &cs43130->xtal_rdy) {
++		offset = 0;
++		flag = CS43130_XTAL_RDY_INT;
++	} else if (to_poll == &cs43130->pll_rdy) {
++		offset = 0;
++		flag = CS43130_PLL_RDY_INT;
++	} else if (to_poll == &cs43130->hpload_evt) {
++		offset = 3;
++		flag = CS43130_HPLOAD_NO_DC_INT | CS43130_HPLOAD_UNPLUG_INT |
++			CS43130_HPLOAD_OOR_INT | CS43130_HPLOAD_AC_INT |
++			CS43130_HPLOAD_DC_INT | CS43130_HPLOAD_ON_INT |
++			CS43130_HPLOAD_OFF_INT;
++	} else {
++		return -EINVAL;
++	}
++
++	return regmap_read_poll_timeout(cs43130->regmap, CS43130_INT_STATUS_1 + offset,
++					stickies, (stickies & flag),
++					1000, time * 1000);
++}
++
+ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				 enum cs43130_mclk_src_sel src)
+ {
+@@ -364,14 +398,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+-			if (ret == 0) {
+-				dev_err(cs43130->dev, "Timeout waiting for XTAL_READY interrupt\n");
+-				return -ETIMEDOUT;
++			if (ret) {
++				dev_err(cs43130->dev, "Error waiting for XTAL_READY interrupt: %d\n", ret);
++				return ret;
+ 			}
+ 		}
+
+@@ -400,14 +433,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+-			if (ret == 0) {
+-				dev_err(cs43130->dev, "Timeout waiting for XTAL_READY interrupt\n");
+-				return -ETIMEDOUT;
++			if (ret) {
++				dev_err(cs43130->dev, "Error waiting for XTAL_READY interrupt: %d\n", ret);
++				return ret;
+ 			}
+ 		}
+
+@@ -416,14 +448,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				   CS43130_PLL_RDY_INT_MASK, 0);
+ 		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 				   CS43130_PDN_PLL_MASK, 0);
+-		ret = wait_for_completion_timeout(&cs43130->pll_rdy,
+-						  msecs_to_jiffies(100));
++		ret = cs43130_wait_for_completion(cs43130, &cs43130->pll_rdy, 100);
+ 		regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 				   CS43130_PLL_RDY_INT_MASK,
+ 				   1 << CS43130_PLL_RDY_INT_SHIFT);
+-		if (ret == 0) {
+-			dev_err(cs43130->dev, "Timeout waiting for PLL_READY interrupt\n");
+-			return -ETIMEDOUT;
++		if (ret) {
++			dev_err(cs43130->dev, "Error waiting for PLL_READY interrupt: %d\n", ret);
++			return ret;
+ 		}
+
+ 		regmap_update_bits(cs43130->regmap, CS43130_SYS_CLK_CTL_1,
+@@ -2048,12 +2079,12 @@ static int cs43130_hpload_proc(struct cs43130_private *cs43130,
+ 	regmap_multi_reg_write(cs43130->regmap, seq,
+ 			       seq_size);
+
+-	ret = wait_for_completion_timeout(&cs43130->hpload_evt,
+-					  msecs_to_jiffies(1000));
++	ret = cs43130_wait_for_completion(cs43130, &cs43130->hpload_evt, 1000);
++
+ 	regmap_read(cs43130->regmap, CS43130_INT_MASK_4, &msk);
+-	if (!ret) {
+-		dev_err(cs43130->dev, "Timeout waiting for HPLOAD interrupt\n");
+-		return -1;
++	if (ret) {
++		dev_err(cs43130->dev, "Timeout waiting for HPLOAD interrupt: %d\n", ret);
++		return ret;
+ 	}
+
+ 	dev_dbg(cs43130->dev, "HP load stat: %x, INT_MASK_4: %x\n",
+@@ -2548,13 +2579,19 @@ static int cs43130_i2c_probe(struct i2c_client *client)
+ 	init_completion(&cs43130->pll_rdy);
+ 	init_completion(&cs43130->hpload_evt);
+
+-	ret = devm_request_threaded_irq(cs43130->dev, client->irq,
+-					NULL, cs43130_irq_thread,
+-					IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+-					"cs43130", cs43130);
+-	if (ret != 0) {
+-		dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
+-		goto err;
++	if (!client->irq) {
++		dev_dbg(cs43130->dev, "IRQ not found, will poll instead\n");
++		cs43130->has_irq_line = 0;
++	} else {
++		ret = devm_request_threaded_irq(cs43130->dev, client->irq,
++						NULL, cs43130_irq_thread,
++						IRQF_ONESHOT | IRQF_TRIGGER_LOW,
++						"cs43130", cs43130);
++		if (ret != 0) {
++			dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
++			goto err;
++		}
++		cs43130->has_irq_line = 1;
+ 	}
+
+ 	cs43130->mclk_int_src = CS43130_MCLK_SRC_RCO;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index d3f595bbd3ba..dbdb5b262f1b 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -508,6 +508,7 @@ struct	cs43130_private {
+ 	struct gpio_desc		*reset_gpio;
+ 	unsigned int			dev_id; /* codec device ID */
+ 	int				xtal_ibias;
++	bool				has_irq_line;
+
+ 	/* shared by both DAIs */
+ 	struct mutex			clk_mutex;
+--
+2.34.1
+
