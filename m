@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D3F7F4062
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EA37F4073
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjKVIlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S230071AbjKVIoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:44:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVIlO (ORCPT
+        with ESMTP id S229631AbjKVIoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:41:14 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DF210E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:41:09 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5484ef5e3d2so7064594a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:41:09 -0800 (PST)
+        Wed, 22 Nov 2023 03:44:10 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9C5B9;
+        Wed, 22 Nov 2023 00:44:06 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32deb2809daso4303178f8f.3;
+        Wed, 22 Nov 2023 00:44:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700642468; x=1701247268; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7Wkcu8kmGItliZN0XfKbebEr2eOskFSIhLTVCyGFKXs=;
-        b=bBZ7M/IcwahMxIvIzLl3EHWe+wnJ9ZkR1B+E6HhFWxSY5JlmLFb5ETYApC3NjO9CvB
-         b/QppfF+z9nlf9sRUHu3pNaKcVmEi8aea8sDlAQb5EzbchRjfqsSMuWAG0OHGZodfPjh
-         4S6z0KeB3EnC0hlJfdr1qW4TlgnVTMeJFwHwAeRugoXij7K32KeT7YzINb3ha2fWm7Pt
-         SiKGEHXeXqqAZ2G/U0AvTuQxsVturtJdq0tKwv/5Q9bvs6pbYiJIfwdQtlaPP2IsfFg6
-         esiZsOobfSyETsEZZnNlQ63lhWJbaxZzTlDEReu3VycqQCpuNeLy0GI6hnhvSnD0pyin
-         2q+A==
+        d=gmail.com; s=20230601; t=1700642645; x=1701247445; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=slAcUkpoN5O9hRUVnE7svsPnWaijh/20uVM8xtCNQd0=;
+        b=eexoc8pXo/qELT7pI8M7U3YARvolmeq3a+aUOwzhfn1IOO0JibDdyd6SG2iQqwA7Oo
+         USw+m23/hq9mxS45a3ya0Qt9aFfCk08b7EDYxCdeDrQzXmIp8D4oTsXBlFTd2GSkqU/9
+         jR/eQNTdcgKdXIDU8Ya1s3cqEqx9gH19Y6Zv8+VGGstgWUPjnp9y9C3dxv5JK58e/O4w
+         eaEDtaRlTSWc7ct4crU50Feg/qF7gslfi7SQy97hHH61/hh1DHDG0P/rrz/Bq5WKnfZn
+         6Hgn4MxHmtTLn0+xA6qzNeuLwznJTYu9kkxWRGDXuFZODrHe+9ClOc2lhtwS3Zl0cXah
+         r1ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700642468; x=1701247268;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Wkcu8kmGItliZN0XfKbebEr2eOskFSIhLTVCyGFKXs=;
-        b=AU9BAun3y5k4u+KFRPOPV6BFYqobHLIGaN7JCEGKA+fsYrsY4MUZrLqG2+f/XwKmo9
-         xLPmR1Rse2M2xzpeO0TriNX0uPECcwHf4KWPxVw+4XZOnwGjSW9Yjx4SHmI13tP3yyd7
-         pRZtsDwsJIgWMMmtXAl+jAhfGzoHQpHqAZVGADik1WeBcjNSJlL96FAnMdSgqGy0nWli
-         2vZU9lg/42WGecRkMH95wtXofgv3Ksz6lfyICR1Cpz5RxjaiHaY/a2Mhe8AhJQcph7IQ
-         EfiMjKn+JqhqR4Blqbtyu/z7tNWD+GbEFQmo8SQeHUszkN3wVBcbu3tilo1mg+fsTNfi
-         yrMw==
-X-Gm-Message-State: AOJu0YyH/WptcaABYhd7JqGwHRS1fthpRwTUhTJrSYsNVCOJ0i9Pd6Ig
-        YWYVrtpdkuKnSGu7bkdU+ul/3Q==
-X-Google-Smtp-Source: AGHT+IGUk93wahKeMaggyH/TSzYZWZsboWBFVYEO64EdO1zfK6oFvTeG2wwquJG85hUY0qOwA+gkpg==
-X-Received: by 2002:a17:906:e46:b0:9bd:bbc1:1c5f with SMTP id q6-20020a1709060e4600b009bdbbc11c5fmr1002158eji.35.1700642468424;
-        Wed, 22 Nov 2023 00:41:08 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id a1-20020a170906190100b009a19701e7b5sm6321163eje.96.2023.11.22.00.41.06
+        d=1e100.net; s=20230601; t=1700642645; x=1701247445;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=slAcUkpoN5O9hRUVnE7svsPnWaijh/20uVM8xtCNQd0=;
+        b=YpTPJTNe1sq7MrE/OQbmcvJtjzt/ThTBiRTM/reeSguf8YBagT5+Y3smM3WFgqovdD
+         9vrejkvhEi8AL39XVvZ+gDs2M/a6Mh3C5LSPqRbeaf1W/yfN7R9F9eQbV7Yl+7bB2wN9
+         HrSjEPvLP8zGXCQdAPi6VCFaCgIF9JfNujt7OiWIJO/TDoxn7UQp/XH2SUU5IJJUbcJO
+         PfceKQPwC7JbTNZNEZiOE3nNc9/bGQ53Pjm92lly1aF9SG9QgKqzr9TsjSOFDpHX/sZv
+         ekFP2owiDvtFVZQttyXoLLKMcPnpLb29Jj3N+il7diCusfYCJd1AqvS7wg5+am06VuJI
+         IToA==
+X-Gm-Message-State: AOJu0YzsjSTiQG6ckr6TFvC9hyO0S9CqPfXgUpw8w8cCnmQG4uZbuRAm
+        pziyk+HQVFGybfDTvY890jk=
+X-Google-Smtp-Source: AGHT+IEytRtILQlhSMgpN7zpBPji4Wh/miHxpihiFYPojEQMtgWL6L0nDQViwvjblkH7lob8K9xySw==
+X-Received: by 2002:a5d:60c3:0:b0:32d:b8f8:2b18 with SMTP id x3-20020a5d60c3000000b0032db8f82b18mr1003331wrt.32.1700642644978;
+        Wed, 22 Nov 2023 00:44:04 -0800 (PST)
+Received: from [10.95.134.92] (54-240-197-234.amazon.com. [54.240.197.234])
+        by smtp.gmail.com with ESMTPSA id bs13-20020a056000070d00b00332d3c78e11sm429224wrb.85.2023.11.22.00.44.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 00:41:08 -0800 (PST)
-Message-ID: <eb95e27d-f408-4e25-bd53-37ff88474537@linaro.org>
-Date:   Wed, 22 Nov 2023 09:41:06 +0100
+        Wed, 22 Nov 2023 00:44:04 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <c461e1e6-3378-4e7a-a44d-decaa7cf0e79@xen.org>
+Date:   Wed, 22 Nov 2023 08:44:03 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] arm64: dts: amlogic: migrate pwms to new meson8 v2
- binding
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v8 02/15] KVM: pfncache: remove unnecessary exports
 Content-Language: en-US
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-References: <20231117125919.1696980-1-jbrunet@baylibre.com>
- <20231117125919.1696980-7-jbrunet@baylibre.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231117125919.1696980-7-jbrunet@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231121180223.12484-1-paul@xen.org>
+ <20231121180223.12484-3-paul@xen.org>
+ <3cf7281c619bb27d922688c4e7aff7608524fe22.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <3cf7281c619bb27d922688c4e7aff7608524fe22.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2023 13:59, Jerome Brunet wrote:
-> Update Amlogic based SoC PWMs to meson8-pwm-v2 compatible
-
-Please write proper commit msgs.
-
+On 21/11/2023 21:49, David Woodhouse wrote:
+> On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> There is need for the existing kvm_gpc_XXX() functions to be exported. Clean
+>> up now before additional functions are added in subsequent patches.
+>>
 > 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> I think you mean "no need".
+> 
 
-...
+Oh yes. Will fix.
 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-> index 18f7b730289e..690552e5a104 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-> @@ -237,8 +237,6 @@ &pwm_ef {
->  	status = "okay";
->  	pinctrl-0 = <&pwm_e_pins>;
->  	pinctrl-names = "default";
-> -	clocks = <&clkc CLKID_FCLK_DIV4>;
-> -	clock-names = "clkin0";
->  };
->  
->  &saradc {
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> index 2673f0dbafe7..bf00672b9009 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> @@ -329,14 +329,14 @@ i2c_A: i2c@8500 {
->  			};
->  
->  			pwm_ab: pwm@8550 {
-> -				compatible = "amlogic,meson-gx-pwm", "amlogic,meson-gxbb-pwm";
-> +				compatible = "amlogic,meson8-pwm-v2";
+>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> 
+> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+> 
 
-This is just wrong. NAK.
+Thanks,
 
-Replacing specific and correct (nothing in commit msg said these are
-incorrect!) compatibles with generic, unspecific one is a no-go. It does
-not make sense to replace correct code with incorrect...
-
-Best regards,
-Krzysztof
+   Paul
 
