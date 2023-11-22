@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C7F7F3E8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18957F3E93
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbjKVHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S234856AbjKVHFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjKVHEa (ORCPT
+        with ESMTP id S229955AbjKVHFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:04:30 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4550419D;
-        Tue, 21 Nov 2023 23:04:26 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id A6E7860513;
-        Wed, 22 Nov 2023 07:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1700636665;
-        bh=VXGR8xQGZzWXW6baSZHRlpOMY386TuOcB9XLnlAtLsY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JSEVesTcdCirCXWm9j2QFnmIl2byVFl2VpYF4FPb9Y9egs/H5xk3uYM4wnZCSBURQ
-         X+0wi12ozQewEC3JjKlo2I8Zig5kcBp/evrX4j5QmjNwSk7S5wpIprE97JareGLhSZ
-         anqVwDs6jeDH+ilFU0gOiV+ROWA0MmBclmF6tp1Owlf73zK06mVLWAqb4TlqDVDshX
-         rLbP4IrOyUcBhpAs0hVt4nJuNEkwfhZx3IUaLyMtLEeyHgtdWc88Eu+iXV/xMlE9KI
-         tzmy9KDsrlcDjFj6bBPEA3Zo/5s9/+XXnE50Q4oqOHW1UKYj5Br/ovHIT3O8SyNRIN
-         1v8q0jRwbHZ6A==
-Date:   Wed, 22 Nov 2023 09:03:53 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] serial: core: Move console character device
- handling from printk
-Message-ID: <20231122070353.GF5169@atomide.com>
-References: <20231121113203.61341-1-tony@atomide.com>
- <20231121113203.61341-4-tony@atomide.com>
+        Wed, 22 Nov 2023 02:05:44 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ACE110;
+        Tue, 21 Nov 2023 23:05:39 -0800 (PST)
+X-UUID: c4ecf16c6ac744a6bd74b93463420173-20231122
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:646ed184-da94-4180-af12-41e1c93f27bb,IP:5,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:-15
+X-CID-INFO: VERSION:1.1.32,REQID:646ed184-da94-4180-af12-41e1c93f27bb,IP:5,URL
+        :0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-15
+X-CID-META: VersionHash:5f78ec9,CLOUDID:38365860-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:2311212011149OSNONXV,BulkQuantity:4,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: c4ecf16c6ac744a6bd74b93463420173-20231122
+X-User: chentao@kylinos.cn
+Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 572602639; Wed, 22 Nov 2023 15:05:32 +0800
+Message-ID: <9b4d2367-97af-4e44-80aa-e591022afeb6@kylinos.cn>
+Date:   Wed, 22 Nov 2023 15:05:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121113203.61341-4-tony@atomide.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ipv6: Correct/silence an endian warning in
+ ip6_multipath_l3_keys
+Content-Language: en-US
+To:     Paolo Abeni <pabeni@redhat.com>, edumazet@google.com
+Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        kunwu.chan@hotmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <CANn89iKJ=Na2hWGv9Dau36Ojivt-icnd1BRgke033Z=a+E9Wcw@mail.gmail.com>
+ <20231119143913.654381-1-chentao@kylinos.cn>
+ <7948d79d8e8052c600a208142755b7a74b4aeee0.camel@redhat.com>
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <7948d79d8e8052c600a208142755b7a74b4aeee0.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [700101 02:00]:
-> -	__add_preferred_console(buf, idx, options, brl_options, true);
->  	return 1;
+Thanks for your reply.
 
-Looks like this can't be dropped yet. We need to keep it for the
-brl_options. I'll change it to return early if brl_options is NULL.
+I'll update it in v3,and add send it in a new thread.
 
-Regards,
 
-Tony
+Thanks,
+Kunwu
+
+On 2023/11/21 20:11, Paolo Abeni wrote:
+> This does not look like the correct fixes tag, sparse warning is
+> preexistent. Likely 23aebdacb05dab9efdf22b9e0413491cbd5f128f
+> 
+> Please sent a new revision with the correct tag, thanks
