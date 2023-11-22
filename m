@@ -2,157 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AC87F4F7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C2C7F4E16
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343962AbjKVS03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S1343981AbjKVRSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235416AbjKVS0F (ORCPT
+        with ESMTP id S232615AbjKVRSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:26:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EB41BF;
-        Wed, 22 Nov 2023 10:25:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700677530; x=1732213530;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=b9T/lmkOzA8qH1gsqzBaEUXEcJ2xCyHprr1GsLX67Go=;
-  b=Nd7nsZ/O0PDv0mbGUgxrFrxmMdNl0nqIbmleG0wl6LU5Q9jYMucavz6h
-   pVHyKsgdVnhSpFbMHMG1IgB0gU46GmwZX8z8eQSHmeCoJ+csGGjWf7aRa
-   6FYbRfws4y4/yYfT23s4OOoewIVrxeC9T5T5uj7OyExkQFmbjf/ySj8D7
-   3XteRxuEIYr9H7Z/EOLQB/5+JV5EP+AXQZ1McJ6Mb4QxreS64cqHHLyRU
-   L3Vytp8w3MGQGb/iSbTwbRQkcXWH8fSdG+y0LHYZXGgUCR0A14SMiPF2w
-   x2sOY8XeHPcg8/RyGKasU3YgNJKGZwYNyzBWruzHUCDJw825DFWmSjfld
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456442927"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="456442927"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 10:25:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="890499124"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="890499124"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 04:13:17 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1r5m3a-0000000G5El-1eRf;
-        Wed, 22 Nov 2023 14:10:14 +0200
-Date:   Wed, 22 Nov 2023 14:10:14 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/39] dma: cirrus: add DT support for Cirrus EP93xx
-Message-ID: <ZV3vpu8uQFq-9ZuF@smile.fi.intel.com>
-References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
- <20231122-ep93xx-v5-9-d59a76d5df29@maquefel.me>
+        Wed, 22 Nov 2023 12:18:21 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF20119D
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:18:16 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-409299277bbso32322765e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700673495; x=1701278295; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=EhO7+CVm1m1oUE9z/3Z07Nkno2ujdBPUPga6VKMIC2w=;
+        b=TG61KYYxYiZwFVhLw4zA98zhDdQXArTG98dhGxFPk4HoPJBs6obRLQe7VuxqadMPPO
+         eBuoZQJzoWtRBb+QrdgiUTgWx/uwlBOii4L2doWVCnyq0LaU0kZOn4OxP5YoEUReswZ/
+         MecotTcCxjzQdiFBk34/F4Q8R40jCF4ERuP8nC1nTOQRJKiyu+ivIANYVZPSL++sE/01
+         jNC8OuObEBaUzqV/Ni3frX/aR4r9BSBEDNe70liP5OgeqWYbusi3HdKo6DOUvVdauS/0
+         r9v7mzM0StyIFqLR0XQRVws90c2sEH1dD7F4mPpTlTpdm2sRuGtQ1x/yXkUrpEOyPCYv
+         0C/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700673495; x=1701278295;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EhO7+CVm1m1oUE9z/3Z07Nkno2ujdBPUPga6VKMIC2w=;
+        b=BvNS1XFTi4GydYyxT1ohEXN+PJImAJkMo4tLnnE+pWTjoo/y8L8iOChJ9Bdvjalu+z
+         ZIQSi6dvRRv4V6d6XJuZTOtxynzCqg7+zbsGUYpbownvywhTQNVSVdHZmysynOvBgr2Y
+         Bs3jrW8vHT64BTBChUD/uWI/Y4RftxMR0+3Jjq8hOGAOaRCeXE4t5k7r00zxB7Ap2ZfS
+         AraWQPiEM2W7H7i2StQgDA2IzFm5fAr6wYm0lbyl0ZlHn+PUA0gcssuazkHKu3O0kTWH
+         Bx79LO9/gl2luYlCTzmt0YOdEh5duYblnVbiOWxiFVRsqSl1v6Bom414iQnWDy1O0aHK
+         2TRA==
+X-Gm-Message-State: AOJu0Yx3W8v5dkuzj4/DKo9Zta6UocU5OcCDJVaOU7iwNeh3JD+Dpj53
+        XnaW6i794cKAi1sNHv800DMA/A==
+X-Google-Smtp-Source: AGHT+IFGdEFm+aNRJMiaufK8tp1EybalqBvtuMK496Fp/eAzQQiZ+CFnVm6AN+L996HflL2LKvAZfw==
+X-Received: by 2002:a05:600c:5102:b0:405:3455:e1a3 with SMTP id o2-20020a05600c510200b004053455e1a3mr2350009wms.17.1700673495188;
+        Wed, 22 Nov 2023 09:18:15 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:d0a1:9a3c:4f4b:fa20])
+        by smtp.gmail.com with ESMTPSA id n5-20020a7bc5c5000000b0040775501256sm8791wmk.16.2023.11.22.09.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 09:18:13 -0800 (PST)
+References: <20231117125919.1696980-1-jbrunet@baylibre.com>
+ <20231117125919.1696980-3-jbrunet@baylibre.com>
+ <170040994064.269288.960284011884896046.robh@kernel.org>
+ <4608012c-059f-4d6a-914b-e85ad0c32ff0@linaro.org>
+ <1j5y1wg3sb.fsf@starbuckisacylon.baylibre.com>
+ <2e7a65da-5c1d-4dd4-ac69-7559a53afdf3@linaro.org>
+ <1j1qckg21u.fsf@starbuckisacylon.baylibre.com>
+ <94e69281-93e1-41cd-9cf5-81cbbc15572c@linaro.org>
+ <1jwmu9et6j.fsf@starbuckisacylon.baylibre.com>
+ <2bbc2031-89d7-42e9-828e-068fa06eabf4@linaro.org>
+ <1jo7flerag.fsf@starbuckisacylon.baylibre.com>
+ <2d9c4c93-6cea-4a44-9093-c1fd51d0a21c@linaro.org>
+User-agent: mu4e 1.10.7; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, neil.armstrong@linaro.org,
+        Rob Herring <robh@kernel.org>,
+        JunYi Zhao <junyi.zhao@amlogic.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v2 2/6] dt-bindings: pwm: amlogic: add new compatible
+ for meson8 pwm type
+Date:   Wed, 22 Nov 2023 17:14:56 +0100
+In-reply-to: <2d9c4c93-6cea-4a44-9093-c1fd51d0a21c@linaro.org>
+Message-ID: <1jjzq9emga.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122-ep93xx-v5-9-d59a76d5df29@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 11:59:47AM +0300, Nikita Shubin wrote:
-> - drop subsys_initcall code
-> - drop platform probe
-> - add OF ID match table with data
-> - add of_probe for device tree
-> - add xlate for m2m/m2p
-> - drop platform structs usage
 
-It's not the best commit message (e.g., unaligned with verb "add"
-in the Subject).
+On Wed 22 Nov 2023 at 16:46, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-...
 
-> +		edmac->clk = of_clk_get(np, i);
+>>>>>
+>>>>> Again, where the "v2" is defined? Where is any document explaining the
+>>>>> mapping between version blocks and SoC parts? Why do you list here only
+>>>>> major version? Blocks almost always have also minor (e.g. v2.0).
+>>>>
+>>>> Again, v2 does has nothing to do with the HW. Never wrote it was.
+>>>> The HW remains the same.
+>>>
+>>> Don't add compatibles which are not related to HW, but represent
+>>> software versioning. Software does not matter for the bindings.
+>> 
+>> What I did I explicitly what is recommended in Grant's presentation from
+>> 2013. 10y old, but I assume slide 10 "Making an incompatible update" is
+>> still valid.
+>> 
+>> https://elinux.org/images/1/1e/DT_Binding_Process_glikely_ksummit_2013_10_28.pdf
+>> 
+>> Breaking the ABI of the old compatible would break all boards which use
+>> u-boot DT and pass it to the kernel, because the meaning of the clock
+>> property would change.
+>
+> You broke U-Boot now as well - it will get your new DTS from the kernel
+> and stop working.
 
-Why devm_clk_get() can't be used?
+U-boot will continue to match the old compatible and work properly.
+When the dts using the new compatible lands in u-boot, it won't
+match until proper driver support is added. It is a lot better than
+breaking the ABI, which would have silently broke u-boot.
 
->  		if (IS_ERR(edmac->clk)) {
-> +			dev_warn(&pdev->dev, "failed to get clock\n");
->  			continue;
->  		}
+I don't really see a way around that.
 
-...
+If you have better way to fix a bad interface, feel free to share it.
 
-> +	if (direction != DMA_MEM_TO_DEV && direction != DMA_DEV_TO_MEM)
-> +		return NULL;
+>
+>> 
+>> Doing things has suggested in this slide, and this patch, allows every
+>> device to continue to work properly, whether the DT given is the one
+>> shipped with u-boot (using the old compatible for now) or the kernel.
+>
+> OK, that explains the reasons. I read your commit msg and nothing like
+> this was mentioned there. What's more, you did not deprecate the old
+> binding, thus the confusion - it looked like you add entirely new
+> hardware (although you put "deprecated" but in some unrelated place, not
+> next to the compatibles).
 
-is_slave_direction() ?
+The old interface being obsoleted by the new one is mentionned in the
+commit description, the comments in the bindings and the bindings itself.
+Thanks a lot for pointing out the placement mistake. I'll fix it.
 
-...
+The commit description says:
+* What the patch does
+* Why it does it:
+  * Why the old bindings is bad/broken
+  * How the new ones fixes the problem
+* Why a single compatible properly describes, IMO, all the related HW.
 
-> +	dev_info(edma->dma_dev.dev, "%s: port=%d", __func__, port);
+This describes the entirety of what the change does.
+That seemed clear enough for Rob. If that is not enough for you and you
+would like it reworded, could please provide a few suggestions ?
 
-info level?! Wouldn't be noisy a bit?
+>
+> Anyway, the main point of Neil was that you started using generic
+> compatible for all SoCs, which is wrong as well. I guess this was the
+> original discussion.
 
-...
+The whole reason for this change is to properly describe the HW, which
+is the 100% same on all the SoCs, or SoC families, concerned. The only
+reason there was a lot of old compatibles is because it was used to match
+data in the driver (this is clearly wrong). This data would now be
+passed through DT.
 
-> +	if (direction != DMA_MEM_TO_DEV && direction != DMA_DEV_TO_MEM)
-> +		return NULL;
+I have been clear about this in the change description.
 
-As per above.
+So why is it wrong to have single compatible for a type of device that
+is 100% the same HW ?
 
-...
+It is lot a easier to apply a rule correctly when the intent is clear.
 
-> +	dev_info(dma_dev->dev, "EP93xx M2%s DMA ready\n",
-> +			       edma->m2m ? "M" : "P");
-
-One line?
-
-...
-
-> +		if (!IS_ERR_OR_NULL(edmac->clk))
-> +			clk_put(edmac->clk);
-
-CLK framework is at least NULL aware. Perhaps you can make sure it's never
-IS_ERR() and drop this conditional altogether.
-
-...
-
-> -
-> +module_platform_driver(ep93xx_dma_driver);
-
-+ blank line.
-
->  MODULE_AUTHOR("Mika Westerberg <mika.westerberg@iki.fi>");
->  MODULE_DESCRIPTION("EP93xx DMA driver");
-
-...
-
-> --- a/include/linux/platform_data/dma-ep93xx.h
-> +++ b/include/linux/platform_data/dma-ep93xx.h
-> @@ -5,6 +5,7 @@
->  #include <linux/types.h>
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/property.h>
-
-Can this be a bit more ordered, like put before types.h (at least from the
-context I see here)?
-
-Also you missing device.h and string.h according to the new function
-implementation.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+>
+> Best regards,
+> Krzysztof
 
