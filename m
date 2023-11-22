@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26047F4DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F717F4DE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjKVRLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        id S232683AbjKVRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVRLS (ORCPT
+        with ESMTP id S229806AbjKVRLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:11:18 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7AEE7;
-        Wed, 22 Nov 2023 09:11:14 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 368C921980;
-        Wed, 22 Nov 2023 17:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700673073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+8UQWN8urvKUYRckX3Xlqtm4AGvpGzvpb35HA8d2DQI=;
-        b=mu8nQlYLDB7p7sUhCTYd8JDfrfk5R3hTA/eBpNN6S5SWPCcrZneWlcKtg/V7yEfVxwRfh9
-        blngk3/E9BjOlyeZYl7zLFTYBS4ayWjat95o/E09UFJ5pTuASrVkFBy5Q+dHmp/uPkq2+G
-        Ot6ggJ/PPH9A396RF+DaajasanKQ0Wo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700673073;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+8UQWN8urvKUYRckX3Xlqtm4AGvpGzvpb35HA8d2DQI=;
-        b=naojmf+wkd6JU6MQq3ItRLNmQOYO0uI2dnMkqdvG1yq3B6LOAPrMWgxUssjhLAJdkDXVpy
-        1zpdJ1X+HujdlrDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D957E13461;
-        Wed, 22 Nov 2023 17:11:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pmIINTA2XmUfUgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 22 Nov 2023 17:11:12 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 696FBA07DC; Wed, 22 Nov 2023 18:11:12 +0100 (CET)
-Date:   Wed, 22 Nov 2023 18:11:12 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, jack@suse.cz,
-        joseph.qi@linux.alibaba.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ritesh.list@gmail.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_dio_write_end_io
-Message-ID: <20231122171112.un5yuwxdcrlswiwe@quack3>
-References: <000000000000ce703b060abf1e06@google.com>
+        Wed, 22 Nov 2023 12:11:42 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B871B5;
+        Wed, 22 Nov 2023 09:11:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kxp/djjLC0Lw510VoCfRhRGSsD7Q8L/T6M4GAU7G0KI=; b=oMN6zoRjxFSEdgndPqgumoztyZ
+        FT0q49I6WX1MeJHViyYdKyK74chUDYr98xtin2diFhAtYR0FvNp62kHN5Wpe3YrYLeusmTecaKh61
+        59cPGWCNC9YIG5WlO+HgyeRgVqBNo4CWQeSIt6zIarTKpqsDoGk8iINd19zoAT7KEu4c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5ql3-000tZx-6y; Wed, 22 Nov 2023 18:11:25 +0100
+Date:   Wed, 22 Nov 2023 18:11:25 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <cde6c19f-01ba-4f6c-9e73-00e4789fb69c@lunn.ch>
+References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+ <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
+ <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
+ <20231122174828.7625d7f4@kmaincent-XPS-13-7390>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000ce703b060abf1e06@google.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305];
-         TAGGED_RCPT(0.00)[47479b71cdfc78f56d30];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         BAYES_HAM(-3.00)[100.00%];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[dilger.ca,suse.cz,linux.alibaba.com,vger.kernel.org,gmail.com,googlegroups.com,mit.edu];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20231122174828.7625d7f4@kmaincent-XPS-13-7390>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-11-23 07:10:31, syzbot wrote:
-> syzbot found the following issue on:
+> > Is the firmware in Motorola SREC format? I thought the kernel had a
+> > helper for that, but a quick search did not find it. So maybe i'm
+> > remembering wrongly. But it seems silly for every driver to implement
+> > an SREC parser.
 > 
-> HEAD commit:    98b1cc82c4af Linux 6.7-rc2
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e09a9f680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-> dashboard link: https://syzkaller.appspot.com/bug?extid=47479b71cdfc78f56d30
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c09a00e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=151d5320e80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/39c6cdad13fc/disk-98b1cc82.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/5a77b5daef9b/vmlinux-98b1cc82.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5e09ae712e0d/bzImage-98b1cc82.xz
-> 
-> The issue was bisected to:
-> 
-> commit 91562895f8030cb9a0470b1db49de79346a69f91
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Fri Oct 13 12:13:50 2023 +0000
-> 
->     ext4: properly sync file size update after O_SYNC direct IO
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d0f0c8e80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1430f0c8e80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1030f0c8e80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
-> Fixes: 91562895f803 ("ext4: properly sync file size update after O_SYNC direct IO")
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 4481 at fs/ext4/file.c:391 ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
+> Oh, I didn't know this format.
 
-OK, so I could easily reproduce this which is good :). It took a bit longer
-to actually debug what's going on. In the end I've confirmed this is a
-false positive (the assertion isn't 100% reliable). What happens is that
-the IO end completion races with expanding truncate (which is not
-synchronized with DIO in any way) and the assertion sees a situation where
-i_disksize was updated but i_size not yet. This is mostly harmless but we
-better should complete the DIO only once we are sure truncate has updated
-the i_size as well. I'll think how to best do this.
+Its often used in small deeply embedded systems. Microcontrollers,
+rather than something which can run Linux.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> The firmware seems indeed to match this format
+> specification.
+> I found two reference of this Firmware format in the kernel:
+> https://elixir.bootlin.com/linux/v6.5.7/source/sound/soc/codecs/zl38060.c#L178
+> https://elixir.bootlin.com/linux/v6.5.7/source/drivers/staging/wlan-ng/prism2fw.c
+
+Ah, all inside a header file. Probably why i missed it. But ihex is
+not SREC. ihex came from Intel. SREC from Motorola.
+
+So i would follow the basic flow in include/linux/ihex.h, add an
+include/linux/srec.h but adapt it for SREC.
+
+	Andrew
