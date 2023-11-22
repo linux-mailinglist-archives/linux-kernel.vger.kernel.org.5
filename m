@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 228617F3AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439327F3B0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbjKVBCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S229783AbjKVBKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbjKVBCc (ORCPT
+        with ESMTP id S235008AbjKVBJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:02:32 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB88D49;
-        Tue, 21 Nov 2023 17:02:26 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5491eb3fb63so642154a12.3;
-        Tue, 21 Nov 2023 17:02:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700614944; x=1701219744; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zXAWsG9iOloHUdNE5mm3jXIIiOW32R7yz4554A63aDM=;
-        b=eLMHczCsRfIWigC0JaCWX2LtiHgJciEgTtYQlM5KAfWfgmyAhJRqY9RyRiBBpV6fHM
-         wX+T01wPqSGwvZTehVtM//1Pxdhmfs+4P98Fh8iDhr519bfkTbuSThZYNOQhmVqom34d
-         Yq+ve7Pzfti2hcCeZdc8F2ZDbjML12T7vpQcrxux+tYISEeu2FqlrpiE633WTjGnm7Nx
-         W1TqEFESlR6QFe1Cxszaz8xOYpd+XB8h8SdQYgeGCtuSLTK6D8DoeF5mYubHaL8FielN
-         nAB0iYiXv6DioEa9+a997TQnrbbOP31K0oETz2ZAG656GGGFXudzM2+ItluXVMvkNCAh
-         T8bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700614944; x=1701219744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zXAWsG9iOloHUdNE5mm3jXIIiOW32R7yz4554A63aDM=;
-        b=S+W3xZ9qlGsZFVZgH+184gy7YWPRjb3dLzO2xptKQjRu8zCmCaC/7ZR9h5Ne6ixwSn
-         XYV+2Q0NzSL34uQuVFzm2KVPE6CVtTvzLj6hMsywuU+xoCKD5FURTqke8R3rq6cVqfIz
-         x1ZyvUNZz+0EqM1ZPUXcuVxRMNBMMaX+u2qxaFfcVyd2SoQp5Q0QySl476szoQHHoiDX
-         4nwiK0K+v5WwpiPgavRewPwS1ddSgadPBgLTO/arr+46Kckx1hUBUZicXszAcJWQPwdY
-         IrG5qAsDcCiOcnOkubYNCO2VXAys+edQtdEsQMtTPkHgjU7G53oozfhFDlF/e+5mavIa
-         ZoMw==
-X-Gm-Message-State: AOJu0YyurhzwGdtBMBM0lOZs7aMb3hjghQw74LRXryF7VTFDkjJuOSOZ
-        z5aW5pT1lF0VL/KLiOyRYPFL49We+qwVGFSAB1M=
-X-Google-Smtp-Source: AGHT+IFAAdSEYQU+FjN4tYW+dYheU4U1L4a17RYKBvYXsMva3YuIChgqqiL7+fiTRx2WV4Qr3vc5DWuiTLVP4mKrrMs=
-X-Received: by 2002:a50:ed89:0:b0:548:5fa3:1483 with SMTP id
- h9-20020a50ed89000000b005485fa31483mr630561edr.6.1700614944335; Tue, 21 Nov
- 2023 17:02:24 -0800 (PST)
+        Tue, 21 Nov 2023 20:09:57 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C278E1731;
+        Tue, 21 Nov 2023 17:09:17 -0800 (PST)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 5045D81BB6;
+        Wed, 22 Nov 2023 01:01:22 +0000 (UTC)
+Received: from pdx1-sub0-mail-a211.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 60E9681AF4;
+        Wed, 22 Nov 2023 01:01:20 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1700614880; a=rsa-sha256;
+        cv=none;
+        b=uDrlXBrGErJayNHHMxGqLoqHrW+Crrh0EwSeMwROyucg2k9wpmk43KMVDnlIKiBIk/CRcM
+        hmeKsvsOC1HjOD+kZdYj7mDlXZzMzj5Pk60zPrP/kb39xv5KN/Ccb3XUKha5I3WXaqJoP3
+        ZoG4WKuh4q+LUHn7p0SlRNolWYNe8H0QrE68yiGo0TrXSH1a/AoAV3VTDe9MgfPaoTfgG6
+        IkQCP3CR0F/vYX8l+qs8Mn5v8AEm1sTrInPbV6VwQVsbzOO3GsOmqOzdsnKXqVW3jFcP0C
+        IjRQ7plBDwnoOQT2N6+vhmckLlyD4bS/2gSBYQypsaWA9OE+BrJ3BxNSYbjwoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1700614880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=pBG5QBQev1WUx8qgrxc7+absFmgUQXr+R05r/UhTqT8=;
+        b=ktwRbYz9T60ih0byWBdI5OZr2RotJMLyXo2/Crla3sDBX5jvfzTPwI1/OsParfKZRQBlnQ
+        VMDojCSZ4BFu0Fo7MuTbVWOQGa2W0Pzf8k+Nnp3shodc5XXgH1WC7jZqEHSFDx31HETeXv
+        X6/sgAZKAMCwINAUz63viKngVrUzuNZieOWJg00EGoj5bW1dk5/uYuPux0vqHk8NVjNk69
+        nSbzPmn7yYbP4Kfpm4cx4Vui0kygLSQ8YMCCuqEsgzznVuohnneI+V/12qlJF9goEy8HF7
+        6vROcvAUQQxgXm2ww2IbKznmsCxQneV9Xoh+xqWlMTwWlKPYVwX7Jgs924nBmw==
+ARC-Authentication-Results: i=1;
+        rspamd-645fb96b5-hzw8k;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Absorbed-Abortive: 11f349ac07025e80_1700614882126_1858017920
+X-MC-Loop-Signature: 1700614882126:3891613807
+X-MC-Ingress-Time: 1700614882126
+Received: from pdx1-sub0-mail-a211.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.104.134.218 (trex/6.9.2);
+        Wed, 22 Nov 2023 01:01:22 +0000
+Received: from offworld (unknown [104.36.30.214])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dave@stgolabs.net)
+        by pdx1-sub0-mail-a211.dreamhost.com (Postfix) with ESMTPSA id 4SZjcG0xmwzXs;
+        Tue, 21 Nov 2023 17:01:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+        s=dreamhost; t=1700614880;
+        bh=pBG5QBQev1WUx8qgrxc7+absFmgUQXr+R05r/UhTqT8=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=NTu6l2dendzv7UQwdOaVWOyt3UvJbIAWI8OJeKZ1PqMdooZF3s1umV2DF3UcQPOfn
+         +RSExkcNV9UZdGM/iJVp8HTDbmsCALUjDIo3F9jycbP3sha6EQIREVcynth+TrOTAU
+         PEC65yyHactoisFgWMl/UvprSu22zfPNe4OCugP0POhgQleUBNd/QuDvQqCZ9ew04w
+         915OPd2aYtAvcWcsAS9BvTQkp5RCKluB/hqPmFdr+jQk2yu/qJ2HrzAnj2I2PBZxEC
+         5sylbnjLL1lzUaNf2SJsI40vpJY2vpQqRr331is/JKTb6er8bisuuqUJ6pEW9FaADW
+         sJYLkNlqvcpAg==
+Date:   Tue, 21 Nov 2023 17:01:14 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     shiju.jose@huawei.com
+Cc:     linux-cxl@vger.kernel.org, linux-mm@kvack.org,
+        jonathan.cameron@huawei.com, dave.jiang@intel.com,
+        alison.schofield@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, dan.j.williams@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@redhat.com, Vilas.Sridharan@amd.com, leo.duran@amd.com,
+        Yazen.Ghannam@amd.com, rientjes@google.com, jiaqiyan@google.com,
+        tony.luck@intel.com, Jon.Grimm@amd.com,
+        dave.hansen@linux.intel.com, rafael@kernel.org, lenb@kernel.org,
+        naoya.horiguchi@nec.com, james.morse@arm.com,
+        jthoughton@google.com, somasundaram.a@hpe.com,
+        erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
+        mike.malvestuto@intel.com, gthelen@google.com,
+        wschwartz@amperecomputing.com, dferguson@amperecomputing.com,
+        tanxiaofei@huawei.com, prime.zeng@hisilicon.com,
+        kangkang.shen@futurewei.com, wanghuiqiang@huawei.com,
+        linuxarm@huawei.com, fan.ni@samsung.com, a.manzanares@samsung.com
+Subject: Re: [PATCH v2 03/10] cxl/mbox: Add SET_FEATURE mailbox command
+Message-ID: <l6spiq3w45fwswuz4adrhhll2w52sc3vj2gg57kys5aaulo6v4@i4pbbjzhm3aq>
+Mail-Followup-To: shiju.jose@huawei.com, linux-cxl@vger.kernel.org, 
+        linux-mm@kvack.org, jonathan.cameron@huawei.com, dave.jiang@intel.com, 
+        alison.schofield@intel.com, vishal.l.verma@intel.com, ira.weiny@intel.com, 
+        dan.j.williams@intel.com, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+        david@redhat.com, Vilas.Sridharan@amd.com, leo.duran@amd.com, 
+        Yazen.Ghannam@amd.com, rientjes@google.com, jiaqiyan@google.com, tony.luck@intel.com, 
+        Jon.Grimm@amd.com, dave.hansen@linux.intel.com, rafael@kernel.org, lenb@kernel.org, 
+        naoya.horiguchi@nec.com, james.morse@arm.com, jthoughton@google.com, 
+        somasundaram.a@hpe.com, erdemaktas@google.com, pgonda@google.com, duenwen@google.com, 
+        mike.malvestuto@intel.com, gthelen@google.com, wschwartz@amperecomputing.com, 
+        dferguson@amperecomputing.com, tanxiaofei@huawei.com, prime.zeng@hisilicon.com, 
+        kangkang.shen@futurewei.com, wanghuiqiang@huawei.com, linuxarm@huawei.com, fan.ni@samsung.com, 
+        a.manzanares@samsung.com
+References: <20231121101844.1161-1-shiju.jose@huawei.com>
+ <20231121101844.1161-4-shiju.jose@huawei.com>
 MIME-Version: 1.0
-References: <20231115020209.4665-1-yaozhenguo@jd.com> <20231117152746.3aa55d68.alex.williamson@redhat.com>
-In-Reply-To: <20231117152746.3aa55d68.alex.williamson@redhat.com>
-From:   Zhenguo Yao <yaozhenguo1@gmail.com>
-Date:   Wed, 22 Nov 2023 09:02:13 +0800
-Message-ID: <CA+WzAR=7R=JPeu4+-ojgfjM7vgP5pcg7fS0yU_CRaLzNSdRaLA@mail.gmail.com>
-Subject: Re: [PATCH V1] vfio: add attach_group_by_node to control behavior of
- attaching group to domain
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     yaozhenguo@jd.com, dwmw2@infradead.org, baolu.lu@linux.intel.com,
-        joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Wenchao Yao <yaowenchao@jd.com>,
-        ZiHan Zhou <zhouzihan30@jd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231121101844.1161-4-shiju.jose@huawei.com>
+User-Agent: NeoMutt/20231006
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,236 +126,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Understood, thanks=EF=BC=81
+On Tue, 21 Nov 2023, shiju.jose@huawei.com wrote:
 
-Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=
-=8818=E6=97=A5=E5=91=A8=E5=85=AD 06:27=E5=86=99=E9=81=93=EF=BC=9A
+>From: Shiju Jose <shiju.jose@huawei.com>
 >
-> On Wed, 15 Nov 2023 10:02:09 +0800
-> yaozhenguo <yaozhenguo1@gmail.com> wrote:
+>Add support for SET_FEATURE mailbox command.
 >
-> > From: Zhenguo Yao <yaozhenguo1@gmail.com>
-> >
-> > Groups will attach to one iommu_domain if ops and enforce_cache_coheren=
-cy
-> > are equal. And all the iommu hardware share one pagetable by default.
-> > There are performance issue in some scenarios. For example:
-> > Host hardware topopy:
-> >
-> > node0 + PCIe RP0 ---+ GPU A100
-> >       |         |---+ GPU A100
-> >       |               |---+ NIC Mellanox CX6
-> >       |               |---+ NIC Mellanox CX6
-> >       + PCIe RP1 ---+ GPU A100
-> >                 |---+ GPU A100
-> >                       |---+ NIC Mellanox CX6
-> >                 |---+ NIC Mellanox CX6
-> > node1 + PCIe RP0 ---+ GPU A100
-> >       |         |---+ GPU A100
-> >       |               |---+ NIC Mellanox CX6
-> >       |               |---+ NIC Mellanox CX6
-> >       + PCIe RP1 ---+ GPU A100
-> >                 |---+ GPU A100
-> >                       |---+ NIC Mellanox CX6
-> >                 |---+ NIC Mellanox CX6
-> >
-> > We passthrough all NICs and GPU to VM, and emulate host hardware topopy=
-.
-> > Mellanox CX6 ATS feature is enabled, GPU direct RDMA enabled.
-> > We test NCCL allreduce in VM at different cases.
-> >
-> > Case1: allreduce test use 4nic and 4GPU in numa0.
-> > Case2=EF=BC=9Aallreduce test use 4nic and 4GPU in numa1.
-> > case3: allreduce test use 8nic and 8GPU.
-> >
-> > the result are below:
-> >
-> > |        | algbw (GB/S) |
-> > | ------ | -------------|
-> > | case1  | 24           |
-> > | case2  | 32           |
-> > | case3  | 45           |
-> >
-> > We checked that IOMMU pagetable is allocated in numa1 when VM boot up.
-> > So, if IOTLB miss happan, IOMMU hardware in numa0 will access remote
-> > pagetable in numa1. This will drop performance. After apply this patch =
-and
-> > attach_group_by_node is 1. Group in same node will attach to one domain=
-.
-> > IOMMU will access there local pagetable. Performance is improved:
-> >
-> > |        | algbw (GB/S) |
-> > | ------ | -------------|
-> > | case1  | 32           |
-> > | case2  | 32           |
-> > | case3  | 63           |
-> >
-> > Signed-off-by: Zhenguo Yao <yaozhenguo1@gmail.com>
-> > Co-developed-by: Wenchao Yao <yaowenchao@jd.com>
-> > Signed-off-by: Wenchao Yao <yaowenchao@jd.com>
-> > Co-developed-by: ZiHan Zhou <zhouzihan30@jd.com>
-> > Signed-off-by: ZiHan Zhou <zhouzihan30@jd.com>
-> > ---
-> >  drivers/iommu/intel/iommu.c     |  8 +++++++-
-> >  drivers/vfio/vfio_iommu_type1.c | 33 +++++++++++++++++++++------------
-> >  include/linux/iommu.h           |  1 +
-> >  3 files changed, 29 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> > index 3531b95..2c6d8f0 100644
-> > --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -569,8 +569,10 @@ void domain_update_iommu_cap(struct dmar_domain *d=
-omain)
-> >        * If RHSA is missing, we should default to the device numa domai=
-n
-> >        * as fall back.
-> >        */
-> > -     if (domain->nid =3D=3D NUMA_NO_NODE)
-> > +     if (domain->nid =3D=3D NUMA_NO_NODE) {
-> >               domain->nid =3D domain_update_device_node(domain);
-> > +             domain->domain.nid =3D domain->nid;
-> > +     }
-> >
-> >       /*
-> >        * First-level translation restricts the input-address to a
-> > @@ -1767,6 +1769,7 @@ static struct dmar_domain *alloc_domain(unsigned =
-int type)
-> >               return NULL;
-> >
-> >       domain->nid =3D NUMA_NO_NODE;
-> > +     domain->domain.nid =3D NUMA_NO_NODE;
-> >       if (first_level_by_default(type))
-> >               domain->use_first_level =3D true;
-> >       domain->has_iotlb_device =3D false;
-> > @@ -1808,6 +1811,8 @@ int domain_attach_iommu(struct dmar_domain *domai=
-n, struct intel_iommu *iommu)
-> >       info->refcnt    =3D 1;
-> >       info->did       =3D num;
-> >       info->iommu     =3D iommu;
-> > +     domain->nid     =3D iommu->node;
-> > +     domain->domain.nid     =3D iommu->node;
-> >       curr =3D xa_cmpxchg(&domain->iommu_array, iommu->seq_id,
-> >                         NULL, info, GFP_ATOMIC);
-> >       if (curr) {
-> > @@ -1837,6 +1842,7 @@ void domain_detach_iommu(struct dmar_domain *doma=
-in, struct intel_iommu *iommu)
-> >               clear_bit(info->did, iommu->domain_ids);
-> >               xa_erase(&domain->iommu_array, iommu->seq_id);
-> >               domain->nid =3D NUMA_NO_NODE;
-> > +             domain->domain.nid =3D NUMA_NO_NODE;
-> >               domain_update_iommu_cap(domain);
-> >               kfree(info);
-> >       }
-> > diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_=
-type1.c
-> > index eacd6ec..6a5641e 100644
-> > --- a/drivers/vfio/vfio_iommu_type1.c
-> > +++ b/drivers/vfio/vfio_iommu_type1.c
-> > @@ -59,6 +59,11 @@
-> >  module_param_named(dma_entry_limit, dma_entry_limit, uint, 0644);
-> >  MODULE_PARM_DESC(dma_entry_limit,
-> >                "Maximum number of user DMA mappings per container (6553=
-5).");
-> > +static uint attach_group_by_node;
-> > +module_param_named(attach_group_by_node,
-> > +             attach_group_by_node, uint, 0644);
-> > +MODULE_PARM_DESC(attach_group_by_node,
-> > +              "Attach group to domain when it's in same node");
-> >
-> >  struct vfio_iommu {
-> >       struct list_head        domain_list;
-> > @@ -2287,19 +2292,23 @@ static int vfio_iommu_type1_attach_group(void *=
-iommu_data,
-> >               if (d->domain->ops =3D=3D domain->domain->ops &&
-> >                   d->enforce_cache_coherency =3D=3D
-> >                           domain->enforce_cache_coherency) {
-> > -                     iommu_detach_group(domain->domain, group->iommu_g=
-roup);
-> > -                     if (!iommu_attach_group(d->domain,
-> > -                                             group->iommu_group)) {
-> > -                             list_add(&group->next, &d->group_list);
-> > -                             iommu_domain_free(domain->domain);
-> > -                             kfree(domain);
-> > -                             goto done;
-> > -                     }
-> > +                     if ((attach_group_by_node =3D=3D 1 &&
-> > +                             d->domain->nid =3D=3D domain->domain->nid=
-) ||
-> > +                             attach_group_by_node =3D=3D 0) {
-> > +                             iommu_detach_group(domain->domain, group-=
->iommu_group);
-> > +                             if (!iommu_attach_group(d->domain,
-> > +                                                     group->iommu_grou=
-p)) {
-> > +                                     list_add(&group->next, &d->group_=
-list);
-> > +                                     iommu_domain_free(domain->domain)=
-;
-> > +                                     kfree(domain);
-> > +                                     goto done;
-> > +                             }
-> >
-> > -                     ret =3D iommu_attach_group(domain->domain,
-> > -                                              group->iommu_group);
-> > -                     if (ret)
-> > -                             goto out_domain;
-> > +                             ret =3D iommu_attach_group(domain->domain=
-,
-> > +                                             group->iommu_group);
-> > +                             if (ret)
-> > +                                     goto out_domain;
-> > +                     }
-> >               }
-> >       }
-> >
-> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > index ec289c1..c1330ed 100644
-> > --- a/include/linux/iommu.h
-> > +++ b/include/linux/iommu.h
-> > @@ -123,6 +123,7 @@ struct iommu_domain {
-> >                       int users;
-> >               };
-> >       };
-> > +     int nid;
-> >  };
-> >
-> >  static inline bool iommu_is_dma_domain(struct iommu_domain *domain)
+>CXL spec 3.0 section 8.2.9.6 describes optional device specific features.
+>CXL devices supports features with changeable attributes.
+>The settings of a feature can be optionally modified using Set Feature
+>command.
 >
-> As I understand what's being done here, we're duplicating
-> dmar_domain.nid to iommu_domain.nid, then when enabled by this new
-> module option, we'll use this node id as part of the match to determine
-> whether to create a new domain within the same container context or
-> re-use an existing domain, which may have non-favorably locality.
+>Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+>---
+> drivers/cxl/core/mbox.c      | 15 +++++++++++++++
+> drivers/cxl/cxlmem.h         | 27 +++++++++++++++++++++++++++
+> include/uapi/linux/cxl_mem.h |  1 +
+> 3 files changed, 43 insertions(+)
 >
-> If we're going to implement a node id on the iommu_domain, it should
-> replace the existing use of node id in the device specific structure
-> and not simply duplicate it.  This should also account for non-VT-d use
-> cases as well, for example AMD IOMMU also has a nid field on their
-> protection_domain structure.  Alternatively this might be implemented
-> through iommu_domain_ops so we could query the node association for a
-> domain.
+>diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+>index 2675c616caec..d892b07446ca 100644
+>--- a/drivers/cxl/core/mbox.c
+>+++ b/drivers/cxl/core/mbox.c
+>@@ -65,6 +65,7 @@ static struct cxl_mem_command cxl_mem_commands[CXL_MEM_COMMAND_ID_MAX] = {
+> 	CXL_CMD(GET_SCAN_MEDIA_CAPS, 0x10, 0x4, 0),
+> 	CXL_CMD(GET_SUPPORTED_FEATURES, 0x8, CXL_VARIABLE_PAYLOAD, 0),
+> 	CXL_CMD(GET_FEATURE, 0x15, CXL_VARIABLE_PAYLOAD, 0),
+>+	CXL_CMD(SET_FEATURE, CXL_VARIABLE_PAYLOAD, 0, 0),
+> };
 >
-> I question whether we need this solution at all though.  AIUI the
-> initial domain is allocated in proximity to the initial group.  The
-> problem comes when the user asks to add an additional group into the
-> same container.  Another valid solution would be that the user
-> recognizes that these groups are not within the same locality and
-> creates a separate container for this group.  In fact, if we're using
-> QEMU here and created a q35 VM with vIOMMU, each device would have a
-> separate address space and therefore a separate container and we'd
-> already avoid the issue this patch tries to solve.
+> /*
+>@@ -1350,6 +1351,20 @@ int cxl_get_feature(struct cxl_memdev_state *mds,
+> }
+> EXPORT_SYMBOL_NS_GPL(cxl_get_feature, CXL);
 >
-> Separate containers per QEMU AddressSpace are a requirement, but QEMU
-> might also implement a policy to not re-use vfio containers between
-> virtual nodes such that if each locality were mapped to separate PXBs
-> with unique proximities, then simply reflecting the physical locality
-> into the VM would be sufficient to avoid this non-optimal domain
-> allocation placement.
+>+int cxl_set_feature(struct cxl_memdev_state *mds, void *feat_in, size_t size)
+>+{
+>+	struct cxl_mbox_cmd mbox_cmd;
+>+
+>+	mbox_cmd = (struct cxl_mbox_cmd) {
+>+		.opcode = CXL_MBOX_OP_SET_FEATURE,
+>+		.size_in = size,
+>+		.payload_in = feat_in,
+>+	};
+>+
+>+	return cxl_internal_send_cmd(mds, &mbox_cmd);
+>+}
+>+EXPORT_SYMBOL_NS_GPL(cxl_set_feature, CXL);
+>+
+> int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+> 		       struct cxl_region *cxlr)
+> {
+>diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+>index 92c1f2a44713..46131dcd0900 100644
+>--- a/drivers/cxl/cxlmem.h
+>+++ b/drivers/cxl/cxlmem.h
+>@@ -508,6 +508,7 @@ enum cxl_opcode {
+> 	CXL_MBOX_OP_GET_LOG		= 0x0401,
+> 	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	= 0x0500,
+> 	CXL_MBOX_OP_GET_FEATURE		= 0x0501,
+>+	CXL_MBOX_OP_SET_FEATURE		= 0x0502,
+> 	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> 	CXL_MBOX_OP_GET_PARTITION_INFO	= 0x4100,
+> 	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+>@@ -817,6 +818,31 @@ struct cxl_mbox_get_feat_in {
+> 	u8 selection;
+> }  __packed;
 >
-> In any case, the type1 vfio IOMMU backend is in the early stages of
-> deprecation, so any choices we make here would also need to be reflected
-> in IOMMUFD, both in the compatibility and native interfaces.  Thanks,
+>+/* Set Feature CXL 3.0 Spec 8.2.9.6.3 */
+>+/*
+>+ * Set Feature input payload
+>+ * CXL rev 3.0 section 8.2.9.6.3; Table 8-81
+>+ */
+>+/* Set Feature : Payload in flags */
+>+#define CXL_SET_FEAT_FLAG_DATA_TRANSFER_MASK	GENMASK(2, 0)
+>+enum cxl_set_feat_flag_data_transfer {
+>+	CXL_SET_FEAT_FLAG_FULL_DATA_TRANSFER = 0x0,
+>+	CXL_SET_FEAT_FLAG_INITIATE_DATA_TRANSFER = 0x1,
+>+	CXL_SET_FEAT_FLAG_CONTINUE_DATA_TRANSFER = 0x2,
+>+	CXL_SET_FEAT_FLAG_FINISH_DATA_TRANSFER = 0x3,
+>+	CXL_SET_FEAT_FLAG_ABORT_DATA_TRANSFER = 0x4,
+>+	CXL_SET_FEAT_FLAG_DATA_TRANSFER_MAX
+>+};
+>+#define CXL_SET_FEAT_FLAG_MOD_VALUE_SAVED_ACROSS_RESET	BIT(3)
+>+
+>+struct cxl_mbox_set_feat_in {
+>+	uuid_t uuid;
+>+	__le32 flags;
+>+	__le16 offset;
+>+	u8 version;
+>+	u8 rsvd[9];
+>+}  __packed;
+>+
+> /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
+> struct cxl_mbox_poison_in {
+> 	__le64 offset;
+>@@ -949,6 +975,7 @@ int cxl_get_supported_features(struct cxl_memdev_state *mds,
+> 			       void *feats_out);
+> int cxl_get_feature(struct cxl_memdev_state *mds,
+> 		    struct cxl_mbox_get_feat_in *pi, void *feat_out);
+>+int cxl_set_feature(struct cxl_memdev_state *mds, void *feat_in, size_t size);
+> int cxl_poison_state_init(struct cxl_memdev_state *mds);
+> int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+> 		       struct cxl_region *cxlr);
+>diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+>index b20de60bfc71..8c89d323cc41 100644
+>--- a/include/uapi/linux/cxl_mem.h
+>+++ b/include/uapi/linux/cxl_mem.h
+>@@ -48,6 +48,7 @@
+> 	___DEPRECATED(GET_SCAN_MEDIA, "Get Scan Media Results"),          \
+> 	___C(GET_SUPPORTED_FEATURES, "Get Supported Features"),           \
+> 	___C(GET_FEATURE, "Get Feature"),                                 \
+>+	___C(SET_FEATURE, "Set Feature"),                                 \
+
+I don't think we want to export this to userspace, and you are
+already using the scrub driver for setting feat attributes.
+
+> 	___C(MAX, "invalid / last command")
 >
-> Alex
+> #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+>-- 
+>2.34.1
 >
