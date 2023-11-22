@@ -2,258 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C1D7F4B90
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5517F4B8F
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344467AbjKVPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        id S1344413AbjKVPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235237AbjKVPuF (ORCPT
+        with ESMTP id S1344361AbjKVPuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:50:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7497ED5E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:49:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BADBC433D9;
-        Wed, 22 Nov 2023 15:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700668179;
-        bh=BYCJA3x5TTAbbQPMEAHdhxb9CpYziBSEh7qg5KYFc3Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lf41l0og8Tssr/hb/ubSBpyXsbiBnPgG2tAw23ddfqRwz1CZu59t60YaMYFHd8bRo
-         8iLpKtrocyaGbjEHRv4usmFfoRkieMPxaEUIlXxPhWmvy6QEByllSsydUjXkWK830b
-         o3jHhP7F1ioMa2Q+Nxwy7Bpem4ZYprHsFuTIYVYWq+/yWnkJ81xXBKJz+MqMeNarcX
-         2rVGUTJGdLOEngFCjMvoNtpm9shzVCPsFgNhFOZtMfwH1S0avG5tuSRA4ZdCACJ8s0
-         I4ydnXS2p4dHVC7dnvadHyP/eaEqAg+Jy9xt2mgoScn8uKLm/G1MguQEqc9iUtVctN
-         PXqAqIzofO9Fg==
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b844357f7cso223197b6e.1;
-        Wed, 22 Nov 2023 07:49:39 -0800 (PST)
-X-Gm-Message-State: AOJu0YzZn/unQrMzkRqSwR+Ksnhd4Xrg0HYh06nFHVvaKpVDZWjwotcf
-        X6tXNuxkur9fnNNTdFN9r40VEroxKXix5hbGdQc=
-X-Google-Smtp-Source: AGHT+IGTa6C9d+mB8rUW3KBSbfG6/zDIsmWbZmbmj2c74lexp3YXviv1PGHzD95lJw6SS5pitC5dIey5qGrQgDzlQ+w=
-X-Received: by 2002:a05:6870:cb97:b0:1e9:919d:83ec with SMTP id
- ov23-20020a056870cb9700b001e9919d83ecmr3553401oab.28.1700668178329; Wed, 22
- Nov 2023 07:49:38 -0800 (PST)
+        Wed, 22 Nov 2023 10:50:03 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07080D8;
+        Wed, 22 Nov 2023 07:49:25 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EC521595;
+        Wed, 22 Nov 2023 07:50:12 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.43.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CD113F73F;
+        Wed, 22 Nov 2023 07:49:23 -0800 (PST)
+Date:   Wed, 22 Nov 2023 15:49:18 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>, Ian Rogers <irogers@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Message-ID: <ZV4i_lrhbOVdEpwH@FVFF77S0Q05N>
+References: <86pm03z0kw.wl-maz@kernel.org>
+ <86o7fnyvrq.wl-maz@kernel.org>
+ <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
+ <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
+ <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
+ <930bfb9a-dcbe-4385-9ae3-26e2aa14c50e@marcan.st>
+ <ZV38z3+p2S2ETtzG@kernel.org>
 MIME-Version: 1.0
-References: <20231118025748.2778044-1-mmaurer@google.com>
-In-Reply-To: <20231118025748.2778044-1-mmaurer@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Nov 2023 00:49:01 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
-Message-ID: <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZV38z3+p2S2ETtzG@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 11:58=E2=80=AFAM Matthew Maurer <mmaurer@google.com=
-> wrote:
->
-> The goal of this patch series is to allow MODVERSIONS and RUST to be
-> enabled simultaneously. The primary issue with doing this at the moment
-> is that Rust uses some extremely long symbol names - for those
-> unfamiliar with Rust, it may be helpful to think of some of the mangled
-> C++ names you may have seen in binaries in the past.
->
-> Previously, Gary Guo attempted to accomplish this by modifying the
-> existing modversion format [1] to support variable-length symbol names.
-> This was unfortunately considered to be a potential userspace break
-> because kmod tools inspect this kernel module metadata. Masahiro Yamada
-> suggested [2] that this could instead be done with a section per-field.
-> This gives us the ability to be more flexible with this format in the
-> future, as a new field or additional information will be in a new
-> section which userspace tools will not yet attempt to read.
->
-> In the previous version of this patchset, Luis Chamberlain suggested [3]
-> I move validation out of the version checking and into the elf validity
-> checker, and also add kernel-docs over there. I found
-> elf_validity_cached_copy to be fairly dense and difficult to directly
-> describe, so I refactored it into easier to explain pieces. In the
-> process, I found a few missing checks and added those as well. See
-> [PATCH 2/5] for more details. If this is too much, I'm more than happy
-> to drop this patch from the series in favor of just adding the
-> kernel-doc to the original code, but figured I'd offer it up in case the
-> added clarity and checks were valuable.
->
-> [1] https://lore.kernel.org/lkml/20230111161155.1349375-1-gary@garyguo.ne=
-t/
-> [2] https://lore.kernel.org/lkml/CAK7LNATsuszFR7JB5ZkqVS1W=3DhWr9=3DE7bTf=
-+MvgJ+NXT3aZNwg@mail.gmail.com/
-> [3] https://lore.kernel.org/lkml/ZVZNh%2FPA5HiVRkeb@bombadil.infradead.or=
-g/
+On Wed, Nov 22, 2023 at 10:06:23AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Nov 22, 2023 at 12:23:27PM +0900, Hector Martin escreveu:
+> > On 2023/11/22 1:38, Ian Rogers wrote:
+> > > On Tue, Nov 21, 2023 at 8:15 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > >> On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
+> > >>> On Tue, Nov 21, 2023 at 8:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > >>>> On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
+> > >>>>> On Tue, Nov 21, 2023 at 7:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > >>>>>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > >>>>>>> On Tue, 21 Nov 2023 13:40:31 +0000,
+> > >>>>>>> Marc Zyngier <maz@kernel.org> wrote:
+> > >>>>>>>>
+> > >>>>>>>> [Adding key people on Cc]
+> > >>>>>>>>
+> > >>>>>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
+> > >>>>>>>> Hector Martin <marcan@marcan.st> wrote:
+> > >>>>>>>>>
+> > >>>>>>>>> Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > >>>>>>>>> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > >>>>>>>>
+> > >>>>>>>> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > >>>>>>>> asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > >>>>>>>> the PMU, but nothing works anymore.
+> > >>>>>>>>
+> > >>>>>>>> The saving grace in my case is that Debian still ships a 6.1 perftool
+> > >>>>>>>> package, but that's obviously not going to last.
+> > >>>>>>>>
+> > >>>>>>>> I'm happy to test potential fixes.
+> > >>>>>>>
+> > >>>>>>> At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > >>>>>>> -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > >>>>>>> CPU):
+> > >>>>>>
+> > >>>>>> IIUC the tool is doing the wrong thing here and overriding explicit
+> > >>>>>> ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather than events using
+> > >>>>>> that ${pmu}'s type and event namespace.
+> > >>>>>>
+> > >>>>>> Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE events to be
+> > >>>>>> targetted to a specific PMU, it's semantically wrong to rewrite events like
+> > >>>>>> this since ${pmu}/${event}/ is not necessarily equivalent to a similarly-named
+> > >>>>>> PERF_COUNT_HW_${EVENT}.
+> > >>>>>
+> > >>>>> If you name a PMU and an event then the event should only be opened on
+> > >>>>> that PMU, 100% agree. There's a bunch of output, but when the legacy
+> > >>>>> cycles event is opened it appears to be because it was explicitly
+> > >>>>> requested.
+> > >>>>
+> > >>>> I think you've missed that the named PMU events are being erreously transformed
+> > >>>> into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
+> > >>>>
+> > >>>>   Opening: apple_firestorm_pmu/cycles/
+> > >>>>   ------------------------------------------------------------
+> > >>>>   perf_event_attr:
+> > >>>>     type                             0 (PERF_TYPE_HARDWARE)
+> > >>>>     size                             136
+> > >>>>     config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >>>>     sample_type                      IDENTIFIER
+> > >>>>     read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >>>>     disabled                         1
+> > >>>>     inherit                          1
+> > >>>>     enable_on_exec                   1
+> > >>>>     exclude_guest                    1
+> > >>>>   ------------------------------------------------------------
+> > >>>>   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+> > >>>>
+> > >>>> ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_CYCLES.
+> > >>>>
+> > >>>> Marc said that he bisected the issue down to commit:
+> > >>>>
+> > >>>>   5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
+> > >>>>
+> > >>>> ... so it looks like something is going wrong when the events are being parsed,
+> > >>>> e.g. losing the HW PMU information?
+> > >>>
+> > >>> Ok, I think I'm getting confused by other things. This looks like the issue.
+> > >>>
+> > >>> I think it may be working as intended, but not how you intended :-) If
+> > >>> a core PMU is listed and then a legacy event, the legacy event should
+> 
+> The point is that "cycles" when prefixed with "pmu/" shouldn't be
+> considered "cycles" as HW/0, in that setting it is "cycles" for that
+> PMU.
+
+Exactly.
+
+> (but we only have "cpu_cycles" for at least the a53 and a72 PMUs I
+> have access in a Libre Computer rockchip 3399-pc hybrid board, if we use
+> it, then we get what we want/had before, see below):
+
+Both Cortex-A53 and Cortex-A72 have the common PMUv3 events, so they have
+"cpu_cycles" and "bus_cycles".
+
+The Apple PMUs that Hector and Marc anre using don't follow the PMUv3
+architecture, and just have a "cycles" event.
+
+[...]
+
+> So what we need here seems to be to translate the generic term "cycles"
+> to "cpu_cycles" when a PMU is explicitely passed in the event name and
+> it doesn't have "cycles" and then just retry.
+
+I'm not sure we need to map that.
 
+My thinking is:
 
+* If the user asks for "cycles" without a PMU name, that should use the
+  PERF_TYPE_HARDWARE cycles event. The ARM PMUs handle that correctly when the
+  event is directed to them.
 
+* If the user asks for "${pmu}/cycles/", that should only use the "cycles"
+  event in that PMU's namespace, not PERF_TYPE_HARDWARE.
 
+* If we need a way so say "use the PERF_TYPE_HARDWARE cycles event on ${pmu}",
+  then we should have a new syntax for that (e.g. as we have for raw events),
+  e.g. it would be possible to have "pmu/hw:cycles/" or something like that.
 
-I want to know why this is useful.
+That way there's no ambiguity.
 
-
-To clarify my question, let me first explain
-what the modversion is.
-
-
-
-In C, a function callee and callers must agree
-with the interface of the function.
-
-
-This is usually done by having a function prototype
-in a header file.
-
-
-Say, we have a function declaration
-
-    int foo(int x, int y);
-
-in include/linux/foo.h
-
-
-Then, the C file that defines foo() and all C files
-that call it must include <linux/foo.h> so that
-argument mismatch can be detected.
-
-
-
-
-Same for EXPORT_SYMBOL; the symbol provider and consumers
-must agree with the interface of exported symbols.
-
-In the kernel, however, there is no promise for in-kernel ABI
-compatibility across different kernel versions.
-The kernel only promises the compatibility of the userspace interface.
-
-
-To load modules, by principle, vmlinux and modules must have
-the same version.
-
-To slightly loosen the limitation, CONFIG_MODVERSIONS was
-introduced; when it is enabled, you can load a module
-as long as all the prototypes of exported symbols match.
-
-To do this, we need to encode information about prototypes.
-
-
-This is done by a tool called genksyms (scripts/genksyms/genksyms).
-
-
-
-Say, we have this code:
-
-
-int foo(int x, int y)
-{
-     // genksyms does not care about
-     // the function body.
-}
-EXPORT_SYMBOL(foo);
-
-
-Genksyms parses the code and computes a CRC value for 'foo'.
-Genksyms is only interested in the function name and its prototype.
-
-It sees
-
-   int foo(int, int)
-
-and it transforms it into a CRC.
-
-
-Any change to the prototype results in a
-different CRC, so the module subsystem
-can check the interface compatibility
-before loading a module.
-
-
-It is obvious that this is impossible for Rust source
-because scripts/genksyms/genksyms is only able to
-parse C code.
-
-
-Then, what is happening here?
-
-See rust/exports.c
-
-
-  #define EXPORT_SYMBOL_RUST_GPL(sym) extern int sym; EXPORT_SYMBOL_GPL(sym=
-)
-
-
-The global scope symbols in Rust (i.e. 'pub) are automatically
-exported, and all of them are visible as 'int' variables
-from C world.
-
-
-Genksyms will see this code:
-
-  extern int foo;
-  EXPORT_SYMBOL_GPL(foo);
-
-Of course, this is not a true prototype.
-The real signature on the Rust side might be:
-
-  fn foo(x: i32, y: i32) -> i32
-
-
-So, even if you enable CONFIG_MODVERSIONS,
-nothing is checked for Rust.
-Genksyms computes a CRC from "int foo", and
-the module subsystem confirms it is a "int"
-variable.
-
-We know this check always succeeds.
-
-Why is this useful?
-
-
-
-
-
-
-> Matthew Maurer (5):
->   export_report: Rehabilitate script
->   modules: Refactor + kdoc elf_validity_cached_copy
->   modpost: Extended modversion support
->   rust: Allow MODVERSIONS
->   export_report: Use new version info format
->
->  arch/powerpc/kernel/module_64.c |  25 +-
->  init/Kconfig                    |   1 -
->  kernel/module/internal.h        |  18 +-
->  kernel/module/main.c            | 663 +++++++++++++++++++++++++-------
->  kernel/module/version.c         |  43 +++
->  scripts/export_report.pl        |  17 +-
->  scripts/mod/modpost.c           |  37 +-
->  7 files changed, 642 insertions(+), 162 deletions(-)
->
-> --
-> 2.43.0.rc0.421.g78406f8d94-goog
->
-
-
---
-Best Regards
-
-
-
-
-
-Masahiro Yamada
+Mark.
