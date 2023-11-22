@@ -2,296 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B486A7F3BAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D761E7F3BB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343521AbjKVCSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
+        id S1343515AbjKVCTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjKVCS2 (ORCPT
+        with ESMTP id S229558AbjKVCS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:18:28 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E79098;
-        Tue, 21 Nov 2023 18:18:24 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27ff83feb29so5385233a91.3;
-        Tue, 21 Nov 2023 18:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700619504; x=1701224304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2JtVvzSXcsMJHs5Fa1LRlSKTAhVxx38CLFocbX7yRI=;
-        b=JPgel1P1PdSaVZ2W4epIyUtmPGcXX8rCxNJ3iuuSf+dwBW7j1N1K3hVAmrc/WcxikL
-         4MTHXhO+bdQ7FfI+vAl8bldvfkbjwFte0s0ZwHVzaDv5w8AOWW1n6d4vot4V5hypYfAB
-         Tt5O5nl6pEaCZ5D+zObkTqODtOPe7NZk2S2XQh7pWiNbZMzsXIzXpZ0e91NiW03YEloX
-         lQgLARM9IUsMUplTa1bE5NDpsEyBt8IEEQYKZtnNVEJ/G5Gp5YRXYOgmu1IbKccbwLKO
-         p2WiXOPAOC3Kpd97tJ5fqarww4r2wwzwRfWiPajkPM6YOyC9naY42aHAteSjGosgY6LZ
-         gvcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700619504; x=1701224304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f2JtVvzSXcsMJHs5Fa1LRlSKTAhVxx38CLFocbX7yRI=;
-        b=Hs7EgCgsO/74gTclSes4RX0Z5mmrzNwHqe0eNlBIziyWDU7s6v1YbO+NADQZbkYalS
-         DGO+7r6lIxVT7oGNiqbWsBWc1eIXR7hsYtnqXSYEEqiBW44zceW+vUo/2dpkSIQRJ56Q
-         5im/3b1UFTXStxG+fF92xefO1Xmo9HiL+Kiyx/eSyPnwT5SAL4xJ2iFSJM3wkTVDUFGb
-         onnMV+ow7GsBYyNs/9Fd7xQU5dA94wNnHiXuHmd5tDRClYdTXNmP253V7g1fFwCCQdXa
-         8zxbBj6CXYqLLgTA3mL20slQJEdC83T/Ozb3CmrSbjUL8AHdOfwbTxoISNynt8Bw7XPD
-         WSdA==
-X-Gm-Message-State: AOJu0YxHgx+A3YGCtipax8zaFpK6dM3Q5okJ+PLYhnFmDswmVGinXnfE
-        41/ASwnwpMwMZkzsc3uQgtY=
-X-Google-Smtp-Source: AGHT+IHULoe6pvKvjGIj978pG/KK+sCwsp4P07vJ0QP8owy3lQgUNgmTBcg4tQiLtn7mpUJHV9y5Cg==
-X-Received: by 2002:a17:90a:1e:b0:283:2932:e90c with SMTP id 30-20020a17090a001e00b002832932e90cmr1280050pja.12.1700619503724;
-        Tue, 21 Nov 2023 18:18:23 -0800 (PST)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:da69])
-        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001cf5c99a62esm4863700ple.117.2023.11.21.18.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 18:18:23 -0800 (PST)
-Date:   Tue, 21 Nov 2023 18:18:17 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, davem@davemloft.net, dsahern@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        samitolvanen@google.com, keescook@chromium.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-        llvm@lists.linux.dev, jpoimboe@kernel.org, joao@overdrivepizza.com,
-        mark.rutland@arm.com
-Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com>
-References: <20231120144642.591358648@infradead.org>
- <20231120154948.708762225@infradead.org>
+        Tue, 21 Nov 2023 21:18:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DC7199;
+        Tue, 21 Nov 2023 18:18:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700619534; x=1732155534;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5o3KNyQ2NXiGAxcrlOf8yoPEXAyka3WGVL/Jm+8LiCw=;
+  b=WzOZbcCQD5kbdf8jVI3zoL37D+QcXO4ScNLedng71Ch6cuZdvUoXCdPi
+   NU4I89CRHFzU0uz2tHxxEza8qR5TK+JW2svqyZrE/b0ZmtKixnhZSEUK0
+   KBBlOB5lUJwrK1bj025/Mmu3w6EK6jVbODjDTq7xxxgz0k8M+w7CNopZ1
+   6jWFS5rS4ucGwzXfE5Kw1wnpUx38Djd8QEVhrYn64leror0hB5gAkDEh0
+   UEiDXVAZTi0THwAE6ZIB+vvJGZmbNvg23BgkcxY1qYXgEi3K/ytIWgpE8
+   liv1zMqTRhAk1uHtEZzHK6t0s1XHpAKCJBbWY5N6HAJ0VktrwRv2nAjST
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="395886240"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="395886240"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 18:18:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="760292891"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="760292891"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 18:18:50 -0800
+Message-ID: <9810c96a-2156-4653-8055-701c0744528c@linux.intel.com>
+Date:   Wed, 22 Nov 2023 10:18:47 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120154948.708762225@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 11/16] KVM: x86/tdp_mmu: Split the large page when zap
+ leaf
+To:     Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
+ <5d9aadbd-975b-4c4d-ba18-ac6e0fb07ba1@linux.intel.com>
+ <20231121110045.GH1109547@ls.amr.corp.intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20231121110045.GH1109547@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 03:46:44PM +0100, Peter Zijlstra wrote:
-> +
-> +#ifdef CONFIG_CFI_CLANG
-> +struct bpf_insn;
-> +
-> +extern unsigned int bpf_func_proto(const void *ctx,
-> +				   const struct bpf_insn *insn);
 
-To make it more obvious what is going on could you rename it to
-__bpf_prog_runX()
-and add a comment that its prototype should match exactly
-bpf interpreters created by DEFINE_BPF_PROG_RUN() macro,
-otherwise cfi will explode.
 
-> +
-> +__ADDRESSABLE(bpf_func_proto);
-> +
-> +asm (
-> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-> +"	.type	cfi_bpf_hash,@object				\n"
-> +"	.globl	cfi_bpf_hash					\n"
-> +"	.p2align	2, 0x0					\n"
-> +"cfi_bpf_hash:							\n"
-> +"	.long	__kcfi_typeid_bpf_func_proto			\n"
+On 11/21/2023 7:00 PM, Isaku Yamahata wrote:
+> On Tue, Nov 21, 2023 at 05:57:28PM +0800,
+> Binbin Wu <binbin.wu@linux.intel.com> wrote:
+>
+>>> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+>>> index 7873e9ee82ad..a209a67decae 100644
+>>> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+>>> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+>>> @@ -964,6 +964,14 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>>>    	return true;
+>>>    }
+>>> +
+>>> +static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
+>>> +						       struct tdp_iter *iter,
+>>> +						       bool shared);
+>>> +
+>>> +static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
+>>> +				   struct kvm_mmu_page *sp, bool shared);
+>>> +
+>>>    /*
+>>>     * If can_yield is true, will release the MMU lock and reschedule if the
+>>>     * scheduler needs the CPU or there is contention on the MMU lock. If this
+>>> @@ -975,13 +983,15 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>>>    			      gfn_t start, gfn_t end, bool can_yield, bool flush,
+>>>    			      bool zap_private)
+>>>    {
+>>> +	bool is_private = is_private_sp(root);
+>>> +	struct kvm_mmu_page *split_sp = NULL;
+>>>    	struct tdp_iter iter;
+>>>    	end = min(end, tdp_mmu_max_gfn_exclusive());
+>>>    	lockdep_assert_held_write(&kvm->mmu_lock);
+>>> -	WARN_ON_ONCE(zap_private && !is_private_sp(root));
+>>> +	WARN_ON_ONCE(zap_private && !is_private);
+>>>    	if (!zap_private && is_private_sp(root))
+>> Can use is_private instead of is_private_sp(root) here as well.
+> I'll update it.
+>
+>>>    		return false;
+>>> @@ -1006,12 +1016,66 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>>>    		    !is_last_spte(iter.old_spte, iter.level))
+>>>    			continue;
+>>> +		if (is_private && kvm_gfn_shared_mask(kvm) &&
+>>> +		    is_large_pte(iter.old_spte)) {
+>>> +			gfn_t gfn = iter.gfn & ~kvm_gfn_shared_mask(kvm);
+>>> +			gfn_t mask = KVM_PAGES_PER_HPAGE(iter.level) - 1;
+>>> +			struct kvm_memory_slot *slot;
+>>> +			struct kvm_mmu_page *sp;
+>>> +
+>>> +			slot = gfn_to_memslot(kvm, gfn);
+>>> +			if (kvm_hugepage_test_mixed(slot, gfn, iter.level) ||
+>>> +			    (gfn & mask) < start ||
+>>> +			    end < (gfn & mask) + KVM_PAGES_PER_HPAGE(iter.level)) {
+>>> +				WARN_ON_ONCE(!can_yield);
+>>> +				if (split_sp) {
+>>> +					sp = split_sp;
+>>> +					split_sp = NULL;
+>>> +					sp->role = tdp_iter_child_role(&iter);
+>>> +				} else {
+>>> +					WARN_ON(iter.yielded);
+>>> +					if (flush && can_yield) {
+>>> +						kvm_flush_remote_tlbs(kvm);
+>>> +						flush = false;
+>>> +					}
+>> Is it necessary to do the flush here?
+> Because tdp_mmu_alloc_sp_for_split() may unlock mmu_lock and block.
+> While blocking, other thread operates on KVM MMU and gets confused due to
+> remaining TLB cache.
+>
+>
+>>> +					sp = tdp_mmu_alloc_sp_for_split(kvm, &iter, false);
+>>> +					if (iter.yielded) {
+>>> +						split_sp = sp;
+>>> +						continue;
+>>> +					}
+>>> +				}
+>>> +				KVM_BUG_ON(!sp, kvm);
+>>> +
+>>> +				tdp_mmu_init_sp(sp, iter.sptep, iter.gfn);
+>>> +				if (tdp_mmu_split_huge_page(kvm, &iter, sp, false)) {
+>>> +					kvm_flush_remote_tlbs(kvm);
+>>> +					flush = false;
+>> Why it needs to flush TLB immediately if tdp_mmu_split_huge_page() fails?
+> Hmm, we don't need it.  When breaking up page table, we need to tlb flush
+> before issuing TDH.MEM.PAGE.DEMOTE(), not after it.  Will remove those two lines.
+>
+>
+>> Also, when KVM MMU write lock is held, it seems tdp_mmu_split_huge_page()
+>> will not fail.
+> This can happen with TDX_OPERAND_BUSY with secure-ept tree lock with other
+> vcpus TDH.VP.ENTER(). TDH.VP.ENTER() can take exclusive lock of secure-EPT.
+>
+>
+>> But let's assume this condition can be triggered, since sp is
+>> local
+>> variable, it will lost its value after continue, and split_sp is also NULL,
+>> it will try to allocate a new sp, memory leakage here?
+> Nice catch. I'll add split_sp = sp;
+>
+>
+>>> +					/* force retry on this gfn. */
+>>> +					iter.yielded = true;
+>>> +				} else
+>>> +					flush = true;
+>>> +				continue;
+>>> +			}
+>>> +		}
+>>> +
+>>>    		tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
+>>>    		flush = true;
+>>>    	}
+>>>    	rcu_read_unlock();
+>>> +	if (split_sp) {
+>>> +		WARN_ON(!can_yield);
+>>> +		if (flush) {
+>>> +			kvm_flush_remote_tlbs(kvm);
+>>> +			flush = false;
+>>> +		}
+>> Same here, why we need to do the flush here?
+>> Can we delay it till the caller do the flush?
+> No. Because we unlock mmu_lock and may block when freeing memory.
+But I don't find it may block during freeing memory.
+Did I miss anything?
 
-Took me some time to grok this.
-Cannot you use __CFI_TYPE() macro here ?
 
-> +"	.size	cfi_bpf_hash, 4					\n"
-> +"	.popsection						\n"
-> +);
-> +#endif
-...
-> +static int emit_fineibt(u8 **pprog)
-> +{
-> +	u8 *prog = *pprog;
-> +
-> +	EMIT_ENDBR();
-> +	EMIT3_off32(0x41, 0x81, 0xea, cfi_bpf_hash);
-> +	EMIT2(0x74, 0x07);
-> +	EMIT2(0x0f, 0x0b);
-> +	EMIT1(0x90);
-> +	EMIT_ENDBR_POISON();
+>
+>>> +
+>>> +		write_unlock(&kvm->mmu_lock);
+>>> +		tdp_mmu_free_sp(split_sp);
+>>> +		write_lock(&kvm->mmu_lock);
+>>> +	}
+>>> +
+>>>    	/*
+>>>    	 * Because this flow zaps _only_ leaf SPTEs, the caller doesn't need
+>>>    	 * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
+>>> @@ -1606,8 +1670,6 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
+>>>    	KVM_BUG_ON(kvm_mmu_page_role_is_private(role) !=
+>>>    		   is_private_sptep(iter->sptep), kvm);
+>>> -	/* TODO: Large page isn't supported for private SPTE yet. */
+>>> -	KVM_BUG_ON(kvm_mmu_page_role_is_private(role), kvm);
+>>>    	/*
+>>>    	 * Since we are allocating while under the MMU lock we have to be
+>>
 
-Please add comments what this asm does. No one can read hex.
-
-> +
-> +	*pprog = prog;
-> +	return 16;
-
-16 means "the caller of this code will jump to endbr_poison", right?
-
-> +}
-> +
-> +static int emit_kcfi(u8 **pprog)
-> +{
-> +	u8 *prog = *pprog;
-> +	int offset = 5;
-> +
-> +	EMIT1_off32(0xb8, cfi_bpf_hash);
-
-and here too.
-
-> +#ifdef CONFIG_CALL_PADDING
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	EMIT1(0x90);
-> +	offset += 11;
-> +#endif
-> +	EMIT_ENDBR();
-> +
-> +	*pprog = prog;
-> +	return offset;
-
-5 or 16 would mean "jump to endbr" ?
-
-> +}
-> +
-> +static int emit_cfi(u8 **pprog)
-> +{
-> +	u8 *prog = *pprog;
-> +	int offset = 0;
-> +
-> +	switch (cfi_mode) {
-> +	case CFI_FINEIBT:
-> +		offset = emit_fineibt(&prog);
-> +		break;
-> +
-> +	case CFI_KCFI:
-> +		offset = emit_kcfi(&prog);
-> +		break;
-> +
-> +	default:
-> +		EMIT_ENDBR();
-> +		break;
-> +	}
-> +
-> +	*pprog = prog;
-> +	return offset;
-> +}
-> +
->  /*
->   * Emit x86-64 prologue code for BPF program.
->   * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
->   * while jumping to another program
->   */
-> -static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
-> -			  bool tail_call_reachable, bool is_subprog,
-> -			  bool is_exception_cb)
-> +static int emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
-> +			 bool tail_call_reachable, bool is_subprog,
-> +			 bool is_exception_cb)
->  {
->  	u8 *prog = *pprog;
-> +	int offset;
->  
-> +	offset = emit_cfi(&prog);
-
-I'm not sure doing cfi_bpf_hash check in JITed code is completely solving the problem.
-From bpf_dispatcher_*_func() calling into JITed will work,
-but this emit_prologue() is doing the same job for all bpf progs.
-Some bpf progs call each other directly and indirectly.
-bpf_dispatcher_*_func() -> JITed_BPF_A -> JITed_BPF_B.
-A into B can be a direct call (which cfi doesn't care about) and
-indirect via emit_bpf_tail_call_indirect()->emit_indirect_jump().
-Should we care about fineibt/kcfi there too?
-
->  	/* BPF trampoline can be made to work without these nops,
->  	 * but let's waste 5 bytes for now and optimize later
->  	 */
-> -	EMIT_ENDBR();
->  	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
->  	prog += X86_PATCH_SIZE;
->  	if (!ebpf_from_cbpf) {
-> @@ -357,6 +426,8 @@ static void emit_prologue(u8 **pprog, u3
->  	if (tail_call_reachable)
->  		EMIT1(0x50);         /* push rax */
->  	*pprog = prog;
-> +
-> +	return offset;
->  }
->  
->  static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
-> @@ -1083,8 +1154,8 @@ static int do_jit(struct bpf_prog *bpf_p
->  	bool tail_call_seen = false;
->  	bool seen_exit = false;
->  	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
-> -	int i, excnt = 0;
->  	int ilen, proglen = 0;
-> +	int i, excnt = 0;
->  	u8 *prog = temp;
->  	int err;
->  
-> @@ -1094,9 +1165,12 @@ static int do_jit(struct bpf_prog *bpf_p
->  	/* tail call's presence in current prog implies it is reachable */
->  	tail_call_reachable |= tail_call_seen;
->  
-> -	emit_prologue(&prog, bpf_prog->aux->stack_depth,
-> -		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
-> -		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
-> +	ctx->prog_offset = emit_prologue(&prog, bpf_prog->aux->stack_depth,
-> +					 bpf_prog_was_classic(bpf_prog),
-> +					 tail_call_reachable,
-> +					 bpf_is_subprog(bpf_prog),
-> +					 bpf_prog->aux->exception_cb);
-> +
->  	/* Exception callback will clobber callee regs for its own use, and
->  	 * restore the original callee regs from main prog's stack frame.
->  	 */
-> @@ -2935,9 +3009,9 @@ struct bpf_prog *bpf_int_jit_compile(str
->  			jit_data->header = header;
->  			jit_data->rw_header = rw_header;
->  		}
-> -		prog->bpf_func = (void *)image;
-> +		prog->bpf_func = (void *)image + ctx.prog_offset;
-
-I don't understand this.
-prog->bpf_func is the main entry point. Everything jumps there.
-Are you trying to skip all of cfi code in the prologue and let
-xdp_dispatcher jump to endbr or endbr_poison (depending on fineibt vs kcfi) ?
-Then what is the point of earlier asm bits?
-Is it a some clang thing that knows to offset indirect jump by
-exactly that many hard coded bytes ?
-Something in the clang does ptr -= 16 in case of fineibt and just
-jumps there ? and ptr -= 5 for kcfi ?
-
-If so, please add a giant comment explaining that.
-No one should be reverse engineering such intricate details.
-
->  		prog->jited = 1;
-> -		prog->jited_len = proglen;
-> +		prog->jited_len = proglen - ctx.prog_offset; // XXX?
-
-jited_len is used later to cover the whole generated code.
-See bpf_prog_ksym_set_addr():
-        prog->aux->ksym.start = (unsigned long) prog->bpf_func;
-        prog->aux->ksym.end   = prog->aux->ksym.start + prog->jited_len;
-we definitely want ksym [start, end] to cover every useful byte
-of JITed code in case IRQ happens on that byte.
-Without covering cfi prologue the stack dump will be wrong for that frame.
-I guess if xdp_dispatcher with fineibt=on jumps into prog->bpf_func - 16
-and IRQ fires we don't care that much about accurate stack of last frame ?
-I guess it's acceptable, but a comment is necessary.
