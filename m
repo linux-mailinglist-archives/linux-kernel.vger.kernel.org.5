@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1019F7F3E50
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CA77F3E53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjKVGql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S234704AbjKVGsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:48:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjKVGqi (ORCPT
+        with ESMTP id S229991AbjKVGsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:46:38 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92FFB9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:46:33 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so571631e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:46:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700635592; x=1701240392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLpj7I2dn2hL6qNFfAxI4zgm0V/CFVJO01lnaJ3CWag=;
-        b=UUV77lNVEHihm6IglVrJuxSlqmv99q3UeIzyMm06ypreVwH6t+csVP4qkWsKywgIgA
-         t/edDlB5UfLKBbr2NiU3CwQd9l0Pn9Df/AmL3fw8bC0O1EEP76L1tJU0Zl6kEFXgYJt+
-         FSdDxMl80uMJNIpkwYoz5OZv9FvpKFIHatN7GClI2czQZCeo0Jr+gp9LpV/XDtEg9idN
-         +BKbMrYTwvzgreVOYx4x4b9y92rbdOLHcwnSJ7x3rGFRvT51T5nyQIlC39FrgmgmUmJa
-         FL29/4WAimeUnXOVVZsMrhk+Cq8+OLwyFurKpXc+X24b2N/61Eu3TokICZaDnFwqNXo1
-         XPng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700635592; x=1701240392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MLpj7I2dn2hL6qNFfAxI4zgm0V/CFVJO01lnaJ3CWag=;
-        b=sADoDjhujy37POUcCdGwzRUTfjh2RbuuO3ug3ZE4SRh27V4GNwHLHoA4Y2UqI9aFl6
-         lJdlDk2rAe+njvUiJcRWoH/hsxBznYk+ZFNe7XkJqvsXEQtdFtMnTOebg1BOQ0s8l/Z4
-         flKk1dGtfRd7At8eywcabLbnbMaKaCAqHwIwl461drixkk237Ui3paQaiNOSoxWyECHX
-         pheRd4wlpwSch8578esLx2sGeZR4Y+wRCRP3f4S7R/ZzTC9cy1oKnd02QOsP5DPC9gMe
-         tn90Qd0YzwEECrdTJhoG+i2DjSaXqibH2HQdU9CVUFF80Yos9EuF+5i3s8RC8IB7ml49
-         EY6w==
-X-Gm-Message-State: AOJu0YyU41KVydMTMh7aBngmQL6n3Canb1x44yc/uqHoB7x/t55i7Qnd
-        B4x1rbHWY+4NhIuZhA068NFBsNZg+C6oBYYbVoA=
-X-Google-Smtp-Source: AGHT+IFlkkWDAkupiUpy/GhOtUb8PgZAwdVLENmzaDv8yP4v9hdXBesgirzRpdNoBhVERrGyzGcRmXrZHX5NeL3iKXo=
-X-Received: by 2002:ac2:5d66:0:b0:50a:9ef7:531c with SMTP id
- h6-20020ac25d66000000b0050a9ef7531cmr1284854lft.33.1700635591863; Tue, 21 Nov
- 2023 22:46:31 -0800 (PST)
+        Wed, 22 Nov 2023 01:48:19 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9449C110
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:48:13 -0800 (PST)
+X-UUID: 48b669095d8046bcaaaf4f95e7db4b1d-20231122
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:b32ff27c-8ab5-4f81-ae02-b0bb2d52caf9,IP:5,U
+        RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-4
+X-CID-INFO: VERSION:1.1.32,REQID:b32ff27c-8ab5-4f81-ae02-b0bb2d52caf9,IP:5,URL
+        :0,TC:0,Content:-25,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-4
+X-CID-META: VersionHash:5f78ec9,CLOUDID:7afd5760-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:231122144800C0XZ0ADZ,BulkQuantity:0,Recheck:0,SF:42|74|66|38|24|17|1
+        9|102,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,
+        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 48b669095d8046bcaaaf4f95e7db4b1d-20231122
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 635458510; Wed, 22 Nov 2023 14:47:57 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        arnd@arndb.de, angus.chen@jaguarmicro.com,
+        u.kleine-koenig@pengutronix.de
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kunwu.chan@hotmail.com, Kunwu Chan <chentao@kylinos.cn>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: [PATCH v2] ARM: imx: Check return value of devm_kasprintf in imx_mmdc_perf_init
+Date:   Wed, 22 Nov 2023 14:46:36 +0800
+Message-Id: <20231122064636.7268-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <CAJD7tkYXcQkTZkUnAz89dR0O1YmEUr29UFeg3142t6Y09aaSpg@mail.gmail.com>
- <CAF8kJuNWj_2tQA+0D-hpQgeJwWZRaQWxOCF=qagFnA8+yb3R1Q@mail.gmail.com>
-In-Reply-To: <CAF8kJuNWj_2tQA+0D-hpQgeJwWZRaQWxOCF=qagFnA8+yb3R1Q@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Wed, 22 Nov 2023 14:46:13 +0800
-Message-ID: <CAMgjq7CyRa9Sz7ri+L0Nz=GVOqFtyWt6dKont0Kvks6K5Ei45g@mail.gmail.com>
-Subject: Re: [PATCH 00/24] Swapin path refactor for optimization and bugfix
-To:     Chris Li <chrisl@kernel.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8821=E6=97=A5=
-=E5=91=A8=E4=BA=8C 04:23=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi Kairui,
->
-> On Mon, Nov 20, 2023 at 11:10=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
-> >
-> > On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com>=
- wrote:
-> > >
-> > > From: Kairui Song <kasong@tencent.com>
-> > >
-> > > This series tries to unify and clean up the swapin path, fixing a few
-> > > issues with optimizations:
-> > >
-> > > 1. Memcg leak issue: when a process that previously swapped out some
-> > >    migrated to another cgroup, and the origianl cgroup is dead. If we
-> > >    do a swapoff, swapped in pages will be accounted into the process
-> > >    doing swapoff instead of the new cgroup. This will allow the proce=
-ss
-> > >    to use more memory than expect easily.
-> > >
-> > >    This can be easily reproduced by:
-> > >    - Setup a swap.
-> > >    - Create memory cgroup A, B and C.
-> > >    - Spawn process P1 in cgroup A and make it swap out some pages.
-> > >    - Move process P1 to memory cgroup B.
-> > >    - Destroy cgroup A.
-> > >    - Do a swapoff in cgroup C
-> > >    - Swapped in pages is accounted into cgroup C.
-> > >
-> > >    This patch will fix it make the swapped in pages accounted in cgro=
-up B.
-> > >
-> >
-> > I guess this only works for anonymous memory and not shmem, right?
-> >
-> > I think tying memcg charges to a process is not something we usually
-> > do. Charging the pages to the memcg of the faulting process if the
-> > previous owner is dead makes sense, it's essentially recharging the
-> > memory to the new owner. Swapoff is indeed a special case, since the
-> > faulting process is not the new owner, but an admin process or so. I
-> > am guessing charging to the new memcg of the previous owner might make
-> > sense in this case, but it is a change of behavior.
-> >
->
-> I was looking at this at patch 23 as well. Will ask more questions in
-> the patch thread.
-> I would suggest making these two behavior change patches separate out
-> from the clean up series to give it more exposure and proper
-> discussion.
-> Patch 5 and patch 23.
->
-> Chris
->
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-Hi Chris,
+Release the id allocated in 'mmdc_pmu_init' when 'devm_kasprintf'
+return NULL
 
-Thank you very much for reviewing these details, it's really helpful.
+Suggested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Fixes: e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+v2: Add new label to release the id allocated in 'mmdc_pmu_init'
+---
+ arch/arm/mach-imx/mmdc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I'll send out new serieses after checking your suggestions on these patches=
-.
+diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+index 2157493b78a9..df69af932375 100644
+--- a/arch/arm/mach-imx/mmdc.c
++++ b/arch/arm/mach-imx/mmdc.c
+@@ -501,6 +501,10 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
+ 
+ 	name = devm_kasprintf(&pdev->dev,
+ 				GFP_KERNEL, "mmdc%d", ret);
++	if (!name) {
++		ret = -ENOMEM;
++		goto pmu_release_id;
++	}
+ 
+ 	pmu_mmdc->mmdc_ipg_clk = mmdc_ipg_clk;
+ 	pmu_mmdc->devtype_data = (struct fsl_mmdc_devtype_data *)of_id->data;
+@@ -523,9 +527,10 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
+ 
+ pmu_register_err:
+ 	pr_warn("MMDC Perf PMU failed (%d), disabled\n", ret);
+-	ida_simple_remove(&mmdc_ida, pmu_mmdc->id);
+ 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
+ 	hrtimer_cancel(&pmu_mmdc->hrtimer);
++pmu_release_id:
++	ida_simple_remove(&mmdc_ida, pmu_mmdc->id);
+ pmu_free:
+ 	kfree(pmu_mmdc);
+ 	return ret;
+-- 
+2.34.1
+
