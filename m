@@ -2,129 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5560C7F4EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8F37F4EE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343687AbjKVSBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S1344312AbjKVSB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVSBI (ORCPT
+        with ESMTP id S1344293AbjKVSB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:01:08 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853591A8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:01:02 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c88750e7d1so520441fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:01:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700676061; x=1701280861; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=rlcXNO/YvL3pSI78Gj8bkvzKJ+5tSLbCTyvm7rSGCSA=;
-        b=H9TeY57mD3nH2Bk3CTptf8aTPd8RZHJEA4f21RuuvVySO82XUuh8lD+nu7rZXMFCVK
-         XJYAdKl8gJV8DiF+jQ724HFyQet2qwMq6POws0DfTxsJAkAqqEwkLKLR3edd2t1Uzitl
-         cD10oJQPmbO16UXz3/2hLusOFAPaa0DngUUUgITURfSREgkh8v0958t1S6s093/2VNAE
-         vGfi+jIo7ggnF6P9L4WIuHj8/IPxATjD+SXTLdAeLJBcLNsvJjImyqtdtU0LqLCoNA7Q
-         NPdIk5G3zaMgRcJ9uqooFgocetWYX2eCYMRJShSMKb90vvMxk4c++u/NR0vB45hOTM54
-         AY0w==
+        Wed, 22 Nov 2023 13:01:57 -0500
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354001B3;
+        Wed, 22 Nov 2023 10:01:53 -0800 (PST)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-357ccaf982eso142485ab.0;
+        Wed, 22 Nov 2023 10:01:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700676061; x=1701280861;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rlcXNO/YvL3pSI78Gj8bkvzKJ+5tSLbCTyvm7rSGCSA=;
-        b=OOiC4Z+ecBWhi76gXcwYdG6p4DC8q5+IqDVyvomk/Rsob2Bt9yRyU//Yj0ti4Zhoul
-         4p6vCCX4aoJunOjXkeVoZTAH2G28UdrgHcTyItrDpFi4Bcghr7nzW17yK6eFu2be9Yfo
-         p0gquSRC608ylZJtw5uS8iQ2cmVtZz/PBiqLpqAeSoi4xF95Gm67jDOCgrM1zjDvMx+Q
-         6YJNkvaHPxt7nNBPzLD7vwUZ3xrSdjnqI5B8vGd5V2ph5mh9HMVazEKtPGe/RhOXmKKH
-         YXT5UmfgHS6UHnkJGCPHIScbGhI7LVtil4PxZi6XNEtV98D22TiwZY3W1SnoBkY+6hHG
-         x54A==
-X-Gm-Message-State: AOJu0YyQfemyfeDuN3M8gjl1IRoIPJPoktRxWrPRYuC0zOVtY2+pHOJy
-        f5T/vFz4ujmhOVtFqrcAEaHAmg==
-X-Google-Smtp-Source: AGHT+IFbREYSh29YxeVAt614vvr3qCBOOQFTQ1/HhijMTVOznlhfY7VnGhWGWbXDpBW2boRSndVpsg==
-X-Received: by 2002:a2e:be09:0:b0:2c6:ed3a:73ee with SMTP id z9-20020a2ebe09000000b002c6ed3a73eemr2195620ljq.7.1700676058610;
-        Wed, 22 Nov 2023 10:00:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id p5-20020a05600c468500b004063d8b43e7sm150990wmo.48.2023.11.22.10.00.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:00:57 -0800 (PST)
-Message-ID: <40afeed9-8780-47fa-ac20-6191dd05b239@linaro.org>
-Date:   Wed, 22 Nov 2023 19:00:55 +0100
+        d=1e100.net; s=20230601; t=1700676112; x=1701280912;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=If8d0YtZJS0mQrEYNoRxWpqFNsU6KzCVMh6IszFfggc=;
+        b=Yhfd1+HoF7cNyR9ezXQhgeBCA+4CDwxOfpWtpyPtc8rNIh1xn8UWhrPd4rzaOSuPyo
+         xWuY9/i3eHB8YMSoBRJXPJTgSKPHn23+UcVy15l8ar5hO8JGPGlSM3+Nlyoy9iHS4ius
+         NnNbtwBD4IJal8UeWMvJXuzdcrx93c0xQKLwWur0cA0kdVyDRs34zoNuK2zUXEQjyRZg
+         i+FH1unuBDtVVN3kvO5PFp4cK1S0Norxxnq77jubWVmXKpdzDQhSBm1tYig4caADN+kZ
+         FlHapmdKS9Rdtk7HPvpGWlDNQfcHaNeidmYWkmCJfLrK7r0MZxSBSMuSuNJShy7Iggkd
+         0wsQ==
+X-Gm-Message-State: AOJu0Yw7ZcAgNJN1grjpaCHpWzPYjbFIgENzKeoz47q6M1Bf6AfhF6Lc
+        mU3sBETxFV2ApVliKBylEw==
+X-Google-Smtp-Source: AGHT+IF1dkbNJetLgO0LDH6ZmMlsbwQjH0FPKo8tVU1ObnCUsCKI/ybOACitXlO0Xw/jZM71V94chA==
+X-Received: by 2002:a05:6e02:20c7:b0:35a:d0b3:427a with SMTP id 7-20020a056e0220c700b0035ad0b3427amr3956494ilq.1.1700676112384;
+        Wed, 22 Nov 2023 10:01:52 -0800 (PST)
+Received: from herring.priv ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id v19-20020a056638359300b004665c29605fsm1766820jal.139.2023.11.22.10.01.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 10:01:51 -0800 (PST)
+Received: (nullmailer pid 1433277 invoked by uid 1000);
+        Wed, 22 Nov 2023 18:01:49 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Michal Simek <michal.simek@amd.com>
+Cc:     Simon Horman <horms@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] net: can: Use device_get_match_data()
+Date:   Wed, 22 Nov 2023 11:01:39 -0700
+Message-ID: <20231122180140.1432025-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
- binding
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
- <20231120151056.148450-2-linux@rasmusvillemoes.dk>
- <fd5c7d9f-a52b-4abb-a0d4-f5bdf2a669de@linaro.org>
- <1c016987-da88-47f2-bc1b-fcbe4c71a5c9@rasmusvillemoes.dk>
- <67a2cea0-f2de-4e7d-bc9d-ae29885f9210@linaro.org>
- <83eeb98d-ea56-4f7c-bed9-fe09aaa4cf7a@rasmusvillemoes.dk>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <83eeb98d-ea56-4f7c-bed9-fe09aaa4cf7a@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -132,58 +70,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/11/2023 10:28, Rasmus Villemoes wrote:
-> On 21/11/2023 09.34, Krzysztof Kozlowski wrote:
->> On 21/11/2023 09:27, Rasmus Villemoes wrote:
->>> On 21/11/2023 08.52, Krzysztof Kozlowski wrote:
-> 
->>>> Anyway, similar comments: this does not look like generic RS485
->>>> property. Are you saying that standard defines such GPIO?
->>>
->>> No, I'm saying that several boards that exist in the wild have the
->>> RX/TX/CTS etc. pins routed to a multiplexer, which in turn routes those
->>> signals to either a rs485 transceiver or an rs232 driver (and those in
->>> turn are connected to different screw terminals). So no, it's not a
->>> property of the rs485 protocol itself, but very much related to making
->>> use of rs485 (and rs232, though of course not simultaneously) on such
->>> boards.
->>
->> Which upstream boards use it?
-> 
-> None, because the binding doesn't exist.
-> 
->> To me it looks like specific to each controller, not to RS485.
-> 
-> What do you mean "controller"? It's not specific to one particular
-> SOC/IP, any uart IP capable of both rs232 and rs485 could be wired to
-> circuitry like this.
-> 
->>> Would a link to a schematic help?
->>
->> Yes, always :)
-> 
-> https://ibb.co/B3gzySt
-> 
-> The UART1.* signals on the right are from the SOC (in this case an
-> imx8mp, but I know of other boards e.g. based on powerpc that use a
-> similar scheme), and the COM1_Sel is just some gpio. The multiplexer is
-> roughly in the middle (U2103).
-> 
-> As you can see, if one wants to talk rs485, one must set COM1_Sel low
-> (and that works just fine by describing the rs485-mux-gpio as
-> ACTIVE_LOW), and if one wants to talk rs232, it must be set high. While
-> userspace could be tasked with knowing about and handling that gpio on
-> top of the ioctl() for switching mode, this really seems like the kind
-> of thing that DT is supposed to describe and the kernel is supposed to
-> handle.
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data. With this, adjust the includes to explicitly
+include the correct headers.
 
-Yep, the trouble is only the placement. This GPIO mux is neither part of
-the UART controller nor connector. Usually such pins in static
-configuration are described either as GPIO hogs or as pinctrl. I guess
-this matches other GPIOs in that binding, so I think it is fine. You
-still though should answer to comments from other folks, including
-multiple-GPIO case and mux.
+Error checking for matching and match data was not necessary as matching
+is always successful if we're already in probe and the match tables always
+have data pointers.
 
-Best regards,
-Krzysztof
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+  - Drop calling "platform_get_device_id(pdev)->driver_data" in c_can
+    and flexcan as device_get_match_data() already did that. The logic
+    was also wrong and would have resulted in returning -ENODEV.
+  - Drop initializing devtype in xilinx_can
+---
+ drivers/net/can/c_can/c_can_platform.c | 13 ++-----------
+ drivers/net/can/flexcan/flexcan-core.c | 12 ++----------
+ drivers/net/can/mscan/mpc5xxx_can.c    |  8 ++++----
+ drivers/net/can/xilinx_can.c           |  9 +++------
+ 4 files changed, 11 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index f44ba2600415..e2ec69aa46e5 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -30,9 +30,9 @@
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/property.h>
+ #include <linux/clk.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/regmap.h>
+ 
+@@ -259,22 +259,13 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	void __iomem *addr;
+ 	struct net_device *dev;
+ 	struct c_can_priv *priv;
+-	const struct of_device_id *match;
+ 	struct resource *mem;
+ 	int irq;
+ 	struct clk *clk;
+ 	const struct c_can_driver_data *drvdata;
+ 	struct device_node *np = pdev->dev.of_node;
+ 
+-	match = of_match_device(c_can_of_table, &pdev->dev);
+-	if (match) {
+-		drvdata = match->data;
+-	} else if (pdev->id_entry->driver_data) {
+-		drvdata = (struct c_can_driver_data *)
+-			platform_get_device_id(pdev)->driver_data;
+-	} else {
+-		return -ENODEV;
+-	}
++	drvdata = device_get_match_data(&pdev->dev);
+ 
+ 	/* get the appropriate clk */
+ 	clk = devm_clk_get(&pdev->dev, NULL);
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index d15f85a40c1e..8ea7f2795551 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -23,11 +23,11 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/can/platform/flexcan.h>
+ #include <linux/pm_runtime.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ 
+@@ -2034,7 +2034,6 @@ MODULE_DEVICE_TABLE(platform, flexcan_id_table);
+ 
+ static int flexcan_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *of_id;
+ 	const struct flexcan_devtype_data *devtype_data;
+ 	struct net_device *dev;
+ 	struct flexcan_priv *priv;
+@@ -2090,14 +2089,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
+-	of_id = of_match_device(flexcan_of_match, &pdev->dev);
+-	if (of_id)
+-		devtype_data = of_id->data;
+-	else if (platform_get_device_id(pdev)->driver_data)
+-		devtype_data = (struct flexcan_devtype_data *)
+-			platform_get_device_id(pdev)->driver_data;
+-	else
+-		return -ENODEV;
++	devtype_data = device_get_match_data(&pdev->dev);
+ 
+ 	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
+ 	    !((devtype_data->quirks &
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index 4837df6efa92..5b3d69c3b6b6 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -12,8 +12,10 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/netdevice.h>
+ #include <linux/can/dev.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
+@@ -290,7 +292,7 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
+ 	int irq, mscan_clksrc = 0;
+ 	int err = -ENOMEM;
+ 
+-	data = of_device_get_match_data(&ofdev->dev);
++	data = device_get_match_data(&ofdev->dev);
+ 	if (!data)
+ 		return -EINVAL;
+ 
+@@ -351,13 +353,11 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
+ 
+ static void mpc5xxx_can_remove(struct platform_device *ofdev)
+ {
+-	const struct of_device_id *match;
+ 	const struct mpc5xxx_can_data *data;
+ 	struct net_device *dev = platform_get_drvdata(ofdev);
+ 	struct mscan_priv *priv = netdev_priv(dev);
+ 
+-	match = of_match_device(mpc5xxx_can_table, &ofdev->dev);
+-	data = match ? match->data : NULL;
++	data = device_get_match_data(&ofdev->dev);
+ 
+ 	unregister_mscandev(dev);
+ 	if (data && data->put_clock)
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index abe58f103043..3722eaa84234 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -20,8 +20,8 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/skbuff.h>
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+@@ -1726,8 +1726,7 @@ static int xcan_probe(struct platform_device *pdev)
+ 	struct net_device *ndev;
+ 	struct xcan_priv *priv;
+ 	struct phy *transceiver;
+-	const struct of_device_id *of_id;
+-	const struct xcan_devtype_data *devtype = &xcan_axi_data;
++	const struct xcan_devtype_data *devtype;
+ 	void __iomem *addr;
+ 	int ret;
+ 	int rx_max, tx_max;
+@@ -1741,9 +1740,7 @@ static int xcan_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
+-	of_id = of_match_device(xcan_of_match, &pdev->dev);
+-	if (of_id && of_id->data)
+-		devtype = of_id->data;
++	devtype = device_get_match_data(&pdev->dev);
+ 
+ 	hw_tx_max_property = devtype->flags & XCAN_FLAG_TX_MAILBOXES ?
+ 			     "tx-mailbox-count" : "tx-fifo-depth";
+-- 
+2.42.0
 
