@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B07427F4C05
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0087F4C0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbjKVQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S231410AbjKVQNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbjKVQLb (ORCPT
+        with ESMTP id S229548AbjKVQNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:11:31 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA088BC;
-        Wed, 22 Nov 2023 08:11:27 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1E47D21853;
-        Wed, 22 Nov 2023 16:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1700669486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tjxIQeXSz4B6dutTyQbVvz42XSlpNrvZxeWc0EaGPkQ=;
-        b=iVmy9Md0SMd/ZAJ7hwv0SH0uCj0+7Q7+bXx7BTix8G6I8LAt6xZhdlFHnJkWS5GJL3pZEK
-        7Khhvp+aPQtZe8JnN6dreGhynuyoOpUSlFBatVXG14e/EdRIJM+GNlGz9My2mMKwNaIFe1
-        EZMIOmP/kuZ8cTVzBME/0cHY2+zEorw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8BC7813467;
-        Wed, 22 Nov 2023 16:11:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mwpQIS0oXmVlNwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 22 Nov 2023 16:11:25 +0000
-Date:   Wed, 22 Nov 2023 17:11:24 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-        Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
-Message-ID: <rfhthr7f6st26h3ggfanaeyfi7ndld5mo46qhq7gufr6fbmzst@fbi27atd6djs>
-References: <20231121175640.9981-1-mkoutny@suse.com>
- <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
- <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
- <CAM0EoMk_OgpjV7Huh-NHF_WxkJtQYGAMY+kutsL=qD9oYthh_w@mail.gmail.com>
- <CAM0EoM=Pq02p-sbkMSQBg8=dwTC5z+AeLjeXdzeHTA1AFSLuRg@mail.gmail.com>
+        Wed, 22 Nov 2023 11:13:20 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12983BC;
+        Wed, 22 Nov 2023 08:13:17 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1ce5e65ba37so7874745ad.1;
+        Wed, 22 Nov 2023 08:13:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700669596; x=1701274396; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IoVmD+VTOG0LFwMmHOyCBmPi9IZVbmlhZU/3heFnccs=;
+        b=E3guqg/0SKWh/jx/NOQrZgjXrpT+l55oKAy9RXcBhk3bSEmFBkBkyRTqYTsiVwGy7p
+         Vf7KhUfbr+uYCp1Avfx/pUgr4FCh0xkhEg1kx39/tUdCHqnSgJXLxomjyrYHTw4VPFPm
+         mdIQPC2xKUrzzSxThLxTilteiRYY4CendxUjUkqXpG2YvwHZLqNIlh/AOw1U8oNvLNeV
+         PhdadhqDjPQW7OO1Is5KL72RZglKjl3bzxtm/HsYbHdhXgnLvD3qCXtzXD4PX/eCT0Ty
+         tXybwiuD4sqchkJ4TQWQbrAXomZ3z5NZfBaP6/4QnN0pj+VBOikic3lGEpvVR1gme0iV
+         2iog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700669596; x=1701274396;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IoVmD+VTOG0LFwMmHOyCBmPi9IZVbmlhZU/3heFnccs=;
+        b=gS9yYPpxS4FXnIjnNv0R4k+dtf1IADN/TPUTQs4rN9ongILo2nFfTr7g0ULlLzSrtM
+         LUOuaUcyipNXC2d0410go1dC+iyMpXDW1jtwMTDW+mwnRmVmcKZTPO1D20u31K19hoMv
+         S1U2ADKSsLsT8ptohZIEubXAdwjeIMx/gw8qdMZu00yD9pKd6owRMAccZhPFyDjNZpGg
+         AuX6LtgybFe362j+GFgdGynakntLG77Z6GncmZa479gBzxuziOBYBRmqDJijbFolo49E
+         lWFqOnLFUe+Y72Or4zf8HQ55Gx6tf5BCHVw6WIvFE/CIizuheADtH2TOzwkYjAGyuFZH
+         9l9w==
+X-Gm-Message-State: AOJu0YyvTbjHpbF5la4NyYlJNsQEQcV55bgtOL3wEn8mob1vQdu/wNi0
+        SOqiCFkVOoiImbR9BqAw9IAU1YgWFOmSahv6
+X-Google-Smtp-Source: AGHT+IFsgXMoN1R9EYrpdelZJS8IU3T+gk7YiDhb8jEIJjGE8qV1tfyECMvAlXEdvK/FIqGa+Vqugw==
+X-Received: by 2002:a17:902:c40f:b0:1cf:792d:93d3 with SMTP id k15-20020a170902c40f00b001cf792d93d3mr3120269plk.4.1700669596158;
+        Wed, 22 Nov 2023 08:13:16 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:313d:d4a3:2c73:a19b:b896:ebbe])
+        by smtp.gmail.com with ESMTPSA id jk21-20020a170903331500b001cc311ef152sm9875626plb.286.2023.11.22.08.13.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 08:13:15 -0800 (PST)
+From:   Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org
+Cc:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH V2] media: stk1160: Fixed high volume of stk1160_dbg messages
+Date:   Wed, 22 Nov 2023 21:43:04 +0530
+Message-Id: <20231122161304.12434-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ellx3u2ji6sqqzad"
-Content-Disposition: inline
-In-Reply-To: <CAM0EoM=Pq02p-sbkMSQBg8=dwTC5z+AeLjeXdzeHTA1AFSLuRg@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         BAYES_HAM(-2.90)[99.56%];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[24];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,iogearbox.net,linux.dev,suse.cz,suse.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function stk1160_dbg gets called too many times, which causes
+the output to get flooded with messages. Since stk1160_dbg uses
+printk, it is now replaced with dev_warn_ratelimited.
 
---ellx3u2ji6sqqzad
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Suggested-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+---
+v2:
+Thanks for your suggestions Phillip. I have updated the TODO comment and 
+used dev_warn_ratelimited for inclusion of kernel warning.
 
-On Wed, Nov 22, 2023 at 10:55:29AM -0500, Jamal Hadi Salim <jhs@mojatatu.com> wrote:
-> Out of curiosity - how did you end up looking at this?
+ drivers/media/usb/stk1160/stk1160-video.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-The trigger for this case was tcindex module -- removed in upstream, so
-we don't want to have implicit autoloads for it while we retain it in
-our distro.
+diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+index f5b75f380c19..a8e0d352a68c 100644
+--- a/drivers/media/usb/stk1160/stk1160-video.c
++++ b/drivers/media/usb/stk1160/stk1160-video.c
+@@ -105,6 +105,16 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+ 	u8 *dst = buf->mem;
+ 	int remain;
+ 
++	/*
++	 * TODO: These stk1160_dbg are very spammy!
++	 * We should check why we are getting them.
++	 *
++	 * UPDATE: One of the reasons (the only one?) for getting these
++	 * is incorrect standard (mismatch between expected and configured).
++	 * So perhaps, we could add a counter for errors. When the counter
++	 * reaches some value, we simply stop streaming.
++	 */
++
+ 	len -= 4;
+ 	src += 4;
+ 
+@@ -140,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+ 
+ 	/* Let the bug hunt begin! sanity checks! */
+ 	if (lencopy < 0) {
+-		printk_ratelimited("copy skipped: negative lencopy\n");
++		dev_warn_ratelimited(dev, "copy skipped: negative lencopy\n");
+ 		return;
+ 	}
+ 
+-- 
+2.25.1
 
-The user has to modprobe explicitly or un-blacklist the module.
-
-(For instance, we've been leveraging this for the fs-* modules due to
-various support status of filesystem modules in SLE.)
-
-
-Michal
-
---ellx3u2ji6sqqzad
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZV4oKgAKCRAGvrMr/1gc
-jiYdAQCazlPSmBnTX8+0PP94jKGjnQ3eWojW1rjG+rqiKhgBeAEAkw8NYL7FaIsQ
-H0omuGkVP0DS2VuIKSLV7NokhGLa0QI=
-=XKw4
------END PGP SIGNATURE-----
-
---ellx3u2ji6sqqzad--
