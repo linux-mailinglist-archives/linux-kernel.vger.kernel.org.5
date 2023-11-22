@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761317F41CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF2C7F41CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbjKVJhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S235117AbjKVJi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJhp (ORCPT
+        with ESMTP id S229631AbjKVJiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:37:45 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ECBBD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:37:42 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8B97421940;
-        Wed, 22 Nov 2023 09:37:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700645860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jy17+oNWzei3WX/QIj/LJHOt0qY0/3p6N33SxwYAQD0=;
-        b=oFi9Jq/JdIsnTbc9d2pmWLUlVeXCQpuDwVMbVR44e/1WLk7qqNtEeilB2ooP2gcSzAyRw2
-        PXOxYhsl0DMvY7lMJw5vVJ0xBlzy58++kV6EXSl5oMzgQOyo6GxDenXvyV2HVWTGfPbe6o
-        bqva54R/t6JctJxOxm6CrV37+sJ+Hfg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700645860;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jy17+oNWzei3WX/QIj/LJHOt0qY0/3p6N33SxwYAQD0=;
-        b=TwkFmVDhwOag+85NhQs6n3T8GipbgY/4mbvw2B33Wewnyj9seiq+LspDOkNIYa0zrhX7aM
-        jK0Wr486/oKa9vBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D2E813461;
-        Wed, 22 Nov 2023 09:37:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9qsoEuTLXWWRewAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 22 Nov 2023 09:37:40 +0000
-Message-ID: <83ff4b9e-94f1-8b35-1233-3dd414ea4dfe@suse.cz>
-Date:   Wed, 22 Nov 2023 10:37:39 +0100
+        Wed, 22 Nov 2023 04:38:25 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790A810C;
+        Wed, 22 Nov 2023 01:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=mnhtNd6IwKv5NoftYNEBxPIdZzAbq3PonPgsgvFvYdI=; b=i3perO0k9ztjIFMSyxM49VKgYP
+        H7MDcZguh7B39KiLP93Zmm1eOYR740+ovLJdu2lwg6jm17DwzfIQuyW+2O7TXC5D13DbwWqjqHrQb
+        LK09ak1sASV7iKfZDhcFAfQK7HOp8DjU4uEICJ8YRFtUFZeUj+Ao2wSoOxI69j1LK+tBom8V4SpH4
+        MEeUdcD42z8eyXgLdbuxmPfJfQDhfup08pgmjXGckPXS+ZI+Hw/ABN2ZdVs7Q7JS8x/S2O23JV3rn
+        TIsqMVgBetuxM61qE92tDPmp/kV29o/E7aiUmUwjgQPgRPv1/mPzRlH8USQn53+LoX5D2gqBO4oYn
+        fd+U56gg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52816)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r5jgO-0008G8-23;
+        Wed, 22 Nov 2023 09:38:08 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r5jgP-00054V-JE; Wed, 22 Nov 2023 09:38:09 +0000
+Date:   Wed, 22 Nov 2023 09:38:09 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v5 1/3] net: dsa: microchip: ksz8: Make flow
+ control, speed, and duplex on CPU port configurable
+Message-ID: <ZV3MAS1yKwz9sANL@shell.armlinux.org.uk>
+References: <20231122092545.2895635-1-o.rempel@pengutronix.de>
+ <20231122092545.2895635-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 6/9] slub: Delay freezing of partial slabs
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>, chengming.zhou@linux.dev
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
- <20231102032330.1036151-7-chengming.zhou@linux.dev>
- <4f3bc1bd-ea87-465d-b58a-0ed57b15187b@sirena.org.uk>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <4f3bc1bd-ea87-465d-b58a-0ed57b15187b@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.40
-X-Spamd-Result: default: False [0.40 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MID_RHS_MATCH_FROM(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         BAYES_HAM(-3.00)[100.00%];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[linux.com,kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,bytedance.com,infradead.org];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122092545.2895635-2-o.rempel@pengutronix.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,71 +71,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 19:49, Mark Brown wrote:
-> On Thu, Nov 02, 2023 at 03:23:27AM +0000, chengming.zhou@linux.dev wrote:
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->> 
->> Now we will freeze slabs when moving them out of node partial list to
->> cpu partial list, this method needs two cmpxchg_double operations:
->> 
->> 1. freeze slab (acquire_slab()) under the node list_lock
->> 2. get_freelist() when pick used in ___slab_alloc()
+On Wed, Nov 22, 2023 at 10:25:43AM +0100, Oleksij Rempel wrote:
+> Allow flow control, speed, and duplex settings on the CPU port to be
+> configurable. Previously, the speed and duplex relied on default switch
+> values, which limited flexibility. Additionally, flow control was
+> hardcoded and only functional in duplex mode. This update enhances the
+> configurability of these parameters.
 > 
-> Recently -next has been failing to boot on a Raspberry Pi 3 with an arm
-> multi_v7_defconfig and a NFS rootfs, a bisect appears to point to this
-> patch (in -next as c8d312e039030edab25836a326bcaeb2a3d4db14) as having
-> introduced the issue.  I've included the full bisect log below.
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Simon Horman <simon.horman@corigine.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> ---
+>  drivers/net/dsa/microchip/ksz8.h       |  4 ++
+>  drivers/net/dsa/microchip/ksz8795.c    | 54 +++++++++++++++++++++++++-
+>  drivers/net/dsa/microchip/ksz_common.c |  1 +
+>  3 files changed, 57 insertions(+), 2 deletions(-)
 > 
-> When we see problems we see RCU stalls while logging in, for example:
+> diff --git a/drivers/net/dsa/microchip/ksz8.h b/drivers/net/dsa/microchip/ksz8.h
+> index ef653bbfde75..571c26ce71e4 100644
+> --- a/drivers/net/dsa/microchip/ksz8.h
+> +++ b/drivers/net/dsa/microchip/ksz8.h
+> @@ -54,5 +54,9 @@ int ksz8_reset_switch(struct ksz_device *dev);
+>  int ksz8_switch_init(struct ksz_device *dev);
+>  void ksz8_switch_exit(struct ksz_device *dev);
+>  int ksz8_change_mtu(struct ksz_device *dev, int port, int mtu);
+> +void ksz8_phylink_mac_link_up(struct ksz_device *dev, int port,
+> +			      unsigned int mode, phy_interface_t interface,
+> +			      struct phy_device *phydev, int speed, int duplex,
+> +			      bool tx_pause, bool rx_pause);
+>  
+>  #endif
+> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+> index 8deb217638d3..3504e7238eba 100644
+> --- a/drivers/net/dsa/microchip/ksz8795.c
+> +++ b/drivers/net/dsa/microchip/ksz8795.c
+> @@ -1528,6 +1528,58 @@ void ksz8_config_cpu_port(struct dsa_switch *ds)
+>  	}
+>  }
+>  
+> +/**
+> + * ksz8_cpu_port_link_up - Configures the CPU port of the switch.
+> + * @dev: The KSZ device instance.
+> + * @speed: The desired link speed.
+> + * @duplex: The desired duplex mode.
+> + * @tx_pause: If true, enables transmit pause.
+> + * @rx_pause: If true, enables receive pause.
+> + *
+> + * Description:
+> + * The function configures flow control and speed settings for the CPU
+> + * port of the switch based on the desired settings, current duplex mode, and
+> + * speed.
+> + */
+> +static void ksz8_cpu_port_link_up(struct ksz_device *dev, int speed, int duplex,
+> +				  bool tx_pause, bool rx_pause)
+> +{
+> +	const u16 *regs = dev->info->regs;
+> +	u8 ctrl = 0;
+> +
+> +	/* SW_FLOW_CTRL, SW_HALF_DUPLEX, and SW_10_MBIT bits are bootstrappable
+> +	 * at least on KSZ8873. They can have different values depending on your
+> +	 * board setup.
+> +	 */
+> +	if (duplex) {
+> +		if (tx_pause || rx_pause)
+> +			ctrl |= SW_FLOW_CTRL;
 
-Can you try this, please?
+Please don't make this dependent on duplex, and allow phylink to enforce
+that. For example, phylink_resolve_an_pause() will only enable tx/rx
+pause if in full duplex mode.
 
-----8<----
-From 000030c1ff055ef6a2ca624d0142f08f3ef19d51 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 22 Nov 2023 10:32:41 +0100
-Subject: [PATCH] mm/slub: try to fix hangs without cmpxchg64/128
+> +	} else {
+> +		ctrl |= SW_HALF_DUPLEX;
+> +	}
+> +
+> +	/* This hardware only supports SPEED_10 and SPEED_100. For SPEED_10
+> +	 * we need to set the SW_10_MBIT bit. Otherwise, we can leave it 0.
+> +	 */
+> +	if (speed == SPEED_10)
+> +		ctrl |= SW_10_MBIT;
+> +
+> +	ksz_rmw8(dev, regs[S_BROADCAST_CTRL], SW_HALF_DUPLEX | SW_FLOW_CTRL |
+> +		 SW_10_MBIT, ctrl);
 
-If we don't have cmpxchg64/128 and resort to slab_lock()/slab_unlock()
-which uses PG_locked, we can get RMW with the newly introduced
-slab_set/clear_node_partial() operation that modify PG_workingset so all
-the operations have to be atomic now.
+So this is using SW_FLOW_CTRL with the S_BROADCAST_CTRL register...
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slub.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> @@ -1576,8 +1628,6 @@ int ksz8_setup(struct dsa_switch *ds)
+>  	 */
+>  	ds->vlan_filtering_is_global = true;
+>  
+> -	ksz_cfg(dev, S_REPLACE_VID_CTRL, SW_FLOW_CTRL, true);
 
-diff --git a/mm/slub.c b/mm/slub.c
-index bcb5b2c4e213..f2cdb81ab02e 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -522,7 +522,7 @@ static __always_inline void slab_unlock(struct slab *slab)
- 	struct page *page = slab_page(slab);
- 
- 	VM_BUG_ON_PAGE(PageTail(page), page);
--	__bit_spin_unlock(PG_locked, &page->flags);
-+	bit_spin_unlock(PG_locked, &page->flags);
- }
- 
- static inline bool
-@@ -2127,12 +2127,12 @@ static inline bool slab_test_node_partial(const struct slab *slab)
- 
- static inline void slab_set_node_partial(struct slab *slab)
- {
--	__set_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
-+	set_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
- }
- 
- static inline void slab_clear_node_partial(struct slab *slab)
- {
--	__clear_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
-+	clear_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
- }
- 
- /*
+But previously it was being used with the S_REPLACE_VID_CTRL register.
+Doesn't make sense to me.
+
 -- 
-2.42.1
-
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
