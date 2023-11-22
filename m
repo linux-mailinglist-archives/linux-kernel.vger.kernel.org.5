@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB327F4AF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DD37F4AF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344545AbjKVPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S1344432AbjKVPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344281AbjKVPhH (ORCPT
+        with ESMTP id S1344641AbjKVPhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:37:07 -0500
+        Wed, 22 Nov 2023 10:37:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D691D10CF;
-        Wed, 22 Nov 2023 07:35:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2419C433C7;
-        Wed, 22 Nov 2023 15:35:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8FC2136;
+        Wed, 22 Nov 2023 07:35:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED988C433CD;
+        Wed, 22 Nov 2023 15:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667319;
-        bh=x+wPCUauejwkomBy0O9Ui+U2EQqM2yABM6Y7MRt/eC8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AvYBfjFL+e9ZuXdGATpXw8Bqk/O8aX8O/6BXETiNl+BNmP0XsVqIdCvTMHxg03Li/
-         XrpwL6k21RG8Mwf22mA3s4LLBtYmgMbb2TRcPycKKpcYr+pH63o1E2UvZfV0QxcHOH
-         08hs45YK7kJdw3QjzDfoNUoteBlwsPM+V45RGU2LErrC5TE4gaTAHN18ATH7CpaFWp
-         2n5dpKbwyXGc0coaTDdAc/Xb3N8gsfnyw5ZIo9W7TwEH1BAL/w/LlBLxQghwYyFCKQ
-         S5Q46vQETlnoDuqh+eYvKy1TkMO4rDBmy6O076bdDgbY/IPaHtFAaS2P4VMGnGHt6S
-         V8bR0VbOlPfVQ==
+        s=k20201202; t=1700667320;
+        bh=bD2NyGW9U7P0uVZroA1oltAJcXnIkFUEAopSBtZoSPA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LDtzBfC8aVhIRKzsjx/N9uzbrWff/BtxGHqKbzjEBZYLqSV+RssCOA+RfGTd7ieSI
+         HGXgfEX4ASD74QOxzHie3ExMsOI0zJxlrvSh9gf4AZgm489hpae9i3TZXRnVbhspof
+         TsxQYkHN0Rx2n/0KNm2Ps+OFRxDX+OvPZ6qlzEhUOvHpw0qnebgpuVmSs1MFDzYasl
+         RevEK5rTz+EfGC94wVyx6ZfcWESFJ9iBxjztnNMETUTAEsiir8js6GTS9+jb+QJfgV
+         bzHYgkyv7m03uQNSp9t0Sp2UEULg7Mu0tKISTYGg1+2OA9DwX8eAOsiBrYb0d9/89g
+         lhB9kixjSPRjg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Yu Liao <liaoyu15@huawei.com>, Liu Tie <liutie4@huawei.com>,
-        Sasha Levin <sashal@kernel.org>, peterz@infradead.org
-Subject: [PATCH AUTOSEL 5.15 1/7] hrtimers: Push pending hrtimers away from outgoing CPU earlier
-Date:   Wed, 22 Nov 2023 10:35:01 -0500
-Message-ID: <20231122153512.853015-1-sashal@kernel.org>
+Cc:     Jan Bottorff <janb@os.amperecomputing.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        andi.shyti@kernel.org, linux-i2c@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 2/7] i2c: designware: Fix corrupted memory seen in the ISR
+Date:   Wed, 22 Nov 2023 10:35:02 -0500
+Message-ID: <20231122153512.853015-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231122153512.853015-1-sashal@kernel.org>
+References: <20231122153512.853015-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,153 +55,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jan Bottorff <janb@os.amperecomputing.com>
 
-[ Upstream commit 5c0930ccaad5a74d74e8b18b648c5eb21ed2fe94 ]
+[ Upstream commit f726eaa787e9f9bc858c902d18a09af6bcbfcdaf ]
 
-2b8272ff4a70 ("cpu/hotplug: Prevent self deadlock on CPU hot-unplug")
-solved the straight forward CPU hotplug deadlock vs. the scheduler
-bandwidth timer. Yu discovered a more involved variant where a task which
-has a bandwidth timer started on the outgoing CPU holds a lock and then
-gets throttled. If the lock required by one of the CPU hotplug callbacks
-the hotplug operation deadlocks because the unthrottling timer event is not
-handled on the dying CPU and can only be recovered once the control CPU
-reaches the hotplug state which pulls the pending hrtimers from the dead
-CPU.
+When running on a many core ARM64 server, errors were
+happening in the ISR that looked like corrupted memory. These
+corruptions would fix themselves if small delays were inserted
+in the ISR. Errors reported by the driver included "i2c_designware
+APMC0D0F:00: i2c_dw_xfer_msg: invalid target address" and
+"i2c_designware APMC0D0F:00:controller timed out" during
+in-band IPMI SSIF stress tests.
 
-Solve this by pushing the hrtimers away from the dying CPU in the dying
-callbacks. Nothing can queue a hrtimer on the dying CPU at that point because
-all other CPUs spin in stop_machine() with interrupts disabled and once the
-operation is finished the CPU is marked offline.
+The problem was determined to be memory writes in the driver were not
+becoming visible to all cores when execution rapidly shifted between
+cores, like when a register write immediately triggers an ISR.
+Processors with weak memory ordering, like ARM64, make no
+guarantees about the order normal memory writes become globally
+visible, unless barrier instructions are used to control ordering.
 
-Reported-by: Yu Liao <liaoyu15@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Liu Tie <liutie4@huawei.com>
-Link: https://lore.kernel.org/r/87a5rphara.ffs@tglx
+To solve this, regmap accessor functions configured by this driver
+were changed to use non-relaxed forms of the low-level register
+access functions, which include a barrier on platforms that require
+it. This assures memory writes before a controller register access are
+visible to all cores. The community concluded defaulting to correct
+operation outweighed defaulting to the small performance gains from
+using relaxed access functions. Being a low speed device added weight to
+this choice of default register access behavior.
+
+Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/cpuhotplug.h |  1 +
- include/linux/hrtimer.h    |  4 ++--
- kernel/cpu.c               |  8 +++++++-
- kernel/time/hrtimer.c      | 33 ++++++++++++---------------------
- 4 files changed, 22 insertions(+), 24 deletions(-)
+ drivers/i2c/busses/i2c-designware-common.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index c7156bb56e831..c1ecc843b97d2 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -193,6 +193,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
- 	CPUHP_AP_ARM64_ISNDEP_STARTING,
- 	CPUHP_AP_SMPCFD_DYING,
-+	CPUHP_AP_HRTIMERS_DYING,
- 	CPUHP_AP_X86_TBOOT_DYING,
- 	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
- 	CPUHP_AP_ONLINE,
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 0ee140176f102..f2044d5a652b5 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -531,9 +531,9 @@ extern void sysrq_timer_list_show(void);
- 
- int hrtimers_prepare_cpu(unsigned int cpu);
- #ifdef CONFIG_HOTPLUG_CPU
--int hrtimers_dead_cpu(unsigned int cpu);
-+int hrtimers_cpu_dying(unsigned int cpu);
- #else
--#define hrtimers_dead_cpu	NULL
-+#define hrtimers_cpu_dying	NULL
- #endif
- 
- #endif
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 393114c10c285..0e786de993e01 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1697,7 +1697,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
- 	[CPUHP_HRTIMERS_PREPARE] = {
- 		.name			= "hrtimers:prepare",
- 		.startup.single		= hrtimers_prepare_cpu,
--		.teardown.single	= hrtimers_dead_cpu,
-+		.teardown.single	= NULL,
- 	},
- 	[CPUHP_SMPCFD_PREPARE] = {
- 		.name			= "smpcfd:prepare",
-@@ -1764,6 +1764,12 @@ static struct cpuhp_step cpuhp_hp_states[] = {
- 		.startup.single		= NULL,
- 		.teardown.single	= smpcfd_dying_cpu,
- 	},
-+	[CPUHP_AP_HRTIMERS_DYING] = {
-+		.name			= "hrtimers:dying",
-+		.startup.single		= NULL,
-+		.teardown.single	= hrtimers_cpu_dying,
-+	},
-+
- 	/* Entry state on starting. Interrupts enabled from here on. Transient
- 	 * state for synchronsization */
- 	[CPUHP_AP_ONLINE] = {
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 97409581e9dac..eebd0f31daa8b 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -2216,29 +2216,22 @@ static void migrate_hrtimer_list(struct hrtimer_clock_base *old_base,
- 	}
- }
- 
--int hrtimers_dead_cpu(unsigned int scpu)
-+int hrtimers_cpu_dying(unsigned int dying_cpu)
+diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+index 4e752321b95e0..cb1d8d192ac0c 100644
+--- a/drivers/i2c/busses/i2c-designware-common.c
++++ b/drivers/i2c/busses/i2c-designware-common.c
+@@ -63,7 +63,7 @@ static int dw_reg_read(void *context, unsigned int reg, unsigned int *val)
  {
- 	struct hrtimer_cpu_base *old_base, *new_base;
--	int i;
-+	int i, ncpu = cpumask_first(cpu_active_mask);
+ 	struct dw_i2c_dev *dev = context;
  
--	BUG_ON(cpu_online(scpu));
--	tick_cancel_sched_timer(scpu);
-+	tick_cancel_sched_timer(dying_cpu);
-+
-+	old_base = this_cpu_ptr(&hrtimer_bases);
-+	new_base = &per_cpu(hrtimer_bases, ncpu);
+-	*val = readl_relaxed(dev->base + reg);
++	*val = readl(dev->base + reg);
  
--	/*
--	 * this BH disable ensures that raise_softirq_irqoff() does
--	 * not wakeup ksoftirqd (and acquire the pi-lock) while
--	 * holding the cpu_base lock
--	 */
--	local_bh_disable();
--	local_irq_disable();
--	old_base = &per_cpu(hrtimer_bases, scpu);
--	new_base = this_cpu_ptr(&hrtimer_bases);
- 	/*
- 	 * The caller is globally serialized and nobody else
- 	 * takes two locks at once, deadlock is not possible.
- 	 */
--	raw_spin_lock(&new_base->lock);
--	raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
-+	raw_spin_lock(&old_base->lock);
-+	raw_spin_lock_nested(&new_base->lock, SINGLE_DEPTH_NESTING);
- 
- 	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
- 		migrate_hrtimer_list(&old_base->clock_base[i],
-@@ -2249,15 +2242,13 @@ int hrtimers_dead_cpu(unsigned int scpu)
- 	 * The migration might have changed the first expiring softirq
- 	 * timer on this CPU. Update it.
- 	 */
--	hrtimer_update_softirq_timer(new_base, false);
-+	__hrtimer_get_next_event(new_base, HRTIMER_ACTIVE_SOFT);
-+	/* Tell the other CPU to retrigger the next event */
-+	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
- 
--	raw_spin_unlock(&old_base->lock);
- 	raw_spin_unlock(&new_base->lock);
-+	raw_spin_unlock(&old_base->lock);
- 
--	/* Check, if we got expired work to do */
--	__hrtimer_peek_ahead_timers();
--	local_irq_enable();
--	local_bh_enable();
  	return 0;
  }
+@@ -72,7 +72,7 @@ static int dw_reg_write(void *context, unsigned int reg, unsigned int val)
+ {
+ 	struct dw_i2c_dev *dev = context;
  
+-	writel_relaxed(val, dev->base + reg);
++	writel(val, dev->base + reg);
+ 
+ 	return 0;
+ }
+@@ -81,7 +81,7 @@ static int dw_reg_read_swab(void *context, unsigned int reg, unsigned int *val)
+ {
+ 	struct dw_i2c_dev *dev = context;
+ 
+-	*val = swab32(readl_relaxed(dev->base + reg));
++	*val = swab32(readl(dev->base + reg));
+ 
+ 	return 0;
+ }
+@@ -90,7 +90,7 @@ static int dw_reg_write_swab(void *context, unsigned int reg, unsigned int val)
+ {
+ 	struct dw_i2c_dev *dev = context;
+ 
+-	writel_relaxed(swab32(val), dev->base + reg);
++	writel(swab32(val), dev->base + reg);
+ 
+ 	return 0;
+ }
+@@ -99,8 +99,8 @@ static int dw_reg_read_word(void *context, unsigned int reg, unsigned int *val)
+ {
+ 	struct dw_i2c_dev *dev = context;
+ 
+-	*val = readw_relaxed(dev->base + reg) |
+-		(readw_relaxed(dev->base + reg + 2) << 16);
++	*val = readw(dev->base + reg) |
++		(readw(dev->base + reg + 2) << 16);
+ 
+ 	return 0;
+ }
+@@ -109,8 +109,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
+ {
+ 	struct dw_i2c_dev *dev = context;
+ 
+-	writew_relaxed(val, dev->base + reg);
+-	writew_relaxed(val >> 16, dev->base + reg + 2);
++	writew(val, dev->base + reg);
++	writew(val >> 16, dev->base + reg + 2);
+ 
+ 	return 0;
+ }
 -- 
 2.42.0
 
