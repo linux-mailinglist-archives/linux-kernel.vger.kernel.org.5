@@ -2,198 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A43D7F44BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 549617F44AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjKVLOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S1343665AbjKVLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343577AbjKVKko (ORCPT
+        with ESMTP id S235319AbjKVLE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:40:44 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67449D8;
-        Wed, 22 Nov 2023 02:40:40 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40842752c6eso33497995e9.1;
-        Wed, 22 Nov 2023 02:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700649639; x=1701254439; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BWEJ4p5oF5My5H+DDjkWQZxD7K1sIs4EyPFQ443g1H4=;
-        b=VWsJGUBb8EBUm7ej/c0zQFMab/O4pQVtVTH3ZO6dBlC5zXXR27p48vhEF+dc8vdd6e
-         n7ZbG8XwSV6jKq1ez93v06NkFMq6y3rIDeXHlw5wWly7i/ugi36b7vsDj7d8/cwmF9fm
-         1etZnxnFnYAvv0vnrYcGd/Qj8seRnl8qBSTF70LrSxFwbZGWd1KNOEML4QcUCIKizwPB
-         IeHnF4MOEc/U0ZuztamO6GIsCpghJie8j50cus5HdxExkT+I0RXX9sEcDgAiKD0mRoZ0
-         amgM1nKvRejltW3X1diangbnSe3sDapVGqZ6l6Uh9qt1/pRZ0aEQxkyVI0UxJ8VH8UlG
-         rkFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700649639; x=1701254439;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BWEJ4p5oF5My5H+DDjkWQZxD7K1sIs4EyPFQ443g1H4=;
-        b=YWx1OLXxT3eQvWYu9LngtdA562hDAL87BammzKZFpNVgJevoIEhRqH/XPrVCy9KH2s
-         0cmG7Y+r5Oy10bKn7/IpHHbcNqWWkj/bs5SHdVwL4xviiq3Jv0OxJqbv6QnmE43kgfHh
-         8UR50wVu94sxWGaNpHG8APkbEW0Z20xkuoRjY1mLeqClrBeVrXHHkfKogH92rCJydZQ7
-         fyyf+jecJIOqF6yWHf8Syhjrk72pXZWAsSqvu8iENygAZUhBhL8nSsh6H/NRV5fSdSHc
-         8I5P+9y2bVHx60dl9slMX+FkIacul82sRKrhfEPUeDPI0vaLiDQa2Ndd/wWHMERd+fcn
-         IeBw==
-X-Gm-Message-State: AOJu0Yx31RlObvdde5flVCXR2dtJJz34Pnd7lBq08Y/Ld6KLK3KhvnXu
-        jIY0APzRvTkxlN/48WsG2KuD5nx2DLA=
-X-Google-Smtp-Source: AGHT+IF6GNB6My6d4ckpfPXb5FpSvJHkY8U2dwMLOBnvWWoqEBHBNpcSvcG+3C2flxq0ONjc8hSHRg==
-X-Received: by 2002:a05:600c:4f44:b0:40b:2a7a:fb11 with SMTP id m4-20020a05600c4f4400b0040b2a7afb11mr1346905wmq.25.1700649638494;
-        Wed, 22 Nov 2023 02:40:38 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id o13-20020a05600c4fcd00b004094e565e71sm1781756wmq.23.2023.11.22.02.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 02:40:37 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scripts/spelling.txt: add more spellings to spelling.txt
-Date:   Wed, 22 Nov 2023 10:40:37 +0000
-Message-Id: <20231122104037.1770749-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 22 Nov 2023 06:04:29 -0500
+Received: from meesny.iki.fi (meesny.iki.fi [IPv6:2001:67c:2b0:1c1::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FBED6E;
+        Wed, 22 Nov 2023 03:04:04 -0800 (PST)
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 4SZyzj4NX0zyhg;
+        Wed, 22 Nov 2023 13:03:59 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1700651042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=585S0owi5MJXgIPgSKoJ9Ihh8XN58xdRy/pLG757tes=;
+        b=eOL/23D2NaatR6obTyHJYyvsL1NtLFxkYi4UtqJn3PPes2H9d4D9wA62QrHe4eqTVS5/kI
+        JU31IIvXVe/yn4nA9dQuMc0yQh5aua9ZkcwW4zbueJE9zeV1LglMfCIS2Ua1rehlj7x73e
+        VRtCzDss2OhmA3hqjllvuMu4FGOqr5w=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1700651042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=585S0owi5MJXgIPgSKoJ9Ihh8XN58xdRy/pLG757tes=;
+        b=r2b/miPIaYp0iDff0JP4lAFMrlqVdJH98J64EuQ4HrTJaK332vuEkJIOMnzp8v2bhd0MdU
+        VqVHvAbabAJikwzjI5/ZuRmgLCu6oUvFj5rfsJlC+CDFMydgB4pdJ1qR9rUkR5XQqUOymQ
+        xm6xRM7qkeCPnLykP1f/U6wADECIw+c=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1700651042; a=rsa-sha256; cv=none;
+        b=PySPdJTcS0BMQGSq06sQwYL3wQ5h2EHJcymHhvLnaI7Z4AtfZZRbVeyiEsqqF0+wLuImpH
+        l3VdoMqRVlK/cgRHRFF1zFkpWqhIgpMf1v4csytZU0pTynLKTqr4LtrSWx9HzdI6xzqA5O
+        gxoNN35fu0zXqBlW102Y9ZoSfxoSbm0=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 1D94D634C93;
+        Wed, 22 Nov 2023 13:03:59 +0200 (EET)
+Date:   Wed, 22 Nov 2023 11:03:58 +0000
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Paul <seanpaul@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH v3 2/3] media: uvcvideo: Do not halt the device after
+ disconnect
+Message-ID: <ZV3gHn8CuK_JJZbu@valkosipuli.retiisi.eu>
+References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
+ <20231121-guenter-mini-v3-2-d8a5eae2312b@chromium.org>
+ <ZV3XDtUKJPuGLhw9@valkosipuli.retiisi.eu>
+ <CANiDSCuXXD_GWadSJo43zxscGAOPzxhODK=TKixn0OPn7z_tCw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiDSCuXXD_GWadSJo43zxscGAOPzxhODK=TKixn0OPn7z_tCw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the more common spelling mistakes and typos that I've found while
-fixing up spelling mistakes in the kernel over the past couple of
-releases.
+Hi Ricardo,
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- scripts/spelling.txt | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+On Wed, Nov 22, 2023 at 11:32:16AM +0100, Ricardo Ribalda wrote:
+> Hi Sakari
+> 
+> On Wed, 22 Nov 2023 at 11:25, Sakari Ailus <sakari.ailus@iki.fi> wrote:
+> >
+> > Hi Ricardo,
+> >
+> > Thank you for the patch.
+> >
+> > On Tue, Nov 21, 2023 at 07:53:49PM +0000, Ricardo Ribalda wrote:
+> > > usb drivers should not call to any usb_() function after the
+> > > .disconnect() callback has been triggered.
+> > >
+> > > If the camera is streaming, the uvc driver will call usb_set_interface or
+> > > usb_clear_halt once the device is being released. Let's fix this issue.
+> > >
+> > > This is probably not the only driver affected with this kind of bug, but
+> > > until there is a better way to do it in the core this is the way to
+> > > solve this issue.
+> > >
+> > > When/if a different mechanism is implemented in the core to solve the
+> > > lifetime of devices we will adopt it in uvc.
+> > >
+> > > Trace:
+> > > [ 1065.389723] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
+> > > [ 1065.390160] drivers/media/usb/uvc/uvc_driver.c:2264 uvc_disconnect exit
+> > > [ 1065.433956] drivers/media/usb/uvc/uvc_v4l2.c:659 uvc_v4l2_release enter
+> > > [ 1065.433973] drivers/media/usb/uvc/uvc_video.c:2274 uvc_video_stop_streaming enter
+> > > [ 1065.434560] drivers/media/usb/uvc/uvc_video.c:2285 uvc_video_stop_streaming exit
+> > > [ 1065.435154] drivers/media/usb/uvc/uvc_v4l2.c:680 uvc_v4l2_release exit
+> > > [ 1065.435188] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
+> > >
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_driver.c |  2 ++
+> > >  drivers/media/usb/uvc/uvc_video.c  | 45 ++++++++++++++++++++++++--------------
+> > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+> > >  3 files changed, 32 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > index 08fcd2ffa727..413c32867617 100644
+> > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > @@ -2257,6 +2257,8 @@ static void uvc_disconnect(struct usb_interface *intf)
+> > >               return;
+> > >
+> > >       uvc_unregister_video(dev);
+> > > +     /* Barrier needed to synchronize with uvc_video_stop_streaming(). */
+> > > +     smp_store_release(&dev->disconnected, true);
+> > >       kref_put(&dev->ref, uvc_delete);
+> > >  }
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > index 28dde08ec6c5..032b44e45b22 100644
+> > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > @@ -2243,28 +2243,39 @@ int uvc_video_start_streaming(struct uvc_streaming *stream)
+> > >       return ret;
+> > >  }
+> > >
+> > > -void uvc_video_stop_streaming(struct uvc_streaming *stream)
+> > > +static void uvc_video_halt(struct uvc_streaming *stream)
+> > >  {
+> > > -     uvc_video_stop_transfer(stream, 1);
+> > > +     unsigned int epnum;
+> > > +     unsigned int pipe;
+> > > +     unsigned int dir;
+> > >
+> > >       if (stream->intf->num_altsetting > 1) {
+> >
+> > Doesn't this imply the device is using isochronous mode?
+> 
+> I haven't changed the behaviour for halt, it is just that git diff is
+> being a bit too creative here:
+> 
+> Basically it is doing:
+> 
+> void video_halt() {
+>    if (is_isoc()) {
+>      usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+>      return;
+>    }
+>    usb_clear_halt();
+> }
+> 
+> instead of the old:
+> 
+> void video_halt() {
+>    if (is_isoc()) {
+>      usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+>    }  else {
+>       usb_clear_halt();
+>    }
+> }
+> 
+> Thanks!
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 855c4863124b..edec60d39bbf 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -26,6 +26,7 @@ accelaration||acceleration
- accelearion||acceleration
- acceleratoin||acceleration
- accelleration||acceleration
-+accelrometer||accelerometer
- accesing||accessing
- accesnt||accent
- accessable||accessible
-@@ -137,6 +138,7 @@ anniversery||anniversary
- annoucement||announcement
- anomolies||anomalies
- anomoly||anomaly
-+anonynous||anonymous
- anway||anyway
- aplication||application
- appearence||appearance
-@@ -267,6 +269,7 @@ cadidate||candidate
- cahces||caches
- calender||calendar
- calescing||coalescing
-+calibraiton||calibration
- calle||called
- callibration||calibration
- callled||called
-@@ -288,6 +291,7 @@ capabitilies||capabilities
- capablity||capability
- capatibilities||capabilities
- capapbilities||capabilities
-+captuer||capture
- caputure||capture
- carefuly||carefully
- cariage||carriage
-@@ -340,6 +344,7 @@ comminucation||communication
- commited||committed
- commiting||committing
- committ||commit
-+commmand||command
- commnunication||communication
- commoditiy||commodity
- comsume||consume
-@@ -406,6 +411,7 @@ continious||continuous
- continous||continuous
- continously||continuously
- continueing||continuing
-+contiuous||continuous
- contraints||constraints
- contruct||construct
- contol||control
-@@ -757,6 +763,7 @@ hardward||hardware
- havind||having
- heirarchically||hierarchically
- heirarchy||hierarchy
-+heirachy||hierarchy
- helpfull||helpful
- hearbeat||heartbeat
- heterogenous||heterogeneous
-@@ -1199,6 +1206,7 @@ priting||printing
- privilaged||privileged
- privilage||privilege
- priviledge||privilege
-+priviledged||privileged
- priviledges||privileges
- privleges||privileges
- probaly||probably
-@@ -1251,6 +1259,7 @@ purgable||purgeable
- pwoer||power
- queing||queuing
- quering||querying
-+querrying||querying
- queus||queues
- randomally||randomly
- raoming||roaming
-@@ -1324,6 +1333,7 @@ reseting||resetting
- reseved||reserved
- reseverd||reserved
- resizeable||resizable
-+resonable||reasonable
- resotre||restore
- resouce||resource
- resouces||resources
-@@ -1427,6 +1437,7 @@ sliped||slipped
- softwade||software
- softwares||software
- soley||solely
-+soluation||solution
- souce||source
- speach||speech
- specfic||specific
-@@ -1458,6 +1469,7 @@ standart||standard
- standy||standby
- stardard||standard
- staticly||statically
-+statisitcs||statistics
- statuss||status
- stoped||stopped
- stoping||stopping
-@@ -1548,6 +1560,7 @@ threds||threads
- threee||three
- threshhold||threshold
- thresold||threshold
-+throtting||throttling
- throught||through
- tansition||transition
- trackling||tracking
-@@ -1571,6 +1584,7 @@ tranasction||transaction
- tranceiver||transceiver
- tranfer||transfer
- tranmission||transmission
-+tranport||transport
- transcevier||transceiver
- transciever||transceiver
- transferd||transferred
+Oops. I missed the removal of the else branch altogether while reading the
+patch.
+
+Shouldn't you also ensure the disconnect callback won't return until the
+streaming has been stopped here?
+
+> >
+> > >               usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> > > -     } else {
+> > > -             /*
+> > > -              * UVC doesn't specify how to inform a bulk-based device
+> > > -              * when the video stream is stopped. Windows sends a
+> > > -              * CLEAR_FEATURE(HALT) request to the video streaming
+> > > -              * bulk endpoint, mimic the same behaviour.
+> > > -              */
+> > > -             unsigned int epnum = stream->header.bEndpointAddress
+> > > -                                & USB_ENDPOINT_NUMBER_MASK;
+> > > -             unsigned int dir = stream->header.bEndpointAddress
+> > > -                              & USB_ENDPOINT_DIR_MASK;
+> > > -             unsigned int pipe;
+> > > -
+> > > -             pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
+> > > -             usb_clear_halt(stream->dev->udev, pipe);
+> > > +             return;
+> > >       }
+> > >
+> > > +     /*
+> > > +      * UVC doesn't specify how to inform a bulk-based device
+> >
+> > Then this comment doesn't look right. What about the code? This isn't
+> > mentioned in the commit message either.
+> >
+> > > +      * when the video stream is stopped. Windows sends a
+> > > +      * CLEAR_FEATURE(HALT) request to the video streaming
+> > > +      * bulk endpoint, mimic the same behaviour.
+> > > +      */
+> > > +     epnum = stream->header.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
+> > > +     dir = stream->header.bEndpointAddress & USB_ENDPOINT_DIR_MASK;
+> > > +     pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
+> > > +     usb_clear_halt(stream->dev->udev, pipe);
+> > > +}
+> > > +
+> > > +void uvc_video_stop_streaming(struct uvc_streaming *stream)
+> > > +{
+> > > +     uvc_video_stop_transfer(stream, 1);
+> > > +
+> > > +     /*
+> > > +      * Barrier needed to synchronize with uvc_disconnect().
+> > > +      * We cannot call usb_* functions on a disconnected USB device.
+> > > +      */
+> > > +     if (!smp_load_acquire(&stream->dev->disconnected))
+> > > +             uvc_video_halt(stream);
+> > > +
+> > >       uvc_video_clock_cleanup(stream);
+> > >  }
+> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > index 6fb0a78b1b00..4318ce8e31db 100644
+> > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > @@ -559,6 +559,8 @@ struct uvc_device {
+> > >       unsigned int users;
+> > >       atomic_t nmappings;
+> > >
+> > > +     bool disconnected;
+> > > +
+> > >       /* Video control interface */
+> > >  #ifdef CONFIG_MEDIA_CONTROLLER
+> > >       struct media_device mdev;
+
 -- 
-2.39.2
+Kind regards,
 
+Sakari Ailus
