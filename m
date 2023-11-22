@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84D77F4336
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B557F4337
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343738AbjKVKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        id S1343773AbjKVKG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234138AbjKVKGf (ORCPT
+        with ESMTP id S235183AbjKVKG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:06:35 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BD183
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:29 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a002562bd8bso132832966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:29 -0800 (PST)
+        Wed, 22 Nov 2023 05:06:57 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB8883
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:53 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00cbb83c82so338562666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700647588; x=1701252388; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700647611; x=1701252411; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wqLfhkR8T6K8pQkiAI2WVwlKUEvVRxTxhEkDVcSmxA4=;
-        b=sofV+i/tnrM72qpQ6hgYw5BcAeViygt/ypHd+gl7qcX/DALDq88bulJA2Q5xDfNgYF
-         TpYtyuCC0hIROpj0XfUnURaumAubWhMCh28RcRyKAsPa43YdJr7NfW1pKl27EH1/LLDS
-         pLnv6l79enZLH8IsNxvLNPSYrbjBglSQH81KOkEByOaFsL+ZFQk38Zwx6ULf4vvHZUPz
-         9/88L0ZY4aLm/tDOO1JbaB+hRS/XTRpOzyzDpjty7ThwWQQ6Aqcrm5Dygo4Yi7mdEmQ5
-         cNQ/KOEg8fi3o1haTE+ImZfoPXwZ6BVR83TMAk1KiesWwDJXxkMiMWGPVI2uXbJYwJ0p
-         wNBg==
+        bh=RDybF7H85ktgdLWOM5SITKQqmOi7Rp9o86frBs4BerY=;
+        b=gWrQfrrYUstCsjizrUHYQo+35f57b7bGDATnWyXmOyl+IHEpcVPWJ2id2qDoC9YQFv
+         Kbcd5aBvbatJ2DiB797lJjEgBucjSMuZd/F9cOTvxf1tekoJl6JL+2hWsYszC0cPSRpH
+         CgvXooBdb/PAiszSWxmNr+mJgDiVqZ64lKKQ9191dqfWwCO4xwX3OrAyg9GKAlW0vmw1
+         w3JJIE6m7uISHbKF8BAXmqhIzg/TUPkFAW2oDCU99EE1rXeHaixfYTpbtYsOf5ugV9uL
+         GZyjfCWsgl0cLm33WKWn4vjCl+LqXSw3NrDtxUiQ2cqluQA6fUZTWygjNYMGv1aCMVE3
+         QRkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700647588; x=1701252388;
+        d=1e100.net; s=20230601; t=1700647611; x=1701252411;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wqLfhkR8T6K8pQkiAI2WVwlKUEvVRxTxhEkDVcSmxA4=;
-        b=lB3HtzRQJzsGMuHpk87t8JB6N9meQDJnCVzWXvQWbjm2Bk0wxjdZq7IW1PVbDAG11k
-         eq9K7keuJSxeMqTlmnv/8sDb/FutDfZSf/bvXIYGL0jJhgehgHwRZDhH8guVMkj4fT3s
-         WF/vIAwoqtXwYcDtHA6YZeH/08M+tyyXi06gPPywO1cVIPZsvm5ZtaWB/6vHKselSSWr
-         6gvxvei5sQ88OkWIoK4PGx8VlZZsnddvVBg5sVsSkWooX+OlPFwa5YigZzik6ymVtDn3
-         ElnrRlgcjE24VLX3hHpbFVQvPbtuBIwvc/bizL9cRXRu6qoGJ3LC3jDExvqcJtXyioPA
-         GgNA==
-X-Gm-Message-State: AOJu0YwOSVTwIlT2pYLPMh3iL+XzO5noF7tV3XQku/Z2+wwVe+ebTTuY
-        eujWPaoJMR0IQdk6SG1YSqoHSg==
-X-Google-Smtp-Source: AGHT+IHXwtCZgUGaDEGHI5VvpONRm4aT5QWp/zsrgChgZ/oQIhX5QWV7xMV7DgHqP8VSjlfdpWtSqw==
-X-Received: by 2002:a17:906:51d5:b0:9ee:a767:12e7 with SMTP id v21-20020a17090651d500b009eea76712e7mr1338076ejk.6.1700647588221;
-        Wed, 22 Nov 2023 02:06:28 -0800 (PST)
+        bh=RDybF7H85ktgdLWOM5SITKQqmOi7Rp9o86frBs4BerY=;
+        b=sJ6vnd23eLEqkCYoRqLTaiNDXrctBC42w5cN4eS0cPc1w5jsCY/wX+i6hocUhWBWgB
+         Z0YRSucD3SsewYLW7683o1es98I4u9Pfxs3LuErIlx95LU83WvLOjFGlPjyJbCoqIUBO
+         CsQ64AgNiEjx/DmQcSwTBv3kNuIE5qBK87gyZAQ9G36hZ7X/0jVSveTVLpS1cXPrsReR
+         KOxKGp8yuccddui8ZwVOJzEkkR+IxqztRmGkCsCvgSuijsd3+GlSxCXu3b6qKHhyq1oP
+         xi7EzAepPAb/j/OqokNdEm6TcvFM3Pnf5MHGSms/+0mbMdMPMiekvGzausmeB1mISR8K
+         9Q0Q==
+X-Gm-Message-State: AOJu0YwDGBV7u3eyrcXI7mauJJ/i4ErOqb/ZLckQbRddOmAk84gpPVJB
+        YedTDxs0If8KQsRxToKi+cGEuQ==
+X-Google-Smtp-Source: AGHT+IHMv1B21HvOTwEFuZG9k7XAkrg963vXhlx6EiG6C4hJ9QYcZlmYRx+osiWw5zqMy2htGLdygw==
+X-Received: by 2002:a17:906:5349:b0:a04:838d:f352 with SMTP id j9-20020a170906534900b00a04838df352mr987304ejo.23.1700647611672;
+        Wed, 22 Nov 2023 02:06:51 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ka13-20020a170907990d00b009a9fbeb15f2sm6400135ejc.62.2023.11.22.02.06.26
+        by smtp.gmail.com with ESMTPSA id ka13-20020a170907990d00b009a9fbeb15f2sm6400135ejc.62.2023.11.22.02.06.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 02:06:27 -0800 (PST)
-Message-ID: <891349b7-f023-4c77-97fc-33cfd48eda23@linaro.org>
-Date:   Wed, 22 Nov 2023 11:06:26 +0100
+        Wed, 22 Nov 2023 02:06:51 -0800 (PST)
+Message-ID: <71adf98a-1aaa-430f-96fc-be170ceacf78@linaro.org>
+Date:   Wed, 22 Nov 2023 11:06:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: soc: xilinx: Move xilinx.yaml from
- arm to soc
+Subject: Re: [PATCH v2 2/2] dt-bindings: soc: Add new board description for
+ MicroBlaze V
 Content-Language: en-US
 To:     Michal Simek <michal.simek@amd.com>, conor@kernel.org,
         linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com, robh@kernel.org
 Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 References: <ef58475a717c62bc86aeea5148d5b88cdc0cc106.1700644418.git.michal.simek@amd.com>
+ <e7af81b1ef3f6b7a07f4f0691f5140156477e87e.1700644418.git.michal.simek@amd.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,7 +111,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ef58475a717c62bc86aeea5148d5b88cdc0cc106.1700644418.git.michal.simek@amd.com>
+In-Reply-To: <e7af81b1ef3f6b7a07f4f0691f5140156477e87e.1700644418.git.michal.simek@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -127,22 +125,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 22/11/2023 10:13, Michal Simek wrote:
-> All Xilinx boards can hosts also soft core CPUs like MicroBlaze or
-> MicroBlaze V (RISC-V ISA) that's why move boar description from arm folder
+> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
+> It is hardware compatible with classic MicroBlaze processor. Processor can
+> be used with standard AMD/Xilinx IPs including interrupt controller and
+> timer.
+> 
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+> 
+> Changes in v2:
+> - Put MicroBlaze V description to xilinx.yaml
+> - Add qemu target platform as platform used for testing.
 
-Boards are cute, but boars are cutter :)
-
-s/boar/boards/
-
-> to soc folder.
-> Similar chagne was done for Renesas by commit c27ce08b806d ("dt-bindings:
-> soc: renesas: Move renesas.yaml from arm to soc").
-
-The reason for Renesas was that otherwise same compatible would be in
-two places: arm and riscv schema.
-
-Are you going to have the same case?
-
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
