@@ -2,66 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1037F3EF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7D37F3EFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbjKVHi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:38:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
+        id S234768AbjKVHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbjKVHiv (ORCPT
+        with ESMTP id S234933AbjKVHjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:38:51 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF8BB2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:38:47 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c25dfc0aeaso1147894a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:38:47 -0800 (PST)
+        Wed, 22 Nov 2023 02:39:21 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A153D6E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:39:10 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so28014425e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:39:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700638727; x=1701243527; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FHv3v4zMtadRDYgbIgBMHVtVwmSmXQEpws2g8Cp+jAE=;
-        b=usR0qey9YMHUOEFeV8kD3F3kWcYfmEnuZL9XWKSHT3u4nF049634bSyUlbtCQ1V3pF
-         iktw9JctQygcp3cJcDF8Efx/bCuwkL1PdMn0VyC86Vk+N9SSjsuPHKcYOjTCdIyXmubI
-         3PXPgNdh9ufyQlsmkS3CyDFTT6PUMYg+xnLkKJkI21jrGGAe69Jq/BTLHm/W3YdYVQc3
-         axO+QNSCSSBdBrqkSnLlLMAeX6712A5PmNup7X2e75w0aDf+3Edj9HIaOpnRMRXXP18/
-         CpEvM/gjt03M9R9erk7iKM0+kUIIR4zK3uMi46p+lRhMdiMzYf44SM5hcr/itfAlccQq
-         PTAw==
+        d=linaro.org; s=google; t=1700638749; x=1701243549; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MBetON7LmVmV+dFyLn9yaZBr84tIkDPKg9QMpcVkFFY=;
+        b=yTZNoA8tyCTBvtcr/Wr7lMCqMWZNORLBIeKGpsuO+XqXko78z1zqh1hc3azBp8YEgF
+         Csz7CgSAWJbHQ1VuQRBR6P6h0AmVCatMLpr0z4JGKE9yIY/G8BsxZksO6avZYgdmguUh
+         qmkzF4KYoe5YcZePtdFqGh4rPKB1oj8XQAxvX0KLEJofgNnSi6fx92vtCPpPC+/twH7J
+         dEbynY9gvXBjxHeMp6Xl9xYSK0ajIwa4PPZdJzMY3+XiHamDoEeBWRH51gS0y4omEljb
+         wIipDbjekml820/qfqqronMfhF8Ap0HeQpDSvbzaIlhngMygZ+Yxp/Ho5LWC9SMpdqk9
+         xOyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700638727; x=1701243527;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FHv3v4zMtadRDYgbIgBMHVtVwmSmXQEpws2g8Cp+jAE=;
-        b=tv+M/dFac8Y8Iec6vbogKFlnZARtRkTM9xS60yub1d6etZx1N2maiLFwZzkkLafLWt
-         a+u8t46EOeDJwemmHUKaUFvJvlDeYwwHk3K8IXxqDuiRzlCnJN3Q3DxQG3ct8fvGtHDH
-         f+VXiaKk2euhvi2Oxr/lgDlJClTxiNhZ94urLXAEmKKj3Y+bYH0UvabfCfHgwyvM2cWo
-         HZ8Oot319Q/81QUrLSXTlVYrW7lusumf/Rt7YX+YhiJe6EM81ehcAbrmPpQC60Uf+e16
-         vDgana/7xR120xmDy+ngXv89O9RbZ0zXp4H/8zI+4jVPQ8EuYqmg98213HMXhHNi0EBx
-         MmBw==
-X-Gm-Message-State: AOJu0Yzfw/TWH581wW/eUthWC6sRUaalHbSx9lZAKpWrLsWs2UVgh08U
-        9YGV8H58PhGZTsxvXJSyIS3NuUMv69rTwspdHKJJbA==
-X-Google-Smtp-Source: AGHT+IFi7IIz+aBSKpx/8e0LzZWvWK6f9EazpqXLPI5zDQ51dr+gRMbi4GBs61tW5z4WcQnHxxCHcyBW7etZgF3ntHE=
-X-Received: by 2002:a05:6a20:428a:b0:187:5c6a:9f17 with SMTP id
- o10-20020a056a20428a00b001875c6a9f17mr1536702pzj.62.1700638726692; Tue, 21
- Nov 2023 23:38:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700638749; x=1701243549;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBetON7LmVmV+dFyLn9yaZBr84tIkDPKg9QMpcVkFFY=;
+        b=NxNthcB3fYEQfJEQOk7pMQquvxmTVscri63ohH2yK5lHYKgZEdCdZ3iEjiLIkDg85C
+         EpvSMnvz3vYvNlwgh2uiwk8C//+CKU25fRvWjvcWoUh4GsUuRtFMtraa/RIIF/45LdAc
+         dJJTgA89NPZgR8SAbVJgvS4rMV1sf4b45Cox1Q2utmQz5Gh/AZ2ThMg2k8Y8ZXiL6T98
+         flxLToua5+TcCpScqjwCQslkjOKjmmldghOjq8wf2wB8QeBRNsbZLFRiJ+fwxWtkNvDC
+         gxlGHeS+cI8kRuy+G1OcLKcVRHDDn6gbU/B/Upk2q8XOX+/c1qXa2FDd0mqJjT0JEyIN
+         NhbA==
+X-Gm-Message-State: AOJu0Yy9c0Ue1QObwws66qLIvPBoFqi/0uAuNMHsuEqWVdyMNEqpvAad
+        CRFC2wlkCqB+0mpU3288AWeioQ==
+X-Google-Smtp-Source: AGHT+IHE+FWVdKuzvDqfGiWF3sTwN9+QgCPCFmpg+kym1BB8RcyIyzqp7R/zVjIB/Lyx9uPBGjBgCA==
+X-Received: by 2002:a7b:c015:0:b0:40a:5c71:2c3e with SMTP id c21-20020a7bc015000000b0040a5c712c3emr1185090wmb.19.1700638749363;
+        Tue, 21 Nov 2023 23:39:09 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id o2-20020a5d4a82000000b003196b1bb528sm16347474wrq.64.2023.11.21.23.39.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 23:39:08 -0800 (PST)
+Message-ID: <ae2f2dc9-4c08-4db8-bfae-80608723d8c3@linaro.org>
+Date:   Wed, 22 Nov 2023 08:39:07 +0100
 MIME-Version: 1.0
-References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
- <20231103131821.1176294-2-vincent.guittot@linaro.org> <20231114205422.k5m6y4m5vnw7dvzj@airbuntu>
-In-Reply-To: <20231114205422.k5m6y4m5vnw7dvzj@airbuntu>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 22 Nov 2023 08:38:35 +0100
-Message-ID: <CAKfTPtDMEes6V2xRHavAwWrVuiZBdFAsaaxv9=-psAZCTPQWKg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] sched/schedutil: Rework performance estimation
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: ufs: Add msi-parent for UFS MCQ
+Content-Language: en-US
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>, quic_asutoshd@quicinc.com,
+        quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
+        stanley.chu@mediatek.com, adrian.hunter@intel.com,
+        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com
+Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -72,334 +130,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 at 17:43, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 11/03/23 14:18, Vincent Guittot wrote:
-> > @@ -7410,45 +7405,41 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> >        * update_irq_load_avg().
-> >        */
-> >       irq = cpu_util_irq(rq);
-> > -     if (unlikely(irq >= max))
-> > -             return max;
-> > +     if (unlikely(irq >= scale)) {
-> > +             if (min)
-> > +                     *min = scale;
-> > +             if (max)
-> > +                     *max = scale;
-> > +             return scale;
-> > +     }
-> > +
-> > +     /*
-> > +      * The minimum utilization returns the highest level between:
-> > +      * - the computed DL bandwidth needed with the irq pressure which
-> > +      *   steals time to the deadline task.
-> > +      * - The minimum bandwidth requirement for CFS and/or RT.
->
-> s/bandwidth for CFS/performance for CFS/?
->
-> I've seen a lot of confusion on what both means. I think you've used bandwidth
-> to refer to performance but most of us look at bandwidth as actual
-> cpu.share/time actually consumed by the task. I think it's important to keep
-> the two concept distinguished and use common terminology as it has been a point
-> of contention in various discussions on and off the list.
->
-> > +      */
-> > +     if (min)
-> > +             *min = max(irq + cpu_bw_dl(rq), uclamp_rq_get(rq, UCLAMP_MIN));
-> >
-> >       /*
-> >        * Because the time spend on RT/DL tasks is visible as 'lost' time to
-> >        * CFS tasks and we use the same metric to track the effective
-> >        * utilization (PELT windows are synchronized) we can directly add them
-> >        * to obtain the CPU's actual utilization.
-> > -      *
-> > -      * CFS and RT utilization can be boosted or capped, depending on
-> > -      * utilization clamp constraints requested by currently RUNNABLE
-> > -      * tasks.
-> > -      * When there are no CFS RUNNABLE tasks, clamps are released and
-> > -      * frequency will be gracefully reduced with the utilization decay.
-> >        */
-> >       util = util_cfs + cpu_util_rt(rq);
-> > -     if (type == FREQUENCY_UTIL)
-> > -             util = uclamp_rq_util_with(rq, util, p);
-> > -
-> > -     dl_util = cpu_util_dl(rq);
-> > +     util += cpu_util_dl(rq);
-> >
-> >       /*
-> > -      * For frequency selection we do not make cpu_util_dl() a permanent part
-> > -      * of this sum because we want to use cpu_bw_dl() later on, but we need
-> > -      * to check if the CFS+RT+DL sum is saturated (ie. no idle time) such
-> > -      * that we select f_max when there is no idle time.
-> > -      *
-> > -      * NOTE: numerical errors or stop class might cause us to not quite hit
-> > -      * saturation when we should -- something for later.
-> > +      * The maximum hint is a soft bandwidth requirement which can be lower
-> > +      * than the actual utilization because of uclamp_max requirements
-> >        */
-> > -     if (util + dl_util >= max)
-> > -             return max;
-> > +     if (max)
-> > +             *max = min(scale, uclamp_rq_get(rq, UCLAMP_MAX));
-> >
-> > -     /*
-> > -      * OTOH, for energy computation we need the estimated running time, so
-> > -      * include util_dl and ignore dl_bw.
-> > -      */
-> > -     if (type == ENERGY_UTIL)
-> > -             util += dl_util;
-> > +     if (util >= scale)
-> > +             return scale;
-> >
-> >       /*
-> >        * There is still idle time; further improve the number by using the
-> > @@ -7459,28 +7450,15 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> >        *   U' = irq + --------- * U
-> >        *                 max
-> >        */
-> > -     util = scale_irq_capacity(util, irq, max);
-> > +     util = scale_irq_capacity(util, irq, scale);
-> >       util += irq;
-> >
-> > -     /*
-> > -      * Bandwidth required by DEADLINE must always be granted while, for
-> > -      * FAIR and RT, we use blocked utilization of IDLE CPUs as a mechanism
-> > -      * to gracefully reduce the frequency when no tasks show up for longer
-> > -      * periods of time.
-> > -      *
-> > -      * Ideally we would like to set bw_dl as min/guaranteed freq and util +
-> > -      * bw_dl as requested freq. However, cpufreq is not yet ready for such
-> > -      * an interface. So, we only do the latter for now.
-> > -      */
-> > -     if (type == FREQUENCY_UTIL)
-> > -             util += cpu_bw_dl(rq);
-> > -
-> > -     return min(max, util);
-> > +     return min(scale, util);
-> >  }
-> >
-> >  unsigned long sched_cpu_util(int cpu)
-> >  {
-> > -     return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL, NULL);
-> > +     return effective_cpu_util(cpu, cpu_util_cfs(cpu), NULL, NULL);
-> >  }
-> >  #endif /* CONFIG_SMP */
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 458d359f5991..38accd8c854b 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -47,7 +47,7 @@ struct sugov_cpu {
-> >       u64                     last_update;
-> >
-> >       unsigned long           util;
-> > -     unsigned long           bw_dl;
-> > +     unsigned long           bw_min;
-> >
-> >       /* The field below is for single-CPU policies only: */
-> >  #ifdef CONFIG_NO_HZ_COMMON
-> > @@ -143,7 +143,6 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> >       unsigned int freq = arch_scale_freq_invariant() ?
-> >                               policy->cpuinfo.max_freq : policy->cur;
-> >
-> > -     util = map_util_perf(util);
-> >       freq = map_util_freq(util, freq, max);
-> >
-> >       if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> > @@ -153,14 +152,35 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> >       return cpufreq_driver_resolve_freq(policy, freq);
-> >  }
-> >
-> > +unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
-> > +                              unsigned long min,
-> > +                              unsigned long max)
-> > +{
-> > +     struct rq *rq = cpu_rq(cpu);
-> > +
-> > +     if (rt_rq_is_runnable(&rq->rt))
-> > +             return max;
->
-> I think this breaks old behavior. When uclamp_is_used() the frequency of the RT
-> task is determined by uclamp_min; but you revert this to the old behavior where
-> we always return max, no? You should check for !uclamp_is_used(); otherwise let
-> the rest of the function exec as usual.
+On 22/11/2023 06:06, Ziqi Chen wrote:
+> The Message Signaled Interrupts (MSI) support has been
+> introduced in UFSHCI version 4.0 (JESD223E). The MSI is
+> the recommended interrupt approach for MCQ. If choose to
+> use MSI, In UFS DT, we need to provide msi-parent property
+> that point to the hardware entity which serves as the MSI
+> controller for this UFS controller.
 
-Yes, I made a shortcut assuming that max would be adjusted to the max
-allowed freq for RT task whereas it's the min freq that is adjusted by
-uclamp and that should also be adjusted without uclamp. Let me fix
-that in effective_cpu_util and remove this early return from
-sugov_effective_cpu_perf()
+Please wrap commit message according to Linux coding style / submission
+process (neither too early nor over the limit):
+https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
 
->
-> > +
-> > +     /* Add dvfs headroom to actual utilization */
-> > +     actual = map_util_perf(actual);
->
-> Can we rename this function please? It is not mapping anything, but applying
-> a dvfs headroom (I suggest apply_dvfs_headroom()). Which would make the comment
-> also unnecessary ;-)
 
-I didn't want to add unnecessary renaming which often confuses
-reviewers so I kept  the current function name. But this can the be
-rename in a follow up patch
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
->
-> > +     /* Actually we don't need to target the max performance */
-> > +     if (actual < max)
-> > +             max = actual;
-> > +
-> > +     /*
-> > +      * Ensure at least minimum performance while providing more compute
-> > +      * capacity when possible.
-> > +      */
-> > +     return max(min, max);
-> > +}
-> > +
-> >  static void sugov_get_util(struct sugov_cpu *sg_cpu)
-> >  {
-> > -     unsigned long util = cpu_util_cfs_boost(sg_cpu->cpu);
-> > -     struct rq *rq = cpu_rq(sg_cpu->cpu);
-> > +     unsigned long min, max, util = cpu_util_cfs_boost(sg_cpu->cpu);
-> >
-> > -     sg_cpu->bw_dl = cpu_bw_dl(rq);
-> > -     sg_cpu->util = effective_cpu_util(sg_cpu->cpu, util,
-> > -                                       FREQUENCY_UTIL, NULL);
-> > +     util = effective_cpu_util(sg_cpu->cpu, util, &min, &max);
-> > +     sg_cpu->bw_min = map_util_perf(min);
->
-> Hmm. I don't think we need to apply_dvfs_headroom() to min here. What's the
-> rationale to give headroom for min perf requirement? I think the headroom is
-> only required for actual util.
+Best regards,
+Krzysztof
 
-This headroom only applies for bw_min that is used with
-cpufreq_driver_adjust_perf(). Currently it only takes cpu_bw_dl()
-which seems too low because IRQ can preempt DL. So I added the average
-irq utilization into bw_min which is only an estimate and needs some
-headroom. That being said I can probably stay with current behavior
-for now and remove headroom
-
->
-> And is it right to mix irq and uclamp_min with bw_min which is for DL? We might
-
-cpu_bw_dl() is not the actual utilization by DL task but the computed
-bandwidth which can be seen as min performance level
-
-> be mixing things up here. If not, I think we need a comment on how bw_min now
-> should be looked at/treated.
->
->
-> Thanks!
->
-> --
-> Qais Yousef
->
-> > +     sg_cpu->util = sugov_effective_cpu_perf(sg_cpu->cpu, util, min, max);
-> >  }
-> >
-> >  /**
-> > @@ -306,7 +326,7 @@ static inline bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu) { return false; }
-> >   */
-> >  static inline void ignore_dl_rate_limit(struct sugov_cpu *sg_cpu)
-> >  {
-> > -     if (cpu_bw_dl(cpu_rq(sg_cpu->cpu)) > sg_cpu->bw_dl)
-> > +     if (cpu_bw_dl(cpu_rq(sg_cpu->cpu)) > sg_cpu->bw_min)
-> >               sg_cpu->sg_policy->limits_changed = true;
-> >  }
-> >
-> > @@ -407,8 +427,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
-> >           sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-> >               sg_cpu->util = prev_util;
-> >
-> > -     cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
-> > -                                map_util_perf(sg_cpu->util), max_cap);
-> > +     cpufreq_driver_adjust_perf(sg_cpu->cpu, sg_cpu->bw_min,
-> > +                                sg_cpu->util, max_cap);
-> >
-> >       sg_cpu->sg_policy->last_freq_update_time = time;
-> >  }
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 8767988242ee..ed64f2eaaa2a 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7671,7 +7671,7 @@ static inline void eenv_pd_busy_time(struct energy_env *eenv,
-> >       for_each_cpu(cpu, pd_cpus) {
-> >               unsigned long util = cpu_util(cpu, p, -1, 0);
-> >
-> > -             busy_time += effective_cpu_util(cpu, util, ENERGY_UTIL, NULL);
-> > +             busy_time += effective_cpu_util(cpu, util, NULL, NULL);
-> >       }
-> >
-> >       eenv->pd_busy_time = min(eenv->pd_cap, busy_time);
-> > @@ -7694,7 +7694,7 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
-> >       for_each_cpu(cpu, pd_cpus) {
-> >               struct task_struct *tsk = (cpu == dst_cpu) ? p : NULL;
-> >               unsigned long util = cpu_util(cpu, p, dst_cpu, 1);
-> > -             unsigned long eff_util;
-> > +             unsigned long eff_util, min, max;
-> >
-> >               /*
-> >                * Performance domain frequency: utilization clamping
-> > @@ -7703,7 +7703,23 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
-> >                * NOTE: in case RT tasks are running, by default the
-> >                * FREQUENCY_UTIL's utilization can be max OPP.
-> >                */
-> > -             eff_util = effective_cpu_util(cpu, util, FREQUENCY_UTIL, tsk);
-> > +             eff_util = effective_cpu_util(cpu, util, &min, &max);
-> > +
-> > +             /* Task's uclamp can modify min and max value */
-> > +             if (tsk && uclamp_is_used()) {
-> > +                     min = max(min, uclamp_eff_value(p, UCLAMP_MIN));
-> > +
-> > +                     /*
-> > +                      * If there is no active max uclamp constraint,
-> > +                      * directly use task's one otherwise keep max
-> > +                      */
-> > +                     if (uclamp_rq_is_idle(cpu_rq(cpu)))
-> > +                             max = uclamp_eff_value(p, UCLAMP_MAX);
-> > +                     else
-> > +                             max = max(max, uclamp_eff_value(p, UCLAMP_MAX));
-> > +             }
-> > +
-> > +             eff_util = sugov_effective_cpu_perf(cpu, eff_util, min, max);
-> >               max_util = max(max_util, eff_util);
-> >       }
-> >
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 2e5a95486a42..302b451a3fd8 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -2961,24 +2961,14 @@ static inline void cpufreq_update_util(struct rq *rq, unsigned int flags) {}
-> >  #endif
-> >
-> >  #ifdef CONFIG_SMP
-> > -/**
-> > - * enum cpu_util_type - CPU utilization type
-> > - * @FREQUENCY_UTIL:  Utilization used to select frequency
-> > - * @ENERGY_UTIL:     Utilization used during energy calculation
-> > - *
-> > - * The utilization signals of all scheduling classes (CFS/RT/DL) and IRQ time
-> > - * need to be aggregated differently depending on the usage made of them. This
-> > - * enum is used within effective_cpu_util() to differentiate the types of
-> > - * utilization expected by the callers, and adjust the aggregation accordingly.
-> > - */
-> > -enum cpu_util_type {
-> > -     FREQUENCY_UTIL,
-> > -     ENERGY_UTIL,
-> > -};
-> > -
-> >  unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> > -                              enum cpu_util_type type,
-> > -                              struct task_struct *p);
-> > +                              unsigned long *min,
-> > +                              unsigned long *max);
-> > +
-> > +unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
-> > +                              unsigned long min,
-> > +                              unsigned long max);
-> > +
-> >
-> >  /*
-> >   * Verify the fitness of task @p to run on @cpu taking into account the
-> > --
-> > 2.34.1
-> >
