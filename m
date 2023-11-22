@@ -2,48 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8398F7F4187
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCF57F418D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbjKVJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        id S235156AbjKVJ0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJZN (ORCPT
+        with ESMTP id S230154AbjKVJ0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:25:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A399D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:25:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F8E5C433C8;
-        Wed, 22 Nov 2023 09:25:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700645109;
-        bh=BEMLKuoWZV+6S1km1/qTddZM9UR4ULUGcsQA6SVus44=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=q8Cw3r7eA34IHJpwsZqG4hWY+IdkvF0IW6UaRzG2aOIBJtKQgOd0Fz0R/RN8OunoP
-         3qZAW/lVnvLig36NXa2WN5Klx0ZN4oJ+rqNmRrdCOV2ijgzK7odBf4neJXVbGQX/1v
-         ZK4xXMFarMx3elX5SmhS8k7SvSpY07zW+zGH8MqMKBbw5l3BbJaftEIZLghgn1/xKe
-         p6o+FrwdQ8qis8hBpFEhwP5GKx3B6ooNVLbHvePEdwC+sYJgyJ0/NLnhZ8/9NIz0o1
-         rWWfYniq88AVE4O/ZDky0zV09C65rCkmTvXHaDyjIFxNVPwUU3M5YnhCOsApzFnny/
-         NxujBrKVdTDHA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231121230900.3754785-1-hugo@hugovil.com>
-References: <20231121230900.3754785-1-hugo@hugovil.com>
-Subject: Re: [PATCH] regmap: fix regmap_noinc_write() description
-Message-Id: <170064510867.2074624.10676780350384273282.b4-ty@kernel.org>
-Date:   Wed, 22 Nov 2023 09:25:08 +0000
+        Wed, 22 Nov 2023 04:26:00 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1399E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:25:55 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5jUS-0006KM-9q; Wed, 22 Nov 2023 10:25:48 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5jUQ-00AmPZ-Sz; Wed, 22 Nov 2023 10:25:46 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5jUQ-00C9Ir-2f;
+        Wed, 22 Nov 2023 10:25:46 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com
+Subject: [PATCH net-next v5 0/2] Fine-Tune Flow Control and Speed Configurations in Microchip KSZ8xxx DSA Driver
+Date:   Wed, 22 Nov 2023 10:25:42 +0100
+Message-Id: <20231122092545.2895635-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,36 +62,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 18:09:00 -0500, Hugo Villeneuve wrote:
-> Change "Write data from" -> "Write data to".
-> 
-> 
+change v5:
+- add Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+- use regs[S_BROADCAST_CTRL] instead of REG_SW_CTRL_4 as requested.
+- s/synchronous/symmetric/
+- make phylink_mac_link_up() not optional, as requested 
 
-Applied to
+change v4:
+- instead of downstream/upstream use CPU-port and PHY-port
+- adjust comments
+- minor fixes
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+changes v3:
+- remove half duplex flow control configuration
+- add comments
+- s/stram/stream
 
-Thanks!
+changes v2:
+- split the patch to upstream and downstream part
+- add comments
+- fix downstream register offset
+- fix CPU configuration
 
-[1/1] regmap: fix regmap_noinc_write() description
-      commit: 1957b92aaff0fa71621e61bbd0257b9c3bb9baf2
+This patch set focuses on enhancing the configurability of flow
+control, speed, and duplex settings in the Microchip KSZ8xxx DSA driver.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+The first patch allows more granular control over the CPU port's flow
+control, speed, and duplex settings. The second patch introduces a
+method for port configurations for port with integrated PHYs, primarily
+concerning flow control based on duplex mode.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Oleksij Rempel (3):
+  net: dsa: microchip: ksz8: Make flow control, speed, and duplex on CPU
+    port configurable
+  net: dsa: microchip: ksz8: Add function to configure ports with
+    integrated PHYs
+  net: dsa: microchip: make phylink_mac_link_up() not optional
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ drivers/net/dsa/microchip/ksz8.h       |   4 +
+ drivers/net/dsa/microchip/ksz8795.c    | 133 ++++++++++++++++++++++++-
+ drivers/net/dsa/microchip/ksz_common.c |   7 +-
+ 3 files changed, 138 insertions(+), 6 deletions(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.39.2
 
