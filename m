@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921ED7F41CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21997F41D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343510AbjKVJii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S1343565AbjKVJmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbjKVJih (ORCPT
+        with ESMTP id S231405AbjKVJmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:38:37 -0500
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1391183
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:38:33 -0800 (PST)
-Message-ID: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700645911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hzQTsEYOMm4An3het2XGLy3/nW2/MSOzvCz8NWvRraU=;
-        b=gENINQ8D2HHl+YbB5l3Lhsql8T2XGT6IAOflzD6Ia6CIkZjbuFWGyp8zNJ5jEgQZeGszrA
-        vHmtt3dZdiuT83pKrz220NM+97JIGMnfllW/viSxKcyLZdBT7+xrWV6MLnEgez0v1Xr9el
-        e2qhBZE1nE2FWIH01b8P5SEx6uaZU9g=
-Date:   Wed, 22 Nov 2023 17:38:25 +0800
+        Wed, 22 Nov 2023 04:42:09 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0DB10C;
+        Wed, 22 Nov 2023 01:42:05 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5a9bc2ec556so4246358a12.0;
+        Wed, 22 Nov 2023 01:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700646125; x=1701250925; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=abM4W7xPRLNxSr6XVpDl8XekNAlf56sZOpqa2J1fPeA=;
+        b=PZyJh801bN8aZubpXbYXUNIAKBkJDSc0EqwLd0cGoLT19sHEPEU1Fk2ubJzYHY268x
+         R3mzqkuwj+Ov5jsmagT7ySIuRfpmx0wJ9n3jpc+TppUwLkOrXV8nrF77/rPLyaW9hWLb
+         nX9k4UGIyECjp2axANWstw9xvYkFQs9H5GSRzldExmQ648gx9fLDVOdEi2svkuJDgAOu
+         ST7a+v8qUt86O8hSuCi5YoZTkQvYc/xrDJEWAeGJa2wVPNj3E3meID95VVPZTJlZKf1+
+         /a97whNOeB2jif//wB3rm31DrtZ6qViU87simbPnvnzNBAHdwFR++/CKBWXqVxumQWQi
+         pZRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700646125; x=1701250925;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=abM4W7xPRLNxSr6XVpDl8XekNAlf56sZOpqa2J1fPeA=;
+        b=afMsjM9I/Z/GMKW8VigBiURuRTohZDmL48eZk3qqAQqo0IVcL/EjbehcaenU22Cqwf
+         TcJ6suCKSjAkPqBMIc6SbwG87nEjfMmdn9Y/Gv+Ko3Wj57BAisoXDTeDpG0AqPD3lGvu
+         HmqOc5fG4362jc1b4LRLIqfonvne+p4hwkTpYck3V4b0xWlt6IRZ79Kp9PVFvakucuE4
+         RNU39rXMwuxbj7p9aSIrKRmGMNR8V+5SilAFOPZkJdAehzRaF6X2cWOfCGbcrH9o3jJZ
+         JPdwdraPuSP8k/zvC2akaC/+ero0Dzw2mU7zh1cDtqlLbhC2bTnU99Oy9bTkAaEcEm3N
+         49CA==
+X-Gm-Message-State: AOJu0YzIYog+ryWntC4nwnlxgDcT7oK+vP8L/N71dHtciPQpz1A26azf
+        yNwjsEDeNpYzpgyGRlRfLUg=
+X-Google-Smtp-Source: AGHT+IHqeWNO23DIW2lYuAdRhp6TKZ+eKAtoCVKFyJQdL7W+3OHe2cC/WMjkijKCBJRvRfwDqiTwfA==
+X-Received: by 2002:a05:6a20:2c91:b0:187:ce9f:e198 with SMTP id g17-20020a056a202c9100b00187ce9fe198mr1422428pzj.5.1700646124816;
+        Wed, 22 Nov 2023 01:42:04 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id b14-20020a17090a488e00b002851466f471sm937659pjh.31.2023.11.22.01.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 01:42:03 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 5B10110210547; Wed, 22 Nov 2023 16:42:00 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Staging Drivers <linux-staging@lists.linux.dev>,
+        Linux Kernel Janitors <kernel-janitors@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <error27@gmail.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Bruno Moreira-Guedes <codeagain@codeagain.dev>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH 0/2] MAINTAINERS update for VME subsystems
+Date:   Wed, 22 Nov 2023 16:41:54 +0700
+Message-ID: <20231122094156.30642-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-To:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
-Cc:     jack@suse.cz, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Hellwig <hch@lst.de>, shr@devkernel.io,
-        neilb@suse.de, Michal Hocko <mhocko@suse.com>
-Subject: Question: memcg dirty throttle caused by low per-memcg dirty thresh
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=856; i=bagasdotme@gmail.com; h=from:subject; bh=2Jh5t3H6agB2YlqKVyZOWg3kjv4ysogPOLg7wiXeDUc=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKmxpx/vc4r/zffF9Mi7w+4/1SZPCBAQnq/Vtqp14lyV5 bFTuKZFdpSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BWAi5/8w/Gabr/jL4GbTtDhl YRXmEI4lp0RnbOp+u2GKcONyFy1udTtGhsklKo7i22cs5VrgefKDJOsLZtZZd6unf5z19qJxUY2 TMj8A
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+Since Martyn's last VME subsystem review [1], VME maintainers are inactive
+with respect to the subsystem. While Martyn is now working for Collabora,
+Manohar is AFAIK MIA (his last email about 9 years ago).
 
-Sorry to bother you, we encountered a problem related to the memcg dirty
-throttle after migrating from cgroup v1 to v2, so want to ask for some
-comments or suggestions.
+Update MAINTAINERS to reflect above situation.
 
-1. Problem
+[1]: https://lore.kernel.org/all/3e91b72a86294b542acf460657d0fd94adeb252e.camel@welchs.me.uk/
 
-We have the "containerd" service running under system.slice, with
-its memory.max set to 5GB. It will be constantly throttled in the
-balance_dirty_pages() since the memcg has dirty memory more than
-the memcg dirty thresh.
+---
 
-We haven't this problem on cgroup v1, because cgroup v1 doesn't have
-the per-memcg writeback and per-memcg dirty thresh. Only the global
-dirty thresh will be checked in balance_dirty_pages().
+This series is based on v6.7-rc2 (same as current staging-next HEAD).
+Greg, you can pick this series up via driver-core tree if you want.
 
-2. Thinking
+Bagas Sanjaya (2):
+  MAINTAINERS: Update Martyn Welch's address
+  MAINTAINERS: Move Manohar Vanga to CREDITS
 
-So we wonder if we can support the per-memcg dirty thresh interface?
-Now the memcg dirty thresh is just calculated from memcg max * ratio,
-which can be set from /proc/sys/vm/dirty_ratio.
+ .mailmap    | 1 +
+ CREDITS     | 4 ++++
+ MAINTAINERS | 3 +--
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-We have to set it to 60 instead of the default 20 to workaround now,
-but worry about the potential side effects.
 
-If we can support the per-memcg dirty thresh interface, we can set
-some containers to a much higher dirty_ratio, especially for hungry
-dirtier workloads like "containerd".
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+-- 
+An old man doll... just what I always wanted! - Clara
 
-3. Solution?
-
-But we could't think of a good solution to support this. The current
-memcg dirty thresh is calculated from a complex rule:
-
-	memcg dirty thresh = memcg avail * dirty_ratio
-
-memcg avail is from combination of: memcg max/high, memcg files
-and capped by system-wide clean memory excluding the amount being used
-in the memcg.
-
-Although we may find a way to calculate the per-memcg dirty thresh,
-we can't use it directly, since we still need to calculate/distribute
-dirty thresh to the per-wb dirty thresh share.
-
-R - A - B
-    \-- C
-
-For example, if we know the dirty thresh of A, but wb is in C, we
-have no way to distribute the dirty thresh shares to the wb in C.
-
-But we have to get the dirty thresh of the wb in C, since we need it
-to control throttling process of the wb in balance_dirty_pages().
-
-I may have missed something above, but the problem seems clear IMHO.
-Looking forward to any comment or suggestion.
-
-Thanks!
