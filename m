@@ -2,111 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4477F4715
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF247F4723
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343970AbjKVMy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S1344148AbjKVM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343953AbjKVMyz (ORCPT
+        with ESMTP id S1343988AbjKVMz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:54:55 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CE318D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1700657686;
-        bh=wuIXzags+RBlDsjUweIx70S2oQNg60ItGMTYwpyF8/M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=XYRAWaNyY9Csde2AbWpecLjArnLsrn0AlVA79QjjWeODirREpWX314cVo3QIskZpN
-         m51hJ686exSXsNpE9nVqalYXaeQBoAeGC2xByBScxxgOlln9d/b7gFhnRSRnlV47W0
-         dEn7nCwXtKgxtNgyXWT/SWibxwhRvXSvf/0/OIL7vZH3/weJl0f+5S/jFLnaTGoNgJ
-         SwdL1M1rDCZ/NN63LGyaiVfYsIl5Z2GyN6U3yuJiKFg7OUuVQeoHymsns06ydgG8Nt
-         XdHE5k9dS7i02GUJxltb7eBdQeqe5XWjWbvaK+XqZUbgzkRlRvKqZQGvDcq/zC3Fw2
-         kx54DpXN6r3xQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sb1RT54M1z4xWV;
-        Wed, 22 Nov 2023 23:54:45 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
-In-Reply-To: <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
-References: <20231120232332.4100288-1-masahiroy@kernel.org>
- <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely> <87bkbnsa5r.fsf@kernel.org>
- <CAK7LNAT-_07_h1_jG606VX0WjJq8dEW+C_4E0f28mjyqFnCWFw@mail.gmail.com>
-Date:   Wed, 22 Nov 2023 23:54:45 +1100
-Message-ID: <87a5r6j6cq.fsf@mail.lhotse>
+        Wed, 22 Nov 2023 07:55:57 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE079112;
+        Wed, 22 Nov 2023 04:55:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xHZcH
+        nUWCgGoIT8dFdu6cImkI1GzZO+m/2tSo8tzkIM=; b=hudgzrCbZuT2bhueDLOxH
+        hbJC4zhzUFXT/ZvxfvOjQtoFJB6ZIcdNOQKV0tfCfxaM4A5T5O4bHAT6hQR7iImm
+        lua2NeP7JjZBNoS7F0xcX3Y9/NDYW9mYY8KAABrcsT1SA7P6zLoMdmkTMDoKClWd
+        JrJOtbzP4hAyKEstE284/Q=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wC3P7s3+l1l+dXuDg--.53227S2;
+        Wed, 22 Nov 2023 20:55:23 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
+Subject: [PATCH v2 08/12] dt-bindings: display: vop2: Add rk3588 support
+Date:   Wed, 22 Nov 2023 20:55:18 +0800
+Message-Id: <20231122125518.3454796-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231122125316.3454268-1-andyshrk@163.com>
+References: <20231122125316.3454268-1-andyshrk@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wC3P7s3+l1l+dXuDg--.53227S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFW3uw15XFy7JrWfArW7twb_yoW8Kw43pa
+        s3C3W8JryfGry7Xr1ktwn5Cw4agF1kuw4UtrsrXrZxta4aqw40qF4akwn8WayUGFn7Za42
+        9FWUua4xGF17Zr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jzBTOUUUUU=
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiEB4wXl8YMqa2bQAAso
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
-> On Tue, Nov 21, 2023 at 6:55=E2=80=AFPM Aneesh Kumar K.V
-> <aneesh.kumar@kernel.org> wrote:
->>
->> "Nicholas Piggin" <npiggin@gmail.com> writes:
->>
->> > On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
->> >> crtsavres.o is linked to modules. However, as explained in commit
->> >> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
->> >> and always-y"), 'make modules' does not build extra-y.
->> >>
->> >> For example, the following command fails:
->> >>
->> >>   $ make ARCH=3Dpowerpc LLVM=3D1 KBUILD_MODPOST_WARN=3D1 mrproper ps3=
-_defconfig modules
->> >>     [snip]
->> >>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
->> >>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such fi=
-le or directory
->> >>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/=
-cell/spufs/spufs.ko] Error 1
->> >>   make[2]: *** [Makefile:1844: modules] Error 2
->> >>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: _=
-_build_one_by_one] Error 2
->> >>   make: *** [Makefile:234: __sub-make] Error 2
->> >>
->> >
->> > Thanks. Is this the correct Fixes tag?
->> >
->> > Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux")
->> >
->>
->> I am finding a different commit ID:
->>
->> commit baa25b571a168aff5a13bfdc973f1229e2b12b63
->> Author: Nicholas Piggin <npiggin@gmail.com>
->> Date:   Fri May 12 01:56:49 2017 +1000
->>
->>     powerpc/64: Do not link crtsavres.o in vmlinux
->>
->>     The 64-bit linker creates save/restore functions on demand with final
->>     links, so vmlinux does not require crtsavres.o.
->
-> Yeah, I think the correct tag is:
->
-> Fixes: baa25b571a16 ("powerpc/64: Do not link crtsavres.o in vmlinux")
+From: Andy Yan <andy.yan@rock-chips.com>
 
-Yep, I used that when applying.
+The vop2 on rk3588 is similar to which on rk356x
+but with 4 video ports and need to reference
+more grf modules.
 
-cheers
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+
+---
+
+Changes in v2:
+- fix errors when running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+
+ .../display/rockchip/rockchip-vop2.yaml       | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+index b60b90472d42..24148d9b3b14 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
++++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+@@ -20,6 +20,7 @@ properties:
+     enum:
+       - rockchip,rk3566-vop
+       - rockchip,rk3568-vop
++      - rockchip,rk3588-vop
+ 
+   reg:
+     items:
+@@ -42,26 +43,47 @@ properties:
+       frame start (VSYNC), line flag and other status interrupts.
+ 
+   clocks:
++    minItems: 3
+     items:
+       - description: Clock for ddr buffer transfer.
+       - description: Clock for the ahb bus to R/W the phy regs.
+       - description: Pixel clock for video port 0.
+       - description: Pixel clock for video port 1.
+       - description: Pixel clock for video port 2.
++      - description: Pixel clock for video port 4.
++      - description: Peripheral clock for vop on rk3588.
+ 
+   clock-names:
++    minItems: 3
+     items:
+       - const: aclk
+       - const: hclk
+       - const: dclk_vp0
+       - const: dclk_vp1
+       - const: dclk_vp2
++      - const: dclk_vp3
++      - const: pclk_vop
+ 
+   rockchip,grf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+       Phandle to GRF regs used for misc control
+ 
++  rockchip,vo-grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to VO GRF regs used for misc control, required for rk3588
++
++  rockchip,vop-grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to VOP GRF regs used for misc control, required for rk3588
++
++  rockchip,pmu:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to PMU regs used for misc control, required for rk3588
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+@@ -81,6 +103,11 @@ properties:
+         description:
+           Output endpoint of VP2
+ 
++      port@3:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Output endpoint of VP3
++
+   iommus:
+     maxItems: 1
+ 
+-- 
+2.34.1
+
