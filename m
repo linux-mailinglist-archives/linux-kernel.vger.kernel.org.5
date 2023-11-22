@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3ED7F4A50
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755DC7F4A53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343942AbjKVPcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:32:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S1344147AbjKVPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjKVPcY (ORCPT
+        with ESMTP id S229634AbjKVPc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:32:24 -0500
+        Wed, 22 Nov 2023 10:32:26 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45041BD;
-        Wed, 22 Nov 2023 07:32:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD26C433C8;
-        Wed, 22 Nov 2023 15:32:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5311B9;
+        Wed, 22 Nov 2023 07:32:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3679C433D9;
+        Wed, 22 Nov 2023 15:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667140;
-        bh=wkCvBo8jEkVfRTkbglYo4Y8OHDg05/CV6/9Vs8YdR8g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=se6rW82kVocMdGPK4qlRzBGluXE4h2xOM+5IM4DNM/SZuKhc12aoeCC9ZnIjH2NKk
-         4EZ6tb7r+IPal0h//+fZpmr3hIdurkjsGRf3DSWPrvwrLUzdi6znEeySKbhnlPlnhH
-         KTHrvQr5jekdTbDfsIW2UyE0lYvDQwRv51XV98i+PAdjfIhg9Ea2z3PMEKCccrZCtJ
-         nSYR+4qg7hm/sXzvgMbbTRAw647A6BrOCPhPzdfrfxrA/8N4SFzYrgs67ZzbKErj3o
-         P2RWhv9dowUX6pD0UWpvRqOEKPxR9zfPFUDXxB5euSPIre0ZBOy2B5G0fzBCMhxZNn
-         Pzqh7ocbdvrHQ==
+        s=k20201202; t=1700667142;
+        bh=wZOl31CRHaL+j/d3aJ+92oVepGGCgSusF0xwqJ0xWVA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rsx1ZVw8rrJ/ib+aFZJWW05Sa2njqfHQt4XYJQgvKO3N44Mp0MczOsS3UMXKYAq3Y
+         aR+vYeQPmo/lMYrxIFyOwksfOZlgcGGQgwm3Uskjd+/dzEXHrGSFre8GQqm6IO6bcy
+         LLBtNpC+PXIozk2jXyXTR5ZrwPjDFLxI6jFzNpEBOZv2F2Q/WBZ9YnB5lIesIxlsx0
+         XupYcP232GeXUXdjErWFJhoWzCbO10S9ZgIBAC0xf0O//HC9HBbSCJOtE9IoHk5LMp
+         0S11A21nDYxJUSFYcanv1TVijFU3WEMn5dTYALrwHIzgA5u+cnSVXymBHX9SLEuB+X
+         vo1wApn+gvf7g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Christie <michael.christie@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Martin Wilck <mwilck@suse.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 01/17] scsi: sd: Fix sshdr use in sd_suspend_common()
-Date:   Wed, 22 Nov 2023 10:31:30 -0500
-Message-ID: <20231122153212.852040-1-sashal@kernel.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 02/17] x86/acpi: Ignore invalid x2APIC entries
+Date:   Wed, 22 Nov 2023 10:31:31 -0500
+Message-ID: <20231122153212.852040-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231122153212.852040-1-sashal@kernel.org>
+References: <20231122153212.852040-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -54,144 +56,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Zhang Rui <rui.zhang@intel.com>
 
-[ Upstream commit 3b83486399a6a9feb9c681b74c21a227d48d7020 ]
+[ Upstream commit ec9aedb2aa1ab7ac420c00b31f5edc5be15ec167 ]
 
-If scsi_execute_cmd() returns < 0, it doesn't initialize the sshdr, so we
-shouldn't access the sshdr. If it returns 0, then the cmd executed
-successfully, so there is no need to check the sshdr. sd_sync_cache() will
-only access the sshdr if it's been setup because it calls
-scsi_status_is_check_condition() before accessing it. However, the
-sd_sync_cache() caller, sd_suspend_common(), does not check.
+Currently, the kernel enumerates the possible CPUs by parsing both ACPI
+MADT Local APIC entries and x2APIC entries. So CPUs with "valid" APIC IDs,
+even if they have duplicated APIC IDs in Local APIC and x2APIC, are always
+enumerated.
 
-sd_suspend_common() is only checking for ILLEGAL_REQUEST which it's using
-to determine if the command is supported. If it's not it just ignores the
-error. So to fix its sshdr use this patch just moves that check to
-sd_sync_cache() where it converts ILLEGAL_REQUEST to success/0.
-sd_suspend_common() was ignoring that error and sd_shutdown() doesn't check
-for errors so there will be no behavior changes.
+Below is what ACPI MADT Local APIC and x2APIC describes on an
+Ivebridge-EP system,
 
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Link: https://lore.kernel.org/r/20231106231304.5694-2-michael.christie@oracle.com
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin Wilck <mwilck@suse.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+[02Ch 0044   1]                Subtable Type : 00 [Processor Local APIC]
+[02Fh 0047   1]                Local Apic ID : 00
+...
+[164h 0356   1]                Subtable Type : 00 [Processor Local APIC]
+[167h 0359   1]                Local Apic ID : 39
+[16Ch 0364   1]                Subtable Type : 00 [Processor Local APIC]
+[16Fh 0367   1]                Local Apic ID : FF
+...
+[3ECh 1004   1]                Subtable Type : 09 [Processor Local x2APIC]
+[3F0h 1008   4]                Processor x2Apic ID : 00000000
+...
+[B5Ch 2908   1]                Subtable Type : 09 [Processor Local x2APIC]
+[B60h 2912   4]                Processor x2Apic ID : 00000077
+
+As a result, kernel shows "smpboot: Allowing 168 CPUs, 120 hotplug CPUs".
+And this wastes significant amount of memory for the per-cpu data.
+Plus this also breaks https://lore.kernel.org/all/87edm36qqb.ffs@tglx/,
+because __max_logical_packages is over-estimated by the APIC IDs in
+the x2APIC entries.
+
+According to https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#processor-local-x2apic-structure:
+
+  "[Compatibility note] On some legacy OSes, Logical processors with APIC
+   ID values less than 255 (whether in XAPIC or X2APIC mode) must use the
+   Processor Local APIC structure to convey their APIC information to OSPM,
+   and those processors must be declared in the DSDT using the Processor()
+   keyword. Logical processors with APIC ID values 255 and greater must use
+   the Processor Local x2APIC structure and be declared using the Device()
+   keyword."
+
+Therefore prevent the registration of x2APIC entries with an APIC ID less
+than 255 if the local APIC table enumerates valid APIC IDs.
+
+[ tglx: Simplify the logic ]
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20230702162802.344176-1-rui.zhang@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sd.c | 53 ++++++++++++++++++++---------------------------
- 1 file changed, 23 insertions(+), 30 deletions(-)
+ arch/x86/kernel/acpi/boot.c | 34 +++++++++++++++-------------------
+ 1 file changed, 15 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 6effa13039f39..ac5e917f7abd6 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -1642,24 +1642,21 @@ static unsigned int sd_check_events(struct gendisk *disk, unsigned int clearing)
- 	return disk_changed ? DISK_EVENT_MEDIA_CHANGE : 0;
- }
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index c55c0ef47a187..fc5bce1b50476 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -63,6 +63,7 @@ int acpi_fix_pin2_polarity __initdata;
  
--static int sd_sync_cache(struct scsi_disk *sdkp, struct scsi_sense_hdr *sshdr)
-+static int sd_sync_cache(struct scsi_disk *sdkp)
+ #ifdef CONFIG_X86_LOCAL_APIC
+ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
++static bool has_lapic_cpus __initdata;
+ static bool acpi_support_online_capable;
+ #endif
+ 
+@@ -232,6 +233,14 @@ acpi_parse_x2apic(union acpi_subtable_headers *header, const unsigned long end)
+ 	if (!acpi_is_processor_usable(processor->lapic_flags))
+ 		return 0;
+ 
++	/*
++	 * According to https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#processor-local-x2apic-structure
++	 * when MADT provides both valid LAPIC and x2APIC entries, the APIC ID
++	 * in x2APIC must be equal or greater than 0xff.
++	 */
++	if (has_lapic_cpus && apic_id < 0xff)
++		return 0;
++
+ 	/*
+ 	 * We need to register disabled CPU as well to permit
+ 	 * counting disabled CPUs. This allows us to size
+@@ -1114,10 +1123,7 @@ static int __init early_acpi_parse_madt_lapic_addr_ovr(void)
+ 
+ static int __init acpi_parse_madt_lapic_entries(void)
  {
- 	int retries, res;
- 	struct scsi_device *sdp = sdkp->device;
- 	const int timeout = sdp->request_queue->rq_timeout
- 		* SD_FLUSH_TIMEOUT_MULTIPLIER;
--	struct scsi_sense_hdr my_sshdr;
-+	struct scsi_sense_hdr sshdr;
- 	const struct scsi_exec_args exec_args = {
- 		.req_flags = BLK_MQ_REQ_PM,
--		/* caller might not be interested in sense, but we need it */
--		.sshdr = sshdr ? : &my_sshdr,
-+		.sshdr = &sshdr,
- 	};
+-	int count;
+-	int x2count = 0;
+-	int ret;
+-	struct acpi_subtable_proc madt_proc[2];
++	int count, x2count = 0;
  
- 	if (!scsi_device_online(sdp))
+ 	if (!boot_cpu_has(X86_FEATURE_APIC))
  		return -ENODEV;
+@@ -1126,21 +1132,11 @@ static int __init acpi_parse_madt_lapic_entries(void)
+ 				      acpi_parse_sapic, MAX_LOCAL_APIC);
  
--	sshdr = exec_args.sshdr;
--
- 	for (retries = 3; retries > 0; --retries) {
- 		unsigned char cmd[16] = { 0 };
- 
-@@ -1684,15 +1681,23 @@ static int sd_sync_cache(struct scsi_disk *sdkp, struct scsi_sense_hdr *sshdr)
- 			return res;
- 
- 		if (scsi_status_is_check_condition(res) &&
--		    scsi_sense_valid(sshdr)) {
--			sd_print_sense_hdr(sdkp, sshdr);
-+		    scsi_sense_valid(&sshdr)) {
-+			sd_print_sense_hdr(sdkp, &sshdr);
- 
- 			/* we need to evaluate the error return  */
--			if (sshdr->asc == 0x3a ||	/* medium not present */
--			    sshdr->asc == 0x20 ||	/* invalid command */
--			    (sshdr->asc == 0x74 && sshdr->ascq == 0x71))	/* drive is password locked */
-+			if (sshdr.asc == 0x3a ||	/* medium not present */
-+			    sshdr.asc == 0x20 ||	/* invalid command */
-+			    (sshdr.asc == 0x74 && sshdr.ascq == 0x71))	/* drive is password locked */
- 				/* this is no error here */
- 				return 0;
-+			/*
-+			 * This drive doesn't support sync and there's not much
-+			 * we can do because this is called during shutdown
-+			 * or suspend so just return success so those operations
-+			 * can proceed.
-+			 */
-+			if (sshdr.sense_key == ILLEGAL_REQUEST)
-+				return 0;
- 		}
- 
- 		switch (host_byte(res)) {
-@@ -3847,7 +3852,7 @@ static void sd_shutdown(struct device *dev)
- 
- 	if (sdkp->WCE && sdkp->media_present) {
- 		sd_printk(KERN_NOTICE, sdkp, "Synchronizing SCSI cache\n");
--		sd_sync_cache(sdkp, NULL);
-+		sd_sync_cache(sdkp);
- 	}
- 
- 	if ((system_state != SYSTEM_RESTART &&
-@@ -3868,7 +3873,6 @@ static inline bool sd_do_start_stop(struct scsi_device *sdev, bool runtime)
- static int sd_suspend_common(struct device *dev, bool runtime)
- {
- 	struct scsi_disk *sdkp = dev_get_drvdata(dev);
--	struct scsi_sense_hdr sshdr;
- 	int ret = 0;
- 
- 	if (!sdkp)	/* E.g.: runtime suspend following sd_remove() */
-@@ -3877,24 +3881,13 @@ static int sd_suspend_common(struct device *dev, bool runtime)
- 	if (sdkp->WCE && sdkp->media_present) {
- 		if (!sdkp->device->silence_suspend)
- 			sd_printk(KERN_NOTICE, sdkp, "Synchronizing SCSI cache\n");
--		ret = sd_sync_cache(sdkp, &sshdr);
--
--		if (ret) {
--			/* ignore OFFLINE device */
--			if (ret == -ENODEV)
--				return 0;
--
--			if (!scsi_sense_valid(&sshdr) ||
--			    sshdr.sense_key != ILLEGAL_REQUEST)
--				return ret;
-+		ret = sd_sync_cache(sdkp);
-+		/* ignore OFFLINE device */
-+		if (ret == -ENODEV)
-+			return 0;
- 
--			/*
--			 * sshdr.sense_key == ILLEGAL_REQUEST means this drive
--			 * doesn't support sync. There's not much to do and
--			 * suspend shouldn't fail.
--			 */
--			ret = 0;
+ 	if (!count) {
+-		memset(madt_proc, 0, sizeof(madt_proc));
+-		madt_proc[0].id = ACPI_MADT_TYPE_LOCAL_APIC;
+-		madt_proc[0].handler = acpi_parse_lapic;
+-		madt_proc[1].id = ACPI_MADT_TYPE_LOCAL_X2APIC;
+-		madt_proc[1].handler = acpi_parse_x2apic;
+-		ret = acpi_table_parse_entries_array(ACPI_SIG_MADT,
+-				sizeof(struct acpi_table_madt),
+-				madt_proc, ARRAY_SIZE(madt_proc), MAX_LOCAL_APIC);
+-		if (ret < 0) {
+-			pr_err("Error parsing LAPIC/X2APIC entries\n");
+-			return ret;
 -		}
-+		if (ret)
-+			return ret;
+-
+-		count = madt_proc[0].count;
+-		x2count = madt_proc[1].count;
++		count = acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_APIC,
++					acpi_parse_lapic, MAX_LOCAL_APIC);
++		has_lapic_cpus = count > 0;
++		x2count = acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_X2APIC,
++					acpi_parse_x2apic, MAX_LOCAL_APIC);
  	}
- 
- 	if (sd_do_start_stop(sdkp->device, runtime)) {
+ 	if (!count && !x2count) {
+ 		pr_err("No LAPIC entries present\n");
 -- 
 2.42.0
 
