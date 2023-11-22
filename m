@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD6A7F4B15
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3079D7F4B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344739AbjKVPjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S1344578AbjKVPkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344685AbjKVPj0 (ORCPT
+        with ESMTP id S1344631AbjKVPjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:39:26 -0500
+        Wed, 22 Nov 2023 10:39:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA44478A;
-        Wed, 22 Nov 2023 07:37:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB460C116B0;
-        Wed, 22 Nov 2023 15:37:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D83D49C4;
+        Wed, 22 Nov 2023 07:37:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0BDC433CB;
+        Wed, 22 Nov 2023 15:37:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667424;
-        bh=8R4ieF89QwLamS+6SQ0FPiopWLe1sv6oGljgg/xL5Ws=;
+        s=k20201202; t=1700667431;
+        bh=iqmGAQ90O89w0fdshBkivkNhkoMkooUfoJ/1xS+9voA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TIL2eT65JKzi5yZWDQnwqNeeKZn+YxR7lQch9eDM6T5a3ONO7vPQTE5vz5w0Wbjfn
-         9XfP0q/LhYjejGt7fu24srdIPXKlX/EMgRVY4XGGcBMdY0R3Pjzhwoh2KKxHeBZUG9
-         m3a1JjFJjegF8HIN8TTmf7PsEpjPpajdG4M1tLfMozs2U2cD22KaKCba57Z7pmL1G/
-         q0+vj7+X7srISlUDFpoEZkgamyeinLbFa6YbXQ1eIRLHAg89gm5glWBCVfO9f8UqqQ
-         kQpOi4ik8it4qGMFuA7m+BJlLcWtCC+7zyNO7FAGy0zysQ2OLIWhpbPQ888XnJyTH1
-         h3WtVEPj7vx0g==
+        b=Dmy8jgGgeBuTJ9/5DjVbw46sbvEQuIJpXAEeqHoSVaEhhL8o8M1npYyfxKb0l9GpM
+         iON2oqp8scpuwI57qkJ7yy+T8rOkM1cQRHN3GjIHlYwP/LbThbjaJGcWsjcazhB9jd
+         Y6uHkpUuMaiF07FcD5gyF2A8ONE82JvrmB+MPmoi6vL9QTFNb+xn+3Nfp65B1pU/R3
+         /e7zh2uccrWEdKuXx0qn2LvXYxewT1SG6Je4G4Lj0qKaQ3i/DYF6n3XFDYC2+RI3A6
+         BOGs9nWpUYP0AdPKA0/vqx+fnUj7MIhV/iimNW1OO6dHZ7xtbGVP0Bvo4947K17YT3
+         lz1MFcQ8+tMWA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Pakhunov <alexey.pakhunov@spacex.com>,
-        Vincent Wong <vincent.wong2@spacex.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, mchan@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/3] tg3: Increment tx_dropped in tg3_tso_bug()
-Date:   Wed, 22 Nov 2023 10:36:54 -0500
-Message-ID: <20231122153658.853640-2-sashal@kernel.org>
+Cc:     YuanShang <YuanShang.Mao@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, guchun.chen@amd.com,
+        luben.tuikov@amd.com, srinivasan.shanmugam@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.14 3/3] drm/amdgpu: correct chunk_ptr to a pointer to chunk.
+Date:   Wed, 22 Nov 2023 10:36:55 -0500
+Message-ID: <20231122153658.853640-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153658.853640-1-sashal@kernel.org>
 References: <20231122153658.853640-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.14.330
@@ -57,39 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Pakhunov <alexey.pakhunov@spacex.com>
+From: YuanShang <YuanShang.Mao@amd.com>
 
-[ Upstream commit 17dd5efe5f36a96bd78012594fabe21efb01186b ]
+[ Upstream commit 50d51374b498457c4dea26779d32ccfed12ddaff ]
 
-tg3_tso_bug() drops a packet if it cannot be segmented for any reason.
-The number of discarded frames should be incremented accordingly.
+The variable "chunk_ptr" should be a pointer pointing
+to a struct drm_amdgpu_cs_chunk instead of to a pointer
+of that.
 
-Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Link: https://lore.kernel.org/r/20231113182350.37472-2-alexey.pakhunov@spacex.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: YuanShang <YuanShang.Mao@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/tg3.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index 96c7a452a4a97..dc27c81ad5129 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -7872,8 +7872,10 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_napi *tnapi,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+index 7bad519aaae08..d24ef103471b9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+@@ -113,7 +113,7 @@ static int amdgpu_cs_parser_init(struct amdgpu_cs_parser *p, void *data)
+ 	}
  
- 	segs = skb_gso_segment(skb, tp->dev->features &
- 				    ~(NETIF_F_TSO | NETIF_F_TSO6));
--	if (IS_ERR(segs) || !segs)
-+	if (IS_ERR(segs) || !segs) {
-+		tnapi->tx_dropped++;
- 		goto tg3_tso_bug_end;
-+	}
+ 	for (i = 0; i < p->nchunks; i++) {
+-		struct drm_amdgpu_cs_chunk __user **chunk_ptr = NULL;
++		struct drm_amdgpu_cs_chunk __user *chunk_ptr = NULL;
+ 		struct drm_amdgpu_cs_chunk user_chunk;
+ 		uint32_t __user *cdata;
  
- 	do {
- 		nskb = segs;
 -- 
 2.42.0
 
