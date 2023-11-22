@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA047F3A85
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9BC7F3A88
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 01:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbjKUX6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 18:58:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
+        id S234947AbjKVABc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 19:01:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbjKUX6R (ORCPT
+        with ESMTP id S234850AbjKVAB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 18:58:17 -0500
+        Tue, 21 Nov 2023 19:01:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7319E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:58:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FED0C433C7;
-        Tue, 21 Nov 2023 23:58:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210F79F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:01:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 988D4C433C8;
+        Wed, 22 Nov 2023 00:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700611094;
-        bh=RpcmV04Y5XssEbTca1q02Yjdopi3rB3NOK/3fMzbaj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jD0Q3Q7N3DsvX6sLJReEOxJuUr9/ay4yEYPRnx698HUHlGRgTCPpBt3q4r9+o6gZe
-         CdEpwa3ZmVSqGU/WfS8ZmnVNqQzDwM+cTK/9oWT4kpNOPYnGaYavXIfHnC9zmYE8Ec
-         1h0u+oVutz7lXx5+R7W+J1NL8A9By3MsAVg1RHyoEr+uMQbkkeniXaz3mvDF49v7ae
-         UH0ZZ8Emd1vsM7p0XPScgRve5l+PVPeBcdP2kz2bENuCJvP6bCsMHZErIl4HONK0uO
-         xIb1Ue7tcP2TFfd3TweP38mRGs5X74zX1VYyBI5VSZHjM8k2lLcHNW3dYHhmpM1AOF
-         jt/jgsQi9wk5w==
-Date:   Tue, 21 Nov 2023 15:58:12 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [net-next PATCH] net: phy: aquantia: make mailbox interface4
- lsw addr mask more specific
-Message-ID: <20231121155812.03113405@kernel.org>
-In-Reply-To: <655d41b4.050a0220.36e34.359e@mx.google.com>
-References: <20231120193504.5922-1-ansuelsmth@gmail.com>
-        <20231121150859.7f934627@kernel.org>
-        <655d3e2b.df0a0220.50550.b235@mx.google.com>
-        <20231121153918.4234973d@kernel.org>
-        <655d41b4.050a0220.36e34.359e@mx.google.com>
+        s=k20201202; t=1700611284;
+        bh=SQLOLBDlMnBI/mq/51HaPLasJW//OWPjVkbjwRsgkDM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=m856fzwao6VC1b7rfMpHRHSwFRBn/HzA0R6GPpPfTRdeX7+IUoayUxL4OKGE7LETf
+         duVfYQOhpHLCp6GgodseTyNakLsR3hBmzXm+BHjQ5O9JuGuFn7/bot4Goy/hHsdkK0
+         OBBfUE6vhVacg36l5pHklboO+uTdYAEuedRQ3tqw9U/xF/zW7HERoka4z28vpo4H1k
+         60BNPJHTQah3ZUXTYsCYkX4oSA63PkeKmcj3kNNy3FSHrXHMNDQSoPBCfpdeub+ZWg
+         mNmZNfzisfubfYp/KOAzFOLlgcf9VHKreihLjT8Vlm6mTsXS6mnkyZpSWWJ9Hs9aV5
+         zPt+h9maJR/Tg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1E650CE0ACF; Tue, 21 Nov 2023 16:01:24 -0800 (PST)
+Date:   Tue, 21 Nov 2023 16:01:24 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
+Message-ID: <0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
+ <87lear4wj6.fsf@oracle.com>
+ <46a4c47a-ba1c-4776-a6f8-6c2146cbdd0d@paulmck-laptop>
+ <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
+ <d10b6243-41b1-44a0-ba95-0cedc7f6856e@paulmck-laptop>
+ <20231121203049.GN8262@noisy.programming.kicks-ass.net>
+ <1cdbb0f6-9078-4023-bf37-8d826ca0c711@paulmck-laptop>
+ <20231121163834.571abb52@gandalf.local.home>
+ <4605b4f4-8a2b-4653-b684-9c696c36ebd0@paulmck-laptop>
+ <20231121175209.1d7ec202@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121175209.1d7ec202@gandalf.local.home>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -60,36 +75,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 00:48:01 +0100 Christian Marangi wrote:
-> > Not so sure about this one, it puts the u32 on the stack, and takes 
-> > the address of it:
-> > 
-> > 	u32 word;
-> > 
-> > 	word = (__force u32)cpu_to_be32(word);
-> > 	crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
-> > 
-> > so the endian will matter here. My guess is that this part is correct.  
-
-Actually I'm wrong about this, you're reading and writing the data,
-so endian conversion happens twice. Canceling itself out.
-
-> Ehhh this is problematic. Data comes from nvmem or filesystem, in theory
-> they should not be touched/converted.
+On Tue, Nov 21, 2023 at 05:52:09PM -0500, Steven Rostedt wrote:
+> On Tue, 21 Nov 2023 14:26:33 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> nvmem_cell_read or request_firmware return pointer to u8 and it's the
-> firmware (that is always in LE)
+> > On Tue, Nov 21, 2023 at 04:38:34PM -0500, Steven Rostedt wrote:
+> > > On Tue, 21 Nov 2023 13:14:16 -0800
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > >   
+> > > > On Tue, Nov 21, 2023 at 09:30:49PM +0100, Peter Zijlstra wrote:  
+> > > > > On Tue, Nov 21, 2023 at 11:25:18AM -0800, Paul E. McKenney wrote:    
+> > > > > > #define preempt_enable() \
+> > > > > > do { \
+> > > > > > 	barrier(); \
+> > > > > > 	if (!IS_ENABLED(CONFIG_PREEMPT_RCU) && raw_cpu_read(rcu_data.rcu_urgent_qs) && \
+> > > > > > 	    (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK) == PREEMPT_OFFSET) &&
+> > > > > > 	    !irqs_disabled()) \  
+> > > 
+> > > Could we make the above an else case of the below if ?  
+> > 
+> > Wouldn't that cause the above preempt_count() test to always fail?
 > 
-> If data is not converted and passed AS IS from what is read to the
-> allocated data, then data should be always swapped.
-> (this PHY is fun... it's probably BE internally but expect LE stuff in
-> the mailbox, as it does emit BE CRC.)
+> preempt_count_dec_and_test() returns true if preempt_count() is zero, which
+> happens only if NEED_RESCHED is set, and the rest of preempt_count() is not
+> set. (NEED_RESCHED bit in preempt_count() is really the inverse of
+> NEED_RESCHED). Do we need to call rcu_all_qs() when we call the scheduler?
+> Isn't scheduling a quiescent state for most RCU flavors?
 > 
-> Any idea where I can verify if nvmem_cell_read or request_firmware makes
-> any kind of endianess conversion on the data it does read?
+> I thought this was to help move along the quiescent states without added
+> cond_resched() around, which has:
+> 
+> int __sched __cond_resched(void)
+> {
+> 	if (should_resched(0)) {
+> 		preempt_schedule_common();
+> 		return 1;
+> 	}
+> 	/*
+> 	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
+> 	 * whether the current CPU is in an RCU read-side critical section,
+> 	 * so the tick can report quiescent states even for CPUs looping
+> 	 * in kernel context.  In contrast, in non-preemptible kernels,
+> 	 * RCU readers leave no in-memory hints, which means that CPU-bound
+> 	 * processes executing in kernel context might never report an
+> 	 * RCU quiescent state.  Therefore, the following code causes
+> 	 * cond_resched() to report a quiescent state, but only when RCU
+> 	 * is in urgent need of one.
+> 	 */
+> #ifndef CONFIG_PREEMPT_RCU
+> 	rcu_all_qs();
+> #endif
+> 	return 0;
+> }
+> 
+> Where if we schedule, we don't call rcu_all_qs().
 
-The underlying storage should be byte-accessible, so neither interface
-should change anything about the endian.
+True enough, but in this __cond_resched() case we know that we are in
+an RCU quiescent state regardless of what should_resched() says.
 
-You should probably switch get_unaligned_le32() for reading it into 
-the word variable, tho.
+In contrast, with preempt_enable(), we are only in a quiescent state
+if __preempt_count_dec_and_test() returns true, and even then only if
+interrupts are enabled.
+
+> I stand by that being in the else statement. It looks like that would keep
+> the previous work flow.
+
+Ah, because PREEMPT_NEED_RESCHED is zero when we need to reschedule,
+so that when __preempt_count_dec_and_test() returns false, we might
+still be in an RCU quiescent state in the case where there was no need
+to reschedule.  Good point!
+
+In which case...
+
+#define preempt_enable() \
+do { \
+	barrier(); \
+	if (unlikely(preempt_count_dec_and_test())) \
+		__preempt_schedule(); \
+	else if (!sched_feat(FORCE_PREEMPT) && \
+		 (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK) == PREEMPT_OFFSET) && \
+		 !irqs_disabled()) \
+) \
+			rcu_all_qs(); \
+} while (0)
+
+Keeping rcu_all_qs() pretty much as is.  Or some or all of the "else if"
+condition could be pushed down into rcu_all_qs(), depending on whether
+Peter's objection was call-site object code size, execution path length,
+or both.  ;-)
+
+If the objection is both call-site object code size and execution path
+length, then maybe all but the preempt_count() check should be pushed
+into rcu_all_qs().
+
+Was that what you had in mind, or am I missing your point?
+
+							Thanx, Paul
