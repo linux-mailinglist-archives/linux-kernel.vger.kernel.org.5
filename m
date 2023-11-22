@@ -2,106 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A83077F3E81
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0807F3E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbjKVHAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:00:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S234870AbjKVHAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjKVHAC (ORCPT
+        with ESMTP id S234830AbjKVHAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:00:02 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 13EF9DD;
-        Tue, 21 Nov 2023 22:59:57 -0800 (PST)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id E795A606AC67E;
-        Wed, 22 Nov 2023 14:59:53 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     kvalo@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com
-Cc:     Su Hui <suhui@nfschina.com>, yangyingliang@huawei.com,
-        libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH wireless-next] wifi: libertas: if_usb: remove some useless code in if_usb_prog_firmware
-Date:   Wed, 22 Nov 2023 14:59:09 +0800
-Message-Id: <20231122065908.907045-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 22 Nov 2023 02:00:14 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E05D47
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:00:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=38yfeYGGIhQE7SMv/R6/plOSGW
+        l9qczmYaH5DMCKBHs7GhUk2Mu3TOKUkdwtoE1CA0YwtVXzY87o9UEYESgpOoQ+wkFW5+eABH/WkHr
+        OuGrjIXzhtBW3884xq2HoSqYetwCtMxT6KCX7u2BHWGRy9Elc/buBH5+vzdEVyy+tIvF8gZjKaIQQ
+        OPq9ij5C5aanVIjFV4Eozw9FDuK5NYNK6x9ybMJleySZdEKfTm4gR4Ioy5Xitr0WFchvG+/C6nB2a
+        ITs6CuwD8VsWpD5XQUDSFaNUYaN7R9kkFsAcRsmme9QU08XLKP3qo8R9y9R7UnesOOZuJUwr7JNxY
+        EIOiLSVA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5hDT-000s2J-2w;
+        Wed, 22 Nov 2023 07:00:07 +0000
+Date:   Tue, 21 Nov 2023 23:00:07 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: mm: implement pgprot_nx
+Message-ID: <ZV2m92lOpRgRFfRk@infradead.org>
+References: <20231121160637.3856-1-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121160637.3856-1-jszhang@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang static checker complains that value stored to 'ret' is never read.
-Remove these useless code to save space.
+Looks good:
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- drivers/net/wireless/marvell/libertas/if_usb.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/libertas/if_usb.c b/drivers/net/wireless/marvell/libertas/if_usb.c
-index 2240b4db8c03..77cc55616ef5 100644
---- a/drivers/net/wireless/marvell/libertas/if_usb.c
-+++ b/drivers/net/wireless/marvell/libertas/if_usb.c
-@@ -830,10 +830,8 @@ static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
- 	}
- 
- 	cardp->fw = fw;
--	if (check_fwfile_format(cardp->fw->data, cardp->fw->size)) {
--		ret = -EINVAL;
-+	if (check_fwfile_format(cardp->fw->data, cardp->fw->size))
- 		goto done;
--	}
- 
- 	/* Cancel any pending usb business */
- 	usb_kill_urb(cardp->rx_urb);
-@@ -848,7 +846,6 @@ static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
- restart:
- 	if (if_usb_submit_rx_urb_fwload(cardp) < 0) {
- 		lbs_deb_usbd(&cardp->udev->dev, "URB submission is failed\n");
--		ret = -EIO;
- 		goto done;
- 	}
- 
-@@ -866,18 +863,15 @@ static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
- 
- 	if (cardp->bootcmdresp == BOOT_CMD_RESP_NOT_SUPPORTED) {
- 		/* Return to normal operation */
--		ret = -EOPNOTSUPP;
- 		usb_kill_urb(cardp->rx_urb);
- 		usb_kill_urb(cardp->tx_urb);
--		if (if_usb_submit_rx_urb(cardp) < 0)
--			ret = -EIO;
-+		if_usb_submit_rx_urb(cardp);
- 		goto done;
- 	} else if (cardp->bootcmdresp <= 0) {
- 		if (--reset_count >= 0) {
- 			if_usb_reset_device(cardp);
- 			goto restart;
- 		}
--		ret = -EIO;
- 		goto done;
- 	}
- 
-@@ -908,7 +902,6 @@ static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
- 		}
- 
- 		pr_info("FW download failure, time = %d ms\n", i * 100);
--		ret = -EIO;
- 		goto done;
- 	}
- 
--- 
-2.30.2
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
