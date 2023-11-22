@@ -2,135 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13807F4EF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A8A7F4EF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbjKVSJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        id S1344090AbjKVSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjKVSJI (ORCPT
+        with ESMTP id S231410AbjKVSKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:09:08 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C27D43
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:09:04 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50970c2115eso10117506e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:09:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700676542; x=1701281342; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=61r2bcwQoi4CJDk5SqSdw7/KG0QOUiAzIJy8fZUsQUM=;
-        b=ud84wcr4w3O7qiQz+BoF7yRVarxslbEBFkBm1oAaxRUNaPZtTD7WnwCRvilClcn2ke
-         MBaPfcuuNl57ycamBEEDpNQhxS5mY/+bHAs/C3GEaIfHkGO3Zd53Cqy8FJlebuWrk/44
-         Mr4S0Hle3eoDJdr57V6J+BkiUlkTg30NKr+pdA0IrSw9Lqf1rineDKJyZPfJCWJXnbqy
-         K4Ncd0rafuandQNUz7MdYPp/flnkMQJ98lCN+5ljWtRqEwHZRbCXN2o3Lsr1CKvXbnjG
-         MBbcr2Sb7VaV1FOTqi/1HTgJn8tZ13cEDT243A0hxw1XaQerXdzSr127zdX/53FOavPs
-         yg5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700676542; x=1701281342;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=61r2bcwQoi4CJDk5SqSdw7/KG0QOUiAzIJy8fZUsQUM=;
-        b=aMT+hNtl5sYP4nuIw6K2e+QwFmymr1FyHuG8tfWY8FngqD6IMCYWgON6Ztyt9zLr5X
-         bRMcegiFNsmrEnJKknHRbPlAVU5zwpnlm/x0TD/vgKgLwtJv6pVoLxr0a0NszLLimbUc
-         LkPx38OOtwWwulaDe9sI53VkbVy4j5N6A6RJMFaYZqnYOyNg7i69sr3Ivez630b5bDIO
-         /S7P6Rvd3rI3geRbImq5fVkhU+nSOMZUeE7frMBaizEp+ydtm1s0sxc3IERjDZp1ZFxL
-         cUVP5jSUU+YtkF7fiM5+Q1MEwNxD0nJW1hrjeVZQrEHQYCukh00hXi6Sa8c1yX4wNqRP
-         K0tQ==
-X-Gm-Message-State: AOJu0YzrBMp8+G4Z6lzaS5nzyCU4IRRRf2TIRQuIYKonfBOpPegAQv5J
-        1Gc2QNTdNJGe+QgJq6q0i144KQ==
-X-Google-Smtp-Source: AGHT+IGYAXrwm5o+Py9/GZEWr7OBAZ6fBZTpyw9LdLv4PV+mfsjraxUvZ5ekZ4luKxlBbWY1Xn5K/A==
-X-Received: by 2002:a19:6545:0:b0:50a:a95b:3c90 with SMTP id c5-20020a196545000000b0050aa95b3c90mr1875346lfj.47.1700676542402;
-        Wed, 22 Nov 2023 10:09:02 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id c23-20020aa7c757000000b00548a408f662sm52843eds.49.2023.11.22.10.09.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:09:01 -0800 (PST)
-Message-ID: <5219b373-8b37-4f12-ad55-0984e3d84b62@linaro.org>
-Date:   Wed, 22 Nov 2023 19:09:00 +0100
+        Wed, 22 Nov 2023 13:10:13 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 745D6A2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:10:07 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9F491042;
+        Wed, 22 Nov 2023 10:10:53 -0800 (PST)
+Received: from [10.57.42.32] (unknown [10.57.42.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D0B83F73F;
+        Wed, 22 Nov 2023 10:10:03 -0800 (PST)
+Message-ID: <02692fd9-d184-4b33-9f45-dd62593064e5@arm.com>
+Date:   Wed, 22 Nov 2023 18:10:02 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] dt-bindings: pwm: amlogic: add new compatible for
- meson8 pwm type
-Content-Language: en-US
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     neil.armstrong@linaro.org, Rob Herring <robh@kernel.org>,
-        JunYi Zhao <junyi.zhao@amlogic.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-References: <20231117125919.1696980-1-jbrunet@baylibre.com>
- <20231117125919.1696980-3-jbrunet@baylibre.com>
- <170040994064.269288.960284011884896046.robh@kernel.org>
- <4608012c-059f-4d6a-914b-e85ad0c32ff0@linaro.org>
- <1j5y1wg3sb.fsf@starbuckisacylon.baylibre.com>
- <2e7a65da-5c1d-4dd4-ac69-7559a53afdf3@linaro.org>
- <1j1qckg21u.fsf@starbuckisacylon.baylibre.com>
- <94e69281-93e1-41cd-9cf5-81cbbc15572c@linaro.org>
- <1jwmu9et6j.fsf@starbuckisacylon.baylibre.com>
- <2bbc2031-89d7-42e9-828e-068fa06eabf4@linaro.org>
- <1jo7flerag.fsf@starbuckisacylon.baylibre.com>
- <2d9c4c93-6cea-4a44-9093-c1fd51d0a21c@linaro.org>
- <1jjzq9emga.fsf@starbuckisacylon.baylibre.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1jjzq9emga.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: [PATCH v3 4/6] arm64: KVM: Add interface to set guest value for
+ TRFCR register
+Content-Language: en-GB
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        maz@kernel.org
+Cc:     broonie@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
+References: <20231019165510.1966367-1-james.clark@arm.com>
+ <20231019165510.1966367-5-james.clark@arm.com>
+ <0ebe2a54-8111-4e8e-8afe-3e17ce85fcb9@arm.com>
+In-Reply-To: <0ebe2a54-8111-4e8e-8afe-3e17ce85fcb9@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -138,110 +62,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 17:14, Jerome Brunet wrote:
+On 16/11/2023 19:26, Suzuki K Poulose wrote:
+> On 19/10/2023 17:55, James Clark wrote:
+>> Add an interface for the Coresight driver to use to set the value of the
+>> TRFCR register for the guest. This register controls the exclude
+>> settings for trace at different exception levels, and is used to honor
+>> the exclude_host and exclude_guest parameters from the Perf session.
+>> This will be used to later write TRFCR_EL1 on nVHE at guest switch. For
+>> VHE, the host trace is controlled by TRFCR_EL2 and thus we can write to
+>> the TRFCR_EL1 immediately. Because guest writes to the register are
+>> trapped, the value will persist and can't be modified.
 > 
-> On Wed 22 Nov 2023 at 16:46, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> 
-> 
->>>>>>
->>>>>> Again, where the "v2" is defined? Where is any document explaining the
->>>>>> mapping between version blocks and SoC parts? Why do you list here only
->>>>>> major version? Blocks almost always have also minor (e.g. v2.0).
->>>>>
->>>>> Again, v2 does has nothing to do with the HW. Never wrote it was.
->>>>> The HW remains the same.
->>>>
->>>> Don't add compatibles which are not related to HW, but represent
->>>> software versioning. Software does not matter for the bindings.
->>>
->>> What I did I explicitly what is recommended in Grant's presentation from
->>> 2013. 10y old, but I assume slide 10 "Making an incompatible update" is
->>> still valid.
->>>
->>> https://elinux.org/images/1/1e/DT_Binding_Process_glikely_ksummit_2013_10_28.pdf
->>>
->>> Breaking the ABI of the old compatible would break all boards which use
->>> u-boot DT and pass it to the kernel, because the meaning of the clock
->>> property would change.
->>
->> You broke U-Boot now as well - it will get your new DTS from the kernel
->> and stop working.
-> 
-> U-boot will continue to match the old compatible and work properly.
-> When the dts using the new compatible lands in u-boot, it won't
-> match until proper driver support is added. It is a lot better than
-> breaking the ABI, which would have silently broke u-boot.
-> 
-> I don't really see a way around that.
-> 
-> If you have better way to fix a bad interface, feel free to share it.
+> This could also be added below to make it easier for the code reader.
 > 
 >>
->>>
->>> Doing things has suggested in this slide, and this patch, allows every
->>> device to continue to work properly, whether the DT given is the one
->>> shipped with u-boot (using the old compatible for now) or the kernel.
+>> The settings must be copied to the vCPU before each run in the same
+>> way that PMU events are, because the per-cpu struct isn't accessible in
+>> protected mode.
 >>
->> OK, that explains the reasons. I read your commit msg and nothing like
->> this was mentioned there. What's more, you did not deprecate the old
->> binding, thus the confusion - it looked like you add entirely new
->> hardware (although you put "deprecated" but in some unrelated place, not
->> next to the compatibles).
-> 
-> The old interface being obsoleted by the new one is mentionned in the
-> commit description, the comments in the bindings and the bindings itself.
-> Thanks a lot for pointing out the placement mistake. I'll fix it.
-> 
-> The commit description says:
-> * What the patch does
-> * Why it does it:
->   * Why the old bindings is bad/broken
->   * How the new ones fixes the problem
-> * Why a single compatible properly describes, IMO, all the related HW.
-> 
-> This describes the entirety of what the change does.
-> That seemed clear enough for Rob. If that is not enough for you and you
-> would like it reworded, could please provide a few suggestions ?
-
-You did not deprecate the compatibles, so this has to be fixed. You put
-the compatible in some other place, not really relevant.
-
-> 
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   arch/arm64/include/asm/kvm_host.h |  3 +++
+>>   arch/arm64/kvm/arm.c              |  1 +
+>>   arch/arm64/kvm/debug.c            | 26 ++++++++++++++++++++++++++
+>>   3 files changed, 30 insertions(+)
 >>
->> Anyway, the main point of Neil was that you started using generic
->> compatible for all SoCs, which is wrong as well. I guess this was the
->> original discussion.
+>> diff --git a/arch/arm64/include/asm/kvm_host.h 
+>> b/arch/arm64/include/asm/kvm_host.h
+>> index 0f0bf8e641bd..e1852102550d 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -1125,6 +1125,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct 
+>> kvm_vcpu *vcpu);
+>>   void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+>>   void kvm_clr_pmu_events(u32 clr);
+>>   bool kvm_set_pmuserenr(u64 val);
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
+>> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu);
+>>   #else
+>>   static inline void kvm_set_pmu_events(u32 set, struct 
+>> perf_event_attr *attr) {}
+>>   static inline void kvm_clr_pmu_events(u32 clr) {}
+>> @@ -1132,6 +1134,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
+>>   {
+>>       return false;
+>>   }
+>> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
+>>   #endif
+>>   void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
+>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>> index 0f717b6a9151..e4d846f2f665 100644
+>> --- a/arch/arm64/kvm/arm.c
+>> +++ b/arch/arm64/kvm/arm.c
+>> @@ -1015,6 +1015,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>           kvm_vgic_flush_hwstate(vcpu);
+>>           kvm_pmu_update_vcpu_events(vcpu);
+>> +        kvm_etm_update_vcpu_events(vcpu);
+>>           /*
+>>            * Ensure we set mode to IN_GUEST_MODE after we disable
+>> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+>> index 20cdd40b3c42..2ab41b954512 100644
+>> --- a/arch/arm64/kvm/debug.c
+>> +++ b/arch/arm64/kvm/debug.c
+>> @@ -23,6 +23,12 @@
+>>   static DEFINE_PER_CPU(u64, mdcr_el2);
+>> +/*
+>> + * Per CPU value for TRFCR that should be applied to any guest vcpu 
+>> that may
+>> + * run on that core in the future.
+>> + */
+>> +static DEFINE_PER_CPU(u64, guest_trfcr);
+>> +
+>>   /**
+>>    * save/restore_guest_debug_regs
+>>    *
+>> @@ -356,3 +362,23 @@ void kvm_arch_vcpu_put_debug_state_flags(struct 
+>> kvm_vcpu *vcpu)
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>>   }
+>> +
 > 
-> The whole reason for this change is to properly describe the HW, which
-> is the 100% same on all the SoCs, or SoC families, concerned. The only
+> The comment in the description could be helpful here.
+> 
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+>> +{
+>> +    if (has_vhe())
 
-You still need specific compatibles, because the hardware is not 100%
-the same. Programming model can, but hardware differs. Many times
-engineers thought that devices are 100% compatible and then turned out
-they are not. I am bored to repeat all this again and again.
+I am wondering if "kvm" should do the extra safety check of
+making sure that the FEAT_TRF is available on the CPU, before
+actually writing to the register ? coresight calls this only
+when the FEAT_TRF is implemented. But given this is an exported
+function, may be we should be extra careful ?
 
-> reason there was a lot of old compatibles is because it was used to match
-> data in the driver (this is clearly wrong). This data would now be
-> passed through DT.
-> 
-> I have been clear about this in the change description.
-> 
-> So why is it wrong to have single compatible for a type of device that
-> is 100% the same HW ?
+Suzuki
 
-Because it is generic, not specific (you match "foo" against "bar" SoC).
-The chapter from writing-bindings you referenced earlier mentioned this.
-You need ability to add quirks and customize for these minor hardware
-differences, even if programming model is the same.
 
-> 
-> It is lot a easier to apply a rule correctly when the intent is clear.
-> 
->>
->> Best regards,
->> Krzysztof
-> 
 
-Best regards,
-Krzysztof
+>> +        write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
+>> +    else
+>> +        *this_cpu_ptr(&guest_trfcr) = trfcr_guest;
+>> +}
+>> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
+>> +
+>> +/*
+>> + * Updates the vcpu's view of the etm events for this cpu. Must be
+>> + * called before every vcpu run after disabling interrupts, to ensure
+>> + * that an interrupt cannot fire and update the structure.
+>> + */
+>> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu)
+>> +{
+>> +    if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+>> +        ctxt_sys_reg(&vcpu->arch.ctxt, TRFCR_EL1) = 
+>> *this_cpu_ptr(&guest_trfcr);
+>> +}
+> 
+> Either way,
+> 
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
