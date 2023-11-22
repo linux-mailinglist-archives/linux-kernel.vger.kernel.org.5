@@ -2,236 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E497F3DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B57F3DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbjKVFod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        id S232593AbjKVFqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234597AbjKVFo0 (ORCPT
+        with ESMTP id S229631AbjKVFqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:44:26 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2064.outbound.protection.outlook.com [40.107.94.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562EDD60;
-        Tue, 21 Nov 2023 21:44:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hT5rNkMUTA+B+86zOaRrhoA2+Y4OO1RFkezotA/Xne/ls9x9+q+U+XPB9E/CbeeMFeKLeJYqcZb7hx/V6QEsy/pM+8gcT885ZS2GhDfyf5Ydbh6P0LemAfOdGnG8ErD0GFpAW+YBrWkQiIllCs4ab+33JSpRKy6qCr4hEi1YP5AbFQ48tyV1OusAHcZ88SNgPOeTgzOLeaqe1u19LO6IMq6JL9Km1paOqL6sjLu4kuKy5iKeDh7ALNDvh2iHA2FioZXj+2cpTbh7lcBkjB9K0PhHMDLTxEXvKIy1RWQLp1oY/vXZLV75KbEeyJnKQlaBqLEQZq0UESrOSBAEXgqy2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PF/zaS7M0P2WtfcRo1p4D+Sk6sb1dnw7d2FI7XptH8k=;
- b=Cvg1E03YsRouWTStKPq3wfk54u1ZsGUmJZbYkgNzOLy3Ou/wSeLO12N9lUiE15G2ZhjBXoEISfPQUbXop/7ZIPZjiURwbgE64GC86/5mNj5AJ5ytXLvOocSp7r6i8i6D+JCzfG8k3m/G+jhiyGe7yP5K6IYG78updy5zK6dkPfrk80kOYXwfJxNpWbxAM+Bw0ciiiNxPxhi3oaW2Aq6SeLXXlPrJx29Mests1tlEefOCRsxUf1C22SWSC2FnEZyT0kSVkFaE/p5IL5StJlFXNRp+jZLp7WoxttOuVpoFGS1+knScOHb1vM2porKEqHXsYe/uv6yNpyx02mmu//veGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PF/zaS7M0P2WtfcRo1p4D+Sk6sb1dnw7d2FI7XptH8k=;
- b=G+HAVjeVKQZAeAEXxxZJQUrEUe35Hl1ZfpAo1DXjvnSOMmQxIDSkDmWtvGTxQRUwPLf3mkXshcq/nKL617o4hT6tj2Mv0yIHn2LVFx9mT0InUZVldG7qfwx51NZoriVhxeXwVcyYyriddlz3ilTZ14WYw+/67qeIScj3ZC/6JJ4=
-Received: from BLAPR03CA0084.namprd03.prod.outlook.com (2603:10b6:208:329::29)
- by CH3PR12MB9343.namprd12.prod.outlook.com (2603:10b6:610:1c0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
- 2023 05:44:18 +0000
-Received: from BL02EPF0001A0FB.namprd03.prod.outlook.com
- (2603:10b6:208:329:cafe::43) by BLAPR03CA0084.outlook.office365.com
- (2603:10b6:208:329::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18 via Frontend
- Transport; Wed, 22 Nov 2023 05:44:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A0FB.mail.protection.outlook.com (10.167.242.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 05:44:18 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
- 2023 23:44:17 -0600
-From:   Nava kishore Manne <nava.kishore.manne@amd.com>
-To:     <mdf@kernel.org>, <hao.wu@intel.com>, <yilun.xu@intel.com>,
-        <trix@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <michal.simek@amd.com>, <mathieu.poirier@linaro.org>,
-        <ben.levinsky@amd.com>, <sai.krishna.potthuri@amd.com>,
-        <tanmay.shah@amd.com>, <nava.kishore.manne@amd.com>,
-        <dhaval.r.shah@amd.com>, <arnd@arndb.de>,
-        <shubhrajyoti.datta@amd.com>, <linux-fpga@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [RFC PATCH 3/3] fpga: zynqmp: Add encrypted Bitstream loading support
-Date:   Wed, 22 Nov 2023 11:14:04 +0530
-Message-ID: <20231122054404.3764288-4-nava.kishore.manne@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
-References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
+        Wed, 22 Nov 2023 00:46:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3970185;
+        Tue, 21 Nov 2023 21:45:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700631960; x=1732167960;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zbu2jPNAJCJoTcvYCqsIzf59jhjUHMCNCUZVzkS116I=;
+  b=jaeeb/h2my4sDgBIQwD1wz+UV67fuVqijfbHCVjuizkCiW8Eh6Q2l2Yl
+   X/Q+CXDrz6MqAqtxzQjyEYX7o1XteeMVuzkAcFXX0AMDLcxMIULQ13VbH
+   M76lyeXPQP+naSZxBs+sftqw83aqpfhcGon9DsqxJWK8B3zqoxYVM3M7U
+   pKPX8dbBd0q8dd+/ghbebTdtcT3uZT3eWnvi2LB6TVqYf/mLr7N4X6KkC
+   ydK2+76MJTsLS8CcgvTnxkPYVEwvRiRB1LHqeSYc9iVpPLRXEnaMTmJJI
+   UG4kWTW0A1mvGLgXEAE77LDN6zVH+0WRLlETZU0lxTi7IMYEzp60Lhfci
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5126007"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="5126007"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 21:45:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="14776664"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 21:45:49 -0800
+Message-ID: <e789b9f5-a7cb-479d-8678-76cfb7bb946e@linux.intel.com>
+Date:   Wed, 22 Nov 2023 13:45:46 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FB:EE_|CH3PR12MB9343:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04674ec8-6cb5-45f9-1400-08dbeb1e11ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ms43jcq3yVuko7z5M0ebYICbseFFloHzIOM24F4wI1W4XGcJKvaqHp6qwI8XhxQC7HHHn7I0S2NQP3YAnh0U/NYuJbIcHkYDwqnBAoLwCH2Q0swPmmIymsXIxRF9paDWqFHV7STHVMpVLNQy2vwdbO6v/g9+sW3q7K5cPfpno0AhuA8i0lpjbqA9JbOjdOxUQOHCeLQ+2l/MidL/bjdQRdjUo8Iz4CjJyWqaPjcr+nWJy6H8BnLzjgcQSF29/nTxKKWn8wBPC4IztLerwIRAjJGhGNimcw0VhEtXdZuQS8FFFXZfEJ7Gyt0LWYqQfFq15oWMllPaBW3ePhKaGAADyEukSAjXOnp6zyafvTf/8Xoq+X7Bzaw3Q0tXIFd9TECuNAMoPKrtTnwi67Dl6gYG2bNC11Wq2cFzou0HpXRc0R0bneGnZDT3SukIlEHVmwoZIXusula9vskx8I6UshDXXucicjAlZ5ovOhYOAPwh0Tz7x49VjK1j25zIfu0ZWNpqmjF/NQM5srtZTY/KkrCVAKILVSku258P9XjXhYC97hszZIbXI82ak25BVO4sps1kJMaotj32h2myaH/kcsgetx1txynf5062L3QIrO51tg22ud9QjESb3rkPxwys4d89wrIbGnTI6CfwGhFa+O7B6lo1pPkRSQuUxpNv5XI8MN9pQcgjb1C7qyBoXdx4+N2ecgl61Zqr5T3CtOivv95MItm7qIhD7cOVb4yNYvPJOSedmuJjM3wHnbnxTtt5VD+PFEQo0Xd4FwHJCZ0ssiTAY3K6vWwYpcJEcp2Ve3jZ67AwZngSXBioMUpRnrUZGnVNgMkCyn0L9TXhgWttFlbM3A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(230922051799003)(64100799003)(82310400011)(451199024)(186009)(1800799012)(40470700004)(36840700001)(46966006)(40460700003)(316002)(110136005)(36756003)(70206006)(70586007)(336012)(2616005)(426003)(81166007)(478600001)(103116003)(6666004)(1076003)(26005)(16526019)(82740400003)(921008)(356005)(83380400001)(36860700001)(86362001)(47076005)(40480700001)(5660300002)(7416002)(2906002)(8936002)(41300700001)(8676002)(36900700001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 05:44:18.0599
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04674ec8-6cb5-45f9-1400-08dbeb1e11ae
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FB.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9343
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 12/16] KVM: x86/tdp_mmu, TDX: Split a large page when
+ 4KB page within it converted to shared
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <051d18f03ff70a66387ec37988d1ffd29f43f4f5.1699368363.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <051d18f03ff70a66387ec37988d1ffd29f43f4f5.1699368363.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for both Device-key and user-key encrypted bitstream
-loading to the Xilinx ZynqMP Soc.
 
-Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
----
- drivers/fpga/zynqmp-fpga.c           | 53 ++++++++++++++++++++++++++--
- include/linux/firmware/xlnx-zynqmp.h |  2 ++
- 2 files changed, 52 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index f3434e2c487b..8b0e4b8b5d99 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -15,16 +15,44 @@
- /* Constant Definitions */
- #define IXR_FPGA_DONE_MASK	BIT(3)
- 
-+#define ENCRYPTED_KEY_LEN	64
-+#define AES_MATCH_STR_LEN	5
-+
- /**
-  * struct zynqmp_fpga_priv - Private data structure
-+ * @aes_key:	Pointer Aes key buffer
-  * @dev:	Device data structure
-  * @flags:	flags which is used to identify the bitfile type
-  */
- struct zynqmp_fpga_priv {
-+	const char *aes_key;
- 	struct device *dev;
- 	u32 flags;
- };
- 
-+static int zynqmp_fpga_parse_aes_key(struct fpga_manager *mgr,
-+				     struct fpga_image_info *info,
-+				     const char *buf, size_t size)
-+{
-+	struct zynqmp_fpga_priv *priv = mgr->priv;
-+	const char *str = "Key 0";
-+
-+	for (int i = 0; i < size; i++) {
-+		if (!strncmp(str, &buf[i], AES_MATCH_STR_LEN)) {
-+			buf += AES_MATCH_STR_LEN + 1;
-+			while (buf[i] == ' ')
-+				i++;
-+			if (size - i < ENCRYPTED_KEY_LEN)
-+				return -EINVAL;
-+			priv->aes_key = &buf[i];
-+
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static int zynqmp_fpga_ops_write_init(struct fpga_manager *mgr,
- 				      struct fpga_image_info *info,
- 				      const char *buf, size_t size)
-@@ -43,25 +71,43 @@ static int zynqmp_fpga_ops_write(struct fpga_manager *mgr,
- 	struct zynqmp_fpga_priv *priv;
- 	dma_addr_t dma_addr;
- 	u32 eemi_flags = 0;
-+	size_t dma_size;
- 	char *kbuf;
- 	int ret;
- 
- 	priv = mgr->priv;
- 
--	kbuf = dma_alloc_coherent(priv->dev, size, &dma_addr, GFP_KERNEL);
-+	if (priv->flags & FPGA_MGR_USRKEY_ENCRYPTED_BITSTREAM)
-+		dma_size = size + ENCRYPTED_KEY_LEN;
-+	else
-+		dma_size = size;
-+
-+	kbuf = dma_alloc_coherent(priv->dev, dma_size, &dma_addr, GFP_KERNEL);
- 	if (!kbuf)
- 		return -ENOMEM;
- 
- 	memcpy(kbuf, buf, size);
- 
-+	if (priv->flags & FPGA_MGR_USRKEY_ENCRYPTED_BITSTREAM) {
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_USERKEY;
-+		memcpy(kbuf + size, priv->aes_key, ENCRYPTED_KEY_LEN);
-+	}
-+
- 	wmb(); /* ensure all writes are done before initiate FW call */
- 
- 	if (priv->flags & FPGA_MGR_PARTIAL_RECONFIG)
- 		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_PARTIAL;
- 
--	ret = zynqmp_pm_fpga_load(dma_addr, size, eemi_flags);
-+	if (priv->flags & FPGA_MGR_ENCRYPTED_BITSTREAM)
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_DEVKEY;
-+
-+	if (priv->flags & FPGA_MGR_USRKEY_ENCRYPTED_BITSTREAM)
-+		ret = zynqmp_pm_fpga_load(dma_addr, dma_addr + size,
-+					  eemi_flags);
-+	else
-+		ret = zynqmp_pm_fpga_load(dma_addr, size, eemi_flags);
- 
--	dma_free_coherent(priv->dev, size, kbuf, dma_addr);
-+	dma_free_coherent(priv->dev, dma_size, kbuf, dma_addr);
- 
- 	return ret;
- }
-@@ -99,6 +145,7 @@ ATTRIBUTE_GROUPS(zynqmp_fpga);
- 
- static const struct fpga_manager_ops zynqmp_fpga_ops = {
- 	.state = zynqmp_fpga_ops_state,
-+	.parse_aes_key = zynqmp_fpga_parse_aes_key,
- 	.write_init = zynqmp_fpga_ops_write_init,
- 	.write = zynqmp_fpga_ops_write,
- };
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index d1ea3898564c..e88f24870a77 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -83,6 +83,8 @@
-  */
- #define XILINX_ZYNQMP_PM_FPGA_FULL	0x0U
- #define XILINX_ZYNQMP_PM_FPGA_PARTIAL	BIT(0)
-+#define XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_USERKEY	BIT(3)
-+#define XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_DEVKEY		BIT(4)
- 
- /* FPGA Status Reg */
- #define XILINX_ZYNQMP_PM_FPGA_CONFIG_STAT_OFFSET	7U
--- 
-2.25.1
+On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
+> From: Xiaoyao Li <xiaoyao.li@intel.com>
+>
+> When mapping the shared page for TDX, it needs to zap private alias.
+>
+> In the case that private page is mapped as large page (2MB), it can be
+> removed directly only when the whole 2MB is converted to shared.
+> Otherwise, it has to split 2MB page into 512 4KB page, and only remove
+> the pages that converted to shared.
+>
+> When a present large leaf spte switches to present non-leaf spte, TDX needs
+> to split the corresponding SEPT page to reflect it.
+>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>   arch/x86/include/asm/kvm_host.h    |  2 ++
+>   arch/x86/kvm/mmu/tdp_mmu.c         | 21 ++++++++++++++++-----
+>   arch/x86/kvm/vmx/tdx.c             | 25 +++++++++++++++++++++++--
+>   arch/x86/kvm/vmx/tdx_arch.h        |  1 +
+>   arch/x86/kvm/vmx/tdx_ops.h         |  7 +++++++
+>   6 files changed, 50 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 8ef0ed217f6e..3deb6ab4f291 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -103,6 +103,7 @@ KVM_X86_OP_OPTIONAL_RET0(get_mt_mask)
+>   KVM_X86_OP(load_mmu_pgd)
+>   KVM_X86_OP_OPTIONAL(link_private_spt)
+>   KVM_X86_OP_OPTIONAL(free_private_spt)
+> +KVM_X86_OP_OPTIONAL(split_private_spt)
+>   KVM_X86_OP_OPTIONAL(set_private_spte)
+>   KVM_X86_OP_OPTIONAL(remove_private_spte)
+>   KVM_X86_OP_OPTIONAL(zap_private_spte)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index c16823f3326e..e75a461bdea7 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1753,6 +1753,8 @@ struct kvm_x86_ops {
+>   				void *private_spt);
+>   	int (*free_private_spt)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+>   				void *private_spt);
+> +	int (*split_private_spt)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+> +				  void *private_spt);
+>   	int (*set_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+>   				 kvm_pfn_t pfn);
+>   	int (*remove_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index a209a67decae..734ee822b43c 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -599,23 +599,34 @@ static int __must_check __set_private_spte_present(struct kvm *kvm, tdp_ptep_t s
+>   {
+>   	bool was_present = is_shadow_present_pte(old_spte);
+>   	bool is_present = is_shadow_present_pte(new_spte);
+> +	bool was_leaf = was_present && is_last_spte(old_spte, level);
+>   	bool is_leaf = is_present && is_last_spte(new_spte, level);
+>   	kvm_pfn_t new_pfn = spte_to_pfn(new_spte);
+> +	void *private_spt;
+>   	int ret = 0;
+>   
+>   	lockdep_assert_held(&kvm->mmu_lock);
+> -	/* TDP MMU doesn't change present -> present */
+> -	KVM_BUG_ON(was_present, kvm);
+>   
+>   	/*
+>   	 * Use different call to either set up middle level
+>   	 * private page table, or leaf.
+>   	 */
+> -	if (is_leaf)
+> +	if (level > PG_LEVEL_4K && was_leaf && !is_leaf) {
+> +		/*
+> +		 * splitting large page into 4KB.
+> +		 * tdp_mmu_split_huage_page() => tdp_mmu_link_sp()
+Typo, tdp_mmu_split_huage_page -> tdp_mmu_split_huge_page
+
+> +		 */
+> +		private_spt = get_private_spt(gfn, new_spte, level);
+> +		KVM_BUG_ON(!private_spt, kvm);
+> +		ret = static_call(kvm_x86_zap_private_spte)(kvm, gfn, level);
+> +		kvm_flush_remote_tlbs(kvm);
+> +		if (!ret)
+> +			ret = static_call(kvm_x86_split_private_spt)(kvm, gfn,
+> +								     level, private_spt);
+> +	} else if (is_leaf)
+>   		ret = static_call(kvm_x86_set_private_spte)(kvm, gfn, level, new_pfn);
+>   	else {
+> -		void *private_spt = get_private_spt(gfn, new_spte, level);
+> -
+> +		private_spt = get_private_spt(gfn, new_spte, level);
+>   		KVM_BUG_ON(!private_spt, kvm);
+>   		ret = static_call(kvm_x86_link_private_spt)(kvm, gfn, level, private_spt);
+>   	}
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index c614ab20c191..91eca578a7da 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -1662,6 +1662,28 @@ static int tdx_sept_link_private_spt(struct kvm *kvm, gfn_t gfn,
+>   	return 0;
+>   }
+>   
+> +static int tdx_sept_split_private_spt(struct kvm *kvm, gfn_t gfn,
+> +				      enum pg_level level, void *private_spt)
+> +{
+> +	int tdx_level = pg_level_to_tdx_sept_level(level);
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> +	gpa_t gpa = gfn_to_gpa(gfn) & KVM_HPAGE_MASK(level);
+> +	hpa_t hpa = __pa(private_spt);
+> +	struct tdx_module_args out;
+> +	u64 err;
+> +
+> +	/* See comment in tdx_sept_set_private_spte() */
+Do you mean the comment about the pages are pinned to prevent migration 
+part?
+Can you add some specific short information in this comment, in case
+tdx_sept_set_private_spte() is extended to have more comments in the future?
+
+> +	err = tdh_mem_page_demote(kvm_tdx->tdr_pa, gpa, tdx_level, hpa, &out);
+> +	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
+> +		return -EAGAIN;
+> +	if (KVM_BUG_ON(err, kvm)) {
+> +		pr_tdx_error(TDH_MEM_PAGE_DEMOTE, err, &out);
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn,
+>   				      enum pg_level level)
+>   {
+> @@ -1675,8 +1697,6 @@ static int tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn,
+>   	if (unlikely(!is_hkid_assigned(kvm_tdx)))
+>   		return 0;
+>   
+> -	/* For now large page isn't supported yet. */
+> -	WARN_ON_ONCE(level != PG_LEVEL_4K);
+>   	err = tdh_mem_range_block(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
+>   	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
+>   		return -EAGAIN;
+> @@ -3183,6 +3203,7 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
+>   
+>   	x86_ops->link_private_spt = tdx_sept_link_private_spt;
+>   	x86_ops->free_private_spt = tdx_sept_free_private_spt;
+> +	x86_ops->split_private_spt = tdx_sept_split_private_spt;
+>   	x86_ops->set_private_spte = tdx_sept_set_private_spte;
+>   	x86_ops->remove_private_spte = tdx_sept_remove_private_spte;
+>   	x86_ops->zap_private_spte = tdx_sept_zap_private_spte;
+> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
+> index ba41fefa47ee..cab6a74446a0 100644
+> --- a/arch/x86/kvm/vmx/tdx_arch.h
+> +++ b/arch/x86/kvm/vmx/tdx_arch.h
+> @@ -21,6 +21,7 @@
+>   #define TDH_MNG_CREATE			9
+>   #define TDH_VP_CREATE			10
+>   #define TDH_MNG_RD			11
+> +#define TDH_MEM_PAGE_DEMOTE		15
+>   #define TDH_MR_EXTEND			16
+>   #define TDH_MR_FINALIZE			17
+>   #define TDH_VP_FLUSH			18
+> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
+> index 0f2df7198bde..38ab0ab1509c 100644
+> --- a/arch/x86/kvm/vmx/tdx_ops.h
+> +++ b/arch/x86/kvm/vmx/tdx_ops.h
+> @@ -183,6 +183,13 @@ static inline u64 tdh_mng_rd(hpa_t tdr, u64 field, struct tdx_module_args *out)
+>   	return tdx_seamcall(TDH_MNG_RD, tdr, field, 0, 0, out);
+>   }
+>   
+> +static inline u64 tdh_mem_page_demote(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
+> +				      struct tdx_module_args *out)
+> +{
+> +	tdx_clflush_page(page, PG_LEVEL_4K);
+> +	return tdx_seamcall_sept(TDH_MEM_PAGE_DEMOTE, gpa | level, tdr, page, 0, out);
+> +}
+> +
+>   static inline u64 tdh_mr_extend(hpa_t tdr, gpa_t gpa,
+>   				struct tdx_module_args *out)
+>   {
 
