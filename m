@@ -2,188 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640537F40AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628817F40A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbjKVI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38436 "EHLO
+        id S230403AbjKVIzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKVI40 (ORCPT
+        with ESMTP id S229513AbjKVIzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:56:26 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B316AE7;
-        Wed, 22 Nov 2023 00:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700643383; x=1732179383;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=579B6Vn86UXddgf59Bx7trqMdHFc5/puvhZkPkUaV4A=;
-  b=JUlVi7MPbR//by4Thh7ciwxViQLuX3LQvwvLS8Ri7e3qi6GBLnZPXnHs
-   oMzy7cLvLTw5hpHFQsyYYWutNKkPJ3x1eQ4+SkdSTA5uKlEx+Bais/C2p
-   bDrFifPgYrHryGLJqJPXJXxNw6w5BkSf2P1xNEBWYBQychdvCkvY06LKy
-   cMtXk69hF1BsIo4n7qsUfGfP5vnpYIyGX2dKZwAt+StXtenznfqE6ntBG
-   ZDGdvpD35/sxstU5Llj1J0+cuaqelhwuAJVaoZyko4l8QaVwegMf5NygV
-   C7EcDjNl9dmaTnjsRWRsBxpugL6JiH3p29aTHm2fU7++NatvoJfEIvRTe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5154735"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="5154735"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 00:56:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="770520489"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="770520489"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Nov 2023 00:56:19 -0800
-Date:   Wed, 22 Nov 2023 16:54:26 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Paul Durrant <paul@xen.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        Wed, 22 Nov 2023 03:55:12 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA1EE7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:55:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6DAF0218A2;
+        Wed, 22 Nov 2023 08:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1700643307; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9EoQGFAtO5/cYeUaY+Oaom7nTtjpqsRwwEVt4XkmqR0=;
+        b=uEBB4SXGz920+dgkLZ6bfRvDwouJI2BC8misLJkFkYB77VTWzT6WoJ07n/lFsMgbyZarrq
+        6R3und7SOMWPI2jUr+W+mnG4HRbmJi1lamKyIoWj7G30YPRrRTQR26P+B8rxM5tH0zJyMq
+        +5GmYcjtykdGqD3zJz+5ZuTdcz3I9X8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FBFC139FD;
+        Wed, 22 Nov 2023 08:55:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id PXYEDOvBXWU/ZAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 22 Nov 2023 08:55:07 +0000
+Date:   Wed, 22 Nov 2023 09:55:06 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 07/15] KVM: pfncache: include page offset in uhva and
- use it consistently
-Message-ID: <ZV3Bwghwz63LmgMu@yilunxu-OptiPlex-7050>
-References: <20231121180223.12484-1-paul@xen.org>
- <20231121180223.12484-8-paul@xen.org>
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no
+ swap space
+Message-ID: <ZV3B6gig-6gyFPro@tiehlicka>
+References: <20231121090624.1814733-1-liushixin2@huawei.com>
+ <ZVyp5eETLTT0PCYj@tiehlicka>
+ <32fe518a-e962-14ae-badc-719390386db9@huawei.com>
+ <CAJD7tkbC=Z6qAE+b6Ch5eVxNY7k0p98i_=RY0m4_3yg5C_zv+A@mail.gmail.com>
+ <878r6q9sx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231121180223.12484-8-paul@xen.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878r6q9sx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.80
+X-Spamd-Result: default: False [-7.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.20)[-0.998];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 06:02:15PM +0000, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+On Wed 22-11-23 14:57:24, Huang, Ying wrote:
+> Yosry Ahmed <yosryahmed@google.com> writes:
 > 
-> Currently the pfncache page offset is sometimes determined using the gpa
-> and sometimes the khva, whilst the uhva is always page-aligned. After a
-> subsequent patch is applied the gpa will not always be valid so adjust
-> the code to include the page offset in the uhva and use it consistently
-> as the source of truth.
+> > On Tue, Nov 21, 2023 at 10:41 PM Liu Shixin <liushixin2@huawei.com> wrote:
+> >>
+> >>
+> >> On 2023/11/21 21:00, Michal Hocko wrote:
+> >> > On Tue 21-11-23 17:06:24, Liu Shixin wrote:
+> >> >
+> >> > However, in swapcache_only mode, the scan count still increased when scan
+> >> > non-swapcache pages because there are large number of non-swapcache pages
+> >> > and rare swapcache pages in swapcache_only mode, and if the non-swapcache
+> >> > is skipped and do not count, the scan of pages in isolate_lru_folios() can
+> >> > eventually lead to hung task, just as Sachin reported [2].
+> >> > I find this paragraph really confusing! I guess what you meant to say is
+> >> > that a real swapcache_only is problematic because it can end up not
+> >> > making any progress, correct?
+> >> This paragraph is going to explain why checking swapcache_only after scan += nr_pages;
+> >> >
+> >> > AFAIU you have addressed that problem by making swapcache_only anon LRU
+> >> > specific, right? That would be certainly more robust as you can still
+> >> > reclaim from file LRUs. I cannot say I like that because swapcache_only
+> >> > is a bit confusing and I do not think we want to grow more special
+> >> > purpose reclaim types. Would it be possible/reasonable to instead put
+> >> > swapcache pages on the file LRU instead?
+> >> It looks like a good idea, but I'm not sure if it's possible. I can try it, is there anything to
+> >> pay attention to?
+> >
+> > I think this might be more intrusive than we think. Every time a page
+> > is added to or removed from the swap cache, we will need to move it
+> > between LRUs. All pages on the anon LRU will need to go through the
+> > file LRU before being reclaimed. I think this might be too big of a
+> > change to achieve this patch's goal.
 > 
-> Also, where a page-aligned address is required, use PAGE_ALIGN_DOWN()
-> for clarity.
+> We need to identify swap cache pages on file LRU firstly.  It appears
+> hard from the current definition of page flags.
 > 
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> ---
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+>   /* Filesystems */
+>   PG_checked = PG_owner_priv_1,
 > 
-> v8:
->  - New in this version.
-> ---
->  virt/kvm/pfncache.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
-> index 0eeb034d0674..c545f6246501 100644
-> --- a/virt/kvm/pfncache.c
-> +++ b/virt/kvm/pfncache.c
-> @@ -48,10 +48,10 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
->  	if (!gpc->active)
->  		return false;
->  
-> -	if (offset_in_page(gpc->gpa) + len > PAGE_SIZE)
-> +	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
->  		return false;
->  
-> -	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
-> +	if (offset_in_page(gpc->uhva) + len > PAGE_SIZE)
->  		return false;
->  
->  	if (!gpc->valid)
-> @@ -119,7 +119,7 @@ static inline bool mmu_notifier_retry_cache(struct kvm *kvm, unsigned long mmu_s
->  static kvm_pfn_t hva_to_pfn_retry(struct gfn_to_pfn_cache *gpc)
->  {
->  	/* Note, the new page offset may be different than the old! */
-> -	void *old_khva = gpc->khva - offset_in_page(gpc->khva);
-> +	void *old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
->  	kvm_pfn_t new_pfn = KVM_PFN_ERR_FAULT;
->  	void *new_khva = NULL;
->  	unsigned long mmu_seq;
-> @@ -192,7 +192,7 @@ static kvm_pfn_t hva_to_pfn_retry(struct gfn_to_pfn_cache *gpc)
->  
->  	gpc->valid = true;
->  	gpc->pfn = new_pfn;
-> -	gpc->khva = new_khva + offset_in_page(gpc->gpa);
-> +	gpc->khva = new_khva + offset_in_page(gpc->uhva);
->  
->  	/*
->  	 * Put the reference to the _new_ pfn.  The pfn is now tracked by the
-> @@ -215,8 +215,8 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
->  	struct kvm_memslots *slots = kvm_memslots(gpc->kvm);
->  	unsigned long page_offset = offset_in_page(gpa);
->  	bool unmap_old = false;
-> -	unsigned long old_uhva;
->  	kvm_pfn_t old_pfn;
-> +	bool hva_change = false;
->  	void *old_khva;
->  	int ret;
->  
-> @@ -242,8 +242,7 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
->  	}
->  
->  	old_pfn = gpc->pfn;
-> -	old_khva = gpc->khva - offset_in_page(gpc->khva);
-> -	old_uhva = gpc->uhva;
-> +	old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
->  
->  	/* If the userspace HVA is invalid, refresh that first */
->  	if (gpc->gpa != gpa || gpc->generation != slots->generation ||
-> @@ -259,13 +258,25 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
->  			ret = -EFAULT;
->  			goto out;
->  		}
-> +
-> +		hva_change = true;
-> +	} else {
-> +		/*
-> +		 * No need to do any re-mapping if the only thing that has
-> +		 * changed is the page offset. Just page align it to allow the
-> +		 * new offset to be added in.
+>   /* SwapBacked */
+>   PG_swapcache = PG_owner_priv_1,       /* Swap page: swp_entry_t in private */
 
-I don't understand how the uhva('s offset) could be changed when both gpa and
-slot are not changed. Maybe I have no knowledge of xen, but in later
-patch you said your uhva would never change...
+Checking along with folio_test_swapbacked would do the trick, right?
 
-Thanks,
-Yilun
-
-> +		 */
-> +		gpc->uhva = PAGE_ALIGN_DOWN(gpc->uhva);
->  	}
->  
-> +	/* Note: the offset must be correct before calling hva_to_pfn_retry() */
-> +	gpc->uhva += page_offset;
-> +
->  	/*
->  	 * If the userspace HVA changed or the PFN was already invalid,
->  	 * drop the lock and do the HVA to PFN lookup again.
->  	 */
-> -	if (!gpc->valid || old_uhva != gpc->uhva) {
-> +	if (!gpc->valid || hva_change) {
->  		ret = hva_to_pfn_retry(gpc);
->  	} else {
->  		/*
-> -- 
-> 2.39.2
-> 
-> 
+-- 
+Michal Hocko
+SUSE Labs
