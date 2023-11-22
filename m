@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9486D7F5348
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EB17F534C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344669AbjKVWTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        id S1344649AbjKVWUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbjKVWTw (ORCPT
+        with ESMTP id S235249AbjKVWUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:19:52 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E04CE7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:19:49 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da307fb7752so339039276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:19:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700691588; x=1701296388; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
-        b=zhLZGpAUuA/22M6TtGTHGgS7ilS41Jy1MH6OMzs/tYtIb0rnu7PKKJQtkcLQFUKj2r
-         tXJu31m7WDO5kWi12UnGqE31cgqyQnmurs2kNufAZ/i2vzMAxb76QBkeT79NLxiuQo6+
-         A97fasyVXyuwgUAiaWEvtgWomhIJCxwr/TgQb0EEPe5A+EioK/wpVrAWTsSLJA6XVQsx
-         WIzv09c8r0RkuSPvbkZftTXYkp0rjCQY3R6Mrc8YqGx7Y21ZokQNEbv/fbgXI+9k10YO
-         KJekmRAlZOY1oqhIRrqVEzBuSv+XtIXcU0kf3pdRaLPsag/oO4QRCaWrN2Qon0FRjO7w
-         ypdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691588; x=1701296388;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4w9WGlpV+oKNURgCWJmbzMqmytRuxi/IH9HmVAy3vpk=;
-        b=mIw2hjkDgeg5Rd2izDnO/M5DvwGYHT8UZUCkQNcX+B8RFK2oFHi81TKkU95na3TsoJ
-         l6G3j3ZU29p+xHiHu4B/EJyMLKM7xYcnbxL/JHLVPBXe65XcG4dzuaPQY4PMz5CMfVe6
-         9HFAGQUNaIFckivCqETqZ7YxCVj2yDR+ArvdKD5kSkixRmT88ABeuICNO4OdQVKZNCYE
-         0QZ+W4lioHoDtFrOKNBR/SUSPLeizcMAQxFaNO1ZN6xKoOgkYXj+0F8MLb/515i/4cmw
-         XQmBO9u4rO8Egkc9eb1zGa2p/6VPj5738FkYMN2frytEzx2+rZCY244R29gks0IX3oee
-         MeHA==
-X-Gm-Message-State: AOJu0YxFjW+JHlEWeYB6OcSbBh2tzRHNRRP+LKnGz5kgIaQkKAS3Xn7Q
-        5TY4ZqaPylZvBxQ+AdeAuXxK8wVZDh7wZfc=
-X-Google-Smtp-Source: AGHT+IHSDwqtRBxMdDOnZwBq01UvhHo5RWciGN7c3Nmk1lbfhcd8KQUoKkkA0peDZ+LMczKoiDc2N2BAek7agzE=
-X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
- (user=jsperbeck job=sendgmr) by 2002:a05:6902:1801:b0:daf:660e:9bdb with SMTP
- id cf1-20020a056902180100b00daf660e9bdbmr101297ybb.6.1700691588594; Wed, 22
- Nov 2023 14:19:48 -0800 (PST)
-Date:   Wed, 22 Nov 2023 22:19:47 +0000
-In-Reply-To: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
-Mime-Version: 1.0
-References: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231122221947.781812-1-jsperbeck@google.com>
-Subject: Re: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
-From:   John Sperbeck <jsperbeck@google.com>
-To:     tip-bot2@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        peterz@infradead.org, rui.zhang@intel.com, tglx@linutronix.de,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 22 Nov 2023 17:20:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBAD1B5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:20:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B4DC433C7;
+        Wed, 22 Nov 2023 22:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700691615;
+        bh=u13b0z+tp/dZxRqpZv9t59kmK5DC5BMUsS/pUkeI2qs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ooPGsOvLIdQyfEAMzxU5AUDDT2dgbuOSg46vaCSzFAnxa36wUIPVF3WtkoXNnAeaN
+         YdoU6LZdkYxhfbvjtcuLhNyWwoXytZde9SwDNdY1Tl4jmbeB43qZphfgSByJsUxg6F
+         P42dILUa3xainFiGGpmMZiLsPLcEDJtYXJ/ilM2uH10l75uTYay6fTgHXEInAIBAG4
+         xl/J2Gkfb9/Y4GskeTffJXv++AReoFw1IqyLIHEbuV3K3MIzH0TePiOljvcS0wZRrY
+         uZ5v8zD7ziuBZelAzr6Xo3tqZ+1c5uFG/k5FHGSkkUSoF0lVfVgTQYw4reqGMKmeoV
+         vdRr0+LrX7NVA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Robert Richter <rric@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Sergey Temerkhanov <s.temerkhanov@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Yeqi Fu <asuk4.q@gmail.com>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC, thunderx: fix possible out-of-bounds string access.
+Date:   Wed, 22 Nov 2023 23:19:53 +0100
+Message-Id: <20231122222007.3199885-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have a platform with both LOCAL_APIC and LOCAL_X2APIC entries for
-each CPU.  However, the ids for the LOCAL_APIC entries are all
-invalid ids of 255, so they have always been skipped in acpi_parse_lapic()
-by this code from f3bf1dbe64b6 ("x86/acpi: Prevent LAPIC id 0xff from being
-accounted"):
+From: Arnd Bergmann <arnd@arndb.de>
 
-    /* Ignore invalid ID */
-    if (processor->id == 0xff)
-            return 0;
+Commit 1b56c90018f0 ("Makefile: Enable -Wstringop-overflow globally") exposes a
+warning for a common bug in the usage of strncat():
 
-With the change in this thread, the return value of 0 means that the
-'count' variable in acpi_parse_entries_array() is incremented.  The
-positive return value means that 'has_lapic_cpus' is set, even though
-no entries were actually matched.  Then, when the MADT is iterated
-with acpi_parse_x2apic(), the x2apic entries with ids less than 255
-are skipped and most of my CPUs aren't recognized.
+drivers/edac/thunderx_edac.c: In function 'thunderx_ocx_com_threaded_isr':
+drivers/edac/thunderx_edac.c:1136:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
+ 1136 |                 strncat(msg, other, OCX_MESSAGE_SIZE);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/edac/thunderx_edac.c:1145:33: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
+ 1145 |                                 strncat(msg, other, OCX_MESSAGE_SIZE);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/edac/thunderx_edac.c:1150:33: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
+ 1150 |                                 strncat(msg, other, OCX_MESSAGE_SIZE);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/edac/thunderx_edac.c: In function 'thunderx_l2c_threaded_isr':
+drivers/edac/thunderx_edac.c:1899:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
+ 1899 |                 strncat(msg, other, L2C_MESSAGE_SIZE);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/edac/thunderx_edac.c: In function 'thunderx_ocx_lnk_threaded_isr':
+drivers/edac/thunderx_edac.c:1220:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
+ 1220 |                 strncat(msg, other, OCX_MESSAGE_SIZE);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I think the original version of this change was okay for this case in
-https://lore.kernel.org/lkml/87pm4bp54z.ffs@tglx/T/
+Apparently the author of this driver expected strncat() to behave the
+way that strlcat() does, which uses the size of the destination buffer
+as its third argument rather than the length of the source buffer.
+The result is that there is no check on the size of the allocated
+buffer.
 
-P.S. I could be convinced that the MADT for my platform is somewhat
-ill-formed and that I'm relying on pre-existing behavior.  I'm not
-well-versed enough in the topic to know for sure.
+Change it to use strncat().
+
+Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/edac/thunderx_edac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
+index b9c5772da959..90d46e5c4ff0 100644
+--- a/drivers/edac/thunderx_edac.c
++++ b/drivers/edac/thunderx_edac.c
+@@ -1133,7 +1133,7 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
+ 		decode_register(other, OCX_OTHER_SIZE,
+ 				ocx_com_errors, ctx->reg_com_int);
+ 
+-		strncat(msg, other, OCX_MESSAGE_SIZE);
++		strlcat(msg, other, OCX_MESSAGE_SIZE);
+ 
+ 		for (lane = 0; lane < OCX_RX_LANES; lane++)
+ 			if (ctx->reg_com_int & BIT(lane)) {
+@@ -1142,12 +1142,12 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
+ 					 lane, ctx->reg_lane_int[lane],
+ 					 lane, ctx->reg_lane_stat11[lane]);
+ 
+-				strncat(msg, other, OCX_MESSAGE_SIZE);
++				strlcat(msg, other, OCX_MESSAGE_SIZE);
+ 
+ 				decode_register(other, OCX_OTHER_SIZE,
+ 						ocx_lane_errors,
+ 						ctx->reg_lane_int[lane]);
+-				strncat(msg, other, OCX_MESSAGE_SIZE);
++				strlcat(msg, other, OCX_MESSAGE_SIZE);
+ 			}
+ 
+ 		if (ctx->reg_com_int & OCX_COM_INT_CE)
+@@ -1217,7 +1217,7 @@ static irqreturn_t thunderx_ocx_lnk_threaded_isr(int irq, void *irq_id)
+ 		decode_register(other, OCX_OTHER_SIZE,
+ 				ocx_com_link_errors, ctx->reg_com_link_int);
+ 
+-		strncat(msg, other, OCX_MESSAGE_SIZE);
++		strlcat(msg, other, OCX_MESSAGE_SIZE);
+ 
+ 		if (ctx->reg_com_link_int & OCX_COM_LINK_INT_UE)
+ 			edac_device_handle_ue(ocx->edac_dev, 0, 0, msg);
+@@ -1896,7 +1896,7 @@ static irqreturn_t thunderx_l2c_threaded_isr(int irq, void *irq_id)
+ 
+ 		decode_register(other, L2C_OTHER_SIZE, l2_errors, ctx->reg_int);
+ 
+-		strncat(msg, other, L2C_MESSAGE_SIZE);
++		strlcat(msg, other, L2C_MESSAGE_SIZE);
+ 
+ 		if (ctx->reg_int & mask_ue)
+ 			edac_device_handle_ue(l2c->edac_dev, 0, 0, msg);
+-- 
+2.39.2
+
