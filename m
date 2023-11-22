@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80587F3F1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D87467F3F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjKVHoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:44:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        id S230120AbjKVHpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjKVHoa (ORCPT
+        with ESMTP id S229931AbjKVHpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:44:30 -0500
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A0010E;
-        Tue, 21 Nov 2023 23:44:26 -0800 (PST)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM6BSjT020627;
-        Wed, 22 Nov 2023 08:44:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=selector1; bh=ha15CihN0usIDrZmjsw4S
-        CfQIkolylzql2Von2LDFCU=; b=K4HfY+V/sbmE5QduDj+4ChLm2/mmJbC6L0Wm5
-        fC+YWfd924xcm8XUoWGTTHvSwONfNZeOGKQV4XnTqk3alPe2j4WAcAsF+Xwc4gqc
-        kwtnSeLg+yLNv6lKEQCA6jGaLNjeDzbpGgZ4fYS9cbtmU4jF7HlbTqg0/u4BLPeC
-        UPkUGBekyN3MPbqWvZpfWe/PPKvdP5sdrpCV0xL2iJjXBcU+qLefoDJeStN2aAN2
-        VP5YFksa1DH3Eo4qnRgQCw+N4RhLsWitYj083gNXjpmxfyv5zlbfbzaOYvjgOmGI
-        sWgCyn0SLQiFlniLjtmWPJpxwp7EXdzCFLuRCH3iSHdBVS6jw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uek9a28yc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Nov 2023 08:44:10 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D777B10003E;
-        Wed, 22 Nov 2023 08:44:09 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CE84D21230F;
-        Wed, 22 Nov 2023 08:44:09 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 22 Nov
- 2023 08:44:09 +0100
-Date:   Wed, 22 Nov 2023 08:44:04 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 0/5] Add support for DCMIPP camera interface of
- STMicroelectronics STM32 SoC series
-Message-ID: <20231122074404.GA787777@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231120170809.728941-1-alain.volmat@foss.st.com>
- <ZVvNMPfW7OhPByZk@kekkonen.localdomain>
+        Wed, 22 Nov 2023 02:45:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A6C197
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:45:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700639138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jTGOOSKEq2M9Q7E6uQFEx6Kxv1A8e9evjKXYaodJf9c=;
+        b=fuDfCiodXAofXvsRSVjGucwJWNjsQCBN8/GCIE0rq6ztvRUKcC7SgxuwiCQW2CqlHPG6TD
+        npe/OtnN2O1mNlIdEwIXZUeq5Slez66t3moF/o3tAVu+6+U6SYaa6/MwxAZbGYbb4DDQCd
+        3Kfb7MfB8LqLKDUCp+ck01uXfYSh7uM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-d6584vmDO0Wf2Ns6rQrEnw-1; Wed, 22 Nov 2023 02:45:34 -0500
+X-MC-Unique: d6584vmDO0Wf2Ns6rQrEnw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA5FE89C666;
+        Wed, 22 Nov 2023 07:45:33 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 09A8640C6EB9;
+        Wed, 22 Nov 2023 07:45:28 +0000 (UTC)
+Date:   Wed, 22 Nov 2023 15:45:24 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v3 2/3] block: introduce new field bd_flags in
+ block_device
+Message-ID: <ZV2xlDgkLpPeUhHN@fedora>
+References: <20231122103103.1104589-1-yukuai1@huaweicloud.com>
+ <20231122103103.1104589-3-yukuai1@huaweicloud.com>
+ <ZV2tuLCH2cPXxQ30@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVvNMPfW7OhPByZk@kekkonen.localdomain>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-22_06,2023-11-21_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+In-Reply-To: <ZV2tuLCH2cPXxQ30@infradead.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,43 +65,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Tue, Nov 21, 2023 at 11:28:56PM -0800, Christoph Hellwig wrote:
+> > +	if (partno && bdev_flagged(disk->part0, BD_FLAG_HAS_SUBMIT_BIO))
+> > +		bdev_set_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
+> >  	else
+> > +		bdev_clear_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
+> 
+> While the block layer has a bit of history of using wrappers for
+> testing, setting and clearing flags, I have to say I always find them
+> rather confusing when reading the code.
+> 
+> > +#define BD_FLAG_READ_ONLY	0 /* read-only-policy */
+> 
+> I know this is copied from the existing field, but can you expand
+> it a bit?
+> 
+> > +#define BD_FLAG_WRITE_HOLDER	1
+> > +#define BD_FLAG_HAS_SUBMIT_BIO	2
+> > +#define BD_FLAG_MAKE_IT_FAIL	3
+> 
+> And also write comments for these. 
+> 
+> > +
+> >  struct block_device {
+> >  	sector_t		bd_start_sect;
+> >  	sector_t		bd_nr_sectors;
+> > @@ -44,10 +49,8 @@ struct block_device {
+> >  	struct request_queue *	bd_queue;
+> >  	struct disk_stats __percpu *bd_stats;
+> >  	unsigned long		bd_stamp;
+> > -	bool			bd_read_only;	/* read-only policy */
+> > +	unsigned short		bd_flags;
+> 
+> I suspect you really need an unsigned long and atomic bit ops here.
+> Even a lock would probably not work on alpha as it could affect
+> the other fields in the same 32-bit alignment.
+ 
+All the existed 'bool' flags are not atomic RW, so I think it isn't
+necessary to define 'bd_flags' as 'unsigned long' for replacing them.
 
-On Mon, Nov 20, 2023 at 09:18:40PM +0000, Sakari Ailus wrote:
-> Hi Alain,
-> 
-> On Mon, Nov 20, 2023 at 06:07:56PM +0100, Alain Volmat wrote:
-> > This patchset introduces support for Digital Camera Memory Interface
-> > Pixel Processor (DCMIPP) of STMicroelectronics STM32 SoC series.
-> > 
-> > This initial support implements a single capture pipe
-> > allowing RGB565, YUV, Y, RAW8 and JPEG capture with
-> > frame skipping, prescaling and cropping.
-> > 
-> > DCMIPP is exposed through 3 subdevices:
-> > - dcmipp_dump_parallel: parallel interface handling
-> > - dcmipp_dump_postproc: frame skipping, prescaling and cropping control
-> > - dcmipp_dump_capture: video device capture node
-> > 
-> > v7:
-> >   - correct byteproc set_fmt handling and compose/crop/fmt handling
-> >   - replace few v4l2_subdev_get_try_* into v4l2_subdev_get_pad_*
-> 
-> Can you rebase this on my my linuxtv.org tree master branch
-> <URL:https://git.linuxtv.org/sailus/media_tree.git/log/>?
-> 
-> These will be called v4l2_subdev_state_get_* now.
+Thanks, 
+Ming
 
-Ok, serie v8 is now rebased on top of the master branch of your tree.
-I'm going to push the rebased gc2145 sensor driver as well in a moment.
-
-Thanks.
-Alain
-
-> 
-> Thanks.
-> 
-> -- 
-> Regards,
-> 
-> Sakari Ailus
