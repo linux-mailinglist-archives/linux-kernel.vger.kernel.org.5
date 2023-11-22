@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6787F5457
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AB27F5458
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344415AbjKVXNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S1344577AbjKVXOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjKVXNP (ORCPT
+        with ESMTP id S229879AbjKVXOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:13:15 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0286D8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:13:11 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cf897c8de1so1738615ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:13:11 -0800 (PST)
+        Wed, 22 Nov 2023 18:14:02 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972A011F
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:13:58 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-332c7d4a6a7so164697f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:13:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700694791; x=1701299591; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700694837; x=1701299637; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nwznl9KTGkJM5XPuI3izDsWPQdxM5T7uw0a2p5x8c0w=;
-        b=aNDnyVO3t/phxPKhbMBku1r2qL12Wy0WAs/hoUpijyIe9EkDu1WxNKLm4c+C9n77T3
-         5ki4itmuucUnd5dfYVHTWbrnAfxmQ4Ay3RNvAjm3XK2q9PfMxS4UTxlnO/MjT6m7BAko
-         7iDdugljrG4DT2FXjODOca3S0KY2EcG3mwsWgAs9IpjU0+oNjvngnTS5MzlgegIfk8QL
-         p61YHvXtRe9qANdU6tebwDPYHEPYWzQ9vB6GyaUzAAR1ykuCjZbzly4ZxzeouTsH3tYc
-         P+zjGQq++YynCWPKpLxc7BL4raq4QkmE2Xpc227l6S+bzJK0Oo9iAn+0w06UKKX2W6Q4
-         5HIQ==
+        bh=wYxuH70oHfA52gNLRhhX4vP0LV6BSVurLPFK41qssdc=;
+        b=qXoDABKJPDvyFk8Y5rtY0iwUYcq0FuBuk73Mze7YE0P9UawC8+xeXOmQ11mSDezZjB
+         IYxHI/wR1I+lK9FlnJrE1PucqjwBMCbgonFJYibWciHI0rzTZuwEh9OF5jGY6qlAkI8e
+         DtNnlRiD0+Bq+nW7sbr8Rs9ytxLfS19gKPWZDRCLfoPQqW9QVDNxALHcKySA87/FYZqE
+         u1gGZxN4IEZ63m0SyYjX5IQuGH1cngwoq5oEgAjtEQyKMAjprDCGHRSvrX0kP7d8yti/
+         YtzWnBe3h/Qj1dDdc/v4nrdAa5NrCeRrFefBGOB03+UvtuodLi6eok1+w7nzgPCLaSKB
+         dt+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700694791; x=1701299591;
+        d=1e100.net; s=20230601; t=1700694837; x=1701299637;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nwznl9KTGkJM5XPuI3izDsWPQdxM5T7uw0a2p5x8c0w=;
-        b=VvffK0RiIyyUQmAJ2TKOMGbUH2ZMztmt4MJstowxMpsesNwMt9Ep2D6T31IzAvsjdD
-         Eplmj96c5Bwd/0oeGsnTewvfS5d37ZKZ4r6NsjYacN2+iUQDpZ84sOA4B0LaFpWZgm8m
-         OfxLur41jpNYfvLBkh5k4gweqNTw6PJW3hnkQeQjmSip6Sw2eDCtl8Lm9Prc4szOBPxZ
-         Wk18/0MdLRop8f5d92eGOea09ob99rjk9URPjpCPmQWRa9l5wVC64pNmij1b/dlD3Dsj
-         fobDN9CUpCO2TVr/4BpHzfQJkOet3E4F/GESJD3VBcnCGpd9u/dQuPorvFxJNU5ACVxl
-         fNOg==
-X-Gm-Message-State: AOJu0YxnmDcnqcRrHSDzyKN0CoH9Ito+ZDjTIcT+jjR/vvLnnLH9tUbj
-        TCRaSL7DqqKbtZANCHrDrcloXLi3ySZ3fD0Xn30=
-X-Google-Smtp-Source: AGHT+IGf3oPjZ4tCuYxiXArRZtd2g18U/dtfgi++B1Sq34Lp4/qi0PCMxNrrUgr8ypZmQuCtBDN5QS5o0dpAX5oyISU=
-X-Received: by 2002:a17:90b:38c8:b0:280:14ac:a6db with SMTP id
- nn8-20020a17090b38c800b0028014aca6dbmr4019309pjb.18.1700694790978; Wed, 22
- Nov 2023 15:13:10 -0800 (PST)
+        bh=wYxuH70oHfA52gNLRhhX4vP0LV6BSVurLPFK41qssdc=;
+        b=NMxXy0871y4n4bGz1FHONYrT2VPZJXJc12hk1T3jEdeIlhOrvS9wBHeboV0QKgzOd5
+         urIwx0vjtFD1w9DDkdEFLRsXHiGgFn1FNIyoZB9aVDZGJzBfaIqAzCpK8HxpykAhwXZQ
+         Yon5S1r4YEKvVI0rjnuSVLlbmVp6F6CjGukNl/H5K7SO+ZSjMSmHyafwuoWAz3LvZN2a
+         bW5j8tnRQokRqKroC57cyNFCcEH3y0lqVeCMsJ81In55UDewlrpk92SnlP5t+yvqTEZY
+         cqGhRJ3CjU0Os95VAR31oxSEMKsC2NR2tpQdPpjvb+5RvrowkB2ZRIifFgpw53mIQfgL
+         08vw==
+X-Gm-Message-State: AOJu0Yy3a7MBBCpyLEFw+rotycVHnBuqtEu9HdN42QZtjGRUDlRcqlEV
+        ZNBQ4XagfUn6MUvXptz9/ZnfC+Tzu8jAz4ukB/48lw==
+X-Google-Smtp-Source: AGHT+IFYi3BMn47KFjWgU73vrNPlY6rfEO7NJN6Pofc8xagO7DFbxSOaj7+w9+p5tuiCSj5HFYsfXanKI/Bqc/lCa5s=
+X-Received: by 2002:a5d:6d0d:0:b0:332:c5ff:1ba5 with SMTP id
+ e13-20020a5d6d0d000000b00332c5ff1ba5mr3509274wrq.13.1700694836803; Wed, 22
+ Nov 2023 15:13:56 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1700502145.git.andreyknvl@google.com> <5cef104d9b842899489b4054fe8d1339a71acee0.1700502145.git.andreyknvl@google.com>
- <CAB=+i9Q95W+w=-KC5vexJuqVi60JJ1P8e-_chegiXOUjB7C3DA@mail.gmail.com>
-In-Reply-To: <CAB=+i9Q95W+w=-KC5vexJuqVi60JJ1P8e-_chegiXOUjB7C3DA@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 23 Nov 2023 00:13:00 +0100
-Message-ID: <CA+fCnZcnL9w=iMgtOqw=bUYRhM2c0MbSbeQUfgzSffqghMutHg@mail.gmail.com>
-Subject: Re: [BISECTED] Boot hangs when SLUB_DEBUG_ON=y
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>
+References: <20231122220001.539770-1-royluo@google.com> <2023112253-fresh-blazing-baae@gregkh>
+In-Reply-To: <2023112253-fresh-blazing-baae@gregkh>
+From:   Roy Luo <royluo@google.com>
+Date:   Wed, 22 Nov 2023 15:13:20 -0800
+Message-ID: <CA+zupgzWqhOhAR0_ybxTQVL928dgAqbm5eqJ6gd-0qrNK7VZng@mail.gmail.com>
+Subject: Re: [PATCH v1] USB: gadget: core: adjust uevent timing on gadget unbind
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stern@rowland.harvard.edu, badhri@google.com,
+        quic_kriskura@quicinc.com, francesco.dolcini@toradex.com,
+        quic_eserrao@quicinc.com, ivan.orlov0322@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,40 +72,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 4:17=E2=80=AFAM Hyeonggon Yoo <42.hyeyoo@gmail.com>=
- wrote:
->
-> On Tue, Nov 21, 2023 at 1:08=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
-e:
-> >
-> > From: Andrey Konovalov <andreyknvl@google.com>
-> >
-> > Evict alloc/free stack traces from the stack depot for Generic KASAN
-> > once they are evicted from the quaratine.
-> >
-> > For auxiliary stack traces, evict the oldest stack trace once a new one
-> > is saved (KASAN only keeps references to the last two).
-> >
-> > Also evict all saved stack traces on krealloc.
-> >
-> > To avoid double-evicting and mis-evicting stack traces (in case KASAN's
-> > metadata was corrupted), reset KASAN's per-object metadata that stores
-> > stack depot handles when the object is initialized and when it's evicte=
-d
-> > from the quarantine.
-> >
-> > Note that stack_depot_put is no-op if the handle is 0.
-> >
-> > Reviewed-by: Marco Elver <elver@google.com>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> I observed boot hangs on a few SLUB configurations.
->
-> Having other users of stackdepot might be the cause. After passing
-> 'slub_debug=3D-' which disables SLUB debugging, it boots fine.
+The logic is there since day 1 of udc in Commit
+2ccea03a8f7ec93641791f2760d7cdc6cab6205f (usb: gadget: introduce UDC
+Class). Do you still want me to put on a fix tag?
 
-Hi Hyeonggon,
+(Sorry for the spam, forgot to switch to plain text mode..)
 
-Just mailed a fix.
-
-Thank you for the report!
+On Wed, Nov 22, 2023 at 2:07=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Wed, Nov 22, 2023 at 10:00:01PM +0000, Roy Luo wrote:
+> > The KOBJ_CHANGE uevent is sent before gadget unbind is actually
+> > executed, resulting in inaccurate uevent emitted at incorrect timing
+> > (the uevent would have USB_UDC_DRIVER variable set while it would
+> > soon be removed).
+> > Move the KOBJ_CHANGE uevent to the end of the unbind function so that
+> > uevent is sent only after the change has been made.
+> >
+> > Signed-off-by: Roy Luo <royluo@google.com>
+> > ---
+> >  drivers/usb/gadget/udc/core.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+>
+> What commit does this fix?
+>
+>
