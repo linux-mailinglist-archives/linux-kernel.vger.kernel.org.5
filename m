@@ -2,178 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700647F4EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132BA7F4EC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbjKVRxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        id S1344239AbjKVRyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbjKVRxs (ORCPT
+        with ESMTP id S232178AbjKVRyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:53:48 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC8E1A8;
-        Wed, 22 Nov 2023 09:53:44 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3316d09c645so3620816f8f.0;
-        Wed, 22 Nov 2023 09:53:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700675622; x=1701280422; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AdOBPKB2H9imCd9isIgQYWfbsuOE5ddo9bpSACnZw7o=;
-        b=X1QfVTaDZlrZlY8VYrFGXSKljh5vJ+6tN6jZO4PO5gqom8HXXeWlwjbsWdWmR2Smz5
-         8Big+26BVjQPuAOw/UJzklCyRjUD53Qu+zIbaFa4M7WOG8w83ODm7P408a2U2lGAhjvN
-         nfeyXKfgXIThQ5TK0xjqSjM9REuI9KIFB3rpHPSq+CYzULEmZ2zCXxKcjNvtqY3FY4/v
-         Z052waF+qfkQ5/ADvoTpi7xKNgc0ZzPJx/6UO+WG/cx3hTaQ71os5oaALiA9M5H5ZrzI
-         K6dnekuSeHzPSS3YTWmh2e0P4b5FOB24X8S0A+V5ySoN8cgoRBn1BKLRic3shf7TktXD
-         6M4w==
+        Wed, 22 Nov 2023 12:54:02 -0500
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47411B6;
+        Wed, 22 Nov 2023 09:53:58 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ce627400f6so63195ad.2;
+        Wed, 22 Nov 2023 09:53:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700675622; x=1701280422;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AdOBPKB2H9imCd9isIgQYWfbsuOE5ddo9bpSACnZw7o=;
-        b=IxXYKczN2g3xWM4gi7rqMJbyrrVULYbaG5WIAWgAT39zgt/VEJ284CF1JiLCMaVs4Y
-         RcUEbR+tWVN+lit1S90cpe8z+1H5F49I08UpvtNcpFOtLsV4efLVA76ZNpo4XzI1SspO
-         yX2kBfD/PbflJpYb3+r1uFDZq1LrzB7N/LPE0U2DObEtQCc1RrrS8LS/FvG+aUB2Rhe6
-         iXW/2XcjuUcxQX6tdssIxj8IS48s1fA1q1uUtAez+DftfZFDfZ+zF4ka+wPkAyo1vIfa
-         Vw9ndSYN9Yw8lo9GB+k96P/sRSg4EwUvi1+CVKiwMaSFru13uMf/NoRcHanXHHd9dAAc
-         SvaQ==
-X-Gm-Message-State: AOJu0Yw9VJriRPyLzPckXnNOW8NcgzBbMBKKNjGUUgo0MyG5g4Cl+KEO
-        qgJysMOaEzsHllTtNXp2qOU=
-X-Google-Smtp-Source: AGHT+IFlnSL12ZSmipJ4vORisCI3rn2874HDuY5w0IGDLNY/BeJv0cNVcWDQ9nqh7rT9QWFD5rDiPw==
-X-Received: by 2002:a5d:67c5:0:b0:332:c441:70aa with SMTP id n5-20020a5d67c5000000b00332c44170aamr2256749wrw.26.1700675622215;
-        Wed, 22 Nov 2023 09:53:42 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id k5-20020adfe8c5000000b00331733a98ddsm14781231wrn.111.2023.11.22.09.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 09:53:41 -0800 (PST)
-Message-ID: <655e4025.df0a0220.50550.3d70@mx.google.com>
-X-Google-Original-Message-ID: <ZV5AI/KsHnNi/gKs@Ansuel-xps.>
-Date:   Wed, 22 Nov 2023 18:53:39 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [net-next PATCH] net: phy: aquantia: drop wrong endianness
- conversion for addr and CRC
-References: <20231122170813.1222-1-ansuelsmth@gmail.com>
- <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
+        d=1e100.net; s=20230601; t=1700675638; x=1701280438;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9x8CsMUGTdsi5KPdkfQH5uxztLGIUnhqBarImAkbXp0=;
+        b=Qc0qvrJzvtu8utNsWERjBxpNc1sQwAT2RF+RU6sfdeymVFRlf3Aq+FKUIdJkaLTadP
+         K9zOQoGK1l58YtcRbmPosCtLYZlB2Zam6j6IxOP3Mk9CnP8Yb70vEe3AZ6N1gl5eiutV
+         BzQk603SxVIcgqVt33BojJUGCAtC8z5kYVZ9R6ToDnpW5/w4N6IaZkrqwge9JkMg0QYs
+         Vt9A09nkV6Kpa4SvaYDqcWJ/COGTK0VOq0T3UZ3f8ZzpPdzoepdsGI9D9uqrSFs+kEM/
+         +rpv1LDCZd4F0baPeq6C+1Vf1Ke8rUFLzODbI4hl7mckec1coYufNpKW95HoRh1Z1ov1
+         NDjA==
+X-Gm-Message-State: AOJu0YxJj2xpW3xpUBAxsRKa5bA3Qe7E2DT/zPsETGBvKW1CV2Pt7RG7
+        rZfux5A8b0HvxxsO2qiGER3ZgzwlUyM=
+X-Google-Smtp-Source: AGHT+IFzb5usn0fE7Zv2UqxPoMh/a3YXsRf3gak5hOkukkrSoLaetesuiE4QV/VtqZawsfR8M9e50A==
+X-Received: by 2002:a17:902:8341:b0:1c3:1f0c:fb82 with SMTP id z1-20020a170902834100b001c31f0cfb82mr2563544pln.41.1700675638221;
+        Wed, 22 Nov 2023 09:53:58 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:9d34:90db:9557:9413? ([2620:0:1000:8411:9d34:90db:9557:9413])
+        by smtp.gmail.com with ESMTPSA id j3-20020a170902758300b001cc0d1af177sm10070853pll.229.2023.11.22.09.53.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 09:53:57 -0800 (PST)
+Message-ID: <f9640827-4100-4ebf-8281-46f2d656540a@acm.org>
+Date:   Wed, 22 Nov 2023 09:53:53 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: ufs: Add msi-parent for UFS MCQ
+Content-Language: en-US
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>, quic_asutoshd@quicinc.com,
+        quic_cang@quicinc.com, mani@kernel.org, stanley.chu@mediatek.com,
+        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com
+Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 05:24:33PM +0000, Russell King (Oracle) wrote:
-> On Wed, Nov 22, 2023 at 06:08:13PM +0100, Christian Marangi wrote:
-> > On further testing on BE target with kernel test robot, it was notice
-> > that the endianness conversion for addr and CRC in fw_load_memory was
-> > wrong and actually not needed. Values in define doesn't get converted
-> > and are passed as is and hardcoded values are already in what the PHY
-> > require, that is LE.
-> > 
-> > Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
-> > _swab32 instead, the word is taked from firmware and is always LE, the
-> 
->                                taken
-> 
-> > mailbox will emit a BE CRC hence the word needs to be always swapped and
-> > the endianness of the host needs to be ignored.
-> 
-> I'm not convinced. If the firmware is a bytestream (as most "files" are)
-> then for val = get_unaligned((u32 *)ptr), where ptr is an array of u8:
-> 
-> ptr[0]	ptr[1]	ptr[2]	ptr[3]	val on LE	val on BE
-> 0x01	0x02	0x03	0x04	0x04030201	0x01020304
-> 
-> So, endianness matters here, and I think as Jakub already suggested, you
-> need to use get_unaligned_le32().
->
+On 11/21/23 21:06, Ziqi Chen wrote:
+> diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> index 985ea8f..31fe7f3 100644
+> --- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> +++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> @@ -87,6 +87,8 @@ properties:
+>       description:
+>         Specifies max. load that can be drawn from VCCQ2 supply.
+>   
+> +  msi-parent: true
+> +
+>   dependencies:
+>     freq-table-hz: [ clocks ]
+>     operating-points-v2: [ clocks, clock-names ]
 
-So they DO get converted to the HOST endian on reading the firmware from
-an nvmem cell or a filesystem?
+Does this patch break support for UFSHCI 4.0 controllers that do not support MSI?
 
-Again this is really dumping raw data from the read file directly to the
-mailbox. Unless phy_write does some conversion internally, but in that
-case how does it know what endian is the PHY internally?
+Thanks,
 
-> > diff --git a/drivers/net/phy/aquantia/aquantia_firmware.c b/drivers/net/phy/aquantia/aquantia_firmware.c
-> > index c5f292b1c4c8..bd093633d0cf 100644
-> > --- a/drivers/net/phy/aquantia/aquantia_firmware.c
-> > +++ b/drivers/net/phy/aquantia/aquantia_firmware.c
-> > @@ -93,9 +93,9 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
-> >  	u16 crc = 0, up_crc;
-> >  	size_t pos;
-> >  
-> > -	/* PHY expect addr in LE */
-> > -	addr = (__force u32)cpu_to_le32(addr);
-> > -
-> > +	/* PHY expect addr in LE. Hardcoded addr in defines are
-> > +	 * already in this format.
-> > +	 */
-> >  	phy_write_mmd(phydev, MDIO_MMD_VEND1,
-> >  		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
-> >  		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
-> > @@ -128,7 +128,7 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
-> >  		 * We convert word to big-endian as PHY is BE and mailbox will
-> >  		 * return a BE CRC.
-> >  		 */
-> > -		word = (__force u32)cpu_to_be32(word);
-> > +		word = __swab32(word);
-> >  		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
-> 
-> Again, I think you need to be careful with the endianness here again.
-> From what I understand here, it seems the CRC needs to be generated by
-> looking at the byte at ptr[3] first, then ptr[2], ptr[1] and finally
-> ptr[0] ?
-> 
-> If that is the case, the problem is using __swab32() on LE will do the
-> job for you, but on BE machines, it will be wrong.
-> 
-> I would make this explicit:
-> 
-> 		u8 crc_data[4];
-> 
-> 		...
-> 
-> 		/* CRC is calculated using BE order */
-> 		crc_data[0] = word >> 24;
-> 		crc_data[1] = word >> 16;
-> 		crc_data[2] = word >> 8;
-> 		crc_data[3] = word;
-> 
-> 		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
-> 
-> which will be (a) completely unambiguous, and (b) completely
-> independent of the host endianness.
-
-But isn't this exactly what is done with ___constant_swab32 ?
-__swab32 should not change if the HOST is BE or LE.
-
-The real question is if word is converted. (by either the read API on
-reading the FW or by phy_write on writing the thing to mailbox) (the
-test are done on a LE HOST)
-
-Our theory is that mailbox takes LE and internally converts to BE (as
-the PHY is BE) but the CRC reg calculates the CRC out of the converted
-data aka it does calculates the CRC from the BE data (converted
-internally).
-
--- 
-	Ansuel
+Bart.
