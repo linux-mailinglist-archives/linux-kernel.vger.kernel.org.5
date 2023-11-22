@@ -2,181 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366A67F4531
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9C7F4533
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343937AbjKVL4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S1344002AbjKVL4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343577AbjKVL4A (ORCPT
+        with ESMTP id S1343577AbjKVL4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:56:00 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2069.outbound.protection.outlook.com [40.107.22.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D2E91;
-        Wed, 22 Nov 2023 03:55:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ea5DxXu7/gjxXBfTJsc1GiiNDAVu1dtSIATgT0diITRcHQKFoaOU8MVzpnOTIxW2EcePzVuhPk9bwRUYMsNu07+tuHvp04zEi7RNdeko4Yf/rh9KL86Fy+Yn/izkIz5+EIiYqLFaFpUurOJ4kEz4XZWUc2QQhFrqXPABnETZ1ry3kmWpwNITE0MPqkvhsJ3TvgFPloLOrafe90q4zz8S8NDtVFJXhXgv2zvhiAM2VsQyL+xTBADRPbdH9J5+e4BlOl/dlYyMkZZSj/jpj+Nw71Od9kUJoQDwE4vw2ATaf/Qnw/mOPQovRa19nUe7N/jWv7HNE+5dWAxwnUHq7KjWZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DAZq1lqs0/i5JHU3+iZ2xT/hO6JGh13xOAcVSTw8Va4=;
- b=KNF+TU5Iw/bBU9EVXX6bxA8a6a0M1MIMaWvc39AUJhqsgYrGjIoRZsde5FH0d+F/Zmfq/q8+YONeTqRYZP7M0thZ98mdmcBzlW+s6RnBDThrM1QKn5DcJFTaRduaZjUQUFKfX8Tz2jPruPozFg9653z5t7NVC4PzFBmguxj6vTUuwJ6L8Y0qZDnsQ2/AZeZ5q2jY/sBSrxLDzsndewxIveL/KqAayfWT94QDrc0LyKmlk4Onc/N4a99rva4MlBm6aw/Tplri9ZSEjphjhq9q6wNjGHBL/TaBTnlEJIxa3mLLjkDbc9LuQtfxM8jW9ZON0rUzPUa0vztHPPxHdASF8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
- dkim=pass header.d=kunbus.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DAZq1lqs0/i5JHU3+iZ2xT/hO6JGh13xOAcVSTw8Va4=;
- b=D8eTDCkUM8m297oQsylbjrxzMCXZZuqXEjwiIwi2vkybgDBjesWmoN1nFdqmG1LOUQhAwHk1lkqGzzUeNZvFRKAtFYxynpp7dIT2LFWpIzPQiX3P7jMUpGRNOqx42xV7IirsuEFOud+02+Azx4gXCtNNNrG8btMRxiVhCV5wbWw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kunbus.com;
-Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM (2603:10a6:803:4e::14)
- by PAXP193MB1904.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:1c8::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
- 2023 11:55:52 +0000
-Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
- ([fe80::653f:d0f3:e7f6:8c06]) by VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
- ([fe80::653f:d0f3:e7f6:8c06%5]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
- 11:55:52 +0000
-Message-ID: <a2b54b76-01ce-4aa2-a00b-e65e123ba7e9@kunbus.com>
-Date:   Wed, 22 Nov 2023 12:55:49 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v4 1/7] serial: Do not hold the port lock when
- setting rx-during-tx GPIO
-Content-Language: en-US
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com
-Cc:     u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        lukas@wunner.de, p.rosenberger@kunbus.com, stable@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Hugo Villeneuve <hugo@hugovil.com>
-References: <20231119112856.11587-1-l.sanfilippo@kunbus.com>
- <20231119112856.11587-2-l.sanfilippo@kunbus.com>
-From:   Lino Sanfilippo <l.sanfilippo@kunbus.com>
-In-Reply-To: <20231119112856.11587-2-l.sanfilippo@kunbus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0319.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:eb::17) To VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:803:4e::14)
+        Wed, 22 Nov 2023 06:56:07 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5A51A4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:56:02 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-280200949c3so4551699a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:56:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700654162; x=1701258962; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qiNcTvNTiP7VbwUFL5XzEOZ9BBiJvHuVsV8cpSMamnM=;
+        b=I20OlXpQ8AXt1A1gxByEvynkkzMv3HjcAwmhsHjMiHP+8EvrSTEHIiucomtRJAjzn2
+         yzmtypDPZZ+/z1+IJv2q9c9Wirt0gHYVZ3JWI6esbb3HN8kImBt9vioI+7GgyXD+dCi3
+         FjY6RBrppJozlJs7EJ1f/J6VfvmKgVAAdgN4mbJT74MC6je+9SXe3xUU39zVEdz0J8QJ
+         01wmrQRUI1oukXHpuNJju3JRq7mQNIQZm2fMNa+TixTKjyu+91Z/KgkBf7+ciHeAfPuC
+         b1qsExEh6gO6In3QumM7pzY7lieiuwgj30n3IqvLRJ3gn8iDEH5gDZDaKNXkL+0l43My
+         381w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700654162; x=1701258962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qiNcTvNTiP7VbwUFL5XzEOZ9BBiJvHuVsV8cpSMamnM=;
+        b=vXLYhMysjeWJQ2USTfeJEkk2S6tWhk+N9MauCELIyajE5YIN9I3eSCcntZLE2aZNnt
+         KuO4UsVLwVk4qz0BPeuU8rJYoFZq+8RR1jsGnEOFZYZTh1DajPXY98rBOIOTjqhCxHzC
+         liUnrlCDFiWQ73+SZIHTt/ExoiaGpZ1z97L42tu+f/AeRfHV/4GTszo7ZLs/s4FBlH8U
+         I1kJ2p9PFeC8GEXgwWGZVypnUUFss0apAEmzEgcu32e+cBxmlzHaWi///c+qxlS5+m+o
+         PQbpxNTdzglW74ox5BLHLNLv1wsBQkRDM1iOmPG6FROutJ8UeTRu2bMFKKXpEIBqkuBt
+         bIaw==
+X-Gm-Message-State: AOJu0YxWD/+nBER7tbLt6vD6vVqjlGpITsm6Q2uR2+v0q58YRbxTDYXq
+        fLlAKirOdXZm19R7ihFrchT07U09H2POIatt46k=
+X-Google-Smtp-Source: AGHT+IHBnET7z4Y8NACRjYOd4f0oaRGvFIygIIguIJwQZpq0vGN9I9tfVbc5KH8obpdBh0m+WmNtJzSGEwXIscLpxgs=
+X-Received: by 2002:a17:90b:17ca:b0:280:1df1:cbc7 with SMTP id
+ me10-20020a17090b17ca00b002801df1cbc7mr2085974pjb.19.1700654161937; Wed, 22
+ Nov 2023 03:56:01 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0413:EE_|PAXP193MB1904:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3198fe32-ef41-45c1-0acf-08dbeb51f9d6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fTcgNzWOFz6neVuyNSKqs+kvjHE3oe5fPKFls8yWPXMpMrvDBRkOcYKfCTG2DTJYO5emVLfHWJ5eGO9Q8Jlk7r+DQbcBsPYKbXnM1vsVW/vPSafbRqhQU2cbNU8AwN3hn5fC2hrlMf+QFDRVc06lr1+N+/D9473hpqAER+wFlU5YfqsP8hIYNiIPorm90q9pdwD8l6Ao+WyZBQeawIwS0EPpA5JqC8w9iUpADWPW9KiR/RSv6GFrzoGeEWfn2oKx+E2QDyJdHr+MdyYZxJC74ml2hFeU0R3mSKJKUTKPWlNH7G+qyLhRoYS7PEUV6/yVwptlZgpzO65InQ9mwcvVDkOBTWumN+f/JnBllAyMuXA5v7Bt2zmphJBQGiY/yFfWhs1BT0nrqEoeCd9OGPeAuj+xsBmdL2vUE+myrsV/x+yvhyGVwqsgr/TJXglkSS/T/+UeyM5ORsluMcE62HHovGraRWGQvWyqoYbdfganv/cHdH0AQbwzPjprKjM+mGO9Jyk7AcAxDHUSz3Wgw8xj2FRsSTaain658SeA7L0tuXniYvZnDIoD6uphWQHN31VPyKAJkLm2/OxuJQQjFIunnKPP8CPux008si6DM8fa5z6SxjoCSCnhqqOfv4JQ4noyRcJtVXAqi8YNmz94gI7c0A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0413.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(39840400004)(136003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(2616005)(6512007)(6666004)(53546011)(52116002)(6506007)(83380400001)(478600001)(7416002)(2906002)(5660300002)(41300700001)(966005)(6486002)(4326008)(8676002)(8936002)(54906003)(66476007)(66556008)(66946007)(316002)(38100700002)(36756003)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmVUUi84ajRnSWNIWktQSEo3MUNBOWd4M1l1eEtlRkVQRDA1L3JIN1dLQy9B?=
- =?utf-8?B?WTY3WGI1K3Y4T2ZhTWJpZWRERi92QXAxZEtTWmN4SkNQSy81VEpMMERWazRm?=
- =?utf-8?B?K0RlbkhNZEMyTzR5ZUtIakM2d0hlWUYvUFZ2eHNWOTluN0JZelNmSXdQSnJZ?=
- =?utf-8?B?WHg3c2JIbXVQdUdOc2dEeEN6WE1zcnRvME9BY2NEQWhaUmp0SWNGb0prWS9i?=
- =?utf-8?B?b0JCK0RQU1I2T2Yvb1VXdjJJbHFQa05yNm80b2J6NldoVk0reXJXK1Mwbjhv?=
- =?utf-8?B?akxncFZmRDlqbEJ1bVlzMWYzbFhMZ1FTYmhXRS90dmg2ZzN5K21BYUZFbFBK?=
- =?utf-8?B?dXp4eTNxQkhQM040NzVXK0ZCN1dVY2graTU0LzA2clpwQjFvTWkyR1VQNDd4?=
- =?utf-8?B?RGFiYU5ld0NSK0VVdjYwd2JTUlloNlIvSHNhdFR3RFUzajBEb2I4Wmx3dVpJ?=
- =?utf-8?B?RjI3WmFuWjhjREdjTG1ERW5yaThQWkM3Ky91NE5WYURhNUJBWTdmOGJyYXBF?=
- =?utf-8?B?ZDA3WGliOU1RS1hhQTFOUEVzSEJTZEFOSnZnd2VsQmNtYktxV2NmbHdvK3hC?=
- =?utf-8?B?aXM4U3JQRythcjZvZVNEazI1ZlNQOENVMHJyRUU0TFI0ZFB0bElYaVRVdzl6?=
- =?utf-8?B?WlAwOXYwWXk3N1lsOHM4MS9FeWJsMGR6STNtc1hoTXY0RUd4MVVmTlRaS09i?=
- =?utf-8?B?Q01PRmtCY2xWZnp4dzhpV2R4emlOMUx0RSt5eUhOY0g1eWgvNk9Jck1vd1Jn?=
- =?utf-8?B?T2JDUG5jWkR1SEtuNjlBcnRoRmtsaHNPWW9RSjlSZWpDNHJLYWVVV0FSM1da?=
- =?utf-8?B?TURtZVpiTDlVNFg4TFJkdGFtNk11Y3FCMDBNYkw5TVUyRlhuY2d6Ti9iM1pv?=
- =?utf-8?B?V002elczSzVvOUZXSWYrMnBFam0wYlE3MHVWUjdzUGw1NTd6MFExWDMrM1gz?=
- =?utf-8?B?aXhNWW1YM29ndjlnckRUTVYxWFA4RUpFWFVpcm56K1QwcjNtUXUwdkhnNWF6?=
- =?utf-8?B?VHZMVXZhbVRUVUpYaWp4OWNNWmx0Nk56OGI2T0JUek5vbkQwMmJCNG9JZ3pT?=
- =?utf-8?B?OVJ4cFFoRXdXYWxLdWNmNjk4R0ZxYjBrUWtYUHYyYjhRc1RIZyt5NDkwMEcv?=
- =?utf-8?B?dXUrd0hQMzZnRmJ5ZHI5ekFySkNFNFhOYTFmcDZOVWxqcDB0NG43cEM2L1Jw?=
- =?utf-8?B?NkNYKzdlK1doeDJiM3pTWGhBeXdWeC9qeENlY2ViOWJwVmFiN1lXMTZ2ZWFI?=
- =?utf-8?B?NzhEaEtTNkpKaksvWmZYZXNKOFZGczJNdjgyRk90U3N2RzFkM0dNWTgzQ1V4?=
- =?utf-8?B?SElZbjRUR3Y4c25NL3VFbjZ6NE1jSS9BdHRMbjREdSsycUN0cjdZVlEwNHMr?=
- =?utf-8?B?ejlldlVPZVl0anBqKzdnb3psYUxveUMwckJBZjJTZGp3S0xYN3huMSt0N2xq?=
- =?utf-8?B?YlQ0OFhGSlFNRy9BYUZTanA4bjRONGlMcmZRUUtmWXNYazN1ditlbWVLWTc4?=
- =?utf-8?B?a2dUWmEzeGZlOVhSQkw2cmg5M1dHRUpneDVHOWt6NXMra3ExNkNVd1NmcE5F?=
- =?utf-8?B?Q1BGU1BGTDhYWHdXN2NLL0NBb1hqczQ0TUo2QTg0cVhaa0xhL3Y2SFh5aE1G?=
- =?utf-8?B?WXNmTkN5TkdPUjBSRGRMV05lY3FkTkg3N1VRTUEzK1VZZU9MNzFnZHZpTHMw?=
- =?utf-8?B?dUMrNmNUVmd6YzN6MTJnQi9mSWxqbkR1engzd2FKRUhrdDlxVGRyUDlpK01L?=
- =?utf-8?B?dlpqVGRYMkdERHFMSnBQTy9UaGR3dzFYa0VackM2UWdXYWRmR2g5OER6Vytn?=
- =?utf-8?B?ZXVFeEF4QjA1YlNacFRYaFBOZjd3OU1kVWpiMFZuS3Z2ckJ3TlNPcHlnek1M?=
- =?utf-8?B?NmtJa1BXU21TTjAyUUdLTlRiRFY5ckU0TldkUUp6TXhLc24xYk9NeXZQMHdK?=
- =?utf-8?B?M1RQbmY5Q0lWN2VHVSsvNGNSRWpqLzB6VWw2VWlwRUM1ZTY0SUZmMVRuT2xS?=
- =?utf-8?B?ZWpnTnM5aEJVRjloamFKRWRvN0hyZHcyZnVnSG8wamNGTXU2RDAwdHRwOVZk?=
- =?utf-8?B?LzJYTlpGcW1WbGprTjdqNHQ2YTBGaGtpaDZFZDhzbWcwNkFUbmV6dVRNbUhU?=
- =?utf-8?B?THMyL3hYSVNnbFVXdHBOckJYQmZRaWVwMUxrczlsYkwyTmRULzdkdVVORW4v?=
- =?utf-8?Q?nElebTolCb05y027JlSNR+2PlLt+s475tRaZNxx5FVyc?=
-X-OriginatorOrg: kunbus.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3198fe32-ef41-45c1-0acf-08dbeb51f9d6
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 11:55:52.1313
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yFKH903Erm6MHz98StTZEyK1yCGHIaGpsfKunYuhlZ0EI/boCpX9/UCJ/2feEHJscf8lz1a9Sbt5rX6taa8vMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB1904
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Wed, 22 Nov 2023 19:55:50 +0800
+Message-ID: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
+To:     "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
+        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi. I have reproduced this bug with repro.txt and repro.c below:
 
+repro.txt
+r0 =3D openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
+ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)=3D{{0x0, 0xffff,
+0x3}, 'syz0\x00'})
+ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
 
-On 19.11.23 12:28, Lino Sanfilippo wrote:
-> Both the imx and stm32 driver set the rx-during-tx GPIO in rs485_config().
-> Since this function is called with the port lock held, this can be an
-> problem in case that setting the GPIO line can sleep (e.g. if a GPIO
-> expander is used which is connected via SPI or I2C).
-> 
-> Avoid this issue by moving the GPIO setting outside of the port lock into
-> the serial core and thus making it a generic feature.
-> 
-> Since both setting the term and the rx-during-tx GPIO is done at the same
-> code place, move it into a common function.
+repro.c
+#define _GNU_SOURCE
 
-> -				       const struct serial_rs485 *rs485)
-> +/*
-> + * Set optional RS485 GPIOs for bus termination and data reception during
-> + * transmission. These GPIOs are controlled by the serial core independently
-> + * from the UART driver.
-> + */
-> +static void uart_set_rs485_gpios(struct uart_port *port,
-> +				 const struct serial_rs485 *rs485)
->  {
->  	if (!(rs485->flags & SER_RS485_ENABLED))
->  		return;
->  
->  	gpiod_set_value_cansleep(port->rs485_term_gpio,
->  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
-> +	gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> +				 !!(rs485->flags & SER_RS485_RX_DURING_TX));
->  }
->  
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
-Rasmus is about to add support for another RS485 related GPIO (see 
-https://lore.kernel.org/all/20231120151056.148450-3-linux@rasmusvillemoes.dk/ )
-which has to be configured both before and after port->rs485_config(). This
-does not fit very well with the idea of handling all these GPIOs in
-one function. 
+static void sleep_ms(uint64_t ms)
+{
+usleep(ms * 1000);
+}
 
-So I would like to revise this patch and send an updated version in a v5
-of this series in which the suggestion from Hugo
-(see https://lore.kernel.org/all/20231011183656.5111ba32ec0c9d43171662a1@hugovil.com/)
-is implemented to use separate functions for the GPIO configurations.
+static uint64_t current_time_ms(void)
+{
+struct timespec ts;
+if (clock_gettime(CLOCK_MONOTONIC, &ts))
+exit(1);
+return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
 
-Regards,
-Lino
+static bool write_file(const char* file, const char* what, ...)
+{
+char buf[1024];
+va_list args;
+va_start(args, what);
+vsnprintf(buf, sizeof(buf), what, args);
+va_end(args);
+buf[sizeof(buf) - 1] =3D 0;
+int len =3D strlen(buf);
+int fd =3D open(file, O_WRONLY | O_CLOEXEC);
+if (fd =3D=3D -1)
+return false;
+if (write(fd, buf, len) !=3D len) {
+int err =3D errno;
+close(fd);
+errno =3D err;
+return false;
+}
+close(fd);
+return true;
+}
+
+static int inject_fault(int nth)
+{
+int fd;
+fd =3D open("/proc/thread-self/fail-nth", O_RDWR);
+if (fd =3D=3D -1)
+exit(1);
+char buf[16];
+sprintf(buf, "%d", nth);
+if (write(fd, buf, strlen(buf)) !=3D (ssize_t)strlen(buf))
+exit(1);
+return fd;
+}
+
+static void kill_and_wait(int pid, int* status)
+{
+kill(-pid, SIGKILL);
+kill(pid, SIGKILL);
+for (int i =3D 0; i < 100; i++) {
+if (waitpid(-1, status, WNOHANG | __WALL) =3D=3D pid)
+return;
+usleep(1000);
+}
+DIR* dir =3D opendir("/sys/fs/fuse/connections");
+if (dir) {
+for (;;) {
+struct dirent* ent =3D readdir(dir);
+if (!ent)
+break;
+if (strcmp(ent->d_name, ".") =3D=3D 0 || strcmp(ent->d_name, "..") =3D=3D 0=
+)
+continue;
+char abort[300];
+snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+ent->d_name);
+int fd =3D open(abort, O_WRONLY);
+if (fd =3D=3D -1) {
+continue;
+}
+if (write(fd, abort, 1) < 0) {
+}
+close(fd);
+}
+closedir(dir);
+} else {
+}
+while (waitpid(-1, status, __WALL) !=3D pid) {
+}
+}
+
+static void setup_test()
+{
+prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+setpgrp();
+write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void setup_fault()
+{
+static struct {
+const char* file;
+const char* val;
+bool fatal;
+} files[] =3D {
+    {"/sys/kernel/debug/failslab/ignore-gfp-wait", "N", true},
+    {"/sys/kernel/debug/fail_futex/ignore-private", "N", false},
+    {"/sys/kernel/debug/fail_page_alloc/ignore-gfp-highmem", "N", false},
+    {"/sys/kernel/debug/fail_page_alloc/ignore-gfp-wait", "N", false},
+    {"/sys/kernel/debug/fail_page_alloc/min-order", "0", false},
+};
+unsigned i;
+for (i =3D 0; i < sizeof(files) / sizeof(files[0]); i++) {
+if (!write_file(files[i].file, files[i].val)) {
+if (files[i].fatal)
+exit(1);
+}
+}
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void)
+{
+int iter =3D 0;
+for (;; iter++) {
+int pid =3D fork();
+if (pid < 0)
+exit(1);
+if (pid =3D=3D 0) {
+setup_test();
+execute_one();
+exit(0);
+}
+int status =3D 0;
+uint64_t start =3D current_time_ms();
+for (;;) {
+if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) =3D=3D pid)
+break;
+sleep_ms(1);
+if (current_time_ms() - start < 5000)
+continue;
+kill_and_wait(pid, &status);
+break;
+}
+}
+}
+
+uint64_t r[1] =3D {0xffffffffffffffff};
+
+void execute_one(void)
+{
+intptr_t res =3D 0;
+memcpy((void*)0x20000500, "/dev/uinput\000", 12);
+res =3D syscall(__NR_openat, /*fd=3D*/0xffffffffffffff9cul,
+/*file=3D*/0x20000500ul, /*flags=3D*/0x802ul, /*mode=3D*/0ul);
+if (res !=3D -1)
+r[0] =3D res;
+*(uint16_t*)0x20000080 =3D 0;
+*(uint16_t*)0x20000082 =3D -1;
+*(uint16_t*)0x20000084 =3D 3;
+*(uint16_t*)0x20000086 =3D 0;
+memcpy((void*)0x20000088,
+"syz0\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\0=
+00\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\=
+000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000=
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\00=
+0\000\000",
+80);
+*(uint32_t*)0x200000d8 =3D 0;
+syscall(__NR_ioctl, /*fd=3D*/r[0], /*cmd=3D*/0x405c5503, /*arg=3D*/0x200000=
+80ul);
+inject_fault(51);
+syscall(__NR_ioctl, /*fd=3D*/r[0], /*cmd=3D*/0x5501, 0);
+
+}
+int main(void)
+{
+syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul,
+/*prot=3D*/0ul, /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul,
+/*prot=3D*/7ul, /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul,
+/*prot=3D*/0ul, /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+setup_fault();
+loop();
+return 0;
+}
