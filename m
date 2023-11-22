@@ -2,247 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C397F3C11
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59B17F3C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343535AbjKVCtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:49:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        id S229894AbjKVCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjKVCtO (ORCPT
+        with ESMTP id S229527AbjKVCsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:49:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9C61AC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700621351; x=1732157351;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=1IPWdrxMjUx+zdbEbcwRXBtsKqM1jihITQbO/mQcJDw=;
-  b=AxqsW3GN5KCbVpHfOh42H8dVtl9WEoByUNqQFKEOXZt3O5hqzVf7FaQ1
-   3vYBYVFMNdJv5pcozIPXlWKijPnhHrPYSoQhFMLKBh0OpcJoFm4ppsytH
-   DeieqNVcuxrqJSNAiIhsaJlL+dmx21DIBiEJBlLuB1lorybbadSROGrk1
-   hDRTho5xqiTu0uM7V/kxY9jHWyjCCcUJXMhZPhVPShItJSjWRbFN8WKPz
-   4W2z/nDVq4HUnIAXMGdYvgdc5NnPSn7ErX07MMtnlm2io6/6bHcQOhOmU
-   3UswV0jyCN9CGbdUQzTdb4Dru15IJJZdZIObxfC3YcSHwAWb5LjnbntlQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5166206"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="5166206"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 18:49:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="795952441"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="795952441"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Nov 2023 18:49:10 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 21 Nov 2023 18:49:09 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 21 Nov 2023 18:49:09 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 21 Nov 2023 18:49:09 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 21 Nov 2023 18:49:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9w+T9nkz5bKZhSgo2mEMsldEVmjMIR2pKU6Cf+k6ASeWcYJoj4QXXnhMCxepzak3nJ43c/ZejwDnL3QEu/pbr18t8uUHJpqFhxl8UdVhkdGgQVLaFdoyNznxcez6ARRISu28vNVWETXAwCswX3Cjauy/hK2Dj8fLHz1NPJfK7FI5UScSCD6lAe7eaPR3jViSgAF9vUxtX0x0RV5ul66xsGiKDj9ttj6vMG190GCRlZwbGRp9aKQmQAGGmt0PIHZTkRFX+/r3HsKanaA3pJik33G8ySDzCAdcrCzISV+0CaDWLfF4WKmagFkiuvbzgVp7MTQp+na9CcxzdaEPCSEXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EBnCXE4YLD+t/qXftOku+5fPKUCukvn1edVbCryEavk=;
- b=AR/dTS0yJfCwtdDhwzng26BprT4euSsQhOXtcWDfp5YWf51sOTPK8D/GEHm5zhK9t5OxzKFsabiOFTk1zviPIcmJHwIg/U9g1lcv7ITsXYjpCQoAD1mcR3nsR3K2qaOkC38+YL8vqfH71JnrPuyPKG2yarocUtkequE0g7lySofbEhq8tz3QYc3Gl8ZffWm957iJOP83dNBnu77OY1uhzVm0LlTAILF4nRMgtBdlqeuWk5DJ2hgUxhJnOywb16MFobaz9UvaO5bqrMe7nsQU9MbK4X914Jguuuh7EEwMQc6Oewj/KOr3C6y2h+XAlJQUD4i+5iZZ5NcGv79jwjbVWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by MW4PR11MB6740.namprd11.prod.outlook.com (2603:10b6:303:209::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Wed, 22 Nov
- 2023 02:49:05 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.7025.017; Wed, 22 Nov 2023
- 02:49:05 +0000
-Date:   Wed, 22 Nov 2023 10:44:28 +0800
-From:   kernel test robot <yujie.liu@intel.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: drivers/hwtracing/intel_th/core.c:812: warning: Function parameter
- or member 'ndevres' not described in 'intel_th_alloc'
-Message-ID: <202311220224.smGIP2Re-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SI2PR01CA0029.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::8) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+        Tue, 21 Nov 2023 21:48:54 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060A9CB;
+        Tue, 21 Nov 2023 18:48:49 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5be30d543c4so4229502a12.2;
+        Tue, 21 Nov 2023 18:48:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700621328; x=1701226128; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YQXdjiznNF4jRDvoezXm1Z+5cBuvh8aVcXIUQZ5/mzA=;
+        b=d7B75+I7RBOHSYGEkM948QUXA5ERusVEIjmkSKa9JLEE4nPSFzprO4Vblja7zpuJNO
+         EBkymwc4agOX+UmwsERuB7ijk7AjIi3nfewzWvjFm/VJMUnHcJWtJdS+jWVC2DaiU6eY
+         Jb128i+UryH/IeIXrgpwo6Oavw585o/EWXKhnjuSmYqkS+8SikIAUNnWveppuFlySJf9
+         nWNa/AxMLXSsmoqUoTcUAE6mnVoV4qyvL4gNQHZeJVZh/ndg/PuB5aD1RTKRkHUjou0w
+         pWYCaX7IH2ZxkgqL+H6XXtCZarNbVodOTpjWfdSFoKVhrdqCr31ki4NBX434gJZrEHLR
+         9qQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700621328; x=1701226128;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YQXdjiznNF4jRDvoezXm1Z+5cBuvh8aVcXIUQZ5/mzA=;
+        b=mlBPe/PFD+ltgS99j+GT6YxeT7IUp1fT36lf1vGkY4as6wv582SjoLUJT6DXJP9Z9i
+         Kw0krh3zQfoR/OeHeAZXIVPYcpIm1i2ozVMpbRqvZyNadoeepN8ueGDzb9bS/rkIk6MW
+         pYnOzzcIEc6FS8PMa3EUBV7m5bE8pGCFPF1ThZvI69wsGJwk8pFpudzO76UCZxbu9/nO
+         YY/Jz7iNyFs0S/ld8urNhYjPZeiLkDuXy7yvS0z57f8uJOxLTWxMAhMgOIMPIEVBhi2b
+         TR6J8LThJkIEkTlADk/Io6AdnF3n6nSPIryYbv17+Cm+dtqy3bvkdGiKKJSGTzjhxD0H
+         3jGg==
+X-Gm-Message-State: AOJu0YxtivHxtqJgxabJr4Cr0gJHOFxREmrpi8X/1JY9/MvyQh2doI54
+        Lbz2hq62TjtELx2v7z/KtpE=
+X-Google-Smtp-Source: AGHT+IFtcaheJAf7Ui3rM3KCz3dsrMHw6/WiLkLW8XvnCrt2R5WP7i9V6O/hPMYUj5aIvwv684T4aQ==
+X-Received: by 2002:a05:6a20:3ca2:b0:188:40a5:f7d4 with SMTP id b34-20020a056a203ca200b0018840a5f7d4mr919978pzj.47.1700621328304;
+        Tue, 21 Nov 2023 18:48:48 -0800 (PST)
+Received: from [192.168.1.7] ([159.192.167.104])
+        by smtp.googlemail.com with ESMTPSA id 12-20020a17090a004c00b0027782f611d1sm273795pjb.36.2023.11.21.18.48.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 18:48:47 -0800 (PST)
+Message-ID: <77b61923-b0df-4120-be19-4442e84fa118@gmail.com>
+Date:   Wed, 22 Nov 2023 09:48:43 +0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|MW4PR11MB6740:EE_
-X-MS-Office365-Filtering-Correlation-Id: 84e9936f-a997-47ca-31a3-08dbeb059751
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zhROxOrpSTXccRCXeXt9Nv8trZ5/LGnNeKi32dX+a8G1yjIbuT2aVb7NNw/nIrmATzAWn1efO5hIRG6koHqR+TcLSP7u3wvjWUn2y1mZ42rMLFixMi7E+GQ0uynoOJiCjA4d48vd6Szub4qtjR318Ehzzk/FfFyOWXyS6panrdsgJbBW3w2oJWexfcA6QFv4iLF9qFnwsFervt7GsC3IZt2DcMeAc+TUSaG4nq6bdSrf6jmJu8cIQYQRdWT03RH5MC7MrIabn8nmU0cNavbsdLri6VoJR5VqD9e5ObMgCKFpYm8NBtSWnoM2ZHgb2g9UA5RbcF56eeFA/K7qUAFKzXrq8MxUCM6LPc+4TXoXh9jodKrJ582Tati+VnRB5tbLgAnP9sNRqAZKM77OaQsEtJXtGGyjyZYi7B/XjBlQg4dNtm3yzswRX74eEgsE3UIbxDOZtTIl4uBceWjvuDivenTkHiwXDlAMx1SWbpmjWVcgXlCTGr1i64hrrDn2VR4D+2vwo2yalUhz6dJCYwnyWs0i5FsD+FZtFO3p4wCAkHExMAgOwRGoSD0ewZhQ5lk/sCYXR7BW0KqxwNBZhpYLE0GeLbF3v+57RHKwPKqhRsCwYHhACLeD4/znERImvz/Y/4U/G5cbKYAt/Sq/BPRMFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(366004)(346002)(396003)(230922051799003)(230273577357003)(230173577357003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(6506007)(478600001)(2616005)(6666004)(6486002)(966005)(82960400001)(26005)(6512007)(316002)(6916009)(66556008)(66476007)(66946007)(38100700002)(1076003)(8676002)(8936002)(4326008)(5660300002)(2906002)(86362001)(41300700001)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jfng50bLs+jDQBxYiN9eFwv+DkMA74myVITjHLvj9eo4pR3DsfRWM6o+/2Hm?=
- =?us-ascii?Q?7lxkL75CpXDeLgU2eHP5wXLws/95n1ItebnQ4ROPNcl3PrMqK7Hv+7GWfJD6?=
- =?us-ascii?Q?kvql1nsftdj3QCuut35N5Ffsg7dJUXwDwY2ItTZLPR2ZzeRdPz++Tj001TcO?=
- =?us-ascii?Q?wvkM36t/qBVqnEBL3dVgeinfUWoPygL386WTN/80kmJoIXaquQNjPBM0OtAW?=
- =?us-ascii?Q?5prCGQ6i8G/nWskVbDKIIt0k0r6mNj6o8WhiAL5TyX0P68ehmbgUU954aoMn?=
- =?us-ascii?Q?iC8/w2mvbm5fUn/4NW7sDwIIrwXX9DKS0o5a2qED9/tCZi7ZFwI+cJ2bjJDR?=
- =?us-ascii?Q?A+u+iT77HURIpA0GMMwWNZIvptoss7H3HBX9lHBuWeq4EMNUxHz5hjR8iDvV?=
- =?us-ascii?Q?DkokD7rAdGytop05pLi9/XzKxRzJG4gMjLbYR6bgGLmrjDd9xUWbMTdELFZa?=
- =?us-ascii?Q?Q6niHA8zsdvK+zYyYQTUFpFfrKzcHBBYqmZxDOTdApAZtGMRjukpSXh/BD6T?=
- =?us-ascii?Q?wUnKxYtYTy8YkcJUOZuIJRU2j0n1w3RRVAZIt5EPkjscOe7p7dovj/lLWYkS?=
- =?us-ascii?Q?DkBAgyjKBNORhMDWk7R6+nXB1VbfiZ8P2nZfyl8qf8MPqSqs8F/Jt/J7Bv1+?=
- =?us-ascii?Q?E157xn3gzzQrFoiR8+Mxo3evmJ61JP+agb+rQk153paMg8a+HxyX7SEJMRlV?=
- =?us-ascii?Q?hyeXwrgSkkfMD2lM5q/riSwaaLY28Xz1vrr1JZpIwd/epQwwowpWNQc/00gN?=
- =?us-ascii?Q?9o7Q8GwOMgTi0V/ZynrQaRDAGPOCGD/gE1Mu0WXJwGxhCgPpo8Zh8oCE6z20?=
- =?us-ascii?Q?XoPsV9hkDrPiFrXTi32d8irBoM/w9vw8ifgHBBxrpuw6j299rSZ2/MrdUkoL?=
- =?us-ascii?Q?9vjBIff9l/Qm8sM0zVeVtBQ0WLYL0MP/zDgjVin4Vc35CfkmNWJfd9NT5rJM?=
- =?us-ascii?Q?Xt3im6OG+xsD1zC5ON2I3RSjx44mYPjgAS06A9jv9MstnqiMQUgLetEUlbHX?=
- =?us-ascii?Q?VursVSHlvavHlSWWoQS6XymQpiRvc0tJn0i8k5UyPMJnf4MMziakNnB38H0j?=
- =?us-ascii?Q?CFnh8/CjwPLBysLQqKyW7wapPAN0jomTm9n2s4a8rzsQhfN4/Sh8nq7IkqIR?=
- =?us-ascii?Q?ORvANW2l83X8AzIUA5rWWczlNRBD5JXz7MvAD2HOhhf22LgGRvCMPiT+RYkb?=
- =?us-ascii?Q?H+dJkJKrc8gkzyHkZHkOEhgwUR8o6M24u2ZqK45NJWxYpjvcZkDvnH9nQT+p?=
- =?us-ascii?Q?mv2/SpBxTN/j0qcgoY4gz2O2Eadg584mWTO7BFLOge+aZ4ByPAfyr37RL8Cq?=
- =?us-ascii?Q?lzB2K5TIa0whBgZOrPefAXqHqTYmdoJAAsl0wVq+mI17ZwgvmbWq95UpPMCS?=
- =?us-ascii?Q?4wPguxOEh1MmLGlqBG5OwvGwzbXqjsiQsLInjx3ZWJI2ctw3ZQwnIWPWrN17?=
- =?us-ascii?Q?gvcyuzsdYdOMXSNrkP07YJi4c+jFAh5FWcU5Z/QyVxQ+860ZTNZuhAHnMNsV?=
- =?us-ascii?Q?k2S5y21U1nKFzjNnsb/4HtIBuaVJB8xvqYvkq+5smHy8tF6F0msqqwiWG1vd?=
- =?us-ascii?Q?zAw8oWt4/g5SD8bzycovJg8zmR2wLe/oqXQikID9?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84e9936f-a997-47ca-31a3-08dbeb059751
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 02:49:05.1966
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gOi1UZMo+Pry8dh9SbhGf4PWtPbIdYoylZaUxslheXfKMnREZawcNHjKvW0t8ck/ySEECmP8mkQY3XfLkapHeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6740
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] USB: serial: option: add Fibocom L7xx modules
+To:     Victor Fragoso <victorffs@hotmail.com>,
+        "johan@kernel.org" <johan@kernel.org>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <39dd187fe27244f28fa729ce134d9d130147f2e1.camel@hotmail.com>
+Content-Language: en-US
+From:   Lars Melin <larsm17@gmail.com>
+In-Reply-To: <39dd187fe27244f28fa729ce134d9d130147f2e1.camel@hotmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+On 11/22/2023 4:05, Victor Fragoso wrote:
+> Add support for Fibocom L716-EU module series.
+> 
+> L716-EU is a Fibocom module based on ZTE's V3E/V3T chipset.
+> 
+> Device creates multiple interfaces when connected to PC as follows:
+>   - Network Interface: ECM or RNDIS (set by FW or AT Command)
+>   - ttyUSB0: AT port
+>   - ttyUSB1: Modem port
+>   - ttyUSB2: AT2 port
+>   - ttyUSB3: Trace port for log information
+>   - ADB: ADB port for debugging. ("Driver=usbfs" when ADB server enabled)
+> 
+> Here are the outputs of lsusb and usb-devices:
+> $ ls /dev/ttyUSB*
+> /dev/ttyUSB0  /dev/ttyUSB1  /dev/ttyUSB2  /dev/ttyUSB3
+> 
+> usb-devices:
+> L716-EU (ECM mode):
+> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 51 Spd=480  MxCh= 0
+> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
+> S:  Manufacturer=Fibocom,Incorporated
+> S:  Product=Fibocom Mobile Boardband
+> S:  SerialNumber=1234567890ABCDEF
+> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
+> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
+> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
+> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
+> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> 
+> L716-EU (RNDIS mode):
+> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 49 Spd=480  MxCh= 0
+> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
+> S:  Manufacturer=Fibocom,Incorporated
+> S:  Product=Fibocom Mobile Boardband
+> S:  SerialNumber=1234567890ABCDEF
+> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
+> A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=03
+> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=02 Prot=ff Driver=rndis_host
+> E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
+> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> 
+> Signed-off-by: Victor Fragoso <victorffs@hotmail.com>
+> ---
+> Changes since v1:
+>   - Removed non-essential VID/PID to work with L716-EU tested module.
+>   - Added device entry comment according to tested module/modes.
+>   - Added according to VID/PID order
+>   - Commit message improved with more information about module ports.
+> ---
+  @@ -2249,6 +2249,7 @@ static const struct usb_device_id option_ids[] = {
+>   	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
+>   	{ USB_DEVICE(0x1782, 0x4d10) },						/* Fibocom L610 (AT mode) */
+>   	{ USB_DEVICE_INTERFACE_CLASS(0x1782, 0x4d11, 0xff) },			/* Fibocom L610 (ECM/RNDIS mode) */
+> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0001, 0xff, 0xff, 0xff) },	/* Fibocom L716-EU (ECM/RNDIS mode) */
+>   	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
+>   	  .driver_info = RSVD(4) | RSVD(5) },
+>   	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
 
-kernel test robot noticed the following build warnings:
+thanks, looks much better now
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
-commit: db73a059de00eed721f13051c0d6ff3e7de90fe8 intel_th: Rework resource passing between glue layers and core
-config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20231122/202311220224.smGIP2Re-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220224.smGIP2Re-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202311220224.smGIP2Re-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/hwtracing/intel_th/core.c:812: warning: Function parameter or member 'drvdata' not described in 'intel_th_alloc'
->> drivers/hwtracing/intel_th/core.c:812: warning: Function parameter or member 'ndevres' not described in 'intel_th_alloc'
-
-
-vim +812 drivers/hwtracing/intel_th/core.c
-
-39f4034693b7c7b Alexander Shishkin 2015-09-22  802  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  803  /**
-39f4034693b7c7b Alexander Shishkin 2015-09-22  804   * intel_th_alloc() - allocate a new Intel TH device and its subdevices
-39f4034693b7c7b Alexander Shishkin 2015-09-22  805   * @dev:	parent device
-db73a059de00eed Alexander Shishkin 2019-05-03  806   * @devres:	resources indexed by th_mmio_idx
-39f4034693b7c7b Alexander Shishkin 2015-09-22  807   * @irq:	irq number
-39f4034693b7c7b Alexander Shishkin 2015-09-22  808   */
-39f4034693b7c7b Alexander Shishkin 2015-09-22  809  struct intel_th *
-3321371b5d64847 Alexander Shishkin 2017-08-18  810  intel_th_alloc(struct device *dev, struct intel_th_drvdata *drvdata,
-3321371b5d64847 Alexander Shishkin 2017-08-18  811  	       struct resource *devres, unsigned int ndevres, int irq)
-39f4034693b7c7b Alexander Shishkin 2015-09-22 @812  {
-39f4034693b7c7b Alexander Shishkin 2015-09-22  813  	struct intel_th *th;
-661b0df8489a35d Alexander Shishkin 2017-08-23  814  	int err, r;
-661b0df8489a35d Alexander Shishkin 2017-08-23  815  
-db73a059de00eed Alexander Shishkin 2019-05-03  816  	if (ndevres < TH_MMIO_END)
-db73a059de00eed Alexander Shishkin 2019-05-03  817  		return ERR_PTR(-EINVAL);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  818  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  819  	th = kzalloc(sizeof(*th), GFP_KERNEL);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  820  	if (!th)
-39f4034693b7c7b Alexander Shishkin 2015-09-22  821  		return ERR_PTR(-ENOMEM);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  822  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  823  	th->id = ida_simple_get(&intel_th_ida, 0, 0, GFP_KERNEL);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  824  	if (th->id < 0) {
-39f4034693b7c7b Alexander Shishkin 2015-09-22  825  		err = th->id;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  826  		goto err_alloc;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  827  	}
-39f4034693b7c7b Alexander Shishkin 2015-09-22  828  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  829  	th->major = __register_chrdev(0, 0, TH_POSSIBLE_OUTPUTS,
-39f4034693b7c7b Alexander Shishkin 2015-09-22  830  				      "intel_th/output", &intel_th_output_fops);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  831  	if (th->major < 0) {
-39f4034693b7c7b Alexander Shishkin 2015-09-22  832  		err = th->major;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  833  		goto err_ida;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  834  	}
-39f4034693b7c7b Alexander Shishkin 2015-09-22  835  	th->dev = dev;
-3321371b5d64847 Alexander Shishkin 2017-08-18  836  	th->drvdata = drvdata;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  837  
-db73a059de00eed Alexander Shishkin 2019-05-03  838  	for (r = 0; r < ndevres; r++)
-db73a059de00eed Alexander Shishkin 2019-05-03  839  		th->resource[r] = devres[r];
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  840  	th->num_resources = ndevres;
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  841  	th->irq = irq;
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  842  
-d7b1787161b78a5 Alexander Shishkin 2016-02-15  843  	dev_set_drvdata(dev, th);
-d7b1787161b78a5 Alexander Shishkin 2016-02-15  844  
-142dfeb20209607 Alexander Shishkin 2016-06-22  845  	pm_runtime_no_callbacks(dev);
-142dfeb20209607 Alexander Shishkin 2016-06-22  846  	pm_runtime_put(dev);
-142dfeb20209607 Alexander Shishkin 2016-06-22  847  	pm_runtime_allow(dev);
-142dfeb20209607 Alexander Shishkin 2016-06-22  848  
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  849  	err = intel_th_populate(th);
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  850  	if (err) {
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  851  		/* free the subdevices and undo everything */
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  852  		intel_th_free(th);
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  853  		return ERR_PTR(err);
-a753bfcfdb1f31d Alexander Shishkin 2017-08-10  854  	}
-39f4034693b7c7b Alexander Shishkin 2015-09-22  855  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  856  	return th;
-39f4034693b7c7b Alexander Shishkin 2015-09-22  857  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  858  err_ida:
-39f4034693b7c7b Alexander Shishkin 2015-09-22  859  	ida_simple_remove(&intel_th_ida, th->id);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  860  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  861  err_alloc:
-39f4034693b7c7b Alexander Shishkin 2015-09-22  862  	kfree(th);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  863  
-39f4034693b7c7b Alexander Shishkin 2015-09-22  864  	return ERR_PTR(err);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  865  }
-39f4034693b7c7b Alexander Shishkin 2015-09-22  866  EXPORT_SYMBOL_GPL(intel_th_alloc);
-39f4034693b7c7b Alexander Shishkin 2015-09-22  867  
-
-:::::: The code at line 812 was first introduced by commit
-:::::: 39f4034693b7c7bd1fe4cb58c93259d600f55561 intel_th: Add driver infrastructure for Intel(R) Trace Hub devices
-
-:::::: TO: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Reviewed-by: Lars Melin <larsm17@gmail.com>
