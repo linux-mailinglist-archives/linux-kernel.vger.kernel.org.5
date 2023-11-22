@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B069A7F4C52
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B217F4C57
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjKVQ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:26:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
+        id S230105AbjKVQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKVQ0k (ORCPT
+        with ESMTP id S229513AbjKVQ3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:26:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90431BD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:26:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CA8C433C7;
-        Wed, 22 Nov 2023 16:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700670396;
-        bh=7PgGcrTNCcmfb/c0MUXulFlbth6/ODhUpejPw9WPm88=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y1gfihIVhqaEQUDUlAv/MiOMwEqTEmHv65SVx5wHp/Xe29gVCJE/fkegmTuEf5vw4
-         Ziu05Dsx4SvFYfV4W/zl1mDDEUIQAGYd22F48WYD8DtDPjKxgDRcbEuzL9ITXNhdit
-         1+kdjQyy2xQ0Khm1MRLoplr2iRNe3IJgfUhwiJDEfF9rj32fL9h5j/VU+5vNylZNx/
-         CRnV/tCNYPY4DoNd+DVqER4a4relWriwqnVn8x6Ozfym+ovB/9gWGsW938jwTP8gtq
-         oMH1MMYHPHxU22wW94JY7ApeR+yLb9RqLoD/yPtMCiDRPUnWmvO6ogpch5MgovfIbV
-         sVsHY99O4UrYw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2175940094; Wed, 22 Nov 2023 13:26:33 -0300 (-03)
-Date:   Wed, 22 Nov 2023 13:26:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Marc Zyngier <maz@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
- v6.5
-Message-ID: <ZV4rubQsiiAPoM1s@kernel.org>
-References: <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
- <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
- <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com>
- <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
- <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com>
- <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
- <930bfb9a-dcbe-4385-9ae3-26e2aa14c50e@marcan.st>
- <ZV38z3+p2S2ETtzG@kernel.org>
- <ZV4i_lrhbOVdEpwH@FVFF77S0Q05N>
- <CAP-5=fXxdt4-j7ea=3oXpqyfOQEmSRYBugzND0r+gZUd5sMi1w@mail.gmail.com>
+        Wed, 22 Nov 2023 11:29:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8612CA2;
+        Wed, 22 Nov 2023 08:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700670540; x=1732206540;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=bagruS5CXrz6mOWB6COGHqS1jlKmltZBn+nUJ6YlRfc=;
+  b=CHGuVvkMltNsrvh0eAqgxIVDewD+WVIdJUZsJ2IkpO5lHrSn4UbwWPBX
+   bpxa/Zr5s20kbZw/hu9l381mf/cqIuKZjUNiVUCnsQmTSZejS4TnZBFTQ
+   ttIJrTDDZHKtxOQ+V/2lvL1rk2UCPDja4FhSw1qH6s7Ymxkwij4Fh8tBu
+   fftWG6kxgIQ4ms/eYgop0ppBYv6nI2xwF7vMoTFevna4yLtkqX/2K49NL
+   JonJpMCy3vy4/528RRPcPVxO3HaS5lY+cZ5feuz/TmIM0158y8gG2vKbq
+   eeg+oGvdzQkx67EEbg8Ty0K0VmE55njHwi5cGXff8aDrxGR2L/aVmxPqo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="394921013"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="394921013"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:28:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="8531683"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Nov 2023 08:28:53 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5q5r-0000gb-0J;
+        Wed, 22 Nov 2023 16:28:51 +0000
+Date:   Thu, 23 Nov 2023 00:28:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Philipp Stanner <pstanner@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Eric Auger <eric.auger@redhat.com>,
+        Kent Overstreet <kmo@daterainc.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Danilo Krummrich <dakr@redhat.com>
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
+Message-ID: <202311222251.miLTgMyd-lkp@intel.com>
+References: <20231120215945.52027-3-pstanner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXxdt4-j7ea=3oXpqyfOQEmSRYBugzND0r+gZUd5sMi1w@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,157 +89,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 22, 2023 at 08:04:26AM -0800, Ian Rogers escreveu:
-> On Wed, Nov 22, 2023 at 7:49 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Wed, Nov 22, 2023 at 10:06:23AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Wed, Nov 22, 2023 at 12:23:27PM +0900, Hector Martin escreveu:
-> > > > On 2023/11/22 1:38, Ian Rogers wrote:
-> > > > > On Tue, Nov 21, 2023 at 8:15 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > >> On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
-> > > > >>> On Tue, Nov 21, 2023 at 8:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > >>>> On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
-> > > > >>>>> On Tue, Nov 21, 2023 at 7:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > >>>>>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
-> > > > >>>>>>> On Tue, 21 Nov 2023 13:40:31 +0000,
-> > > > >>>>>>> Marc Zyngier <maz@kernel.org> wrote:
-> > > > >>>>>>>>
-> > > > >>>>>>>> [Adding key people on Cc]
-> > > > >>>>>>>>
-> > > > >>>>>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
-> > > > >>>>>>>> Hector Martin <marcan@marcan.st> wrote:
-> > > > >>>>>>>>>
-> > > > >>>>>>>>> Perf broke on all Apple ARM64 systems (tested almost everything), and
-> > > > >>>>>>>>> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
-> > > > >>>>>>>>
-> > > > >>>>>>>> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
-> > > > >>>>>>>> asymmetric ARM platform. It isn't clear what criteria is used to pick
-> > > > >>>>>>>> the PMU, but nothing works anymore.
-> > > > >>>>>>>>
-> > > > >>>>>>>> The saving grace in my case is that Debian still ships a 6.1 perftool
-> > > > >>>>>>>> package, but that's obviously not going to last.
-> > > > >>>>>>>>
-> > > > >>>>>>>> I'm happy to test potential fixes.
-> > > > >>>>>>>
-> > > > >>>>>>> At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
-> > > > >>>>>>> -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
-> > > > >>>>>>> CPU):
-> > > > >>>>>>
-> > > > >>>>>> IIUC the tool is doing the wrong thing here and overriding explicit
-> > > > >>>>>> ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather than events using
-> > > > >>>>>> that ${pmu}'s type and event namespace.
-> > > > >>>>>>
-> > > > >>>>>> Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE events to be
-> > > > >>>>>> targetted to a specific PMU, it's semantically wrong to rewrite events like
-> > > > >>>>>> this since ${pmu}/${event}/ is not necessarily equivalent to a similarly-named
-> > > > >>>>>> PERF_COUNT_HW_${EVENT}.
-> > > > >>>>>
-> > > > >>>>> If you name a PMU and an event then the event should only be opened on
-> > > > >>>>> that PMU, 100% agree. There's a bunch of output, but when the legacy
-> > > > >>>>> cycles event is opened it appears to be because it was explicitly
-> > > > >>>>> requested.
-> > > > >>>>
-> > > > >>>> I think you've missed that the named PMU events are being erreously transformed
-> > > > >>>> into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
-> > > > >>>>
-> > > > >>>>   Opening: apple_firestorm_pmu/cycles/
-> > > > >>>>   ------------------------------------------------------------
-> > > > >>>>   perf_event_attr:
-> > > > >>>>     type                             0 (PERF_TYPE_HARDWARE)
-> > > > >>>>     size                             136
-> > > > >>>>     config                           0 (PERF_COUNT_HW_CPU_CYCLES)
-> > > > >>>>     sample_type                      IDENTIFIER
-> > > > >>>>     read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-> > > > >>>>     disabled                         1
-> > > > >>>>     inherit                          1
-> > > > >>>>     enable_on_exec                   1
-> > > > >>>>     exclude_guest                    1
-> > > > >>>>   ------------------------------------------------------------
-> > > > >>>>   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
-> > > > >>>>
-> > > > >>>> ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_CYCLES.
-> > > > >>>>
-> > > > >>>> Marc said that he bisected the issue down to commit:
-> > > > >>>>
-> > > > >>>>   5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
-> > > > >>>>
-> > > > >>>> ... so it looks like something is going wrong when the events are being parsed,
-> > > > >>>> e.g. losing the HW PMU information?
-> > > > >>>
-> > > > >>> Ok, I think I'm getting confused by other things. This looks like the issue.
-> > > > >>>
-> > > > >>> I think it may be working as intended, but not how you intended :-) If
-> > > > >>> a core PMU is listed and then a legacy event, the legacy event should
-> > >
-> > > The point is that "cycles" when prefixed with "pmu/" shouldn't be
-> > > considered "cycles" as HW/0, in that setting it is "cycles" for that
-> > > PMU.
-> >
-> > Exactly.
-> >
-> > > (but we only have "cpu_cycles" for at least the a53 and a72 PMUs I
-> > > have access in a Libre Computer rockchip 3399-pc hybrid board, if we use
-> > > it, then we get what we want/had before, see below):
-> >
-> > Both Cortex-A53 and Cortex-A72 have the common PMUv3 events, so they have
-> > "cpu_cycles" and "bus_cycles".
-> >
-> > The Apple PMUs that Hector and Marc anre using don't follow the PMUv3
-> > architecture, and just have a "cycles" event.
-> >
-> > [...]
-> >
-> > > So what we need here seems to be to translate the generic term "cycles"
-> > > to "cpu_cycles" when a PMU is explicitely passed in the event name and
-> > > it doesn't have "cycles" and then just retry.
-> >
-> > I'm not sure we need to map that.
-> >
-> > My thinking is:
-> >
-> > * If the user asks for "cycles" without a PMU name, that should use the
-> >   PERF_TYPE_HARDWARE cycles event. The ARM PMUs handle that correctly when the
-> >   event is directed to them.
-> >
-> > * If the user asks for "${pmu}/cycles/", that should only use the "cycles"
-> >   event in that PMU's namespace, not PERF_TYPE_HARDWARE.
-> >
-> > * If we need a way so say "use the PERF_TYPE_HARDWARE cycles event on ${pmu}",
-> >   then we should have a new syntax for that (e.g. as we have for raw events),
-> >   e.g. it would be possible to have "pmu/hw:cycles/" or something like that.
-> >
-> > That way there's no ambiguity.
-> 
-> This would break cpu_core/LLC-load-misses/ on Intel hybrid as the
-> LLC-load-misses event is legacy and not advertised in either sysfs or
-> in json.
+Hi Philipp,
 
-Indeed:
+kernel test robot noticed the following build warnings:
 
-[root@quaco ~]# ls /sys/devices/cpu/events/
-branch-instructions  bus-cycles    cache-references  instructions  mem-stores  topdown-fetch-bubbles     topdown-recovery-bubbles.scale  topdown-slots-retired  topdown-total-slots.scale
-branch-misses        cache-misses  cpu-cycles        mem-loads     ref-cycles  topdown-recovery-bubbles  topdown-slots-issued            topdown-total-slots
-[root@quaco ~]# strace -e perf_event_open perf stat -e cpu/LLC-load-misses/ echo
-perf_event_open({type=PERF_TYPE_HW_CACHE, size=0x88 /* PERF_ATTR_SIZE_??? */, config=PERF_COUNT_HW_CACHE_RESULT_MISS<<16|PERF_COUNT_HW_CACHE_OP_READ<<8|PERF_COUNT_HW_CACHE_LL, sample_period=0, sample_type=PERF_SAMPLE_IDENTIFIER, read_format=PERF_FORMAT_TOTAL_TIME_ENABLED|PERF_FORMAT_TOTAL_TIME_RUNNING, disabled=1, inherit=1, enable_on_exec=1, precise_ip=0 /* arbitrary skid */, exclude_guest=1, ...}, 41467, -1, -1, PERF_FLAG_FD_CLOEXEC) = 3
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-202311=
+22]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
---- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=41467, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-=
+move-pci_iomap-c-to-drivers-pci/20231121-060258
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40=
+redhat.com
+patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
+config: csky-kismet-CONFIG_GENERIC_PCI_IOMAP-CONFIG_CSKY-0-0 (https://downl=
+oad.01.org/0day-ci/archive/20231122/202311222251.miLTgMyd-lkp@intel.com/con=
+fig)
+reproduce: (https://download.01.org/0day-ci/archive/20231122/202311222251.m=
+iLTgMyd-lkp@intel.com/reproduce)
 
- Performance counter stats for 'echo':
+If you fix the issue in a separate patch/commit (i.e. not just a new versio=
+n of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311222251.miLTgMyd-lkp@i=
+ntel.com/
 
-             1,015      cpu/LLC-load-misses/
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMA=
+P when selected by CSKY
+   /usr/bin/grep: /db/releases/20231122101355/kernel-tests/etc/kcflags: No =
+such file or directory
+   {"timestamp":"2023-11-22 12:45:55 +0800", "level":"WARN", "event":"kbuil=
+d.sh:3942:in `add_etc_kcflags': grep exit 2 (ShellError)", "detail":"cmd: '=
+/usr/bin/grep' '-v' '-e' '^#' '-e' '^$' '/db/releases/20231122101355/kernel=
+-tests/etc/kcflags' \nstderr: /usr/bin/grep: /db/releases/20231122101355/ke=
+rnel-tests/etc/kcflags: No such file or directory\n\n", "hostname":"communi=
+ty-kbuild-consumer-56", "host_hostname":"lkp-worker31", "call_stack":"/zday=
+/kernel-tests/lib/kbuild.sh:3942:in `add_etc_kcflags': /usr/bin/grep: /db/r=
+eleases/20231122101355/kernel-tests/etc/kcflags: No such file or directory =
+(ShellError 2)\n  from /zday/kernel-tests/lib/kbuild.sh:3971: setup_kcflags=
+\n  from /zday/kernel-tests/lib/kbuild.sh:4016: invoke_make\n  from /zday/k=
+ernel-tests/lib/kbuild.sh:4122: make\n  from /zday/kernel-tests/lib/kbuild.=
+sh:5623: make_config_allyes\n  from /zday/kernel-tests/common.sh:209: redir=
+ect_error_to_screen\n  from /zday/kernel-tests/common.sh:217: redirect_comm=
+and_errors\n  from /zday/kernel-tests/lib/kbuild.sh:5630: make_config\n  fr=
+om /zday/kernel-tests/lib/builder/kismet.sh:156: generate_make_olddefconfig=
+_warnings\n  from /zday/kernel-tests/lib/builder/kismet.sh:297: builder_com=
+pile\n  from /zday/kernel-tests/bisect-test-build-error.sh:94: main\n"}
+  =20
+   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
+     Depends on [n]: PCI [=3Dn]
+     Selected by [y]:
+     - CSKY [=3Dy]
 
-       0.005167119 seconds time elapsed
-
-       0.000821000 seconds user
-       0.004105000 seconds sys
-
-
---- SIGCHLD {si_signo=SIGCHLD, si_code=SI_USER, si_pid=41466, si_uid=0} ---
-+++ exited with 0 +++
-[root@quaco ~]#
-
-Is it difficult to before doing the current expansion to
-PERF_TYPE_HARDWARE/PERF_HW_CPU_CYCLES just check if there is an event
-with the name specified in the PMU specified, if there is, use that.
-
-- Arnaldo
+--=20
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
