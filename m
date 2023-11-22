@@ -2,148 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE147F4E0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70E87F4E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343980AbjKVRQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        id S1343986AbjKVRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjKVRQs (ORCPT
+        with ESMTP id S233978AbjKVRQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:16:48 -0500
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.145])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A063197
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:16:43 -0800 (PST)
-Received: (wp-smtpd smtp.tlen.pl 6764 invoked from network); 22 Nov 2023 18:16:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1700673400; bh=tb9uWjBsYkuddaju8FnfaBIITnr7XlEu3AzBqfbpLRM=;
-          h=Subject:To:Cc:From;
-          b=jNAlXodEEp5Ev6on/1OXSRlMUJoP+4PIWBjZaQ8Iw9JFmSlu/sVcQ+tIywkUVQUpC
-           ptt5FhPPyfwvRL8hJU7uBL7Cc/c5PnnZQ1Z9022gxuTtUCfbbkx590VdKC9JsaGdc5
-           CtQCXCO/sctbUa0W/W2erGd9cGzbV2Cde5LijTKs=
-Received: from aafl106.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.141.106])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <mario.limonciello@amd.com>; 22 Nov 2023 18:16:40 +0100
-Message-ID: <828b9911-c172-4f9a-9c1f-ec9dc956bb8f@o2.pl>
-Date:   Wed, 22 Nov 2023 18:16:39 +0100
+        Wed, 22 Nov 2023 12:16:56 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA73191;
+        Wed, 22 Nov 2023 09:16:50 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D9EEC60005;
+        Wed, 22 Nov 2023 17:16:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700673409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=96QYHoZIDIT+pxG6t2aqCRbFyqHy2hKopbA6OtGC0ug=;
+        b=KUA08b5UpgDVT1Kju2OmlHYuYPXgqPrvOrFBHuw1abLqkrs5cPxtdYXHtnbwYAM8lelA88
+        jm1PutjS30gkjtNygopDI5oZa0aJYFHh7SRzlVxIaoMc7obiW98oKo9db1aOdIPGCW+A+C
+        Ash1xYvo6E/RUmxVsIOS+G3F2KZajj+gPzSNz2utAQUa+X+rnPhvWsIVFLRCs4mq64rsBG
+        8B7O9KyJl52TiZ+/MIssxF4mxVn1/f9NlVuCbIJ2wlGym9utHkXm9tApy4zUQC6HIOOp86
+        x8o7ABaAu2TcLEwT2lNVvP6XDl3FtfSjSIZQbG8r9V97Vf2j85MUjhDjUTDdDQ==
+Date:   Wed, 22 Nov 2023 18:16:47 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <20231122181647.06d9c3c9@kmaincent-XPS-13-7390>
+In-Reply-To: <04f59e77-134b-45b2-8759-84b8e22c30d5@lunn.ch>
+References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+        <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
+        <2ff8bea5-5972-4d1a-a692-34ad27b05446@lunn.ch>
+        <20231122171112.59370d21@kmaincent-XPS-13-7390>
+        <04f59e77-134b-45b2-8759-84b8e22c30d5@lunn.ch>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] rtc: Extend timeout for waiting for UIP to clear
- to 1s
-Content-Language: en-GB
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org, tobrohl@gmail.com, aalsing@gmail.com,
-        Dhaval.Giani@amd.com, xmb8dsv4@gmail.com, x86@kernel.org,
-        dhaval.giani@gmail.com
-References: <20231120141555.458-1-mario.limonciello@amd.com>
- <20231120141555.458-5-mario.limonciello@amd.com>
-From:   =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <20231120141555.458-5-mario.limonciello@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: d26295b416ab48a2949df0bacf555cb3
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [cVMB]                               
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 20.11.2023 o 15:15, Mario Limonciello pisze:
-> Specs don't say anything about UIP being cleared within 10ms. They
-> only say that UIP won't occur for another 244uS. If a long NMI occurs
-> while UIP is still updating it might not be possible to get valid
-> data in 10ms.
->
-> This has been observed in the wild that around s2idle some calls can
-> take up to 480ms before UIP is clear.
->
-> Adjust callers from outside an interrupt context to wait for up to a
-> 1s instead of 10ms.
->
-> Cc: stable@vger.kernel.org # 6.1.y: commit d2a632a8a117 ("rtc: mc146818-lib: reduce RTC_UIP polling period")
-Same as for patch 3/4.
-> Fixes: ec5895c0f2d8 ("rtc: mc146818-lib: extract mc146818_avoid_UIP")
-> Reported-by: xmb8dsv4@gmail.com
+On Wed, 22 Nov 2023 17:54:53 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Maybe nitpick, but consider providing the full name of Carsten Hatger, not just
-an email address.
+> > > > +static int pd692x0_sendrecv_msg(struct pd692x0_priv *priv,
+> > > > +				struct pd692x0_msg *msg,
+> > > > +				struct pd692x0_msg_content *buf)
+> > > > +{
+> > > > +	struct device *dev =3D &priv->client->dev;
+> > > > +	int ret;
+> > > > +
+> > > > +	ret =3D pd692x0_send_msg(priv, msg);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	ret =3D pd692x0_recv_msg(priv, msg, buf);   =20
+> > >=20
+> > > So this function takes at least 10 seconds? =20
+> >=20
+> > No, on normal communication it takes a bit more than 30ms. =20
+>=20
+> So i think the first step is to refactor this code to make it clear
+> what the normal path is, and what the exception path is, and the
+> timing of each.
 
-Otherwise,
+Ok I will try to refactor it to makes it more readable.
 
-Reviewed-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-Acked-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+> > > > +	msg.content.sub[2] =3D id;
+> > > > +	ret =3D pd692x0_sendrecv_msg(priv, &msg, &buf);   =20
+> > >=20
+> > > So this is also 10 seconds?=20
+> > >=20
+> > > Given its name, it looks like this is called via ethtool? Is the
+> > > ethtool core holding RTNL? It is generally considered bad to hold RTN=
+L for
+> > > that long. =20
+> >=20
+> > Yes it is holding RTNL lock. Should I consider another behavior in case=
+ of
+> > communication loss to not holding RTNL lock so long? =20
+>=20
+> How often does it happen? On the scale of its a theoretical
+> possibility, through to it happens every N calls? Also, does it happen
+> on cold boot and reboot?
+>=20
+> If its never supposed to happen, i would keep holding RTNL, and add a
+> pr_warn() that the PSE has crashed and burned, waiting for it to
+> reboot. If this is likely to happen on the first communication with
+> the device, we might want to do a dummy transfer during probe to get
+> is synchronized before we start using it with the RTNL held.
 
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217626
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v1->v2:
->  * Add tags
-> ---
->  arch/x86/kernel/rtc.c          | 2 +-
->  drivers/base/power/trace.c     | 2 +-
->  drivers/rtc/rtc-cmos.c         | 2 +-
->  drivers/rtc/rtc-mc146818-lib.c | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
->  
+I would say it never supposed to happen.
+I never faced the issue playing with the controller. The first communicatio=
+n is
+a simple i2c_master_recv of the controller status without entering the
+pd692x0_sendrecv_msg function, therefore it won't be an issue.
 
-Greetings,
+Another solution could be to raise a flag if I enter in communication loss =
+and
+release the rtnlock. We would lock again the rtnl when the flags got disabl=
+ed.
+The controler won't be accessible until the flag is disabled.
 
-Mateusz
-
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
