@@ -2,236 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E63E7F4005
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306A47F4003
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343490AbjKVIXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:23:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        id S235056AbjKVIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235060AbjKVIXU (ORCPT
+        with ESMTP id S231239AbjKVIXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:23:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33AA10E;
-        Wed, 22 Nov 2023 00:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700641395; x=1732177395;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=BY69KRJyVnfr650kIJoZMO0IwdZ8tdBk9ZG9Q7+w90Y=;
-  b=Zv8r5A03cRJ4fZbdmnBa44FZmWE8Zqn3f+WRWBYAba6D32NVIUnkDH7N
-   AJr019gpNstCxcKIjliDxXB6EKLb1nsOS+cQeP29gx98sOwY6X0gFa/24
-   xgwbKGMmD/MzY9vsJ++JGqnETskPbojlKgKK61iKT6qkEmWVi2cJQKPQO
-   DXch5qMMPqf8NVmPoVdQvQZfAo6oqD8OdORIbVy6rhNsVXMUBKUSVwped
-   UJlxHWtsiQQpuP58XwfEgsU2t+52L+FgE2gG5dra+G5Yu/76LrOREsQlL
-   giiOiU+ik4/PJg7LygLxQhzL0FCh5xseKrp6qEuw9Dgqe6Ooe43u7Q+PO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="390870124"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="390870124"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 00:23:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="8366873"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 00:23:08 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 00:23:07 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 00:23:07 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 00:23:07 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 22 Nov 2023 00:23:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JvprLBlijTqrqAaoXswcOdJddMvp7aUCB8OZsvj3MluUQ67GTFxLMTfQMhPZcqQ28Z0YoBnVaZ3kBnCf/fmasXih+63wy2XxJwp60TmZQiaxsgW9LeUidOGIrt+f91xNH7VVSypunES6xLABZM+4ujA4WOgFxcPs13IZ+SPg6EaTs8nxaInMxuFX7pWkwlu7znvdxRfzpmxCVbK29T2gIbidv+QTMCe+2HQkNQm4tFHYQYLoGbsGx5wmATUxnMII+KlDR8rTuK4PamxIp5nE+xFZ0GQTLdzo3q+Fz8WMpGe+yY2EpnIsLogy0svDufJqNnMWJjWQogoM+9Goy2U/DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h9MbO9RYIyEEJhn1zYZBXGb1lGbJ+uh+hX+x+bGC8SM=;
- b=HIv0bPhznS5GCsnbxDNWWP/1btvnU7zqsFATd0K9t7xTs36YaToU8F2KVdpVRpey0Z0A0C8+NaJmX9rSZCby4PMHivpFcAvDJUWiXW/M/sFoP6I9TI9ceWweJamkutC4+jzCFDQPZDOmlX5X7H1fMeL/7iuEi/Tb05y9EGUS25yf8gYX6mNaUPLqtJiqBf57zUoxz0YiQe2s2I12yLF1Tfvbbf4fveyce8z+BWQduXorVvPDeVukhTufEmK9eBORnwxJmCUfaRf1sEq7aKmgV6nnxqaT8F3b8r1Xo+VXAtt8SyY7Bdm9gIClcxaneIdEw/CQEcS6zj9AsQ+OlffJbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by SA3PR11MB7536.namprd11.prod.outlook.com (2603:10b6:806:320::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
- 2023 08:23:03 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::1236:9a2e:5acd:a7f]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::1236:9a2e:5acd:a7f%3]) with mapi id 15.20.7002.027; Wed, 22 Nov 2023
- 08:23:02 +0000
-Date:   Wed, 22 Nov 2023 16:22:53 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Nicolas Schier <n.schier@avm.de>,
-        Miguel Ojeda <ojeda@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        "Martin Rodriguez Reboredo" <yakoyoku@gmail.com>,
-        <linux-kbuild@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <oliver.sang@intel.com>
-Subject: [linus:master] [kbuild]  72d091846d:
- kernel-selftests.net.udpgro_bench.sh.fail
-Message-ID: <202311221453.9e6d5ac0-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SGXP274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::24)
- To LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+        Wed, 22 Nov 2023 03:23:07 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B354F9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:23:03 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5845213c583so3505802eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700641382; x=1701246182; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1tLro5qVWpp7kyrB0acm9exDu7RQojZgmOKkDhEynw=;
+        b=m5i+UpSrxa9CwjPpDyMIRs//Fc3+trBYFfVkj3BNE8HAlfNmm5wDTaPmqU4MVmdR6+
+         Z4s7gIPgSknW7uytsGQ4ztSac/YoQ6XFVDyggC/w73N/LNkD2AnVVYzpdRdygZEpZBC1
+         yor5YiDBdKgt/OY2hLBB6FOcSXHhUe7k9x3kQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700641382; x=1701246182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1tLro5qVWpp7kyrB0acm9exDu7RQojZgmOKkDhEynw=;
+        b=HjlBkdrPM7T8yoM2TfSnnfZIDXlpO92N7sj3zm1ZW6VtkgPFQ19PCydi4uh33zQOkx
+         ufwmYSvRgFtk+Go7JuBm9SxM7q/I4Q0y53EOqujOJ4BZRL47RU7HOQgwLSu7kGv4K6GF
+         Ev1UBTqlVju9iyrOd7dm02vajMfOYj0Ld3rBH9RrZ7kR749cTelJ/xDU1cMLx5l6IxAx
+         lf2Xne9KXtAKkcCLOZjl75L1pccJEkU/M5EcGbkDsKVxo6as15M9B6MzalwgoeW/FnAy
+         zonwdXZ6wlWCEOKJl6riQWTqNjNMHoFTlMJoi8MsroROE9EBhXhhiu7U9ptUTeSnlPlu
+         g2yw==
+X-Gm-Message-State: AOJu0YzlcYDdqGX9mU0NZzaHd32hnGI57CsXWwTpKJtbBrjucgeYcoz7
+        0dmZ0dZah6vtKK7AfwLI6hv+pg==
+X-Google-Smtp-Source: AGHT+IHthHR4uSwyBMbf5L0LPuBScubFWeTz3LWQhscIQ7SlJqGt1wJujwql08okmUIRt1e/T+Tjnw==
+X-Received: by 2002:a05:6358:5e0f:b0:16d:aead:f750 with SMTP id q15-20020a0563585e0f00b0016daeadf750mr1978924rwn.7.1700641382487;
+        Wed, 22 Nov 2023 00:23:02 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:1aba:fb75:807e:7620])
+        by smtp.gmail.com with ESMTPSA id j26-20020a63551a000000b005b529d633b7sm8989061pgb.14.2023.11.22.00.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 00:23:02 -0800 (PST)
+Date:   Wed, 22 Nov 2023 17:22:57 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Paul <seanpaul@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH v3 3/3] media: uvcvideo: Lock video streams and queues
+ while unregistering
+Message-ID: <20231122082257.GB1526356@google.com>
+References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
+ <20231121-guenter-mini-v3-3-d8a5eae2312b@chromium.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA3PR11MB7536:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8e354ab-9c3b-40d4-f279-08dbeb343ea8
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1M/dhBS07cgVDAx/l6d4paU5F8MgPfhoUDPywk0FBlUTMdu0E4SzBOqBjWlgy9OCSiry0dMHtREisbZzvn0/LJsyqHrRUTF1O2Hd4UMqRQwaIYBA8RW3ZIW9y4lmo6rQG1QHeT0J+I9cDSIO738MF3nziHi7yokrL0KhznCdLrN2oDId/jGMSC7sKfF2Z3DlA16YJ0V2700OruzCmFkBQloTk5x+oqG89RxZAqqQT1J1qoWZyvJVGJ8hd7kPmcnTLmyKQfn6Q+QgbOtB6X/bV6+D79f4M0+HDYRaa+PEmKBIwWkJ+tRQxlPE/UvQXU+AGBrzg4NzKzqYzddAkBXy7qt4z5iNs2NOdR7yzGYDZL5UbMdLSWpRq3WHYbQIj+Wn1IIeESNnpuGHeFYz8kZbm747hTMdFRI2hP0qTBQ6EkbPMIrNp4AmiQp5nTl52A7VyC4ysv4b12SPqbrJYkjj4+rtxvEe1tPei0WanCahOQE7cqsRRJHVgBzwh7GhjGId9hARsyI4FZuETINIMdLNKDmtqIQgyMxnSNAHvv1Z5cVD3x1PNAjcfhhwcg48Mo3N8L6izrzd70C6k3+gNz62SQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(396003)(39860400002)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(86362001)(82960400001)(38100700002)(36756003)(107886003)(6916009)(316002)(54906003)(66556008)(66476007)(966005)(2616005)(1076003)(66946007)(26005)(478600001)(7416002)(6512007)(6666004)(6506007)(5660300002)(2906002)(6486002)(4326008)(8936002)(41300700001)(8676002)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0hJAF7GTU+IAdybWAZ5lwnzmPtv+JMASdcCQgLk+/Spz/y9Wp8qy9YFjLiG9?=
- =?us-ascii?Q?+g2kuSf3y31tyvBqq47bYefAWsnvSGjadM2juTM2Q8jicaRnYkOhsBzwEkEM?=
- =?us-ascii?Q?pqGv0abZdt4BfnW4ryT5/iMvMEivBycLYx+QyEbGmlKjCo9aWcjxSq+lNGLW?=
- =?us-ascii?Q?E59wAWAM89mcKX+MfXxLzJOQ00/mE2NBfaJ2d+Y2MTbUkH4ExAieARel0uEv?=
- =?us-ascii?Q?LK4URYu21f4J3xaGzSNP3kIfZR2qMdBs4rJnufUG96VOkbGE0dqzlJVRyiiS?=
- =?us-ascii?Q?Y9/W7z59TjjClOwnBDwJChFP0nmWSLr2WCuKkEUN5EOJuOX0Xg/gRIVlmNlW?=
- =?us-ascii?Q?KOkDugE1kAPk33n0j8pPVuxV0Cyy+TC+Djs0H8Ievd6L/VSPeDNeZPtrO8rW?=
- =?us-ascii?Q?dmyB033xJRNv5nplCOltkmHEhAXzYEnN7AG3bVp+qTIZ+Cu6A9F28d0w8zcv?=
- =?us-ascii?Q?KuWbBcsYK0SThViY8QHL7dXIe4o5qJhH/BACR+FQsFn1mE/vOSTJBvIVhHSs?=
- =?us-ascii?Q?kAHeydDs6+QqFAnflpd80NaIJUFwnF3gCheyAu2+wx4exavVOExNluw85Wuk?=
- =?us-ascii?Q?Pf06wdAfKJYgieMvYCN03hQHVzd0FkDpGutDOnFo+Rbs5MfWgnzMPBCuJev/?=
- =?us-ascii?Q?ljdHYSNBlSyoGAy/OXgJT3nP/fH7+GzLW8y3NIUc0jEOKMJ8tjOsCYRgq5D3?=
- =?us-ascii?Q?zNppV257FAxyQ0PJrmWZKv80Mv0t4Dxu2ZyQGlTHZKSmV2HLHdEzo40gF+Ko?=
- =?us-ascii?Q?8Hgo3R5wmZF0bQDzk7iW2nQgPjmY4wnf6MIlIAA9gS2iyXUlMB/7//sN5sHm?=
- =?us-ascii?Q?4Xu96ktgL9L+4Y1WEojkIoage9lsGJLdfwXgVPnEGvHHFHLz5I97L6WH4D6W?=
- =?us-ascii?Q?LuWHv7DYDM3ufYwZ0AGB3l1yIl2v+V1U7mJXLJj0PSL06pdd5i0RPjLPw69v?=
- =?us-ascii?Q?vHjtu4SI4FI+6OwHEIcxW7M7DdeBOCrMWL8FGh6NGlqfYpTmuwYr6Y5NZ/NG?=
- =?us-ascii?Q?B+/gnjMH49iAUku8oJeosTAwHVEe/ksI8Y4Tp+vZxNHj7xiK/xI0YXB3H/Ps?=
- =?us-ascii?Q?W8nZclQwPI0Y+fN2VoBEEJPWOmtrLpIklhDmzZOQmchF2zZXHBqino0fVqO0?=
- =?us-ascii?Q?MG03kst9iGcN9sBJMSR3hrwWJH3p6R8bvB4RtdDSVdsbZno8lcq8bBqDPkY2?=
- =?us-ascii?Q?GlHDMw94bv7raAk17UqhpF1yRjcNZL7IirVYeqHCBqPnMqC5yQW8q2t7sU40?=
- =?us-ascii?Q?xaUmbeT7XIJr2IvYt80h5SA7NMWwjJm48QI17ais5OBqb05ndXYOxUG+EO8g?=
- =?us-ascii?Q?nlQDU55eToHM7uhTL9pzmE6HIUjWhqATeEXrSV3GxxCopRKJtmnHjf/qdiUu?=
- =?us-ascii?Q?xBD0L0hAcQwViFcn/tmtKAVR4jY3fDyFvteILNV+tbha7kdztS+sIXlzfLBm?=
- =?us-ascii?Q?p1+Qh/ZFrK/zM0E022+V8+GAUqAFzgsQYXRRiLJNEmGsCqwnmyhzP1SJ3FFw?=
- =?us-ascii?Q?7pkVntb+Y/1XnkpCtAZPkILH5gCd2nJThAQJUMOrZXjdDVpwM48CMgdgaucL?=
- =?us-ascii?Q?wlv8eW7c+35Kl2qEKjAVD8T6whdZybOOgaDm9wf9JS1U2WwIZOD4eyzRd8ND?=
- =?us-ascii?Q?Gw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8e354ab-9c3b-40d4-f279-08dbeb343ea8
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 08:23:02.5994
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qd7vOl+XO0rOCzYiaJPR+RqULINr03aZw32ksP6RVQ7tV9aK69RmGS/7xvWCeLq+N7rO3TOlRfoLx04fuj/vHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7536
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121-guenter-mini-v3-3-d8a5eae2312b@chromium.org>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (23/11/21 19:53), Ricardo Ribalda wrote:
+> The call to uvc_disconnect() is not protected by any mutex.
+> This means it can and will be called while other accesses to the video
+> device are in progress. This can cause all kinds of race conditions,
+> including crashes such as the following.
+> 
+[..]
+> 
+> Call Trace:
+>  usb_hcd_alloc_bandwidth+0x1ee/0x30f
+>  usb_set_interface+0x1a3/0x2b7
+>  uvc_video_start_transfer+0x29b/0x4b8 [uvcvideo]
+>  uvc_video_start_streaming+0x91/0xdd [uvcvideo]
+>  uvc_start_streaming+0x28/0x5d [uvcvideo]
+>  vb2_start_streaming+0x61/0x143 [videobuf2_common]
+>  vb2_core_streamon+0xf7/0x10f [videobuf2_common]
+>  uvc_queue_streamon+0x2e/0x41 [uvcvideo]
+>  uvc_ioctl_streamon+0x42/0x5c [uvcvideo]
+>  __video_do_ioctl+0x33d/0x42a
+>  video_usercopy+0x34e/0x5ff
+>  ? video_ioctl2+0x16/0x16
+>  v4l2_ioctl+0x46/0x53
+>  do_vfs_ioctl+0x50a/0x76f
+>  ksys_ioctl+0x58/0x83
+>  __x64_sys_ioctl+0x1a/0x1e
+>  do_syscall_64+0x54/0xde
+> 
+> usb_set_interface() should not be called after the USB device has been
+> unregistered. However, in the above case the disconnect happened after
+> v4l2_ioctl() was called, but before the call to usb_ifnum_to_if().
+> 
+> Acquire various mutexes in uvc_unregister_video() to fix the majority
+> (maybe all) of the observed race conditions.
+> 
+> The uvc_device lock prevents races against suspend and resume calls
+> and the poll function.
+> 
+> The uvc_streaming lock prevents races against stream related functions;
+> for the most part, those are ioctls. This lock also requires other
+> functions using this lock to check if a video device is still registered
+> after acquiring it. For example, it was observed that the video device
+> was already unregistered by the time the stream lock was acquired in
+> uvc_ioctl_streamon().
+> 
+> The uvc_queue lock prevents races against queue functions, Most of
+> those are already protected by the uvc_streaming lock, but some
+> are called directly. This is done as added protection; an actual race
+> was not (yet) observed.
+> 
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+> Reviewed-by: Sean Paul <seanpaul@chromium.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-
-Hello,
-
-kernel test robot noticed "kernel-selftests.net.udpgro_bench.sh.fail" on:
-
-commit: 72d091846de935e0942a8a0f1fe24ff739d85d76 ("kbuild: avoid too many execution of scripts/pahole-flags.sh")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-[test failed on linus/master 7475e51b87969e01a6812eac713a1c8310372e8a]
-[test failed on linux-next/master eff99d8edbed7918317331ebd1e365d8e955d65e]
-
-in testcase: kernel-selftests
-version: kernel-selftests-x86_64-60acb023-1_20230329
-with following parameters:
-
-	group: net
-
-
-
-compiler: gcc-12
-test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202311221453.9e6d5ac0-oliver.sang@intel.com
-
-
-besides kernel-selftests.net.udpgro_bench.sh, we also observed below tests
-failed upon this commit but can pass on parent.
-
-7f6d8f7e43fb516f 72d091846de935e0942a8a0f1fe
----------------- ---------------------------
-       fail:runs  %reproduction    fail:runs
-           |             |             |
-           :20         100%          20:20    kernel-selftests.net.udpgro.sh.fail
-           :20         100%          20:20    kernel-selftests.net.udpgro_bench.sh.fail
-           :20         100%          20:20    kernel-selftests.net.udpgro_frglist.sh.fail
-           :20         100%          20:20    kernel-selftests.net.veth.sh.fail
-
-
-
-....
-
-# timeout set to 1500
-# selftests: net: udpgro_bench.sh
-# Missing ../bpf/xdp_dummy.bpf.o. Build bpf selftest first
-not ok 25 selftests: net: udpgro_bench.sh # exit=255
-# timeout set to 1500
-# selftests: net: udpgro.sh
-# Missing ../bpf/xdp_dummy.bpf.o. Build bpf selftest first
-not ok 26 selftests: net: udpgro.sh # exit=255
-
-....
-
-# timeout set to 1500
-# selftests: net: udpgro_frglist.sh
-# Missing ../bpf/xdp_dummy.bpf.o. Build bpf selftest first
-not ok 53 selftests: net: udpgro_frglist.sh # exit=255
-# timeout set to 1500
-# selftests: net: veth.sh
-# Missing ../bpf/xdp_dummy.bpf.o. Build bpf selftest first
-not ok 54 selftests: net: veth.sh # exit=1
-
-....
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20231122/202311221453.9e6d5ac0-oliver.sang@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
