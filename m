@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B67F54CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633497F54DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbjKVXcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
+        id S1344410AbjKVXdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344066AbjKVXb7 (ORCPT
+        with ESMTP id S232195AbjKVXc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:31:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E35D47
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:31:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 264D8C433C8;
-        Wed, 22 Nov 2023 23:31:44 +0000 (UTC)
-Date:   Wed, 22 Nov 2023 18:32:00 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v2 01/33] ftrace: Unpoison ftrace_regs in
- ftrace_ops_list_func()
-Message-ID: <20231122183200.409e982b@gandalf.local.home>
-In-Reply-To: <20231121220155.1217090-2-iii@linux.ibm.com>
-References: <20231121220155.1217090-1-iii@linux.ibm.com>
-        <20231121220155.1217090-2-iii@linux.ibm.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 22 Nov 2023 18:32:59 -0500
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bd])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B5E1B9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:32:33 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700695952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qgv33Ovxam0+KiksvHm1DaTN1DFcMIwCLo7TltDYJWk=;
+        b=BsDuU21WrjJl0BjQ0mHT2oy9QZIswuRNbpcZm/xDU+FSGPNd3DFXdPAZKbnv8QQ032ltZx
+        ud0N+bpOfodRztqH1p47dyIB0WVCl9V/YnCOPKBmx2/jU7LgZogfC7Zkf4YWIWQTJP+KoY
+        n5zGcjDgVDOUHd7nA1dgzCHC4nXQIyY=
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH] rhashtable: Better error message on allocation failure
+Date:   Wed, 22 Nov 2023 18:32:16 -0500
+Message-ID: <20231122233225.178910-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 23:00:55 +0100
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+Memory allocation failures print backtraces by default, but when we're
+running out of a rhashtable worker the backtrace is useless - it doesn't
+tell us which hashtable the allocation failure was for.
 
-> Architectures use assembly code to initialize ftrace_regs and call
-> ftrace_ops_list_func(). Therefore, from the KMSAN's point of view,
-> ftrace_regs is poisoned on ftrace_ops_list_func entry(). This causes
-> KMSAN warnings when running the ftrace testsuite.
-> 
-> Fix by trusting the architecture-specific assembly code and always
-> unpoisoning ftrace_regs in ftrace_ops_list_func.
+This adds a dedicated warning that prints out functions from the
+rhashtable params, which will be a bit more useful.
 
-You must be very trusting to trust architecture-specific assembly code ;-)
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Thomas Graf <tgraf@suug.ch>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ lib/rhashtable.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
--- Steve
-
-
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  kernel/trace/ftrace.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 8de8bec5f366..dfb8b26966aa 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7399,6 +7399,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->  void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->  			       struct ftrace_ops *op, struct ftrace_regs *fregs)
->  {
-> +	kmsan_unpoison_memory(fregs, sizeof(*fregs));
->  	__ftrace_ops_list_func(ip, parent_ip, NULL, fregs);
->  }
->  #else
+diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+index 6ae2ba8e06a2..d3fce9c8989a 100644
+--- a/lib/rhashtable.c
++++ b/lib/rhashtable.c
+@@ -360,9 +360,14 @@ static int rhashtable_rehash_alloc(struct rhashtable *ht,
+ 
+ 	ASSERT_RHT_MUTEX(ht);
+ 
+-	new_tbl = bucket_table_alloc(ht, size, GFP_KERNEL);
+-	if (new_tbl == NULL)
++	new_tbl = bucket_table_alloc(ht, size, GFP_KERNEL|__GFP_NOWARN);
++	if (new_tbl == NULL) {
++		WARN("rhashtable bucket table allocation failure for %ps",
++		     (void *) ht->p.hashfn ?:
++		     (void *) ht->p.obj_hashfn ?:
++		     (void *) ht->p.obj_cmpfn);
+ 		return -ENOMEM;
++	}
+ 
+ 	err = rhashtable_rehash_attach(ht, old_tbl, new_tbl);
+ 	if (err)
+-- 
+2.42.0
 
