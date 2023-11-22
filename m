@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 725CA7F4121
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B587F4122
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235253AbjKVJD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        id S235114AbjKVJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbjKVJBh (ORCPT
+        with ESMTP id S1343674AbjKVJCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:01:37 -0500
+        Wed, 22 Nov 2023 04:02:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82EDD53
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A685BD51
         for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:01:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E4BA1C433CB;
-        Wed, 22 Nov 2023 09:01:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D50FC3278E;
+        Wed, 22 Nov 2023 09:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700643675;
-        bh=M1j5OjVWfQrOszIC+nXpzNjQFC9Kux218UBu4t0RSvU=;
+        s=k20201202; t=1700643676;
+        bh=zkhPldPOAlAFRTkdFSMjyn2EDAhrYy+WeFmrSve003o=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=K3LpvopqfXZ/O1DUsyKnRtf41Y4BM94yWyHmEgr84xzXXUMuTuLktwg78sEOQHuuc
-         Dr3abZWaRhjNzlGBtg7hSU0hqHKSZL2SP9ye89p/dN6HPTJlReiptZxU8MQ0YGDwyq
-         ed9zBzOVOevN8VkD9buWdxsW0HVTjFDQqCiE/kRTAglViY22i/wYJp0zScBbyg32oz
-         Wev5dJb7d7LLvS1bG+qiSu2vkKx27fICC3m5mxxzS4PmnsXUS/voncaIZrErQDaz6/
-         uoiUI8HznGV+Ii7O4rqVmagbsI22HEqu78X5D8r+jRVc6G3D/RE675R5BsE+lgpPUg
-         FYHMIicbtlLWQ==
+        b=d5rniZGESw64MNoFuaM7Nf7YNG2O4ZZfR/u2FI5chMdZ6ttmVnhIySgMlA7yQ//3E
+         IBkVTe2uCabFkcSBPBuQt7kUgKB1t8ODxBrMGt9zW2CcbWYlOPXFjqW4aIT3BeDxwM
+         OGLfpPGaAkL6dgIiUd/bvU0qVjC+MNG4QliXnk4w/OZ3Gqn/n2qa+QSsfm+/4O/gfE
+         h/pVxRJ1WPHAjqkjbV4gx2bjqar4SH7KdJFOJGTHnneKXzphSTL6ISziPPgVLPvS0s
+         128JBncPYFIZeKaWTx2bV5pmPzSFXCSyyGt3sP0HmPxhdYpDufuVXukOmqKDwBI3ZS
+         46bf8NnMYyVoQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id D2AA7C61D9D;
-        Wed, 22 Nov 2023 09:01:15 +0000 (UTC)
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 2C5CCC61D9C;
+        Wed, 22 Nov 2023 09:01:16 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Wed, 22 Nov 2023 12:00:08 +0300
-Subject: [PATCH v5 30/39] ARM: dts: add Cirrus EP93XX SoC .dtsi
+Date:   Wed, 22 Nov 2023 12:00:14 +0300
+Subject: [PATCH v5 36/39] ARM: ep93xx: delete all boardfiles
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-ep93xx-v5-30-d59a76d5df29@maquefel.me>
+Message-Id: <20231122-ep93xx-v5-36-d59a76d5df29@maquefel.me>
 References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
 In-Reply-To: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+To:     Hartley Sweeten <hsweeten@visionengravers.com>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
         Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700643671; l=11984;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700643671; l=118218;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=f589Q1y7wPDCACOwmC68XfHG1X2f02mX+v+hu1/n49A=; =?utf-8?q?b=3DzhNIU3AwfWrz?=
- =?utf-8?q?jgiYlYEXS+jMbddSj3V2RRCNv+g/7sa55QSzRnncSH4MKYeG3E4BsneSQ4X/xpfH?=
- KitOzw1zAul7qtGozlJQhCOsq4gkbdJbTCTkFYQLvPTJBgRwa2Vb
+ bh=hT8QSvLxqHwd+skcU2nF+tE5WsZ+SwujK8y0DoE8DaU=; =?utf-8?q?b=3D/c6/X3GKg09D?=
+ =?utf-8?q?sNTWZFb0UreOFWqMlnCds6+YB3hoFqfoqk8YDV1G+oss/fjlZvPclnVKy27NKh4u?=
+ 5XStaekPA8Gsw7Vik4CbB7sbWwYYkUJZOuhM6zwI4XF27FD5yHKH
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -70,463 +70,3751 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add support for Cirrus Logic EP93XX SoC's family.
+Delete the ep93xx board files.
 
-Co-developed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- arch/arm/boot/dts/cirrus/ep93xx.dtsi | 442 +++++++++++++++++++++++++++++++++++
- 1 file changed, 442 insertions(+)
+ arch/arm/mach-ep93xx/clock.c             | 733 ------------------------
+ arch/arm/mach-ep93xx/core.c              | 954 -------------------------------
+ arch/arm/mach-ep93xx/dma.c               | 114 ----
+ arch/arm/mach-ep93xx/edb93xx.c           | 344 -----------
+ arch/arm/mach-ep93xx/ep93xx-regs.h       |  38 --
+ arch/arm/mach-ep93xx/gpio-ep93xx.h       | 111 ----
+ arch/arm/mach-ep93xx/hardware.h          |  25 -
+ arch/arm/mach-ep93xx/irqs.h              |  76 ---
+ arch/arm/mach-ep93xx/platform.h          |  42 --
+ arch/arm/mach-ep93xx/soc.h               | 212 -------
+ arch/arm/mach-ep93xx/timer-ep93xx.c      | 143 -----
+ arch/arm/mach-ep93xx/ts72xx.c            | 422 --------------
+ arch/arm/mach-ep93xx/ts72xx.h            |  94 ---
+ arch/arm/mach-ep93xx/vision_ep9307.c     | 311 ----------
+ include/linux/platform_data/spi-ep93xx.h |  15 -
+ 15 files changed, 3634 deletions(-)
 
-diff --git a/arch/arm/boot/dts/cirrus/ep93xx.dtsi b/arch/arm/boot/dts/cirrus/ep93xx.dtsi
-new file mode 100644
-index 000000000000..e00ebe7bae81
---- /dev/null
-+++ b/arch/arm/boot/dts/cirrus/ep93xx.dtsi
-@@ -0,0 +1,442 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree file for Cirrus Logic systems EP93XX SoC
-+ */
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/soc/cirrus,ep9301-syscon.h>
-+/ {
-+	soc: soc {
-+		compatible = "simple-bus";
-+		ranges;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		syscon: syscon@80930000 {
-+			compatible = "cirrus,ep9301-syscon",
-+				     "syscon", "simple-mfd";
-+			reg = <0x80930000 0x1000>;
-+
-+			#clock-cells = <1>;
-+			clocks = <&xtali>;
-+
-+			spi_default_pins: pins-spi {
-+				function = "spi";
-+				groups = "ssp";
-+			};
-+
-+			ac97_default_pins: pins-ac97 {
-+				function = "ac97";
-+				groups = "ac97";
-+			};
-+
-+			i2s_on_ssp_pins: pins-i2sonssp {
-+				function = "i2s";
-+				groups = "i2s_on_ssp";
-+			};
-+
-+			i2s_on_ac97_pins: pins-i2sonac97 {
-+				function = "i2s";
-+				groups = "i2s_on_ac97";
-+			};
-+
-+			gpio1_default_pins: pins-gpio1 {
-+				function = "gpio";
-+				groups = "gpio1agrp";
-+			};
-+
-+			pwm1_default_pins: pins-pwm1 {
-+				function = "pwm";
-+				groups = "pwm1";
-+			};
-+
-+			gpio2_default_pins: pins-gpio2 {
-+				function = "gpio";
-+				groups = "gpio2agrp";
-+			};
-+
-+			gpio3_default_pins: pins-gpio3 {
-+				function = "gpio";
-+				groups = "gpio3agrp";
-+			};
-+
-+			keypad_default_pins: pins-keypad {
-+				function = "keypad";
-+				groups = "keypadgrp";
-+			};
-+
-+			gpio4_default_pins: pins-gpio4 {
-+				function = "gpio";
-+				groups = "gpio4agrp";
-+			};
-+
-+			gpio6_default_pins: pins-gpio6 {
-+				function = "gpio";
-+				groups = "gpio6agrp";
-+			};
-+
-+			gpio7_default_pins: pins-gpio7 {
-+				function = "gpio";
-+				groups = "gpio7agrp";
-+			};
-+
-+			ide_default_pins: pins-ide {
-+				function = "pata";
-+				groups = "idegrp";
-+			};
-+
-+			lcd_on_dram0_pins: pins-rasteronsdram0 {
-+				function = "lcd";
-+				groups = "rasteronsdram0grp";
-+			};
-+
-+			lcd_on_dram3_pins: pins-rasteronsdram3 {
-+				function = "lcd";
-+				groups = "rasteronsdram3grp";
-+			};
-+		};
-+
-+		adc: adc@80900000 {
-+			compatible = "cirrus,ep9301-adc";
-+			reg = <0x80900000 0x28>;
-+			clocks = <&syscon EP93XX_CLK_ADC>;
-+			interrupt-parent = <&vic0>;
-+			interrupts = <30>;
-+			status = "disabled";
-+		};
-+
-+		/*
-+		 * The EP93XX expansion bus is a set of up to 7 each up to 16MB
-+		 * windows in the 256MB space from 0x50000000 to 0x5fffffff.
-+		 * But since we don't require to setup it in any way, we can
-+		 * represent it as a simple-bus.
-+		 */
-+		ebi: bus@80080000 {
-+			compatible = "simple-bus";
-+			reg = <0x80080000 0x20>;
-+			native-endian;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+		};
-+
-+		dma0: dma-controller@80000000 {
-+			compatible = "cirrus,ep9301-dma-m2p";
-+			reg = <0x80000000 0x0040>,
-+			      <0x80000040 0x0040>,
-+			      <0x80000080 0x0040>,
-+			      <0x800000c0 0x0040>,
-+			      <0x80000240 0x0040>,
-+			      <0x80000200 0x0040>,
-+			      <0x800002c0 0x0040>,
-+			      <0x80000280 0x0040>,
-+			      <0x80000340 0x0040>,
-+			      <0x80000300 0x0040>;
-+			clocks = <&syscon EP93XX_CLK_M2P0>,
-+				 <&syscon EP93XX_CLK_M2P1>,
-+				 <&syscon EP93XX_CLK_M2P2>,
-+				 <&syscon EP93XX_CLK_M2P3>,
-+				 <&syscon EP93XX_CLK_M2P4>,
-+				 <&syscon EP93XX_CLK_M2P5>,
-+				 <&syscon EP93XX_CLK_M2P6>,
-+				 <&syscon EP93XX_CLK_M2P7>,
-+				 <&syscon EP93XX_CLK_M2P8>,
-+				 <&syscon EP93XX_CLK_M2P9>;
-+			clock-names = "m2p0", "m2p1",
-+				      "m2p2", "m2p3",
-+				      "m2p4", "m2p5",
-+				      "m2p6", "m2p7",
-+				      "m2p8", "m2p9";
-+			interrupt-parent = <&vic0>;
-+			interrupts = <7>, <8>, <9>, <10>, <11>,
-+				<12>, <13>, <14>, <15>, <16>;
-+			#dma-cells = <2>;
-+		};
-+
-+		dma1: dma-controller@80000100 {
-+			compatible = "cirrus,ep9301-dma-m2m";
-+			reg = <0x80000100 0x0040>,
-+			      <0x80000140 0x0040>;
-+			clocks = <&syscon EP93XX_CLK_M2M0>,
-+				 <&syscon EP93XX_CLK_M2M1>;
-+			clock-names = "m2m0", "m2m1";
-+			interrupt-parent = <&vic0>;
-+			interrupts = <17>, <18>;
-+			#dma-cells = <2>;
-+		};
-+
-+		eth0: ethernet@80010000 {
-+			compatible = "cirrus,ep9301-eth";
-+			reg = <0x80010000 0x10000>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <7>;
-+			mdio0: mdio {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
-+		gpio0: gpio@80840000 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840000 0x04>,
-+			      <0x80840010 0x04>,
-+			      <0x80840090 0x1c>;
-+			reg-names = "data", "dir", "intr";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <27>;
-+		};
-+
-+		gpio1: gpio@80840004 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840004 0x04>,
-+			      <0x80840014 0x04>,
-+			      <0x808400ac 0x1c>;
-+			reg-names = "data", "dir", "intr";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <27>;
-+		};
-+
-+		gpio2: gpio@80840008 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840008 0x04>,
-+			      <0x80840018 0x04>;
-+			reg-names = "data", "dir";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&gpio2_default_pins>;
-+		};
-+
-+		gpio3: gpio@8084000c {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x8084000c 0x04>,
-+			      <0x8084001c 0x04>;
-+			reg-names = "data", "dir";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&gpio3_default_pins>;
-+		};
-+
-+		gpio4: gpio@80840020 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840020 0x04>,
-+			      <0x80840024 0x04>;
-+			reg-names = "data", "dir";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&gpio4_default_pins>;
-+		};
-+
-+		gpio5: gpio@80840030 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840030 0x04>,
-+			      <0x80840034 0x04>,
-+			      <0x8084004c 0x1c>;
-+			reg-names = "data", "dir", "intr";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			interrupts-extended = <&vic0 19>, <&vic0 20>,
-+					      <&vic0 21>, <&vic0 22>,
-+					      <&vic1 15>, <&vic1 16>,
-+					      <&vic1 17>, <&vic1 18>;
-+		};
-+
-+		gpio6: gpio@80840038 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840038 0x04>,
-+			      <0x8084003c 0x04>;
-+			reg-names = "data", "dir";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&gpio6_default_pins>;
-+		};
-+
-+		gpio7: gpio@80840040 {
-+			compatible = "cirrus,ep9301-gpio";
-+			reg = <0x80840040 0x04>,
-+			      <0x80840044 0x04>;
-+			reg-names = "data", "dir";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&gpio7_default_pins>;
-+		};
-+
-+		i2s: i2s@80820000 {
-+			compatible = "cirrus,ep9301-i2s";
-+			reg = <0x80820000 0x100>;
-+			#sound-dai-cells = <0>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <28>;
-+			clocks = <&syscon EP93XX_CLK_I2S_MCLK>,
-+				 <&syscon EP93XX_CLK_I2S_SCLK>,
-+				 <&syscon EP93XX_CLK_I2S_LRCLK>;
-+			clock-names = "mclk", "sclk", "lrclk";
-+			dmas = <&dma0 0 1>, <&dma0 0 2>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+
-+		ide: ide@800a0000 {
-+			compatible = "cirrus,ep9312-pata";
-+			reg = <0x800a0000 0x38>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <8>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&ide_default_pins>;
-+			status = "disabled";
-+		};
-+
-+		vic0: interrupt-controller@800b0000 {
-+			compatible = "arm,pl192-vic";
-+			reg = <0x800b0000 0x1000>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+			valid-mask = <0x7ffffffc>;
-+			valid-wakeup-mask = <0x0>;
-+		};
-+
-+		vic1: interrupt-controller@800c0000 {
-+			compatible = "arm,pl192-vic";
-+			reg = <0x800c0000 0x1000>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+			valid-mask = <0x1fffffff>;
-+			valid-wakeup-mask = <0x0>;
-+		};
-+
-+		keypad: keypad@800f0000 {
-+			compatible = "cirrus,ep9307-keypad";
-+			reg = <0x800f0000 0x0c>;
-+			interrupt-parent = <&vic0>;
-+			interrupts = <29>;
-+			clocks = <&syscon EP93XX_CLK_KEYPAD>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&keypad_default_pins>;
-+			linux,keymap =	<KEY_UP>,
-+					<KEY_DOWN>,
-+					<KEY_VOLUMEDOWN>,
-+					<KEY_HOME>,
-+					<KEY_RIGHT>,
-+					<KEY_LEFT>,
-+					<KEY_ENTER>,
-+					<KEY_VOLUMEUP>,
-+					<KEY_F6>,
-+					<KEY_F8>,
-+					<KEY_F9>,
-+					<KEY_F10>,
-+					<KEY_F1>,
-+					<KEY_F2>,
-+					<KEY_F3>,
-+					<KEY_POWER>;
-+		};
-+
-+		pwm0: pwm@80910000 {
-+			compatible = "cirrus,ep9301-pwm";
-+			reg = <0x80910000 0x10>;
-+			clocks = <&syscon EP93XX_CLK_PWM>;
-+			#pwm-cells = <3>;
-+			status = "disabled";
-+		};
-+
-+		pwm1: pwm@80910020 {
-+			compatible = "cirrus,ep9301-pwm";
-+			reg = <0x80910020 0x10>;
-+			clocks = <&syscon EP93XX_CLK_PWM>;
-+			#pwm-cells = <3>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pwm1_default_pins>;
-+			status = "disabled";
-+		};
-+
-+		rtc0: rtc@80920000 {
-+			compatible = "cirrus,ep9301-rtc";
-+			reg = <0x80920000 0x100>;
-+		};
-+
-+		spi0: spi@808a0000 {
-+			compatible = "cirrus,ep9301-spi";
-+			reg = <0x808a0000 0x18>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <21>;
-+			clocks = <&syscon EP93XX_CLK_SPI>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&spi_default_pins>;
-+			status = "disabled";
-+		};
-+
-+		timer: timer@80810000 {
-+			compatible = "cirrus,ep9301-timer";
-+			reg = <0x80810000 0x100>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <19>;
-+		};
-+
-+		uart0: serial@808c0000 {
-+			compatible = "arm,pl011", "arm,primecell";
-+			reg = <0x808c0000 0x1000>;
-+			arm,primecell-periphid = <0x00041010>;
-+			clocks = <&syscon EP93XX_CLK_UART1>, <&syscon EP93XX_CLK_UART>;
-+			clock-names = "uartclk", "apb_pclk";
-+			interrupt-parent = <&vic1>;
-+			interrupts = <20>;
-+			status = "disabled";
-+		};
-+
-+		uart1: uart@808d0000 {
-+			compatible = "arm,primecell";
-+			reg = <0x808d0000 0x1000>;
-+			arm,primecell-periphid = <0x00041010>;
-+			clocks = <&syscon EP93XX_CLK_UART2>, <&syscon EP93XX_CLK_UART>;
-+			clock-names = "apb:uart2", "apb_pclk";
-+			interrupt-parent = <&vic1>;
-+			interrupts = <22>;
-+			status = "disabled";
-+		};
-+
-+		uart2: uart@808b0000 {
-+			compatible = "arm,primecell";
-+			reg = <0x808b0000 0x1000>;
-+			arm,primecell-periphid = <0x00041010>;
-+			clocks = <&syscon EP93XX_CLK_UART3>, <&syscon EP93XX_CLK_UART>;
-+			clock-names = "apb:uart3", "apb_pclk";
-+			interrupt-parent = <&vic1>;
-+			interrupts = <23>;
-+			status = "disabled";
-+		};
-+
-+		usb0: usb@80020000 {
-+			compatible = "generic-ohci";
-+			reg = <0x80020000 0x10000>;
-+			interrupt-parent = <&vic1>;
-+			interrupts = <24>;
-+			clocks = <&syscon EP93XX_CLK_USB>;
-+			status = "disabled";
-+		};
-+
-+		watchdog0: watchdog@80940000 {
-+			compatible = "cirrus,ep9301-wdt";
-+			reg = <0x80940000 0x08>;
-+		};
-+	};
-+
-+	xtali: oscillator {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <14745600>;
-+		clock-output-names = "xtali";
-+	};
-+};
+diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+deleted file mode 100644
+index 85a496ddc619..000000000000
+--- a/arch/arm/mach-ep93xx/clock.c
++++ /dev/null
+@@ -1,733 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/clock.c
+- * Clock control for Cirrus EP93xx chips.
+- *
+- * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- */
+-
+-#define pr_fmt(fmt) "ep93xx " KBUILD_MODNAME ": " fmt
+-
+-#include <linux/kernel.h>
+-#include <linux/clk.h>
+-#include <linux/err.h>
+-#include <linux/module.h>
+-#include <linux/string.h>
+-#include <linux/io.h>
+-#include <linux/spinlock.h>
+-#include <linux/clkdev.h>
+-#include <linux/clk-provider.h>
+-#include <linux/soc/cirrus/ep93xx.h>
+-
+-#include "hardware.h"
+-
+-#include <asm/div64.h>
+-
+-#include "soc.h"
+-
+-static DEFINE_SPINLOCK(clk_lock);
+-
+-static char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
+-static char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
+-static char pclk_divisors[] = { 1, 2, 4, 8 };
+-
+-static char adc_divisors[] = { 16, 4 };
+-static char sclk_divisors[] = { 2, 4 };
+-static char lrclk_divisors[] = { 32, 64, 128 };
+-
+-static const char * const mux_parents[] = {
+-	"xtali",
+-	"pll1",
+-	"pll2"
+-};
+-
+-/*
+- * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
+- */
+-static unsigned long calc_pll_rate(unsigned long long rate, u32 config_word)
+-{
+-	int i;
+-
+-	rate *= ((config_word >> 11) & 0x1f) + 1;		/* X1FBD */
+-	rate *= ((config_word >> 5) & 0x3f) + 1;		/* X2FBD */
+-	do_div(rate, (config_word & 0x1f) + 1);			/* X2IPD */
+-	for (i = 0; i < ((config_word >> 16) & 3); i++)		/* PS */
+-		rate >>= 1;
+-
+-	return (unsigned long)rate;
+-}
+-
+-struct clk_psc {
+-	struct clk_hw hw;
+-	void __iomem *reg;
+-	u8 bit_idx;
+-	u32 mask;
+-	u8 shift;
+-	u8 width;
+-	char *div;
+-	u8 num_div;
+-	spinlock_t *lock;
+-};
+-
+-#define to_clk_psc(_hw) container_of(_hw, struct clk_psc, hw)
+-
+-static int ep93xx_clk_is_enabled(struct clk_hw *hw)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	u32 val = readl(psc->reg);
+-
+-	return (val & BIT(psc->bit_idx)) ? 1 : 0;
+-}
+-
+-static int ep93xx_clk_enable(struct clk_hw *hw)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	unsigned long flags = 0;
+-	u32 val;
+-
+-	if (psc->lock)
+-		spin_lock_irqsave(psc->lock, flags);
+-
+-	val = __raw_readl(psc->reg);
+-	val |= BIT(psc->bit_idx);
+-
+-	ep93xx_syscon_swlocked_write(val, psc->reg);
+-
+-	if (psc->lock)
+-		spin_unlock_irqrestore(psc->lock, flags);
+-
+-	return 0;
+-}
+-
+-static void ep93xx_clk_disable(struct clk_hw *hw)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	unsigned long flags = 0;
+-	u32 val;
+-
+-	if (psc->lock)
+-		spin_lock_irqsave(psc->lock, flags);
+-
+-	val = __raw_readl(psc->reg);
+-	val &= ~BIT(psc->bit_idx);
+-
+-	ep93xx_syscon_swlocked_write(val, psc->reg);
+-
+-	if (psc->lock)
+-		spin_unlock_irqrestore(psc->lock, flags);
+-}
+-
+-static const struct clk_ops clk_ep93xx_gate_ops = {
+-	.enable = ep93xx_clk_enable,
+-	.disable = ep93xx_clk_disable,
+-	.is_enabled = ep93xx_clk_is_enabled,
+-};
+-
+-static struct clk_hw *ep93xx_clk_register_gate(const char *name,
+-				    const char *parent_name,
+-				    void __iomem *reg,
+-				    u8 bit_idx)
+-{
+-	struct clk_init_data init;
+-	struct clk_psc *psc;
+-	struct clk *clk;
+-
+-	psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+-	if (!psc)
+-		return ERR_PTR(-ENOMEM);
+-
+-	init.name = name;
+-	init.ops = &clk_ep93xx_gate_ops;
+-	init.flags = CLK_SET_RATE_PARENT;
+-	init.parent_names = (parent_name ? &parent_name : NULL);
+-	init.num_parents = (parent_name ? 1 : 0);
+-
+-	psc->reg = reg;
+-	psc->bit_idx = bit_idx;
+-	psc->hw.init = &init;
+-	psc->lock = &clk_lock;
+-
+-	clk = clk_register(NULL, &psc->hw);
+-	if (IS_ERR(clk)) {
+-		kfree(psc);
+-		return ERR_CAST(clk);
+-	}
+-
+-	return &psc->hw;
+-}
+-
+-static u8 ep93xx_mux_get_parent(struct clk_hw *hw)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	u32 val = __raw_readl(psc->reg);
+-
+-	if (!(val & EP93XX_SYSCON_CLKDIV_ESEL))
+-		return 0;
+-
+-	if (!(val & EP93XX_SYSCON_CLKDIV_PSEL))
+-		return 1;
+-
+-	return 2;
+-}
+-
+-static int ep93xx_mux_set_parent_lock(struct clk_hw *hw, u8 index)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	unsigned long flags = 0;
+-	u32 val;
+-
+-	if (index >= ARRAY_SIZE(mux_parents))
+-		return -EINVAL;
+-
+-	if (psc->lock)
+-		spin_lock_irqsave(psc->lock, flags);
+-
+-	val = __raw_readl(psc->reg);
+-	val &= ~(EP93XX_SYSCON_CLKDIV_ESEL | EP93XX_SYSCON_CLKDIV_PSEL);
+-
+-
+-	if (index != 0) {
+-		val |= EP93XX_SYSCON_CLKDIV_ESEL;
+-		val |= (index - 1) ? EP93XX_SYSCON_CLKDIV_PSEL : 0;
+-	}
+-
+-	ep93xx_syscon_swlocked_write(val, psc->reg);
+-
+-	if (psc->lock)
+-		spin_unlock_irqrestore(psc->lock, flags);
+-
+-	return 0;
+-}
+-
+-static bool is_best(unsigned long rate, unsigned long now,
+-		     unsigned long best)
+-{
+-	return abs(rate - now) < abs(rate - best);
+-}
+-
+-static int ep93xx_mux_determine_rate(struct clk_hw *hw,
+-				struct clk_rate_request *req)
+-{
+-	unsigned long rate = req->rate;
+-	struct clk *best_parent = NULL;
+-	unsigned long __parent_rate;
+-	unsigned long best_rate = 0, actual_rate, mclk_rate;
+-	unsigned long best_parent_rate;
+-	int __div = 0, __pdiv = 0;
+-	int i;
+-
+-	/*
+-	 * Try the two pll's and the external clock
+-	 * Because the valid predividers are 2, 2.5 and 3, we multiply
+-	 * all the clocks by 2 to avoid floating point math.
+-	 *
+-	 * This is based on the algorithm in the ep93xx raster guide:
+-	 * http://be-a-maverick.com/en/pubs/appNote/AN269REV1.pdf
+-	 *
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(mux_parents); i++) {
+-		struct clk *parent = clk_get_sys(mux_parents[i], NULL);
+-
+-		__parent_rate = clk_get_rate(parent);
+-		mclk_rate = __parent_rate * 2;
+-
+-		/* Try each predivider value */
+-		for (__pdiv = 4; __pdiv <= 6; __pdiv++) {
+-			__div = mclk_rate / (rate * __pdiv);
+-			if (__div < 2 || __div > 127)
+-				continue;
+-
+-			actual_rate = mclk_rate / (__pdiv * __div);
+-			if (is_best(rate, actual_rate, best_rate)) {
+-				best_rate = actual_rate;
+-				best_parent_rate = __parent_rate;
+-				best_parent = parent;
+-			}
+-		}
+-	}
+-
+-	if (!best_parent)
+-		return -EINVAL;
+-
+-	req->best_parent_rate = best_parent_rate;
+-	req->best_parent_hw = __clk_get_hw(best_parent);
+-	req->rate = best_rate;
+-
+-	return 0;
+-}
+-
+-static unsigned long ep93xx_ddiv_recalc_rate(struct clk_hw *hw,
+-						unsigned long parent_rate)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	unsigned long rate = 0;
+-	u32 val = __raw_readl(psc->reg);
+-	int __pdiv = ((val >> EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) & 0x03);
+-	int __div = val & 0x7f;
+-
+-	if (__div > 0)
+-		rate = (parent_rate * 2) / ((__pdiv + 3) * __div);
+-
+-	return rate;
+-}
+-
+-static int ep93xx_ddiv_set_rate(struct clk_hw *hw, unsigned long rate,
+-				unsigned long parent_rate)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	int pdiv = 0, div = 0;
+-	unsigned long best_rate = 0, actual_rate, mclk_rate;
+-	int __div = 0, __pdiv = 0;
+-	u32 val;
+-
+-	mclk_rate = parent_rate * 2;
+-
+-	for (__pdiv = 4; __pdiv <= 6; __pdiv++) {
+-		__div = mclk_rate / (rate * __pdiv);
+-		if (__div < 2 || __div > 127)
+-			continue;
+-
+-		actual_rate = mclk_rate / (__pdiv * __div);
+-		if (is_best(rate, actual_rate, best_rate)) {
+-			pdiv = __pdiv - 3;
+-			div = __div;
+-			best_rate = actual_rate;
+-		}
+-	}
+-
+-	if (!best_rate)
+-		return -EINVAL;
+-
+-	val = __raw_readl(psc->reg);
+-
+-	/* Clear old dividers */
+-	val &= ~0x37f;
+-
+-	/* Set the new pdiv and div bits for the new clock rate */
+-	val |= (pdiv << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | div;
+-	ep93xx_syscon_swlocked_write(val, psc->reg);
+-
+-	return 0;
+-}
+-
+-static const struct clk_ops clk_ddiv_ops = {
+-	.enable = ep93xx_clk_enable,
+-	.disable = ep93xx_clk_disable,
+-	.is_enabled = ep93xx_clk_is_enabled,
+-	.get_parent = ep93xx_mux_get_parent,
+-	.set_parent = ep93xx_mux_set_parent_lock,
+-	.determine_rate = ep93xx_mux_determine_rate,
+-	.recalc_rate = ep93xx_ddiv_recalc_rate,
+-	.set_rate = ep93xx_ddiv_set_rate,
+-};
+-
+-static struct clk_hw *clk_hw_register_ddiv(const char *name,
+-					  void __iomem *reg,
+-					  u8 bit_idx)
+-{
+-	struct clk_init_data init;
+-	struct clk_psc *psc;
+-	struct clk *clk;
+-
+-	psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+-	if (!psc)
+-		return ERR_PTR(-ENOMEM);
+-
+-	init.name = name;
+-	init.ops = &clk_ddiv_ops;
+-	init.flags = 0;
+-	init.parent_names = mux_parents;
+-	init.num_parents = ARRAY_SIZE(mux_parents);
+-
+-	psc->reg = reg;
+-	psc->bit_idx = bit_idx;
+-	psc->lock = &clk_lock;
+-	psc->hw.init = &init;
+-
+-	clk = clk_register(NULL, &psc->hw);
+-	if (IS_ERR(clk)) {
+-		kfree(psc);
+-		return ERR_CAST(clk);
+-	}
+-	return &psc->hw;
+-}
+-
+-static unsigned long ep93xx_div_recalc_rate(struct clk_hw *hw,
+-					    unsigned long parent_rate)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	u32 val = __raw_readl(psc->reg);
+-	u8 index = (val & psc->mask) >> psc->shift;
+-
+-	if (index > psc->num_div)
+-		return 0;
+-
+-	return DIV_ROUND_UP_ULL(parent_rate, psc->div[index]);
+-}
+-
+-static long ep93xx_div_round_rate(struct clk_hw *hw, unsigned long rate,
+-				   unsigned long *parent_rate)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	unsigned long best = 0, now, maxdiv;
+-	int i;
+-
+-	maxdiv = psc->div[psc->num_div - 1];
+-
+-	for (i = 0; i < psc->num_div; i++) {
+-		if ((rate * psc->div[i]) == *parent_rate)
+-			return DIV_ROUND_UP_ULL((u64)*parent_rate, psc->div[i]);
+-
+-		now = DIV_ROUND_UP_ULL((u64)*parent_rate, psc->div[i]);
+-
+-		if (is_best(rate, now, best))
+-			best = now;
+-	}
+-
+-	if (!best)
+-		best = DIV_ROUND_UP_ULL(*parent_rate, maxdiv);
+-
+-	return best;
+-}
+-
+-static int ep93xx_div_set_rate(struct clk_hw *hw, unsigned long rate,
+-			       unsigned long parent_rate)
+-{
+-	struct clk_psc *psc = to_clk_psc(hw);
+-	u32 val = __raw_readl(psc->reg) & ~psc->mask;
+-	int i;
+-
+-	for (i = 0; i < psc->num_div; i++)
+-		if (rate == parent_rate / psc->div[i]) {
+-			val |= i << psc->shift;
+-			break;
+-		}
+-
+-	if (i == psc->num_div)
+-		return -EINVAL;
+-
+-	ep93xx_syscon_swlocked_write(val, psc->reg);
+-
+-	return 0;
+-}
+-
+-static const struct clk_ops ep93xx_div_ops = {
+-	.enable = ep93xx_clk_enable,
+-	.disable = ep93xx_clk_disable,
+-	.is_enabled = ep93xx_clk_is_enabled,
+-	.recalc_rate = ep93xx_div_recalc_rate,
+-	.round_rate = ep93xx_div_round_rate,
+-	.set_rate = ep93xx_div_set_rate,
+-};
+-
+-static struct clk_hw *clk_hw_register_div(const char *name,
+-					  const char *parent_name,
+-					  void __iomem *reg,
+-					  u8 enable_bit,
+-					  u8 shift,
+-					  u8 width,
+-					  char *clk_divisors,
+-					  u8 num_div)
+-{
+-	struct clk_init_data init;
+-	struct clk_psc *psc;
+-	struct clk *clk;
+-
+-	psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+-	if (!psc)
+-		return ERR_PTR(-ENOMEM);
+-
+-	init.name = name;
+-	init.ops = &ep93xx_div_ops;
+-	init.flags = 0;
+-	init.parent_names = (parent_name ? &parent_name : NULL);
+-	init.num_parents = 1;
+-
+-	psc->reg = reg;
+-	psc->bit_idx = enable_bit;
+-	psc->mask = GENMASK(shift + width - 1, shift);
+-	psc->shift = shift;
+-	psc->div = clk_divisors;
+-	psc->num_div = num_div;
+-	psc->lock = &clk_lock;
+-	psc->hw.init = &init;
+-
+-	clk = clk_register(NULL, &psc->hw);
+-	if (IS_ERR(clk)) {
+-		kfree(psc);
+-		return ERR_CAST(clk);
+-	}
+-	return &psc->hw;
+-}
+-
+-struct ep93xx_gate {
+-	unsigned int bit;
+-	const char *dev_id;
+-	const char *con_id;
+-};
+-
+-static struct ep93xx_gate ep93xx_uarts[] = {
+-	{EP93XX_SYSCON_DEVCFG_U1EN, "apb:uart1", NULL},
+-	{EP93XX_SYSCON_DEVCFG_U2EN, "apb:uart2", NULL},
+-	{EP93XX_SYSCON_DEVCFG_U3EN, "apb:uart3", NULL},
+-};
+-
+-static void __init ep93xx_uart_clock_init(void)
+-{
+-	unsigned int i;
+-	struct clk_hw *hw;
+-	u32 value;
+-	unsigned int clk_uart_div;
+-
+-	value = __raw_readl(EP93XX_SYSCON_PWRCNT);
+-	if (value & EP93XX_SYSCON_PWRCNT_UARTBAUD)
+-		clk_uart_div = 1;
+-	else
+-		clk_uart_div = 2;
+-
+-	hw = clk_hw_register_fixed_factor(NULL, "uart", "xtali", 0, 1, clk_uart_div);
+-
+-	/* parenting uart gate clocks to uart clock */
+-	for (i = 0; i < ARRAY_SIZE(ep93xx_uarts); i++) {
+-		hw = ep93xx_clk_register_gate(ep93xx_uarts[i].dev_id,
+-					"uart",
+-					EP93XX_SYSCON_DEVCFG,
+-					ep93xx_uarts[i].bit);
+-
+-		clk_hw_register_clkdev(hw, NULL, ep93xx_uarts[i].dev_id);
+-	}
+-}
+-
+-static struct ep93xx_gate ep93xx_dmas[] = {
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P0, NULL, "m2p0"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P1, NULL, "m2p1"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P2, NULL, "m2p2"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P3, NULL, "m2p3"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P4, NULL, "m2p4"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P5, NULL, "m2p5"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P6, NULL, "m2p6"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P7, NULL, "m2p7"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P8, NULL, "m2p8"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2P9, NULL, "m2p9"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2M0, NULL, "m2m0"},
+-	{EP93XX_SYSCON_PWRCNT_DMA_M2M1, NULL, "m2m1"},
+-};
+-
+-static void __init ep93xx_dma_clock_init(void)
+-{
+-	unsigned int i;
+-	struct clk_hw *hw;
+-	int ret;
+-
+-	for (i = 0; i < ARRAY_SIZE(ep93xx_dmas); i++) {
+-		hw = clk_hw_register_gate(NULL, ep93xx_dmas[i].con_id,
+-					"hclk", 0,
+-					EP93XX_SYSCON_PWRCNT,
+-					ep93xx_dmas[i].bit,
+-					0,
+-					&clk_lock);
+-
+-		ret = clk_hw_register_clkdev(hw, ep93xx_dmas[i].con_id, NULL);
+-		if (ret)
+-			pr_err("%s: failed to register lookup %s\n",
+-			       __func__, ep93xx_dmas[i].con_id);
+-	}
+-}
+-
+-static int __init ep93xx_clock_init(void)
+-{
+-	u32 value;
+-	struct clk_hw *hw;
+-	unsigned long clk_pll1_rate;
+-	unsigned long clk_f_rate;
+-	unsigned long clk_h_rate;
+-	unsigned long clk_p_rate;
+-	unsigned long clk_pll2_rate;
+-	unsigned int clk_f_div;
+-	unsigned int clk_h_div;
+-	unsigned int clk_p_div;
+-	unsigned int clk_usb_div;
+-	unsigned long clk_spi_div;
+-
+-	hw = clk_hw_register_fixed_rate(NULL, "xtali", NULL, 0, EP93XX_EXT_CLK_RATE);
+-	clk_hw_register_clkdev(hw, NULL, "xtali");
+-
+-	/* Determine the bootloader configured pll1 rate */
+-	value = __raw_readl(EP93XX_SYSCON_CLKSET1);
+-	if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
+-		clk_pll1_rate = EP93XX_EXT_CLK_RATE;
+-	else
+-		clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
+-
+-	hw = clk_hw_register_fixed_rate(NULL, "pll1", "xtali", 0, clk_pll1_rate);
+-	clk_hw_register_clkdev(hw, NULL, "pll1");
+-
+-	/* Initialize the pll1 derived clocks */
+-	clk_f_div = fclk_divisors[(value >> 25) & 0x7];
+-	clk_h_div = hclk_divisors[(value >> 20) & 0x7];
+-	clk_p_div = pclk_divisors[(value >> 18) & 0x3];
+-
+-	hw = clk_hw_register_fixed_factor(NULL, "fclk", "pll1", 0, 1, clk_f_div);
+-	clk_f_rate = clk_get_rate(hw->clk);
+-	hw = clk_hw_register_fixed_factor(NULL, "hclk", "pll1", 0, 1, clk_h_div);
+-	clk_h_rate = clk_get_rate(hw->clk);
+-	hw = clk_hw_register_fixed_factor(NULL, "pclk", "hclk", 0, 1, clk_p_div);
+-	clk_p_rate = clk_get_rate(hw->clk);
+-
+-	clk_hw_register_clkdev(hw, "apb_pclk", NULL);
+-
+-	ep93xx_dma_clock_init();
+-
+-	/* Determine the bootloader configured pll2 rate */
+-	value = __raw_readl(EP93XX_SYSCON_CLKSET2);
+-	if (!(value & EP93XX_SYSCON_CLKSET2_NBYP2))
+-		clk_pll2_rate = EP93XX_EXT_CLK_RATE;
+-	else if (value & EP93XX_SYSCON_CLKSET2_PLL2_EN)
+-		clk_pll2_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
+-	else
+-		clk_pll2_rate = 0;
+-
+-	hw = clk_hw_register_fixed_rate(NULL, "pll2", "xtali", 0, clk_pll2_rate);
+-	clk_hw_register_clkdev(hw, NULL, "pll2");
+-
+-	/* Initialize the pll2 derived clocks */
+-	/*
+-	 * These four bits set the divide ratio between the PLL2
+-	 * output and the USB clock.
+-	 * 0000 - Divide by 1
+-	 * 0001 - Divide by 2
+-	 * 0010 - Divide by 3
+-	 * 0011 - Divide by 4
+-	 * 0100 - Divide by 5
+-	 * 0101 - Divide by 6
+-	 * 0110 - Divide by 7
+-	 * 0111 - Divide by 8
+-	 * 1000 - Divide by 9
+-	 * 1001 - Divide by 10
+-	 * 1010 - Divide by 11
+-	 * 1011 - Divide by 12
+-	 * 1100 - Divide by 13
+-	 * 1101 - Divide by 14
+-	 * 1110 - Divide by 15
+-	 * 1111 - Divide by 1
+-	 * On power-on-reset these bits are reset to 0000b.
+-	 */
+-	clk_usb_div = (((value >> 28) & 0xf) + 1);
+-	hw = clk_hw_register_fixed_factor(NULL, "usb_clk", "pll2", 0, 1, clk_usb_div);
+-	hw = clk_hw_register_gate(NULL, "ohci-platform",
+-				"usb_clk", 0,
+-				EP93XX_SYSCON_PWRCNT,
+-				EP93XX_SYSCON_PWRCNT_USH_EN,
+-				0,
+-				&clk_lock);
+-	clk_hw_register_clkdev(hw, NULL, "ohci-platform");
+-
+-	/*
+-	 * EP93xx SSP clock rate was doubled in version E2. For more information
+-	 * see:
+-	 *     http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
+-	 */
+-	clk_spi_div = 1;
+-	if (ep93xx_chip_revision() < EP93XX_CHIP_REV_E2)
+-		clk_spi_div = 2;
+-	hw = clk_hw_register_fixed_factor(NULL, "ep93xx-spi.0", "xtali", 0, 1, clk_spi_div);
+-	clk_hw_register_clkdev(hw, NULL, "ep93xx-spi.0");
+-
+-	/* pwm clock */
+-	hw = clk_hw_register_fixed_factor(NULL, "pwm_clk", "xtali", 0, 1, 1);
+-	clk_hw_register_clkdev(hw, "pwm_clk", NULL);
+-
+-	pr_info("PLL1 running at %ld MHz, PLL2 at %ld MHz\n",
+-		clk_pll1_rate / 1000000, clk_pll2_rate / 1000000);
+-	pr_info("FCLK %ld MHz, HCLK %ld MHz, PCLK %ld MHz\n",
+-		clk_f_rate / 1000000, clk_h_rate / 1000000,
+-		clk_p_rate / 1000000);
+-
+-	ep93xx_uart_clock_init();
+-
+-	/* touchscreen/adc clock */
+-	hw = clk_hw_register_div("ep93xx-adc",
+-				"xtali",
+-				EP93XX_SYSCON_KEYTCHCLKDIV,
+-				EP93XX_SYSCON_KEYTCHCLKDIV_TSEN,
+-				EP93XX_SYSCON_KEYTCHCLKDIV_ADIV,
+-				1,
+-				adc_divisors,
+-				ARRAY_SIZE(adc_divisors));
+-
+-	clk_hw_register_clkdev(hw, NULL, "ep93xx-adc");
+-
+-	/* keypad clock */
+-	hw = clk_hw_register_div("ep93xx-keypad",
+-				"xtali",
+-				EP93XX_SYSCON_KEYTCHCLKDIV,
+-				EP93XX_SYSCON_KEYTCHCLKDIV_KEN,
+-				EP93XX_SYSCON_KEYTCHCLKDIV_KDIV,
+-				1,
+-				adc_divisors,
+-				ARRAY_SIZE(adc_divisors));
+-
+-	clk_hw_register_clkdev(hw, NULL, "ep93xx-keypad");
+-
+-	/* On reset PDIV and VDIV is set to zero, while PDIV zero
+-	 * means clock disable, VDIV shouldn't be zero.
+-	 * So i set both dividers to minimum.
+-	 */
+-	/* ENA - Enable CLK divider. */
+-	/* PDIV - 00 - Disable clock */
+-	/* VDIV - at least 2 */
+-	/* Check and enable video clk registers */
+-	value = __raw_readl(EP93XX_SYSCON_VIDCLKDIV);
+-	value |= (1 << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
+-	ep93xx_syscon_swlocked_write(value, EP93XX_SYSCON_VIDCLKDIV);
+-
+-	/* check and enable i2s clk registers */
+-	value = __raw_readl(EP93XX_SYSCON_I2SCLKDIV);
+-	value |= (1 << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
+-	ep93xx_syscon_swlocked_write(value, EP93XX_SYSCON_I2SCLKDIV);
+-
+-	/* video clk */
+-	hw = clk_hw_register_ddiv("ep93xx-fb",
+-				EP93XX_SYSCON_VIDCLKDIV,
+-				EP93XX_SYSCON_CLKDIV_ENABLE);
+-
+-	clk_hw_register_clkdev(hw, NULL, "ep93xx-fb");
+-
+-	/* i2s clk */
+-	hw = clk_hw_register_ddiv("mclk",
+-				EP93XX_SYSCON_I2SCLKDIV,
+-				EP93XX_SYSCON_CLKDIV_ENABLE);
+-
+-	clk_hw_register_clkdev(hw, "mclk", "ep93xx-i2s");
+-
+-	/* i2s sclk */
+-#define EP93XX_I2SCLKDIV_SDIV_SHIFT	16
+-#define EP93XX_I2SCLKDIV_SDIV_WIDTH	1
+-	hw = clk_hw_register_div("sclk",
+-				"mclk",
+-				EP93XX_SYSCON_I2SCLKDIV,
+-				EP93XX_SYSCON_I2SCLKDIV_SENA,
+-				EP93XX_I2SCLKDIV_SDIV_SHIFT,
+-				EP93XX_I2SCLKDIV_SDIV_WIDTH,
+-				sclk_divisors,
+-				ARRAY_SIZE(sclk_divisors));
+-
+-	clk_hw_register_clkdev(hw, "sclk", "ep93xx-i2s");
+-
+-	/* i2s lrclk */
+-#define EP93XX_I2SCLKDIV_LRDIV32_SHIFT	17
+-#define EP93XX_I2SCLKDIV_LRDIV32_WIDTH	3
+-	hw = clk_hw_register_div("lrclk",
+-				"sclk",
+-				EP93XX_SYSCON_I2SCLKDIV,
+-				EP93XX_SYSCON_I2SCLKDIV_SENA,
+-				EP93XX_I2SCLKDIV_LRDIV32_SHIFT,
+-				EP93XX_I2SCLKDIV_LRDIV32_WIDTH,
+-				lrclk_divisors,
+-				ARRAY_SIZE(lrclk_divisors));
+-
+-	clk_hw_register_clkdev(hw, "lrclk", "ep93xx-i2s");
+-
+-	return 0;
+-}
+-postcore_initcall(ep93xx_clock_init);
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+deleted file mode 100644
+index 66dba9b4a6f9..000000000000
+--- a/arch/arm/mach-ep93xx/core.c
++++ /dev/null
+@@ -1,954 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/core.c
+- * Core routines for Cirrus EP93xx chips.
+- *
+- * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
+- *
+- * Thanks go to Michael Burian and Ray Lehtiniemi for their key
+- * role in the ep93xx linux community.
+- */
+-
+-#define pr_fmt(fmt) "ep93xx " KBUILD_MODNAME ": " fmt
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/interrupt.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/sys_soc.h>
+-#include <linux/irq.h>
+-#include <linux/io.h>
+-#include <linux/gpio.h>
+-#include <linux/leds.h>
+-#include <linux/uaccess.h>
+-#include <linux/termios.h>
+-#include <linux/amba/bus.h>
+-#include <linux/amba/serial.h>
+-#include <linux/mtd/physmap.h>
+-#include <linux/i2c.h>
+-#include <linux/gpio/machine.h>
+-#include <linux/spi/spi.h>
+-#include <linux/export.h>
+-#include <linux/irqchip/arm-vic.h>
+-#include <linux/reboot.h>
+-#include <linux/usb/ohci_pdriver.h>
+-#include <linux/random.h>
+-#include <linux/ioport.h>
+-
+-#include "hardware.h"
+-#include <linux/platform_data/video-ep93xx.h>
+-#include <linux/platform_data/keypad-ep93xx.h>
+-#include <linux/platform_data/spi-ep93xx.h>
+-#include <linux/soc/cirrus/ep93xx.h>
+-
+-#include "gpio-ep93xx.h"
+-
+-#include <asm/mach/arch.h>
+-#include <asm/mach/map.h>
+-
+-#include "soc.h"
+-#include "irqs.h"
+-
+-/*************************************************************************
+- * Static I/O mappings that are needed for all EP93xx platforms
+- *************************************************************************/
+-static struct map_desc ep93xx_io_desc[] __initdata = {
+-	{
+-		.virtual	= EP93XX_AHB_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(EP93XX_AHB_PHYS_BASE),
+-		.length		= EP93XX_AHB_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= EP93XX_APB_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(EP93XX_APB_PHYS_BASE),
+-		.length		= EP93XX_APB_SIZE,
+-		.type		= MT_DEVICE,
+-	},
+-};
+-
+-void __init ep93xx_map_io(void)
+-{
+-	iotable_init(ep93xx_io_desc, ARRAY_SIZE(ep93xx_io_desc));
+-}
+-
+-/*************************************************************************
+- * EP93xx IRQ handling
+- *************************************************************************/
+-void __init ep93xx_init_irq(void)
+-{
+-	vic_init(EP93XX_VIC1_BASE, IRQ_EP93XX_VIC0, EP93XX_VIC1_VALID_IRQ_MASK, 0);
+-	vic_init(EP93XX_VIC2_BASE, IRQ_EP93XX_VIC1, EP93XX_VIC2_VALID_IRQ_MASK, 0);
+-}
+-
+-
+-/*************************************************************************
+- * EP93xx System Controller Software Locked register handling
+- *************************************************************************/
+-
+-/*
+- * syscon_swlock prevents anything else from writing to the syscon
+- * block while a software locked register is being written.
+- */
+-static DEFINE_SPINLOCK(syscon_swlock);
+-
+-void ep93xx_syscon_swlocked_write(unsigned int val, void __iomem *reg)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&syscon_swlock, flags);
+-
+-	__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
+-	__raw_writel(val, reg);
+-
+-	spin_unlock_irqrestore(&syscon_swlock, flags);
+-}
+-
+-void ep93xx_devcfg_set_clear(unsigned int set_bits, unsigned int clear_bits)
+-{
+-	unsigned long flags;
+-	unsigned int val;
+-
+-	spin_lock_irqsave(&syscon_swlock, flags);
+-
+-	val = __raw_readl(EP93XX_SYSCON_DEVCFG);
+-	val &= ~clear_bits;
+-	val |= set_bits;
+-	__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
+-	__raw_writel(val, EP93XX_SYSCON_DEVCFG);
+-
+-	spin_unlock_irqrestore(&syscon_swlock, flags);
+-}
+-
+-/**
+- * ep93xx_chip_revision() - returns the EP93xx chip revision
+- *
+- * See "platform.h" for more information.
+- */
+-unsigned int ep93xx_chip_revision(void)
+-{
+-	unsigned int v;
+-
+-	v = __raw_readl(EP93XX_SYSCON_SYSCFG);
+-	v &= EP93XX_SYSCON_SYSCFG_REV_MASK;
+-	v >>= EP93XX_SYSCON_SYSCFG_REV_SHIFT;
+-	return v;
+-}
+-EXPORT_SYMBOL_GPL(ep93xx_chip_revision);
+-
+-/*************************************************************************
+- * EP93xx GPIO
+- *************************************************************************/
+-/* port A */
+-static struct resource ep93xx_a_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE,        0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x10, 0x04, "dir"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x90, 0x1c, "intr"),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO_AB),
+-};
+-
+-static struct platform_device ep93xx_a_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 0,
+-	.num_resources = ARRAY_SIZE(ep93xx_a_gpio_resources),
+-	.resource = ep93xx_a_gpio_resources,
+-};
+-
+-/* port B */
+-static struct resource ep93xx_b_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x04, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x14, 0x04, "dir"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0xac, 0x1c, "intr"),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO_AB),
+-};
+-
+-static struct platform_device ep93xx_b_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 1,
+-	.num_resources = ARRAY_SIZE(ep93xx_b_gpio_resources),
+-	.resource = ep93xx_b_gpio_resources,
+-};
+-
+-/* port C */
+-static struct resource ep93xx_c_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x08, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x18, 0x04, "dir"),
+-};
+-
+-static struct platform_device ep93xx_c_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 2,
+-	.num_resources = ARRAY_SIZE(ep93xx_c_gpio_resources),
+-	.resource = ep93xx_c_gpio_resources,
+-};
+-
+-/* port D */
+-static struct resource ep93xx_d_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x0c, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x1c, 0x04, "dir"),
+-};
+-
+-static struct platform_device ep93xx_d_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 3,
+-	.num_resources = ARRAY_SIZE(ep93xx_d_gpio_resources),
+-	.resource = ep93xx_d_gpio_resources,
+-};
+-
+-/* port E */
+-static struct resource ep93xx_e_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x20, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x24, 0x04, "dir"),
+-};
+-
+-static struct platform_device ep93xx_e_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 4,
+-	.num_resources = ARRAY_SIZE(ep93xx_e_gpio_resources),
+-	.resource = ep93xx_e_gpio_resources,
+-};
+-
+-/* port F */
+-static struct resource ep93xx_f_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x30, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x34, 0x04, "dir"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x4c, 0x1c, "intr"),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO0MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO1MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO2MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO3MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO4MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO5MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO6MUX),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_GPIO7MUX),
+-};
+-
+-static struct platform_device ep93xx_f_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 5,
+-	.num_resources = ARRAY_SIZE(ep93xx_f_gpio_resources),
+-	.resource = ep93xx_f_gpio_resources,
+-};
+-
+-/* port G */
+-static struct resource ep93xx_g_gpio_resources[] = {
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x38, 0x04, "data"),
+-	DEFINE_RES_MEM_NAMED(EP93XX_GPIO_PHYS_BASE + 0x3c, 0x04, "dir"),
+-};
+-
+-static struct platform_device ep93xx_g_gpio = {
+-	.name           = "gpio-ep93xx",
+-	.id             = 6,
+-	.num_resources = ARRAY_SIZE(ep93xx_g_gpio_resources),
+-	.resource = ep93xx_g_gpio_resources,
+-};
+-
+-static struct platform_device *ep93xx_gpio_device[] __initdata = {
+-	&ep93xx_a_gpio,
+-	&ep93xx_b_gpio,
+-	&ep93xx_c_gpio,
+-	&ep93xx_d_gpio,
+-	&ep93xx_e_gpio,
+-	&ep93xx_f_gpio,
+-	&ep93xx_g_gpio,
+-};
+-
+-/*************************************************************************
+- * EP93xx peripheral handling
+- *************************************************************************/
+-#define EP93XX_UART_MCR_OFFSET		(0x0100)
+-
+-static void ep93xx_uart_set_mctrl(struct amba_device *dev,
+-				  void __iomem *base, unsigned int mctrl)
+-{
+-	unsigned int mcr;
+-
+-	mcr = 0;
+-	if (mctrl & TIOCM_RTS)
+-		mcr |= 2;
+-	if (mctrl & TIOCM_DTR)
+-		mcr |= 1;
+-
+-	__raw_writel(mcr, base + EP93XX_UART_MCR_OFFSET);
+-}
+-
+-static struct amba_pl010_data ep93xx_uart_data = {
+-	.set_mctrl	= ep93xx_uart_set_mctrl,
+-};
+-
+-static AMBA_APB_DEVICE(uart1, "apb:uart1", 0x00041010, EP93XX_UART1_PHYS_BASE,
+-	{ IRQ_EP93XX_UART1 }, &ep93xx_uart_data);
+-
+-static AMBA_APB_DEVICE(uart2, "apb:uart2", 0x00041010, EP93XX_UART2_PHYS_BASE,
+-	{ IRQ_EP93XX_UART2 }, NULL);
+-
+-static AMBA_APB_DEVICE(uart3, "apb:uart3", 0x00041010, EP93XX_UART3_PHYS_BASE,
+-	{ IRQ_EP93XX_UART3 }, &ep93xx_uart_data);
+-
+-static struct resource ep93xx_rtc_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_RTC_PHYS_BASE, 0x10c),
+-};
+-
+-static struct platform_device ep93xx_rtc_device = {
+-	.name		= "ep93xx-rtc",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_rtc_resource),
+-	.resource	= ep93xx_rtc_resource,
+-};
+-
+-/*************************************************************************
+- * EP93xx OHCI USB Host
+- *************************************************************************/
+-
+-static struct clk *ep93xx_ohci_host_clock;
+-
+-static int ep93xx_ohci_power_on(struct platform_device *pdev)
+-{
+-	if (!ep93xx_ohci_host_clock) {
+-		ep93xx_ohci_host_clock = devm_clk_get(&pdev->dev, NULL);
+-		if (IS_ERR(ep93xx_ohci_host_clock))
+-			return PTR_ERR(ep93xx_ohci_host_clock);
+-	}
+-
+-	return clk_prepare_enable(ep93xx_ohci_host_clock);
+-}
+-
+-static void ep93xx_ohci_power_off(struct platform_device *pdev)
+-{
+-	clk_disable(ep93xx_ohci_host_clock);
+-}
+-
+-static struct usb_ohci_pdata ep93xx_ohci_pdata = {
+-	.power_on	= ep93xx_ohci_power_on,
+-	.power_off	= ep93xx_ohci_power_off,
+-	.power_suspend	= ep93xx_ohci_power_off,
+-};
+-
+-static struct resource ep93xx_ohci_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_USB_PHYS_BASE, 0x1000),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_USB),
+-};
+-
+-static u64 ep93xx_ohci_dma_mask = DMA_BIT_MASK(32);
+-
+-static struct platform_device ep93xx_ohci_device = {
+-	.name		= "ohci-platform",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_ohci_resources),
+-	.resource	= ep93xx_ohci_resources,
+-	.dev		= {
+-		.dma_mask		= &ep93xx_ohci_dma_mask,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-		.platform_data		= &ep93xx_ohci_pdata,
+-	},
+-};
+-
+-/*************************************************************************
+- * EP93xx physmap'ed flash
+- *************************************************************************/
+-static struct physmap_flash_data ep93xx_flash_data;
+-
+-static struct resource ep93xx_flash_resource = {
+-	.flags		= IORESOURCE_MEM,
+-};
+-
+-static struct platform_device ep93xx_flash = {
+-	.name		= "physmap-flash",
+-	.id		= 0,
+-	.dev		= {
+-		.platform_data	= &ep93xx_flash_data,
+-	},
+-	.num_resources	= 1,
+-	.resource	= &ep93xx_flash_resource,
+-};
+-
+-/**
+- * ep93xx_register_flash() - Register the external flash device.
+- * @width:	bank width in octets
+- * @start:	resource start address
+- * @size:	resource size
+- */
+-void __init ep93xx_register_flash(unsigned int width,
+-				  resource_size_t start, resource_size_t size)
+-{
+-	ep93xx_flash_data.width		= width;
+-
+-	ep93xx_flash_resource.start	= start;
+-	ep93xx_flash_resource.end	= start + size - 1;
+-
+-	platform_device_register(&ep93xx_flash);
+-}
+-
+-
+-/*************************************************************************
+- * EP93xx ethernet peripheral handling
+- *************************************************************************/
+-static struct ep93xx_eth_data ep93xx_eth_data;
+-
+-static struct resource ep93xx_eth_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_ETHERNET_PHYS_BASE, 0x10000),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_ETHERNET),
+-};
+-
+-static u64 ep93xx_eth_dma_mask = DMA_BIT_MASK(32);
+-
+-static struct platform_device ep93xx_eth_device = {
+-	.name		= "ep93xx-eth",
+-	.id		= -1,
+-	.dev		= {
+-		.platform_data		= &ep93xx_eth_data,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-		.dma_mask		= &ep93xx_eth_dma_mask,
+-	},
+-	.num_resources	= ARRAY_SIZE(ep93xx_eth_resource),
+-	.resource	= ep93xx_eth_resource,
+-};
+-
+-/**
+- * ep93xx_register_eth - Register the built-in ethernet platform device.
+- * @data:	platform specific ethernet configuration (__initdata)
+- * @copy_addr:	flag indicating that the MAC address should be copied
+- *		from the IndAd registers (as programmed by the bootloader)
+- */
+-void __init ep93xx_register_eth(struct ep93xx_eth_data *data, int copy_addr)
+-{
+-	if (copy_addr)
+-		memcpy_fromio(data->dev_addr, EP93XX_ETHERNET_BASE + 0x50, 6);
+-
+-	ep93xx_eth_data = *data;
+-	platform_device_register(&ep93xx_eth_device);
+-}
+-
+-
+-/*************************************************************************
+- * EP93xx i2c peripheral handling
+- *************************************************************************/
+-
+-/* All EP93xx devices use the same two GPIO pins for I2C bit-banging */
+-static struct gpiod_lookup_table ep93xx_i2c_gpiod_table = {
+-	.dev_id		= "i2c-gpio.0",
+-	.table		= {
+-		/* Use local offsets on gpiochip/port "G" */
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.6", 1, NULL, 0,
+-				GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN),
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.6", 0, NULL, 1,
+-				GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN),
+-	},
+-};
+-
+-static struct platform_device ep93xx_i2c_device = {
+-	.name		= "i2c-gpio",
+-	.id		= 0,
+-	.dev		= {
+-		.platform_data	= NULL,
+-	},
+-};
+-
+-/**
+- * ep93xx_register_i2c - Register the i2c platform device.
+- * @devices:	platform specific i2c bus device information (__initdata)
+- * @num:	the number of devices on the i2c bus
+- */
+-void __init ep93xx_register_i2c(struct i2c_board_info *devices, int num)
+-{
+-	/*
+-	 * FIXME: this just sets the two pins as non-opendrain, as no
+-	 * platforms tries to do that anyway. Flag the applicable lines
+-	 * as open drain in the GPIO_LOOKUP above and the driver or
+-	 * gpiolib will handle open drain/open drain emulation as need
+-	 * be. Right now i2c-gpio emulates open drain which is not
+-	 * optimal.
+-	 */
+-	__raw_writel((0 << 1) | (0 << 0),
+-		     EP93XX_GPIO_EEDRIVE);
+-
+-	i2c_register_board_info(0, devices, num);
+-	gpiod_add_lookup_table(&ep93xx_i2c_gpiod_table);
+-	platform_device_register(&ep93xx_i2c_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx SPI peripheral handling
+- *************************************************************************/
+-static struct ep93xx_spi_info ep93xx_spi_master_data;
+-
+-static struct resource ep93xx_spi_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_SPI_PHYS_BASE, 0x18),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_SSP),
+-};
+-
+-static u64 ep93xx_spi_dma_mask = DMA_BIT_MASK(32);
+-
+-static struct platform_device ep93xx_spi_device = {
+-	.name		= "ep93xx-spi",
+-	.id		= 0,
+-	.dev		= {
+-		.platform_data		= &ep93xx_spi_master_data,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-		.dma_mask		= &ep93xx_spi_dma_mask,
+-	},
+-	.num_resources	= ARRAY_SIZE(ep93xx_spi_resources),
+-	.resource	= ep93xx_spi_resources,
+-};
+-
+-/**
+- * ep93xx_register_spi() - registers spi platform device
+- * @info: ep93xx board specific spi master info (__initdata)
+- * @devices: SPI devices to register (__initdata)
+- * @num: number of SPI devices to register
+- *
+- * This function registers platform device for the EP93xx SPI controller and
+- * also makes sure that SPI pins are muxed so that I2S is not using those pins.
+- */
+-void __init ep93xx_register_spi(struct ep93xx_spi_info *info,
+-				struct spi_board_info *devices, int num)
+-{
+-	/*
+-	 * When SPI is used, we need to make sure that I2S is muxed off from
+-	 * SPI pins.
+-	 */
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONSSP);
+-
+-	ep93xx_spi_master_data = *info;
+-	spi_register_board_info(devices, num);
+-	platform_device_register(&ep93xx_spi_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx LEDs
+- *************************************************************************/
+-static const struct gpio_led ep93xx_led_pins[] __initconst = {
+-	{
+-		.name	= "platform:grled",
+-	}, {
+-		.name	= "platform:rdled",
+-	},
+-};
+-
+-static const struct gpio_led_platform_data ep93xx_led_data __initconst = {
+-	.num_leds	= ARRAY_SIZE(ep93xx_led_pins),
+-	.leds		= ep93xx_led_pins,
+-};
+-
+-static struct gpiod_lookup_table ep93xx_leds_gpio_table = {
+-	.dev_id = "leds-gpio",
+-	.table = {
+-		/* Use local offsets on gpiochip/port "E" */
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.4", 0, NULL, 0, GPIO_ACTIVE_HIGH),
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.4", 1, NULL, 1, GPIO_ACTIVE_HIGH),
+-		{ }
+-	},
+-};
+-
+-/*************************************************************************
+- * EP93xx pwm peripheral handling
+- *************************************************************************/
+-static struct resource ep93xx_pwm0_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_PWM_PHYS_BASE, 0x10),
+-};
+-
+-static struct platform_device ep93xx_pwm0_device = {
+-	.name		= "ep93xx-pwm",
+-	.id		= 0,
+-	.num_resources	= ARRAY_SIZE(ep93xx_pwm0_resource),
+-	.resource	= ep93xx_pwm0_resource,
+-};
+-
+-static struct resource ep93xx_pwm1_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_PWM_PHYS_BASE + 0x20, 0x10),
+-};
+-
+-static struct platform_device ep93xx_pwm1_device = {
+-	.name		= "ep93xx-pwm",
+-	.id		= 1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_pwm1_resource),
+-	.resource	= ep93xx_pwm1_resource,
+-};
+-
+-void __init ep93xx_register_pwm(int pwm0, int pwm1)
+-{
+-	if (pwm0)
+-		platform_device_register(&ep93xx_pwm0_device);
+-
+-	/* NOTE: EP9307 does not have PWMOUT1 (pin EGPIO14) */
+-	if (pwm1)
+-		platform_device_register(&ep93xx_pwm1_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx video peripheral handling
+- *************************************************************************/
+-static struct ep93xxfb_mach_info ep93xxfb_data;
+-
+-static struct resource ep93xx_fb_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_RASTER_PHYS_BASE, 0x800),
+-};
+-
+-static struct platform_device ep93xx_fb_device = {
+-	.name			= "ep93xx-fb",
+-	.id			= -1,
+-	.dev			= {
+-		.platform_data		= &ep93xxfb_data,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-		.dma_mask		= &ep93xx_fb_device.dev.coherent_dma_mask,
+-	},
+-	.num_resources		= ARRAY_SIZE(ep93xx_fb_resource),
+-	.resource		= ep93xx_fb_resource,
+-};
+-
+-/* The backlight use a single register in the framebuffer's register space */
+-#define EP93XX_RASTER_REG_BRIGHTNESS 0x20
+-
+-static struct resource ep93xx_bl_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_RASTER_PHYS_BASE +
+-		       EP93XX_RASTER_REG_BRIGHTNESS, 0x04),
+-};
+-
+-static struct platform_device ep93xx_bl_device = {
+-	.name		= "ep93xx-bl",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_bl_resources),
+-	.resource	= ep93xx_bl_resources,
+-};
+-
+-/**
+- * ep93xx_register_fb - Register the framebuffer platform device.
+- * @data:	platform specific framebuffer configuration (__initdata)
+- */
+-void __init ep93xx_register_fb(struct ep93xxfb_mach_info *data)
+-{
+-	ep93xxfb_data = *data;
+-	platform_device_register(&ep93xx_fb_device);
+-	platform_device_register(&ep93xx_bl_device);
+-}
+-
+-
+-/*************************************************************************
+- * EP93xx matrix keypad peripheral handling
+- *************************************************************************/
+-static struct ep93xx_keypad_platform_data ep93xx_keypad_data;
+-
+-static struct resource ep93xx_keypad_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_KEY_MATRIX_PHYS_BASE, 0x0c),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_KEY),
+-};
+-
+-static struct platform_device ep93xx_keypad_device = {
+-	.name		= "ep93xx-keypad",
+-	.id		= -1,
+-	.dev		= {
+-		.platform_data	= &ep93xx_keypad_data,
+-	},
+-	.num_resources	= ARRAY_SIZE(ep93xx_keypad_resource),
+-	.resource	= ep93xx_keypad_resource,
+-};
+-
+-/**
+- * ep93xx_register_keypad - Register the keypad platform device.
+- * @data:	platform specific keypad configuration (__initdata)
+- */
+-void __init ep93xx_register_keypad(struct ep93xx_keypad_platform_data *data)
+-{
+-	ep93xx_keypad_data = *data;
+-	platform_device_register(&ep93xx_keypad_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx I2S audio peripheral handling
+- *************************************************************************/
+-static struct resource ep93xx_i2s_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_I2S_PHYS_BASE, 0x100),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_SAI),
+-};
+-
+-static struct platform_device ep93xx_i2s_device = {
+-	.name		= "ep93xx-i2s",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_i2s_resource),
+-	.resource	= ep93xx_i2s_resource,
+-};
+-
+-static struct platform_device ep93xx_pcm_device = {
+-	.name		= "ep93xx-pcm-audio",
+-	.id		= -1,
+-};
+-
+-void __init ep93xx_register_i2s(void)
+-{
+-	platform_device_register(&ep93xx_i2s_device);
+-	platform_device_register(&ep93xx_pcm_device);
+-}
+-
+-#define EP93XX_SYSCON_DEVCFG_I2S_MASK	(EP93XX_SYSCON_DEVCFG_I2SONSSP | \
+-					 EP93XX_SYSCON_DEVCFG_I2SONAC97)
+-
+-#define EP93XX_I2SCLKDIV_MASK		(EP93XX_SYSCON_I2SCLKDIV_ORIDE | \
+-					 EP93XX_SYSCON_I2SCLKDIV_SPOL)
+-
+-int ep93xx_i2s_acquire(void)
+-{
+-	unsigned val;
+-
+-	ep93xx_devcfg_set_clear(EP93XX_SYSCON_DEVCFG_I2SONAC97,
+-			EP93XX_SYSCON_DEVCFG_I2S_MASK);
+-
+-	/*
+-	 * This is potentially racy with the clock api for i2s_mclk, sclk and 
+-	 * lrclk. Since the i2s driver is the only user of those clocks we
+-	 * rely on it to prevent parallel use of this function and the 
+-	 * clock api for the i2s clocks.
+-	 */
+-	val = __raw_readl(EP93XX_SYSCON_I2SCLKDIV);
+-	val &= ~EP93XX_I2SCLKDIV_MASK;
+-	val |= EP93XX_SYSCON_I2SCLKDIV_ORIDE | EP93XX_SYSCON_I2SCLKDIV_SPOL;
+-	ep93xx_syscon_swlocked_write(val, EP93XX_SYSCON_I2SCLKDIV);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ep93xx_i2s_acquire);
+-
+-void ep93xx_i2s_release(void)
+-{
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2S_MASK);
+-}
+-EXPORT_SYMBOL(ep93xx_i2s_release);
+-
+-/*************************************************************************
+- * EP93xx AC97 audio peripheral handling
+- *************************************************************************/
+-static struct resource ep93xx_ac97_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_AAC_PHYS_BASE, 0xac),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_AACINTR),
+-};
+-
+-static struct platform_device ep93xx_ac97_device = {
+-	.name		= "ep93xx-ac97",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_ac97_resources),
+-	.resource	= ep93xx_ac97_resources,
+-};
+-
+-void __init ep93xx_register_ac97(void)
+-{
+-	/*
+-	 * Make sure that the AC97 pins are not used by I2S.
+-	 */
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
+-
+-	platform_device_register(&ep93xx_ac97_device);
+-	platform_device_register(&ep93xx_pcm_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx Watchdog
+- *************************************************************************/
+-static struct resource ep93xx_wdt_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_WATCHDOG_PHYS_BASE, 0x08),
+-};
+-
+-static struct platform_device ep93xx_wdt_device = {
+-	.name		= "ep93xx-wdt",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_wdt_resources),
+-	.resource	= ep93xx_wdt_resources,
+-};
+-
+-/*************************************************************************
+- * EP93xx IDE
+- *************************************************************************/
+-static struct resource ep93xx_ide_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_IDE_PHYS_BASE, 0x38),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_EXT3),
+-};
+-
+-static struct platform_device ep93xx_ide_device = {
+-	.name		= "ep93xx-ide",
+-	.id		= -1,
+-	.dev		= {
+-		.dma_mask		= &ep93xx_ide_device.dev.coherent_dma_mask,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-	},
+-	.num_resources	= ARRAY_SIZE(ep93xx_ide_resources),
+-	.resource	= ep93xx_ide_resources,
+-};
+-
+-void __init ep93xx_register_ide(void)
+-{
+-	platform_device_register(&ep93xx_ide_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx ADC
+- *************************************************************************/
+-static struct resource ep93xx_adc_resources[] = {
+-	DEFINE_RES_MEM(EP93XX_ADC_PHYS_BASE, 0x28),
+-	DEFINE_RES_IRQ(IRQ_EP93XX_TOUCH),
+-};
+-
+-static struct platform_device ep93xx_adc_device = {
+-	.name		= "ep93xx-adc",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_adc_resources),
+-	.resource	= ep93xx_adc_resources,
+-};
+-
+-void __init ep93xx_register_adc(void)
+-{
+-	/* Power up ADC, deactivate Touch Screen Controller */
+-	ep93xx_devcfg_set_clear(EP93XX_SYSCON_DEVCFG_TIN,
+-				EP93XX_SYSCON_DEVCFG_ADCPD);
+-
+-	platform_device_register(&ep93xx_adc_device);
+-}
+-
+-/*************************************************************************
+- * EP93xx Security peripheral
+- *************************************************************************/
+-
+-/*
+- * The Maverick Key is 256 bits of micro fuses blown at the factory during
+- * manufacturing to uniquely identify a part.
+- *
+- * See: http://arm.cirrus.com/forum/viewtopic.php?t=486&highlight=maverick+key
+- */
+-#define EP93XX_SECURITY_REG(x)		(EP93XX_SECURITY_BASE + (x))
+-#define EP93XX_SECURITY_SECFLG		EP93XX_SECURITY_REG(0x2400)
+-#define EP93XX_SECURITY_FUSEFLG		EP93XX_SECURITY_REG(0x2410)
+-#define EP93XX_SECURITY_UNIQID		EP93XX_SECURITY_REG(0x2440)
+-#define EP93XX_SECURITY_UNIQCHK		EP93XX_SECURITY_REG(0x2450)
+-#define EP93XX_SECURITY_UNIQVAL		EP93XX_SECURITY_REG(0x2460)
+-#define EP93XX_SECURITY_SECID1		EP93XX_SECURITY_REG(0x2500)
+-#define EP93XX_SECURITY_SECID2		EP93XX_SECURITY_REG(0x2504)
+-#define EP93XX_SECURITY_SECCHK1		EP93XX_SECURITY_REG(0x2520)
+-#define EP93XX_SECURITY_SECCHK2		EP93XX_SECURITY_REG(0x2524)
+-#define EP93XX_SECURITY_UNIQID2		EP93XX_SECURITY_REG(0x2700)
+-#define EP93XX_SECURITY_UNIQID3		EP93XX_SECURITY_REG(0x2704)
+-#define EP93XX_SECURITY_UNIQID4		EP93XX_SECURITY_REG(0x2708)
+-#define EP93XX_SECURITY_UNIQID5		EP93XX_SECURITY_REG(0x270c)
+-
+-static char ep93xx_soc_id[33];
+-
+-static const char __init *ep93xx_get_soc_id(void)
+-{
+-	unsigned int id, id2, id3, id4, id5;
+-
+-	if (__raw_readl(EP93XX_SECURITY_UNIQVAL) != 1)
+-		return "bad Hamming code";
+-
+-	id = __raw_readl(EP93XX_SECURITY_UNIQID);
+-	id2 = __raw_readl(EP93XX_SECURITY_UNIQID2);
+-	id3 = __raw_readl(EP93XX_SECURITY_UNIQID3);
+-	id4 = __raw_readl(EP93XX_SECURITY_UNIQID4);
+-	id5 = __raw_readl(EP93XX_SECURITY_UNIQID5);
+-
+-	if (id != id2)
+-		return "invalid";
+-
+-	/* Toss the unique ID into the entropy pool */
+-	add_device_randomness(&id2, 4);
+-	add_device_randomness(&id3, 4);
+-	add_device_randomness(&id4, 4);
+-	add_device_randomness(&id5, 4);
+-
+-	snprintf(ep93xx_soc_id, sizeof(ep93xx_soc_id),
+-		 "%08x%08x%08x%08x", id2, id3, id4, id5);
+-
+-	return ep93xx_soc_id;
+-}
+-
+-static const char __init *ep93xx_get_soc_rev(void)
+-{
+-	int rev = ep93xx_chip_revision();
+-
+-	switch (rev) {
+-	case EP93XX_CHIP_REV_D0:
+-		return "D0";
+-	case EP93XX_CHIP_REV_D1:
+-		return "D1";
+-	case EP93XX_CHIP_REV_E0:
+-		return "E0";
+-	case EP93XX_CHIP_REV_E1:
+-		return "E1";
+-	case EP93XX_CHIP_REV_E2:
+-		return "E2";
+-	default:
+-		return "unknown";
+-	}
+-}
+-
+-static const char __init *ep93xx_get_machine_name(void)
+-{
+-	return kasprintf(GFP_KERNEL,"%s", machine_desc->name);
+-}
+-
+-static struct device __init *ep93xx_init_soc(void)
+-{
+-	struct soc_device_attribute *soc_dev_attr;
+-	struct soc_device *soc_dev;
+-
+-	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+-	if (!soc_dev_attr)
+-		return NULL;
+-
+-	soc_dev_attr->machine = ep93xx_get_machine_name();
+-	soc_dev_attr->family = "Cirrus Logic EP93xx";
+-	soc_dev_attr->revision = ep93xx_get_soc_rev();
+-	soc_dev_attr->soc_id = ep93xx_get_soc_id();
+-
+-	soc_dev = soc_device_register(soc_dev_attr);
+-	if (IS_ERR(soc_dev)) {
+-		kfree(soc_dev_attr->machine);
+-		kfree(soc_dev_attr);
+-		return NULL;
+-	}
+-
+-	return soc_device_to_device(soc_dev);
+-}
+-
+-struct device __init *ep93xx_init_devices(void)
+-{
+-	struct device *parent;
+-	unsigned int i;
+-
+-	/* Disallow access to MaverickCrunch initially */
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_CPENA);
+-
+-	/* Default all ports to GPIO */
+-	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_KEYS |
+-			       EP93XX_SYSCON_DEVCFG_GONK |
+-			       EP93XX_SYSCON_DEVCFG_EONIDE |
+-			       EP93XX_SYSCON_DEVCFG_GONIDE |
+-			       EP93XX_SYSCON_DEVCFG_HONIDE);
+-
+-	parent = ep93xx_init_soc();
+-
+-	/* Get the GPIO working early, other devices need it */
+-	for (i = 0; i < ARRAY_SIZE(ep93xx_gpio_device); i++)
+-		platform_device_register(ep93xx_gpio_device[i]);
+-
+-	amba_device_register(&uart1_device, &iomem_resource);
+-	amba_device_register(&uart2_device, &iomem_resource);
+-	amba_device_register(&uart3_device, &iomem_resource);
+-
+-	platform_device_register(&ep93xx_rtc_device);
+-	platform_device_register(&ep93xx_ohci_device);
+-	platform_device_register(&ep93xx_wdt_device);
+-
+-	gpiod_add_lookup_table(&ep93xx_leds_gpio_table);
+-	gpio_led_register_device(-1, &ep93xx_led_data);
+-
+-	return parent;
+-}
+-
+-void ep93xx_restart(enum reboot_mode mode, const char *cmd)
+-{
+-	/*
+-	 * Set then clear the SWRST bit to initiate a software reset
+-	 */
+-	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_SWRST);
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_SWRST);
+-
+-	while (1)
+-		;
+-}
+diff --git a/arch/arm/mach-ep93xx/dma.c b/arch/arm/mach-ep93xx/dma.c
+deleted file mode 100644
+index 74515acab8ef..000000000000
+--- a/arch/arm/mach-ep93xx/dma.c
++++ /dev/null
+@@ -1,114 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/dma.c
+- *
+- * Platform support code for the EP93xx dmaengine driver.
+- *
+- * Copyright (C) 2011 Mika Westerberg
+- *
+- * This work is based on the original dma-m2p implementation with
+- * following copyrights:
+- *
+- *   Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- *   Copyright (C) 2006 Applied Data Systems
+- *   Copyright (C) 2009 Ryan Mallon <rmallon@gmail.com>
+- */
+-
+-#include <linux/dmaengine.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/init.h>
+-#include <linux/interrupt.h>
+-#include <linux/kernel.h>
+-#include <linux/platform_device.h>
+-
+-#include <linux/platform_data/dma-ep93xx.h>
+-#include "hardware.h"
+-
+-#include "soc.h"
+-
+-#define DMA_CHANNEL(_name, _base, _irq) \
+-	{ .name = (_name), .base = (_base), .irq = (_irq) }
+-
+-/*
+- * DMA M2P channels.
+- *
+- * On the EP93xx chip the following peripherals my be allocated to the 10
+- * Memory to Internal Peripheral (M2P) channels (5 transmit + 5 receive).
+- *
+- *	I2S	contains 3 Tx and 3 Rx DMA Channels
+- *	AAC	contains 3 Tx and 3 Rx DMA Channels
+- *	UART1	contains 1 Tx and 1 Rx DMA Channels
+- *	UART2	contains 1 Tx and 1 Rx DMA Channels
+- *	UART3	contains 1 Tx and 1 Rx DMA Channels
+- *	IrDA	contains 1 Tx and 1 Rx DMA Channels
+- *
+- * Registers are mapped statically in ep93xx_map_io().
+- */
+-static struct ep93xx_dma_chan_data ep93xx_dma_m2p_channels[] = {
+-	DMA_CHANNEL("m2p0", EP93XX_DMA_BASE + 0x0000, IRQ_EP93XX_DMAM2P0),
+-	DMA_CHANNEL("m2p1", EP93XX_DMA_BASE + 0x0040, IRQ_EP93XX_DMAM2P1),
+-	DMA_CHANNEL("m2p2", EP93XX_DMA_BASE + 0x0080, IRQ_EP93XX_DMAM2P2),
+-	DMA_CHANNEL("m2p3", EP93XX_DMA_BASE + 0x00c0, IRQ_EP93XX_DMAM2P3),
+-	DMA_CHANNEL("m2p4", EP93XX_DMA_BASE + 0x0240, IRQ_EP93XX_DMAM2P4),
+-	DMA_CHANNEL("m2p5", EP93XX_DMA_BASE + 0x0200, IRQ_EP93XX_DMAM2P5),
+-	DMA_CHANNEL("m2p6", EP93XX_DMA_BASE + 0x02c0, IRQ_EP93XX_DMAM2P6),
+-	DMA_CHANNEL("m2p7", EP93XX_DMA_BASE + 0x0280, IRQ_EP93XX_DMAM2P7),
+-	DMA_CHANNEL("m2p8", EP93XX_DMA_BASE + 0x0340, IRQ_EP93XX_DMAM2P8),
+-	DMA_CHANNEL("m2p9", EP93XX_DMA_BASE + 0x0300, IRQ_EP93XX_DMAM2P9),
+-};
+-
+-static struct ep93xx_dma_platform_data ep93xx_dma_m2p_data = {
+-	.channels		= ep93xx_dma_m2p_channels,
+-	.num_channels		= ARRAY_SIZE(ep93xx_dma_m2p_channels),
+-};
+-
+-static u64 ep93xx_dma_m2p_mask = DMA_BIT_MASK(32);
+-
+-static struct platform_device ep93xx_dma_m2p_device = {
+-	.name			= "ep93xx-dma-m2p",
+-	.id			= -1,
+-	.dev			= {
+-		.platform_data		= &ep93xx_dma_m2p_data,
+-		.dma_mask		= &ep93xx_dma_m2p_mask,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-	},
+-};
+-
+-/*
+- * DMA M2M channels.
+- *
+- * There are 2 M2M channels which support memcpy/memset and in addition simple
+- * hardware requests from/to SSP and IDE. We do not implement an external
+- * hardware requests.
+- *
+- * Registers are mapped statically in ep93xx_map_io().
+- */
+-static struct ep93xx_dma_chan_data ep93xx_dma_m2m_channels[] = {
+-	DMA_CHANNEL("m2m0", EP93XX_DMA_BASE + 0x0100, IRQ_EP93XX_DMAM2M0),
+-	DMA_CHANNEL("m2m1", EP93XX_DMA_BASE + 0x0140, IRQ_EP93XX_DMAM2M1),
+-};
+-
+-static struct ep93xx_dma_platform_data ep93xx_dma_m2m_data = {
+-	.channels		= ep93xx_dma_m2m_channels,
+-	.num_channels		= ARRAY_SIZE(ep93xx_dma_m2m_channels),
+-};
+-
+-static u64 ep93xx_dma_m2m_mask = DMA_BIT_MASK(32);
+-
+-static struct platform_device ep93xx_dma_m2m_device = {
+-	.name			= "ep93xx-dma-m2m",
+-	.id			= -1,
+-	.dev			= {
+-		.platform_data		= &ep93xx_dma_m2m_data,
+-		.dma_mask		= &ep93xx_dma_m2m_mask,
+-		.coherent_dma_mask	= DMA_BIT_MASK(32),
+-	},
+-};
+-
+-static int __init ep93xx_dma_init(void)
+-{
+-	platform_device_register(&ep93xx_dma_m2p_device);
+-	platform_device_register(&ep93xx_dma_m2m_device);
+-	return 0;
+-}
+-arch_initcall(ep93xx_dma_init);
+diff --git a/arch/arm/mach-ep93xx/edb93xx.c b/arch/arm/mach-ep93xx/edb93xx.c
+deleted file mode 100644
+index c1e880946f72..000000000000
+--- a/arch/arm/mach-ep93xx/edb93xx.c
++++ /dev/null
+@@ -1,344 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/edb93xx.c
+- * Cirrus Logic EDB93xx Development Board support.
+- *
+- * EDB93XX, EDB9301, EDB9307A
+- * Copyright (C) 2008-2009 H Hartley Sweeten <hsweeten@visionengravers.com>
+- *
+- * EDB9302
+- * Copyright (C) 2006 George Kashperko <george@chas.com.ua>
+- *
+- * EDB9302A, EDB9315, EDB9315A
+- * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- *
+- * EDB9307
+- * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
+- *
+- * EDB9312
+- * Copyright (C) 2006 Infosys Technologies Limited
+- *                    Toufeeq Hussain <toufeeq_hussain@infosys.com>
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/i2c.h>
+-#include <linux/spi/spi.h>
+-#include <linux/gpio/machine.h>
+-
+-#include <sound/cs4271.h>
+-
+-#include "hardware.h"
+-#include <linux/platform_data/video-ep93xx.h>
+-#include <linux/platform_data/spi-ep93xx.h>
+-#include "gpio-ep93xx.h"
+-
+-#include <asm/mach-types.h>
+-#include <asm/mach/arch.h>
+-
+-#include "soc.h"
+-
+-static void __init edb93xx_register_flash(void)
+-{
+-	if (machine_is_edb9307() || machine_is_edb9312() ||
+-	    machine_is_edb9315()) {
+-		ep93xx_register_flash(4, EP93XX_CS6_PHYS_BASE, SZ_32M);
+-	} else {
+-		ep93xx_register_flash(2, EP93XX_CS6_PHYS_BASE, SZ_16M);
+-	}
+-}
+-
+-static struct ep93xx_eth_data __initdata edb93xx_eth_data = {
+-	.phy_id		= 1,
+-};
+-
+-
+-/*************************************************************************
+- * EDB93xx i2c peripheral handling
+- *************************************************************************/
+-
+-static struct i2c_board_info __initdata edb93xxa_i2c_board_info[] = {
+-	{
+-		I2C_BOARD_INFO("isl1208", 0x6f),
+-	},
+-};
+-
+-static struct i2c_board_info __initdata edb93xx_i2c_board_info[] = {
+-	{
+-		I2C_BOARD_INFO("ds1337", 0x68),
+-	},
+-};
+-
+-static void __init edb93xx_register_i2c(void)
+-{
+-	if (machine_is_edb9302a() || machine_is_edb9307a() ||
+-	    machine_is_edb9315a()) {
+-		ep93xx_register_i2c(edb93xxa_i2c_board_info,
+-				    ARRAY_SIZE(edb93xxa_i2c_board_info));
+-	} else if (machine_is_edb9302() || machine_is_edb9307()
+-		|| machine_is_edb9312() || machine_is_edb9315()) {
+-		ep93xx_register_i2c(edb93xx_i2c_board_info,
+-				    ARRAY_SIZE(edb93xx_i2c_board_info));
+-	}
+-}
+-
+-
+-/*************************************************************************
+- * EDB93xx SPI peripheral handling
+- *************************************************************************/
+-static struct cs4271_platform_data edb93xx_cs4271_data = {
+-	.gpio_nreset	= -EINVAL,	/* filled in later */
+-};
+-
+-static struct spi_board_info edb93xx_spi_board_info[] __initdata = {
+-	{
+-		.modalias		= "cs4271",
+-		.platform_data		= &edb93xx_cs4271_data,
+-		.max_speed_hz		= 6000000,
+-		.bus_num		= 0,
+-		.chip_select		= 0,
+-		.mode			= SPI_MODE_3,
+-	},
+-};
+-
+-static struct gpiod_lookup_table edb93xx_spi_cs_gpio_table = {
+-	.dev_id = "spi0",
+-	.table = {
+-		GPIO_LOOKUP("gpio-ep93xx.0", 6, "cs", GPIO_ACTIVE_LOW),
+-		{ },
+-	},
+-};
+-
+-static struct ep93xx_spi_info edb93xx_spi_info __initdata = {
+-	/* Intentionally left blank */
+-};
+-
+-static void __init edb93xx_register_spi(void)
+-{
+-	if (machine_is_edb9301() || machine_is_edb9302())
+-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
+-	else if (machine_is_edb9302a() || machine_is_edb9307a())
+-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_H(2);
+-	else if (machine_is_edb9315a())
+-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
+-
+-	gpiod_add_lookup_table(&edb93xx_spi_cs_gpio_table);
+-	ep93xx_register_spi(&edb93xx_spi_info, edb93xx_spi_board_info,
+-			    ARRAY_SIZE(edb93xx_spi_board_info));
+-}
+-
+-
+-/*************************************************************************
+- * EDB93xx I2S
+- *************************************************************************/
+-static struct platform_device edb93xx_audio_device = {
+-	.name		= "edb93xx-audio",
+-	.id		= -1,
+-};
+-
+-static int __init edb93xx_has_audio(void)
+-{
+-	return (machine_is_edb9301() || machine_is_edb9302() ||
+-		machine_is_edb9302a() || machine_is_edb9307a() ||
+-		machine_is_edb9315a());
+-}
+-
+-static void __init edb93xx_register_i2s(void)
+-{
+-	if (edb93xx_has_audio()) {
+-		ep93xx_register_i2s();
+-		platform_device_register(&edb93xx_audio_device);
+-	}
+-}
+-
+-
+-/*************************************************************************
+- * EDB93xx pwm
+- *************************************************************************/
+-static void __init edb93xx_register_pwm(void)
+-{
+-	if (machine_is_edb9301() ||
+-	    machine_is_edb9302() || machine_is_edb9302a()) {
+-		/* EP9301 and EP9302 only have pwm.1 (EGPIO14) */
+-		ep93xx_register_pwm(0, 1);
+-	} else if (machine_is_edb9307() || machine_is_edb9307a()) {
+-		/* EP9307 only has pwm.0 (PWMOUT) */
+-		ep93xx_register_pwm(1, 0);
+-	} else {
+-		/* EP9312 and EP9315 have both */
+-		ep93xx_register_pwm(1, 1);
+-	}
+-}
+-
+-
+-/*************************************************************************
+- * EDB93xx framebuffer
+- *************************************************************************/
+-static struct ep93xxfb_mach_info __initdata edb93xxfb_info = {
+-	.flags		= 0,
+-};
+-
+-static int __init edb93xx_has_fb(void)
+-{
+-	/* These platforms have an ep93xx with video capability */
+-	return machine_is_edb9307() || machine_is_edb9307a() ||
+-	       machine_is_edb9312() || machine_is_edb9315() ||
+-	       machine_is_edb9315a();
+-}
+-
+-static void __init edb93xx_register_fb(void)
+-{
+-	if (!edb93xx_has_fb())
+-		return;
+-
+-	if (machine_is_edb9307a() || machine_is_edb9315a())
+-		edb93xxfb_info.flags |= EP93XXFB_USE_SDCSN0;
+-	else
+-		edb93xxfb_info.flags |= EP93XXFB_USE_SDCSN3;
+-
+-	ep93xx_register_fb(&edb93xxfb_info);
+-}
+-
+-
+-/*************************************************************************
+- * EDB93xx IDE
+- *************************************************************************/
+-static int __init edb93xx_has_ide(void)
+-{
+-	/*
+-	 * Although EDB9312 and EDB9315 do have IDE capability, they have
+-	 * INTRQ line wired as pull-up, which makes using IDE interface
+-	 * problematic.
+-	 */
+-	return machine_is_edb9312() || machine_is_edb9315() ||
+-	       machine_is_edb9315a();
+-}
+-
+-static void __init edb93xx_register_ide(void)
+-{
+-	if (!edb93xx_has_ide())
+-		return;
+-
+-	ep93xx_register_ide();
+-}
+-
+-
+-static void __init edb93xx_init_machine(void)
+-{
+-	ep93xx_init_devices();
+-	edb93xx_register_flash();
+-	ep93xx_register_eth(&edb93xx_eth_data, 1);
+-	edb93xx_register_i2c();
+-	edb93xx_register_spi();
+-	edb93xx_register_i2s();
+-	edb93xx_register_pwm();
+-	edb93xx_register_fb();
+-	edb93xx_register_ide();
+-	ep93xx_register_adc();
+-}
+-
+-
+-#ifdef CONFIG_MACH_EDB9301
+-MACHINE_START(EDB9301, "Cirrus Logic EDB9301 Evaluation Board")
+-	/* Maintainer: H Hartley Sweeten <hsweeten@visionengravers.com> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9302
+-MACHINE_START(EDB9302, "Cirrus Logic EDB9302 Evaluation Board")
+-	/* Maintainer: George Kashperko <george@chas.com.ua> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9302A
+-MACHINE_START(EDB9302A, "Cirrus Logic EDB9302A Evaluation Board")
+-	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9307
+-MACHINE_START(EDB9307, "Cirrus Logic EDB9307 Evaluation Board")
+-	/* Maintainer: Herbert Valerio Riedel <hvr@gnu.org> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9307A
+-MACHINE_START(EDB9307A, "Cirrus Logic EDB9307A Evaluation Board")
+-	/* Maintainer: H Hartley Sweeten <hsweeten@visionengravers.com> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9312
+-MACHINE_START(EDB9312, "Cirrus Logic EDB9312 Evaluation Board")
+-	/* Maintainer: Toufeeq Hussain <toufeeq_hussain@infosys.com> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9315
+-MACHINE_START(EDB9315, "Cirrus Logic EDB9315 Evaluation Board")
+-	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+-
+-#ifdef CONFIG_MACH_EDB9315A
+-MACHINE_START(EDB9315A, "Cirrus Logic EDB9315A Evaluation Board")
+-	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ep93xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= edb93xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-#endif
+diff --git a/arch/arm/mach-ep93xx/ep93xx-regs.h b/arch/arm/mach-ep93xx/ep93xx-regs.h
+deleted file mode 100644
+index 8fa3646de0a4..000000000000
+--- a/arch/arm/mach-ep93xx/ep93xx-regs.h
++++ /dev/null
+@@ -1,38 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_ARCH_EP93XX_REGS_H
+-#define __ASM_ARCH_EP93XX_REGS_H
+-
+-/*
+- * EP93xx linux memory map:
+- *
+- * virt		phys		size
+- * fe800000			5M		per-platform mappings
+- * fed00000	80800000	2M		APB
+- * fef00000	80000000	1M		AHB
+- */
+-
+-#define EP93XX_AHB_PHYS_BASE		0x80000000
+-#define EP93XX_AHB_VIRT_BASE		0xfef00000
+-#define EP93XX_AHB_SIZE			0x00100000
+-
+-#define EP93XX_AHB_PHYS(x)		(EP93XX_AHB_PHYS_BASE + (x))
+-#define EP93XX_AHB_IOMEM(x)		IOMEM(EP93XX_AHB_VIRT_BASE + (x))
+-
+-#define EP93XX_APB_PHYS_BASE		0x80800000
+-#define EP93XX_APB_VIRT_BASE		0xfed00000
+-#define EP93XX_APB_SIZE			0x00200000
+-
+-#define EP93XX_APB_PHYS(x)		(EP93XX_APB_PHYS_BASE + (x))
+-#define EP93XX_APB_IOMEM(x)		IOMEM(EP93XX_APB_VIRT_BASE + (x))
+-
+-/* APB UARTs */
+-#define EP93XX_UART1_PHYS_BASE		EP93XX_APB_PHYS(0x000c0000)
+-#define EP93XX_UART1_BASE		EP93XX_APB_IOMEM(0x000c0000)
+-
+-#define EP93XX_UART2_PHYS_BASE		EP93XX_APB_PHYS(0x000d0000)
+-#define EP93XX_UART2_BASE		EP93XX_APB_IOMEM(0x000d0000)
+-
+-#define EP93XX_UART3_PHYS_BASE		EP93XX_APB_PHYS(0x000e0000)
+-#define EP93XX_UART3_BASE		EP93XX_APB_IOMEM(0x000e0000)
+-
+-#endif
+diff --git a/arch/arm/mach-ep93xx/gpio-ep93xx.h b/arch/arm/mach-ep93xx/gpio-ep93xx.h
+deleted file mode 100644
+index 7b46eb7e5507..000000000000
+--- a/arch/arm/mach-ep93xx/gpio-ep93xx.h
++++ /dev/null
+@@ -1,111 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* Include file for the EP93XX GPIO controller machine specifics */
+-
+-#ifndef __GPIO_EP93XX_H
+-#define __GPIO_EP93XX_H
+-
+-#include "ep93xx-regs.h"
+-
+-#define EP93XX_GPIO_PHYS_BASE		EP93XX_APB_PHYS(0x00040000)
+-#define EP93XX_GPIO_BASE		EP93XX_APB_IOMEM(0x00040000)
+-#define EP93XX_GPIO_REG(x)		(EP93XX_GPIO_BASE + (x))
+-#define EP93XX_GPIO_F_INT_STATUS	EP93XX_GPIO_REG(0x5c)
+-#define EP93XX_GPIO_A_INT_STATUS	EP93XX_GPIO_REG(0xa0)
+-#define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
+-#define EP93XX_GPIO_EEDRIVE		EP93XX_GPIO_REG(0xc8)
+-
+-/* GPIO port A.  */
+-#define EP93XX_GPIO_LINE_A(x)		((x) + 0)
+-#define EP93XX_GPIO_LINE_EGPIO0		EP93XX_GPIO_LINE_A(0)
+-#define EP93XX_GPIO_LINE_EGPIO1		EP93XX_GPIO_LINE_A(1)
+-#define EP93XX_GPIO_LINE_EGPIO2		EP93XX_GPIO_LINE_A(2)
+-#define EP93XX_GPIO_LINE_EGPIO3		EP93XX_GPIO_LINE_A(3)
+-#define EP93XX_GPIO_LINE_EGPIO4		EP93XX_GPIO_LINE_A(4)
+-#define EP93XX_GPIO_LINE_EGPIO5		EP93XX_GPIO_LINE_A(5)
+-#define EP93XX_GPIO_LINE_EGPIO6		EP93XX_GPIO_LINE_A(6)
+-#define EP93XX_GPIO_LINE_EGPIO7		EP93XX_GPIO_LINE_A(7)
+-
+-/* GPIO port B.  */
+-#define EP93XX_GPIO_LINE_B(x)		((x) + 8)
+-#define EP93XX_GPIO_LINE_EGPIO8		EP93XX_GPIO_LINE_B(0)
+-#define EP93XX_GPIO_LINE_EGPIO9		EP93XX_GPIO_LINE_B(1)
+-#define EP93XX_GPIO_LINE_EGPIO10	EP93XX_GPIO_LINE_B(2)
+-#define EP93XX_GPIO_LINE_EGPIO11	EP93XX_GPIO_LINE_B(3)
+-#define EP93XX_GPIO_LINE_EGPIO12	EP93XX_GPIO_LINE_B(4)
+-#define EP93XX_GPIO_LINE_EGPIO13	EP93XX_GPIO_LINE_B(5)
+-#define EP93XX_GPIO_LINE_EGPIO14	EP93XX_GPIO_LINE_B(6)
+-#define EP93XX_GPIO_LINE_EGPIO15	EP93XX_GPIO_LINE_B(7)
+-
+-/* GPIO port C.  */
+-#define EP93XX_GPIO_LINE_C(x)		((x) + 40)
+-#define EP93XX_GPIO_LINE_ROW0		EP93XX_GPIO_LINE_C(0)
+-#define EP93XX_GPIO_LINE_ROW1		EP93XX_GPIO_LINE_C(1)
+-#define EP93XX_GPIO_LINE_ROW2		EP93XX_GPIO_LINE_C(2)
+-#define EP93XX_GPIO_LINE_ROW3		EP93XX_GPIO_LINE_C(3)
+-#define EP93XX_GPIO_LINE_ROW4		EP93XX_GPIO_LINE_C(4)
+-#define EP93XX_GPIO_LINE_ROW5		EP93XX_GPIO_LINE_C(5)
+-#define EP93XX_GPIO_LINE_ROW6		EP93XX_GPIO_LINE_C(6)
+-#define EP93XX_GPIO_LINE_ROW7		EP93XX_GPIO_LINE_C(7)
+-
+-/* GPIO port D.  */
+-#define EP93XX_GPIO_LINE_D(x)		((x) + 24)
+-#define EP93XX_GPIO_LINE_COL0		EP93XX_GPIO_LINE_D(0)
+-#define EP93XX_GPIO_LINE_COL1		EP93XX_GPIO_LINE_D(1)
+-#define EP93XX_GPIO_LINE_COL2		EP93XX_GPIO_LINE_D(2)
+-#define EP93XX_GPIO_LINE_COL3		EP93XX_GPIO_LINE_D(3)
+-#define EP93XX_GPIO_LINE_COL4		EP93XX_GPIO_LINE_D(4)
+-#define EP93XX_GPIO_LINE_COL5		EP93XX_GPIO_LINE_D(5)
+-#define EP93XX_GPIO_LINE_COL6		EP93XX_GPIO_LINE_D(6)
+-#define EP93XX_GPIO_LINE_COL7		EP93XX_GPIO_LINE_D(7)
+-
+-/* GPIO port E.  */
+-#define EP93XX_GPIO_LINE_E(x)		((x) + 32)
+-#define EP93XX_GPIO_LINE_GRLED		EP93XX_GPIO_LINE_E(0)
+-#define EP93XX_GPIO_LINE_RDLED		EP93XX_GPIO_LINE_E(1)
+-#define EP93XX_GPIO_LINE_DIORn		EP93XX_GPIO_LINE_E(2)
+-#define EP93XX_GPIO_LINE_IDECS1n	EP93XX_GPIO_LINE_E(3)
+-#define EP93XX_GPIO_LINE_IDECS2n	EP93XX_GPIO_LINE_E(4)
+-#define EP93XX_GPIO_LINE_IDEDA0		EP93XX_GPIO_LINE_E(5)
+-#define EP93XX_GPIO_LINE_IDEDA1		EP93XX_GPIO_LINE_E(6)
+-#define EP93XX_GPIO_LINE_IDEDA2		EP93XX_GPIO_LINE_E(7)
+-
+-/* GPIO port F.  */
+-#define EP93XX_GPIO_LINE_F(x)		((x) + 16)
+-#define EP93XX_GPIO_LINE_WP		EP93XX_GPIO_LINE_F(0)
+-#define EP93XX_GPIO_LINE_MCCD1		EP93XX_GPIO_LINE_F(1)
+-#define EP93XX_GPIO_LINE_MCCD2		EP93XX_GPIO_LINE_F(2)
+-#define EP93XX_GPIO_LINE_MCBVD1		EP93XX_GPIO_LINE_F(3)
+-#define EP93XX_GPIO_LINE_MCBVD2		EP93XX_GPIO_LINE_F(4)
+-#define EP93XX_GPIO_LINE_VS1		EP93XX_GPIO_LINE_F(5)
+-#define EP93XX_GPIO_LINE_READY		EP93XX_GPIO_LINE_F(6)
+-#define EP93XX_GPIO_LINE_VS2		EP93XX_GPIO_LINE_F(7)
+-
+-/* GPIO port G.  */
+-#define EP93XX_GPIO_LINE_G(x)		((x) + 48)
+-#define EP93XX_GPIO_LINE_EECLK		EP93XX_GPIO_LINE_G(0)
+-#define EP93XX_GPIO_LINE_EEDAT		EP93XX_GPIO_LINE_G(1)
+-#define EP93XX_GPIO_LINE_SLA0		EP93XX_GPIO_LINE_G(2)
+-#define EP93XX_GPIO_LINE_SLA1		EP93XX_GPIO_LINE_G(3)
+-#define EP93XX_GPIO_LINE_DD12		EP93XX_GPIO_LINE_G(4)
+-#define EP93XX_GPIO_LINE_DD13		EP93XX_GPIO_LINE_G(5)
+-#define EP93XX_GPIO_LINE_DD14		EP93XX_GPIO_LINE_G(6)
+-#define EP93XX_GPIO_LINE_DD15		EP93XX_GPIO_LINE_G(7)
+-
+-/* GPIO port H.  */
+-#define EP93XX_GPIO_LINE_H(x)		((x) + 56)
+-#define EP93XX_GPIO_LINE_DD0		EP93XX_GPIO_LINE_H(0)
+-#define EP93XX_GPIO_LINE_DD1		EP93XX_GPIO_LINE_H(1)
+-#define EP93XX_GPIO_LINE_DD2		EP93XX_GPIO_LINE_H(2)
+-#define EP93XX_GPIO_LINE_DD3		EP93XX_GPIO_LINE_H(3)
+-#define EP93XX_GPIO_LINE_DD4		EP93XX_GPIO_LINE_H(4)
+-#define EP93XX_GPIO_LINE_DD5		EP93XX_GPIO_LINE_H(5)
+-#define EP93XX_GPIO_LINE_DD6		EP93XX_GPIO_LINE_H(6)
+-#define EP93XX_GPIO_LINE_DD7		EP93XX_GPIO_LINE_H(7)
+-
+-/* maximum value for gpio line identifiers */
+-#define EP93XX_GPIO_LINE_MAX		EP93XX_GPIO_LINE_H(7)
+-
+-/* maximum value for irq capable line identifiers */
+-#define EP93XX_GPIO_LINE_MAX_IRQ	EP93XX_GPIO_LINE_F(7)
+-
+-#endif /* __GPIO_EP93XX_H */
+diff --git a/arch/arm/mach-ep93xx/hardware.h b/arch/arm/mach-ep93xx/hardware.h
+deleted file mode 100644
+index e7d850e04782..000000000000
+--- a/arch/arm/mach-ep93xx/hardware.h
++++ /dev/null
+@@ -1,25 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * arch/arm/mach-ep93xx/include/mach/hardware.h
+- */
+-
+-#ifndef __ASM_ARCH_HARDWARE_H
+-#define __ASM_ARCH_HARDWARE_H
+-
+-#include "platform.h"
+-
+-/*
+- * The EP93xx has two external crystal oscillators.  To generate the
+- * required high-frequency clocks, the processor uses two phase-locked-
+- * loops (PLLs) to multiply the incoming external clock signal to much
+- * higher frequencies that are then divided down by programmable dividers
+- * to produce the needed clocks.  The PLLs operate independently of one
+- * another.
+- */
+-#define EP93XX_EXT_CLK_RATE	14745600
+-#define EP93XX_EXT_RTC_RATE	32768
+-
+-#define EP93XX_KEYTCHCLK_DIV4	(EP93XX_EXT_CLK_RATE / 4)
+-#define EP93XX_KEYTCHCLK_DIV16	(EP93XX_EXT_CLK_RATE / 16)
+-
+-#endif
+diff --git a/arch/arm/mach-ep93xx/irqs.h b/arch/arm/mach-ep93xx/irqs.h
+deleted file mode 100644
+index 353201b90c66..000000000000
+--- a/arch/arm/mach-ep93xx/irqs.h
++++ /dev/null
+@@ -1,76 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_ARCH_IRQS_H
+-#define __ASM_ARCH_IRQS_H
+-
+-#define IRQ_EP93XX_VIC0			1
+-
+-#define IRQ_EP93XX_COMMRX		(IRQ_EP93XX_VIC0 + 2)
+-#define IRQ_EP93XX_COMMTX		(IRQ_EP93XX_VIC0 + 3)
+-#define IRQ_EP93XX_TIMER1		(IRQ_EP93XX_VIC0 + 4)
+-#define IRQ_EP93XX_TIMER2		(IRQ_EP93XX_VIC0 + 5)
+-#define IRQ_EP93XX_AACINTR		(IRQ_EP93XX_VIC0 + 6)
+-#define IRQ_EP93XX_DMAM2P0		(IRQ_EP93XX_VIC0 + 7)
+-#define IRQ_EP93XX_DMAM2P1		(IRQ_EP93XX_VIC0 + 8)
+-#define IRQ_EP93XX_DMAM2P2		(IRQ_EP93XX_VIC0 + 9)
+-#define IRQ_EP93XX_DMAM2P3		(IRQ_EP93XX_VIC0 + 10)
+-#define IRQ_EP93XX_DMAM2P4		(IRQ_EP93XX_VIC0 + 11)
+-#define IRQ_EP93XX_DMAM2P5		(IRQ_EP93XX_VIC0 + 12)
+-#define IRQ_EP93XX_DMAM2P6		(IRQ_EP93XX_VIC0 + 13)
+-#define IRQ_EP93XX_DMAM2P7		(IRQ_EP93XX_VIC0 + 14)
+-#define IRQ_EP93XX_DMAM2P8		(IRQ_EP93XX_VIC0 + 15)
+-#define IRQ_EP93XX_DMAM2P9		(IRQ_EP93XX_VIC0 + 16)
+-#define IRQ_EP93XX_DMAM2M0		(IRQ_EP93XX_VIC0 + 17)
+-#define IRQ_EP93XX_DMAM2M1		(IRQ_EP93XX_VIC0 + 18)
+-#define IRQ_EP93XX_GPIO0MUX		(IRQ_EP93XX_VIC0 + 19)
+-#define IRQ_EP93XX_GPIO1MUX		(IRQ_EP93XX_VIC0 + 20)
+-#define IRQ_EP93XX_GPIO2MUX		(IRQ_EP93XX_VIC0 + 21)
+-#define IRQ_EP93XX_GPIO3MUX		(IRQ_EP93XX_VIC0 + 22)
+-#define IRQ_EP93XX_UART1RX		(IRQ_EP93XX_VIC0 + 23)
+-#define IRQ_EP93XX_UART1TX		(IRQ_EP93XX_VIC0 + 24)
+-#define IRQ_EP93XX_UART2RX		(IRQ_EP93XX_VIC0 + 25)
+-#define IRQ_EP93XX_UART2TX		(IRQ_EP93XX_VIC0 + 26)
+-#define IRQ_EP93XX_UART3RX		(IRQ_EP93XX_VIC0 + 27)
+-#define IRQ_EP93XX_UART3TX		(IRQ_EP93XX_VIC0 + 28)
+-#define IRQ_EP93XX_KEY			(IRQ_EP93XX_VIC0 + 29)
+-#define IRQ_EP93XX_TOUCH		(IRQ_EP93XX_VIC0 + 30)
+-#define EP93XX_VIC1_VALID_IRQ_MASK	0x7ffffffc
+-
+-#define IRQ_EP93XX_VIC1			(IRQ_EP93XX_VIC0 + 32)
+-
+-#define IRQ_EP93XX_EXT0			(IRQ_EP93XX_VIC1 + 0)
+-#define IRQ_EP93XX_EXT1			(IRQ_EP93XX_VIC1 + 1)
+-#define IRQ_EP93XX_EXT2			(IRQ_EP93XX_VIC1 + 2)
+-#define IRQ_EP93XX_64HZ			(IRQ_EP93XX_VIC1 + 3)
+-#define IRQ_EP93XX_WATCHDOG		(IRQ_EP93XX_VIC1 + 4)
+-#define IRQ_EP93XX_RTC			(IRQ_EP93XX_VIC1 + 5)
+-#define IRQ_EP93XX_IRDA			(IRQ_EP93XX_VIC1 + 6)
+-#define IRQ_EP93XX_ETHERNET		(IRQ_EP93XX_VIC1 + 7)
+-#define IRQ_EP93XX_EXT3			(IRQ_EP93XX_VIC1 + 8)
+-#define IRQ_EP93XX_PROG			(IRQ_EP93XX_VIC1 + 9)
+-#define IRQ_EP93XX_1HZ			(IRQ_EP93XX_VIC1 + 10)
+-#define IRQ_EP93XX_VSYNC		(IRQ_EP93XX_VIC1 + 11)
+-#define IRQ_EP93XX_VIDEO_FIFO		(IRQ_EP93XX_VIC1 + 12)
+-#define IRQ_EP93XX_SSP1RX		(IRQ_EP93XX_VIC1 + 13)
+-#define IRQ_EP93XX_SSP1TX		(IRQ_EP93XX_VIC1 + 14)
+-#define IRQ_EP93XX_GPIO4MUX		(IRQ_EP93XX_VIC1 + 15)
+-#define IRQ_EP93XX_GPIO5MUX		(IRQ_EP93XX_VIC1 + 16)
+-#define IRQ_EP93XX_GPIO6MUX		(IRQ_EP93XX_VIC1 + 17)
+-#define IRQ_EP93XX_GPIO7MUX		(IRQ_EP93XX_VIC1 + 18)
+-#define IRQ_EP93XX_TIMER3		(IRQ_EP93XX_VIC1 + 19)
+-#define IRQ_EP93XX_UART1		(IRQ_EP93XX_VIC1 + 20)
+-#define IRQ_EP93XX_SSP			(IRQ_EP93XX_VIC1 + 21)
+-#define IRQ_EP93XX_UART2		(IRQ_EP93XX_VIC1 + 22)
+-#define IRQ_EP93XX_UART3		(IRQ_EP93XX_VIC1 + 23)
+-#define IRQ_EP93XX_USB			(IRQ_EP93XX_VIC1 + 24)
+-#define IRQ_EP93XX_ETHERNET_PME		(IRQ_EP93XX_VIC1 + 25)
+-#define IRQ_EP93XX_DSP			(IRQ_EP93XX_VIC1 + 26)
+-#define IRQ_EP93XX_GPIO_AB		(IRQ_EP93XX_VIC1 + 27)
+-#define IRQ_EP93XX_SAI			(IRQ_EP93XX_VIC1 + 28)
+-#define EP93XX_VIC2_VALID_IRQ_MASK	0x1fffffff
+-
+-#define NR_EP93XX_IRQS			(IRQ_EP93XX_VIC1 + 32 + 24)
+-
+-#define EP93XX_BOARD_IRQ(x)		(NR_EP93XX_IRQS + (x))
+-#define EP93XX_BOARD_IRQS		32
+-
+-#endif
+diff --git a/arch/arm/mach-ep93xx/platform.h b/arch/arm/mach-ep93xx/platform.h
+deleted file mode 100644
+index 5fb1b919133f..000000000000
+--- a/arch/arm/mach-ep93xx/platform.h
++++ /dev/null
+@@ -1,42 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * arch/arm/mach-ep93xx/include/mach/platform.h
+- */
+-
+-#ifndef __ASSEMBLY__
+-
+-#include <linux/platform_data/eth-ep93xx.h>
+-#include <linux/reboot.h>
+-
+-struct device;
+-struct i2c_board_info;
+-struct spi_board_info;
+-struct platform_device;
+-struct ep93xxfb_mach_info;
+-struct ep93xx_keypad_platform_data;
+-struct ep93xx_spi_info;
+-
+-void ep93xx_map_io(void);
+-void ep93xx_init_irq(void);
+-
+-void ep93xx_register_flash(unsigned int width,
+-			   resource_size_t start, resource_size_t size);
+-
+-void ep93xx_register_eth(struct ep93xx_eth_data *data, int copy_addr);
+-void ep93xx_register_i2c(struct i2c_board_info *devices, int num);
+-void ep93xx_register_spi(struct ep93xx_spi_info *info,
+-			 struct spi_board_info *devices, int num);
+-void ep93xx_register_fb(struct ep93xxfb_mach_info *data);
+-void ep93xx_register_pwm(int pwm0, int pwm1);
+-void ep93xx_register_keypad(struct ep93xx_keypad_platform_data *data);
+-void ep93xx_register_i2s(void);
+-void ep93xx_register_ac97(void);
+-void ep93xx_register_ide(void);
+-void ep93xx_register_adc(void);
+-
+-struct device *ep93xx_init_devices(void);
+-extern void ep93xx_timer_init(void);
+-
+-void ep93xx_restart(enum reboot_mode, const char *);
+-
+-#endif
+diff --git a/arch/arm/mach-ep93xx/soc.h b/arch/arm/mach-ep93xx/soc.h
+deleted file mode 100644
+index 3245ebbd5069..000000000000
+--- a/arch/arm/mach-ep93xx/soc.h
++++ /dev/null
+@@ -1,212 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * arch/arm/mach-ep93xx/soc.h
+- *
+- * Copyright (C) 2012 Open Kernel Labs <www.ok-labs.com>
+- * Copyright (C) 2012 Ryan Mallon <rmallon@gmail.com>
+- */
+-
+-#ifndef _EP93XX_SOC_H
+-#define _EP93XX_SOC_H
+-
+-#include "ep93xx-regs.h"
+-#include "irqs.h"
+-
+-/*
+- * EP93xx Physical Memory Map:
+- *
+- * The ASDO pin is sampled at system reset to select a synchronous or
+- * asynchronous boot configuration.  When ASDO is "1" (i.e. pulled-up)
+- * the synchronous boot mode is selected.  When ASDO is "0" (i.e
+- * pulled-down) the asynchronous boot mode is selected.
+- *
+- * In synchronous boot mode nSDCE3 is decoded starting at physical address
+- * 0x00000000 and nCS0 is decoded starting at 0xf0000000.  For asynchronous
+- * boot mode they are swapped with nCS0 decoded at 0x00000000 ann nSDCE3
+- * decoded at 0xf0000000.
+- *
+- * There is known errata for the EP93xx dealing with External Memory
+- * Configurations.  Please refer to "AN273: EP93xx Silicon Rev E Design
+- * Guidelines" for more information.  This document can be found at:
+- *
+- *	http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
+- */
+-
+-#define EP93XX_CS0_PHYS_BASE_ASYNC	0x00000000	/* ASDO Pin = 0 */
+-#define EP93XX_SDCE3_PHYS_BASE_SYNC	0x00000000	/* ASDO Pin = 1 */
+-#define EP93XX_CS1_PHYS_BASE		0x10000000
+-#define EP93XX_CS2_PHYS_BASE		0x20000000
+-#define EP93XX_CS3_PHYS_BASE		0x30000000
+-#define EP93XX_PCMCIA_PHYS_BASE		0x40000000
+-#define EP93XX_CS6_PHYS_BASE		0x60000000
+-#define EP93XX_CS7_PHYS_BASE		0x70000000
+-#define EP93XX_SDCE0_PHYS_BASE		0xc0000000
+-#define EP93XX_SDCE1_PHYS_BASE		0xd0000000
+-#define EP93XX_SDCE2_PHYS_BASE		0xe0000000
+-#define EP93XX_SDCE3_PHYS_BASE_ASYNC	0xf0000000	/* ASDO Pin = 0 */
+-#define EP93XX_CS0_PHYS_BASE_SYNC	0xf0000000	/* ASDO Pin = 1 */
+-
+-/* AHB peripherals */
+-#define EP93XX_DMA_BASE			EP93XX_AHB_IOMEM(0x00000000)
+-
+-#define EP93XX_ETHERNET_PHYS_BASE	EP93XX_AHB_PHYS(0x00010000)
+-#define EP93XX_ETHERNET_BASE		EP93XX_AHB_IOMEM(0x00010000)
+-
+-#define EP93XX_USB_PHYS_BASE		EP93XX_AHB_PHYS(0x00020000)
+-#define EP93XX_USB_BASE			EP93XX_AHB_IOMEM(0x00020000)
+-
+-#define EP93XX_RASTER_PHYS_BASE		EP93XX_AHB_PHYS(0x00030000)
+-#define EP93XX_RASTER_BASE		EP93XX_AHB_IOMEM(0x00030000)
+-
+-#define EP93XX_GRAPHICS_ACCEL_BASE	EP93XX_AHB_IOMEM(0x00040000)
+-
+-#define EP93XX_SDRAM_CONTROLLER_BASE	EP93XX_AHB_IOMEM(0x00060000)
+-
+-#define EP93XX_PCMCIA_CONTROLLER_BASE	EP93XX_AHB_IOMEM(0x00080000)
+-
+-#define EP93XX_BOOT_ROM_BASE		EP93XX_AHB_IOMEM(0x00090000)
+-
+-#define EP93XX_IDE_PHYS_BASE		EP93XX_AHB_PHYS(0x000a0000)
+-#define EP93XX_IDE_BASE			EP93XX_AHB_IOMEM(0x000a0000)
+-
+-#define EP93XX_VIC1_BASE		EP93XX_AHB_IOMEM(0x000b0000)
+-
+-#define EP93XX_VIC2_BASE		EP93XX_AHB_IOMEM(0x000c0000)
+-
+-/* APB peripherals */
+-#define EP93XX_TIMER_BASE		EP93XX_APB_IOMEM(0x00010000)
+-
+-#define EP93XX_I2S_PHYS_BASE		EP93XX_APB_PHYS(0x00020000)
+-#define EP93XX_I2S_BASE			EP93XX_APB_IOMEM(0x00020000)
+-
+-#define EP93XX_SECURITY_BASE		EP93XX_APB_IOMEM(0x00030000)
+-
+-#define EP93XX_AAC_PHYS_BASE		EP93XX_APB_PHYS(0x00080000)
+-#define EP93XX_AAC_BASE			EP93XX_APB_IOMEM(0x00080000)
+-
+-#define EP93XX_SPI_PHYS_BASE		EP93XX_APB_PHYS(0x000a0000)
+-#define EP93XX_SPI_BASE			EP93XX_APB_IOMEM(0x000a0000)
+-
+-#define EP93XX_IRDA_BASE		EP93XX_APB_IOMEM(0x000b0000)
+-
+-#define EP93XX_KEY_MATRIX_PHYS_BASE	EP93XX_APB_PHYS(0x000f0000)
+-#define EP93XX_KEY_MATRIX_BASE		EP93XX_APB_IOMEM(0x000f0000)
+-
+-#define EP93XX_ADC_PHYS_BASE		EP93XX_APB_PHYS(0x00100000)
+-#define EP93XX_ADC_BASE			EP93XX_APB_IOMEM(0x00100000)
+-#define EP93XX_TOUCHSCREEN_BASE		EP93XX_APB_IOMEM(0x00100000)
+-
+-#define EP93XX_PWM_PHYS_BASE		EP93XX_APB_PHYS(0x00110000)
+-#define EP93XX_PWM_BASE			EP93XX_APB_IOMEM(0x00110000)
+-
+-#define EP93XX_RTC_PHYS_BASE		EP93XX_APB_PHYS(0x00120000)
+-#define EP93XX_RTC_BASE			EP93XX_APB_IOMEM(0x00120000)
+-
+-#define EP93XX_WATCHDOG_PHYS_BASE	EP93XX_APB_PHYS(0x00140000)
+-#define EP93XX_WATCHDOG_BASE		EP93XX_APB_IOMEM(0x00140000)
+-
+-/* System controller */
+-#define EP93XX_SYSCON_BASE		EP93XX_APB_IOMEM(0x00130000)
+-#define EP93XX_SYSCON_REG(x)		(EP93XX_SYSCON_BASE + (x))
+-#define EP93XX_SYSCON_POWER_STATE	EP93XX_SYSCON_REG(0x00)
+-#define EP93XX_SYSCON_PWRCNT		EP93XX_SYSCON_REG(0x04)
+-#define EP93XX_SYSCON_PWRCNT_FIR_EN	(1<<31)
+-#define EP93XX_SYSCON_PWRCNT_UARTBAUD	(1<<29)
+-#define EP93XX_SYSCON_PWRCNT_USH_EN	28
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2M1	27
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2M0	26
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P8	25
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P9	24
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P6	23
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P7	22
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P4	21
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P5	20
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P2	19
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P3	18
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P0	17
+-#define EP93XX_SYSCON_PWRCNT_DMA_M2P1	16
+-#define EP93XX_SYSCON_HALT		EP93XX_SYSCON_REG(0x08)
+-#define EP93XX_SYSCON_STANDBY		EP93XX_SYSCON_REG(0x0c)
+-#define EP93XX_SYSCON_CLKSET1		EP93XX_SYSCON_REG(0x20)
+-#define EP93XX_SYSCON_CLKSET1_NBYP1	(1<<23)
+-#define EP93XX_SYSCON_CLKSET2		EP93XX_SYSCON_REG(0x24)
+-#define EP93XX_SYSCON_CLKSET2_NBYP2	(1<<19)
+-#define EP93XX_SYSCON_CLKSET2_PLL2_EN	(1<<18)
+-#define EP93XX_SYSCON_DEVCFG		EP93XX_SYSCON_REG(0x80)
+-#define EP93XX_SYSCON_DEVCFG_SWRST	(1<<31)
+-#define EP93XX_SYSCON_DEVCFG_D1ONG	(1<<30)
+-#define EP93XX_SYSCON_DEVCFG_D0ONG	(1<<29)
+-#define EP93XX_SYSCON_DEVCFG_IONU2	(1<<28)
+-#define EP93XX_SYSCON_DEVCFG_GONK	(1<<27)
+-#define EP93XX_SYSCON_DEVCFG_TONG	(1<<26)
+-#define EP93XX_SYSCON_DEVCFG_MONG	(1<<25)
+-#define EP93XX_SYSCON_DEVCFG_U3EN	24
+-#define EP93XX_SYSCON_DEVCFG_CPENA	(1<<23)
+-#define EP93XX_SYSCON_DEVCFG_A2ONG	(1<<22)
+-#define EP93XX_SYSCON_DEVCFG_A1ONG	(1<<21)
+-#define EP93XX_SYSCON_DEVCFG_U2EN	20
+-#define EP93XX_SYSCON_DEVCFG_EXVC	(1<<19)
+-#define EP93XX_SYSCON_DEVCFG_U1EN	18
+-#define EP93XX_SYSCON_DEVCFG_TIN	(1<<17)
+-#define EP93XX_SYSCON_DEVCFG_HC3IN	(1<<15)
+-#define EP93XX_SYSCON_DEVCFG_HC3EN	(1<<14)
+-#define EP93XX_SYSCON_DEVCFG_HC1IN	(1<<13)
+-#define EP93XX_SYSCON_DEVCFG_HC1EN	(1<<12)
+-#define EP93XX_SYSCON_DEVCFG_HONIDE	(1<<11)
+-#define EP93XX_SYSCON_DEVCFG_GONIDE	(1<<10)
+-#define EP93XX_SYSCON_DEVCFG_PONG	(1<<9)
+-#define EP93XX_SYSCON_DEVCFG_EONIDE	(1<<8)
+-#define EP93XX_SYSCON_DEVCFG_I2SONSSP	(1<<7)
+-#define EP93XX_SYSCON_DEVCFG_I2SONAC97	(1<<6)
+-#define EP93XX_SYSCON_DEVCFG_RASONP3	(1<<4)
+-#define EP93XX_SYSCON_DEVCFG_RAS	(1<<3)
+-#define EP93XX_SYSCON_DEVCFG_ADCPD	(1<<2)
+-#define EP93XX_SYSCON_DEVCFG_KEYS	(1<<1)
+-#define EP93XX_SYSCON_DEVCFG_SHENA	(1<<0)
+-#define EP93XX_SYSCON_VIDCLKDIV		EP93XX_SYSCON_REG(0x84)
+-#define EP93XX_SYSCON_CLKDIV_ENABLE	15
+-#define EP93XX_SYSCON_CLKDIV_ESEL	(1<<14)
+-#define EP93XX_SYSCON_CLKDIV_PSEL	(1<<13)
+-#define EP93XX_SYSCON_CLKDIV_PDIV_SHIFT	8
+-#define EP93XX_SYSCON_I2SCLKDIV		EP93XX_SYSCON_REG(0x8c)
+-#define EP93XX_SYSCON_I2SCLKDIV_SENA	31
+-#define EP93XX_SYSCON_I2SCLKDIV_ORIDE   (1<<29)
+-#define EP93XX_SYSCON_I2SCLKDIV_SPOL	(1<<19)
+-#define EP93XX_I2SCLKDIV_SDIV		(1 << 16)
+-#define EP93XX_I2SCLKDIV_LRDIV32	(0 << 17)
+-#define EP93XX_I2SCLKDIV_LRDIV64	(1 << 17)
+-#define EP93XX_I2SCLKDIV_LRDIV128	(2 << 17)
+-#define EP93XX_I2SCLKDIV_LRDIV_MASK	(3 << 17)
+-#define EP93XX_SYSCON_KEYTCHCLKDIV	EP93XX_SYSCON_REG(0x90)
+-#define EP93XX_SYSCON_KEYTCHCLKDIV_TSEN	31
+-#define EP93XX_SYSCON_KEYTCHCLKDIV_ADIV	16
+-#define EP93XX_SYSCON_KEYTCHCLKDIV_KEN	15
+-#define EP93XX_SYSCON_KEYTCHCLKDIV_KDIV	(1<<0)
+-#define EP93XX_SYSCON_SYSCFG		EP93XX_SYSCON_REG(0x9c)
+-#define EP93XX_SYSCON_SYSCFG_REV_MASK	(0xf0000000)
+-#define EP93XX_SYSCON_SYSCFG_REV_SHIFT	(28)
+-#define EP93XX_SYSCON_SYSCFG_SBOOT	(1<<8)
+-#define EP93XX_SYSCON_SYSCFG_LCSN7	(1<<7)
+-#define EP93XX_SYSCON_SYSCFG_LCSN6	(1<<6)
+-#define EP93XX_SYSCON_SYSCFG_LASDO	(1<<5)
+-#define EP93XX_SYSCON_SYSCFG_LEEDA	(1<<4)
+-#define EP93XX_SYSCON_SYSCFG_LEECLK	(1<<3)
+-#define EP93XX_SYSCON_SYSCFG_LCSN2	(1<<1)
+-#define EP93XX_SYSCON_SYSCFG_LCSN1	(1<<0)
+-#define EP93XX_SYSCON_SWLOCK		EP93XX_SYSCON_REG(0xc0)
+-
+-/* EP93xx System Controller software locked register write */
+-void ep93xx_syscon_swlocked_write(unsigned int val, void __iomem *reg);
+-void ep93xx_devcfg_set_clear(unsigned int set_bits, unsigned int clear_bits);
+-
+-static inline void ep93xx_devcfg_set_bits(unsigned int bits)
+-{
+-	ep93xx_devcfg_set_clear(bits, 0x00);
+-}
+-
+-static inline void ep93xx_devcfg_clear_bits(unsigned int bits)
+-{
+-	ep93xx_devcfg_set_clear(0x00, bits);
+-}
+-
+-#endif /* _EP93XX_SOC_H */
+diff --git a/arch/arm/mach-ep93xx/timer-ep93xx.c b/arch/arm/mach-ep93xx/timer-ep93xx.c
+deleted file mode 100644
+index a9efa7bc2fa1..000000000000
+--- a/arch/arm/mach-ep93xx/timer-ep93xx.c
++++ /dev/null
+@@ -1,143 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/clocksource.h>
+-#include <linux/clockchips.h>
+-#include <linux/sched_clock.h>
+-#include <linux/interrupt.h>
+-#include <linux/irq.h>
+-#include <linux/io.h>
+-#include <asm/mach/time.h>
+-#include "soc.h"
+-#include "platform.h"
+-
+-/*************************************************************************
+- * Timer handling for EP93xx
+- *************************************************************************
+- * The ep93xx has four internal timers.  Timers 1, 2 (both 16 bit) and
+- * 3 (32 bit) count down at 508 kHz, are self-reloading, and can generate
+- * an interrupt on underflow.  Timer 4 (40 bit) counts down at 983.04 kHz,
+- * is free-running, and can't generate interrupts.
+- *
+- * The 508 kHz timers are ideal for use for the timer interrupt, as the
+- * most common values of HZ divide 508 kHz nicely.  We pick the 32 bit
+- * timer (timer 3) to get as long sleep intervals as possible when using
+- * CONFIG_NO_HZ.
+- *
+- * The higher clock rate of timer 4 makes it a better choice than the
+- * other timers for use as clock source and for sched_clock(), providing
+- * a stable 40 bit time base.
+- *************************************************************************
+- */
+-#define EP93XX_TIMER_REG(x)		(EP93XX_TIMER_BASE + (x))
+-#define EP93XX_TIMER1_LOAD		EP93XX_TIMER_REG(0x00)
+-#define EP93XX_TIMER1_VALUE		EP93XX_TIMER_REG(0x04)
+-#define EP93XX_TIMER1_CONTROL		EP93XX_TIMER_REG(0x08)
+-#define EP93XX_TIMER123_CONTROL_ENABLE	(1 << 7)
+-#define EP93XX_TIMER123_CONTROL_MODE	(1 << 6)
+-#define EP93XX_TIMER123_CONTROL_CLKSEL	(1 << 3)
+-#define EP93XX_TIMER1_CLEAR		EP93XX_TIMER_REG(0x0c)
+-#define EP93XX_TIMER2_LOAD		EP93XX_TIMER_REG(0x20)
+-#define EP93XX_TIMER2_VALUE		EP93XX_TIMER_REG(0x24)
+-#define EP93XX_TIMER2_CONTROL		EP93XX_TIMER_REG(0x28)
+-#define EP93XX_TIMER2_CLEAR		EP93XX_TIMER_REG(0x2c)
+-#define EP93XX_TIMER4_VALUE_LOW		EP93XX_TIMER_REG(0x60)
+-#define EP93XX_TIMER4_VALUE_HIGH	EP93XX_TIMER_REG(0x64)
+-#define EP93XX_TIMER4_VALUE_HIGH_ENABLE	(1 << 8)
+-#define EP93XX_TIMER3_LOAD		EP93XX_TIMER_REG(0x80)
+-#define EP93XX_TIMER3_VALUE		EP93XX_TIMER_REG(0x84)
+-#define EP93XX_TIMER3_CONTROL		EP93XX_TIMER_REG(0x88)
+-#define EP93XX_TIMER3_CLEAR		EP93XX_TIMER_REG(0x8c)
+-
+-#define EP93XX_TIMER123_RATE		508469
+-#define EP93XX_TIMER4_RATE		983040
+-
+-static u64 notrace ep93xx_read_sched_clock(void)
+-{
+-	u64 ret;
+-
+-	ret = readl(EP93XX_TIMER4_VALUE_LOW);
+-	ret |= ((u64) (readl(EP93XX_TIMER4_VALUE_HIGH) & 0xff) << 32);
+-	return ret;
+-}
+-
+-static u64 ep93xx_clocksource_read(struct clocksource *c)
+-{
+-	u64 ret;
+-
+-	ret = readl(EP93XX_TIMER4_VALUE_LOW);
+-	ret |= ((u64) (readl(EP93XX_TIMER4_VALUE_HIGH) & 0xff) << 32);
+-	return (u64) ret;
+-}
+-
+-static int ep93xx_clkevt_set_next_event(unsigned long next,
+-					struct clock_event_device *evt)
+-{
+-	/* Default mode: periodic, off, 508 kHz */
+-	u32 tmode = EP93XX_TIMER123_CONTROL_MODE |
+-		    EP93XX_TIMER123_CONTROL_CLKSEL;
+-
+-	/* Clear timer */
+-	writel(tmode, EP93XX_TIMER3_CONTROL);
+-
+-	/* Set next event */
+-	writel(next, EP93XX_TIMER3_LOAD);
+-	writel(tmode | EP93XX_TIMER123_CONTROL_ENABLE,
+-	       EP93XX_TIMER3_CONTROL);
+-        return 0;
+-}
+-
+-
+-static int ep93xx_clkevt_shutdown(struct clock_event_device *evt)
+-{
+-	/* Disable timer */
+-	writel(0, EP93XX_TIMER3_CONTROL);
+-
+-	return 0;
+-}
+-
+-static struct clock_event_device ep93xx_clockevent = {
+-	.name			= "timer1",
+-	.features		= CLOCK_EVT_FEAT_ONESHOT,
+-	.set_state_shutdown	= ep93xx_clkevt_shutdown,
+-	.set_state_oneshot	= ep93xx_clkevt_shutdown,
+-	.tick_resume		= ep93xx_clkevt_shutdown,
+-	.set_next_event		= ep93xx_clkevt_set_next_event,
+-	.rating			= 300,
+-};
+-
+-static irqreturn_t ep93xx_timer_interrupt(int irq, void *dev_id)
+-{
+-	struct clock_event_device *evt = dev_id;
+-
+-	/* Writing any value clears the timer interrupt */
+-	writel(1, EP93XX_TIMER3_CLEAR);
+-
+-	evt->event_handler(evt);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-void __init ep93xx_timer_init(void)
+-{
+-	int irq = IRQ_EP93XX_TIMER3;
+-	unsigned long flags = IRQF_TIMER | IRQF_IRQPOLL;
+-
+-	/* Enable and register clocksource and sched_clock on timer 4 */
+-	writel(EP93XX_TIMER4_VALUE_HIGH_ENABLE,
+-	       EP93XX_TIMER4_VALUE_HIGH);
+-	clocksource_mmio_init(NULL, "timer4",
+-			      EP93XX_TIMER4_RATE, 200, 40,
+-			      ep93xx_clocksource_read);
+-	sched_clock_register(ep93xx_read_sched_clock, 40,
+-			     EP93XX_TIMER4_RATE);
+-
+-	/* Set up clockevent on timer 3 */
+-	if (request_irq(irq, ep93xx_timer_interrupt, flags, "ep93xx timer",
+-			&ep93xx_clockevent))
+-		pr_err("Failed to request irq %d (ep93xx timer)\n", irq);
+-	clockevents_config_and_register(&ep93xx_clockevent,
+-					EP93XX_TIMER123_RATE,
+-					1,
+-					0xffffffffU);
+-}
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+deleted file mode 100644
+index 0bbdf587c685..000000000000
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ /dev/null
+@@ -1,422 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/ts72xx.c
+- * Technologic Systems TS72xx SBC support.
+- *
+- * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- */
+-
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/io.h>
+-#include <linux/mtd/platnand.h>
+-#include <linux/spi/spi.h>
+-#include <linux/spi/flash.h>
+-#include <linux/spi/mmc_spi.h>
+-#include <linux/mmc/host.h>
+-#include <linux/platform_data/spi-ep93xx.h>
+-#include <linux/gpio/machine.h>
+-
+-#include "gpio-ep93xx.h"
+-#include "hardware.h"
+-
+-#include <asm/mach-types.h>
+-#include <asm/mach/map.h>
+-#include <asm/mach/arch.h>
+-
+-#include "soc.h"
+-#include "ts72xx.h"
+-
+-/*************************************************************************
+- * IO map
+- *************************************************************************/
+-static struct map_desc ts72xx_io_desc[] __initdata = {
+-	{
+-		.virtual	= (unsigned long)TS72XX_MODEL_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_MODEL_PHYS_BASE),
+-		.length		= TS72XX_MODEL_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= (unsigned long)TS72XX_OPTIONS_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_OPTIONS_PHYS_BASE),
+-		.length		= TS72XX_OPTIONS_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= (unsigned long)TS72XX_OPTIONS2_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_OPTIONS2_PHYS_BASE),
+-		.length		= TS72XX_OPTIONS2_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= (unsigned long)TS72XX_CPLDVER_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_CPLDVER_PHYS_BASE),
+-		.length		= TS72XX_CPLDVER_SIZE,
+-		.type		= MT_DEVICE,
+-	}
+-};
+-
+-static void __init ts72xx_map_io(void)
+-{
+-	ep93xx_map_io();
+-	iotable_init(ts72xx_io_desc, ARRAY_SIZE(ts72xx_io_desc));
+-}
+-
+-
+-/*************************************************************************
+- * NAND flash
+- *************************************************************************/
+-#define TS72XX_NAND_CONTROL_ADDR_LINE	22	/* 0xN0400000 */
+-#define TS72XX_NAND_BUSY_ADDR_LINE	23	/* 0xN0800000 */
+-
+-static void ts72xx_nand_hwcontrol(struct nand_chip *chip,
+-				  int cmd, unsigned int ctrl)
+-{
+-	if (ctrl & NAND_CTRL_CHANGE) {
+-		void __iomem *addr = chip->legacy.IO_ADDR_R;
+-		unsigned char bits;
+-
+-		addr += (1 << TS72XX_NAND_CONTROL_ADDR_LINE);
+-
+-		bits = __raw_readb(addr) & ~0x07;
+-		bits |= (ctrl & NAND_NCE) << 2;	/* bit 0 -> bit 2 */
+-		bits |= (ctrl & NAND_CLE);	/* bit 1 -> bit 1 */
+-		bits |= (ctrl & NAND_ALE) >> 2;	/* bit 2 -> bit 0 */
+-
+-		__raw_writeb(bits, addr);
+-	}
+-
+-	if (cmd != NAND_CMD_NONE)
+-		__raw_writeb(cmd, chip->legacy.IO_ADDR_W);
+-}
+-
+-static int ts72xx_nand_device_ready(struct nand_chip *chip)
+-{
+-	void __iomem *addr = chip->legacy.IO_ADDR_R;
+-
+-	addr += (1 << TS72XX_NAND_BUSY_ADDR_LINE);
+-
+-	return !!(__raw_readb(addr) & 0x20);
+-}
+-
+-#define TS72XX_BOOTROM_PART_SIZE	(SZ_16K)
+-#define TS72XX_REDBOOT_PART_SIZE	(SZ_2M + SZ_1M)
+-
+-static struct mtd_partition ts72xx_nand_parts[] = {
+-	{
+-		.name		= "TS-BOOTROM",
+-		.offset		= 0,
+-		.size		= TS72XX_BOOTROM_PART_SIZE,
+-		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
+-	}, {
+-		.name		= "Linux",
+-		.offset		= MTDPART_OFS_RETAIN,
+-		.size		= TS72XX_REDBOOT_PART_SIZE,
+-				/* leave so much for last partition */
+-	}, {
+-		.name		= "RedBoot",
+-		.offset		= MTDPART_OFS_APPEND,
+-		.size		= MTDPART_SIZ_FULL,
+-		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
+-	},
+-};
+-
+-static struct platform_nand_data ts72xx_nand_data = {
+-	.chip = {
+-		.nr_chips	= 1,
+-		.chip_offset	= 0,
+-		.chip_delay	= 15,
+-	},
+-	.ctrl = {
+-		.cmd_ctrl	= ts72xx_nand_hwcontrol,
+-		.dev_ready	= ts72xx_nand_device_ready,
+-	},
+-};
+-
+-static struct resource ts72xx_nand_resource[] = {
+-	{
+-		.start		= 0,			/* filled in later */
+-		.end		= 0,			/* filled in later */
+-		.flags		= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct platform_device ts72xx_nand_flash = {
+-	.name			= "gen_nand",
+-	.id			= -1,
+-	.dev.platform_data	= &ts72xx_nand_data,
+-	.resource		= ts72xx_nand_resource,
+-	.num_resources		= ARRAY_SIZE(ts72xx_nand_resource),
+-};
+-
+-static void __init ts72xx_register_flash(struct mtd_partition *parts, int n,
+-				  resource_size_t start)
+-{
+-	/*
+-	 * TS7200 has NOR flash all other TS72xx board have NAND flash.
+-	 */
+-	if (board_is_ts7200()) {
+-		ep93xx_register_flash(2, EP93XX_CS6_PHYS_BASE, SZ_16M);
+-	} else {
+-		ts72xx_nand_resource[0].start = start;
+-		ts72xx_nand_resource[0].end = start + SZ_16M - 1;
+-
+-		ts72xx_nand_data.chip.partitions = parts;
+-		ts72xx_nand_data.chip.nr_partitions = n;
+-
+-		platform_device_register(&ts72xx_nand_flash);
+-	}
+-}
+-
+-/*************************************************************************
+- * RTC M48T86
+- *************************************************************************/
+-#define TS72XX_RTC_INDEX_PHYS_BASE	(EP93XX_CS1_PHYS_BASE + 0x00800000)
+-#define TS72XX_RTC_DATA_PHYS_BASE	(EP93XX_CS1_PHYS_BASE + 0x01700000)
+-
+-static struct resource ts72xx_rtc_resources[] = {
+-	DEFINE_RES_MEM(TS72XX_RTC_INDEX_PHYS_BASE, 0x01),
+-	DEFINE_RES_MEM(TS72XX_RTC_DATA_PHYS_BASE, 0x01),
+-};
+-
+-static struct platform_device ts72xx_rtc_device = {
+-	.name		= "rtc-m48t86",
+-	.id		= -1,
+-	.resource	= ts72xx_rtc_resources,
+-	.num_resources 	= ARRAY_SIZE(ts72xx_rtc_resources),
+-};
+-
+-/*************************************************************************
+- * Watchdog (in CPLD)
+- *************************************************************************/
+-#define TS72XX_WDT_CONTROL_PHYS_BASE	(EP93XX_CS2_PHYS_BASE + 0x03800000)
+-#define TS72XX_WDT_FEED_PHYS_BASE	(EP93XX_CS2_PHYS_BASE + 0x03c00000)
+-
+-static struct resource ts72xx_wdt_resources[] = {
+-	DEFINE_RES_MEM(TS72XX_WDT_CONTROL_PHYS_BASE, 0x01),
+-	DEFINE_RES_MEM(TS72XX_WDT_FEED_PHYS_BASE, 0x01),
+-};
+-
+-static struct platform_device ts72xx_wdt_device = {
+-	.name		= "ts72xx-wdt",
+-	.id		= -1,
+-	.resource	= ts72xx_wdt_resources,
+-	.num_resources	= ARRAY_SIZE(ts72xx_wdt_resources),
+-};
+-
+-/*************************************************************************
+- * ETH
+- *************************************************************************/
+-static struct ep93xx_eth_data __initdata ts72xx_eth_data = {
+-	.phy_id		= 1,
+-};
+-
+-/*************************************************************************
+- * SPI SD/MMC host
+- *************************************************************************/
+-#define BK3_EN_SDCARD_PHYS_BASE         0x12400000
+-#define BK3_EN_SDCARD_PWR 0x0
+-#define BK3_DIS_SDCARD_PWR 0x0C
+-static void bk3_mmc_spi_setpower(struct device *dev, unsigned int vdd)
+-{
+-	void __iomem *pwr_sd = ioremap(BK3_EN_SDCARD_PHYS_BASE, SZ_4K);
+-
+-	if (!pwr_sd) {
+-		pr_err("Failed to enable SD card power!");
+-		return;
+-	}
+-
+-	pr_debug("%s: SD card pwr %s VDD:0x%x\n", __func__,
+-		 !!vdd ? "ON" : "OFF", vdd);
+-
+-	if (!!vdd)
+-		__raw_writeb(BK3_EN_SDCARD_PWR, pwr_sd);
+-	else
+-		__raw_writeb(BK3_DIS_SDCARD_PWR, pwr_sd);
+-
+-	iounmap(pwr_sd);
+-}
+-
+-static struct mmc_spi_platform_data bk3_spi_mmc_data = {
+-	.detect_delay	= 500,
+-	.powerup_msecs	= 100,
+-	.ocr_mask	= MMC_VDD_32_33 | MMC_VDD_33_34,
+-	.caps		= MMC_CAP_NONREMOVABLE,
+-	.setpower       = bk3_mmc_spi_setpower,
+-};
+-
+-/*************************************************************************
+- * SPI Bus - SD card access
+- *************************************************************************/
+-static struct spi_board_info bk3_spi_board_info[] __initdata = {
+-	{
+-		.modalias		= "mmc_spi",
+-		.platform_data		= &bk3_spi_mmc_data,
+-		.max_speed_hz		= 7.4E6,
+-		.bus_num		= 0,
+-		.chip_select		= 0,
+-		.mode			= SPI_MODE_0,
+-	},
+-};
+-
+-/*
+- * This is a stub -> the FGPIO[3] pin is not connected on the schematic
+- * The all work is performed automatically by !SPI_FRAME (SFRM1) and
+- * goes through CPLD
+- */
+-static struct gpiod_lookup_table bk3_spi_cs_gpio_table = {
+-	.dev_id = "spi0",
+-	.table = {
+-		GPIO_LOOKUP("gpio-ep93xx.5", 3, "cs", GPIO_ACTIVE_LOW),
+-		{ },
+-	},
+-};
+-
+-static struct ep93xx_spi_info bk3_spi_master __initdata = {
+-	.use_dma	= 1,
+-};
+-
+-/*************************************************************************
+- * TS72XX support code
+- *************************************************************************/
+-#if IS_ENABLED(CONFIG_FPGA_MGR_TS73XX)
+-
+-/* Relative to EP93XX_CS1_PHYS_BASE */
+-#define TS73XX_FPGA_LOADER_BASE		0x03c00000
+-
+-static struct resource ts73xx_fpga_resources[] = {
+-	{
+-		.start	= EP93XX_CS1_PHYS_BASE + TS73XX_FPGA_LOADER_BASE,
+-		.end	= EP93XX_CS1_PHYS_BASE + TS73XX_FPGA_LOADER_BASE + 1,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct platform_device ts73xx_fpga_device = {
+-	.name	= "ts73xx-fpga-mgr",
+-	.id	= -1,
+-	.resource = ts73xx_fpga_resources,
+-	.num_resources = ARRAY_SIZE(ts73xx_fpga_resources),
+-};
+-
+-#endif
+-
+-/*************************************************************************
+- * SPI Bus
+- *************************************************************************/
+-static struct spi_board_info ts72xx_spi_devices[] __initdata = {
+-	{
+-		.modalias		= "tmp122",
+-		.max_speed_hz		= 2 * 1000 * 1000,
+-		.bus_num		= 0,
+-		.chip_select		= 0,
+-	},
+-};
+-
+-static struct gpiod_lookup_table ts72xx_spi_cs_gpio_table = {
+-	.dev_id = "spi0",
+-	.table = {
+-		/* DIO_17 */
+-		GPIO_LOOKUP("gpio-ep93xx.5", 2, "cs", GPIO_ACTIVE_LOW),
+-		{ },
+-	},
+-};
+-
+-static struct ep93xx_spi_info ts72xx_spi_info __initdata = {
+-	/* Intentionally left blank */
+-};
+-
+-static void __init ts72xx_init_machine(void)
+-{
+-	ep93xx_init_devices();
+-	ts72xx_register_flash(ts72xx_nand_parts, ARRAY_SIZE(ts72xx_nand_parts),
+-			      is_ts9420_installed() ?
+-			      EP93XX_CS7_PHYS_BASE : EP93XX_CS6_PHYS_BASE);
+-	platform_device_register(&ts72xx_rtc_device);
+-	platform_device_register(&ts72xx_wdt_device);
+-
+-	ep93xx_register_eth(&ts72xx_eth_data, 1);
+-#if IS_ENABLED(CONFIG_FPGA_MGR_TS73XX)
+-	if (board_is_ts7300())
+-		platform_device_register(&ts73xx_fpga_device);
+-#endif
+-	gpiod_add_lookup_table(&ts72xx_spi_cs_gpio_table);
+-	ep93xx_register_spi(&ts72xx_spi_info, ts72xx_spi_devices,
+-			    ARRAY_SIZE(ts72xx_spi_devices));
+-}
+-
+-MACHINE_START(TS72XX, "Technologic Systems TS-72xx SBC")
+-	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ts72xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= ts72xx_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+-
+-/*************************************************************************
+- * EP93xx I2S audio peripheral handling
+- *************************************************************************/
+-static struct resource ep93xx_i2s_resource[] = {
+-	DEFINE_RES_MEM(EP93XX_I2S_PHYS_BASE, 0x100),
+-	DEFINE_RES_IRQ_NAMED(IRQ_EP93XX_SAI, "spilink i2s slave"),
+-};
+-
+-static struct platform_device ep93xx_i2s_device = {
+-	.name		= "ep93xx-spilink-i2s",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ep93xx_i2s_resource),
+-	.resource	= ep93xx_i2s_resource,
+-};
+-
+-/*************************************************************************
+- * BK3 support code
+- *************************************************************************/
+-static struct mtd_partition bk3_nand_parts[] = {
+-	{
+-		.name		= "System",
+-		.offset	= 0x00000000,
+-		.size		= 0x01e00000,
+-	}, {
+-		.name		= "Data",
+-		.offset	= 0x01e00000,
+-		.size		= 0x05f20000
+-	}, {
+-		.name		= "RedBoot",
+-		.offset	= 0x07d20000,
+-		.size		= 0x002e0000,
+-		.mask_flags	= MTD_WRITEABLE,	/* force RO */
+-	},
+-};
+-
+-static void __init bk3_init_machine(void)
+-{
+-	ep93xx_init_devices();
+-
+-	ts72xx_register_flash(bk3_nand_parts, ARRAY_SIZE(bk3_nand_parts),
+-			      EP93XX_CS6_PHYS_BASE);
+-
+-	ep93xx_register_eth(&ts72xx_eth_data, 1);
+-
+-	gpiod_add_lookup_table(&bk3_spi_cs_gpio_table);
+-	ep93xx_register_spi(&bk3_spi_master, bk3_spi_board_info,
+-			    ARRAY_SIZE(bk3_spi_board_info));
+-
+-	/* Configure ep93xx's I2S to use AC97 pins */
+-	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
+-	platform_device_register(&ep93xx_i2s_device);
+-}
+-
+-MACHINE_START(BK3, "Liebherr controller BK3.1")
+-	/* Maintainer: Lukasz Majewski <lukma@denx.de> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS,
+-	.map_io		= ts72xx_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= bk3_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+diff --git a/arch/arm/mach-ep93xx/ts72xx.h b/arch/arm/mach-ep93xx/ts72xx.h
+deleted file mode 100644
+index 00b4941d29c9..000000000000
+--- a/arch/arm/mach-ep93xx/ts72xx.h
++++ /dev/null
+@@ -1,94 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * arch/arm/mach-ep93xx/include/mach/ts72xx.h
+- */
+-
+-/*
+- * TS72xx memory map:
+- *
+- * virt		phys		size
+- * febff000	22000000	4K	model number register (bits 0-2)
+- * febfe000	22400000	4K	options register
+- * febfd000	22800000	4K	options register #2
+- * febfc000     23400000        4K      CPLD version register
+- */
+-
+-#ifndef __TS72XX_H_
+-#define __TS72XX_H_
+-
+-#define TS72XX_MODEL_PHYS_BASE		0x22000000
+-#define TS72XX_MODEL_VIRT_BASE		IOMEM(0xfebff000)
+-#define TS72XX_MODEL_SIZE		0x00001000
+-
+-#define TS72XX_MODEL_TS7200		0x00
+-#define TS72XX_MODEL_TS7250		0x01
+-#define TS72XX_MODEL_TS7260		0x02
+-#define TS72XX_MODEL_TS7300		0x03
+-#define TS72XX_MODEL_TS7400		0x04
+-#define TS72XX_MODEL_MASK		0x07
+-
+-
+-#define TS72XX_OPTIONS_PHYS_BASE	0x22400000
+-#define TS72XX_OPTIONS_VIRT_BASE	IOMEM(0xfebfe000)
+-#define TS72XX_OPTIONS_SIZE		0x00001000
+-
+-#define TS72XX_OPTIONS_COM2_RS485	0x02
+-#define TS72XX_OPTIONS_MAX197		0x01
+-
+-
+-#define TS72XX_OPTIONS2_PHYS_BASE	0x22800000
+-#define TS72XX_OPTIONS2_VIRT_BASE	IOMEM(0xfebfd000)
+-#define TS72XX_OPTIONS2_SIZE		0x00001000
+-
+-#define TS72XX_OPTIONS2_TS9420		0x04
+-#define TS72XX_OPTIONS2_TS9420_BOOT	0x02
+-
+-#define TS72XX_CPLDVER_PHYS_BASE	0x23400000
+-#define TS72XX_CPLDVER_VIRT_BASE	IOMEM(0xfebfc000)
+-#define TS72XX_CPLDVER_SIZE		0x00001000
+-
+-#ifndef __ASSEMBLY__
+-
+-static inline int ts72xx_model(void)
+-{
+-	return __raw_readb(TS72XX_MODEL_VIRT_BASE) & TS72XX_MODEL_MASK;
+-}
+-
+-static inline int board_is_ts7200(void)
+-{
+-	return ts72xx_model() == TS72XX_MODEL_TS7200;
+-}
+-
+-static inline int board_is_ts7250(void)
+-{
+-	return ts72xx_model() == TS72XX_MODEL_TS7250;
+-}
+-
+-static inline int board_is_ts7260(void)
+-{
+-	return ts72xx_model() == TS72XX_MODEL_TS7260;
+-}
+-
+-static inline int board_is_ts7300(void)
+-{
+-	return ts72xx_model()  == TS72XX_MODEL_TS7300;
+-}
+-
+-static inline int board_is_ts7400(void)
+-{
+-	return ts72xx_model() == TS72XX_MODEL_TS7400;
+-}
+-
+-static inline int is_max197_installed(void)
+-{
+-	return !!(__raw_readb(TS72XX_OPTIONS_VIRT_BASE) &
+-					TS72XX_OPTIONS_MAX197);
+-}
+-
+-static inline int is_ts9420_installed(void)
+-{
+-	return !!(__raw_readb(TS72XX_OPTIONS2_VIRT_BASE) &
+-					TS72XX_OPTIONS2_TS9420);
+-}
+-#endif
+-#endif /* __TS72XX_H_ */
+diff --git a/arch/arm/mach-ep93xx/vision_ep9307.c b/arch/arm/mach-ep93xx/vision_ep9307.c
+deleted file mode 100644
+index 020223b0be2b..000000000000
+--- a/arch/arm/mach-ep93xx/vision_ep9307.c
++++ /dev/null
+@@ -1,311 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * arch/arm/mach-ep93xx/vision_ep9307.c
+- * Vision Engraving Systems EP9307 SoM support.
+- *
+- * Copyright (C) 2008-2011 Vision Engraving Systems
+- * H Hartley Sweeten <hsweeten@visionengravers.com>
+- */
+-
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/irq.h>
+-#include <linux/gpio.h>
+-#include <linux/gpio/machine.h>
+-#include <linux/fb.h>
+-#include <linux/io.h>
+-#include <linux/mtd/partitions.h>
+-#include <linux/i2c.h>
+-#include <linux/platform_data/pca953x.h>
+-#include <linux/spi/spi.h>
+-#include <linux/spi/flash.h>
+-#include <linux/spi/mmc_spi.h>
+-#include <linux/mmc/host.h>
+-
+-#include <sound/cs4271.h>
+-
+-#include "hardware.h"
+-#include <linux/platform_data/video-ep93xx.h>
+-#include <linux/platform_data/spi-ep93xx.h>
+-#include "gpio-ep93xx.h"
+-
+-#include <asm/mach-types.h>
+-#include <asm/mach/map.h>
+-#include <asm/mach/arch.h>
+-
+-#include "soc.h"
+-
+-/*************************************************************************
+- * Static I/O mappings for the FPGA
+- *************************************************************************/
+-#define VISION_PHYS_BASE	EP93XX_CS7_PHYS_BASE
+-#define VISION_VIRT_BASE	0xfebff000
+-
+-static struct map_desc vision_io_desc[] __initdata = {
+-	{
+-		.virtual	= VISION_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(VISION_PHYS_BASE),
+-		.length		= SZ_4K,
+-		.type		= MT_DEVICE,
+-	},
+-};
+-
+-static void __init vision_map_io(void)
+-{
+-	ep93xx_map_io();
+-
+-	iotable_init(vision_io_desc, ARRAY_SIZE(vision_io_desc));
+-}
+-
+-/*************************************************************************
+- * Ethernet
+- *************************************************************************/
+-static struct ep93xx_eth_data vision_eth_data __initdata = {
+-	.phy_id		= 1,
+-};
+-
+-/*************************************************************************
+- * Framebuffer
+- *************************************************************************/
+-#define VISION_LCD_ENABLE	EP93XX_GPIO_LINE_EGPIO1
+-
+-static int vision_lcd_setup(struct platform_device *pdev)
+-{
+-	int err;
+-
+-	err = gpio_request_one(VISION_LCD_ENABLE, GPIOF_INIT_HIGH,
+-				dev_name(&pdev->dev));
+-	if (err)
+-		return err;
+-
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_RAS |
+-				 EP93XX_SYSCON_DEVCFG_RASONP3 |
+-				 EP93XX_SYSCON_DEVCFG_EXVC);
+-
+-	return 0;
+-}
+-
+-static void vision_lcd_teardown(struct platform_device *pdev)
+-{
+-	gpio_free(VISION_LCD_ENABLE);
+-}
+-
+-static void vision_lcd_blank(int blank_mode, struct fb_info *info)
+-{
+-	if (blank_mode)
+-		gpio_set_value(VISION_LCD_ENABLE, 0);
+-	else
+-		gpio_set_value(VISION_LCD_ENABLE, 1);
+-}
+-
+-static struct ep93xxfb_mach_info ep93xxfb_info __initdata = {
+-	.flags		= EP93XXFB_USE_SDCSN0 | EP93XXFB_PCLK_FALLING,
+-	.setup		= vision_lcd_setup,
+-	.teardown	= vision_lcd_teardown,
+-	.blank		= vision_lcd_blank,
+-};
+-
+-
+-/*************************************************************************
+- * GPIO Expanders
+- *************************************************************************/
+-#define PCA9539_74_GPIO_BASE	(EP93XX_GPIO_LINE_MAX + 1)
+-#define PCA9539_75_GPIO_BASE	(PCA9539_74_GPIO_BASE + 16)
+-#define PCA9539_76_GPIO_BASE	(PCA9539_75_GPIO_BASE + 16)
+-#define PCA9539_77_GPIO_BASE	(PCA9539_76_GPIO_BASE + 16)
+-
+-static struct pca953x_platform_data pca953x_74_gpio_data = {
+-	.gpio_base	= PCA9539_74_GPIO_BASE,
+-	.irq_base	= EP93XX_BOARD_IRQ(0),
+-};
+-
+-static struct pca953x_platform_data pca953x_75_gpio_data = {
+-	.gpio_base	= PCA9539_75_GPIO_BASE,
+-	.irq_base	= -1,
+-};
+-
+-static struct pca953x_platform_data pca953x_76_gpio_data = {
+-	.gpio_base	= PCA9539_76_GPIO_BASE,
+-	.irq_base	= -1,
+-};
+-
+-static struct pca953x_platform_data pca953x_77_gpio_data = {
+-	.gpio_base	= PCA9539_77_GPIO_BASE,
+-	.irq_base	= -1,
+-};
+-
+-/*************************************************************************
+- * I2C Bus
+- *************************************************************************/
+-
+-static struct i2c_board_info vision_i2c_info[] __initdata = {
+-	{
+-		I2C_BOARD_INFO("isl1208", 0x6f),
+-		.irq		= IRQ_EP93XX_EXT1,
+-	}, {
+-		I2C_BOARD_INFO("pca9539", 0x74),
+-		.platform_data	= &pca953x_74_gpio_data,
+-	}, {
+-		I2C_BOARD_INFO("pca9539", 0x75),
+-		.platform_data	= &pca953x_75_gpio_data,
+-	}, {
+-		I2C_BOARD_INFO("pca9539", 0x76),
+-		.platform_data	= &pca953x_76_gpio_data,
+-	}, {
+-		I2C_BOARD_INFO("pca9539", 0x77),
+-		.platform_data	= &pca953x_77_gpio_data,
+-	},
+-};
+-
+-/*************************************************************************
+- * SPI CS4271 Audio Codec
+- *************************************************************************/
+-static struct cs4271_platform_data vision_cs4271_data = {
+-	.gpio_nreset	= EP93XX_GPIO_LINE_H(2),
+-};
+-
+-/*************************************************************************
+- * SPI Flash
+- *************************************************************************/
+-static struct mtd_partition vision_spi_flash_partitions[] = {
+-	{
+-		.name	= "SPI bootstrap",
+-		.offset	= 0,
+-		.size	= SZ_4K,
+-	}, {
+-		.name	= "Bootstrap config",
+-		.offset	= MTDPART_OFS_APPEND,
+-		.size	= SZ_4K,
+-	}, {
+-		.name	= "System config",
+-		.offset	= MTDPART_OFS_APPEND,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+-static struct flash_platform_data vision_spi_flash_data = {
+-	.name		= "SPI Flash",
+-	.parts		= vision_spi_flash_partitions,
+-	.nr_parts	= ARRAY_SIZE(vision_spi_flash_partitions),
+-};
+-
+-/*************************************************************************
+- * SPI SD/MMC host
+- *************************************************************************/
+-static struct mmc_spi_platform_data vision_spi_mmc_data = {
+-	.detect_delay	= 100,
+-	.powerup_msecs	= 100,
+-	.ocr_mask	= MMC_VDD_32_33 | MMC_VDD_33_34,
+-	.caps2		= MMC_CAP2_RO_ACTIVE_HIGH,
+-};
+-
+-static struct gpiod_lookup_table vision_spi_mmc_gpio_table = {
+-	.dev_id = "mmc_spi.2", /* "mmc_spi @ CS2 */
+-	.table = {
+-		/* Card detect */
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.1", 7, NULL, 0, GPIO_ACTIVE_LOW),
+-		/* Write protect */
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.5", 0, NULL, 1, GPIO_ACTIVE_HIGH),
+-		{ },
+-	},
+-};
+-
+-/*************************************************************************
+- * SPI Bus
+- *************************************************************************/
+-static struct spi_board_info vision_spi_board_info[] __initdata = {
+-	{
+-		.modalias		= "cs4271",
+-		.platform_data		= &vision_cs4271_data,
+-		.max_speed_hz		= 6000000,
+-		.bus_num		= 0,
+-		.chip_select		= 0,
+-		.mode			= SPI_MODE_3,
+-	}, {
+-		.modalias		= "sst25l",
+-		.platform_data		= &vision_spi_flash_data,
+-		.max_speed_hz		= 20000000,
+-		.bus_num		= 0,
+-		.chip_select		= 1,
+-		.mode			= SPI_MODE_3,
+-	}, {
+-		.modalias		= "mmc_spi",
+-		.platform_data		= &vision_spi_mmc_data,
+-		.max_speed_hz		= 20000000,
+-		.bus_num		= 0,
+-		.chip_select		= 2,
+-		.mode			= SPI_MODE_3,
+-	},
+-};
+-
+-static struct gpiod_lookup_table vision_spi_cs_gpio_table = {
+-	.dev_id = "spi0",
+-	.table = {
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.0", 6, "cs", 0, GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.0", 7, "cs", 1, GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP_IDX("gpio-ep93xx.6", 2, "cs", 2, GPIO_ACTIVE_LOW),
+-		{ },
+-	},
+-};
+-
+-static struct ep93xx_spi_info vision_spi_master __initdata = {
+-	.use_dma	= 1,
+-};
+-
+-/*************************************************************************
+- * I2S Audio
+- *************************************************************************/
+-static struct platform_device vision_audio_device = {
+-	.name		= "edb93xx-audio",
+-	.id		= -1,
+-};
+-
+-static void __init vision_register_i2s(void)
+-{
+-	ep93xx_register_i2s();
+-	platform_device_register(&vision_audio_device);
+-}
+-
+-/*************************************************************************
+- * Machine Initialization
+- *************************************************************************/
+-static void __init vision_init_machine(void)
+-{
+-	ep93xx_init_devices();
+-	ep93xx_register_flash(2, EP93XX_CS6_PHYS_BASE, SZ_64M);
+-	ep93xx_register_eth(&vision_eth_data, 1);
+-	ep93xx_register_fb(&ep93xxfb_info);
+-	ep93xx_register_pwm(1, 0);
+-
+-	/*
+-	 * Request the gpio expander's interrupt gpio line now to prevent
+-	 * the kernel from doing a WARN in gpiolib:gpio_ensure_requested().
+-	 */
+-	if (gpio_request_one(EP93XX_GPIO_LINE_F(7), GPIOF_DIR_IN,
+-				"pca9539:74"))
+-		pr_warn("cannot request interrupt gpio for pca9539:74\n");
+-
+-	vision_i2c_info[1].irq = gpio_to_irq(EP93XX_GPIO_LINE_F(7));
+-
+-	ep93xx_register_i2c(vision_i2c_info,
+-				ARRAY_SIZE(vision_i2c_info));
+-	gpiod_add_lookup_table(&vision_spi_mmc_gpio_table);
+-	gpiod_add_lookup_table(&vision_spi_cs_gpio_table);
+-	ep93xx_register_spi(&vision_spi_master, vision_spi_board_info,
+-				ARRAY_SIZE(vision_spi_board_info));
+-	vision_register_i2s();
+-}
+-
+-MACHINE_START(VISION_EP9307, "Vision Engraving Systems EP9307")
+-	/* Maintainer: H Hartley Sweeten <hsweeten@visionengravers.com> */
+-	.atag_offset	= 0x100,
+-	.nr_irqs	= NR_EP93XX_IRQS + EP93XX_BOARD_IRQS,
+-	.map_io		= vision_map_io,
+-	.init_irq	= ep93xx_init_irq,
+-	.init_time	= ep93xx_timer_init,
+-	.init_machine	= vision_init_machine,
+-	.restart	= ep93xx_restart,
+-MACHINE_END
+diff --git a/include/linux/platform_data/spi-ep93xx.h b/include/linux/platform_data/spi-ep93xx.h
+deleted file mode 100644
+index b439f2a896e0..000000000000
+--- a/include/linux/platform_data/spi-ep93xx.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_MACH_EP93XX_SPI_H
+-#define __ASM_MACH_EP93XX_SPI_H
+-
+-struct spi_device;
+-
+-/**
+- * struct ep93xx_spi_info - EP93xx specific SPI descriptor
+- * @use_dma: use DMA for the transfers
+- */
+-struct ep93xx_spi_info {
+-	bool	use_dma;
+-};
+-
+-#endif /* __ASM_MACH_EP93XX_SPI_H */
 
 -- 
 2.41.0
