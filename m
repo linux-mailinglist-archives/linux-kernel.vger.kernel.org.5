@@ -2,220 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174367F4874
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4944E7F4884
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344294AbjKVOEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S1344299AbjKVOGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344270AbjKVOEV (ORCPT
+        with ESMTP id S1344271AbjKVOGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:04:21 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD5D101;
-        Wed, 22 Nov 2023 06:04:16 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9765F29A;
-        Wed, 22 Nov 2023 15:03:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700661822;
-        bh=oJXJ8kLmzf92pS4ZT/ct+jHaRrGF9rbK5iV0CqAtqBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tadb5qV4kEZTnM4MYYHDbeSyn7u1UREaBTaGDy7fuOhh0D0KSucw41yPbJLQ1vCxP
-         XUY3g5+bRDmXvoTX76JgMa36Px9LNN2tumDqBVJlmwRXkB0Q66GcAc+D8wAQDINFvY
-         UjnL+w129t4d4RgUm1QxgVm34WksUMwlZ8cCdxjU=
-Date:   Wed, 22 Nov 2023 16:04:19 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Paul <seanpaul@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v3 3/3] media: uvcvideo: Lock video streams and queues
- while unregistering
-Message-ID: <20231122140419.GF3909@pendragon.ideasonboard.com>
-References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
- <20231121-guenter-mini-v3-3-d8a5eae2312b@chromium.org>
- <ZV3WEDZ0EfdYrImE@valkosipuli.retiisi.eu>
- <20231122131455.GC3909@pendragon.ideasonboard.com>
- <CANiDSCs9wQyrDt8i7Rk8yFVdBEzdE_AcJWKU4m9iX5EHn8ATqQ@mail.gmail.com>
+        Wed, 22 Nov 2023 09:06:20 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E151101
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:06:16 -0800 (PST)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMDHGf8025176;
+        Wed, 22 Nov 2023 14:04:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=dA7NrA5d6C8cs4386hd0trKQbmFGmI3SeE+zd99ea/I=;
+ b=K9ZKUUO09qNAPWcuVsKyEBVp/fNXpdXkimm5gcu1Ai14fJf6F7NMk+Q//sZhReLZhbOZ
+ PKVRsXMWuQcAKiZTRKyjbtZpSBoF9/UitPlii/QyjEXV5QFejRqoUWVc4CzQapNBWr87
+ ZRq9XhA4K1hzSw85x5V5kvwwEdcqVjGgrdY7d/pj5MlKsVPJwPNeYS/i8IgQ57piU+jQ
+ fMR4WDksYdkLUN103mfGItDYsMAUZVWBfgMwDRfMxC5m9x8RLBriediFdO46+4TT53JQ
+ uyLde522BvqhGMY7Aigts6JkL/YN3SU2/zfJ8Q8bk8gDhkQQ+ZpePMuPtDYqlRCmfr3H IQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uhjd0hc3h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 14:04:57 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AMDolDB024045;
+        Wed, 22 Nov 2023 14:04:57 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uhjd0hc30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 14:04:56 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMDUD1o001768;
+        Wed, 22 Nov 2023 14:04:55 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf93m031d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 14:04:55 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AME4pgL44827032
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Nov 2023 14:04:51 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5FD3E20043;
+        Wed, 22 Nov 2023 14:04:51 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A52B20040;
+        Wed, 22 Nov 2023 14:04:50 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 22 Nov 2023 14:04:50 +0000 (GMT)
+Date:   Wed, 22 Nov 2023 15:04:49 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, peterz@infradead.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        akpm@linux-foundation.org, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com,
+        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
+        paulmck@kernel.org, luto@kernel.org, songliubraving@fb.com,
+        peterx@redhat.com, david@redhat.com, dhowells@redhat.com,
+        hughd@google.com, bigeasy@linutronix.de, kent.overstreet@linux.dev,
+        punit.agrawal@bytedance.com, lstoakes@gmail.com,
+        peterjung1337@gmail.com, rientjes@google.com,
+        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
+        shakeelb@google.com, tatashin@google.com, edumazet@google.com,
+        gthelen@google.com, gurua@google.com, arjunroy@google.com,
+        soheil@google.com, hughlynch@google.com, leewalsh@google.com,
+        posk@google.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 12/41] mm: add per-VMA lock and helper functions to
+ control it
+Message-ID: <ZV4KgferuePsR2Iz@tuxmaker.boeblingen.de.ibm.com>
+References: <20230109205336.3665937-1-surenb@google.com>
+ <20230109205336.3665937-13-surenb@google.com>
+ <CAG48ez0RhQ6=W01brLUXDXqQxz2M1FEMNqd2OvL+LhcJQY=NqA@mail.gmail.com>
+ <CAJuCfpHawn-hj3yK6MEMHsvnH9xgO87h7Sj3_g0FA7rgut_mVg@mail.gmail.com>
+ <CAG48ez3sCwasFzKD5CsqMFA2W57-2fazd75g7r0NaA_BVNTLow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiDSCs9wQyrDt8i7Rk8yFVdBEzdE_AcJWKU4m9iX5EHn8ATqQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAG48ez3sCwasFzKD5CsqMFA2W57-2fazd75g7r0NaA_BVNTLow@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5MhcCP9ifUrUeiSZNpIhaNnBNovbexne
+X-Proofpoint-ORIG-GUID: zLZ94B08QXl1Fcylsg1aKWlm3qbMRA7p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_09,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311220100
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+On Tue, Jan 17, 2023 at 10:45:25PM +0100, Jann Horn wrote:
 
-On Wed, Nov 22, 2023 at 02:59:31PM +0100, Ricardo Ribalda wrote:
-> On Wed, 22 Nov 2023 at 14:14, Laurent Pinchart wrote:
-> > On Wed, Nov 22, 2023 at 10:21:04AM +0000, Sakari Ailus wrote:
-> > > On Tue, Nov 21, 2023 at 07:53:50PM +0000, Ricardo Ribalda wrote:
-> > > > From: Guenter Roeck <linux@roeck-us.net>
-> > > >
-> > > > The call to uvc_disconnect() is not protected by any mutex.
-> > > > This means it can and will be called while other accesses to the video
-> > > > device are in progress. This can cause all kinds of race conditions,
-> > > > including crashes such as the following.
-> > > >
-> > > > usb 1-4: USB disconnect, device number 3
-> > > > BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-> > > > PGD 0 P4D 0
-> > > > Oops: 0000 [#1] PREEMPT SMP PTI
-> > > > CPU: 0 PID: 5633 Comm: V4L2CaptureThre Not tainted 4.19.113-08536-g5d29ca36db06 #1
-> > > > Hardware name: GOOGLE Edgar, BIOS Google_Edgar.7287.167.156 03/25/2019
-> > > > RIP: 0010:usb_ifnum_to_if+0x29/0x40
-> > > > Code: <...>
-> > > > RSP: 0018:ffffa46f42a47a80 EFLAGS: 00010246
-> > > > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff904a396c9000
-> > > > RDX: ffff904a39641320 RSI: 0000000000000001 RDI: 0000000000000000
-> > > > RBP: ffffa46f42a47a80 R08: 0000000000000002 R09: 0000000000000000
-> > > > R10: 0000000000009975 R11: 0000000000000009 R12: 0000000000000000
-> > > > R13: ffff904a396b3800 R14: ffff904a39e88000 R15: 0000000000000000
-> > > > FS: 00007f396448e700(0000) GS:ffff904a3ba00000(0000) knlGS:0000000000000000
-> > > > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > CR2: 0000000000000000 CR3: 000000016cb46000 CR4: 00000000001006f0
-> > > > Call Trace:
-> > > >  usb_hcd_alloc_bandwidth+0x1ee/0x30f
-> > > >  usb_set_interface+0x1a3/0x2b7
-> > > >  uvc_video_start_transfer+0x29b/0x4b8 [uvcvideo]
-> > > >  uvc_video_start_streaming+0x91/0xdd [uvcvideo]
-> > > >  uvc_start_streaming+0x28/0x5d [uvcvideo]
-> > > >  vb2_start_streaming+0x61/0x143 [videobuf2_common]
-> > > >  vb2_core_streamon+0xf7/0x10f [videobuf2_common]
-> > > >  uvc_queue_streamon+0x2e/0x41 [uvcvideo]
-> > > >  uvc_ioctl_streamon+0x42/0x5c [uvcvideo]
-> > > >  __video_do_ioctl+0x33d/0x42a
-> > > >  video_usercopy+0x34e/0x5ff
-> > > >  ? video_ioctl2+0x16/0x16
-> > > >  v4l2_ioctl+0x46/0x53
-> > > >  do_vfs_ioctl+0x50a/0x76f
-> > > >  ksys_ioctl+0x58/0x83
-> > > >  __x64_sys_ioctl+0x1a/0x1e
-> > > >  do_syscall_64+0x54/0xde
-> > > >
-> > > > usb_set_interface() should not be called after the USB device has been
-> > > > unregistered. However, in the above case the disconnect happened after
-> > > > v4l2_ioctl() was called, but before the call to usb_ifnum_to_if().
-> > > >
-> > > > Acquire various mutexes in uvc_unregister_video() to fix the majority
-> > > > (maybe all) of the observed race conditions.
-> > > >
-> > > > The uvc_device lock prevents races against suspend and resume calls
-> > > > and the poll function.
-> > > >
-> > > > The uvc_streaming lock prevents races against stream related functions;
-> > > > for the most part, those are ioctls. This lock also requires other
-> > > > functions using this lock to check if a video device is still registered
-> > > > after acquiring it. For example, it was observed that the video device
-> > > > was already unregistered by the time the stream lock was acquired in
-> > > > uvc_ioctl_streamon().
-> > > >
-> > > > The uvc_queue lock prevents races against queue functions, Most of
-> > > > those are already protected by the uvc_streaming lock, but some
-> > > > are called directly. This is done as added protection; an actual race
-> > > > was not (yet) observed.
-> > > >
-> > > > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > > > Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> > > > Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-> > > > Reviewed-by: Sean Paul <seanpaul@chromium.org>
-> > > > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > ---
-> > > >  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
-> > > >  1 file changed, 9 insertions(+)
-> > > >
-> > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > > index 413c32867617..3408b865d346 100644
-> > > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > > @@ -1907,14 +1907,22 @@ static void uvc_unregister_video(struct uvc_device *dev)
-> > > >  {
-> > > >     struct uvc_streaming *stream;
-> > > >
-> > > > +   mutex_lock(&dev->lock);
-> > > > +
-> > > >     list_for_each_entry(stream, &dev->streams, list) {
-> > > >             if (!video_is_registered(&stream->vdev))
-> > > >                     continue;
-> > > >
-> > > > +           mutex_lock(&stream->mutex);
-> > > > +           mutex_lock(&stream->queue.mutex);
-> > > > +
-> > > >             video_unregister_device(&stream->vdev);
-> > > >             video_unregister_device(&stream->meta.vdev);
-> > > >
-> > > >             uvc_debugfs_cleanup_stream(stream);
-> > > > +
-> > > > +           mutex_unlock(&stream->queue.mutex);
-> > > > +           mutex_unlock(&stream->mutex);
-> > > >     }
-> > > >
-> > > >     uvc_status_unregister(dev);
-> > > > @@ -1925,6 +1933,7 @@ static void uvc_unregister_video(struct uvc_device *dev)
-> > > >     if (media_devnode_is_registered(dev->mdev.devnode))
-> > > >             media_device_unregister(&dev->mdev);
-> > > >  #endif
-> > > > +   mutex_unlock(&dev->lock);
-> > > >  }
-> > > >
-> > > >  int uvc_register_video_device(struct uvc_device *dev,
-> > > >
+Hi Jann,
+
+> On Tue, Jan 17, 2023 at 10:28 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > On Tue, Jan 17, 2023 at 10:03 AM Jann Horn <jannh@google.com> wrote:
 > > >
-> > > Instead of acquiring all the possible locks, could you instead take the
-> > > same approach as you do with ISP? It should use refcount_t btw.
-> > > <URL:https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/kcam-6.1/drivers/isp/isp-device.c:
+> > > +locking maintainers
 > >
-> > The right approach, as I've said countless of times, is to fix this at
-> > the cdev and V4L2 level. Dan Williams has done some ground work on this
-> > a while ago ([1]), and before that I posted an RFC series that
-> > overlapped with Dan's work (with a more naive and less efficient
-> > implementation of refcounting, see [2]).
+> > Thanks! I'll CC the locking maintainers in the next posting.
 > >
-> > [1] https://lore.kernel.org/all/161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com/
-> > [2] https://lore.kernel.org/linux-media/20171116003349.19235-2-laurent.pinchart+renesas@ideasonboard.com/
+> > >
+> > > On Mon, Jan 9, 2023 at 9:54 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > Introduce a per-VMA rw_semaphore to be used during page fault handling
+> > > > instead of mmap_lock. Because there are cases when multiple VMAs need
+> > > > to be exclusively locked during VMA tree modifications, instead of the
+> > > > usual lock/unlock patter we mark a VMA as locked by taking per-VMA lock
+> > > > exclusively and setting vma->lock_seq to the current mm->lock_seq. When
+> > > > mmap_write_lock holder is done with all modifications and drops mmap_lock,
+> > > > it will increment mm->lock_seq, effectively unlocking all VMAs marked as
+> > > > locked.
+> > > [...]
+> > > > +static inline void vma_read_unlock(struct vm_area_struct *vma)
+> > > > +{
+> > > > +       up_read(&vma->lock);
+> > > > +}
+> > >
+> > > One thing that might be gnarly here is that I think you might not be
+> > > allowed to use up_read() to fully release ownership of an object -
+> > > from what I remember, I think that up_read() (unlike something like
+> > > spin_unlock()) can access the lock object after it's already been
+> > > acquired by someone else. So if you want to protect against concurrent
+> > > deletion, this might have to be something like:
+> > >
+> > > rcu_read_lock(); /* keeps vma alive */
+> > > up_read(&vma->lock);
+> > > rcu_read_unlock();
+> >
+> > But for deleting VMA one would need to write-lock the vma->lock first,
+> > which I assume can't happen until this up_read() is complete. Is that
+> > assumption wrong?
 > 
-> The UVC driver is violating the USB driver API [1] causing crashes and
-> probably security vulnerabilities. It has to be fixed.
+> __up_read() does:
 > 
-> If there was a different way TODAY to do this, I would very happily
-> implement it differently. But your patchset is 6 years old and Dan's 2
-> and they have not landed. How many kernel versions is ok to put our
-> users willingly at risk?
+> rwsem_clear_reader_owned(sem);
+> tmp = atomic_long_add_return_release(-RWSEM_READER_BIAS, &sem->count);
+> DEBUG_RWSEMS_WARN_ON(tmp < 0, sem);
+> if (unlikely((tmp & (RWSEM_LOCK_MASK|RWSEM_FLAG_WAITERS)) ==
+>       RWSEM_FLAG_WAITERS)) {
+>   clear_nonspinnable(sem);
+>   rwsem_wake(sem);
+> }
+
+This sequence is covered by preempt_disable()/preempt_enable().
+Would not it preserve the RCU grace period until after __up_read()
+exited?
+
+> The atomic_long_add_return_release() is the point where we are doing
+> the main lock-releasing.
 > 
-> This patch simply serialises unregister_video? How can this patch
-> affect the viability of your patchset or Dan's patch? If this patch is
-> not needed in the future we can simply revert it.
+> So if a reader dropped the read-lock while someone else was waiting on
+> the lock (RWSEM_FLAG_WAITERS) and no other readers were holding the
+> lock together with it, the reader also does clear_nonspinnable() and
+> rwsem_wake() afterwards.
+> But in rwsem_down_write_slowpath(), after we've set
+> RWSEM_FLAG_WAITERS, we can return successfully immediately once
+> rwsem_try_write_lock() sees that there are no active readers or
+> writers anymore (if RWSEM_LOCK_MASK is unset and the cmpxchg
+> succeeds). We're not necessarily waiting for the "nonspinnable" bit or
+> the wake.
 > 
-> When/If there is a better way to implement this, I would very happily
-> send a follow-up patch to use that framework.
+> So yeah, I think down_write() can return successfully before up_read()
+> is done with its memory accesses.
 
-What I'm asking is that you, or someone else at your time, take over
-these patches from Dan and myself and help with the huge backlog we have
-in V4L2. You can't expect maintainers to fix everything in their spare
-time. Helping there is a good way to lower the pressure on maintainers
-and get patches reviewed more quickly.
-
-> [1] https://www.kernel.org/doc/html/latest/driver-api/usb/callbacks.html#the-disconnect-callback
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks!
