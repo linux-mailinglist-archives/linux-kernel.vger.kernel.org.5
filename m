@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B557F4337
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E9A7F4339
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343773AbjKVKG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        id S1343801AbjKVKHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235183AbjKVKG5 (ORCPT
+        with ESMTP id S1343742AbjKVKHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:06:57 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB8883
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:53 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00cbb83c82so338562666b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:53 -0800 (PST)
+        Wed, 22 Nov 2023 05:07:09 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B7100;
+        Wed, 22 Nov 2023 02:07:04 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd19eac8so8632762e87.0;
+        Wed, 22 Nov 2023 02:07:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700647611; x=1701252411; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RDybF7H85ktgdLWOM5SITKQqmOi7Rp9o86frBs4BerY=;
-        b=gWrQfrrYUstCsjizrUHYQo+35f57b7bGDATnWyXmOyl+IHEpcVPWJ2id2qDoC9YQFv
-         Kbcd5aBvbatJ2DiB797lJjEgBucjSMuZd/F9cOTvxf1tekoJl6JL+2hWsYszC0cPSRpH
-         CgvXooBdb/PAiszSWxmNr+mJgDiVqZ64lKKQ9191dqfWwCO4xwX3OrAyg9GKAlW0vmw1
-         w3JJIE6m7uISHbKF8BAXmqhIzg/TUPkFAW2oDCU99EE1rXeHaixfYTpbtYsOf5ugV9uL
-         GZyjfCWsgl0cLm33WKWn4vjCl+LqXSw3NrDtxUiQ2cqluQA6fUZTWygjNYMGv1aCMVE3
-         QRkA==
+        d=gmail.com; s=20230601; t=1700647623; x=1701252423; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R0+XfKuM9Y0ZNl5hDp6sO3vLEtpG295qVGbb4kQD/kE=;
+        b=TZJHztzKokU2AJsd1GrGAHt82/OlV6Ehu7bDj0cFGR7iQt8TTUE/4cvv4XXqVI/MG9
+         O5KPdXOwblQihcgWOIR/XpY7BsWH1czzzN7jGBpNdqV1pAfD8eTgxb/RhiShZb3OOBci
+         9w6AcqQLRGopigKCDfd310r6xuq4ljBfgF+Ma20JhxqaLR4CmGQvyqakT9je0I27o7Ar
+         H7rXSVQT3vgbwrX8ycV0TQcK3jO4iuW5Asu+m6cGVJpZDwix+eLw3nexbs4PaAuyOrbH
+         uu9C0DqT8IS8XBdsSjOe5v/rkzKml671gOBVrA38DqEM+aphDICWALO/CAmMyhFHYSr+
+         i/Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700647611; x=1701252411;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RDybF7H85ktgdLWOM5SITKQqmOi7Rp9o86frBs4BerY=;
-        b=sJ6vnd23eLEqkCYoRqLTaiNDXrctBC42w5cN4eS0cPc1w5jsCY/wX+i6hocUhWBWgB
-         Z0YRSucD3SsewYLW7683o1es98I4u9Pfxs3LuErIlx95LU83WvLOjFGlPjyJbCoqIUBO
-         CsQ64AgNiEjx/DmQcSwTBv3kNuIE5qBK87gyZAQ9G36hZ7X/0jVSveTVLpS1cXPrsReR
-         KOxKGp8yuccddui8ZwVOJzEkkR+IxqztRmGkCsCvgSuijsd3+GlSxCXu3b6qKHhyq1oP
-         xi7EzAepPAb/j/OqokNdEm6TcvFM3Pnf5MHGSms/+0mbMdMPMiekvGzausmeB1mISR8K
-         9Q0Q==
-X-Gm-Message-State: AOJu0YwDGBV7u3eyrcXI7mauJJ/i4ErOqb/ZLckQbRddOmAk84gpPVJB
-        YedTDxs0If8KQsRxToKi+cGEuQ==
-X-Google-Smtp-Source: AGHT+IHMv1B21HvOTwEFuZG9k7XAkrg963vXhlx6EiG6C4hJ9QYcZlmYRx+osiWw5zqMy2htGLdygw==
-X-Received: by 2002:a17:906:5349:b0:a04:838d:f352 with SMTP id j9-20020a170906534900b00a04838df352mr987304ejo.23.1700647611672;
-        Wed, 22 Nov 2023 02:06:51 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ka13-20020a170907990d00b009a9fbeb15f2sm6400135ejc.62.2023.11.22.02.06.50
+        d=1e100.net; s=20230601; t=1700647623; x=1701252423;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0+XfKuM9Y0ZNl5hDp6sO3vLEtpG295qVGbb4kQD/kE=;
+        b=FUjK7fL8+W7CuvdoP/EaPg2L8ZgUwGyT4w78ZUuOwQzNISrVfbtBLRykVPWa0ySfTh
+         5NO8qscP1YoVbaqRA4hSSnjPCmjK5HRE3P+t41g5106c40r8DqHNuqJ80CO9tiGEhL4Y
+         P3Sy6iIAJtgfe10KwIDaSUu45yEw2X1CHkS8Aqw49b5ZccVttMsqdUIN/EiYr3rPR1Vs
+         BCVADijH9hhqHPt+cDTJWr81B5+dlUW+GdUL6bx8ZHI+ID7qeI7zCWpbV+4VrsABdnAi
+         znMaKfTYRNnQswO0bnbgTtAsYlughbe27R7ULlyPx6eUU0w/WkX9lWpgj+yTIbApLf/E
+         Wegg==
+X-Gm-Message-State: AOJu0YxCnibB57vx8bBZEsui6WbwbI5wHP6hsJJHkWjQTlMbdV/scZDF
+        Dq+woBy6VrVh5nMMzM0N1uU=
+X-Google-Smtp-Source: AGHT+IFkDwjlMfSKlUr9YgNxElddYa6sPr9m+mc6ZuFXAoZcBTuttiiSXwheDeifmxdNw6IBTp1+8Q==
+X-Received: by 2002:ac2:5ec2:0:b0:503:2623:7cfa with SMTP id d2-20020ac25ec2000000b0050326237cfamr1009610lfq.35.1700647622328;
+        Wed, 22 Nov 2023 02:07:02 -0800 (PST)
+Received: from [10.95.134.92] (54-240-197-234.amazon.com. [54.240.197.234])
+        by smtp.gmail.com with ESMTPSA id p9-20020a5d6389000000b00332cc3e0817sm5510256wru.39.2023.11.22.02.07.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 02:06:51 -0800 (PST)
-Message-ID: <71adf98a-1aaa-430f-96fc-be170ceacf78@linaro.org>
-Date:   Wed, 22 Nov 2023 11:06:50 +0100
+        Wed, 22 Nov 2023 02:07:02 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <5e0e13ea-3eee-41bd-a070-e7bd9ed5d2e9@xen.org>
+Date:   Wed, 22 Nov 2023 10:07:00 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: soc: Add new board description for
- MicroBlaze V
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v8 08/15] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
 Content-Language: en-US
-To:     Michal Simek <michal.simek@amd.com>, conor@kernel.org,
-        linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com, robh@kernel.org
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <ef58475a717c62bc86aeea5148d5b88cdc0cc106.1700644418.git.michal.simek@amd.com>
- <e7af81b1ef3f6b7a07f4f0691f5140156477e87e.1700644418.git.michal.simek@amd.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e7af81b1ef3f6b7a07f4f0691f5140156477e87e.1700644418.git.michal.simek@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231121180223.12484-1-paul@xen.org>
+ <20231121180223.12484-9-paul@xen.org>
+ <ec89ab12288426761ab5bd7d05562a4e8834e5f1.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <ec89ab12288426761ab5bd7d05562a4e8834e5f1.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 10:13, Michal Simek wrote:
-> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
-> It is hardware compatible with classic MicroBlaze processor. Processor can
-> be used with standard AMD/Xilinx IPs including interrupt controller and
-> timer.
+On 21/11/2023 22:47, David Woodhouse wrote:
+> On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
+>>
+>> -static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
+>> +static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, u64 addr, bool addr_is_gpa,
+>>                               unsigned long len)
+>>   {
+>>          struct kvm_memslots *slots = kvm_memslots(gpc->kvm);
+>> -       unsigned long page_offset = offset_in_page(gpa);
+>> +       unsigned long page_offset = offset_in_page(addr);
+>>          bool unmap_old = false;
+>>          kvm_pfn_t old_pfn;
+>>          bool hva_change = false;
+>> @@ -244,12 +244,21 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
+>>          old_pfn = gpc->pfn;
+>>          old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
+>>   
+>> -       /* If the userspace HVA is invalid, refresh that first */
+>> -       if (gpc->gpa != gpa || gpc->generation != slots->generation ||
+>> -           kvm_is_error_hva(gpc->uhva)) {
+>> -               gfn_t gfn = gpa_to_gfn(gpa);
+>> +       if (!addr_is_gpa) {
+>> +               gpc->gpa = KVM_XEN_INVALID_GPA;
+>> +               gpc->uhva = PAGE_ALIGN_DOWN(gpc->uhva);
+>> +               addr = PAGE_ALIGN_DOWN(addr);
+>> +
+>> +               if (gpc->uhva != addr) {
+>> +                       gpc->uhva = addr;
+>> +                       hva_change = true;
+>> +               }
+>> +       } else if (gpc->gpa != addr ||
+>> +                  gpc->generation != slots->generation ||
+>> +                  kvm_is_error_hva(gpc->uhva)) {
+>> +               gfn_t gfn = gpa_to_gfn(addr);
+>>   
+>> -               gpc->gpa = gpa;
+>> +               gpc->gpa = addr;
+>>                  gpc->generation = slots->generation;
+>>                  gpc->memslot = __gfn_to_memslot(slots, gfn);
+>>                  gpc->uhva = gfn_to_hva_memslot(gpc->memslot, gfn);
 > 
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
+> Hrm, now that a previous patch means we're preserving the low bits of
+> gpc->uhva surely you don't *need* to mess with the gpc struct?
 > 
-> Changes in v2:
-> - Put MicroBlaze V description to xilinx.yaml
-> - Add qemu target platform as platform used for testing.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I'm not messing with it, am I?
 
-Best regards,
-Krzysztof
+> If gpc->gpa == KVM_XEN_INVALID_GPA (but gpc->uhva != KVM_ERR_ERR_BAD &&
+> gpc->active) surely that's enough to signal that gpc->uhva is canonical
+> and doesn't need to be looked up from the GPA?
+> 
+> And I think that means the 'bool addr_is_gpa' argument can go away from
+> __kvm_gpc_refresh(); you can set it up in {__,}kvm_gpc_activate*()
+> instead?
+
+Alas not... __kvm_gpc_refresh() still needs to know *something* has 
+changed, otherwise the khva will be stale.
+
+   Paul
+
 
