@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0357F3DEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2AD7F3DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjKVGIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:08:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        id S234704AbjKVGJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVGIg (ORCPT
+        with ESMTP id S229498AbjKVGJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:08:36 -0500
-Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BE4B9;
-        Tue, 21 Nov 2023 22:08:30 -0800 (PST)
-Received: from sunspire (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id 1D97028EE6F;
-        Wed, 22 Nov 2023 06:08:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1700633309;
-        bh=qXrWiEusWw2mGp8Om+7vfvXGecnaxYZpAvAu49+prmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=bFyILb78z0IBNzVGHbVq8BASi75VURs9Qlu5pKkUJdZf/BaJxTFnrlHdfrwluiA7f
-         hKiFF/11JtSujkyhyacaYFLXvF4HdJm0lHE5EmKP3qfQCgPNrmoNByZ/ZK0/7WprHA
-         u+7QtrA92LHjPbda8XAL2awdOSN98yUAdb4F6BaM=
-Date:   Wed, 22 Nov 2023 08:08:27 +0200
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 2/2] iio: pressure: driver for Honeywell HSC/SSC series
- pressure sensors
-Message-ID: <ZV2a213oidterHYZ@sunspire>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117164232.8474-2-petre.rodan@subdimension.ro>
- <ZVtSm5f-Qyp8LFFp@smile.fi.intel.com>
+        Wed, 22 Nov 2023 01:09:35 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479FCD1;
+        Tue, 21 Nov 2023 22:09:31 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM4hiJh032712;
+        Wed, 22 Nov 2023 06:09:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : cc : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vThq1oi26KFnLqYRqimd+y9S4pnfD/7AHosfvgTDFnU=;
+ b=WiKQT54IkcHxuzt8O+e45lADJ+QzaxWWe2xCtVfzuh+tYXDsdE5Maaj7HNmYGPfHYxmV
+ FUinvccJq+zNV7Jak2GaIGIRKEs+uTD/iXaqgj+c/29J3d0GDyvfoP3km56GJVccihIG
+ tzyFCiP7c9sPt33Iby7Y8rqdoRY7H3W4hQSN3QMihr3GgeM/s/rjcxhMdsxRWg/W4eKQ
+ VPbZe3gEvZ6zALHIWiDzdj3RCqjaOK+3RsaJDBl55gD7fCrMlQcd4XZjyOYo45Mu5VJj
+ DQDql7+j9/sZtPNsYmBYLjDBkbdA/U3klkvem9n3AEUzyEs75lKoZvpXr3UolzXIitUT kw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uh477gvc6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 06:09:25 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AM69BdE018763
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 06:09:11 GMT
+Received: from [10.216.41.176] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
+ 2023 22:09:08 -0800
+Message-ID: <eba3fc5a-d106-4420-8350-c4a783bc79f9@quicinc.com>
+Date:   Wed, 22 Nov 2023 11:39:05 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVtSm5f-Qyp8LFFp@smile.fi.intel.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: gcc-msm8953: fix stuck gcc_usb30_master_clk
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?B?QmFybmFiw6FzIEN6w6ltw6Fu?= <trabarni@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>
+References: <20231002170021.192740-1-trabarni@gmail.com>
+ <0eebfc14-dbcd-4987-9e94-ea5630b6c268@linaro.org>
+ <07937184481af74c65108bae26526605.sboyd@kernel.org>
+ <64a9d171-377c-48df-bdcd-1ac6d13c2da6@linaro.org>
+Content-Language: en-US
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <64a9d171-377c-48df-bdcd-1ac6d13c2da6@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wlclgCYyPsjDEDJ5vK5hZevnlqFxs7Ax
+X-Proofpoint-GUID: wlclgCYyPsjDEDJ5vK5hZevnlqFxs7Ax
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_03,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=852 clxscore=1011
+ suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311220043
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,407 +86,66 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-hello,
 
-first of all, thank you for the code review.
-in the interest of brevity I will skip all comments where I simply remove the block, blankline, or fix indentation.
-
-On Mon, Nov 20, 2023 at 02:35:39PM +0200, Andy Shevchenko wrote:
-> > +	select HSC030PA_I2C if (I2C)
-> > +	select HSC030PA_SPI if (SPI_MASTER)
+On 11/18/2023 6:18 AM, Konrad Dybcio wrote:
+> On 24.10.2023 04:59, Stephen Boyd wrote:
+>> Quoting Konrad Dybcio (2023-10-06 16:50:18)
+>>> On 2.10.2023 19:00, Barnabás Czémán wrote:
+>>>> According to downstream dwc3-msm source this clock has FSM dependency on
+>>>> gcc_pcnoc_usb30_clk so enabling it would fail if latter isn't enabled.
+>>>> This patch add works around this issue by changing parent of
+>>>> gcc_usb30_master_clk to gcc_pcnoc_usb30_clk. This is acceptable because
+>>>> both clocks have same parent and are branches/gates.
+>>>>
+>>>> Signed-off-by: Barnabás Czémán <trabarni@gmail.com>
+>>>> ---
+>>> "meh"
+>>>
+>>> There are multiple cases, especially with qcom, where there are some
+>>> magic "dependencies" without parent-child relationship. The common
+>>> clock framework doesn't currently have any good way to handle this,
+>>> other than some mind gymnastics like you had to do here with matching
+>>> them against a common parent/ancestor..
+>>>
+>>> Stephen, what do you say?
+>>>
+>>
+>> You can't change the parent to be not the actual parent. The consumer of
+>> the branch probably wants to call clk_set_rate() on the branch and have
+>> it propagate up to the parent to set the actual rate. Can the axi clk
+>> simply be left enabled all the time? That seems simpler. Otherwise we
+>> probably need to leave the axi clk control to the interconnect driver
+>> and make sure drivers enable interconnects before enabling this branch.
+> Yeah I'm almost inclined to think adding even more ifs to the icc driver
+> will consume more power than just leaving the AXI hanging..
 > 
-> Unneeded parentheses
-
-ack
-
-> > +	help
-> > +	  Say Y here to build support for the Honeywell HSC and SSC TruStability
-> > +      pressure and temperature sensor series.
-> > +
-> > +	  To compile this driver as a module, choose M here: the module will be
-> > +	  called hsc030pa.
+>>
+>> When things start to get this tangled I tend to think that we need to
+>> remove control of the clk from the general drivers and put the logic to
+>> control interconnects and clks into some SoC glue driver and expose a
+>> single interface, like genpd power_on/power_off so that general drivers
+>> can't get the sequence of steps wrong. Instead all they can do is "power
+>> on" their device, and the SoC glue driver can do the proper sequence of
+>> framework calls to power up the device.
+> That too, given the structure of qcom SoCs, it should almost look like:
 > 
-> Yeah besides indentation issues the LKP complain about this.
-
-fixed indentation and now it compiles fine with git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-sorry, what is 'LKP' in this context and how do I reproduce?
-
-> > +#include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/init.h>
-> > +#include <linux/math64.h>
-> > +#include <linux/units.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/printk.h>
+> xyznoc-bus {
+> 	compatible = "simple-pm-bus";
+> 	clocks = <&gcc xyznoc_ahb>,
+> 		 <&gcc xyznoc_axi>;
+> 	...
 > 
-> Keep them sorted alphabetically.
-> Also there are missing at least these ones: array_size.h, types.h.
-
-'#include <linux/array_size.h>' is a weird one.
-$ cd /usr/src/linux/drivers
-$ grep -r ARRAY_SIZE * | grep '\.c:' |  wc -l
- 32396
-$ grep -r 'include.*array_size\.h' * | grep -E '\.[ch]:' | wc -l
-11
-$ grep -r 'include.*array_size\.h' * | grep -E '\.[ch]:' | grep -v '^pinctrl' | wc -l
-0
-
-plus on a 6.1 version kernel, `make modules` actually reports that the header can't be found if I include it. can't comprehend that.
-so I'll be skipping that particular include.
-
-> > +// pressure range for current chip based on the nomenclature
-> > +struct hsc_range_config {
-> > +	char name[HSC_RANGE_STR_LEN];	// 5-char string that defines the range - ie "030PA"
-> > +	s32 pmin;		// minimal pressure in pascals
-> > +	s32 pmax;		// maximum pressure in pascals
-> > +};
+> 	xyznoc-node@abcd {};
+> }
 > 
-> Can you utilize linear ranges data types and APIs? (linear_range.h)
-
-not fit for this purpose, sorry.
-
-> > +/*
-> > + * the first two bits from the first byte contain a status code
-> > + *
-> > + * 00 - normal operation, valid data
-> > + * 01 - device in hidden factory command mode
-> > + * 10 - stale data
-> > + * 11 - diagnostic condition
-> > + *
-> > + * function returns 1 only if both bits are zero
-> > + */
+> etc.
 > 
-> You really need to be consistent with style of multi-line comments.
-> And also C++/C variants. Besides that, respect English grammar and
-> punctuation.
+> I've actually discussed this with Bjorn, but we came to a conclusion
+> that it's not trivial to determine which peripheral lives on which NoC
+> + many of them seem to sorta overlap more than one..
 
-ok, I changed all comments to /* */.
-this particular block was rewritten (the legend is taken from honeywell's i2c-related datasheet).
+Are we seeing the clk getting stuck during suspend/resume or during 
+clk_prepare_enable in probe ?
 
-> > +static bool hsc_measurement_is_valid(struct hsc_data *data)
-> > +{
-> > +	if (data->buffer[0] & 0xc0)
-> > +		return 0;
-> > +
-> > +	return 1;
-> 
-> You use bool and return integers.
-> 
-> Besides, it can be just a oneliner.
-
-rewritten as a one-liner, without GENMASK.
-
-> 	return !(buffer[0] & GENMASK(3, 2));
-> 
-> (Note, you will need bits.h for this.)
-> 
-> > +}
-> 
-...
-> > +	ret = chip->valid(data);
-> > +	if (!ret)
-> > +		return -EAGAIN;
-> > +
-> > +	data->is_valid = true;
-> 
-> Can this be like
-> 
-> 	bool is_valid;
-> 
-> 	is_valid = chip->valid(...);
-> 	if (!is_valid)
-> 		return ...
-> 
-> 
-> 	data->is_valid = is_valid;
-> 
-> 	// Depending on the flow you can even use that field directly
-
-ack
-
-> > +	case IIO_CHAN_INFO_RAW:
-> > +		mutex_lock(&data->lock);
-> > +		ret = hsc_get_measurement(data);
-> > +		mutex_unlock(&data->lock);
-> 
-> Use guard() operator from cleanup.h.
-
-I'm not familiar with that, for the time being I'll stick to mutex_lock/unlock if you don't mind.
-
-> > +		switch (channel->type) {
-> > +		case IIO_PRESSURE:
-> > +			*val =
-> > +			    ((data->buffer[0] & 0x3f) << 8) + data->buffer[1];
-> > +			return IIO_VAL_INT;
-> > +		case IIO_TEMP:
-> > +			*val =
-> > +			    (data->buffer[2] << 3) +
-> > +			    ((data->buffer[3] & 0xe0) >> 5);
-> 
-> Is this some endianess / sign extension? Please convert using proper APIs.
-
-the raw conversion data is spread over 4 bytes and interlaced with other info (see comment above the function).
-I'm just cherry-picking the bits I'm interested in, in a way my brain can understand what is going on.
-
-> > +			ret = 0;
-> > +			if (!ret)
-> 
-> lol
-
-I should leave that in for comic relief. missed it after a lot of code changes.
-
-> > +	case IIO_CHAN_INFO_OFFSET:
-> > +		switch (channel->type) {
-> > +		case IIO_TEMP:
-> > +			*val = -50000000;
-> > +			*val2 = 97704;
-> > +			return IIO_VAL_FRACTIONAL;
-> > +		case IIO_PRESSURE:
-> > +			*val = data->p_offset;
-> > +			*val2 = data->p_offset_nano;
-> > +			return IIO_VAL_INT_PLUS_NANO;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +	}
-> 
-> > +	return ret;
-> 
-> Use default with explicit error code.
-
-ack.
-
-> > +static const struct iio_chan_spec hsc_channels[] = {
-> > +	{
-> > +	 .type = IIO_PRESSURE,
-> > +	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> > +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET)
-> > +	 },
-> > +	{
-> > +	 .type = IIO_TEMP,
-> > +	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> > +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET)
-> > +	 },
-> 
-> Strange indentation of }:s...
-
-I blame `indent -linux --line-length 80` for these and weirdly-spaced pointer declarations.
-are you using something else?
-
-> > +int hsc_probe(struct iio_dev *indio_dev, struct device *dev,
-> > +	      const char *name, int type)
-> > +{
-> > +	struct hsc_data *hsc;
-> > +	u64 tmp;
-> > +	int index;
-> > +	int found = 0;
-> > +
-> > +	hsc = iio_priv(indio_dev);
-> > +
-> > +	hsc->last_update = jiffies - HZ;
-> > +	hsc->chip = &hsc_chip;
-> > +
-> > +	if (strcasecmp(hsc->range_str, "na") != 0) {
-> > +		// chip should be defined in the nomenclature
-> > +		for (index = 0; index < ARRAY_SIZE(hsc_range_config); index++) {
-> > +			if (strcasecmp
-> > +			    (hsc_range_config[index].name,
-> > +			     hsc->range_str) == 0) {
-> > +				hsc->pmin = hsc_range_config[index].pmin;
-> > +				hsc->pmax = hsc_range_config[index].pmax;
-> > +				found = 1;
-> > +				break;
-> > +			}
-> > +		}
-> 
-> Reinventing match_string() / sysfs_match_string() ?
-
-match_string() is case-sensitive and operates on string arrays, so unfit for this purpose.
-
-> > +struct hsc_data {
-> > +	void *client;                           // either i2c or spi kernel interface struct for current dev
-> > +	const struct hsc_chip_data *chip;
-> > +	struct mutex lock;                      // lock protecting chip reads
-> > +	int (*xfer)(struct hsc_data *data);    // function that implements the chip reads
-> > +	bool is_valid;                          // false if last transfer has failed
-> > +	unsigned long last_update;              // time of last successful conversion
-> > +	u8 buffer[HSC_REG_MEASUREMENT_RD_SIZE]; // raw conversion data
-> > +	char range_str[HSC_RANGE_STR_LEN];	// range as defined by the chip nomenclature - ie "030PA" or "NA"
-> > +	s32 pmin;                               // min pressure limit
-> > +	s32 pmax;                               // max pressure limit
-> > +	u32 outmin;                             // minimum raw pressure in counts (based on transfer function)
-> > +	u32 outmax;                             // maximum raw pressure in counts (based on transfer function)
-> > +	u32 function;                           // transfer function
-> > +	s64 p_scale;                            // pressure scale
-> > +	s32 p_scale_nano;                       // pressure scale, decimal places
-> > +	s64 p_offset;                           // pressure offset
-> > +	s32 p_offset_nano;                      // pressure offset, decimal places
-> > +};
-> > +
-> > +struct hsc_chip_data {
-> > +	bool (*valid)(struct hsc_data *data);  // function that checks the two status bits
-> > +	const struct iio_chan_spec *channels;   // channel specifications
-> > +	u8 num_channels;                        // pressure and temperature channels
-> > +};
-> 
-> Convert comments to kernel-doc format.
-
-ack. switched to kernel-doc format in multiple places.
-
-> > +enum hsc_func_id {
-> > +	HSC_FUNCTION_A,
-> > +	HSC_FUNCTION_B,
-> > +	HSC_FUNCTION_C,
-> > +	HSC_FUNCTION_F
-> 
-> Leave trailing comma. It make code slightly better to maintain.
-
-ack
-
-> > +static int hsc_i2c_xfer(struct hsc_data *data)
-> > +{
-> > +	struct i2c_client *client = data->client;
-> > +	struct i2c_msg msg;
-> > +	int ret;
-> > +
-> > +	msg.addr = client->addr;
-> > +	msg.flags = client->flags | I2C_M_RD;
-> > +	msg.len = HSC_REG_MEASUREMENT_RD_SIZE;
-> > +	msg.buf = (char *)&data->buffer;
-> > +
-> > +	ret = i2c_transfer(client->adapter, &msg, 1);
-> > +
-> > +	return (ret == 2) ? 0 : ret;
-> > +}
-> 
-> Can you use regmap I2C?
-
-the communication is one-way as in the sensors do not expect anything except 4 bytes-worth of clock signals per 'packet' for both the i2c and spi versions.
-regmap is suited to sensors with an actual memory map.
-
-> > +static int hsc_i2c_probe(struct i2c_client *client,
-> > +			 const struct i2c_device_id *id)
-> 
-> No use of this function prototype, we have a new one.
-
-oops, I was hoping my 6.1.38 kernel is using the same API as 6.7.0
-fixed.
-
-> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
-> > +	if (!indio_dev) {
-> 
-> > +		dev_err(&client->dev, "Failed to allocate device\n");
-> > +		return -ENOMEM;
-> 
-> First of all, use
-> 
-> 		return dev_err_probe();
-> 
-> Second, since it's ENOMEM, we do not issue an errors like this, error
-> code is already enough.
-
-ack
-
-> 
-> > +	}
-> > +
-> > +	hsc = iio_priv(indio_dev);
-> 
-> > +	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-> > +		hsc->xfer = hsc_i2c_xfer;
-> > +	else
-> 
-> Redundant 'else', see below.
-> 
-> > +		return -EOPNOTSUPP;
-> 
-> Use traditional pattern, i.e. checking for errors first:
-> 
-> 	if (...)
-> 		return ...
-
-ack
-
-> > +	ret = devm_regulator_get_enable_optional(dev, "vdd");
-> > +	if (ret == -EPROBE_DEFER)
-> > +		return -EPROBE_DEFER;
-> 
-> Oh, boy, this should check for ENODEV or so, yeah, regulator APIs a bit
-> interesting.
-
-since I'm unable to test this I'd rather remove the block altogether.
-if I go the ENODEV route my module will never load since I can't see any vdd-supply support on my devboard.
-
-> > +	if (!dev_fwnode(dev))
-> > +		return -EOPNOTSUPP;
-> 
-> Why do you need this?
-> And why this error code?
-
-it's intentional.
-this module has a hard requirement on the correct parameters (transfer function and pressure range) being provided in the devicetree.
-without those I don't want to provide any measurements since there can't be a default transfer function and pressure range for a generic driver that supports an infinite combination of those.
-
-echo hsc030pa 0x28 > /sys/bus/i2c/devices/i2c-0/new_device
-I want iio_info to detect 0 devices.
-
-> > +	memcpy(hsc->range_str, range_nom, HSC_RANGE_STR_LEN - 1);
-> > +	hsc->range_str[HSC_RANGE_STR_LEN - 1] = 0;
-> 
-> Oh, why do you need this all and can use the property value directly?
-> (Besides the fact the interesting operations are being used for strings.)
-
-using directly and moved to main probe() file.
-
-> > +MODULE_DEVICE_TABLE(of, hsc_i2c_match);
-> > +
-> > +static const struct i2c_device_id hsc_i2c_id[] = {
-> > +	{"hsc", HSC},
-> > +	{"ssc", SSC},
-> 
-> Both ID tables should use pointers in driver data and respective API to get
-> that.
-
-re-written based on bindings thread.
-
-> > +	spi_set_drvdata(spi, indio_dev);
-> 
-> How is this being used?
-
-removed.
-
-> > +	spi->mode = SPI_MODE_0;
-> > +	spi->max_speed_hz = min(spi->max_speed_hz, 800000U);
-> > +	spi->bits_per_word = 8;
-> > +	ret = spi_setup(spi);
-> > +	if (ret < 0)
-> > +		return ret;
-> 
-> Why the firmware can't provide the correct information to begin with?
-
-moved 800kHz max requirement to the bindings file.
-
-> > +	ret = device_property_read_u32(dev,
-> > +				       "honeywell,transfer-function",
-> > +				       &hsc->function);
-..
-> > +		if (ret)
-> > +			return dev_err_probe(dev, ret,
-> > +					     "honeywell,pmax-pascal could not be read\n");
-> > +	}
-> 
-> Ditto. Why is this duplication?
-
-you're right, moved to main probe()
-
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-
-patches are ready, but awaiting any aditional feedback to this message.
-
-thanks again,
-peter
-
--- 
-petre rodan
+Regards,
+Krishna,
