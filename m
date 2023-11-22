@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C38C37F4B0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A969D7F4B1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344385AbjKVPi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S1344600AbjKVPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:38:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344531AbjKVPiD (ORCPT
+        with ESMTP id S1344404AbjKVPiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:38:03 -0500
+        Wed, 22 Nov 2023 10:38:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150E519A7;
-        Wed, 22 Nov 2023 07:36:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C442AC433CD;
-        Wed, 22 Nov 2023 15:35:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490EA3879;
+        Wed, 22 Nov 2023 07:36:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C00FC433AD;
+        Wed, 22 Nov 2023 15:36:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667359;
-        bh=qMYe0ujzqXsUk0C5qySdnhJOisL1bIPCthnjXfv3pBs=;
+        s=k20201202; t=1700667360;
+        bh=Lq00onOaGhMQrQm6KMEWgcF+DMXr0QemXLunGniudF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+YneGy5jV6l7EgrzSrMVn3F5Bnd2utmfr47xJsYVNvIcRP5u/ejjnFGCYn73AE9l
-         sH+4fJTmMXsyNRB3OGXnNkuA0VjsvB352YEDTkqxo1gel7kb05ZMXp+kAHfisyDnx1
-         X0OSme9/S58XdduS7sk7NhxcMOJCSpEODYnKtJklIpzrijADKzVRlpxQYYvjWj1bDy
-         3zDxIIV8DAgmiBIBq0tRETfe7FZIBacZk0fM+z+j6ehL9tDwbKAxqP39KR8CYyEj0q
-         KgDJ7JFjv2Gh7ahq8hFiUTkweUJ1f/d+pBGRERZaw8nRzpKEH3yiZN6x8tJEZcBQu7
-         7lvImhiIc+D7g==
+        b=pQRB8xFfRd/9S+tpfoBdeXtJpgUz1ftEFNxtRdr3PWJ+/nnFE7oPFg4ttOvMEI1lF
+         mVHYzSsgQcnuKPpZ59w3gn/qD2/p8TE9wKtHtp6hgjZuyFj/H/XRJUYnF7PhRuO5MU
+         i+lrLC/USM7BnUxvj28FuxTZgrUvSg2iVDbSdjbhso4c8nQg6p8pEer7T90puUB8Ic
+         QO6koqJP1JakK8eBNRJRzHx9ZLTJh+Kf2P0md4hLBCFvQza6gZgRAOVObN7yxYbEQT
+         FW4ixiUfhx08AHfRPHN0Xod8qtcc+pdqpV91miujuOBa2I3bPqEzcR3pf2J6q5Kcw3
+         f57FunZeTluQQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Pakhunov <alexey.pakhunov@spacex.com>,
-        Vincent Wong <vincent.wong2@spacex.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, mchan@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/7] tg3: Increment tx_dropped in tg3_tso_bug()
-Date:   Wed, 22 Nov 2023 10:35:33 -0500
-Message-ID: <20231122153541.853179-5-sashal@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 6/7] kconfig: fix memory leak from range properties
+Date:   Wed, 22 Nov 2023 10:35:34 -0500
+Message-ID: <20231122153541.853179-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153541.853179-1-sashal@kernel.org>
 References: <20231122153541.853179-1-sashal@kernel.org>
@@ -57,39 +52,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Pakhunov <alexey.pakhunov@spacex.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 17dd5efe5f36a96bd78012594fabe21efb01186b ]
+[ Upstream commit ae1eff0349f2e908fc083630e8441ea6dc434dc0 ]
 
-tg3_tso_bug() drops a packet if it cannot be segmented for any reason.
-The number of discarded frames should be incremented accordingly.
+Currently, sym_validate_range() duplicates the range string using
+xstrdup(), which is overwritten by a subsequent sym_calc_value() call.
+It results in a memory leak.
 
-Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Link: https://lore.kernel.org/r/20231113182350.37472-2-alexey.pakhunov@spacex.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Instead, only the pointer should be copied.
+
+Below is a test case, with a summary from Valgrind.
+
+[Test Kconfig]
+
+  config FOO
+          int "foo"
+          range 10 20
+
+[Test .config]
+
+  CONFIG_FOO=0
+
+[Before]
+
+  LEAK SUMMARY:
+     definitely lost: 3 bytes in 1 blocks
+     indirectly lost: 0 bytes in 0 blocks
+       possibly lost: 0 bytes in 0 blocks
+     still reachable: 17,465 bytes in 21 blocks
+          suppressed: 0 bytes in 0 blocks
+
+[After]
+
+  LEAK SUMMARY:
+     definitely lost: 0 bytes in 0 blocks
+     indirectly lost: 0 bytes in 0 blocks
+       possibly lost: 0 bytes in 0 blocks
+     still reachable: 17,462 bytes in 20 blocks
+          suppressed: 0 bytes in 0 blocks
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/tg3.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ scripts/kconfig/symbol.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index a2c6c204fe9d4..b010f28b0abf4 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -7890,8 +7890,10 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_napi *tnapi,
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index ffa3ec65cc907..a2056fa80de2b 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -123,9 +123,9 @@ static long long sym_get_range_val(struct symbol *sym, int base)
+ static void sym_validate_range(struct symbol *sym)
+ {
+ 	struct property *prop;
++	struct symbol *range_sym;
+ 	int base;
+ 	long long val, val2;
+-	char str[64];
  
- 	segs = skb_gso_segment(skb, tp->dev->features &
- 				    ~(NETIF_F_TSO | NETIF_F_TSO6));
--	if (IS_ERR(segs) || !segs)
-+	if (IS_ERR(segs) || !segs) {
-+		tnapi->tx_dropped++;
- 		goto tg3_tso_bug_end;
-+	}
+ 	switch (sym->type) {
+ 	case S_INT:
+@@ -141,17 +141,15 @@ static void sym_validate_range(struct symbol *sym)
+ 	if (!prop)
+ 		return;
+ 	val = strtoll(sym->curr.val, NULL, base);
+-	val2 = sym_get_range_val(prop->expr->left.sym, base);
++	range_sym = prop->expr->left.sym;
++	val2 = sym_get_range_val(range_sym, base);
+ 	if (val >= val2) {
+-		val2 = sym_get_range_val(prop->expr->right.sym, base);
++		range_sym = prop->expr->right.sym;
++		val2 = sym_get_range_val(range_sym, base);
+ 		if (val <= val2)
+ 			return;
+ 	}
+-	if (sym->type == S_INT)
+-		sprintf(str, "%lld", val2);
+-	else
+-		sprintf(str, "0x%llx", val2);
+-	sym->curr.val = xstrdup(str);
++	sym->curr.val = range_sym->curr.val;
+ }
  
- 	skb_list_walk_safe(segs, seg, next) {
- 		skb_mark_not_on_list(seg);
+ static void sym_set_changed(struct symbol *sym)
 -- 
 2.42.0
 
