@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3557F4D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0547F4D0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjKVQvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S1344014AbjKVQly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjKVQvn (ORCPT
+        with ESMTP id S1343632AbjKVQl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:51:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66D8E7;
-        Wed, 22 Nov 2023 08:51:39 -0800 (PST)
+        Wed, 22 Nov 2023 11:41:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9807B1711;
+        Wed, 22 Nov 2023 08:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700671899; x=1732207899;
+  t=1700671282; x=1732207282;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OXF8QWtk6BJLVhGwMk5+UIaDLR26JucJQ+nr7p9zeKQ=;
-  b=lmaeE/WfOL4I1Q44fDWmIz22KfnnrQv/c7XR3+A92D/QfLk2QQcgSVQg
-   Pl963GggqbpAmEZAPZX+aLOe7uGdX60Hk2Aai62ua+HITibI1V4TNUEF6
-   ZoZ3/qWo7lh2j04tQPcD/4C9sSAX3UuWKe/MEnALBqwncIj25wKC4DgBL
-   2VfiSFvbfFaAinVAp4O/pSpk9DMwXn2TmUBEJTe2M64258oppM/Lxg61m
-   /iXia5XI2ZbKf1mGtEj37GXIJ4O4VWhp+3o7ydKoQgCTRs65MHxhG4JS5
-   CtvKbfgEzXa8sU2Zku/D+a2hwMCSEDtaMAlqRuVR1xixsH8w/hep5YNHo
+  bh=7v2CAg5DroP23VK/yC7/YkMVF79slYQ+EVkLEfbZi+o=;
+  b=eRvLkWgD55A3lR2H3RQvijRU+zMBl2J3pGjGIOCNPcebds4S+Xp/Ni4t
+   7JOXhCaKCmqpAtlF4f5HHNrH49jlyB3Ae5X7drEg6ekIZH/yiyURfQjL1
+   HXak57+OFObBKIb8eJfuScgeKi0iDG3wYDpXBMFgZsly20NywULgUfpJQ
+   BawWE5Rhub0Rpznwpmv0JAS059gBw+ujvnu47hsOXahiJuJrQdGvmBNSM
+   UjVZfkRMEG7xDgHKDGSzbAd2stRoF9d14nOdbDDCTGRphrXO8fAyphRgf
+   FKoG4xrDG6ul3oefacjkJqX8QxsHrmNHw11k2+BazAqwXEt7ymjzELujZ
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396016625"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456414396"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="396016625"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:51:38 -0800
+   d="scan'208";a="456414396"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:41:21 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="837489025"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="884681699"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="837489025"
+   d="scan'208";a="884681699"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2023 08:51:16 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 22 Nov 2023 08:41:13 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D20638FE; Wed, 22 Nov 2023 18:40:45 +0200 (EET)
+        id DF13E9EF; Wed, 22 Nov 2023 18:40:45 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,18 +75,18 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v1 15/17] pinctrl: renesas: Convert to use grp member
-Date:   Wed, 22 Nov 2023 18:35:47 +0200
-Message-ID: <20231122164040.2262742-16-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 16/17] pinctrl: starfive: Convert to use grp member
+Date:   Wed, 22 Nov 2023 18:35:48 +0200
+Message-ID: <20231122164040.2262742-17-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
 References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,82 +97,76 @@ Convert drivers to use grp member embedded in struct group_desc.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/renesas/pinctrl-rza1.c  |  2 +-
- drivers/pinctrl/renesas/pinctrl-rza2.c  | 10 +++++-----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c |  4 ++--
- drivers/pinctrl/renesas/pinctrl-rzv2m.c |  4 ++--
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 8 ++++----
+ drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rza1.c b/drivers/pinctrl/renesas/pinctrl-rza1.c
-index ab334de89b69..b03f22c54ca8 100644
---- a/drivers/pinctrl/renesas/pinctrl-rza1.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rza1.c
-@@ -1131,7 +1131,7 @@ static int rza1_set_mux(struct pinctrl_dev *pctldev, unsigned int selector,
+diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+index ea70b8c61679..21bfbbaede72 100644
+--- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
++++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+@@ -654,7 +654,7 @@ static int starfive_set_mux(struct pinctrl_dev *pctldev,
  		return -EINVAL;
  
- 	mux_confs = (struct rza1_mux_conf *)func->data;
--	for (i = 0; i < grp->num_pins; ++i) {
-+	for (i = 0; i < grp->grp.npins; ++i) {
- 		int ret;
+ 	pinmux = group->data;
+-	for (i = 0; i < group->num_pins; i++) {
++	for (i = 0; i < group->grp.npins; i++) {
+ 		u32 v = pinmux[i];
+ 		unsigned int gpio = starfive_pinmux_to_gpio(v);
+ 		u32 dout = starfive_pinmux_to_dout(v);
+@@ -797,7 +797,7 @@ static int starfive_pinconf_group_get(struct pinctrl_dev *pctldev,
+ 	if (!group)
+ 		return -EINVAL;
  
- 		ret = rza1_pin_mux_single(rza1_pctl, &mux_confs[i]);
-diff --git a/drivers/pinctrl/renesas/pinctrl-rza2.c b/drivers/pinctrl/renesas/pinctrl-rza2.c
-index 990b96d45967..af689d7c117f 100644
---- a/drivers/pinctrl/renesas/pinctrl-rza2.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rza2.c
-@@ -447,15 +447,15 @@ static int rza2_set_mux(struct pinctrl_dev *pctldev, unsigned int selector,
+-	return starfive_pinconf_get(pctldev, group->pins[0], config);
++	return starfive_pinconf_get(pctldev, group->grp.pins[0], config);
+ }
  
- 	psel_val = func->data;
- 
--	for (i = 0; i < grp->num_pins; ++i) {
-+	for (i = 0; i < grp->grp.npins; ++i) {
- 		dev_dbg(priv->dev, "Setting P%c_%d to PSEL=%d\n",
--			port_names[RZA2_PIN_ID_TO_PORT(grp->pins[i])],
--			RZA2_PIN_ID_TO_PIN(grp->pins[i]),
-+			port_names[RZA2_PIN_ID_TO_PORT(grp->grp.pins[i])],
-+			RZA2_PIN_ID_TO_PIN(grp->grp.pins[i]),
- 			psel_val[i]);
- 		rza2_set_pin_function(
- 			priv->base,
--			RZA2_PIN_ID_TO_PORT(grp->pins[i]),
--			RZA2_PIN_ID_TO_PIN(grp->pins[i]),
-+			RZA2_PIN_ID_TO_PORT(grp->grp.pins[i]),
-+			RZA2_PIN_ID_TO_PIN(grp->grp.pins[i]),
- 			psel_val[i]);
+ static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
+@@ -876,8 +876,8 @@ static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
+ 		}
  	}
  
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 9de350ad7e7d..511247e70371 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -283,9 +283,9 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+-	for (i = 0; i < group->num_pins; i++)
+-		starfive_padctl_rmw(sfp, group->pins[i], mask, value);
++	for (i = 0; i < group->grp.npins; i++)
++		starfive_padctl_rmw(sfp, group->grp.pins[i], mask, value);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+index 9d71e8c13310..60160965cd29 100644
+--- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
++++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+@@ -307,7 +307,7 @@ static int jh7110_set_mux(struct pinctrl_dev *pctldev,
  		return -EINVAL;
  
- 	psel_val = func->data;
--	pins = group->pins;
-+	pins = group->grp.pins;
- 
+ 	pinmux = group->data;
 -	for (i = 0; i < group->num_pins; i++) {
 +	for (i = 0; i < group->grp.npins; i++) {
- 		unsigned int *pin_data = pctrl->desc.pins[pins[i]].drv_data;
- 		u32 off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
- 		u32 pin = RZG2L_PIN_ID_TO_PIN(pins[i]);
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzv2m.c b/drivers/pinctrl/renesas/pinctrl-rzv2m.c
-index 21d7d5ac8c4a..62f3924f5bea 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzv2m.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzv2m.c
-@@ -175,9 +175,9 @@ static int rzv2m_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+ 		u32 v = pinmux[i];
+ 
+ 		if (info->jh7110_set_one_pin_mux)
+@@ -437,7 +437,7 @@ static int jh7110_pinconf_group_get(struct pinctrl_dev *pctldev,
+ 	if (!group)
  		return -EINVAL;
  
- 	psel_val = func->data;
--	pins = group->pins;
-+	pins = group->grp.pins;
+-	return jh7110_pinconf_get(pctldev, group->pins[0], config);
++	return jh7110_pinconf_get(pctldev, group->grp.pins[0], config);
+ }
  
--	for (i = 0; i < group->num_pins; i++) {
-+	for (i = 0; i < group->grp.npins; i++) {
- 		dev_dbg(pctrl->dev, "port:%u pin: %u PSEL:%u\n",
- 			RZV2M_PIN_ID_TO_PORT(pins[i]), RZV2M_PIN_ID_TO_PIN(pins[i]),
- 			psel_val[i]);
+ static int jh7110_pinconf_group_set(struct pinctrl_dev *pctldev,
+@@ -508,8 +508,8 @@ static int jh7110_pinconf_group_set(struct pinctrl_dev *pctldev,
+ 		}
+ 	}
+ 
+-	for (i = 0; i < group->num_pins; i++)
+-		jh7110_padcfg_rmw(sfp, group->pins[i], mask, value);
++	for (i = 0; i < group->grp.npins; i++)
++		jh7110_padcfg_rmw(sfp, group->grp.pins[i], mask, value);
+ 
+ 	return 0;
+ }
 -- 
 2.43.0.rc1.1.gbec44491f096
 
