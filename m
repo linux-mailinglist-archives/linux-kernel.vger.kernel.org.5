@@ -2,87 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4A17F41E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839867F4264
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343501AbjKVJmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:42:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S235273AbjKVJqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235232AbjKVJmf (ORCPT
+        with ESMTP id S1343767AbjKVJpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:42:35 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EAFD5D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:42:28 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c19a0a2fbfso6865431a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:42:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700646148; x=1701250948;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ybpS3Kpz0i70hy2wEb1DIpGOL/gddSSQCTyiAG1BSqo=;
-        b=S6g61OAe94ronWsTS8WQV9Eya0JRsLtLSlqTgMBJ8OX8MoLZh6ztkF/xwVkfiG8P/r
-         vgZ9yy7XHNLZsS3CSaR5GhKB2bH3xHaZNY5bcvGD4HbuBQvkaE6KIzO31SliCFNF6d3T
-         gXNM5t2P8qdd/t9GnTyAEfJaoKKuznSbc1ivqD6ouWWltP+79dt9hzbTqZ9FB8OHnbP1
-         4/xWWD6r8ZZmJP6k61RQ/iqRKsl5Pxlkkql45BVBMLQMjND+dZxCVBVsA+bA5tsR/S3q
-         dABJ3J/SItI4voBV5i3GYEF59ZMKVBJrxfjbvXGFhCa67TJAvmyImW3iWNIFPOQAmsgL
-         dHfA==
-X-Gm-Message-State: AOJu0YyOB49m4lPoHs7cqaq32QkItMCPVwafR46MJl8L1Hh3DVeY0rIi
-        itA58I/fEN95K1P5MNV6/lltO99gyDmooHPkyzLA7+3X1BZ007U=
-X-Google-Smtp-Source: AGHT+IE5fpvHSL6i4ngm4RSP52PXMaAoI/x3pf8nA2cPa+4li/L2TdV+k09WWzbj2jzDO+3Qvw7yCeouZuoDpB8j5+1cjXugZLaC
+        Wed, 22 Nov 2023 04:45:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA3F10D1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:45:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEE1DC433C8;
+        Wed, 22 Nov 2023 09:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700646314;
+        bh=BzV/RIjxnxMn9VbcnDWXuF4bpk5mXr34eQJiBtwP4NE=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=l/tPHDZNixS3bQk2n+SQhubpzTfcvaboniqmwUh/PTbCtGaJTfzsMFW7xRRZgI7QS
+         iDE7cilI1DbJeAIwmDbOwO1mCCxOaIuTdR27BQhkBBc96Q7dT+6aLYUnAWSz4LUfqS
+         wca9ympps1BSiJrViPZBxwqOIYjvs+Cu2pjPu8UHjcTdLxe209jcyhOb8S+92tP93r
+         azGWWAvwK+SVC3z+7QS1CM2oNASn21FY+PMbJs3GDyS8RPf8e/bhbklg09GkGiJIcg
+         hdpXy/Qq3ZPD9ODrfB7CvUWAmiZpuaUPoVHyapkCxoEFHvcrqWe74qnkqE/a3ZRzPR
+         Yb5KCzU8Uh2Xg==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Wed, 22 Nov 2023 09:42:29 +0000
+Subject: [PATCH v7 19/39] arm64/mm: Handle GCS data aborts
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a02:590:b0:5bd:d69b:6f8 with SMTP id
- by16-20020a056a02059000b005bdd69b06f8mr421000pgb.4.1700646148308; Wed, 22 Nov
- 2023 01:42:28 -0800 (PST)
-Date:   Wed, 22 Nov 2023 01:42:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f064b060aba89c4@google.com>
-Subject: [syzbot] Monthly rds report (Nov 2023)
-From:   syzbot <syzbot+listdfc3c773f22d2282a24a@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231122-arm64-gcs-v7-19-201c483bd775@kernel.org>
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+In-Reply-To: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5688; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=BzV/RIjxnxMn9VbcnDWXuF4bpk5mXr34eQJiBtwP4NE=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlXc0FZrStz9Xr8Prvr2S0JFwovux2nNPRmOouZ
+ p8eOCwtpimJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZV3NBQAKCRAk1otyXVSH
+ 0NmMB/9iOfF48aW2DH8GfqhVA2m6OttDsfi8udYamecnJPcdti7OK5IEBs6O/7ccnIxI6+Dt8H3
+ Dm4IDlD9qdSD04W5mGrRffn6p3plw6PmIuzC7gd4iqjAG+6QDVAnQ2vRWkISWgXJ8VojIpu5cJg
+ jETt5f7+meyZpX7Dz6KDygBxHgMpOs4Ua9UmN/yeDU6ZMIpCMGqOljcXee/8Xg5yn2itZwWOs0b
+ MM2K35WGayANmXha1Z1vIME/dVrDqVqaF81BflwSn+dVaBejDxkNnVaECEDo4Y6qvCWsBs1OrYL
+ OSJsoHrfhXZPAVAeHEiCu4/SYLssCMlwH/7uyX4yQ17OTMQx
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello rds maintainers/developers,
+All GCS operations at EL0 must happen on a page which is marked as
+having UnprivGCS access, including read operations.  If a GCS operation
+attempts to access a page without this then it will generate a data
+abort with the GCS bit set in ESR_EL1.ISS2.
 
-This is a 31-day syzbot report for the rds subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/rds
+EL0 may validly generate such faults, for example due to copy on write
+which will cause the GCS data to be stored in a read only page with no
+GCS permissions until the actual copy happens.  Since UnprivGCS allows
+both reads and writes to the GCS (though only through GCS operations) we
+need to ensure that the memory management subsystem handles GCS accesses
+as writes at all times.  Do this by adding FAULT_FLAG_WRITE to any GCS
+page faults, adding handling to ensure that invalid cases are identfied
+as such early so the memory management core does not think they will
+succeed.  The core cannot distinguish between VMAs which are generally
+writeable and VMAs which are only writeable through GCS operations.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 20 have been fixed so far.
+EL1 may validly write to EL0 GCS for management purposes (eg, while
+initialising with cap tokens).
 
-Some of the still happening issues:
+We also report any GCS faults in VMAs not marked as part of a GCS as
+access violations, causing a fault to be delivered to userspace if it
+attempts to do GCS operations outside a GCS.
 
-Ref Crashes Repro Title
-<1> 15      Yes   possible deadlock in rds_wake_sk_sleep (4)
-                  https://syzkaller.appspot.com/bug?extid=dcd73ff9291e6d34b3ab
-<2> 5       Yes   possible deadlock in rds_message_put
-                  https://syzkaller.appspot.com/bug?extid=f9db6ff27b9bfdcfeca0
-<3> 3       No    KCSAN: data-race in rds_sendmsg / rds_sendmsg
-                  https://syzkaller.appspot.com/bug?extid=00563755980a79a575f6
-
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/mm/fault.c | 79 +++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 71 insertions(+), 8 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 460d799e1296..28de0807b4a1 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -494,13 +494,30 @@ static void do_bad_area(unsigned long far, unsigned long esr,
+ 	}
+ }
+ 
++/*
++ * Note: not valid for EL1 DC IVAC, but we never use that such that it
++ * should fault. EL0 cannot issue DC IVAC (undef).
++ */
++static bool is_write_abort(unsigned long esr)
++{
++	return (esr & ESR_ELx_WNR) && !(esr & ESR_ELx_CM);
++}
++
++static bool is_gcs_fault(unsigned long esr)
++{
++	if (!esr_is_data_abort(esr))
++		return false;
++
++	return ESR_ELx_ISS2(esr) & ESR_ELx_GCS;
++}
++
+ #define VM_FAULT_BADMAP		((__force vm_fault_t)0x010000)
+ #define VM_FAULT_BADACCESS	((__force vm_fault_t)0x020000)
+ 
+ static vm_fault_t __do_page_fault(struct mm_struct *mm,
+ 				  struct vm_area_struct *vma, unsigned long addr,
+ 				  unsigned int mm_flags, unsigned long vm_flags,
+-				  struct pt_regs *regs)
++				  unsigned long esr, struct pt_regs *regs)
+ {
+ 	/*
+ 	 * Ok, we have a good vm_area for this memory access, so we can handle
+@@ -510,6 +527,26 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm,
+ 	 */
+ 	if (!(vma->vm_flags & vm_flags))
+ 		return VM_FAULT_BADACCESS;
++
++	if (vma->vm_flags & VM_SHADOW_STACK) {
++		/*
++		 * Writes to a GCS must either be generated by a GCS
++		 * operation or be from EL1.
++		 */
++		if (is_write_abort(esr) &&
++		    !(is_gcs_fault(esr) || is_el1_data_abort(esr)))
++			return VM_FAULT_BADACCESS;
++	} else {
++		/*
++		 * GCS faults should never happen for pages that are
++		 * not part of a GCS and the operation being attempted
++		 * can never succeed.
++		 */
++		if (is_gcs_fault(esr))
++			return VM_FAULT_BADACCESS;
++	}
++
++
+ 	return handle_mm_fault(vma, addr, mm_flags, regs);
+ }
+ 
+@@ -518,13 +555,18 @@ static bool is_el0_instruction_abort(unsigned long esr)
+ 	return ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_LOW;
+ }
+ 
+-/*
+- * Note: not valid for EL1 DC IVAC, but we never use that such that it
+- * should fault. EL0 cannot issue DC IVAC (undef).
+- */
+-static bool is_write_abort(unsigned long esr)
++static bool is_invalid_el0_gcs_access(struct vm_area_struct *vma, u64 esr)
+ {
+-	return (esr & ESR_ELx_WNR) && !(esr & ESR_ELx_CM);
++	if (!system_supports_gcs())
++		return false;
++	if (likely(!(vma->vm_flags & VM_SHADOW_STACK))) {
++		if (is_gcs_fault(esr))
++			return true;
++		return false;
++	}
++	if (is_gcs_fault(esr))
++		return false;
++	return is_write_abort(esr);
+ }
+ 
+ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+@@ -573,6 +615,13 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+ 		/* If EPAN is absent then exec implies read */
+ 		if (!alternative_has_cap_unlikely(ARM64_HAS_EPAN))
+ 			vm_flags |= VM_EXEC;
++		/*
++		 * Upgrade read faults to write faults, GCS reads must
++		 * occur on a page marked as GCS so we need to trigger
++		 * copy on write always.
++		 */
++		if (is_gcs_fault(esr))
++			mm_flags |= FAULT_FLAG_WRITE;
+ 	}
+ 
+ 	if (is_ttbr0_addr(addr) && is_el1_permission_fault(addr, esr, regs)) {
+@@ -594,6 +643,20 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+ 	if (!vma)
+ 		goto lock_mmap;
+ 
++	/*
++	 * We get legitimate write faults for GCS pages from GCS
++	 * operations, even when the initial operation was a read, as
++	 * a result of upgrading GCS accesses to writes for CoW but
++	 * GCS acceses outside of a GCS must fail.  Specifically check
++	 * for this since the mm core isn't able to distinguish
++	 * invalid GCS access from valid ones and will try to resolve
++	 * the fault.
++	 */
++	if (is_invalid_el0_gcs_access(vma, esr)) {
++		vma_end_read(vma);
++		goto lock_mmap;
++	}
++
+ 	if (!(vma->vm_flags & vm_flags)) {
+ 		vma_end_read(vma);
+ 		goto lock_mmap;
+@@ -623,7 +686,7 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+ 		goto done;
+ 	}
+ 
+-	fault = __do_page_fault(mm, vma, addr, mm_flags, vm_flags, regs);
++	fault = __do_page_fault(mm, vma, addr, mm_flags, vm_flags, esr, regs);
+ 
+ 	/* Quick path to respond to signals */
+ 	if (fault_signal_pending(fault, regs)) {
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+-- 
+2.39.2
 
-You may send multiple commands in a single email message.
