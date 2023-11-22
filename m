@@ -2,63 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702447F538E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101AA7F538B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343979AbjKVWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:44:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        id S232705AbjKVWoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:44:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235163AbjKVWoJ (ORCPT
+        with ESMTP id S230346AbjKVWoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:44:09 -0500
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0375D46;
-        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-35b144ba935so928135ab.1;
-        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
+        Wed, 22 Nov 2023 17:44:00 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B7718E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:43:57 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-357cc880bd8so1041165ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700693037; x=1701297837; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/uQWLtXvGOw3ykzrrU4k8v24BV7qfGLjUcROVaGJI+0=;
+        b=tTXLEysy7dHrGxlhqbekOvGqQR03prQlWP+0xXIVauxfzUVRc+rMX7usSl2YyhJBCR
+         WQSIiiQgOu8IWfoX7v4jHgYoXAWHPS8hOS6z59BoHDHn1Xn3DjVljAVo1gRoK+viT1me
+         uNROZu+JY0hGynMvjvKK6Lq45bgYv7ITh+ITdtrBTkq6T+PeOu6Cq7Njis1QYO5+eDiJ
+         47iN1QXga9nBHLMVPK/5WnDiLNwexprvmC7lpDlpe4pjF5Ax1RrbfWg5FXC9YszyEhnp
+         US/SyPxKlbT53Ik9GwMqiRpdRa6D7JXqLgQ1mNFy1fiZSXu9Kh1xLcTGvG7iji0gkggg
+         Ss2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700693044; x=1701297844;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XZkFDdPjcBcVfp1fm2YjqN5xwGDpseg/uIenoFVR2Lw=;
-        b=PqJ8J//CYG7OqrfMHlaU80SyQR0Ibc0VReS3lhg6YruHvxGbYjhtslfwuJZ91OAAW7
-         c38ggd9RIP86rzR88t3Af2fb5ZRMqqvlqJggvgED0NgXfxdT1nwPyyikmsA66B7KGdA5
-         RkqIwX12PkQSoQdIZeaBtbt346srNmwxeZJ1wW8nupgU4FzkkBoRvu4rTteofLhBPvoS
-         FGzM6umGue8oiA9wOP1bz7Xk91spfJIQ5bi1lD6jzCOQiMxRa0L6OIQtCvWt+dLgAI5C
-         ly2yp/WdbQnquea3M3/jt4ekbGuQrCbOurcJOin5yWMMeXnT2qkiKPb6DHeo48KvxSuk
-         Z7sA==
-X-Gm-Message-State: AOJu0Yw+7VuXlEsDdluAbsUWQFR9Yu+80ufpj+uq2anLvPELUqnkSaXj
-        MdQFwa5Ol38garo4EItHDw==
-X-Google-Smtp-Source: AGHT+IF6fTuuPgt0NRPsUDTeD8Nz/gX1NLKQZPb1BbfDD8amxSiKaZQV+46egIs8xYOWZBv4J5wfrw==
-X-Received: by 2002:a05:6e02:1044:b0:35a:a534:916a with SMTP id p4-20020a056e02104400b0035aa534916amr2886625ilj.6.1700693044054;
-        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id be5-20020a056e02304500b00357f979d56csm182648ilb.12.2023.11.22.14.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 14:44:03 -0800 (PST)
-Received: (nullmailer pid 2808775 invoked by uid 1000);
-        Wed, 22 Nov 2023 22:44:01 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: reset: qcom: drop unneeded quotes
-Date:   Wed, 22 Nov 2023 15:43:52 -0700
-Message-ID: <20231122224352.2808435-1-robh@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1700693037; x=1701297837;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/uQWLtXvGOw3ykzrrU4k8v24BV7qfGLjUcROVaGJI+0=;
+        b=CjMF9am628hq4avDRH/2xHPvm3j5HuEeXtztwN3X7UGI5OTevcVU63Uj1y0TDVis8H
+         /2EVK5XjwfxcUItwoHI9OGshwiTIZOupq80LsOi9680xSvtV68p1jYQGghmSB3v7vTPp
+         wG7JuEKXyl99MSIMt1yAle415bEZAwA4M7nRnRUswR3hH84KSdKG65yUZGBpiwqgDOd3
+         4zOyIupnNKlwGAx81xeyrsZsIh2G620QbrA3URAfyPn8am0T+FYcUojkUkD8tanfUxT8
+         AaJznscq0eN30ktQ037KwFXyRuchlaq4SKj3Wj4jui766hlTJyc7Jr/lfY9joyjtizKc
+         utfA==
+X-Gm-Message-State: AOJu0YzImoym+c4vpf5e3VE4sthcvAOJK2pO5Q87oUBjK80KiVBiZIJp
+        H+QYA9MA3q6VuwWCP4XtN3DTCw==
+X-Google-Smtp-Source: AGHT+IFOPvtZpcwPXuq8eUu58wUK/6nPgwmjHf3787rZ+5lhZhoC3jeRFLZhZtUkV1G97+aBxx5dbA==
+X-Received: by 2002:a92:c56f:0:b0:351:5acb:281 with SMTP id b15-20020a92c56f000000b003515acb0281mr4482037ilj.31.1700693036861;
+        Wed, 22 Nov 2023 14:43:56 -0800 (PST)
+Received: from [172.22.22.28] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
+        by smtp.gmail.com with ESMTPSA id eq25-20020a0566384e3900b0041e328a2084sm101532jab.79.2023.11.22.14.43.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 14:43:56 -0800 (PST)
+Message-ID: <90d55f78-c31b-4764-958e-4ad88374518b@linaro.org>
+Date:   Wed, 22 Nov 2023 16:43:55 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: ipa: fix one GSI register field width
+Content-Language: en-US
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
+        quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
+        quic_subashab@quicinc.com, elder@kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231122212504.714276-1-elder@linaro.org>
+In-Reply-To: <20231122212504.714276-1-elder@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,69 +78,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop unneeded quotes over simple string values to fix a soon to be
-enabled yamllint warning:
+On 11/22/23 3:25 PM, Alex Elder wrote:
+> The width of the R_LENGTH field of the EV_CH_E_CNTXT_1 GSI register
+> is 24 bits (not 20 bits) starting with IPA v5.0.  Fix this.
+> 
+> Fixes: 627659d542c5 ("net: ipa: add IPA v5.0 GSI register definitions")
 
-  [error] string value is redundantly quoted with any quotes (quoted-strings)
+All is well on this, but I put the wrong commit hash on the
+"Fixes" tag.  I'll send an update soon.  The correct hash is
+faf0678ec8a0.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/reset/qcom,aoss-reset.yaml     | 10 +++++-----
- .../devicetree/bindings/reset/qcom,pdc-global.yaml     |  8 ++++----
- 2 files changed, 9 insertions(+), 9 deletions(-)
+					-Alex
 
-diff --git a/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml b/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
-index d92e2b3cc83f..24beb712b56d 100644
---- a/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
-+++ b/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
-@@ -18,17 +18,17 @@ properties:
-     oneOf:
-       - description: on SC7180 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sc7180-aoss-cc"
--          - const: "qcom,sdm845-aoss-cc"
-+          - const: qcom,sc7180-aoss-cc
-+          - const: qcom,sdm845-aoss-cc
- 
-       - description: on SC7280 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sc7280-aoss-cc"
--          - const: "qcom,sdm845-aoss-cc"
-+          - const: qcom,sc7280-aoss-cc
-+          - const: qcom,sdm845-aoss-cc
- 
-       - description: on SDM845 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sdm845-aoss-cc"
-+          - const: qcom,sdm845-aoss-cc
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
-index ca5d79332189..f514363aa474 100644
---- a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
-+++ b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
-@@ -18,16 +18,16 @@ properties:
-     oneOf:
-       - description: on SC7180 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sc7180-pdc-global"
--          - const: "qcom,sdm845-pdc-global"
-+          - const: qcom,sc7180-pdc-global
-+          - const: qcom,sdm845-pdc-global
- 
-       - description: on SC7280 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sc7280-pdc-global"
-+          - const: qcom,sc7280-pdc-global
- 
-       - description: on SDM845 SoCs the following compatibles must be specified
-         items:
--          - const: "qcom,sdm845-pdc-global"
-+          - const: qcom,sdm845-pdc-global
- 
-   reg:
-     maxItems: 1
--- 
-2.42.0
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>   drivers/net/ipa/reg/gsi_reg-v5.0.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ipa/reg/gsi_reg-v5.0.c b/drivers/net/ipa/reg/gsi_reg-v5.0.c
+> index d7b81a36d673b..145eb0bd096d6 100644
+> --- a/drivers/net/ipa/reg/gsi_reg-v5.0.c
+> +++ b/drivers/net/ipa/reg/gsi_reg-v5.0.c
+> @@ -78,7 +78,7 @@ REG_STRIDE_FIELDS(EV_CH_E_CNTXT_0, ev_ch_e_cntxt_0,
+>   		  0x0001c000 + 0x12000 * GSI_EE_AP, 0x80);
+>   
+>   static const u32 reg_ev_ch_e_cntxt_1_fmask[] = {
+> -	[R_LENGTH]					= GENMASK(19, 0),
+> +	[R_LENGTH]					= GENMASK(23, 0),
+>   };
+>   
+>   REG_STRIDE_FIELDS(EV_CH_E_CNTXT_1, ev_ch_e_cntxt_1,
 
