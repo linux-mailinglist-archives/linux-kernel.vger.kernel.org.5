@@ -2,48 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A987F4A8C
+	by mail.lfdr.de (Postfix) with ESMTP id 2304A7F4A8B
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344433AbjKVPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S1344365AbjKVPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjKVPdl (ORCPT
+        with ESMTP id S235201AbjKVPdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:33:41 -0500
+        Wed, 22 Nov 2023 10:33:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E3510F8;
-        Wed, 22 Nov 2023 07:33:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D966C433C7;
-        Wed, 22 Nov 2023 15:33:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5181BC9;
+        Wed, 22 Nov 2023 07:33:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A62C433CB;
+        Wed, 22 Nov 2023 15:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667192;
-        bh=tsfvs86aMqoPF1wuQaLY1UWqDFl9Q+xKTuDaoPAgxQA=;
+        s=k20201202; t=1700667195;
+        bh=DBJcN5FTG05qwhWIh0MyzB/8LycVdIjfM46WyfaKjzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BfhvONRjUjf2nqK16BzmmGxTarYvY2GPim3lhQml90UR21RJ0y7+wYH77HpCiyvlu
-         5cHpMfhUFQfIDnm8Uc9LM4xa6KZ20QuZPNRvD5Pqe5rVSVsHUH5kEPQl5BGkSSenNB
-         bpTapWwsfstzJynBIUw4ilGpFsbi2qh2Rpnlaey6xL2hB0SQ79GJQWQ1Z2wiyvFefA
-         DPViHpG3loIBW+5Z2Ns/61Fy6QIyfIBRlrcFO75HO8LynXFTMkSrfqflDi3REH+ayP
-         BNnoms+Dr0AdQ47JI461/fOtPNStAtiL2N/C4TVz6Qb4cWPdoQwCJApy9XqdPcs2nh
-         sm8VD/De53uZA==
+        b=lahtm9OeyXh+DnN6RG3klRBoI41SJnujm7SsriBS/yVSGWud9ukhj5uPzpvNSjojq
+         Fim8i8SQthZqvUL5ll6zpndHTWYjjkD4x8zmJ5CTh9i3k1vfKT5ShcMfUmyewoPEsJ
+         y9G6Ao1qUSvQmbqXobLmxw1/+bH7Ie+R6Vuopk5sXKU0oGRQ7zGn3V4LB6/5FWiu2q
+         30DeJMRSOxDDu45dtj81WGp3l2G06cztfara+n1d5p55AiY1kUmgS2BuYYCpXEUQbq
+         S0XfG1C1YYq47R+VI12+1TR2OkRLK3WR5mZIVRK8xWyHIlxyZZB+bwYpSU/VNnSOxd
+         XEhK3Dlijnveg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     YuanShang <YuanShang.Mao@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
-        airlied@gmail.com, daniel@ffwll.ch, guchun.chen@amd.com,
-        srinivasan.shanmugam@amd.com, luben.tuikov@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 16/17] drm/amdgpu: correct chunk_ptr to a pointer to chunk.
-Date:   Wed, 22 Nov 2023 10:31:45 -0500
-Message-ID: <20231122153212.852040-16-sashal@kernel.org>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, agk@redhat.com,
+        dm-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 17/17] dm-crypt: start allocating with MAX_ORDER
+Date:   Wed, 22 Nov 2023 10:31:46 -0500
+Message-ID: <20231122153212.852040-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153212.852040-1-sashal@kernel.org>
 References: <20231122153212.852040-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.2
@@ -58,35 +54,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YuanShang <YuanShang.Mao@amd.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 50d51374b498457c4dea26779d32ccfed12ddaff ]
+[ Upstream commit 13648e04a9b831b3dfa5cf3887dfa6cf8fe5fe69 ]
 
-The variable "chunk_ptr" should be a pointer pointing
-to a struct drm_amdgpu_cs_chunk instead of to a pointer
-of that.
+Commit 23baf831a32c ("mm, treewide: redefine MAX_ORDER sanely")
+changed the meaning of MAX_ORDER from exclusive to inclusive. So, we
+can allocate compound pages with up to 1 << MAX_ORDER pages.
 
-Signed-off-by: YuanShang <YuanShang.Mao@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reflect this change in dm-crypt and start trying to allocate compound
+pages with MAX_ORDER.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 +-
+ drivers/md/dm-crypt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-index d93a8961274c6..bfac7a93726ed 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-@@ -207,7 +207,7 @@ static int amdgpu_cs_pass1(struct amdgpu_cs_parser *p,
- 	}
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 5315fd261c23b..9a4b4932438f3 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -1679,7 +1679,7 @@ static struct bio *crypt_alloc_buffer(struct dm_crypt_io *io, unsigned int size)
+ 	unsigned int nr_iovecs = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+ 	gfp_t gfp_mask = GFP_NOWAIT | __GFP_HIGHMEM;
+ 	unsigned int remaining_size;
+-	unsigned int order = MAX_ORDER - 1;
++	unsigned int order = MAX_ORDER;
  
- 	for (i = 0; i < p->nchunks; i++) {
--		struct drm_amdgpu_cs_chunk __user **chunk_ptr = NULL;
-+		struct drm_amdgpu_cs_chunk __user *chunk_ptr = NULL;
- 		struct drm_amdgpu_cs_chunk user_chunk;
- 		uint32_t __user *cdata;
- 
+ retry:
+ 	if (unlikely(gfp_mask & __GFP_DIRECT_RECLAIM))
 -- 
 2.42.0
 
