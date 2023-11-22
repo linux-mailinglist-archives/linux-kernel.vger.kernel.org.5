@@ -2,85 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B217F4C57
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14757F4C59
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjKVQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S230510AbjKVQaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKVQ3E (ORCPT
+        with ESMTP id S229464AbjKVQaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:29:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8612CA2;
-        Wed, 22 Nov 2023 08:29:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700670540; x=1732206540;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=bagruS5CXrz6mOWB6COGHqS1jlKmltZBn+nUJ6YlRfc=;
-  b=CHGuVvkMltNsrvh0eAqgxIVDewD+WVIdJUZsJ2IkpO5lHrSn4UbwWPBX
-   bpxa/Zr5s20kbZw/hu9l381mf/cqIuKZjUNiVUCnsQmTSZejS4TnZBFTQ
-   ttIJrTDDZHKtxOQ+V/2lvL1rk2UCPDja4FhSw1qH6s7Ymxkwij4Fh8tBu
-   fftWG6kxgIQ4ms/eYgop0ppBYv6nI2xwF7vMoTFevna4yLtkqX/2K49NL
-   JonJpMCy3vy4/528RRPcPVxO3HaS5lY+cZ5feuz/TmIM0158y8gG2vKbq
-   eeg+oGvdzQkx67EEbg8Ty0K0VmE55njHwi5cGXff8aDrxGR2L/aVmxPqo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="394921013"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="394921013"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:28:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="8531683"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 22 Nov 2023 08:28:53 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5q5r-0000gb-0J;
-        Wed, 22 Nov 2023 16:28:51 +0000
-Date:   Thu, 23 Nov 2023 00:28:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <202311222251.miLTgMyd-lkp@intel.com>
-References: <20231120215945.52027-3-pstanner@redhat.com>
+        Wed, 22 Nov 2023 11:30:10 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24394F4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:30:06 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A413DC15;
+        Wed, 22 Nov 2023 08:30:52 -0800 (PST)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A14F3F73F;
+        Wed, 22 Nov 2023 08:30:02 -0800 (PST)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
+Date:   Wed, 22 Nov 2023 16:29:40 +0000
+Message-Id: <20231122162950.3854897-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,64 +56,248 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+Note: I'm resending this at Andrew's suggestion due to having originally sent
+it during LPC. I'm hoping its in a position where the feedback is minor enough
+that I can rework in time for v6.8, but so far haven't had any.
 
-kernel test robot noticed the following build warnings:
+Hi All,
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-202311=
-22]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This is v7 of a series to implement small-sized THP for anonymous memory
+(previously called "large anonymous folios"). The objective of this is to
+improve performance by allocating larger chunks of memory during anonymous page
+faults:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-=
-move-pci_iomap-c-to-drivers-pci/20231121-060258
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40=
-redhat.com
-patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-config: csky-kismet-CONFIG_GENERIC_PCI_IOMAP-CONFIG_CSKY-0-0 (https://downl=
-oad.01.org/0day-ci/archive/20231122/202311222251.miLTgMyd-lkp@intel.com/con=
-fig)
-reproduce: (https://download.01.org/0day-ci/archive/20231122/202311222251.m=
-iLTgMyd-lkp@intel.com/reproduce)
+1) Since SW (the kernel) is dealing with larger chunks of memory than base
+   pages, there are efficiency savings to be had; fewer page faults, batched PTE
+   and RMAP manipulation, reduced lru list, etc. In short, we reduce kernel
+   overhead. This should benefit all architectures.
+2) Since we are now mapping physically contiguous chunks of memory, we can take
+   advantage of HW TLB compression techniques. A reduction in TLB pressure
+   speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
+   TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new versio=
-n of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311222251.miLTgMyd-lkp@i=
-ntel.com/
+The major change in this revision is the migration to a new sysfs interface as
+recommended by David Hildenbrand - thanks to David for the suggestion! This
+interface is inspired by the existing per-hugepage-size sysfs interface used by
+hugetlb, provides full backwards compatibility with the existing PMD-size THP
+interface, and provides a base for future extensibility. See [7] for detailed
+discussion of the interface.
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMA=
-P when selected by CSKY
-   /usr/bin/grep: /db/releases/20231122101355/kernel-tests/etc/kcflags: No =
-such file or directory
-   {"timestamp":"2023-11-22 12:45:55 +0800", "level":"WARN", "event":"kbuil=
-d.sh:3942:in `add_etc_kcflags': grep exit 2 (ShellError)", "detail":"cmd: '=
-/usr/bin/grep' '-v' '-e' '^#' '-e' '^$' '/db/releases/20231122101355/kernel=
--tests/etc/kcflags' \nstderr: /usr/bin/grep: /db/releases/20231122101355/ke=
-rnel-tests/etc/kcflags: No such file or directory\n\n", "hostname":"communi=
-ty-kbuild-consumer-56", "host_hostname":"lkp-worker31", "call_stack":"/zday=
-/kernel-tests/lib/kbuild.sh:3942:in `add_etc_kcflags': /usr/bin/grep: /db/r=
-eleases/20231122101355/kernel-tests/etc/kcflags: No such file or directory =
-(ShellError 2)\n  from /zday/kernel-tests/lib/kbuild.sh:3971: setup_kcflags=
-\n  from /zday/kernel-tests/lib/kbuild.sh:4016: invoke_make\n  from /zday/k=
-ernel-tests/lib/kbuild.sh:4122: make\n  from /zday/kernel-tests/lib/kbuild.=
-sh:5623: make_config_allyes\n  from /zday/kernel-tests/common.sh:209: redir=
-ect_error_to_screen\n  from /zday/kernel-tests/common.sh:217: redirect_comm=
-and_errors\n  from /zday/kernel-tests/lib/kbuild.sh:5630: make_config\n  fr=
-om /zday/kernel-tests/lib/builder/kismet.sh:156: generate_make_olddefconfig=
-_warnings\n  from /zday/kernel-tests/lib/builder/kismet.sh:297: builder_com=
-pile\n  from /zday/kernel-tests/bisect-test-build-error.sh:94: main\n"}
-  =20
-   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
-     Depends on [n]: PCI [=3Dn]
-     Selected by [y]:
-     - CSKY [=3Dy]
+By default, the existing behaviour (and performance) is maintained. The user
+must explicitly enable small-sized THP to see the performance benefit.
 
---=20
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The series has also become heavy with mm selftest changes: These all relate to
+enlightenment of cow and khugepaged tests to explicitly test with small-sized
+THP.
+
+This series is based on mm-unstable (60df8b4235f5).
+
+
+Prerequisites
+=============
+
+Some work items identified as being prerequisites are listed on page 3 at [8].
+The summary is:
+
+| item                          | status                  |
+|:------------------------------|:------------------------|
+| mlock                         | In mainline (v6.7)      |
+| madvise                       | In mainline (v6.6)      |
+| compaction                    | v1 posted [9]           |
+| numa balancing                | Investigated: see below |
+| user-triggered page migration | In mainline (v6.7)      |
+| khugepaged collapse           | In mainline (NOP)       |
+
+On NUMA balancing, which currently ignores any PTE-mapped THPs it encounters,
+John Hubbard has investigated this and concluded that it is A) not clear at the
+moment what a better policy might be for PTE-mapped THP and B) questions whether
+this should really be considered a prerequisite given no regression is caused
+for the default "small-sized THP disabled" case, and there is no correctness
+issue when it is enabled - its just a potential for non-optimal performance.
+(John please do elaborate if I haven't captured this correctly!)
+
+If there are no disagreements about removing numa balancing from the list, then
+that just leaves compaction which is in review on list at the moment.
+
+I really would like to get this series (and its remaining comapction
+prerequisite) in for v6.8. I accept that it may be a bit optimistic at this
+point, but lets see where we get to with review?
+
+
+Testing
+=======
+
+The series includes patches for mm selftests to enlighten the cow and khugepaged
+tests to explicitly test with small-order THP, in the same way that PMD-order
+THP is tested. The new tests all pass, and no regressions are observed in the mm
+selftest suite. I've also run my usual kernel compilation and java script
+benchmarks without any issues.
+
+Refer to my performance numbers posted with v6 [6]. (These are for small-sized
+THP only - they do not include the arm64 contpte follow-on series).
+
+John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
+some workloads at [10]. (Observed using v6 of this series as well as the arm64
+contpte series).
+
+Kefeng Wang at Huawei has also indicated he sees improvements at [11] although
+there are some latency regressions also.
+
+
+Changes since v6 [6]
+====================
+
+  - Refactored vmf_pte_range_changed() to remove uffd special-case (suggested by
+    JohnH)
+  - Dropped accounting patch (#3 in v6) (suggested by DavidH)
+      - Continue to account *PMD-sized* THP only for now
+      - Can add more counters in future if needed
+      - Page cache large folios haven't needed any new counters yet
+  - Pivot to sysfs ABI proposed by DavidH
+      - per-size directories in a similar shape to that used by hugetlb
+  - Dropped "recommend" keyword patch (#6 in v6) (suggested by DavidH, Yu Zhou)
+      - For now, users need to understand implicitly which sizes are beneficial
+        to their HW/SW
+  - Dropped arch_wants_pte_order() patch (#7 in v6)
+      - No longer needed due to dropping patch "recommend" keyword patch
+  - Enlightened khugepaged mm selftest to explicitly test with small-size THP
+  - Scrubbed commit logs to use "small-sized THP" consistently (suggested by
+    DavidH)
+
+
+Changes since v5 [5]
+====================
+
+  - Added accounting for PTE-mapped THPs (patch 3)
+  - Added runtime control mechanism via sysfs as extension to THP (patch 4)
+  - Minor refactoring of alloc_anon_folio() to integrate with runtime controls
+  - Stripped out hardcoded policy for allocation order; its now all user space
+    controlled (although user space can request "recommend" which will configure
+    the HW-preferred order)
+
+
+Changes since v4 [4]
+====================
+
+  - Removed "arm64: mm: Override arch_wants_pte_order()" patch; arm64
+    now uses the default order-3 size. I have moved this patch over to
+    the contpte series.
+  - Added "mm: Allow deferred splitting of arbitrary large anon folios" back
+    into series. I originally removed this at v2 to add to a separate series,
+    but that series has transformed significantly and it no longer fits, so
+    bringing it back here.
+  - Reintroduced dependency on set_ptes(); Originally dropped this at v2, but
+    set_ptes() is in mm-unstable now.
+  - Updated policy for when to allocate LAF; only fallback to order-0 if
+    MADV_NOHUGEPAGE is present or if THP disabled via prctl; no longer rely on
+    sysfs's never/madvise/always knob.
+  - Fallback to order-0 whenever uffd is armed for the vma, not just when
+    uffd-wp is set on the pte.
+  - alloc_anon_folio() now returns `struct folio *`, where errors are encoded
+    with ERR_PTR().
+
+  The last 3 changes were proposed by Yu Zhao - thanks!
+
+
+Changes since v3 [3]
+====================
+
+  - Renamed feature from FLEXIBLE_THP to LARGE_ANON_FOLIO.
+  - Removed `flexthp_unhinted_max` boot parameter. Discussion concluded that a
+    sysctl is preferable but we will wait until real workload needs it.
+  - Fixed uninitialized `addr` on read fault path in do_anonymous_page().
+  - Added mm selftests for large anon folios in cow test suite.
+
+
+Changes since v2 [2]
+====================
+
+  - Dropped commit "Allow deferred splitting of arbitrary large anon folios"
+      - Huang, Ying suggested the "batch zap" work (which I dropped from this
+        series after v1) is a prerequisite for merging FLXEIBLE_THP, so I've
+        moved the deferred split patch to a separate series along with the batch
+        zap changes. I plan to submit this series early next week.
+  - Changed folio order fallback policy
+      - We no longer iterate from preferred to 0 looking for acceptable policy
+      - Instead we iterate through preferred, PAGE_ALLOC_COSTLY_ORDER and 0 only
+  - Removed vma parameter from arch_wants_pte_order()
+  - Added command line parameter `flexthp_unhinted_max`
+      - clamps preferred order when vma hasn't explicitly opted-in to THP
+  - Never allocate large folio for MADV_NOHUGEPAGE vma (or when THP is disabled
+    for process or system).
+  - Simplified implementation and integration with do_anonymous_page()
+  - Removed dependency on set_ptes()
+
+
+Changes since v1 [1]
+====================
+
+  - removed changes to arch-dependent vma_alloc_zeroed_movable_folio()
+  - replaced with arch-independent alloc_anon_folio()
+      - follows THP allocation approach
+  - no longer retry with intermediate orders if allocation fails
+      - fallback directly to order-0
+  - remove folio_add_new_anon_rmap_range() patch
+      - instead add its new functionality to folio_add_new_anon_rmap()
+  - remove batch-zap pte mappings optimization patch
+      - remove enabler folio_remove_rmap_range() patch too
+      - These offer real perf improvement so will submit separately
+  - simplify Kconfig
+      - single FLEXIBLE_THP option, which is independent of arch
+      - depends on TRANSPARENT_HUGEPAGE
+      - when enabled default to max anon folio size of 64K unless arch
+        explicitly overrides
+  - simplify changes to do_anonymous_page():
+      - no more retry loop
+
+
+[1] https://lore.kernel.org/linux-mm/20230626171430.3167004-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20230703135330.1865927-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.roberts@arm.com/
+[5] https://lore.kernel.org/linux-mm/20230810142942.3169679-1-ryan.roberts@arm.com/
+[6] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.roberts@arm.com/
+[7] https://lore.kernel.org/linux-mm/6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com/
+[8] https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view?usp=sharing&resourcekey=0-U1Mj3-RhLD1JV6EThpyPyA
+[9] https://lore.kernel.org/linux-mm/20231113170157.280181-1-zi.yan@sent.com/
+[10] https://lore.kernel.org/linux-mm/c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com/
+[11] https://lore.kernel.org/linux-mm/479b3e2b-456d-46c1-9677-38f6c95a0be8@huawei.com/
+
+
+Thanks,
+Ryan
+
+Ryan Roberts (10):
+  mm: Allow deferred splitting of arbitrary anon large folios
+  mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+  mm: thp: Introduce per-size thp sysfs interface
+  mm: thp: Support allocation of anonymous small-sized THP
+  selftests/mm/kugepaged: Restore thp settings at exit
+  selftests/mm: Factor out thp settings management
+  selftests/mm: Support small-sized THP interface in thp_settings
+  selftests/mm/khugepaged: Enlighten for small-sized THP
+  selftests/mm/cow: Generalize do_run_with_thp() helper
+  selftests/mm/cow: Add tests for anonymous small-sized THP
+
+ Documentation/admin-guide/mm/transhuge.rst |  74 +++-
+ Documentation/filesystems/proc.rst         |   6 +-
+ fs/proc/task_mmu.c                         |   3 +-
+ include/linux/huge_mm.h                    | 102 +++--
+ mm/huge_memory.c                           | 263 +++++++++++--
+ mm/khugepaged.c                            |  16 +-
+ mm/memory.c                                | 112 +++++-
+ mm/page_vma_mapped.c                       |   3 +-
+ mm/rmap.c                                  |  32 +-
+ tools/testing/selftests/mm/Makefile        |   4 +-
+ tools/testing/selftests/mm/cow.c           | 215 +++++++----
+ tools/testing/selftests/mm/khugepaged.c    | 410 ++++-----------------
+ tools/testing/selftests/mm/run_vmtests.sh  |   2 +
+ tools/testing/selftests/mm/thp_settings.c  | 349 ++++++++++++++++++
+ tools/testing/selftests/mm/thp_settings.h  |  80 ++++
+ 15 files changed, 1160 insertions(+), 511 deletions(-)
+ create mode 100644 tools/testing/selftests/mm/thp_settings.c
+ create mode 100644 tools/testing/selftests/mm/thp_settings.h
+
+--
+2.25.1
+
