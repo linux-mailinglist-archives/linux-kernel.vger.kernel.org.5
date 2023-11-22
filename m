@@ -2,42 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64047F4B66
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE677F4B6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344692AbjKVPq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S1344645AbjKVPqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344797AbjKVPpq (ORCPT
+        with ESMTP id S1344779AbjKVPpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:45:46 -0500
+        Wed, 22 Nov 2023 10:45:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFC6468F;
-        Wed, 22 Nov 2023 07:36:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12678C433B8;
-        Wed, 22 Nov 2023 15:36:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0982D69;
+        Wed, 22 Nov 2023 07:36:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44719C433C8;
+        Wed, 22 Nov 2023 15:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667410;
-        bh=6ZoHN0iibOyM751thDgV3ean1uRWh6q1kOki5dHPK+I=;
+        s=k20201202; t=1700667414;
+        bh=o3f4VkGW0yexAr+VkV/QIhWOsoaxPdXTZYS43eG16rw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olzeNtQrwXyleycJgF+vCUvbF6roaKKSiIuZqPWzFDUld5UFywKAjJb7IDOQws1jL
-         jXK7OC58kdgUR6Lq7kgVnidhbWmsKk1JPiCvHvlLhsWx6M56TRZFFVeXdfVSdY7wHv
-         QDglklE6tAIa7pOnfIoVmaRHkRszbxtuTyDL9+xy0qXthQ08ZvLPNQEw4lTdjLPSyy
-         Vde5l2x4VbRRYMY5Zvu3xGZilQkzR+7o28S/9XZb0n+CrgHgI/Z3Z14X5t80JE86KN
-         nIYzjgW5eQp4IPvS0pyNNle2ZMCcNo/AvCQcm33cISmcCccWceyrKcIe7HAhd0sOY0
-         V+zhjWZAG+YRw==
+        b=j8slBQByNq+9jE7RBXIBevFFg5TlcKYh5jcipvPT7EFYxfP4+tsc6KIZplGVREhrK
+         QdLDiWXVrRPPYwuqJdKqdyxlvtEZPbBSlUO0kt3nIQB4vwf1y+nMNd7HAWMxoH6MpK
+         ACQhAsDtZQE8TbQbqNJkkBSpEB/mUBIAphEhNUezVkZhSKBTRRbShvXgv8DkowJ8Gy
+         4VNj7qWGQ05I11JPhooE+9z8DWyDaPfSZrZTlF7nGwzGXnZxmHX/BI7G2VLOkQQ0w5
+         xH2Odk9BnE5zHrX8xInigwvRUU32o+rIgl/T+KAnxgKud1+BbSlpGa5T4+b2ee/zi2
+         5tyPpi34ko5fQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 5/6] kconfig: fix memory leak from range properties
-Date:   Wed, 22 Nov 2023 10:36:29 -0500
-Message-ID: <20231122153635.853495-5-sashal@kernel.org>
+Cc:     YuanShang <YuanShang.Mao@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, guchun.chen@amd.com,
+        srinivasan.shanmugam@amd.com, luben.tuikov@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.19 6/6] drm/amdgpu: correct chunk_ptr to a pointer to chunk.
+Date:   Wed, 22 Nov 2023 10:36:30 -0500
+Message-ID: <20231122153635.853495-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153635.853495-1-sashal@kernel.org>
 References: <20231122153635.853495-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.299
@@ -52,90 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: YuanShang <YuanShang.Mao@amd.com>
 
-[ Upstream commit ae1eff0349f2e908fc083630e8441ea6dc434dc0 ]
+[ Upstream commit 50d51374b498457c4dea26779d32ccfed12ddaff ]
 
-Currently, sym_validate_range() duplicates the range string using
-xstrdup(), which is overwritten by a subsequent sym_calc_value() call.
-It results in a memory leak.
+The variable "chunk_ptr" should be a pointer pointing
+to a struct drm_amdgpu_cs_chunk instead of to a pointer
+of that.
 
-Instead, only the pointer should be copied.
-
-Below is a test case, with a summary from Valgrind.
-
-[Test Kconfig]
-
-  config FOO
-          int "foo"
-          range 10 20
-
-[Test .config]
-
-  CONFIG_FOO=0
-
-[Before]
-
-  LEAK SUMMARY:
-     definitely lost: 3 bytes in 1 blocks
-     indirectly lost: 0 bytes in 0 blocks
-       possibly lost: 0 bytes in 0 blocks
-     still reachable: 17,465 bytes in 21 blocks
-          suppressed: 0 bytes in 0 blocks
-
-[After]
-
-  LEAK SUMMARY:
-     definitely lost: 0 bytes in 0 blocks
-     indirectly lost: 0 bytes in 0 blocks
-       possibly lost: 0 bytes in 0 blocks
-     still reachable: 17,462 bytes in 20 blocks
-          suppressed: 0 bytes in 0 blocks
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: YuanShang <YuanShang.Mao@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/symbol.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
-index 703b9b899ee9c..5adb60b7e12f3 100644
---- a/scripts/kconfig/symbol.c
-+++ b/scripts/kconfig/symbol.c
-@@ -119,9 +119,9 @@ static long long sym_get_range_val(struct symbol *sym, int base)
- static void sym_validate_range(struct symbol *sym)
- {
- 	struct property *prop;
-+	struct symbol *range_sym;
- 	int base;
- 	long long val, val2;
--	char str[64];
- 
- 	switch (sym->type) {
- 	case S_INT:
-@@ -137,17 +137,15 @@ static void sym_validate_range(struct symbol *sym)
- 	if (!prop)
- 		return;
- 	val = strtoll(sym->curr.val, NULL, base);
--	val2 = sym_get_range_val(prop->expr->left.sym, base);
-+	range_sym = prop->expr->left.sym;
-+	val2 = sym_get_range_val(range_sym, base);
- 	if (val >= val2) {
--		val2 = sym_get_range_val(prop->expr->right.sym, base);
-+		range_sym = prop->expr->right.sym;
-+		val2 = sym_get_range_val(range_sym, base);
- 		if (val <= val2)
- 			return;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+index 70e446c2acf82..94b06c918e80d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+@@ -147,7 +147,7 @@ static int amdgpu_cs_parser_init(struct amdgpu_cs_parser *p, union drm_amdgpu_cs
  	}
--	if (sym->type == S_INT)
--		sprintf(str, "%lld", val2);
--	else
--		sprintf(str, "0x%llx", val2);
--	sym->curr.val = xstrdup(str);
-+	sym->curr.val = range_sym->curr.val;
- }
  
- static void sym_set_changed(struct symbol *sym)
+ 	for (i = 0; i < p->nchunks; i++) {
+-		struct drm_amdgpu_cs_chunk __user **chunk_ptr = NULL;
++		struct drm_amdgpu_cs_chunk __user *chunk_ptr = NULL;
+ 		struct drm_amdgpu_cs_chunk user_chunk;
+ 		uint32_t __user *cdata;
+ 
 -- 
 2.42.0
 
