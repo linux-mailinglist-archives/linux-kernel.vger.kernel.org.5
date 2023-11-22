@@ -2,141 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC5D7F4FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DC57F4FE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344217AbjKVStT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:49:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        id S232553AbjKVStd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 13:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjKVStS (ORCPT
+        with ESMTP id S231825AbjKVStb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:49:18 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559B10C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:49:14 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-332ce3fa438so718344f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:49:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700678952; x=1701283752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pzbb4yu+uIFcF0LoyxrjR6+s/zlLmfO0KYxAIgJm4X8=;
-        b=wSJQc1W1FXzb7hmO98WrGCJ2lE5vYXfZhWebZ9uGL6wLwvBlvK9V96T/fYaiDGcOoT
-         Y5ZQFZN8eBEpBejotCj7sW1R7dE+yB5iEj6HjqK+FO+SpHrqncYEATQJ9N2EABbn2O+k
-         Y82Olw01k0XUQgZZO5BRNvDNUN4I2Z23sTJNH+3W/mZaxVulEXLUjYjL1V6UnkYrLZzr
-         nJ1OFe64VKeqLx/lYWXQwZ4+rD0VI5EmeHr4DOBQkBVOSUjyBWRDhzqftN+T7Ya84Qtx
-         CU33U+3ENCSwF7uq3w1GEsaeZ0bjHZL/wW1w8k0v/tI+G80rfM+C2T5qpI+1tCZW6J2R
-         Yy8w==
+        Wed, 22 Nov 2023 13:49:31 -0500
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023A9199;
+        Wed, 22 Nov 2023 10:49:26 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2854757f0f8so125347a91.1;
+        Wed, 22 Nov 2023 10:49:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700678952; x=1701283752;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pzbb4yu+uIFcF0LoyxrjR6+s/zlLmfO0KYxAIgJm4X8=;
-        b=jfmjvcYh5IqllBDHnSuJg6Jdx706mDPnSCtDpVFeuPWMaXljQ7QxHfsMnjpA5RKf65
-         NrJdPICJP8kxKGIlkXG4GxCHWAM76hkz+zRSUH5F4xot+UWEMM4jYZvXHIr6vAMbMb9o
-         Jfa8FYTXp8EsHbrHdQZuVmjFZgjOclekSoRRC6DFWDaiCCKTSqnRLIjFyhrajAu4BiYq
-         o5hCPQXIR7M4Cj68yk2ohISqnkns6Z2azEV6s7Q4PqVDq1CrFMtRfds5PFAVsA0l7G8a
-         L/cNZ6nc841gU/7PYx7vMXExy1QOS/tbGIa29GonFQb9f2QAdb36NiCl8SYr1BSTvz5V
-         nu5A==
-X-Gm-Message-State: AOJu0Yx6eQpu3vWyPYgOWazajkB5/CEdYoGRyCAfeS1+LlLacMMFH+zQ
-        oZ3E/hNi3qEOxPFUPy9HARGI2A==
-X-Google-Smtp-Source: AGHT+IEbwWgrAjraL3qg12/f7IyrcpKs895Ih7FeIKScS02O8BbPyyDQUj7vUvlvSEC6Xivk6iMBIw==
-X-Received: by 2002:adf:e609:0:b0:32f:c188:38ec with SMTP id p9-20020adfe609000000b0032fc18838ecmr336677wrm.16.1700678952552;
-        Wed, 22 Nov 2023 10:49:12 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id f5-20020a5d64c5000000b00332ce0d7300sm71471wri.92.2023.11.22.10.49.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 10:49:12 -0800 (PST)
-Message-ID: <9b502026-8a44-4f9e-aad6-25963886b39d@linaro.org>
-Date:   Wed, 22 Nov 2023 19:49:10 +0100
+        d=1e100.net; s=20230601; t=1700678966; x=1701283766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W7Iop8NjAv/V7uTTjT8YgCc8seaP7i+Z8kpzZdHXtjE=;
+        b=aDDnQ2UbJI+J/sMDnThx3pWqpVeIAzK/72dAmSzOcNTDXXrDibCTFkhmSt2rK+idAX
+         hJtqew9ghkD2bGiK4fvtwblCLVDuBzpI+fIHDfE04e+/xqtd9/EoDH5mUnSOjy1F49N0
+         hOtbc4HFK/wc2VU/94Sk62BO3g/6E8HeWpkCezA7ZTCGCUiS3mQTxHGgAddIwQSZz5wL
+         a29Ikd/nRyv1YJX581jR4wyhm6WsJYjszoq2YU3TmbgmE3o65aah/50rFD8UEAy5EV1P
+         ctOmEHByImQMLYz8p5xESwg3pUtN+S7JGS7rsnuRY5i7OWg9gFD7R/sMpv7+z9fuKKMj
+         kpSA==
+X-Gm-Message-State: AOJu0Yz6J+vlXjq1hvmxFVUZ3xrZ8hd0ZT6BiqQEXxEADpndRsxdWm+r
+        SJT4sjCpIszr6APXKI10KSU9p2vi7MjVYzkuTTI+63Db7M0=
+X-Google-Smtp-Source: AGHT+IFWNWFEpGBHQ5w/vbcwy/t3WZMV319y8jsMD7cAf4LiuLVYYuzCiA/kwkmbqQGNj5DKcNqFSCSoWpg5y3vJwMg=
+X-Received: by 2002:a17:90b:1e4d:b0:281:1404:c36f with SMTP id
+ pi13-20020a17090b1e4d00b002811404c36fmr3475423pjb.16.1700678966001; Wed, 22
+ Nov 2023 10:49:26 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 28/39] ASoC: dt-bindings: ep93xx: Document Audio Port
- support
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
- <20231122-ep93xx-v5-28-d59a76d5df29@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122-ep93xx-v5-28-d59a76d5df29@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231110000012.3538610-1-namhyung@kernel.org> <20231110000012.3538610-19-namhyung@kernel.org>
+ <ZVzvFen/214ylf32@kernel.org>
+In-Reply-To: <ZVzvFen/214ylf32@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 22 Nov 2023 10:49:13 -0800
+Message-ID: <CAM9d7cijprv2fOM_jwYbrV0jbhno2ZQDCT3SExG=Ot=b2mANmw@mail.gmail.com>
+Subject: Re: [PATCH 18/52] perf report: Add 'type' sort key
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 10:00, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Document Audio Graph Port support in binding document.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
+On Tue, Nov 21, 2023 at 9:55 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, Nov 09, 2023 at 03:59:37PM -0800, Namhyung Kim escreveu:
+> > The 'type' sort key is to aggregate hist entries by data type they
+> > access.  Add mem_type field to hist_entry struct to save the type.
+> > If hist_entry__get_data_type() returns NULL, it'd use the
+> > 'unknown_type' instance.
+>
+> I built up to here and then tried on a random perf.data file:
+>
+> ⬢[acme@toolbox perf-tools-next]$ perf evlist
+> cycles:Pu
+> ⬢[acme@toolbox perf-tools-next]$ perf evlist -v
+> cycles:Pu: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
+> ⬢[acme@toolbox perf-tools-next]$
+>
+> And got:
+>
+> ⬢[acme@toolbox perf-tools-next]$ perf report -s type
+> perf: Segmentation fault
+> -------- backtrace --------
+> perf[0x69f743]
+> /lib64/libc.so.6(+0x3dbb0)[0x7f89b4778bb0]
+> perf[0x505af6]
+> perf[0x512d47]
+> perf[0x512f82]
+> perf[0x5b3461]
+> perf[0x5b3516]
+> perf[0x5b3a3e]
+> perf[0x5bbb05]
+> perf[0x5bc68f]
+> perf[0x5bca7c]
+> perf[0x42ead1]
+> perf[0x42fa08]
+> perf[0x43200d]
+> perf[0x504856]
+> perf[0x504ac5]
+> perf[0x504c14]
+> perf[0x504f01]
+> /lib64/libc.so.6(+0x27b8a)[0x7f89b4762b8a]
+> /lib64/libc.so.6(__libc_start_main+0x8b)[0x7f89b4762c4b]
+> perf[0x40ed65]
+> ⬢[acme@toolbox perf-tools-next]$
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Right, the 'type' sort key was added here but unfortunately
+it's not ready for prime time yet.  It also needs the next patch
+19/52 ("perf report: Support data type profiling") to fully enable
+the feature.  Do you think it's better to squash into here?
 
-Best regards,
-Krzysztof
+Thanks,
+Namhyung
 
+>
+> Using gdb:
+>
+> (gdb) run report --stdio -s type
+> Starting program: /home/acme/bin/perf report --stdio -s type
+>
+> This GDB supports auto-downloading debuginfo from the following URLs:
+>   <https://debuginfod.fedoraproject.org/>
+> Enable debuginfod for this session? (y or [n]) y
+> Debuginfod has been enabled.
+> To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+> [Thread debugging using libthread_db enabled]
+> Using host libthread_db library "/lib64/libthread_db.so.1".
+> [Detaching after fork from child process 811109]
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0000000000505af6 in list_empty (head=0x14c20) at /home/acme/git/perf-tools-next/tools/include/linux/list.h:189
+> 189             return head->next == head;
+> (gdb) bt
+> #0  0x0000000000505af6 in list_empty (head=0x14c20) at /home/acme/git/perf-tools-next/tools/include/linux/list.h:189
+> #1  0x0000000000512d47 in symbol__ensure_annotate (ms=0xe6f258, evsel=0xe276f0) at util/annotate.c:3640
+> #2  0x0000000000512f82 in hist_entry__get_data_type (he=0xe6f1e0) at util/annotate.c:3696
+> #3  0x00000000005b3461 in sort__type_init (he=0xe6f1e0) at util/sort.c:2152
+> #4  0x00000000005b3516 in sort__type_collapse (left=0xe6ed80, right=0xe6f1e0) at util/sort.c:2169
+> #5  0x00000000005b3a3e in __sort__hpp_collapse (fmt=0xe448f0, a=0xe6ed80, b=0xe6f1e0) at util/sort.c:2394
+> #6  0x00000000005bbb05 in hist_entry__collapse (left=0xe6ed80, right=0xe6f1e0) at util/hist.c:1306
+> #7  0x00000000005bc68f in hists__collapse_insert_entry (hists=0xe27960, root=0xe27998, he=0xe6f1e0) at util/hist.c:1613
+> #8  0x00000000005bca7c in hists__collapse_resort (hists=0xe27960, prog=0x7fffffffb820) at util/hist.c:1697
+> #9  0x000000000042ead1 in report__collapse_hists (rep=0x7fffffffbac0) at builtin-report.c:723
+> #10 0x000000000042fa08 in __cmd_report (rep=0x7fffffffbac0) at builtin-report.c:1042
+> #11 0x000000000043200d in cmd_report (argc=0, argv=0x7fffffffe1b0) at builtin-report.c:1733
+> #12 0x0000000000504856 in run_builtin (p=0xdf7da0 <commands+288>, argc=4, argv=0x7fffffffe1b0) at perf.c:322
+> #13 0x0000000000504ac5 in handle_internal_command (argc=4, argv=0x7fffffffe1b0) at perf.c:375
+> #14 0x0000000000504c14 in run_argv (argcp=0x7fffffffdfcc, argv=0x7fffffffdfc0) at perf.c:419
+> #15 0x0000000000504f01 in main (argc=4, argv=0x7fffffffe1b0) at perf.c:535
+> (gdb)
+>
+>
+> static void symbol__ensure_annotate(struct map_symbol *ms, struct evsel *evsel)
+> +{
+> +       struct disasm_line *dl, *tmp_dl;
+> +       struct annotation *notes;
+> +
+> +       notes = symbol__annotation(ms->sym);
+> +       if (!list_empty(&notes->src->source))
+> +               return;
+> +
+> +       if (symbol__annotate(ms, evsel, notes->options, NULL) < 0)
+> +               return;
+> +
+> +       /* remove non-insn disasm lines for simplicity */
+> +       list_for_each_entry_safe(dl, tmp_dl, &notes->src->source, al.node) {
+> +               if (dl->al.offset == -1) {
+> +                       list_del(&dl->al.node);
+> +                       free(dl);
+> +               }
+> +       }
+> +}
+>
+> Probably annotated_source__new() wasn't called? Yeah, seems so:
+>
+> (gdb) b annotated_source__new
+> Breakpoint 1 at 0x50a894: file util/annotate.c, line 851.
+> (gdb) run report --stdio -s type
+> Starting program: /home/acme/bin/perf report --stdio -s type
+>
+> This GDB supports auto-downloading debuginfo from the following URLs:
+>   <https://debuginfod.fedoraproject.org/>
+> Enable debuginfod for this session? (y or [n]) y
+> Debuginfod has been enabled.
+> To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+> [Thread debugging using libthread_db enabled]
+> Using host libthread_db library "/lib64/libthread_db.so.1".
+> [Detaching after fork from child process 818292]
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0000000000505af6 in list_empty (head=0x14c20) at /home/acme/git/perf-tools-next/tools/include/linux/list.h:189
+> 189             return head->next == head;
+> (gdb)
