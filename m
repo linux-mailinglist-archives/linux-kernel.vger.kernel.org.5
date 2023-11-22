@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F317F441C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECE67F4428
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343561AbjKVKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
+        id S1343692AbjKVKnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235073AbjKVKmT (ORCPT
+        with ESMTP id S235134AbjKVKm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:42:19 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A79C1AA;
-        Wed, 22 Nov 2023 02:42:13 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 69FCA6607359;
-        Wed, 22 Nov 2023 10:42:11 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700649732;
-        bh=WfTQvbA1j86GwIsj9Oe5JMz0TJlJUgsfZVCjYFqjN20=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S9ZxG94WkUixZsqVzVrRwI/ekHdd8DMfDqyHjXGfqYt4Cz3qu19rG20+xyc0OR9me
-         N8Bkmc3kUVSTwsSybCjuz1n/0oQvImiVgENF8SIGsPQWGAtAYieOIoeOwZxkBa1Ag5
-         Cawtosqh/52zRaD8I07pWkiw2a1eGu0oFVO8kPxOl/N/gm+AHfZ5jVsTi7+ckb7JAz
-         9UHemAH06xevqfjjhZs8780YyOVoZAwcTzHanhShkjQfs7i+CZ4j5F1rblu4Wq3O3v
-         oqPyJuYDPd8ndwyY7pUiZkqC82NQhYzUhbeygvavNIEOD1a4QqNf0q3uUqF+60rvHx
-         WrfRwqbsAj1xA==
-Date:   Wed, 22 Nov 2023 11:42:08 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, mripard@kernel.org,
-        dri-devel@lists.freedesktop.org, wenst@chromium.org,
-        kernel@collabora.com,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
- panfrost_gpu_power_off()
-Message-ID: <20231122114208.60271aa0@collabora.com>
-In-Reply-To: <ecea3676-5dc6-4633-9373-931cdb582190@collabora.com>
-References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
-        <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
-        <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
-        <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
-        <20231121175531.085809f5@collabora.com>
-        <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
-        <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
-        <20231122105419.69724739@collabora.com>
-        <ecea3676-5dc6-4633-9373-931cdb582190@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 22 Nov 2023 05:42:59 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFDBD45
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:42:50 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b2a8575d9so11755645e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:42:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700649768; x=1701254568; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rurRnFBbtA8r5xBB9XdMEov5qrYkrbGrKu11nLThWAg=;
+        b=hDATLdm76jmntW5Uy3TVWYzAl2pAronH2wqQV+RujEavcyT+F1ZF4t1kU5Ht1bAA/4
+         rL73J3iTSr/k2Cozi5vedAlmWKWeWqKPDbhAw1H88sMQIMSDaWiyzi8dribsgHDvjJbp
+         jJ33Xr5EEZlN8k12SJuVb6O2Kp0AFTXvSGVfpBZSD952tHHpCAYgWjvn8I9N0Stoog66
+         wCZeP5FLKU5M0m9akOeozhkSfNMkz/ZGB1B6Q0xt4qHr4zKRgfpw1oUwAbqMm8RI7HLe
+         I7/2FHD1tT4u/Rn7jAcUUKcsznKaI/PkE+4jd7y9UjLKWJXMjVGEyzlc8+CM4+ZYOVet
+         g79A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700649768; x=1701254568;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rurRnFBbtA8r5xBB9XdMEov5qrYkrbGrKu11nLThWAg=;
+        b=fD2Z8l5svcpkazQj+BTFOB5dUPCzCh6AHLtttnmdHSxvmLkZEUopk/0zCgighfOtf7
+         Sgbb7eZx/rxKxaQ7aMPXdWCQoVPoTuO1wi097TmtlBbCbxX9dcaRxRwABCugjRz3S4zh
+         gierg+m2w4ui2oGQKLDcyOoL+MtUWibqgtHspQpJk7drVX+K+uHdGhHqG87DpwEuAUFO
+         t0GWNqV8kVlA07NFjRYSq5nwrWlq6MqJPF/97bRLqhB71RzgMrDEPeXaTcxX/iFmPSBL
+         Ni2s+kOLz9uMtosuZ+qQeUihZ/+TF4YGlrnaqcKcBIaoxjcJj8bpeXKz7I6MDVOgNWrv
+         7N6w==
+X-Gm-Message-State: AOJu0YyYRkCyse+9TVT/EilUoOZ0zp1AsHWt0IwlGF34UikdKk0D4pLY
+        76eCzrn7rKaUnmvXgrZk+l3SAw==
+X-Google-Smtp-Source: AGHT+IFZjLI1RN+qmEZ+XlbiqgLBb55GOp+qtgAUNp2iNwKVeATclqjSDDfovff2tf+Kv7dOVUhy+w==
+X-Received: by 2002:a05:600c:45d2:b0:40b:29f2:968f with SMTP id s18-20020a05600c45d200b0040b29f2968fmr1291689wmo.26.1700649768415;
+        Wed, 22 Nov 2023 02:42:48 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id z5-20020adff745000000b0032d829e10c0sm16752245wrp.28.2023.11.22.02.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 02:42:47 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Wed, 22 Nov 2023 05:42:44 -0500
+To:     oe-kbuild@lists.linux.dev, shiju.jose@huawei.com,
+        linux-cxl@vger.kernel.org, linux-mm@kvack.org, dave@stgolabs.net,
+        jonathan.cameron@huawei.com, dave.jiang@intel.com,
+        alison.schofield@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, dan.j.williams@intel.com
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@redhat.com, Vilas.Sridharan@amd.com, leo.duran@amd.com,
+        Yazen.Ghannam@amd.com, rientjes@google.com, jiaqiyan@google.com,
+        tony.luck@intel.com, Jon.Grimm@amd.com,
+        dave.hansen@linux.intel.com, rafael@kernel.org, lenb@kernel.org,
+        naoya.horiguchi@nec.com, james.morse@arm.com,
+        jthoughton@google.com, somasundaram.a@hpe.com,
+        erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
+        mike.malvestuto@intel.com
+Subject: Re: [PATCH v2 06/10] memory: scrub: Add scrub driver supports
+ configuring memory scrubbers in the system
+Message-ID: <416c6883-7eaf-469a-9f5f-1829f729b78e@suswa.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121101844.1161-7-shiju.jose@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,231 +84,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 11:23:05 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
+Hi,
 
-> Il 22/11/23 10:54, Boris Brezillon ha scritto:
-> > Hi Angelo,
-> >=20
-> > On Wed, 22 Nov 2023 10:06:19 +0100
-> > AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > wrote:
-> >  =20
-> >> Il 21/11/23 18:08, Krzysztof Kozlowski ha scritto: =20
-> >>> On 21/11/2023 17:55, Boris Brezillon wrote: =20
-> >>>> On Tue, 21 Nov 2023 17:11:42 +0100
-> >>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >>>> wrote:
-> >>>>    =20
-> >>>>> Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto: =20
-> >>>>>> On 08/11/2023 14:20, Steven Price wrote: =20
-> >>>>>>> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote: =20
-> >>>>>>>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to=
- request
-> >>>>>>>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_L=
-O ones:
-> >>>>>>>> this means that in order to request poweroff of cores, we are su=
-pposed
-> >>>>>>>> to write a bitmask of cores that should be powered off!
-> >>>>>>>> This means that the panfrost_gpu_power_off() function has always=
- been
-> >>>>>>>> doing nothing.
-> >>>>>>>>
-> >>>>>>>> Fix powering off the GPU by writing a bitmask of the cores to po=
-weroff
-> >>>>>>>> to the relevant PWROFF_LO registers and then check that the tran=
-sition
-> >>>>>>>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
-> >>>>>>>> registers.
-> >>>>>>>>
-> >>>>>>>> While at it, in order to avoid code duplication, move the core m=
-ask
-> >>>>>>>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_ma=
-sk()
-> >>>>>>>> function, used in both poweron and poweroff.
-> >>>>>>>>
-> >>>>>>>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
-> >>>>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delr=
-egno@collabora.com> =20
-> >>>>>>
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> This commit was added to next recently but it causes "external abo=
-rt on
-> >>>>>> non-linefetch" during boot of my Odroid HC1 board.
-> >>>>>>
-> >>>>>> At least bisect points to it.
-> >>>>>>
-> >>>>>> If fixed, please add:
-> >>>>>>
-> >>>>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >>>>>>
-> >>>>>> [    4.861683] 8<--- cut here ---
-> >>>>>> [    4.863429] Unhandled fault: external abort on non-linefetch (0=
-x1008) at 0xf0c8802c
-> >>>>>> [    4.871018] [f0c8802c] *pgd=3D433ed811, *pte=3D11800653, *ppte=
-=3D11800453
-> >>>>>> ...
-> >>>>>> [    5.164010]  panfrost_gpu_irq_handler from __handle_irq_event_p=
-ercpu+0xcc/0x31c
-> >>>>>> [    5.171276]  __handle_irq_event_percpu from handle_irq_event+0x=
-38/0x80
-> >>>>>> [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
-> >>>>>> [    5.183743]  handle_fasteoi_irq from generic_handle_domain_irq+=
-0x28/0x38
-> >>>>>> [    5.190417]  generic_handle_domain_irq from gic_handle_irq+0x88=
-/0xa8
-> >>>>>> [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0=
-x44
-> >>>>>> [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
-> >>>>>>
-> >>>>>> Full log:
-> >>>>>> https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
-> >>>>>>        =20
-> >>>>>
-> >>>>> Hey Krzysztof,
-> >>>>>
-> >>>>> This is interesting. It might be about the cores that are missing f=
-rom the partial
-> >>>>> core_mask raising interrupts, but an external abort on non-linefetc=
-h is strange to
-> >>>>> see here. =20
-> >>>>
-> >>>> I've seen such external aborts in the past, and the fault type has
-> >>>> often been misleading. It's unlikely to have anything to do with a =
-=20
-> >>>
-> >>> Yeah, often accessing device with power or clocks gated.
-> >>>     =20
-> >>
-> >> Except my commit does *not* gate SoC power, nor SoC clocks =F0=9F=99=
-=82 =20
-> >=20
-> > It's not directly related to your commit, it's just a side effect.
-> >  =20
->=20
-> Indeed!
->=20
-> >>
-> >> What the "Really power off ..." commit does is to ask the GPU to inter=
-nally power
-> >> off the shaders, tilers and L2, that's why I say that it is strange to=
- see that
-> >> kind of abort.
-> >>
-> >> The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and GPU_FAULT_ADDRESS=
-_{HI/LO}
-> >> registers should still be accessible even with shaders, tilers and cac=
-he OFF. =20
-> >=20
-> > It's not the power_off() call that's problematic, it's when it happens
-> > (the last thing called in panfrost_device_runtime_suspend()), and the
-> > fact it generates interrupts. Yes, you don't explicitly gate the clocks
-> > in panfrost_device_runtime_suspend(), but the PM layer does interact
-> > directly with power domains, and shutting down a power domain might
-> > result in other clks/components being gated, which might make the
-> > register bank inaccessible from the CPU.
-> >  =20
-> >>
-> >> Anyway, yes, synchronizing IRQs before calling the poweroff sequence w=
-ould also
-> >> work, but that'd add up quite a bit of latency on the runtime_suspend(=
-) call, =20
-> >=20
-> > Really? In practice I'd expect no pending interrupts, other than the
-> > power transition ones, which are purely and simply ignored by the
-> > handler. If we had any other pending interrupts on suspend, we would
-> > have faced this problem before. To sum-up, I'd expect the extra latency
-> > to just be the overhead of the synchronize_irq() call, which, after
-> > looking at the code, shouldn't be such a big deal.
-> >  =20
-> >> so
-> >> in this case I'd be more for avoiding to execute any register r/w in t=
-he handler
-> >> by either checking if the GPU is supposed to be OFF, =20
-> >=20
-> > Yes, that's an option, but I don't think that's enough (see below).
-> >  =20
-> >> or clearing interrupts, =20
-> >=20
-> > The handler might have been called already when you clear the
-> > interrupt, and you'd still need to make sure the handler has returned
-> > before returning from panfrost_device_runtime_suspend() if you want to
-> > guarantee no one is touching the registers when the power domains are
-> > shutdown.
-> >  =20
-> >> which
-> >> may not work if those are generated after the execution of the powerof=
-f function. =20
-> >=20
-> > They are generated while you poll the register, but that doesn't
-> > guarantee they will be processed by the time you return from your
-> > power_off() function, which I think is exactly the problem we're facing
-> > here.
-> >  =20
-> >> Or we could simply disable the irq after power_off, but that'd be hack=
-y (as well). =20
-> >=20
-> > If by disabling the interrupt you mean calling disable_irq(), that
-> > would work if the irq lines were not declared as shared (IRQF_SHARED
-> > flag passed at request time). Beside, the latency of disable_irq()
-> > should be pretty much the same as synchronize_irq(), given
-> > synchronize_irq() from there.
-> >=20
-> > If by disabling the interrupt, you mean masking it with _INT_MASK,
-> > then, as said above, that's not enough. You need to make sure any
-> > handler that may have been called as a result of this interrupt,
-> > returns before you return from the suspend function, so you need some
-> > kind of synchronization.
-> >  =20
->=20
-> Your reasons are totally valid and I see the point.
->=20
-> That's what I'll do as a follow-up Fixes patch:
->   - gpu_write(pfdev, GPU_INT_MASK, 0);
->   - gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
->   - synchronize_irq()
+kernel test robot noticed the following build warnings:
 
-More generally, I think we should have helpers that do that for the 3
-irqs we in panfrost (gpu, mmu and job), because ultimately, the problem
-exists for all of them.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->   - poweroff *all* shaders/tilers/l2 (without caring about core_mask)
+url:    https://github.com/intel-lab-lkp/linux/commits/shiju-jose-huawei-com/cxl-mbox-Add-GET_SUPPORTED_FEATURES-mailbox-command/20231121-182247
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231121101844.1161-7-shiju.jose%40huawei.com
+patch subject: [PATCH v2 06/10] memory: scrub: Add scrub driver supports configuring memory scrubbers in the system
+config: powerpc-randconfig-r071-20231122 (https://download.01.org/0day-ci/archive/20231122/202311221028.fsptP2bp-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231122/202311221028.fsptP2bp-lkp@intel.com/reproduce)
 
-Sounds good to me.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311221028.fsptP2bp-lkp@intel.com/
 
->   - *No* INT_MASK restore, as we rely on soft_reset() to do that for us
->     once we resume the GPU.
+smatch warnings:
+drivers/memory/scrub/memory-scrub.c:71 scrub_dev_attr_is_visible() warn: this array is probably non-NULL. 'scrub_dev->name'
 
-Yeah, I didn't check, but if soft_reset() restores all the _INT_MASK
-properly, and it's called in the resume path, we're good.
+vim +71 drivers/memory/scrub/memory-scrub.c
 
->=20
->=20
-> >>
-> >>
-> >> Let's see if asking to poweroff *everything* works: =20
-> >=20
-> > It might slightly change the timing, making this problem disappear by
-> > chance (if the interrupt gets processed before power_off() returns),
-> > but it doesn't make the suspend logic more robust. We really have to
-> > guarantee that no one will touch the registers when we enter suspend,
-> > be it some interrupt handler, or any kind of deferred work.
-> >=20
-> > Again, none of this is a direct result of your patch, it's just that
-> > your patch uncovered the problem, and I think now is a good time to fix
-> > it properly.
-> >  =20
->=20
-> Yes, I am well aware of that and I was trying to make that clear in the f=
-irst
-> place - I'm sorry if I gave the impression of having any kind of doubt ar=
-ound
-> that, or any other.
+248ee451a36346 Shiju Jose 2023-11-21  65  static umode_t scrub_dev_attr_is_visible(struct kobject *kobj,
+248ee451a36346 Shiju Jose 2023-11-21  66  					    struct attribute *attr, int n)
+248ee451a36346 Shiju Jose 2023-11-21  67  {
+248ee451a36346 Shiju Jose 2023-11-21  68  	struct device *dev = kobj_to_dev(kobj);
+248ee451a36346 Shiju Jose 2023-11-21  69  	struct scrub_device *scrub_dev = to_scrub_device(dev);
+248ee451a36346 Shiju Jose 2023-11-21  70  
+248ee451a36346 Shiju Jose 2023-11-21 @71  	if (attr == &dev_attr_name.attr && scrub_dev->name == NULL)
 
-Not particularly, just wanted to insist on the fact there is no blame
-to be taken for this regression, and that's actually a good opportunity
-to fix the PM logic with regards to interrupt handling. I'm glad you're
-now volunteering for that :-).
+I wrote this check 12 years ago and it's crap.  scrub_dev->name is the
+first struct member so it's the same as same as "scrub_dev".  However
+to_scrub_device() can't return NULL so this check is dead code.
+
+248ee451a36346 Shiju Jose 2023-11-21  72  		return 0;
+248ee451a36346 Shiju Jose 2023-11-21  73  
+248ee451a36346 Shiju Jose 2023-11-21  74  	return attr->mode;
+248ee451a36346 Shiju Jose 2023-11-21  75  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
