@@ -2,51 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C987F44D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A577F44D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343644AbjKVLWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
+        id S1343687AbjKVLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343554AbjKVLWH (ORCPT
+        with ESMTP id S1343649AbjKVLWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:22:07 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CE81B9;
-        Wed, 22 Nov 2023 03:22:03 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8CC11595;
-        Wed, 22 Nov 2023 03:22:49 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E01E3F7A6;
-        Wed, 22 Nov 2023 03:22:01 -0800 (PST)
-Date:   Wed, 22 Nov 2023 11:21:58 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>, suzuki.poulose@arm.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 4/7] coresight: tpiu: Move ACPI support from AMBA driver
- to platform driver
-Message-ID: <ZV3kVhZYBHwSaPr9@bogus>
-References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
- <20231027072943.3418997-5-anshuman.khandual@arm.com>
- <92d6a66d-3270-3378-2ab9-9214c004d5c7@arm.com>
- <268e1605-fe3f-4aa0-92e3-36ddfc8aacb3@arm.com>
+        Wed, 22 Nov 2023 06:22:41 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318D9B9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:22:38 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5lJ7-0007CM-Sz; Wed, 22 Nov 2023 12:22:13 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5lJ7-00AnbT-0P; Wed, 22 Nov 2023 12:22:13 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r5lJ6-003I31-Ta; Wed, 22 Nov 2023 12:22:12 +0100
+Date:   Wed, 22 Nov 2023 12:22:12 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
+        Ye Bin <yebin10@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
+        linux-pm@vger.kernel.org,
+        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: mmc: handling of Under-Voltage Events in eMMC
+Message-ID: <20231122112212.GA783262@pengutronix.de>
+References: <20230929130028.GB2825985@pengutronix.de>
+ <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <268e1605-fe3f-4aa0-92e3-36ddfc8aacb3@arm.com>
+In-Reply-To: <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,74 +70,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 12:32:33PM +0530, Anshuman Khandual wrote:
-> On 11/15/23 19:23, James Clark wrote:
-> > On 27/10/2023 08:29, Anshuman Khandual wrote:
-> >> Add support for the tpiu device in the platform driver, which can then be
-> >> used on ACPI based platforms. This change would now allow runtime power
-> >> management for ACPI based systems. The driver would try to enable the APB
-> >> clock if available.
-> >>
-> > [...]
-> >> +#ifdef CONFIG_ACPI
-> >> +static const struct acpi_device_id tpiu_acpi_ids[] = {
-> >> +	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
-> >> +	{}
-> >> +};
-> >> +MODULE_DEVICE_TABLE(acpi, tpiu_acpi_ids);
-> >> +#endif
-> >> +
-> >> +static struct platform_driver tpiu_platform_driver = {
-> >> +	.probe	= tpiu_platform_probe,
-> >> +	.remove	= tpiu_platform_remove,
-> >> +	.driver = {
-> >> +		.name			= "coresight-tpiu-platform",
-> >> +		.acpi_match_table	= ACPI_PTR(tpiu_acpi_ids),
-> >> +		.suppress_bind_attrs	= true,
-> >> +		.pm			= &tpiu_dev_pm_ops,
-> >> +	},
-> >> +};
-> >> +module_platform_driver(tpiu_platform_driver);
-> >> +
-> > 
-> > Is there a special build config where this works? I get an error here
-> 
-> I have been testing this with a config known to work on RB5 board.
-> 
-> > because module_platform_driver() redefines things that are in
-> > module_amba_driver() which is defined above:
-> > 
-> >   module_amba_driver(tpiu_driver);
-> > 
-> > This isn't a W=1 build or anything, just a normal one. And it applies to
-> > most of the patches in this set.
-> 
-> You are right, I am able to recreate this problem with defconfig on
-> 6.7-rc2 as well. The problem here seems to be caused by having both
-> module_amba_driver() and module_platform_driver() in the same file.
-> 
-> #define module_amba_driver(__amba_drv) \
->         module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
-> 
-> #define module_platform_driver(__platform_driver) \
->         module_driver(__platform_driver, platform_driver_register, \
->                         platform_driver_unregister)
-> 
-> Although, AFAICT, have not seen these before - even on the defconfig.
-> Just to work around this problem, there can be a common module_init()
-> /module_exit() to register/unregister both AMBA and platform drivers,
-> similar to etm4x_init()/etm4x_exit() setup in coresight-etm4x-core.c.
+Hi Ulf, Hi Mark,
 
-Could this be the reason why I am seeing the below error why booting with
-ACPI ? I wanted to check the tables before I comment but this discussion
-made me think it could be the reason, hence posting this before I got time
-to analyse it.
+On Tue, Oct 10, 2023 at 04:48:24PM +0200, Ulf Hansson wrote:
+> On Fri, 29 Sept 2023 at 15:00, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> >
+> > Hi,
+> >
+> > I'm working on a project aiming to protect eMMC during power loss. Our
+> > hardware setup includes an under-voltage detector, circuits to disable
+> > non-critical components, and enough capacitance to allow the CPU to run
+> > for 100ms.
+> >
+> > I've added an interrupt handler to the fixed regulator to emit
+> > REGULATOR_EVENT_UNDER_VOLTAGE events, and modified
+> > drivers/mmc/host/sdhci.c to receive these events. Currently, the handler
+> > only produces debug output.
+> >
+> > What is the recommended approach for handling under-voltage situations?
+> > Should the driver finish ongoing write commands, block new ones, and
+> > shut down the eMMC? I'm looking for direction here.
+> 
+> That's indeed a very good question. From a general point of view, I
+> think the best we can do is to stop any new I/O requests from being
+> managed - and try to complete only the last ongoing one, if any.
+> Exactly how to do that can be a bit tricky though.
+> 
+> Beyond that, we should probably try to send the eMMC specific commands
+> that allow us to inform the eMMC that it's about to be powered-off.
+> Although, I am not sure that we actually will be able to complete
+> these operations within 100ms, so maybe it's not really worth trying?
+> See mmc_poweroff_notify(), for example.
 
-  |  coresight-tmc-platform ARMHC97C:00: can't request region for resource [mem 0x20010000-0x20010fff]
-  |  coresight-tmc-platform: probe of ARMHC97C:00 failed with error -16
-  |  coresight-tmc-platform ARMHC501:00: can't request region for resource [mem 0x20070000-0x20070fff]
-  |  coresight-tmc-platform: probe of ARMHC501:00 failed with error -16
+Some puzzle parts are now mainline, for example regulator framework
+can be configured to detect under-voltage events and execute
+hw_protection_shutdown(). So far it worked good enough to complete
+mmc_poweroff_notify() withing 100ms window. The problem is, the chance to
+execute mmc_poweroff_notify() depends on kernel configuration. If there are too
+many drivers and devices, mmc_poweroff_notify() will be not executed in time.
 
---
+For now, I workaround it by registering a reboot notifier for mmc shutdown.
+It works, because kernel_power_off() is executing all registered reboot
+notifiers at first place and there are no other slow reboot notifiers.
+But, it seems to be not reliable enough. Probably notifier prioritization
+is needed to make it more predictable.
+
+So far, I have two variants to implement it in more predictable way:
+variant 1 - forward the under-voltage notification to the mmc framework and
+  execute mmc_poweroff_notify() or bus shutdown.
+variant 2 - use reboot notifier and introduce reboot notifier prioritization.
+
+Are there other options? What are your preferences?
+
 Regards,
-Sudeep
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
