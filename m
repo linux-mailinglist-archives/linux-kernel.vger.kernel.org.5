@@ -2,137 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252207F3D3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0E77F3D3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbjKVFUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:20:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S229821AbjKVFV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjKVFUa (ORCPT
+        with ESMTP id S229498AbjKVFV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:20:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B01110
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:20:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0C99C43395
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700630426;
-        bh=TBbRhfDoqJI+ymRHmhoyHUYl0HTJGIfk3dxv/NU20Ms=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IK3LtsikP1BRvwrCEda6kuTq9O8soo75WIIUOk2Fz9xXUoexs5vP6NjzjW+PhPPvA
-         DNmXbdqCUFHGfiVSS+c0O/cu3DrW8VyOei0MpCAf8J98XFpQPrfk2yx5OohGJd7oRr
-         z7CqSaIUtco5hW6OHfK5ZnuHK+u2k8c44bFPucZGl1SEklO4VqRy3aVcrGy5JfSqMk
-         7SD4fkIzzNynOylUShKy5l5/7WHJCnMqoKGISmy8qec2U5lpHQcI2IJT5hoTdmxBSV
-         FthKfY3MFdfmRyBYFd9hbwkQuXC25YW8BmnECgbRdvV9bw8sUEzuWj991pq0CKueCH
-         D8dCqUJqWVRVA==
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2851c0569acso2775351a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:20:26 -0800 (PST)
-X-Gm-Message-State: AOJu0YyOv0weoG5bDOoBoKj3vH8eCiCH5uUYAE0tA7lx9tQUNdxPY7Ts
-        /5v4MvibeZDlhHXEK3qyjMp1mdH4VzaApndvJ4wbPw==
-X-Google-Smtp-Source: AGHT+IFcrF1HMAPcEcdg3CE9b/rONhKC5c1o9etFhSEOQC2ujUcKF7+jI+/KXApiAMAt48bunhDMoHWEhQ9XY7eC6QM=
-X-Received: by 2002:a17:90a:6349:b0:280:65ed:df9 with SMTP id
- v9-20020a17090a634900b0028065ed0df9mr1378521pjs.31.1700630426038; Tue, 21 Nov
- 2023 21:20:26 -0800 (PST)
+        Wed, 22 Nov 2023 00:21:28 -0500
+Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ABF112
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:21:23 -0800 (PST)
+Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-5bd26ef66d1so9420518a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:21:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700630483; x=1701235283;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jv57hKCODxYrzZthLIomnSbbu4eI0XselGu/K5imZtU=;
+        b=F1FwwYVkcQxIBDun9lTBVRojS1bZOg0HTF83Gll7woT+vPwc8/c5ljo8OStKJOpxii
+         W5wgJCnYbaNjpk8anaJg/WP2LKodc0X1o8IiX6MYOIWY/lEC3pho0moeLdcilo4i2Gvs
+         l9OivSBJeFIa5kpzEkNTn7+0g4XYSQhVMVCw+Fzc16HTa/617exxciYFTi99bdMkUB0K
+         ZFa6yNDJ/38NKV21Ubw4L8eUYOfR3VJ4+coNI76FuNTycPfRFys3nT0VZlQSaGsuoW5e
+         o0RScbWAyPGRXt6AoK3lv+Va/m9Ou+AHWb31FsefdryKOAZGo+mjXzFoTJJQ/r2+4k8q
+         G2mg==
+X-Gm-Message-State: AOJu0YwNUl5qb9BSksc93NuZMsHZdo2qKTC0iemfqQBtdpHpPzidz9Sy
+        Odu5rd4Lfr25Vd3EF31z1V0lRoMKsirGSNhcYK3/lH9C0PC4
+X-Google-Smtp-Source: AGHT+IFYsXF5dC8iNtVFMw5ZY9OZfLhgs+qoF4p1jCh4Px90aDh3audhE0uCMwWjh7coLnX+YluUBSetXkVXNgsnPSUtkL+8vn/i
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-23-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-23-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 21:20:14 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuPssXch+t5Rn0-dBzLPUCg-fid6PRaiTObc36L9Wqrzcg@mail.gmail.com>
-Message-ID: <CAF8kJuPssXch+t5Rn0-dBzLPUCg-fid6PRaiTObc36L9Wqrzcg@mail.gmail.com>
-Subject: Re: [PATCH 22/24] swap: make swap_cluster_readahead static
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+X-Received: by 2002:a65:64d7:0:b0:5bd:3b33:88c7 with SMTP id
+ t23-20020a6564d7000000b005bd3b3388c7mr245706pgv.0.1700630483169; Tue, 21 Nov
+ 2023 21:21:23 -0800 (PST)
+Date:   Tue, 21 Nov 2023 21:21:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7f8ce060ab6e38e@google.com>
+Subject: [syzbot] [ntfs3?] possible deadlock in ntfs_set_size
+From:   syzbot <syzbot+18f543fc90dd1194c616@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kairui,
+Hello,
 
-On Sun, Nov 19, 2023 at 11:49=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Now there is no caller outside the same file, make it static.
+syzbot found the following issue on:
 
-Seems to me too trivial/low value to justify as a standalone patch.
+HEAD commit:    791c8ab095f7 Merge tag 'bcachefs-2023-11-17' of https://ev..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1294d267680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84217b7fc4acdc59
+dashboard link: https://syzkaller.appspot.com/bug?extid=18f543fc90dd1194c616
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Chris
+Unfortunately, I don't have any reproducer for this issue yet.
 
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/swap.h       | 8 --------
->  mm/swap_state.c | 4 ++--
->  2 files changed, 2 insertions(+), 10 deletions(-)
->
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 4402970547e7..795a25df87da 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -56,8 +56,6 @@ struct page *read_swap_cache_async(swp_entry_t entry, g=
-fp_t gfp_mask,
->  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
->                                      struct mempolicy *mpol, pgoff_t ilx,
->                                      bool *new_page_allocated);
-> -struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
-> -                                   struct mempolicy *mpol, pgoff_t ilx);
->  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
->                               struct vm_fault *vmf, enum swap_cache_resul=
-t *result);
->  struct page *swapin_page_non_fault(swp_entry_t entry, gfp_t gfp_mask,
-> @@ -93,12 +91,6 @@ static inline void show_swap_cache_info(void)
->  {
->  }
->
-> -static inline struct page *swap_cluster_readahead(swp_entry_t entry,
-> -                       gfp_t gfp_mask, struct mempolicy *mpol, pgoff_t i=
-lx)
-> -{
-> -       return NULL;
-> -}
-> -
->  static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_m=
-ask,
->                         struct vm_fault *vmf, enum swap_cache_result *res=
-ult)
->  {
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 0433a2586c6d..b377e55cb850 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -627,8 +627,8 @@ static unsigned long swapin_nr_pages(unsigned long of=
-fset)
->   * are used for every page of the readahead: neighbouring pages on swap
->   * are fairly likely to have been swapped out from the same node.
->   */
-> -struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
-> -                                   struct mempolicy *mpol, pgoff_t ilx)
-> +static struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_=
-mask,
-> +                                          struct mempolicy *mpol, pgoff_=
-t ilx)
->  {
->         struct page *page;
->         unsigned long entry_offset =3D swp_offset(entry);
-> --
-> 2.42.0
->
->
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-791c8ab0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e433bf284ce1/vmlinux-791c8ab0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ef2e25e71c51/bzImage-791c8ab0.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+18f543fc90dd1194c616@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.7.0-rc1-syzkaller-00213-g791c8ab095f7 #0 Not tainted
+------------------------------------------------------
+syz-executor.1/29095 is trying to acquire lock:
+ffffffff8d11bae0 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
+ffffffff8d11bae0 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slab.h:710 [inline]
+ffffffff8d11bae0 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3460 [inline]
+ffffffff8d11bae0 (fs_reclaim){+.+.}-{0:0}, at: __kmem_cache_alloc_node+0x51/0x310 mm/slub.c:3517
+
+but task is already holding lock:
+ffff8880241bf050 (&ni->file.run_lock#2){++++}-{3:3}, at: ntfs_set_size+0x119/0x220 fs/ntfs3/inode.c:838
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ni->file.run_lock#2){++++}-{3:3}:
+       down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
+       mi_read+0x301/0x650 fs/ntfs3/record.c:129
+       mi_format_new+0x39c/0x580 fs/ntfs3/record.c:420
+       ni_add_subrecord+0xd1/0x4f0 fs/ntfs3/frecord.c:372
+       ntfs_look_free_mft+0x209/0xdd0 fs/ntfs3/fsntfs.c:715
+       ni_create_attr_list+0x93b/0x1520 fs/ntfs3/frecord.c:876
+       ni_ins_attr_ext+0x23f/0xaf0 fs/ntfs3/frecord.c:974
+       ni_insert_attr+0x310/0x870 fs/ntfs3/frecord.c:1141
+       ni_insert_resident+0xd2/0x3a0 fs/ntfs3/frecord.c:1525
+       ni_add_name+0x48b/0x820 fs/ntfs3/frecord.c:3047
+       ni_rename+0xa1/0x1a0 fs/ntfs3/frecord.c:3087
+       ntfs_rename+0x91f/0xec0 fs/ntfs3/namei.c:322
+       vfs_rename+0xe23/0x1c30 fs/namei.c:4844
+       do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+       __do_sys_rename fs/namei.c:5042 [inline]
+       __se_sys_rename fs/namei.c:5040 [inline]
+       __ia32_sys_rename+0x80/0xa0 fs/namei.c:5040
+       do_syscall_32_irqs_on arch/x86/entry/common.c:164 [inline]
+       __do_fast_syscall_32+0x62/0xe0 arch/x86/entry/common.c:230
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:255
+       entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+-> #1 (&wnd->rw_lock/1){+.+.}-{3:3}:
+       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
+       ntfs_mark_rec_free+0x2f4/0x400 fs/ntfs3/fsntfs.c:742
+       ni_delete_all+0x6ad/0x880 fs/ntfs3/frecord.c:1637
+       ni_clear+0x515/0x6a0 fs/ntfs3/frecord.c:106
+       evict+0x2ed/0x6b0 fs/inode.c:664
+       iput_final fs/inode.c:1775 [inline]
+       iput.part.0+0x560/0x7b0 fs/inode.c:1801
+       iput+0x5c/0x80 fs/inode.c:1791
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x11e/0x4a0 fs/dcache.c:1201
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
+       super_cache_scan+0x327/0x540 fs/super.c:228
+       do_shrink_slab+0x428/0x1120 mm/shrinker.c:435
+       shrink_slab_memcg mm/shrinker.c:548 [inline]
+       shrink_slab+0xa83/0x1310 mm/shrinker.c:626
+       shrink_one+0x4f7/0x700 mm/vmscan.c:4724
+       shrink_many mm/vmscan.c:4776 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4893 [inline]
+       shrink_node+0x20cd/0x3790 mm/vmscan.c:5833
+       kswapd_shrink_node mm/vmscan.c:6638 [inline]
+       balance_pgdat+0x9d2/0x1a90 mm/vmscan.c:6828
+       kswapd+0x5be/0xbf0 mm/vmscan.c:7088
+       kthread+0x2c6/0x3a0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x2464/0x3b10 kernel/locking/lockdep.c:5136
+       lock_acquire kernel/locking/lockdep.c:5753 [inline]
+       lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5718
+       __fs_reclaim_acquire mm/page_alloc.c:3693 [inline]
+       fs_reclaim_acquire+0x100/0x150 mm/page_alloc.c:3707
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slab.h:710 [inline]
+       slab_alloc_node mm/slub.c:3460 [inline]
+       __kmem_cache_alloc_node+0x51/0x310 mm/slub.c:3517
+       __do_kmalloc_node mm/slab_common.c:1006 [inline]
+       __kmalloc_node+0x4c/0x90 mm/slab_common.c:1014
+       kmalloc_node include/linux/slab.h:620 [inline]
+       kvmalloc_node+0x99/0x1a0 mm/util.c:617
+       kvmalloc include/linux/slab.h:738 [inline]
+       run_add_entry+0x7b2/0xbe0 fs/ntfs3/run.c:389
+       attr_allocate_clusters+0x213/0x710 fs/ntfs3/attrib.c:181
+       attr_set_size+0x14d7/0x2ca0 fs/ntfs3/attrib.c:572
+       ntfs_set_size+0x13d/0x220 fs/ntfs3/inode.c:840
+       ntfs_extend+0x3fd/0x560 fs/ntfs3/file.c:333
+       ntfs_file_write_iter+0x33f/0x1e60 fs/ntfs3/file.c:1077
+       call_write_iter include/linux/fs.h:2020 [inline]
+       do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+       do_iter_write+0x17f/0x7f0 fs/read_write.c:860
+       vfs_writev+0x221/0x700 fs/read_write.c:933
+       do_writev+0x137/0x370 fs/read_write.c:976
+       do_syscall_32_irqs_on arch/x86/entry/common.c:164 [inline]
+       __do_fast_syscall_32+0x62/0xe0 arch/x86/entry/common.c:230
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:255
+       entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> &wnd->rw_lock/1 --> &ni->file.run_lock#2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ni->file.run_lock#2);
+                               lock(&wnd->rw_lock/1);
+                               lock(&ni->file.run_lock#2);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+5 locks held by syz-executor.1/29095:
+ #0: ffff888024ffd4c8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe7/0x170 fs/file.c:1177
+ #1: ffff888015250418 (sb_writers#17){.+.+}-{0:0}, at: do_writev+0x137/0x370 fs/read_write.c:976
+ #2: ffff8880241bf240 (&sb->s_type->i_mutex_key#25){+.+.}-{3:3}, at: inode_trylock include/linux/fs.h:822 [inline]
+ #2: ffff8880241bf240 (&sb->s_type->i_mutex_key#25){+.+.}-{3:3}, at: ntfs_file_write_iter+0x23b/0x1e60 fs/ntfs3/file.c:1061
+ #3: ffff8880241befa0 (&ni->ni_lock/4){+.+.}-{3:3}, at: ni_lock fs/ntfs3/ntfs_fs.h:1124 [inline]
+ #3: ffff8880241befa0 (&ni->ni_lock/4){+.+.}-{3:3}, at: ntfs_set_size+0x111/0x220 fs/ntfs3/inode.c:837
+ #4: ffff8880241bf050 (&ni->file.run_lock#2){++++}-{3:3}, at: ntfs_set_size+0x119/0x220 fs/ntfs3/inode.c:838
+
+stack backtrace:
+CPU: 2 PID: 29095 Comm: syz-executor.1 Not tainted 6.7.0-rc1-syzkaller-00213-g791c8ab095f7 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x317/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x2464/0x3b10 kernel/locking/lockdep.c:5136
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5718
+ __fs_reclaim_acquire mm/page_alloc.c:3693 [inline]
+ fs_reclaim_acquire+0x100/0x150 mm/page_alloc.c:3707
+ might_alloc include/linux/sched/mm.h:303 [inline]
+ slab_pre_alloc_hook mm/slab.h:710 [inline]
+ slab_alloc_node mm/slub.c:3460 [inline]
+ __kmem_cache_alloc_node+0x51/0x310 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc_node+0x4c/0x90 mm/slab_common.c:1014
+ kmalloc_node include/linux/slab.h:620 [inline]
+ kvmalloc_node+0x99/0x1a0 mm/util.c:617
+ kvmalloc include/linux/slab.h:738 [inline]
+ run_add_entry+0x7b2/0xbe0 fs/ntfs3/run.c:389
+ attr_allocate_clusters+0x213/0x710 fs/ntfs3/attrib.c:181
+ attr_set_size+0x14d7/0x2ca0 fs/ntfs3/attrib.c:572
+ ntfs_set_size+0x13d/0x220 fs/ntfs3/inode.c:840
+ ntfs_extend+0x3fd/0x560 fs/ntfs3/file.c:333
+ ntfs_file_write_iter+0x33f/0x1e60 fs/ntfs3/file.c:1077
+ call_write_iter include/linux/fs.h:2020 [inline]
+ do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+ do_iter_write+0x17f/0x7f0 fs/read_write.c:860
+ vfs_writev+0x221/0x700 fs/read_write.c:933
+ do_writev+0x137/0x370 fs/read_write.c:976
+ do_syscall_32_irqs_on arch/x86/entry/common.c:164 [inline]
+ __do_fast_syscall_32+0x62/0xe0 arch/x86/entry/common.c:230
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:255
+ entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+RIP: 0023:0xf7f1e579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7f195ac EFLAGS: 00000292 ORIG_RAX: 0000000000000092
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000000
+RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
