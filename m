@@ -2,156 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1CC7F52A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2A47F5202
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344164AbjKVVb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S232279AbjKVVE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKVVbW (ORCPT
+        with ESMTP id S230377AbjKVVE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:31:22 -0500
-X-Greylist: delayed 1579 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 13:31:16 PST
-Received: from fallback21.i.mail.ru (fallback21.i.mail.ru [79.137.243.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B2C1B2;
-        Wed, 22 Nov 2023 13:31:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=jblfQLaXgN57NJdQHsW9Nwoj6gP8mAKnFa+pJM3/qeE=;
-        t=1700688676;x=1700778676; 
-        b=I4ymifgTdKoyey6N62bi8ryMAuqmVaTzTSm/CT0aXVtNg2kl0vGN77/whsC/LkaAjtDgTqkHrkf/xgXaoNPSuhT3sDvCP3ej4x8zoWOxZNnzZOSA7xLnuIQZgKfaCPPH9RTZuHkGwwC6Fai7QAaoE0O+qclC0K0HgN8jtJ/bkt4=;
-Received: from [10.12.4.19] (port=52030 helo=smtp43.i.mail.ru)
-        by fallback21.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
-        id 1r5uP0-000OZY-L6; Thu, 23 Nov 2023 00:04:54 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-        ; s=mailru; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To
-        :Cc:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-        List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-        bh=jblfQLaXgN57NJdQHsW9Nwoj6gP8mAKnFa+pJM3/qeE=; t=1700687094; x=1700777094; 
-        b=hqrEwHolpOoPo/dkW79x+56p4PBtQVazew1OUW6OIPVAUslPCcLfnRyQNaUby3XuN/6iSF31KjW
-        WptItnjSM8BP28fjKf8KhWH8htAB/PJ3fcEJGHbgNj53UYhYfp/jdPasKsLtiqlFPuVoRaMQHDSiv
-        PEyUiyiUWi7zfO3MY2U=;
-Received: by smtp43.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-        id 1r5uOc-008zQK-2j; Thu, 23 Nov 2023 00:04:31 +0300
-Message-ID: <99ffd03f-b888-4222-939b-603c10f2307b@jiaxyga.com>
-Date:   Thu, 23 Nov 2023 00:03:56 +0300
+        Wed, 22 Nov 2023 16:04:26 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA15898
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:04:22 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-548db776f6cso510a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700687061; x=1701291861; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mINXLXrq9/oLpdA6Yk/sy1UPcvyskcwNgTwzkZ9kBzs=;
+        b=J+TAF2QvDW3tT3S/KbM5WIA5UU9ZgLW5iQGHLxF4J5F1x6f754B9ezoqHNp/Fly6/n
+         6hGqdg+URMLDZMEaL6u3ogItVvNfbxQIrF4diW/kUN9+n5xBBBQ9ru9n3K5PVL6xtGwa
+         OkyvjSNxvG9AcrcADjJrS7gZK52BJz2aDG3hnBz0f6dafGIVIipgOSbkqJTID015QBzM
+         1YPQKEAhqYl4F0OaBukGlGjeUArlneb0HAJLKBNUNnLjtpMxeMRnj7S3A6O7Lx7ZiUcl
+         Gux2U7WCJjhEdv5etZDzgmBFL2BdfuEkshalGei3QH+R5WCPiWbL5VfqOhifYuJJxbs+
+         9Aeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700687061; x=1701291861;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mINXLXrq9/oLpdA6Yk/sy1UPcvyskcwNgTwzkZ9kBzs=;
+        b=WfIW8iR4U0h5RXML3R8VTOrWNqIMp/aVemNf9nCNVTw7+TIya4ZMN82vreudlJECmO
+         sVU8M9kRoWvi4Yooez4dy+gHv5iR7JRRWf52wuTjegOGYHUrrkWmlrlXMzLnbr/AO6PY
+         slF7mz6n9WeYntlnEioQ9pmlSPiW5nPKwZQKg3PoH21mKdI9VO0c+ow/uQT5+poi5M43
+         fiRNzODZUQIrB+R6kgzaq7aMUfHVloC4KdhkudTpSJkSv2r/WHt1BkFyN5zRNeIw8uwl
+         vsDGni+rFHMsJDO/Kl00LRnOieP2wWhn7Uasu3LLwkofQO0NKM74gYSZW1j/Av4EFVp0
+         bEPw==
+X-Gm-Message-State: AOJu0YxEy/QHAEP6ciqLkYsYYIiXVRdzN9XGk0TPhXh7Il7b/rXlUFun
+        3NVWsjelV4zJm95ZD+c4SnjikOik3Rdpt5x00HPSKQ==
+X-Google-Smtp-Source: AGHT+IEGm9MLKZeGbPnej8xX4u8eiSlbh1Mqb8POBm36fW5cFOc334Fc5wDrn2GxrY0UsMNCzK9qE0nvCl+hpFusPUw=
+X-Received: by 2002:a05:6402:d67:b0:548:c1b1:96b2 with SMTP id
+ ec39-20020a0564020d6700b00548c1b196b2mr225540edb.6.1700687061263; Wed, 22 Nov
+ 2023 13:04:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] drm/msm/adreno: Add support for SM7150 SoC machine
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
-        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
-        johan+linaro@kernel.org, andersson@kernel.org,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230926174243.161422-1-danila@jiaxyga.com>
- <20230926174243.161422-2-danila@jiaxyga.com>
- <42a1d0ab-4e8d-461d-bb2c-977a793e52b2@linaro.org>
- <1695755445.902336096@f165.i.mail.ru>
- <84e63b82-4fef-416b-8dbe-3838ad788824@linaro.org>
- <c684d0a7-3336-48e3-9d2b-5c92f9132550@linaro.org>
- <f76637f9-8242-4258-932e-b879145a5cfd@linaro.org>
-From:   Danila Tikhonov <danila@jiaxyga.com>
-In-Reply-To: <f76637f9-8242-4258-932e-b879145a5cfd@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-7564579A: EEAE043A70213CC8
-X-77F55803: 4F1203BC0FB41BD9FEA8E122FE2215F5F9A7F26A9461D4801668790ACF3513421867C24CE74E72BB5FE18E9CBFBE7C07241E1071E2B2D02006023B87ED3BEECD951DA7CF553926D1ACCB5262BB601CA2
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE701173C01F417A2A6EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637204D59D994DFFAD78638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8A85988B41A48817BB4090DA2F2DB256A117882F4460429724CE54428C33FAD305F5C1EE8F4F765FC8C7ADC89C2F0B2A5A471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F446042972877693876707352033AC447995A7AD18E5D25F19253116ADD2E47CDBA5A96583BA9C0B312567BB2376E601842F6C81A19E625A9149C048EE140C956E756FBB7ABDB03A3F2A65D472D8FC6C240DEA76429C9F4D5AE37F343AA9539A8B242431040A6AB1C7CE11FEE3E753FA5741D1AD0203F1AB874ED89028C4224003CC836476E2F48590F00D11D6E2021AF6380DFAD1A18204E546F3947C1D471462564A2E192E808ACE2090B5E1725E5C173C3A84C3C5EA940A35A165FF2DBA43225CD8A89FD2A95C73FD1EFF45156CCFE7AF13BCA4B5C8C57E37DE458BEDA766A37F9254B7
-X-C1DE0DAB: 0D63561A33F958A558E0945AD6A1CE49C7D1B61F0E22AB3EDCD281A92BBA7DA0F87CCE6106E1FC07E67D4AC08A07B9B04E7D9683544204AFCB5012B2E24CD356
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFD3107C73A4316D00DE5271C7D9B56E81DE88995E47143240567AF9FE9C99B2B0963129249CAA680A88AD3775A6B0C83443447918D0247561A0A6CFF861C8033909F6894F2AE002664C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojGZhPsaRkbbk3fOmNk7fScw==
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C73949813146EB258E4CBD74EB5277BAE3EB1823E9438CDA4132709F643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4C412E14AEF4742E1D915F33BAFA678CCA9926E5A99BFA133049FFFDB7839CE9E432D8BDF4FB0405F661F4097165CE4A672D8DF364A9363439C866DA6A8CBEA58
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFdjNtV51DQSTDsvBazPo9aTw==
-X-Mailru-MI: C000000000000800
-X-Mras: Ok
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231118025748.2778044-1-mmaurer@google.com> <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
+From:   Matthew Maurer <mmaurer@google.com>
+Date:   Wed, 22 Nov 2023 13:04:09 -0800
+Message-ID: <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sc7180/sm7125 (atoll) expects speedbins from atoll.dtsi:
-And has a parameter: /delete-property/ qcom,gpu-speed-bin;
-107 for 504Mhz max freq, pwrlevel 4
-130 for 610Mhz max freq, pwrlevel 3
-159 for 750Mhz max freq, pwrlevel 5
-169 for 800Mhz max freq, pwrlevel 2
-174 for 825Mhz max freq, pwrlevel 1 (Downstream says 172, but thats 
-probably typo)
-For rest of the speed bins, speed-bin value is calulated as
-FMAX/4.8MHz + 2 round up to zero decimal places.
-
-sm7150 (sdmmagpie) expects speedbins from sdmmagpie-gpu.dtsi:
-128 for 610Mhz max freq, pwrlevel 3
-146 for 700Mhz max freq, pwrlevel 2
-167 for 800Mhz max freq, pwrlevel 4
-172 for 504Mhz max freq, pwrlevel 1
-For rest of the speed bins, speed-bin value is calulated as
-FMAX/4.8 MHz round up to zero decimal places.
-
-Creating a new entry does not make much sense.
-I can suggest expanding the standard entry:
-
-.speedbins = ADRENO_SPEEDBINS(
-     { 0, 0 },
-     /* sc7180/sm7125 */
-     { 107, 3 },
-     { 130, 4 },
-     { 159, 5 },
-     { 168, 1 }, has already
-     { 174, 2 }, has already
-     /* sm7150 */
-     { 128, 1 },
-     { 146, 2 },
-     { 167, 3 },
-     { 172, 4 }, ),
-
-All the best,
-Danila
-
-On 11/22/23 23:28, Konrad Dybcio wrote:
+> So, even if you enable CONFIG_MODVERSIONS,
+> nothing is checked for Rust.
+> Genksyms computes a CRC from "int foo", and
+> the module subsystem confirms it is a "int"
+> variable.
 >
+> We know this check always succeeds.
 >
-> On 10/16/23 16:32, Dmitry Baryshkov wrote:
->> On 26/09/2023 23:03, Konrad Dybcio wrote:
->>> On 26.09.2023 21:10, Danila Tikhonov wrote:
->>>>
->>>> I think you mean by name downstream dt - sdmmagpie-gpu.dtsi
->>>>
->>>> You can see the forked version of the mainline here:
->>>> https://github.com/sm7150-mainline/linux/blob/next/arch/arm64/boot/dts/qcom/sm7150.dtsi 
->>>>
->>>>
->>>> All fdt that we got here, if it is useful for you:
->>>> https://github.com/sm7150-mainline/downstream-fdt
->>>>
->>>> Best wishes, Danila
->>> Taking a look at downstream, atoll.dtsi (SC7180) includes
->>> sdmmagpie-gpu.dtsi.
->>>
->>> Bottom line is, they share the speed bins, so it should be
->>> fine to just extend the existing entry.
->>
->> But then atoll.dtsi rewrites speed bins and pwrlevel bins. So they 
->> are not shared.
-> +Akhil
->
-> could you please check internally?
->
-> Konrad
+> Why is this useful?
+The reason this is immediately useful is that it allows us to have Rust
+in use with a kernel where C modules are able to benefit from MODVERSIONS
+checking. The check would effectively be a no-op for now, as you have correctly
+determined, but we could refine it to make it more restrictive later.
+Since the
+existing C approach errs on the side of "it could work" rather than "it will
+work", I thought being more permissive was the correct initial solution.
 
+If we want to err on the other side (modversions passes, so we're pretty sure
+it will work), I could add to the last patch support for using .rmeta files as
+the CRC source for Rust symbols. This would essentially say that the interface
+for the entire compilation unit has to stay the same rather than just that one
+function. We could potentially loosen this requirement in the future.
+
+With regards to future directions that likely won't work for loosening it:
+Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
+teach genksyms to open it up and split out the pieces for specific functions.
+Extending genksyms to parse Rust would also not solve the situation -
+layouts are allowed to differ across compiler versions or even (in rare
+cases) seemingly unrelated code changes.
+
+Future directions that might work for loosening it:
+* Generating crcs from debuginfo + compiler + flags
+* Adding a feature to the rust compiler to dump this information. This
+is likely to
+  get pushback because Rust's current stance is that there is no ability to load
+  object code built against a different library.
+
+Would setting up Rust symbols so that they have a crc built out of .rmeta be
+sufficient for you to consider this useful? If not, can you help me understand
+what level of precision would be required?
