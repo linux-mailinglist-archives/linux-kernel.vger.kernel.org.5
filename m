@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAF77F413E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970957F413F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbjKVJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
+        id S235266AbjKVJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:09:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235188AbjKVJId (ORCPT
+        with ESMTP id S235192AbjKVJIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:08:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0940F359B;
-        Wed, 22 Nov 2023 01:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700643951; x=1732179951;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ZV4v3ZL1hjdt47vWaLz2wx1T0ywHDaLvuBT2yNfWDQU=;
-  b=B55z53qskeOkgCwg6Bw5mcIQFYNiDa43QuBq+YT7J2QP0fxFggsUtHVk
-   qijMPn1Xl0WwWcxds5zQ6EfibyDXmAtEPkJhN90H8zu3O5oPBQu80Xm9m
-   WWw84ZYyuKV/NUgHfh39xlVvfZ4Ry1ojcsVAWsjnJb+LcDXGEGYsPv7ns
-   ZplRFp3KohJ9g7FkqhWXEs68Ex1uQ11TTd21ShJlfIXvr0tHFgX/kw6w7
-   NstUrpUO2L3aHy5LmkHQwIIDNHzqwa7EZCKG9zbc8n5CspmNgT1LgbDbL
-   lP8K7EB5Luh91pLPEXSj+pChcMdIIAiwNTHYt7tKco9raDiv9Xly5fP7g
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="10678097"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="10678097"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 01:05:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="832946770"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="832946770"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.0.129]) ([10.238.0.129])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 01:05:45 -0800
-Message-ID: <376511f8-1d84-41fc-84ad-73d2f0ed3af1@linux.intel.com>
-Date:   Wed, 22 Nov 2023 17:05:43 +0800
+        Wed, 22 Nov 2023 04:08:49 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4B23C33;
+        Wed, 22 Nov 2023 01:06:24 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B168D6602F2B;
+        Wed, 22 Nov 2023 09:06:22 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700643983;
+        bh=+6frr+ifTyvpSRQqcbHjfT1DwxvyGpG2yDaXM+9UwGg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=CVBu/rkb3GBYVQMzGejdK1ETSEu/H9Xw339jFIbwK+HXuMgcdtWfkeRVOqQkHmKjF
+         jyfzv/8zPf4RIN/hlElLrLpHO7hY+SFE4kyBZxMNE/SKPmkQunKdWAvSxKs2h2OX1E
+         7gkpz5rTR3I0a4tzGLI4mmITtPFcA/ZuPxdnU1i9BbsoM4h8O8MILXaHxEU9pI912D
+         8uxhSyj7JBrhU3Z1pn/m8s4dwQ9OM4ojmxb22HrDJrZQwV/Am8SkxLiqu3j5fSH91E
+         eMTPeMCnejusp5K9/raSjQCOMnk8JYRUwA31WEity1rxwDDvl5LT++Wmk9vNyHxo/E
+         1u8FlghJEQ06w==
+Message-ID: <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
+Date:   Wed, 22 Nov 2023 10:06:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 15/16] KVM: x86/mmu: Make kvm fault handler aware of
- large page of private memslot
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <075de567893a2b09bdfb203ae7ecd1867e5c3d8e.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <075de567893a2b09bdfb203ae7ecd1867e5c3d8e.1699368363.git.isaku.yamahata@intel.com>
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, mripard@kernel.org,
+        dri-devel@lists.freedesktop.org, wenst@chromium.org,
+        kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+ <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+ <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+ <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+ <20231121175531.085809f5@collabora.com>
+ <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,185 +68,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 21/11/23 18:08, Krzysztof Kozlowski ha scritto:
+> On 21/11/2023 17:55, Boris Brezillon wrote:
+>> On Tue, 21 Nov 2023 17:11:42 +0100
+>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> wrote:
+>>
+>>> Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto:
+>>>> On 08/11/2023 14:20, Steven Price wrote:
+>>>>> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote:
+>>>>>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
+>>>>>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
+>>>>>> this means that in order to request poweroff of cores, we are supposed
+>>>>>> to write a bitmask of cores that should be powered off!
+>>>>>> This means that the panfrost_gpu_power_off() function has always been
+>>>>>> doing nothing.
+>>>>>>
+>>>>>> Fix powering off the GPU by writing a bitmask of the cores to poweroff
+>>>>>> to the relevant PWROFF_LO registers and then check that the transition
+>>>>>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+>>>>>> registers.
+>>>>>>
+>>>>>> While at it, in order to avoid code duplication, move the core mask
+>>>>>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+>>>>>> function, used in both poweron and poweroff.
+>>>>>>
+>>>>>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+>>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>> This commit was added to next recently but it causes "external abort on
+>>>> non-linefetch" during boot of my Odroid HC1 board.
+>>>>
+>>>> At least bisect points to it.
+>>>>
+>>>> If fixed, please add:
+>>>>
+>>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>
+>>>> [    4.861683] 8<--- cut here ---
+>>>> [    4.863429] Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c8802c
+>>>> [    4.871018] [f0c8802c] *pgd=433ed811, *pte=11800653, *ppte=11800453
+>>>> ...
+>>>> [    5.164010]  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
+>>>> [    5.171276]  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+>>>> [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+>>>> [    5.183743]  handle_fasteoi_irq from generic_handle_domain_irq+0x28/0x38
+>>>> [    5.190417]  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
+>>>> [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+>>>> [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+>>>>
+>>>> Full log:
+>>>> https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
+>>>>    
+>>>
+>>> Hey Krzysztof,
+>>>
+>>> This is interesting. It might be about the cores that are missing from the partial
+>>> core_mask raising interrupts, but an external abort on non-linefetch is strange to
+>>> see here.
+>>
+>> I've seen such external aborts in the past, and the fault type has
+>> often been misleading. It's unlikely to have anything to do with a
+> 
+> Yeah, often accessing device with power or clocks gated.
+> 
+
+Except my commit does *not* gate SoC power, nor SoC clocks 🙂
+
+What the "Really power off ..." commit does is to ask the GPU to internally power
+off the shaders, tilers and L2, that's why I say that it is strange to see that
+kind of abort.
+
+The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and GPU_FAULT_ADDRESS_{HI/LO}
+registers should still be accessible even with shaders, tilers and cache OFF.
+
+Anyway, yes, synchronizing IRQs before calling the poweroff sequence would also
+work, but that'd add up quite a bit of latency on the runtime_suspend() call, so
+in this case I'd be more for avoiding to execute any register r/w in the handler
+by either checking if the GPU is supposed to be OFF, or clearing interrupts, which
+may not work if those are generated after the execution of the poweroff function.
+Or we could simply disable the irq after power_off, but that'd be hacky (as well).
 
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> struct kvm_page_fault.req_level is the page level which takes care of the
-> faulted-in page size.  For now its calculation is only for the conventional
-> kvm memslot by host_pfn_mapping_level() that traverses page table.
->
-> However, host_pfn_mapping_level() cannot be used for private kvm memslot
-> because pages of private kvm memlost aren't mapped into user virtual
-> address space.
+Let's see if asking to poweroff *everything* works:
 
-The description here is not accurate.  A memslot can be private doesn't mean
-all pages of the memslot can't be mapped into user virtual address space.
 
-> Instead page order is given when getting pfn.  Remember it
-> in struct kvm_page_fault and use it.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c          | 34 +++++++++++++++++----------------
->   arch/x86/kvm/mmu/mmu_internal.h | 12 +++++++++++-
->   arch/x86/kvm/mmu/tdp_mmu.c      |  2 +-
->   3 files changed, 30 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 0bf043812644..0aec7c11f4e2 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3158,10 +3158,10 @@ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn,
->   
->   static int __kvm_mmu_max_mapping_level(struct kvm *kvm,
->   				       const struct kvm_memory_slot *slot,
-> -				       gfn_t gfn, int max_level, bool is_private)
-> +				       gfn_t gfn, int max_level, int host_level,
-> +				       bool is_private)
->   {
->   	struct kvm_lpage_info *linfo;
-> -	int host_level;
->   
->   	max_level = min(max_level, max_huge_page_level);
->   	for ( ; max_level > PG_LEVEL_4K; max_level--) {
-> @@ -3170,24 +3170,23 @@ static int __kvm_mmu_max_mapping_level(struct kvm *kvm,
->   			break;
->   	}
->   
-> -	if (is_private)
-> -		return max_level;
-> -
->   	if (max_level == PG_LEVEL_4K)
->   		return PG_LEVEL_4K;
->   
-> -	host_level = host_pfn_mapping_level(kvm, gfn, slot);
-> +	if (!is_private) {
-> +		WARN_ON_ONCE(host_level != PG_LEVEL_NONE);
-> +		host_level = host_pfn_mapping_level(kvm, gfn, slot);
-> +	}
-> +	WARN_ON_ONCE(host_level == PG_LEVEL_NONE);
->   	return min(host_level, max_level);
->   }
->   
->   int kvm_mmu_max_mapping_level(struct kvm *kvm,
->   			      const struct kvm_memory_slot *slot, gfn_t gfn,
-> -			      int max_level)
-> +			      int max_level, bool faultin_private)
+---
+  drivers/gpu/drm/panfrost/panfrost_gpu.c | 14 +++++++++++---
+  1 file changed, 11 insertions(+), 3 deletions(-)
 
-When the parameter "faultin_private" is added, the only valid value is
-"false".  If the caller passes in "faultin_private = true", then it 
-would be a
-problem based on this patch.
-It seems meaningless and confusing to introduce the parameter 
-"faultin_private"
-here.
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c 
+b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 09f5e1563ebd..1c7276aaa182 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -429,21 +429,29 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+      int ret;
+      u32 val;
 
->   {
-> -	bool is_private = kvm_slot_can_be_private(slot) &&
-> -			  kvm_mem_is_private(kvm, gfn);
-> -
-> -	return __kvm_mmu_max_mapping_level(kvm, slot, gfn, max_level, is_private);
-> +	return __kvm_mmu_max_mapping_level(kvm, slot, gfn, max_level,
-> +					   PG_LEVEL_NONE, faultin_private);
->   }
->   
->   void kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> @@ -3212,7 +3211,8 @@ void kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->   	 */
->   	fault->req_level = __kvm_mmu_max_mapping_level(vcpu->kvm, slot,
->   						       fault->gfn, fault->max_level,
-> -						       fault->is_private);
-> +						       fault->host_level,
-> +						       kvm_is_faultin_private(fault));
->   	if (fault->req_level == PG_LEVEL_4K || fault->huge_page_disallowed)
->   		return;
->   
-> @@ -4336,6 +4336,7 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->   				   struct kvm_page_fault *fault)
->   {
->   	int max_order, r;
-> +	u8 max_level;
->   
->   	if (!kvm_slot_can_be_private(fault->slot)) {
->   		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> @@ -4349,8 +4350,9 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->   		return r;
->   	}
->   
-> -	fault->max_level = min(kvm_max_level_for_order(max_order),
-> -			       fault->max_level);
-> +	max_level = kvm_max_level_for_order(max_order);
-> +	fault->host_level = max_level;
-> +	fault->max_level = min(max_level, fault->max_level);
->   	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
->   
->   	return RET_PF_CONTINUE;
-> @@ -4400,7 +4402,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->   		return -EFAULT;
->   	}
->   
-> -	if (fault->is_private)
-> +	if (kvm_is_faultin_private(fault))
->   		return kvm_faultin_pfn_private(vcpu, fault);
->   
->   	async = false;
-> @@ -6809,7 +6811,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->   		 */
->   		if (sp->role.direct &&
->   		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
-> -							       PG_LEVEL_NUM)) {
-> +							       PG_LEVEL_NUM, false)) {
->   			kvm_zap_one_rmap_spte(kvm, rmap_head, sptep);
->   
->   			if (kvm_available_flush_remote_tlbs_range())
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 653e96769956..6b540a10fd67 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -357,6 +357,9 @@ struct kvm_page_fault {
->   	 * is changing its own translation in the guest page tables.
->   	 */
->   	bool write_fault_to_shadow_pgtable;
-> +
-> +	/* valid only for private memslot && private gfn */
-> +	enum pg_level host_level;
->   };
->   
->   int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
-> @@ -451,7 +454,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->   
->   int kvm_mmu_max_mapping_level(struct kvm *kvm,
->   			      const struct kvm_memory_slot *slot, gfn_t gfn,
-> -			      int max_level);
-> +			      int max_level, bool faultin_private);
->   void kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
->   void disallowed_hugepage_adjust(struct kvm_page_fault *fault, u64 spte, int cur_level);
->   
-> @@ -469,4 +472,11 @@ static inline bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t g
->   }
->   #endif
->   
-> +static inline bool kvm_is_faultin_private(const struct kvm_page_fault *fault)
-> +{
-> +	if (IS_ENABLED(CONFIG_KVM_GENERIC_PRIVATE_MEM))
-> +		return fault->is_private && kvm_slot_can_be_private(fault->slot);
-> +	return false;
-> +}
-> +
->   #endif /* __KVM_X86_MMU_INTERNAL_H */
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index c8a4bd052c71..173e4e9053fc 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -2179,7 +2179,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
->   			continue;
->   
->   		max_mapping_level = kvm_mmu_max_mapping_level(kvm, slot,
-> -							      iter.gfn, PG_LEVEL_NUM);
-> +							      iter.gfn, PG_LEVEL_NUM, false);
->   		if (max_mapping_level < iter.level)
->   			continue;
->   
+-    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
++    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
++    gpu_write(pfdev, SHADER_PWROFF_HI, U32_MAX);
+      ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+                       val, !val, 1, 1000);
+      if (ret)
+          dev_err(pfdev->dev, "shader power transition timeout");
+
+      gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
++    gpu_write(pfdev, TILER_PWROFF_HI, U32_MAX);
+      ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
+                       val, !val, 1, 1000);
+      if (ret)
+          dev_err(pfdev->dev, "tiler power transition timeout");
+
+-    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
++    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+      ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+-                 val, !val, 0, 1000);
++                     val, !val, 0, 1000);
++    if (ret)
++        dev_err(pfdev->dev, "l2_low power transition timeout");
++
++    gpu_write(pfdev, L2_PWROFF_HI, U32_MAX);
++    ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_HI,
++                     val, !val, 0, 1000);
+      if (ret)
+          dev_err(pfdev->dev, "l2 power transition timeout");
+  }
+-- 
+2.42.0
+
+Cheers,
+Angelo
+
+>> non-linefetch access, but it might be caused by a register access after
+>> the clock or power domain driving the register bank has been disabled.
+>> The following diff might help validate this theory. If that works, we
+>> probably want to make sure we synchronize IRQs before disabling in the
+>> suspend path.
+>>
+>> --->8---
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
+>> index 55ec807550b3..98df66e5cc9b 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_regs.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
+>> @@ -34,8 +34,6 @@
+>>            (GPU_IRQ_FAULT                        |\
+>>             GPU_IRQ_MULTIPLE_FAULT               |\
+>>             GPU_IRQ_RESET_COMPLETED              |\
+>> -          GPU_IRQ_POWER_CHANGED                |\
+>> -          GPU_IRQ_POWER_CHANGED_ALL            |\
+> 
+> This helped, at least for this issue (next-20231121). Much later in
+> user-space boot I have lockups:
+> watchdog: BUG: soft lockup - CPU#4 stuck for 26s! [kworker/4:1:61]
+> 
+> [   56.329224]  smp_call_function_single from
+> __sync_rcu_exp_select_node_cpus+0x29c/0x78c
+> [   56.337111]  __sync_rcu_exp_select_node_cpus from
+> sync_rcu_exp_select_cpus+0x334/0x878
+> [   56.344995]  sync_rcu_exp_select_cpus from wait_rcu_exp_gp+0xc/0x18
+> [   56.351231]  wait_rcu_exp_gp from process_one_work+0x20c/0x620
+> [   56.357038]  process_one_work from worker_thread+0x1d0/0x488
+> [   56.362668]  worker_thread from kthread+0x104/0x138
+> [   56.367521]  kthread from ret_from_fork+0x14/0x28
+> 
+> But anyway the external abort does not appear.
+> 
+> Best regards,
+> Krzysztof
+> 
+
 
