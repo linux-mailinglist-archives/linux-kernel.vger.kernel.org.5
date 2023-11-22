@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A39E77F4772
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C6C7F4773
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343953AbjKVNOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:14:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S1343971AbjKVNOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:14:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbjKVNOS (ORCPT
+        with ESMTP id S1343894AbjKVNOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:14:18 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAF8193;
-        Wed, 22 Nov 2023 05:14:15 -0800 (PST)
+        Wed, 22 Nov 2023 08:14:20 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A29191;
+        Wed, 22 Nov 2023 05:14:16 -0800 (PST)
 Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 18BDF29A;
-        Wed, 22 Nov 2023 14:13:41 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1D1EC6EF;
+        Wed, 22 Nov 2023 14:13:42 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700658821;
-        bh=T8/2/eVWOaSK74Zk/huyWx16HxOvhau72w6ke9khnUk=;
+        s=mail; t=1700658822;
+        bh=grxjc5oPfkc4yi8C+sR2kDM81apJg3ELEbrGiy+KFM0=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=q9SkXhu4AQI4R7ZMreUYZcuHkeiW7TLR2XuUdvegGAgerF8PVMtLjXJtq6eval9aC
-         JD/KOU8ZnYDr04uxr0kIZo4+gO4qlE0UDhqAq6vkzN+76f/0KXjXQuSwhmfp1EKhzu
-         ZsQSiRHaj7FGYrtYcfhg9jFcCKD5aKciIKJdsLLY=
+        b=jjQAnthgxn697I6YpYq0XmJj7SdfyCi69X8jm9bc82FxI506m7dUHWO5mM5RPCwwY
+         9zEZaqo0gmCbZ+gn7OtwptjWQqpFPMRDTuhYr8O85fkAXcaJWV2sirPpVyx8PYfVzf
+         3C1ydHpkVGZCW3Msl5TJjeuZvu3+wVziP62Eu2kc=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 22 Nov 2023 15:13:48 +0200
-Subject: [PATCH 1/2] media: imx-mipi-csis: Fix clock handling in remove()
+Date:   Wed, 22 Nov 2023 15:13:49 +0200
+Subject: [PATCH 2/2] media: imx-mipi-csis: Drop extra clock enable at
+ probe()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-imx-csis-v1-1-0617368eb996@ideasonboard.com>
+Message-Id: <20231122-imx-csis-v1-2-0617368eb996@ideasonboard.com>
 References: <20231122-imx-csis-v1-0-0617368eb996@ideasonboard.com>
 In-Reply-To: <20231122-imx-csis-v1-0-0617368eb996@ideasonboard.com>
 To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
@@ -49,21 +50,21 @@ Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1197;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2282;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=T8/2/eVWOaSK74Zk/huyWx16HxOvhau72w6ke9khnUk=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlXf6hZE9bpUJV4Xp6/7RrJtsJvOTki0kH73Zcr
- 0+T/K2GQRyJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZV3+oQAKCRD6PaqMvJYe
- 9YCED/oCFm3ABpBs9PrRCrZNYgdhLzwVyaBddL4bnnEd2fj7Vebw/mDfOLyots2G/qgh3WUNpMO
- JZhPrZ+Xi4aoVX7kC1i0TM5nZu9POri2ZeExU4FvkSmumv5W9bX7PRAduTVaVEBlYP7Lo+9RGqq
- vuOXFereBiNFf6eORCGVVkqOl0QH8jp//mpAToioKRNnPKR2XoJ+/uFY3FJxdhGnGPv//bwiSK/
- eAzx29cSVH5F8wzNwZyTsfpMawgXe34+olYfRGKDgimDqhxrTUgzL/+iKEy3++jH+LxRnYUBAtR
- EpYBh2ZHXAxLj0HKY/qHKf+hP2WLQgd/ixo56OZOhE7J12lJI9lZdGZQ/wECil0sHzywmXE2TVN
- ylQZoqv7AnaA5+v9YzuTFyG/UKGibHafEtR6+gmYgG6y3yWdslKRuMtPo9nSsUgOLIQX1qUPhVh
- 2pKA4F7IhpgxruyQxR7nCSBl3M1nLHgYpZKL7DRzSP4dHZk1szlGszk8e+k0EN/Ob7vINkiw28E
- ayWAgQ15wKhtqA/xgzSy6nWF6/grR/Xft73DHDxnxS6ikIeptO0Z+nz0L/iQob6BqsxGe+TEfZ8
- 8jI9JDALlV+H5lt87UkVKvemv2BaNhptriVCQpNs+BPuRpxrRO9ej6ab58qBqC8cmpNqQoOdH8W
- WyCa57C2XU1DUKA==
+ bh=grxjc5oPfkc4yi8C+sR2kDM81apJg3ELEbrGiy+KFM0=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlXf6ixWjeF0HRbIjAcZmWDEdLJA0x39UzpL+dN
+ knosF/zzH2JAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZV3+ogAKCRD6PaqMvJYe
+ 9em+D/91Yj9X6HpvONi/OwvSPfSqgLbmZ4TlEQXnG25MJEds11sjNcKvQQS/TnppGbgnE295I0p
+ dMJDjjrn9uqMxEQzJBme0qn3+13vBh7bxpEqr9i7Psr0Zb80KO48Vk051lWSarMw851beZT5y0Z
+ tf1ItS/9MNxVg3CdXsIvy1wW9XMWCoZHIZIA8kD7xBA4JvJYoR1Odbq/80QZz0KcB09cE6nsT6f
+ yMQ8PZgm8IB4/pYrN5EceOqFpbvyDScIEv8aCVL23dd/Oh2Lb7LHvXiBMf0ASgXydoErHoEYjm1
+ WB9HntxOiYpMa2yfu+lsdFT4gTtM3dQhJ4oSSmdOknlDsgOg+e+5gkw8OLLzoMUv4M1RwNZLOtk
+ KzbQQm2o2mlPkXHxa5Sw3WmTTw/uSH2WE5rBYuW5OuY/1qmD/QvPOy5tKtVzlOkEJtVVB4jpQnM
+ T/Kr6WqOXAR2A/3sTOvGD7CBY0nszOvkC0DTXLzZHbXa1912R78h/06yDliBj5i6FwzEqE0sCgy
+ ChhVFPi/rIQtkO8y/vz/cO429l1zzprFjDKwYYOcf94Cw3b2MkImKX5UIhOiElz5sKhjgGqiTcI
+ N1SFkJbF5JxP/tmtP7WnqoiKJ/nvmZlRpQigzoPNpiI69PNqLND2L7jtyY5353T9DpkjFUlpHji
+ kyIaf9QL0Ft2trQ==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,34 +76,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver always calls mipi_csis_runtime_suspend() and
-mipi_csis_clk_disable() in remove(). This causes multiple WARNs from the
-kernel, as the clocks get disabled too many times.
+The driver always enables the clocks at probe() and disables them only
+at remove(). It is not clear why the driver does this, as it supports
+runtime PM, and enables and disables the clocks in the runtime resume
+and suspend callbacks. Also, in the case runtime PM is not available,
+the driver calls the resume and suspend callbacks manually from probe()
+and remove().
 
-Fix the remove() to call mipi_csis_runtime_suspend() and
-mipi_csis_clk_disable() in a way that reverses what is done in probe().
+Drop the unnecessary clock enable, thus enabling the clocks only when
+actually needed.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/media/platform/nxp/imx-mipi-csis.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/nxp/imx-mipi-csis.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
-index 6cb20b45e0a1..b39d7aeba750 100644
+index b39d7aeba750..b08f6d2e7516 100644
 --- a/drivers/media/platform/nxp/imx-mipi-csis.c
 +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
-@@ -1502,8 +1502,10 @@ static void mipi_csis_remove(struct platform_device *pdev)
+@@ -1435,24 +1435,18 @@ static int mipi_csis_probe(struct platform_device *pdev)
+ 	/* Reset PHY and enable the clocks. */
+ 	mipi_csis_phy_reset(csis);
+ 
+-	ret = mipi_csis_clk_enable(csis);
+-	if (ret < 0) {
+-		dev_err(csis->dev, "failed to enable clocks: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* Now that the hardware is initialized, request the interrupt. */
+ 	ret = devm_request_irq(dev, irq, mipi_csis_irq_handler, 0,
+ 			       dev_name(dev), csis);
+ 	if (ret) {
+ 		dev_err(dev, "Interrupt request failed\n");
+-		goto err_disable_clock;
++		return ret;
+ 	}
+ 
+ 	/* Initialize and register the subdev. */
+ 	ret = mipi_csis_subdev_init(csis);
+ 	if (ret < 0)
+-		goto err_disable_clock;
++		return ret;
+ 
+ 	platform_set_drvdata(pdev, &csis->sd);
+ 
+@@ -1486,8 +1480,6 @@ static int mipi_csis_probe(struct platform_device *pdev)
+ 	v4l2_async_nf_unregister(&csis->notifier);
  	v4l2_async_nf_cleanup(&csis->notifier);
  	v4l2_async_unregister_subdev(&csis->sd);
+-err_disable_clock:
+-	mipi_csis_clk_disable(csis);
  
-+	if (!pm_runtime_enabled(&pdev->dev))
-+		mipi_csis_runtime_suspend(&pdev->dev);
-+
+ 	return ret;
+ }
+@@ -1506,7 +1498,6 @@ static void mipi_csis_remove(struct platform_device *pdev)
+ 		mipi_csis_runtime_suspend(&pdev->dev);
+ 
  	pm_runtime_disable(&pdev->dev);
--	mipi_csis_runtime_suspend(&pdev->dev);
- 	mipi_csis_clk_disable(csis);
+-	mipi_csis_clk_disable(csis);
  	v4l2_subdev_cleanup(&csis->sd);
  	media_entity_cleanup(&csis->sd.entity);
+ 	pm_runtime_set_suspended(&pdev->dev);
 
 -- 
 2.34.1
