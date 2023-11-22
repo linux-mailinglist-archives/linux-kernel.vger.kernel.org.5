@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAC37F4157
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361B07F4159
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjKVJP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
+        id S235117AbjKVJQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJPy (ORCPT
+        with ESMTP id S235111AbjKVJQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:15:54 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCE683;
-        Wed, 22 Nov 2023 01:15:50 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r5jKg-0000kn-Ox; Wed, 22 Nov 2023 10:15:42 +0100
-Message-ID: <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
-Date:   Wed, 22 Nov 2023 10:15:42 +0100
+        Wed, 22 Nov 2023 04:16:13 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E9F1A2;
+        Wed, 22 Nov 2023 01:16:09 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CD0C024000D;
+        Wed, 22 Nov 2023 09:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700644567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pd8P94KReE7rtC9tl5ie2LKIkhmNIUEsbYj4grCZU0M=;
+        b=ZW/ci6WZHSFyXWwK4JmihGUwbWHjWUTjUBhA/E8IZ0w3FE/PJmx3QB7CPbJ3ECb0G+E5bQ
+        NlM5N7gLomjSpiCVQHJPvrx3oXoUmr2L2nQXlMhTPq7SSpFhaMnC/bXdsz7WQNJT4y5axb
+        60mpTFTDvJMLu4t6jmwG5miPll28wiuDyCXymKKwmtt5ZwhcCcBdLC2vljYmWsoXW8+Z21
+        ym15nG/lJC0hd524C44lrBMk6roj2wgzMZ0fDIwSkGRqraj1+cugpt76P3yNCqRePg3AcT
+        eY+urbL+FEQy7PClrqeSzREUKsgBZBkC9caSvAxLsukJUy5yURXKmtpZMJ/d/w==
+Date:   Wed, 22 Nov 2023 10:16:05 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2] firmware_loader: Expand Firmware upload
+ error codes with firmware invalid error
+Message-ID: <20231122101605.0786440b@kmaincent-XPS-13-7390>
+In-Reply-To: <20231121173022.3cb2fcad@kernel.org>
+References: <20231121-feature_firmware_error_code-v2-1-f879a7734a4e@bootlin.com>
+        <20231121173022.3cb2fcad@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to
- CONFIG_MICROCODE_AMD)
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-To:     Borislav Petkov <bp@alien8.de>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
-        hpa@zytor.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
- <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
-Content-Language: en-US, de-DE
-In-Reply-To: <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700644550;2614c532;
-X-HE-SMSGID: 1r5jKg-0000kn-Ox
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.11.23 19:10, Borislav Petkov wrote:
-> On Sun, Nov 12, 2023 at 04:03:32PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
->> That's because dracut until the recent commit
->> https://github.com/dracutdevs/dracut/commit/6c80408c8644a0add1907b0593eb83f90d6247b1
->> looked for CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL in the config
->> file to decide what to include or not.
-> 
-> They've been told a bunch of times already that grepping .config for
-> specific symbols is not how one should check whether one should add
-> microcode blobs to the initrd or not because Kconfig symbols are not an
-> ABI.
+Hello Jakub,
 
-Maybe, but you know how Linus sees things like this: what's considered
-an ABI/API or not is nearly[1] irrelevant - if a change breaks something
-that used to work then it needs to be fixed.
+On Tue, 21 Nov 2023 17:30:22 -0800
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-[1] unless you fiddle with things obviously internal; not sure if this
-case would qualify for him, but somehow I doubt it -- but I might be
-wrong there.
+> On Tue, 21 Nov 2023 11:50:35 +0100 Kory Maincent wrote:
+> > No error code are available to signal an invalid firmware content.
+> > Drivers that can check the firmware content validity can not return this
+> > specific failure to the user-space
+> >=20
+> > Expand the firmware error code with an additional code:
+> > - "firmware invalid" code which can be used when the provided firmware
+> >   is invalid =20
+>=20
+> Any idea what this is?
+>=20
+> lib/test_firmware.o: warning: objtool: test_fw_upload_prepare() falls thr=
+ough
+> to next function __cfi_test_fw_upload_cancel()
+>=20
+> My build shows this on an incremental clang 17 build.
 
-> And looking at that commit, now they're grepping for CONFIG_MICROCODE.
-> And that'll break again if one day we decide to make the microcode
-> loader built in unconditionally.
-> 
-> How to fix this reliably and properly?
-> 
-> Honestly, I don't have a good idea. If we do something like this:
-> grep microcode_init System.map
-> 
-> then that makes "microode_init" ABI and we won't be able to change it
-> eva. I'd need to do some digging here...
+Thanks for the report.
+It seems I have to update fw_upload_err_str accordingly.
+Didn't know about this test_firmware.c file.=20
 
-Any progress on this?
-
-BTW: I see that this could help preventing problems like the current one
-to happen in the far future. But how would that help the current
-situation (e.g. users that have an old dracut and updated the kernel
-without updating dracut)?
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot poke
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
