@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6F27F50B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B2C7F50A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344414AbjKVTfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 14:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+        id S1344427AbjKVTfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 14:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbjKVTfa (ORCPT
+        with ESMTP id S1343867AbjKVTfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 14:35:30 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B942118E;
-        Wed, 22 Nov 2023 11:35:25 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 983C35C0231;
-        Wed, 22 Nov 2023 14:35:22 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 22 Nov 2023 14:35:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1700681722; x=1700768122; bh=lx
-        3Gf8Ml5YHZ79DEZBtfhV6TJngHlrEmAjf3G2BUG5I=; b=u2TiS0xIOQsffzBAVU
-        JSTs2mGFfVTuQMlgIJgHNPnrhs78q46sLtXDhRnurDbnCTVctxhViklKISCbXqPJ
-        4zklquNGsoexd+vDTADrs5yNRWdE8cNDhrKrQPrcT6KxgF80yzbPKqc3Aowq1yJ8
-        EmU0xsb04QOXaRiCBNSDVlt+k9fXanRUneRaXg4Llmo3gShROyoFwVzU6nAAzkH8
-        VPvMLjauYd75oxdJ3jmOOLieuJYh8o4TJgz8XRtQ7uh/AQbSS4681JPFeJau9SKu
-        CdMal+gFwVhzjafLGclkZ1iOcuQOb7AmNjZg9/LWbHPI8hSH3qKTzmm4BHs/DOZ4
-        Wgkw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700681722; x=1700768122; bh=lx3Gf8Ml5YHZ7
-        9DEZBtfhV6TJngHlrEmAjf3G2BUG5I=; b=HktlyKuM6aaLQ6S2eyF6AyJosR+pQ
-        GNgRH40Ywg+gkZwQdn7moY7Y+59ZLJYiZXNuMHoNwYQeMNA+AznC17pC/OVohdY5
-        VjgrTYOHShDNF32knHfLUxlcUM7NrzSiR1BgduQrFf7RMpQUYSoS6ltoKwZxrj/K
-        bot0k9SLRayF03N1tB7c29RBqOR0UpnXva1ckBwYUDFsBiwgSmdDF7GAoMo+Y24k
-        KBfpTDhZpMIY6HZTVCG+3WfB9BUsk+Mpi9k4E5orXrkaCSgQOD0fkYVjnrhQnGo/
-        UqA6hynC/XUYcwf7kxAWekWr21Q5GLcWMiQItvhrcbaNMV0G7Wj+tLfNw==
-X-ME-Sender: <xms:-VdeZXTQDoj04OGydyU_tsLVOIngFCFZgrFY9eh_f0ejBuzlpcKokQ>
-    <xme:-VdeZYwVfUiZlaozz7Ei8iAf4N0ApBmCBHI9rs7qzU_q68qQejS-CuxYbF8Y2pSJH
-    Bm8RUHP4sNN78BExvw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:-VdeZc1MDnsssALlgVh0DSsi9KVGIi8mJSEsShVn5VZDPvB0xY-dCA>
-    <xmx:-VdeZXBN9hUryZPJ7XhsUt-aFrPAtmEATvvtFZUwmSiikBbunwAvcg>
-    <xmx:-VdeZQhd9WJc2trzfd8cr4zx7_HBYqyk0C8pbLkqsPKk1WLx_Lu7iw>
-    <xmx:-ldeZcy3EllNCPOB08Eq1u1DCV9iGLuZEJAiiU4rIy-olCaheuZ-4A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6E100B60089; Wed, 22 Nov 2023 14:35:21 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Wed, 22 Nov 2023 14:35:11 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8D718E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:35:06 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso1813581fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:35:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700681705; x=1701286505; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hDmhoQHGOOALyVImUqGT+R0vogulb4Mds0pYOKaTAe0=;
+        b=bikKc5lUw/LI4QjmZk3K8Ctg2TFU52ankJhgr1UMIKOabQI2HObJDHpG3mZ43Xojs3
+         seWBM8H6/qPnGdHKJnH0OOAR89kqtNuyCWMeA/230v+4LJ0/BHvwZ28a7RVpikbNrTFo
+         KzlhF1fhqaBOVsC3vdhaj9UOLerLBbpO7of4nAu+/WsBBytkPk5Hb0eHYUZEHC833hTa
+         ryr3sTSHxKe0d6WLdR4mn3m51C6IKe6iqj7vnYYE5HXK9fyrUxuVZ1e/2S2KW42VWp8h
+         7oQ/EGNKAlAZ2aY8pCvBRzHyNbnHt1VpzUp47OqYqtjHmI9SJJKbHN1n3TfE+CApa/Si
+         lNUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700681705; x=1701286505;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hDmhoQHGOOALyVImUqGT+R0vogulb4Mds0pYOKaTAe0=;
+        b=vp/Z+2UN9H23QKPxGnlfoLil4LubtUrP3WFH/eZO9hR4GD+9G5LCk4C3XnMW+zsCXI
+         9mc07KpDehCZqh2xI9MZXfnCyeGSuk0kfq+uYipSW4RqMoQthBa651v+MdshpbCcAb3b
+         OTW44kBBDCDs7ZAAzmpDTwMT4g1DBeFNQpBi88jEaUE1Piyz5kIh5GP6jhVln09xjiYs
+         c2BtinO+Xny51sUCd70/K3EUfdHXbAm1O9hIT/0IV9ST7xrUOsMyNwW1ssVTF76x3Ehc
+         v8Rb4gOiaXeLFtiaTE45IKYlREG/bTvSgzf+syxuNLa6cF74mFSeO/7yRQt75tuq4XaH
+         Y+SA==
+X-Gm-Message-State: AOJu0YwnreWz8Yd/yG6wctlV7WeLb2BjkFkTw5mwIzD307YHyvTFoHu+
+        dCICdaQM4E/DQ+0odYuqmffGlw==
+X-Google-Smtp-Source: AGHT+IE6aS0LAuHAvH9t9v/SYT2pY0NL/sN0lO5YQ5D7kje63sItMPR3QHt65q3O5k6KurxZCAhxWA==
+X-Received: by 2002:a2e:920b:0:b0:2c5:23e3:ed11 with SMTP id k11-20020a2e920b000000b002c523e3ed11mr2640611ljg.30.1700681704688;
+        Wed, 22 Nov 2023 11:35:04 -0800 (PST)
+Received: from [172.30.204.74] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f6-20020a2e9186000000b002c505a6a398sm29408ljg.89.2023.11.22.11.35.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 11:35:03 -0800 (PST)
+Message-ID: <6e399854-40a2-412b-8c41-4f9e6b17e38b@linaro.org>
+Date:   Wed, 22 Nov 2023 20:35:02 +0100
 MIME-Version: 1.0
-Message-Id: <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
-In-Reply-To: <20231122182419.30633-2-fancer.lancer@gmail.com>
-References: <20231122182419.30633-1-fancer.lancer@gmail.com>
- <20231122182419.30633-2-fancer.lancer@gmail.com>
-Date:   Wed, 22 Nov 2023 20:35:01 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Serge Semin" <fancer.lancer@gmail.com>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Yinglu Yang" <yangyinglu@loongson.cn>,
-        "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-Cc:     "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
-        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
-        "Aleksandar Rikalo" <arikalo@gmail.com>,
-        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
-        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/16] dt-bindings: arm: qcom: add SM8550 AIM300
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        tglx@linutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+ <20231117101817.4401-2-quic_tengfan@quicinc.com>
+ <519b89a2-550e-44a2-bff0-a6a86c50d073@linaro.org>
+ <54b68923-f670-482b-b4a2-ff5f5c867a91@linaro.org>
+ <7bf18b1e-463d-4030-99cd-4fcf2126fda2@quicinc.com>
+ <4eb76d38-93b5-424b-adce-3cc296fa03fb@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <4eb76d38-93b5-424b-adce-3cc296fa03fb@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023, at 19:23, Serge Semin wrote:
-> dmi_early_remap() has been defined as ioremap_cache() which on MIPS32 gets
-> to be converted to the VM-based mapping. DMI early remapping is performed
-> at the setup_arch() stage with no VM available. So calling the
-> dmi_early_remap() for MIPS32 causes the system to crash at the early boot
-> time. Fix that by converting dmi_early_remap() to the uncached remapping
-> which is always available on both 32 and 64-bits MIPS systems.
->
-> Fixes: be8fa1cb444c ("MIPS: Add support for Desktop Management Interface (DMI)")
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> ---
->  arch/mips/include/asm/dmi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/include/asm/dmi.h b/arch/mips/include/asm/dmi.h
-> index 27415a288adf..525aad1572d1 100644
-> --- a/arch/mips/include/asm/dmi.h
-> +++ b/arch/mips/include/asm/dmi.h
-> @@ -5,7 +5,7 @@
->  #include <linux/io.h>
->  #include <linux/memblock.h>
+
+
+On 11/21/23 08:18, Krzysztof Kozlowski wrote:
+> On 21/11/2023 01:30, Tengfei Fan wrote:
+>>
+>>
+>> 在 11/20/2023 4:53 PM, Krzysztof Kozlowski 写道:
+>>> On 17/11/2023 11:22, Krzysztof Kozlowski wrote:
+>>>> On 17/11/2023 11:18, Tengfei Fan wrote:
+>>>>> Add board compatible for SM8550 AIM300.
+>>>>
+>>>> Subject, commit msg and compatible tell basically the same... and none
+>>>> of them tell me what is AIM300.
+>>>
+>>> Due to lack of explanation it is difficult to judge what's this. However
+>>> based on pieces of information I got, it looks like it is not a board,
+>>> so it is not suitable to be DTS, but DTSI. You still need a board...
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> Hi Krzysztof,
+>> AIM (Artificial Intelligence Module). This hardware platform can be used
+>> to develop AI related software based on Qualcomm chipset. I also will
+>> update this message to patch commit message.
 > 
-> -#define dmi_early_remap(x, l)		ioremap_cache(x, l)
-> +#define dmi_early_remap(x, l)		ioremap_uc(x, l)
+> Does "Module" means it is physical module?
+Moreover, does it have anything specific that makes it different from
+a MTP/QRD/regular 8550 SoM?
+In general, you can develop AI software on any computer, there are no
+runtime checks for "AI" presence in the naming ;)
 
-Please don't use ioremap_uc() in new code, we are in the (long)
-process of removing it from the kernel for everything except
-x86-32, and it already returns NULL on most of them.
+Or is it perhaps like QRB5165N [1], a base soc with what seems to
+be a fat AI accelerator connected to it?
 
-Would the normal ioremap() work for you here? It seems to
-do the same thing as ioremap_uc() on mips and a couple of 
-other architectures that have not yet killed it off.
+Konrad
 
-   Arnd
+[1] https://www.thundercomm.com/product/qualcomm-robotics-rb6-development-kit/#specifications
