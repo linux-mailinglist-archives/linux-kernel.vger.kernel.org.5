@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A577F44D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B0E7F44D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343687AbjKVLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S1343669AbjKVLWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343649AbjKVLWl (ORCPT
+        with ESMTP id S1343587AbjKVLWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:22:41 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318D9B9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:22:38 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5lJ7-0007CM-Sz; Wed, 22 Nov 2023 12:22:13 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5lJ7-00AnbT-0P; Wed, 22 Nov 2023 12:22:13 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5lJ6-003I31-Ta; Wed, 22 Nov 2023 12:22:12 +0100
-Date:   Wed, 22 Nov 2023 12:22:12 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
-        Ye Bin <yebin10@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
-        linux-pm@vger.kernel.org,
-        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
-Subject: Re: mmc: handling of Under-Voltage Events in eMMC
-Message-ID: <20231122112212.GA783262@pengutronix.de>
-References: <20230929130028.GB2825985@pengutronix.de>
- <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
+        Wed, 22 Nov 2023 06:22:40 -0500
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E582197;
+        Wed, 22 Nov 2023 03:22:37 -0800 (PST)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7ad501cb1f9so257691639f.0;
+        Wed, 22 Nov 2023 03:22:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700652156; x=1701256956;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Zj0FMeXmZaLFHcDzJTQgipypunMiy6dY5lJGXKJ5iLE=;
+        b=Y+QKB3kQq+LhlS6Q1Sj9wX3LnpP8sbc1EdSuVGCRB0llqbfYVGda8KgIdbSNFaek3W
+         73c538E8gUDaTXKaoT4+4U4TsAhbDv8e0OMlhmYMpOGhrsRZn0fq7yBPOLdC5QorLtDR
+         7tyvSA1Jp8UjHxKLGGhINsq5qma7NcuPoEUdEIo2E70Qw46CCTZJ0UY2m6kOO2hT+Q8D
+         L4Q0wZYZNWYcIK7fw+EDleKq4gvMJwJws1SYmAl7hAFcN9yGcWjPNVx8k0TXEPCr5dOg
+         sAhh5+6qLOVMbP6h0Q505TzOmyajd9qhXbRw5zmwm+rp1KPRjmmZnhXfi/jg3ObHJ5Fk
+         LBtw==
+X-Gm-Message-State: AOJu0YyBGqgD5gygGrs1A9aCDhvw2tT37iDA7W1QrItZYfzln5qrOoQk
+        AEWoCAm31q742dF+emTSYBIKSRFtug==
+X-Google-Smtp-Source: AGHT+IE5AaMO5ccVmjeQMs+c1NmBQLPKnBYj3HiPziCiqUqVINA24WPX6yT8oPrsPk1ympBeEzcPmg==
+X-Received: by 2002:a05:6e02:1d8b:b0:359:3150:c696 with SMTP id h11-20020a056e021d8b00b003593150c696mr1942671ila.8.1700652156424;
+        Wed, 22 Nov 2023 03:22:36 -0800 (PST)
+Received: from herring.priv ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id n2-20020a92d9c2000000b0035b0b05189bsm1593415ilq.38.2023.11.22.03.22.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 03:22:35 -0800 (PST)
+Received: (nullmailer pid 262788 invoked by uid 1000);
+        Wed, 22 Nov 2023 11:22:34 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+From:   Rob Herring <robh@kernel.org>
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     conor@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, git@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
+        monstr@monstr.eu,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+In-Reply-To: <9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com>
+References: <281ed28bccc14e7006caf17d6cfeb2a679b0e255.1700648588.git.michal.simek@amd.com>
+ <9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com>
+Message-Id: <170065215396.262656.16459426202425895063.robh@kernel.org>
+Subject: Re: [PATCH v3 2/2] dt-bindings: soc: Add new board description for
+ MicroBlaze V
+Date:   Wed, 22 Nov 2023 04:22:34 -0700
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,62 +71,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf, Hi Mark,
 
-On Tue, Oct 10, 2023 at 04:48:24PM +0200, Ulf Hansson wrote:
-> On Fri, 29 Sept 2023 at 15:00, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> >
-> > Hi,
-> >
-> > I'm working on a project aiming to protect eMMC during power loss. Our
-> > hardware setup includes an under-voltage detector, circuits to disable
-> > non-critical components, and enough capacitance to allow the CPU to run
-> > for 100ms.
-> >
-> > I've added an interrupt handler to the fixed regulator to emit
-> > REGULATOR_EVENT_UNDER_VOLTAGE events, and modified
-> > drivers/mmc/host/sdhci.c to receive these events. Currently, the handler
-> > only produces debug output.
-> >
-> > What is the recommended approach for handling under-voltage situations?
-> > Should the driver finish ongoing write commands, block new ones, and
-> > shut down the eMMC? I'm looking for direction here.
+On Wed, 22 Nov 2023 11:23:13 +0100, Michal Simek wrote:
+> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
+> It is hardware compatible with classic MicroBlaze processor. Processor can
+> be used with standard AMD/Xilinx IPs including interrupt controller and
+> timer.
 > 
-> That's indeed a very good question. From a general point of view, I
-> think the best we can do is to stop any new I/O requests from being
-> managed - and try to complete only the last ongoing one, if any.
-> Exactly how to do that can be a bit tricky though.
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 > 
-> Beyond that, we should probably try to send the eMMC specific commands
-> that allow us to inform the eMMC that it's about to be powered-off.
-> Although, I am not sure that we actually will be able to complete
-> these operations within 100ms, so maybe it's not really worth trying?
-> See mmc_poweroff_notify(), for example.
+> Changes in v3:
+> - Add Krzysztof's ACK
+> 
+> Changes in v2:
+> - Put MicroBlaze V description to xilinx.yaml
+> - Add qemu target platform as platform used for testing.
+> 
+>  Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
-Some puzzle parts are now mainline, for example regulator framework
-can be configured to detect under-voltage events and execute
-hw_protection_shutdown(). So far it worked good enough to complete
-mmc_poweroff_notify() withing 100ms window. The problem is, the chance to
-execute mmc_poweroff_notify() depends on kernel configuration. If there are too
-many drivers and devices, mmc_poweroff_notify() will be not executed in time.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-For now, I workaround it by registering a reboot notifier for mmc shutdown.
-It works, because kernel_power_off() is executing all registered reboot
-notifiers at first place and there are no other slow reboot notifiers.
-But, it seems to be not reliable enough. Probably notifier prioritization
-is needed to make it more predictable.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/arm/xilinx.yaml:137:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
 
-So far, I have two variants to implement it in more predictable way:
-variant 1 - forward the under-voltage notification to the mmc framework and
-  execute mmc_poweroff_notify() or bus shutdown.
-variant 2 - use reboot notifier and introduce reboot notifier prioritization.
+dtschema/dtc warnings/errors:
 
-Are there other options? What are your preferences?
+doc reference errors (make refcheckdocs):
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/9f925b8e1580df2bd53ce37028d56775b51e1415.1700648588.git.michal.simek@amd.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
