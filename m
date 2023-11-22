@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6167F42FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EBC7F4301
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343729AbjKVJ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S1343717AbjKVJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjKVJ6k (ORCPT
+        with ESMTP id S235182AbjKVJ7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:58:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87619449F
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:58:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149E8C433C8;
-        Wed, 22 Nov 2023 09:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700647115;
-        bh=wFOz84X6JQkAzM3R0/wXegUEVDcHqoOwN9/NQtwtvm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wf1mV/PkVmEWBKYQSBG9vYSivTRFJ852ePt/q6LjCA0663fSVUQoEc8MSIKQYHi9j
-         9GQoEiUCuYB0jtaKMyhiCLXyA+HaXSUe5SLGzyyBC4uT6rSV6nav0M4q19s6zEJa1Q
-         zw4Z3zL1QxYPUIWaX7StTBczTpZGjAGP4/jPmiXOkVLPsUc0CDcc6t2L0e2mv1BMcu
-         J9YrxCqsGS5I6pUxcX8j5HG13sVGFDJpwmUMrJM9mK4w/Edn0Qdnhyg0+jFYOchkc4
-         6Kl5aTIT5sgpgBMxPV42UFSGMc0422tlVAZLrg8oXZ9sawdJYHBt2HmJ9efgbfdy3P
-         YMASud1Mubkcg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r5k0O-0008Co-2n;
-        Wed, 22 Nov 2023 10:58:49 +0100
-Date:   Wed, 22 Nov 2023 10:58:48 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 02/12] usb: dwc3: qcom: Rename dwc3 platform_device
- reference
-Message-ID: <ZV3Q2Fa4KL-0hBE8@hovoldconsulting.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-2-ab4a84165470@quicinc.com>
+        Wed, 22 Nov 2023 04:59:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D934649E6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700647142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZCjzWXii4u28sN5GkNkdatJx6cXmhKIdL34C9BKN+9E=;
+        b=irmIYQvZJoEP3caUUf7WJXk4Hj8oEQhydDHvTJ33uZcM6V9MOBFvMc9k/LYi+1DDod4JOA
+        Mtng72DI7t78J3HpSFWEf44vWCucbz5EGsfb4bBpCYxJ4UoqefnypXscGxU+sBtfGv2bg5
+        +qXWeTeDcUcMp8bhgMy5SwwAqwl1xBU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-294-QhcexgQrPJyp37D1Ovkadw-1; Wed,
+ 22 Nov 2023 04:58:56 -0500
+X-MC-Unique: QhcexgQrPJyp37D1Ovkadw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 322863810B1A;
+        Wed, 22 Nov 2023 09:58:56 +0000 (UTC)
+Received: from [10.45.226.4] (unknown [10.45.226.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11EE82026D4C;
+        Wed, 22 Nov 2023 09:58:53 +0000 (UTC)
+Message-ID: <48330ace-2b5f-4919-b5cb-7ac4372120bf@redhat.com>
+Date:   Wed, 22 Nov 2023 10:58:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016-dwc3-refactor-v1-2-ab4a84165470@quicinc.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next v3 3/5] i40e: Add helpers to find VSI and VEB by
+ SEID and use them
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Simon Horman <horms@kernel.org>, mschmidt@redhat.com,
+        netdev@vger.kernel.org
+References: <20231116152114.88515-1-ivecera@redhat.com>
+ <20231116152114.88515-4-ivecera@redhat.com>
+ <f90bc4fc-d9e3-468c-8b94-73bea4b2d764@intel.com>
+Content-Language: en-US
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <f90bc4fc-d9e3-468c-8b94-73bea4b2d764@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,49 +76,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:11:10PM -0700, Bjorn Andersson wrote:
-> In preparation for the introduction of a direct reference to the struct
-> dwc3 in the dwc3_qcom struct, rename the generically named "dwc3" to
-> reduce the risk for confusion.
+
+
+On 22. 11. 23 0:05, Tony Nguyen wrote:
 > 
-> No functional change.
 > 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 46 ++++++++++++++++++++++----------------------
->  1 file changed, 23 insertions(+), 23 deletions(-)
+> On 11/16/2023 7:21 AM, Ivan Vecera wrote:
 > 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 3de43df6bbe8..a31c3bc1f56e 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -67,7 +67,7 @@ struct dwc3_acpi_pdata {
->  struct dwc3_qcom {
->  	struct device		*dev;
->  	void __iomem		*qscratch_base;
-> -	struct platform_device	*dwc3;
-> +	struct platform_device	*dwc_dev;
+>> @@ -13197,17 +13193,14 @@ static int i40e_ndo_bridge_getlink(struct 
+>> sk_buff *skb, u32 pid, u32 seq,
+>>       struct i40e_vsi *vsi = np->vsi;
+>>       struct i40e_pf *pf = vsi->back;
+>>       struct i40e_veb *veb = NULL;
+>> -    int i;
+>>       /* Only for PF VSI for now */
+>>       if (vsi->seid != pf->vsi[pf->lan_vsi]->seid)
+>>           return -EOPNOTSUPP;
+>>       /* Find the HW bridge for the PF VSI */
+>> -    i40e_pf_for_each_veb(pf, i, veb)
+>> -        if (veb->seid == vsi->uplink_seid)
+>> -            break;
+>> -    if (i == I40E_MAX_VEB)
+>> +    veb = i40e_pf_get_veb_by_seid(pf, vsi->uplink_seid);
+>> +    if (!vsi)
+>>           return 0;
+> 
+> In addition to the kdoc stuff that Simon pointed out. Should this null 
+> check be against veb?
+> 
+Oops, the check should be against veb here not aganst vsi...
+Good eyes, Tony. Thanks, I will fix this.
 
-Since "dev" is so overloaded, please name this one "dwc_pdev" instead.
+Ivan
 
->  	struct platform_device	*urs_usb;
->  	struct clk		**clks;
->  	int			num_clocks;
- 
->  static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
->  {
-> -	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
-> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc_dev);
->  	struct usb_device *udev;
->  	struct usb_hcd __maybe_unused *hcd;
->  
-> @@ -486,7 +486,7 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
->  static irqreturn_t qcom_dwc3_resume_irq(int irq, void *data)
->  {
->  	struct dwc3_qcom *qcom = data;
-> -	struct dwc3	*dwc = platform_get_drvdata(qcom->dwc3);
-> +	struct dwc3	*dwc = platform_get_drvdata(qcom->dwc_dev);
-
-Perhaps you can drop the tab while changing this line.
-
-Johan
