@@ -2,60 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ADE7F4ECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B81D7F4ECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjKVRy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:54:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        id S1344293AbjKVRzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKVRy4 (ORCPT
+        with ESMTP id S231391AbjKVRzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:54:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93426101;
-        Wed, 22 Nov 2023 09:54:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700675692; x=1732211692;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YCdU8G3RGqUX0Po0bGsZzggEg0XQbmO7+fvYqgSfd2c=;
-  b=Mo/Uu3QW/OfmhTZ5S4wcDckSKBsxUjSdxRaOXVZd/3ozOoP2K4FC4Q+6
-   5BfdevoRQ6OSa0NQ+RgMyTrOW3IMDwPG/v2x9BMLawZB/DJvNp6TY+wUz
-   i75NFq7oBif6FnzRCQr4gYJ2u3oxNc5URsZIuFm8OQnQ99HMak2RMHJ9d
-   uCCAPlM1DBxLJqN8kPg32A3epkB/dU/b1SApo6TB2ncHbiRB8fTjyAJ91
-   /03QJTwXQhsmQl0U0vh9NGbcNE5QWyy1GTACUgb/OomuPQf4gkxt48SQg
-   C5R/YtBVNxRei983kx0d9xANsBm2LHq33zTQgKdwC4p9/adS+BmbJW4/m
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389268414"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="389268414"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 09:54:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="837516073"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="837516073"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2023 09:54:48 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A79B42A2; Wed, 22 Nov 2023 19:54:46 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 1/1] pinctrl: lynxpoint: Simplify code with cleanup helpers
-Date:   Wed, 22 Nov 2023 19:54:44 +0200
-Message-ID: <20231122175444.2316719-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+        Wed, 22 Nov 2023 12:55:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA761AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:55:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FD0EC433C9;
+        Wed, 22 Nov 2023 17:55:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700675727;
+        bh=NKrLhVxDSneYqBCgaVREfOa2yycpjhLMjCDFnhPnIpo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dOR2PKrTFmPPs9/0hWB9mt8n2ESvpeM8wedLTWtBwke6lEOhjDVyFWNHvwr2IK0aZ
+         YgW3ENr0qW1JAdGvsdxaJYdSAPeMnVhVn57X7EEqN5yyx1jQbLeVTODDy1LtyHZYMM
+         YlW07D5wXxGE9SYU1aJNMsckLmGb91ESFAjhaTsn40tiHiK22RQex/bbRZxOcQnGRi
+         Bl7DNCE+4JG/7nTxehf5ML6n/+Kiqx6vLNSBQHnvirnmGt4uafJdfcfOfVRucczSj4
+         glznnW5TNdm61zY+kocAbaHsQbeSXSrJkeojrZL26mfQYWzd78x5z9SMRsJ0LKb98z
+         z3jzNIaLyS+OQ==
+Date:   Wed, 22 Nov 2023 09:55:25 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231122095525.1438eaa3@kernel.org>
+In-Reply-To: <20231122165955.tujcadked5bgqjet@skbuf>
+References: <20231120115839.74ee5492@kernel.org>
+        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+        <20231120133737.70dde657@kernel.org>
+        <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+        <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
+        <20231121094354.635ee8cd@kernel.org>
+        <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
+        <20231122140850.li2mvf6tpo3f2fhh@skbuf>
+        <20231122143618.cqyb45po7bon2xzg@skbuf>
+        <20231122085459.1601141e@kernel.org>
+        <20231122165955.tujcadked5bgqjet@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,247 +82,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use macros defined in linux/cleanup.h to automate resource lifetime
-control in the driver.
+On Wed, 22 Nov 2023 18:59:55 +0200 Vladimir Oltean wrote:
+> I wouldn't be so sure. The alternative interpretation "for PTP, give me
+> timestamps from both sources" also sounds reasonable for the distant
+> future where that will be possible (with proper cmsg identification).
+> But I don't see how to distinguish the two - the filters, expressed in
+> these terms, would be the same.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/intel/pinctrl-lynxpoint.c | 72 +++++++----------------
- 1 file changed, 21 insertions(+), 51 deletions(-)
+We can add an attribute that explicitly says that the configuration
+is only requesting one stamp. But feels like jumping the gun at this
+stage, given we have no other option to express there.
 
-diff --git a/drivers/pinctrl/intel/pinctrl-lynxpoint.c b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-index e6878e4cf20c..1fb0bba8b386 100644
---- a/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-+++ b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-@@ -10,6 +10,7 @@
- #include <linux/acpi.h>
- #include <linux/array_size.h>
- #include <linux/bitops.h>
-+#include <linux/cleanup.h>
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -291,10 +292,9 @@ static int lp_pinmux_set_mux(struct pinctrl_dev *pctldev,
- {
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	const struct intel_pingroup *grp = &lg->soc->groups[group];
--	unsigned long flags;
- 	int i;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	/* Now enable the mux setting for each pin in the group */
- 	for (i = 0; i < grp->grp.npins; i++) {
-@@ -312,8 +312,6 @@ static int lp_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 		iowrite32(value, reg);
- 	}
- 
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
--
- 	return 0;
- }
- 
-@@ -334,10 +332,9 @@ static int lp_gpio_request_enable(struct pinctrl_dev *pctldev,
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	void __iomem *reg = lp_gpio_reg(&lg->chip, pin, LP_CONFIG1);
- 	void __iomem *conf2 = lp_gpio_reg(&lg->chip, pin, LP_CONFIG2);
--	unsigned long flags;
- 	u32 value;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	/*
- 	 * Reconfigure pin to GPIO mode if needed and issue a warning,
-@@ -352,8 +349,6 @@ static int lp_gpio_request_enable(struct pinctrl_dev *pctldev,
- 	/* Enable input sensing */
- 	lp_gpio_enable_input(conf2);
- 
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
--
- 	return 0;
- }
- 
-@@ -363,14 +358,11 @@ static void lp_gpio_disable_free(struct pinctrl_dev *pctldev,
- {
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	void __iomem *conf2 = lp_gpio_reg(&lg->chip, pin, LP_CONFIG2);
--	unsigned long flags;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	/* Disable input sensing */
- 	lp_gpio_disable_input(conf2);
--
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
- }
- 
- static int lp_gpio_set_direction(struct pinctrl_dev *pctldev,
-@@ -379,10 +371,9 @@ static int lp_gpio_set_direction(struct pinctrl_dev *pctldev,
- {
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	void __iomem *reg = lp_gpio_reg(&lg->chip, pin, LP_CONFIG1);
--	unsigned long flags;
- 	u32 value;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	value = ioread32(reg);
- 	value &= ~DIR_BIT;
-@@ -400,8 +391,6 @@ static int lp_gpio_set_direction(struct pinctrl_dev *pctldev,
- 	}
- 	iowrite32(value, reg);
- 
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
--
- 	return 0;
- }
- 
-@@ -421,13 +410,11 @@ static int lp_pin_config_get(struct pinctrl_dev *pctldev, unsigned int pin,
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	void __iomem *conf2 = lp_gpio_reg(&lg->chip, pin, LP_CONFIG2);
- 	enum pin_config_param param = pinconf_to_config_param(*config);
--	unsigned long flags;
- 	u32 value, pull;
- 	u16 arg;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
--	value = ioread32(conf2);
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
-+	scoped_guard(raw_spinlock_irqsave, &lg->lock)
-+		value = ioread32(conf2);
- 
- 	pull = value & GPIWP_MASK;
- 
-@@ -464,11 +451,10 @@ static int lp_pin_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 	struct intel_pinctrl *lg = pinctrl_dev_get_drvdata(pctldev);
- 	void __iomem *conf2 = lp_gpio_reg(&lg->chip, pin, LP_CONFIG2);
- 	enum pin_config_param param;
--	unsigned long flags;
--	int i, ret = 0;
-+	unsigned int i;
- 	u32 value;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	value = ioread32(conf2);
- 
-@@ -489,19 +475,13 @@ static int lp_pin_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 			value |= GPIWP_UP;
- 			break;
- 		default:
--			ret = -ENOTSUPP;
-+			return -ENOTSUPP;
- 		}
--
--		if (ret)
--			break;
- 	}
- 
--	if (!ret)
--		iowrite32(value, conf2);
-+	iowrite32(value, conf2);
- 
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
--
--	return ret;
-+	return 0;
- }
- 
- static const struct pinconf_ops lptlp_pinconf_ops = {
-@@ -527,16 +507,13 @@ static void lp_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
- {
- 	struct intel_pinctrl *lg = gpiochip_get_data(chip);
- 	void __iomem *reg = lp_gpio_reg(chip, offset, LP_CONFIG1);
--	unsigned long flags;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
- 
- 	if (value)
- 		iowrite32(ioread32(reg) | OUT_LVL_BIT, reg);
- 	else
- 		iowrite32(ioread32(reg) & ~OUT_LVL_BIT, reg);
--
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
- }
- 
- static int lp_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
-@@ -592,11 +569,10 @@ static void lp_irq_ack(struct irq_data *d)
- 	struct intel_pinctrl *lg = gpiochip_get_data(gc);
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
- 	void __iomem *reg = lp_gpio_reg(&lg->chip, hwirq, LP_INT_STAT);
--	unsigned long flags;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
-+
- 	iowrite32(BIT(hwirq % 32), reg);
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
- }
- 
- static void lp_irq_unmask(struct irq_data *d)
-@@ -613,13 +589,11 @@ static void lp_irq_enable(struct irq_data *d)
- 	struct intel_pinctrl *lg = gpiochip_get_data(gc);
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
- 	void __iomem *reg = lp_gpio_reg(&lg->chip, hwirq, LP_INT_ENABLE);
--	unsigned long flags;
- 
- 	gpiochip_enable_irq(gc, hwirq);
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
--	iowrite32(ioread32(reg) | BIT(hwirq % 32), reg);
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
-+	scoped_guard(raw_spinlock_irqsave, &lg->lock)
-+		iowrite32(ioread32(reg) | BIT(hwirq % 32), reg);
- }
- 
- static void lp_irq_disable(struct irq_data *d)
-@@ -628,11 +602,9 @@ static void lp_irq_disable(struct irq_data *d)
- 	struct intel_pinctrl *lg = gpiochip_get_data(gc);
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
- 	void __iomem *reg = lp_gpio_reg(&lg->chip, hwirq, LP_INT_ENABLE);
--	unsigned long flags;
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
--	iowrite32(ioread32(reg) & ~BIT(hwirq % 32), reg);
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
-+	scoped_guard(raw_spinlock_irqsave, &lg->lock)
-+		iowrite32(ioread32(reg) & ~BIT(hwirq % 32), reg);
- 
- 	gpiochip_disable_irq(gc, hwirq);
- }
-@@ -642,7 +614,6 @@ static int lp_irq_set_type(struct irq_data *d, unsigned int type)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct intel_pinctrl *lg = gpiochip_get_data(gc);
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
--	unsigned long flags;
- 	void __iomem *reg;
- 	u32 value;
- 
-@@ -656,7 +627,8 @@ static int lp_irq_set_type(struct irq_data *d, unsigned int type)
- 		return -EBUSY;
- 	}
- 
--	raw_spin_lock_irqsave(&lg->lock, flags);
-+	guard(raw_spinlock_irqsave)(&lg->lock);
-+
- 	value = ioread32(reg);
- 
- 	/* set both TRIG_SEL and INV bits to 0 for rising edge */
-@@ -682,8 +654,6 @@ static int lp_irq_set_type(struct irq_data *d, unsigned int type)
- 	else if (type & IRQ_TYPE_LEVEL_MASK)
- 		irq_set_handler_locked(d, handle_level_irq);
- 
--	raw_spin_unlock_irqrestore(&lg->lock, flags);
--
- 	return 0;
- }
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+> So the ptp4l source code would have to be modified to still work with
+> the same precision as before? I'm not seeing this through.
 
+We can do the opposite and add a socket flag which says "DMA is okay".
