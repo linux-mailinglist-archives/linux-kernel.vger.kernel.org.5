@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32957F530A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB1E7F531F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344568AbjKVWMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S1344541AbjKVWOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjKVWMn (ORCPT
+        with ESMTP id S231392AbjKVWOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:12:43 -0500
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDDCB9;
-        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-35937f2fadeso858685ab.2;
-        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691159; x=1701295959;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQrmqAZcdIuXmqszFM5kR+KdU7shYUbjsm44jbecVtk=;
-        b=HmmXPwzc50joKTkOWtAw3+vfvwRiCJwUxb66bn0t0RkrnwXrWSRk3c6b5Shvdoh2sU
-         1Ws/58s/BN2eTAn9XZvjg6u01uhbmcGAOH7EnsT+kTbG2DIzyuyoxcgEUpJSXFmnJePk
-         QQFX+2Kc5fgSuinpVmNBN0WU84ER/oosxaKkNnMFeDluUotIq3Bd6gjBQR3ybPRhwEjb
-         3YjUYSLEYZ36hbpwG01KySCr8IpTslGHW3dGY/IF9WMA4uRhuAgeCglzQNyCJgSACRSa
-         P63Vid7B+ctDcka/yhDiQzEvFAXyWjeYu/OLlYTrWUwkdQoXBUUVmXBRHUsORX3WYomF
-         TyAA==
-X-Gm-Message-State: AOJu0YwUMbJYNNiUHMB89pLYoBA7II/J2cjO01l4lvOT9QyA4sONZp2z
-        KAWDU3LqmPgemTxsBpStKA==
-X-Google-Smtp-Source: AGHT+IGj21a13xz1WqdS/H6Nqa3rnnJqU98fDkeH4YoBfe8sZRN0UwRgSamoEKVV6rR3nWw7fbCw5w==
-X-Received: by 2002:a92:c5cb:0:b0:35b:110f:8127 with SMTP id s11-20020a92c5cb000000b0035b110f8127mr3639999ilt.26.1700691159445;
-        Wed, 22 Nov 2023 14:12:39 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id y17-20020a056e02119100b0035b19b773b8sm159259ili.59.2023.11.22.14.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 14:12:38 -0800 (PST)
-Received: (nullmailer pid 2753842 invoked by uid 1000);
-        Wed, 22 Nov 2023 22:12:33 -0000
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 22 Nov 2023 15:12:35 -0700
-Subject: [PATCH v2 4/4] arm/arm64: dts: samsung: Always enable extra W=1
- warnings
+        Wed, 22 Nov 2023 17:14:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11134B9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:14:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88974C433C8;
+        Wed, 22 Nov 2023 22:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700691273;
+        bh=aWQ1WosCXNx8YLqqiiqVPjOn2S3ApOJNQuk6aGU9t4Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MS2uMxCEmTjhyh75y+8ySB5WevsdWntNucFuJnOEJ+NnniCPeACPNSOIdvGtr1WNj
+         jfEhx3ALW0Miyv3gKlhT2Ujqv6J88KtAn4CNXVHDOYWuBM9kmZGvpNn/rR2F8kUaab
+         Ik0b9/1OQUVOAY4UMJYlaDNkQBQ2IOSen3Waf/VSwt6Xy8UaE24b+tQDmvF24jlxzA
+         ++5ClYBjdhHerpcrnITcvbg9HYn1gMqFhEiqI2IaAunt4uTYxvCmT4V8ldYUzMPCpN
+         QDTX31Uj7tBS47Pt004uhTDbRwIrhktLEO6Ezldy+bDN0spqkTAof9lypS4DNL46t7
+         edonuXg/zGADA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        George Shen <george.shen@amd.com>, Jun Lei <Jun.Lei@amd.com>,
+        Michael Mityushkin <michael.mityushkin@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Alan Liu <haoping.liu@amd.com>,
+        Michael Strauss <michael.strauss@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/display: avoid stringop-overflow warnings for dp_decide_lane_settings()
+Date:   Wed, 22 Nov 2023 23:13:36 +0100
+Message-Id: <20231122221421.2944301-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-dtc-warnings-v2-4-bd4087325392@kernel.org>
-References: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
-In-Reply-To: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Conor Dooley <conor@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-X-Mailer: b4 0.13-dev
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Samsung platforms are clean of W=1 dtc warnings, so enable the warnings
-by default. This way submitters don't have to remember to run a W=1
-build of the .dts files and the grumpiness of the maintainers can be
-reduced.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+gcc prints a warning about a possible array overflow for a couple of
+callers of dp_decide_lane_settings() after commit 1b56c90018f0 ("Makefile:
+Enable -Wstringop-overflow globally"):
+
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c: In function 'dp_perform_fixed_vs_pe_training_sequence_legacy':
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:426:25: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
+  426 |                         dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  427 |                                         lt_settings->hw_lane_settings, lt_settings->dpcd_lane_settings);
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:426:25: note: referencing argument 4 of type 'union dpcd_training_lane[4]'
+
+I'm not entirely sure what caused this, but changing the prototype to expect
+a pointer instead of an array avoids the warnings.
+
+Fixes: 7727e7b60f82 ("drm/amd/display: Improve robustness of FIXED_VS link training at DP1 rates")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2:
- - Use new variable name
----
- arch/arm/boot/dts/samsung/Makefile  | 3 +++
- arch/arm64/boot/dts/exynos/Makefile | 3 +++
- 2 files changed, 6 insertions(+)
+ .../gpu/drm/amd/display/dc/link/protocols/link_dp_training.c    | 2 +-
+ .../gpu/drm/amd/display/dc/link/protocols/link_dp_training.h    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/samsung/Makefile b/arch/arm/boot/dts/samsung/Makefile
-index 7becf36656b1..fffc5c45d441 100644
---- a/arch/arm/boot/dts/samsung/Makefile
-+++ b/arch/arm/boot/dts/samsung/Makefile
-@@ -1,4 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+KBUILD_EXTRA_WARN_DTC=1
-+
- dtb-$(CONFIG_ARCH_EXYNOS3) += \
- 	exynos3250-artik5-eval.dtb \
- 	exynos3250-monk.dtb \
-diff --git a/arch/arm64/boot/dts/exynos/Makefile b/arch/arm64/boot/dts/exynos/Makefile
-index 6e4ba69268e5..9cb188ef470d 100644
---- a/arch/arm64/boot/dts/exynos/Makefile
-+++ b/arch/arm64/boot/dts/exynos/Makefile
-@@ -1,4 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+KBUILD_EXTRA_WARN_DTC=1
-+
- dtb-$(CONFIG_ARCH_EXYNOS) += \
- 	exynos5433-tm2.dtb		\
- 	exynos5433-tm2e.dtb		\
-
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
+index 90339c2dfd84..5a0b04518956 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
+@@ -807,7 +807,7 @@ void dp_decide_lane_settings(
+ 		const struct link_training_settings *lt_settings,
+ 		const union lane_adjust ln_adjust[LANE_COUNT_DP_MAX],
+ 		struct dc_lane_settings hw_lane_settings[LANE_COUNT_DP_MAX],
+-		union dpcd_training_lane dpcd_lane_settings[LANE_COUNT_DP_MAX])
++		union dpcd_training_lane *dpcd_lane_settings)
+ {
+ 	uint32_t lane;
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
+index 7d027bac8255..851bd17317a0 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
+@@ -111,7 +111,7 @@ void dp_decide_lane_settings(
+ 	const struct link_training_settings *lt_settings,
+ 	const union lane_adjust ln_adjust[LANE_COUNT_DP_MAX],
+ 	struct dc_lane_settings hw_lane_settings[LANE_COUNT_DP_MAX],
+-	union dpcd_training_lane dpcd_lane_settings[LANE_COUNT_DP_MAX]);
++	union dpcd_training_lane *dpcd_lane_settings);
+ 
+ enum dc_dp_training_pattern decide_cr_training_pattern(
+ 		const struct dc_link_settings *link_settings);
 -- 
-2.42.0
+2.39.2
 
