@@ -2,288 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007B97F494E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F2D7F4944
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344266AbjKVOtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S1343836AbjKVOr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbjKVOtL (ORCPT
+        with ESMTP id S231594AbjKVOr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:49:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267F319D;
-        Wed, 22 Nov 2023 06:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700664546; x=1732200546;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=jao+8zLEkPjov/1oV+u3GvxDqE5acbRJzZZEQtZlF2o=;
-  b=AS/8HUTWN08tPzwjHOwhjOB5exAEE6XGKV1hlzNPU1AsMh8zcT3h6VcO
-   Nd4xHfHenRZxlfsGbznGj1oDvJj9Xa9sFz8Zn5xfPG4MODWrvljJ1fbwU
-   g9X5wE9wXd1e2PERhSI9V6JuTM1PwnDrWOkJowIN5qdalnPGhkXZ9PaWd
-   5I6Qcf7oHX6agyeP8aNBaQXNwRMMs0eGVv7v8vAQvt8Bs9Bscb3Db6bqz
-   sD4rO7ga+DEkbybP447CWdn8o0oinFyeRozfYqxuQaFqHwBDlcJlYV4kh
-   7mkjBH+i0gDYeTkgLXZWNtpp87f+85eA2N/i+ieMfiBKW3qcElH5rRNoz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="395989334"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="395989334"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 06:47:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833037261"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="833037261"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Nov 2023 06:47:51 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id C11C3387; Wed, 22 Nov 2023 16:47:50 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 1/1] pinctrl: mediatek: Switch to use no-IRQ PM helpers
-Date:   Wed, 22 Nov 2023 16:46:35 +0200
-Message-ID: <20231122144744.2222207-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+        Wed, 22 Nov 2023 09:47:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAD4A1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:47:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C9EC433C8;
+        Wed, 22 Nov 2023 14:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700664443;
+        bh=2iDkyy2pYuw/tH7EYuXZS9rOXSZNR28XOlJHo6ZUDdc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QyTy7j7meGO9qKAr0c6GbSYsAbArXo04NjyVeodowq4Wn5GvYhRETi0lq5vrNTZqI
+         XdYsY8wpQ4VSf271TevH3ZLCcu5jefHtGNfEIgpS3OJbCHTbSdUxojiWNmSYbU/r4A
+         u970WvgT43UpiGEPX4Ux5LPdIqO2MKFHnHreNFW82QlSm9q5iwOu7p+/M5HB0/WDa3
+         g+8S977gf0m/YP9yCfBqR91ASWZa8Wavlh2xRJsDv/BjwZ8aemRLN+LL8X8WgKTDA4
+         8jbpgY1fWVZyJI+eksAFXIC0ax39/8zD2fOOB3NGakhfko0SXFODUtMjvWozAURLaG
+         zJcUDCWoTUWgw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: sysfs: support discard_io_aware
+Date:   Wed, 22 Nov 2023 22:47:15 +0800
+Message-Id: <20231122144715.518256-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since pm.h provides a helper for system no-IRQ PM callbacks,
-switch the driver to use it instead of open coded variant.
+It gives a way to enable/disable IO aware feature for background
+discard, so that we can tune background discard more precisely
+based on undiscard condition. e.g. force to disable IO aware if
+there are large number of discard extents, and discard IO may
+always be interrupted by frequent common IO.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
+ Documentation/ABI/testing/sysfs-fs-f2fs | 6 ++++++
+ fs/f2fs/f2fs.h                          | 7 +++++++
+ fs/f2fs/segment.c                       | 6 +++++-
+ fs/f2fs/sysfs.c                         | 9 +++++++++
+ 4 files changed, 27 insertions(+), 1 deletion(-)
 
-v4:
-- used correct macro, i.e. EXPORT_GPL_DEV_SLEEP_PM_OPS() (Raag)
-
-v3:
-- used EXPORT_... helper and pm_sleep_ptr() (Paul)
-- dropped renaming (Paul, Angelo, Jonathan)
-
- drivers/pinctrl/mediatek/pinctrl-mt2701.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt2712.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt6795.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8167.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8173.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8183.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8186.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8188.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8192.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8365.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mt8516.c     | 2 +-
- drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 5 ++---
- drivers/pinctrl/mediatek/pinctrl-paris.c      | 5 ++---
- 14 files changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2701.c b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
-index 5fb377c1668b..6b1c7122b0fb 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt2701.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
-@@ -533,7 +533,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt2701-pinctrl",
- 		.of_match_table = mt2701_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 36c3cb547901..4f1d4e636d67 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -740,3 +740,9 @@ Description:	When compress cache is on, it controls cached page
+ 		If cached page percent exceed threshold, then deny caching compress page.
+ 		The value should be in range of (0, 100], by default it was initialized
+ 		as 20(%).
++
++What:		/sys/fs/f2fs/<disk>/discard_io_aware
++Date:		November 2023
++Contact:	"Chao Yu" <chao@kernel.org>
++Description:	It controls to enable/disable IO aware feature for background discard.
++		By default, the value is 1 which indicates IO aware is on.
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 9043cedfa12b..86a145be4e53 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -374,6 +374,12 @@ enum {
+ 	MAX_DPOLICY,
  };
  
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2712.c b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
-index 8a6daa0db54b..bb7394ae252b 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt2712.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
-@@ -581,7 +581,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt2712-pinctrl",
- 		.of_match_table = mt2712_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
- };
++enum {
++	DPOLICY_IO_AWARE_DISABLE,	/* force to not be aware of IO */
++	DPOLICY_IO_AWARE_ENABLE,	/* force to be aware of IO */
++	DPOLICY_IO_AWARE_MAX,
++};
++
+ struct discard_policy {
+ 	int type;			/* type of discard */
+ 	unsigned int min_interval;	/* used for candidates exist */
+@@ -406,6 +412,7 @@ struct discard_cmd_control {
+ 	unsigned int discard_urgent_util;	/* utilization which issue discard proactively */
+ 	unsigned int discard_granularity;	/* discard granularity */
+ 	unsigned int max_ordered_discard;	/* maximum discard granularity issued by lba order */
++	unsigned int discard_io_aware;		/* io_aware policy */
+ 	unsigned int undiscard_blks;		/* # of undiscard blocks */
+ 	unsigned int next_pos;			/* next discard position */
+ 	atomic_t issued_discard;		/* # of issued discard */
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index f4ffd64b44b2..08e2f44a1264 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -1172,7 +1172,10 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
+ 		dpolicy->min_interval = dcc->min_discard_issue_time;
+ 		dpolicy->mid_interval = dcc->mid_discard_issue_time;
+ 		dpolicy->max_interval = dcc->max_discard_issue_time;
+-		dpolicy->io_aware = true;
++		if (dcc->discard_io_aware == DPOLICY_IO_AWARE_ENABLE)
++			dpolicy->io_aware = true;
++		else if (dcc->discard_io_aware == DPOLICY_IO_AWARE_DISABLE)
++			dpolicy->io_aware = false;
+ 		dpolicy->sync = false;
+ 		dpolicy->ordered = true;
+ 		if (utilization(sbi) > dcc->discard_urgent_util) {
+@@ -2275,6 +2278,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ 	dcc->discard_io_aware_gran = MAX_PLIST_NUM;
+ 	dcc->discard_granularity = DEFAULT_DISCARD_GRANULARITY;
+ 	dcc->max_ordered_discard = DEFAULT_MAX_ORDERED_DISCARD_GRANULARITY;
++	dcc->discard_io_aware = DPOLICY_IO_AWARE_ENABLE;
+ 	if (F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_SEGMENT)
+ 		dcc->discard_granularity = sbi->blocks_per_seg;
+ 	else if (F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_SECTION)
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 417fae96890f..7099ffa57299 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -516,6 +516,13 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return count;
+ 	}
  
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt6795.c b/drivers/pinctrl/mediatek/pinctrl-mt6795.c
-index 01e855ccd4dd..ee3ae3d2fa7e 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt6795.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt6795.c
-@@ -612,7 +612,7 @@ static struct platform_driver mt6795_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt6795-pinctrl",
- 		.of_match_table = mt6795_pctrl_match,
--		.pm = &mtk_paris_pinctrl_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8167.c b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
-index ba7f30c3296f..143c26622272 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8167.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
-@@ -334,7 +334,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt8167-pinctrl",
- 		.of_match_table = mt8167_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
- };
++	if (!strcmp(a->attr.name, "discard_io_aware")) {
++		if (t >= DPOLICY_IO_AWARE_MAX)
++			return -EINVAL;
++		*ui = t;
++		return count;
++	}
++
+ 	if (!strcmp(a->attr.name, "migration_granularity")) {
+ 		if (t == 0 || t > sbi->segs_per_sec)
+ 			return -EINVAL;
+@@ -926,6 +933,7 @@ DCC_INFO_GENERAL_RW_ATTR(discard_io_aware_gran);
+ DCC_INFO_GENERAL_RW_ATTR(discard_urgent_util);
+ DCC_INFO_GENERAL_RW_ATTR(discard_granularity);
+ DCC_INFO_GENERAL_RW_ATTR(max_ordered_discard);
++DCC_INFO_GENERAL_RW_ATTR(discard_io_aware);
  
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8173.c b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
-index 455eec018f93..b214deeafbf1 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8173.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
-@@ -347,7 +347,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt8173-pinctrl",
- 		.of_match_table = mt8173_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8183.c b/drivers/pinctrl/mediatek/pinctrl-mt8183.c
-index ddc48b725c22..93e482c6b5fd 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8183.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8183.c
-@@ -576,7 +576,7 @@ static struct platform_driver mt8183_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt8183-pinctrl",
- 		.of_match_table = mt8183_pinctrl_of_match,
--		.pm = &mtk_paris_pinctrl_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8186.c b/drivers/pinctrl/mediatek/pinctrl-mt8186.c
-index a02f7c326970..7be591591cce 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8186.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8186.c
-@@ -1255,7 +1255,7 @@ static struct platform_driver mt8186_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt8186-pinctrl",
- 		.of_match_table = mt8186_pinctrl_of_match,
--		.pm = &mtk_paris_pinctrl_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8188.c b/drivers/pinctrl/mediatek/pinctrl-mt8188.c
-index c067e043e619..3975e99d9cf4 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8188.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8188.c
-@@ -1658,7 +1658,7 @@ static struct platform_driver mt8188_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt8188-pinctrl",
- 		.of_match_table = mt8188_pinctrl_of_match,
--		.pm = &mtk_paris_pinctrl_pm_ops
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops)
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8192.c b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-index dee1b3aefd36..e3a76381f7f4 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-@@ -1420,7 +1420,7 @@ static struct platform_driver mt8192_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt8192-pinctrl",
- 		.of_match_table = mt8192_pinctrl_of_match,
--		.pm = &mtk_paris_pinctrl_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-index 09c4dcef9338..83345c52b2fa 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-@@ -968,7 +968,7 @@ static struct platform_driver mt8195_pinctrl_driver = {
- 	.driver = {
- 		.name = "mt8195-pinctrl",
- 		.of_match_table = mt8195_pinctrl_of_match,
--		.pm = &mtk_paris_pinctrl_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
- 	},
- 	.probe = mtk_paris_pinctrl_probe,
- };
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8365.c b/drivers/pinctrl/mediatek/pinctrl-mt8365.c
-index 1db04bbdb423..e3e0d66cfbbf 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8365.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8365.c
-@@ -484,7 +484,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt8365-pinctrl",
- 		.of_match_table = mt8365_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8516.c b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
-index 950275c47122..abda75d4354e 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8516.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
-@@ -334,7 +334,7 @@ static struct platform_driver mtk_pinctrl_driver = {
- 	.driver = {
- 		.name = "mediatek-mt8516-pinctrl",
- 		.of_match_table = mt8516_pctrl_match,
--		.pm = &mtk_eint_pm_ops,
-+		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-index e79d66a04194..d39afc122516 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
-@@ -914,9 +914,8 @@ static int mtk_eint_resume(struct device *device)
- 	return mtk_eint_do_resume(pctl->eint);
- }
- 
--const struct dev_pm_ops mtk_eint_pm_ops = {
--	.suspend_noirq = mtk_eint_suspend,
--	.resume_noirq = mtk_eint_resume,
-+EXPORT_GPL_DEV_SLEEP_PM_OPS(mtk_eint_pm_ops) = {
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_eint_suspend, mtk_eint_resume)
- };
- 
- static int mtk_pctrl_build_state(struct platform_device *pdev)
-diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
-index 6392f1e05d02..b6bc31abd2b0 100644
---- a/drivers/pinctrl/mediatek/pinctrl-paris.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
-@@ -1131,9 +1131,8 @@ static int mtk_paris_pinctrl_resume(struct device *device)
- 	return mtk_eint_do_resume(pctl->eint);
- }
- 
--const struct dev_pm_ops mtk_paris_pinctrl_pm_ops = {
--	.suspend_noirq = mtk_paris_pinctrl_suspend,
--	.resume_noirq = mtk_paris_pinctrl_resume,
-+EXPORT_GPL_DEV_SLEEP_PM_OPS(mtk_paris_pinctrl_pm_ops) = {
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_paris_pinctrl_suspend, mtk_paris_pinctrl_resume)
- };
- 
- MODULE_LICENSE("GPL v2");
+ /* NM_INFO ATTR */
+ NM_INFO_RW_ATTR(max_roll_forward_node_blocks, max_rf_node_blocks);
+@@ -1074,6 +1082,7 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(discard_urgent_util),
+ 	ATTR_LIST(discard_granularity),
+ 	ATTR_LIST(max_ordered_discard),
++	ATTR_LIST(discard_io_aware),
+ 	ATTR_LIST(pending_discard),
+ 	ATTR_LIST(gc_mode),
+ 	ATTR_LIST(ipu_policy),
 -- 
-2.43.0.rc1.1.gbec44491f096
+2.40.1
 
