@@ -2,121 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525137F446E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85D17F4478
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbjKVK5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        id S1343547AbjKVK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbjKVK5U (ORCPT
+        with ESMTP id S229714AbjKVK7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:57:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180D5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:57:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35550C433C7;
-        Wed, 22 Nov 2023 10:57:14 +0000 (UTC)
-Message-ID: <6e0ade60-9382-4df2-8fb0-368957a154ea@xs4all.nl>
-Date:   Wed, 22 Nov 2023 11:57:12 +0100
+        Wed, 22 Nov 2023 05:59:18 -0500
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1963C110;
+        Wed, 22 Nov 2023 02:59:13 -0800 (PST)
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AM6qe0B014828;
+        Wed, 22 Nov 2023 05:58:58 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3uhcrk0w78-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 05:58:57 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3AMAwuhx053161
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Nov 2023 05:58:56 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Wed, 22 Nov 2023 05:58:55 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Wed, 22 Nov 2023 05:58:54 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Wed, 22 Nov 2023 05:58:54 -0500
+Received: from KPALLER2-L02.ad.analog.com (KPALLER2-L02.ad.analog.com [10.117.220.22])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3AMAwbo3006221;
+        Wed, 22 Nov 2023 05:58:39 -0500
+From:   Kim Seer Paller <kimseer.paller@analog.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Kim Seer Paller" <kimseer.paller@analog.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, "kernel test robot" <lkp@intel.com>
+Subject: [PATCH v3 1/2] dt-bindings: iio: frequency: add admfm2000
+Date:   Wed, 22 Nov 2023 18:58:30 +0800
+Message-ID: <20231122105831.182570-1-kimseer.paller@analog.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] staging: media: av7110: Fix various formatting and
- small code issues
-Content-Language: en-US, nl
-To:     Jonathan Bergh <bergh.jonathan@gmail.com>, mchehab@kernel.org
-Cc:     gregkh@linuxfoundation.org, error27@gmail.com,
-        linux-staging@lists.linux.dev, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231020232332.55024-1-bergh.jonathan@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231020232332.55024-1-bergh.jonathan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: WlcDQbU0T_OgMYQQ5EFuCpzMz_S-cxhE
+X-Proofpoint-GUID: WlcDQbU0T_OgMYQQ5EFuCpzMz_S-cxhE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_06,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1011 mlxlogscore=999 spamscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311220076
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Dual microwave down converter module with input RF and LO frequency
+ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+for each down conversion path.
 
-On 21/10/2023 01:23, Jonathan Bergh wrote:
-> These patches cover various formatting and small code issues. Formatting
-> issues include missing newlines, whitespace and miscellaneous formatting 
-> issues. The series also fixes small code issues including using preferred 
-> integer types ('long' instead of 'long int') and ('unsigned int' instead 
-> of 'unsigned').
-> 
-> Jonathan Bergh (5):
->   staging: media: av7110: Fix missing newlines after declaration
->     warnings
->   staging: media: av7110: Fix various whitespace checkpatch errors
->   staging: media: av7110: Remove unnecessary whitespace before quoted
->     newlines
->   staging: media: av7110: Fix 'long int' and 'unsigned' variable
->     declarations
->   staging: media: av7110: Fix various formating issues
-> 
->  drivers/staging/media/av7110/av7110_av.c | 114 +++++++++++++----------
->  1 file changed, 64 insertions(+), 50 deletions(-)
-> 
+Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311220624.J7Nqg5h1-lkp@intel.com/
+---
+V2 -> V3: Adjusted indentation to resolve wrong indentation warning. 
+          Changed node name to converter. Updated the descriptions to clarify
+          the properties.
+V1 -> V2: Removed '|' after description. Specified the pins connected to
+          the GPIOs. Added additionalProperties: false. Changed node name to gpio.
+          Aligned < syntax with the previous syntax in the examples.
 
-For future reference: when looking at staging drivers always check the
-TODO file. In this case see drivers/staging/media/av7110/TODO:
+ .../bindings/iio/frequency/adi,admfm2000.yaml | 140 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +
+ 2 files changed, 147 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
 
-- This driver is too old and relies on a different API.
-  Drop it from Kernel on a couple of versions.
-- Cleanup patches for the drivers here won't be accepted.
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+new file mode 100644
+index 000000000..57844c8b7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+@@ -0,0 +1,140 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/frequency/adi,admfm2000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ADMFM2000 Dual Microwave Down Converter
++
++maintainers:
++  - Kim Seer Paller <kimseer.paller@analog.com>
++
++description:
++  Dual microwave down converter module with input RF and LO frequency ranges
++  from 0.5 to 32 GHz and an output IF frequency range from 0.1 to 8 GHz.
++  It consists of a LNA, mixer, IF filter, DSA, and IF amplifier for each down
++  conversion path.
++
++properties:
++  compatible:
++    enum:
++      - adi,admfm2000
++
++  switch1-gpios:
++    items:
++      - description:
++          Setting B15 GPIO to high and B16 GPIO to low will result in channel 1
++          being in Direct IF mode.
++      - description:
++          Setting B15 GPIO to low and B16 GPIO to high will result in channel 1
++          being in Mixer mode.
++
++  switch2-gpios:
++    items:
++      - description:
++          Setting K14 GPIO to high and L14 GPIO to low will result in channel 2
++          being in Mixer mode.
++      - description:
++          Setting K14 GPIO to low and L14 GPIO to high will result in channel 2
++          being in Direct IF mode.
++
++  attenuation1-gpios:
++    description:
++      Must contain an array of 5 GPIO specifiers, referring to the GPIO pins
++      connected to the C14, C15, C16, D14, and D15. The DSA attenuation control
++      is by the logic level of the GPIO pins. All high at the logic level on
++      the GPIO pins give the minimum attenuation, 0 dB and all low for the
++      maximum attenuation, at 31 dB.
++    minItems: 5
++    maxItems: 5
++
++  attenuation2-gpios:
++    description:
++      Must contain an array of 5 GPIO specifiers, referring to the GPIO pins
++      connected to the L15, L16, M14, M15, and M16. The DSA attenuation control
++      is by the logic level of the GPIO pins. All high at the logic level on
++      the GPIO pins give the minimum attenuation, 0 dB and all low for the
++      maximum attenuation, at 31 dB.
++    minItems: 5
++    maxItems: 5
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++patternProperties:
++  "^channel@[0-1]$":
++    type: object
++    description: Represents a channel of the device.
++
++    additionalProperties: false
++
++    properties:
++      reg:
++        description:
++          The channel number.
++        minimum: 0
++        maximum: 1
++
++      adi,mode:
++        description:
++          RF path selected for the channel.
++            0 - Direct IF mode
++            1 - Mixer mode
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++
++    required:
++      - reg
++      - adi,mode
++
++required:
++  - compatible
++  - switch1-gpios
++  - switch2-gpios
++  - attenuation1-gpios
++  - attenuation2-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    converter {
++      compatible = "adi,admfm2000";
++
++      switch1-gpios = <&gpio 1 GPIO_ACTIVE_LOW>,
++                      <&gpio 2 GPIO_ACTIVE_HIGH>;
++
++      switch2-gpios = <&gpio 3 GPIO_ACTIVE_LOW>,
++                      <&gpio 4 GPIO_ACTIVE_HIGH>;
++
++      attenuation1-gpios = <&gpio 17 GPIO_ACTIVE_LOW>,
++                           <&gpio 22 GPIO_ACTIVE_LOW>,
++                           <&gpio 23 GPIO_ACTIVE_LOW>,
++                           <&gpio 24 GPIO_ACTIVE_LOW>,
++                           <&gpio 25 GPIO_ACTIVE_LOW>;
++
++      attenuation2-gpios = <&gpio 0 GPIO_ACTIVE_LOW>,
++                           <&gpio 5 GPIO_ACTIVE_LOW>,
++                           <&gpio 6 GPIO_ACTIVE_LOW>,
++                           <&gpio 16 GPIO_ACTIVE_LOW>,
++                           <&gpio 26 GPIO_ACTIVE_LOW>;
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      channel@0 {
++        reg = <0>;
++        adi,mode = <1>;
++      };
++
++      channel@1 {
++        reg = <1>;
++        adi,mode = <1>;
++      };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0e79e24b6..f1692ec68 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1247,6 +1247,13 @@ W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
+ F:	drivers/hwmon/adm1177.c
+ 
++ANALOG DEVICES INC ADMFM2000 DRIVER
++M:	Kim Seer Paller <kimseer.paller@analog.com>
++L:	linux-iio@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
++
+ ANALOG DEVICES INC ADMV1013 DRIVER
+ M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+ L:	linux-iio@vger.kernel.org
 
-So I'll just drop these cleanup patches.
+base-commit: c2d5304e6c648ebcf653bace7e51e0e6742e46c8
+-- 
+2.34.1
 
-Regards,
-
-	Hans
