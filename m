@@ -2,182 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A8A7F4EF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166A47F4EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344090AbjKVSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:10:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        id S1344008AbjKVSLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:11:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjKVSKN (ORCPT
+        with ESMTP id S230510AbjKVSLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:10:13 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 745D6A2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:10:07 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9F491042;
-        Wed, 22 Nov 2023 10:10:53 -0800 (PST)
-Received: from [10.57.42.32] (unknown [10.57.42.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D0B83F73F;
-        Wed, 22 Nov 2023 10:10:03 -0800 (PST)
-Message-ID: <02692fd9-d184-4b33-9f45-dd62593064e5@arm.com>
-Date:   Wed, 22 Nov 2023 18:10:02 +0000
+        Wed, 22 Nov 2023 13:11:45 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF479F9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:11:41 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41ea9c5e83cso12591cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 10:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700676701; x=1701281501; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RAQB8Hqqm5OvoGj9nVayTd/1ohNlYq2PenxVIqdoeMw=;
+        b=fm2p2vQLatnCZwoh8euniQPcouWhq6w+hG12y3Zr5zi8FDkGjNbfmrCaRUHBgH6teP
+         wFR+w1wM1oNoQL2q09ae+ckbFuL2L89lVWa9yB3yk2MLLd9czstvKxoXd9v9RPCk6UcV
+         Oec+RLvRxtbETqebZPscvPP5++7vZGlJp6ny+SxqGLf3+vsW4hWoJr/K0k0C8AdMHP85
+         sZznmIqTOw7+MaT3Gw9Z39IIxlx8B8inISbxNaJzmXzdeZaqxBkP6W7GTHIqG8XavbYm
+         2MDDT4mAF+qxpfe/9XJI8+UIQnrmxNoYF+3P4QFBEgFaRzt3YHk/8garZlUKW0ff/vLz
+         vKCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700676701; x=1701281501;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RAQB8Hqqm5OvoGj9nVayTd/1ohNlYq2PenxVIqdoeMw=;
+        b=bAHTuxJCp42q1VmCfQAuONf5Sq9V8qOqbtebGTr38gyTscA+q0syNWPxLAtJW/EKoi
+         fgtVOfP8SbU/7i2CHOAkcaysxFoX8m6YT1W/OXcuHnu0Zsfy7rf7KIrbO7WubulXdcMD
+         Y7q6xZM+VMZU4+jZrbJ7nRPTEMVk81msjj6r+FV2ttILOnJQdXanCKJ494DKYrPFAoVG
+         G7+BYlvSzhn8kUBJexGBsOWcfccStiMMM/e5cHY1fBgPjLr9XdVZyr6VRVmrrkf75Efo
+         xyaE/gMUowXOoEiFxzTbfxxBvbGYOMd78acmGr3MIjk6fcWAiTLYgEcdOyy+uKlV3A/B
+         CJug==
+X-Gm-Message-State: AOJu0Yy+me3nKaFftvXuKZhtLZPautgWqVRJ0Y+fqunpNDUUBfvSr1iK
+        Cb0kbuaOOvtFJTR9Btw8Es/dgS3nLGkFBFJM5addJg==
+X-Google-Smtp-Source: AGHT+IGnVy3OkrkedALWFXc2ZxGZceq3AwioxW/zk3TSCzH69K8tQhpDqZs4kwBm6hQdtLLNyQBm88m5ggQuiUU9tgg=
+X-Received: by 2002:ac8:4e54:0:b0:420:d18c:ffd2 with SMTP id
+ e20-20020ac84e54000000b00420d18cffd2mr306349qtw.24.1700676700854; Wed, 22 Nov
+ 2023 10:11:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/6] arm64: KVM: Add interface to set guest value for
- TRFCR register
-Content-Language: en-GB
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        maz@kernel.org
-Cc:     broonie@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-References: <20231019165510.1966367-1-james.clark@arm.com>
- <20231019165510.1966367-5-james.clark@arm.com>
- <0ebe2a54-8111-4e8e-8afe-3e17ce85fcb9@arm.com>
-In-Reply-To: <0ebe2a54-8111-4e8e-8afe-3e17ce85fcb9@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120115839.74ee5492@kernel.org> <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+ <20231120133737.70dde657@kernel.org> <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+ <20231121183114.727fb6d7@kmaincent-XPS-13-7390> <20231121094354.635ee8cd@kernel.org>
+ <20231122144453.5eb0382f@kmaincent-XPS-13-7390> <20231122140850.li2mvf6tpo3f2fhh@skbuf>
+ <20231122143618.cqyb45po7bon2xzg@skbuf> <20231122085459.1601141e@kernel.org>
+ <20231122165955.tujcadked5bgqjet@skbuf> <20231122095525.1438eaa3@kernel.org>
+In-Reply-To: <20231122095525.1438eaa3@kernel.org>
+From:   Willem de Bruijn <willemb@google.com>
+Date:   Wed, 22 Nov 2023 13:11:02 -0500
+Message-ID: <CA+FuTSe+SOFciGf+d+e=Co22yZ56gGGkJ0WBbvfT-2P0+Ug8DQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Mahesh Bandewar <maheshb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 19:26, Suzuki K Poulose wrote:
-> On 19/10/2023 17:55, James Clark wrote:
->> Add an interface for the Coresight driver to use to set the value of the
->> TRFCR register for the guest. This register controls the exclude
->> settings for trace at different exception levels, and is used to honor
->> the exclude_host and exclude_guest parameters from the Perf session.
->> This will be used to later write TRFCR_EL1 on nVHE at guest switch. For
->> VHE, the host trace is controlled by TRFCR_EL2 and thus we can write to
->> the TRFCR_EL1 immediately. Because guest writes to the register are
->> trapped, the value will persist and can't be modified.
-> 
-> This could also be added below to make it easier for the code reader.
-> 
->>
->> The settings must be copied to the vCPU before each run in the same
->> way that PMU events are, because the per-cpu struct isn't accessible in
->> protected mode.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   arch/arm64/include/asm/kvm_host.h |  3 +++
->>   arch/arm64/kvm/arm.c              |  1 +
->>   arch/arm64/kvm/debug.c            | 26 ++++++++++++++++++++++++++
->>   3 files changed, 30 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/kvm_host.h 
->> b/arch/arm64/include/asm/kvm_host.h
->> index 0f0bf8e641bd..e1852102550d 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -1125,6 +1125,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct 
->> kvm_vcpu *vcpu);
->>   void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
->>   void kvm_clr_pmu_events(u32 clr);
->>   bool kvm_set_pmuserenr(u64 val);
->> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
->> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu);
->>   #else
->>   static inline void kvm_set_pmu_events(u32 set, struct 
->> perf_event_attr *attr) {}
->>   static inline void kvm_clr_pmu_events(u32 clr) {}
->> @@ -1132,6 +1134,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
->>   {
->>       return false;
->>   }
->> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
->>   #endif
->>   void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 0f717b6a9151..e4d846f2f665 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -1015,6 +1015,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->>           kvm_vgic_flush_hwstate(vcpu);
->>           kvm_pmu_update_vcpu_events(vcpu);
->> +        kvm_etm_update_vcpu_events(vcpu);
->>           /*
->>            * Ensure we set mode to IN_GUEST_MODE after we disable
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index 20cdd40b3c42..2ab41b954512 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -23,6 +23,12 @@
->>   static DEFINE_PER_CPU(u64, mdcr_el2);
->> +/*
->> + * Per CPU value for TRFCR that should be applied to any guest vcpu 
->> that may
->> + * run on that core in the future.
->> + */
->> +static DEFINE_PER_CPU(u64, guest_trfcr);
->> +
->>   /**
->>    * save/restore_guest_debug_regs
->>    *
->> @@ -356,3 +362,23 @@ void kvm_arch_vcpu_put_debug_state_flags(struct 
->> kvm_vcpu *vcpu)
->>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->>   }
->> +
-> 
-> The comment in the description could be helpful here.
-> 
->> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
->> +{
->> +    if (has_vhe())
+On Wed, Nov 22, 2023 at 12:55=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> On Wed, 22 Nov 2023 18:59:55 +0200 Vladimir Oltean wrote:
+> > I wouldn't be so sure. The alternative interpretation "for PTP, give me
+> > timestamps from both sources" also sounds reasonable for the distant
+> > future where that will be possible (with proper cmsg identification).
+> > But I don't see how to distinguish the two - the filters, expressed in
+> > these terms, would be the same.
+>
+> We can add an attribute that explicitly says that the configuration
+> is only requesting one stamp. But feels like jumping the gun at this
+> stage, given we have no other option to express there.
+>
+> > So the ptp4l source code would have to be modified to still work with
+> > the same precision as before? I'm not seeing this through.
+>
+> We can do the opposite and add a socket flag which says "DMA is okay".
 
-I am wondering if "kvm" should do the extra safety check of
-making sure that the FEAT_TRF is available on the CPU, before
-actually writing to the register ? coresight calls this only
-when the FEAT_TRF is implemented. But given this is an exported
-function, may be we should be extra careful ?
+There already is a disconnect between configuring hardware timestamp
+generation. Through the ioctl, which is a global admin-only interface.
+And requesting timestamps with SO_TIMESTAMPING.
 
-Suzuki
+Today the user of ptp4l already has to know that the admin has
+configured the right RX and TX filters. That is no different if
+multiple filters can be installed? (PHY for PTP, DMA for everything
+else).
 
+If attribution becomes important, we could add another cmsg alongside
+the timestamp. On TX this already happens with
+IP_RECVERR/IPV6_RECVERR/PACKET_TX_TIMESTAMP. Maybe the
+sock_extended_err struct even still has a field that can be (ab)used
+for this purpose.
 
-
->> +        write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
->> +    else
->> +        *this_cpu_ptr(&guest_trfcr) = trfcr_guest;
->> +}
->> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
->> +
->> +/*
->> + * Updates the vcpu's view of the etm events for this cpu. Must be
->> + * called before every vcpu run after disabling interrupts, to ensure
->> + * that an interrupt cannot fire and update the structure.
->> + */
->> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu)
->> +{
->> +    if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
->> +        ctxt_sys_reg(&vcpu->arch.ctxt, TRFCR_EL1) = 
->> *this_cpu_ptr(&guest_trfcr);
->> +}
-> 
-> Either way,
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
+Being able to pass multiple timestamps up to userspace eventually will
+be interesting. A large blocker is where to store these values in the
+sk_buff on the path between the driver and the socket (skb_ext?). At
+Google we already have this scenario, where the local TCP stack and
+userspace both want converted hardware timestamps -- but converted
+from raw to different timebases.
