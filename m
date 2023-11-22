@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7167F4313
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C437F4312
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343765AbjKVKDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        id S1343746AbjKVKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235345AbjKVKCx (ORCPT
+        with ESMTP id S235393AbjKVKCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:02:53 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6D210EB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:02:22 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cf6af8588fso18448485ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700647341; x=1701252141; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=posmgTcCkhlABVGwUF/c8OhraDvnS50EBWdyGitGAYo=;
-        b=C7x76kV5ObrCJsqTtty8ziLfNkinXQsqvdbwoYvu1XwRJ/Cqtv6BxEoSwQ5jylWeRM
-         xmkVOJigGdPmZ/UB+P9aj2oIQ8tezIF1J+s+QYTq8dp2rfYo6D28tdOMWBRVJgJAS5cA
-         3/P8pkvbDiID7s6s4fsKEu0nXpr5+lHwNDeBaNzNHdOKCAkY3sPopqyWqgq+m18TxN4/
-         rDOzFTQplD69gKX2obOkyeoFLOPO7PZmCJiA8897n/Hh7D0h8kTeMx8XC19T3xibQEcV
-         nrwX9PyLC+zsaZHmBmVK+eLeo510FTS+NtPCygUsOuy2xXlOvHqudfHBQls/4gC4k+Qp
-         5H3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700647341; x=1701252141;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=posmgTcCkhlABVGwUF/c8OhraDvnS50EBWdyGitGAYo=;
-        b=BE8fNa2t/RavrRyD3DAD/ESbGhTMwhE71w9A3U9HOYJg3qSJ1VpcZ4U08uxGBipx+N
-         fBLAlPedzXRxL9wi2xOs/aGuh1QGeMjIzyRiJEBIezAxbWS/LURbW0Mxj51Xf5iT5cAs
-         XQso2kx+Pun/hiRaNkcYMvIlvHkAyY8G4I+S83kz7IVB3c7bkqYfPtjIOnJ3Ysxw4lar
-         Lk+o7oWls1EBqWs/PyT9c4mk2redPR+yZicepBjv8DoS+hI7cCN6bCaejYrFePXbojRG
-         mzL9ewkefx0iKtgKAmdC+2/Csfh3y/RCVpzJBVpXOyfXEmXw3yBjs6JkL845HAA/XnNC
-         eBhg==
-X-Gm-Message-State: AOJu0Yxl9RYzYtB/oVGrF6GWLcFk6w1L3eW+FngZrMnsoAjWTNXzq23V
-        uWPlvVEf+XH/LVnev4tnr28Tzg==
-X-Google-Smtp-Source: AGHT+IEhYGGnYMAOYNX00MDa6p9hnwJG53NTnWuNRM5vTBbDuG16bYOc6plNXjTdNYBdTMAKv/D64A==
-X-Received: by 2002:a17:903:22d2:b0:1cf:5d59:9323 with SMTP id y18-20020a17090322d200b001cf5d599323mr2245269plg.57.1700647341559;
-        Wed, 22 Nov 2023 02:02:21 -0800 (PST)
-Received: from localhost.localdomain ([203.208.189.9])
-        by smtp.gmail.com with ESMTPSA id h15-20020a170902ac8f00b001ce5b6e97b3sm9419742plr.24.2023.11.22.02.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 02:02:21 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     dianders@chromium.org, akpm@linux-foundation.org, pmladek@suse.com,
-        lecopzer.chen@mediatek.com, kernelfans@gmail.com
-Cc:     linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        lizhe.67@bytedance.com
-Subject: [PATCH v2] softlockup: serialized softlockup's log
-Date:   Wed, 22 Nov 2023 18:02:12 +0800
-Message-Id: <20231122100212.94327-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
+        Wed, 22 Nov 2023 05:02:43 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3E5D62
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:02:37 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 49CBB21907;
+        Wed, 22 Nov 2023 10:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1700647356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V8UXEq4tG3CrvcnhAyz5zGu6O+LKydPLS1VtSC8nRHw=;
+        b=nmnKKEyemWfQTDRXkITM5LIaTg5DlCCv+QKEyJ9vjx/Oy7fEYU67YOosnuamLdKXrMi6wY
+        rVhDixsmsmj1NmxQjJg5SeZhvCV/N7Ru6goNgBiReXpVfwbcajbDRq1Agx3jWx3PBarm/H
+        fomFDLdRmK6VCEFIq9oe3wLUKTNJYoc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0DDBE13461;
+        Wed, 22 Nov 2023 10:02:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gdvOOrvRXWXTCQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 22 Nov 2023 10:02:35 +0000
+Date:   Wed, 22 Nov 2023 11:02:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        jack@suse.cz, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christoph Hellwig <hch@lst.de>, shr@devkernel.io, neilb@suse.de
+Subject: Re: Question: memcg dirty throttle caused by low per-memcg dirty
+ thresh
+Message-ID: <ZV3Ru1BmHaU_uW7b@tiehlicka>
+References: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <109029e0-1772-4102-a2a8-ab9076462454@linux.dev>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.60
+X-Spamd-Result: default: False [-1.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_SPAM_SHORT(3.00)[1.000];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.00)[28.26%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Zhe <lizhe.67@bytedance.com>
+On Wed 22-11-23 17:38:25, Chengming Zhou wrote:
+> Hello all,
+> 
+> Sorry to bother you, we encountered a problem related to the memcg dirty
+> throttle after migrating from cgroup v1 to v2, so want to ask for some
+> comments or suggestions.
+> 
+> 1. Problem
+> 
+> We have the "containerd" service running under system.slice, with
+> its memory.max set to 5GB. It will be constantly throttled in the
+> balance_dirty_pages() since the memcg has dirty memory more than
+> the memcg dirty thresh.
+> 
+> We haven't this problem on cgroup v1, because cgroup v1 doesn't have
+> the per-memcg writeback and per-memcg dirty thresh. Only the global
+> dirty thresh will be checked in balance_dirty_pages().
 
-If multiple CPUs trigger softlockup at the same time with
-'softlockup_all_cpu_backtrace=0', the softlockup's logs will appear
-staggeredly in dmesg, which will affect the viewing of the logs for
-developer. Since the code path for outputting softlockup logs is not
-a kernel hotspot and the performance requirements for the code are
-not strict, locks are used to serialize the softlockup log output to
-improve the readability of the logs.
+Yes, v1 didn't have any sensible IO throttling and so we had to rely on
+ugly hack to wait for writeback to finish from the memcg memory reclaim
+path.  This is really suboptimal because it makes memcg reclaim stalls
+hard to predict. So it is essentially only a poor's man OOM prevention.
 
-Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
----
-Changelogs:
+V2 on the other hand has memcg aware dirty memory throttling which is a
+much better solution as it throttles at the moment when the memory is
+being dirtied.
 
-v1->v2:
-- define the lock outside the scope of function
-- add precondition 'softlockup_all_cpu_backtrace=0' in commit message
+Why do you consider that to be a problem? Constant throttling as you
+suggest might be a result of the limit being too small?
 
- kernel/watchdog.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> 
+> 2. Thinking
+> 
+> So we wonder if we can support the per-memcg dirty thresh interface?
+> Now the memcg dirty thresh is just calculated from memcg max * ratio,
+> which can be set from /proc/sys/vm/dirty_ratio.
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 5cd6d4e26915..6c80dd8ff24b 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -28,6 +28,8 @@
- #include <linux/kvm_para.h>
+In general I would recommend using dirty_bytes instead as the ratio
+doesn't scall all that great on larger systems.
  
- static DEFINE_MUTEX(watchdog_mutex);
-+/* This lock is used to prevent concurrent actions of softlockup output logs */
-+static DEFINE_SPINLOCK(watchdog_output_lock);
- 
- #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HARDLOCKUP_DETECTOR_SPARC64)
- # define WATCHDOG_HARDLOCKUP_DEFAULT	1
-@@ -514,6 +516,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
- 
-+		spin_lock(&watchdog_output_lock);
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -523,6 +526,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			show_regs(regs);
- 		else
- 			dump_stack();
-+		spin_unlock(&watchdog_output_lock);
- 
- 		if (softlockup_all_cpu_backtrace) {
- 			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
+> We have to set it to 60 instead of the default 20 to workaround now,
+> but worry about the potential side effects.
+> 
+> If we can support the per-memcg dirty thresh interface, we can set
+> some containers to a much higher dirty_ratio, especially for hungry
+> dirtier workloads like "containerd".
+
+But why would you want that? If you allow heavy writers to dirty a lot
+of memory then flushing that to the backing store will take more time.
+That could starve small writers as well because they could end up queued
+behind huge amount of data to be flushed.
+
+I am no expert on the writeback so others could give you a better
+arguments but from my POV the dirty data flushing and throttling is
+mostly a global mechanism to optmize the IO pattern and is a function of
+storage much more than workload specific. If you heavy writer hits
+throttling too much then either the limit is too low or you should stard
+background flushing earlier.
+
 -- 
-2.20.1
-
+Michal Hocko
+SUSE Labs
