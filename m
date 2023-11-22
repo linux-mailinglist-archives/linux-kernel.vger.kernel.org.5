@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9A77F44E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085B47F44E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbjKVL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        id S235029AbjKVL0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVL0N (ORCPT
+        with ESMTP id S229806AbjKVL0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:26:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CCED8;
-        Wed, 22 Nov 2023 03:26:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R1tJgVUqMBfrrFKHqi8zUTmtOCljYrVyHwjJtd1A0kM=; b=cHWbIoJFR1UVR3YAtYmSOarYfm
-        yBhinaFRfw/khmm2jRxiWZ0I/Gg0QCkQHFuLzRpSI4E20CiPNFseE0+Su/e2H3xD1a40+j90PnVSm
-        L/FpwEO+MvWR/s9BHJy35yZIAyEAE+gZIxxpLdWvS8AibG3xkz9Zzqc+qKUSGjob8fq2H1PWu7vuQ
-        iTuBP9cXkV0KpXYPaykkHJNgum+kgQdwZGHj4IR0iV9h0MlgmKhAiIIYdZhXfMKYtK1FeOEgpOpc3
-        7JJEViZpjjq7PFh/zqoM8H/gqLwXOIvA7BlilmSNeinf0lUVs2SAJJ2t+QnAOD/40eFPtNLc69D73
-        d2pwZjNg==;
-Received: from [2001:8b0:10b:5:22b8:d80f:1c9c:f188] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r5lMa-006UAW-4t; Wed, 22 Nov 2023 11:25:48 +0000
-Message-ID: <40d2e3051fbc70308cf0b6fc5298b65bf5737012.camel@infradead.org>
-Subject: Re: [PATCH v8 15/15] KVM: xen: allow vcpu_info content to be
- 'safely' copied
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     paul@xen.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 22 Nov 2023 11:25:47 +0000
-In-Reply-To: <94697586-7600-420d-a91b-2829019dab7c@xen.org>
-References: <20231121180223.12484-1-paul@xen.org>
-         <20231121180223.12484-16-paul@xen.org>
-         <4a76b7dc9055485d9e2592b395e60221dc349abf.camel@infradead.org>
-         <7c7238a9c8b0dc6bc865407ba804a651cdfdb044.camel@infradead.org>
-         <94697586-7600-420d-a91b-2829019dab7c@xen.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-Ej8SiaNBjrjbJBEJ86QV"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Wed, 22 Nov 2023 06:26:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B7E112
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:26:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700652393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2nxiX3zTK96N3iDK7/DQy2rA2pN7GRHmvt3F8JWaDVo=;
+        b=Wb077uZC4OI6Ak2eB/8ot/yEQHiLMdnTq86rEdgAkhJ702iKmBiTlXa6oBQWvQ1ZwNyaJe
+        z9JTZYOSwDQEFZU2vWas+8kparx0lEsARwdtCuKLnY5UZPq1YQKd0g7PIShwawO7B8WifH
+        PA9Z0WRCXXvzxr7I/4NZm1irU1nXMtc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-658-xWDN6sCRN1-B6CyhZcZiNw-1; Wed,
+ 22 Nov 2023 06:26:29 -0500
+X-MC-Unique: xWDN6sCRN1-B6CyhZcZiNw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7993C1C18CC3;
+        Wed, 22 Nov 2023 11:26:29 +0000 (UTC)
+Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DE062166B27;
+        Wed, 22 Nov 2023 11:26:29 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+        id 8B600400E56F9; Wed, 22 Nov 2023 08:26:02 -0300 (-03)
+Date:   Wed, 22 Nov 2023 08:26:02 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 0/2] mm: too_many_isolated can stall due to out of sync
+ VM counters
+Message-ID: <ZV3lSttsGq1fuPyG@tpad>
+References: <20231113233420.446465795@redhat.com>
+ <ZVMtuYLviLYqAI7x@tiehlicka>
+ <ZVNnjVdeNblG1l8t@tpad>
+ <ZVNsMVPJ5y8C_hBC@tiehlicka>
+ <ZV3kxwqedKH+LDum@tpad>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV3kxwqedKH+LDum@tpad>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,147 +72,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 22, 2023 at 08:23:51AM -0300, Marcelo Tosatti wrote:
+> On Tue, Nov 14, 2023 at 01:46:41PM +0100, Michal Hocko wrote:
+> > On Tue 14-11-23 09:26:53, Marcelo Tosatti wrote:
+> > > Hi Michal,
+> > > 
+> > > On Tue, Nov 14, 2023 at 09:20:09AM +0100, Michal Hocko wrote:
+> > > > On Mon 13-11-23 20:34:20, Marcelo Tosatti wrote:
+> > > > > A customer reported seeing processes hung at too_many_isolated,
+> > > > > while analysis indicated that the problem occurred due to out
+> > > > > of sync per-CPU stats (see below).
+> > > > > 
+> > > > > Fix is to use node_page_state_snapshot to avoid the out of stale values.
+> > > > > 
+> > > > > 2136 static unsigned long
+> > > > >     2137 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
+> > > > >     2138                      struct scan_control *sc, enum lru_list lru)
+> > > > >     2139 {
+> > > > >     :
+> > > > >     2145         bool file = is_file_lru(lru);
+> > > > >     :
+> > > > >     2147         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> > > > >     :
+> > > > >     2150         while (unlikely(too_many_isolated(pgdat, file, sc))) {
+> > > > >     2151                 if (stalled)
+> > > > >     2152                         return 0;
+> > > > >     2153
+> > > > >     2154                 /* wait a bit for the reclaimer. */
+> > > > >     2155                 msleep(100);   <--- some processes were sleeping here, with pending SIGKILL.
+> > > > >     2156                 stalled = true;
+> > > > >     2157
+> > > > >     2158                 /* We are about to die and free our memory. Return now. */
+> > > > >     2159                 if (fatal_signal_pending(current))
+> > > > >     2160                         return SWAP_CLUSTER_MAX;
+> > > > >     2161         }
+> > > > > 
+> > > > > msleep() must be called only when there are too many isolated pages:
+> > > > 
+> > > > What do you mean here?
+> > > 
+> > > That msleep() must not be called when
+> > > 
+> > > isolated > inactive
+> > > 
+> > > is false.
+> > 
+> > Well, but the code is structured in a way that this is simply true.
+> > too_many_isolated might be false positive because it is a very loose
+> > interface and the number of isolated pages can fluctuate depending on
+> > the number of direct reclaimers.
+> >  
+> > > > >     2019 static int too_many_isolated(struct pglist_data *pgdat, int file,
+> > > > >     2020                 struct scan_control *sc)
+> > > > >     2021 {
+> > > > >     :
+> > > > >     2030         if (file) {
+> > > > >     2031                 inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
+> > > > >     2032                 isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
+> > > > >     2033         } else {
+> > > > >     :
+> > > > >     2046         return isolated > inactive;
+> > > > > 
+> > > > > The return value was true since:
+> > > > > 
+> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
+> > > > >     $8 = {
+> > > > >       counter = 1
+> > > > >     }
+> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
+> > > > >     $9 = {
+> > > > >       counter = 2
+> > > > > 
+> > > > > while per_cpu stats had:
+> > > > > 
+> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
+> > > > >     $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
+> > > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
+> > > > >     $86 = 0xffff00917fcc32e0
+> > > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
+> > > > >     $87 = -1 '\377'
+> > > > > 
+> > > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
+> > > > >     $89 = 0xffff00917fe032e0
+> > > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
+> > > > >     $91 = -1 '\377'
+> > > > 
+> > > > This doesn't really tell much. How much out of sync they really are
+> > > > cumulatively over all cpus?
+> > > 
+> > > This is the cumulative value over all CPUs (offsets for other CPUs 
+> > > have been omitted since they are zero).
+> > 
+> > OK, so that means the NR_ISOLATED_FILE is 0 while NR_INACTIVE_FILE is 1,
+> > correct? If that is the case then the value is indeed outdated but it
+> > also means that the NR_INACTIVE_FILE is so small that all but 1 (resp. 2
+> > as kswapd is never throttled) reclaimers will be stalled anyway. So does
+> > the exact snapshot really help? Do you have any means to reproduce this
+> > behavior and see that the patch actually changed the behavior?
+> > 
+> > [...]
+> > 
+> > > > With a very low NR_FREE_PAGES and many contending allocation the system
+> > > > could be easily stuck in reclaim. What are other reclaim
+> > > > characteristics? 
+> > > 
+> > > I can ask. What information in particular do you want to know?
+> > 
+> > When I am dealing with issues like this I heavily rely on /proc/vmstat
+> > counters and pgscan, pgsteal counters to see whether there is any
+> > progress over time.
+> > 
+> > > > Is the direct reclaim successful? 
+> > > 
+> > > Processes are stuck in too_many_isolated (unnecessarily). What do you mean when you ask
+> > > "Is the direct reclaim successful", precisely?
+> > 
+> > With such a small LRU list it is quite likely that many processes will
+> > be competing over last pages on the list while rest will be throttled
+> > because there is nothing to reclaim. It is quite possible that all
+> > reclaimers will be waiting for a single reclaimer (either kswapd or
+> > other direct reclaimer). I would like to understand whether the system
+> > is stuck in unproductive state where everybody just waits until the
+> > counter is synced or everything just progress very slowly because of the
+> > small LRU. 
+> > -- 
+> > Michal Hocko
+> > SUSE Labs
+> 
+> Michal,
+> 
+> I think this provides the data you are looking for:
+> 
+> It seems that the situation was invoking memory-consuming user program
+> in pallarel expecting that the system will kick oom-killer at the end.
+> 
+> The node 0-3 are small containing system data and almost all files.
+> The node 4-7 are large prepared to contain user data only. 
+> The issue described in above was observed on node 4-7, where
+> had very few memory for files.
+> 
+> The node 4-7 has more cpu than node 0-3.
+> Only cpus on node 4-7 are configuerd to be nohz_full.
+> So we often found unflushed percpu vmstat on cpus of node 4-7.
+> 
+> 
 
---=-Ej8SiaNBjrjbJBEJ86QV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Michal,
 
-On Wed, 2023-11-22 at 10:55 +0000, Paul Durrant wrote:
->=20
-> > > Wait, didn't we realise that this leaves the bits set in the shadow
-> > > evtchn_pending_sel that get lost on migration?
-> > >=20
->=20
-> Indeed we did not, but that's not something that *this* patch, or even=
-=20
-> this series, is dealing with.=C2=A0 We also know that setting the 'width'=
- of=20
-> shared_info has some issues, but again, can we keep that for other=20
-> patches? The series is at v9 and has already suffered a fair amount of=
-=20
-> scope-creep.
+Let me know if you have any objections to the patch, thanks.
 
-Hrm... OK, that makes sense. This series is attempting to address the
-fact that we can't do overlays on memslots without temporarily taking
-away GPA ranges that we didn't mean to change. This patch is sufficient
-to allow evtchn delivery to work while the memslots are being frobbed,
-because userspace takes the vcpu_info away during the update.
-
-In that case the shadow works just fine.
-
-So yeah, if you want to handle the migration case separately then that
-seems reasonable.
-
---=-Ej8SiaNBjrjbJBEJ86QV
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIyMTEyNTQ3WjAvBgkqhkiG9w0BCQQxIgQg9qXmpCB5
-kF2r9fz2SXpLVcrVXnvl6TLBbzbT8/D7YSEwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCiAXF+t7Monyri5LPqCNda3gV1TZPwaAv4
-8U7YVawnWWLQ36XvE3LP5piejUErZXK8lOqX1xlPLPxWVJzrnKAWZdZu6uATXoA8tAx+/qGKzMPm
-0aJh2CtspTm674afDZilvLK9IR4lihOk4yMJP1nOlAPmLtT4Oi4GU4vDNCNkdXmRWcVXucXjOach
-wFsOJBhEe+TdsZsUxtd2w+Q+JLJSv7UMD+Ujxk2GAj6pAzs1djtUh4OQt9HNNFIEs8oJd6+ta2iY
-brylfLgYdruO0mmaJMxwenNNTg0RUss2wVVCT+s5jTtV5FPgqEgpP4s8jVTG+to05rsuvb1i/f+A
-ZEmdj1eZIaouqEdtla1P0G19BKKeK2GN0bLi436KTqq3q/oOfIIC2LdcpRQnijHB95aqNaj/2po8
-osvjfRQm/uL2Ez/OkPyfyGN+Pte7bnYOPyotBJ+ksX2yekWamYKi5j7AzMNdzpX6wAE3bsl9RyyY
-PQ0cZS69OrKJaep29Mz2WbImQ+qzPcXyrFiAy3y4QRJ14iPHoVUlCOQTgemRvog9aV75fLuGsyBO
-JSiQcp34CDJ1rI5+MTanWCQzu424NbBMcXP4Bar0wKem0F0VMOVWMCA6f9/bNhLbROvy6Ps7CB4d
-ceGiFO43eqGPMbnupYy2AJxK5cUvp+OYZyC1opY2YwAAAAAAAA==
-
-
---=-Ej8SiaNBjrjbJBEJ86QV--
