@@ -2,128 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8E37F465D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE8D7F4662
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344040AbjKVMfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:35:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
+        id S1343815AbjKVMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjKVMf3 (ORCPT
+        with ESMTP id S230061AbjKVMiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:35:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BB7E7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:35:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0685BC433C8;
-        Wed, 22 Nov 2023 12:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700656525;
-        bh=1Ar0GKfipyRpyKssaDDz4nM10Fr0fuJQJLvwdTfE8yg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AmzKg1O3K1rzLkH4aWS3nsfilpzZbpomRyyGlZ/CTQEpBpTWX6u2TsffsgMK0Rf1J
-         41y6A2v2IxxsGu8ApVABHIiaEy9BRqPTagY9r71obCwfdOm2Yg5pI9b11mPdTIZu5v
-         HclpKS5qWPQfozmDte3yQ8C1d184e9TCw8CMSQ12gWvizrxrRoLfhQKFY9NHlxBAzM
-         6c7qVJvm4Zk3/jIa4CGlRPuU82VIUUzaDmUDiERfgFL1HTxNIGg6l54497QJUB4Vrt
-         R9MTIXAeiz8mTI9nj7X+YTURDl2+KGeJlijEiLg868ahemoyTgIwZSx59Bb7KfV7u6
-         pMVlbl6lFuTyQ==
-Message-ID: <ea997987-6a84-445c-a806-527d766569b1@kernel.org>
-Date:   Wed, 22 Nov 2023 13:35:19 +0100
+        Wed, 22 Nov 2023 07:38:11 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71688E7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:38:07 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7c43ca1b178so192612241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:38:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700656686; x=1701261486; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=47LDcSAfuEcl+L6+R5MtrU7Ds/aa57XUWW6702q4oOE=;
+        b=X6MRJ5TFbVX5FLcagwIBSYK/LVs/8E7uVRAl9V0UoZ6k18A2WUsDzHx7XOW8L2DY5Q
+         +26Xc1s+dXdFi0FBwAjdzfICZKOXaYeSjlKr4RNNTORLHP2S6IOI2/7aqaeVTDbwWNtF
+         BSTVygZUbgDTcLJ87cBfpmTju3KABbsKOUCTfq9fBRdlkSblDyAgxMB3lQ6v5+DJgrOF
+         t5FYniPydJ8HyUtTEv8wvvdyIfBFLQM/cvLEdGLWE1RAOC6yLu/vImZDDSRMkFYxU11Z
+         4qz6xo/7MPodGfLBZgXTmMJqFVc2aBisKgXp3UIppHRSJRjTPDd8fvMWpE0D50de1FsT
+         s0Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700656686; x=1701261486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=47LDcSAfuEcl+L6+R5MtrU7Ds/aa57XUWW6702q4oOE=;
+        b=vvmODfxcX1CwXzwA74lzKcPO4yYnrDC7nVplXI6/pKbp8pGJxbhQsEovi0llTrfdBz
+         Hb5XqrUlLRIovxXW6jEqLaNvNlUBMfvV/DzJKYKSryR71zIS+6TDEKAEyvPxxyvNJCSn
+         0Z2zScZfEiRVKbSi474S3z5k0sE/fuYgENMaC5ziQiGp7EBLB35Num9vr/r2dLFZ3N7u
+         NxfXy+GMzk2F2CccAmsrsyYskMGmbhLZ+txj7Vi9f+/lNgGH0bVbS1ZbnQx6BIwoFKUu
+         kPK0Z2VUDa+SSJ8gS104WBPNe1dyTlKnq0mayEadZIoLgibSl5ekPiaC3xUamPo0Xx7+
+         dPWQ==
+X-Gm-Message-State: AOJu0Yxr2QvEPdUWqaR9RAr3Jjn5dDkwZbYwbeDZoLuKkJoSNlS1mR5R
+        U+szAhZJro+aTMO2LHRNL5LvyKoDAyRmLEB8XGs=
+X-Google-Smtp-Source: AGHT+IEUXkt/Uo14NeHqrnCYvIXleBRp8Buq8qSQUbvJ0B1GcV4Mxr6c2InQnokzag9uZWl1tE7SvJdpVCs0nFfJKbk=
+X-Received: by 2002:a1f:cb86:0:b0:49d:c1f5:d491 with SMTP id
+ b128-20020a1fcb86000000b0049dc1f5d491mr2245888vkg.15.1700656686405; Wed, 22
+ Nov 2023 04:38:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: iio: temperature: add MLX90635 device
- bindings
-Content-Language: en-US
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <cover.1700648164.git.cmo@melexis.com>
- <2e8b4a7d3ef4bc1c53bd0a849e4c31eaf2477f6b.1700648165.git.cmo@melexis.com>
- <99d1808a-da04-4bc1-a1f7-cbd269adbbf0@kernel.org>
- <CAKv63uv87srZ3gJxFASuGWV6cULXkN=gYi_L=BCcd3dgOFQEfw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CAKv63uv87srZ3gJxFASuGWV6cULXkN=gYi_L=BCcd3dgOFQEfw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1700502145.git.andreyknvl@google.com> <5cef104d9b842899489b4054fe8d1339a71acee0.1700502145.git.andreyknvl@google.com>
+ <CAB=+i9Q95W+w=-KC5vexJuqVi60JJ1P8e-_chegiXOUjB7C3DA@mail.gmail.com>
+In-Reply-To: <CAB=+i9Q95W+w=-KC5vexJuqVi60JJ1P8e-_chegiXOUjB7C3DA@mail.gmail.com>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Wed, 22 Nov 2023 21:37:53 +0900
+Message-ID: <CAB=+i9Re7BY96_eBjNUct9kdRqkXNXQ1UdYdQxtZ30vEyCT0=g@mail.gmail.com>
+Subject: [REGRESSION] Boot hangs when SLUB_DEBUG_ON=y and KASAN_GENERIC=y
+To:     andrey.konovalov@linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 13:28, Crt Mori wrote:
->>> +  Since measured object emissivity effects Infra Red energy emitted,
->>> +  emissivity should be set before requesting the object temperature.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: melexis,mlx90635
->>
->> It's the same as mlx90632. Add it there (as enum).
->>
-> 
-> Properties are the same, but then you can't have much differences for
-> a temperature sensor. It has a bit worse relative measurement error
-> outside of the human body range and overall different DSP, register
-> map, even physical size - it's 1.8x1.8 mm compared to 90632 3x3 mm. I
-> was not sure how it qualifies for adding it as another enum, but I
-> went with the feeling that if it can reuse the driver, then it is an
-> enum, otherwise it is a new file. And I could not reuse anything from
-> 90632.
-> 
-> Thanks for quick feedback and best regards,
+On Wed, Nov 22, 2023 at 12:17=E2=80=AFPM Hyeonggon Yoo <42.hyeyoo@gmail.com=
+> wrote:
+>
+> On Tue, Nov 21, 2023 at 1:08=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
+e:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Evict alloc/free stack traces from the stack depot for Generic KASAN
+> > once they are evicted from the quaratine.
+> >
+> > For auxiliary stack traces, evict the oldest stack trace once a new one
+> > is saved (KASAN only keeps references to the last two).
+> >
+> > Also evict all saved stack traces on krealloc.
+> >
+> > To avoid double-evicting and mis-evicting stack traces (in case KASAN's
+> > metadata was corrupted), reset KASAN's per-object metadata that stores
+> > stack depot handles when the object is initialized and when it's evicte=
+d
+> > from the quarantine.
+> >
+> > Note that stack_depot_put is no-op if the handle is 0.
+> >
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>
+> I observed boot hangs on a few SLUB configurations.
+>
+> Having other users of stackdepot might be the cause. After passing
+> 'slub_debug=3D-' which disables SLUB debugging, it boots fine.
 
-Driver is independent choice. There is no need for new binding file if
-everything is the same from bindings point of view.
+Looks like I forgot to Cc regzbot.
+If you need more information, please let me know.
 
-Best regards,
-Krzysztof
+#regzbot introduced: f0ff84b7c3a
 
+Thanks,
+Hyeonggon
+
+> compiler version: gcc-11
+> config: https://download.kerneltesting.org/builds/2023-11-21-f121f2/.conf=
+ig
+> bisect log: https://download.kerneltesting.org/builds/2023-11-21-f121f2/b=
+isect.log.txt
+>
+> [dmesg]
+> (gdb) lx-dmesg
+> [    0.000000] Linux version 6.7.0-rc1-00136-g0e8b630f3053
+> (hyeyoo@localhost.localdomain) (gcc (GCC) 11.3.1 20221121 (R3[
+> 0.000000] Command line: console=3DttyS0 root=3D/dev/sda1 nokaslr
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+> 6.7.0-rc1-00136-g0e8b630f3053 #22
+> [    0.000000] RIP: 0010:setup_arch+0x500/0x2250
+> [    0.000000] Code: c6 09 08 00 48 89 c5 48 85 c0 0f 84 58 13 00 00
+> 48 c1 e8 03 48 83 05 be 97 66 00 01 80 3c 18 00 0f3[    0.000000] RSP:
+> 0000:ffffffff86007e00 EFLAGS: 00010046 ORIG_RAX: 0000000000000009
+> [    0.000000] RAX: 1fffffffffe40088 RBX: dffffc0000000000 RCX: 1ffffffff=
+11ed630
+> [    0.000000] RDX: 0000000000000000 RSI: feec4698e8103000 RDI: ffffffff8=
+8f6b180
+> [    0.000000] RBP: ffffffffff200444 R08: 8000000000000163 R09: 1ffffffff=
+11ed628
+> [    0.000000] R10: ffffffff88f7a150 R11: 0000000000000000 R12: 000000000=
+0000010
+> [    0.000000] R13: ffffffffff200450 R14: feec4698e8102444 R15: feec4698e=
+8102444
+> [    0.000000] FS:  0000000000000000(0000) GS:ffffffff88d5b000(0000)
+> knlGS:0000000000000000
+> [    0.000000] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    0.000000] CR2: ffffffffff200444 CR3: 0000000008f0e000 CR4: 000000000=
+00000b0
+> [    0.000000] Call Trace:
+> [    0.000000]  <TASK>
+> [    0.000000]  ? show_regs+0x87/0xa0
+> [    0.000000]  ? early_fixup_exception+0x130/0x310
+> [    0.000000]  ? do_early_exception+0x23/0x90
+> [    0.000000]  ? early_idt_handler_common+0x2f/0x40
+> [    0.000000]  ? setup_arch+0x500/0x2250
+> [    0.000000]  ? __pfx_setup_arch+0x10/0x10
+> [    0.000000]  ? vprintk_default+0x20/0x30
+> [    0.000000]  ? vprintk+0x4c/0x80
+> [    0.000000]  ? _printk+0xba/0xf0
+> [    0.000000]  ? __pfx__printk+0x10/0x10
+> [    0.000000]  ? init_cgroup_root+0x10f/0x2f0
+> --Type <RET> for more, q to quit, c to continue without paging--
+> [    0.000000]  ? cgroup_init_early+0x1e4/0x440
+> [    0.000000]  ? start_kernel+0xae/0x790
+> [    0.000000]  ? x86_64_start_reservations+0x28/0x50
+> [    0.000000]  ? x86_64_start_kernel+0x10e/0x130
+> [    0.000000]  ? secondary_startup_64_no_verify+0x178/0x17b
+> [    0.000000]  </TASK>
