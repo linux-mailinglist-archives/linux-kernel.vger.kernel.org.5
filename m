@@ -2,136 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B347F59FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BAA7F5A07
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344926AbjKWI2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S1344937AbjKWIby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjKWI2i (ORCPT
+        with ESMTP id S234566AbjKWIbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:28:38 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2067.outbound.protection.outlook.com [40.107.220.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E73BC;
-        Thu, 23 Nov 2023 00:28:42 -0800 (PST)
+        Thu, 23 Nov 2023 03:31:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35AED49
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:31:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700728318; x=1732264318;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=NiOt7q/s7vY16mQ6FoKFKII5Zzz1SacsBW/6wYHhwu8=;
+  b=eXq1yfCOgAB01qK4LuAepSsE26zu0JWMr3NVXgCr+YpBRpfIY5sfTrKS
+   v+i7o449YQZapMip4e3tEtjBe3A90bR94PY5J4j3gwN4mT2YfXgV9+yFz
+   WjEunT2d8g9LJK4rCxJbbgRfOmEjSpiLTD32I6E2VGnCm1t+rGSJJvesf
+   nOnJgt1p2o9VfqcyPCOCBPbKY/RH9H1tEP9Z1sOv0OXFQafJWk69kovTv
+   jB5fIORAKeslaRJsZm44FIU9rMD9eSSN05Eg13G+y5QMiuWgwTaxAcMj2
+   Iw31ifS2rCxyagasH0SM3+Xl49gIxsexJ8vqxlipHO7Jimd1Tx14/AGjQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="478424367"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="478424367"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 00:31:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="837730540"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="837730540"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Nov 2023 00:31:43 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 23 Nov 2023 00:31:42 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 23 Nov 2023 00:31:42 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 23 Nov 2023 00:31:42 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 23 Nov 2023 00:31:41 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fzqzrojzsTUBmHuW2UDZnJPAqUPkzoHhiBq7RdsPMNbGNTwQNkny3Vv+uprat4G8ahR5nc2D3tQoylfQ751+Qlf8JpSF9N9jDeMuZy29LO1YiijY0hjoVT/eQ10JzdoNMUHIMsM8/EROiPWSrRU0okcqUviOM1/PfTXPGDVE32+IcJc7X+2idazBCkif5yANZAUWYWksVWwdIC3NUsPIAAKS+gU6fUrYo8Gtx0WbzYeJrj9fWbeieJtH9CaKJAHSFt8+GSrJrydX+bpO1Ew9ejdN6d8IqUEIT1TXiTX6TaZT3wijWH9SZc6CmolD0dtx+o4OctmkF4W3P3noqWcQGA==
+ b=DrAYKZ91DX5oJzC6bddE9WKXeqJs7CIU6xeNhA7snUYvZSxQnmmaK9xwx8fNKTGvgk4rl+Kuu2HMj2JHlP6I3oRsYZkodDfmoJvsXnVViI0zs6fDhxCwITlg8vtFM23pNpHbLIkdKK7WkaDn6p7uK5U2gPYqSoRkrmE/wiNoBwoouxfyeDGjxxfXPgAUpFVXU3kgnw7dLyWm1d1u5Gr6MfyxeIDRVWyG1gIyzajTZe3AqwdtPb+99X7NXB+N53LrUXzRNzz3w51HHl6N/8u62yhHlWilG7Zg4C8L0c0TmMfwuy0qurcMQ+VhtWRit83HEeQ7fjJuVtgpCPVZQbpipg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iA1DghR5CuUIJAL1SUAdXjQCkegyBdqtzc06cDEKgfc=;
- b=S0xERr80/9KoE2lEBDBff1NYF+ExcVmLzztUvjCfhsWIXdyUrQGqZUFQlJ+0oqIWdRIwn46pjSNYVsEIl69S2JOZVsw8E//p+dG0jtAXacr6LuP6z82Q8B+WjMUk09Zx73Sj2CcaAHqZwz89yH+j/NQ+fknQkBcRKnpiYv4de5AHQ+9lkHxows7T4EbnRyzc6CIbm61f0j/1irlxIHisGxZWXShlI01mYSsoEejEGBDcYrT51XR089d3R1VKVgNWivOBGSeDT+g4goNjl77F1KZCHcsj8juGw9pZPSqqdJ2aQ655hDvyCpQ6OKLM/o9bDEkS1ACRWmFLcVGWJlALww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iA1DghR5CuUIJAL1SUAdXjQCkegyBdqtzc06cDEKgfc=;
- b=AZr9VCN1XVGGw/Vw5G4Asz96gVIwIjPoYHaYqG12oHy83bQqTyL707GEC7bRPpzgKfqjiL9BGslQ9YkTQj4g+gRX8DvjwK+6Mb7cMDOnkIvm3JrU6sLL5kLrHmC/jRmkNtxraFCkvkLrdWlAJqooddMcGHsgkroSxd9HSTiE3DA=
-Received: from MW4PR03CA0122.namprd03.prod.outlook.com (2603:10b6:303:8c::7)
- by PH7PR12MB9254.namprd12.prod.outlook.com (2603:10b6:510:308::5) with
+ bh=pRN7rPA8aejJfgy34h6zIBGRbRxsLIGBc/hL3OIJ9og=;
+ b=UactFNPK6yYPv2jD+JGCOMrm6pJOa4OCpJddiN+YxdoKB0ncgbatYe95AnG87m0zLf55d28BKFSa5yBH32Z/d/ChUwcTSen9bKhNSgDTATBCXO+n7bTOli2egfj/64ASRj1bhjdGjaeArV27EPCQz51/fh5MqqnXbVLB5G6PWboieQG4XB/Qv5SIszlNPfCTB70SGx7/MKNQB5Nbs/nWHe1waA5FDMgkpIr8I1bPbMN1P6b5mCd3FfSJnq9ofWaOWr0V+8TdturlGEWtexBQiqGOzXbFW56g7sJImAp56j8GKU88gJAWpE/5t6+7JFGcQun68ryPD3pNDOMVhhutOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ0PR11MB4831.namprd11.prod.outlook.com (2603:10b6:a03:2d2::20)
+ by DS0PR11MB7960.namprd11.prod.outlook.com (2603:10b6:8:fe::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Thu, 23 Nov
- 2023 08:28:40 +0000
-Received: from CO1PEPF000044F7.namprd21.prod.outlook.com
- (2603:10b6:303:8c:cafe::3f) by MW4PR03CA0122.outlook.office365.com
- (2603:10b6:303:8c::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19 via Frontend
- Transport; Thu, 23 Nov 2023 08:28:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F7.mail.protection.outlook.com (10.167.241.197) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.3 via Frontend Transport; Thu, 23 Nov 2023 08:28:39 +0000
-Received: from BLR-5CG11610CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 23 Nov
- 2023 02:28:36 -0600
-From:   "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-To:     Wyes Karny <wyes.karny@amd.com>, Huang Rui <ray.huang@amd.com>,
-        "Mario Limonciello" <mario.limonciello@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Subject: [PATCH] cpufreq/amd-pstate: Fix the return value of amd_pstate_fast_switch()
-Date:   Thu, 23 Nov 2023 13:57:57 +0530
-Message-ID: <20231123082757.3527-1-gautham.shenoy@amd.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
+ 2023 08:31:34 +0000
+Received: from SJ0PR11MB4831.namprd11.prod.outlook.com
+ ([fe80::50f0:1dd8:29fc:3f87]) by SJ0PR11MB4831.namprd11.prod.outlook.com
+ ([fe80::50f0:1dd8:29fc:3f87%4]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
+ 08:31:31 +0000
+Message-ID: <1f29e229-d07a-41e2-97da-b6720bd5f2d7@intel.com>
+Date:   Thu, 23 Nov 2023 16:29:22 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <ying.huang@intel.com>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+ <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
+ <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
+ <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
+ <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
+From:   Yin Fengwei <fengwei.yin@intel.com>
+In-Reply-To: <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SGAP274CA0003.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::15)
+ To SJ0PR11MB4831.namprd11.prod.outlook.com (2603:10b6:a03:2d2::20)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F7:EE_|PH7PR12MB9254:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5266be46-8a7f-4570-bd1f-08dbebfe320e
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4831:EE_|DS0PR11MB7960:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59eb9e15-cfec-4a20-fcec-08dbebfe97de
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T06tPSAcMb1WSmmJxkRzaYRdzGwG8tKS5aZRAT+t9cGi2cTczzovdIbXDVuZucv/SqgipGwxfHDE+REpTdMWadw2r0EFSiLDBWLjY6egMkg9VqgEoLCFXmzAB9mfyuDHnhFLP3uXVMpiCoXOvaLycn5qcFo19OkfLSwJClfR0wHNVLtVi94W3dzY8I1xvAe0UZVmGg0jelKkAK0ePvHM7M00APIaM1o01NNeCAlSrIDpOzBxFZ55mxCgPTsddO/uyh+mGSRKsWN6gZkQjBctAdehoi1JdrVUU5QndOQsWT3s4tNcHXKuGq1/R/8EeRCuMuciHK99Qm5dH1tU18/lYDVOzsK1D7rNR8ckj27gtw9VJjq0oeElubbgLreTFrCHhd5aFEOJFRLpWyWV1VJi59LS7HHVVHVuI7F0UUmH7jcCuF3N5EHB4KYHPgYKikZpbsxtBqZ7SBafAykN59942zF3R1C1CM/uiIcPvOvZ2PawyJjQQYsTfcPBA1Vi6Jr62nlD5v05aU0+8iaqqveSUAEKbybL/cF4E+lgzC8f/on3jX4MlTUvDrsDwSB1Ef0goutlEPYG/vJBi8MHauXXNk7vekm1mK11YoPKgfM9yqHOXQ+8fa0bKfue6y7SThVzJPzVpC529tabq6ntPBrKHhlJUrxmhaiDD0qpey7083/ZgY5ZlePrAS2YxfzD2UtFN0FukNM/3UnrHvPFhTP+iUjWKwBLAwSGDN1BlY3ht9o=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(40470700004)(36840700001)(46966006)(86362001)(5660300002)(2906002)(316002)(70206006)(70586007)(110136005)(40460700003)(4326008)(8936002)(36756003)(8676002)(54906003)(41300700001)(40480700001)(47076005)(478600001)(356005)(81166007)(36860700001)(26005)(426003)(16526019)(336012)(82740400003)(2616005)(83380400001)(7696005)(1076003)(6666004)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 08:28:39.5698
+X-Microsoft-Antispam-Message-Info: 6nLaLGePDzQKO+SFiKcXROrhiG4egdWvwE8tVYPnn7RNYm4kaBciOsojx5GPe3/uO27a0NzgmZ6hK1+lrbP3JSon8K2YBz2diL506sjOdSt/UiiF2Lpg0ryx6KhWnNy7hqtOg32MgpHLiwS/1URApzDhl0eaUAfd8SvZJNNuQI+NksXF4n917GOaeS8klh/NsHGNXPnLg400uM0EtU5ieBdhv2y5DjsWrSscCSCpoKASpoM+Vh2wkjjZm1RBMY6CmpYkTmjGtk25Wcm8ecpIGjPbgkQ3ATVkoz4305HnJLgvlAq4xuEVPC5oT8XKNIKpq0GVy67JaqcH+p6oZuNSvqlFiYdWfiXb1eC+3rioKk9KUD09SLM/OZzYJ8rMaIsezkfVlW7ioxlyI6h+MH6GpPXGndTTFmsipYZRFk252AwxWpHgAu+Lc1i3WgLVT+pn7Ux6ITXEQQMZfcwLkBI1TIpd/ERtRf3vKTU5XGDhuttq1E/XANsaHqrXe8yl2WbAOhckd7G4jE2J1op3vGI0ictrKrE1cG8bhxGQ9lTua+vwSy5m5F74lXmtfMm/STtrIsXab2tH9GxPXTOM8fscCf2Yl2sOSxH2EOS4zJNj4jepL7qC1gLn2l6a1UtHPQaq4xf/BLxm11uFZzq0XCMCVK4On+gY6+yFO8BglYc3PIFUl7yLwyvWu2i9lHzP/H6A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB4831.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(5660300002)(7416002)(2906002)(8676002)(8936002)(66946007)(66476007)(4326008)(66556008)(316002)(41300700001)(6666004)(6486002)(6506007)(478600001)(966005)(53546011)(31686004)(26005)(2616005)(6512007)(38100700002)(83380400001)(66899024)(82960400001)(86362001)(36756003)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RnNteVBIMitncTE0V0lDRGdSMnVETmRiQnRNOFVGazV0cFBON09jWGpRQzRq?=
+ =?utf-8?B?UHM3aWV6UTdrZGgrVmN5b3hkYi92MDZyTkpiaW9XdUNzbm4yYjdmQnlEMDNt?=
+ =?utf-8?B?TmN3YS8rRjdERUdoMDdIZTYyN3BMeWJHNzFmTGJiV1FROUZUTVAxcUJFN3gw?=
+ =?utf-8?B?SUFzRHdPVWQ0UUJJMWU0U0pGYjZXK2k3Qjl3Vm5jZ1RNblBLdVJWMzcza2ZT?=
+ =?utf-8?B?b2h5UVNZTGl5OHBEVVFTU2ZrK0EwYTVMVi9nengwaHllZnplQUUwazhRQi80?=
+ =?utf-8?B?Y0lRMkRyQzYyTVBjRjR4Wk1WdC94dTIxTHJ4SWZGNGZyTmpaeEowRFhNcyto?=
+ =?utf-8?B?QXVlcjY2TnBNckdPZGFtbzlkNjd3bHNwaWdwMENZNS8wWlZrbFd4SjdlcDVR?=
+ =?utf-8?B?a01ITjR2b1ZjN1I2YUk5KzdieUVTMW5MN1VsVCtRVVJ6d1BUSUEybTluTHhx?=
+ =?utf-8?B?QU5xL1FpMzV2d1BDUmp6MDNJdEQ2WUNyTDVGVGJOSnNZRFlxcGZxWGJyem02?=
+ =?utf-8?B?ajNWYjdXeHFlanFNaThTMEsxYmZYYTcyS1hKelNvM2x3YTBxdlg2S1RsK1RB?=
+ =?utf-8?B?Qis5N1RONDBrVGR4Vk5zb1ZTdTFNaVJNMER0U3o5TlBLN1pUdE9kdkV6ZzVW?=
+ =?utf-8?B?YlpscTBhenZEam82SVE2S3I5R2k3SU95amdZZVQxd3B2MEFIeDJVTXZMbmRX?=
+ =?utf-8?B?aEc1dkY4Q0xDcEZuKzlURWMwZXpXb3hteXV2WGlobld1ZWNaRG5TSDc2aHk4?=
+ =?utf-8?B?dGtLdmtVbWp3UW1rSkZXWk5CU1Vqc0tFR3hqeUs0T0FGbVVoR2p6eDNYemsy?=
+ =?utf-8?B?MUZDL1psODFpN0hpN3o2LzJ5YzhMV1BZZi94dkRMODdEeTkzQjI0NUJiTnY0?=
+ =?utf-8?B?ck5YRU5qZDR6Z2UrZXhNVWtyb0J4Q0FXYjhncGc0QzN6TEtOVGIyTWwzYjg2?=
+ =?utf-8?B?SmZRcGMxWXVyalJiZTN0Y1B6NzJqSENRaUJONkhOVFhzbVBNN1NqYkZINFBy?=
+ =?utf-8?B?S0x3cGJYTGR6K1lFTkhUdDdwVzE5UGtYR2JOY251RVBKby8zalpNSmd2TjhM?=
+ =?utf-8?B?b1JIczNhaTJQUkttSHJVVVU5YXV2bjU5YzRUNFpqRVdSaVlpK0FEdVlFTmpp?=
+ =?utf-8?B?czZYVjQwWEhNeFhuazlxT1ZUT3FISkNoK21IdlltQmxGVmptNHhlRGd0aEJ0?=
+ =?utf-8?B?MzZMQjBCaU9sZGNlRitkTzgzclBkYjl2aDI1a3VSb3NCU2svUytKcit3L0Rq?=
+ =?utf-8?B?V2ZyeFFLVzZLRXM5MVk1QlhMOTM0NnY2R3hBUFpjY0pvYUl0VE1ad05PM0FV?=
+ =?utf-8?B?dW5oeWhENVJXMFJnRVhFOVROQTVqNFVuZ0NMejBOQ2JPbmd4YUI3UGlnNThN?=
+ =?utf-8?B?a2xaeDhyTVNrd2tSOFlHUkpPVUNTOGwvbCtlVkpmbU1xR3NTWVU2MUlrb2Zt?=
+ =?utf-8?B?UWxWVjNyekk1WFQ1eUNicVRIc2NSYm10NFVMTkJtd0djcFRyOGdmYVNrZDZk?=
+ =?utf-8?B?Z0FOeXVkN3Z0NEt2eWN4Tmc4d3g4U2lSdHZQbXZYcC90WVlYNzFlWWY2T3Iw?=
+ =?utf-8?B?VXBFZ3BneWMwQTNBbDdDeFR2b3NtU0Z5V0N6Z2FkbXoxd2UvM1FEcExGSmxI?=
+ =?utf-8?B?NmRCaXhESXlsOWVjL0IyN3dvNFlzNFU3WmwvbjRhbHNsZFdUV3NwNmU0U1dU?=
+ =?utf-8?B?TFdSU3Vtdzk0OHlQTU9OMExYSGFYektuR0VaSnFMVGN3ZVFPc2N0OXpLWk1n?=
+ =?utf-8?B?YlM0RkNoK0tCYWRtQk10NlZIeHVNQklVeURwcjZNL0pvc2RqZUNiOGNudEIz?=
+ =?utf-8?B?N2paV3dCMXN1UDZpR3dOWkFQRmpobmYyK2ZBdksrMHVnWkRaY1hVL1pKdmNH?=
+ =?utf-8?B?Z3lmRG1ZYzd5QW9hNGcrSGtXZnpwSnFZaVhDcXlZM0ZLR3lvQW1LOGtQMklw?=
+ =?utf-8?B?dzRxUUpvN09HUEd1VlRTUVA4OG1IY1dkUGYwTWFTYXdTKytVQk56dUNaRGM0?=
+ =?utf-8?B?bjFYR0VWNFY4OUZ4Rng0bi9INzZGUVdTdmVyZHJZb3NCN25URVVsamZNSXV2?=
+ =?utf-8?B?bGgzU3RRbFZNT2dRaUdTV29ZL3BtV0V1czdCZDk4REtzRThiU08wL2N0SmtO?=
+ =?utf-8?B?NWcxMmRydkNrRko0YnFYd3phMENZZ1lpU3cyTUI5VzhMbXAwRG0yeEJNS2dB?=
+ =?utf-8?B?bVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59eb9e15-cfec-4a20-fcec-08dbebfe97de
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB4831.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 08:31:31.3656
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5266be46-8a7f-4570-bd1f-08dbebfe320e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F7.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9254
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O+B4wpJacFpmswmZJF4PFkVjX0jUGFYZv14ODa3h5z03X4nVjzwcxc3tpUnCkjD9XTvLn5o4c4qnfaVDOiUBoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7960
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpufreq_driver->fast_switch() callback expects a frequency as a return
-value. amd_pstate_fast_switch() was returning the return value of
-amd_pstate_update_freq(), which only indicates a success or failure.
 
-Fix this by making amd_pstate_fast_switch() return the target_freq
-when the call to amd_pstate_update_freq() is successful, and return
-the current frequency from policy->cur when the call to
-amd_pstate_update_freq() is unsuccessful.
 
-Fixes: 4badf2eb1e98 ("cpufreq: amd-pstate: Add ->fast_switch() callback")
-Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
----
- drivers/cpufreq/amd-pstate.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 11/23/23 15:57, zhangpeng (AS) wrote:
+> On 2023/11/23 13:26, Yin Fengwei wrote:
+> 
+>> On 11/23/23 12:12, zhangpeng (AS) wrote:
+>>> On 2023/11/23 9:09, Yin Fengwei wrote:
+>>>
+>>>> Hi Peng,
+>>>>
+>>>> On 11/22/23 22:00, Peng Zhang wrote:
+>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>
+>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>
+>>>>> This caused by temporarily cleared pte during a read/modify/write update
+>>>>> of the pte, eg, do_numa_page()/change_pte_range().
+>>>>>
+>>>>> For the data segment of the user-mode program, the global variable area
+>>>>> is a private mapping. After the pagecache is loaded, the private anonymous
+>>>>> page is generated after the COW is triggered. Mlockall can lock COW pages
+>>>>> (anonymous pages), but the original file pages cannot be locked and may
+>>>>> be reclaimed. If the global variable (private anon page) is accessed when
+>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>>>>>
+>>>>> At this time, the original private file page may have been reclaimed.
+>>>>> If the page cache is not available at this time, a major fault will be
+>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>
+>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() before
+>>>>> triggering a major fault.
+>>>>>
+>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>>>>>
+>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>> ---
+>>>>>    mm/filemap.c | 14 ++++++++++++++
+>>>>>    1 file changed, 14 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>> index 71f00539ac00..bb5e6a2790dc 100644
+>>>>> --- a/mm/filemap.c
+>>>>> +++ b/mm/filemap.c
+>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>>>                mapping_locked = true;
+>>>>>            }
+>>>>>        } else {
+>>>>> +        pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>>>>> +                          vmf->address, &vmf->ptl);
+>>>>> +        if (ptep) {
+>>>>> +            /*
+>>>>> +             * Recheck pte with ptl locked as the pte can be cleared
+>>>>> +             * temporarily during a read/modify/write update.
+>>>>> +             */
+>>>>> +            if (unlikely(!pte_none(ptep_get(ptep))))
+>>>>> +                ret = VM_FAULT_NOPAGE;
+>>>>> +            pte_unmap_unlock(ptep, vmf->ptl);
+>>>>> +            if (unlikely(ret))
+>>>>> +                return ret;
+>>>>> +        }
+>>>> I am curious. Did you try not to take PTL here and just check whether PTE is not NONE?
+>>> Thank you for your reply.
+>>>
+>>> If we don't take PTL, the current use case won't trigger this issue either.
+>> Is this verified by testing or just in theory?
+> 
+> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_commit(),
+> this issue will also trigger. Without delay, we haven't reproduced this problem
+> so far.
+Thanks for the testing.
 
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index 9a1e194d5cf8..300f81d36291 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -518,7 +518,9 @@ static int amd_pstate_target(struct cpufreq_policy *policy,
- static unsigned int amd_pstate_fast_switch(struct cpufreq_policy *policy,
- 				  unsigned int target_freq)
- {
--	return amd_pstate_update_freq(policy, target_freq, true);
-+	if (!amd_pstate_update_freq(policy, target_freq, true))
-+		return target_freq;
-+	return policy->cur;
- }
- 
- static void amd_pstate_adjust_perf(unsigned int cpu,
--- 
-2.25.1
+> 
+>>> In most cases, if we don't take PTL, this issue won't be triggered. However,
+>>> there is still a possibility of triggering this issue. The corner case is that
+>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_start()
+>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 passes the
+>>> check whether the PTE is not NONE before task 1 updates PTE in
+>>> ptep_modify_prot_commit() without taking PTL.
+>> There is very limited operations between ptep_modify_prot_start() and
+>> ptep_modify_prot_commit(). While the code path from page fault to this check is
+>> long. My understanding is it's very likely the PTE is not NONE when do PTE check
+>> here without hold PTL (This is my theory. :)).
+> 
+> Yes, there is a high probability that this issue won't occur without taking PTL.
+> 
+>> In the other side, acquiring/releasing PTL may bring performance impaction. It may
+>> not be big deal because the IO operations in this code path. But it's better to
+>> collect some performance data IMHO.
+> 
+> We tested the performance of file private mapping page fault (page_fault2.c of
+> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of will-it-scale).
+> The difference in performance (in operations per second) before and after patch
+> applied is about 0.7% on a x86 physical machine.
+> 
+> [1] https://github.com/antonblanchard/will-it-scale/tree/master
+Maybe include this performance related information to commit message?
 
+For the code change, looks good to me.
+
+Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+
+
+Regards
+Yin, Fengwei
+
+> 
+>>
+>> Regards
+>> Yin, Fengwei
+>>
+>>>> Regards
+>>>> Yin, Fengwei
+>>>>
+>>>>> +
+>>>>>            /* No page in the page cache at all */
+>>>>>            count_vm_event(PGMAJFAULT);
+>>>>>            count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+> 
