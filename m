@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66E77F61E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393077F61EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345902AbjKWOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:48:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        id S1345918AbjKWOsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345872AbjKWOsd (ORCPT
+        with ESMTP id S1345907AbjKWOss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:48:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90904D5E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:48:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B336C433C8;
-        Thu, 23 Nov 2023 14:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700750920;
-        bh=u1dfPAl8WU4nH1bqr+U/uJcJjIRSFeshXRZIIy7HgTw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=KioWlU0zmU30FWER87A8d5h5uul9ohvHD+i0X704NCKIYMg8CIhu8OYWNR5uH6hT9
-         8j/QU+ung6WIr/9ZNBmh+jvAYMUYATV2jaXsIL14e+VFrX7hIPPd4Y3C6KsnEgHZPt
-         iz5pd3LzK2QpHtRFFpkZQEntsc47alcz746BqT+ZXscNP56Pn6c7j/Y/aVIm/ixask
-         TXFjGn1/C03I72hRt9T6/hnVDW8sm1zKooGwdNYJwPjPE2rMNqazOnaVofLg03H1oc
-         OmQpJ2vj+rLmvRGadRlf4fTLA8fvgSFXUeKpjc79nJozWWrBg83Fb8HlLStfYepPlu
-         YENPJUi1+9zHQ==
-From:   Lee Jones <lee@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Pavel Machek <pavel@ucw.cz>
-In-Reply-To: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com>
-References: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/4] leds: trigger: gpio: Replace custom code for
- gpiod_get_optional()
-Message-Id: <170075091897.1365956.17632014819922518514.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 14:48:38 +0000
+        Thu, 23 Nov 2023 09:48:48 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2EFD71
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:48:54 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C2B82660739B;
+        Thu, 23 Nov 2023 14:48:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700750932;
+        bh=TOxOSufmcOtURwsWljuFpDtQMmDKswF940eCd0/40e8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GUBVz5eUSRzQhnr6IkWj+jo4rJm341qH1y3W881oKdKubsHsULT1YCS3ioMDZwpOk
+         ssD5sNLakFDgu7dS5Tk0PaAgh/hMAMZSwynz1ccdNpYDxkC2mXV4ltmrpw0TxKcr0Y
+         ejGZ8g02aLRVdDIGsom6njnd/GnR/GR8PtMIupQIRnWdEOcFWDnUw1bHWNO1rgY/d4
+         0IgKTiFj8JKT43OsH+hoW3pIq1Vho62mmbtrbQQaHZhXeLB+saxCqR1swFBEa12Gtn
+         4594UIN8+PPbXGQFijdjHu65/TC45og1ePfRGgUCaxv/Bih77MoQcIGiEm9ATQNTDG
+         tUaj9so8WEU+Q==
+Date:   Thu, 23 Nov 2023 15:48:48 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put
+ drm-shmem pages
+Message-ID: <20231123154848.034f4710@collabora.com>
+In-Reply-To: <20231029230205.93277-16-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-16-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Nov 2023 21:53:07 +0200, Andy Shevchenko wrote:
-> gpiod_get_optional() and currently used fwnode_gpiod_get_index()
-> are both wrappers against the same engine internally. Since we
-> have a pointer to struct device there is no reason to use fwnode
-> type of GPIO call. So, replace the current fwnode call by respective
-> gpiod ones.
+On Mon, 30 Oct 2023 02:01:54 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> To simplify the drm-shmem refcnt handling, we're moving away from
+> the implicit get_pages() that is used by get_pages_sgt(). From now on
+> drivers will have to pin pages while they use sgt. Panfrost's shrinker
+> doesn't support swapping out BOs, hence pages are pinned and sgt is valid
+> as long as pages' use-count > 0.
 > 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gem.c | 17 +++++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c |  6 ++----
+>  2 files changed, 19 insertions(+), 4 deletions(-)
 > 
-> [...]
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> index 6b77d8cebcb2..bb9d43cf7c3c 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -47,8 +47,13 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
+>  			}
+>  		}
+>  		kvfree(bo->sgts);
+> +
+> +		drm_gem_shmem_put_pages(&bo->base);
+>  	}
+>  
+> +	if (!bo->is_heap && !obj->import_attach)
+> +		drm_gem_shmem_put_pages(&bo->base);
+> +
+>  	drm_gem_shmem_free(&bo->base);
+>  }
+>  
+> @@ -269,6 +274,7 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
+>  {
+>  	struct drm_gem_shmem_object *shmem;
+>  	struct panfrost_gem_object *bo;
+> +	int err;
+>  
+>  	/* Round up heap allocations to 2MB to keep fault handling simple */
+>  	if (flags & PANFROST_BO_HEAP)
+> @@ -282,7 +288,18 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
+>  	bo->noexec = !!(flags & PANFROST_BO_NOEXEC);
+>  	bo->is_heap = !!(flags & PANFROST_BO_HEAP);
+>  
+> +	if (!bo->is_heap) {
+> +		err = drm_gem_shmem_get_pages(shmem);
 
-Applied, thanks!
+I really hate the fact we request pages here while we call
+panfrost_mmu_map() in panfrost_gem_open(), because ultimately, pages
+are requested for the MMU mapping. Also hate the quirk we have in shmem
+to call free_pages() instead of put_pages_locked() when the BO refcount
+dropped to zero, and I was hoping we could get rid of it at some point
+by teaching drivers to request pages when they actually need it instead
+of tying pages lifetime to the GEM object lifetime.
 
-[1/4] leds: trigger: gpio: Replace custom code for gpiod_get_optional()
-      commit: cafe2f8ed515e586b020a60df44e9f251f4d6248
-[2/4] leds: trigger: gpio: Convert to use kstrtox()
-      commit: 001813a6f0c7b05c139cde5d5177a4a9bfe39b09
-[3/4] leds: trigger: gpio: Use sysfs_emit() to instead of s*printf()
-      commit: bd4f0709c66394bb746c985872c4153ac93877b7
-[4/4] leds: trigger: gpio: Convert to DEVICE_ATTR_RW()
-      commit: 0603a253b18421a336c3be14bdcd1c5d75b6503b
-
---
-Lee Jones [李琼斯]
-
+Maybe what we should do instead is move the get/put_pages() in
+panfrost_mmu_map/unmap() (as I suggested), but have a special mapping
+panfrost_mmu_evict/restore() helpers that kill/restore the MMU mappings
+without releasing/acquiring the pages ref.
