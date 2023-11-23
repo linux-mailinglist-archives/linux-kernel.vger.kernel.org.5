@@ -2,163 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6AC7F5D17
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61FC7F5D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbjKWK6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43254 "EHLO
+        id S235224AbjKWK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbjKWK6S (ORCPT
+        with ESMTP id S235191AbjKWK6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Nov 2023 05:58:18 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265A9D54
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:58:23 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-332cc1f176bso496101f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:58:23 -0800 (PST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2314BD5A
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:58:24 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b36b9d9faso25485e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:58:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700737101; x=1701341901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tqBAdO1zKF8ljfRCPt++e5LSU5ewUNxfyiSB8BZlHv8=;
-        b=Uqs+mu2kG8b/nMSexlMAHw9CLCQHKwZcETJ8y8H4fnk9J1IS4bDHFJlJRYjdna+5+n
-         y/KICZFlfF8O/Xo1CCQGJM7+WuuQGoqQm0XlwMhwzd2Z0pGNO4Lha2DqGmip6xaLZC6p
-         mRw082WTqYvKoG9l0w+LxTcdlbV/ylz3+NCHG4CdJb14xcwvC5gp/HWAE9HLjAVRKqjR
-         /CLx+cz9jXDKfS8SlCRx3YYmNR387E6FDbLoGJvwMd9IEf4YF6R2LQjMYlB3GeCK9IB1
-         lmZRNyuGKbhxt6xBQPO77jkk5IS2UuJ49ktLcGUIXbETxiUGqSnGpZHDefX3/INzFahm
-         KJTw==
+        d=google.com; s=20230601; t=1700737102; x=1701341902; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tbD+CZLI2OJnj2XtkqlWGnXInTbmUcqYNyaWG++MW1o=;
+        b=HiCbmO1BCtoKlVmh18VYckeBAc5s9WLFAyvriomLKnssA+fkK10s+kuXB7ezYpIP3+
+         2V+SajP1cU0De+rGG9wS6QlfJDJC5gOkJ1uJCS6z7chJKc+jE1rOg4FAA8xiEjHgTTN4
+         TQs1qwRT3o0oIs7xuTiUdCddU4q712zXF9r6oEi40DBB7nrE3TOSfIQB7nx32+n2cEjW
+         Pb8Zsc92s/U5XmbkktMs1FKtqlumC2e7ifoXgmEhvTFqehNIJoQmCyIdMq6uzf1yYUY5
+         wjzEm3K8Dhd84efV+bmIor0+DkSKy/Ksj7ga1g7bP3Q67F1XQiFWzr40S30t4+Qy7YnH
+         vy5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700737101; x=1701341901;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tqBAdO1zKF8ljfRCPt++e5LSU5ewUNxfyiSB8BZlHv8=;
-        b=ZiaDZLd627mW8m3o4uv+CHqIFYqqjWvaOUBOdL3EpxZBYwz3Fo5t4n/LovtzKiulTW
-         fURt7Bx69f7rRje7S9i09A7deMBZ2vwizUw/pnU6xtvijjHHM0HNPSXbJKn3IpHx8FKx
-         QYZbvdMJRWmIKlyImvvC5AIM9wFGPpohMg+FRF6VfZM92EPTOCredjttWj2+CZZkYlWy
-         SfOxt3XheFZQkxOf2mBVdGqM/RGy+SNBv8as/BFFx146u2oxcM0mjf+atasIJRFANCmg
-         VUpCsSYu1GXbLNQlTE9aetWTLdEJbeFBRSKRhgQUbC5P/Q5oNkc76ascSgDhU9jXA+P6
-         969Q==
-X-Gm-Message-State: AOJu0Yz65Tp1Y+V/I2aAgN+W5d4Ezejz1/AWwUYRbIoeT5g/P1InYCSP
-        POgVUkus+HJxaAcavmqLjRB8WQ==
-X-Google-Smtp-Source: AGHT+IELTh4W/0QfNa+Lv0THyhTcZGP5fMjTa/b5guLAwCq4ZLSHuz9cdQCs/FgTb+jDmOXapE1JAQ==
-X-Received: by 2002:adf:ee8b:0:b0:331:3426:4c2c with SMTP id b11-20020adfee8b000000b0033134264c2cmr3627632wro.41.1700737101658;
+        d=1e100.net; s=20230601; t=1700737102; x=1701341902;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tbD+CZLI2OJnj2XtkqlWGnXInTbmUcqYNyaWG++MW1o=;
+        b=pk1RUF+4t719C4GHNfGQbC6Zf9dzwqi8/9dEgqh3NaCmh5GMPCHnL0l1YFabII4J43
+         YBKSY7G3Zqsl7AyBfh5f6l/S1rR+XTS5ZUNbX7E+BTiOkiu0X48OoR12515eEEBPP0Vx
+         SfSlBK1oA184MsOegt7SPOuYxROrYmuNuphlGw0Nc47dMEAVV/rlI9LXZ3A4GBbEA/l2
+         1pIrkxbBfElafZYluxtRPUFoxOET9rUrm2AtFgwGZEEnX+3qYLPWRuk01OyrbdIYR8HU
+         59vzLv+ne1Heoi0GEKpG22yDeNuoIOdZAio+Kgjq9W2lmbjOztpXFzJwXcUl52UdYYZQ
+         f09g==
+X-Gm-Message-State: AOJu0YywNGxoRo5RXm8YGcPiCU2eKu5Qjn9HAUgq8LXnaTrVz3WQkJyM
+        aRms3mbqRk5VF29N4PEdm8RACg==
+X-Google-Smtp-Source: AGHT+IECpNi7V/qSvW7pVQ/CJFY4C0ksNj+vFUmeqFagu+qFkUWQoOPShJMnthXGa96ey5y1uPJSiw==
+X-Received: by 2002:a05:600c:3b13:b0:40a:483f:f828 with SMTP id m19-20020a05600c3b1300b0040a483ff828mr251605wms.4.1700737102403;
+        Thu, 23 Nov 2023 02:58:22 -0800 (PST)
+Received: from google.com (110.121.148.146.bc.googleusercontent.com. [146.148.121.110])
+        by smtp.gmail.com with ESMTPSA id k11-20020adfe3cb000000b00332d3c78e11sm1305204wrm.85.2023.11.23.02.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 23 Nov 2023 02:58:21 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm185067wru.67.2023.11.23.02.58.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 02:58:21 -0800 (PST)
-Message-ID: <479c16ce-da90-4571-bd08-b592d63f06cf@linaro.org>
-Date:   Thu, 23 Nov 2023 11:58:19 +0100
+Date:   Thu, 23 Nov 2023 10:58:20 +0000
+From:   Sebastian Ene <sebastianene@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     will@kernel.org, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>, catalin.marinas@arm.com,
+        mark.rutland@arm.com, akpm@linux-foundation.org, maz@kernel.org,
+        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        vdonnefort@google.com, qperret@google.com, smostafa@google.com
+Subject: Re: [PATCH v3 10/10] arm64: ptdump: Add support for guest stage-2
+ pagetables dumping
+Message-ID: <ZV8wTMtuztSdzPaI@google.com>
+References: <20231115171639.2852644-2-sebastianene@google.com>
+ <20231115171639.2852644-12-sebastianene@google.com>
+ <ZV6QXSV_SrYjjoE_@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/2] soundwire: fix initializing sysfs for same
- devices on different buses
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
-Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
-        gregkh@linuxfoundation.org,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-References: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
- <20231017160933.12624-3-pierre-louis.bossart@linux.intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231017160933.12624-3-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV6QXSV_SrYjjoE_@linux.dev>
+X-Spam-Status: No, score=-16.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 18:09, Pierre-Louis Bossart wrote:
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Wed, Nov 22, 2023 at 11:35:57PM +0000, Oliver Upton wrote:
+> On Wed, Nov 15, 2023 at 05:16:40PM +0000, Sebastian Ene wrote:
+> > +struct ptdump_registered_guest {
+> > +	struct list_head		reg_list;
+> > +	struct ptdump_info		info;
+> > +	struct kvm_pgtable_snapshot	snapshot;
+> > +	rwlock_t			*lock;
+> > +};
 > 
-> If same devices with same device IDs are present on different soundwire
-> buses, the probe fails due to conflicting device names and sysfs
-> entries:
+> Why can't we just store a pointer directly to struct kvm in ::private?
+
+I don't think it will work unless we expect a struct kvm_pgtable
+in stage2_ptdump_walk file_priv field. I think it is a good ideea and will
+simplify things a little bit dropping kvm_pgtable_snapshot from here.
+
+The current code has some fileds that are reduntant (the priv pointers)
+because I also made this to work with protected guests where we can't
+access their pagetables directly.
+
+> Also, shouldn't you take a reference on struct kvm when the file is
+> opened to protect against VM teardown?
+>
+
+I am not sure about the need could you please elaborate a bit ? On VM
+teardown we expect ptdump_unregister_guest_stage2 to be invoked.
+
+> > +static LIST_HEAD(ptdump_guest_list);
+> > +static DEFINE_MUTEX(ptdump_list_lock);
 > 
->   sysfs: cannot create duplicate filename '/bus/soundwire/devices/sdw:0:0217:0204:00:0'
+> What is the list for?
 > 
-> The link ID is 0 for both devices, so they should be differentiated by
-> the controller ID. Add the controller ID so, the device names and sysfs entries look
-> like:
+
+I am keeping a list of registered guests with ptdump and the lock should
+protect the list against concurent VM teardowns.
+
+> >  static phys_addr_t ptdump_host_pa(void *addr)
+> >  {
+> >  	return __pa(addr);
+> > @@ -757,6 +768,63 @@ static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
+> >  	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
+> >  }
+> >  
+> > +static void guest_stage2_ptdump_walk(struct seq_file *s,
+> > +				     struct ptdump_info *info)
+> > +{
+> > +	struct ptdump_info_file_priv *f_priv =
+> > +		container_of(info, struct ptdump_info_file_priv, info);
+> > +	struct ptdump_registered_guest *guest = info->priv;
+> > +
+> > +	f_priv->file_priv = &guest->snapshot;
+> > +
+> > +	read_lock(guest->lock);
+> > +	stage2_ptdump_walk(s, info);
+> > +	read_unlock(guest->lock);
 > 
->   sdw:1:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6ab0000.soundwire-controller/sdw-master-1-0/sdw:1:0:0217:0204:00:0
->   sdw:3:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6b10000.soundwire-controller/sdw-master-3-0/sdw:3:0:0217:0204:00:0
+> Taking the mmu lock for read allows other table walkers to add new
+> mappings and adjust the granularity of existing ones. Should this
+> instead take the mmu lock for write?
+>
+
+Thanks for pointing our, this is exactly what I was trying to avoid,
+so yes I should use the write mmu lock in this case.
+
+> > +}
+> > +
+> > +int ptdump_register_guest_stage2(struct kvm *kvm)
+> > +{
+> > +	struct ptdump_registered_guest *guest;
+> > +	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
+> > +	struct kvm_pgtable *pgt = mmu->pgt;
+> > +
+> > +	guest = kzalloc(sizeof(struct ptdump_registered_guest), GFP_KERNEL);
 > 
-> [PLB changes: use bus->controller_id instead of bus->id]
+> You want GFP_KERNEL_ACCOUNT here.
 > 
-> Fixes: 7c3cd189b86d ("soundwire: Add Master registration")
-> Cc: <stable@vger.kernel.org>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-The order of SoB is not correct. Author's goes before co-developed.
+Right, thanks this is because it is an untrusted allocation triggered from
+userspace.
 
+> -- 
+> Thanks,
+> Oliver
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Thank you,
+Seb
