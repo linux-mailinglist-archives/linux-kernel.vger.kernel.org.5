@@ -2,132 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA39D7F5FBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E097F5FE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345407AbjKWNLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
+        id S1345422AbjKWNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345271AbjKWNK7 (ORCPT
+        with ESMTP id S1345402AbjKWNPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:10:59 -0500
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70CE0A1;
-        Thu, 23 Nov 2023 05:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-        Content-Type; bh=SirAb/jEBgE0qrD2TgpJrt8NLd9ku9glI9AfL5GoTu0=;
-        b=k3WG98rbUbwEasrQMMFPZf53UA2LR6/FQjctIhuVngLjcrP+oGLsAHT4ZCRCL/
-        6BNKe/ZvfqbKYuKCaQ7xSiZMEFFKUWqzvPKcJ0zx1ND5ilrd4sF/yboVJXrBpuHZ
-        DjAicfeDvoeCIJq7UBFKzAGr6wDpgV9P9zWDQ/NEcUG9Q=
-Received: from [172.23.69.7] (unknown [121.32.254.149])
-        by zwqz-smtp-mta-g4-0 (Coremail) with SMTP id _____wDXf9deSV9lRwv0Cw--.64556S2;
-        Thu, 23 Nov 2023 20:45:20 +0800 (CST)
-Message-ID: <7a1297c3-25d4-41d8-b421-ab1dda2973f2@126.com>
-Date:   Thu, 23 Nov 2023 20:45:15 +0800
+        Thu, 23 Nov 2023 08:15:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A98C1A8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:15:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DBFC433C8;
+        Thu, 23 Nov 2023 13:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700745322;
+        bh=1geUD0PxSwl4jgapDcrWydrHt9Icc3WU+vTDHs1Kn8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OHST/eVsPlt34bKRusq/pA0fPojvNhTL8M91927W7+2fn/NY8QZ38WSt1xoKwwM0P
+         BVRwq6EjiXeZDYhZmkGPnfiihpw+jfK+gtvuGEYRCVApIrUNozGcUgo48eNIsX3LVI
+         ujj+7tow3XtFTuG26iM4s+ToDrepe5MvcpVp8pQQ=
+Date:   Thu, 23 Nov 2023 12:56:07 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Umang Jain <umang.jain@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: Re: [PATCH] fixup! staging: vc04_services: bcm2835-isp: Add a more
+ complex ISP processing component
+Message-ID: <2023112352-ravishing-garter-c9fc@gregkh>
+References: <20231109210309.638594-11-umang.jain@ideasonboard.com>
+ <20231113140755.425365-1-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net/mlx5e: Fix a race in command alloc flow
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, jackm@dev.mellanox.co.il,
-        ogerlitz@mellanox.com, roland@purestorage.com, eli@mellanox.com,
-        dinghui@sangfor.com.cn, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121115251.588436-1-lishifeng1992@126.com>
- <20231122120245.GC4760@unreal>
-From:   Shifeng Li <lishifeng1992@126.com>
-In-Reply-To: <20231122120245.GC4760@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _____wDXf9deSV9lRwv0Cw--.64556S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGryfAF4xGr45WFy8CFW3KFg_yoWrGw1rpr
-        yfGr47AFn5GFnrtrn7Xr4jq3W8A39rK345GF1v9F1xWan8Aa4kZw1Ikr40g34UZ3yYqFyU
-        JayDKa48Jr43XaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcmi_UUUUU=
-X-Originating-IP: [121.32.254.149]
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1wUxr153c4CXgAAAsB
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113140755.425365-1-umang.jain@ideasonboard.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 20:02, Leon Romanovsky wrote:
-> On Tue, Nov 21, 2023 at 03:52:51AM -0800, Shifeng Li wrote:
->> Fix a cmd->ent use after free due to a race on command entry.
->> Such race occurs when one of the commands releases its last refcount and
->> frees its index and entry while another process running command flush
->> flow takes refcount to this command entry. The process which handles
->> commands flush may see this command as needed to be flushed if the other
->> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
->> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
->> the spin lock.
->>
->> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
->> [70013.081968]
->> [70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
->> [70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
->> [70013.082028] Workqueue: events aer_isr
->> [70013.082053] Call Trace:
->> [70013.082067]  dump_stack+0x8b/0xbb
->> [70013.082086]  print_address_description+0x6a/0x270
->> [70013.082102]  kasan_report+0x179/0x2c0
->> [70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
->> [70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
->> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
->> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
->> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
->> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
->> [70013.082390]  ? __pm_runtime_resume+0x58/0x70
->> [70013.082409]  pci_device_remove+0xf3/0x280
->> [70013.082426]  ? pcibios_free_irq+0x10/0x10
->> [70013.082439]  device_release_driver_internal+0x1c3/0x470
->> [70013.082453]  pci_stop_bus_device+0x109/0x160
->> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
->> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
->> [70013.082493]  aer_isr+0x7d2/0x960
->> [70013.082510]  ? aer_get_device_error_info+0x420/0x420
->> [70013.082526]  ? __schedule+0x821/0x2040
->> [70013.082536]  ? strscpy+0x85/0x180
->> [70013.082543]  process_one_work+0x65f/0x12d0
->> [70013.082556]  worker_thread+0x87/0xb50
->> [70013.082563]  ? __kthread_parkme+0x82/0xf0
->> [70013.082569]  ? process_one_work+0x12d0/0x12d0
->> [70013.082571]  kthread+0x2e9/0x3a0
->> [70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
->> [70013.082592]  ret_from_fork+0x1f/0x40
+On Mon, Nov 13, 2023 at 09:07:55AM -0500, Umang Jain wrote:
+> Setup DMA Mask
+> ---
+> I realised while (re)creating the test branches (sent in reply to the cover
+> letter), I missed to squash this hunk in
+> "staging: vc04_services: bcm2835-isp: Add a more complex ISP processing component"
+> before sending out the series.
 > 
-> I'm curious how did you get this error? I would expect to see some sort
-> of lock in upper level which prevents it.
-> 
-The logical relationship of this error is as follows:
+> Sending it as a fixup! for now. 
 
-                   aer_recover_work                    |             ent->work
-------------------------------------------------------+---------------------------------
-aer_recover_work_func                                 |
-|- pcie_do_recovery                                   |
-   |- report_error_detected                            |
-     |- mlx5_pci_err_detected                          |cmd_work_handler
-       |- mlx5_enter_error_state                       |  |- cmd_alloc_index
-         |- enter_error_state                          |    |- lock cmd->alloc_lock
-           |- mlx5_cmd_flush                           |    |- clear_bit
-             |- mlx5_cmd_trigger_completions           |    |- unlock cmd->alloc_lock
-               |- lock cmd->alloc_lock                 |
-               |- vector = ~dev->cmd.vars.bitmask      |
-               |- for_each_set_bit                     |
-                 |- cmd_ent_get(cmd->ent_arr[i]) (UAF) |
-               |- unlock cmd->alloc_lock               |  |- cmd->ent_arr[ent->idx] = ent
+What does that mean?  What can I do with this?
 
-The cmd->ent_arr[ent->idx] assignment and the bit clearing are not protected by the cmd->alloc_lock in cmd_work_handler().
+confused,
 
-> Thanks
-
+greg k-h
