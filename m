@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D767F60D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE387F60DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345642AbjKWNvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        id S1345630AbjKWNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345614AbjKWNvF (ORCPT
+        with ESMTP id S1345594AbjKWNwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:51:05 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1901010C1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:51:09 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9125266073B7;
-        Thu, 23 Nov 2023 13:51:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700747467;
-        bh=DnXF0OkfH2bcxKLu8PbitJNBwxB6hYevVnIxk2w5rOg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MnkCReTip92PjzcqXM0YUwuD6pn2ZdqyOpp+pyBYn/CaPkDMbztHNITo/pUQiinpa
-         PDF0Qg8AeDQRR+anHyfExydNABXs4lPr+zcCmWwJ14xqF/5cFeZw7AV8HTVuYzfd7k
-         6SK+DWyrReXSeogqUKTac4BHw5e7paBAsuHyKwts19hGIdwkno3cMC1B2GK7Z/umFR
-         84EcrugR9Fex/SSRTgiXfzmmC19HpzAlOW5Vo+8/Xbrt/UVB0n9jEsBhG6n+Shwj/k
-         1yw92Cr/9DH58GSyt+zbE+Ah2oKgQ6QqdSlFd2MmYFZ63AkjEkaKPA2r0rk5GDVoVr
-         nB4nyYInVryOw==
-Date:   Thu, 23 Nov 2023 14:51:03 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org, kernel@collabora.com
-Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Message-ID: <20231123145103.23b6eac9@collabora.com>
-In-Reply-To: <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
-References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
-        <20231123113530.46191ded@collabora.com>
-        <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
-        <20231123135933.34d643f7@collabora.com>
-        <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 23 Nov 2023 08:52:31 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3522AB9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:52:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1700747558; x=1732283558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aznKgEjxL0gDCvdqXB2iOl1LmY4FPyCsLGk1PVbiKws=;
+  b=iuOe1W5K7eGBBmeh+tzI9X8Gm+YIzreWauc4WaCQ00+nIAidqewWPEH3
+   Nkov4VTb/yKeHAkkdgZ0umqpLSSCcOod9BzDo7H9E66XStfRXcxfDwkz4
+   horKor8V9BFLlfYA2fffB6sP1ytRl1FnhIXRaYCxt2MWDDK4CzMgUE7zu
+   0MWlPkjM+u9tKCNaZVJyTzswImbm7hyZVcuDbMsWnakeDOGI5ESDulZm5
+   wpAgQNu6IaIgwA518RnowR0ow+hXfjwYDeMkVfZsYrfYqLDeLM8lwAOQ+
+   czCUVpronmptVhz9v3H1o+32thjosg2B2ZuozPduawxLFCSwJl/zCOabx
+   g==;
+X-CSE-ConnectionGUID: h2V/iXBSSfiFReBxuDFLQA==
+X-CSE-MsgGUID: QZh0mXVNQLGVqC67cNRwjw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="asc'?scan'208";a="12193466"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Nov 2023 06:52:37 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 23 Nov 2023 06:52:17 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 23 Nov 2023 06:52:15 -0700
+Date:   Thu, 23 Nov 2023 13:51:47 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH] riscv: declare overflow_stack as exported from traps.c
+Message-ID: <20231123-blooper-very-cefbf92c0f05@wendy>
+References: <20231123134214.81481-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="AAkSMNNL38JK6UIZ"
+Content-Disposition: inline
+In-Reply-To: <20231123134214.81481-1-ben.dooks@codethink.co.uk>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,88 +70,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 14:24:57 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
+--AAkSMNNL38JK6UIZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >>
-> >> So, while I agree that it'd be slightly more readable as a diff if those
-> >> were two different commits I do have reasons against splitting.....  
-> > 
-> > If we just need a quick fix to avoid PWRTRANS interrupts from kicking
-> > in when we power-off the cores, I think we'd be better off dropping
-> > GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
-> > at [re]initialization time, and then have a separate series that fixes
-> > the problem more generically.
-> >   
-> 
-> But that didn't work:
-> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+On Thu, Nov 23, 2023 at 01:42:14PM +0000, Ben Dooks wrote:
+> The percpu area overflow_stacks is exported from arch/riscv/kernel/traps.c
+> for use in the entry code, but is not declared anywhere. Add the relevant
+> declaration to arch/riscv/include/asm/stacktrace.h to silence the followi=
+ng
+> sparse warning:
+>=20
+> arch/riscv/kernel/traps.c:395:1: warning: symbol '__pcpu_scope_overflow_s=
+tack' was not declared. Should it be static?
+>=20
+> We don't add the stackinfo_get_overflow() call as for some of the other
+> architectures as this doesn't seem to be used yet, so just silence the
+> warning.
+>=20
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 
-I meant, your 'ignore-core_mask' fix + the
-'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+I suppose this should also be
+Fixes: be97d0db5f44 ("riscv: VMAP_STACK overflow detection thread-safe")
 
-So,
+Cheers,
+Conor.
 
-https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
-+
-https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+> ---
+>  arch/riscv/include/asm/stacktrace.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/arch/riscv/include/asm/stacktrace.h b/arch/riscv/include/asm=
+/stacktrace.h
+> index f7e8ef2418b9..b1495a7e06ce 100644
+> --- a/arch/riscv/include/asm/stacktrace.h
+> +++ b/arch/riscv/include/asm/stacktrace.h
+> @@ -21,4 +21,9 @@ static inline bool on_thread_stack(void)
+>  	return !(((unsigned long)(current->stack) ^ current_stack_pointer) & ~(=
+THREAD_SIZE - 1));
+>  }
+> =20
+> +
+> +#ifdef CONFIG_VMAP_STACK
+> +DECLARE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overfl=
+ow_stack);
+> +#endif /* CONFIG_VMAP_STACK */
+> +
+>  #endif /* _ASM_RISCV_STACKTRACE_H */
+> --=20
+> 2.37.2.352.g3c44437643
+>=20
 
-> 
-> 
-> ...while this "full" solution worked:
-> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
-> 
-> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
-> 
-> 
-> ...so this *is* a "quick fix" already... :-)
+--AAkSMNNL38JK6UIZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It's a half-baked solution for the missing irq-synchronization-on-suspend
-issue IMHO. I understand why you want it all in one patch that can serve
-as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
-panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
-even simpler diff (see below), and then fully address the
-irq-synhronization-on-suspend issue in a follow-up patchset.
+-----BEGIN PGP SIGNATURE-----
 
---->8---
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 09f5e1563ebd..6e2d7650cc2b 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
-        }
- 
-        gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
--       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
-+       gpu_write(pfdev, GPU_INT_MASK,
-+                 GPU_IRQ_MASK_ERROR |
-+                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
-+                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
- 
-        /*
-         * All in-flight jobs should have released their cycle
-@@ -425,11 +428,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
- 
- void panfrost_gpu_power_off(struct panfrost_device *pfdev)
- {
--       u64 core_mask = panfrost_get_core_mask(pfdev);
-        int ret;
-        u32 val;
- 
--       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-+       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
-        ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
-                                         val, !val, 1, 1000);
-        if (ret)
-@@ -441,7 +443,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-        if (ret)
-                dev_err(pfdev->dev, "tiler power transition timeout");
- 
--       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-+       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
-        ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
-                                 val, !val, 0, 1000);
-        if (ret)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZV9Y8wAKCRB4tDGHoIJi
+0h0SAQDcTTkoh0A97aUVYnh6fGQAyoM9vAAQlKvpypv3AJuD+gEAoEsaf1PuO36l
+tNylF+mvaA8289yMcGPGOgABUq/p1As=
+=qrsB
+-----END PGP SIGNATURE-----
 
-
+--AAkSMNNL38JK6UIZ--
