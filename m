@@ -2,167 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CDA7F5A81
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132C77F5A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjKWIvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S231407AbjKWIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKWIv3 (ORCPT
+        with ESMTP id S229477AbjKWIv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:51:29 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A598109
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:51:35 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so9410425e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700729494; x=1701334294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QKrtQ46uvlnW7h0P5ani0UtGyomwcVmv5l1dbE1uIOY=;
-        b=fQ4CqHoM3gc+qbVIktzg73/EzIsFqfUm1F6G4wWOG1qbSFTfKojIAt4T6dQw00BlVm
-         07irPOMRUs/musifEQ1yrtD8q2U6JgYI6pS8aX6OO2cABOyyrhNNDazCdL825V9fe2/E
-         gMXUdxrKDUpEyFNPNV+fTpVbaEQpKH0Na93f93X9CiYpLIx/4eXsu2iGrze4r+qyBEXt
-         LcDFMjXkjwslw26m1QawkNi5YFyylXyVrcckEReHdC75tEBlkk/S3PxCsKdXU9XvCHra
-         acZVBxLi73rVojYNaBEI5IrwpOxtAXNGwwyJ23wPdb/I+n2XmE78EAzE+oqwruzoO4oi
-         XXyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700729494; x=1701334294;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QKrtQ46uvlnW7h0P5ani0UtGyomwcVmv5l1dbE1uIOY=;
-        b=JwzopgjcUOnPljWeb+Qc/pxFQPyCXLfvwqssxDKVHLdgtijCoZCXubwgvtCp8FpUxP
-         w+Ua3uVXTejjVs7rW3/i55v9582LeAS7Kjil4Sv55R35kKa75kByRtN0iiz12tFOVuMU
-         ES51qsf73u+DT7HrsORZ+OaSkIKr43SmsWwiAMTQzjyEWdwk7X27aieBmn92HgG0/RJ7
-         3QuSoZM+85d8uQQ4UJEApAnRkXOCMe2P1ztYl+kV9V5oF6jVhe7odNK113Ubzzp9rpNw
-         urCwpAJLK1HxGAR2af96ZxKZ2LRR4+FsnQLiRaeph5dwJ9CCGSSLFFU4L2VKoxDa9goy
-         cIuQ==
-X-Gm-Message-State: AOJu0YylQV8qE3AF4FDM2Djt7Knxxx6dggHNNFiM9mmY8Gl8WOaN0yAO
-        Ns+keViN6oeACKtSIj/bQlqS1Q==
-X-Google-Smtp-Source: AGHT+IGKMG5ZPQH9o0fjf0YQKPxm9BMhc59Vi3H2A59VKUHWPCjYAXsm8/rND5ySqMBK0Hupa3pYxA==
-X-Received: by 2002:a05:600c:1c9f:b0:40b:2a08:c45e with SMTP id k31-20020a05600c1c9f00b0040b2a08c45emr1599098wms.3.1700729494087;
-        Thu, 23 Nov 2023 00:51:34 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id h4-20020a05600c350400b0040b34720206sm1236285wmq.12.2023.11.23.00.51.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 00:51:33 -0800 (PST)
-Message-ID: <640523aa-6b14-417c-8a62-e02d17a26ce7@linaro.org>
-Date:   Thu, 23 Nov 2023 09:51:31 +0100
+        Thu, 23 Nov 2023 03:51:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF4CA3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:52:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8895BC433C7;
+        Thu, 23 Nov 2023 08:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700729526;
+        bh=DBtWK3+4bTYvqhR6xwdSm2zuTXXKyTcaPF4a3vAo4Ig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VJMrc7/dELHegU6ys8Q9xNaHPwau7uBCLn6rsF+qCD+JTomT6cSouvQ5Lk2OamqAF
+         s5YDFYEvpMJgFwTo7i9tx8F8ZknIk6vZK4F2a9BsDAqa8UcELizInMXzMByX5uAXR5
+         79bPHk+oJqaxd3H1FVY5Y9mnEPbYnDy3Xk9kRLZY=
+Date:   Thu, 23 Nov 2023 08:52:02 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Roy Luo <royluo@google.com>
+Cc:     stern@rowland.harvard.edu, badhri@google.com,
+        quic_kriskura@quicinc.com, francesco.dolcini@toradex.com,
+        quic_eserrao@quicinc.com, ivan.orlov0322@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] USB: gadget: core: adjust uevent timing on gadget
+ unbind
+Message-ID: <2023112339-deeply-curve-034f@gregkh>
+References: <20231122220001.539770-1-royluo@google.com>
+ <2023112253-fresh-blazing-baae@gregkh>
+ <CA+zupgzWqhOhAR0_ybxTQVL928dgAqbm5eqJ6gd-0qrNK7VZng@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] arm64: dts: qcom: Fix hs_phy_irq for
- SDM670/SDM845/SM6350
-Content-Language: en-US
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, quic_wcheng@quicinc.com
-References: <20231122191452.3183-1-quic_kriskura@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122191452.3183-1-quic_kriskura@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+zupgzWqhOhAR0_ybxTQVL928dgAqbm5eqJ6gd-0qrNK7VZng@mail.gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 20:14, Krishna Kurapati wrote:
-> For sm6350/sdm670/sdm845, although they are qusb2 phy targets, dp/dm
-> interrupts are used for wakeup instead of qusb2_phy irq. These targets
-> were part of a generation that were the last ones to implement QUSB2 PHY
-> and the design incorporated dedicated DP/DM interrupts which eventually
-> carried forward to the newer femto based targets.
-> 
-> Add the missing pwr_event irq for these targets.
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sdm670.dtsi |  5 ++++-
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 10 ++++++++--
->  arch/arm64/boot/dts/qcom/sm6350.dtsi |  7 +++++--
->  3 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm670.dtsi b/arch/arm64/boot/dts/qcom/sdm670.dtsi
-> index 6d9843d05cb3..b8888f71b1d6 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm670.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm670.dtsi
-> @@ -1296,10 +1296,13 @@ usb_1: usb@a6f8800 {
->  			assigned-clock-rates = <19200000>, <150000000>;
->  
->  			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
->  				     <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
->  				     <GIC_SPI 488 IRQ_TYPE_LEVEL_HIGH>,
->  				     <GIC_SPI 489 IRQ_TYPE_LEVEL_HIGH>;
-> -			interrupt-names = "hs_phy_irq", "ss_phy_irq",
-> +			interrupt-names = "hs_phy_irq",
-> +					  "pwr_event",
-> +					  "ss_phy_irq",
->  					  "dm_hs_phy_irq", "dp_hs_phy_irq";
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-New entries should be added usually to the end of the list. Commit msg
-does not explain this to me why new entry is in the middle of the list.
+A: No.
+Q: Should I include quotations after my reply?
 
-Best regards,
-Krzysztof
+http://daringfireball.net/2007/07/on_top
 
+On Wed, Nov 22, 2023 at 03:13:20PM -0800, Roy Luo wrote:
+> The logic is there since day 1 of udc in Commit
+> 2ccea03a8f7ec93641791f2760d7cdc6cab6205f (usb: gadget: introduce UDC
+> Class). Do you still want me to put on a fix tag?
+
+Yes please, and do you want this backported to all older stable kernels?
+
+thanks,
+
+greg k-h
