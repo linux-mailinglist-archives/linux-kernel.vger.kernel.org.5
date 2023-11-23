@@ -2,208 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02877F5D6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83FD7F5D72
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344912AbjKWLKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:10:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S1344880AbjKWLLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjKWLKF (ORCPT
+        with ESMTP id S229525AbjKWLLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:10:05 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541E1BD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:10:11 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cbe6d514cdso412388b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700737811; x=1701342611; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YnPIxcNUwxZIAQpLJFkXUu+mZlTcP31SPZMOLg6sxfA=;
-        b=XvaXi9IbgzCwbkNHxK32qLLu1yh+86yqCevUQTcAHmOoBEPosSkTuUvSAHq6bXWXdj
-         YzS8SSheIM6kxbqxVoAEBCmjbqHUjvV/RM0+7B26PGMWsY+LHAjbAtxBm3bOEtn/oJ5q
-         lWiF3gdABI+rsI8sn7uwnHimU3OlRHn9xLmA5+L7oHdqjb35xBSZe0mzTEWQoCC7aEku
-         cAIZOtvCllDBBDCmnNul8odLXDpak1n/8m6uOU0d/Bk4zW5msx2tPE6iMx7nddXI5YNx
-         2QnLHBuo3iKua8XVJQz2YFN6SjOnRpnGYVhKWFPDFBQY9i08XentFNN6aPEG0FT2JCKJ
-         gnSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700737811; x=1701342611;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YnPIxcNUwxZIAQpLJFkXUu+mZlTcP31SPZMOLg6sxfA=;
-        b=NBidRQ9wK2nQqVJHeLIZ5mSuqS1zURdlBhr3j1UYuIGsuykFSSOlXkMDuAZI38GV1n
-         4qAYd/OA5q7vhAcZS1dsOaP+04SCc4kyPXCfkuLL12AUBDWdL5MbEjJtUbNZ4yNJXxv2
-         6tFE48HiGPRQlkFKIvp7nk+Rg91exIqgleVsiVkD9oUVg8jCJuQy6CiZGCBH/NmmuMxq
-         yD+r0eXza6cYlXcSDczTQ5tb8MoG+y5Be0RyQATtlg+baDd1tw8cv9NRQzWsJ+cfCU5f
-         0y283HAq/X9ZMAzpEL0T4p8WLuFniO2LQuZxaSDCUG1BpgYtiKzGLjC8Qh1Pd7k+nxHo
-         haig==
-X-Gm-Message-State: AOJu0Ywyw5tpUPb+n47mrLVH9+E27/0J21vGq15OCUvprdqhrOlynogs
-        DPHHlAY39Me55PFe/kITPWY=
-X-Google-Smtp-Source: AGHT+IFVv0clC/hkcgsHEwC2gmcFDNuwfjjutMqSNeQMrJsu68lFVwO+nLEtlilzfGZ+HDcS9Ourmg==
-X-Received: by 2002:a05:6a00:4ac7:b0:6c2:cf23:3e21 with SMTP id ds7-20020a056a004ac700b006c2cf233e21mr5764471pfb.17.1700737811113;
-        Thu, 23 Nov 2023 03:10:11 -0800 (PST)
-Received: from dragonet (dragonet.kaist.ac.kr. [143.248.133.220])
-        by smtp.gmail.com with ESMTPSA id a9-20020aa78e89000000b0068fb8e18971sm979405pfr.130.2023.11.23.03.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 03:10:10 -0800 (PST)
-Date:   Thu, 23 Nov 2023 20:08:29 +0900
-From:   "Dae R. Jeong" <threeearcat@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Yewon Choi <woni9911@gmail.com>, Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vmci_host: use smp_load_acquire/smp_store_release when
- accessing vmci_host_dev->ct_type
-Message-ID: <ZV8yrfAnCv-sxLbq@dragonet>
-References: <20231122122005.GA4661@libra05>
- <2023112257-polymer-banknote-4869@gregkh>
- <20231123074920.GA10480@libra05>
- <2023112331-wise-regain-72dc@gregkh>
- <ZV8kPHlGoPYKORQn@dragonet>
- <2023112352-congested-puzzling-f76d@gregkh>
+        Thu, 23 Nov 2023 06:11:37 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19A11BD;
+        Thu, 23 Nov 2023 03:11:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1700737862; x=1701342662; i=j.neuschaefer@gmx.net;
+        bh=LkE5Nuq5cpUfZVO4p3a9aPdP5nVFWe7nwzvBcr5GDNk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
+         In-Reply-To;
+        b=S7iVe7/0DFJ2Glol27Dhh4tQ2/MSVm6hQfrQTYHOjexz+b3exqTH6gjYP/ugO0dJ
+         ywmNfO1UhMb720kxrgKEDi4jGPUGAHuManuT3bEKyfHmBWeFlQVGHaNeLDP5mBjx4
+         md8PO1K0ouI3ETbJYh6QpvvLPPDKB/P0UmcmTwKl+wpGJtmcbm/CnMiBgIzDDg10P
+         D+a+KXRbeDbEQKkjPmZqHFjfgXJiH4hpwyrgjc0aPj7T/oa9SrIH0X15+132g4w4l
+         0TB4B9/IyFZck9/7XBEjAFQ0OwnZrirjoJJBNWFx3A9/ZAvdYycYiks+0KnKlcm6n
+         0YCmGndubOBkrZkI4A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.0.47.44]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1rY1Ne2r3T-00gsCP; Thu, 23
+ Nov 2023 12:11:01 +0100
+Date:   Thu, 23 Nov 2023 12:10:57 +0100
+From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Subject: Re: [PATCH v1 00/17] pinctrl: Convert struct group_desc to use
+ struct pingroup
+Message-ID: <ZV8zQZyT4Kwom-m_@probook>
+References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ITcYWtdfuDR2w/Y2"
 Content-Disposition: inline
-In-Reply-To: <2023112352-congested-puzzling-f76d@gregkh>
+In-Reply-To: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
+X-Provags-ID: V03:K1:wGI5Xyg60PX5Zi8dLHVTABR+Ax9JUsCqbiZjKL4ncgCtAcMMEAg
+ dvO2Gv8Fy9M1TFaBXJaUQ52G9VUbCo0zhirW5WpIJmiSbL4Ad71TGzG5CInLYjx4k0znTxp
+ MsYKpvrDvhRcT8VzpTAal6yl9EyYSd4HX/pNnbueeTP18AtDFXhKZ/baUvLS1o0FqHAC39e
+ kaH9t9h50tBeo/979hVUw==
+UI-OutboundReport: notjunk:1;M01:P0:mCrqrZi3U7U=;hjgkNsvydEYHgYUAxEqXVR1jW+v
+ WAXa6jsttiV3Ln4DZ0S5+IfJl56rm95DOKlTbmcQr9WKDtczoY7w0WO7tCbq2TdsLZY4M/XNV
+ gjlNSBVDMGmX6Dx+i1B4+IqZD7nYXCg8bpeUVskTtGD2ehd+tuYqiLrKaUZYt5YX5Bi6SxaZk
+ SiafR5fV2qFEZqSfzgTb3+oyzR8LUbyJT3Ch8FXlvqXpYkz1y4rpe9td7RUV0RTzb303uZ84G
+ dHbPwbngHJ4KbtY3l92y2SoCUiA2cDtF1if6HCE9uEysOZnYbxtOBQ8jhcc9HERdxHZk10q+o
+ 0IcYykIaku/u4b3Y2qHwPM/lYiaeuJGZ3FjBMt/89ZPPId97BUvM34EE6lkv6iatlizmdH6k1
+ 9Iz2dRT9uzWLof1mSy5aZwc6Q0Nhtn1sjOHwJevNOgn+uZdhoe58sxHP3tO2eWNs9ntxLuftr
+ dxttOpDHjf699kxi7zl5jdx3jOINoildv+AVS25xKHTs3VQBkXk8mikzFSRWrqccciuqI8+bc
+ pcD5A8NygGPERdmPNO5o56xYOLncor6g9sVhjh6s9Tj8vkqN94iLpNjo25E4CUH/5kHIOQBD1
+ rLIvJ8xE/MPsbZH5F8VJmuNMyMv159TRsi+r9tp7MBinkypKzTlxsh6bj+DuYsf0dK6FzGKvA
+ J3lvXIqSfDD9+1BRjI5XZBww/49z0+lFBMkd+5NTSlbugIVD5/qS9adHgeiZPmIABBK0RYTeM
+ Oz74R7Jyp+sKVRS0zp7ME8ExUBQJxin4+XkDnqd3mC4MmD5c7AiV6QKuKHcY48LWKfkT0YDvv
+ pludqeafs1x5RDFyz3R7XvuaGFjXVyq64BT0Fe0GeeCnq3HuianeceIzs+dH6lSkmV58QdfiH
+ 1GPyNtEGK1v7vZz6hJoMkbkR36G+EnJNBQWGEWq1ExKq+NCHsm89f9ytrRtXmkg43No+v6wVP
+ sgRCrNM1X0IPjxzWfH5ew/bkMSM=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 10:14:52AM +0000, Greg Kroah-Hartman wrote:
-> On Thu, Nov 23, 2023 at 07:06:52PM +0900, Dae R. Jeong wrote:
-> > On Thu, Nov 23, 2023 at 08:44:46AM +0000, Greg Kroah-Hartman wrote:
-> > > On Thu, Nov 23, 2023 at 04:49:22PM +0900, Yewon Choi wrote:
-> > > > On Wed, Nov 22, 2023 at 02:34:55PM +0000, Greg Kroah-Hartman wrote:
-> > > > > On Wed, Nov 22, 2023 at 09:20:08PM +0900, Yewon Choi wrote:
-> > > > > > In vmci_host.c, missing memory barrier between vmci_host_dev->ct_type
-> > > > > > and vmci_host_dev->context may cause uninitialized data access.
-> > > > > > 
-> > > > > > One of possible execution flows is as follows:
-> > > > > > 
-> > > > > > CPU 1 (vmci_host_do_init_context)
-> > > > > > =====
-> > > > > > vmci_host_dev->context = vmci_ctx_create(...) // 1
-> > > > > > vmci_host_dev->ct_type = VMCIOBJ_CONTEXT; // 2
-> > > > > > 
-> > > > > > CPU 2 (vmci_host_poll)
-> > > > > > =====
-> > > > > > if (vmci_host_dev->ct_type == VMCIOBJ_CONTEXT) { // 3
-> > > > > > 	context = vmci_host_dev->context; // 4
-> > > > > > 	poll_wait(..., &context->host_context.wait_queue, ...);
-> > > > > > 
-> > > > > > While ct_type serves as a flag indicating that context is initialized,
-> > > > > > there is no memory barrier which prevents reordering between
-> > > > > > 1,2 and 3, 4. So it is possible that 4 reads uninitialized
-> > > > > > vmci_host_dev->context.
-> > > > > > In this case, the null dereference occurs in poll_wait().
-> > > > > > 
-> > > > > > In order to prevent this kind of reordering, we change plain accesses
-> > > > > > to ct_type into smp_load_acquire() and smp_store_release().
-> > > > > > 
-> > > > > > Signed-off-by: Yewon Choi <woni9911@gmail.com>
-> > > > > > ---
-> > > > > >  drivers/misc/vmw_vmci/vmci_host.c | 40 ++++++++++++++++++-------------
-> > > > > >  1 file changed, 23 insertions(+), 17 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/misc/vmw_vmci/vmci_host.c b/drivers/misc/vmw_vmci/vmci_host.c
-> > > > > > index abe79f6fd2a7..e83b6e0fe55b 100644
-> > > > > > --- a/drivers/misc/vmw_vmci/vmci_host.c
-> > > > > > +++ b/drivers/misc/vmw_vmci/vmci_host.c
-> > > > > > @@ -139,7 +139,7 @@ static int vmci_host_close(struct inode *inode, struct file *filp)
-> > > > > >  {
-> > > > > >  	struct vmci_host_dev *vmci_host_dev = filp->private_data;
-> > > > > >  
-> > > > > > -	if (vmci_host_dev->ct_type == VMCIOBJ_CONTEXT) {
-> > > > > > +	if (smp_load_acquire(&vmci_host_dev->ct_type) == VMCIOBJ_CONTEXT) {
-> > > > > 
-> > > > > This is getting tricky, why not use a normal lock to ensure that all is
-> > > > > safe?  close isn't on a "fast path", so this shouldn't be a speed issue,
-> > > > > right?
-> > > > > 
-> > > > 
-> > > > I think using locks can be considered orthogonal to correcting memory ordering. 
-> > > 
-> > > But they ensure proper memory ordering.
-> > 
-> > Yes, using a lock obviously ensures memory ordering.
-> > 
-> > > > If the lock is needed, we will need to add locks in all of them. I cannot be
-> > > > sure which is better. Besides that, it seems to be a separate issue.
-> > > 
-> > > Nope, I think it's the same issue :)
-> > > 
-> > > > On the other hand, the current implementation doesn't guarantee memory ordering 
-> > > > which leads to wrong behavior.
-> > > > This patch fixes this issue by adding primitives. 
-> > > 
-> > > But it's still wrong, again, what keeps the value from changing right
-> > > after checking it?
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > It seems that VMCI assumes that vmci_host_dev->context is not NULL if
-> > vmci_host_dev->ct_type == VMCIOBJ_CONTEXT (because all readers of
-> > vmci_host_dev->context check whether vmci_host_dev->ct_type is
-> > VMCIOBJ_CONTEXT or not, and access vmci_host_dev->context without
-> > checking whether is it NULL or not). So I think this patch clarifies
-> > this assumption.
-> > 
-> > As you said, we need to ensure that vmci_host_dev->context is not
-> > changed after checking vmci_host_dev->ct_type. But
-> > (1) the only place that changes vmci_host_dev->context is
-> > vmci_host_close() and
-> 
-> Then why is it even checked in close()?
 
-It is because close() needs to destory vmci_host_dev->context if it is
-created.
+--ITcYWtdfuDR2w/Y2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > (2) (I think) vmci_host_close() do not concurrently run with readers
-> > of vmci_host_dev->context. IIUC, all readers of vmci_host_dev->context
-> > are system calls (eg, ioctl handlers or the poll handler). So I think
-> > the ref count of the file saves us here. (Otherwise, Syzkaller will
-> > tell us the truth maybe?)
-> 
-> Ok, then why is this needed to be checked then at all?
+On Wed, Nov 22, 2023 at 06:35:32PM +0200, Andy Shevchenko wrote:
+> The struct group_desc has a lot of duplication with struct pingroup.=20
+> Deduplicate that by embeddind the latter in the former and convert
+> users.
 
-It is because vmci_host_dev->context is created by
-ioctl(IOCTL_VMCI_INIT_CONTEXT). So it is possible that vmci_host_dev
-is created but vmci_host_dev->context is *not* created. All other
-places should be careful of this.
+It is strange to me that struct pingroup was introduced without any
+reference to the pre-existing struct group_desc, but it's good to see
+them unified at last.
 
-> > At least, this patch introduces no change of the logic but the
-> > guarantees of the memory ordering, so I think this patch is safe?
-> 
-> I think the logic is incorrect, don't try to paper over it thinking that
-> the issue to be solved is "memory ordering" please.  Solve the root
-> issue here.
-
-I don't exactly get the point what you think the root issue is.
-
-We can have a system call sequence like this:
-fd = open("/dev/vmci")
-ioctl(fd, VMCI_VERSION2, user_version)
-ioctl(fd, INIT_CONTEXT) // this somewhat depends on ioctl(VMCI_VERSION2) as it runs `context->user_version = user_version`
-
-Between open() and ioctl(INIT_CONTEXT), we have vmci_host_dev
-initialized but vmci_host_dev->context is not initialized. We need to
-check whether vmci_host_dev->context is initialized in other
-places. And I still think store_release/load_acquire can be used to
-declare that context is created and check whether context is created
-or not. Please excuse me if I'm wrong...
+Even better might be to move the definitions next to each other in the
+same file, so that anyone who finds one, also finds the other.
 
 
-Best regards,
-Dae R. Jeong
+Thanks,
+Jonathan
+
+>=20
+> Linus, assuming everything is fine, I can push this to my tree.
+> Or you can apply it (assumming all CIs and people are happy with
+> the series).
+>=20
+> NB. This series contains previously sent patches for Qualcomm and
+> Nuovoton. Here the updated version for Qualcomm that splits previous
+> patch to two and fixes compilation warnings.
+>=20
+> NB. The function_desc is in plan to follow the similar deduplication.
+
+--ITcYWtdfuDR2w/Y2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmVfMyAACgkQCDBEmo7z
+X9tfixAAghfTTH5Cq8CFefsef3u1AwmB5dL8brGS/xkDMXHN/RwR0sn/Zr/kxANZ
+Ko9qr9vnCVoSmNi8MwdIRBGOugPq+ZnD40EXBsBtW0BzwkqH9U3tRMhbpucS7F+7
+k+BDoiMeVa7vBNvRQK6XltOa9KRlbppR6wmesPZkzsTJyk/iLCCNTcNBekW8KbQp
+HNCfDoQS0m4cpYW66VdUP7hgBleB/Fjn6ttt0udhrEuFFL5hlKLn87dEo43224nm
+o/DNGFVXXt9Mn+FxxWhhAx01nvc3TaGlCuLqbPXb8v/cyffRFY9SmRa1aJY21zJN
+vr/a+eW7RB5Pi3MAKu8hYEv6nG7Hu/GCN9/hRGpfCv6hat+qyQU0TGRuAmJTKLre
+PxlacpHbRhsGZByRg/sT1cfYA17+EMDuWHDIO7Yj06TNSJdZKO4ucPwdC4Q6zjJc
+pf+gQDIGOU+A/rLwh0HD4ZH30vavQ5uEj0xJhmsUmL+rb+EY78Xj90sGSXvrpCNE
+J/A/1gRjF670OFsRq8+4eMxZ3e5DUx/oNobi5IbAHNnfHh88kjlcYJ1TSBPkvIfR
+czTkc3e6E+n1whHAD9XzIdI+QuftgWXoHr2FFozxoH36a01YAM9t1WJX7BvLCS/9
+YL9i3b/NVhvojwn71TmOgomDm0aKznw/Q2QtJ9PYINrXbh1pyCU=
+=qPNB
+-----END PGP SIGNATURE-----
+
+--ITcYWtdfuDR2w/Y2--
