@@ -2,86 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391C97F5B88
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E670E7F5B86
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbjKWJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:44:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S235298AbjKWJny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235027AbjKWJoF (ORCPT
+        with ESMTP id S234566AbjKWJnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:44:05 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35402689;
-        Thu, 23 Nov 2023 01:42:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=c9A0h9EHjn+9AK2XEWtAOPekKI3L68PN3h1Lyx81LzI=; b=Wi8ibNjOcLiDxxs7I2oPO2AfTG
-        Zh3wJihGah/S0cfIggBM2XksRyJtEP5he1QDJCY1RC/KB/Y/QqIJlM+B3rfmuu1dC2al16jToQv4l
-        5Rlzt0G/PLFcWlzRw/+nbg84Q0eW/1SZxP+ppOTrFcf5B39Im7nZzfFzXAN5QmpzrYe5UzLsWVa5c
-        X14XaU0b8HNWFrPFy2XlWTh+IfsP5hjllp2VmCOsUVvZZNuhsWHhXLARAz9qpJcpc1y/5aMIWs5rH
-        1y3N4K7Gx11mm5+bh1aJjBsXe+/wRh2CRwMNVxzJ1WVeNoSf/hZWVV0qtb/kgODBvNUKzV4SvxayP
-        XDlSogHA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38192)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r66DR-0001LI-1F;
-        Thu, 23 Nov 2023 09:41:45 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r66DO-000673-Lq; Thu, 23 Nov 2023 09:41:42 +0000
-Date:   Thu, 23 Nov 2023 09:41:42 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 12/14] dt-bindings: net: Document Qcom
- QCA807x PHY package
-Message-ID: <ZV8eVj0YzwF+lxrd@shell.armlinux.org.uk>
-References: <20231120135041.15259-1-ansuelsmth@gmail.com>
- <20231120135041.15259-13-ansuelsmth@gmail.com>
+        Thu, 23 Nov 2023 04:43:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DFC2107
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:41:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A0F2C433C7;
+        Thu, 23 Nov 2023 09:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700732513;
+        bh=L1HU47elgDtXBHr6aW6J+6GyoSBIGTHAwEytneSgsx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIl4xvQN+8xZnm3sHyWuYtjeO5nCx8uM1ub3wg70cVOGJVP1CGBUJSfg1gnvjONj1
+         9WN+0sTeXcG/s4qPNSqbumcS2xHPuoskC/UzjA/CpMK3qma0L7bcbtAvkUkVSDN8VP
+         m1HF4OB4zJpI2sF95dj7+XIGrCkXKDB2ZHAEf3Do=
+Date:   Thu, 23 Nov 2023 09:41:49 +0000
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     xingwei lee <xrivendell7@gmail.com>,
+        "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
+        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
+Message-ID: <2023112306-diner-jawline-c7dc@gregkh>
+References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
+ <2023112332-award-fanciness-2bcf@gregkh>
+ <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231120135041.15259-13-ansuelsmth@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,24 +54,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 02:50:39PM +0100, Christian Marangi wrote:
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    mdio {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ethernet-phy-package {
-> +            compatible = "ethernet-phy-package";
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            global-phys = <&qca8075_4>, <&qca8075_psgmii>;
+On Thu, Nov 23, 2023 at 10:32:26AM +0100, Aleksandr Nogikh wrote:
+> On Thu, Nov 23, 2023 at 9:55 AM gregkh@linuxfoundation.org
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
+> > > Hi. I have reproduced this bug with repro.txt and repro.c below:
+> > >
+> > > repro.txt
+> > > r0 = openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
+> > > ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)={{0x0, 0xffff,
+> > > 0x3}, 'syz0\x00'})
+> > > ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
+> >
+> > You are using fault injection, which, by it's very name, causes faults :)
+> 
+> But those injected failures (that do not break the kernel, but just
+> emulate an error returned from a function that should be expected to
+> sometimes return an error) still should not lead to general protection
+> fault panics, shouldn't they?
 
-Should the second one be &qca8075_pqsgmii ? (note the addition of 'q').
+It all depends on what exactly the fault is happening for.  Some
+allocations in the kernel just "will not fail ever" so when you add
+fault injection testing, you are doing things that really can not ever
+happen.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+So the proof is first on the reporter, prove that this type of fault
+_can_ actually happen, and then, make a fix to properly handle it.
+Don't expect us to make a fix for something that can not actually occur,
+as that would be pointless (hint, we have been down this path before, it
+doesn't work...)
+
+thanks,
+
+greg k-h
