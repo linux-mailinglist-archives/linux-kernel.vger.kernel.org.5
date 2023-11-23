@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2587B7F632A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A2A7F6331
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346151AbjKWPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S229670AbjKWPl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346072AbjKWPiy (ORCPT
+        with ESMTP id S1346140AbjKWPlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:38:54 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38279C1;
-        Thu, 23 Nov 2023 07:39:01 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso12646121fa.3;
-        Thu, 23 Nov 2023 07:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700753939; x=1701358739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X5QTDN/COfbPh5hWo0S55LVkpF8OpC4D7Gn+kAsnVaM=;
-        b=FLRWlJ4YycqQmX/t9mb9H0MYg5bSdDOwFevPr43+Ddy92WWRxaUCVMLn21OSa5to6s
-         uBLOPOwdIKPetbruNM/l1t1TFuPZtTlpB8CL9YH5tod0otI9N8ZTHintYfl3NFTXeK2Q
-         q0IbyMXBr7fDDk3icH6wJkHnAJ3J9aUjhP86XHTxzo9sT38SBJf+vCl6tt04Et4TmkNO
-         oygF4SUHBlRUPki/8nrATwsVMonvBESn6m+1Zqz8ATNoNRJLMpya80V2O22Efa/LG6X3
-         F9PjU8ekLCKNcGJ4zVsK7f1RAR1XwJ1Ke8zUutY+DZ5+HRIANvC7gUo4sf820FyE4IAT
-         M0iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700753939; x=1701358739;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X5QTDN/COfbPh5hWo0S55LVkpF8OpC4D7Gn+kAsnVaM=;
-        b=irOXZ17kF5e/ro+lUE0zg+MJ/6bIhFDGKSil+LPXoth9kwAUwiwkzvICII/slQj/+E
-         O9u909htwAX6okJiKj3gLZgVO5ZmW+3aEYLSr6hLFmADvT1lQsmOMBf+rhbD+RYDwY6c
-         ztD2T/RMSISOYQ7K9KWr0vWrrYF7K8+ttILq3yLFcoPXHOMZ7l0IWE/HZIG9KTGOaYyj
-         p5gNvcgi8FffAEn93D8RH354jU9hI06vMCDCwTFZm5D4Y+G/QmessdyErR3ytzI1oNJx
-         r1mAwKhwsD5UbhurXzZuHZY8eRAUYg/SZT5ZlnyWr9LMYAggF1YPq0VgSFL6u/pVtnap
-         DIEA==
-X-Gm-Message-State: AOJu0YwzcU72EmCQVbBgjIspjlkL7I7RGho4Bwb8Brb2K2e7DvCVpkmR
-        PXr4OOfxCIg8HqkeKedQItI=
-X-Google-Smtp-Source: AGHT+IHomSdQ+41Hjzo6i7Clcyf/5GQNw82lEcTgP30RpuqoAvf3sXxd02xrsS0dBSM2Qe4A8z/Zjg==
-X-Received: by 2002:a2e:9e55:0:b0:2c5:70f:614a with SMTP id g21-20020a2e9e55000000b002c5070f614amr3380967ljk.17.1700753938803;
-        Thu, 23 Nov 2023 07:38:58 -0800 (PST)
-Received: from ?IPV6:2001:999:251:b686:cec4:d552:2937:637c? ([2001:999:251:b686:cec4:d552:2937:637c])
-        by smtp.gmail.com with ESMTPSA id y35-20020a2ebba3000000b002bcedacd726sm244401lje.25.2023.11.23.07.38.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 07:38:58 -0800 (PST)
-Message-ID: <74b0b808-7b97-4e53-a1a4-6e2e1274ecff@gmail.com>
-Date:   Thu, 23 Nov 2023 17:40:24 +0200
+        Thu, 23 Nov 2023 10:41:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468F2F9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:41:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30D54C433C8;
+        Thu, 23 Nov 2023 15:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700754089;
+        bh=wYo7fAMqhxFyBFMQMLKccEbNB96HsajO4uuHMmp53Og=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZDDf/GUUb7F28lHZof2kZ/ExvVGLi3nSeT3k5MbpJeP7J0VRZNmeH0n0637NQXiJB
+         hXe8WuNM4qKqZGi8AinuhXcYMqOENZ9/wzckFUhv+cEJRM4/HmSMMksK/WN6Dy5Ma8
+         crPwiGQ3GaiSK00zr+Kr3EpqT8dPwQzDEBl05EUafOfTas5YObKWcowYE6HhNzwKX4
+         gyZ7Z+k9Vr2SNTiHif5d2ZK3xPjSD8Mo/PvaRTgwaABEKoQRtpYp2i3PjOPpa3mV3f
+         8LRmCGmlgs78DL4EGWUkJDk7QoF8PY4psFMdIZKb0OGYKJMHSvVD3m8M16G4YVYpCF
+         3WbWtHvt69uMQ==
+Date:   Thu, 23 Nov 2023 08:41:27 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "bhe@redhat.com" <bhe@redhat.com>
+Cc:     "Liu, Yujie" <yujie.liu@intel.com>, lkp <lkp@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
+Message-ID: <20231123154127.GA3487126@dev-arch.thelio-3990X>
+References: <20231114153253.241262-3-bhe@redhat.com>
+ <202311160431.BXPc7NO9-lkp@intel.com>
+ <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
+ <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
+ <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
+ <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mfd: twl6030-irq: Revert to use of_match_device()
-To:     Lee Jones <lee@kernel.org>
-Cc:     tony@atomide.com, robh@kernel.org, wens@csie.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231029114843.15553-1-peter.ujfalusi@gmail.com>
- <20231123103756.GD1184245@google.com> <20231123104108.GF1184245@google.com>
-Content-Language: en-US
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20231123104108.GF1184245@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,36 +64,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/11/2023 12:41, Lee Jones wrote:
->>> @@ -368,10 +368,10 @@ int twl6030_init_irq(struct device *dev, int irq_num)
->>>  	int			nr_irqs;
->>>  	int			status;
->>>  	u8			mask[3];
->>> -	const int		*irq_tbl;
->>> +	const struct of_device_id *of_id;
->>>  
->>> -	irq_tbl = device_get_match_data(dev);
->>> -	if (!irq_tbl) {
->>> +	of_id = of_match_device(twl6030_of_match, dev);
->>
->> I think you just dropped support for ACPI.
+On Thu, Nov 23, 2023 at 09:49:20PM +0800, bhe@redhat.com wrote:
+> On 11/17/23 at 10:01pm, Baoquan He wrote:
+> > On 11/17/23 at 09:37am, Liu, Yujie wrote:
+> > > Hi Baoquan,
+> > > 
+> > > On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
+> > > > Hi,
+> > > > 
+> > > > On 11/16/23 at 05:04am, kernel test robot wrote:
+> > > > > Hi Baoquan,
+> > > > > 
+> > > > > kernel test robot noticed the following build errors:
+> > > > > 
+> > > > > [auto build test ERROR on arm64/for-next/core]
+> > > > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
+> > > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > > > And when submitting patch, we suggest to use '--base' as documented in
+> > > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > > > 
+> > > > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
+> > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> > > > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
+> > > > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
+> > > > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
+> > > > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> > > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
+> > > > > 
+> > > > 
+> > > > Thanks for reporting.
+> > > > 
+> > > > I met below failure when following the steps of provided reproducer.
+> > > > Could anyone help check what's wrong with that?
+> > > 
+> > > Sorry this seems to be a bug in the reproducer. Could you please change
+> > > the compiler parameter to "COMPILER=clang-16" and rerun the command? We
+> > > will fix the issue ASAP.
 > 
-> Ah, scrap that.  I was looking at the wrong part of 1e0c866887f4.
-> 
-> So what about the other drivers changed in the aforementioned commit?
+> Any update for the reproducer? I would like to post v2 with the fix. I
+> doubt it's the same issue as another report on this patch, while not
+> quite sure.
 
-Looking back at it again, I think only this patch is needed.
-This is not a real driver, it is using the twl core's device.
-The twl6030 is for sure broken, let me reply to the twl4030-power in a sec.
+Shouldn't you be able to run
 
-> Ideally we'd have a call that covers all of the various probing APIs.
-> 
->> Rob, care to follow-up?
-> 
-> I'd still like Rob to comment.
-> 
+  $ COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash kernel/
 
--- 
-PÃ©ter
+after the command you just ran to reproduce this now? It is
+essentially the same fix that they mention above but for the second
+invocation of make.cross.
+
+You can also not even bother with the wrapper altogether if you have the
+compiler installed in the default path that they provide (W=1 is not
+necessary to reproduce this issue):
+
+  $ mkdir -p build_dir
+  $ curl -LSso build_dir/.config https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config
+  $ make -skj"$(nproc)" ARCH=hexagon LLVM=$HOME/0day/llvm-16.0.6-x86_64/bin/ O=build_dir olddefconfig kernel/crash_core.o
+  ...
+  kernel/crash_core.c:554:3: error: call to undeclared function 'kexec_dprintk'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                  kexec_dprintk("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, "
+                  ^
+  1 error generated.
+
+> > Here you are. Thanks for your quick response.
+> > ------------------------------
+> > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> > Compiler will be installed in /root/0day
+> > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
+> > /root/linux                                                                             
+> > tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
+> > PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+> > make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
+> > make[1]: Entering directory '/root/linux/build_dir'
+> >   GEN     Makefile
+> >   HOSTCC  scripts/basic/fixdep
+> >   HOSTCC  scripts/kconfig/conf.o
+> >   HOSTCC  scripts/kconfig/confdata.o
+> >   HOSTCC  scripts/kconfig/expr.o
+> >   HOSTCC  scripts/kconfig/lexer.lex.o
+> >   HOSTCC  scripts/kconfig/menu.o
+> >   HOSTCC  scripts/kconfig/parser.tab.o
+> >   HOSTCC  scripts/kconfig/preprocess.o
+> >   HOSTCC  scripts/kconfig/symbol.o
+> >   HOSTCC  scripts/kconfig/util.o
+> >   HOSTLD  scripts/kconfig/conf
+> > #
+> > # configuration written to .config
+> > #
+> > make[1]: Leaving directory '/root/linux/build_dir'
+> > 
+> > > 
+> > > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> > > > Compiler will be installed in /root/0day
+> > > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
+> > > > get1: /pub/tools/llvm/files/: files/: Is a directory
+> > > > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
+> > > > clang crosstool install failed
+> > > > Install clang compiler failed
+> > > > setup_crosstool failed
+> > > 
+> > > 
+> > 
+> 
+> 
