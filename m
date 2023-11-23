@@ -2,223 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F23057F65B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E76C7F65BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346112AbjKWRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        id S1345657AbjKWRqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345750AbjKWRoM (ORCPT
+        with ESMTP id S1345731AbjKWRqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:44:12 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917F810DB;
-        Thu, 23 Nov 2023 09:44:16 -0800 (PST)
-Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sblk51lXTz6K5sT;
-        Fri, 24 Nov 2023 01:39:57 +0800 (CST)
-Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
- lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 23 Nov 2023 17:44:13 +0000
-From:   <shiju.jose@huawei.com>
-To:     <linux-cxl@vger.kernel.org>, <linux-mm@kvack.org>,
-        <dave@stgolabs.net>, <jonathan.cameron@huawei.com>,
-        <dave.jiang@intel.com>, <alison.schofield@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <dan.j.williams@intel.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
-        <Yazen.Ghannam@amd.com>, <rientjes@google.com>,
-        <jiaqiyan@google.com>, <tony.luck@intel.com>, <Jon.Grimm@amd.com>,
-        <dave.hansen@linux.intel.com>, <rafael@kernel.org>,
-        <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <jthoughton@google.com>,
-        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
-        <pgonda@google.com>, <duenwen@google.com>,
-        <mike.malvestuto@intel.com>, <gthelen@google.com>,
-        <wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
-        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
-        <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [PATCH v3 11/11] cxl: scrub: sysfs: Add Documentation for CXL memory device scrub control attributes
-Date:   Fri, 24 Nov 2023 01:43:54 +0800
-Message-ID: <20231123174355.1176-12-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.35.1.windows.2
-In-Reply-To: <20231123174355.1176-1-shiju.jose@huawei.com>
-References: <20231123174355.1176-1-shiju.jose@huawei.com>
+        Thu, 23 Nov 2023 12:46:38 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AF710DA;
+        Thu, 23 Nov 2023 09:46:44 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 5D2893200A92;
+        Thu, 23 Nov 2023 12:46:43 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 23 Nov 2023 12:46:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1700761602; x=1700848002; bh=JdVkYHyZCwkaqqs8iJxKPLWNDNKV1uUX4zd
+        6JLzaduk=; b=Av9IVz9upWizEgMWXliaWlxTB2n29cXJjymrRgPOhNTeuolTl80
+        qtPWMlJ4KacVpv5o4Yxod+BZtSojlcNJ2d+KsIULxhSKyDwSZR98i9dGaJbM8GOo
+        aZn1xiYh0OCzjBO0RMoDLLDZabAT5q0eldp0Rl5rNkLGqGHWus2l9DbHi2Bev5EI
+        ZFrYlbt2ykoVbfvrbGA+CqlR5shfrrsUp5OQmHP/edRoPTCTds3uhggp8LcNjiRC
+        KBkAPi4aH023MLVv+QLvu3IiOxf1kYMcC9UqtGdC7+TiZZ126AcTiB389G4tLbPb
+        Eidu+yMF+hrgGBbWnTaq2JMkHjsqlj3RAXw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1700761602; x=1700848002; bh=JdVkYHyZCwkaqqs8iJxKPLWNDNKV1uUX4zd
+        6JLzaduk=; b=LHAbkZsEk5baSGX4tj3aOonz7W4kleGgb/h86/BbL2AR9+F/6R7
+        NeX9uB8FIpgahkQVIpI1VwSL+8j3YZCfYLiym4p0zRZWvLd0AzkHPFowbW3Bo5/d
+        ACbo1IDy0xvSVcK4Tzfr0dBkiDGTtzy1vSzK8iLpXtJ7eBfzPg8ROIPZPEbgn21X
+        /wuiXJrlo9sjANfBqEmO9y4wPjwk4bQ5zSFequ8Nl2481aPrnEVPLB9SaWpts77q
+        /P9wI9PCJpwoOhEKhgD15sD2ait/jUyVnvzKZj+SYyJ9fPsMO//u7/WxzgT7F+8j
+        VUC0vBdvCKVpPUYRdI2e/KYLIGrFOU35fNQ==
+X-ME-Sender: <xms:ApBfZYWSeq5YcSACIiu9Ny592KVe02DhqgN9AxKCD-QjHkst-67DOw>
+    <xme:ApBfZcn8ZRo7OH9Y0YWJ7A4_kPsnhLgW-MLUrWjLwDqFp8f_vSFn6fTUYox9w3t7E
+    3q-Z4yhsaaorUG5olI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehfedguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
+    homheqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefh
+    jeeugeevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:ApBfZcaPNS2qOqi6-NIEobQrkLF8d-Baf0jUAo-7DwiuhusYtkMkig>
+    <xmx:ApBfZXWHZeJYLPxL-Wmc2yx8yhT1iW8EBwUK7TzcCHs4EDXglH343Q>
+    <xmx:ApBfZSmPDS-kACi1pAJm-cVih3X2OzAXexYukiz_F-pugmdqbNUEfw>
+    <xmx:ApBfZbc9itzmhbm4YqjXDjn87OwcdTRS-9i_JwGS0cx8AGsFph8JiA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 604E436A0075; Thu, 23 Nov 2023 12:46:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.122.247.234]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500006.china.huawei.com (7.191.161.198)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <db993514-7daa-41cb-8e6e-179305c16e24@app.fastmail.com>
+In-Reply-To: <20231123152639.561231-21-gregory.clement@bootlin.com>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
+ <20231123152639.561231-21-gregory.clement@bootlin.com>
+Date:   Thu, 23 Nov 2023 17:46:19 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 20/21] MIPS: generic: Add support for Mobileye EyeQ5
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shiju Jose <shiju.jose@huawei.com>
 
-Add sysfs documentation for the CXL memory device scrub control
-attributes those are exposed in /sys/class/scrub/ by the scrub
-driver. These attributes support user configuring a CXL memory
-device scrub.
 
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
----
- .../testing/sysfs-class-cxl-scrub-configure   | 135 ++++++++++++++++++
- 1 file changed, 135 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
+=E5=9C=A82023=E5=B9=B411=E6=9C=8823=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
+=E4=B8=8B=E5=8D=883:26=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
+> Introduce support for the MIPS based Mobileye EyeQ5 SoCs.
+>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+[...]
+> diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+> index 7dc5b3821cc6e..04e1fc6f789b5 100644
+> --- a/arch/mips/generic/Kconfig
+> +++ b/arch/mips/generic/Kconfig
+> @@ -48,6 +48,13 @@ config SOC_VCOREIII
+>  config MSCC_OCELOT
+>  	bool
+>=20
+> +config SOC_EYEQ5
+> +	select ARM_AMBA
+> +	select WEAK_ORDERING
+> +	select WEAK_REORDERING_BEYOND_LLSC
+> +	select PHYSICAL_START_BOOL
+> +	bool
 
-diff --git a/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure b/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
-new file mode 100644
-index 000000000000..57ba63d5390f
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
-@@ -0,0 +1,135 @@
-+What:		/sys/class/scrub/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The scrub/ class subdirectory belongs to the scrub
-+		subsystem.
-+
-+What:		/sys/class/scrub/scrubX/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrub{0,1,2,3,...} directories
-+		correspond to each scrub device.
-+
-+What:		/sys/class/scrub/scrubX/name
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) name of the memory scrub device
-+
-+What:		/sys/class/scrub/scrubX/regionY/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrubX/region{0,1,2,3,...}
-+		directories correspond to each scrub region under a scrub device.
-+		Scrub region is a physical address range or for example
-+		memory media FRU of DDR5 ECS feature for which scrub may be
-+		separately controlled.
-+
-+What:		/sys/class/scrub/scrubX/regionY/enable
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) Start/Stop CXL memory patrol scrub.
-+		1 - enable the CXL memory patrol scrub.
-+		0 - disable the CXL memory patrol scrub.
-+
-+What:		/sys/class/scrub/scrubX/regionY/speed
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The scrub cycle to set for the CXL memory
-+		patrol scrub and it must be within the supported
-+		range. The unit of the scrub cycle is hour.
-+
-+What:		/sys/class/scrub/scrubX/regionY/speed_available
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported range of the scrub cycle by the
-+		CXL memory patrol scrub.
-+		The unit of the scrub cycle is hour.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The log entry type of how the DDR5 ECS log is
-+		reported.
-+		00b - per DRAM.
-+		01b - per memory media FRU.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type_per_dram
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current log entry type of DDR5 ECS
-+		region is per DRAM.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type_per_memory_media
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current log entry type of DDR5 ECS
-+		region is per memory media FRU.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The mode of how the DDR5 ECS counts the errors.
-+		0 - ECS counts rows with errors.
-+		1 - ECS counts codewords with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode_counts_rows
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current mode of DDR5 ECS region
-+		is counts rows with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode_counts_codewords
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current mode of DDR5 ECS region
-+		is counts codewords with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/reset_counter
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) DDR5 ECS reset ECC counter.
-+		0 - normal, ECC counter running actively.
-+		1 - reset ECC counter to the default value.
-+
-+What:		/sys/class/scrub/scrubX/regionY/threshold
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) DDR5 ECS threshold count per GB of memory cells.
-+
-+What:		/sys/class/scrub/scrubX/regionY/threshold_available
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported list of DDR5 ECS threshold count per GB of
-+		memory cells.
--- 
-2.34.1
-
+^ I believe WEAK_ORDERING is already selected by MIPS_CPS,
+and WEAK_REORDERING_BEYOND_LLSC should be selected by MIPS_CPS as well.
+=20
+Thanks
+--=20
+- Jiaxun
