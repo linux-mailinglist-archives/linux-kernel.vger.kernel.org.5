@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDD17F6077
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FD07F6079
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345501AbjKWNiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        id S1345618AbjKWNiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:38:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345556AbjKWNiK (ORCPT
+        with ESMTP id S1345567AbjKWNiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:38:10 -0500
+        Thu, 23 Nov 2023 08:38:14 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181F910C7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:38:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E51CC4339A;
-        Thu, 23 Nov 2023 13:38:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025DFD7E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:38:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F67C433C9;
+        Thu, 23 Nov 2023 13:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700746695;
-        bh=KAXGKMe2WBFft3tNq3FpiQGsTc/R5/rmU8Cl5gayixE=;
+        s=k20201202; t=1700746700;
+        bh=yp3tKEvY3IVCFEhD0Bxg/Hw6hTrEBgQxqiXCTK5PONg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BhN61ErzqtMja4ZFFmQQN/xzpcG0fK/ObB0YFgMn1t1PGix45506/KGgqWs9ohzmp
-         teG1YFzyk9oQHh3zwqPYA0hlBtfBusl0Z6r345MOhJnm8rvM4KB48x0iaNk4nldz/u
-         ZS9+xmE2mHJ2uXcQThWf2D8dspHlyDLqj7SjTHHtbjnWOocfW8x7aUWleDr2BtpDjB
-         e5xvjFGDf3TbYpIGlY/vHoscApV9jwAZHzjyfe70iG1Z11sj2tcDmNKKqaVZtAr0qI
-         GXIDyaX0p2WxIBxhNqyYA3+ZN7Nm5yJgt1gk1jWhI4PR5du6I3bNv6b+7Svp2m+9wn
-         NxEvBWQHWjUjA==
+        b=iI/CzRx+LbYWI9WFQv0WzBDR0lAxkkzVvtOC7DAQgaylWVB0Kb9xobuPy+A/9V4ys
+         6EslE2vM1ydHw9XSW/FFipkTg5V7FHnrQ8hXY0FQmsfiw/DCnn+sxbq4jQDfh3NGQZ
+         FfZIzYVSg6nfy8/MYy4wpZT/XpLDcGftkMMaI7NtZDw7O6uqShHYJi8m+B1H7QbZ/g
+         4EN6pgFy2ZjJ50Hb89pELrKVU9RH+xLr7c4AyeilrWYswiHLSHySDwRMk/b6RTClXO
+         GF5KDC6eMbJ29r+vPueyY2a0DTT8oR3aKBDczeLj7/BRLSQCqj5w8upiJRaVbsIxN6
+         4M9pqlxxp0tLA==
 From:   Michael Walle <mwalle@kernel.org>
 To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -50,9 +50,9 @@ Cc:     dri-devel@lists.freedesktop.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-phy@lists.infradead.org, Michael Walle <mwalle@kernel.org>
-Subject: [PATCH 3/4] arm64: dts: mediatek: mt8195: add DSI and MIPI DPHY nodes
-Date:   Thu, 23 Nov 2023 14:37:48 +0100
-Message-Id: <20231123133749.2030661-4-mwalle@kernel.org>
+Subject: [PATCH 4/4] drm/mediatek: support the DSI0 output on the MT8195 VDOSYS0
+Date:   Thu, 23 Nov 2023 14:37:49 +0100
+Message-Id: <20231123133749.2030661-5-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231123133749.2030661-1-mwalle@kernel.org>
 References: <20231123133749.2030661-1-mwalle@kernel.org>
@@ -68,87 +68,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the two DSI controller node and the associated DPHY nodes.
-Individual boards have to enable them in the board device tree.
+With the latest dynamic selection of the output component, we can now
+support different outputs. Move current output component into the
+dynamic routes array and add the new DSI0 output.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 48 ++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 54c674c45b49..0621bb461967 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -1714,6 +1714,26 @@ u2port3: usb-phy@0 {
- 			};
- 		};
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 2b0c35cacbc6..6fa88976376e 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -222,7 +222,11 @@ static const unsigned int mt8195_mtk_ddp_main[] = {
+ 	DDP_COMPONENT_DITHER0,
+ 	DDP_COMPONENT_DSC0,
+ 	DDP_COMPONENT_MERGE0,
+-	DDP_COMPONENT_DP_INTF0,
++};
++
++static const struct mtk_drm_route mt8195_mtk_ddp_main_routes[] = {
++	{ 0, DDP_COMPONENT_DP_INTF0 },
++	{ 0, DDP_COMPONENT_DSI0 },
+ };
  
-+		mipi_tx0: dsi-phy@11c80000 {
-+			compatible = "mediatek,mt8195-mipi-tx", "mediatek,mt8183-mipi-tx";
-+			reg = <0 0x11c80000 0 0x1000>;
-+			clocks = <&clk26m>;
-+			clock-output-names = "mipi_tx0_pll";
-+			#clock-cells = <0>;
-+			#phy-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		mipi_tx1: dsi-phy@11c90000 {
-+			compatible = "mediatek,mt8195-mipi-tx", "mediatek,mt8183-mipi-tx";
-+			reg = <0 0x11c90000 0 0x1000>;
-+			clocks = <&clk26m>;
-+			clock-output-names = "mipi_tx1_pll";
-+			#clock-cells = <0>;
-+			#phy-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		i2c5: i2c@11d00000 {
- 			compatible = "mediatek,mt8195-i2c",
- 				     "mediatek,mt8192-i2c";
-@@ -2737,6 +2757,20 @@ dither0: dither@1c007000 {
- 			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x7000 0x1000>;
- 		};
+ static const unsigned int mt8195_mtk_ddp_ext[] = {
+@@ -308,6 +312,8 @@ static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
+ static const struct mtk_mmsys_driver_data mt8195_vdosys0_driver_data = {
+ 	.main_path = mt8195_mtk_ddp_main,
+ 	.main_len = ARRAY_SIZE(mt8195_mtk_ddp_main),
++	.conn_routes = mt8195_mtk_ddp_main_routes,
++	.num_conn_routes = ARRAY_SIZE(mt8195_mtk_ddp_main_routes),
+ 	.mmsys_dev_num = 2,
+ };
  
-+		dsi0: dsi@1c008000 {
-+			compatible = "mediatek,mt8195-dsi", "mediatek,mt8183-dsi";
-+			reg = <0 0x1c008000 0 0x1000>;
-+			interrupts = <GIC_SPI 644 IRQ_TYPE_LEVEL_HIGH 0>;
-+			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-+			clocks = <&vdosys0 CLK_VDO0_DSI0>,
-+				 <&vdosys0 CLK_VDO0_DSI0_DSI>,
-+				 <&mipi_tx0>;
-+			clock-names = "engine", "digital", "hs";
-+			phys = <&mipi_tx0>;
-+			phy-names = "dphy";
-+			status = "disabled";
-+		};
-+
- 		dsc0: dsc@1c009000 {
- 			compatible = "mediatek,mt8195-disp-dsc";
- 			reg = <0 0x1c009000 0 0x1000>;
-@@ -2746,6 +2780,20 @@ dsc0: dsc@1c009000 {
- 			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x9000 0x1000>;
- 		};
- 
-+		dsi1: dsi@1c012000 {
-+			compatible = "mediatek,mt8195-dsi", "mediatek,mt8183-dsi";
-+			reg = <0 0x1c012000 0 0x1000>;
-+			interrupts = <GIC_SPI 654 IRQ_TYPE_LEVEL_HIGH 0>;
-+			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-+			clocks = <&vdosys0 CLK_VDO0_DSI1>,
-+				 <&vdosys0 CLK_VDO0_DSI1_DSI>,
-+				 <&mipi_tx1>;
-+			clock-names = "engine", "digital", "hs";
-+			phys = <&mipi_tx1>;
-+			phy-names = "dphy";
-+			status = "disabled";
-+		};
-+
- 		merge0: merge@1c014000 {
- 			compatible = "mediatek,mt8195-disp-merge";
- 			reg = <0 0x1c014000 0 0x1000>;
 -- 
 2.39.2
 
