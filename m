@@ -2,210 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD447F5E36
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9667F5E3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345123AbjKWLug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S1345130AbjKWLvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345105AbjKWLuf (ORCPT
+        with ESMTP id S1345134AbjKWLvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:50:35 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1425F98
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:50:40 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D4E4B660739D;
-        Thu, 23 Nov 2023 11:50:38 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700740239;
-        bh=dh2u8+ENkzMcCabo+NPjxzRrT5AZKX5LLmWOZX/WdMo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AGPkOiF8QGU98z6j6hhUuTZWRxGHq6SROI9m1VlPT7DbVaZipMFDKR56F31owqYvT
-         hMFwCjsd2TNF0mrcalG5HCiN05IfPwQAmB9ZSORQfPCg75UewEP6S5rnLR7ApUJyWa
-         h95lDFmeWAwYSj15ykcNj3KVHXjdO/yZi9t9i22qL/eMRdEgAmHMB29YxDYPO/lko/
-         W9fwEgFoBC/f9bO7SxhhbC1SMZylY/pLzorBw7jkYdo14gWAqiRvKxjQIcibBEPhIR
-         nzH7bVgmLFJRHDCxg3JOCeTw64YV/26GMHHQfzhKl8a1zqzQKcgcUnGO8lsSdbFR5m
-         dkVv/Yb6fIBMw==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     steven.price@arm.com
-Cc:     boris.brezillon@collabora.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        angelogioacchino.delregno@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org
-Subject: [PATCH v2] drm/panfrost: Ignore core_mask for poweroff and sync interrupts
-Date:   Thu, 23 Nov 2023 12:50:29 +0100
-Message-ID: <20231123115029.68422-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 23 Nov 2023 06:51:39 -0500
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149F41BF;
+        Thu, 23 Nov 2023 03:51:41 -0800 (PST)
+X-UUID: a658a54089f611eea33bb35ae8d461a2-20231123
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=m+PsuocUr3D0nftupsQKJwog5YmODHhCk5w3pvQ5IUU=;
+        b=PtsqmX1cVZQxZT/4Ad7q/xyy270AxWzu0s0V4uokRA5+/94dF10N5b72t8qS6KDwLFDj3c6nNb9Y7ffNwn489CbOu7S6apBvb6FxyBu+eYe4KU5SQc0J1Z9fWGdYWcx6xo3kz42cbirYSORUncsaGxMtfC+8UC3movOJf0uZKTY=;
+X-CID-CACHE: Type:Local,Time:202311231905+08,HitQuantity:2
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:db04952b-ab20-41cc-8d0f-5f102883a5a0,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:364b77b,CLOUDID:d6b5defc-4a48-46e2-b946-12f04f20af8c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: a658a54089f611eea33bb35ae8d461a2-20231123
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+        (envelope-from <zhi.mao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1568917443; Thu, 23 Nov 2023 19:51:34 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 23 Nov 2023 19:51:32 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 23 Nov 2023 19:51:31 +0800
+From:   Zhi Mao <zhi.mao@mediatek.com>
+To:     <mchehab@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <shengnan.wang@mediatek.com>, <yaya.chang@mediatek.com>,
+        <10572168@qq.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <yunkec@chromium.org>, <conor+dt@kernel.org>,
+        <matthias.bgg@gmail.com>,
+        <angelogioacchino.delregno@collabora.com>,
+        <jacopo.mondi@ideasonboard.com>, <sakari.ailus@linux.intel.com>,
+        <zhi.mao@mediatek.com>, <hverkuil-cisco@xs4all.nl>,
+        <heiko@sntech.de>, <jernej.skrabec@gmail.com>,
+        <macromorgan@hotmail.com>, <linus.walleij@linaro.org>,
+        <laurent.pinchart@ideasonboard.com>, <hdegoede@redhat.com>,
+        <tomi.valkeinen@ideasonboard.com>, <gerald.loacker@wolfvision.net>,
+        <andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
+        <dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 0/2] media: i2c: Add support for GC08A3 sensor
+Date:   Thu, 23 Nov 2023 19:51:02 +0800
+Message-ID: <20231123115104.32094-1-zhi.mao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoCs may be equipped with a GPU containing two core groups
-and this is exactly the case of Samsung's Exynos 5422 featuring
-an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
-is partial, as this driver currently supports using only one
-core group and that's reflected on all parts of it, including
-the power on (and power off, previously to this patch) function.
+This series adds YAML DT binding and V4L2 sub-device driver for Galaxycore's
+GC08A3 8-megapixel 10-bit RAW CMOS 1/4" sensor, with an MIPI CSI-2 image data
+interface and the I2C control bus.
 
-The issue with this is that even though executing the soft reset
-operation should power off all cores unconditionally, on at least
-one platform we're seeing a crash that seems to be happening due
-to an interrupt firing which may be because we are calling power
-transition only on the first core group, leaving the second one
-unchanged, or because ISR execution was pending before entering
-the panfrost_gpu_power_off() function and executed after powering
-off the GPU cores, or all of the above.
+The driver is implemented with V4L2 framework.
+ - Async registered as a V4L2 sub-device.
+ - As the first component of camera system including Seninf, ISP pipeline.
+ - A media entity that provides one source pad in common.
+ - Used in camera features on ChromeOS application.
 
-Finally, solve this by introducing a new panfrost_gpu_suspend_irq()
-helper function and changing the panfrost_device_suspend() flow to
- 1. Mask and clear all interrupts: we don't need nor want any, as
-    for power_off() we are polling PWRTRANS, but we anyway don't
-    want GPU IRQs to fire while it is suspended/powered off;
- 2. Call synchronize_irq() after that to make sure that any pending
-    ISR is executed before powering off the GPU Shaders/Tilers/L2
-    hence avoiding unpowered registers R/W; and
- 3. Ignore the core_mask and ask the GPU to poweroff both core groups
+Also this driver supports following features:
+ - manual exposure and analog gain control support
+ - vertical blanking control support
+ - test pattern support
+ - media controller support
+ - runtime PM support
+ - support resolution: 3264x2448@30fps, 1920x1080@60fps
 
-Of course it was also necessary to add a `irq` variable to `struct
-panfrost_device` as we need to get that in panfrost_gpu_power_off()
-for calling synchronize_irq() on it.
+Thanks
 
-Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
-[Regression detected on Odroid HC1, Exynos5422, Mali-T628 MP6]
-Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
+Zhi Mao (2):
+  media: dt-bindings: media: i2c: Document GC08A3 bindings
+  media: i2c: Add GC08A3 image sensor driver
 
-Changes in v2:
- - Fixed the commit hash of "Really power off [...]"
- - Actually based on a clean next-20231121
- - Renamed "irq" to "gpu_irq" as per Boris' suggestion
- - Moved the IRQ mask/clear/sync to a helper function and added
-   a call to that in panfrost_device.c instead of doing that in
-   panfrost_gpu_power_off().
+ .../bindings/media/i2c/galaxycore,gc08a3.yaml |  128 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ drivers/media/i2c/Kconfig                     |   14 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc08a3.c                    | 2046 +++++++++++++++++
+ 5 files changed, 2191 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
+ create mode 100644 drivers/media/i2c/gc08a3.c
 
-NOTE: I didn't split 1+2 from 3 as suggested by Boris, and I'm sending
-this one without waiting for feedback on my reasons for that which I
-explained as a reply to v1 because the former couldn't be applied to
-linux-next, and I want to unblock Krzysztof ASAP to get this tested.
-
-
- drivers/gpu/drm/panfrost/panfrost_device.c |  1 +
- drivers/gpu/drm/panfrost/panfrost_device.h |  1 +
- drivers/gpu/drm/panfrost/panfrost_gpu.c    | 26 ++++++++++++++++------
- drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
- 4 files changed, 22 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-index c90ad5ee34e7..b0a4f3e513f4 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-@@ -421,6 +421,7 @@ static int panfrost_device_runtime_suspend(struct device *dev)
- 		return -EBUSY;
- 
- 	panfrost_devfreq_suspend(pfdev);
-+	panfrost_gpu_suspend_irq(pfdev);
- 	panfrost_gpu_power_off(pfdev);
- 
- 	return 0;
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-index 0fc558db6bfd..f2b1d4afb9e9 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-@@ -94,6 +94,7 @@ struct panfrost_device {
- 	struct device *dev;
- 	struct drm_device *ddev;
- 	struct platform_device *pdev;
-+	int gpu_irq;
- 
- 	void __iomem *iomem;
- 	struct clk *clock;
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 09f5e1563ebd..efda085c2b95 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -425,11 +425,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
- 
- void panfrost_gpu_power_off(struct panfrost_device *pfdev)
- {
--	u64 core_mask = panfrost_get_core_mask(pfdev);
- 	int ret;
- 	u32 val;
- 
--	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-+	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
- 	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
- 					 val, !val, 1, 1000);
- 	if (ret)
-@@ -448,9 +447,22 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
- 		dev_err(pfdev->dev, "l2 power transition timeout");
- }
- 
-+void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
-+{
-+	/* Disable all interrupts before suspending the GPU */
-+	gpu_write(pfdev, GPU_INT_MASK, 0);
-+	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-+
-+	/*
-+	 * Make sure that we don't have pending ISRs, otherwise we'll be
-+	 * reading and/or writing registers while the GPU is powered off
-+	 */
-+	synchronize_irq(pfdev->gpu_irq);
-+}
-+
- int panfrost_gpu_init(struct panfrost_device *pfdev)
- {
--	int err, irq;
-+	int err;
- 
- 	err = panfrost_gpu_soft_reset(pfdev);
- 	if (err)
-@@ -465,11 +477,11 @@ int panfrost_gpu_init(struct panfrost_device *pfdev)
- 
- 	dma_set_max_seg_size(pfdev->dev, UINT_MAX);
- 
--	irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
--	if (irq < 0)
--		return irq;
-+	pfdev->gpu_irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
-+	if (pfdev->gpu_irq < 0)
-+		return pfdev->gpu_irq;
- 
--	err = devm_request_irq(pfdev->dev, irq, panfrost_gpu_irq_handler,
-+	err = devm_request_irq(pfdev->dev, pfdev->gpu_irq, panfrost_gpu_irq_handler,
- 			       IRQF_SHARED, KBUILD_MODNAME "-gpu", pfdev);
- 	if (err) {
- 		dev_err(pfdev->dev, "failed to request gpu irq");
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-index 876fdad9f721..d841b86504ea 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-@@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
- int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
- void panfrost_gpu_power_on(struct panfrost_device *pfdev);
- void panfrost_gpu_power_off(struct panfrost_device *pfdev);
-+void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
- 
- void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
- void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
 -- 
-2.42.0
+2.25.1
+
 
