@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 197B27F5B1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532CB7F5B1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbjKWJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
+        id S231922AbjKWJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbjKWJcc (ORCPT
+        with ESMTP id S229464AbjKWJgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:32:32 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9535ADD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:32:39 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1ce5b72e743so108695ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:32:39 -0800 (PST)
+        Thu, 23 Nov 2023 04:36:13 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C2B1AE;
+        Thu, 23 Nov 2023 01:36:19 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d64c1155a8so429762a34.2;
+        Thu, 23 Nov 2023 01:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700731959; x=1701336759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vg2oX9GVI0kS/noOuJCQjC9JixpUFNyRl5zhQzr8FOM=;
-        b=PvNmGO2nOx0eclcNXcpegW62Y3wfg+mrhlxMLriRogxqOLEsu1/Vkqsf4jrsDi3rRv
-         yLiWkykqYfaHd4nqEuR0AKf95cohOKXFQ5zBtq7sgz41Y+t/djZtiS0k3/uM6A68Eo1e
-         s7lIrZ0qH0zjM/hRoXaKkx248uVQoEg7thhhagCyHOLsAbeBcN5rNLRKsZj+/yTdMBUQ
-         CeiEL977NYMPdvPnbtMmi6Euf4x8rVEZ11a71TMbpCbUEf6PPK7eLn6UjC4BsheYBlSi
-         me/mWO6nPJb1Cn6iGaoVh2xY1cSZ/0Zt/KK8VW01Es7Cwg+lfKs10qf9O7Irv7DK5qQ7
-         JR9w==
+        d=gmail.com; s=20230601; t=1700732179; x=1701336979; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dQhHNIKfWiIWad6NjUl3O8AGhzuURYHnVhK+SmvQomg=;
+        b=Urd7garV3JSeoh8vnLumPumoZFRb39usTX5jVzYuKhVXZlS0+aJHuQcUNROT8AQ8Ou
+         Vfx6qgDEhgxnVpA+NeRuUDdAf6/pw7Q2JxIXeQ4fcJVoWKqYWpre3Vl91Y7VnBz9TlTK
+         V7oJEGHIpQwS3Z1/t5BvtKCpLBdxgHCGs28VoWOpeXeuvRAQUwOXFXmHT1dgPkIXBlDf
+         mjsg2IQV0nIwi99Jwerpn1+enI3wzh+HMVcviqhObyW4dCW+u8HY2+fvAz/Y+FSTrXy5
+         q8QIPFUyEbIXDcA9VbCI20UhuEmN7ivQLD2kNEfA3O5eeIfW5+4RPeOGEJIsmExRm+25
+         ui/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700731959; x=1701336759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vg2oX9GVI0kS/noOuJCQjC9JixpUFNyRl5zhQzr8FOM=;
-        b=TZSpTpU+FayxRqYr2e4l74WEqMuRFjFI8nL5P4cslCtMrYNMxXpwz/ZUTa7I5m/OSX
-         I1MM7kPiSh4dhUDwaoLG8VOj7Ys3WWhBFqfcwGyJhBKJGedxq7sfsSF2bI+ezQfbFIAt
-         vhlC2FCybkRAVXgDQVaR4wuLgNeiF4YXM3vnmU/2f3neXsIe71V0eUk2wTtUeAdl2G7h
-         kPAk6N1X+nSk6I67UwFs2jUuTyDSeHBMiOFwAx/C0ZTRJIeJqBpZThkZWVu9X5lelOtB
-         lH3H46TBg+oDnkwpFSKN7LlDsPW60buDRw8Zop6xwcMDR00ZXVEy/+yCZ0Z2tVFUI21j
-         MmEw==
-X-Gm-Message-State: AOJu0Yy22a+nx0mBZ2OglOyaCoSunmsqIus/4vtUXMqKx3wjnXzkLxt8
-        QbX7SgBGdrJXxTC2XnOaKPZlyFlZ797WfZASqhRaKg==
-X-Google-Smtp-Source: AGHT+IEVA1wv/X7Ck9L/Fo/SledU+PyhSbpPMagAeGLNdxr8mHH0XrGC/g/LdyNjQ3tDc1P1sJ4xT9sTfj1k8QokvuM=
-X-Received: by 2002:a17:902:b782:b0:1cf:89e2:4960 with SMTP id
- e2-20020a170902b78200b001cf89e24960mr141262pls.6.1700731958610; Thu, 23 Nov
- 2023 01:32:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700732179; x=1701336979;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dQhHNIKfWiIWad6NjUl3O8AGhzuURYHnVhK+SmvQomg=;
+        b=nV/wH5ITCGEQckMFPEkwnMRs9GX8etQgu7Igb+v/rU1pibHwYgO2lqT3ZcKoac4qzc
+         dOABTQWj+DdAPEFGcpcMuqiS1pIzGgQ5g1ycJ88wf9fUO17QGC41PJMZ87OryDyN8XWp
+         pvQ6i2/NI+/aBQQGPdZJ68FypW9ZuluHiopN8H9uw2AfN+q/VLcDcBGVE2oMWBFCGrjO
+         Nzyh06JJvrLePamUqq31VTUbyevV4EZbB91bEsd/W0JZV+MLOgN98y0w6ny1dNxcuM3R
+         nakoWY6set7xi4/CymFhCB3Xu/meCWj3XCIA540uLizEMPLpiCk1k+kmQZ+vOap/gxX6
+         4SJg==
+X-Gm-Message-State: AOJu0Yz9Iqit1gxWllkZkU8PyYtp4db+z2c7urR37OTrj96a3cYAJN2c
+        m2HpAEfYpCoWnpAcljUKrOU=
+X-Google-Smtp-Source: AGHT+IEpKb2YEB93s5BEDe/ctdnNVWLRYV7AcKyFu0sGdgnl4YodP6t5BrbO/0iA6SuVCzPswe8etA==
+X-Received: by 2002:a9d:6857:0:b0:6d6:4b8b:baf1 with SMTP id c23-20020a9d6857000000b006d64b8bbaf1mr5427820oto.23.1700732178744;
+        Thu, 23 Nov 2023 01:36:18 -0800 (PST)
+Received: from localhost.localdomain ([74.48.130.204])
+        by smtp.googlemail.com with ESMTPSA id o13-20020a635a0d000000b005a9b20408a7sm922970pgb.23.2023.11.23.01.36.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 01:36:18 -0800 (PST)
+From:   Furong Xu <0x1207@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
+Subject: [PATCH net v1] net: stmmac: xgmac: Disable FPE MMC interrupts
+Date:   Thu, 23 Nov 2023 17:35:38 +0800
+Message-Id: <20231123093538.2216633-1-0x1207@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
- <2023112332-award-fanciness-2bcf@gregkh>
-In-Reply-To: <2023112332-award-fanciness-2bcf@gregkh>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 23 Nov 2023 10:32:26 +0100
-Message-ID: <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     xingwei lee <xrivendell7@gmail.com>,
-        "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
-        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 9:55=E2=80=AFAM gregkh@linuxfoundation.org
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
-> > Hi. I have reproduced this bug with repro.txt and repro.c below:
-> >
-> > repro.txt
-> > r0 =3D openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
-> > ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)=3D{{0x0, 0xffff,
-> > 0x3}, 'syz0\x00'})
-> > ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
->
-> You are using fault injection, which, by it's very name, causes faults :)
+Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+by default") leaves the FPE(Frame Preemption) MMC interrupts enabled.
+Now we disable FPE TX and RX interrupts too.
 
-But those injected failures (that do not break the kernel, but just
-emulate an error returned from a function that should be expected to
-sometimes return an error) still should not lead to general protection
-fault panics, shouldn't they?
+Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+Signed-off-by: Furong Xu <0x1207@gmail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---=20
-Aleksandr
+diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+index ea4910ae0921..cdd7fbde2bfa 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+@@ -177,8 +177,10 @@
+ #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
+ #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+ 
++#define MMC_XGMAC_FPE_TX_INTR_MASK	0x204
+ #define MMC_XGMAC_TX_FPE_FRAG		0x208
+ #define MMC_XGMAC_TX_HOLD_REQ		0x20c
++#define MMC_XGMAC_FPE_RX_INTR_MASK	0x224
+ #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
+ #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
+ #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
+@@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+ {
+ 	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
+ 	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
++	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_TX_INTR_MASK);
++	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_RX_INTR_MASK);
+ 	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+ }
+ 
+-- 
+2.34.1
 
->
-> Can you reproduce it without causing faults in the kernel?  And if so,
-> can you create a patch to fix this?
->
-> thanks,
->
-> greg k-h
->
