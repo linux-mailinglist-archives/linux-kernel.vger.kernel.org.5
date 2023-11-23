@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F100E7F5E4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4B37F5E54
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345152AbjKWLx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S1345156AbjKWLyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345148AbjKWLx5 (ORCPT
+        with ESMTP id S1345159AbjKWLyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:53:57 -0500
+        Thu, 23 Nov 2023 06:54:04 -0500
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6129A;
-        Thu, 23 Nov 2023 03:54:03 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN9a19p011095;
-        Thu, 23 Nov 2023 11:53:52 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F821BF;
+        Thu, 23 Nov 2023 03:54:10 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANAm6bT007184;
+        Thu, 23 Nov 2023 11:53:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=cahJq3zvyMWZ26vAEszpiEN1alzkguUJCq7NtLAPzUI=;
- b=AENSVShVaRjv1DOY+ccVE2fRBFRLxpIpTmPy6AR9ZJFU5yWXUJNUz7BG4dubXI3cGJgT
- C3fglSqoQ9TwQzD+66urjX3OYSDUXdpAA4DGVh+4zcPYwxUJjPpb12oMlA5yNMyhUPSJ
- 3HfTH1J2N02YjvTuxFXS6xXl4OsYWvO9duk9XuNof2b4gb+sI9PsFa9Oo6EAj0JzYerD
- q+CMOpoctsqXtQq+o7kYP2XQ6Q+X4SjCZOzBcWvhdWwrJXYKNOLIIKsHuylfOBjBBSxN
- 776EWJprOCM4p1dYEnfJ4SiImFIZl4IroCOOJKI0lwk6sx5C+mHmJt8h4Cv/g5fdvBxI sg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj3ec0bvx-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=5NrpzcWOO/EfnbaqhTitBFYT1Ee58KANGffTvQACQH8=;
+ b=MCHF4zrZvhMhI3ngdYIjtEqQOzcQAltGdLXxMRORAwfdiK2jYP7PeaTvggT1CdIx3DXt
+ 8hQNTzgRHDiDN3nk6ZOJBNriK0jHMnAPYSDXaLkS6EO96t5yP7oBtmf5kRE7zmmcIRH/
+ L3hEQg6QGNHvF8IscQq8e5dZBMbuGYG7VWhcT/ijRdNxIJtzzzDotJor9J7IB8lwcUaW
+ eiXTrprIfEdc9eDWXhZzkZXrk6ZHMrqYnkdtQz53mbbaaj8XJyy9VCF2wnjPW9cyCF4P
+ 1i97Jj3q05pw8wbCEWRAj6BoQ2PGP8tKoqNRd/1TqOdJZThK5NLiirHyM1lkLrp6G4pN 6Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj4hwg6pn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 11:53:52 +0000
+        Thu, 23 Nov 2023 11:53:59 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ANBrpmT021868
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ANBrw4j026947
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 11:53:51 GMT
+        Thu, 23 Nov 2023 11:53:58 GMT
 Received: from hu-jsuraj-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 23 Nov 2023 03:53:41 -0800
+ 15.2.1118.40; Thu, 23 Nov 2023 03:53:48 -0800
 From:   Suraj Jaiswal <quic_jsuraj@quicinc.com>
 To:     <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
         Bhupesh Sharma <bhupesh.sharma@linaro.org>,
@@ -60,10 +60,12 @@ To:     <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
         Prasad Sodagudi <psodagud@quicinc.com>,
         Andrew Halaney <ahalaney@redhat.com>
 CC:     <kernel@quicinc.com>
-Subject: [PATCH net-next v3 0/3] Ethernet DWMAC5 fault IRQ support
-Date:   Thu, 23 Nov 2023 17:23:19 +0530
-Message-ID: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+Subject: [PATCH net-next v3 1/3] dt-bindings: net: qcom,ethqos: add binding doc for fault IRQ for sa8775p
+Date:   Thu, 23 Nov 2023 17:23:20 +0530
+Message-ID: <ff458955a24c0cb4ba41158b8b53fbef00c8237d.1700737841.git.quic_jsuraj@quicinc.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -72,15 +74,15 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: uFRYnVx6PQExqimVzUmhlLkKjiEdG1iI
-X-Proofpoint-GUID: uFRYnVx6PQExqimVzUmhlLkKjiEdG1iI
+X-Proofpoint-GUID: IItaCfOBPcJQ5G2J4-1KCE60PkIWsfe1
+X-Proofpoint-ORIG-GUID: IItaCfOBPcJQ5G2J4-1KCE60PkIWsfe1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-23_10,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=771 phishscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=969
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2311230084
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -92,20 +94,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suraj Jaiswal (3):
-  dt-bindings: net: qcom,ethqos: add binding doc for fault IRQ for
-    sa8775p
-  arm64: dts: qcom: sa8775p: enable Fault IRQ
-  net: stmmac: Add driver support for DWMAC5 fault IRQ Support
+Add binding doc for fault IRQ. The fault IRQ will be
+triggered for ECC, DPP, FSM error.
 
- .../devicetree/bindings/net/qcom,ethqos.yaml  |  7 +++++--
- arch/arm64/boot/dts/qcom/sa8775p.dtsi         | 10 ++++++----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 ++
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 18 +++++++++++++++++
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 20 +++++++++++++++++++
- 6 files changed, 52 insertions(+), 6 deletions(-)
+Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+---
+ Documentation/devicetree/bindings/net/qcom,ethqos.yaml | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+index 7bdb412a0185..e013cb51fb07 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+@@ -37,12 +37,14 @@ properties:
+     items:
+       - description: Combined signal for various interrupt events
+       - description: The interrupt that occurs when Rx exits the LPI state
++      - description: The interrupt that occurs when HW fault occurs
+ 
+   interrupt-names:
+     minItems: 1
+     items:
+       - const: macirq
+       - const: eth_lpi
++      - const: safety
+ 
+   clocks:
+     maxItems: 4
+@@ -89,8 +91,9 @@ examples:
+                <&gcc GCC_ETH_PTP_CLK>,
+                <&gcc GCC_ETH_RGMII_CLK>;
+       interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
+-                   <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+-      interrupt-names = "macirq", "eth_lpi";
++                   <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 782 IRQ_TYPE_LEVEL_HIGH>;
++      interrupt-names = "macirq", "eth_lpi", "safety";
+ 
+       rx-fifo-depth = <4096>;
+       tx-fifo-depth = <4096>;
 -- 
 2.25.1
 
