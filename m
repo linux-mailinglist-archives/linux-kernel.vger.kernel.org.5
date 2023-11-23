@@ -2,239 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03237F5577
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5347F5586
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbjKWAnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 19:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
+        id S231638AbjKWAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 19:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKWAnW (ORCPT
+        with ESMTP id S229513AbjKWAtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 19:43:22 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BEC10E;
-        Wed, 22 Nov 2023 16:43:18 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32daeed7771so202121f8f.3;
-        Wed, 22 Nov 2023 16:43:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700700197; x=1701304997; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I4mDM3fOhLxMKv9Qsj/stPbdPgmQsMFznGIuQOD753M=;
-        b=AAhYVkDNOyIif9CmavrWY98Y86DL8k4oXHyIICTLTPAj9elVkBZ1tLDetXk2YZ+13R
-         UCvnB01W5jQR8s2sUMDm1TVemTOY5uqjvUVS2JAWQldwwAwZrOj1M4/pXnyAHTwHWhFw
-         JZPXvJT3Ywvu0srodVY0D6zIwY68ESp3GrWXF8qvRTdYzUfnuPtSyl0f7N8pDEQeKwti
-         OGFni6YSI8V6Ah9lxEfBySkReoT91kKG+x4UB9n3oOFO/BK1dgmmwfVwl0Sgf4LhYvmO
-         SHs48AaSkdUhRHoMLHgrYeJyJasOD3PT+JXOiwsFyGeMXVuuIUyi/47VSnt2Z9vQlmkv
-         gf4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700700197; x=1701304997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I4mDM3fOhLxMKv9Qsj/stPbdPgmQsMFznGIuQOD753M=;
-        b=YOSK155JLFZseJpEYjJ1ddyUuEEAwQDd5okf24v63C9PjeCw0UJy8L9+dVItJ+4TWY
-         ZGs6IuoG1BBlRdIeiLf7xL9L52Bk2VyWKsLdDkNMJjWYkliDO3P43aZ/HB9uyAARD/3M
-         Koa2oUTlYGHhXRb1Os4pdVv4WTCYu5eXV68ykkjTnZQ7JxOCnlhaDcGFkw56Cmf6yBp2
-         Zx41sWoauX/IFmOWWnH9+AsB2NIZOkKL5AvocwFQOTPtRQvPOwokjw6caawbSEuYtm+I
-         ihdVZuw6SHJKBMDOOp6pyMsKv42IEG73TfgGylXsYn0S90jgZsqdOyWpBuVRamoT7/bR
-         UQ7g==
-X-Gm-Message-State: AOJu0YwNen8GTt81BW5vW2GxVp5uuEnCeQVd6n4s3oVelGk/s65SlqlM
-        Yu9ffR/i9kEAeL3izrCWXLPswUkeQzcoaah3NLM=
-X-Google-Smtp-Source: AGHT+IFaGuLwN1xpFTtgde8hjR8udeumSPNXj31L06f21NbuevuO4pwK/eQWIUQlq/PJPmsAyg32Y1iA4ZTIjeNqURg=
-X-Received: by 2002:a05:6000:128d:b0:332:cc15:6bae with SMTP id
- f13-20020a056000128d00b00332cc156baemr2454118wrx.20.1700700196781; Wed, 22
- Nov 2023 16:43:16 -0800 (PST)
+        Wed, 22 Nov 2023 19:49:06 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC41D1B3;
+        Wed, 22 Nov 2023 16:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700700515; x=1701305315; i=w_armin@gmx.de;
+        bh=yDHyDHS5S4Auj4mc9ZSQ4WBkDIhFW3w9J4NlOR396bA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=V2/nGg+l89FJhovOYpe620NwhhbJeixnNf5TJhKUg/1tNy8FgIBy15nG/3LwbE0s
+         VFFo+VoBAzE0QRJN2xL+6ZC+2PYvnbTCcWl6TtAB7RwF93cj0/2yKsBdyTZnxcmi2
+         jrs7bRzeD6jbWev8rgWCHfaSdRE8xXgH+i3/1n16IPtCtgFZ0MDsIyuD4zhaHY/Gq
+         tvgX4MnKqp7owsc1z1qr12sHy+mQM+riTxcbFT0TBj5p8HAEVCC7UCJv8DPtkUl4o
+         MZN59DrxGprpNewGzoYvkaEpJDltLpR4/+G0lPqfNkLkvIhBTSwZCTROwf07azSef
+         peeWJeNcVkSG1Go9Zw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1ML9yS-1qnt2n1YNm-00I9EK; Thu, 23 Nov 2023 01:48:35 +0100
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     pali@kernel.org
+Cc:     jdelvare@suse.com, linux@roeck-us.net, hdegoede@redhat.com,
+        markgross@kernel.org, ilpo.jarvinen@linux.intel.com,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/9] hwmon: (dell-smm) Add support for WMI SMM interface
+Date:   Thu, 23 Nov 2023 01:48:11 +0100
+Message-Id: <20231123004820.50635-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231120144642.591358648@infradead.org> <20231120154948.708762225@infradead.org>
- <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com> <20231122111517.GR8262@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231122111517.GR8262@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Nov 2023 16:43:05 -0800
-Message-ID: <CAADnVQLhWFKcxno53zqGtuiWwUcw+TU8gB2eCBRPQC=2y5vrFw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/8/j+v/jLv65EcbwtRVIULNAn+AXMfHuCCmvpDJblvjb9KBaCNQ
+ z8yXIudV5LTlgMloxMGj7afibyf8EQXUY6U6mZ5CpUERbAX5NZxALXOPMleJagbDyZ973Bc
+ Qq27PNbFtWBLtAmJ8Mg9JPoYG/LbNCyq5wXbTnqrDrm4vkzCa65eV9S1yXa4rMt06LunQVk
+ C7dCEkO0SKzo96M2Y5zzQ==
+UI-OutboundReport: notjunk:1;M01:P0:QEu2HiJ3IXc=;uhPAUJLf6aJNhsq/a4AmdUvLkMv
+ fskxnYN3fHyK/C4fBiQGBo6E+F0GI1mHP+M7nA635SHjT7MiSi69tje66wx5f2mbQvglkv4u9
+ BoXP8/Zo5svlJwOqzvjXdKMaoLjM8P2sfYkMEdJLbZdtQsexVXeSgBE1gUfRkNbIeukV7CBNs
+ c2H+HKf9zZmFGj5ddmZbvFW+L6uHTn8IP657sz7KLpNJtq3eSocYIbNVYRNMerO6sZUS4GoPC
+ UtLOORNEKONOUS0aSn0Y7iZ9KRPFF4mQJHPQCSn3oQ+O/p3x9A9o7RdoYQVdkxfH20u6SI6Gl
+ eMmL2sMXfKGGjM/IdTpLqQ+aN1Thsv8/KKL+dBNJXMJznUJTXGfEpEvYgM3tfxCtZI7fQpNFb
+ d7UgXSHouXiFEytu4RCmTgnbB0KeloKHlDCqDPvUiGLfC2RHQhLNj3qn5iKiNqrtKupSvfyus
+ jUbWdPAHeWdUOuIhpqZgo9IcTXoa2ZadzNG/agVHXfeuK+WDBoJ9wAZOnhberRNoCeyk/6phQ
+ nMy2iFuDRR/uPmHxsuuxXUlLUHb/FEHdUSgAJ1jCdaX6EkSoEB2EVKBCaavW0Fgpg8JJnVIib
+ W8F1wVGumbvHTO/6McFj66eDYCPrAjr/JcO5Xy+RGIIPSZdpVFv4pNYoSAIkLydSKZLNdXAdm
+ e5LlrpeLGyGVhEBZVe7kNEMDxSUNDGKF3XaXvhQhc4lnWlM6RJLOWxq6NmuMulCPt456/Fa30
+ 07S8Dx+bivUKuO4mRRUjPwKj1Ugpj59oTYAG1mZwcjVFoRQB8WZtw1y6TRijFYGDikeg9n08o
+ gOMKsvrgMBhtz+m/2795hxcz3msGQzYfkAvXxUDzr01OeYKNH4Ohx0A9LjjJMQmoJDg5rVQrU
+ L2e6YOU12AaNCZ5HIjWH1LEE6tFIH4KpIaJqyXxiyWzbd4rGPqQbsVub8mGBa5lYNrauGtdwj
+ df4AJg==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 3:15=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
->
-> To be very explicit, let me list all the various forms of function
-> calls:
->
-> Traditional:
->
-> foo:
->   ... code here ...
->   ret
->
-> direct caller:
->
->   call foo
->
-> indirect caller:
->
->   lea foo(%rip), %r11
->   call *%r11
->
-> IBT:
->
-> foo:
->   endbr64
->   ... code here ...
->   ret
->
-> direct caller:
->
->   call foo / call foo+4
->
-> indirect caller:
->
->   lea foo(%rip), %r11
->   ...
->   call *%r11
->
->
-> kCFI:
->
-> __cfi_foo:
->   movl $0x12345678, %rax
->   (11 nops when CALL_PADDING)
-> foo:
->   endbr64 (when also IBT)
->   ... code here ...
->   ret
->
-> direct caller:
->
->   call foo / call foo+4
->
-> indirect caller:
->
->   lea foo(%rip), %r11
->   ...
->   movl $(-0x12345678), %r10d
->   addl -15(%r11), %r10d (or -4 without CALL_PADDING)
->   je 1f
->   ud2
-> 1:call *%r11
->
->
-> FineIBT (builds as kCFI + CALL_PADDING + IBT + RETPOLINE and runtime
-> patches things to look like):
->
-> __cfi_foo:
->   endbr64
->   subl $0x12345678, %r10d
->   jz foo
->   ud2
->   nop
-> foo:
->   osp nop3 (was endbr64)
->   ... code here ...
->   ret
->
-> direct caller:
->
->   call foo / call foo+4
->
-> indirect caller:
->
->   lea foo(%rip), %r11
->   ...
->   movl $0x12345678, %r10d
->   subl $16, %r11
->   nop4
->   call *%r11
+This patch series adds support for an alternative SMM calling
+backend to the dell-smm-hwmon driver. The reason for this is
+that on some modern machines, the legacy SMM calling interface
+does not work anymore and the SMM handler can be called over
+ACPI WMI instead.
 
-Got it. That helps a lot!
-You kind of have this comment scattered through arch/x86/kernel/alternative=
-.c
-but having it in one place like above would go a long way.
-Could you please add it to arch/x86/net/bpf_jit_comp.c
-or arch/x86/include/asm/cfi.h next to enum cfi_mode ?
+The first four patches prepare the driver by allowing to
+specify different SMM calling backends, and by moving most of
+the DMI handling into i8k_init() so that the DMI tables can
+keep their __initconst attributes (the WMI SMM backend driver
+does not probe at module init time). The fifth patch does some
+minor cleanup, while the next three patches implement the new
+WMI SMM calling backend. The last patch adds the machine of
+the user who requested and tested the changes to the fan control
+whitelist.
 
-> > I'm not sure doing cfi_bpf_hash check in JITed code is completely solvi=
-ng the problem.
-> > From bpf_dispatcher_*_func() calling into JITed will work,
-> > but this emit_prologue() is doing the same job for all bpf progs.
-> > Some bpf progs call each other directly and indirectly.
-> > bpf_dispatcher_*_func() -> JITed_BPF_A -> JITed_BPF_B.
-> > A into B can be a direct call (which cfi doesn't care about) and
-> > indirect via emit_bpf_tail_call_indirect()->emit_indirect_jump().
-> > Should we care about fineibt/kcfi there too?
->
-> The way I understood the tail-call thing to work is that it jumps to
-> bpf_prog + X86_TAIL_CALL_OFFSET, we already emit an extra ENDBR there to
-> make this work.
->
-> So the A -> B indirect call is otherwise unadornen and only needs ENDBR.
->
-> Ideally that would use kCFI/FineIBT but since it also skips some of the
-> setup, this gets to be non-trivial, so I've let this be as is.
+If the driver does not detect the legacy SMM interface, either
+because the machine is not whitelisted or because the SMM handler
+does not react, it registers an WMI driver which will then bound
+to the WMI SMM interface and do the remaining initialization.
 
-I see. yeah. The setup is not trivial indeed. Keep as-is is fine.
+The deprecated procfs interface is not supported when using the
+WMI SMM calling backend for the following reason: the WMI driver
+can potentially be instantiated multiple times while the deprectated
+procfs interface cannot. This should not cause any regressions
+because on machines supporting only the WMI SMM interface, the
+driver would, until now, not load anyway.
 
-> So the kCFI thing is 'new' but readily inspected by objdump or godbolt:
->
->   https://godbolt.org/z/sGe18z3ca
->
-> (@Sami, that .Ltmp15 thing, I don't see that in the kernel, what
-> compiler flag makes that go away?)
+All patches where tested on a Dell Inspiron 3505 and a Dell
+OptiPlex 7000.
 
-I also noticed this discrepancy. It doesn't seem to be used.
-Looks weird to spend 8 bytes to store -sizeof(ud2)
+Changes since v3:
+- Using unsigned integers for registers
+- use TAB instead of space after comma
 
-> As to FineIBT, that has a big comment in arch/x86/kernel/alternative.c
-> where I rewrite the kCFI thing into FineIBT. I can refer there to avoid
-> duplicating comments, would that work?
+Changes since v2:
+- Rework WMI response parsing
+- Use #define for method number
 
-Just the above comment somewhere would work.
-I wouldn't worry about duplication. This is tricky stuff.
-When gcc folks get around implementing kcfi they will find it useful too.
+Changes since v1:
+- Cc platform driver maintainers
+- Fix formating inside documentation
+
+Armin Wolf (9):
+  hwmon: (dell-smm) Prepare for multiple SMM calling backends
+  hwmon: (dell-smm) Move blacklist handling to module init
+  hwmon: (dell-smm) Move whitelist handling to module init
+  hwmon: (dell-smm) Move DMI config handling to module init
+  hwmon: (dell-smm) Move config entries out of i8k_dmi_table
+  hwmon: (dell-smm) Introduce helper function for data init
+  hwmon: (dell-smm) Add support for WMI SMM interface
+  hwmon: (dell-smm) Document the WMI SMM interface
+  hwmon: (dell-smm) Add Optiplex 7000 to fan control whitelist
+
+ Documentation/hwmon/dell-smm-hwmon.rst |  38 +-
+ drivers/hwmon/Kconfig                  |   1 +
+ drivers/hwmon/dell-smm-hwmon.c         | 604 +++++++++++++++++--------
+ drivers/platform/x86/wmi.c             |   1 +
+ 4 files changed, 454 insertions(+), 190 deletions(-)
+
+=2D-
+2.39.2
+
