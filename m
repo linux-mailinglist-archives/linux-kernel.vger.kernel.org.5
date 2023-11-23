@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6A97F631C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFD87F631D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346142AbjKWPhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
+        id S1346126AbjKWPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346072AbjKWPhV (ORCPT
+        with ESMTP id S1346143AbjKWPhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:37:21 -0500
+        Thu, 23 Nov 2023 10:37:23 -0500
 Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2074.outbound.protection.outlook.com [40.107.15.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEBC1AE;
-        Thu, 23 Nov 2023 07:37:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE14CD68;
+        Thu, 23 Nov 2023 07:37:28 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ghEmNgZs/7qoElol7KCFVhXtfAGpFfzxAJ37nnEkkOjH9YStgYdZCxGdjKS2TJh7JT6cqoNJLwKtjVRHMs1n2TsqcvtvG2i35zlXhRAyEWHOgf9LM1Z8Qh74v9F0GzkR7/qeH9x9iFOEbTcWX9xiVN1rMlBsoXwreo2CucswF30Vpk4XyAUF3Q4YJwGpiDtD11ejpOuXPTGI4ubuxtksEbofcIS2kNbnp+KQ9GyksRBFXYje+7mYezRg2Kk46H7StMji8S2KshaWbrtvweevW7iBPkgD0PZRDhxhs86vLGYos1EF9amnF9gpvl2oo70GTUGkJVzDdnka7clqt5v01Q==
+ b=aKJV/ef0lMutd65WYm9jAM8hJay9SYJ85nXXHUdp5GEx4YIawqi9xxnJHZLzrF3HIPHQVVe+s706MQvfqSa9PFHdd6aF8vuvY3z9i1QWCkXOchhZ+Pg1mzkePwnieFvuCKVky+DqKHp0UvT5jAneZMvTlCPaKOz+LovlH1vR3zdStTrbY5XI2bTYPaGDDW8rxCyF+NKgLN+KqwomYzw+qZaScvmH8gs+ErUkhy0pTSf16M7Xuy64+O71Mtn1mUxKc0Xiz+9IzD6BPzzqOU5qZiLjJXYKuV5KKvKN/kmoyKALyRfEOCxNclOqA6wFADAZcQ9hDpoSt8HMeQPVEnVEgA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cb57mRET1V1pDQyFNdf1zGBmPIx0e5ZYRlRykQNlJ/Y=;
- b=PIc4Nhbx/VIFJR+mEu+DchUr5YxeT0RET3/eckWgTctHt7nCG+SB4hQ2pYsgHOCAhIL538dMJjm8d5tVZOIvTln+QeLXhu5MpA3dduYVW2niqZ9r0H5Uua7lKz9usOFzs6BW7/ckwo2x2cz9F260jJmW5nLBQsQgK6f/GwktM/AFawx4utCHGmpfkDgMvPTBMNLIUUAUq5g5YqDi+WvRfKGPma3hJgozGAdFOgObWBAaCv1UC8QdP5lwTC3sv/kNtFweUmSfnAqMviKSdCP/bZfFZ51uTjmIEt2W7/oNJQCB/ZFh5MzbA5+WmnQ4Ylc+/P61ypXqXU9a3NNdKtKcjw==
+ bh=jSSFJJxILrq9FVlxVr8Xq3i0p/W1AbYB4Pb3ODARUf4=;
+ b=Ox/PVd46k29WAXP9jAo1Zmy2N7OrEbYVH/TLmDCC9JSayd2Ff2FapgbqnjbU3PKyRkoJ+uHuPXss0jDCVto+vdJH/lvuopdmtzjKOHQU9AU3nohg4O7lKBYJ0Z0Q3dShm6Hm7qN3orlGkwIplXQT+mbUrU+lqrEJw+EhHZavwNN5yq51QF3QXVDbE/VOZXfEFsiQ/kDArgGCLkFgO1JDS/RhLwUgjj9L1fmXKabbTFH8+WKiGARNCAU2II0MBW/iTXkLQ3Asgu0s06SslZ3tkT3j7kOXOxXmN58W5L7DYX4BRV6hyP6TZz8NHUdi693AYZ86MnDXv6T8Z9JXg8E39g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cb57mRET1V1pDQyFNdf1zGBmPIx0e5ZYRlRykQNlJ/Y=;
- b=GDI8QPUR2I/pRIJxKVahZ/SAgBjaCC+pTXWhlRceOaI+9m/D2cs0FvDvEi94UrXfMvwLZchlS5Z2zpDnxbI8HnND7A4EcdVkECBVUbc5f81QMaGnILF+hsIpehyYZIM82uwsi+iTSUN6QXhlEesyWQwBGYvTQdyhY83zaKKvsY8=
+ bh=jSSFJJxILrq9FVlxVr8Xq3i0p/W1AbYB4Pb3ODARUf4=;
+ b=0N7HzVeHsiQN5x+2654+ZACnDnhmgEJF/i5sfiDOaakWc4Wppuqfj3vPDJKoEnezc3ty65831+qYJQaTAZK+CMk8Tp/4lmUp5cr0q6+UolhmMLh6c+XBy6tJbwBwLyIXzM2yqPXGcUG5zG1NCB098bcUcXEWRMkgaYvcdYqHeRk=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wolfvision.net;
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
@@ -42,11 +42,12 @@ Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
  15:37:24 +0000
 From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-Date:   Thu, 23 Nov 2023 16:37:01 +0100
-Subject: [PATCH v3 1/2] usb: typec: tps6598x: add reset gpio support
+Date:   Thu, 23 Nov 2023 16:37:02 +0100
+Subject: [PATCH v3 2/2] dt-bindings: usb: tps6598x: add reset-gpios
+ property
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-topic-tps6598x_reset-v3-1-0c2873070a77@wolfvision.net>
+Message-Id: <20230912-topic-tps6598x_reset-v3-2-0c2873070a77@wolfvision.net>
 References: <20230912-topic-tps6598x_reset-v3-0-0c2873070a77@wolfvision.net>
 In-Reply-To: <20230912-topic-tps6598x_reset-v3-0-0c2873070a77@wolfvision.net>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -57,13 +58,14 @@ To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org,
-        Javier Carrasco <javier.carrasco@wolfvision.net>
+        Javier Carrasco <javier.carrasco@wolfvision.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700753842; l=3466;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700753842; l=1462;
  i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=N06QjDGuoaMeG5Mg1opmllcR/3CqTs4j2zURs5NjTU0=;
- b=1lJCEp1AIre6yfn+OVNlbWJmafQFtv2Evqqlptj9yAFfoVK3ZzUoa+NIrVU4N6JTHPKD51A0C
- wOb3ysBcosTDxphmdqHl2U6c52X+N8qfngxwsNoRJ89Jmyo+QTh5ZfE
+ bh=32MkaeWH8tGOkOGWuOxuD6fsyjPm/VF9u3nSmwKN8Y0=;
+ b=7MaPjs2xtrZW3Bem4FmSSQaoThsFivd1XCdEbiWJgpTWK99VE+ss8p7RzQhV8jyQMPNrCKamU
+ 25a+iBKBrmfCW72J7Y/vxPzWLCkeX2edpnM7IaltJ0ZQ/VPOL+7wQpe
 X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-ClientProxiedBy: VI1PR09CA0156.eurprd09.prod.outlook.com
@@ -72,60 +74,60 @@ X-ClientProxiedBy: VI1PR09CA0156.eurprd09.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|VE1PR08MB5599:EE_
-X-MS-Office365-Filtering-Correlation-Id: e365d475-1554-4234-372d-08dbec3a16d3
+X-MS-Office365-Filtering-Correlation-Id: dd983094-3073-449a-bc17-08dbec3a1739
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OtgfNtNCYkRUfe2l0CTA9cqcgBWfgO+NESsrhn1br4OUJEcHz6JSd/wR6aYBnDO7AkklcJaJ8X/A+oJ6A2s5NmyKJgSfjQQF60DMdBbQj/QxYV52IbdAB2QUWmHRTM0cDlkOLMJlJYb819i5qkqCfURDk0W4vcNATVOj30X+so1lIXAvQh/ypSmXRdI3lKDZSkj8HD+o9Nba+eqMptDUMpnFQwdWwHs38HFlkVctfwNlRqBnSJD941t3JsHjTUpZYGN/bH/AQNvB2XydHN9835xS/jlavudAdtR5iPES8fiUxZ++d6WPrvdbVVZLG2ZFEqW/uM9UJ5HKm/6QsI1cAKakDZ+r2uVLvUH+Fu0nhFHNQpBODFww0hollSyXcp49BkLtMWrtpByA1kxZUjQFFc2nDyn1HwsWei/yuapHFuCzzoPuMmw8LnHNfAttOTCmbtiI7x8cGXRAE4ND1Bgr7DO1UN4RjfPVbSNCUDBdi/odnrGgc7EF81neVEOMewHDANterhEAlvegagqOCNw54zb41o6UCRvQBe6e7aLq8hZlN2mX1KaBtC9W3dnzED6avQ34Ss7tIF7OIlxsH6BxKc4TBhcC8OZjo/Ep7IC9dXI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39840400004)(376002)(136003)(366004)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(86362001)(44832011)(5660300002)(38100700002)(26005)(83380400001)(6666004)(107886003)(316002)(110136005)(6506007)(52116002)(6512007)(2616005)(4326008)(66476007)(66556008)(66946007)(8676002)(8936002)(41300700001)(6486002)(38350700005)(478600001)(966005)(2906002)(36756003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: CtGv7CCCMV87HG7b3lQMqiUURe/HrhdfVX7rAVBz3PdQncJ0KSdVt3vVvkgF4RmvM9L6Hc+fAo9efc8/oS8ru/0h2rt9fEs9icMi2Y/XXaKZ/5hYgNLc4fx/64BTQSrLEb9ZpFtVznLIaufbkhvCvQrjfm/qW66/9W/F61vQzWSIF73dxRvrY30M7ReXLCMnp8hUZ+zUkWNaZYSykvQOT0lPeJ05rWb1IOj6rQ4v1PIpp3AKed5qLP9ox4YeL7z90TnGihe6gpQ/mSRkij0HJvOvG2WLZmbHl6FOeSjldn+voQdavCqCoiGyDrRe1xNAtoTl5hPx8Qx5E7rmjM5vfdfAAc3+lhGB3SGBYgIG2wM05yxZwruUOGUax37Yzz3zFTe1vblZr0cguBNQTe5n49eriNszimVEV1ZAqMcMMpfBLzzLf/R8X+aKTfvrv+C4ePA0n0p1nEypQd+1uFF1rAB0GRZ0/Q2U77EG03aEp2puw4xUa8Z06Cb7OuXc68J5YoLbGAatjlFP1RHWM7+wKL25wlS0D3FCARuKGHKPrFYR7zsn0itHHUZKYzh9Az0SLMzHxUNgwiUG/4fnZ2jeeoWLbEqmiiT1tAGaDKeaRLU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39840400004)(376002)(136003)(366004)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(86362001)(44832011)(5660300002)(7416002)(38100700002)(26005)(6666004)(316002)(110136005)(6506007)(54906003)(52116002)(6512007)(2616005)(4326008)(66476007)(66556008)(66946007)(8676002)(8936002)(41300700001)(6486002)(38350700005)(478600001)(2906002)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MDJZdnFTM1l2VGZSb0pubEhQMWo1UlVIK20wTFZnNk9LYXNMNDFtMWcrVFdS?=
- =?utf-8?B?TmYxNitGcmh6RlZ5RExTUzc1Qjk4OUJoZTlaUm9xdGtLTk1uUkVQcnFray82?=
- =?utf-8?B?ZHFiTXZtbHlsT2l3cW9mL3A5NzNPSzdPd2JZdkk4bkx3ZUhxYlVHRVJXM0wx?=
- =?utf-8?B?US9qeTlhbjdhVWh2VGNyVmZDMTRySXEvV0NwMXJNVi9hK1V6Q1VyREVzWUxP?=
- =?utf-8?B?Zk41eTVOaytCRjhTbzg0Y3c5ZFZVYnltNThHNEZwOWw3TjYvM3VHMGxVa21I?=
- =?utf-8?B?Vno0VFpwZTR6dVpjcWM5bmZBVGN4L1pUaEpMeDBDWjh1ek1MMjJ2a1hlVEtt?=
- =?utf-8?B?cDlwRW1ENTdtYkRaREpOejZJem1oVldiNmJITG5aNlBVU2lYcUt3Zm5GUVli?=
- =?utf-8?B?ZTNCMFhNa0RpZ1pOdCt3c3djWXJra0lEZjNrMEVOamk4N2hZN2xMdnZ0anJR?=
- =?utf-8?B?aTZwY2VJNzZOR3JNbHVnM1JBZ3RmaEJzQmNmblRtWFVjOVYvVlZmdTZHRVJO?=
- =?utf-8?B?SEdiM3gwM2l5QVVJR3NlMlVmakJwbjlHckEzalk2MFRNdWtzaDU1Qk84cGRy?=
- =?utf-8?B?dnZ1dWptRUZSQTc2b2dTeDBoakIxL0ZCNGlnQklXZXhCakxxTGxMZEtTUy9V?=
- =?utf-8?B?WnBOWDhzT1hTeWNqQ3lubnRwMFJjYTFlaWFWc0E1QlhPME00NDNqRkJxaFdZ?=
- =?utf-8?B?a0hiQ0VMd0ZLaWtndFBVMS96Y3hLalVJWGNTd0doOUtUZmRMSThQNVRlZURq?=
- =?utf-8?B?N3ZVdmNiZDk5bCtjeXJRaEg3SnJJUU04VzZZYURmemFVbU1mbVVGc2RwaHJh?=
- =?utf-8?B?bmhFSmIxSWg5SndRQ3MvWjV0WFJpamFhRGVWTHRrU2pxK0Q0Wm41dnFSelJN?=
- =?utf-8?B?OFk2MjdkWHZuaEpZSUhaZTBtV1laUHBJMXQ4THhMaEtZWnJBYk92MzN2ZGtQ?=
- =?utf-8?B?SnJrZmpHVnBlNS9BeHdxTWllcXRoZWU1QVBOQzlrczAzV1pOYk40NXVaM3pD?=
- =?utf-8?B?dk1IVEdoSjRLVEFxdmZSMDUyeEdsTzJwR3pXYnY0RytmbHNueTNBcjJQb0cz?=
- =?utf-8?B?THhZZUVyZkw2VHhHbFdCK0F4MjdsajlROEJmdWJONitjRlkxUUduTm14M2V5?=
- =?utf-8?B?UGI4a01WYkh4eFdla3dXQnZzVzlVYVpkUTZWeUVIeHhQY1NkY0Y3UWVOeGRC?=
- =?utf-8?B?MEhtakxJY0xoZm04TTFrWm1VN2UrbTFKOFJMUUNaaEJHajVVVjVlalA2YUND?=
- =?utf-8?B?K2xPaVlQT2ErV2JudEk2dkhVanE2OG04VEg4ZVJ1UjBEeE1pUUhlcGJyeEFX?=
- =?utf-8?B?S3l3ZmFkS05BZWZzTzdianpGWU5ISW1SNzQ1UUpFRXY0WFVXS1k0ZHdMeEpl?=
- =?utf-8?B?bjNBaTFaOS91SVhSVXQxRTdmRmNjSXlYNlNsb2VyS3FEYUpzOEhOZFJlRFJY?=
- =?utf-8?B?eUszdk44UzI0WGd0MlN1Y2VzTjRpQkhQN1NxSTNIR09ETmhjdDIwYy9hdU9p?=
- =?utf-8?B?bEdGa0g2MkxKdVkwWEFTbjZBUHVXK3VwUytTR0pKK1I3bER0M25sK1VuQmxm?=
- =?utf-8?B?eVNNNmdiSzhqenpBWFBJMEdzV1FNRTFBTm1Scnk1aXVlN0xRSnp6L1lCcEVi?=
- =?utf-8?B?ZDVKcmZGZzRYcnFrelRjK3c5Y2Nqblo3a0pjQk9FU0cvdWx2Uk4xbEZUQzNY?=
- =?utf-8?B?R3ZVLzEvVG11b1FNSmZIaWVrSXBuTW5XU0JQU09iODJDU1pDUnJEVzRXeFFV?=
- =?utf-8?B?Q0pac3N2dzE0cjdyYXl1d1dHd0poQjc4NTRkVVJ6YWpCQnVLNHI1SU5lY3hV?=
- =?utf-8?B?elNpQS8ybVE3UGdwRXZrekJzYU4rQUlBcmM4a2RGTXRnVlJuaFo3bEJ3ejg4?=
- =?utf-8?B?MXoxYTlFQ0FSNDk2U2pCVUU2UHdReUtUUVhpRTltQmFQL3VLYWEzT01zUkcv?=
- =?utf-8?B?cCtoclhrTXBrTnlhMkl0UVVwSEgvekRlcTFQY3A1cXY1WG1ML1F4VXdoVlQ5?=
- =?utf-8?B?KzE3VHE3TndScEVHNFVOMXB4YU9vcU5KS3hVRWtiUllIWlBHbC83ZjU3MXJW?=
- =?utf-8?B?cEpBRzhveThNdk1xWXNLQkh4QS9FK1ZNS1ZvVEdvNGF6alE4eUwxTUNMZVlE?=
- =?utf-8?B?aU9Mc2U2NjlHSHFwQVVWMEQ0R3ROUGNxODNEc2ZsZHZ4UVBBdTdmY3VEaC9n?=
- =?utf-8?Q?UYqw8nCqu2fkkmgqs10bM3c=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WThkTEUrTDlMbFlXVHc1WG1ocUFQdE1zOGFOQ3hnVWxNN00zNk55RVRDMEkv?=
+ =?utf-8?B?WnZ3WkQzMEZkNjAyVzk0L2JPdlJFZE5GRFRGOHlJc205NEdpQkQyZ2h3VFJq?=
+ =?utf-8?B?YlYrVHdSLzhacEtXVXVld2k3Yk43eXFYcWgzWUtBTlMybTlIVStoWGx5TkhL?=
+ =?utf-8?B?OU9sRUUyN00yL2NpU0o0WGE0NXBsUTl2NlhjcXhuUkhJWjJ3cktmUitjeWUr?=
+ =?utf-8?B?MFV3MmlEaElQOXhvVXlvVk1VTXFwU0hFMFhBOWtmYmlBc2ZDREtOV083MVR2?=
+ =?utf-8?B?SDdLc0xkeFBXa3pWRTY1WC9CTytjdkVGa2ZFK3Q1U3JCYkZYU3RiOGJzSkMw?=
+ =?utf-8?B?QkdCdlNHWDZsUXl6U3RPa0JaV2REZWZrSVJNQ2RBR3ovZFdONnBNUVJVb213?=
+ =?utf-8?B?OWlSZzB1eGU4alVOdmRjcXg4cCtPUjhNKytRZWwvN0ZUQjNFNUl5WWtxSXBv?=
+ =?utf-8?B?djlHN1Z2NEx1MnE2TVJXVGQwMjJ2dU84aXN2aTUrbG9xOHJyQUxMSHJVQWJ2?=
+ =?utf-8?B?bnBZTnI5U2ZVT1dwdHA3QmdkdDMwR2l2Mzl1YWdiNkxCT2gwWG82NUZjN21O?=
+ =?utf-8?B?Rmp4ZXk1Q1B5dzl3UVpJME01WGVpNktDNkQ5cmJDYVhEYURKWTRBMUVNS2JR?=
+ =?utf-8?B?cGZuTkVMK0ZUUTgwT1hqaUpxa3hoRW1RQkZHQlhPRnFlUDJuWU1saXgvNytq?=
+ =?utf-8?B?VmpBVUdRZzdQTlJMTUZQSFkwTkFKc2pVT2FmYk9WMmRhVWNySUIxd3VsdDl1?=
+ =?utf-8?B?WUVReFZGT24yRmd4dlN1VzBHbjU3Rk9NZVRuZ2Q1SWk0aWViUVltU3hQRDRZ?=
+ =?utf-8?B?NjlnVTBObzA3K2pubWp3eWdHZ2xFdi93OWp2U0loQnJhUHcxR1pRY3ZkbUtS?=
+ =?utf-8?B?UHZtRkVaNFlsbXI1RDYzZjJXTmtXZkIvSjBoSW1jS2NhWU9tOHJRQjRwaURn?=
+ =?utf-8?B?WjE5Q3ljaEMzanNyeDJUalJhZUpqNlBOaUh3NGNPU081Q1JMQWx0b1hPeVFO?=
+ =?utf-8?B?Rnl5dFh5WGthL3J6ZU5peHNEQzZKMW1kWHUwRUhQRnRxbWdvSlI3bE4xcW1r?=
+ =?utf-8?B?MGp1S2c2c2YvVlZjZFZreFpnWDEzellmek56RWNPaERaRHRyS3R0S045ZWpZ?=
+ =?utf-8?B?OUlIb000VzdzVUZUc0gwajE4UGpDaW15eEl4U29oMjB5TXJZS1RZWXE1SU1x?=
+ =?utf-8?B?QVUzMDNtYnAvaUpnSG81WkpDSVNlVDgzL3VzeUhiclpDRFd4czNxbkJLeEIw?=
+ =?utf-8?B?WEUwSm9sODlOVVJIT0RnZHlLelF5S1RERGV1RjMxZC94Tk5Yc1UzV29nZEhs?=
+ =?utf-8?B?RDhYNitKWE5CN2svSG9PN1prYmNvR3k2bVQrL054Y1MxclhiWnBsSElyc2E2?=
+ =?utf-8?B?ZnFTZWZZWEViYXBLMHFYSVlremxEdWtEZ21HV3oyMTNlL3pvVnRQL204SFo5?=
+ =?utf-8?B?anpERVNCb1lWdzVtZWdlNFZKTHBGeWRTaDdnUVZqMHZnOXN5NFJXcHdqZG1U?=
+ =?utf-8?B?amNyNGZiNzNiZTJqT3RIdFlXUVJDd2MwT25TYkYzTjBzRm1LSzZHM1VoM21V?=
+ =?utf-8?B?bERlQk1wVkx2SUlYZkZBd29FT1JHQzRmbVdoSTlFY1l0RWVISXlxN0V1cEpw?=
+ =?utf-8?B?aFBNZzdmb1ZDTnEzeU90Tkg2elRWM0pxU1RQTU15NnZTVTBBYlZZR0NGUXRs?=
+ =?utf-8?B?bFpWbWVRMkhUVklPYm1ub0JNVG1iVkVqM01ZUU54ODVpcDEvM1JaMnkwNGFl?=
+ =?utf-8?B?b2RUT2p4bVRCcG9UUXo4ZVVsYmJiTk5GWUlHMi9DYytnbWlGK1BEZTgrQVlK?=
+ =?utf-8?B?NWwybDhSNjQ2UHV5UzQ0YWo3VTZ2QVg1Nk1aaXZIKzBUR2ZFSjVBU0dyRTRz?=
+ =?utf-8?B?VnNkaGk4NkNKYWJxTzNzL3RRZjhKUjJiUlhoK29RbDZVZ2d5VUIwdVA5c3Nl?=
+ =?utf-8?B?Q04vQzRqZlVkUVM4TXcyRXFwRmdiNEs5N2tFN3Z6QnI4Vi94T3BmSXNXdG1k?=
+ =?utf-8?B?cWdYZWdHREV1YmhIWWE5ZXFsV3FEU3QyaUlQS1R6bCtYV0paVVdQMVBmYXJs?=
+ =?utf-8?B?RDM3Ri80OUdZazE4cXZmeUIrSUpPK1NSWm1KcmZKYnV6VklnSnU2Y0tvUEZX?=
+ =?utf-8?B?UUZQaEZPWlNoUkJ4ek55Q0pyYVhkdUVCTzJmNTBtcGhqNFFyZTVGN1FrcitV?=
+ =?utf-8?Q?MlHCYoeoumED3H+K8uyoeJo=3D?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: e365d475-1554-4234-372d-08dbec3a16d3
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd983094-3073-449a-bc17-08dbec3a1739
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 15:37:23.9346
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 15:37:24.6503
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8elQIEjUyRMlYtYwWlJqNTa8b+53qZ52eOFb7o2+nCBR+Ltu4Tv4ZKqb2A7n2Opk/nS9IeQHQPqh1G8qzdeD/arq6pJkVw819W8/Cjev218=
+X-MS-Exchange-CrossTenant-UserPrincipalName: V0kBs7rfwLN/bNmMpq/Vo3hWLBr6talZ6RX6l9w+DXeKiVz9NWdZAA5yDPe95zr6Y+GuOo+zjfcm6Cx07+nEeFTvtDe1xv0D8kLmyUuh+9g=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR08MB5599
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -137,103 +139,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TPS6598x PD controller provides an active-high hardware reset input
-that reinitializes all device settings. If it is not grounded by
-design, the driver must be able to de-assert it in order to initialize
-the device.
+The TPS6598x device family provides a high-level reset pin. It can be
+either grounded or used to reinitialize all device settings.
 
-The PD controller is not ready for registration right after the reset
-de-assertion and a delay must be introduced in that case. According to
-TI, the delay can reach up to 1000 ms [1], which is in line with the
-experimental results obtained with a TPS65987D.
-
-Add a GPIO descriptor for the reset signal and basic reset management
-for initialization and suspend/resume.
-
-[1] https://e2e.ti.com/support/power-management-group/power-management/
-f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
-to-normal-operation/4809389#4809389
+Document the reset GPIO as an optional property and add it to the
+existing example.
 
 Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/usb/typec/tipd/core.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ Documentation/devicetree/bindings/usb/ti,tps6598x.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 0e867f531d34..014e15f29629 100644
---- a/drivers/usb/typec/tipd/core.c
-+++ b/drivers/usb/typec/tipd/core.c
-@@ -8,6 +8,7 @@
+diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+index 323d664ae06a..1745e28b3110 100644
+--- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
++++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+@@ -38,6 +38,10 @@ properties:
+       - const: main
+       - const: patch-address
  
- #include <linux/i2c.h>
- #include <linux/acpi.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/power_supply.h>
-@@ -64,6 +65,9 @@
- #define TPS_PBMC_RC	0 /* Return code */
- #define TPS_PBMC_DPCS	2 /* device patch complete status */
- 
-+/* reset de-assertion to ready for operation */
-+#define TPS_SETUP_MS			1000
++  reset-gpios:
++    description: GPIO used for the HRESET pin.
++    maxItems: 1
 +
- enum {
- 	TPS_PORTINFO_SINK,
- 	TPS_PORTINFO_SINK_ACCESSORY,
-@@ -119,6 +123,7 @@ struct tps6598x {
- 	struct mutex lock; /* device lock */
- 	u8 i2c_protocol:1;
+   wakeup-source: true
  
-+	struct gpio_desc *reset;
- 	struct typec_port *port;
- 	struct typec_partner *partner;
- 	struct usb_pd_identity partner_identity;
-@@ -1190,6 +1195,13 @@ static int tps6598x_probe(struct i2c_client *client)
- 	mutex_init(&tps->lock);
- 	tps->dev = &client->dev;
+   interrupts:
+@@ -90,6 +94,7 @@ additionalProperties: false
  
-+	tps->reset = devm_gpiod_get_optional(tps->dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(tps->reset))
-+		return dev_err_probe(tps->dev, PTR_ERR(tps->reset),
-+				     "failed to get reset GPIO\n");
-+	if (tps->reset)
-+		msleep(TPS_SETUP_MS);
-+
- 	tps->regmap = devm_regmap_init_i2c(client, &tps6598x_regmap_config);
- 	if (IS_ERR(tps->regmap))
- 		return PTR_ERR(tps->regmap);
-@@ -1344,6 +1356,9 @@ static void tps6598x_remove(struct i2c_client *client)
- 	/* Reset PD controller to remove any applied patch */
- 	if (device_is_compatible(tps->dev, "ti,tps25750"))
- 		tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
-+
-+	if (tps->reset)
-+		gpiod_set_value_cansleep(tps->reset, 1);
- }
+ examples:
+   - |
++    #include <dt-bindings/gpio/gpio.h>
+     #include <dt-bindings/interrupt-controller/irq.h>
+     i2c {
+         #address-cells = <1>;
+@@ -106,6 +111,7 @@ examples:
  
- static int __maybe_unused tps6598x_suspend(struct device *dev)
-@@ -1354,6 +1369,8 @@ static int __maybe_unused tps6598x_suspend(struct device *dev)
- 	if (tps->wakeup) {
- 		disable_irq(client->irq);
- 		enable_irq_wake(client->irq);
-+	} else if (tps->reset) {
-+		gpiod_set_value_cansleep(tps->reset, 1);
- 	}
+             pinctrl-names = "default";
+             pinctrl-0 = <&typec_pins>;
++            reset-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
  
- 	if (!client->irq)
-@@ -1381,6 +1398,9 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
- 	if (tps->wakeup) {
- 		disable_irq_wake(client->irq);
- 		enable_irq(client->irq);
-+	} else if (tps->reset) {
-+		gpiod_set_value_cansleep(tps->reset, 0);
-+		msleep(TPS_SETUP_MS);
- 	}
- 
- 	if (!client->irq)
+             typec_con: connector {
+                 compatible = "usb-c-connector";
 
 -- 
 2.39.2
