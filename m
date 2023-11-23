@@ -2,232 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA237F5A57
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C7C7F5A5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344992AbjKWIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:45:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        id S1344995AbjKWIrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345010AbjKWIp0 (ORCPT
+        with ESMTP id S234988AbjKWIrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:45:26 -0500
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6847CD42;
-        Thu, 23 Nov 2023 00:45:29 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 31BB441F5F;
-        Thu, 23 Nov 2023 08:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-        t=1700729126; bh=HutI9EG0kKFuTj0lAK98ZuffMEYUqaLfWIup+i0AkAw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=RQFgZgRr4dxfXUj8osOldDjyiWHNtOZZ2dTanRaueLvNgJTV6f9Ye+vJKWzbcnZ0Y
-         mt5G5F3oCCBnwwzr1L/28O5HA8+NMEPqil6jTHEgeOXRPdOjPV/hBkPEfroZOUNI0q
-         OG9HHKozlJKlq+g2iC7H2/JJI2MBKiazcyenQLKaQ3v9QFDYbllbejbIh1rdMBxYgW
-         izhE8befv8ABOeBJ5ZZ9tNJW56CKPYMdNObY7WrHSv8YPwvjcX5I/vZ6cOhkgB5bHH
-         ROtz5kV8S301GCOkryE41GGrpC2fWz/C9DzMSq0UNo8xiIeU+IxAibza5dvUb8qBCx
-         g5IRlkMU3ARWA==
-Message-ID: <ac4cf01d-4bb5-4b4d-bd87-bf05ddb67f2d@marcan.st>
-Date:   Thu, 23 Nov 2023 17:45:19 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
- priority than sysfs/json
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231123042922.834425-1-irogers@google.com>
-From:   Hector Martin <marcan@marcan.st>
-In-Reply-To: <20231123042922.834425-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 23 Nov 2023 03:47:00 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47378BC;
+        Thu, 23 Nov 2023 00:47:06 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN5q7B9019400;
+        Thu, 23 Nov 2023 08:46:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=jpPNjtbFq54UX+LJMlI2ATd3HcoEWd0fPFi2EKnyjyg=;
+ b=i9NofE63Sm8XJYUz14cbQN7Mjxj0EQ0bBbjXlPR8q3whXfeSqGqwzInUwQe+TIKak/rL
+ 9Eu/Q0diEVM7c7ktRv2xpl+7PZ1cfLYr/me9m1ulS4mZ1K8aKVmoHPk8CfbOubs0xb7y
+ njnYvBeOO3LTEg3xnaiYpVJTfmHP/J9HzFli3MCxvnpWG6+ll0YHzMVatBsjyVwdbYMZ
+ Japj/0Lv/8cQL2XSmA/EXfUszw+8Gsi/b4BuIZf0BMPWvlqcQQTZqMUzn6sDefC8M64k
+ woWvn1AM9mriVd2YCj1bKaPNSC2ijB5zvkEkpZJZnEVhL0EbT3PMKoQV7/KdzjRTtz9y IQ== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhgajtndu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 08:46:49 +0000
+Received: from pps.filterd (NASANPPMTA03.qualcomm.com [127.0.0.1])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AN8WDQY024629;
+        Thu, 23 Nov 2023 08:46:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by NASANPPMTA03.qualcomm.com (PPS) with ESMTP id 3uhwcrkk8y-1;
+        Thu, 23 Nov 2023 08:46:48 +0000
+Received: from NASANPPMTA03.qualcomm.com (NASANPPMTA03.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AN8anao029807;
+        Thu, 23 Nov 2023 08:46:48 GMT
+Received: from stor-dylan.qualcomm.com (stor-dylan.qualcomm.com [192.168.140.207])
+        by NASANPPMTA03.qualcomm.com (PPS) with ESMTP id 3AN8klgv011366;
+        Thu, 23 Nov 2023 08:46:48 +0000
+Received: by stor-dylan.qualcomm.com (Postfix, from userid 359480)
+        id A6EE020A68; Thu, 23 Nov 2023 00:46:47 -0800 (PST)
+From:   Can Guo <quic_cang@quicinc.com>
+To:     quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
+        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v5 00/10] Enable HS-G5 support on SM8550
+Date:   Thu, 23 Nov 2023 00:46:20 -0800
+Message-Id: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Wdr-4dnwV2WVW0s-DacmwJWP3QaRkEYT
+X-Proofpoint-ORIG-GUID: Wdr-4dnwV2WVW0s-DacmwJWP3QaRkEYT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_06,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230062
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/23 13:29, Ian Rogers wrote:
-> The perf tool has previously made legacy events the priority so with
-> or without a PMU the legacy event would be opened:
-> 
-> ```
-> $ perf stat -e cpu-cycles,cpu/cpu-cycles/ true
-> Using CPUID GenuineIntel-6-8D-1
-> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-> Attempting to add event pmu 'cpu' with 'cpu-cycles,' that may result in non-fatal errors
-> After aliases, add event pmu 'cpu' with 'cpu-cycles,' that may result in non-fatal errors
-> Control descriptor is not initialized
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             0 (PERF_TYPE_HARDWARE)
->   size                             136
->   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid 833967  cpu -1  group_fd -1  flags 0x8 = 3
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             0 (PERF_TYPE_HARDWARE)
->   size                             136
->   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> ...
-> ```
-> 
-> Fixes to make hybrid/BIG.little PMUs behave correctly, ie as core PMUs
-> capable of opening legacy events on each, removing hard coded
-> "cpu_core" and "cpu_atom" Intel PMU names, etc. caused a behavioral
-> difference on Apple/ARM due to latent issues in the PMU driver
-> reported in:
-> https://lore.kernel.org/lkml/08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st/
-> 
-> As part of that report Mark Rutland <mark.rutland@arm.com> requested
-> that legacy events not be higher in priority when a PMU is specified
-> reversing what has until this change been perf's default
-> behavior. With this change the above becomes:
-> 
-> ```
-> $ perf stat -e cpu-cycles,cpu/cpu-cycles/ true
-> Using CPUID GenuineIntel-6-8D-1
-> Attempt to add: cpu/cpu-cycles=0/
-> ..after resolving event: cpu/event=0x3c/
-> Control descriptor is not initialized
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             0 (PERF_TYPE_HARDWARE)
->   size                             136
->   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid 827628  cpu -1  group_fd -1  flags 0x8 = 3
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             4 (PERF_TYPE_RAW)
->   size                             136
->   config                           0x3c
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> ...
-> ```
-> 
-> So the second event has become a raw event as
-> /sys/devices/cpu/events/cpu-cycles exists.
-> 
-> A fix was necessary to config_term_pmu in parse-events.c as
-> check_alias expansion needs to happen after config_term_pmu, and
-> config_term_pmu may need calling a second time because of this.
-> 
-> config_term_pmu is updated to not use the legacy event when the PMU
-> has such a named event (either from json or sysfs).
-> 
-> The bulk of this change is updating all of the parse-events test
-> expectations so that if a sysfs/json event exists for a PMU the test
-> doesn't fail - a further sign, if it were needed, that the legacy
-> event priority was a known and tested behavior of the perf tool.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
-> This is a large behavioral change:
-> 1) the scope of the change means it should bake on linux-next and I
-> don't believe should be a 6.7-rc fix.
-> 2) a fixes tag and stable backport I don't think are appropriate. The
-> real reported issue is with the PMU driver. A backport would bring the
-> risk that later fixes, due to the large behavior change, wouldn't be
-> backported and past releases get regressed in scenarios like
-> hybrid. Backports for the perf tool are also less necessary than say a
-> buggy PMU driver, as distributions should be updating to the latest
-> perf tool regardless of what Linux kernel is being run (the perf tool
-> is backward compatible).
-> ---
->  tools/perf/tests/parse-events.c | 256 +++++++++++++++++++++++---------
->  tools/perf/util/parse-events.c  |  52 +++++--
->  tools/perf/util/pmu.c           |   8 +-
->  tools/perf/util/pmu.h           |   3 +-
->  4 files changed, 231 insertions(+), 88 deletions(-)
-> 
+This series enables HS-G5 support on SM8550.
 
-Tested-by: Hector Martin <marcan@marcan.st>
+This series is rebased on below changes from Mani -
+https://patchwork.kernel.org/project/linux-scsi/patch/20230908145329.154024-1-manivannan.sadhasivam@linaro.org/
+https://patchwork.kernel.org/project/linux-scsi/patch/20230908145329.154024-2-manivannan.sadhasivam@linaro.org/
 
-$ sudo taskset -c 2 ./perf stat -e apple_icestorm_pmu/cycles/ -e
-apple_firestorm_pmu/cycles/ -e cycles echo
+This series is tested on below HW combinations -
+SM8550 MTP + UFS4.0
+SM8550 QRD + UFS3.1
+SM8450 MTP + UFS3.1 (for regression test)
+SM8350 MTP + UFS3.1 (for regression test)
 
+Note that during reboot test on above platforms, I occasinally hit PA (PHY)
+error during the 2nd init, this is not related with this series. A fix for
+this is mentioned in below patchwork -
 
- Performance counter stats for 'echo':
+https://patchwork.kernel.org/project/linux-scsi/patch/1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com/
 
-     <not counted>      apple_icestorm_pmu/cycles/
-                       (0.00%)
-            34,622      apple_firestorm_pmu/cycles/
+Also note that on platforms, which have two sets of UFS PHY settings are
+provided (say G4 and no-G4, G5 and no-G5). The two sets of PHY settings are
+basically programming different values to different registers, mixing the
+two sets and/or overwriting one set with another set is definitely not
+blessed by UFS PHY designers. For SM8550, this series will make sure we
+honor the rule. However, for old targets Mani and I will fix them in
+another series in future.
 
-            30,751      cycles
+v4 -> v5:
+Removed two useless debug prints in patch #9
 
+v3 -> v4:
+1. Used .tbls_hs_overlay array instead of adding more tables with different names like .tbls_hs_g5
 
-       0.000429625 seconds time elapsed
+v2 -> v3:
+1. Addressed comments from Andrew, Mani and Bart in patch #1
+2. Added patch #2 as per request from Andrew and Mani
+3. Added patch #4 to fix a common issue on old targets, it is not necessary
+   for this series, but put in this series only because it would be easier
+   to maintain and no need to rebase
+4. Addressed comments from Dmitry and Mani in patches to phy-qcom-qmp-ufs.c
 
-       0.000000000 seconds user
-       0.000443000 seconds sys
+v1 -> v2:
+1. Removed 2 changes which were exposing power info in sysfs
+2. Removed 1 change which was moving data structs to phy-qcom-qmp-ufs.h
+3. Added one new change (the 1st one) to clean up usage of ufs_dev_params based on comments from Mani
+4. Adjusted the logic of UFS device version detection according to comments from Mani:
+	4.1 For HW version < 0x5, go through dual init
+ 	4.2 For HW version >= 0x5
+		a. If UFS device version is populated, one init is required
+		b. If UFS device version is not populated, go through dual init
 
+Bao D. Nguyen (1):
+  scsi: ufs: ufs-qcom: Add support for UFS device version detection
 
-$ sudo taskset -c 0 ./perf stat -e apple_icestorm_pmu/cycles/ -e
-apple_firestorm_pmu/cycles/ -e cycles echo
+Can Guo (9):
+  scsi: ufs: host: Rename structure ufs_dev_params to ufs_host_params
+  scsi: ufs: ufs-qcom: No need to set hs_rate after
+    ufshcd_init_host_param()
+  scsi: ufs: ufs-qcom: Setup host power mode during init
+  scsi: ufs: ufs-qcom: Limit negotiated gear to selected PHY gear
+  scsi: ufs: ufs-qcom: Allow the first init start with the maximum
+    supported gear
+  scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to hosts with HW version 5
+  scsi: ufs: ufs-qcom: Set initial PHY gear to max HS gear for HW ver 5
+    and newer
+  phy: qualcomm: phy-qcom-qmp-ufs: Rectify SM8550 UFS HS-G4 PHY Settings
+  phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed Gear 5 support for
+    SM8550
 
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
+ .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  12 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 196 ++++++++++++++++++---
+ drivers/ufs/host/ufs-exynos.c                      |   7 +-
+ drivers/ufs/host/ufs-hisi.c                        |  11 +-
+ drivers/ufs/host/ufs-mediatek.c                    |  12 +-
+ drivers/ufs/host/ufs-qcom.c                        |  92 +++++++---
+ drivers/ufs/host/ufs-qcom.h                        |   5 +-
+ drivers/ufs/host/ufshcd-pltfrm.c                   |  69 ++++----
+ drivers/ufs/host/ufshcd-pltfrm.h                   |  10 +-
+ 11 files changed, 311 insertions(+), 107 deletions(-)
 
- Performance counter stats for 'echo':
+-- 
+2.7.4
 
-            13,413      apple_icestorm_pmu/cycles/
-
-     <not counted>      apple_firestorm_pmu/cycles/
-                       (0.00%)
-     <not counted>      cycles
-                       (0.00%)
-
-       0.000898458 seconds time elapsed
-
-       0.000908000 seconds user
-       0.000000000 seconds sys
-
-(It would be nice to have "cycles" match/aggregate both PMUs, but that's
-a story for another day. The behavior above is what was there in 6.4 and
-earlier.)
-
-- Hector
