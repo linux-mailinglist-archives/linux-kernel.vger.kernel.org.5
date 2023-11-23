@@ -2,172 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3667F65DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCEC7F65E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjKWSAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 13:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        id S230034AbjKWSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 13:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWSAK (ORCPT
+        with ESMTP id S229462AbjKWSCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 13:00:10 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E96711F
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:00:16 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548db776f6cso13029a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700762411; x=1701367211; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oC1A8FYWCE9VFXIWJCcHsK/1/70L94HS4n6KVdO2o8A=;
-        b=eryl6WgvluWuvqsuvNz+n6Cin8fCM1fVm+YqTcpyHHvgvM1HkxyvVPtynz5R9YOEtw
-         lalRDk7PV2k2PUKSYNIT4MZjx2NjV7vPwnaPaufc7h/XqXqz8/jAMi+ZZMmYUst8B2eV
-         bWje0hX1zICLBmQol88EnygPKeBOsXYfhEDCwNsY5goWKcreRwutla00Lg7VzBD76HF7
-         gaMzI+RNl0fpDio8LxQSHBLGp3rleQp/JKjWcogK28xrJQtJbKDQdJOjOUP+KUDXiKIM
-         ch5dSMWzhSQAfMGat9YSJ1CUqqg37N+YuT4+NCF0sj6PyYtLusxpataKI1d/tyWQrEGG
-         lwJg==
+        Thu, 23 Nov 2023 13:02:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FF3D41
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:02:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700762546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4EEXViqB805TEJLl95Oc48y0HOh1LGI/lPszglbnn4k=;
+        b=iQM2FzLOiwoYKUGqIMdAHh3rSeG6/y1SK/SWyDhqrOyVm9itztVZn9boGg1BlyZbLVsk/S
+        MfGDcU56elmktZEQ408DvZJ99qt6jo59swYjG7R80WRtxISLG09xmrmoNglrURmJu/Yqe+
+        b1TUIQx9f4wMiRrVXna+hTEaUaHwPBw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-aewL9pyOOc-jHFR0DY4Hdw-1; Thu, 23 Nov 2023 13:02:25 -0500
+X-MC-Unique: aewL9pyOOc-jHFR0DY4Hdw-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67a05428cceso2146146d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:02:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700762411; x=1701367211;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oC1A8FYWCE9VFXIWJCcHsK/1/70L94HS4n6KVdO2o8A=;
-        b=VcgWmIQ4N6+g7defxXeptwKFpLpwShvm3s8EMXaq48vOO7NWHQbWKH+7NjQoymA2Ox
-         MXWUbCpALwU4Wo+QIR6kPGlc5+5dBGcsOs95IpBJ7GOBFnBdrPYg8ik1hXHbJtBnl7gp
-         Y4hcSAe5R5Vtyg3opzlFhVkAjbyR4eN4XDVI8LgOv3YrsRejvi+mi1uAbO1MBbnRn/bW
-         oknXD76Q7LpNE1xP4sLcO/eb27y48/EvfFkMySv4qfUmQUKh+KWAJwn12Gp0Ld2195wZ
-         NcmHFPsK8mwDEndGp0ZjE0AeT5O5Ezp8rqT5N1yzEX9uOerUgAfyb4g8Mrgx9bM4aOZ3
-         sEdQ==
-X-Gm-Message-State: AOJu0YzNRQg+mx8QBvaV/hrTRnhLhkAIos2uT8QEWeQvBIXysNeO/Ek5
-        rdLc6suIX/4fu8NQABbEs0aUbSfuyOlrgrkJUvLn2w==
-X-Google-Smtp-Source: AGHT+IHoBIIXEGSlxDzz0Dj3khuJipljirn6ek0M2FA+OCRKBDUg44tbPGTWEee8EfzTFB6XoqrHGN7ahfjVHOEnbQM=
-X-Received: by 2002:a05:6402:540a:b0:545:279:d075 with SMTP id
- ev10-20020a056402540a00b005450279d075mr327312edb.1.1700762410841; Thu, 23 Nov
- 2023 10:00:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700762544; x=1701367344;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4EEXViqB805TEJLl95Oc48y0HOh1LGI/lPszglbnn4k=;
+        b=Pm+zGSrbyvWYMCO2e/AxE1OdkIG5pp94liJKQ3/jNPIlpXLWaGh5OnhPVRGHX76feo
+         YaZ3E3zfdhcoxDwaiI4COYbZwkrybXMVMW/lZCQbuwNGZfBhh7JYtdik+3D5NiuJnIQ6
+         B/df5fuCXLx2HEmkzPxU3J6PzaGtuT2G1Dtrx85/CSPlUBox8JhdsF+99SSp8zPOmGHP
+         KQWy7Qde7re00dUxq0naXfsQLffOdQk1COwJd17NKvmDysNMdfdVMvT5GDTLCQEWX0ou
+         W7E4Aob14HGt19sUagFjKc4GVNDYuJ1bOdXnobI16+U9P/CaDxBp6JQ+AIaC/+RiRck/
+         Q2Rg==
+X-Gm-Message-State: AOJu0YyDllhig5Rk+hCzbL4nu7OKnaDq25uwpfCaAp1Tg7j9Ah9eAoYa
+        QWQEVVuT65p8ZEGeFVD8+p23z97rOHKc90WzaVHGRi4fjiSarBqRUpKutBlSDCGMUvr49JAKDvi
+        MwIJkCLRQ4WYhksKD79yCPljrS2m+yQse
+X-Received: by 2002:ad4:420f:0:b0:679:d8a9:ef41 with SMTP id k15-20020ad4420f000000b00679d8a9ef41mr273790qvp.0.1700762544394;
+        Thu, 23 Nov 2023 10:02:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEUr77F/yyuIsbmtEQQMFGKhS5qNFNQVBgvQdBpyjkNFaD58T2jqzyON33YgIFslunf28Y/Jg==
+X-Received: by 2002:ad4:420f:0:b0:679:d8a9:ef41 with SMTP id k15-20020ad4420f000000b00679d8a9ef41mr273772qvp.0.1700762544131;
+        Thu, 23 Nov 2023 10:02:24 -0800 (PST)
+Received: from x1n.redhat.com (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id s2-20020a0cdc02000000b0065af9d1203dsm693210qvk.121.2023.11.23.10.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 10:02:23 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] mm/gup: Fix follow_devmap_p[mu]d() on page==NULL handling
+Date:   Thu, 23 Nov 2023 13:02:22 -0500
+Message-ID: <20231123180222.1048297-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231123042922.834425-1-irogers@google.com> <86cyw0zeiu.wl-maz@kernel.org>
- <CAP-5=fXjX2pNmmX3WOY=m0BqUHTR2YPKVki6bbgG3g1Btc2=Ng@mail.gmail.com> <86bkbkzc2p.wl-maz@kernel.org>
-In-Reply-To: <86bkbkzc2p.wl-maz@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 23 Nov 2023 09:59:59 -0800
-Message-ID: <CAP-5=fUU4ZRLUrg7h+ua0f9mJBONfTd2JuCRPaXq2CApk5-_fA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
- priority than sysfs/json
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 8:09=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Thu, 23 Nov 2023 15:27:54 +0000,
-> Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Thu, Nov 23, 2023 at 7:16=E2=80=AFAM Marc Zyngier <maz@kernel.org> w=
-rote:
-> > >
-> > > Again, perf gets shipped in distros, and not necessary as the latest
-> > > version. Rather, they tend to ship the version matching the kernel. N=
-o
-> > > backport, buggy perf.
-> >
-> > Please complain to the distros. I complained to Debian, we got rid of
-> > the horrible wrapper script thing they did. I complained to two
-> > separate Ubuntu people over the last two weeks as they still have
-> > broken packaging even though they derive from Debian. Fedora is of
-> > course perfect as Arnaldo oversees it :-)
->
-> In this instance, I don't need to complain to anyone but you. And
-> guess what: it is on Fedora that this issue was first discovered.
->
-> I also don't see what distro packaging policy has anything to do with
-> the issue at hand, but that's beside the point.
+This is a bug found not by any report but only by code observations.
 
-Because the latest perf tool is always improved and carries fixes,
-just as say gcc or clang. We don't ask these tools to backport fixes
-and then deliberately run out-of-date versions of them.
+When GUP sees a devpmd/devpud and if page==NULL is returned, it means a
+fault is probably required.  Here falling through when page==NULL can cause
+unexpected behavior.
 
-> >
-> > > And again, I don't see a bug in the PMU driver.
-> >
-> > Whether the PMU driver is requested a legacy cycles event or the
-> > cycles event as an event code, the PMU driver should support it.
-> > Supporting legacy events is just something core PMU drivers do. This
-> > workaround wouldn't be necessary were it not for this PMU bug.
->
-> Again, *which* PMU bug? What is a legacy event, and when has this
-> terminology made it into the kernel? Who has decided that a change was
-> necessary? Why haven't you submitted patches upgrading all the PMU
-> drivers to support whatever you are referring to?
+Fix both cases by catching the page==NULL cases with no_page_table().
 
-I did fix ARM's PMU driver for extended types, James Clark took over
-the patch. The term legacy has at least been in use in kernel source
-code for over 11 years:
-http://lkml.kernel.org/r/1337584373-2741-4-git-send-email-jolsa@redhat.com
+Fixes: 3565fce3a659 ("mm, x86: get_user_pages() for dax mappings")
+Fixes: 080dbb618b4b ("mm/follow_page_mask: split follow_page_mask to smaller functions.")
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/gup.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-An issue I face in fixing somebody's PMU driver is it is ever so
-useful to be able to test. The work done with James was done blind by
-me except for checking for regressions on a raspberry pi 4, which
-isn't heterogeneous (nor is the 5 *sigh*). The fact there were bugs in
-ARM's PMU driver for so long shows a lack of testing by ARM and we've
-been going out of our way to increase testing. Something positive ARM
-could do in this area is to update the parse-events test, yes the one
-that is supposed to test issues like this, so that the hardcoded "cpu"
-PMU assumption that works on most platforms who name their core PMU
-"cpu" also works on ARM. For bonus points setting up testing so that
-we know when things break would be useful. As mentioned in previous
-emails I hope to work away from needing an actual machine to test the
-perf tool's correctness, but we're a long way from that. There are
-very many BIG.little Android devices in the field where the PMUs are
-not set up as heterogeneous, ARM could contribute a CTS test to
-Android to make sure this doesn't happen.
+diff --git a/mm/gup.c b/mm/gup.c
+index 231711efa390..0a5f0e91bfec 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -710,6 +710,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 		spin_unlock(ptl);
+ 		if (page)
+ 			return page;
++		return no_page_table(vma, flags);
+ 	}
+ 	if (likely(!pmd_trans_huge(pmdval)))
+ 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
+@@ -758,6 +759,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+ 		spin_unlock(ptl);
+ 		if (page)
+ 			return page;
++		return no_page_table(vma, flags);
+ 	}
+ 	if (unlikely(pud_bad(*pud)))
+ 		return no_page_table(vma, flags);
+-- 
+2.41.0
 
-Thanks,
-Ian
-
-> > This change impacts every user of perf not just a partial fix to
-> > workaround ARM PMU driver issues, see the updated parse-events test
-> > for a list of what a simple test sees as a behavior change.
->
-> When making far-reaching changes to a subsystem, I apply two rules:
->
-> - I address everything that is affected, not just my pet architecture
->
-> - I don't break other people's toys, which means compatibility is a
->   *must*, not a 'nice to have'
->
-> By this standard, your complaining that "ARM is broken" doesn't hold.
-> It was working just fine until your changes rendered perf unusable.
->
-> Nonetheless, thank you for addressing it quickly. This is sincerely
-> appreciated.
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
