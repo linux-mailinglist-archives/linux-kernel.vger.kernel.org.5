@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9620F7F612C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFCC7F612E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345687AbjKWONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S1345714AbjKWONg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345534AbjKWONT (ORCPT
+        with ESMTP id S1345534AbjKWONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:13:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD28DD;
-        Thu, 23 Nov 2023 06:13:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700748806; x=1732284806;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=i6dlBQVLbMkbONcy1iFh3NN9IB9skLHq2GtmTkDvwpI=;
-  b=bFDa7rYYQhVaP7n0o2u9TqxFUZ0FsNkNCfXJb8/wcNHdNSur0lykkiIG
-   XTU7mQ8ojwuwuvxy8boWs2FvDrPy8yLz8VQsCXVQIm+wTUGR911Hf+abT
-   SDCTNJvy5DQq8ewy+hoOsqCKHCqaopWzNX3anqi4pAU0uzvskM3xFlIZe
-   D9SKFwpBVvuvzIo8qqXMvDfLHVOQel4yKObI7kNr3QWr3ecJYiUmynfFf
-   0Z52+gDMEmAjRczN9qAxwK5fbXCEFqcpqiMR6/UlRdw1/H2aDWNtUmcXH
-   oH1mFMTrUc4OZXzUtjgynliH7S954yvoh2KxvwhIBZ6V3fDchXDBPo0fR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="13826094"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="13826094"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:13:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="837815344"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="837815344"
-Received: from ckochhof-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.58.117])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:13:20 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2250410A38A; Thu, 23 Nov 2023 17:13:18 +0300 (+03)
-Date:   Thu, 23 Nov 2023 17:13:18 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        sashal@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] x86/coco: Disable TDX module calls when TD
- partitioning is active
-Message-ID: <20231123141318.rmskhl3scc2a6muw@box.shutemov.name>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231122170106.270266-2-jpiotrowski@linux.microsoft.com>
+        Thu, 23 Nov 2023 09:13:34 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0D0D40;
+        Thu, 23 Nov 2023 06:13:41 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANDod0w013391;
+        Thu, 23 Nov 2023 14:13:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=Q04AXgHuRqcJadhMlb2LUeTbuaDdTSUNd6AIPrTaYzs=;
+ b=JfXIJVS+F5prnqDH5sAiQ9lg5miS4D82vC5tSM6gib0Y98dn3HrL9O1y/TGEqOSx/Bq1
+ VXrNP9rDZaFClNNyF/qqdE9CzPQ7WAc3sTHgOoowVKb6qQ6E6v17vgSA3i1pl6dpGlo6
+ nJfgnUx53i6tUPKFyXa7Bhs6ARh06vWKPCOIGelxuG31lh1gNGvSnMVK5gZaWPpVtBzk
+ f3UagDvuCcO7Zkb4XeGEcWVO/QojqyFtnMaHjrOk/nKHHA29JA1j3IyhVUU7bQagRrkR
+ RsSlatuUx+CdWWn/bBPO2TRR4r6YF8n3jfeUBODSLWuS7GPPUI69BrSzoPuZTZ3lxP+b lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj7dpsh8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 14:13:34 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ANDomMR014492;
+        Thu, 23 Nov 2023 14:13:34 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj7dpsh87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 14:13:34 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANBIqBa024672;
+        Thu, 23 Nov 2023 14:13:33 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf8kp7jkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 14:13:32 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ANEDVjF45548276
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Nov 2023 14:13:31 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB5E62004B;
+        Thu, 23 Nov 2023 14:13:30 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B37820040;
+        Thu, 23 Nov 2023 14:13:30 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.80.84])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 23 Nov 2023 14:13:30 +0000 (GMT)
+Date:   Thu, 23 Nov 2023 15:13:28 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        akpm@linux-foundation.org, ignat@cloudflare.com,
+        eric_devolder@yahoo.com
+Subject: Re: [PATCH 2/3] drivers/base/cpu: crash data showing should depends
+ on KEXEC_CORE
+Message-ID: <ZV9eCBm5uy7/VgOX@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20231123073652.507034-1-bhe@redhat.com>
+ <20231123073652.507034-3-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231122170106.270266-2-jpiotrowski@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231123073652.507034-3-bhe@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 2VLVSyf8Y0jVaqlYYFYjpVvyoOJkyXHF
+X-Proofpoint-ORIG-GUID: FbY8vbpibFUL3rG1mgZJQiwJNhj6l0VL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 spamscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxlogscore=642
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230102
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 06:01:05PM +0100, Jeremi Piotrowski wrote:
-> Introduce CC_ATTR_TDX_MODULE_CALLS to allow code to check whether TDX module
-> calls are available. When TD partitioning is enabled, a L1 TD VMM handles most
-> TDX facilities and the kernel running as an L2 TD VM does not have access to
-> TDX module calls. The kernel still has access to TDVMCALL(0) which is forwarded
-> to the VMM for processing, which is the L1 TD VM in this case.
+On Thu, Nov 23, 2023 at 03:36:51PM +0800, Baoquan He wrote:
+> When below kernel config items are set, compiling error are triggered.
+> 
+> CONFIG_CRASH_CORE=y
+> CONFIG_KEXEC_CORE=y
+> CONFIG_CRASH_DUMP=y
+> CONFIG_CRASH_HOTPLUG=y
+> 
+> ------------------------------------------------------
+> drivers/base/cpu.c: In function ‘crash_hotplug_show’:
+> drivers/base/cpu.c:309:40: error: implicit declaration of function ‘crash_hotplug_cpu_support’; did you mean ‘crash_hotplug_show’? [-Werror=implicit-function-declaration]
+>   309 |         return sysfs_emit(buf, "%d\n", crash_hotplug_cpu_support());
+>       |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                                        crash_hotplug_show
+> cc1: some warnings being treated as errors
+> ------------------------------------------------------
+> 
+> CONFIG_KEXEC is used to enable kexec_load interface, the
+> crash_notes/crash_notes_size/crash_hotplug showing depends on
+> CONFIG_KEXEC is incorrect. It should depend on KEXEC_CORE instead.
+> 
+> Fix it now.
 
-Sounds like a problem introduced by patch 1/3 :/
+If this error introduced with the prevous patch?
+If so, the patches need to be swapped I guess.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> Signed-off-by: Baoquan He <bhe@redhat.com>
