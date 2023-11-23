@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EA67F629C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D492C7F62A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346056AbjKWPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:23:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
+        id S1346058AbjKWPXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346049AbjKWPXU (ORCPT
+        with ESMTP id S1346049AbjKWPXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:23:20 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DC1D41;
-        Thu, 23 Nov 2023 07:23:25 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cf6a67e290so7412875ad.1;
-        Thu, 23 Nov 2023 07:23:25 -0800 (PST)
+        Thu, 23 Nov 2023 10:23:23 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555A3C1;
+        Thu, 23 Nov 2023 07:23:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cf52e5e07eso14925065ad.0;
+        Thu, 23 Nov 2023 07:23:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700753005; x=1701357805; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700753010; x=1701357810; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XrmeMWw1USORDmUFPvtwFbLaQiZXCrXNlk5T2YIWwKM=;
-        b=b34948C3dzfgy1vF7zWhS6bt6lH/8eGxzVUUfd/8oID1V9CpNLbZwBMHRhTjdw5rE+
-         IUOUn1ph7tJrEsKW6doIjlo7TtnuZzAzWyd3GWucaHiW/Hop22Gv5TVYd0NTIuERL3cg
-         HuCc2Ear6Wa4WLm8spaWI6vY2nfRGUgqYNvfqyc+r8yG5jrxZPKCSInN25Tg8FBWtSkv
-         A1S6NU3/xjE8MWeFcupWqwGuzJuEHfEviKs5k1V1QL1gPtdG7FVTg5xiTBgIfeHCJjkb
-         euVCNsz1MAHMhiZzntbJxeqkruzYEXhVVTbyEh8mA49wBW2V2ht/AkhoEkk5PTaL1TWA
-         vVRw==
+        bh=er0tOmx71t3kRF+sJtcJFohjaQYKHdu0ri/MYPaslMU=;
+        b=PIHroE1j75Bl12mxdFDtjDvfCO9RczOP8gAwsFaMZ8Ocx0di7RzKwb9jBD5gJwdPh1
+         jaLqtyTBvQjpHmgkp6PYGQ762r0onr9tdmqakAlgeigDyxL0bpfo+m1GG712Lpmz4iNI
+         JT56wT8udjqWzfrvege4zKLVCDIf1hIUIIR8FdGZ3LvXnb+HB5DuTnHlXyYNvvVDIF3N
+         NRTMOKlPJ7hgPz3rlRqn8bGh6wa1GQoR4RBy8f1MXxbgTx96Ai60pIrecpt7CMnKcVO1
+         SC9suXSZuoH5K3Lp5UhwKmVkPesgnwmDcadFO5gXCb/d1c8566Gs2Fy2bH9/5pdOwaa5
+         qItg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700753005; x=1701357805;
+        d=1e100.net; s=20230601; t=1700753010; x=1701357810;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XrmeMWw1USORDmUFPvtwFbLaQiZXCrXNlk5T2YIWwKM=;
-        b=u/xITElOtHobD4qfl4b/jN0cWBLo2Qytw/sVlQGCeewwqLQVHtu3AXmdx+0cPQ3NfH
-         WubSWTxQTLZO00aBVfxNwGdZzHpsoltxO9ImZMw5xrmXV0Z6hGwz4rRlDDR+u7pTrZON
-         11R2QlR7HMcpX/pZY+kAuZPQwSPNUaVntnqTmG89QlEByD/OTBlse1y0ywvDFcICte5p
-         4yNKyFgvEGuqUTBmVhs1AN7n5JROQqvo65dUBXSyvgmqASIUiWpDpW6qDKn0/jqWaAp/
-         xfMr6kFZAsg2YRNB2hDdX7sAKq9FJRXV5dezrqYNgbPmaQkM5B4WxdXKU7BmU9deKUDr
-         0Xyg==
-X-Gm-Message-State: AOJu0Yxq17KkvJPNjhcj909OzDj6jxr+GDG45mTHmGyCjspcsnn0591L
-        en9dvlmQ93ZySeRa6JM5+Ss=
-X-Google-Smtp-Source: AGHT+IGnSlbZBHnI/AMNWYiIO4SemzdKvGc9tl3gWeBGboQrYkYDbDJLG8EqFaGYysEOYhtIzSfuew==
-X-Received: by 2002:a17:902:8f91:b0:1cc:20ec:d3bb with SMTP id z17-20020a1709028f9100b001cc20ecd3bbmr5190037plo.40.1700753005234;
-        Thu, 23 Nov 2023 07:23:25 -0800 (PST)
+        bh=er0tOmx71t3kRF+sJtcJFohjaQYKHdu0ri/MYPaslMU=;
+        b=E4qzxzsnE74QY8i3FuSNHZ8KkDdg8fKWpc002eBqU3c/oTLJtZXD1nArVDB3wgi+WE
+         T7kqfln6xSIpk1+VzYvrbxbpcQJTY1Epe0WVHT70ZJbOGXEM3CLZ+Dv3BSr3ayVFswbP
+         7ucGWbCHpSEDl6LcCarINNbEf6RcP+bjeZVkO6yVoLnjWlNjx23B19avowSNe18xe907
+         Si9QJl17lbb1wjNI3ctMDfNCrDtw4uZj+bXT0oWtOp8Ds7jmh+nR6O1j400IzcLkRRiC
+         YMXpgxgZsCdxycU+CNDwHebhDS2jSEXr4q6BsocSsIrGD4OegTaZsYFvY/QL2QqCTTm8
+         Q4EQ==
+X-Gm-Message-State: AOJu0Yw5jFDhph5PaBjmtR+lU1rbxzUI5tSBnwSoih4oQBSpgVw3OM5Q
+        gRKJsd4iv38W/VZbrSzVomjjcPMdo8bBSQ==
+X-Google-Smtp-Source: AGHT+IHgAS4Tb9n7kVYDmGJ6n4Db7afPC11zCFXLxI0vV3gGFsQNzv4705dikKcZtJq5iAoNSU55PQ==
+X-Received: by 2002:a17:902:dac2:b0:1cc:644a:2129 with SMTP id q2-20020a170902dac200b001cc644a2129mr4275303plx.32.1700753009654;
+        Thu, 23 Nov 2023 07:23:29 -0800 (PST)
 Received: from localhost.localdomain ([110.46.146.116])
-        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b001c737950e4dsm418565plh.2.2023.11.23.07.23.22
+        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b001c737950e4dsm418565plh.2.2023.11.23.07.23.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 07:23:24 -0800 (PST)
+        Thu, 23 Nov 2023 07:23:29 -0800 (PST)
 From:   SungHwan Jung <onenowy@gmail.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
@@ -58,9 +58,9 @@ To:     Hans de Goede <hdegoede@redhat.com>,
 Cc:     SungHwan Jung <onenowy@gmail.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-hwmon@vger.kernel.org
-Subject: [PATCH v3 1/2]  platform/x86: acer-wmi: Add platform profile and mode key support for Predator PHN16-71
-Date:   Fri, 24 Nov 2023 00:22:26 +0900
-Message-ID: <20231123152229.4920-2-onenowy@gmail.com>
+Subject: [PATCH v3 2/2] platform/x86: acer-wmi: add fan speed monitoring for Predator PHN16-71
+Date:   Fri, 24 Nov 2023 00:22:27 +0900
+Message-ID: <20231123152229.4920-3-onenowy@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231123152229.4920-1-onenowy@gmail.com>
 References: <20231123152229.4920-1-onenowy@gmail.com>
@@ -76,418 +76,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- The Acer Predator PHN16-71 has the mode key that is used to rotate
-thermal modes or toggle turbo mode with predator sense app (ver. 4) on
-windows.
-This patch includes platform profile and the mode key support for the
-device and also includes a small fix for "WMI_gaming_execute_u64"
-function.
+Support CPU and GPU fan speed monitoring through WMI for Predator
+PHN16-71.
+
+This patch depends on patch "platform/x86: acer-wmi: Add platform
+profile and mode key support for Predator PHN16-71"
+
+"select ACPI_VIDEO" cause recursive dependency and it is not recommended
+to use "select" for visible symbol, "select" has changed to "depends on".
 
 Signed-off-by: SungHwan Jung <onenowy@gmail.com>
 ---
- drivers/platform/x86/acer-wmi.c | 268 +++++++++++++++++++++++++++++++-
- 1 file changed, 267 insertions(+), 1 deletion(-)
+ drivers/platform/x86/Kconfig    |  3 +-
+ drivers/platform/x86/acer-wmi.c | 98 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 99 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 7e69fdacc..33ddb644e 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -177,7 +177,8 @@ config ACER_WMI
+ 	depends on INPUT
+ 	depends on RFKILL || RFKILL = n
+ 	depends on ACPI_WMI
+-	select ACPI_VIDEO
++	depends on HWMON
++	depends on ACPI_VIDEO
+ 	select INPUT_SPARSEKMAP
+ 	select LEDS_CLASS
+ 	select NEW_LEDS
 diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 0e472aa9b..e3650dce0 100644
+index e3650dce0..f2f3b1c45 100644
 --- a/drivers/platform/x86/acer-wmi.c
 +++ b/drivers/platform/x86/acer-wmi.c
-@@ -20,6 +20,7 @@
- #include <linux/backlight.h>
- #include <linux/leds.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_profile.h>
- #include <linux/acpi.h>
- #include <linux/i8042.h>
- #include <linux/rfkill.h>
-@@ -62,9 +63,12 @@ MODULE_LICENSE("GPL");
+@@ -30,6 +30,7 @@
+ #include <linux/input.h>
+ #include <linux/input/sparse-keymap.h>
+ #include <acpi/video.h>
++#include <linux/hwmon.h>
  
- #define ACER_WMID_SET_GAMING_LED_METHODID 2
- #define ACER_WMID_GET_GAMING_LED_METHODID 4
-+#define ACER_WMID_GET_GAMING_SYS_INFO_METHODID 5
- #define ACER_WMID_SET_GAMING_FAN_BEHAVIOR 14
- #define ACER_WMID_SET_GAMING_MISC_SETTING_METHODID 22
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+@@ -96,6 +97,8 @@ enum acer_wmi_event_ids {
  
-+#define ACER_PREDATOR_V4_THERMAL_PROFILE_EC_OFFSET 0x54
-+
- /*
-  * Acer ACPI method GUIDs
-  */
-@@ -90,6 +94,10 @@ enum acer_wmi_event_ids {
- 	WMID_GAMING_TURBO_KEY_EVENT = 0x7,
+ enum acer_wmi_predator_v4_sys_info_command {
+ 	ACER_WMID_CMD_GET_PREDATOR_V4_BAT_STATUS = 0x02,
++	ACER_WMID_CMD_GET_PREDATOR_V4_CPU_FAN_SPEED = 0x0201,
++	ACER_WMID_CMD_GET_PREDATOR_V4_GPU_FAN_SPEED = 0x0601,
  };
  
-+enum acer_wmi_predator_v4_sys_info_command {
-+	ACER_WMID_CMD_GET_PREDATOR_V4_BAT_STATUS = 0x02,
-+};
-+
  static const struct key_entry acer_wmi_keymap[] __initconst = {
- 	{KE_KEY, 0x01, {KEY_WLAN} },     /* WiFi */
- 	{KE_KEY, 0x03, {KEY_WLAN} },     /* WiFi */
-@@ -232,6 +240,7 @@ struct hotkey_function_type_aa {
- #define ACER_CAP_TURBO_OC     BIT(7)
+@@ -241,6 +244,7 @@ struct hotkey_function_type_aa {
  #define ACER_CAP_TURBO_LED     BIT(8)
  #define ACER_CAP_TURBO_FAN     BIT(9)
-+#define ACER_CAP_PLATFORM_PROFILE BIT(10)
+ #define ACER_CAP_PLATFORM_PROFILE BIT(10)
++#define ACER_CAP_FAN_SPEED_READ BIT(11)
  
  /*
   * Interface type flags
-@@ -259,6 +268,7 @@ static bool ec_raw_mode;
- static bool has_type_aa;
- static u16 commun_func_bitmap;
- static u8 commun_fn_key_number;
-+static bool cycle_gaming_thermal_profile = true;
- 
- module_param(mailled, int, 0444);
- module_param(brightness, int, 0444);
-@@ -266,12 +276,16 @@ module_param(threeg, int, 0444);
- module_param(force_series, int, 0444);
- module_param(force_caps, int, 0444);
- module_param(ec_raw_mode, bool, 0444);
-+module_param(cycle_gaming_thermal_profile, bool, 0644);
- MODULE_PARM_DESC(mailled, "Set initial state of Mail LED");
- MODULE_PARM_DESC(brightness, "Set initial LCD backlight brightness");
- MODULE_PARM_DESC(threeg, "Set initial state of 3G hardware");
- MODULE_PARM_DESC(force_series, "Force a different laptop series");
- MODULE_PARM_DESC(force_caps, "Force the capability bitmask to this value");
- MODULE_PARM_DESC(ec_raw_mode, "Enable EC raw mode");
-+MODULE_PARM_DESC(
-+	cycle_gaming_thermal_profile,
-+	"Set thermal mode key in cycle mode. Disabling it sets the mode key in turbo toggle mode");
- 
- struct acer_data {
- 	int mailled;
-@@ -321,6 +335,7 @@ struct quirk_entry {
- 	u8 turbo;
- 	u8 cpu_fans;
- 	u8 gpu_fans;
-+	u8 predator_v4;
- };
- 
- static struct quirk_entry *quirks;
-@@ -336,6 +351,9 @@ static void __init set_quirks(void)
- 	if (quirks->turbo)
- 		interface->capability |= ACER_CAP_TURBO_OC | ACER_CAP_TURBO_LED
+@@ -353,7 +357,8 @@ static void __init set_quirks(void)
  					 | ACER_CAP_TURBO_FAN;
-+
-+	if (quirks->predator_v4)
-+		interface->capability |= ACER_CAP_PLATFORM_PROFILE;
+ 
+ 	if (quirks->predator_v4)
+-		interface->capability |= ACER_CAP_PLATFORM_PROFILE;
++		interface->capability |= ACER_CAP_PLATFORM_PROFILE |
++					 ACER_CAP_FAN_SPEED_READ;
  }
  
  static int __init dmi_matched(const struct dmi_system_id *dmi)
-@@ -370,6 +388,11 @@ static struct quirk_entry quirk_acer_predator_ph315_53 = {
- 	.gpu_fans = 1,
- };
- 
-+static struct quirk_entry quirk_acer_predator_v4 = {
-+	.predator_v4 = 1,
-+};
-+
-+
- /* This AMW0 laptop has no bluetooth */
- static struct quirk_entry quirk_medion_md_98300 = {
- 	.wireless = 1,
-@@ -546,6 +569,15 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
- 		},
- 		.driver_data = &quirk_acer_predator_ph315_53,
- 	},
-+	{
-+		.callback = dmi_matched,
-+		.ident = "Acer Predator PHN16-71",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Predator PHN16-71"),
-+		},
-+		.driver_data = &quirk_acer_predator_v4,
-+	},
- 	{
- 		.callback = set_force_caps,
- 		.ident = "Acer Aspire Switch 10E SW3-016",
-@@ -659,6 +691,33 @@ static const struct dmi_system_id non_acer_quirks[] __initconst = {
- 	{}
- };
- 
-+static struct platform_profile_handler platform_profile_handler;
-+static bool platform_profile_support;
-+
-+/*
-+ * The profile used before turbo mode. This variable is needed for
-+ * returning from turbo mode when the mode key is in toggle mode.
-+ */
-+static int last_non_turbo_profile;
-+
-+enum acer_predator_v4_thermal_profile_ec {
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_ECO = 0x04,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO = 0x03,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE = 0x02,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET = 0x01,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED = 0x00,
-+};
-+
-+enum acer_predator_v4_thermal_profile_wmi {
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_ECO_WMI = 0x060B,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI = 0x050B,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE_WMI = 0x040B,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET_WMI = 0x0B,
-+	ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI = 0x010B,
-+};
-+
-+
-+
- /* Find which quirks are needed for a particular vendor/ model pair */
- static void __init find_quirks(void)
- {
-@@ -1339,7 +1398,7 @@ WMI_gaming_execute_u64(u32 method_id, u64 in, u64 *out)
- 	struct acpi_buffer input = { (acpi_size) sizeof(u64), (void *)(&in) };
- 	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
- 	union acpi_object *obj;
--	u32 tmp = 0;
-+	u64 tmp = 0;
- 	acpi_status status;
- 
- 	status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
-@@ -1698,6 +1757,199 @@ static int acer_toggle_turbo(void)
- 	return turbo_led_state;
+@@ -1722,6 +1727,25 @@ static int acer_gsensor_event(void)
+ 	return 0;
  }
  
-+static int
-+acer_predator_v4_platform_profile_get(struct platform_profile_handler *pprof,
-+				      enum platform_profile_option *profile)
-+{
-+	u8 tp;
-+	int err;
-+
-+	err = ec_read(ACER_PREDATOR_V4_THERMAL_PROFILE_EC_OFFSET, &tp);
-+
-+	if (err < 0)
-+		return err;
-+
-+	switch (tp) {
-+	case ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO:
-+		*profile = PLATFORM_PROFILE_PERFORMANCE;
-+		break;
-+	case ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE:
-+		*profile = PLATFORM_PROFILE_BALANCED_PERFORMANCE;
-+		break;
-+	case ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED:
-+		*profile = PLATFORM_PROFILE_BALANCED;
-+		break;
-+	case ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET:
-+		*profile = PLATFORM_PROFILE_QUIET;
-+		break;
-+	case ACER_PREDATOR_V4_THERMAL_PROFILE_ECO:
-+		*profile = PLATFORM_PROFILE_LOW_POWER;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int
-+acer_predator_v4_platform_profile_set(struct platform_profile_handler *pprof,
-+				      enum platform_profile_option profile)
-+{
-+	int tp;
-+	acpi_status status;
-+
-+	switch (profile) {
-+	case PLATFORM_PROFILE_PERFORMANCE:
-+		tp = ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI;
-+		break;
-+	case PLATFORM_PROFILE_BALANCED_PERFORMANCE:
-+		tp = ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE_WMI;
-+		break;
-+	case PLATFORM_PROFILE_BALANCED:
-+		tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+		break;
-+	case PLATFORM_PROFILE_QUIET:
-+		tp = ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET_WMI;
-+		break;
-+	case PLATFORM_PROFILE_LOW_POWER:
-+		tp = ACER_PREDATOR_V4_THERMAL_PROFILE_ECO_WMI;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	status = WMI_gaming_execute_u64(
-+		ACER_WMID_SET_GAMING_MISC_SETTING_METHODID, tp, NULL);
-+
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+
-+	if (tp != ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI)
-+		last_non_turbo_profile = tp;
-+
-+	return 0;
-+}
-+
-+static int acer_platform_profile_setup(void)
++static int acer_get_fan_speed(int fan)
 +{
 +	if (quirks->predator_v4) {
-+		int err;
-+
-+		platform_profile_handler.profile_get =
-+			acer_predator_v4_platform_profile_get;
-+		platform_profile_handler.profile_set =
-+			acer_predator_v4_platform_profile_set;
-+
-+		set_bit(PLATFORM_PROFILE_PERFORMANCE,
-+			platform_profile_handler.choices);
-+		set_bit(PLATFORM_PROFILE_BALANCED_PERFORMANCE,
-+			platform_profile_handler.choices);
-+		set_bit(PLATFORM_PROFILE_BALANCED,
-+			platform_profile_handler.choices);
-+		set_bit(PLATFORM_PROFILE_QUIET,
-+			platform_profile_handler.choices);
-+		set_bit(PLATFORM_PROFILE_LOW_POWER,
-+			platform_profile_handler.choices);
-+
-+		err = platform_profile_register(&platform_profile_handler);
-+		if (err)
-+			return err;
-+
-+		platform_profile_support = true;
-+
-+		/* Set default non-turbo profile  */
-+		last_non_turbo_profile =
-+			ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+	}
-+	return 0;
-+}
-+
-+static int acer_thermal_profile_change(void)
-+{
-+	/*
-+	 * This mode key can rotate each mode or toggle turbo mode.
-+	 * On battery, only ECO and BALANCED mode are available.
-+	 */
-+	if (quirks->predator_v4) {
-+		u8 current_tp;
-+		int tp, err;
-+		u64 on_AC;
 +		acpi_status status;
++		u64 fanspeed;
 +
-+		err = ec_read(ACER_PREDATOR_V4_THERMAL_PROFILE_EC_OFFSET,
-+			      &current_tp);
-+
-+		if (err < 0)
-+			return err;
-+
-+		/* Check power source */
 +		status = WMI_gaming_execute_u64(
 +			ACER_WMID_GET_GAMING_SYS_INFO_METHODID,
-+			ACER_WMID_CMD_GET_PREDATOR_V4_BAT_STATUS, &on_AC);
++			fan == 0 ? ACER_WMID_CMD_GET_PREDATOR_V4_CPU_FAN_SPEED :
++				   ACER_WMID_CMD_GET_PREDATOR_V4_GPU_FAN_SPEED,
++			&fanspeed);
 +
 +		if (ACPI_FAILURE(status))
 +			return -EIO;
-+
-+		switch (current_tp) {
-+		case ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO:
-+			if (!on_AC)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+			else if (cycle_gaming_thermal_profile)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_ECO_WMI;
-+			else
-+				tp = last_non_turbo_profile;
-+			break;
-+		case ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE:
-+			if (!on_AC)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+			else
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI;
-+			break;
-+		case ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED:
-+			if (!on_AC)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_ECO_WMI;
-+			else if (cycle_gaming_thermal_profile)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_PERFORMANCE_WMI;
-+			else
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI;
-+			break;
-+		case ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET:
-+			if (!on_AC)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+			else if (cycle_gaming_thermal_profile)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+			else
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI;
-+			break;
-+		case ACER_PREDATOR_V4_THERMAL_PROFILE_ECO:
-+			if (!on_AC)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_BALANCED_WMI;
-+			else if (cycle_gaming_thermal_profile)
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_QUIET_WMI;
-+			else
-+				tp = ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI;
-+			break;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+
-+		status = WMI_gaming_execute_u64(
-+			ACER_WMID_SET_GAMING_MISC_SETTING_METHODID, tp, NULL);
-+
-+		if (ACPI_FAILURE(status))
-+			return -EIO;
-+
-+		/* Store non-turbo profile for turbo mode toggle*/
-+		if (tp != ACER_PREDATOR_V4_THERMAL_PROFILE_TURBO_WMI)
-+			last_non_turbo_profile = tp;
-+
-+		platform_profile_notify();
++		return fanspeed >> 8;
 +	}
-+
-+	return 0;
++	return -EOPNOTSUPP;
 +}
 +
  /*
-  * Switch series keyboard dock status
+  *  Predator series turbo button
   */
-@@ -1997,6 +2249,8 @@ static void acer_wmi_notify(u32 value, void *context)
- 	case WMID_GAMING_TURBO_KEY_EVENT:
- 		if (return_value.key_num == 0x4)
- 			acer_toggle_turbo();
-+		if (return_value.key_num == 0x5 && has_cap(ACER_CAP_PLATFORM_PROFILE))
-+			acer_thermal_profile_change();
- 		break;
- 	default:
- 		pr_warn("Unknown function number - %d - %d\n",
-@@ -2245,6 +2499,12 @@ static int acer_platform_probe(struct platform_device *device)
- 	if (err)
- 		goto error_rfkill;
+@@ -2476,6 +2500,8 @@ static u32 get_wmid_devices(void)
+ 	return devices;
+ }
  
-+	if (has_cap(ACER_CAP_PLATFORM_PROFILE)) {
-+		err = acer_platform_profile_setup();
-+		if (err)
-+			goto error_platform_profile;
-+	}
++static int acer_wmi_hwmon_init(void);
++
+ /*
+  * Platform device
+  */
+@@ -2505,6 +2531,9 @@ static int acer_platform_probe(struct platform_device *device)
+ 			goto error_platform_profile;
+ 	}
+ 
++	if (has_cap(ACER_CAP_FAN_SPEED_READ))
++		err = acer_wmi_hwmon_init();
 +
  	return err;
  
  error_rfkill:
-@@ -2253,6 +2513,9 @@ static int acer_platform_probe(struct platform_device *device)
- error_brightness:
- 	if (has_cap(ACER_CAP_MAILLED))
- 		acer_led_exit();
-+error_platform_profile:
-+	if (platform_profile_support)
-+		platform_profile_remove();
- error_mailled:
- 	return err;
+@@ -2617,6 +2646,73 @@ static void __init create_debugfs(void)
+ 			   &interface->debug.wmid_devices);
  }
-@@ -2265,6 +2528,9 @@ static void acer_platform_remove(struct platform_device *device)
- 		acer_backlight_exit();
  
- 	acer_rfkill_exit();
++static umode_t acer_wmi_hwmon_is_visible(const void *data,
++					 enum hwmon_sensor_types type, u32 attr,
++					 int channel)
++{
++	switch (type) {
++	case hwmon_fan:
++		if (acer_get_fan_speed(channel) >= 0)
++			return 0444;
++		break;
++	default:
++		return 0;
++	}
 +
-+	if (platform_profile_support)
-+		platform_profile_remove();
- }
- 
- #ifdef CONFIG_PM_SLEEP
++	return 0;
++}
++
++static int acer_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
++			       u32 attr, int channel, long *val)
++{
++	int ret;
++
++	switch (type) {
++	case hwmon_fan:
++		ret = acer_get_fan_speed(channel);
++		if (ret < 0)
++			return ret;
++		*val = ret;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++static const struct hwmon_channel_info *const acer_wmi_hwmon_info[] = {
++	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT, HWMON_F_INPUT), NULL
++};
++
++static const struct hwmon_ops acer_wmi_hwmon_ops = {
++	.read = acer_wmi_hwmon_read,
++	.is_visible = acer_wmi_hwmon_is_visible,
++};
++
++static const struct hwmon_chip_info acer_wmi_hwmon_chip_info = {
++	.ops = &acer_wmi_hwmon_ops,
++	.info = acer_wmi_hwmon_info,
++};
++
++static int acer_wmi_hwmon_init(void)
++{
++	struct device *dev = &acer_platform_device->dev;
++	struct device *hwmon;
++
++	hwmon = devm_hwmon_device_register_with_info(dev, "acer",
++						     &acer_platform_driver,
++						     &acer_wmi_hwmon_chip_info,
++						     NULL);
++
++	if (IS_ERR(hwmon)) {
++		dev_err(dev, "Could not register acer hwmon device\n");
++		return PTR_ERR(hwmon);
++	}
++
++	return 0;
++}
++
+ static int __init acer_wmi_init(void)
+ {
+ 	int err;
 -- 
 2.43.0
 
