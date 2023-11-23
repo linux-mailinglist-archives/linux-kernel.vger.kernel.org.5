@@ -2,69 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF097F5D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E58B7F5D23
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344808AbjKWK7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        id S1344862AbjKWLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344926AbjKWK7N (ORCPT
+        with ESMTP id S229542AbjKWLAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:59:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C350AD67
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:59:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F4CC433C8;
-        Thu, 23 Nov 2023 10:59:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700737149;
-        bh=90AhqRMEb1URW49+jHELClQUBz+rpek7dQfPYTTBU3s=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pzTpA21fS4E7VIIiK2AXpbARKJ2zwaJ85J26OuY9iHMSe9nF9HGOzknVg89sSfG/p
-         8rhPDqVk66jHZnUtBl3nhNJBoDQwPn5/2Yqcwn+LXhSIuO8EMDCn8CuH6va9vfvKUY
-         n1vT3pHE4w1bgae+55qFsbP0qIETsPqODGgnoEfPwrESC8tke2xn8/i9rYtTIi85gF
-         +jMfVWiDr97CdQOj9XegXFDPiuW0kFQTLprTCm+8sA/vOtWWbsGFSdA1KVdPl/2ybB
-         9HC3oHPyBC+qUHawUi4cs+MI0tTvhi4KOwCnmk2j6clJmnQ8aFGYhEhhjOsd9eQW9r
-         4tzxVGQ3drLoA==
-From:   Lee Jones <lee@kernel.org>
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Nikita Travkin <nikitos.tr@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231103114203.1108922-1-danct12@riseup.net>
-References: <20231103114203.1108922-1-danct12@riseup.net>
-Subject: Re: (subset) [PATCH] leds: aw2013: Select REGMAP_I2C
-Message-Id: <170073714794.1242990.14043054450989948510.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 10:59:07 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 23 Nov 2023 06:00:30 -0500
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0CF1BE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:00:36 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VwzFwnV_1700737214;
+Received: from localhost(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0VwzFwnV_1700737214)
+          by smtp.aliyun-inc.com;
+          Thu, 23 Nov 2023 19:00:34 +0800
+From:   Bitao Hu <yaoma@linux.alibaba.com>
+To:     kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kanie@linux.alibaba.com
+Subject: [PATCH] nvme: fix deadlock between reset and scan
+Date:   Thu, 23 Nov 2023 19:00:13 +0800
+Message-Id: <1700737213-110685-1-git-send-email-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Nov 2023 18:42:03 +0700, Dang Huynh wrote:
-> The AW2013 driver uses devm_regmap_init_i2c, so REGMAP_I2C needs to
-> be selected.
-> 
-> Otherwise build process may fail with:
-> ld: drivers/leds/leds-aw2013.o: in function `aw2013_probe':
-> leds-aw2013.c:345: undefined reference to `__devm_regmap_init_i2c'
-> 
-> [...]
+If controller reset occurs when allocating namespace, both
+nvme_reset_work and nvme_scan_work will hang, as shown below.
 
-Applied, thanks!
+Test Scripts:
 
-[1/1] leds: aw2013: Select REGMAP_I2C
-      commit: 5de5423bb5f7c1a20f00a0f45ca38e533714fcfd
+    for ((t=1;t<=128;t++))
+    do
+    nsid=`nvme create-ns /dev/nvme1 -s 14537724 -c 14537724 -f 0 -m 0 \
+    -d 0 | awk -F: '{print($NF);}'`
+    nvme attach-ns /dev/nvme1 -n $nsid -c 0
+    done
+    nvme reset /dev/nvme1
 
---
-Lee Jones [李琼斯]
+We will find that both nvme_reset_work and nvme_scan_work hung:
+
+    INFO: task kworker/u249:4:17848 blocked for more than 120 seconds.
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
+    message.
+    task:kworker/u249:4  state:D stack:    0 pid:17848 ppid:     2
+    flags:0x00000028
+    Workqueue: nvme-reset-wq nvme_reset_work [nvme]
+    Call trace:
+    __switch_to+0xb4/0xfc
+    __schedule+0x22c/0x670
+    schedule+0x4c/0xd0
+    blk_mq_freeze_queue_wait+0x84/0xc0
+    nvme_wait_freeze+0x40/0x64 [nvme_core]
+    nvme_reset_work+0x1c0/0x5cc [nvme]
+    process_one_work+0x1d8/0x4b0
+    worker_thread+0x230/0x440
+    kthread+0x114/0x120
+    INFO: task kworker/u249:3:22404 blocked for more than 120 seconds.
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
+    message.
+    task:kworker/u249:3  state:D stack:    0 pid:22404 ppid:     2
+    flags:0x00000028
+    Workqueue: nvme-wq nvme_scan_work [nvme_core]
+    Call trace:
+    __switch_to+0xb4/0xfc
+    __schedule+0x22c/0x670
+    schedule+0x4c/0xd0
+    rwsem_down_write_slowpath+0x32c/0x98c
+    down_write+0x70/0x80
+    nvme_alloc_ns+0x1ac/0x38c [nvme_core]
+    nvme_validate_or_alloc_ns+0xbc/0x150 [nvme_core]
+    nvme_scan_ns_list+0xe8/0x2e4 [nvme_core]
+    nvme_scan_work+0x60/0x500 [nvme_core]
+    process_one_work+0x1d8/0x4b0
+    worker_thread+0x260/0x440
+    kthread+0x114/0x120
+    INFO: task nvme:28428 blocked for more than 120 seconds.
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
+    message.
+    task:nvme            state:D stack:    0 pid:28428 ppid: 27119
+    flags:0x00000000
+    Call trace:
+    __switch_to+0xb4/0xfc
+    __schedule+0x22c/0x670
+    schedule+0x4c/0xd0
+    schedule_timeout+0x160/0x194
+    do_wait_for_common+0xac/0x1d0
+    __wait_for_common+0x78/0x100
+    wait_for_completion+0x24/0x30
+    __flush_work.isra.0+0x74/0x90
+    flush_work+0x14/0x20
+    nvme_reset_ctrl_sync+0x50/0x74 [nvme_core]
+    nvme_dev_ioctl+0x1b0/0x250 [nvme_core]
+    __arm64_sys_ioctl+0xa8/0xf0
+    el0_svc_common+0x88/0x234
+    do_el0_svc+0x7c/0x90
+    el0_svc+0x1c/0x30
+    el0_sync_handler+0xa8/0xb0
+    el0_sync+0x148/0x180
+
+The reason for the hang is that nvme_reset_work occurs while nvme_scan_work
+is still running. nvme_scan_work may add new ns into ctrl->namespaces
+list after nvme_reset_work frozen all ns->q in ctrl->namespaces list.
+The newly added ns is not frozen, so nvme_wait_freeze will wait forever.
+Unfortunately, ctrl->namespaces_rwsem is held by nvme_reset_work, so
+nvme_scan_work will also wait forever. Now we are deadlocked!
+
+PROCESS1                         PROCESS2
+==============                   ==============
+nvme_scan_work
+  ...                            nvme_reset_work
+  nvme_validate_or_alloc_ns        nvme_dev_disable
+    nvme_alloc_ns                    nvme_start_freeze
+     down_write                      ...
+     nvme_ns_add_to_ctrl_list        ...
+     up_write                        nvme_wait_freeze
+    ...                                down_read
+    nvme_alloc_ns                      blk_mq_freeze_queue_wait
+     down_write
+
+Fix by checking ctrl->state whether is NVME_CTRL_LIVE before adding new
+ns into ctrl->namespaces.
+
+Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+---
+ drivers/nvme/host/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 62612f8..7551b55 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -3631,6 +3631,11 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, struct nvme_ns_info *info)
+ 		goto out_unlink_ns;
+ 
+ 	down_write(&ctrl->namespaces_rwsem);
++	/* preventing adding ns during resetting */
++	if (unlikely(ctrl->state != NVME_CTRL_LIVE)) {
++		up_write(&ctrl->namespaces_rwsem);
++		goto out_unlink_ns;
++	}
+ 	nvme_ns_add_to_ctrl_list(ns);
+ 	up_write(&ctrl->namespaces_rwsem);
+ 	nvme_get_ctrl(ctrl);
+-- 
+1.8.3.1
 
