@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BEA7F66A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3D77F66A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjKWSsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 13:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
+        id S230094AbjKWSsm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Nov 2023 13:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjKWSsM (ORCPT
+        with ESMTP id S229988AbjKWSsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 13:48:12 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E1419D
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:48:18 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-4ac211e5bbbso1246835e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:48:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700765298; x=1701370098; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l1r9JxSmLJtBWwQD5WMXoyMpcIa8PCU8/HG8nOTjmTc=;
-        b=JDW6BuyjNYMldZAJl+8zbnStBDU7IVrrh+45xGV2YB8Mc8WgGAjrBhtx7c/bvH3uE0
-         GXdkJmrfckerymqAxpp19rkehnTX9HBBlSaJgzCq5Hb5hxVxO/vASuRkegpqdQa4T6Qn
-         yh/49mHNEmITi621N0Caog8SDRsa6DPJrvs6CTPb9qHycLE66IXxNXHqxXFjIPHQ/PPy
-         6DHA9m6olsQQhuPyMvilBksq/Rj+fxqcMCd0R+lOupVDw3q+FjqSc/tBCkMqz8jyijCm
-         fP6cCDrTP7O9I5tFuvAB3c5HypD/TuTsKt5m3rQC39VN3O848mOvCagPxCfERHLBN/hi
-         9Bxw==
+        Thu, 23 Nov 2023 13:48:40 -0500
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CC2D4A;
+        Thu, 23 Nov 2023 10:48:47 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5cbcfdeaff3so11971587b3.0;
+        Thu, 23 Nov 2023 10:48:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700765298; x=1701370098;
+        d=1e100.net; s=20230601; t=1700765327; x=1701370127;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=l1r9JxSmLJtBWwQD5WMXoyMpcIa8PCU8/HG8nOTjmTc=;
-        b=NbPZCkPMXPoghvHMMQQehuWWtIyw0XtkOu4xbFDsC7kKlEkjHaTgbyvSDENGE0csxB
-         pnayOUOdF3LN+qJzd0zYzPfNzN4oJk2CGxUAA4U1lLQXmTJINayEcbk/sthQgDpnik0Q
-         Y5T74DdFi+U6KQXIuaY9YsRq7ffC5Znhdn14SGqIGTN4mV4Md9Rnaw6cFF1RRhK8gDAE
-         ks5qjCVxpMDDZeFEtPL+QepWlfnOW9rVm+9jsKpeUNg8dPsjHi3nDeIO+fHcQdDt/FgT
-         mXd9df1T22CyvCHEVvzLjcGYttbD+crKgc/cdKW5jthRNePzeUkTw1J8NI6DxQz73X9z
-         3ZKg==
-X-Gm-Message-State: AOJu0YxnW8j3yy8zQmBphfKclyEm5OkTNgLul6kjb7NX7mDZDn89CDha
-        3DV9vsZfNp6j6F5kruI0VGS4u0LM2Tnzb5QH/xe7bg==
-X-Google-Smtp-Source: AGHT+IEXcraqL3GVfTO/0XxaqVLIGaNyi+kyI+POrn7TO6voCkRYby9hJNNOOq9vbEl4fkNE3NgjkuN2qveL5kdHaeg=
-X-Received: by 2002:a05:6102:38c7:b0:457:c953:bc39 with SMTP id
- k7-20020a05610238c700b00457c953bc39mr3960679vst.1.1700765297816; Thu, 23 Nov
- 2023 10:48:17 -0800 (PST)
+        bh=BW4/JJUWKoNDMmEO5Ub2khORc7J8S5l7T6XZYcoByRY=;
+        b=P27FwIQ41GBHXr5oRPgGY2+8bUkSLqOqG8g7jZOB66XomaBHMKO1Mv4KDMG/BZyFeN
+         vcX3VZRqVIY6o4oRDRu89xASlZ/S0GC6ChMhy4Rq+c4/V97rENzOl/mNEI/HfDnLyBwk
+         82u7QCiK7DU7RaMGJjN5RP3ochCp8dTNGoPkn1FGSnnwy8Zm6AVU0nsIOII4i0kxcURf
+         sake+BBxg5dAqUyeEz8z8Lfldif5Fkt6S3S0vR36wOCsbDNDpGEtcnHmirRrm7QsZP99
+         AHhz5WvY2WLkDNeUVKfWip7wNr59CREFEP1+fTC67WSRXN9VUMgx4yYk76PywfzIxIDN
+         LBEw==
+X-Gm-Message-State: AOJu0YzNvU0aDre47N7ubYnBYzhW0c6k5NAWimtzXmRq7LI2JwanL5WA
+        hS4MQmIYJpuKfgznhx4hdDlQxy3WZk3ZBg==
+X-Google-Smtp-Source: AGHT+IHon/DG1pbZWRYOBxv2h46j4yF8+KjvkhBjQnmRAIxgGFfKKhV8sqeJ9lrD7/FkEk0/o7iK+A==
+X-Received: by 2002:a25:400b:0:b0:d80:4533:9556 with SMTP id n11-20020a25400b000000b00d8045339556mr114170yba.63.1700765326672;
+        Thu, 23 Nov 2023 10:48:46 -0800 (PST)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id x1-20020a25ac81000000b00daf198ef6fbsm447578ybi.21.2023.11.23.10.48.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 10:48:45 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5cbcfdeaff3so11971337b3.0;
+        Thu, 23 Nov 2023 10:48:44 -0800 (PST)
+X-Received: by 2002:a81:7b54:0:b0:5c9:ed39:5557 with SMTP id
+ w81-20020a817b54000000b005c9ed395557mr217201ywc.45.1700765324574; Thu, 23 Nov
+ 2023 10:48:44 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1699297309.git.andreyknvl@google.com> <9752c5fc4763e7533a44a7c9368f056c47b52f34.1699297309.git.andreyknvl@google.com>
- <ZV44eczk0L_ihkwi@elver.google.com> <CA+fCnZft0Nkc2RrKofi-0a0Yq9gX0Fw5Z+ubBfQy+dVYbWuPuQ@mail.gmail.com>
-In-Reply-To: <CA+fCnZft0Nkc2RrKofi-0a0Yq9gX0Fw5Z+ubBfQy+dVYbWuPuQ@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 23 Nov 2023 19:47:40 +0100
-Message-ID: <CANpmjNMpPK56mc5wiSoL+AX1pgzG0Kz=SuqGPDme=FFCdhnf9w@mail.gmail.com>
-Subject: Re: [PATCH RFC 14/20] mempool: introduce mempool_use_prealloc_only
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     andrey.konovalov@linux.dev,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com, Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+References: <20231123180246.750674-1-dimitri.ledkov@canonical.com> <20231123180246.750674-4-dimitri.ledkov@canonical.com>
+In-Reply-To: <20231123180246.750674-4-dimitri.ledkov@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Nov 2023 19:48:30 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXZ365Xd7+pOyy9WLORSbaXG8+O5Y1gRfd7by8G7QJQEg@mail.gmail.com>
+Message-ID: <CAMuHMdXZ365Xd7+pOyy9WLORSbaXG8+O5Y1gRfd7by8G7QJQEg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] m68k: stop shipping a.out.h uapi headers
+To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc:     Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, x86@kernel.org,
         linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+        "Eric W. Biederman" <ebiederm@xmission.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 19:06, Andrey Konovalov <andreyknvl@gmail.com> wrote=
-:
->
-> On Wed, Nov 22, 2023 at 6:21=E2=80=AFPM Marco Elver <elver@google.com> wr=
-ote:
-> >
-> > On Mon, Nov 06, 2023 at 09:10PM +0100, andrey.konovalov@linux.dev wrote=
-:
-> > > From: Andrey Konovalov <andreyknvl@google.com>
-> > >
-> > > Introduce a new mempool_use_prealloc_only API that tells the mempool =
-to
-> > > only use the elements preallocated during the mempool's creation and =
-to
-> > > not attempt allocating new ones.
-> > >
-> > > This API is required to test the KASAN poisoning/unpoisoning functina=
-lity
-> > > in KASAN tests, but it might be also useful on its own.
-> > >
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > ---
-> > >  include/linux/mempool.h |  2 ++
-> > >  mm/mempool.c            | 27 ++++++++++++++++++++++++---
-> > >  2 files changed, 26 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/include/linux/mempool.h b/include/linux/mempool.h
-> > > index 4aae6c06c5f2..822adf1e7567 100644
-> > > --- a/include/linux/mempool.h
-> > > +++ b/include/linux/mempool.h
-> > > @@ -18,6 +18,7 @@ typedef struct mempool_s {
-> > >       int min_nr;             /* nr of elements at *elements */
-> > >       int curr_nr;            /* Current nr of elements at *elements =
-*/
-> > >       void **elements;
-> > > +     bool use_prealloc_only; /* Use only preallocated elements */
-> >
-> > This increases the struct size from 56 to 64 bytes (64 bit arch).
-> > mempool_t is embedded in lots of other larger structs, and this may
-> > result in some unwanted bloat.
-> >
-> > Is there a way to achieve the same thing without adding a new bool to
-> > the mempool struct?
->
-> We could split out the part of mempool_alloc that uses preallocated
-> elements without what waiting part and expose it in another API
-> function named something like mempool_alloc_preallocated. Would that
-> be better?
+Hi Dimitri,
 
-Yes, that might be better. As long as other users of mempool (esp if
-KASAN is disabled) are unaffected then it should be fine.
+Thanks for your patch!
+
+On Thu, Nov 23, 2023 at 7:03 PM Dimitri John Ledkov
+<dimitri.ledkov@canonical.com> wrote:
+> Stop shipping a.out.h uapi headers, unused.
+
+Yep, since commit 987f20a9dcce3989 ("a.out: Remove the a.out implementation")
+in v6.1.
+
+> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
