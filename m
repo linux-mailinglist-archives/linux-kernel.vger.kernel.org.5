@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF6B7F59D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B347F59DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbjKWIPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S232524AbjKWISA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKWIPo (ORCPT
+        with ESMTP id S230285AbjKWIR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:15:44 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771D2D41
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:15:50 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6bf2b098e43so698444b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:15:50 -0800 (PST)
+        Thu, 23 Nov 2023 03:17:58 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9D21B2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:18:03 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5c08c47c055so5922977b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700727350; x=1701332150; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CrEIDOduhti6InSDnRypg+BVJxqG3xXbxgAmhP0hxmM=;
-        b=x2rkB6udHXM79Gx1VkF6RrzD0tkl8Be5FgtE3leLVPPPHRlc3EdNlXYMpWS1WCQu15
-         jpB9m/m1cj39LXqICa4WRPMBzhRmRC7MdKehkFEZ6SKY+Cr21d0Ohza5FhK8wi1FRGbk
-         MwSle3fAAhUf8CUlZE5QA3qedYhd9XPLO7ebvQllVBP670LRNX2qrCXm94laDm3nVw+W
-         SFnTAd/1AYN2Jr/Tr5yme7rKS6ARtt3VUC/3sNhFijq/dZomO18mOpRxQ/E+Th0vTpPH
-         qJpY7AeLAVPnsYEJNmm3oh49t4jQj1w1hgwL4rT3aKTczffTP84nb03xP331TWGGfk/p
-         ITbA==
+        d=linaro.org; s=google; t=1700727482; x=1701332282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WvQyz8WUbCXXcHlGWxMEoDuZxvoCOtrHTLLemanVJpw=;
+        b=ywYR/1HXWq4++wDj5eemMv/6QtWRWPoqX9MM6XzyU0G4LrwZ1Fsvlz7iw04FroAMLR
+         +/5bpq/ZR4zRxG5l0Jed9gsT1AdGk0FNNDiXpM+hxrWgA30ciDNBVzE1tsrcF37vrFTO
+         Gm00lmlKs/g7i5/KsyCZz+RvVhaxPbBoSGSA0pQ7wbTDJgrFFu5ttBNKI65aJORL35RQ
+         6q+uN5V+LqstUGbeZ8nqYJpV8j3Uln6cU8E4JLUQUg583LYTZoGOJmkkv4OJeJ+idlIS
+         Jh3y5fuFc/oC5QHaEAtc7Ba0gtpXPqZxafEUH4WVBy9EAI1QNDRK4Rr2xNc1Pav2Xh/Z
+         r6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700727350; x=1701332150;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CrEIDOduhti6InSDnRypg+BVJxqG3xXbxgAmhP0hxmM=;
-        b=M1zthULYdtOnuLYAw9zoD5G3PIWzyUGtY0smKWsvT5tMW0QS9D5AVT107CF6wFdNFm
-         jMFsxTioBu2HlxaQm+nI2tLhtVudyU08gxlnvCSgrk8vaUmuKYTnxZJddPs4GxEDSr2L
-         GZ3JUZeylwRewWN26LPEzsQ6XGNG7HnEW5nWuvygxzxZi28Y8QWOV5QCLmZ+Jdh01k4X
-         GCVLuLrWCka4LT2CGGYaT0N6FnrDJQruQBS6n6UMfp8hbZm/NtfH0eETHGEvY0xJ6u7+
-         vQm8JyGWSy5dCj9VmESBLCJ2yU6FBPUR7Jp6tkoQ9POeLKSLACs5ZNfUGt3+U+zZK0a7
-         qZxw==
-X-Gm-Message-State: AOJu0Yxudgy0wiFzW+ohkPLLt9/BsP7M+vPGF5TEzqoPH02KbreS/Se+
-        wz8uS2tf/cfAFzZ1QO/QbGQzHR1ExCq8rw==
-X-Google-Smtp-Source: AGHT+IH9adT6B0i1q+P6CsoaxvjLgFLnosKLJplk4qIgLHNWoRCdaiFD4O87oq0Kh4mkVoq1iaj+K6sacIpqzQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a05:6a00:1da3:b0:6c4:ec00:2941 with SMTP
- id z35-20020a056a001da300b006c4ec002941mr1201225pfw.4.1700727349918; Thu, 23
- Nov 2023 00:15:49 -0800 (PST)
-Date:   Thu, 23 Nov 2023 08:15:47 +0000
-In-Reply-To: <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
-Mime-Version: 1.0
-References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
- <20231122100156.6568-2-ddrokosov@salutedevices.com> <20231123072126.jpukmc6rqmzckdw2@google.com>
- <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
-Message-ID: <20231123081547.7fbxd4ts3qohrioq@google.com>
-Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg tracepoints
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
-        akpm@linux-foundation.org, kernel@sberdevices.ru,
-        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1700727482; x=1701332282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WvQyz8WUbCXXcHlGWxMEoDuZxvoCOtrHTLLemanVJpw=;
+        b=U40nyT/GEooKD/hVcgfuMbq+98OjvDXiWv2INYzAo0GBkV7005RSx9QO1RPE58ndXB
+         uT1kOxmls1F7yB8GAp/iQWrktcEJVfNagRPESaQ93uZMEfIPw01SQNCjIW6v0vRMv2t8
+         51Mns1ijgI3e1gci9anwALiFhxSqr1oUqooKWm+eGc1g9bZFhJIm8eBFvlisDRioMdC2
+         H4EN+kvYV0pmwBOU3eGr0XcQvalTURHYhtGWXSBTsztxw3Tz5aeRGne9kqf3XiGK6K/x
+         2vnjivdMl6nBlKkYNwqXBZTcuI46W4sWFFEYW4YHF2J03LqV5n/F2CHSNV3N6IEX2Qbv
+         Zxlg==
+X-Gm-Message-State: AOJu0YxaPSnS1JqhzHeONjm1+cGTCSpIMqddxp4CbwmZaLK5o/7p6U+I
+        5EJRvJEu/VZm6sGR2qEfxvy8y+QCK/wYP+cr8UMtlQ==
+X-Google-Smtp-Source: AGHT+IEwql/FgZ2i8ySsNVBR/Nowgs8VsmzDvaDcvugx+PF9f25ta/GIkylxpBoLVtMa8WZ+CpZvXGDmbeZBOafDiZ8=
+X-Received: by 2002:a0d:df0d:0:b0:5c9:e7f8:ba03 with SMTP id
+ i13-20020a0ddf0d000000b005c9e7f8ba03mr4532566ywe.4.1700727482614; Thu, 23 Nov
+ 2023 00:18:02 -0800 (PST)
+MIME-Version: 1.0
+References: <170066723324.2477261.2506149141979712937.stgit@djiang5-mobl3> <655e7361d6ce_b2e8294b9@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <655e7361d6ce_b2e8294b9@dwillia2-xfh.jf.intel.com.notmuch>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Nov 2023 09:17:49 +0100
+Message-ID: <CACRpkdYjEgsyCznNwkSaStk+DMtjH3_oGeX4f4BJzpo5eXHm2g@mail.gmail.com>
+Subject: Re: [PATCH v3] acpi: Fix ARM32 platforms compile issue introduced by
+ fw_table changes
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Dave Jiang <dave.jiang@intel.com>, rafael@kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
+        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+        guohanjun@huawei.com, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, cfsworks@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 11:03:34AM +0300, Dmitry Rokosov wrote:
-[...]
-> > > +		cgroup_name(memcg->css.cgroup,
-> > > +			__entry->name,
-> > > +			sizeof(__entry->name));
-> > 
-> > Any reason not to use cgroup_ino? cgroup_name may conflict and be
-> > ambiguous.
-> 
-> I actually didn't consider it, as the cgroup name serves as a clear tag
-> for filtering the appropriate cgroup in the entire trace file. However,
-> you are correct that there might be conflicts with cgroup names.
-> Therefore, it might be better to display both tags: ino and name. What
-> do you think on this?
-> 
+On Wed, Nov 22, 2023 at 10:32=E2=80=AFPM Dan Williams <dan.j.williams@intel=
+.com> wrote:
 
-I can see putting cgroup name can avoid pre or post processing, so
-putting both are fine. Though keep in mind that cgroup_name acquires a
-lock which may impact the applications running on the system.
+> It concerns me that neither linux-next nor 0day robot exposure reported
+> this problem.
+>
+> Does ARM32 require manual compilation coverage these days or was this
+> just a series of unfortunate events that the build bots missed this?
+
+It's not just ARM32, I saw it on ARM64 as well and I'm pretty
+sure it appears on any bare metal "none" compiler.
+
+kernel.org host "nolibc" cross compilers (Arnd makes these):
+https://mirrors.edge.kernel.org/pub/tools/crosstool/
+and those WORK, because they use the kernel minimal
+libc which defines __linux__.
+
+So a "nolibc" compiler works but not "none" compilers.
+
+I think the test robots all use Arnds nolibc compilers or the
+compilers from distributions so they don't see this.
+
+A typical example of breaking compilers: ARMs supported
+"none" compilers:
+https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
+
+Yours,
+Linus Walleij
