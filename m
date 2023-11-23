@@ -2,320 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FAB7F64E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945AE7F64EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345271AbjKWRIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S1345185AbjKWRIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:08:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjKWRIK (ORCPT
+        with ESMTP id S230050AbjKWRIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:08:10 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A458C1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:08:16 -0800 (PST)
-Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
-        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1r6DBS-0001A4-70; Thu, 23 Nov 2023 18:08:10 +0100
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-Date:   Thu, 23 Nov 2023 18:08:06 +0100
-Subject: [PATCH 3/3] drm/panel: ilitek-ili9881c: Add Ampire AM8001280G LCD panel
+        Thu, 23 Nov 2023 12:08:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F1CE410D8;
+        Thu, 23 Nov 2023 09:08:45 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C3041042;
+        Thu, 23 Nov 2023 09:09:32 -0800 (PST)
+Received: from [10.57.3.62] (unknown [10.57.3.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 807783F7A6;
+        Thu, 23 Nov 2023 09:08:44 -0800 (PST)
+Message-ID: <96fa7b1a-9f64-315b-c767-e582db55c7a4@arm.com>
+Date:   Thu, 23 Nov 2023 17:08:43 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231123-drm-panel-ili9881c-am8001280g-v1-3-fdf4d624c211@pengutronix.de>
-References: <20231123-drm-panel-ili9881c-am8001280g-v1-0-fdf4d624c211@pengutronix.de>
-In-Reply-To: <20231123-drm-panel-ili9881c-am8001280g-v1-0-fdf4d624c211@pengutronix.de>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        kernel@pengutronix.de, Philipp Zabel <p.zabel@pengutronix.de>
-X-Mailer: b4 0.12-dev-aab37
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Content-Language: en-US
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+ <86pm03z0kw.wl-maz@kernel.org> <86o7fnyvrq.wl-maz@kernel.org>
+ <ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fW8exsmUg_9K09Oy6T4ZAvvD7ZbZN2sxODdqisZOR6mUA@mail.gmail.com>
+ <ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Ampire AM8001280G LCD panels.
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
----
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 223 ++++++++++++++++++++++++++
- 1 file changed, 223 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 0c911ed9141b..2ffe5f68a890 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -830,6 +830,203 @@ static const struct ili9881c_instr w552946ab_init[] = {
- 	ILI9881C_SWITCH_PAGE_INSTR(0),
- };
- 
-+static const struct ili9881c_instr am8001280g_init[] = {
-+	ILI9881C_SWITCH_PAGE_INSTR(3),
-+	ILI9881C_COMMAND_INSTR(0x01, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x02, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x03, 0x73),
-+	ILI9881C_COMMAND_INSTR(0x04, 0xD3),
-+	ILI9881C_COMMAND_INSTR(0x05, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x06, 0x0A),
-+	ILI9881C_COMMAND_INSTR(0x07, 0x0E),
-+	ILI9881C_COMMAND_INSTR(0x08, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x09, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0a, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0b, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0c, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0d, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0e, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0f, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x10, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x11, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x12, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x13, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x14, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x15, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x16, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x17, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x18, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x19, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1a, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1b, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1e, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x1f, 0x80),
-+	ILI9881C_COMMAND_INSTR(0x20, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x21, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x22, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x23, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x24, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x25, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x26, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x27, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x28, 0x33),
-+	ILI9881C_COMMAND_INSTR(0x29, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x2a, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2b, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2e, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2f, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x30, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x31, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x32, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x33, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x34, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x35, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x36, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x37, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x38, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x39, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3a, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x3b, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x3c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3e, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3f, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x40, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x41, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x42, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x43, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x44, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0x50, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x51, 0x23),
-+	ILI9881C_COMMAND_INSTR(0x52, 0x45),
-+	ILI9881C_COMMAND_INSTR(0x53, 0x67),
-+	ILI9881C_COMMAND_INSTR(0x54, 0x89),
-+	ILI9881C_COMMAND_INSTR(0x55, 0xab),
-+	ILI9881C_COMMAND_INSTR(0x56, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x57, 0x23),
-+	ILI9881C_COMMAND_INSTR(0x58, 0x45),
-+	ILI9881C_COMMAND_INSTR(0x59, 0x67),
-+	ILI9881C_COMMAND_INSTR(0x5a, 0x89),
-+	ILI9881C_COMMAND_INSTR(0x5b, 0xab),
-+	ILI9881C_COMMAND_INSTR(0x5c, 0xcd),
-+	ILI9881C_COMMAND_INSTR(0x5d, 0xef),
-+
-+	ILI9881C_COMMAND_INSTR(0x5e, 0x11),
-+	ILI9881C_COMMAND_INSTR(0x5f, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x60, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x61, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x62, 0x0D),
-+	ILI9881C_COMMAND_INSTR(0x63, 0x0C),
-+	ILI9881C_COMMAND_INSTR(0x64, 0x0F),
-+	ILI9881C_COMMAND_INSTR(0x65, 0x0E),
-+	ILI9881C_COMMAND_INSTR(0x66, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x67, 0x07),
-+	ILI9881C_COMMAND_INSTR(0x68, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x69, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6a, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x6b, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6c, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6d, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6e, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6f, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x70, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x71, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x72, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x73, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x74, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x75, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x76, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x77, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x78, 0x0D),
-+	ILI9881C_COMMAND_INSTR(0x79, 0x0C),
-+	ILI9881C_COMMAND_INSTR(0x7a, 0x0F),
-+	ILI9881C_COMMAND_INSTR(0x7b, 0x0E),
-+	ILI9881C_COMMAND_INSTR(0x7c, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x7d, 0x07),
-+	ILI9881C_COMMAND_INSTR(0x7e, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x7f, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x80, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x81, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x82, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x83, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x84, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x85, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x86, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x87, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x88, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x89, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x8A, 0x02),
-+
-+	ILI9881C_SWITCH_PAGE_INSTR(4),
-+	ILI9881C_COMMAND_INSTR(0x6c, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x6e, 0x30),
-+	ILI9881C_COMMAND_INSTR(0x6f, 0x33),
-+	ILI9881C_COMMAND_INSTR(0x8d, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x3a, 0xa4),
-+	ILI9881C_COMMAND_INSTR(0x87, 0xba),
-+	ILI9881C_COMMAND_INSTR(0x26, 0x76),
-+	ILI9881C_COMMAND_INSTR(0xb2, 0xd1),
-+
-+	ILI9881C_SWITCH_PAGE_INSTR(1),
-+	ILI9881C_COMMAND_INSTR(0x22, 0x0A),
-+	ILI9881C_COMMAND_INSTR(0x31, 0x0B),
-+	ILI9881C_COMMAND_INSTR(0x50, 0xa5),
-+	ILI9881C_COMMAND_INSTR(0x51, 0xa0),
-+	ILI9881C_COMMAND_INSTR(0x53, 0x70),
-+	ILI9881C_COMMAND_INSTR(0x55, 0x7A),
-+	ILI9881C_COMMAND_INSTR(0x60, 0x14),
-+
-+	ILI9881C_COMMAND_INSTR(0xA0, 0x00),
-+	ILI9881C_COMMAND_INSTR(0xA1, 0x53),
-+	ILI9881C_COMMAND_INSTR(0xA2, 0x50),
-+	ILI9881C_COMMAND_INSTR(0xA3, 0x20),
-+	ILI9881C_COMMAND_INSTR(0xA4, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xA5, 0x33),
-+	ILI9881C_COMMAND_INSTR(0xA6, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xA7, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xA8, 0xD4),
-+	ILI9881C_COMMAND_INSTR(0xA9, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xAA, 0x2B),
-+	ILI9881C_COMMAND_INSTR(0xAB, 0xB5),
-+	ILI9881C_COMMAND_INSTR(0xAC, 0x19),
-+	ILI9881C_COMMAND_INSTR(0xAD, 0x18),
-+	ILI9881C_COMMAND_INSTR(0xAE, 0x53),
-+	ILI9881C_COMMAND_INSTR(0xAF, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xB0, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xB1, 0x62),
-+	ILI9881C_COMMAND_INSTR(0xB2, 0x6A),
-+	ILI9881C_COMMAND_INSTR(0xB3, 0x31),
-+
-+	ILI9881C_COMMAND_INSTR(0xC0, 0x00),
-+	ILI9881C_COMMAND_INSTR(0xC1, 0x53),
-+	ILI9881C_COMMAND_INSTR(0xC2, 0x50),
-+	ILI9881C_COMMAND_INSTR(0xC3, 0x20),
-+	ILI9881C_COMMAND_INSTR(0xC4, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xC5, 0x33),
-+	ILI9881C_COMMAND_INSTR(0xC6, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xC7, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xC8, 0xD4),
-+	ILI9881C_COMMAND_INSTR(0xC9, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xCA, 0x2B),
-+	ILI9881C_COMMAND_INSTR(0xCB, 0xB5),
-+	ILI9881C_COMMAND_INSTR(0xCC, 0x19),
-+	ILI9881C_COMMAND_INSTR(0xCD, 0x18),
-+	ILI9881C_COMMAND_INSTR(0xCE, 0x53),
-+	ILI9881C_COMMAND_INSTR(0xCF, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xD0, 0x25),
-+	ILI9881C_COMMAND_INSTR(0xD1, 0x62),
-+	ILI9881C_COMMAND_INSTR(0xD2, 0x6A),
-+	ILI9881C_COMMAND_INSTR(0xD3, 0x31),
-+	ILI9881C_SWITCH_PAGE_INSTR(0),
-+	ILI9881C_COMMAND_INSTR(MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x2c),
-+	ILI9881C_COMMAND_INSTR(MIPI_DCS_WRITE_POWER_SAVE, 0x00),
-+};
-+
- static inline struct ili9881c *panel_to_ili9881c(struct drm_panel *panel)
- {
- 	return container_of(panel, struct ili9881c, panel);
-@@ -1014,6 +1211,23 @@ static const struct drm_display_mode w552946aba_default_mode = {
- 	.height_mm	= 121,
- };
- 
-+static const struct drm_display_mode am8001280g_default_mode = {
-+	.clock		= 67911,
-+
-+	.hdisplay	= 800,
-+	.hsync_start	= 800 + 20,
-+	.hsync_end	= 800 + 20 + 32,
-+	.htotal		= 800 + 20 + 32 + 20,
-+
-+	.vdisplay	= 1280,
-+	.vsync_start	= 1280 + 6,
-+	.vsync_end	= 1280 + 6 + 8,
-+	.vtotal		= 1280 + 6 + 8 + 4,
-+
-+	.width_mm	= 94,
-+	.height_mm	= 151,
-+};
-+
- static int ili9881c_get_modes(struct drm_panel *panel,
- 			      struct drm_connector *connector)
- {
-@@ -1147,11 +1361,20 @@ static const struct ili9881c_desc w552946aba_desc = {
- 		      MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET,
- };
- 
-+static const struct ili9881c_desc am8001280g_desc = {
-+	.init = am8001280g_init,
-+	.init_length = ARRAY_SIZE(am8001280g_init),
-+	.mode = &am8001280g_default_mode,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-+		      MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_LPM,
-+};
-+
- static const struct of_device_id ili9881c_of_match[] = {
- 	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
- 	{ .compatible = "feixin,k101-im2byl02", .data = &k101_im2byl02_desc },
- 	{ .compatible = "tdo,tl050hdv35", .data = &tl050hdv35_desc },
- 	{ .compatible = "wanchanglong,w552946aba", .data = &w552946aba_desc },
-+	{ .compatible = "ampire,am8001280g", .data = &am8001280g_desc },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ili9881c_of_match);
+On 23/11/2023 16:48, Mark Rutland wrote:
+> On Thu, Nov 23, 2023 at 07:14:21AM -0800, Ian Rogers wrote:
+>> On Thu, Nov 23, 2023 at 6:23 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>>>
+>>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+>>>> On Tue, 21 Nov 2023 13:40:31 +0000,
+>>>> Marc Zyngier <maz@kernel.org> wrote:
+>>>>>
+>>>>> [Adding key people on Cc]
+>>>>>
+>>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
+>>>>> Hector Martin <marcan@marcan.st> wrote:
+>>>>>>
+>>>>>> Perf broke on all Apple ARM64 systems (tested almost everything), and
+>>>>>> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+>>>>>
+>>>>> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+>>>>> asymmetric ARM platform. It isn't clear what criteria is used to pick
+>>>>> the PMU, but nothing works anymore.
+>>>>>
+>>>>> The saving grace in my case is that Debian still ships a 6.1 perftool
+>>>>> package, but that's obviously not going to last.
+>>>>>
+>>>>> I'm happy to test potential fixes.
+>>>>
+>>>> At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+>>>> -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+>>>> CPU):
+>>>
+>>> Looking at this with fresh(er) eyes, I think there's a userspace bug here,
+>>> regardless of whether one believes it's correct to convert a named-pmu event to
+>>> a PERF_TYPE_HARDWARE event directed at that PMU.
+>>>
+>>> It looks like the userspace tool is dropping the extended type ID after an
+>>> initial probe, and requests events with plain PERF_TYPE_HARDWARE (without an
+>>> extended type ID), which explains why we seem to get events from one PMU only.
+>>>
+>>> More detail below...
+>>>
+>>> Marc, if you have time, could you run the same commands (on the same kernel)
+>>> with a perf tool build from v6.4?
+>>>
+>>>> <quote>
+>>>> maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 0 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+>>>>  apple_firestorm_pmu/cycles/ -e cycles ls
+>>>> Using CPUID 0x00000000612f0280
+>>>> Attempt to add: apple_icestorm_pmu/cycles=0/
+>>>> ..after resolving event: apple_icestorm_pmu/cycles=0/
+>>>> Opening: unknown-hardware:HG
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   config                           0xb00000000
+>>>>   disabled                         1
+>>>> ------------------------------------------------------------
+>>>
+>>> Here config[31:0] is 0 (PERF_COUNT_HW_CPU_CYCLES), and config[63:32] is 0xb,
+>>> which is presumably the PMU ID for the apple_icestorm_pmu.
+>>>
+>>> The attr doesn't contain exclude_guest=1, so this will be rejected by the PMU
+>>> driver due to its mode exclusion requirements.
+>>>
+>>>> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+>>>> sys_perf_event_open failed, error -95
+>>>
+>>> ... which is what we see here (this is EOPNOTSUPP, which __hw_perf_event_init()
+>>> in drivers/perf/arm_pmu.c returns when the mode requested mode exclusion
+>>> options aren't supported).
+>>>
+>>> So far, so good...
+>>>
+>>>> Attempt to add: apple_firestorm_pmu/cycles=0/
+>>>> ..after resolving event: apple_firestorm_pmu/cycles=0/
+>>>> Control descriptor is not initialized
+>>>> Opening: apple_icestorm_pmu/cycles/
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>
+>>> ... but here, the extended type ID has been dropped, and this event is no
+>>> longer directed towards the apple_firestorm_pmu PMU, so the kernel can direct
+>>> this to *any* CPU PMU...
+>>>
+>>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 3
+>>>
+>>> ... and *some* PMU accepts it.
+>>>
+>>>> Opening: apple_firestorm_pmu/cycles/
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>
+>>> Likewise here, no extended type ID...
+>>>
+>>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+>>>> Opening: cycles
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>
+>>> Likewise here, no extended type ID...
+>>>
+>>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 5
+>>>> arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
+>>>> bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
+>>>> Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
+>>>> builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
+>>>> builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
+>>>> builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
+>>>> builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
+>>>> builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
+>>>> builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
+>>>> builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
+>>>> builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
+>>>> builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
+>>>> builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
+>>>> builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
+>>>> builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
+>>>> builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
+>>>> builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
+>>>> builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
+>>>> builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
+>>>> builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
+>>>> apple_icestorm_pmu/cycles/: -1: 0 873709 0
+>>>> apple_firestorm_pmu/cycles/: -1: 0 873709 0
+>>>> cycles: -1: 0 873709 0
+>>>> apple_icestorm_pmu/cycles/: 0 873709 0
+>>>> apple_firestorm_pmu/cycles/: 0 873709 0
+>>>> cycles: 0 873709 0
+>>>>
+>>>>  Performance counter stats for 'ls':
+>>>>
+>>>>      <not counted>      apple_icestorm_pmu/cycles/                                              (0.00%)
+>>>>      <not counted>      apple_firestorm_pmu/cycles/                                             (0.00%)
+>>>>      <not counted>      cycles                                                                  (0.00%)
+>>>>
+>>>>        0.000002250 seconds time elapsed
+>>>>
+>>>>        0.000000000 seconds user
+>>>>        0.000000000 seconds sys
+>>>
+>>> So it looks like the tool has expanded the requested
+>>> 'apple_icestorm_pmu/cycles/' event into three cycles events, each opened
+>>> without an extended type ID.
+>>>
+>>> AFAICT, the kernel has done exactly what it has always done for
+>>> PERF_TYPE_HARDWARE/PERF_COUNT_HW_CPU_CYCLES events: pick the first PMU which
+>>> said it can handle them.
+>>>
+>>>> If I run the same thing on another CPU cluster (firestorm), I get
+>>>> this:
+>>>>
+>>>> <quote>
+>>>> maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 2 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+>>>>  apple_firestorm_pmu/cycles/ -e cycles ls
+>>>> Using CPUID 0x00000000612f0280
+>>>> Attempt to add: apple_icestorm_pmu/cycles=0/
+>>>> ..after resolving event: apple_icestorm_pmu/cycles=0/
+>>>> Opening: unknown-hardware:HG
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   config                           0xb00000000
+>>>>   disabled                         1
+>>>> ------------------------------------------------------------
+>>>> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+>>>> sys_perf_event_open failed, error -95
+>>>
+>>> Again, we see one request with an extended type ID, which fails due to mode exclusion requirements...
+>>>
+>>>> Attempt to add: apple_firestorm_pmu/cycles=0/
+>>>> ..after resolving event: apple_firestorm_pmu/cycles=0/
+>>>> Control descriptor is not initialized
+>>>> Opening: apple_icestorm_pmu/cycles/
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 3
+>>>> Opening: apple_firestorm_pmu/cycles/
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 4
+>>>> Opening: cycles
+>>>> ------------------------------------------------------------
+>>>> perf_event_attr:
+>>>>   type                             0 (PERF_TYPE_HARDWARE)
+>>>>   size                             136
+>>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>>>>   sample_type                      IDENTIFIER
+>>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>>>>   disabled                         1
+>>>>   inherit                          1
+>>>>   enable_on_exec                   1
+>>>>   exclude_guest                    1
+>>>> ------------------------------------------------------------
+>>>
+>>> ... but all subsequent requests do not have an extended type ID, and the kernel
+>>> directs these to whichever PMU accepts the event first...
+>>>
+>>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 5
+>>>> arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
+>>>> bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
+>>>> Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
+>>>> builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
+>>>> builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
+>>>> builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
+>>>> builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
+>>>> builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
+>>>> builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
+>>>> builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
+>>>> builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
+>>>> builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
+>>>> builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
+>>>> builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
+>>>> builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
+>>>> builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
+>>>> builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
+>>>> builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
+>>>> builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
+>>>> builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
+>>>> apple_icestorm_pmu/cycles/: -1: 1035101 469125 469125
+>>>> apple_firestorm_pmu/cycles/: -1: 1035035 469125 469125
+>>>> cycles: -1: 1034653 469125 469125
+>>>> apple_icestorm_pmu/cycles/: 1035101 469125 469125
+>>>> apple_firestorm_pmu/cycles/: 1035035 469125 469125
+>>>> cycles: 1034653 469125 469125
+>>>>
+>>>>  Performance counter stats for 'ls':
+>>>>
+>>>>          1,035,101      apple_icestorm_pmu/cycles/
+>>>>          1,035,035      apple_firestorm_pmu/cycles/
+>>>>          1,034,653      cycles
+>>>>
+>>>>        0.000001333 seconds time elapsed
+>>>>
+>>>>        0.000000000 seconds user
+>>>>        0.000000000 seconds sys
+>>>> </quote>
+>>>
+>>> ... and in this case the workload was run on a CPU affine ot that arbitrary
+>>> PMU, hence we managed to count.
+>>>
+>>> So AFAICT, this is a userspace bug, maybe related to the way we probe for
+>>> supported PMU features?
+>>
+>> Probing PMU features is done by trying to perf_event_open events. For
+>> extended types it is a cycles event on each core PMU:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/pmus.c?h=perf-tools-next#n532
+>>
+>> The is_event_supported logic is here:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/print-events.c?h=perf-tools-next#n232
+> 
+> Ah, so IIUC what's happening is:
+> 
+> 1) Userspace tries to detect extended type support, with a cycles event
+>    directed to one of the CPU PMUs. The attr for this does not have
+>    exclude_guest set.
+> 
+> 2) In the kernel, the core perf code sees the extended hw type id, and directs
+>    this towards the correct PMU (apple_icestorm_pmu).
+> 
+> 3) The PMU driver looks at the attr, sees exclude_guest is not set, and returns
+>    -EOPNOTSUPP, exactly as it would regardless of whether the extended hw type
+>    is used.
+> 
+>    Note: this happens to be a difference between x86 PMUs and the apple_* PMUs,
+>    but this is a legitimate part of the perf ABI, not an arm-specific quirk or
+>    bug.
+> 
+> 4) Userspace receives -EOPNOTSUPP, and so decide the extended hw_type is not
+>    supported (even though the kernel does support the extended hw type id, and
+>    the event was rejected for orthogonal reasons).
+> 
+> 5) Userspace avoids the extended hw type, but still uses
+>    PERF_EVENT_TYPE_HARDWARE events for named-pmu events.
+> 
+> Does that sound plausible to you, or have I misunderstood?
+> 
+> From Marc's reply at:
+> 
+>   https://lore.kernel.org/lkml/86edggzfxx.wl-maz@kernel.org/
+> 
+> ... with perf built from v6.4, the perf tool can open named pmu events without
+> issue, and sets exclude_guest in the attr. So it seems like there's a mismatch
+> between regular opening of events and probing for extended hw type that causes
+> that to differ.
+> 
+> AFAICT, the kernel is doing the right thing here, but the userspace detection
+> of extended type id support happens to differ from regular event opening, and
+> mis-interprets -EOPNOTSUP as "the kernel doesn't support extended type IDs"
+> rather than "The kernel was able to consume the extended type ID, but the
+> specific PMU targetted said it doesn't support this attr".
+> 
+> IIUC that means this'll be broken on older kernels (those before the extended
+> hw type id support was introduced), too?
+> 
+> It sounds like we need to make (4) more robust? I'm not immediately sure how, 
+> given the rats nest of returns in perf_event_open(), but I'm happy to try to
+> help with that.
 
--- 
-2.39.2
+It might be worth reporting extended HW ID support in the caps folder of
+the PMU so that Perf can look there instead of trying to open the event.
+It's something that we know will always be on or always be off so it
+doesn't make sense to try to discover it by opening an event.
+
+> 
+> It also seems like (5) is a problem regardless. If the user asks for a named
+> PMU event on an older kernel (before the extended hw type id was a thing), and
+> the tool converts that to a plain PERF_EVENT_TYPE_HARDWARE event, it's liable
+> to be handled by a different PMU than the one the user asked for.
+> 
+> Thanks,
+> Mark.
