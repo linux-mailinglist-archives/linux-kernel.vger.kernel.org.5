@@ -2,219 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A341D7F5832
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B58D7F5833
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344760AbjKWG2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S1344773AbjKWG2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKWG2V (ORCPT
+        with ESMTP id S1344704AbjKWG2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:28:21 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2050.outbound.protection.outlook.com [40.107.212.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B15AD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:28:27 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=erfEyoSkAYmyHHuM/9yAjasIu2PFdqXGnyuo+O2E7qqm1QAGOZpctQwMSxeP5WR4wQ6OSrYMtUdn7CKgKaBVM6R7K3MfiLCfVrfcLLqD4nndC3StINMwdfJwcbTvzBPYOmPRq6x9ku4D4UtJ7T/ktlV4qIRn21EEALAQj2rBUdzcB2aQN4A2rKr8MtbR1MRLYD19xa9G/Me24dE0tXj+eOASFHKq0tfSjVBD7Bv/QOLynrQ9huEdqkpJQgMcFdwHzDoOZhjyryitPY5dfMfcBFVGaHiNZHSlnlNjJoFVAvmPCY1WJS1ljjPhHJZPsnlLyXeNnQaP6qZ6L2wY/oY9Eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PMdN8nYSx4Eemcc1GPPEt9xpGQEmhE/LTCD4UkN5+ag=;
- b=AWbd/uezGHXiC5yihXRdh7DO4PJMjX7sd6M4HTjjbZtC+HkW1QUDeGW0/gkUTUfcOWhu55xWiWFm3rKn2s0HYA3J3UqhZlp/Mls3LtN5zW2sqTDcgmb0/2+FbCISVw3E9w2lB6URh8K5yHqhBEKx9R6QGt9mW0VGkyy8TdbvHDSggEZE0aL10/WV7MkP0jGCOK6x6Kf84Cm6PnKK60PaZT2jOgY0ZPGcQtxgXYXhyOesyS3V7m4SIIPBmoJefTNu42IIg6NMrbm6cph3Der1+d4ms6j/bh6JJ2602DA6Z2QOcadYtAKsXi/sGwy2dQ5bmiKsbqe49AqXH8hAbsrWyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PMdN8nYSx4Eemcc1GPPEt9xpGQEmhE/LTCD4UkN5+ag=;
- b=ZeLnl1cn2sImjqdCXJaVH/2DDPREHPOb1Y5h0jldrXtFy3aH4c8wIsx1zI/rkk96OZF9azs30LssXGlM6ezS8SLiwdf58ixLxeK5K3EwMb3BPBRneugLQg3p95ubYz5WEcR4IPXGJVF1T3uJyi2JQBo4Tps1RWOMaTYbgv9muGZyCZdRAa3bTu/Ht4kbjms6SIjQVYYV4raB2bdGLOWbcpWU8q1vJYe6Z/PWfoveuZW5op5iiWl1It5x1JBki2veJ+DDP6CA/VHXnacFSf25ix4tH8dYUfXB/Gc1K1EaQ9fVHTczFdgYJgMRuVBbz/wqaxNnhrg3ya7Jq6c0T04KGQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by DS7PR12MB6069.namprd12.prod.outlook.com (2603:10b6:8:9f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
- 2023 06:28:25 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6b9f:df87:1ee2:88ca]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6b9f:df87:1ee2:88ca%6]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
- 06:28:25 +0000
-Message-ID: <101e5ffa-acf3-459c-85f4-7f36a63b125a@nvidia.com>
-Date:   Wed, 22 Nov 2023 22:28:04 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <20231122162950.3854897-1-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR08CA0060.namprd08.prod.outlook.com
- (2603:10b6:a03:117::37) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+        Thu, 23 Nov 2023 01:28:49 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C76189
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:28:54 -0800 (PST)
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 979ED40C4F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1700720932;
+        bh=KDCZsrpFj7eJm5TsscoUxhvwf8t1zu/BgHh2L9uW6fQ=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=qTD1LomgZ2KXILT42+wTdLmfHkqjUEb5tic1+a2bAIyyr48LbNTCwmZOaPWnPhBF0
+         eI7pep0Ju9SIt1D1drWLotg8KkXKFgfd3/e3r1Fk1gimdCIJbkQa71Ork5GJHnfXml
+         M/5v6CNgrb/Y3nWZ59PQvlI0IJb1bskt6XWq1+CyQKM6IRTNdeqjICZGfGlTufSXC9
+         AO255R2fX1sMTBTbOvnBf77DzQawz/+7ZDyVE6CtP4avONmXq0s9mLII+QlwPQLIbR
+         jqEMbcUnUOeT5BxDNexWoDQSpoeED4MtISfI/YnCcKVmOQ5XDKDmKyON8CycMS+7nn
+         +8mdVrOClzFNA==
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c89230b1fdso4842671fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:28:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700720931; x=1701325731;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KDCZsrpFj7eJm5TsscoUxhvwf8t1zu/BgHh2L9uW6fQ=;
+        b=U3Av88GKz9QDL8voik75IQE/oq9F0avr4wNMLz5hAHuvLzOXedsVjyxyPQ/AQC8Bdy
+         2BP4VnWgqosGJmycC8V3wiJ5VNfqMRXDC1v1E5lxMFr5dO7JwtpzKH1tjmjQFk2n4cgJ
+         kWU2xzvyaKPTHjBLSpUthz6bPk2Yh4sgwJfNE7xn9ub19Nes4KXIimb1hyGPyxQHEUL6
+         AZaW5MEPP1SoEnJ+gWpgZxSnIMiHXEgmUi5Vu8rt45iavyOofKKHtIkhAjPBYLVPdN9q
+         PL4z8dwdMmhG/Htmp7Eru+GBQmAdc03mk5haGm9c8DrKkbiWbWgd4ep2N5Ulvt/slSxK
+         joQw==
+X-Gm-Message-State: AOJu0YyEQ+Pnf9292wEOn0i40SeQin5Dj9kP+HBgfb0ClpazcpNUOjSw
+        RYmwHD9oaTicyWxbaPz0BI+1LZ93VAAt0GM1RpTrjc6k71ATEScyrkR3oAZuwdU1Z6ijkrF9D6e
+        bNdz6DirLKl2/rOHrfzXTAudT8xLZChaxHHLv8gg13Rl/SQMZgKyH
+X-Received: by 2002:a2e:8095:0:b0:2c2:c450:c2d0 with SMTP id i21-20020a2e8095000000b002c2c450c2d0mr3086711ljg.24.1700720931781;
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFeapI2zr/lkHVWEAuf15/aw5+xLb5nbTdIJh1ap18WkP3QVTzHdOPCwXTHdl2XzfqhlnLIQg==
+X-Received: by 2002:a2e:8095:0:b0:2c2:c450:c2d0 with SMTP id i21-20020a2e8095000000b002c2c450c2d0mr3086697ljg.24.1700720931407;
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+Received: from localhost (host-79-54-179-199.retail.telecomitalia.it. [79.54.179.199])
+        by smtp.gmail.com with ESMTPSA id my47-20020a1709065a6f00b009920a690cd9sm366280ejc.59.2023.11.22.22.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+Date:   Thu, 23 Nov 2023 07:28:50 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Provide a boot time parameter to enable lazy RCU
+Message-ID: <ZV7xIjSq1l1q7gRI@gpd>
+References: <20231121205304.315146-1-qyousef@layalina.io>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|DS7PR12MB6069:EE_
-X-MS-Office365-Filtering-Correlation-Id: c31fb7de-e9f3-4543-37ad-08dbebed65a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fSa6oPi/IH6fdFwly0hAmjz9UqVpWhFe7qS0S0LLiXadyKXNYyLTLr9i0WecLm2E7D5JzhQiB2XnrWlMwZV1D9SFBr5Ld3O9IwJ/KZUNcjkwXS7qbhm1KEYeb8qfAHEwoCyFiavZ7MFQCaA8yGi5oWQJAoXiXc1PHwYAswiR2UKublb3TOEMY3Nfkix0bGtn2hRHS72bt9Lr6AHVVwcjeJZDqEyaE5oMptCCmLi0daXSyI1/cyNiuNdnguBtbbUWrPRCKGToDoZ5VaG4VsVeF/LVtDLL3tgyGj6QOLZFf43udjR9gKh689NdKwRJ0qwjqQRH0S5Xs8PzYX1CFsSYTLz9BoL8wFVLX2ZlmXSavNLPyha1OnMsiWk86ZX70vzKNp9HIjgXdJxq7abVo0ZW8OjmO9nD+RurR28SfGGlwZB+h5jZvF0yLO9NqKlxywtW58Vv/RaQRYnEORk0F63YuqHRiO0KlYQTLAVzyoLWor0sPo3BY4uhYoAtRdYoQuRfaWPOU9RYnaiqPXi5brvZjna5KIuii28tbVzQzF7T7eta9qbRk3ifnRP+Cm68XbjFCLs2hyR2t5tsFn83MnaRRuQdrU2K5zTgMJpf+XmGnAoAzpRGQaRWWIBB6BauUd5WoTvP8hpWc8SStQDnvOXTHOaGmLLMMg8v0On9qawJ5L4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(346002)(366004)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(2906002)(8936002)(8676002)(4326008)(31696002)(86362001)(7416002)(5660300002)(921008)(41300700001)(36756003)(83380400001)(53546011)(6512007)(6506007)(2616005)(38100700002)(110136005)(31686004)(66476007)(66556008)(316002)(66946007)(478600001)(6666004)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ek1sTVRPREhXUkhZM2FqOXZ2UlFPYjFvbUlOWGdob0JGSVNJaTFoUk1HdXdm?=
- =?utf-8?B?bTBsS2twbUg0NXFOdlBaU0hFUUhlV3JabVU0Vk9RalJuWHg0K1hDOXlvWllo?=
- =?utf-8?B?NWZNM05nVEhTeEtGWjRGL0tRVGxmN0U2OHI5MmJrQVZOWXVoN3pnbGRJOExQ?=
- =?utf-8?B?YXFaUG5hbzRzWC9SNlNKODk2aStDaXEvc3luSVRRMURidmgvZzFuUmNLS3V5?=
- =?utf-8?B?RTJiaExQK0paMjNkd3JNR0V4T3prdGFJR3FDOFpDcnV3ZHRrMUR5VFlxTUQ2?=
- =?utf-8?B?YVZtdWJQMjU3QzNlYXoyZlYxVHFLL201MzJzNnhpemZOSmFJQzk5eERPL21W?=
- =?utf-8?B?M3J6NTNyRnVUdk0wVmw5NWg5UnZiTElnU09BWTJZeEcwQ0FFTjd0MXA2aGVu?=
- =?utf-8?B?TU1EUlV4Wk1kelRtUEZRRnhXNGRsV0YzYmhCUjROTCtyMlpEOU0rc002ekRM?=
- =?utf-8?B?aUFkYlMvS0k5Q2RsUGUxbEZldEpGc0w0OXJkUzM2OWVvaGdxMEFEYnA2ZlE1?=
- =?utf-8?B?RkpPWGNtM2Q1Mm8rU1FlYk54MWtqNk9abXJ4WVMrWXNZNndhMzk2Vmx5b01z?=
- =?utf-8?B?eXJtZzVFdDJXZ3lWeGo5RmdSbHM2U2NrWWxtd3BraVF4d1ZRZXNQV0hKVitD?=
- =?utf-8?B?dVJrUE9aNzcweXV2QngyVm8zNmxFKzZlclpDaVBBeHJOL0lSU2NYQVpRSUlY?=
- =?utf-8?B?dndZRnpBdG1sWGlncEEzT0tGbnNqOFg4WEdEdkF5azFTSGorU0dWU1BObzJm?=
- =?utf-8?B?bUtITWlFOU1BRXNCT1pJbW5jRDZSYzkzVG9QazFaRE1mSzRnRXVFZzZzQmRx?=
- =?utf-8?B?Qm9CTnZYYVZGOEp5R1BSZVozK2NnVTJRMUgzWlpVT3o5NXFjZlpiS3ZmQzJS?=
- =?utf-8?B?U3huMTZDaTB3cHJMT0xsRi9vV3RvbGNydHRacVVMOG5RditVYnkvSjNkaGU5?=
- =?utf-8?B?alBaRlJ4T3JqOFdWQlVsQ1dKNWFUSk1MOThSVlBldGFXRnVyN2M2d3MxK2Nq?=
- =?utf-8?B?dVA0L2RwcDRjMHhsOGlydGcwQml0UDR1M0tiRUxWNW9KQUlXTy9JM1ZSc3h3?=
- =?utf-8?B?OU5tV0lnWjNaSGw5M3k5aGJyNmIvbkEvNGp3RXE4dTZGTFJTMnV3T0NwR2Vq?=
- =?utf-8?B?N0NBd3JHdzNQZFBUUG1WZGRRYWpVNFFwR0RzVGZaQ3JPbXFxSDJ1cE0rbTly?=
- =?utf-8?B?aVY3ZjZ0aXV5OUYxeWloeks1N0tzSXVZeERNWWUzS0pqSllPd3lNejJROFRo?=
- =?utf-8?B?SC9UQnhSMkFPaXV5dmJRQVBPajhxWVVNNkEwS3JkdFllcU9SeTlJa1Qvc3lT?=
- =?utf-8?B?WmQvdkNUckJWRE9jM2RaaGIzTkFDUFdvZnhrM0VaVklCbmNveVZhU3pCT0cy?=
- =?utf-8?B?Q1lWeldqNVo3aDNSYXI4OXhDaHFhNTBDSjRkaUdveW9aZk9qS2xDSzN1MStw?=
- =?utf-8?B?ZFYzbHkzd1JhL3lEd3ZMRUpUSE5TQjlhMXhUVHUzS2FPdEFyQ2l6bGdZVzRE?=
- =?utf-8?B?d0hUdmVIZ3ZOWVlWY1Q2Nm5rOTZxNzF2WWlyOERGenA3NFhkSzJlVHUvSG5h?=
- =?utf-8?B?ZDRnTWdtVnU0aUttOEpRWGJDQk1oT3JRdkU0UkVINzVhQlVzTVZudkVJWEdp?=
- =?utf-8?B?Rm1ZUDJVQTYxZ3B1TnczdjVnN0lpSUZhSHgwR1k5WUM4bWc3NFlLMTdRQlNJ?=
- =?utf-8?B?MUdMZ2RENmEvN3E0ckFFL0sxcUZNdjRWV3pqK21OZWYrTm5hYkZlVTN1bytT?=
- =?utf-8?B?UGJ6dXRoMitQNzQ3VEJQOU8vNFJBSzhRWHFkR0p6NmZ1Z29pc1k2RG9vWkx3?=
- =?utf-8?B?MU5Tb1FqZmlDaWtiNGJvRVJzbEFSZUo2d3lzRFhJZGZOczdJOWpYRkJQMVNT?=
- =?utf-8?B?YTQraWdXS1JiN3NZaTdvQ2ROZTlQZkw2TE1pbDFSdVJvVjNObWJjWjJCVUhP?=
- =?utf-8?B?ajhkdjQxQ1JxRmJOZ3BOYUdPNGp4SXp3T2dHT0d3OS9ydWREY1JnQVcvK3lB?=
- =?utf-8?B?Q3BKak1UVzNTbTVEM1B5S1dHL0JId0dQREtWTmFYMDduRUdYQmtibC91OWZ1?=
- =?utf-8?B?eU1sU1J3LzIvbGVXejBzQm84YjhEMmZzSzdFTHk4WENLcVZWQnNIa0JMUVhM?=
- =?utf-8?B?Rm5FUllVSnNqNXIzQjVLV3NSTmtIR1VsemJ2SmYveFovaEt1WkMwQ28xSWlR?=
- =?utf-8?B?OUE9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c31fb7de-e9f3-4543-37ad-08dbebed65a1
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 06:28:24.9113
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w/achWDwmnGGEV8b5EJtFjxbhudOQv18rytBazb1HXTLM+YwCSk3neIPekk0bxLdlnn28kAyppPUBmZ1+akLsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6069
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121205304.315146-1-qyousef@layalina.io>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 08:29, Ryan Roberts wrote:
-...
-> Prerequisites
-> =============
+On Tue, Nov 21, 2023 at 08:53:04PM +0000, Qais Yousef wrote:
+> To allow more flexible opt-in arrangements while still provide a single
+> kernel for distros, provide a boot time parameter to enable lazy RCU.
 > 
-> Some work items identified as being prerequisites are listed on page 3 at [8].
-> The summary is:
+> Specify:
 > 
-> | item                          | status                  |
-> |:------------------------------|:------------------------|
-> | mlock                         | In mainline (v6.7)      |
-> | madvise                       | In mainline (v6.6)      |
-> | compaction                    | v1 posted [9]           |
-> | numa balancing                | Investigated: see below |
-> | user-triggered page migration | In mainline (v6.7)      |
-> | khugepaged collapse           | In mainline (NOP)       |
+> 	rcutree.enable_rcu_lazy
 > 
-> On NUMA balancing, which currently ignores any PTE-mapped THPs it encounters,
-> John Hubbard has investigated this and concluded that it is A) not clear at the
-> moment what a better policy might be for PTE-mapped THP and B) questions whether
-> this should really be considered a prerequisite given no regression is caused
-> for the default "small-sized THP disabled" case, and there is no correctness
-> issue when it is enabled - its just a potential for non-optimal performance.
-> (John please do elaborate if I haven't captured this correctly!)
+> Which also requires
+> 
+> 	rcu_nocbs=all
+> 
+> at boot time to enable lazy RCU assuming CONFIG_RCU_LAZY=y. The
+> parameter will be ignored if CONFIG_RCU_LAZY is not set.
+> 
+> With this change now lazy RCU is disabled by default if the boot
+> parameter is not set even when CONFIG_RCU_LAZY is enabled.
 
-That's accurate. I actually want to continue looking into this (Mel
-Gorman's recent replies to v6 provided helpful touchstones to the NUMA
-reasoning leading up to the present day), and maybe at least bring
-pte-thps into rough parity with THPs with respect to NUMA.
+I'm wondering if we should make this enabled by default if
+CONFIG_RCU_LAZY=y, so we don't break the previous behavior, and those
+who want it disabled (despite having CONFIG_RCU_LAZY=y in their .config)
+can add rcutree.enable_rcu_lazy=0 to the boot options.
 
-But that really doesn't seem like something that needs to happen first,
-especially since the outcome might even be, "first, do no harm"--as in,
-it's better as-is. We'll see.
+Thanks for working on this!
+-Andrea
 
 > 
-> If there are no disagreements about removing numa balancing from the list, then
-> that just leaves compaction which is in review on list at the moment.
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
 > 
-> I really would like to get this series (and its remaining comapction
-> prerequisite) in for v6.8. I accept that it may be a bit optimistic at this
-> point, but lets see where we get to with review?
+> Makes sense to remove the CONFIG_RCU_LAZY now we have a boot time param?
+> 
+> We can make it a static key too if it *really* matters.
+> 
+> Thanks to Joel for helping initially in reviewing this patch which was intended
+> originally for Android.
+> 
+> I got some requests to make this a runtime modifiable for init scripts; but
+> Paul suggested there shall be dragons. So RO it is.
 > 
 > 
-> Testing
-> =======
+>  .../admin-guide/kernel-parameters.txt         |  5 ++++
+>  kernel/rcu/tree.c                             | 26 ++++++++++++++++++-
+>  2 files changed, 30 insertions(+), 1 deletion(-)
 > 
-> The series includes patches for mm selftests to enlighten the cow and khugepaged
-> tests to explicitly test with small-order THP, in the same way that PMD-order
-> THP is tested. The new tests all pass, and no regressions are observed in the mm
-> selftest suite. I've also run my usual kernel compilation and java script
-> benchmarks without any issues.
-> 
-> Refer to my performance numbers posted with v6 [6]. (These are for small-sized
-> THP only - they do not include the arm64 contpte follow-on series).
-> 
-> John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
-> some workloads at [10]. (Observed using v6 of this series as well as the arm64
-> contpte series).
-> 
-
-Testing continues. Some workloads do even much better than than 10x,
-it's quite remarkable and glorious to see. :)  I can send more perf data
-perhaps in a few days or a week, if there is still doubt about the
-benefits.
-
-That was with the v6 series, though. I'm about to set up and run with
-v7, and expect to provide a tested by tag for functionality, sometime
-soon (in the next few days), if machine availability works out as
-expected.
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..2f0386a12aa7 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5021,6 +5021,11 @@
+>  			this kernel boot parameter, forcibly setting it
+>  			to zero.
+>  
+> +	rcutree.enable_rcu_lazy= [KNL]
+> +			To save power, batch RCU callbacks and flush after
+> +			delay, memory pressure or callback list growing too
+> +			big.
+> +
+>  	rcuscale.gp_async= [KNL]
+>  			Measure performance of asynchronous
+>  			grace-period primitives such as call_rcu().
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 3ac3c846105f..e0885905b3f6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2718,7 +2718,30 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>  	}
+>  }
+>  
+> +static bool enable_rcu_lazy;
+>  #ifdef CONFIG_RCU_LAZY
+> +/* Enable lazy rcu at boot time */
+> +static int param_set_rcu_lazy(const char *val, const struct kernel_param *kp)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * Make sure a grace period has passed before and after flipping the
+> +	 * switch.
+> +	 */
+> +	rcu_barrier();
+> +	ret = param_set_bool(val, kp);
+> +	rcu_barrier();
+> +
+> +	return ret;
+> +}
+> +static const struct kernel_param_ops rcu_lazy_ops = {
+> +	.flags = KERNEL_PARAM_OPS_FL_NOARG,
+> +	.set = param_set_rcu_lazy,
+> +	.get = param_get_bool,
+> +};
+> +module_param_cb(enable_rcu_lazy, &rcu_lazy_ops, &enable_rcu_lazy, 0444);
+> +
+>  /**
+>   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+>   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> @@ -2792,7 +2815,8 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>   */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> +	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY) &&
+> +			  READ_ONCE(enable_rcu_lazy));
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> -- 
+> 2.34.1
