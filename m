@@ -2,416 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945AE7F64EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E9E7F64EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345185AbjKWRIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S1345293AbjKWRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjKWRIm (ORCPT
+        with ESMTP id S229686AbjKWRKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:08:42 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F1CE410D8;
-        Thu, 23 Nov 2023 09:08:45 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C3041042;
-        Thu, 23 Nov 2023 09:09:32 -0800 (PST)
-Received: from [10.57.3.62] (unknown [10.57.3.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 807783F7A6;
-        Thu, 23 Nov 2023 09:08:44 -0800 (PST)
-Message-ID: <96fa7b1a-9f64-315b-c767-e582db55c7a4@arm.com>
-Date:   Thu, 23 Nov 2023 17:08:43 +0000
+        Thu, 23 Nov 2023 12:10:17 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77C0CB
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:10:22 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so1559674a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:10:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700759421; x=1701364221; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3SFIzPt7TEX9nsF6CmEt2y+2kFBYceN5ADYmICOYrZM=;
+        b=WQ8S3eSst8h2CA0I6RYvHHQJtkMlslcg6CGqLiYHLzuhUfvfx+EuVzaBGn9xUqH93X
+         okddBTfi4TyXRbKtstu8Fr8er+QJHSPmACeeV8+f6Q0vnu7JBy8lGNl58XOSoJpJ4FUJ
+         TCLVkybbdBBsBqjYK95uzzEvREKEr5GvAuKx5nJRw9+1c/caiBsJErGlhGNdJhbttlR3
+         phzvqnBeaaga2JxTlry2/AgDOr4mZCJpOswXXiuEigxGwAfMQbFVCD3Re2al7mBHpJBn
+         hnjmGekwrCZLltIfwS6f8vECsYomq5tCRFPE6e3PAWtruOOX6l+YxIvFB3RFh2fMSwMI
+         w35w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700759421; x=1701364221;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3SFIzPt7TEX9nsF6CmEt2y+2kFBYceN5ADYmICOYrZM=;
+        b=jtIayD5eq3MRBMO5YcGCZMGM+1kTjnsl8KtvfQd+k/Jq6+hfQeKcngeJyPeILRgjnW
+         6Ul2B87J7/VOQuyTJBsnKw2NW5foEKn+eUiQueABjq4VBsTKYKBR8hKXEJJCxF276W2A
+         XEJRlaSMXeHBYKmbwORMEEDISDg1pTQbhX9YAPW+0VmQ9Euk/uEW5t+U0olG8ckE9Sfp
+         ItNqwqOFnh7LwGpvNjzxTptRaUsHGifJri/ecsp7SxgJTlft1jDRhnttiTUukWlrBCkx
+         g4oKCwcClhhgFkNHVZb0JVNOrrYtgWVcqTPPgRA/swYcm0wHC24abNfaga5dkUWCAfQF
+         x4/g==
+X-Gm-Message-State: AOJu0YxnxbWwPeF3hrFI15EwfnbHnblT3Z2lPW8Xqca47HpQxsSknm5x
+        +vmZ5Q+lru2Tjs+SNTT6VpqIUA==
+X-Google-Smtp-Source: AGHT+IFCYKgtF3mjNW4AH91q6HDmr7WR4otmQC45N+hCgGoUwH/B1qJH8bZX7d0ZE0lapIiwwntAaw==
+X-Received: by 2002:a50:d747:0:b0:54a:b02e:1ffe with SMTP id i7-20020a50d747000000b0054ab02e1ffemr1648458edj.20.1700759421101;
+        Thu, 23 Nov 2023 09:10:21 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.3])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05640210cf00b0054847e78203sm840661edu.29.2023.11.23.09.10.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 09:10:20 -0800 (PST)
+Message-ID: <a9760bbb-d06d-4914-b0d1-48a224f74858@tuxon.dev>
+Date:   Thu, 23 Nov 2023 19:10:17 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
- v6.5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/13] net: ravb: Rely on PM domain to enable refclk
 Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Asahi Linux <asahi@lists.linux.dev>
-References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
- <86pm03z0kw.wl-maz@kernel.org> <86o7fnyvrq.wl-maz@kernel.org>
- <ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com>
- <CAP-5=fW8exsmUg_9K09Oy6T4ZAvvD7ZbZN2sxODdqisZOR6mUA@mail.gmail.com>
- <ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.arm.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, p.zabel@pengutronix.de,
+        yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
+        biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        sergei.shtylyov@cogentembedded.com,
+        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-9-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdV=2_h2PW9K7zT3Hwqjdk6D2m_Dd09bqHtifAvVTM7Lrw@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdV=2_h2PW9K7zT3Hwqjdk6D2m_Dd09bqHtifAvVTM7Lrw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Geert,
 
-
-On 23/11/2023 16:48, Mark Rutland wrote:
-> On Thu, Nov 23, 2023 at 07:14:21AM -0800, Ian Rogers wrote:
->> On Thu, Nov 23, 2023 at 6:23 AM Mark Rutland <mark.rutland@arm.com> wrote:
->>>
->>> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
->>>> On Tue, 21 Nov 2023 13:40:31 +0000,
->>>> Marc Zyngier <maz@kernel.org> wrote:
->>>>>
->>>>> [Adding key people on Cc]
->>>>>
->>>>> On Tue, 21 Nov 2023 12:08:48 +0000,
->>>>> Hector Martin <marcan@marcan.st> wrote:
->>>>>>
->>>>>> Perf broke on all Apple ARM64 systems (tested almost everything), and
->>>>>> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
->>>>>
->>>>> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
->>>>> asymmetric ARM platform. It isn't clear what criteria is used to pick
->>>>> the PMU, but nothing works anymore.
->>>>>
->>>>> The saving grace in my case is that Debian still ships a 6.1 perftool
->>>>> package, but that's obviously not going to last.
->>>>>
->>>>> I'm happy to test potential fixes.
->>>>
->>>> At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
->>>> -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
->>>> CPU):
->>>
->>> Looking at this with fresh(er) eyes, I think there's a userspace bug here,
->>> regardless of whether one believes it's correct to convert a named-pmu event to
->>> a PERF_TYPE_HARDWARE event directed at that PMU.
->>>
->>> It looks like the userspace tool is dropping the extended type ID after an
->>> initial probe, and requests events with plain PERF_TYPE_HARDWARE (without an
->>> extended type ID), which explains why we seem to get events from one PMU only.
->>>
->>> More detail below...
->>>
->>> Marc, if you have time, could you run the same commands (on the same kernel)
->>> with a perf tool build from v6.4?
->>>
->>>> <quote>
->>>> maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 0 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
->>>>  apple_firestorm_pmu/cycles/ -e cycles ls
->>>> Using CPUID 0x00000000612f0280
->>>> Attempt to add: apple_icestorm_pmu/cycles=0/
->>>> ..after resolving event: apple_icestorm_pmu/cycles=0/
->>>> Opening: unknown-hardware:HG
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   config                           0xb00000000
->>>>   disabled                         1
->>>> ------------------------------------------------------------
->>>
->>> Here config[31:0] is 0 (PERF_COUNT_HW_CPU_CYCLES), and config[63:32] is 0xb,
->>> which is presumably the PMU ID for the apple_icestorm_pmu.
->>>
->>> The attr doesn't contain exclude_guest=1, so this will be rejected by the PMU
->>> driver due to its mode exclusion requirements.
->>>
->>>> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
->>>> sys_perf_event_open failed, error -95
->>>
->>> ... which is what we see here (this is EOPNOTSUPP, which __hw_perf_event_init()
->>> in drivers/perf/arm_pmu.c returns when the mode requested mode exclusion
->>> options aren't supported).
->>>
->>> So far, so good...
->>>
->>>> Attempt to add: apple_firestorm_pmu/cycles=0/
->>>> ..after resolving event: apple_firestorm_pmu/cycles=0/
->>>> Control descriptor is not initialized
->>>> Opening: apple_icestorm_pmu/cycles/
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>
->>> ... but here, the extended type ID has been dropped, and this event is no
->>> longer directed towards the apple_firestorm_pmu PMU, so the kernel can direct
->>> this to *any* CPU PMU...
->>>
->>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 3
->>>
->>> ... and *some* PMU accepts it.
->>>
->>>> Opening: apple_firestorm_pmu/cycles/
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>
->>> Likewise here, no extended type ID...
->>>
->>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
->>>> Opening: cycles
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>
->>> Likewise here, no extended type ID...
->>>
->>>> sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 5
->>>> arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
->>>> bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
->>>> Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
->>>> builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
->>>> builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
->>>> builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
->>>> builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
->>>> builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
->>>> builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
->>>> builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
->>>> builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
->>>> builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
->>>> builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
->>>> builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
->>>> builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
->>>> builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
->>>> builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
->>>> builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
->>>> builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
->>>> builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
->>>> apple_icestorm_pmu/cycles/: -1: 0 873709 0
->>>> apple_firestorm_pmu/cycles/: -1: 0 873709 0
->>>> cycles: -1: 0 873709 0
->>>> apple_icestorm_pmu/cycles/: 0 873709 0
->>>> apple_firestorm_pmu/cycles/: 0 873709 0
->>>> cycles: 0 873709 0
->>>>
->>>>  Performance counter stats for 'ls':
->>>>
->>>>      <not counted>      apple_icestorm_pmu/cycles/                                              (0.00%)
->>>>      <not counted>      apple_firestorm_pmu/cycles/                                             (0.00%)
->>>>      <not counted>      cycles                                                                  (0.00%)
->>>>
->>>>        0.000002250 seconds time elapsed
->>>>
->>>>        0.000000000 seconds user
->>>>        0.000000000 seconds sys
->>>
->>> So it looks like the tool has expanded the requested
->>> 'apple_icestorm_pmu/cycles/' event into three cycles events, each opened
->>> without an extended type ID.
->>>
->>> AFAICT, the kernel has done exactly what it has always done for
->>> PERF_TYPE_HARDWARE/PERF_COUNT_HW_CPU_CYCLES events: pick the first PMU which
->>> said it can handle them.
->>>
->>>> If I run the same thing on another CPU cluster (firestorm), I get
->>>> this:
->>>>
->>>> <quote>
->>>> maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 2 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
->>>>  apple_firestorm_pmu/cycles/ -e cycles ls
->>>> Using CPUID 0x00000000612f0280
->>>> Attempt to add: apple_icestorm_pmu/cycles=0/
->>>> ..after resolving event: apple_icestorm_pmu/cycles=0/
->>>> Opening: unknown-hardware:HG
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   config                           0xb00000000
->>>>   disabled                         1
->>>> ------------------------------------------------------------
->>>> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
->>>> sys_perf_event_open failed, error -95
->>>
->>> Again, we see one request with an extended type ID, which fails due to mode exclusion requirements...
->>>
->>>> Attempt to add: apple_firestorm_pmu/cycles=0/
->>>> ..after resolving event: apple_firestorm_pmu/cycles=0/
->>>> Control descriptor is not initialized
->>>> Opening: apple_icestorm_pmu/cycles/
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 3
->>>> Opening: apple_firestorm_pmu/cycles/
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 4
->>>> Opening: cycles
->>>> ------------------------------------------------------------
->>>> perf_event_attr:
->>>>   type                             0 (PERF_TYPE_HARDWARE)
->>>>   size                             136
->>>>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
->>>>   sample_type                      IDENTIFIER
->>>>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>>>   disabled                         1
->>>>   inherit                          1
->>>>   enable_on_exec                   1
->>>>   exclude_guest                    1
->>>> ------------------------------------------------------------
->>>
->>> ... but all subsequent requests do not have an extended type ID, and the kernel
->>> directs these to whichever PMU accepts the event first...
->>>
->>>> sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 5
->>>> arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
->>>> bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
->>>> Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
->>>> builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
->>>> builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
->>>> builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
->>>> builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
->>>> builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
->>>> builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
->>>> builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
->>>> builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
->>>> builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
->>>> builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
->>>> builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
->>>> builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
->>>> builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
->>>> builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
->>>> builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
->>>> builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
->>>> builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
->>>> apple_icestorm_pmu/cycles/: -1: 1035101 469125 469125
->>>> apple_firestorm_pmu/cycles/: -1: 1035035 469125 469125
->>>> cycles: -1: 1034653 469125 469125
->>>> apple_icestorm_pmu/cycles/: 1035101 469125 469125
->>>> apple_firestorm_pmu/cycles/: 1035035 469125 469125
->>>> cycles: 1034653 469125 469125
->>>>
->>>>  Performance counter stats for 'ls':
->>>>
->>>>          1,035,101      apple_icestorm_pmu/cycles/
->>>>          1,035,035      apple_firestorm_pmu/cycles/
->>>>          1,034,653      cycles
->>>>
->>>>        0.000001333 seconds time elapsed
->>>>
->>>>        0.000000000 seconds user
->>>>        0.000000000 seconds sys
->>>> </quote>
->>>
->>> ... and in this case the workload was run on a CPU affine ot that arbitrary
->>> PMU, hence we managed to count.
->>>
->>> So AFAICT, this is a userspace bug, maybe related to the way we probe for
->>> supported PMU features?
+On 23.11.2023 10:48, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> Thanks for your patch (which seems to have been delayed by 3 days, ouch)!
+> 
+> On Thu, Nov 23, 2023 at 5:35 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>
->> Probing PMU features is done by trying to perf_event_open events. For
->> extended types it is a cycles event on each core PMU:
->> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/pmus.c?h=perf-tools-next#n532
+>> For RZ/G3S and RZ/G2L SoCs the Ethernet's reference clock is part of the
+>> Ethernet's power domain. It is controlled though CPG driver that is
+>> providing the support for power domain that Ethernet belongs. Thus,
+>> to be able to implement runtime PM (at least for RZ/G3S at the moment)
+> 
+> Why only for RZ/G3S?
+
+(I'm copy pasting here what I already replied to Sergey)
+
+The reasons I've limited only to RZ/G3S are:
+1/ I don't have all the platforms to test it
+2/ on G1H this doesn't work. I tried to debugged it but I don't have a
+   platform at hand, only remotely, and is hardly to debug once the
+   ethernet fails to work: probe is working(), open is executed, PHY is
+   initialized and then TX/RX is not working... don't know why ATM.
+
+> 
+>> w/o the need to add clock enable/disable specific calls in runtime PM
+>> ops of ravb driver and interfere with other IP specific implementations,
+>> add a new variable to struct_hw_info and enable the reference clock
+>> based on the value of this variable (the variable states if reference
+>> clock is part of the Ethernet's power domain).
 >>
->> The is_event_supported logic is here:
->> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/print-events.c?h=perf-tools-next#n232
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> Ah, so IIUC what's happening is:
+>> --- a/drivers/net/ethernet/renesas/ravb.h
+>> +++ b/drivers/net/ethernet/renesas/ravb.h
+>> @@ -1043,6 +1043,7 @@ struct ravb_hw_info {
+>>         unsigned nc_queues:1;           /* AVB-DMAC has RX and TX NC queues */
+>>         unsigned magic_pkt:1;           /* E-MAC supports magic packet detection */
+>>         unsigned half_duplex:1;         /* E-MAC supports half duplex mode */
+>> +       unsigned refclk_in_pd:1;        /* Reference clock is part of a power domain. */
+>>  };
+>>
+>>  struct ravb_private {
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 836fdb4b3bfd..ddd8cd2c0f89 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -2502,6 +2502,7 @@ static const struct ravb_hw_info gbeth_hw_info = {
+>>         .tx_counters = 1,
+>>         .carrier_counters = 1,
+>>         .half_duplex = 1,
+>> +       .refclk_in_pd = 1,
+>>  };
+>>
+>>  static const struct of_device_id ravb_match_table[] = {
+>> @@ -2749,12 +2750,14 @@ static int ravb_probe(struct platform_device *pdev)
+>>                 goto out_release;
+>>         }
+>>
+>> -       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+>> -       if (IS_ERR(priv->refclk)) {
+>> -               error = PTR_ERR(priv->refclk);
+>> -               goto out_release;
+>> +       if (!info->refclk_in_pd) {
+>> +               priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+>> +               if (IS_ERR(priv->refclk)) {
+>> +                       error = PTR_ERR(priv->refclk);
+>> +                       goto out_release;
+>> +               }
+>> +               clk_prepare_enable(priv->refclk);
+>>         }
+>> -       clk_prepare_enable(priv->refclk);
 > 
-> 1) Userspace tries to detect extended type support, with a cycles event
->    directed to one of the CPU PMUs. The attr for this does not have
->    exclude_guest set.
-> 
-> 2) In the kernel, the core perf code sees the extended hw type id, and directs
->    this towards the correct PMU (apple_icestorm_pmu).
-> 
-> 3) The PMU driver looks at the attr, sees exclude_guest is not set, and returns
->    -EOPNOTSUPP, exactly as it would regardless of whether the extended hw type
->    is used.
-> 
->    Note: this happens to be a difference between x86 PMUs and the apple_* PMUs,
->    but this is a legitimate part of the perf ABI, not an arm-specific quirk or
->    bug.
-> 
-> 4) Userspace receives -EOPNOTSUPP, and so decide the extended hw_type is not
->    supported (even though the kernel does support the extended hw type id, and
->    the event was rejected for orthogonal reasons).
-> 
-> 5) Userspace avoids the extended hw type, but still uses
->    PERF_EVENT_TYPE_HARDWARE events for named-pmu events.
-> 
-> Does that sound plausible to you, or have I misunderstood?
-> 
-> From Marc's reply at:
-> 
->   https://lore.kernel.org/lkml/86edggzfxx.wl-maz@kernel.org/
-> 
-> ... with perf built from v6.4, the perf tool can open named pmu events without
-> issue, and sets exclude_guest in the attr. So it seems like there's a mismatch
-> between regular opening of events and probing for extended hw type that causes
-> that to differ.
-> 
-> AFAICT, the kernel is doing the right thing here, but the userspace detection
-> of extended type id support happens to differ from regular event opening, and
-> mis-interprets -EOPNOTSUP as "the kernel doesn't support extended type IDs"
-> rather than "The kernel was able to consume the extended type ID, but the
-> specific PMU targetted said it doesn't support this attr".
-> 
-> IIUC that means this'll be broken on older kernels (those before the extended
-> hw type id support was introduced), too?
-> 
-> It sounds like we need to make (4) more robust? I'm not immediately sure how, 
-> given the rats nest of returns in perf_event_open(), but I'm happy to try to
-> help with that.
+> Is this patch really needed? It doesn't hurt to manually enable a
+> clock that is also under Runtime PM control.  Clock prepare/enable
+> refcounting will take care of that.
 
-It might be worth reporting extended HW ID support in the caps folder of
-the PMU so that Perf can look there instead of trying to open the event.
-It's something that we know will always be on or always be off so it
-doesn't make sense to try to discover it by opening an event.
+I agree with that. I chose this path to not interfere w/ the comments
+ravb_runtime_nop() which I didn't understand. Also I fail to understand why
+the ravb_runtime_nop() is there...
 
 > 
-> It also seems like (5) is a problem regardless. If the user asks for a named
-> PMU event on an older kernel (before the extended hw type id was a thing), and
-> the tool converts that to a plain PERF_EVENT_TYPE_HARDWARE event, it's liable
-> to be handled by a different PMU than the one the user asked for.
+>>
+>>         if (info->gptp_ref_clk) {
+>>                 priv->gptp_clk = devm_clk_get(&pdev->dev, "gptp");
+>> @@ -2869,7 +2872,8 @@ static int ravb_probe(struct platform_device *pdev)
+>>         if (info->ccc_gac)
+>>                 ravb_ptp_stop(ndev);
+>>  out_disable_refclk:
+>> -       clk_disable_unprepare(priv->refclk);
+>> +       if (!info->refclk_in_pd)
+>> +               clk_disable_unprepare(priv->refclk);
+>>  out_release:
+>>         free_netdev(ndev);
+>>  pm_runtime_put:
+>> @@ -2890,7 +2894,8 @@ static void ravb_remove(struct platform_device *pdev)
+>>         if (info->ccc_gac)
+>>                 ravb_ptp_stop(ndev);
+>>
+>> -       clk_disable_unprepare(priv->refclk);
+>> +       if (!info->refclk_in_pd)
+>> +               clk_disable_unprepare(priv->refclk);
+>>
+>>         /* Set reset mode */
+>>         ravb_write(ndev, CCC_OPC_RESET, CCC);
 > 
-> Thanks,
-> Mark.
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
