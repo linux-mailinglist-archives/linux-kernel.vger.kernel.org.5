@@ -2,224 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E637F6107
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F127F6112
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345688AbjKWOHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:07:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
+        id S1345698AbjKWOIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345666AbjKWOHU (ORCPT
+        with ESMTP id S1345666AbjKWOIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:07:20 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24671B2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:07:25 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 83DB666073BF;
-        Thu, 23 Nov 2023 14:07:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700748444;
-        bh=Xh7ItolyIMoAQKYgzvPHx2FNhsLQj3Hwraf4dBbfyHg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ev1tzTd9M9Lz6R73YAzrEp8gE0HfO3AypSmzBPqhHhLY5MMmxTaYs8IQVqL28oubd
-         64tr4x3cfGNRHOJQYWJsjzWc1DhDexbu18ce0GvyUtLNXP5M6HJp686QUf3F3ufdmu
-         8q+AhHngIj14oV+/cxFOrQi3066FUnQtcmDG+nwidkM7yTr3UTSVpFmWD0aqjlH7Os
-         o1vVj3KoqLlg6Qk74qI4Up8rAxEulyGneapoqu11a/Zwe6fq8Qco08vqKZXqkO02Xw
-         2fXwwA9U0OkQ9s2C4LdiDqVQ7vdY8N9KS9qoQqxXKgMXvu7SRiTRVi4HadGWBNQ2JL
-         6iRPOA+2ph4UQ==
-Date:   Thu, 23 Nov 2023 15:07:20 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v3] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Message-ID: <20231123150720.07f33ada@collabora.com>
-In-Reply-To: <f27d53de-41c7-4841-9335-994b5a6c178a@collabora.com>
-References: <20231123120521.147695-1-angelogioacchino.delregno@collabora.com>
-        <20231123141308.3ba50409@collabora.com>
-        <f27d53de-41c7-4841-9335-994b5a6c178a@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 23 Nov 2023 09:08:02 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17257D44;
+        Thu, 23 Nov 2023 06:08:09 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANCeGkg032073;
+        Thu, 23 Nov 2023 14:08:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=OEAROGnnmwLYzFPw63TAfHhUI9YicpFnZ5bBINWjykA=;
+ b=PnewYGcmw1BQakUf43VMvg91DGhMtQieJ8JPfai9u4WDY/QICA3JcHFveLqx64ziTCfX
+ 8cK5SDyuTuITSVZOSmQ75yho7sHYPBJrifblIRq5HsCkkp3BU1AjzilAfsB899Mp1Fpj
+ GMa2fWOSdbCmdYv8DCB7EcxmdXuNJbgD4hO0kH47msv5PD8wV7bILC60RLGVJkDGWkDQ
+ zhfe2PxK4Vl9vyg+j7Vi4ka8JY23nnZYxS+kdSgy5Lt7vegfI2hhq3hrOhQjgXF+8QLP
+ FpRkz/KqLf7L4rpIRWlOFwg49Rc1vqCyBIrriXWO0VbPGp8cQZ8yyWdh+8Wh7tBaZum0 0w== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhvm0sha8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 14:08:04 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ANE83NZ028413
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 14:08:03 GMT
+Received: from [10.216.43.77] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 06:08:00 -0800
+Message-ID: <57eed7c3-e884-a28b-a1ff-e5aecbb11137@quicinc.com>
+Date:   Thu, 23 Nov 2023 19:37:28 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sm8550: Enable download mode
+ register write
+Content-Language: en-US
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
+ <1698253601-11957-4-git-send-email-quic_mojha@quicinc.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <1698253601-11957-4-git-send-email-quic_mojha@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MtdaFQmtmJAZlN_-R2PVX3kSwMvzdpCH
+X-Proofpoint-ORIG-GUID: MtdaFQmtmJAZlN_-R2PVX3kSwMvzdpCH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1011 priorityscore=1501 spamscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=796 mlxscore=0 adultscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230101
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 14:30:08 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
 
-> Il 23/11/23 14:13, Boris Brezillon ha scritto:
-> > On Thu, 23 Nov 2023 13:05:21 +0100
-> > AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > wrote:
-> >   
-> >> Some SoCs may be equipped with a GPU containing two core groups
-> >> and this is exactly the case of Samsung's Exynos 5422 featuring
-> >> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
-> >> is partial, as this driver currently supports using only one
-> >> core group and that's reflected on all parts of it, including
-> >> the power on (and power off, previously to this patch) function.
-> >>
-> >> The issue with this is that even though executing the soft reset
-> >> operation should power off all cores unconditionally, on at least
-> >> one platform we're seeing a crash that seems to be happening due
-> >> to an interrupt firing which may be because we are calling power
-> >> transition only on the first core group, leaving the second one
-> >> unchanged, or because ISR execution was pending before entering
-> >> the panfrost_gpu_power_off() function and executed after powering
-> >> off the GPU cores, or all of the above.
-> >>
-> >> Finally, solve this by introducing a new panfrost_gpu_suspend_irq()
-> >> helper function and changing the panfrost_device_suspend() flow to
-> >>   1. Mask and clear all interrupts: we don't need nor want any, as
-> >>      for power_off() we are polling PWRTRANS, but we anyway don't
-> >>      want GPU IRQs to fire while it is suspended/powered off;
-> >>   2. Call synchronize_irq() after that to make sure that any pending
-> >>      ISR is executed before powering off the GPU Shaders/Tilers/L2
-> >>      hence avoiding unpowered registers R/W; and
-> >>   3. Ignore the core_mask and ask the GPU to poweroff both core groups
-> >>
-> >> Of course it was also necessary to add a `irq` variable to `struct
-> >> panfrost_device` as we need to get that in panfrost_gpu_power_off()
-> >> for calling synchronize_irq() on it.
-> >>
-> >> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
-> >> [Regression detected on Odroid HC1, Exynos5422, Mali-T628 MP6]
-> >> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >> ---
-> >>
-> >> Changes in v3:
-> >>   - Fix compile issue
-> >>
-> >> Changes in v2:
-> >>   - Fixed the commit hash of "Really power off [...]"
-> >>   - Actually based on a clean next-20231121
-> >>   - Renamed "irq" to "gpu_irq" as per Boris' suggestion
-> >>   - Moved the IRQ mask/clear/sync to a helper function and added
-> >>     a call to that in panfrost_device.c instead of doing that in
-> >>     panfrost_gpu_power_off().
-> >>
-> >> NOTE: I didn't split 1+2 from 3 as suggested by Boris, and I'm sending
-> >> this one without waiting for feedback on my reasons for that which I
-> >> explained as a reply to v1 because the former couldn't be applied to
-> >> linux-next, and I want to unblock Krzysztof ASAP to get this tested.
-> >>
-> >>   drivers/gpu/drm/panfrost/panfrost_device.c |  1 +
-> >>   drivers/gpu/drm/panfrost/panfrost_device.h |  1 +
-> >>   drivers/gpu/drm/panfrost/panfrost_gpu.c    | 28 +++++++++++++++-------
-> >>   drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
-> >>   4 files changed, 23 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> >> index c90ad5ee34e7..b0a4f3e513f4 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> >> @@ -421,6 +421,7 @@ static int panfrost_device_runtime_suspend(struct device *dev)
-> >>   		return -EBUSY;
-> >>   
-> >>   	panfrost_devfreq_suspend(pfdev);
-> >> +	panfrost_gpu_suspend_irq(pfdev);
-> >>   	panfrost_gpu_power_off(pfdev);
-> >>   
-> >>   	return 0;
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> >> index 0fc558db6bfd..f2b1d4afb9e9 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> >> @@ -94,6 +94,7 @@ struct panfrost_device {
-> >>   	struct device *dev;
-> >>   	struct drm_device *ddev;
-> >>   	struct platform_device *pdev;
-> >> +	int gpu_irq;
-> >>   
-> >>   	void __iomem *iomem;
-> >>   	struct clk *clock;
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> >> index 09f5e1563ebd..2c09aede0945 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> >> @@ -425,11 +425,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
-> >>   
-> >>   void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-> >>   {
-> >> -	u64 core_mask = panfrost_get_core_mask(pfdev);
-> >>   	int ret;
-> >>   	u32 val;
-> >>   
-> >> -	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-> >> +	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
-> >>   	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
-> >>   					 val, !val, 1, 1000);
-> >>   	if (ret)
-> >> @@ -441,16 +440,29 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-> >>   	if (ret)
-> >>   		dev_err(pfdev->dev, "tiler power transition timeout");
-> >>   
-> >> -	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-> >> +	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
-> >>   	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
-> >>   				 val, !val, 0, 1000);
-> >>   	if (ret)
-> >>   		dev_err(pfdev->dev, "l2 power transition timeout");
-> >>   }
-> >>   
-> >> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
-> >> +{
-> >> +	/* Disable all interrupts before suspending the GPU */
-> >> +	gpu_write(pfdev, GPU_INT_MASK, 0);
-> >> +	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-> >> +
-> >> +	/*
-> >> +	 * Make sure that we don't have pending ISRs, otherwise we'll be
-> >> +	 * reading and/or writing registers while the GPU is powered off  
-> > 
-> > I see this comment, plus the fact you call panfrost_gpu_suspend_irq()
-> > before panfrost_gpu_power_off() and I realize there might still be a
-> > misunderstanding. It's not the l2,shader,tiler-poweroff that causes the
-> > invalid reg access, it's what happens in the PM core after we've
-> > returned from panfrost_device_runtime_suspend() (power domain turned
-> > off). The register bank is still accessible when the sub-blocks are off,
-> > otherwise we wouldn't be able to power them on after a reset (which
-> > automatically powers off all the blocks, IIRC).
-> >   
-> 
-> Uhm, should I reword that? Suggestions about how?
-> 
-> There wasn't any misunderstanding, I did get that the issue can be about unclocked
-> access or unpowered access (unpowered = vregs off or power domains off), but it is
-> correct to mask and sync IRQs *before* calling shader/tiler/l2 poweroff (at least
-> for how I see it), because if there's anything that we want to do in the ISR, we
-> still have the GPU fully powered up and we're sure that, for example, if we want
-> to read a debug register to get the reason of an error irq, we're sure that it did
-> not get cleared.
 
-Which is also true after the l2,tiler,core poweroff happened AFAICT (at
-least for registers that are in the GPU_xxx range). My point is, just
-because some internal blocks are powered off, doesn't mean the
-registers exposed to the CPU are invalid, some are just unlikely to
-change after that point. And if you're worried about some registers
-having invalid content after a poweroff, it's also true for MMU and JOB
-registers, but you don't mask+synchronize those in this patch. That's
-what I'm talking about when I say it's a partial fix to a potentially
-wider issue, and the very reason I suggested going for simpler fix here,
-and then fix the irq-sync-on-suspend issue in another patch series.
+On 10/25/2023 10:36 PM, Mukesh Ojha wrote:
+> Enable download mode setting for sm8550 which can help collect
+> ramdump for this SoC.
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+> Changes in v2:
+>   - Improved commit text.
+> 
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 7bafb3d88d69..c94d06a9290c 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -324,6 +324,7 @@
+>   	firmware {
+>   		scm: scm {
+>   			compatible = "qcom,scm-sm8550", "qcom,scm";
+> +			qcom,dload-mode = <&tcsr 0x13000>;
+
+Sorry for this but made a mistake here for sm8550.
+
+it should be
+
+qcom,dload-mode = <&tcsr 0x19000>;
+
+will send a v3 for this patch.
+
+-Mukesh
+
+>   			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
+>   		};
+>   	};
