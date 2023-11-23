@@ -2,192 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9577F55ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6897F55EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbjKWBef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 20:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
+        id S232396AbjKWBfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 20:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWBec (ORCPT
+        with ESMTP id S231952AbjKWBe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 20:34:32 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A200711F
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:34:38 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77d6f853ba0so35413085a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700703278; x=1701308078; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FVvQm7dNdcrEw+By/HnAz+p8UyFgjuaek7oRs10lPJY=;
-        b=GdL6/VlN7tTsAvSXSMeqcyi4qeYwx513sH2bpcKD5XY2fbQBZwe8Ib2mLPeqX+GvQS
-         ljgVSzwAe1X/upLY1mymTowYH15xz1G4JduBmDfTx6vc6s/47a9XkLv+KpBjSV+YHH3p
-         0dYjDmcDgwxMFyA3WfVNH2TtoqM1I4ZHgsodSRBEUZu3786HkEnByhamZ6bIzCJWSL/N
-         FKMAjOVl8k4qt6wfwOYcwm3uMY9DC+dTd+f2I2gIobT8oQBwcY74vRPc8Lo0AhLxWlLT
-         +T6L8rahZSeH+IeFCGm4ObDBLS9EdLSwSu2j/++dUFjupM6PhzixNbMcv0VB4ax5zjWJ
-         TopQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700703278; x=1701308078;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FVvQm7dNdcrEw+By/HnAz+p8UyFgjuaek7oRs10lPJY=;
-        b=WhCihjA4HmjBWL5A7OYPsEwgs34N4H7g+76Q+CF+d2tCKn0OGVXIrI9UaGbOCwhS5G
-         lwMzEwl28TAAKZ+geIpHwwVz9kiaMT8gRWxvld5dLIWJNZPYGXeHZWgNMBD4gm3faBtr
-         VfmNGjmxYzw0zMLnjiOjvg5KkqVZFHHPZ5+ucIzrpLCuzw5AxdKxN9+PyghqpcolisyB
-         G0hLvpwKH+ylpyroSl7orRfirsEv0+8zbmAhlbFncPT0y0UQaRbSqdP8ayWsvSp/Ljrt
-         2CZOl/UH2CXMxkyBdigMQbCwNrKv+vwk7qt7l6jYxFjeMppzmzQPcl8nWUbwNDGBhUnP
-         N4Ew==
-X-Gm-Message-State: AOJu0YyA/8I6+DLV/u5zfYfRli3inzUzeTthvde3jgElBZwXTORIJu3y
-        EO+Cx1gauQqgC7y2QI0dbwI=
-X-Google-Smtp-Source: AGHT+IHx11EczPrIFISk6oINBDdC+aE6H1v5VzuBWLY0gV6CordtkXc/Q14nS5mEopntoBTUpp8S8w==
-X-Received: by 2002:a05:620a:1712:b0:773:fa62:39fe with SMTP id az18-20020a05620a171200b00773fa6239femr2160568qkb.1.1700703277644;
-        Wed, 22 Nov 2023 17:34:37 -0800 (PST)
-Received: from [192.168.2.14] ([76.65.20.140])
-        by smtp.gmail.com with ESMTPSA id vz18-20020a05620a495200b0077d5c5af0c1sm62097qkn.6.2023.11.22.17.34.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 17:34:36 -0800 (PST)
-Message-ID: <019eb41e-6052-414f-90d4-cd192fa3fe04@gmail.com>
-Date:   Wed, 22 Nov 2023 20:34:27 -0500
+        Wed, 22 Nov 2023 20:34:57 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id A4B0411F;
+        Wed, 22 Nov 2023 17:35:02 -0800 (PST)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 93A156027E065;
+        Thu, 23 Nov 2023 09:34:58 +0800 (CST)
+Message-ID: <79634dda-fd3b-5a93-9435-d0a1474b847f@nfschina.com>
+Date:   Thu, 23 Nov 2023 09:34:57 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
- Thunderbird/115.5.0
-Subject: Re: Radeon regression in 6.6 kernel
-Content-Language: en-CA, en-US
-To:     Phillip Susi <phill@thesusis.net>,
-        Alex Deucher <alexdeucher@gmail.com>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-References: <87edgv4x3i.fsf@vps.thesusis.net>
- <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
- <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
- <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
- <87bkbodp51.fsf@vps.thesusis.net>
- <CADnq5_Nh4wCFY10Ha9dTGWvehPCdY2zxfERtFuoeF5_xA+P=QA@mail.gmail.com>
- <87r0kircdo.fsf@vps.thesusis.net>
-From:   Luben Tuikov <ltuikov89@gmail.com>
-Autocrypt: addr=ltuikov89@gmail.com; keydata=
- xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
- Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
- eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
- AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
- JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
- cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
- 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
- aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
-In-Reply-To: <87r0kircdo.fsf@vps.thesusis.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------27nbuB0IZ3H2JpCGJkZb2mlG"
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH wireless-next 2/2] rtlwifi: rtl8821ae: phy: fix an
+ undefined bitwise shift behavior
+Content-Language: en-US
+To:     Ping-Ke Shih <pkshih@realtek.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lizetao1@huawei.com" <lizetao1@huawei.com>,
+        "linville@tuxdriver.com" <linville@tuxdriver.com>,
+        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+In-Reply-To: <99ec66d717b249e781f9316cbd689521@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------27nbuB0IZ3H2JpCGJkZb2mlG
-Content-Type: multipart/mixed; boundary="------------JaUbo0Dk7JfrrXuVg05JtlSM";
- protected-headers="v1"
-From: Luben Tuikov <ltuikov89@gmail.com>
-To: Phillip Susi <phill@thesusis.net>, Alex Deucher <alexdeucher@gmail.com>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
- linux-kernel@vger.kernel.org,
- "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
- dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Message-ID: <019eb41e-6052-414f-90d4-cd192fa3fe04@gmail.com>
-Subject: Re: Radeon regression in 6.6 kernel
-References: <87edgv4x3i.fsf@vps.thesusis.net>
- <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
- <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
- <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
- <87bkbodp51.fsf@vps.thesusis.net>
- <CADnq5_Nh4wCFY10Ha9dTGWvehPCdY2zxfERtFuoeF5_xA+P=QA@mail.gmail.com>
- <87r0kircdo.fsf@vps.thesusis.net>
-In-Reply-To: <87r0kircdo.fsf@vps.thesusis.net>
+On 2023/11/23 08:41, Ping-Ke Shih wrote:
+>
+>> -----Original Message-----
+>> From: Dan Carpenter <dan.carpenter@linaro.org>
+>> Sent: Wednesday, November 22, 2023 9:02 PM
+>> To: Su Hui <suhui@nfschina.com>
+>> Cc: Ping-Ke Shih <pkshih@realtek.com>; kvalo@kernel.org; nathan@kernel.org; ndesaulniers@google.com;
+>> trix@redhat.com; lizetao1@huawei.com; linville@tuxdriver.com; Larry.Finger@lwfinger.net;
+>> linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org; llvm@lists.linux.dev;
+>> kernel-janitors@vger.kernel.org
+>> Subject: Re: [PATCH wireless-next 2/2] rtlwifi: rtl8821ae: phy: fix an undefined bitwise shift behavior
+>>
+>> Perhaps, a better way to silence the warning is to just change
+>> _rtl8821ae_phy_calculate_bit_shift() to not return 32 bits?  Do we
+>> really ever pass bitmask 0?  No idea...
+>>
+> I think the bitmask should not 0, so just replace _rtl8821ae_phy_calculate_bit_shift()
+> by __ffs(bitmask). To be safer, callers can check bitmask is not 0 before calling.
+Thanks for your great suggestion!
+I will send v2 soon.
 
---------------JaUbo0Dk7JfrrXuVg05JtlSM
-Content-Type: multipart/mixed; boundary="------------0UWsNpAWAXtLgwX61eP4ohzW"
+Su Hui
 
---------------0UWsNpAWAXtLgwX61eP4ohzW
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 2023-11-21 17:05, Phillip Susi wrote:
-> Alex Deucher <alexdeucher@gmail.com> writes:
->=20
->> Does reverting 56e449603f0ac580700621a356d35d5716a62ce5 alone fix it?
->> Can you also attach your full dmesg log for the failed suspend?
->=20
-> No, it doesn't.  Here is the full syslog from the boot with only that
-> revert:
->=20
-
-Thank you Phillip for verifying this.
-
-BTW, luben.tuikov@amd.com should absolutely bounce for everyone sending e=
-mails to it. Not sure why it is still active.
-My new email is the one this email is coming from.
---=20
-Regards,
-Luben
-
---------------0UWsNpAWAXtLgwX61eP4ohzW
-Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
-PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
-QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
-BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
-MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
-bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
-9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
-OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
-z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
-=3DqCaZ
------END PGP PUBLIC KEY BLOCK-----
-
---------------0UWsNpAWAXtLgwX61eP4ohzW--
-
---------------JaUbo0Dk7JfrrXuVg05JtlSM--
-
---------------27nbuB0IZ3H2JpCGJkZb2mlG
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZV6sIwUDAAAAAAAKCRBMFUeUMaM0r0PV
-AP0WuXBGxTcRLZ2DRrGpYBHu4m7v0WRi1i3elruWFZVUtAEAsqEfv7eS3EOHFkUAGpjnAdrE4sQB
-BVYPLJdOYTd4pA0=
-=2dlN
------END PGP SIGNATURE-----
-
---------------27nbuB0IZ3H2JpCGJkZb2mlG--
