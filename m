@@ -2,73 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A435D7F58B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63247F58AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344782AbjKWG52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        id S1344787AbjKWG5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbjKWG5Z (ORCPT
+        with ESMTP id S229737AbjKWG4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:57:25 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D82C1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:57:31 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b84402923fso329218b6e.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700722651; x=1701327451; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9WCHkg8EwYgV8K7NhoHBdWRiWjVGGiMNhMP8Dvq/T3c=;
-        b=IZ1oQT7rlVxuJ3/nFJrqcLkeNP0MNSZWN10NcvwoOrBiKjtTZcpGfzcxMj4yIn+UCi
-         ylnoQDiFfw45PHuu9SNmF02NP/ZwoAvruEj7hXjQtJtHlkpfkohGPdDqBTUUHL9j5HdL
-         xzORU0lNsNM1xDCLFyn9bUm19f4aYyi4+TGsp7aQcc51OyqoqWlCm2y/TzOvK8f1+qMr
-         r+tYAk4+zOXTlxsDWausQnwuFyjEqz65zhIQr61hTiQtIdomxbkmhyZOG19gWl/P2r4v
-         6XArHvmB149aU7Rrm2Y+ObUMnMqGucCpd2zmQ02COz9yXmM/SW8fIRbuB7H70uTB4zyF
-         7OOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700722651; x=1701327451;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9WCHkg8EwYgV8K7NhoHBdWRiWjVGGiMNhMP8Dvq/T3c=;
-        b=un5G1hDrM5kW/3HJ2o5OXl8i5maQmnUJDvc3A6sTyGjJQhu0wPwJg9zX/xSuppsvRX
-         Lr6aJap/1Ca50byMmqWH6SmpfHLJy+pDmaZSCB+3td/WSES/b3xcX/jLkPvpi4PERJ2X
-         C9MMTHZeiy4PwzoJUWMOiyG8k9RRAQIJUy1lIVxbvII1yuHE2q0UX7tHAlbzf7upr1Md
-         qKqUMJk6+VAO+w98U3GvIHTDRCJuQ+U2Q3xhWXergTNKAun1un1UTvtBXbEQlDKmSkGv
-         Jt95t2DG7GNUgr75GnMKx0EtvGITyksDlDj3pHktrOqileV6Con04NuR+PrQrAzt7USZ
-         dQ/g==
-X-Gm-Message-State: AOJu0YxUo+Zw7b7fCZRrup+hGv85nKijQZocXzECBB4FvXcY7iyenx+S
-        c8YAIyazYa41dymIBOcXuCAHtg==
-X-Google-Smtp-Source: AGHT+IF+JUV2qs3GxZcMJ8mDN8tfMhVpkCkyXhPxn9II1VI5nQr9SgqkEEhOwu5qk/0BmZa46AiHEg==
-X-Received: by 2002:a05:6808:2096:b0:3b2:e461:bcfc with SMTP id s22-20020a056808209600b003b2e461bcfcmr5671424oiw.20.1700722651004;
-        Wed, 22 Nov 2023 22:57:31 -0800 (PST)
-Received: from J9GPGXL7NT.bytedance.net ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id w37-20020a634765000000b005bd2b3a03eesm615437pgk.6.2023.11.22.22.57.26
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 22 Nov 2023 22:57:30 -0800 (PST)
-From:   Xu Lu <luxu.kernel@bytedance.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org, anup@brainfault.org,
-        atishp@atishpatra.org
-Cc:     dengliang.1214@bytedance.com, xieyongji@bytedance.com,
-        lihangjing@bytedance.com, songmuchun@bytedance.com,
-        punit.agrawal@bytedance.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Xu Lu <luxu.kernel@bytedance.com>
-Subject: [RFC PATCH V1 01/11] mm: Fix misused APIs on huge pte
-Date:   Thu, 23 Nov 2023 14:56:58 +0800
-Message-Id: <20231123065708.91345-2-luxu.kernel@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <20231123065708.91345-1-luxu.kernel@bytedance.com>
-References: <20231123065708.91345-1-luxu.kernel@bytedance.com>
+        Thu, 23 Nov 2023 01:56:55 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4587518E;
+        Wed, 22 Nov 2023 22:57:01 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A972F2192D;
+        Thu, 23 Nov 2023 06:56:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700722619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=+cyotAqL8AduDM5+Y4Kh5EBMjuBXnBF9LgA0c07VSx8=;
+        b=khMJDMZ73wZbWfp00ra0Z6efVYxQD/34+y1If9SLEjb3SE0lLgmaj3MW3iqWu2sGQxM852
+        9iv7tId0W9hYPwGBcuhP9HOPS5W6oNg5GBvq7XNg5qIdp1rt3Om8nShqpS9BMYcf7A1iPs
+        I4RyuUmt8fZ7ehsjoJnaXePercV9OFM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700722619;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=+cyotAqL8AduDM5+Y4Kh5EBMjuBXnBF9LgA0c07VSx8=;
+        b=IwktbC3zvGYGDcAPkvoq16OUkmjP98Yln46qE2evYjUeKg8wA3oZMCnNsBCDGUjBO6TWbi
+        9gkNZHdNNFTUurBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 32A74133B6;
+        Thu, 23 Nov 2023 06:56:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /aJ2C7v3XmX5XAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 23 Nov 2023 06:56:59 +0000
+Message-ID: <4e0cc556-a7eb-48ce-8226-0f5281f3ef0a@suse.de>
+Date:   Thu, 23 Nov 2023 07:56:58 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/20] remove I2C_CLASS_DDC support
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231120214624.9378-1-hkallweit1@gmail.com>
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20231120214624.9378-1-hkallweit1@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------vifXtZ8GAwM1Zi9nNGG8Dq4u"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.79
+X-Spamd-Result: default: False [-3.79 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         TO_DN_SOME(0.00)[];
+         HAS_ATTACHMENT(0.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         SIGNED_PGP(-2.00)[];
+         FREEMAIL_TO(0.00)[gmail.com,kernel.org,lists.freedesktop.org];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[24];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,kwiboo.se,ideasonboard.com,lists.freedesktop.org,lists.infradead.org,redhat.com,lists.linux.dev,poorly.run,somainline.org,hisilicon.com,linaro.org,google.com]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,162 +144,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist some paths that try to get value of huge pte via normal
-pte API ptep_get instead of huge pte API huge_ptep_get. This commit
-corrects these misused APIs.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------vifXtZ8GAwM1Zi9nNGG8Dq4u
+Content-Type: multipart/mixed; boundary="------------IiZwcTSMBVj1VO2fSGDyCS5o";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Heiner Kallweit <hkallweit1@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+ intel-gfx@lists.freedesktop.org
+Cc: linux-i2c@vger.kernel.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonas Karlman <jonas@kwiboo.se>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Jocelyn Falempe <jfalempe@redhat.com>, linux-sunxi@lists.linux.dev,
+ linux-mediatek@lists.infradead.org, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+ Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Yongqin Liu
+ <yongqin.liu@linaro.org>, John Stultz <jstultz@google.com>
+Message-ID: <4e0cc556-a7eb-48ce-8226-0f5281f3ef0a@suse.de>
+Subject: Re: [PATCH v4 00/20] remove I2C_CLASS_DDC support
+References: <20231120214624.9378-1-hkallweit1@gmail.com>
+In-Reply-To: <20231120214624.9378-1-hkallweit1@gmail.com>
 
-Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
----
- arch/riscv/mm/hugetlbpage.c   |  2 +-
- fs/proc/task_mmu.c            |  2 +-
- include/asm-generic/hugetlb.h |  7 +++++++
- mm/hugetlb.c                  |  2 +-
- mm/migrate.c                  |  5 ++++-
- mm/mprotect.c                 |  2 +-
- mm/rmap.c                     | 10 ++++++++--
- mm/vmalloc.c                  |  3 ++-
- 8 files changed, 25 insertions(+), 8 deletions(-)
+--------------IiZwcTSMBVj1VO2fSGDyCS5o
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
-index b52f0210481f..d7cf8e2d3c5b 100644
---- a/arch/riscv/mm/hugetlbpage.c
-+++ b/arch/riscv/mm/hugetlbpage.c
-@@ -74,7 +74,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm,
- 
- out:
- 	if (pte) {
--		pte_t pteval = ptep_get_lockless(pte);
-+		pte_t pteval = huge_ptep_get_lockless(pte);
- 
- 		WARN_ON_ONCE(pte_present(pteval) && !pte_huge(pteval));
- 	}
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index ef2eb12906da..0fe9d23aa062 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -726,7 +726,7 @@ static int smaps_hugetlb_range(pte_t *pte, unsigned long hmask,
- 	struct mem_size_stats *mss = walk->private;
- 	struct vm_area_struct *vma = walk->vma;
- 	struct page *page = NULL;
--	pte_t ptent = ptep_get(pte);
-+	pte_t ptent = huge_ptep_get(pte);
- 
- 	if (pte_present(ptent)) {
- 		page = vm_normal_page(vma, addr, ptent);
-diff --git a/include/asm-generic/hugetlb.h b/include/asm-generic/hugetlb.h
-index 6dcf4d576970..52c299db971a 100644
---- a/include/asm-generic/hugetlb.h
-+++ b/include/asm-generic/hugetlb.h
-@@ -150,6 +150,13 @@ static inline pte_t huge_ptep_get(pte_t *ptep)
- }
- #endif
- 
-+#ifndef __HAVE_ARCH_HUGE_PTEP_GET_LOCKLESS
-+static inline pte_t huge_ptep_get_lockless(pte_t *ptep)
-+{
-+	return huge_ptep_get(ptep);
-+}
-+#endif
-+
- #ifndef __HAVE_ARCH_GIGANTIC_PAGE_RUNTIME_SUPPORTED
- static inline bool gigantic_page_runtime_supported(void)
- {
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1169ef2f2176..9f773eb95b3b 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -7406,7 +7406,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 	}
- 
- 	if (pte) {
--		pte_t pteval = ptep_get_lockless(pte);
-+		pte_t pteval = huge_ptep_get_lockless(pte);
- 
- 		BUG_ON(pte_present(pteval) && !pte_huge(pteval));
- 	}
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 35a88334bb3c..d0daf58e486e 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -210,7 +210,10 @@ static bool remove_migration_pte(struct folio *folio,
- 
- 		folio_get(folio);
- 		pte = mk_pte(new, READ_ONCE(vma->vm_page_prot));
--		old_pte = ptep_get(pvmw.pte);
-+		if (folio_test_hugetlb(folio))
-+			old_pte = huge_ptep_get(pvmw.pte);
-+		else
-+			old_pte = ptep_get(pvmw.pte);
- 		if (pte_swp_soft_dirty(old_pte))
- 			pte = pte_mksoft_dirty(pte);
- 
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 81991102f785..b9129c03f451 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -555,7 +555,7 @@ static int prot_none_hugetlb_entry(pte_t *pte, unsigned long hmask,
- 				   unsigned long addr, unsigned long next,
- 				   struct mm_walk *walk)
- {
--	return pfn_modify_allowed(pte_pfn(ptep_get(pte)),
-+	return pfn_modify_allowed(pte_pfn(huge_ptep_get(pte)),
- 				  *(pgprot_t *)(walk->private)) ?
- 		0 : -EACCES;
- }
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 7a27a2b41802..d93c6dabbdf4 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1577,7 +1577,10 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 			break;
- 		}
- 
--		pfn = pte_pfn(ptep_get(pvmw.pte));
-+		if (folio_test_hugetlb(folio))
-+			pfn = pte_pfn(huge_ptep_get(pvmw.pte));
-+		else
-+			pfn = pte_pfn(ptep_get(pvmw.pte));
- 		subpage = folio_page(folio, pfn - folio_pfn(folio));
- 		address = pvmw.address;
- 		anon_exclusive = folio_test_anon(folio) &&
-@@ -1931,7 +1934,10 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
- 		/* Unexpected PMD-mapped THP? */
- 		VM_BUG_ON_FOLIO(!pvmw.pte, folio);
- 
--		pfn = pte_pfn(ptep_get(pvmw.pte));
-+		if (folio_test_hugetlb(folio))
-+			pfn = pte_pfn(huge_ptep_get(pvmw.pte));
-+		else
-+			pfn = pte_pfn(ptep_get(pvmw.pte));
- 
- 		if (folio_is_zone_device(folio)) {
- 			/*
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index d12a17fc0c17..1a451b82a7ac 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -103,7 +103,6 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
- 	if (!pte)
- 		return -ENOMEM;
- 	do {
--		BUG_ON(!pte_none(ptep_get(pte)));
- 
- #ifdef CONFIG_HUGETLB_PAGE
- 		size = arch_vmap_pte_range_map_size(addr, end, pfn, max_page_shift);
-@@ -111,11 +110,13 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
- 			pte_t entry = pfn_pte(pfn, prot);
- 
- 			entry = arch_make_huge_pte(entry, ilog2(size), 0);
-+			BUG_ON(!pte_none(huge_ptep_get(pte)));
- 			set_huge_pte_at(&init_mm, addr, pte, entry, size);
- 			pfn += PFN_DOWN(size);
- 			continue;
- 		}
- #endif
-+		BUG_ON(!pte_none(ptep_get(pte)));
- 		set_pte_at(&init_mm, addr, pte, pfn_pte(pfn, prot));
- 		pfn++;
- 	} while (pte += PFN_DOWN(size), addr += size, addr != end);
--- 
-2.20.1
+SGkNCg0KQW0gMjAuMTEuMjMgdW0gMjI6NDYgc2NocmllYiBIZWluZXIgS2FsbHdlaXQ6DQo+
+IEFmdGVyIHJlbW92YWwgb2YgdGhlIGxlZ2FjeSBFRVBST00gZHJpdmVyIGFuZCBJMkNfQ0xB
+U1NfRERDIHN1cHBvcnQgaW4NCj4gb2xwY19kY29uIHRoZXJlJ3Mgbm8gaTJjIGNsaWVudCBk
+cml2ZXIgbGVmdCBzdXBwb3J0aW5nIEkyQ19DTEFTU19EREMuDQo+IENsYXNzLWJhc2VkIGRl
+dmljZSBhdXRvLWRldGVjdGlvbiBpcyBhIGxlZ2FjeSBtZWNoYW5pc20gYW5kIHNob3VsZG4n
+dA0KPiBiZSB1c2VkIGluIG5ldyBjb2RlLiBTbyB3ZSBjYW4gcmVtb3ZlIHRoaXMgY2xhc3Mg
+Y29tcGxldGVseSBub3cuDQo+IA0KPiBQcmVmZXJhYmx5IHRoaXMgc2VyaWVzIHNob3VsZCBi
+ZSBhcHBsaWVkIHZpYSB0aGUgaTJjIHRyZWUuDQo+IA0KPiB2MjoNCj4gLSBjaGFuZ2UgdGFn
+IGluIGNvbW1pdCBzdWJqZWN0IG9mIHBhdGNoIDAzDQo+IC0gYWRkIGFjayB0YWdzDQo+IHYz
+Og0KPiAtIGZpeCBhIGNvbXBpbGUgZXJyb3IgaW4gcGF0Y2ggNQ0KPiB2NDoNCj4gLSBtb3Jl
+IGFjayBhbmQgcmV2aWV3IHRhZ3MNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhlaW5lciBLYWxs
+d2VpdCA8aGthbGx3ZWl0MUBnbWFpbC5jb20+DQoNCkFja2VkLWJ5OiBUaG9tYXMgWmltbWVy
+bWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4NCg0KZm9yIHRoZSBwYXRjaGVzIHRoYXQgZG9u
+J3QgYWxyZWFkeSBoYXZlIG15IHItYi4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiAN
+Cj4gLS0tDQo+IA0KPiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9pMmMu
+YyAgICAgICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Rpc3BsYXkv
+YW1kZ3B1X2RtL2FtZGdwdV9kbS5jIHwgICAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL2Fz
+dC9hc3RfaTJjLmMgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgLQ0KPiAgIGRyaXZlcnMv
+Z3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS5jICAgICAgICAgfCAgICAxIC0NCj4g
+ICBkcml2ZXJzL2dwdS9kcm0vZGlzcGxheS9kcm1fZHBfaGVscGVyLmMgICAgICAgICAgIHwg
+ICAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL2Rpc3BsYXkvZHJtX2RwX21zdF90b3BvbG9n
+eS5jICAgICB8ICAgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9nbWE1MDAvY2R2X2ludGVs
+X2RwLmMgICAgICAgICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vZ21hNTAw
+L2ludGVsX2dtYnVzLmMgICAgICAgICAgICAgIHwgICAgMSAtDQo+ICAgZHJpdmVycy9ncHUv
+ZHJtL2dtYTUwMC9vYWt0cmFpbF9oZG1pX2kyYy5jICAgICAgICB8ICAgIDEgLQ0KPiAgIGRy
+aXZlcnMvZ3B1L2RybS9nbWE1MDAvcHNiX2ludGVsX3Nkdm8uYyAgICAgICAgICAgfCAgICAx
+IC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vaGlzaWxpY29uL2hpYm1jL2hpYm1jX2RybV9pMmMu
+YyAgIHwgICAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL2k5MTUvZGlzcGxheS9pbnRlbF9n
+bWJ1cy5jICAgICAgICB8ICAgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2Rpc3Bs
+YXkvaW50ZWxfc2R2by5jICAgICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0v
+bG9vbmdzb24vbHNkY19pMmMuYyAgICAgICAgICAgICAgIHwgICAgMSAtDQo+ICAgZHJpdmVy
+cy9ncHUvZHJtL21lZGlhdGVrL210a19oZG1pX2RkYy5jICAgICAgICAgICB8ICAgIDEgLQ0K
+PiAgIGRyaXZlcnMvZ3B1L2RybS9tZ2FnMjAwL21nYWcyMDBfaTJjLmMgICAgICAgICAgICAg
+fCAgICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vbXNtL2hkbWkvaGRtaV9pMmMuYyAgICAg
+ICAgICAgICAgIHwgICAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb25f
+aTJjLmMgICAgICAgICAgICAgICB8ICAgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9yb2Nr
+Y2hpcC9pbm5vX2hkbWkuYyAgICAgICAgICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL2dw
+dS9kcm0vcm9ja2NoaXAvcmszMDY2X2hkbWkuYyAgICAgICAgICAgIHwgICAgMSAtDQo+ICAg
+ZHJpdmVycy9ncHUvZHJtL3N1bjRpL3N1bjRpX2hkbWlfaTJjLmMgICAgICAgICAgICB8ICAg
+IDEgLQ0KPiAgIGRyaXZlcnMvdmlkZW8vZmJkZXYvY29yZS9mYl9kZGMuYyAgICAgICAgICAg
+ICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2N5YmVyMjAwMGZiLmMg
+ICAgICAgICAgICAgICAgIHwgICAgMSAtDQo+ICAgZHJpdmVycy92aWRlby9mYmRldi9pNzQw
+ZmIuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgLQ0KPiAgIGRyaXZlcnMvdmlkZW8v
+ZmJkZXYvaW50ZWxmYi9pbnRlbGZiX2kyYy5jICAgICAgICAgfCAgIDE1ICsrKysrLS0tLS0t
+LS0tLQ0KPiAgIGRyaXZlcnMvdmlkZW8vZmJkZXYvbWF0cm94L2kyYy1tYXRyb3hmYi5jICAg
+ICAgICAgfCAgIDEyICsrKystLS0tLS0tLQ0KPiAgIGRyaXZlcnMvdmlkZW8vZmJkZXYvczNm
+Yi5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxIC0NCj4gICBkcml2ZXJzL3ZpZGVv
+L2ZiZGV2L3RkZnhmYi5jICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSAtDQo+ICAgZHJp
+dmVycy92aWRlby9mYmRldi90cmlkZW50ZmIuYyAgICAgICAgICAgICAgICAgICB8ICAgIDEg
+LQ0KPiAgIGRyaXZlcnMvdmlkZW8vZmJkZXYvdmlhL3ZpYV9pMmMuYyAgICAgICAgICAgICAg
+ICAgfCAgICAxIC0NCj4gICBpbmNsdWRlL2xpbnV4L2kyYy5oICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgMSAtDQo+ICAgMzEgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRp
+b25zKCspLCA0NyBkZWxldGlvbnMoLSkNCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3Jh
+cGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFu
+eSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0K
+R0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4g
+TW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
 
+--------------IiZwcTSMBVj1VO2fSGDyCS5o--
+
+--------------vifXtZ8GAwM1Zi9nNGG8Dq4u
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmVe97oFAwAAAAAACgkQlh/E3EQov+BL
+pRAAofCcHzKlz7RbTPrrcEcKn9btAb4NPmvFo3wpV8ZrJ3GDqaCOYx1jnoYJqfjk6iFqXqHFEOr3
+lmzuzL/jCzE6gA1fAlP0Uc0Fm9AwJoCYYQ9x81EGKKuQUMXkwnYYVMk1VtTdW3t2OcEQqFT1Mr1f
+GNZIVtD5iwXyEWdFDtWHqEPIR3Mgqk2u5twaqkxYkQrp5W594ZJxRJqdSj3AQf6stCxwd8cqHyH+
+m39bh2zMwVNC8LUQZNe+7UUB3uJUypHhtrexw07YRzHgvCo57c4i6YT69MzMarbREhxElAf5mPON
+Rb46KLVyJaTH8KVgGISA8pCVXadJwdf5h9hmUXgwp9Z8mHn/z0oXOK2WtAelRdQvMx1nHnCG/MUd
+bTpRzPI9SNEkTL6Q2r+ieDugUOWy5V3b+1RTd5lkzwvSbZZFfbYuIFpfY+h0UQdOQ8EvuKfibCMX
+0/Tp/o5qF5AP6bR9JZmB4mrfom85fqTFZoJjaN6uOaXkdLr+KK4ZhxiUmIhhsYJwB1rd5+STruaO
+6TbfOCLe+q69FMzuNn+95fb/iur0BMuV5ZKgpnOAaffivnGuztF9pGpKZLbT+so3OAy7LaoxiunE
+9/GJEStgnV43QE84GnfkMDEsRKMGwFXfCJNWcVJG9pBrYiN8nA5SAb0rWJNCKLMPi4aZwc7bj9Mu
+KaA=
+=qc7l
+-----END PGP SIGNATURE-----
+
+--------------vifXtZ8GAwM1Zi9nNGG8Dq4u--
