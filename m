@@ -2,212 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1517F5546
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D31D7F553F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjKWA0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 19:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        id S231410AbjKWAY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 19:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWA0I (ORCPT
+        with ESMTP id S229453AbjKWAY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 19:26:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAFA1B3;
-        Wed, 22 Nov 2023 16:26:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700699164; x=1732235164;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   mime-version:in-reply-to;
-  bh=kMJqNQrPFkouBUmP1tIxtozSsYheDkR/LnL4F11wiis=;
-  b=a0RMRtdr45SnsHLYk3kiLIfZs2Z292eQtCjDOGkSajq4kJgqoPyPz1Z8
-   xhWoNH51ino8oe9+Nmimsn7SFdTQgw8cA/qSM06asNrV9XlVmhWFA6efE
-   bx/KJxGEkz9CgKaAcRip2AVvQj244oSCMbQ2SV3R4DIR0CTNKXPPkI00S
-   8UPzwDbKGWrNEIvyOLU2GF23JoceIic+G88FMkrhNsWS/7MACg0sIjNMf
-   ijDW0ytrIcjGYvd6MSyu2liYjeaUIruC6bgfya5Y7v4Nc28NcFQbnBBQQ
-   f0zW1UCdi/Sb7g9NYp8o9b8iKurHqbTYEdk8doLf35VPgtN8OmhSA3u25
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389323011"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="asc'?scan'208";a="389323011"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 16:26:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="716903060"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="asc'?scan'208";a="716903060"
-Received: from debian-skl.sh.intel.com (HELO debian-skl) ([10.239.160.45])
-  by orsmga003.jf.intel.com with ESMTP; 22 Nov 2023 16:25:45 -0800
-Date:   Thu, 23 Nov 2023 08:24:24 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jan Kara <jack@suse.cz>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] i915: make inject_virtual_interrupt() void
-Message-ID: <ZV6buHrQy2+CJ7xX@debian-scheme>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
- <20231122-vfs-eventfd-signal-v2-1-bd549b14ce0c@kernel.org>
+        Wed, 22 Nov 2023 19:24:57 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2013.outbound.protection.outlook.com [40.92.22.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4158E189;
+        Wed, 22 Nov 2023 16:24:53 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XuqLcjR3Zuzl/X345MeNCTPyYI1YOBIWSPE9IfkFMf7O3PDEVDg4CHsvQqFsPVnO++qvvpN+iXiKXRL3Ag7L4Y2drx8Q0h9ZCzhl3yqr0UZOTLRDpLEEW1R7RImUI85K5WmJSoL7FunOzNoYaBGFlGVF9U3sQTVoEk/Z17LFYn67wCejG/TdqvropKA5Elv63oJQhQVWpDoPJ4nsS8QMsokxiid1v5R37Agn/OJziZ3kmz00uhOS8wZXh0w8zpYUzA13WS3pu7pZeKPMSzdwsE0aRRdMNQMOY6yjLo2Pq/OPLRJnOinL9NUQ5HZhX2/5HELVugZipx2ZZaFkO3AKUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vFYuMfZuF9noQQfdnQCzi87xAPOBq7FJX5YtBGl5Vyk=;
+ b=fmQ56rd38+BH6I2CdxUcAKiD0iFhRKzEYZxu1sYSgahAMtsNivkclKw3zoWvxBg7nn800rzVhl9ue179ml6l9SK8jtIJJE8ejgL/exUvXHzaZitWyJSXakgNyBM5N2mluM2qP/vijznw6ZWgJvRJDUOGn3u6EuZBYyxcJaWzrlx5M8bmqUs/8cFlsrbnclNKYZEotOMgK6v5YUUnaRSVweqndwDmfUS/sF12EgqclynZjT9qmPZtVrliqc5pfumz5lqQbgI7e5/6U5vck8I9gPKyGKkQ7nuWEKbgjxOw3rTjk06wNy9U/tMEvX9E0yheEjadmPTU549rTMQDsA8ltw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vFYuMfZuF9noQQfdnQCzi87xAPOBq7FJX5YtBGl5Vyk=;
+ b=WWuhZCoaJLy9g0gvPWlaFRU+cEiYfBFcXtGKfM6ATPGVVqbPyBd4R0orc5iFmaThrIp+nVMBo5KFflIoqbN3f8USvFAnzGc/mjubftOukPLkKS50Kw2EJMCesXGQtBht/zsDhE3f18dLWWqg6hGUvnm+xtsCONauL7I9zIjFLOhRSt+r8PKNS3UkX3yJnE0/p/SCoCFBY3B1qVMKt6QqCj8IUF3IeJxGEuRrQaODkZhFUy3TdE1GUlz+HnsyEN6l+AXu80e85oB/Lf8EuZ1uZv3Idm6ZtWk1GDwEyknIxaa+zXbaaPsoCZTrPp6hw18EZx7Pqfb3Q9hItVzgRrLo+Q==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SJ0PR02MB7295.namprd02.prod.outlook.com (2603:10b6:a03:292::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Thu, 23 Nov
+ 2023 00:24:49 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7025.017; Thu, 23 Nov 2023
+ 00:24:49 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "decui@microsoft.com" <decui@microsoft.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH v2 3/8] x86/mm: Remove "static" from vmap_pages_range()
+Thread-Topic: [PATCH v2 3/8] x86/mm: Remove "static" from vmap_pages_range()
+Thread-Index: AQHaHMCcNHra+kumRUKExlyvEEqwbLCF4AyAgAEpOhA=
+Date:   Thu, 23 Nov 2023 00:24:49 +0000
+Message-ID: <SN6PR02MB41571479B921621EDE3BE2EFD4B9A@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231121212016.1154303-1-mhklinux@outlook.com>
+ <20231121212016.1154303-4-mhklinux@outlook.com>
+ <ZV2e/6qTJDkjYbfY@infradead.org>
+In-Reply-To: <ZV2e/6qTJDkjYbfY@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [pEL4nMtFZRRevAUIjVYH09Yi70BnciIL]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ0PR02MB7295:EE_
+x-ms-office365-filtering-correlation-id: f2b0e916-2c65-4bd2-9f28-08dbebba9a73
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o8SATonuDUAy3rGIfwZeTByJVu5yjaPynZsQVldA0rbzCjYiXcxk0vLM70TeXdqBBF3cBlNH7+RgIei4WIg0KAOIwPujG3yXCESfmUQAe8SU+A9O63+jGv5cEcbiodxIFwoUKTtanhsf6FkCqk3khp11aS4s10zlk/If37bum/nOm2smWnwEDxhq6DthrBv1CO4OhKuhP/KhO3Xg549+N63sOA7bTPoAS+Yp9PmN16thN1XAM18UP/TgAhS1TGLzyxEjAol0iIf8HbWZiBZb/Z8Rd2oUWVmaFw4UtNOT9wi2+cXtUEVebHbXgKLH6BW6wGwDAKLLr1IKZ4xf5q4TQwrskO8UDupypWPRqqqZf+sBgM6BpJQw1TiHdM75ebRRM7+sfR17O1s3jvolft7wuaRosQmJODPfgbH0fgigkvG3eypqr1EakJFEoBmYMdRhY2QAGHn7887mKvSVhI8vfKIWn6rOeJxboE7XX+LRBJ6JDUdaR4V8UN7QKBO918Daws4sg+w+NSOU6mJH5lYWnBckLoNLmYyVC5wMhbcYKsPvAVS/UQge0C4XEiPGFZmD
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qUSW7lm16aQL0yw2K+cKqPTwfQaluAXqmzsoR5ApJBlwjeY20wb6d9OWywE3?=
+ =?us-ascii?Q?2vdlPcix288TueDEzVRSp/t1aZ9OPNbfZQ4wT46uGWuqPIICwRGzTqR8SPxA?=
+ =?us-ascii?Q?eb6Puzs1Ze5lmiSazaPUvOGeUhOt3ydgDl1JQn8NYgEYn2wyRbW2/cRdNuQn?=
+ =?us-ascii?Q?RTK0t9YR5Utgc1GH1Vp24DVQX9E+FQQWlyvlVrE3oPOUX0TvBq+b/yzwvv4j?=
+ =?us-ascii?Q?0Uf01ZV4ZswvpPnhZE9f1DV2rrLSWfFgUKEpSa7utW7uvJK6dOpPhIaJ91Hc?=
+ =?us-ascii?Q?qF5h3PsMCgSMg1M+t4UxveLKVXuz7+UtV85w+52VGJpf+MXFvfwAPmYmN/vU?=
+ =?us-ascii?Q?NDqfiUPloST9CCRRRLN9GwaC2ZUH3LvT5uPEudhFG0fjduoYPuV/gMJdadej?=
+ =?us-ascii?Q?RahFMXU3FRI7Ofc2cGyO/+WZ7SUwQdP/UTR5DL2UFoU0u5ighEPS3EEe9WtI?=
+ =?us-ascii?Q?N7BVSwDQ2EDRo1kx9W9JZos0SYBr6s9kxpdsPqQckD6cZToKoXba59LEONE5?=
+ =?us-ascii?Q?hF4pAXW1/dO664vOBgV7TSnORdDRUX5ojJ2gMlcpNfJ5MfWRz5GYUvFREHvX?=
+ =?us-ascii?Q?b8QaLYo2TFOUreNCVEqywxJ3bSx8xF6JNWh1xZXBWuAtBMsyLWJw6GzWJ1XH?=
+ =?us-ascii?Q?R4t/NWqDGCDAc+DOKZfHi5RL6oAetM1TuGPdr+quN9vC3pwJBy4kAXteunWX?=
+ =?us-ascii?Q?E+8wA6P9ETHwzVp1FflU2z01CJztwklHKSNe9ggWzD/g3G3GWXl0idxWsvvQ?=
+ =?us-ascii?Q?uFEjVVxHNwZOexMoSTVc5D3WQDrqHe+Yy0mjvsAy6owDXkeVkqpzCPju4ItP?=
+ =?us-ascii?Q?3GDxZsVmImjFO+eSNKYZQIJPdeJ9fHpLYqaQzofKA38pQYO5zZwMSAs8f991?=
+ =?us-ascii?Q?c4ISM+2p5qcbYgh7gOLTGNHr43fhV60dJQiP9BmydyLXD6yfLjJpUa24Pm+x?=
+ =?us-ascii?Q?NpvrVafPeO8qvxAMYJiOM++lj7d7852lZDvjSo0/WgGyahwUL05ClkuiulIQ?=
+ =?us-ascii?Q?orHO5oM0Ksp+zv4IUnRARfclGr16PHUWZ9J0/Z1ts5m6NFlQB3DuBFECi7r1?=
+ =?us-ascii?Q?s7kKqP2t/RKJ/cippCQ+Uu0F5n61KjUX7QVI4WM3blTpee2A0vffbZUeOy1H?=
+ =?us-ascii?Q?t3EQJWHnLdWUpexzXRzEWjTmX2X4fW8HCzMzx/Dnb0HLSLHh61IDz/YzzY9Y?=
+ =?us-ascii?Q?Gia3PL1pxo7W9MIOQh5qsjeBnZHODcgiTf3DtQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ehCOKC0wDaVXxQlM"
-Content-Disposition: inline
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-1-bd549b14ce0c@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2b0e916-2c65-4bd2-9f28-08dbebba9a73
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2023 00:24:49.0698
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7295
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ehCOKC0wDaVXxQlM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 2023.11.22 13:48:22 +0100, Christian Brauner wrote:
-> The single caller of inject_virtual_interrupt() ignores the return value
-> anyway. This allows us to simplify eventfd_signal() in follow-up
-> patches.
+From: Christoph Hellwig <hch@infradead.org> Sent: Tuesday, November 21, 202=
+3 10:26 PM
 >=20
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  drivers/gpu/drm/i915/gvt/interrupt.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> On Tue, Nov 21, 2023 at 01:20:11PM -0800, mhkelley58@gmail.com wrote:
+> > From: Michael Kelley <mhklinux@outlook.com>
+> >
+> > The mm subsystem currently provides no mechanism to map memory pages
+> > to a specified virtual address range.  A virtual address range can be
+> > allocated using get_vm_area(), but the only function available for
+> > mapping memory pages to a caller-specified address in that range is
+> > ioremap_page_range(), which is inappropriate for system memory.
+> >
+> > Fix this by allowing vmap_pages_range() to be used by callers outside
+> > of vmalloc.c.
 >=20
-> diff --git a/drivers/gpu/drm/i915/gvt/interrupt.c b/drivers/gpu/drm/i915/=
-gvt/interrupt.c
-> index de3f5903d1a7..9665876b4b13 100644
-> --- a/drivers/gpu/drm/i915/gvt/interrupt.c
-> +++ b/drivers/gpu/drm/i915/gvt/interrupt.c
-> @@ -422,7 +422,7 @@ static void init_irq_map(struct intel_gvt_irq *irq)
->  #define MSI_CAP_DATA(offset) (offset + 8)
->  #define MSI_CAP_EN 0x1
-> =20
-> -static int inject_virtual_interrupt(struct intel_vgpu *vgpu)
-> +static void inject_virtual_interrupt(struct intel_vgpu *vgpu)
->  {
->  	unsigned long offset =3D vgpu->gvt->device_info.msi_cap_offset;
->  	u16 control, data;
-> @@ -434,10 +434,10 @@ static int inject_virtual_interrupt(struct intel_vg=
-pu *vgpu)
-> =20
->  	/* Do not generate MSI if MSIEN is disabled */
->  	if (!(control & MSI_CAP_EN))
-> -		return 0;
-> +		return;
-> =20
->  	if (WARN(control & GENMASK(15, 1), "only support one MSI format\n"))
-> -		return -EINVAL;
-> +		return;
-> =20
->  	trace_inject_msi(vgpu->id, addr, data);
-> =20
-> @@ -451,10 +451,10 @@ static int inject_virtual_interrupt(struct intel_vg=
-pu *vgpu)
->  	 * returned and don't inject interrupt into guest.
->  	 */
->  	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
-> -		return -ESRCH;
-> -	if (vgpu->msi_trigger && eventfd_signal(vgpu->msi_trigger, 1) !=3D 1)
-> -		return -EFAULT;
-> -	return 0;
-> +		return;
-> +	if (!vgpu->msi_trigger)
-> +		return;
-> +	eventfd_signal(vgpu->msi_trigger, 1);
->  }
+> I really do not want to expose vmap_pages_range.  Please try to come up
+> with a good way to encapsulate your map at a certain address primitive
+> and implement it in vmalloc.c.
 
-I think it's a little simpler to write as
-    if (vgpu->msi_trigger)
-            eventfd_signal(vgpu->msi_trigger, 1);
+To clarify, is your concern narrowly about vmap_pages_range()
+specifically?  Or is your concern more generally about having two separate
+steps as applied to system memory:  1) allocate the virtual address
+space and 2) do the mapping?  The two separate steps are already
+available for MMIO space.  Doing the equivalent for system memory
+should be straightforward.
 
-Looks fine with me.
+Conversely, combining the two steps into a single new vmap() variant
+would be a little messy, but can probably be made to work.  This
+combined approach will be less efficient since my use case does a single
+allocation of virtual address space and repeatedly maps/unmaps the
+same page in that space.  I would need to take some measurements
+to see if the inefficiency actually matters.
 
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Michael
 
-Thanks!
-
-> =20
->  static void propagate_event(struct intel_gvt_irq *irq,
->=20
-> --=20
-> 2.42.0
->=20
-
---ehCOKC0wDaVXxQlM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCZV6bswAKCRCxBBozTXgY
-JySHAJ4qE2jv0i0ZauQv+Bv/bGwHt0ZrbACeJadIIL6gQC6kmoICLhyqplCwOeo=
-=1+t0
------END PGP SIGNATURE-----
-
---ehCOKC0wDaVXxQlM--
