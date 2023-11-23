@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF587F67D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47FE7F67E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjKWTuJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Nov 2023 14:50:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
+        id S229650AbjKWTzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWTuI (ORCPT
+        with ESMTP id S229453AbjKWTzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:50:08 -0500
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA55091;
-        Thu, 23 Nov 2023 11:50:14 -0800 (PST)
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1efba24b038so279087fac.1;
-        Thu, 23 Nov 2023 11:50:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700769014; x=1701373814;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SPnVIP7WE+e1m6kbF0iZl32seDul9DiRZGTrCiOrxg0=;
-        b=FNIWBW2c7Kj6ZofayiRNXObglnaSc+VU/SNbg0ft6JE7UTzJc5Mebgwio3mbx1OjpK
-         6zs8uu89SJPbQRvoflVlE8chKohmuZgGOgSR9+5PXUXDWawDo8Tf8MgMZyPCKM9JJ1f4
-         GvlDXoxOEI0JMhAYQrhvBq+hWEZC9vXXmmvZFIp/+ht1a2qNnPJXYhmhaEkpS8TC4zpD
-         Y4OdVYauiQ7/HaUyK9oQFpWhtuOwEv2I0IbJ3F7MpArbSnF5PO8wVKnsHWq8HbVtsvom
-         leRFITfw7BAGE3PhPFRFVsXS6J336C04r3Fhf24HrS+cktjJnSFn4KCjt/s8hvqYi29M
-         awug==
-X-Gm-Message-State: AOJu0YzMXzcUP4hmO2AxCShoIGz0fHgEORzW1hXUyAlY1rAzyYuOLYMy
-        WVBIOiBWF0GWAUg3fptvOEqaNRQuRgBOOa8pg931+S1/
-X-Google-Smtp-Source: AGHT+IFUFtQSgD+W8Yy8QPiwQE4p1RlFzJFt/GSUiRGPuyvIdEEMv1z9wpYE6RAlbcCC6n75J8HSPBnaL6jFaFWFHNM=
-X-Received: by 2002:a05:6871:530f:b0:1d0:e372:6cf8 with SMTP id
- hx15-20020a056871530f00b001d0e3726cf8mr463783oac.2.1700769014104; Thu, 23 Nov
- 2023 11:50:14 -0800 (PST)
+        Thu, 23 Nov 2023 14:55:02 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBF79A;
+        Thu, 23 Nov 2023 11:55:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=s4TiSliP4FrmhVEWHIqx682/BEBEcotd5kanD+uZ5mw=; b=K5euXy2+Cdnhc4/vFJ9CJnPdQn
+        pAnaS5wY7Fw0DZmPiwAdtaiQ80/xryznYo7PGWIrTEFjXHyA05lMZKSRh57IhQxZR19dg791TJjcE
+        isUtUd65cIBAEw6de7gT9QT52LI0USFibXRgU6iEtJJ5LAe333jVJwDFpNmA7OlCdqBc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6Fms-0011u7-N1; Thu, 23 Nov 2023 20:54:58 +0100
+Date:   Thu, 23 Nov 2023 20:54:58 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, kernel@quicinc.com
+Subject: Re: [PATCH net-next v3 0/3] Ethernet DWMAC5 fault IRQ support
+Message-ID: <84560bb2-045f-4d7d-99ea-1f1c200b219f@lunn.ch>
+References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
 MIME-Version: 1.0
-References: <20231025192225.468228-1-lukasz.luba@arm.com> <CAJZ5v0gniBtFduwjhDku+OZzjvkCaFK7ew0uJTfW254XKTOyyw@mail.gmail.com>
- <ce8f1a13-b56f-4419-a954-8d987af44112@arm.com> <5fd9ce52-9216-47ae-9ed3-fabb0f3b02fd@arm.com>
-In-Reply-To: <5fd9ce52-9216-47ae-9ed3-fabb0f3b02fd@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 23 Nov 2023 20:50:01 +0100
-Message-ID: <CAJZ5v0jL38PgFYVXFj2Py5NvUU0xFGU45w=TdcBXqr7v+xToag@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Minor cleanup for thermal gov power allocator
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, rui.zhang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+On Thu, Nov 23, 2023 at 05:08:12PM +0530, Suraj Jaiswal wrote:
+> Suraj Jaiswal (3):
+>   dt-bindings: net: qcom,ethqos: add binding doc for fault IRQ for
+>     sa8775p
+>   arm64: dts: qcom: sa8775p: enable Fault IRQ
+>   net: stmmac: Add driver support for DWMAC5 fault IRQ Support
 
-On Thu, Nov 23, 2023 at 4:19 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi Rafael,
->
-> Gentle ping
->
-> On 10/26/23 13:22, Lukasz Luba wrote:
-> >
-> >
-> > On 10/26/23 09:54, Rafael J. Wysocki wrote:
-> >> On Wed, Oct 25, 2023 at 9:21 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>>
-> >>> Hi all,
-> >>>
-> >>> The patch set does some small clean up for Intelligent Power Allocator.
-> >>> Those changes are not expected to alter the general functionality.
-> >>> They just
-> >>> improve the code reading. Only patch 3/7 might improve the use case for
-> >>> binding the governor to thermal zone (very unlikely in real products,
-> >>> but
-> >>> it's needed for correctness).
-> >>>
-> >>> The changes are based on top of current PM thermal branch, so with the
-> >>> new trip points.
-> >>>
-> >>> Regards,
-> >>> Lukasz
-> >>>
-> >>> Lukasz Luba (7):
-> >>>    thermal: gov_power_allocator: Rename trip_max_desired_temperature
-> >>>    thermal: gov_power_allocator: Setup trip points earlier
-> >>>    thermal: gov_power_allocator: Check the cooling devices only for
-> >>>      trip_max
-> >>>    thermal: gov_power_allocator: Rearrange the order of variables
-> >>>    thermal: gov_power_allocator: Use shorter variable when possible
-> >>>    thermal: gov_power_allocator: Remove unneeded local variables
-> >>>    thermal: gov_power_allocator: Clean needed variables at the beginning
-> >>>
-> >>>   drivers/thermal/gov_power_allocator.c | 123 ++++++++++++++------------
-> >>>   1 file changed, 64 insertions(+), 59 deletions(-)
-> >>>
-> >>> --
-> >>
-> >> The series looks good to me overall, but I'd prefer to make these
-> >> changes in the 6.8 cycle, because the 6.7 merge window is around the
-> >> corner and there is quite a bit of thermal material in this cycle
-> >> already.
-> >
-> > Thanks for having a look! Yes, I agree, we can wait after the
-> > merge window. It just have to be cleaned one day a bit and I postponed
-> > this a few times, so no rush ;)
->
-> I've seen you've created the new pm/thermal. Could you consider to take
-> those in, please?
+The purpose of 0/X patch is to explain the big picture. What does this
+patch series do?
 
-Sure, I'll get to them presumably tomorrow and if not then early next week.
+Please add some text here.
 
-> I would send some RFC on top showing the issue with reading back the CPU
-> max frequency from the PM_QoS chain.
-
-Sounds good.
+      Andrew
