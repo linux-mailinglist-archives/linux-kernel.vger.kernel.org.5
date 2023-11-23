@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9E47F59AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6695E7F59AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344898AbjKWH7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S1344913AbjKWH7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKWH7X (ORCPT
+        with ESMTP id S233940AbjKWH7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:59:23 -0500
+        Thu, 23 Nov 2023 02:59:24 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEB0E7;
-        Wed, 22 Nov 2023 23:59:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EB5DD;
+        Wed, 22 Nov 2023 23:59:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700726369; x=1732262369;
+  t=1700726370; x=1732262370;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QAnIkSe8vCJEmntCGcCtC+pX9E9tP0IPB7jfTlctgwE=;
-  b=DfG/7v0LOOL2NTc0v7h4tgHZiVaIbUEICzprqVoDw04Ic9Ydaiy95lLv
-   LUxunpxb1lz4sXo0zZyV5w5UpDUyzP+46+bumYDn5fUHwwrG9l+U55upP
-   LvFu7KTN0WilgYUx0XyPfE5QIi//wbl5xDHb5DpC+55JM9Zst/G5y6o2E
-   aNpAu5COWknkvOCrL1XiuWqZ5vJwDeSga+MbjpfhoB7FXZLfa9cQ3vJnO
-   OdcLAMiqGYai1EL8IO+xEnkhjFyw9BiflHzpE3RpgyVHtZLwseBUFyJFf
-   UM7jE+5ACh/DDpCvBvKq6kEjt1Nmz8FpynE0iJAMppDASnrs5HxjHw5zW
+  bh=kUUFMnMOTmqXLUn2vId7q0QVssfMrP3gOX/sAt3Ulg0=;
+  b=K9oRkGKnWGnRD3VVQBccxpNVBHIBEFDV7gSazu/dRLskV58/MNu/Hvhx
+   zYpnnwqhTl6zLIvu5dbrtbquLNTpKpEG2dTMn+Sxc27dmu29+t2l/QyBP
+   vFoj6fM5iQcxvDwQbHB7Z+3VVYZY5sVnyvA/EhG5+jjdHZu4JFnyYEGnO
+   NdiJyZBBd7Uo7Up0UmOQSWRPqrn/Y7Zd8pD8zjwvpYNZrVWRm4roZq40f
+   ZRquMC7tarPubZvTHs96CFrl9wh5ZKJk56xIrSIQ3nEYbSxyMiDveS//8
+   L+EkSLr8DH3XT8VrN0IwqcUtJBkzKn3EBJL0ozG93a7gD8LWwFNoBISg1
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396126398"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396126413"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="396126398"
+   d="scan'208";a="396126413"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:28 -0800
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:29 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="8764979"
+   d="scan'208";a="8764981"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.41.107])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:06 -0800
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:09 -0800
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
@@ -46,9 +46,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         German Gomez <german.gomez@arm.com>,
         Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org
-Subject: [PATCH 1/8] perf header: Fix segfault on build_mem_topology() error path
-Date:   Thu, 23 Nov 2023 09:58:41 +0200
-Message-Id: <20231123075848.9652-2-adrian.hunter@intel.com>
+Subject: [PATCH 2/8] perf tests lib: Add perf_has_symbol.sh
+Date:   Thu, 23 Nov 2023 09:58:42 +0200
+Message-Id: <20231123075848.9652-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231123075848.9652-1-adrian.hunter@intel.com>
 References: <20231123075848.9652-1-adrian.hunter@intel.com>
@@ -65,68 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not increase the node count unless a node has been successfully read,
-because it can lead to a segfault if an error occurs.
+Some shell tests depend on finding symbols for perf itself, and fail if
+perf has been stripped and no debug object is available. Add helper
+functions to check if perf has a needed symbol. This is preparation for
+amending the tests themselves to be skipped if a needed symbol is not
+found.
 
-For example, if perf exceeds the open file limit in memory_node__read(),
-which, on a test system, could be made to happen by setting the file limit
-to exactly 32:
+The functions make use of the "Symbols" test which reads and checks symbols
+from a dso, perf itself by default. Note the "Symbols" test will find
+symbols using the same method as other perf tests, including, for example,
+looking in the buildid cache.
 
- Before:
+An alternative would be to prevent the needed symbols from being stripped,
+which seems to work with gcc's externally_visible attribute, but that
+attribute is not supported by clang.
 
-  $ ulimit -n 32
-  $ perf mem record --all-user -- sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  failed: can't open memory sysfs data
-  perf: Segmentation fault
-  Obtained 14 stack frames.
-  perf(sighandler_dump_stack+0x48) [0x55f4b1f59558]
-  /lib/x86_64-linux-gnu/libc.so.6(+0x42520) [0x7f4ba1c42520]
-  /lib/x86_64-linux-gnu/libc.so.6(free+0x1e) [0x7f4ba1ca53fe]
-  perf(+0x178ff4) [0x55f4b1f48ff4]
-  perf(+0x179a70) [0x55f4b1f49a70]
-  perf(+0x17ef5d) [0x55f4b1f4ef5d]
-  perf(+0x85c0b) [0x55f4b1e55c0b]
-  perf(cmd_record+0xe1d) [0x55f4b1e5920d]
-  perf(cmd_mem+0xc96) [0x55f4b1e80e56]
-  perf(+0x130460) [0x55f4b1f00460]
-  perf(main+0x689) [0x55f4b1e427d9]
-  /lib/x86_64-linux-gnu/libc.so.6(+0x29d90) [0x7f4ba1c29d90]
-  /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80) [0x7f4ba1c29e40]
-  perf(_start+0x25) [0x55f4b1e42a25]
-  Segmentation fault (core dumped)
-  $
+Another alternative would be to use option -Wl,-E (which is already used
+when perf is built with perl support) which causes the linker to add all
+(global) symbols to the dynamic symbol table. Then the required symbols
+need only be made global in scope to avoid being strippable. However that
+goes beyond what is needed.
 
-After:
-
-  $ ulimit -n 32
-  $ perf mem record --all-user -- sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  failed: can't open memory sysfs data
-  [ perf record: Captured and wrote 0.005 MB perf.data (11 samples) ]
-  $
-
-Fixes: f8e502b9d1b3 ("perf header: Ensure bitmaps are freed")
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/util/header.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/tests/shell/lib/perf_has_symbol.sh | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 tools/perf/tests/shell/lib/perf_has_symbol.sh
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 1c687b5789c0..08cc2febabde 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -1444,7 +1444,9 @@ static int build_mem_topology(struct memory_node **nodesp, u64 *cntp)
- 			nodes = new_nodes;
- 			size += 4;
- 		}
--		ret = memory_node__read(&nodes[cnt++], idx);
-+		ret = memory_node__read(&nodes[cnt], idx);
-+		if (!ret)
-+			cnt += 1;
- 	}
- out:
- 	closedir(dir);
+diff --git a/tools/perf/tests/shell/lib/perf_has_symbol.sh b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+new file mode 100644
+index 000000000000..5d59c32ae3e7
+--- /dev/null
++++ b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+@@ -0,0 +1,21 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++perf_has_symbol()
++{
++	if perf test -vv "Symbols" 2>&1 | grep "[[:space:]]$1$"; then
++		echo "perf does have symbol '$1'"
++		return 0
++	fi
++	echo "perf does not have symbol '$1'"
++	return 1
++}
++
++skip_test_missing_symbol()
++{
++	if ! perf_has_symbol "$1" ; then
++		echo "perf is missing symbols - skipping test"
++		exit 2
++	fi
++	return 0
++}
 -- 
 2.34.1
 
