@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8557F5AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78F17F5AC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjKWJFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:05:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        id S231793AbjKWJGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKWJFt (ORCPT
+        with ESMTP id S232067AbjKWJGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:05:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FA8101
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:05:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C291C433C8;
-        Thu, 23 Nov 2023 09:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700730355;
-        bh=Lcd150vAerjkaRvtY0bS83Rte9WRMhTnKhCGePr/mKY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gZxE875+pb5Kx5SdnUy+1qJggwnPSULnHJZNmnyyWU1tZnEKd6+k+CLcxMCdL2SZI
-         dNU/1oTl+LESlR5MxF2sNxJ8zA+4gVVwUx3CVe6jBu7kI5fW4yMj35sj4acE7tqxMN
-         KaG2fJSM6oZZxOlC9JU9HsL7YAfrbLxHWJYBYuJ4=
-Date:   Thu, 23 Nov 2023 09:05:52 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
-Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
-Message-ID: <2023112314-tubby-eligibly-007a@gregkh>
-References: <20231118025748.2778044-1-mmaurer@google.com>
- <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
- <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
+        Thu, 23 Nov 2023 04:06:00 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056ECD69
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:06:04 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A0129660738E;
+        Thu, 23 Nov 2023 09:06:01 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700730362;
+        bh=jXx0AZxK0x/3x229o8gedk/6QPlybYeQFVHL/LcCTj8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZSp86ftyTaaRQ1uCyPN0eOAAmXLdLz+oOdzcxBeABdqLPtswej1z5nVQj2WLuVB35
+         2yuuRJUU8TjK4IAowsJVj2LRWBngf1dLfc2U4SqkoiJPIbp2DlnFz6jGMVG/dZMHaQ
+         z12bNmCYM65GsdnU3hGAsEtkmQCQBr73UD/NOJ+lXOXuUVi60Y5UkVAiidyhKdWXrt
+         TnUMkoloHlHX663vqHVpzOiLGL0AWM7Z4QcDg5xJp15giD05mAlqAPC/dpF4zvnhBo
+         b9TS12tqrFhXs/iHkIPO8jLsAPW6hAslJdiwi9F77GDI3Ws7aCmbvN0XNu0oUmDf16
+         /5Pey2NHXtIwA==
+Date:   Thu, 23 Nov 2023 10:05:57 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put
+ drm-shmem pages
+Message-ID: <20231123100557.05a49343@collabora.com>
+In-Reply-To: <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-16-dmitry.osipenko@collabora.com>
+        <20231110115354.356c87f7@collabora.com>
+        <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 01:04:09PM -0800, Matthew Maurer wrote:
-> > So, even if you enable CONFIG_MODVERSIONS,
-> > nothing is checked for Rust.
-> > Genksyms computes a CRC from "int foo", and
-> > the module subsystem confirms it is a "int"
-> > variable.
-> >
-> > We know this check always succeeds.
-> >
-> > Why is this useful?
-> The reason this is immediately useful is that it allows us to have Rust
-> in use with a kernel where C modules are able to benefit from MODVERSIONS
-> checking. The check would effectively be a no-op for now, as you have correctly
-> determined, but we could refine it to make it more restrictive later.
-> Since the
-> existing C approach errs on the side of "it could work" rather than "it will
-> work", I thought being more permissive was the correct initial solution.
+On Thu, 23 Nov 2023 01:04:56 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-But it's just providing "fake" information to the CRC checker, which
-means that the guarantee of a ABI check is not true at all.
+> On 11/10/23 13:53, Boris Brezillon wrote:
+> > Hm, there was no drm_gem_shmem_get_pages_sgt() call here, why should we
+> > add a drm_gem_shmem_get_pages()? What we should do instead is add a
+> > drm_gem_shmem_get_pages() for each drm_gem_shmem_get_pages_sgt() we
+> > have in the driver (in panfrost_mmu_map()), and add
+> > drm_gem_shmem_put_pages() calls where they are missing
+> > (panfrost_mmu_unmap()).
+> >   
+> >> +		if (err)
+> >> +			goto err_free;
+> >> +	}
+> >> +
+> >>  	return bo;
+> >> +
+> >> +err_free:
+> >> +	drm_gem_shmem_free(&bo->base);
+> >> +
+> >> +	return ERR_PTR(err);
+> >>  }
+> >>  
+> >>  struct drm_gem_object *
+> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> >> index 770dab1942c2..ac145a98377b 100644
+> >> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> >> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> >> @@ -504,7 +504,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
+> >>  		if (IS_ERR(pages[i])) {
+> >>  			ret = PTR_ERR(pages[i]);
+> >>  			pages[i] = NULL;
+> >> -			goto err_pages;
+> >> +			goto err_unlock;
+> >>  		}
+> >>  	}
+> >>  
+> >> @@ -512,7 +512,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
+> >>  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
+> >>  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
+> >>  	if (ret)
+> >> -		goto err_pages;
+> >> +		goto err_unlock;  
+> > Feels like the panfrost_gem_mapping object should hold a ref on the BO
+> > pages, not the BO itself, because, ultimately, the user of the BO is
+> > the GPU. This matches what I was saying about moving get/put_pages() to
+> > panfrost_mmu_map/unmap(): everytime a panfrost_gem_mapping becomes
+> > active, to want to take a pages ref, every time it becomes inactive,
+> > you should release the pages ref.  
+> 
+> The panfrost_mmu_unmap() is also used by shrinker when BO is purged. I'm
+> unhappy with how icky it all becomes if unmap is made to put pages.
 
-So the ask for the user of "ensure that the ABI checking is correct" is
-being circumvented here, and any change in the rust side can not be
-detected at all.
+Why, that's exactly what's supposed to happen. If you mmu_unmap(), that
+means you no longer need the pages ref you got.
 
-The kernel is a "whole", either an option works for it, or it doesn't,
-and you are splitting that guarantee here by saying "modversions will
-only work for a portion of the kernel, not the whole thing" which is
-going to cause problems for when people expect it to actually work
-properly.
+> 
+> Previously map() was implicitly allocating pages with get_sgt() and then
+> pages were implicitly released by drm_gem_shmem_free(). A non-heap BO is
+> mapped when it's created by Panfrost, hence the actual lifetime of pages
+> is kept unchanged by this patch.
 
-So, I'd strongly recommend fixing this for the rust code if you wish to
-allow modversions to be enabled at all.
+But the whole point of making it explicit is to control when pages are
+needed or not, isn't it. The fact we mmu_map() the BO at open time, and
+keep it mapped until it's not longer referenced is an implementation
+choice, and I don't think having pages_put() in mmu_unmap() changes
+that.
 
-> With regards to future directions that likely won't work for loosening it:
-> Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
-> teach genksyms to open it up and split out the pieces for specific functions.
-> Extending genksyms to parse Rust would also not solve the situation -
-> layouts are allowed to differ across compiler versions or even (in rare
-> cases) seemingly unrelated code changes.
+> The implicit allocation is turned into
+> explicit one, i.e. pages are explicitly allocated before BO is mapped.
+> 
 
-What do you mean by "layout" here?  Yes, the crcs can be different
-across compiler versions and seemingly unrelated code changes (genksyms
-is VERY fragile) but that's ok, that's not what you are checking here.
-You want to know if the rust function signature changes or not from the
-last time you built the code, with the same compiler and options, that's
-all you are verifying.
-
-> Future directions that might work for loosening it:
-> * Generating crcs from debuginfo + compiler + flags
-> * Adding a feature to the rust compiler to dump this information. This
-> is likely to
->   get pushback because Rust's current stance is that there is no ability to load
->   object code built against a different library.
-
-Why not parse the function signature like we do for C?
-
-> Would setting up Rust symbols so that they have a crc built out of .rmeta be
-> sufficient for you to consider this useful? If not, can you help me understand
-> what level of precision would be required?
-
-What exactly does .rmeta have to do with the function signature?  That's
-all you care about here.
-
-thanks,
-
-greg k-h
