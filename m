@@ -2,60 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E17F617A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8D27F617E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbjKWOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        id S1345789AbjKWOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345736AbjKWOaY (ORCPT
+        with ESMTP id S1345846AbjKWOam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:30:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D62B9;
-        Thu, 23 Nov 2023 06:30:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700749830; x=1732285830;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=GOtJ/wPUcjOXSBk7IRQC4DD2WhaZ57quY1cxcixvzmw=;
-  b=WQPdD5jpJ5VpeXbj1PeyepxUNSvl33+RIsLezS0Q1xdItJs9n6Ie2sft
-   1BPBXErLFbFVWzXX86aNajnZXEPUoP7k7HXjmCj/8iu8ASQqRV6xpKC3g
-   SBz5DNAc7BGyrOTpZpWfVZjrWjsP3WUuqFX9MonfA7KVaKpwsgZhlLO2K
-   Ucd93Ny54vY+ba7J/1KmoxrYqHbch4vF/xSLQ3eP2sLXjGkiLHZnmn7io
-   62caroeYZezXEUH2JcNI7uSvFMfsNzZZ3ngQB6+u4mPH7Fsbh6CZBwO4U
-   t79uWOphJLc6j01VjmkvyKZPG7LUpNdbQcAFuYVj3cbKSmRKZNq76B9LH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382678115"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="382678115"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:30:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="717071779"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="717071779"
-Received: from mstrobel-mobl.ger.corp.intel.com ([10.252.40.70])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:30:28 -0800
-Date:   Thu, 23 Nov 2023 16:30:25 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org
-Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap cleanup.h
- support
-In-Reply-To: <20231123040355.82139-13-david.e.box@linux.intel.com>
-Message-ID: <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
-References: <20231123040355.82139-1-david.e.box@linux.intel.com> <20231123040355.82139-13-david.e.box@linux.intel.com>
+        Thu, 23 Nov 2023 09:30:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347AD1A8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:30:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700749847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=22lkuupwOi3hQyJ80zjsVGNVUUakiKR9P1emLJtIdd0=;
+        b=IA0eFvKR5SAjdih0mGGQZ1wNIX2Qyo6LQhIJBIb4Fei32k8u3ffDYiKU0Zh6krOHOKaxQR
+        YpZ5OiNuNWKkrqzWBTcFnTBZGnAPLt1eeybN+J6gZ636QmcOi84XzUU9jCmiLUEfBi+0Td
+        wI/fdrkNY+Ek8BPOYKiYy6oZlEi8aj0=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-153-nxp1M6ieMcW9adDc5q_5jw-1; Thu, 23 Nov 2023 09:30:46 -0500
+X-MC-Unique: nxp1M6ieMcW9adDc5q_5jw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c506abc320so6959351fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:30:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700749845; x=1701354645;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=22lkuupwOi3hQyJ80zjsVGNVUUakiKR9P1emLJtIdd0=;
+        b=iMBmzvw+iqdij57/2wOMJ+jP1P0SN8UAXd9FHTJjfHTtgCx/BpKUdjw0o6sbOvb3Hj
+         GD7GjbNt6l2xZd8swaruBSJon51+zgP3iIBeaghFmvggwL+dEM9FBSEaLAhMRt2YDJwc
+         i+PlU57e2MGlu508LQTZfKRDaOKRi9fF3/aO9FIaFjYXy52IjFeLduB+o+HwnAyH+8Y3
+         D3XeA1BPzgRBo2ziOT/p3WutHu16UHkvSMO8Q7DKGFrox2H6bxEC25cfVbj1or7OcdBn
+         M/UNjk5jJKtHoiYIRXt2i+AlI1wQZ7F0FH5D6COQpJzZblEFP05yZzDZJsofHozagxJR
+         w2RA==
+X-Gm-Message-State: AOJu0YwKh7PMWiWMstFG5+yuxrydfJzVjBf/HUT6sXfc9NWYy4QTkHnx
+        3Hpu9T7qfem6ApHyrRHp+gHVLn4n2/budpiTBGa/GW1RkZa6AGhQaQRFu2BmbbZMpkAD5zzKiM2
+        j/VZhvoFAjXSNBtAJwHLnpWVw
+X-Received: by 2002:a05:651c:1214:b0:2bc:d8cb:59fe with SMTP id i20-20020a05651c121400b002bcd8cb59femr3944439lja.8.1700749844774;
+        Thu, 23 Nov 2023 06:30:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFaP3pVQfTih1k5s7Q4cFcnc5LQv+SCNgGHEweImwr6WvbNRyXZ7e2KaHTHZEe9LdiiGTQrYg==
+X-Received: by 2002:a05:651c:1214:b0:2bc:d8cb:59fe with SMTP id i20-20020a05651c121400b002bcd8cb59femr3944425lja.8.1700749844298;
+        Thu, 23 Nov 2023 06:30:44 -0800 (PST)
+Received: from ?IPV6:2003:cb:c716:c800:ed2f:91bf:8c46:7078? (p200300cbc716c800ed2f91bf8c467078.dip0.t-ipconnect.de. [2003:cb:c716:c800:ed2f:91bf:8c46:7078])
+        by smtp.gmail.com with ESMTPSA id g21-20020a05600c311500b0040b3645a7c2sm2188202wmo.40.2023.11.23.06.30.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 06:30:43 -0800 (PST)
+Message-ID: <19e138f1-477a-4d79-97a3-68604f8da098@redhat.com>
+Date:   Thu, 23 Nov 2023 15:30:43 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-872993958-1700749829=:1676"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/mm: prevent duplicate runs caused by
+ TEST_GEN_PROGS
+Content-Language: en-US
+To:     Nico Pache <npache@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org
+Cc:     shuah@kernel.org, akpm@linux-foundation.org, jsavitz@redhat.com
+References: <20231120222908.28559-1-npache@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231120222908.28559-1-npache@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,66 +128,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-872993958-1700749829=:1676
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Wed, 22 Nov 2023, David E. Box wrote:
-
-> Add auto-release cleanups for iounmap() and ioport_unmap().
+On 20.11.23 23:29, Nico Pache wrote:
+> commit 05f1edac8009 ("selftests/mm: run all tests from run_vmtests.sh")
+> fixed the inconsistancy caused by tests being defined as TEST_GEN_PROGS.
+> This issue was leading to tests not being executed via run_vmtests.sh and
+> furthermore some tests running twice due to the kselftests wrapper also
+> executing them.
 > 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Fix the definition of two tests (soft-dirty and pagemap_ioctl)
+> that are still incorrectly defined.
+> 
+> Signed-off-by: Nico Pache <npache@redhat.com>
 > ---
-> V2 - Move from linux/io.h to asm-generic/io.h. Adds iounmap cleanup if
->      iounmap() is defined. Adds ioport_unmap cleanup if CONFIG_IOPORT_MAP
->      is defined.
+>   tools/testing/selftests/mm/Makefile | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->  include/asm-generic/io.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index bac63e874c7b..9ef0332490b1 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -8,6 +8,7 @@
->  #define __ASM_GENERIC_IO_H
->  
->  #include <asm/page.h> /* I/O is all done through memory accesses */
-> +#include <linux/cleanup.h>
->  #include <linux/string.h> /* for memset() and memcpy() */
->  #include <linux/types.h>
->  #include <linux/instruction_pointer.h>
-> @@ -1065,6 +1066,10 @@ static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
->  #endif
->  #endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
->  
-> +#ifdef iounmap
-> +DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
-> +#endif
-> +
->  #ifndef ioremap_wc
->  #define ioremap_wc ioremap
->  #endif
-> @@ -1127,6 +1132,7 @@ static inline void ioport_unmap(void __iomem *p)
->  extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
->  extern void ioport_unmap(void __iomem *p);
->  #endif /* CONFIG_GENERIC_IOMAP */
-> +DEFINE_FREE(ioport_unmap, void __iomem *, ioport_unmap(_T));
->  #endif /* CONFIG_HAS_IOPORT_MAP */
->  
->  #ifndef CONFIG_GENERIC_IOMAP
+> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+> index 78dfec8bc676..dede0bcf97a3 100644
+> --- a/tools/testing/selftests/mm/Makefile
+> +++ b/tools/testing/selftests/mm/Makefile
+> @@ -60,7 +60,7 @@ TEST_GEN_FILES += mrelease_test
+>   TEST_GEN_FILES += mremap_dontunmap
+>   TEST_GEN_FILES += mremap_test
+>   TEST_GEN_FILES += on-fault-limit
+> -TEST_GEN_PROGS += pagemap_ioctl
+> +TEST_GEN_FILES += pagemap_ioctl
+>   TEST_GEN_FILES += thuge-gen
+>   TEST_GEN_FILES += transhuge-stress
+>   TEST_GEN_FILES += uffd-stress
+> @@ -72,7 +72,7 @@ TEST_GEN_FILES += mdwe_test
+>   TEST_GEN_FILES += hugetlb_fault_after_madv
+>   
+>   ifneq ($(ARCH),arm64)
+> -TEST_GEN_PROGS += soft-dirty
+> +TEST_GEN_FILES += soft-dirty
+>   endif
+>   
+>   ifeq ($(ARCH),x86_64)
 
-Has this now built successfully with LKP? (I don't think we get success 
-notifications from LKP for patch submissions, only failures).
-
-There were some odd errors last time but I think all they were unrelated 
-to this change (besides the checkpatch false positive, I mean).
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
- i.
+Cheers,
 
---8323329-872993958-1700749829=:1676--
+David / dhildenb
+
