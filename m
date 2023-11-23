@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8810B7F5DE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D077F5DE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345068AbjKWLcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        id S1345072AbjKWLh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345034AbjKWLcs (ORCPT
+        with ESMTP id S1345034AbjKWLhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:32:48 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C992719D;
-        Thu, 23 Nov 2023 03:32:53 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-543c3756521so1042399a12.2;
-        Thu, 23 Nov 2023 03:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700739172; x=1701343972; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJR3101Hl0ju0T8k7A5FLhqgAt7jmzAhmxoZQCDqWNQ=;
-        b=GUOz08A+XjAbDfEUHx2VlJ2WTqaPRGbE+0wZELY6tVi4aJGILWORN0ay2fATSAuUhG
-         IVKsiGWpJZES7aDo5K2F1SR5bgAqufii0FkvkwRvx6SFIWN+VSBb30WxiVZEZsLNdaEv
-         rZ+kyf3gyZ8u4sY6erkgg7nnTOwmu/P2U3Nk8u9ZBTbLK6ZM3eqLUMOPrzpTyo28uZ/n
-         0tc/JDbCGt7YFHJUoBlYDKQp4QhQCcm2W2hGBHEU1Kkb4w3xcvwGFvTlFYEwj19pzaDN
-         DdPwXyv1o0e+zROHslFbBP4eQOSTgDue9yccuaAjfebSYe97YpCLQ9krpTmwsZaUYxnY
-         uCRw==
+        Thu, 23 Nov 2023 06:37:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF459F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700739449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cNU0lJ4bqwRQlxt9Wpe1IHAIeheCW8RuRwLK6Qt/j8Q=;
+        b=NqE0TNiYDkk5iBKFDXEDLXB63RjgeK5cgSCpKFNa447zj5GT2YJD0Yz8DlKhFoZW+KDXsR
+        jb3RGwYVKXIkDkDsrgUmPctRijR914GABTAyDGGWuSK1p/7N0f7aP5icVtvm+h52zcwn7H
+        tEOB2y4DCw3m1JOEMHtF09+L4O7PB14=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-306-3Hom0jNnO5Kj0NUzJ6FadQ-1; Thu, 23 Nov 2023 06:37:25 -0500
+X-MC-Unique: 3Hom0jNnO5Kj0NUzJ6FadQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a02225ee165so14883266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:37:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700739172; x=1701343972;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FJR3101Hl0ju0T8k7A5FLhqgAt7jmzAhmxoZQCDqWNQ=;
-        b=m1plgXXm41i+psrLsb4ffj+I1uVzIM+p6CORh3OCZws7xJKpBi9jChiWxmva6qNkmq
-         P/o3aM7vQjRtN7vC3BHkygyAP4mYYYhPxhEXYMh2JvTaynAYgk04kApbxG7woSkcukip
-         LbXifPC0E9+LcY8g96cnP7sjLHuBVkUHcuiI+38/mxd+59rtljsi7trqAR55G/8L5bF3
-         KsZLMjbzVTYOfj4M3l8XfiSrSmtxQP9jwsVLikqxjklsHa4QhXK8xy6GgI3A3a0EyCC/
-         sD9Wcd4rseaFurc/IKa3/60pZ4U70vNUM/0zFkwcBtzp5rW3OyxlOiVB6SB0VBgwhUKy
-         wkjg==
-X-Gm-Message-State: AOJu0YxbXRYTTLDX32qdHyIfca885kd+UNBTJtg0ya/9EkrJDFmcWog5
-        Zi0D36kP5o14mWxkBHSj8Nw=
-X-Google-Smtp-Source: AGHT+IF9yCBLo40X1hbdFBWCUzdwY/UWNgg06E7pt731qK1mToTbvsH/X0QsP6Uzk24cb537Bx/Ntw==
-X-Received: by 2002:a05:6402:26c7:b0:54a:9155:48e3 with SMTP id x7-20020a05640226c700b0054a915548e3mr2592158edd.1.1700739172081;
-        Thu, 23 Nov 2023 03:32:52 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d183:a5d9:39a9:cd13])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402151300b005489dbe8ed3sm557251edw.4.2023.11.23.03.32.51
+        d=1e100.net; s=20230601; t=1700739443; x=1701344243;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cNU0lJ4bqwRQlxt9Wpe1IHAIeheCW8RuRwLK6Qt/j8Q=;
+        b=LDYo2aU9zvVMxDLWWwhkCoSZXbSfs5mMBcw1Ws2C1AmIh7ChdJgo4QKa+iZHDd2UyJ
+         E7dUBa173a7fXc9t89DaW9l+IZxymhcbIAPP34jGjKMsApWjgulR49ct9WVzCCBHNe/R
+         fTB3bXWC7ai1I7Jn0N9XhfP2kqDqEgqiZ6at5TowlKR1JAXR6bQ0OBZF+pHu6f4Ho+tY
+         QgUhQINHzsuryDBOqD1ROp6etuqQd7Eg9DlowILfa7bovhXWflqEY6O4G/KwCw8anGsm
+         0AuZhrNbbjcFLuWcPuquMHrodBEsb5z7e2q9uhaMmo7RNnKY0gEWBbyVaG8eZ5SSX5Xj
+         urXA==
+X-Gm-Message-State: AOJu0YxszFXnXXYOErOeNdpLq0BivaEylJt+HSz/+hEyYb9T/GhseyIP
+        1VDjyiUwMnuJbP3UkCmPcBJLsRJZsp6d+vVdEFJ4BetU3+KAaHhFD3zSp/pOTW7I6MEGatgdsY2
+        szlWSdZVVKKSgZ5GU47lfOsp7
+X-Received: by 2002:a17:906:cb:b0:a02:a2fb:543 with SMTP id 11-20020a17090600cb00b00a02a2fb0543mr3401949eji.7.1700739443546;
+        Thu, 23 Nov 2023 03:37:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/qhXeu1lxpefrtiQ6p1bXy+gUpUMSWogFKiIjUP9coMkMwyY1B5XPnDJWqosDbagW70xJxA==
+X-Received: by 2002:a17:906:cb:b0:a02:a2fb:543 with SMTP id 11-20020a17090600cb00b00a02a2fb0543mr3401937eji.7.1700739443239;
+        Thu, 23 Nov 2023 03:37:23 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-213.dyn.eolo.it. [146.241.241.213])
+        by smtp.gmail.com with ESMTPSA id jx19-20020a170906ca5300b009fc9fab9178sm669800ejb.125.2023.11.23.03.37.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 03:32:51 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Lee Jones <lee@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust file patterns in TQ SYSTEMS BOARD & DRIVER SUPPORT
-Date:   Thu, 23 Nov 2023 12:32:45 +0100
-Message-Id: <20231123113245.23542-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 23 Nov 2023 03:37:22 -0800 (PST)
+Message-ID: <a24433f86e39cbb45a9606621e01446e7ad6fa53.camel@redhat.com>
+Subject: Re: [PATCH 2/4 net] qca_spi: Fix SPI IRQ handling
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Stefan Wahren <wahrenst@gmx.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 23 Nov 2023 12:37:21 +0100
+In-Reply-To: <20231121163004.21232-3-wahrenst@gmx.net>
+References: <20231121163004.21232-1-wahrenst@gmx.net>
+         <20231121163004.21232-3-wahrenst@gmx.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 77da3f22b3d5 ("MAINTAINERS: Add entry for TQ-Systems device trees
-and drivers") adds some file patterns for files in arch/arm/boot/dts/, but
-those patterns do not match any files in the repository. Hence,
-./scripts/get_maintainer.pl --self-test=patterns complains about broken
-references. The files of interest are actually in the directory
-arch/arm/boot/dts/nxp/imx/.
+On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
+> The functions qcaspi_netdev_open/close are responsible of request &
+> free of the SPI interrupt, which wasn't the best choice. Currently
+> it's possible to trigger a double free of the interrupt by calling
+> qcaspi_netdev_close() after qcaspi_netdev_open() has failed.
+> So let us split IRQ allocation & enabling, so we can take advantage
+> of a device managed IRQ and also fix the issue.
+>=20
+> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA=
+7000")
+> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 
-Adjust the file patterns to match the intended files.
+The change makes sense, but the changelog is confusing.=C2=A0
 
-Fixes: 77da3f22b3d5 ("MAINTAINERS: Add entry for TQ-Systems device trees and drivers")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+qcaspi_netdev_close() and qcaspi_netdev_open() are invoked only via
+ndo_open and ndo_close(), right? So qcaspi_netdev_close() will never be
+invoked qcaspi_netdev_open(), failure - that is when IFF_UP is not set.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index df7a57ac864e..1e439b08d5d4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22084,9 +22084,9 @@ TQ SYSTEMS BOARD & DRIVER SUPPORT
- L:	linux@ew.tq-group.com
- S:	Supported
- W:	https://www.tq-group.com/en/products/tq-embedded/
--F:	arch/arm/boot/dts/imx*mba*.dts*
--F:	arch/arm/boot/dts/imx*tqma*.dts*
--F:	arch/arm/boot/dts/mba*.dtsi
-+F:	arch/arm/boot/dts/nxp/imx/imx*mba*.dts*
-+F:	arch/arm/boot/dts/nxp/imx/imx*tqma*.dts*
-+F:	arch/arm/boot/dts/nxp/imx/mba*.dtsi
- F:	arch/arm64/boot/dts/freescale/fsl-*tqml*.dts*
- F:	arch/arm64/boot/dts/freescale/imx*mba*.dts*
- F:	arch/arm64/boot/dts/freescale/imx*tqma*.dts*
--- 
-2.17.1
+Cheers,
+
+Paolo
 
