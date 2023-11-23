@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B30B7F5F72
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DC67F5F54
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345366AbjKWMwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
+        id S1345349AbjKWMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345271AbjKWMwp (ORCPT
+        with ESMTP id S1345426AbjKWMop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:52:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31724189
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:52:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03413C433C7;
-        Thu, 23 Nov 2023 12:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700743971;
-        bh=EOAR9aStMcqAj4DF61/GK2dpwSnF0ONfVuJDcw9Utyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fXkVuCCkg464swbbqS6oYlj++sI478XJM0yJropc+VN9LlD2mEYYAoSXkB9cB46GM
-         b9uNdZl+wQB8g+LQ+tgsSCd5eiaL1Uz1JEyP2R+NwqAETh4wuBXf2LZRAL8QhFg0Xo
-         sU9eFAbQx1IQMnUw/aFcjxOOFQGuasZ9BsOlLfnQ=
-Date:   Thu, 23 Nov 2023 12:44:13 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gary Rookard <garyrookard@fastmail.org>
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] staging: rtl8192e: renaming of 5 different variables
- patch series
-Message-ID: <2023112353-appraisal-snort-6d8a@gregkh>
-References: <20231121181435.9337-1-garyrookard@fastmail.org>
+        Thu, 23 Nov 2023 07:44:45 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B1C10D2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:44:26 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 83BF466073A7;
+        Thu, 23 Nov 2023 12:44:24 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700743465;
+        bh=Pa2QYm+OXYCOPTslAZUn4HsfAc4k7tJU3XsjaVT4JPc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EX6uzfvDoId7KXRQaSrHdrUbXnRiWHfYVw5oWBrtXUU3zNsXXuOVreG9Hk2HcDl/K
+         UL47SRyDKfTJv4vVeaXxYkV65hrp4fKpiBmKijQkkjnOpkHzUyZ7zcqsA/52BphINu
+         cxBCFPwy6RnLsscPIWWN+SThoVmQ6u0axpDC0mgvDjMpe2gUYAfpGxvOG7UlQJW5Pj
+         dVvFEGCvSwQm6E+mLcYm598BjSt3SXhC36DhjQ6Qg36hw/kWD1YFJrQXmVoDIb5xWy
+         3tpieb94QpIic/dRpX6d2Tm9VezflMFY463Se/F/KJp3oFozuho8iXbvtxjmrbsru/
+         muTnB+qzoYMeQ==
+Message-ID: <140cff33-3421-4d78-9d58-83de5eec4dce@collabora.com>
+Date:   Thu, 23 Nov 2023 13:44:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121181435.9337-1-garyrookard@fastmail.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        steven.price@arm.com
+Cc:     boris.brezillon@collabora.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231123120521.147695-1-angelogioacchino.delregno@collabora.com>
+ <5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 01:14:30PM -0500, Gary Rookard wrote:
-> Hi,
+Il 23/11/23 13:43, Krzysztof Kozlowski ha scritto:
+> On 23/11/2023 13:05, AngeloGioacchino Del Regno wrote:
+>> Some SoCs may be equipped with a GPU containing two core groups
+>> and this is exactly the case of Samsung's Exynos 5422 featuring
+>> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+>> is partial, as this driver currently supports using only one
+>> core group and that's reflected on all parts of it, including
+>> the power on (and power off, previously to this patch) function.
+>>
+>> The issue with this is that even though executing the soft reset
+>> operation should power off all cores unconditionally, on at least
+>> one platform we're seeing a crash that seems to be happening due
+>> to an interrupt firing which may be because we are calling power
+>> transition only on the first core group, leaving the second one
+>> unchanged, or because ISR execution was pending before entering
+>> the panfrost_gpu_power_off() function and executed after powering
+>> off the GPU cores, or all of the above.
+>>
+>> Finally, solve this by introducing a new panfrost_gpu_suspend_irq()
+>> helper function and changing the panfrost_device_suspend() flow to
+>>   1. Mask and clear all interrupts: we don't need nor want any, as
+>>      for power_off() we are polling PWRTRANS, but we anyway don't
+>>      want GPU IRQs to fire while it is suspended/powered off;
+>>   2. Call synchronize_irq() after that to make sure that any pending
+>>      ISR is executed before powering off the GPU Shaders/Tilers/L2
+>>      hence avoiding unpowered registers R/W; and
+>>   3. Ignore the core_mask and ask the GPU to poweroff both core groups
+>>
+>> Of course it was also necessary to add a `irq` variable to `struct
+>> panfrost_device` as we need to get that in panfrost_gpu_power_off()
+>> for calling synchronize_irq() on it.
+>>
+>> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
+>> [Regression detected on Odroid HC1, Exynos5422, Mali-T628 MP6]
+>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > 
-> This patch series renames 5 different variables from
-> Pascal/CamelCase to snake case.
 > 
-> Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-> Driver/module rtl8291e compiles.
+> Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> Patch 1/5) renamed variable from HTMcsToDataRate -> ht_mcs_to_data_rate
-> Patch 2/5) renamed variable from TXCountToDAtaRate -> tx-count_to_data_rate
-> Patch 3/5) renamed variable from IsHTHalfNmodeAPs -> is_ht_half_nmode_aps
-> Patch 4/5) renamed variable from HTIOTPeerDetermine -> ht_iot_peer_determine
-> Patch 5/5) renamed variable from HTIOTActIsMgntUseCCK6M -> ht_iot_act_is_mgnt_use_cck_6m
+
+Thank you for the test and, more importantly, for your patience.
+
+Cheers,
+Angelo
+
+> Best regards,
+> Krzysztof
 > 
-> Regards,
-> Gary
 
-Hi,
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
