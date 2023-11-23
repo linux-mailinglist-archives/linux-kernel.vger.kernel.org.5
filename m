@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D0D7F5CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD287F5CE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344773AbjKWKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S1344820AbjKWKwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjKWKv0 (ORCPT
+        with ESMTP id S229609AbjKWKwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:51:26 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01B51BE
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:51:32 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c87903d314so9296761fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:51:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700736691; x=1701341491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YwmrQxHTU1CAY1ik/8lG526otmBtdlTxUGsXkGRD6CI=;
-        b=k0dIWGdyCNSRc9jCtYdKWRp7xFeEkqVxOsptra5DyH9AIu0NxKT0Os8NctAOrJZU/B
-         5RuSWBWaaaGUvYYuf+6jbzF8SuYBVuFoOTUctkeVkL73Tx7aBIVcB6s+bkr8jC3PNsnd
-         OBdRB8vItg1MwQMlOaldLOjX5+6rNN73wjStaT3nj3C+SJCOrgq6JhGiucaPKPcNRwqs
-         Fq2gB4wDT9MnXk4qnPlulqvG1D6OCezhy/RPzXGbu+uQpPw/Bs5G4WcvJCFpXtSBV9Dc
-         o3djXpX6lrLj7T3KmzoHq9h6QAnrSj4kingaOr/fnlfXg8pl7bV503PrXKNyd55sUVT9
-         +Omg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700736691; x=1701341491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YwmrQxHTU1CAY1ik/8lG526otmBtdlTxUGsXkGRD6CI=;
-        b=ATWM3Z+oFlId+j4wumXyxjOXxc4S2eRZoPWpSq9ktZcxSSXrh92h6Ay6s3j7sYm545
-         HpxCeElWDXERzxBB9iq38Je+KsZDdIbyHCWkn6pC0wP/Ht4MzcoW91IcRSTdVDaGsu1c
-         oG28UoHcigQ59751X6aW/RnQ4pcL7014Mk2KZsgwQIZ3x4nAurelAsiGdBHU21xtzaHx
-         ok0dJ2fJbLKPZJpA8D5PloBY4XS0r+Z/wHmK4G0oRi3CuBIMQY3u5PUHtew6ewrjSGlh
-         fFntuzQi6BFeKWleXcx3JY0MRXF8ky/M+VH6bfKHZuioHytP8sw58to+5psG9juPa3KR
-         20jQ==
-X-Gm-Message-State: AOJu0YzZHMOfoPxmos9rDi1GCXC/IiTH0C24ArXkVlpry64O9riwYvsV
-        DzorR4tCyknglcPHCdl0WwIjco2njm0U/u/OLe8=
-X-Google-Smtp-Source: AGHT+IG/bNRUZnDOK8JBHt6VPrcbVxdIHI6XPaKwYdXRcBEqiwDsjykl6EI0sBO9H1n+8AIlxzyLn24s3GHw/rvOVBg=
-X-Received: by 2002:a2e:a988:0:b0:2c6:c3ea:af7b with SMTP id
- x8-20020a2ea988000000b002c6c3eaaf7bmr3896551ljq.5.1700736690883; Thu, 23 Nov
- 2023 02:51:30 -0800 (PST)
+        Thu, 23 Nov 2023 05:52:05 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB00319D;
+        Thu, 23 Nov 2023 02:52:11 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AN5lWrm021272;
+        Thu, 23 Nov 2023 04:52:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=RSshxsOe/WpI9Zh
+        vx3znWw9Og1R8TvaJz6zt8sGGClA=; b=CYdZNzfqonmbYuLq5QqkJdfsvc9DRix
+        siAT998YsCAn+2jS2Of1dNeua5XrpyLaSlpNNS6WgF4S3Xl5v74O7KPrvOaASjwh
+        p8zaDsKjk73Dlb/9WtcAW/Is3uanjPbHk5TJJj7N5u0nJWA1+RG2DKIbQ6c2w6Jw
+        PWV/XaH7u4d6SOZDtKtWAJSU2Kf5r1jT0a/D/EmTCGiwryfaPlMwUeNH2MSs5K4b
+        5LFIA4BwCMYpuFs4HwlUVAKZFO0lB4MvRJmi6fFArTXspRkg62I/0JreYUMvAJCu
+        oeMjo3dk3AW2YqkPSAmb8s5T/KtdfyECeWNVQRRyQD8pfsmq0di8ssQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj2dmwn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 04:52:05 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 23 Nov
+ 2023 10:52:03 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Thu, 23 Nov 2023 10:52:03 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 27074357F;
+        Thu, 23 Nov 2023 10:52:03 +0000 (UTC)
+Date:   Thu, 23 Nov 2023 10:52:03 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-ID: <20231123105203.GP32655@ediswmail.ad.cirrus.com>
+References: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+ <20231123104624.GO32655@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-7-ryncsn@gmail.com>
- <CAF8kJuO_ztE=M3EF-7pSkUL73tL8kfi2KqQPsYVC2VE-J_nu6Q@mail.gmail.com>
-In-Reply-To: <CAF8kJuO_ztE=M3EF-7pSkUL73tL8kfi2KqQPsYVC2VE-J_nu6Q@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Thu, 23 Nov 2023 18:51:13 +0800
-Message-ID: <CAMgjq7A2uMyYAkpp_ZYYhVw9wZenv-2t7xOO-MJc613o-o27iA@mail.gmail.com>
-Subject: Re: [PATCH 06/24] swap: rework swapin_no_readahead arguments
-To:     Chris Li <chrisl@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231123104624.GO32655@ediswmail.ad.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: qKX3GwV0qDWZUXbT5DPlthRZsCGgZXz2
+X-Proofpoint-GUID: qKX3GwV0qDWZUXbT5DPlthRZsCGgZXz2
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8821=E6=97=A5=
-=E5=91=A8=E4=BA=8C 14:44=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Make it use alloc_pages_mpol instead of vma_alloc_folio, and accept
-> > mm_struct directly as an argument instead of taking a vmf as argument.
-> > Make its arguments similar to swap_{cluster,vma}_readahead, to
-> > make the code more aligned.
->
-> It is unclear to me what is the value of making the
-> swap_{cluster,vma}_readahead more aligned here.
->
-> > Also prepare for following commits which will skip vmf for certain
-> > swapin paths.
->
-> The following patch 07/24 does not seem to use this patch.
-> Can it merge with the other patch that uses it?
->
-> As it is, this patch does not serve a stand alone value to justify it.
+On Thu, Nov 23, 2023 at 10:46:24AM +0000, Charles Keepax wrote:
+> On Thu, Nov 23, 2023 at 09:06:58AM +0000, Maciej Strozek wrote:
+> > Add a polling mechanism that will keep the driver operational even in
+> > absence of physical IRQ connection. If IRQ line is detected, the driver
+> > will continue working as usual, in case of missing IRQ line it will
+> > fallback to the polling mechanism introduced in this change.
+> > This will support users which choose not to connect an IRQ line as it
+> > is not critical to part's operation.
+> > 
+> > Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> > ---
+> 
+> Sorry hang on this doesn't apply to Mark's tree, will need a v6.
 
-Yes, I'll rearrange this.
+No that is me being a moron, apologies ignore this noise.
+
+Thanks,
+Charles
