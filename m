@@ -2,135 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 425CC7F6035
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6057F6039
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345491AbjKWN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S1345500AbjKWN2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345477AbjKWN1u (ORCPT
+        with ESMTP id S1345466AbjKWN2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:27:50 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152FE1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:27:55 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40b2fa4ec5eso5699075e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:27:55 -0800 (PST)
+        Thu, 23 Nov 2023 08:28:04 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABC1D62
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:28:07 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00a9c6f283so120319766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:28:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700746073; x=1701350873; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EXvmaEo9djiQoWu0VY3+nTDbX4i2eSIVDoQ7R6Z2gjo=;
-        b=lUWuEyD0if9x4rryxJfvCDjmAyqPGfe9sVOl9r6AMYQON/viGgzcuH1ZZPC0CuchV0
-         N2Cw/KhtkZxGfaNdTTuB6+T61SoPQkTlFitMK2yKvZT4I8VC6xCm9I/bN7UGgIPqEflm
-         mrOojTArGSIgqyUtEwlChXwqLOrmhlUsZ4d5eg6W2Y52TZEjh0/JGrw6vIJSVaeZJg85
-         /BamVty7RkRa0iNdJ1+sHide0fYVVJbGLMkz740fHHbGb4DKiqhzoScfOdO286Hf/8sW
-         haus1JuCdaEA+i0FQKT1dFyRgKYpzUUZV0uwKyg4ZlmEEbEqvvuFrMUDUUeX/wPFB/Ka
-         Ad2Q==
+        d=9elements.com; s=google; t=1700746086; x=1701350886; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QV98IcOEB2mGkUK9HbyaOsyZut+dAy3dRloMdrb/xJo=;
+        b=YU0iYCwlFYsueB9XF2q0CXCHuzTNsKnYWHlBTLuRIhRml/EdQH2BSLe5ueAu7TCUCI
+         jTuZFXX3zb4nqrEAYvbe9l/jIttZZv/L4PMG5DOwybix84jieNA78gGmpMY/VkHLmaeX
+         B6kU3w25WlrrTmbJ0C84BpTWs98YBjTeR0GfLT7BEqv0lUT1AK4GLWOOI6rE9qS9s6d7
+         kJzZFRd94abiJVjGxZNSqottPAxP0S/f8Lu6kX6UOHecSnGslNM49AhpZqnjvoLTLdae
+         JLNF2jLn05rDmlruNBT3+6mPX5DDC67k9uYewuMI56ZArq4Wdbgcn4CY2RjVuni/tEEd
+         EpBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700746073; x=1701350873;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EXvmaEo9djiQoWu0VY3+nTDbX4i2eSIVDoQ7R6Z2gjo=;
-        b=JaCbuti44TCeyY5G2xFdWGP443Sa/HuF6j5VEjoNsFaPDeO6y1TKe07/+j7qvnfpvK
-         r6n/V6qUy0p/JcJmdGWVzInYqp61PG7qEPmJQryDcTvXAT+loc5StwbeQjItoN7f4hfl
-         ASVgPENuhkBIlUF3JxsJ2i1ncWN/ctZVF8hkpjq4WAs4yWLLfIb0U373aWG71TPdf+Yn
-         bC+Q2nQxdfJQyWxFFbu2aG/a4dYFSQggdFiQ2l0Ppmny75hxE0XYwyijaEaLlDaiYuvb
-         T7Y74sd1Gi0fWnL8nXD/PJ7ovm2PgGAxHCjUUHYCajYvMT9aXL97Mp+DEPE2WiwmjorS
-         jEUA==
-X-Gm-Message-State: AOJu0YxjcMWcHTkFhO/wO5srETRkSfslSwTGvIqhGGhrtTIamwYiuONt
-        6bhYqXmpBgf5e2wsJQIuJISXKA==
-X-Google-Smtp-Source: AGHT+IFRncMZMkWKQOTBdPyoxEXl6GS2B9sTnKBvNDqJ6WMnhKHs+zxPIJPoaIzwue8nphltI8lN8w==
-X-Received: by 2002:a05:600c:138d:b0:40b:2a85:d7ae with SMTP id u13-20020a05600c138d00b0040b2a85d7aemr4119954wmf.16.1700746073580;
-        Thu, 23 Nov 2023 05:27:53 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id c4-20020a05600c0a4400b003fefaf299b6sm2024158wmq.38.2023.11.23.05.27.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 05:27:53 -0800 (PST)
-Message-ID: <dc0d9638-f35a-4d85-be3b-d912ba0e464f@linaro.org>
-Date:   Thu, 23 Nov 2023 14:27:51 +0100
+        d=1e100.net; s=20230601; t=1700746086; x=1701350886;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QV98IcOEB2mGkUK9HbyaOsyZut+dAy3dRloMdrb/xJo=;
+        b=spVzd+ryVzN4CadHQArZgzl9Vb+qpuJEVbytku8gGLTeCUUcEIrbYzC80NABhIr1tz
+         LVndu54mNeVnZZ6kwBWid9pKJ9ilTqlWM+xtRzn3fIvKku88GVCXkSJoC+lJslf1crSz
+         EwLQwEaCSi6eB6WifvwfImgjreuUJRkwTHtLrKBJpc7XwRF5rcGdwXE/fMUEDJquaMAa
+         72OZW6f013yq0D6UM0FDlP95+XNju2MGaDF6F4hQzM2cxjvCriUdDFPVaS3mBJkoXxwn
+         7AQ+dD4N1fptgT70KISWpUBvOFOhi8XAyuhgGYEYmDAQ6TYuESqMMqTRMZJli/F9lZGF
+         piVA==
+X-Gm-Message-State: AOJu0YykHBckXd5sqwtUbYLXqsRgBWDV0lL2UxZh+nvtOhl07PdLQ4wO
+        6xWzu9hr3F4tcNckVn364CrYvw==
+X-Google-Smtp-Source: AGHT+IG0rIzX/GbTE1ChinuMTNv4LrhiX2EguPkdr14yTXNjoPSPSmIriaidjBWhJKJmbNa6dS4oWg==
+X-Received: by 2002:a17:906:2249:b0:9fd:4bed:72af with SMTP id 9-20020a170906224900b009fd4bed72afmr4260455ejr.72.1700746085961;
+        Thu, 23 Nov 2023 05:28:05 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id q22-20020a1709064c9600b009ae69c303aasm778834eju.137.2023.11.23.05.28.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 05:28:05 -0800 (PST)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: [PATCH v5] leds: max5970: Add support for max5970
+Date:   Thu, 23 Nov 2023 13:28:02 +0000
+Message-ID: <20231123132803.1107174-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] exynos-gsc: remove unused improper CONFIG definition
-Content-Language: en-US
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231123103808.17848-1-lukas.bulwahn@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231123103808.17848-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 11:38, Lukas Bulwahn wrote:
-> Defines prefixed with "CONFIG" should be limited to proper Kconfig options,
-> that are introduced in a Kconfig file.
-> 
-> In the driver code, there is a define for CONFIG_VB2_GSC_DMA_CONTIG, but
-> this is not used anywhere in the code.
-> 
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The MAX5970 is hot swap controller and has 4 indication LED.
 
-Best regards,
-Krzysztof
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+Reviewed-by: Lee Jones <lee@kernel.org>
+---
+Changes in V5:
+- Replace -EPROBE_DEFER with -ENODEV
+Changes in V4:
+- Compact declaration of variable to single line
+- Use sizeof(*ddata) instead of sizeof(struct max5970_led).
+- Use the shorter 'dev' version whilst it's available
+Changes in V3:
+- Drop array for ddata variable.
+Changes in V2:
+- Add of_node_put before return.
+- Code cleanup
+- Refactor code & remove max5970_setup_led function.
+---
+ drivers/leds/Kconfig        |  11 ++++
+ drivers/leds/Makefile       |   1 +
+ drivers/leds/leds-max5970.c | 109 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 121 insertions(+)
+ create mode 100644 drivers/leds/leds-max5970.c
+
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index 6292fddcc55c..da60940d711f 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -638,6 +638,17 @@ config LEDS_ADP5520
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called leds-adp5520.
+ 
++config LEDS_MAX5970
++	tristate "LED Support for Maxim 5970"
++	depends on LEDS_CLASS
++	depends on MFD_MAX5970
++	help
++	  This option enables support for the Maxim MAX5970 & MAX5978 smart
++	  switch indication LEDs via the I2C bus.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called leds-max5970.
++
+ config LEDS_MC13783
+ 	tristate "LED Support for MC13XXX PMIC"
+ 	depends on LEDS_CLASS
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index d7348e8bc019..6eaee0a753c6 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)		+= leds-lp8501.o
+ obj-$(CONFIG_LEDS_LP8788)		+= leds-lp8788.o
+ obj-$(CONFIG_LEDS_LP8860)		+= leds-lp8860.o
+ obj-$(CONFIG_LEDS_LT3593)		+= leds-lt3593.o
++obj-$(CONFIG_LEDS_MAX5970)		+= leds-max5970.o
+ obj-$(CONFIG_LEDS_MAX77650)		+= leds-max77650.o
+ obj-$(CONFIG_LEDS_MAX8997)		+= leds-max8997.o
+ obj-$(CONFIG_LEDS_MC13783)		+= leds-mc13783.o
+diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
+new file mode 100644
+index 000000000000..456a16a47450
+--- /dev/null
++++ b/drivers/leds/leds-max5970.c
+@@ -0,0 +1,109 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device driver for leds in MAX5970 and MAX5978 IC
++ *
++ * Copyright (c) 2022 9elements GmbH
++ *
++ * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
++ */
++
++#include <linux/leds.h>
++#include <linux/mfd/max5970.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++
++#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev)
++
++struct max5970_led {
++	struct device *dev;
++	struct regmap *regmap;
++	struct led_classdev cdev;
++	unsigned int index;
++};
++
++static int max5970_led_set_brightness(struct led_classdev *cdev,
++				      enum led_brightness brightness)
++{
++	struct max5970_led *ddata = ldev_to_maxled(cdev);
++	int ret, val;
++
++	/* Set/clear corresponding bit for given led index */
++	val = !brightness ? BIT(ddata->index) : 0;
++
++	ret = regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, BIT(ddata->index), val);
++	if (ret < 0)
++		dev_err(cdev->dev, "failed to set brightness %d", ret);
++
++	return ret;
++}
++
++static int max5970_led_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev_of_node(dev->parent);
++	struct regmap *regmap;
++	struct device_node *led_node, *child;
++	struct max5970_led *ddata;
++	int ret = -ENODEV, num_leds = 0;
++
++	regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!regmap)
++		return -ENODEV;
++
++	led_node = of_get_child_by_name(np, "leds");
++	if (!led_node)
++		return -ENODEV;
++
++	for_each_available_child_of_node(led_node, child) {
++		u32 reg;
++
++		if (of_property_read_u32(child, "reg", &reg))
++			continue;
++
++		if (reg >= MAX5970_NUM_LEDS) {
++			dev_err(dev, "invalid LED (%u >= %d)\n", reg, MAX5970_NUM_LEDS);
++			continue;
++		}
++
++		ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
++		if (!ddata) {
++			of_node_put(child);
++			return -ENOMEM;
++		}
++
++		ddata->index = reg;
++		ddata->regmap = regmap;
++		ddata->dev = dev;
++
++		if (of_property_read_string(child, "label", &ddata->cdev.name))
++			ddata->cdev.name = child->name;
++
++		ddata->cdev.max_brightness = 1;
++		ddata->cdev.brightness_set_blocking = max5970_led_set_brightness;
++		ddata->cdev.default_trigger = "none";
++
++		ret = devm_led_classdev_register(dev, &ddata->cdev);
++		if (ret < 0) {
++			of_node_put(child);
++			dev_err(dev, "Failed to initialize LED %u\n", reg);
++			return ret;
++		}
++		num_leds++;
++	}
++
++	return ret;
++}
++
++static struct platform_driver max5970_led_driver = {
++	.driver = {
++		.name = "max5970-led",
++	},
++	.probe = max5970_led_probe,
++};
++
++module_platform_driver(max5970_led_driver);
++MODULE_AUTHOR("Patrick Rudolph <patrick.rudolph@9elements.com>");
++MODULE_AUTHOR("Naresh Solanki <Naresh.Solanki@9elements.com>");
++MODULE_DESCRIPTION("MAX5970_hot-swap controller LED driver");
++MODULE_LICENSE("GPL");
+
+base-commit: b9604be241587fb29c0f40450e53d0a37dc611b5
+-- 
+2.41.0
 
