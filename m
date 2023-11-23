@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 476067F5EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141B27F5EE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345256AbjKWMQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:16:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
+        id S1345261AbjKWMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbjKWMQh (ORCPT
+        with ESMTP id S1345168AbjKWMRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:16:37 -0500
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D672B2;
-        Thu, 23 Nov 2023 04:16:43 -0800 (PST)
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3575287211bso2403695ab.1;
-        Thu, 23 Nov 2023 04:16:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700741803; x=1701346603;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6ABYdNkFKBFRNWab8mxw4kb18qdWZBOQPLFeqpwcNJk=;
-        b=POWIAbzIAeLx8T5+kLL2H6/RkvbwYEjVSEetNwvHrp259XMoW1Ms54JSeztbUbwLKD
-         gOwz9QX+/1G0dGo1FjGpnFjlRHhsKBo28Q/x+f/jhHuQivJ46vKhW2RBVjsYCHZUae8K
-         yjqiH/gfAp9dVDNdmx2Uve8o6ot8sPWyNEtj6lHPoPtt4m83TXvNcLUwCWjIxRMPM6eo
-         M6AG7d/SmncGpEb2UoKtzJ02H/cId6YUH/unmvegJhYvT1RknuYZAw3LXdOy37sZ0oYS
-         Ttc9KASINgvPjtDu34XaaZ6BYxtj3QsHi6dPsvtvK/vmb6dNbUXHJWrclzq0C9y5hHdz
-         cvCw==
-X-Gm-Message-State: AOJu0YyWacxysI2P+IlkvhRA9D4FqSz3zF5VWgL/w89mZ3OmfssV5XDd
-        TaQ8XrzFIRVXbpSwTH9LGIWXXMjntQ==
-X-Google-Smtp-Source: AGHT+IGnJ5zLxO0Amw6q36pyoOYqwFkUrfD9vSmlUmkYLqpXg8cbkLjhN79VbrEGip0Himn8/AUBxQ==
-X-Received: by 2002:a05:6e02:1145:b0:35b:41e:6357 with SMTP id o5-20020a056e02114500b0035b041e6357mr5236207ill.14.1700741802689;
-        Thu, 23 Nov 2023 04:16:42 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id a17-20020a92ce51000000b003576e122389sm321280ilr.24.2023.11.23.04.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 04:16:41 -0800 (PST)
-Received: (nullmailer pid 826780 invoked by uid 1000);
-        Thu, 23 Nov 2023 12:16:39 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Thu, 23 Nov 2023 07:17:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C491191
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:17:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC58CC433C8;
+        Thu, 23 Nov 2023 12:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700741842;
+        bh=xCCEkCoA+F5EPxb6wixFuv+Y++MgTfZXWFP2tS5YmbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DnQ+IN2CmzxBZAQar7A0chcph0OEoFG6VnV6a6nmioVv2J/i9XwLKSaBn/FSInAxx
+         LjQyETOrquG0xUVyofz8IdDiXc+65v47aEFJYrkyp94Rhr7Qn+wXpibKXsoCuej9tn
+         F9i+QRgxqAqc9qAEbQWB9alRJo7ThMiX5NTqYAA9/Mh1bDV5X8D1VGlgfY80qTWKKf
+         JCh2pnKtcOgJ+INkcur5VZYKBtiXwOINvTJSzfLQt4T0OQuqIdxQRaxPK/lz3TIlRy
+         gkPRtHSBxj21quDA8+JA3AfWf+aq3ofiXoJd0+8V6+G+YhgnXpTiH4S/qtZjio0SiG
+         1qQaNC4hl1CSg==
+Date:   Thu, 23 Nov 2023 12:17:19 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH RFT v3 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <ZV9Cz00vAKd7EwKD@finisterre.sirena.org.uk>
+References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
+ <20231120-clone3-shadow-stack-v3-2-a7b8ed3e2acc@kernel.org>
+ <20231123-derivate-freikarte-6de8984caf85@brauner>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Zhi Mao <zhi.mao@mediatek.com>
-Cc:     sakari.ailus@linux.intel.com, 10572168@qq.com,
-        linux-arm-kernel@lists.infradead.org,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        macromorgan@hotmail.com, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, bingbu.cao@intel.com,
-        jernej.skrabec@gmail.com, krzysztof.kozlowski+dt@linaro.org,
-        robh+dt@kernel.org, hdegoede@redhat.com, heiko@sntech.de,
-        hverkuil-cisco@xs4all.nl, yaya.chang@mediatek.com,
-        tomi.valkeinen@ideasonboard.com, gerald.loacker@wolfvision.net,
-        jacopo.mondi@ideasonboard.com, andy.shevchenko@gmail.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        devicetree@vger.kernel.org, yunkec@chromium.org,
-        shengnan.wang@mediatek.com, dan.scally@ideasonboard.com,
-        linux-media@vger.kernel.org, conor+dt@kernel.org,
-        linux-mediatek@lists.infradead.org
-In-Reply-To: <20231123115104.32094-2-zhi.mao@mediatek.com>
-References: <20231123115104.32094-1-zhi.mao@mediatek.com>
- <20231123115104.32094-2-zhi.mao@mediatek.com>
-Message-Id: <170074179924.826739.5309761699074670232.robh@kernel.org>
-Subject: Re: [PATCH 1/2] media: dt-bindings: media: i2c: Document GC08A3
- bindings
-Date:   Thu, 23 Nov 2023 05:16:39 -0700
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AJGmcN2ZtlBWZhny"
+Content-Disposition: inline
+In-Reply-To: <20231123-derivate-freikarte-6de8984caf85@brauner>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,45 +74,71 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 23 Nov 2023 19:51:03 +0800, Zhi Mao wrote:
-> Add YAML device tree binding for GC08A3 CMOS image sensor,
-> and the relevant MAINTAINERS entries.
-> 
-> Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
-> ---
->  .../bindings/media/i2c/galaxycore,gc08a3.yaml | 128 ++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  2 files changed, 130 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
-> 
+--AJGmcN2ZtlBWZhny
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Thu, Nov 23, 2023 at 11:28:47AM +0100, Christian Brauner wrote:
+> On Mon, Nov 20, 2023 at 11:54:30PM +0000, Mark Brown wrote:
 
-yamllint warnings/errors:
+> Any reasonably maximum that should be assumed here? IOW, what happens if
+> userspace starts specifying 4G shadow_stack_size with each clone3() call
+> for lolz?
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.example.dts:29.37-38 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+I guess we could impose RLIMIT_STACK?
 
-doc reference errors (make refcheckdocs):
+> > +	} else {
+> > +		/*
+> > +		 * For CLONE_VFORK the child will share the parents
+> > +		 * shadow stack.  Make sure to clear the internal
+> > +		 * tracking of the thread shadow stack so the freeing
+> > +		 * logic run for child knows to leave it alone.
+> > +		 */
+> > +		if (clone_flags & CLONE_VFORK) {
+> > +			shstk->base = 0;
+> > +			shstk->size = 0;
+> > +			return 0;
+> > +		}
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231123115104.32094-2-zhi.mao@mediatek.com
+> Why is the CLONE_VFORK handling only necessary if shadow_stack_size is
+> unset? In general, a comment or explanation on the interaction between
+> CLONE_VFORK and shadow_stack_size would be helpful.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+This is the existing implicit behaviour that clone() has, it's current
+ABI for x86.  The intent is that if the user has explicitly configured a
+shadow stack then we just do whatever they asked us to do, if they
+didn't we try to guess something sensible.  The comment at the top of
+this block when where we check if shadow_stack_size is set is intended
+to capture this requirement:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+	/*
+	 * If the user specified a shadow stack then do some basic
+	 * validation and use it, otherwise fall back to a default
+	 * shadow stack size if the clone_flags don't indicate an
+	 * allocation is unneeded.
+	 */
+	if (args->shadow_stack_size) {
+		size = args->shadow_stack_size;
 
-pip3 install dtschema --upgrade
+		if (size < 8)
+			return (unsigned long)ERR_PTR(-EINVAL);
+	} else {
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+I'm not immediately seeing somewhere else to add something?
 
+--AJGmcN2ZtlBWZhny
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfQswACgkQJNaLcl1U
+h9DRagf/Qr+aRzdrHJh9fSSLcdVyPWWetGTynP7apYTbfIJNAFGrD8vDR4FbXIgo
+3zI00sIHLkRQiHWty6m4u9AJ8XMLCYFmQimJNZLz7I25IjHPsLRBGP17h4VGUFKp
+MXKiwwy/MXn13Mt1wXsn+sizlovYp5rfd4+ta7JRpNb8w35xKAn/U9fvMeUgK/NT
+OGwo4JdB/YCubVh7D7diPSYIxrsmxqCn7Y3d2g5YODah+bndYUvTUvobke1ncRiT
+Z/MA21qSDAjVZ9izHDZOuR0/D0P0KhIELHWgYmVfrYYKDjQh2oG20edjGnd0KBBP
+RefBRVldWZfRr0LBmg/sGFYHxzOX9w==
+=EwkF
+-----END PGP SIGNATURE-----
+
+--AJGmcN2ZtlBWZhny--
