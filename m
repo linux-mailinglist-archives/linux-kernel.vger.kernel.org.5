@@ -2,157 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2556E7F5D12
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FD87F5D1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbjKWK6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
+        id S235262AbjKWK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjKWK6E (ORCPT
+        with ESMTP id S235192AbjKWK6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:58:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52B1D44;
-        Thu, 23 Nov 2023 02:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700737090; x=1732273090;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=5+WH8YQamGc7Uju7P24kfUpSpYuO1ehXUk9QYkzsOXs=;
-  b=V2IcHHQmnlnJf0dK7+MzWnqY1VFb97rkb6Xeh6Nil/ivZrs6Rk9jgQgq
-   WeOVmmcU2VdtZ2rxAgrs6NcCazjyDA/qxchekKrrYHAE2TqP4HLJv2cgp
-   JJPv+4JRb1cDaibC01TrqdsmKQc4EVwgPrKsakPvJjqt8uLYhq9Gc89nB
-   gvbQa6bf3w65C4HGEcVqbitA5lWCBa+UFcK6xbaiC5F49rpUN8uvyg4Bp
-   e7HZVOoP4J/JVlSVyrwbtXggmRHvXL5HFrcRXgX7S7H6st7yOfKYcb1h1
-   lxdfnFyF1sD1O278hyF6tCpPR+uFn/pLq0K1QCuE3EPKY5B+O5dq3I0Ww
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="372406268"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="372406268"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:58:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1014582887"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="1014582887"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Nov 2023 02:58:10 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 23 Nov 2023 02:58:09 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 23 Nov 2023 02:58:09 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 23 Nov 2023 02:58:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BLH/w6f+7Gchza+rvgAnT61dFUaONc5U0lcpZJGtE7SRXntZM+pT1aKoiq7J0LDLirmX4pUWeAdRVfa+000PFnGhjgSINDql4CU0BViI7MC8ZbtI2FakmfRuNq4a0mjF5tfo3FwNh20HgHWSL2UbwByoM7KkplUM1BAR+nVThyPAYWm3Oy2ki6Q23toJUM8xde+b/nW+hfZBlWjWI2vmJgiZWUkNNAj53v10s5+IQFAm50OrU5LxGOAzh6jnIkqWtGx0HrsM0B2H7SbosvvcqwJBhBM6E7qfideHYe++9qBca7vyqjLhCi2SyPTlNIr6BX2Pnz5jSOaa5ySCvP/pdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vdEFYk7DrfhYzd0QRMP9pQXxXGMvFbaBpKoQDEt+2ag=;
- b=JEKnF3ivG1rHMmgXUZ6+3YSelhm/1v/DWB2zrgATBMTGKemf1m67uJr+n1ws7Ag2u9AKs7xger67UMTRi8GT0aPdynDg5UDqH2K4o06t6HyUuHHQxveGY3rK2H+qNRJlmrofAcwTcdc3ZZmXVX9z9fKpRdUz/E0VqDhDONBTvuEMHjOBbL/dQ/IRCW/ZrGxzJ7uCdi0+/1781n5j02uaDDrQo/Qhy4SMtlNadPcJZIBO0fuN9W+gIg0evtzR9QOZG4b6/K/pTmcZsFMOn94Q6VzyrIoQp1QyO3qvJOblxmAu/eckw6NG17rWUvU8NVnpyq6BZA0AVv42qwxrzvFrKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
- by SA2PR11MB5019.namprd11.prod.outlook.com (2603:10b6:806:f8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
- 2023 10:58:02 +0000
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3]) by MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3%7]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
- 10:58:02 +0000
-Message-ID: <bf6874cc-9604-408e-abee-8c26cf680b11@intel.com>
-Date:   Thu, 23 Nov 2023 11:57:56 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net PATCH 5/5] octeontx2-af: Update Tx link register range
-Content-Language: en-US
-To:     Geetha sowjanya <gakula@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-References: <20231123055941.19430-1-gakula@marvell.com>
- <20231123055941.19430-6-gakula@marvell.com>
-From:   Wojciech Drewek <wojciech.drewek@intel.com>
-In-Reply-To: <20231123055941.19430-6-gakula@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0040.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:92::7) To MW4PR11MB5776.namprd11.prod.outlook.com
- (2603:10b6:303:183::9)
+        Thu, 23 Nov 2023 05:58:19 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEFAD44;
+        Thu, 23 Nov 2023 02:58:21 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN8CE7I004665;
+        Thu, 23 Nov 2023 10:58:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=qLQaZ89NvhC1j+2VehIGu4V3oAPl0sgBsH3ZIGNFkaM=;
+ b=gLKeQ1QI7H/gScDyatm7kmuoQmdvrzr1+I2l2JWr5AG7njKzdNwZGYQoi9hS3tEMzfQJ
+ lRX5aBsFpHsnD7m5ewJJnYz8I46Ozl8rn8TyfaUVjMMXtzbMyzE/jPzbklTt47P1U+Md
+ gorHEgFGgCgaD+AuXatiIS/tYhoNxPtahu53xJ3dnqgYSm+I1JNI1XI5nr+DyC5ocTZA
+ Q3+FeIeApLhTiF/U+qVOGxFZuA8CeMQ56a4GTd2mvCGeeFXACOVgL5zquR++vVgHh0OQ
+ bi9AVrlH9yNpYZmePQ9iPY1vdB+UC5Wsuop02mwiHWRvX4lHA4wFyWZJ9EHRRI+sSsuG ZQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj30x8a11-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 10:58:06 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ANAw5fJ002445
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 10:58:05 GMT
+Received: from [10.253.33.181] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 02:58:02 -0800
+Message-ID: <d2ac542c-aae3-49ae-ae2b-9defc4ca98eb@quicinc.com>
+Date:   Thu, 23 Nov 2023 18:57:59 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|SA2PR11MB5019:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc28ab3c-db2b-4eaa-b4d7-08dbec131008
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GpKbkvAYFWd1l0SSb6/zAkHwyc8AawlCX/nv0f8lcxQXjQ0wRk8LebK3yFwchjao+uD11bwgAzy2fdIDqXTbZQY7KxXV+jwanSmx8HWZTUygqLBGqjcFdzjqAMhbTSTbsz9zUY/BZ4TW1oz/pMyhpY3Pe0xacsK/sSp1YEpH6trjYoDuhz2fiNsfDvlGaySruT+8NZvB0jC1b+1icvge6liT5AnjEIvV30gqQP/rOvhPM2ji7DASe1ekylvj7RTlbEKJwzw+g5PBDs4BzVpThjYL2tReJ4ejPKrtfI4SJF0wUc5BZvveNo/Hxsn4CFmtuOpALCp/O3RtcTi1GF3J+0yARHoHB85p2NTHXR5axlkW3f3s5TPE6EISUr31ReHfmAE8KR1PifCnG506hfA2h6vuQybnlSS398JP6hZxooyFiD71CPxOIBK2+N0aNHSO0eaCoceaHZUKOuA+ubX0CW2lCEHg7r+5F4VR6XZXJesYp0ehrZpGmIP+cZVZM0YX2GWp5hj5DmRvOdlM7XRmF2sYM/wK5S1w7u1KdLzAyFmiaMLFAA/qk+SUIxFSarU4liUM81O+dCuADien5n2HR3ZAz8Od9dg249ZX6unwjl+YroNaMWqyuzjQu3uZFSSl3fOhp/qdBAjFl3EmkGKuvw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(53546011)(7416002)(6666004)(2906002)(6506007)(6486002)(478600001)(4326008)(8676002)(8936002)(44832011)(31696002)(66476007)(66556008)(66946007)(316002)(86362001)(41300700001)(83380400001)(26005)(82960400001)(38100700002)(36756003)(31686004)(2616005)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MHBKemJjVEJ5NWtETnp4eWxtZlpNOUgvbVZFVDFkRnl4TkxNd1k4b3F3ckJp?=
- =?utf-8?B?OEQ3amt4MUtQMU9xM3BYY0JrZ0l5NjU0Tm4yYlYrUkpEamxOWFRXUFFBZm4y?=
- =?utf-8?B?TmJVRFJrbzZ6YWErVnlnZGdIMEhwTFR2UHkvWUMySWk4OGovcjJnaXVHR3hY?=
- =?utf-8?B?dmxBYmZqU3Vza1hCUEdnRzl4Z2tZWTlGRnZIeDdMclJyN2s4eXVtdW9mWWx5?=
- =?utf-8?B?Mk5mMU5ZeEcydWIxYTE3aTdUbEozY0ZHY0J4SjhqNTREOEF5UnlOMzdHdUxC?=
- =?utf-8?B?V1VpcGhMZFdqQzhxdnp1eDlaQnBoRW93ZWdObDhGazJZaUYzVkNrNzQwN0xw?=
- =?utf-8?B?bGdtRjQ1aGRmNXU2Y29DSVdPei9jNmIxUHBzM1ptQTNwYWFMUjh1b2ZpUDRQ?=
- =?utf-8?B?OFdlVU9iRm5qcE03WmVSeXhscGVKVjFEdVloZkNxa015bzdzQXZ3d0d4Y3NV?=
- =?utf-8?B?N2ZDdUZ5REQza2pMd3hqRG5rOFdlZ0hYSERFZnpPa2h2NmFtV29qaVoxSmg1?=
- =?utf-8?B?T3Jpb3VpUyt3VjhxQWV0RUFWcUowSUFLWEJhdlFaK3N5SER6TWdiRUR0TENm?=
- =?utf-8?B?c1VJdDkzS29CUnM1KzFRVjRKZXJ6d0c2RWdYLzZFY3RMT0RRS2tPd1RiWmhz?=
- =?utf-8?B?cktEQksvbW9EOWdzSG9VYWpheXJJak9QUSswbTd1am5CL09vVkI4ZVRoWjBW?=
- =?utf-8?B?OS9LaGozNDZqTHlrVEU0MWdhTE1XVHhUc00zK3I1bWUxb25ETkRMazVQa3Ey?=
- =?utf-8?B?Z1F3YVBBKyt6UHRXQWZzN3RmT1hBcWpENU1DaHhDUnBUZEcvN2ZBU1dLVzZB?=
- =?utf-8?B?cldlNzBqNkw2d3ZxYlFURFNOUzNvSHZQSStGWW1UQ21yZXR3UDlFOHI5eENP?=
- =?utf-8?B?UG5UVlJaWTkwZ3A1K0lzYkJUemF6bEo1MnpmZUdKZVd3dkUwY2FlVCttbU5Z?=
- =?utf-8?B?dTVKeitLYnhqZHEvcWRoeGdWbkhWVXgvWGwxODRrWGFXbENleEpYVC9hMlo5?=
- =?utf-8?B?c0lmbTBCdjkrQlMwQkorditxMHpPN3NIdVErTHNyN2Y4Zk00VVdmaUI0aXNM?=
- =?utf-8?B?RDlLaWc2LzhoOUFYQVRqcWxLQUVZM1RtVmZsRy90TURCQWtHV2Zjbm5tclkx?=
- =?utf-8?B?RHF6VVg0UVlUaFFGLzJxazVLSjc0UzFneVhLWCtSSUM4WmFXTlEwd1ZteEJV?=
- =?utf-8?B?ZHhsaHFxKy9NemEyQTk1T1JyOUpjQW0rUmgxUDhidDJSeUJKUGZja3p1NWVh?=
- =?utf-8?B?bzhKK1JTeUhyTXhPc3d0eXNqcVFOck9uZFNHZkdKVXE5c2JJM3k2UXJzNDd4?=
- =?utf-8?B?TzRpN2J6QmJ0VjQwVmFaZUpuYU9sNmR4eThxSDZtWmFBZVZFVzJ5aFY4Z0Z1?=
- =?utf-8?B?ZWhZdkdBU2t5RlpkcEpQY29NSHNFK3orOXBrcGhWWm45M1MrMnBibStmbHUz?=
- =?utf-8?B?RGRPLzNKRzA0Wm1yaTlmWC9DaW8zYXRLWnpNSno5VGFUNWNZbktjYzR2d0xW?=
- =?utf-8?B?QnZyVUR4WmFkNTBYYk91Wm9MaUVEK3FuYUxwdFZDS25Ka1VhNEFJL2ZHSmdK?=
- =?utf-8?B?SndhL1dyN2NqSVZYczFjOUYzUUt6UDZwaThTK1hFaTVHL21YcG9lYWtZU2Nq?=
- =?utf-8?B?emQ1TEx1NC95c1plZ1JqNFdDTEVsNndzbVhXNU9McnJad2c1RUlGMzg1bXNG?=
- =?utf-8?B?aEhTMlNXeXQyQlhZUGNrTEpscWRkVkFxR09acUZYaW9kVlI1UmJiQ0dZNkpN?=
- =?utf-8?B?elNRMVNuNzNkcVRRVkJxakZ2VnZNWFgzRjVKSThRM0JWemNDcDdleHZXTkRN?=
- =?utf-8?B?dW1XeEVTMEdpM0ZiOFE0eGltTy90WGViV2IzaEFNR2tFM0VKOFNYaTljZmYv?=
- =?utf-8?B?YlFtRFhKN01sQyszUC9jRWcvVk5xOXNoMW96QjF4S2h0N3A1dnhLOG1WeW10?=
- =?utf-8?B?c0xrSG1MUnArREpuWlRWdVV2aW5XUkRIbEtiRk5IRmdsSDZCM251SXhmQWly?=
- =?utf-8?B?Ny9MMVVFdllnL3NqaU5xRXU5T2RUUENrMDVIdUM2RDRiWEpmYWMraTVJZ0hV?=
- =?utf-8?B?SzQybDNjdzV3ckQvNElFekp4SC93cVp1SlFYUk4zeU90QUlXUHNDSlBML3BZ?=
- =?utf-8?B?S1NpQjBoalRDeWtGSVl6RzVTN0FiSXQ4d3cvRGFhbkJDb0QyTkROZVp6eG0w?=
- =?utf-8?B?Unc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc28ab3c-db2b-4eaa-b4d7-08dbec131008
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 10:58:02.2946
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OVoVLjG+JjZ48vDWLzvsM9IRO1ptMwRzg3v0TUXFV+E0VNHOQeq+XJXLcUfIeNHJgHgpnF+bXNqquwv3KQ9apkVge3jofMPzH1ezIKuMpLQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5019
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>, <corbet@lwn.net>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+References: <20231118062754.2453-1-quic_luoj@quicinc.com>
+ <20231118062754.2453-4-quic_luoj@quicinc.com>
+ <1eb60a08-f095-421a-bec6-96f39db31c09@lunn.ch>
+ <ZVkRkhMHWcAR37fW@shell.armlinux.org.uk>
+ <eee39816-b0b8-475c-aa4a-8500ba488a29@lunn.ch>
+ <fef2ab86-ccd7-4693-8a7e-2dac2c80fd53@quicinc.com>
+ <1d4d7761-6b42-48ec-af40-747cb4b84ca5@lunn.ch>
+ <316fb626-4dc3-4540-9cc4-e45840e36f77@quicinc.com>
+ <ZVyZ+8Q2eNfAKjO/@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <ZVyZ+8Q2eNfAKjO/@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pOQONhNd20YTfGS7Zztiqo-7s85JCRCK
+X-Proofpoint-GUID: pOQONhNd20YTfGS7Zztiqo-7s85JCRCK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_09,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ mlxscore=0 bulkscore=0 phishscore=0 adultscore=0 clxscore=1015
+ mlxlogscore=999 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230078
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -161,36 +92,151 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 23.11.2023 06:59, Geetha sowjanya wrote:
-> On new silicons the TX channels for transmit level has increased.
-
-Will it still work with older silicon?
-
-> This patch fixes the respective register offset range to
-> configure the newly added channels.
+On 11/21/2023 7:52 PM, Russell King (Oracle) wrote:
+> On Tue, Nov 21, 2023 at 07:10:08PM +0800, Jie Luo wrote:
+>> when pcs is configured to SGMII mode, the fourth PHY can reach to
+>> maximum speed 2.5G(2500BaseT) that is reached by increasing the clock
+>> rate to 312.5MHZ from 125MHZ of 1G speed, but there is no corresponding
+>> interface mode can be used to reflect this 2.5G speed mode(sgmii+)
 > 
-> Fixes: b279bbb3314e ("octeontx2-af: NIX Tx scheduler queue config support")
-> Signed-off-by: Rahul Bhansali <rbhansali@marvell.com>
+> So this comes up again. 2.5G SGMII? What is that?
 
-What Rahul's signed-off stands for?
+2.5G SGMII here is reached by increasing the PCS clock rate to 312.5MHZ
+from sgmii with the clock rate 125MHZ.
 
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.c
-> index b3150f053291..d46ac29adb96 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.c
-> @@ -31,8 +31,8 @@ static struct hw_reg_map txsch_reg_map[NIX_TXSCH_LVL_CNT] = {
->  	{NIX_TXSCH_LVL_TL4, 3, 0xFFFF, {{0x0B00, 0x0B08}, {0x0B10, 0x0B18},
->  			      {0x1200, 0x12E0} } },
->  	{NIX_TXSCH_LVL_TL3, 4, 0xFFFF, {{0x1000, 0x10E0}, {0x1600, 0x1608},
-> -			      {0x1610, 0x1618}, {0x1700, 0x17B0} } },
-> -	{NIX_TXSCH_LVL_TL2, 2, 0xFFFF, {{0x0E00, 0x0EE0}, {0x1700, 0x17B0} } },
-> +			      {0x1610, 0x1618}, {0x1700, 0x17C8} } },
-> +	{NIX_TXSCH_LVL_TL2, 2, 0xFFFF, {{0x0E00, 0x0EE0}, {0x1700, 0x17C8} } },
->  	{NIX_TXSCH_LVL_TL1, 1, 0xFFFF, {{0x0C00, 0x0D98} } },
->  };
->  
+> Let's start off with the basics. SGMII is Cisco's modification of
+> 1000base-X. The two are broadly compatible in that they can communicate
+> with each other provided that the inband control word is disregarded.
+> 
+> 2500base-X is generally implemented as 1000base-X over-clocked by 2.5x.
+> Some manufacturers state that the inband control word is not supported.
+> Others say it can be used. This disparity comes from the lack of early
+> IEEE standardisation of this protocol.
+> 
+> Cisco SGMII as defined is a 10M/100M/1G protocol operating at 125MHz
+> with a fixed underlying baud rate of 1250Mbaud. Slower speeds are
+> achieved via symbol replication by 10x or 100x. The inband control
+> word is modified in order to convey this speed information, as well
+> as duplex and sometimes also other vendor extensions.
+> 
+> Switching SGMII to be clocked 2.5x faster means that a partner that
+> expects SGMII at normal speed sees garbage - it can't recognise the
+> waveform. Therefore, it is not possible for inband to convey any
+> information. Many vendors explicitly state that symbol replication
+> is not supported when "SGMII" is clocked at 2.5x.
+> 
+> All variants of whatever the vendor calls the 2.5G mode tend to use
+> the SGMII term because... it's Serial Gigabit... and SGMII even gets
+> used by vendors to describe the interface used for 1000base-X.
+> Vendors use terms like "HS-SGMII" and other stuff to describe their
+> 2.5x mode. Some use "2500base-X". Yours seems to use "SGMII+".
+
+i use the term SGMII+ because of the 2.5G speed achieved by operating
+the clock rate in 312.5MHZ from 1G speed of 125MHZ.
+
+> 
+> SGMII without inband signalling is basically the same as 1000base-X.
+> Therefore, SGMII clocked at 2.5x the speed is basically the same as
+> 2500base-X without inband signalling.
+
+SGMII+ disable the autoneg when the serdes works 312.5MHZ for the 2.5
+link speed.
+
+> 
+> So, the whole area is totally confused, and one should not get too
+> hung up on the terminology that vendors are using, but go back to
+> precisely what's going on at the hardware level.
+> 
+> We have raised this point almost every time someone talks about an
+> up-clocked "SGMII".
+> 
+> 
+>> Actually we should add a new interface mode such as sgmii+
+>> to reflect this 2.5G speed of sgmii
+> 
+> Only if there really is something different about it. For example,
+> if it were Cisco SGMII modified to operate always at 312.5MHz with
+> inband signalling updated to signal the four speeds. That would
+> definitely be a different protocol.
+
+For qca808x PHY, the clock rate is different between sgmii(125MHZ for
+speed 10/100/1000M) and sgmii+(312.5MHZ for 2.5G).
+
+> 
+> However, it's not that. What it actually is is Cisco SGMII when
+> operating at 10M/100M/1G speeds, and 2500base-X without inband
+> signalling when operating at 2.5G speed.
+
+Yes, Russell, this is what qca808x PHY works on.
+
+> 
+> We have PHYs that support this (and more) which we support. PHYs
+> that switch between 10GBASE-R, 5GBASE-R, 2500BASE-X and Cisco SGMII
+> depending on the speed that was negotiated on the media. There is
+> no definition of a single interface mode that covers all those,
+> because it isn't a single interface mode. It's four separate modes
+> that the PHY switches between - and this is no different from what
+> is happening with your PHY.
+
+This is indeed two different modes switched between 2.5G and other
+speeds(10/100/1000M).
+
+> 
+> Ultimately, you will need a way to use inband signalling with Cisco
+> SGMII for 10M/100M/1G speeds, and then switch to 2500base-X when
+> operating at 2.5G speeds, and that is done via the PHY driver
+> updating phydev->interface.
+> 
+> What we do need is some way for the PHY to also tell the PCS/MAC
+> whether inband should be used. This is something I keep bringing up
+> and now that we have PCS drivers revised to use the value from
+> phylink_pcs_neg_mode() _and_ a consistent implementation amongst them
+> we can now think about signalling to PCS drivers whether inband mode
+> needs to be turned off when switching between modes.
+
+Yes, we can switch the interface mode according to the current link
+speed in the pcs driver.
+but the issue is that the phy-mode i specified for the PHYLINK,
+if phy-mode is sgmii, the support capability is limited to maximum
+capability 1G during the PHYLINK setup and i can't configure it to 2.5G
+dynamically, if the phy-mode is 2500base-x, then PHY capability will
+be modified to only support 2.5G, other speeds can't be linked up.
+
+> 
+> There have been patches in the past that allow inband mode to be
+> queried from phylib, and this is another important component in
+> properly dealing with PHYs that need to use inband signalling with
+> Cisco SGMII, but do not support inband signalling when operating at
+> 2.5G speeds. The problem when operating at 2.5G speed is that the
+> base-X protocols are normally for use over fibre, which is the media,
+> and therefore the ethtool Autoneg bit should define whether inband
+> gets used or not. However, in the case of a PHY using 2500base-X,
+> the Autoneg bit continues to define whether autonegotiation should
+> be used on the media, and in this case it's the media side of the
+> PHY rather than the 2500base-X link.
+> 
+> So, when using a 2500base-X link to a PHY, we need to disregard the
+> Autoneg bit, but that then raises the question about how we should
+> configure it - and one solution to that would be to entire of phylib
+> what the PHY wants to do. Another is to somehow ask the PCS driver
+> whether it supports inband signalling at 2500base-X, and resolve
+> those capabilities.
+
+For the qca808x PHY, when it is linked in 2.5G, the autoneg is also
+disabled in PCS hardware, so the sgmii+ of qca808x PHY is almost
+same as 2500base-X.
+
+> 
+> That is my view where we need to get to in order to properly resolve
+> the ongoing issues about 2500base-X and PHYs that make use of that.
+> 
+
+Thanks Russell for the detail information about the SGMII and 2500BASE-X
+mode, it is really helpful.
+
+For now, the issue is "the Supported link modes" of PHY is limited when
+the interface mode(such as sgmii) is used to setup PHYLINK, which leads
+to the PHY can't link in the speed(such as 2.5G) of the different
+interface mode(sgmii+).
+
