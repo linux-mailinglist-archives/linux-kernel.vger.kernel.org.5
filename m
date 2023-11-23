@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B27F5EE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181817F5EE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345261AbjKWMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        id S1345264AbjKWMTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbjKWMRP (ORCPT
+        with ESMTP id S1345168AbjKWMTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:17:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C491191
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:17:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC58CC433C8;
-        Thu, 23 Nov 2023 12:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700741842;
-        bh=xCCEkCoA+F5EPxb6wixFuv+Y++MgTfZXWFP2tS5YmbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DnQ+IN2CmzxBZAQar7A0chcph0OEoFG6VnV6a6nmioVv2J/i9XwLKSaBn/FSInAxx
-         LjQyETOrquG0xUVyofz8IdDiXc+65v47aEFJYrkyp94Rhr7Qn+wXpibKXsoCuej9tn
-         F9i+QRgxqAqc9qAEbQWB9alRJo7ThMiX5NTqYAA9/Mh1bDV5X8D1VGlgfY80qTWKKf
-         JCh2pnKtcOgJ+INkcur5VZYKBtiXwOINvTJSzfLQt4T0OQuqIdxQRaxPK/lz3TIlRy
-         gkPRtHSBxj21quDA8+JA3AfWf+aq3ofiXoJd0+8V6+G+YhgnXpTiH4S/qtZjio0SiG
-         1qQaNC4hl1CSg==
-Date:   Thu, 23 Nov 2023 12:17:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Thu, 23 Nov 2023 07:19:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC811B6;
+        Thu, 23 Nov 2023 04:19:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700741952; x=1732277952;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bQdpKQROgueA3Gs7uL4fvcxngYtStie2+8CIT0nxY54=;
+  b=P9N2QDQYAL4Oj5xl36hBoKllks2wA2Iep2V0a+sWbZS81MraBq1jmwDT
+   GbfICuT1oIIitDIP8NFHjHLglQYaap0w01E4iWj+rgCtudUKIYgb2seaf
+   nERSRG0RS0yfuw3cLTkvMK07UeJrm49Lox5gLXNah95wi0Yv23v6h4Co0
+   2lLRwEMLXj0NdhOGuosReLNYfZhglXmrSnG6hwxcjSvvGH+oFV1j545Nn
+   3G+yQ8RJi0Gr3rvtI+qffAHboPQQWI7Xm20Q9dKHqzukV2WsiUt9j9cjO
+   Z0p+YhdKBZcAeB8mNvA8DnfTqGa4yvYKcixC552L+eg39uoF77HnDT7k/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="478456331"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="478456331"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 04:19:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="890774781"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="890774781"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.41.107])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 04:19:06 -0800
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Hendrik Brueckner <brueckner@linux.ibm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH RFT v3 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <ZV9Cz00vAKd7EwKD@finisterre.sirena.org.uk>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231120-clone3-shadow-stack-v3-2-a7b8ed3e2acc@kernel.org>
- <20231123-derivate-freikarte-6de8984caf85@brauner>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH RFC 0/3] perf/core: Add ability for an event to "pause" or "resume" AUX area tracing
+Date:   Thu, 23 Nov 2023 14:18:48 +0200
+Message-Id: <20231123121851.10826-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AJGmcN2ZtlBWZhny"
-Content-Disposition: inline
-In-Reply-To: <20231123-derivate-freikarte-6de8984caf85@brauner>
-X-Cookie: Slow day.  Practice crawling.
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
---AJGmcN2ZtlBWZhny
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hardware traces, such as instruction traces, can produce a vast amount of
+trace data, so being able to reduce tracing to more specific circumstances
+can be useful.
 
-On Thu, Nov 23, 2023 at 11:28:47AM +0100, Christian Brauner wrote:
-> On Mon, Nov 20, 2023 at 11:54:30PM +0000, Mark Brown wrote:
+The ability to pause or resume tracing when another event happens, can do
+that.
 
-> Any reasonably maximum that should be assumed here? IOW, what happens if
-> userspace starts specifying 4G shadow_stack_size with each clone3() call
-> for lolz?
+These patches add such a facilty and show how it would work for Intel
+Processor Trace.
 
-I guess we could impose RLIMIT_STACK?
+Maintainers of other AUX area tracing implementations are requested to
+consider if this is something they might employ and then whether or not
+the ABI would work for them.
 
-> > +	} else {
-> > +		/*
-> > +		 * For CLONE_VFORK the child will share the parents
-> > +		 * shadow stack.  Make sure to clear the internal
-> > +		 * tracking of the thread shadow stack so the freeing
-> > +		 * logic run for child knows to leave it alone.
-> > +		 */
-> > +		if (clone_flags & CLONE_VFORK) {
-> > +			shstk->base = 0;
-> > +			shstk->size = 0;
-> > +			return 0;
-> > +		}
+Changes to perf tools are not fleshed out yet.
 
-> Why is the CLONE_VFORK handling only necessary if shadow_stack_size is
-> unset? In general, a comment or explanation on the interaction between
-> CLONE_VFORK and shadow_stack_size would be helpful.
 
-This is the existing implicit behaviour that clone() has, it's current
-ABI for x86.  The intent is that if the user has explicitly configured a
-shadow stack then we just do whatever they asked us to do, if they
-didn't we try to guess something sensible.  The comment at the top of
-this block when where we check if shadow_stack_size is set is intended
-to capture this requirement:
+Adrian Hunter (3):
+      perf/core: Add aux_pause, aux_resume, aux_start_paused
+      perf/x86/intel/pt: Add support for pause_resume()
+      perf tools: Add support for AUX area pause_resume()
 
-	/*
-	 * If the user specified a shadow stack then do some basic
-	 * validation and use it, otherwise fall back to a default
-	 * shadow stack size if the clone_flags don't indicate an
-	 * allocation is unneeded.
-	 */
-	if (args->shadow_stack_size) {
-		size = args->shadow_stack_size;
+ arch/x86/events/intel/pt.c                | 12 ++++++
+ include/linux/perf_event.h                |  9 +++++
+ include/uapi/linux/perf_event.h           | 13 ++++++-
+ kernel/events/core.c                      | 65 +++++++++++++++++++++++++++++--
+ kernel/events/internal.h                  |  1 +
+ tools/include/uapi/linux/perf_event.h     | 13 ++++++-
+ tools/perf/util/auxtrace.c                |  4 ++
+ tools/perf/util/evsel.c                   |  9 +++++
+ tools/perf/util/evsel_config.h            |  6 +++
+ tools/perf/util/parse-events.c            | 33 ++++++++++++++++
+ tools/perf/util/parse-events.h            |  3 ++
+ tools/perf/util/parse-events.l            |  3 ++
+ tools/perf/util/perf_event_attr_fprintf.c |  3 ++
+ 13 files changed, 167 insertions(+), 7 deletions(-)
 
-		if (size < 8)
-			return (unsigned long)ERR_PTR(-EINVAL);
-	} else {
 
-I'm not immediately seeing somewhere else to add something?
-
---AJGmcN2ZtlBWZhny
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfQswACgkQJNaLcl1U
-h9DRagf/Qr+aRzdrHJh9fSSLcdVyPWWetGTynP7apYTbfIJNAFGrD8vDR4FbXIgo
-3zI00sIHLkRQiHWty6m4u9AJ8XMLCYFmQimJNZLz7I25IjHPsLRBGP17h4VGUFKp
-MXKiwwy/MXn13Mt1wXsn+sizlovYp5rfd4+ta7JRpNb8w35xKAn/U9fvMeUgK/NT
-OGwo4JdB/YCubVh7D7diPSYIxrsmxqCn7Y3d2g5YODah+bndYUvTUvobke1ncRiT
-Z/MA21qSDAjVZ9izHDZOuR0/D0P0KhIELHWgYmVfrYYKDjQh2oG20edjGnd0KBBP
-RefBRVldWZfRr0LBmg/sGFYHxzOX9w==
-=EwkF
------END PGP SIGNATURE-----
-
---AJGmcN2ZtlBWZhny--
+Regards
+Adrian
