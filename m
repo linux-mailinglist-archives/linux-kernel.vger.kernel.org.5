@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE117F63AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47B67F63B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjKWQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        id S229838AbjKWQMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjKWQLr (ORCPT
+        with ESMTP id S229687AbjKWQMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:11:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F30BA
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700755912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8IbO4KgPnWaEztnpzO0r+lahYtNssXdnrhCz8eHLLKU=;
-        b=QCTR32dpTm/6oH2BZAogKT6EO2WRNodRehfSiu9sNx9V5bShDusMmC08M+fWTNbAUR3H/K
-        S6fPfeCfSoCufunnnvXni2bBRHcF4gCBuLf8CEgtwlpmeGdVZOlZdDPt0eE9KFbELSRz9G
-        hbomZfqOWgeNnkTxtITYgoohFPcIz9E=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-259-DQcKuahAN1m91_-KOreXNA-1; Thu, 23 Nov 2023 11:11:50 -0500
-X-MC-Unique: DQcKuahAN1m91_-KOreXNA-1
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6d664911ccfso134730a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:11:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700755910; x=1701360710;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 23 Nov 2023 11:12:15 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD999D65
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:12:20 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a0dd02364so1778846d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700755940; x=1701360740; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8IbO4KgPnWaEztnpzO0r+lahYtNssXdnrhCz8eHLLKU=;
-        b=BhqPebWYnarJ7ZG6s4o8KmN+KbGto1oUY0VdaRPyhcVtY/3xYE6eZ0hGqacDOXnU//
-         pT84aoxM9xinrLCiPApXDuIAEB3uPQQygRYppvlKIMv99YXHJ40zaO5Ht/3oagFx9NdX
-         yv25XLZgVHMkOAXqGR5rh3olra5yXx0iz+slTEiOvrvuiJ8T4qc5khX+DsMJT5o6l5zk
-         K6u1ccPbBhHLYKY+gnR0o1aFRcbB0/LJg00/JiX5ci7ZkqUsM19LRhPfmlYiBhZAd5sS
-         pX4MIjSNnvi2Ngzv9zBdkN8AQREL+Oobn5FUX29qKbwxG/v/xVw14rbXUnQfmo7YSxkm
-         CjlQ==
-X-Gm-Message-State: AOJu0YzCAbsFx1DqxKszGQqfdhna0qy8X1Lwu9AE2OZvVD6xsnJhpVY8
-        N5qa5ZnGtddqyGkRoEF5Vw0YFbOCRZMyvseJ/bjtWL1pe7vaQblbjhEr2jXe2K6DHlUVIL+U8FT
-        o/X0/pEOkzluXxPQ/A5EZUTMo
-X-Received: by 2002:a05:6820:2713:b0:589:dc7a:75e5 with SMTP id db19-20020a056820271300b00589dc7a75e5mr108258oob.1.1700755910168;
-        Thu, 23 Nov 2023 08:11:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH+2tFm6H3EiyYM7ARmM6DOGQygEKl6IoRRftHyYzKnTLw1QqSRG9maQ5eEZB/yHGvcwTzszg==
-X-Received: by 2002:a05:6820:2713:b0:589:dc7a:75e5 with SMTP id db19-20020a056820271300b00589dc7a75e5mr108234oob.1.1700755909967;
-        Thu, 23 Nov 2023 08:11:49 -0800 (PST)
-Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id dw14-20020a0562140a0e00b0067a0d46bc4esm293494qvb.58.2023.11.23.08.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 08:11:49 -0800 (PST)
-Date:   Thu, 23 Nov 2023 11:11:47 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        James Houghton <jthoughton@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RFC 04/12] mm: Introduce vma_pgtable_walk_{begin|end}()
-Message-ID: <ZV95w730I45Y-XcK@x1n>
-References: <20231116012908.392077-1-peterx@redhat.com>
- <20231116012908.392077-5-peterx@redhat.com>
- <ZV7+KqGP9iG6+QaH@infradead.org>
+        bh=vGyQEtxcPZXDfK5MLunRkVEU0dG6NY5S9HKgUKbsr1Y=;
+        b=DKoCw+MHJS0U+4NYeqOj347Wc1dH5pN2oYybdIXkQr0udFII+4/v9lGpKV9deTcGM2
+         tPBfeoqEcEsplKO8Ux3wWL5SxaWswHJnipc22D5w6KK3JV5siH4EPZ07E5DewFs9hZMS
+         SnXho2oeUnJSXcPauCclQZz7TtVUDWTMFYwbmVE+tusiNRcl464lwXGUs4bxhzUee7Z+
+         4YSkyji1UtZl4HMlfYu3O+DSD6Xw9MB8OTWSRurY2EmD9uYO+JDrbnPScEg+6tNBGYqC
+         CKDCG7c07yvUIC89mjhxaalAYBCr0iz4hq6tpfIpIykND4o1YWcCJsMUm7M2ks+FeS1/
+         9/PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700755940; x=1701360740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vGyQEtxcPZXDfK5MLunRkVEU0dG6NY5S9HKgUKbsr1Y=;
+        b=RVGnV5n5mhVFoqqroJomEtXzkBXZxowxItq8X4RO/EDmlgslD6LssY8oszJw2PNUKy
+         C/ItZj+0BYTApU1LX0fsLiuGR+097kj4g8scr7pxcZXcJT1dIh2MmMlONUUADOtHYP3p
+         3k0oE3KJdBzwZyPqJx671n/uW0Y7kDRwdeswDqmk7z2RvZDuI2KmxGptafIg7HvjhleS
+         XbFQKAkbIdNcnVmjOzW2/mfFnFyHGnUVE0z++OHBtqhLry1mRAb4ebMbD7tyuQjUlSER
+         aplCSnEgHIEaBuT6GL8xX1gnl8lByrRJ0AkIQX3CCUDFAK6ULaFyd+nvoW+1Fdk3qZj7
+         O9iw==
+X-Gm-Message-State: AOJu0Yz+qdZmmf6wF3ijx4BDgCzFdjr+LL77pdsbkOqzazaLFWmsCtbt
+        xE68zKVqCGrAM2CvyY2Sdd8b7R5p0WJSQsYPlNBfDXJJoDfyww==
+X-Google-Smtp-Source: AGHT+IFf92rQ7Iiv6WS+3q0acJTP9/j2IzOmmhqe6Em2KAoTKcA9LyHepmXhNDvx76jaLNiTaV6rjfAxwkYjqXRBPS0=
+X-Received: by 2002:a05:6214:21e2:b0:672:aecf:581a with SMTP id
+ p2-20020a05621421e200b00672aecf581amr6478936qvj.47.1700755939932; Thu, 23 Nov
+ 2023 08:12:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZV7+KqGP9iG6+QaH@infradead.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231122231202.121277-1-andrey.konovalov@linux.dev> <ZV7whSufeIqslzzN@feng-clx>
+In-Reply-To: <ZV7whSufeIqslzzN@feng-clx>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Thu, 23 Nov 2023 17:12:08 +0100
+Message-ID: <CA+fCnZcAnZh7H901SZFsaU=-XrpUeeJwUeThMpduDd1-Wt0gsA@mail.gmail.com>
+Subject: Re: [PATCH mm] slub, kasan: improve interaction of KASAN and
+ slub_debug poisoning
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "andrey.konovalov@linux.dev" <andrey.konovalov@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 11:24:26PM -0800, Christoph Hellwig wrote:
-> Looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Thu, Nov 23, 2023 at 7:35=E2=80=AFAM Feng Tang <feng.tang@intel.com> wro=
+te:
+>
 
-One thing I'd prefer double check is this email in the R-b is different
-from From:.  Should I always use lst.de for either tags and CCs for my
-future versions?  Let me know if that matters.
+Hi Feng,
 
-Thanks,
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -870,20 +870,20 @@ static inline void set_orig_size(struct kmem_cach=
+e *s,
+> >                               void *object, unsigned int orig_size)
+> >  {
+> >       void *p =3D kasan_reset_tag(object);
+> > +     unsigned int kasan_meta_size;
+> >
+> >       if (!slub_debug_orig_size(s))
+> >               return;
+> >
+> > -#ifdef CONFIG_KASAN_GENERIC
+> >       /*
+> > -      * KASAN could save its free meta data in object's data area at
+> > -      * offset 0, if the size is larger than 'orig_size', it will
+> > -      * overlap the data redzone in [orig_size+1, object_size], and
+> > -      * the check should be skipped.
+> > +      * KASAN can save its free meta data inside of the object at offs=
+et 0.
+> > +      * If this meta data size is larger than 'orig_size', it will ove=
+rlap
+> > +      * the data redzone in [orig_size+1, object_size]. Thus, we adjus=
+t
+> > +      * 'orig_size' to be as at least as big as KASAN's meta data.
+> >        */
+> > -     if (kasan_metadata_size(s, true) > orig_size)
+> > -             orig_size =3D s->object_size;
+> > -#endif
+> > +     kasan_meta_size =3D kasan_metadata_size(s, true);
+> > +     if (kasan_meta_size > orig_size)
+> > +             orig_size =3D kasan_meta_size;
+>
+> 'orig_size' is to save the orignal request size for kmalloc object,
+> and its main purpose is to detect the memory wastage of kmalloc
+> objects, see commit 6edf2576a6cc "mm/slub: enable debugging memory
+> wasting of kmalloc"
+>
+> Setting "orig_size =3D s->object_size" was to skip the wastage check
+> and the redzone sanity check for this 'wasted space'.
 
--- 
-Peter Xu
+Yes, I get that.
 
+The point of my change was to allow slub_debug detecting overwrites in
+the [kasan_meta_size, object_size) range when KASAN stores its free
+meta in the [0, kasan_meta_size) range. If orig_size is set to
+object_size, writes to that area will not be detected. I also thought
+that using kasan_meta_size instead of object_size for orig_size might
+give the reader better understanding of the memory layout.
+
+> So it's better not to set 'kasan_meta_size' to orig_size.
+
+I don't have a strong preference here: slub_debug and KASAN are not
+really meant to be used together anyway. So if you prefer, I can
+revert this change and keep using object_size as before.
+
+> And from the below code, IIUC, the orig_size is not used in fixing
+> the boot problem found by Hyeonggon?
+
+No, this is a just a partially-related clean up. It just seemed
+natural to include it into the fix, as it also touches the code around
+a kasan_metadata_size call.
+
+Thanks!
