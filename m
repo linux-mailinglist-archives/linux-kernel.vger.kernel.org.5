@@ -2,265 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEB57F58C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4660D7F58C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344824AbjKWHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S233005AbjKWHAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:00:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjKWHBD (ORCPT
+        with ESMTP id S229737AbjKWHAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:01:03 -0500
-Received: from out0-209.mail.aliyun.com (out0-209.mail.aliyun.com [140.205.0.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EEBD43
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:01:09 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.VU7afWl_1700722866;
-Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.VU7afWl_1700722866)
-          by smtp.aliyun-inc.com;
-          Thu, 23 Nov 2023 15:01:07 +0800
-From:   "=?UTF-8?B?6buE6Z2WKOm7hOmdlik=?=" <henry.hj@antgroup.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
-        "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
-        <akpm@linux-foundation.org>,
-        "=?UTF-8?B?6buE6Z2WKOm7hOmdlik=?=" <henry.hj@antgroup.com>
-Subject: [RFC] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
-Date:   Thu, 23 Nov 2023 14:58:11 +0800
-Message-ID: <ca8120f250dae3b1458c3e17e1dff96b89762d27.1700719508.git.henry.hj@antgroup.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1700719508.git.henry.hj@antgroup.com>
-References: <cover.1700719508.git.henry.hj@antgroup.com>
+        Thu, 23 Nov 2023 02:00:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AE2B9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:00:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F59C433C8;
+        Thu, 23 Nov 2023 07:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700722816;
+        bh=gtU+Ip4vBdqkXNcVYMAHTdA7Yf0OaFIdHF1c43xiML0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O8dtWN9vYKsRY/QVCQnJOZQMygs9qZR3wKEwAqgHsbtp3o9Uz8TuFWQhWw85jtvUI
+         XXAGrFMsnzJ2LKoaVjLqUGMYPMMJ/jNPe5VrslWFx9QWIUoKSVlyURITZdFufAyv45
+         mGY/lb0py1rl6lxM52ZFUn46m6W3AbHjnrhG0Dr84YSj8Prx+c4z9zbTgAIkwFYR9U
+         O69VHy8DBgf6FPoL4o40OT8DuBtUFqJ+4m2zBa4n9ZhEW1h9ZBb5xDmCVqh/KINU9J
+         HWsGLxOsUuBs6vCzxdLvGl8YkcF4RY4l9GkjVpBZktIRdFMDhvxH348Fxs5uPFQPiU
+         IIShg0B1Izf6A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Zhang Rui <rui.zhang@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPI: thermal_lib: include "internal.h" for function prototypes
+Date:   Thu, 23 Nov 2023 07:59:57 +0100
+Message-Id: <20231123070010.4013969-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-Gen LRU page-table walker clears pte young flag, but it doesn't
-clear page idle flag. When we use /sys/kernel/mm/page_idle/bitmap to check
-whether one page is accessed, it would tell us this page is idle,
-but actually this page has been accessed.
+From: Arnd Bergmann <arnd@arndb.de>
 
-For those unmapped filecache pages, page idle flag would not been
-cleared in folio_mark_accessed if Multi-Gen LRU is enabled.
-So we couln't use /sys/kernel/mm/page_idle/bitmap to check whether
-a filecache page is read or written.
+The newly added functions are declared in a header that is not included
+before the definition:
 
-What's more, /sys/kernel/mm/page_idle/bitmap also clears pte young flag.
-If one page is accessed, it would set page young flag. Multi-Gen LRU
-page-table walker should check both page&pte young flags.
+drivers/acpi/thermal_lib.c:46:5: error: no previous prototype for 'acpi_active_trip_temp' [-Werror=missing-prototypes]
+   46 | int acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
+      |     ^~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/thermal_lib.c:57:5: error: no previous prototype for 'acpi_passive_trip_temp' [-Werror=missing-prototypes]
+   57 | int acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/thermal_lib.c:63:5: error: no previous prototype for 'acpi_hot_trip_temp' [-Werror=missing-prototypes]
+   63 | int acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
+      |     ^~~~~~~~~~~~~~~~~~
+drivers/acpi/thermal_lib.c:69:5: error: no previous prototype for 'acpi_critical_trip_temp' [-Werror=missing-prototypes]
+   69 | int acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
 
-how-to-reproduce-problem
-
-idle_page_track
-   a tools to track process accessed memory during a specific time
-usage
-   idle_page_track $pid $time
-how-it-works
-   1. scan process vma from /proc/$pid/maps
-   2. vfn --> pfn from /proc/$pid/pagemap
-   3. write /sys/kernel/mm/page_idle/bitmap to
-      mark phy page idle flag and clear pte young flag
-   4. sleep $time
-   5. read /sys/kernel/mm/page_idle/bitmap to
-      test_and_clear pte young flag and
-      return whether phy page is accessed
-
-test ---- test program
-
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-
- int main(int argc, const char *argv[])
- {
-     char *buf = NULL;
-     char pipe_info[4096];
-     int n;
-     int fd = -1;
-
-     buf = malloc(1024*1024*1024UL);
-     memset(buf, 0, 1024*1024*1024UL);
-     fd = open("access.pipe", O_RDONLY);
-     if (fd < 0)
-         goto out;
-     while (1) {
-         n = read(fd, pipe_info, sizeof(pipe_info));
-         if (!n) {
-             sleep(1);
-             continue;
-         } else if (n < 0) {
-             break;
-         }
-         memset(buf, 0, 1024*1024*1024UL);
-         puts("finish access");
-      }
- out:
-     if (fd >=0)
-         close(fd);
-     if (buf)
-         free(buf);
-
-     return 0;
- }
-
-prepare:
-mkfifo access.pipe
-./test
-ps -ef | grep test
-root       4106   3148  8 06:47 pts/0    00:00:01 ./test
-
-We use /sys/kernel/debug/lru_gen to simulate mglru page-table scan.
-
-case 1: mglru walker break page_idle
-./idle_page_track 4106 60 &
-sleep 5; echo 1 > access.pipe
-sleep 5;  echo '+ 8 0 6 1 1' > /sys/kernel/debug/lru_gen
-
-the output of idle_page_track is:
-Est(s)     Ref(MB)
-64.822        1.00
-only found 1MB were accessed during 64.822s, but actually 1024MB were
-accessed.
-
-case 2: page_idle break mglru walker
-echo 1 > access.pipe
-./idle_page_track 4106 10
-echo '+ 8 0 7 1 1' > /sys/kernel/debug/lru_gen
-lru gen status:
-memcg     8     /user.slice
- node     0
-          5     772458       1065        9735
-          6     737435     262244          72
-          7     538053       1184         632
-          8      59404       6422           0
-almost pages should be in max_seq-1 queue, but actually not.
-
-Signed-off-by: Henry Huang <henry.hj@antgroup.com>
+Fixes: 6908097aa5a7 ("ACPI: thermal_lib: Add functions returning temperature in deci-Kelvin")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- mm/swap.c   |  3 +++
- mm/vmscan.c | 37 ++++++++++++++++++++++++++-----------
- 2 files changed, 29 insertions(+), 11 deletions(-)
+ drivers/acpi/thermal_lib.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index cd8f0150ba3a..4bd14aabdc10 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -416,6 +416,9 @@ static void folio_inc_refs(struct folio *folio)
- {
- 	unsigned long new_flags, old_flags = READ_ONCE(folio->flags);
+diff --git a/drivers/acpi/thermal_lib.c b/drivers/acpi/thermal_lib.c
+index 646ff6bda6dd..4e0519ca9739 100644
+--- a/drivers/acpi/thermal_lib.c
++++ b/drivers/acpi/thermal_lib.c
+@@ -9,6 +9,7 @@
+ #include <linux/acpi.h>
+ #include <linux/units.h>
+ #include <linux/thermal.h>
++#include "internal.h"
  
-+	if (folio_test_idle(folio))
-+		folio_clear_idle(folio);
-+
- 	if (folio_test_unevictable(folio))
- 		return;
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 96abaa5a973e..4f41bef5bca5 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3355,6 +3355,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 		unsigned long pfn;
- 		struct folio *folio;
- 		pte_t ptent = ptep_get(pte + i);
-+		int is_pte_young;
- 
- 		total++;
- 		walk->mm_stats[MM_LEAF_TOTAL]++;
-@@ -3363,18 +3364,22 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 		if (pfn == -1)
- 			continue;
- 
--		if (!pte_young(ptent)) {
--			walk->mm_stats[MM_LEAF_OLD]++;
--			continue;
--		}
--
- 		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
- 		if (!folio)
- 			continue;
- 
--		if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
-+		is_pte_young = pte_young(ptent);
-+		if (!folio_test_clear_young(folio) && !is_pte_young) {
-+			walk->mm_stats[MM_LEAF_OLD]++;
-+			continue;
-+		}
-+
-+		if (is_pte_young && !ptep_test_and_clear_young(args->vma, addr, pte + i))
- 			VM_WARN_ON_ONCE(true);
- 
-+		if (folio_test_idle(folio))
-+			folio_clear_idle(folio);
-+
- 		young++;
- 		walk->mm_stats[MM_LEAF_YOUNG]++;
- 
-@@ -3435,6 +3440,7 @@ static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area
- 	do {
- 		unsigned long pfn;
- 		struct folio *folio;
-+		int is_pmd_young;
- 
- 		/* don't round down the first address */
- 		addr = i ? (*first & PMD_MASK) + i * PMD_SIZE : *first;
-@@ -3453,9 +3459,13 @@ static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area
- 		if (!folio)
- 			goto next;
- 
--		if (!pmdp_test_and_clear_young(vma, addr, pmd + i))
-+		is_pmd_young = pmdp_test_and_clear_young(vma, addr, pmd + i);
-+		if (!folio_test_clear_young(folio) && !is_pmd_young)
- 			goto next;
- 
-+		if (folio_test_idle(folio))
-+			folio_clear_idle(folio);
-+
- 		walk->mm_stats[MM_LEAF_YOUNG]++;
- 
- 		if (pmd_dirty(pmd[i]) && !folio_test_dirty(folio) &&
-@@ -4025,21 +4035,26 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 	for (i = 0, addr = start; addr != end; i++, addr += PAGE_SIZE) {
- 		unsigned long pfn;
- 		pte_t ptent = ptep_get(pte + i);
-+		int is_pte_young;
- 
- 		pfn = get_pte_pfn(ptent, pvmw->vma, addr);
- 		if (pfn == -1)
- 			continue;
- 
--		if (!pte_young(ptent))
--			continue;
--
- 		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap);
- 		if (!folio)
- 			continue;
- 
--		if (!ptep_test_and_clear_young(pvmw->vma, addr, pte + i))
-+		is_pte_young = pte_young(ptent);
-+		if (!folio_test_clear_young(folio) && !is_pte_young)
-+			continue;
-+
-+		if (is_pte_young && !ptep_test_and_clear_young(pvmw->vma, addr, pte + i))
- 			VM_WARN_ON_ONCE(true);
- 
-+		if (folio_test_idle(folio))
-+			folio_clear_idle(folio);
-+
- 		young++;
- 
- 		if (pte_dirty(ptent) && !folio_test_dirty(folio) &&
+ /*
+  * Minimum temperature for full military grade is 218°K (-55°C) and
 -- 
-2.43.0
+2.39.2
 
