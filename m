@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0AE7F5691
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0021B7F569C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjKWCvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 21:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        id S232766AbjKWCxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 21:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjKWCvF (ORCPT
+        with ESMTP id S232615AbjKWCxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 21:51:05 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3946FDA;
-        Wed, 22 Nov 2023 18:51:11 -0800 (PST)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SbMzt3FHhzWhbc;
-        Thu, 23 Nov 2023 10:50:34 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 23 Nov 2023 10:51:08 +0800
-Subject: Re: [PATCH] KVM: selftests: aarch64: Remove unused functions from
- vpmu test
-To:     Raghavendra Rao Ananta <rananta@google.com>
-CC:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>
-References: <20231122221526.2750966-1-rananta@google.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <bf4128c9-ce13-dba1-1ea3-825279e3dd76@huawei.com>
-Date:   Thu, 23 Nov 2023 10:51:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 22 Nov 2023 21:53:42 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E97101;
+        Wed, 22 Nov 2023 18:53:47 -0800 (PST)
+X-UUID: 7d5fb57093db448c974e807b2d285c27-20231123
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: EDM_GE969F26
+X-CID-O-INFO: VERSION:1.1.32,REQID:70f420c1-b88e-4ea1-82e4-019a6041019e,IP:15,
+        URL:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-15
+X-CID-INFO: VERSION:1.1.32,REQID:70f420c1-b88e-4ea1-82e4-019a6041019e,IP:15,UR
+        L:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:EDM_GE969F26,ACTI
+        ON:release,TS:-15
+X-CID-META: VersionHash:5f78ec9,CLOUDID:9436f872-1bd3-4f48-b671-ada88705968c,B
+        ulkID:231123102511SQXRFV44,BulkQuantity:1,Recheck:0,SF:66|38|24|72|19|44|1
+        02,TC:nil,Content:0,EDM:1,IP:-2,URL:0,File:nil,Bulk:41,QS:nil,BEC:nil,COL:
+        0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-UUID: 7d5fb57093db448c974e807b2d285c27-20231123
+X-User: shitao@kylinos.cn
+Received: from kylin-pc.. [(112.64.161.44)] by mailgw
+        (envelope-from <shitao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1164908357; Thu, 23 Nov 2023 10:53:34 +0800
+From:   shitao <shitao@kylinos.cn>
+To:     justin.chen@broadcom.com, alcooperx@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shitao <shitao@kylinos.cn>, k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] usb: Correct misspelling comment word dynamic
+Date:   Thu, 23 Nov 2023 10:53:13 +0800
+Message-Id: <20231123025313.2565268-1-shitao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20231122221526.2750966-1-rananta@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/23 6:15, Raghavendra Rao Ananta wrote:
-> vpmu_counter_access's disable_counter() carries a bug that disables
-> all the counters that are enabled, instead of just the requested one.
-> Fortunately, it's not an issue as there are no callers of it. Hence,
-> instead of fixing it, remove the definition entirely.
-> 
-> Remove enable_counter() as it's unused as well.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+The word 'dyanmic' on comment of struct tcp_error is misspelled.
+Correct it to be 'dynamic', avoiding confusing other developers.
 
-Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: shitao <shitao@kylinos.cn>
+---
+ drivers/usb/gadget/udc/bdc/bdc_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 35a652807fca..874122f8baa3 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -361,7 +361,7 @@ int bdc_reinit(struct bdc *bdc)
+ 	return ret;
+ }
+ 
+-/* Allocate all the dyanmic memory */
++/* Allocate all the dynamic memory */
+ static int bdc_mem_alloc(struct bdc *bdc)
+ {
+ 	u32 page_size;
+-- 
+2.34.1
+
