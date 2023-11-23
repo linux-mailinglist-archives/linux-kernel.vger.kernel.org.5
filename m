@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3D27F68B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89247F68B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjKWVcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 16:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
+        id S229889AbjKWVdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 16:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWVcs (ORCPT
+        with ESMTP id S229453AbjKWVdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 16:32:48 -0500
+        Thu, 23 Nov 2023 16:33:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0767AD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:32:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA4BC433CA;
-        Thu, 23 Nov 2023 21:32:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FAC130
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:33:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BADBCC433C7;
+        Thu, 23 Nov 2023 21:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700775174;
-        bh=EJrVqrprMxLs4WMWlL05MhTf0n0/Q9nUsytRTZI/d+g=;
+        s=k20201202; t=1700775224;
+        bh=nmgRXoCC/6bVdvvn+DsQpOtnPLlwkOcJBQD/gcvPILU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZL3+ID0ndJJL3M/cuMNcG1XIlie8Hvdz9NNpc7AdcSp41bhttRGAOP7Nl7uQnxkeh
-         gbLpzILeqsOWMcdF+Wwe1s8FS4lJmt2bg2Ne4mDVJfwbEj6BCSQY3+8eSi8+LPwjUr
-         A5lgWeGYchJUQjRA21fOGpFqxDyMhIPmReuJJ25vm1AgrcXD8S4ebLNe8zOZA8a1B+
-         9DU091vhc+PlRY4bTHZMySJkD+S0G2YNn/7UkGDfk9NjJMx+QJ1D0PeqYL/WA+S2Nc
-         I9mBCi/5AbOQNUrI4TwcJmxcr0GxTljeY1Fbt38K2Aflk1f/D2qZjQNZwFFRu56HgT
-         VSC/vuK/KpE6A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A14DB40094; Thu, 23 Nov 2023 18:32:51 -0300 (-03)
-Date:   Thu, 23 Nov 2023 18:32:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Ian Rogers <irogers@google.com>, Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
- priority than sysfs/json
-Message-ID: <ZV/FA+tGFWkMhXiM@kernel.org>
-References: <20231123042922.834425-1-irogers@google.com>
- <ZV9jq1C0TUh8MbeU@FVFF77S0Q05N.cambridge.arm.com>
+        b=QX5gnL6JXj8vwBd2hjrgTWmiQNvpaIU3ub8DZJit9Gh0ljsPaGJPx49AWqTyKl4EA
+         MxLsTmaI0J08GfBbNmZjOMk5kO/qqeDp4cbPt3UIxlPrCxNX9Ybbo8D/5zN6YIT/c5
+         Hnj6bfqt1z0klQSfKgjf1u2TKv2FBCx5URjphkB83BntI5fFoPmHmoZCLyARPTWK6O
+         tphuxc8VElCdY2DqFnyhtojL941RLPd+x7YqE3ObFsb0vpG92ljXG0z8CMOuNRgrow
+         rasw3VtSw505b5SaknZkPzLjb2F1Etfd4VuPA9L3fLwdIadEeib6E5YIE9YSMXlWfX
+         3WbVK/7XEz8bA==
+Date:   Thu, 23 Nov 2023 22:33:41 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     intel-gfx@lists.freedesktop.org, linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+Subject: Re: [PATCH v5 00/20] remove I2C_CLASS_DDC support
+Message-ID: <ZV/FNWfw0jdXSglr@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        intel-gfx@lists.freedesktop.org, linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>, linux-sunxi@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231123094040.592-1-hkallweit1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xLjxEuZaeN8xgDN1"
 Content-Disposition: inline
-In-Reply-To: <ZV9jq1C0TUh8MbeU@FVFF77S0Q05N.cambridge.arm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20231123094040.592-1-hkallweit1@gmail.com>
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,94 +85,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 23, 2023 at 02:37:31PM +0000, Mark Rutland escreveu:
-> Hi Ian,
-> 
-> Thanks for this!
 
-Yeah, it seems we're making progress, thanks for the continuous effort
-in getting this fixed!
- 
-> On Wed, Nov 22, 2023 at 08:29:22PM -0800, Ian Rogers wrote:
-> > The perf tool has previously made legacy events the priority so with
-> > or without a PMU the legacy event would be opened:
+--xLjxEuZaeN8xgDN1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-<SNIP> 
+On Thu, Nov 23, 2023 at 10:40:20AM +0100, Heiner Kallweit wrote:
+> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> Class-based device auto-detection is a legacy mechanism and shouldn't
+> be used in new code. So we can remove this class completely now.
+>=20
+> Preferably this series should be applied via the i2c tree.
+>=20
+> v2:
+> - change tag in commit subject of patch 03
+> - add ack tags
+> v3:
+> - fix a compile error in patch 5
+> v4:
+> - more ack and review tags
+> v5:
+> - more acks
+>=20
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-> > The bulk of this change is updating all of the parse-events test
-> > expectations so that if a sysfs/json event exists for a PMU the test
-> > doesn't fail - a further sign, if it were needed, that the legacy
-> > event priority was a known and tested behavior of the perf tool.
+I created an immutable branch for this which the buildbots will
+hopefully check over night. I will reply with comments tomorrow when I
+got the buildbot results.
 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
- 
-> Regardless of my comments below, for this patch as-is:
- 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-I'm collecting this even with the problems in some setups so far, thanks
-for providing it.
- 
-> > ---
-> > This is a large behavioral change:
-> > 1) the scope of the change means it should bake on linux-next and I
-> > don't believe should be a 6.7-rc fix.
-> 
-> I'm happy for this to bake, but I do think it needs to be backported for the
-> sake of users, especially given that it *restores* the old behaviour.
-> 
-> > 2) a fixes tag and stable backport I don't think are appropriate.
- 
-> For the sake of users I think a fixes tag and stable backport are necssary. In
-> practice distributions ship the perf tool associated with their stable kernel,
-> so (for better or worse) a stable backport is certainly necessary for distros
-> that'll use the v6.6 stable kernel.
+--xLjxEuZaeN8xgDN1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Which, as Ian mentioned, is a common misconception, as the lack of
-lockstep of perf/kernel versions was never properly stated in
-documentation, only in the source code, look for the
-evsel__disable_missing_features() function that tries to do whatever we
-managed to do from what was being asked (new features for old kernels)
-and the laconic responses from perf_event_open() given back to those
-requests.
+-----BEGIN PGP SIGNATURE-----
 
-But the fact is that most if not all distros think perf is in lockstep
-with the kernel, which is not the intent.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVfxTEACgkQFA3kzBSg
+KbarPBAAkN43LMGC9b1vpMsl5y6W1jnEMTjSF+7tzpFga/xsqL+jL9B/h0bO4NQ4
+ATDYno+0o6BwCEUeBSgYEs7/gNJHlWCq2SisLmhVXXOTzWZ09VRSPaXU49gXviog
+LZbTffK3ABbQSCBbzAhx6/Aog9BH2md1QBdbrCmkf/+i8OOhDUzPiyz6txmIimC2
+6YRBRpLdY1cnme1uvNPJv8GI8UYUgdrYeFQQd4qbPsz5WIzl5/MbMeev4jtUzXC0
+exE4jjPds5scEDyf7QdoeOsHRxZ5pGEu6/luiIhN+SFolyYWzX3Yun37Ac1WWmnR
+Wo97HN7iUlhAQVQ6phTbiVCp8HISNGiWkh/Z0/NoMPO21Vr4WV1/p4TX+5shPicc
+OhBT1NydXft0pPSmT0adOalbsEv4x4P3Oa0I6A+HQCea7Acsz5Ya1+AxY2LehDKz
+lyYnz7L0pcF+k3II/wqSeiK8CidamPnVPamCG+Df3F/NDBXEih9jaI23Hkjyp8xM
+7AO5GH/0ihgont0oYMIl6bAeK9BGrKOt0AM+fF0dC+byFDGxffRvFwYnPIqJfxCr
+6NKvDBM37nY4pHxbDu1b9iamk8WN3tpdrC/XZ8BxqKaciOF+w52ac/v4+znNeo2X
+J9U48VknVCyH0l1Fpph+/ukvqwpdWMVtk4GI2wgR7mdFp8c44Z8=
+=oQZk
+-----END PGP SIGNATURE-----
 
-That said, for distros that do backports, this is one to be done, and
-for stable@kernel.org, yeah, I also think this is one to be flagged as
-that, but since this hybrid thing has such a miscoordinated
-user/kernel/arches history, with such great number of nuances and
-interpretations, I think we better continue to test it for a while, in
-perf-tools-next/perf-tools-next and linux-next, to the flag it for
-backports.
- 
-> > The real reported issue is with the PMU driver. 
-> 
-> Having trawled through the driver and core perf code, I don't believe the PMU
-> driver is at fault. Please see my analysis at:
-> 
->   https://lore.kernel.org/lkml/ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com/
-> 
-> ... where it looks like the perf tool is dropping the extended type ID in some
-> cases.
- 
-> If you know of a specific bug in the PMU driver or perf core code, please let
-> me know and I will investigate. As it stands we have no evidence of a bug in
-> the PMU driver, and pretty clear evidence (as linked above) there there is
-> *some* issue in userspace. In the absence of such evidence, please don't assert
-> that there must be a kernel bug.
- 
-> > A backport would bring the
-> > risk that later fixes, due to the large behavior change, wouldn't be
-> > backported and past releases get regressed in scenarios like
-> > hybrid. Backports for the perf tool are also less necessary than say a
-> > buggy PMU driver, as distributions should be updating to the latest
-> > perf tool regardless of what Linux kernel is being run (the perf tool
-> > is backward compatible).
-
-> As above I believe that a backport is necessary.
-
-Agreed, as we get this tested a bit.
-
-- Arnaldo
+--xLjxEuZaeN8xgDN1--
