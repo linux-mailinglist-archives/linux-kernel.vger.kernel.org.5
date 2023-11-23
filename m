@@ -2,159 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E58B7F5D23
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121617F5D2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344862AbjKWLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S1344884AbjKWLCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjKWLAa (ORCPT
+        with ESMTP id S229542AbjKWLCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:00:30 -0500
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0CF1BE
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:00:36 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VwzFwnV_1700737214;
-Received: from localhost(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0VwzFwnV_1700737214)
-          by smtp.aliyun-inc.com;
-          Thu, 23 Nov 2023 19:00:34 +0800
-From:   Bitao Hu <yaoma@linux.alibaba.com>
-To:     kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kanie@linux.alibaba.com
-Subject: [PATCH] nvme: fix deadlock between reset and scan
-Date:   Thu, 23 Nov 2023 19:00:13 +0800
-Message-Id: <1700737213-110685-1-git-send-email-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 23 Nov 2023 06:02:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B224A1BF
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:02:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62CFBC433C7;
+        Thu, 23 Nov 2023 11:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700737335;
+        bh=wGEC7NeVuil562coNYSljHzRxwtVUGQAUh7l2e2swGA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Dn6wlwSYfiG7Sidrra0kIMHkZaNULLwwBRrTsZLHXaDjU9uyw3MIYxtdhe4Mmm4lZ
+         htgWBW2kjBpWattsDiGm95gY0c6oZ/qfw0fEj/lsgfIuDvt0bnqlUzQDVpsuhfhrSW
+         jqLWo2DOAJilMah1rmmFYa/vwFnL3Sl9Q66WNnHPpDpS0MZl8bwTO3dnR6AT1ciLHo
+         ob5udTeYtRofrHZp286+dX5hK1+s6vYy4knsFoGuQtWomA+nMFvq/mdNV9rInSq0xr
+         7CGC0fo5B/x//hrPPmYPpshnnz+fVHSeAPgPQ7UE++s6pUIuhEE/YpJt1RVstdt8Jt
+         b083dvF0JJf9A==
+From:   Michael Walle <mwalle@kernel.org>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        CK Hu <ck.hu@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Walle <mwalle@kernel.org>
+Subject: [PATCH] phy: mediatek: mipi: mt8183: fix minimal supported frequency
+Date:   Thu, 23 Nov 2023 12:02:02 +0100
+Message-Id: <20231123110202.2025585-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If controller reset occurs when allocating namespace, both
-nvme_reset_work and nvme_scan_work will hang, as shown below.
+The lowest supported clock frequency of the PHY is 125MHz (see also
+mtk_mipi_tx_pll_enable()), but the clamping in .round_rate() has the
+wrong minimal value, which will make the .enable() op return -EINVAL on
+low frequencies. Fix the minimal clamping value.
 
-Test Scripts:
-
-    for ((t=1;t<=128;t++))
-    do
-    nsid=`nvme create-ns /dev/nvme1 -s 14537724 -c 14537724 -f 0 -m 0 \
-    -d 0 | awk -F: '{print($NF);}'`
-    nvme attach-ns /dev/nvme1 -n $nsid -c 0
-    done
-    nvme reset /dev/nvme1
-
-We will find that both nvme_reset_work and nvme_scan_work hung:
-
-    INFO: task kworker/u249:4:17848 blocked for more than 120 seconds.
-    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
-    message.
-    task:kworker/u249:4  state:D stack:    0 pid:17848 ppid:     2
-    flags:0x00000028
-    Workqueue: nvme-reset-wq nvme_reset_work [nvme]
-    Call trace:
-    __switch_to+0xb4/0xfc
-    __schedule+0x22c/0x670
-    schedule+0x4c/0xd0
-    blk_mq_freeze_queue_wait+0x84/0xc0
-    nvme_wait_freeze+0x40/0x64 [nvme_core]
-    nvme_reset_work+0x1c0/0x5cc [nvme]
-    process_one_work+0x1d8/0x4b0
-    worker_thread+0x230/0x440
-    kthread+0x114/0x120
-    INFO: task kworker/u249:3:22404 blocked for more than 120 seconds.
-    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
-    message.
-    task:kworker/u249:3  state:D stack:    0 pid:22404 ppid:     2
-    flags:0x00000028
-    Workqueue: nvme-wq nvme_scan_work [nvme_core]
-    Call trace:
-    __switch_to+0xb4/0xfc
-    __schedule+0x22c/0x670
-    schedule+0x4c/0xd0
-    rwsem_down_write_slowpath+0x32c/0x98c
-    down_write+0x70/0x80
-    nvme_alloc_ns+0x1ac/0x38c [nvme_core]
-    nvme_validate_or_alloc_ns+0xbc/0x150 [nvme_core]
-    nvme_scan_ns_list+0xe8/0x2e4 [nvme_core]
-    nvme_scan_work+0x60/0x500 [nvme_core]
-    process_one_work+0x1d8/0x4b0
-    worker_thread+0x260/0x440
-    kthread+0x114/0x120
-    INFO: task nvme:28428 blocked for more than 120 seconds.
-    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
-    message.
-    task:nvme            state:D stack:    0 pid:28428 ppid: 27119
-    flags:0x00000000
-    Call trace:
-    __switch_to+0xb4/0xfc
-    __schedule+0x22c/0x670
-    schedule+0x4c/0xd0
-    schedule_timeout+0x160/0x194
-    do_wait_for_common+0xac/0x1d0
-    __wait_for_common+0x78/0x100
-    wait_for_completion+0x24/0x30
-    __flush_work.isra.0+0x74/0x90
-    flush_work+0x14/0x20
-    nvme_reset_ctrl_sync+0x50/0x74 [nvme_core]
-    nvme_dev_ioctl+0x1b0/0x250 [nvme_core]
-    __arm64_sys_ioctl+0xa8/0xf0
-    el0_svc_common+0x88/0x234
-    do_el0_svc+0x7c/0x90
-    el0_svc+0x1c/0x30
-    el0_sync_handler+0xa8/0xb0
-    el0_sync+0x148/0x180
-
-The reason for the hang is that nvme_reset_work occurs while nvme_scan_work
-is still running. nvme_scan_work may add new ns into ctrl->namespaces
-list after nvme_reset_work frozen all ns->q in ctrl->namespaces list.
-The newly added ns is not frozen, so nvme_wait_freeze will wait forever.
-Unfortunately, ctrl->namespaces_rwsem is held by nvme_reset_work, so
-nvme_scan_work will also wait forever. Now we are deadlocked!
-
-PROCESS1                         PROCESS2
-==============                   ==============
-nvme_scan_work
-  ...                            nvme_reset_work
-  nvme_validate_or_alloc_ns        nvme_dev_disable
-    nvme_alloc_ns                    nvme_start_freeze
-     down_write                      ...
-     nvme_ns_add_to_ctrl_list        ...
-     up_write                        nvme_wait_freeze
-    ...                                down_read
-    nvme_alloc_ns                      blk_mq_freeze_queue_wait
-     down_write
-
-Fix by checking ctrl->state whether is NVME_CTRL_LIVE before adding new
-ns into ctrl->namespaces.
-
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+Fixes: efda51a58b4a ("drm/mediatek: add mipi_tx driver for mt8183")
+Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/nvme/host/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 62612f8..7551b55 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3631,6 +3631,11 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, struct nvme_ns_info *info)
- 		goto out_unlink_ns;
+diff --git a/drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c b/drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c
+index f021ec5a70e5..553725e1269c 100644
+--- a/drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c
++++ b/drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c
+@@ -100,7 +100,7 @@ static void mtk_mipi_tx_pll_disable(struct clk_hw *hw)
+ static long mtk_mipi_tx_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+ 				       unsigned long *prate)
+ {
+-	return clamp_val(rate, 50000000, 1600000000);
++	return clamp_val(rate, 125000000, 1600000000);
+ }
  
- 	down_write(&ctrl->namespaces_rwsem);
-+	/* preventing adding ns during resetting */
-+	if (unlikely(ctrl->state != NVME_CTRL_LIVE)) {
-+		up_write(&ctrl->namespaces_rwsem);
-+		goto out_unlink_ns;
-+	}
- 	nvme_ns_add_to_ctrl_list(ns);
- 	up_write(&ctrl->namespaces_rwsem);
- 	nvme_get_ctrl(ctrl);
+ static const struct clk_ops mtk_mipi_tx_pll_ops = {
 -- 
-1.8.3.1
+2.39.2
 
