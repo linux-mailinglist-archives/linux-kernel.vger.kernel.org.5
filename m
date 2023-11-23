@@ -2,193 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F197F56EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D4D7F56F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344340AbjKWDQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 22:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
+        id S1344520AbjKWDRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 22:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjKWDQg (ORCPT
+        with ESMTP id S1344455AbjKWDRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 22:16:36 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9FA1A4;
-        Wed, 22 Nov 2023 19:16:41 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AN3GABt82734578, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AN3GABt82734578
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Nov 2023 11:16:11 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 23 Nov 2023 11:16:11 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 23 Nov 2023 11:16:10 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Thu, 23 Nov 2023 11:16:10 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Heiner Kallweit <heiner.kallweit@web.de>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Larry Chiu <larry.chiu@realtek.com>
-Subject: RE: [PATCH net-next v11 10/13] net:ethernet:realtek:rtase: Implement ethtool function
-Thread-Topic: [PATCH net-next v11 10/13] net:ethernet:realtek:rtase: Implement
- ethtool function
-Thread-Index: AQHaF8h5wE5dkwWmREKiN4x2lSouErB688EAgAxTVEA=
-Date:   Thu, 23 Nov 2023 03:16:10 +0000
-Message-ID: <975a7188d5544794a2f84fcc95dda717@realtek.com>
-References: <20231115133414.1221480-1-justinlai0215@realtek.com>
- <20231115133414.1221480-11-justinlai0215@realtek.com>
- <409a4eaf-3d2b-4de6-a0f0-245cc1523bee@web.de>
-In-Reply-To: <409a4eaf-3d2b-4de6-a0f0-245cc1523bee@web.de>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 22 Nov 2023 22:17:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184CF1B6;
+        Wed, 22 Nov 2023 19:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700709439; x=1732245439;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1c3Mf56cspS0rK0V+e9p5p1VgJgFuCb7pZFxscw0f/Q=;
+  b=RxIWG4AP5nErNZ3whJsyLAYUN2FOpCs//PJq0eGYe9nX/XiR2ALvXf3I
+   BKaQMnd4ei3NPlvXDPIHb9xa2RwkxVm3yyJE5ZrLlhvUg755jevHK4h4w
+   R1d3O5Wyh/AHQ+EOg74bgOHLZAPV/BESrKmf+nPLyHFvF3n0D9FkVgu2W
+   x49ISnbwRBTTDSWHKfTh9VFt/se5laj7Tv8Fn/Ciq5c7wZ8VNfkSg9ZUR
+   XC+Pn1Y3c13/8n1B5dNsFGvy7I95QblrJxF5e1GAz8V7fR4xcr3gWqKig
+   Nk1GT3QVZR+KYo9BNdRihjjLOBCjo9UbNXfGG5aNLlQzEL130aq9a6TAH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5380205"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="5380205"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 19:17:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767083290"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="767083290"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 22 Nov 2023 19:17:14 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r60DI-0001Ag-0H;
+        Thu, 23 Nov 2023 03:17:12 +0000
+Date:   Thu, 23 Nov 2023 11:16:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-media@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] media: i2c: gc2145: Galaxy Core GC2145 sensor
+ support
+Message-ID: <202311231047.GzLUXA47-lkp@intel.com>
+References: <20231122075154.789431-4-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122075154.789431-4-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAxNS4xMS4yMDIzIDE0OjM0LCBKdXN0aW4gTGFpIHdyb3RlOg0KPiA+IEltcGxlbWVudCB0
-aGUgZXRodG9vbCBmdW5jdGlvbiB0byBzdXBwb3J0IHVzZXJzIHRvIG9idGFpbiBuZXR3b3JrIGNh
-cmQNCj4gPiBpbmZvcm1hdGlvbiwgaW5jbHVkaW5nIG9idGFpbmluZyB2YXJpb3VzIGRldmljZSBz
-ZXR0aW5ncywgUmVwb3J0DQo+ID4gd2hldGhlciBwaHlzaWNhbCBsaW5rIGlzIHVwLCBSZXBvcnQg
-cGF1c2UgcGFyYW1ldGVycywgU2V0IHBhdXNlDQo+ID4gcGFyYW1ldGVycywgUmV0dXJuIGEgc2V0
-IG9mIHN0cmluZ3MgdGhhdCBkZXNjcmliZSB0aGUgcmVxdWVzdGVkDQo+ID4gb2JqZWN0cywgR2V0
-IG51bWJlciBvZiBzdHJpbmdzIHRoYXQgQGdldF9zdHJpbmdzIHdpbGwgd3JpdGUsIFJldHVybg0K
-PiA+IGV4dGVuZGVkIHN0YXRpc3RpY3MgYWJvdXQgdGhlIGRldmljZS4NCj4gPg0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IEp1c3RpbiBMYWkgPGp1c3RpbmxhaTAyMTVAcmVhbHRlay5jb20+DQo+ID4gLS0t
-DQo+ID4gIC4uLi9uZXQvZXRoZXJuZXQvcmVhbHRlay9ydGFzZS9ydGFzZV9tYWluLmMgICB8IDE0
-NCArKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDE0NCBpbnNlcnRpb25z
-KCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9y
-dGFzZS9ydGFzZV9tYWluLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L3JlYWx0ZWsvcnRh
-c2UvcnRhc2VfbWFpbi5jDQo+ID4gaW5kZXggYjc2NzliNzRjYzhhLi41ZWE0ZDUxZmNjNDcgMTAw
-NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9ydGFzZS9ydGFzZV9t
-YWluLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9yZWFsdGVrL3J0YXNlL3J0YXNl
-X21haW4uYw0KPiA+IEBAIC0xOTAwLDkgKzE5MDAsMTUzIEBAIHN0YXRpYyB2b2lkIHJ0YXNlX2dl
-dF9tYWNfYWRkcmVzcyhzdHJ1Y3QNCj4gbmV0X2RldmljZSAqZGV2KQ0KPiA+ICAgICAgIGV0aGVy
-X2FkZHJfY29weShkZXYtPnBlcm1fYWRkciwgZGV2LT5kZXZfYWRkcik7ICB9DQo+ID4NCj4gPiAr
-c3RhdGljIHZvaWQgcnRhc2VfZ2V0X2RydmluZm8oc3RydWN0IG5ldF9kZXZpY2UgKmRldiwNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGV0aHRvb2xfZHJ2aW5mbyAqZHJ2
-aW5mbykgew0KPiA+ICsgICAgIGNvbnN0IHN0cnVjdCBydGFzZV9wcml2YXRlICp0cCA9IG5ldGRl
-dl9wcml2KGRldik7DQo+ID4gKw0KPiA+ICsgICAgIHN0cnNjcHkoZHJ2aW5mby0+ZHJpdmVyLCBL
-QlVJTERfTU9ETkFNRSwgMzIpOw0KPiA+ICsgICAgIHN0cnNjcHkoZHJ2aW5mby0+YnVzX2luZm8s
-IHBjaV9uYW1lKHRwLT5wZGV2KSwgMzIpOyB9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHJ0YXNl
-X2dldF9zZXR0aW5ncyhzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LA0KPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBzdHJ1Y3QgZXRodG9vbF9saW5rX2tzZXR0aW5ncyAqY21kKSB7DQo+ID4g
-KyAgICAgdTMyIHN1cHBvcnRlZCA9IFNVUFBPUlRFRF9NSUkgfCBTVVBQT1JURURfUGF1c2UgfA0K
-PiA+ICtTVVBQT1JURURfQXN5bV9QYXVzZTsNCj4gPiArDQo+ID4gKw0KPiBldGh0b29sX2NvbnZl
-cnRfbGVnYWN5X3UzMl90b19saW5rX21vZGUoY21kLT5saW5rX21vZGVzLnN1cHBvcnRlZCwNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VwcG9ydGVk
-KTsNCj4gPiArICAgICBjbWQtPmJhc2Uuc3BlZWQgPSBTUEVFRF81MDAwOw0KPiA+ICsgICAgIGNt
-ZC0+YmFzZS5kdXBsZXggPSBEVVBMRVhfRlVMTDsNCj4gPiArICAgICBjbWQtPmJhc2UucG9ydCA9
-IFBPUlRfTUlJOw0KPiA+ICsgICAgIGNtZC0+YmFzZS5hdXRvbmVnID0gQVVUT05FR19ESVNBQkxF
-Ow0KPiA+ICsNCj4gV2hhdCBhcmUgeW91IHJlcG9ydGluZyBoZXJlPyBEb2VzIHRoaXMgcmVmZXIg
-dG8gdGhlIGxpbmsgYmV0d2VlbiBNQUMgYW5kDQo+IHN3aXRjaCBDUFUgcG9ydD8gQmVjYXVzZSBJ
-IHdvdWxkIGFzc3VtZSB0aGF0IHRoZSBzd2l0Y2ggcG9ydHMgY2FuIGRvDQo+IGF1dG9uZWcuDQoN
-ClBBVENIIDEvMTMgaGFzIG91ciBDSElQIGFyY2hpdGVjdHVyZS4gVGhlIG1hYyBhbmQgc3dpdGNo
-IGFyZSBkaXJlY3RseSBjb25uZWN0ZWQsIGFuZCB0aGUgbGluZSBzZWVkIGlzIGZpeGVkIGF0IDVH
-LCBzbyB0aGVyZSBpcyBubyBuZWVkIGZvciBhdXRvbmVnLg0KPiANCj4gPiArICAgICByZXR1cm4g
-MDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgcnRhc2VfZ2V0X3BhdXNlcGFyYW0o
-c3RydWN0IG5ldF9kZXZpY2UgKmRldiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc3RydWN0IGV0aHRvb2xfcGF1c2VwYXJhbSAqcGF1c2UpIHsNCj4gPiArICAgICBjb25zdCBz
-dHJ1Y3QgcnRhc2VfcHJpdmF0ZSAqdHAgPSBuZXRkZXZfcHJpdihkZXYpOw0KPiA+ICsgICAgIHUx
-NiB2YWx1ZSA9IHJ0YXNlX3IxNih0cCwgUlRBU0VfQ1BMVVNfQ01EKTsNCj4gPiArDQo+ID4gKyAg
-ICAgcGF1c2UtPmF1dG9uZWcgPSBBVVRPTkVHX0RJU0FCTEU7DQo+ID4gKw0KPiA+ICsgICAgIGlm
-ICgodmFsdWUgJiAoRk9SQ0VfVFhGTE9XX0VOIHwgRk9SQ0VfUlhGTE9XX0VOKSkgPT0NCj4gPiAr
-ICAgICAgICAgKEZPUkNFX1RYRkxPV19FTiB8IEZPUkNFX1JYRkxPV19FTikpIHsNCj4gPiArICAg
-ICAgICAgICAgIHBhdXNlLT5yeF9wYXVzZSA9IDE7DQo+ID4gKyAgICAgICAgICAgICBwYXVzZS0+
-dHhfcGF1c2UgPSAxOw0KPiA+ICsgICAgIH0gZWxzZSBpZiAoKHZhbHVlICYgRk9SQ0VfVFhGTE9X
-X0VOKSkgew0KPiA+ICsgICAgICAgICAgICAgcGF1c2UtPnR4X3BhdXNlID0gMTsNCj4gPiArICAg
-ICB9IGVsc2UgaWYgKCh2YWx1ZSAmIEZPUkNFX1JYRkxPV19FTikpIHsNCj4gPiArICAgICAgICAg
-ICAgIHBhdXNlLT5yeF9wYXVzZSA9IDE7DQo+ID4gKyAgICAgfQ0KPiA+ICt9DQo+ID4gKw0KPiA+
-ICtzdGF0aWMgaW50IHJ0YXNlX3NldF9wYXVzZXBhcmFtKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYs
-DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGV0aHRvb2xfcGF1c2Vw
-YXJhbSAqcGF1c2UpIHsNCj4gPiArICAgICBjb25zdCBzdHJ1Y3QgcnRhc2VfcHJpdmF0ZSAqdHAg
-PSBuZXRkZXZfcHJpdihkZXYpOw0KPiA+ICsgICAgIHUxNiB2YWx1ZSA9IHJ0YXNlX3IxNih0cCwg
-UlRBU0VfQ1BMVVNfQ01EKTsNCj4gPiArDQo+ID4gKyAgICAgaWYgKHBhdXNlLT5hdXRvbmVnKQ0K
-PiA+ICsgICAgICAgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOw0KPiA+ICsNCj4gPiArICAgICB2
-YWx1ZSAmPSB+KEZPUkNFX1RYRkxPV19FTiB8IEZPUkNFX1JYRkxPV19FTik7DQo+ID4gKw0KPiA+
-ICsgICAgIGlmIChwYXVzZS0+dHhfcGF1c2UpDQo+ID4gKyAgICAgICAgICAgICB2YWx1ZSB8PSBG
-T1JDRV9UWEZMT1dfRU47DQo+ID4gKw0KPiA+ICsgICAgIGlmIChwYXVzZS0+cnhfcGF1c2UpDQo+
-ID4gKyAgICAgICAgICAgICB2YWx1ZSB8PSBGT1JDRV9SWEZMT1dfRU47DQo+ID4gKw0KPiA+ICsg
-ICAgIHJ0YXNlX3cxNih0cCwgUlRBU0VfQ1BMVVNfQ01ELCB2YWx1ZSk7DQo+ID4gKyAgICAgcmV0
-dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBjaGFyIHJ0YXNlX2dzdHJp
-bmdzW11bRVRIX0dTVFJJTkdfTEVOXSA9IHsNCj4gPiArICAgICAidHhfcGFja2V0cyIsDQo+ID4g
-KyAgICAgInJ4X3BhY2tldHMiLA0KPiA+ICsgICAgICJ0eF9lcnJvcnMiLA0KPiA+ICsgICAgICJy
-eF9lcnJvcnMiLA0KPiA+ICsgICAgICJyeF9taXNzZWQiLA0KPiA+ICsgICAgICJhbGlnbl9lcnJv
-cnMiLA0KPiA+ICsgICAgICJ0eF9zaW5nbGVfY29sbGlzaW9ucyIsDQo+ID4gKyAgICAgInR4X211
-bHRpX2NvbGxpc2lvbnMiLA0KPiA+ICsgICAgICJ1bmljYXN0IiwNCj4gPiArICAgICAiYnJvYWRj
-YXN0IiwNCj4gPiArICAgICAibXVsdGljYXN0IiwNCj4gPiArICAgICAidHhfYWJvcnRlZCIsDQo+
-ID4gKyAgICAgInR4X3VuZGVycnVuIiwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lk
-IHJ0YXNlX2dldF9zdHJpbmdzKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsIHUzMiBzdHJpbmdzZXQs
-DQo+ID4gK3U4ICpkYXRhKSB7DQo+ID4gKyAgICAgc3dpdGNoIChzdHJpbmdzZXQpIHsNCj4gPiAr
-ICAgICBjYXNlIEVUSF9TU19TVEFUUzoNCj4gPiArICAgICAgICAgICAgIG1lbWNweShkYXRhLCAq
-cnRhc2VfZ3N0cmluZ3MsIHNpemVvZihydGFzZV9nc3RyaW5ncykpOw0KPiA+ICsgICAgICAgICAg
-ICAgYnJlYWs7DQo+ID4gKyAgICAgfQ0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHJ0
-YXNlX2dldF9zc2V0X2NvdW50KHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsIGludCBzc2V0KSB7DQo+
-ID4gKyAgICAgaW50IHJldCA9IC1FT1BOT1RTVVBQOw0KPiA+ICsNCj4gPiArICAgICBzd2l0Y2gg
-KHNzZXQpIHsNCj4gPiArICAgICBjYXNlIEVUSF9TU19TVEFUUzoNCj4gPiArICAgICAgICAgICAg
-IHJldCA9IEFSUkFZX1NJWkUocnRhc2VfZ3N0cmluZ3MpOw0KPiA+ICsgICAgICAgICAgICAgYnJl
-YWs7DQo+ID4gKyAgICAgfQ0KPiA+ICsNCj4gPiArICAgICByZXR1cm4gcmV0Ow0KPiA+ICt9DQo+
-ID4gKw0KPiA+ICtzdGF0aWMgdm9pZCBydGFzZV9nZXRfZXRodG9vbF9zdGF0cyhzdHJ1Y3QgbmV0
-X2RldmljZSAqZGV2LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1
-Y3QgZXRodG9vbF9zdGF0cyAqc3RhdHMsIHU2NA0KPiA+ICsqZGF0YSkgew0KPiA+ICsgICAgIHN0
-cnVjdCBydGFzZV9wcml2YXRlICp0cCA9IG5ldGRldl9wcml2KGRldik7DQo+ID4gKyAgICAgY29u
-c3Qgc3RydWN0IHJ0YXNlX2NvdW50ZXJzICpjb3VudGVyczsNCj4gPiArDQo+ID4gKyAgICAgQVNT
-RVJUX1JUTkwoKTsNCj4gPiArDQo+ID4gKyAgICAgY291bnRlcnMgPSB0cC0+dGFsbHlfdmFkZHI7
-DQo+ID4gKyAgICAgaWYgKCFjb3VudGVycykNCj4gPiArICAgICAgICAgICAgIHJldHVybjsNCj4g
-PiArDQo+ID4gKyAgICAgcnRhc2VfZHVtcF90YWxseV9jb3VudGVyKHRwKTsNCj4gPiArDQo+ID4g
-KyAgICAgZGF0YVswXSA9IGxlNjRfdG9fY3B1KGNvdW50ZXJzLT50eF9wYWNrZXRzKTsNCj4gPiAr
-ICAgICBkYXRhWzFdID0gbGU2NF90b19jcHUoY291bnRlcnMtPnJ4X3BhY2tldHMpOw0KPiA+ICsg
-ICAgIGRhdGFbMl0gPSBsZTY0X3RvX2NwdShjb3VudGVycy0+dHhfZXJyb3JzKTsNCj4gPiArICAg
-ICBkYXRhWzNdID0gbGUzMl90b19jcHUoY291bnRlcnMtPnJ4X2Vycm9ycyk7DQo+ID4gKyAgICAg
-ZGF0YVs0XSA9IGxlMTZfdG9fY3B1KGNvdW50ZXJzLT5yeF9taXNzZWQpOw0KPiA+ICsgICAgIGRh
-dGFbNV0gPSBsZTE2X3RvX2NwdShjb3VudGVycy0+YWxpZ25fZXJyb3JzKTsNCj4gPiArICAgICBk
-YXRhWzZdID0gbGUzMl90b19jcHUoY291bnRlcnMtPnR4X29uZV9jb2xsaXNpb24pOw0KPiA+ICsg
-ICAgIGRhdGFbN10gPSBsZTMyX3RvX2NwdShjb3VudGVycy0+dHhfbXVsdGlfY29sbGlzaW9uKTsN
-Cj4gPiArICAgICBkYXRhWzhdID0gbGU2NF90b19jcHUoY291bnRlcnMtPnJ4X3VuaWNhc3QpOw0K
-PiA+ICsgICAgIGRhdGFbOV0gPSBsZTY0X3RvX2NwdShjb3VudGVycy0+cnhfYnJvYWRjYXN0KTsN
-Cj4gPiArICAgICBkYXRhWzEwXSA9IGxlMzJfdG9fY3B1KGNvdW50ZXJzLT5yeF9tdWx0aWNhc3Qp
-Ow0KPiA+ICsgICAgIGRhdGFbMTFdID0gbGUxNl90b19jcHUoY291bnRlcnMtPnR4X2Fib3J0ZWQp
-Ow0KPiA+ICsgICAgIGRhdGFbMTJdID0gbGUxNl90b19jcHUoY291bnRlcnMtPnR4X3VuZGVydW4p
-Ow0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGV0aHRvb2xfb3BzIHJ0
-YXNlX2V0aHRvb2xfb3BzID0gew0KPiA+ICsgICAgIC5nZXRfZHJ2aW5mbyA9IHJ0YXNlX2dldF9k
-cnZpbmZvLA0KPiA+ICsgICAgIC5nZXRfbGluayA9IGV0aHRvb2xfb3BfZ2V0X2xpbmssDQo+ID4g
-KyAgICAgLmdldF9saW5rX2tzZXR0aW5ncyA9IHJ0YXNlX2dldF9zZXR0aW5ncywNCj4gPiArICAg
-ICAuZ2V0X3BhdXNlcGFyYW0gPSBydGFzZV9nZXRfcGF1c2VwYXJhbSwNCj4gPiArICAgICAuc2V0
-X3BhdXNlcGFyYW0gPSBydGFzZV9zZXRfcGF1c2VwYXJhbSwNCj4gPiArICAgICAuZ2V0X3N0cmlu
-Z3MgPSBydGFzZV9nZXRfc3RyaW5ncywNCj4gPiArICAgICAuZ2V0X3NzZXRfY291bnQgPSBydGFz
-ZV9nZXRfc3NldF9jb3VudCwNCj4gPiArICAgICAuZ2V0X2V0aHRvb2xfc3RhdHMgPSBydGFzZV9n
-ZXRfZXRodG9vbF9zdGF0cywNCj4gPiArICAgICAuZ2V0X3RzX2luZm8gPSBldGh0b29sX29wX2dl
-dF90c19pbmZvLCB9Ow0KPiA+ICsNCj4gPiAgc3RhdGljIHZvaWQgcnRhc2VfaW5pdF9uZXRkZXZf
-b3BzKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpICB7DQo+ID4gICAgICAgZGV2LT5uZXRkZXZfb3Bz
-ID0gJnJ0YXNlX25ldGRldl9vcHM7DQo+ID4gKyAgICAgZGV2LT5ldGh0b29sX29wcyA9ICZydGFz
-ZV9ldGh0b29sX29wczsNCj4gPiAgfQ0KPiA+DQo+ID4gIHN0YXRpYyB2b2lkIHJ0YXNlX3Jlc2V0
-X2ludGVycnVwdChzdHJ1Y3QgcGNpX2RldiAqcGRldiwNCj4gDQoNCg==
+Hi Alain,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on linuxtv-media-stage/master]
+[also build test ERROR on linus/master v6.7-rc2 next-20231122]
+[cannot apply to media-tree/master robh/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Alain-Volmat/dt-bindings-vendor-prefixes-Add-prefix-for-GalaxyCore-Inc/20231122-155443
+base:   https://git.linuxtv.org/media_stage.git master
+patch link:    https://lore.kernel.org/r/20231122075154.789431-4-alain.volmat%40foss.st.com
+patch subject: [PATCH v5 3/3] media: i2c: gc2145: Galaxy Core GC2145 sensor support
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231123/202311231047.GzLUXA47-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231123/202311231047.GzLUXA47-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311231047.GzLUXA47-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/media/i2c/gc2145.c:664:11: error: call to undeclared function 'v4l2_subdev_state_get_format'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           format = v4l2_subdev_state_get_format(state, 0);
+                    ^
+   drivers/media/i2c/gc2145.c:664:9: error: incompatible integer to pointer conversion assigning to 'struct v4l2_mbus_framefmt *' from 'int' [-Wint-conversion]
+           format = v4l2_subdev_state_get_format(state, 0);
+                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/media/i2c/gc2145.c:669:9: error: call to undeclared function 'v4l2_subdev_state_get_crop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           crop = v4l2_subdev_state_get_crop(state, 0);
+                  ^
+   drivers/media/i2c/gc2145.c:669:7: error: incompatible integer to pointer conversion assigning to 'struct v4l2_rect *' from 'int' [-Wint-conversion]
+           crop = v4l2_subdev_state_get_crop(state, 0);
+                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/i2c/gc2145.c:681:13: error: call to undeclared function 'v4l2_subdev_state_get_crop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   sel->r = *v4l2_subdev_state_get_crop(sd_state, 0);
+                             ^
+   drivers/media/i2c/gc2145.c:681:12: error: indirection requires pointer operand ('int' invalid)
+                   sel->r = *v4l2_subdev_state_get_crop(sd_state, 0);
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/i2c/gc2145.c:758:13: error: call to undeclared function 'v4l2_subdev_state_get_format'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           framefmt = v4l2_subdev_state_get_format(sd_state, fmt->pad);
+                      ^
+   drivers/media/i2c/gc2145.c:758:11: error: incompatible integer to pointer conversion assigning to 'struct v4l2_mbus_framefmt *' from 'int' [-Wint-conversion]
+           framefmt = v4l2_subdev_state_get_format(sd_state, fmt->pad);
+                    ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/i2c/gc2145.c:770:9: error: call to undeclared function 'v4l2_subdev_state_get_crop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           crop = v4l2_subdev_state_get_crop(sd_state, fmt->pad);
+                  ^
+   drivers/media/i2c/gc2145.c:770:7: error: incompatible integer to pointer conversion assigning to 'struct v4l2_rect *' from 'int' [-Wint-conversion]
+           crop = v4l2_subdev_state_get_crop(sd_state, fmt->pad);
+                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/i2c/gc2145.c:874:8: error: call to undeclared function 'v4l2_subdev_state_get_format'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           fmt = v4l2_subdev_state_get_format(state, 0);
+                 ^
+   drivers/media/i2c/gc2145.c:874:6: error: incompatible integer to pointer conversion assigning to 'struct v4l2_mbus_framefmt *' from 'int' [-Wint-conversion]
+           fmt = v4l2_subdev_state_get_format(state, 0);
+               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   12 errors generated.
+
+
+vim +/v4l2_subdev_state_get_format +664 drivers/media/i2c/gc2145.c
+
+   655	
+   656	static int gc2145_init_cfg(struct v4l2_subdev *sd,
+   657				   struct v4l2_subdev_state *state)
+   658	{
+   659		struct gc2145 *gc2145 = to_gc2145(sd);
+   660		struct v4l2_mbus_framefmt *format;
+   661		struct v4l2_rect *crop;
+   662	
+   663		/* Initialize pad format */
+ > 664		format = v4l2_subdev_state_get_format(state, 0);
+   665		gc2145_update_pad_format(gc2145, &supported_modes[0], format,
+   666					 MEDIA_BUS_FMT_RGB565_1X16);
+   667	
+   668		/* Initialize crop rectangle. */
+ > 669		crop = v4l2_subdev_state_get_crop(state, 0);
+   670		*crop = supported_modes[0].crop;
+   671	
+   672		return 0;
+   673	}
+   674	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
