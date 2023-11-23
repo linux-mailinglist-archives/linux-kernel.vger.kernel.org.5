@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816B87F617C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9E17F617A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345795AbjKWOad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        id S1345784AbjKWOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345736AbjKWOaa (ORCPT
+        with ESMTP id S1345736AbjKWOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:30:30 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34604A4;
-        Thu, 23 Nov 2023 06:30:37 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1D5A540E0257;
-        Thu, 23 Nov 2023 14:30:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id OkiWKAWqFvOB; Thu, 23 Nov 2023 14:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700749833; bh=CbtmBDjQ9qd0QRr4KwqrmOaMwZq9bR8pSRoPEZXDNqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MwvfBChw+Z9+GdVylxTDucIGOFOYLbEQWbfpP1AZg0eZ7LT/C1tspkTEb39FrCeeI
-         BvSqD/1lBWFddp6ilfvdQXfAKSLIZekxVqU9pcgm/CPEAf/5c7TvAEHx1zNOj12lyk
-         NRRWWuwURHrXapku1youRrXfABcCmd26tFkbXt4MtrM/opkawyMg84+/YuHqrtOvkp
-         xIb/LcClHowTyBtvp8uLtSVWP5WGA4rHJNYdGq1zyInTQ2Qd7vrs11gDs6fixbL4ef
-         r+SWOaEGSbj82zO3I35fKBBMMWxzwzFb9LeDg/SPdIfxlM+NeDHmpXW4JQvKWq1yEm
-         3pNfx2dxTK1K5uHdtL14fQsxwSkCTh5Lm5O8iJ3VZtYTulbyjBm5r36Csl37Mawqnt
-         ICbd0ymJ701Vo+OzNQXYt+NGqqZ6vpsmOoWuFyD5Ygq1qZFNWCCBJUK94qIn1te/u9
-         r41vJxnSSEuvj6Bfjbf82STOtTAvaP+FQBVIo59njveDQFPwCAEJBgH9IwhNy8VjzI
-         doSIO9c8OMBXGpNEZ7FWokww9nlIxaze7jcXpVt6qWlAryfRof/GAQNNGdfbz6Kn7I
-         CrfPifM5VEt7dMADlJn9BisbSmkL0YwUWGuTxF3w5TFtWNsLYJu6hObZCGdLzxZ/Y3
-         n1MYJpjHEohD3Yiis0t2m0/A=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1C90E40E014B;
-        Thu, 23 Nov 2023 14:30:20 +0000 (UTC)
-Date:   Thu, 23 Nov 2023 15:30:19 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Robert Richter <rric@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Sergey Temerkhanov <s.temerkhanov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yeqi Fu <asuk4.q@gmail.com>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] EDAC, thunderx: fix possible out-of-bounds string access.
-Message-ID: <20231123143019.GDZV9h+zIVj5pBQySh@fat_crate.local>
-References: <20231122222007.3199885-1-arnd@kernel.org>
- <20231123115812.GBZV8+VHPKYmKB/sva@fat_crate.local>
- <f018b794-8af5-4c08-ae7f-0528a3e0f0e8@embeddedor.com>
+        Thu, 23 Nov 2023 09:30:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D62B9;
+        Thu, 23 Nov 2023 06:30:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700749830; x=1732285830;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=GOtJ/wPUcjOXSBk7IRQC4DD2WhaZ57quY1cxcixvzmw=;
+  b=WQPdD5jpJ5VpeXbj1PeyepxUNSvl33+RIsLezS0Q1xdItJs9n6Ie2sft
+   1BPBXErLFbFVWzXX86aNajnZXEPUoP7k7HXjmCj/8iu8ASQqRV6xpKC3g
+   SBz5DNAc7BGyrOTpZpWfVZjrWjsP3WUuqFX9MonfA7KVaKpwsgZhlLO2K
+   Ucd93Ny54vY+ba7J/1KmoxrYqHbch4vF/xSLQ3eP2sLXjGkiLHZnmn7io
+   62caroeYZezXEUH2JcNI7uSvFMfsNzZZ3ngQB6+u4mPH7Fsbh6CZBwO4U
+   t79uWOphJLc6j01VjmkvyKZPG7LUpNdbQcAFuYVj3cbKSmRKZNq76B9LH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382678115"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="382678115"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:30:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="717071779"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="717071779"
+Received: from mstrobel-mobl.ger.corp.intel.com ([10.252.40.70])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:30:28 -0800
+Date:   Thu, 23 Nov 2023 16:30:25 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
+        dave.hansen@linux.intel.com, peterz@infradead.org
+Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap cleanup.h
+ support
+In-Reply-To: <20231123040355.82139-13-david.e.box@linux.intel.com>
+Message-ID: <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
+References: <20231123040355.82139-1-david.e.box@linux.intel.com> <20231123040355.82139-13-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f018b794-8af5-4c08-ae7f-0528a3e0f0e8@embeddedor.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-872993958-1700749829=:1676"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 08:03:58AM -0600, Gustavo A. R. Silva wrote:
-> That's correct, yes.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Commit ID is stable enough so that it doesn't change?
+--8323329-872993958-1700749829=:1676
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-I don't want to commit it now and it would happen to change later and
-I'll have a stale reference in the commit message...
+On Wed, 22 Nov 2023, David E. Box wrote:
+
+> Add auto-release cleanups for iounmap() and ioport_unmap().
+> 
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+> V2 - Move from linux/io.h to asm-generic/io.h. Adds iounmap cleanup if
+>      iounmap() is defined. Adds ioport_unmap cleanup if CONFIG_IOPORT_MAP
+>      is defined.
+> 
+>  include/asm-generic/io.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index bac63e874c7b..9ef0332490b1 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -8,6 +8,7 @@
+>  #define __ASM_GENERIC_IO_H
+>  
+>  #include <asm/page.h> /* I/O is all done through memory accesses */
+> +#include <linux/cleanup.h>
+>  #include <linux/string.h> /* for memset() and memcpy() */
+>  #include <linux/types.h>
+>  #include <linux/instruction_pointer.h>
+> @@ -1065,6 +1066,10 @@ static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
+>  #endif
+>  #endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
+>  
+> +#ifdef iounmap
+> +DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
+> +#endif
+> +
+>  #ifndef ioremap_wc
+>  #define ioremap_wc ioremap
+>  #endif
+> @@ -1127,6 +1132,7 @@ static inline void ioport_unmap(void __iomem *p)
+>  extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
+>  extern void ioport_unmap(void __iomem *p);
+>  #endif /* CONFIG_GENERIC_IOMAP */
+> +DEFINE_FREE(ioport_unmap, void __iomem *, ioport_unmap(_T));
+>  #endif /* CONFIG_HAS_IOPORT_MAP */
+>  
+>  #ifndef CONFIG_GENERIC_IOMAP
+
+Has this now built successfully with LKP? (I don't think we get success 
+notifications from LKP for patch submissions, only failures).
+
+There were some odd errors last time but I think all they were unrelated 
+to this change (besides the checkpatch false positive, I mean).
 
 -- 
-Regards/Gruss,
-    Boris.
+ i.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--8323329-872993958-1700749829=:1676--
