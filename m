@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D29157F6346
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C2D7F6340
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346204AbjKWPsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S1346176AbjKWPrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:47:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346072AbjKWPsA (ORCPT
+        with ESMTP id S1346072AbjKWPrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:48:00 -0500
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BC2D53;
-        Thu, 23 Nov 2023 07:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1700754486; x=1732290486;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=Iv2Qzs4D9MzjAZ/+msRXyW+jC+y0zttCg1ew3aqF+2U=;
-  b=XdqnoFa6SrYGCG6WtVw4QcggNxU+Zqsb1fSRmWEMaIT7CCW389TDj9c7
-   sM8y36pNpBLGE0eSozRH1dLlSotoAZVGxcah6XIdvL/BEJqyjuOx8tn5F
-   /3sB501+EVDpZuZ3nPiizqCsW15FKixmYsNcs4e1LEVXnbsvGYynx/Wwx
-   avQSLgqzSYejdTwf5sZ2U8qqH6qcilIFPqtmQ6Cxn5rb1YAnOvf06/KNY
-   TC+ANC7BZkm3AhBnu7d2lRHsePbtTBbA9gUrjkQv7BKGxcxXHrniDkP/u
-   ewq+jIuqHoco1/WE6CVFbfpWppc90hTc/l8IfT3b2iNFu3uqtA84LNb2V
-   A==;
-X-CSE-ConnectionGUID: Vhq+0gP4QhqPhldSfqOCjw==
-X-CSE-MsgGUID: OusHH5ePR4udevI2Xk1IYA==
-X-IronPort-AV: E=Sophos;i="6.04,222,1695657600"; 
-   d="scan'208";a="3129205"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Nov 2023 23:47:32 +0800
-IronPort-SDR: yNSpfGHBkWSFijbzS2oZZ9uxivi5cNW88Z1XYcrF9DyAM3uh1j5tj4H6jq0ZRB9k/WjTKexBOH
- +L8NfEElF5MIirn1hD0LmhywCRXdOsiDH4rTUqsz9UpzL22A8r3TlXsg0kvQc3vdn8h9QMPg88
- Mr84cqxgvDgycivn+XuVNHAK08ymayVdspbhVrLZNjCESvd5r/s7TM8tjiw/vtfy0x9C7Tumsq
- +LSG8JT2/10znpBImqrjYDN+o1IssTrYHiWOkwjjyCPz6hSgb7mOVFTuqrRVT0+j37x3fEnSQy
- 1Xo=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Nov 2023 06:58:48 -0800
-IronPort-SDR: 1PUIqR2s/9Ebt5mkbwQHyzg38pV/M8VUbJyDLr0N/g57npTB6w5L+mfhlIOI/ptILjgzxWhZzh
- DxBhermHVSngyJ+gAVltCBd6X6V9rIbOqhQoWtAyx4WnoMjAGVC/ewvGltK03WQxYRxaSbOvAo
- m0zwViSajrK7JnP8VvmfWp/q1A1tHYvhaxHSSxNwupgTO7pXN+hmE4I7VGy+BSvN9qLoCqiJLE
- TUdlkbxGh1WU8+z0wVkaOOAUkdByLZZ2iDEagu8Ud00+E3GUTvo5mZk1m5vHwB0OyVwcBBkTwY
- +rE=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip01.wdc.com with ESMTP; 23 Nov 2023 07:47:31 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date:   Thu, 23 Nov 2023 07:47:19 -0800
-Subject: [PATCH v2 5/5] btrfs: reflow btrfs_free_tree_block
+        Thu, 23 Nov 2023 10:47:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA0DC1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vasH22+ZqE7NawyIR92P5uPhDSRcq1ysNxbjToJ1LBY=; b=vLpbgGizfUkL6qUgpsivl4JAm/
+        l8J8tNyrQHt5ij+7+mH22jvJHwKDnm15G+Y8yMTDvxK5gRlnADcaWJ0gGwXnEL+X6/fGctU+gIkgH
+        i7e0bTPjn5mArHPGmVnZ3Sd4irNBwcAJX3hcvaGLJPXbWqYn15n3uPyDZxtwkLGiuzrZBSL0W3h7g
+        0NnaVmbnZK083gVv5tpkKKqa2NiGaBEqg1aGsZitgcpovI9OR2AvH5HpmcbdwkXTFME1UrDr2MgzP
+        GZEnBpDtPaOAgDKKUAZp8G4YTEUeZWMFnI74HVPypN/duW75NVuUCoPbRlM89yKGH7bN101Tg5qlt
+        qowOlYxw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r6Bvh-007gJ1-SR; Thu, 23 Nov 2023 15:47:49 +0000
+Date:   Thu, 23 Nov 2023 15:47:49 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
+ hugepd processing
+Message-ID: <ZV90JcnQ1RGud/0R@casper.infradead.org>
+References: <20231116012908.392077-1-peterx@redhat.com>
+ <20231116012908.392077-7-peterx@redhat.com>
+ <ZVsYMMJpmFV2T/Zc@infradead.org>
+ <ZVzT5_3Zn-Y-6xth@x1n>
+ <ZV21GCbG48nTLDzn@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231123-josef-generic-163-v2-5-ed1a79a8e51e@wdc.com>
-References: <20231123-josef-generic-163-v2-0-ed1a79a8e51e@wdc.com>
-In-Reply-To: <20231123-josef-generic-163-v2-0-ed1a79a8e51e@wdc.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700754443; l=4954;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=Iv2Qzs4D9MzjAZ/+msRXyW+jC+y0zttCg1ew3aqF+2U=;
- b=wBKec1gxRq/i9SilagPHNs70jWLvaxWae6ekUc2QGDkIjfdCvJRtWv2CFHXJdevEZTz4yce1d
- bFonXlHMBy+CsXhi6FcwJXSE5yrygMMK8EjIGN7QtY1j23VdHUsyt16
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV21GCbG48nTLDzn@infradead.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,144 +68,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reflow btrfs_free_tree_block() so that there is one level of indentation
-needed.
+On Wed, Nov 22, 2023 at 12:00:24AM -0800, Christoph Hellwig wrote:
+> > The other option is I can always add a comment above gup_huge_pd()
+> > explaining this special bit, so that when someone is adding hugepd support
+> > to file large folios we'll hopefully not forget it?  But then that
+> > generalization work will only happen when the code will be needed.
+> 
+> If dropping the check is the right thing for now (and I think the ppc
+> maintainers and willy as the large folio guy might have a more useful
+> opinions than I do), leaving a comment in would be very useful.
 
-This patch has no functional changes.
+It looks like ARM (in the person of Ryan) are going to add support for
+something equivalent to hugepd.  Insofar as I understand hugepd, anyway.
+I've done my best to set up the generic code so that the arch code can
+use whatever size TLB entries it supports.  I haven't been looking to the
+hugetlb code as a reference for it, since it can assume natural alignment
+and generic THP/large folio must be able to handle arbitrary alignment.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/extent-tree.c | 97 +++++++++++++++++++++++++-------------------------
- 1 file changed, 49 insertions(+), 48 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 4044102271e9..093aaf7aeb3a 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3426,6 +3426,7 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_ref generic_ref = { 0 };
-+	struct btrfs_block_group *cache;
- 	int ret;
- 
- 	btrfs_init_generic_ref(&generic_ref, BTRFS_DROP_DELAYED_REF,
-@@ -3439,64 +3440,64 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
- 		BUG_ON(ret); /* -ENOMEM */
- 	}
- 
--	if (last_ref && btrfs_header_generation(buf) == trans->transid) {
--		struct btrfs_block_group *cache;
--		bool must_pin = false;
--
--		if (root_id != BTRFS_TREE_LOG_OBJECTID) {
--			ret = check_ref_cleanup(trans, buf->start);
--			if (!ret)
--				goto out;
--		}
-+	if (!last_ref)
-+		return;
- 
--		cache = btrfs_lookup_block_group(fs_info, buf->start);
-+	if (btrfs_header_generation(buf) != trans->transid)
-+		goto out;
- 
--		if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
--			pin_down_extent(trans, cache, buf->start, buf->len, 1);
--			btrfs_put_block_group(cache);
-+	if (root_id != BTRFS_TREE_LOG_OBJECTID) {
-+		ret = check_ref_cleanup(trans, buf->start);
-+		if (!ret)
- 			goto out;
--		}
-+	}
- 
--		/*
--		 * If there are tree mod log users we may have recorded mod log
--		 * operations for this node.  If we re-allocate this node we
--		 * could replay operations on this node that happened when it
--		 * existed in a completely different root.  For example if it
--		 * was part of root A, then was reallocated to root B, and we
--		 * are doing a btrfs_old_search_slot(root b), we could replay
--		 * operations that happened when the block was part of root A,
--		 * giving us an inconsistent view of the btree.
--		 *
--		 * We are safe from races here because at this point no other
--		 * node or root points to this extent buffer, so if after this
--		 * check a new tree mod log user joins we will not have an
--		 * existing log of operations on this node that we have to
--		 * contend with.
--		 */
--		if (test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
--			must_pin = true;
-+	cache = btrfs_lookup_block_group(fs_info, buf->start);
- 
--		if (must_pin || btrfs_is_zoned(fs_info)) {
--			pin_down_extent(trans, cache, buf->start, buf->len, 1);
--			btrfs_put_block_group(cache);
--			goto out;
--		}
-+	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
-+		pin_down_extent(trans, cache, buf->start, buf->len, 1);
-+		btrfs_put_block_group(cache);
-+		goto out;
-+	}
- 
--		WARN_ON(test_bit(EXTENT_BUFFER_DIRTY, &buf->bflags));
-+	/*
-+	 * If there are tree mod log users we may have recorded mod log
-+	 * operations for this node.  If we re-allocate this node we
-+	 * could replay operations on this node that happened when it
-+	 * existed in a completely different root.  For example if it
-+	 * was part of root A, then was reallocated to root B, and we
-+	 * are doing a btrfs_old_search_slot(root b), we could replay
-+	 * operations that happened when the block was part of root A,
-+	 * giving us an inconsistent view of the btree.
-+	 *
-+	 * We are safe from races here because at this point no other
-+	 * node or root points to this extent buffer, so if after this
-+	 * check a new tree mod log user joins we will not have an
-+	 * existing log of operations on this node that we have to
-+	 * contend with.
-+	 */
- 
--		btrfs_add_free_space(cache, buf->start, buf->len);
--		btrfs_free_reserved_bytes(cache, buf->len, 0);
-+	if (test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags)
-+		     || btrfs_is_zoned(fs_info)) {
-+		pin_down_extent(trans, cache, buf->start, buf->len, 1);
- 		btrfs_put_block_group(cache);
--		trace_btrfs_reserved_extent_free(fs_info, buf->start, buf->len);
-+		goto out;
- 	}
-+
-+	WARN_ON(test_bit(EXTENT_BUFFER_DIRTY, &buf->bflags));
-+
-+	btrfs_add_free_space(cache, buf->start, buf->len);
-+	btrfs_free_reserved_bytes(cache, buf->len, 0);
-+	btrfs_put_block_group(cache);
-+	trace_btrfs_reserved_extent_free(fs_info, buf->start, buf->len);
-+
- out:
--	if (last_ref) {
--		/*
--		 * Deleting the buffer, clear the corrupt flag since it doesn't
--		 * matter anymore.
--		 */
--		clear_bit(EXTENT_BUFFER_CORRUPT, &buf->bflags);
--	}
-+
-+	/*
-+	 * Deleting the buffer, clear the corrupt flag since it doesn't
-+	 * matter anymore.
-+	 */
-+	clear_bit(EXTENT_BUFFER_CORRUPT, &buf->bflags);
- }
- 
- /* Can return -ENOMEM */
-
--- 
-2.41.0
-
+If powerpc want to join in on the fun, they're more than welcome, but I
+get the feeling that investment in Linux-on-PPC is somewhat smaller than
+Linux-on-ARM these days.  Even if we restrict that to the server space.
