@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D0D7F6482
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83007F648A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjKWQ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S232403AbjKWQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345145AbjKWQ46 (ORCPT
+        with ESMTP id S1345236AbjKWQ5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:56:58 -0500
+        Thu, 23 Nov 2023 11:57:05 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49236D42
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:57:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C6AD7D
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:57:09 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r6D0g-00058v-MR; Thu, 23 Nov 2023 17:57:02 +0100
+        id 1r6D0h-00059B-0C; Thu, 23 Nov 2023 17:57:03 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r6D0g-00B55X-9s; Thu, 23 Nov 2023 17:57:02 +0100
+        id 1r6D0g-00B55c-Jp; Thu, 23 Nov 2023 17:57:02 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r6D0g-006p08-0j; Thu, 23 Nov 2023 17:57:02 +0100
+        id 1r6D0g-006p0C-AV; Thu, 23 Nov 2023 17:57:02 +0100
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH v2 17/18] mfd: tps65911-comparator: Convert to platform remove callback returning void
-Date:   Thu, 23 Nov 2023 17:56:45 +0100
-Message-ID: <20231123165627.492259-18-u.kleine-koenig@pengutronix.de>
+Cc:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH v2 18/18] mfd: twl4030-audio: Convert to platform remove callback returning void
+Date:   Thu, 23 Nov 2023 17:56:46 +0100
+Message-ID: <20231123165627.492259-19-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0.586.gbc5204569f7d.dirty
 In-Reply-To: <20231123165627.492259-1-u.kleine-koenig@pengutronix.de>
 References: <20231123165627.492259-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1926; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=DS/bp0Y0SVGN2rxRjkqNDXNDiJW5c7dknT63m3wnUL0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlX4RPuliNKk8BbKe9n0XXWQ4RFLhS0vJCQB6pC DrWE2WIpRuJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZV+ETwAKCRCPgPtYfRL+ Tq/hB/9U5uK3C/E0qQE1XN08NxkYDjSWNC4dbR5jjSSKuRmoMI8gTsSDNv3DoPuc4gnWelJuKC6 Ma9cm4OjpqmKbLrWJJrDz7gm1TZFnm8uVKpCrciM9LIcI4HJdN7UXIAeRDerSf7WxM6A72fzT+E jKhDQa2EQuYmy17k5vZdAqXtL8qNDSghg2l+miMezfZi8Dx1Er7k2Rqa2x2k8mHYTT4gk815wc+ CfpMKMaOCBNY3/S1Kf7lDYrt51v8Btv2mV0+UDPV/vmbsV41oUjKJzRfog+A5D1ktSXUXHmS4LO ku+89U/RF+v0wvHHfu4G2TJtB6Dlygj8IsH14ELnJ3TqSUcy
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1723; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=DEtnBZo9+Rw2avXE1cyu5z7dDDmV5UUxzQ8KgZxe55o=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlX4RQBLGaD9pFfd1Eg7BbBRcTWakbniKn95iPB cQ9N7fsf4uJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZV+EUAAKCRCPgPtYfRL+ Tvh2B/0YkRZYVT9s0hWo0DjSZZuxSkD8Rl/758nwco+aLXlRzC2A5W4oAkrVaSs/LvQj18zku32 Cz8tHBwDUbpykspjmGEkFpG7PLPVEgOUBxsDSuhRfN7zacoZG0jk6x0+ySCHaR1zh7Zh3BoVbfz Z6UCyw5jTTtm19/VJN++oB0/dGja6F2LBPCt1ajKF1aDm9rv43NN0yKyx877d3Z2CsJEEJ6ObE7 LZurYaIlvvCSCVkrfCeiZcGoIEqEcsO+qQsITI+A18Y3AHozwZUFYQNo/P+D30gwA0Hr61Ksg+i 4mjJQeq8mV5dA0YKds3GTIIy9h1u4KMGBWkWRtXVnVVYxo6j
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -49,7 +50,7 @@ X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expand
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,39 +72,36 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/mfd/tps65911-comparator.c | 6 ++----
+ drivers/mfd/twl4030-audio.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/tps65911-comparator.c b/drivers/mfd/tps65911-comparator.c
-index 8f4210075913..f206a9c50e9d 100644
---- a/drivers/mfd/tps65911-comparator.c
-+++ b/drivers/mfd/tps65911-comparator.c
-@@ -140,15 +140,13 @@ static int tps65911_comparator_probe(struct platform_device *pdev)
+diff --git a/drivers/mfd/twl4030-audio.c b/drivers/mfd/twl4030-audio.c
+index 88002f8941e5..d436ddf661da 100644
+--- a/drivers/mfd/twl4030-audio.c
++++ b/drivers/mfd/twl4030-audio.c
+@@ -258,12 +258,10 @@ static int twl4030_audio_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int tps65911_comparator_remove(struct platform_device *pdev)
-+static void tps65911_comparator_remove(struct platform_device *pdev)
+-static int twl4030_audio_remove(struct platform_device *pdev)
++static void twl4030_audio_remove(struct platform_device *pdev)
  {
- 	struct tps65910 *tps65910;
- 
- 	tps65910 = dev_get_drvdata(pdev->dev.parent);
- 	device_remove_file(&pdev->dev, &dev_attr_comp2_threshold);
- 	device_remove_file(&pdev->dev, &dev_attr_comp1_threshold);
+ 	mfd_remove_devices(&pdev->dev);
+ 	twl4030_audio_dev = NULL;
 -
 -	return 0;
  }
  
- static struct platform_driver tps65911_comparator_driver = {
-@@ -156,7 +154,7 @@ static struct platform_driver tps65911_comparator_driver = {
- 		.name = "tps65911-comparator",
+ static const struct of_device_id twl4030_audio_of_match[] = {
+@@ -278,7 +276,7 @@ static struct platform_driver twl4030_audio_driver = {
+ 		.of_match_table = twl4030_audio_of_match,
  	},
- 	.probe = tps65911_comparator_probe,
--	.remove = tps65911_comparator_remove,
-+	.remove_new = tps65911_comparator_remove,
+ 	.probe		= twl4030_audio_probe,
+-	.remove		= twl4030_audio_remove,
++	.remove_new	= twl4030_audio_remove,
  };
  
- static int __init tps65911_comparator_init(void)
+ module_platform_driver(twl4030_audio_driver);
 -- 
 2.42.0
 
