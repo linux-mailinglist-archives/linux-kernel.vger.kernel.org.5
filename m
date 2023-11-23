@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988E17F5974
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE187F596C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344883AbjKWHjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        id S1343883AbjKWHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKWHjK (ORCPT
+        with ESMTP id S229543AbjKWHi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:39:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2453D1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:39:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BACE2C433CA;
-        Thu, 23 Nov 2023 07:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700725154;
-        bh=dnmMd/Gc51YGnbhok9mTHLUrlL/9RJjKE3NYV+vKfVY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CQQ3yDjiaKQqXGl+F6WcMG1ruJBisZBke27GVjPRyHrQlhGpCyvtEUrGUWSpj4hCk
-         8ZqRP+sP3sSSqHK2zhMDkB0WGWRRPV3y+hFZogyl8aOCzDOoClk0xEMFgiBGc/oFmz
-         0IRp62rFN9A1VDadsEyDaD0ETrwL9TdooE7LzY4naj9tMp6UnzsBzgS7ajz/1Ghwr9
-         9mgK6xbwT+xtfo/UMTJ2bpznMC9sUmUxU6WY43I0Uurps2e/P9mxE/ba2a3GIAwAlA
-         LOLhilZLVDO2sd7yLrNdgdKY/pXI3UkhyjUUqKD3hWhpFmlOPXke2dKDX1bh2/HbHv
-         UdIzPBThbuZHA==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1eb39505ba4so436592fac.0;
-        Wed, 22 Nov 2023 23:39:14 -0800 (PST)
-X-Gm-Message-State: AOJu0YzU2M5Z7lhvk9uyvpKe2Jm6PtQNs1UrtebJbYt1q7jMzKFIloxS
-        MKJkt2HQ6KzlTnkOymQVSF0C5xK2KMqdHOeGWb0=
-X-Google-Smtp-Source: AGHT+IE/aHZ2CqZK023YoKIf3yCJ3PHVdOqmqOE42F0qp4WJHAcnHX3ZkplDwoELnnYLxCAA2La8Da6akCN0EmpAj1w=
-X-Received: by 2002:a05:6870:6c0a:b0:1f0:d96:8d9c with SMTP id
- na10-20020a0568706c0a00b001f00d968d9cmr6123126oab.9.1700725154090; Wed, 22
- Nov 2023 23:39:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
-In-Reply-To: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Nov 2023 16:38:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASVMjVg4dr=KdSDHwGww_47H78H7rMXA=wf+ncugesDSA@mail.gmail.com>
-Message-ID: <CAK7LNASVMjVg4dr=KdSDHwGww_47H78H7rMXA=wf+ncugesDSA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] kbuild: Per arch/platform dtc warning levels
-To:     Rob Herring <robh@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
+        Thu, 23 Nov 2023 02:38:58 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2521BD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:39:04 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6cb55001124so1229253b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700725144; x=1701329944; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xnV2yqKOcPNVU/h0qUFRaNBNtVv3KcbN9dof9BEc7kQ=;
+        b=UYtVk2yqDQ7Lu8oprclAEfT45nJrY2hJQ+/whB1lYpT4jsWMHZTo9zV8s1KMwYEFI+
+         H9wldtNcJzz2lTj1n9RsUjIRry705tibUHePkOA1CiQNM5tTxR9rhjbUv0vxyEaEglOD
+         ywKF4p6MzQJmBsuZ7h+TmYLp7FVpeWP/JEYdtth7vn4zNSBDbrMqodENcXCzq7eBYGlC
+         ycnsZ0jZ/LLIN+iCMYzDGj3RFEijzXSNE2CJ5soiOq206BpVd8SA6Je2HSdlxrFPSlIQ
+         LYpFXr74dG+cKgiLumwzQD37DSUl4lA/DtODqeWb+q/V4LdyZd8+vEzKnXbAvvMfIBnN
+         G/Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700725144; x=1701329944;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xnV2yqKOcPNVU/h0qUFRaNBNtVv3KcbN9dof9BEc7kQ=;
+        b=PY5U2+SWFTivrPncaE4hUgMEcBZk5TnGCx4GU7B+HkuwWWgKw+nCQR5GnI+1iEN5O6
+         zcNCe/9hkyyn6Urcn89x0teB8A/7wB2b3Iejd+jQ6AlaVFrIjaja7+SJPfHYeEahIloz
+         kIan/lCUlklayHMQG/B+iXmj26wWk32sicdPzJiBP+S3sqlmjQAFLc9pswstmHmriig0
+         aYKk4i73MaQEjt0Zbs6J5i7eH6Etm/QfVtJlXGei4bxwL/vcs92vN6/xyMdrOuqMUnAP
+         P0G5QBQu11CKiAlt514cQRM0B6NnYe5GwdYCD3LZ7ZYnLuLhPhUK+RWOrJsaxgHvyCmG
+         2jxA==
+X-Gm-Message-State: AOJu0Yz9bpT5L+tTjN3G2ZYxxgXT9pTCVX0gB70IjJJ2Xdj632GjhAja
+        G8Kdx3IWWNyd3/KMA+09tuIzMA==
+X-Google-Smtp-Source: AGHT+IESFAAMDlqgKalFBUEpZJ78OIYtfPl0UuU+VSp5kr/47KyUaSkNptVf7zlPgQwcjCQST2ym6A==
+X-Received: by 2002:a05:6a21:6da3:b0:187:bb9c:569 with SMTP id wl35-20020a056a216da300b00187bb9c0569mr2883617pzb.5.1700725143897;
+        Wed, 22 Nov 2023 23:39:03 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id v13-20020aa7808d000000b006c0fe2cf26csm615737pff.107.2023.11.22.23.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 23:39:03 -0800 (PST)
+Date:   Thu, 23 Nov 2023 13:09:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Conor Dooley <conor@kernel.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] cpufreq: qcom-nvmem: Fix power domain scaling
+Message-ID: <20231123073901.meb7p4yzueg2lkou@vireshk-i7>
+References: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 7:12=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
-:
->
-> This series adds support to set the dtc extra warning level on a per
-> arch or per platform (directory really) basis.
->
-> The first version of this was just a simple per directory override for
-> Samsung platforms, but Conor asked to be able to do this for all of
-> riscv.
->
-> For merging, either I can take the whole thing or the riscv and samsung
-> patches can go via their normal trees. The added variable will have no
-> effect until merged with patch 2.
->
-> v1:
->  - https://lore.kernel.org/all/20231116211739.3228239-1-robh@kernel.org/
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On 14-11-23, 11:07, Stephan Gerhold wrote:
+> The power domain scaling setup for QCS404 and MSM8909 in
+> cpufreq-com-nvmem does not work correctly at the moment because the
+> genpd core ignores all the performance state votes that are specified in
+> the CPU OPP table. This happens because nothing in the driver makes the
+> genpd core aware that the power domains are actively being consumed by
+> the CPU.
+> 
+> Fix this by marking the devices as runtime active. Also mark the devices
+> to be in the "awake path" during system suspend so that performance
+> state votes necessary for the CPU are preserved during system suspend.
+> 
+> While all the patches in this series are needed for full functionality,
+> the cpufreq and pmdomain patches can be merged independently. There is
+> no compile-time dependency between those two.
+> 
+> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 > ---
+> Changes in v3:
+> - Drop patches with MSM8909 definitions that were applied already
+> - Add extra patch to fix system suspend properly by using
+>   device_set_awake_path() instead of dev_pm_syscore_device()
+> - Set GENPD_FLAG_ACTIVE_WAKEUP for rpmpd so that performance state votes
+>   needed by the CPU are preserved during suspend
+> - Link to v2: https://lore.kernel.org/r/20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com
 
+Applied. Thanks.
 
-There were some attempts in the past to enable W=3D1 in particular subsyste=
-ms,
-so here is a similar comment.
+I picked the pmdomain patch too, lemme know if that needs to go via
+some other tree.
 
-Adding a new warning flag to W=3D1 is always safe without doing any compile=
- test.
-
-With this series, it would not be true any more because a new warning in W=
-=3D1
-would potentially break riscv/samsung platforms.
-
-Linus requires a clean build (i.e. zero warning) when W=3D option is not gi=
-ven.
-
-
-
-
-
-
-> Rob Herring (4):
->       kbuild: Move dtc graph_child_address warning to W=3D2
->       kbuild: Allow arch/platform override of dtc warning level
->       riscv: dts: Always enable extra W=3D1 warnings
->       arm/arm64: dts: samsung: Always enable extra W=3D1 warnings
->
->  arch/arm/boot/dts/samsung/Makefile  |  3 +++
->  arch/arm64/boot/dts/exynos/Makefile |  3 +++
->  arch/riscv/boot/dts/Makefile        |  3 +++
->  scripts/Makefile.lib                | 16 +++++++++-------
->  4 files changed, 18 insertions(+), 7 deletions(-)
-> ---
-> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> change-id: 20231122-dtc-warnings-968ff83a86ed
->
-> Best regards,
-> --
-> Rob Herring <robh@kernel.org>
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+viresh
