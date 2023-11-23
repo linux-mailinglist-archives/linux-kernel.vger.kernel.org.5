@@ -2,52 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2252D7F670F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD017F6710
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345811AbjKWTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:22:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S230231AbjKWTWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbjKWTWM (ORCPT
+        with ESMTP id S230441AbjKWTWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:22:12 -0500
+        Thu, 23 Nov 2023 14:22:36 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C344B10DD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:22:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D90FC433C9;
-        Thu, 23 Nov 2023 19:22:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A919E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:22:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00AA2C433C9;
+        Thu, 23 Nov 2023 19:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700767339;
-        bh=R6XsSadM5I2yXfIdaPIQgY509tpbrMFgDxEb4kwI94I=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hxi1O8Iq7Fh36dXc8H+L2W2SmRulDZoZjizjVeTdbcoXqs9uqbTQyuSm5th9QPCXP
-         fEbbOc+PveOQ97Qsa7p1jdXyi+R7Rz58Nh6/UrlR0DeujTFMbXUD+qlV9Zs1OtoN8f
-         xJXHTOxhgtKwYOf9ZP3CXWQg8KxdPQ5PSzu0jtAdWB5GoNPNVOKAqxoRk9/9IJbmko
-         OrSsnRhn2t1QL6+4wCMTHYnG8IzYICnDxW4d1hOj9IVXfWzyQqhkf+FBJ5BkLmbrQM
-         +QKJM/7loigbcS8VS7KhSBvDHYRPQw4gTQGC98GDIkWxSiEcgCMUr3r8mynkwzwVAs
-         UJyjIQoZJb09A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4B2E4EAA95A;
-        Thu, 23 Nov 2023 19:22:19 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.7-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231123171825.957077-1-kuba@kernel.org>
-References: <20231123171825.957077-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231123171825.957077-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
-X-PR-Tracked-Commit-Id: 39f04b1406b23fcc129a67e70d6205d5a7322f38
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7
-Message-Id: <170076733930.13126.8602329933324976229.pr-tracker-bot@kernel.org>
-Date:   Thu, 23 Nov 2023 19:22:19 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com,
-        bpf@vger.kernel.org
+        s=k20201202; t=1700767363;
+        bh=+DnfYw9L0OuHBRrJMLhZjl50FM6MJZ9pOeWDYd/DFnk=;
+        h=Date:From:To:cc:Subject:From;
+        b=G+/QOiHCYmgMcdzGaJ9KUrZuc+710L9mfrlVQZn72UyrGTs1LCsMCX0XW4O5l9R8J
+         q6ZBBNKJTwrs/4xZ4gDV+V6lIBHP3tGX6cbXLRb3S92V1rht1JwY7cS+8gEcruw0eV
+         8eeOnee/zlDj4zIQHqiKZuGtr5KA5AdlGGawNbskqC6XtGhTi245QNqqyUA9ZIuamh
+         Pfy/iOIzUNwRuX+f4XRcbMnKhP2DEx/xfJtD5yjEiNJXk80BbIuori/X+n3j9ZCku9
+         A2wVlygPiKzpt50g+N8PuJYjbPg+ipPpnZiTO03r+JLyETi+4OaMcrWMMBfPi7FcAG
+         WJw1qJFcB4h4A==
+Date:   Thu, 23 Nov 2023 20:22:39 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [GIT PULL] HID fixes
+Message-ID: <nycvar.YFH.7.76.2311231302250.29220@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,15 +47,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 23 Nov 2023 09:18:25 -0800:
+Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
+please pull from
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/for-linus-2023112301
 
-Thank you!
+To receive HID subsystem fixes for 6.7.
+
+=====
+- Revert of commit that caused regression to many Logitech unifying 
+  receiver users (Jiri Kosina)
+- power management fix for hid-mcp2221 (Hamish Martin)
+- fix for race condition between HID core and HID debug (Charles Yi)
+- a couple of assorted device-ID-specific quirks
+=====
+
+Aoba K (1):
+      HID: multitouch: Add quirk for HONOR GLO-GXXX touchpad
+
+Brett Raye (1):
+      HID: glorious: fix Glorious Model I HID report
+
+Charles Yi (1):
+      HID: fix HID device resource race between HID core and debugging support
+
+Denis Benato (2):
+      HID: hid-asus: add const to read-only outgoing usb buffer
+      HID: hid-asus: reset the backlight brightness level on resume
+
+Hamish Martin (2):
+      HID: mcp2221: Set driver data before I2C adapter add
+      HID: mcp2221: Allow IO to start during probe
+
+Jiri Kosina (1):
+      Revert "HID: logitech-dj: Add support for a new lightspeed receiver iteration"
+
+Oliver Neukum (1):
+      HID: add ALWAYS_POLL quirk for Apple kb
+
+Yihong Cao (1):
+      HID: apple: add Jamesdonkey and A3R to non-apple keyboards list
+
+ drivers/hid/hid-apple.c       |  2 ++
+ drivers/hid/hid-asus.c        | 27 +++++++++++++++++++++++----
+ drivers/hid/hid-core.c        | 12 ++++++++++--
+ drivers/hid/hid-debug.c       |  3 +++
+ drivers/hid/hid-glorious.c    | 16 ++++++++++++++--
+ drivers/hid/hid-ids.h         | 12 +++++++-----
+ drivers/hid/hid-logitech-dj.c | 11 +++--------
+ drivers/hid/hid-mcp2221.c     |  4 +++-
+ drivers/hid/hid-multitouch.c  |  5 +++++
+ drivers/hid/hid-quirks.c      |  1 +
+ include/linux/hid.h           |  3 +++
+ 11 files changed, 74 insertions(+), 22 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Jiri Kosina
+SUSE Labs
+
