@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A1C7F6295
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6387F6299
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346036AbjKWPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        id S1346043AbjKWPXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345997AbjKWPVj (ORCPT
+        with ESMTP id S1345997AbjKWPXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:21:39 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38292C1;
-        Thu, 23 Nov 2023 07:21:46 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso624121a12.2;
-        Thu, 23 Nov 2023 07:21:46 -0800 (PST)
+        Thu, 23 Nov 2023 10:23:14 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FF4C1;
+        Thu, 23 Nov 2023 07:23:20 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ce656b9780so6967615ad.2;
+        Thu, 23 Nov 2023 07:23:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700752905; x=1701357705; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q70ME+Z8MA/iN3ndOUEyZrB6FW+VdFvlQgHMP5KT7Xo=;
-        b=iCM5CXlqAt6LnkAOYOhnscwAXsBbXV7C+ZTWy1y0+lqJME3AzFM04ost8zlgR61r5M
-         PrzdagkS4HXJTl50UaFQ+Q3IECUJ03ejFDjcec79B2BFVixqsLXRI6vSuDbZErn00DrE
-         t+TnrXSpuLl5jkYrkuPBU8gW/eNMhuwRD6kdGmzyqP4Oe7vel1JLRXqyfjQGaibDZUfg
-         u6Qdk0e8HKQdZPf4C8WzmJAPLGfXcGTVU8Gnd1tE4n7Zhrc2C8kRMpFR6OQQclsd+lS+
-         O7K/3bF/txOsjVMueW2xDUVSFzOtbIxLr4zBdxlr/pUoONyLFHM770WznoBSHrgjsXkf
-         XY1w==
+        d=gmail.com; s=20230601; t=1700752999; x=1701357799; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O8k0J5g8fTvye961SlGaFZHeC7PjYj+KQtQkSEfcfOY=;
+        b=nobkJI9vC6LppbRZ/fh0nlVFNUwxgXOoOovhLY9pYdH/EYHbyVL9IlFKp8mtbdEJH3
+         xT4eV0eKImmvqd9lWsQIeijJ5tKBndxNKcrDqpo9xmTsXTiOvchPITocvlm5jI7VH7f9
+         3rmw3zH0TW9HDgPUXwH7rNxOtaYoJWjGLsEXmYz1AzcGuMK5k7pnluAWTn8A4tKP0+S6
+         25fAwwpKPF6bZ5EIfq1de6Te1MA+wK/uqiddwwseFUSbpeaLpIXyPf1mNztJ6Yorte8l
+         ECemZvpQfnd6WkmF9f6CaPc5kvUknrU8DNrCbxblkRmomAEuIiyxxC6W04+GH1BKdyM1
+         IYrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700752905; x=1701357705;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q70ME+Z8MA/iN3ndOUEyZrB6FW+VdFvlQgHMP5KT7Xo=;
-        b=K7H/4wA3vRaN/7cbMAiBt8w5gsNJy0M4BfaQKNgWmsgPVNzPI94nd9h8sXMWf8GfSs
-         CZ5DVguqnURC7cunaTuGB0O4kqXQXcZoj4ieqBZE5sDfU765YAlpN0cY+kr6dq9bBHpx
-         5thmd/2OKtYPrG7zU2WPc0EtFRXAWMB1w7jI2fWVJ5OtyB1SAgc088tzcqHKekD4KUM6
-         vtSijG8ReRgvH3b9kt4bJ22P1mAY7csfPyYNI8Z11mDKoHtQCkDsZMZufiMN52+1Hdrm
-         LKhVA0TgV8ofja+lNMTeazD6VSfZIOwyfyAGRUGvX+oiq54Q4E4ZsUYPjjELcyP+SOFJ
-         lK4w==
-X-Gm-Message-State: AOJu0YyYJjE+8LRzi9o2tLqqrlbARxvN2IhkEUEIUkeJG8Imduudu//f
-        j7JfZG0GGl8AWJHLPHw1gCvnHo1G/CQRnuEEy0U=
-X-Google-Smtp-Source: AGHT+IG7HjrLo+UO2gU6kyO67Qrxj1Fj9BW3CiY12ZHHr9qO2aQ6gsiGv7l3PWYv+dLAVKqIAWPZHZTysn9dpGno6g4=
-X-Received: by 2002:a17:90a:1948:b0:280:cd5f:bf90 with SMTP id
- 8-20020a17090a194800b00280cd5fbf90mr5907737pjh.23.1700752905538; Thu, 23 Nov
- 2023 07:21:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700752999; x=1701357799;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O8k0J5g8fTvye961SlGaFZHeC7PjYj+KQtQkSEfcfOY=;
+        b=dpt1tW5YiV9MmEkL3tq7yCRqA84hN13JYq1Dc5wlYQ89IDDC32UaYz59sY76qbVItX
+         Vn2fmCBOndQ3gOYQ2sUOXRGUyXSSaS/RkrVS/VipR12KNA/FAiUcnt+aHvUgeGlDzbl4
+         Z1DN9KeRi6L1Zm5000xmVXX47z11TgFZX0/QrB5Gm4jpJ/kLC8LiQ66WPMiPqboDYDAa
+         G8vPFrsiaUr4FAythkiYNrqPHO/ni33ar8DrtnC61osAM+Q4IC+gtvcMqEQk19hZgdnI
+         QbGC3y2e5PEzRlx+BEnc3qnqCRzoPQRjqkRqIY1T951Sh3z3yCQ6BAVP7K8keDCm0oMo
+         EaeQ==
+X-Gm-Message-State: AOJu0YzvYdhaxgd3t/PCMfZBwN0jGdUYIpcMcvEVCb7uSxZbCXPavigk
+        CrKhTr3fCYH4FPPc0YlMENw=
+X-Google-Smtp-Source: AGHT+IE600Ab4cUQicMoMEPXhDZXqX+n8l2zmdX8bzr6PkqlfIQjhSoXlYepYPH0IrVCo/nbyqwBFQ==
+X-Received: by 2002:a17:903:4289:b0:1cf:64c9:b116 with SMTP id ju9-20020a170903428900b001cf64c9b116mr5559508plb.4.1700752999465;
+        Thu, 23 Nov 2023 07:23:19 -0800 (PST)
+Received: from localhost.localdomain ([110.46.146.116])
+        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b001c737950e4dsm418565plh.2.2023.11.23.07.23.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 07:23:19 -0800 (PST)
+From:   SungHwan Jung <onenowy@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     SungHwan Jung <onenowy@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: [PATCH v3 0/2] Add support for Acer Predator PHN16-71
+Date:   Fri, 24 Nov 2023 00:22:25 +0900
+Message-ID: <20231123152229.4920-1-onenowy@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <ZV5zGROLefrsEcHJ@r13-u19.micron.com> <ZV6Uhsg6WLBtNqU3@memverge.com>
-In-Reply-To: <ZV6Uhsg6WLBtNqU3@memverge.com>
-From:   Vinicius Petrucci <vpetrucci@gmail.com>
-Date:   Thu, 23 Nov 2023 09:21:08 -0600
-Message-ID: <CAEZ6=UNLuOYom1Qng28F2y6XocJM4cnbDG1yq3m1p8btuQ4tRQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm/mbind: Introduce process_mbind() syscall for
- external memory binding
-To:     Gregory Price <gregory.price@memverge.com>, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, linux-cxl@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, minchan@kernel.org,
-        dave.hansen@linux.intel.com, x86@kernel.org,
-        Jonathan.Cameron@huawei.com, aneesh.kumar@linux.ibm.com,
-        ying.huang@intel.com, dan.j.williams@intel.com,
-        hezhongkun.hzk@bytedance.com, fvdl@google.com, surenb@google.com,
-        rientjes@google.com, hannes@cmpxchg.org, mhocko@suse.com,
-        Hasan.Maruf@amd.com, jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com,
-        vtavarespetr@micron.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,73 +73,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg!
+This series of patches adds support for Acer Predator PHN16-71 in acer-wmi
+including platform profile, (thermal) mode key and fan speed monitoring.
 
-Thanks a lot for quickly looking into this and sharing your notes here.
+The acer-wmi driver already includes fan control and turbo mode support
+for gaming laptops that use predator sense app (version 3), but PHN16-71
+operates in different way with new predator sense (version 4).
+To distinguish from implementation for previous model, new implementation
+for this device is marked with "v4".
 
-On Wed, Nov 22, 2023 at 5:53=E2=80=AFPM Gregory Price
-<gregory.price@memverge.com> wrote:
->
-> > Please note the initial `maxnode` parameter from `mbind` was omitted
-> > to ensure the API doesn't exceed 6 arguments. Instead, the constant
-> > MAX_NUMNODES was utilized.
-> >
->
-> I don't think this will work, users have traditionally been allowed to
-> shorten their nodemasks, and also for some level of portability.
->
-> We may want to consider an arg structure, rather than just chopping an
-> argument off.
->
+Changes in v3:
+- change dependencies in kconfig
 
-Yes, good point... that should be considered as a more complete
-long-term approach beyond the MVP.
+Changes in v2:
+- fix typo
+- remove redundant "if" statement
 
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index 10a590ee1c89..91ee300fa728 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -1215,11 +1215,10 @@ static struct folio *alloc_migration_target_by_=
-mpol(struct folio *src,
-> >  }
-> >  #endif
-> >
-> > -static long do_mbind(unsigned long start, unsigned long len,
-> > +static long do_mbind(struct mm_struct *mm, unsigned long start, unsign=
-ed long len,
-> >                    unsigned short mode, unsigned short mode_flags,
-> >                    nodemask_t *nmask, unsigned long flags)
-> >  {
-> > -     struct mm_struct *mm =3D current->mm;
-> >       struct vm_area_struct *vma, *prev;
-> >       struct vma_iterator vmi;
-> >       struct migration_mpol mmpol;
-> > @@ -1465,10 +1464,84 @@ static inline int sanitize_mpol_flags(int *mode=
-, unsigned short *flags)
-> >       return 0;
-> >  }
->
-> This is a completely insufficient change to do_mbind.  do_mbind utilizes
-> `current` in a variety of places for nodemask (cpuset) validation and to
-> acquire the task's lock.  This will not work the way you intend it to,
-> you end up mixing up node masks between current and target task.
->
+SungHwan Jung (2):
+  platform/x86: acer-wmi: Add platform profile and mode key support for
+    Predator PHN16-71
+  platform/x86: acer-wmi: add fan speed monitoring for Predator PHN16-71
 
-Oh oh. True! Good catch!
+ drivers/platform/x86/Kconfig    |   3 +-
+ drivers/platform/x86/acer-wmi.c | 364 +++++++++++++++++++++++++++++++-
+ 2 files changed, 365 insertions(+), 2 deletions(-)
 
-> see here:
-> https://lore.kernel.org/all/20231122211200.31620-7-gregory.price@memverge=
-.com/
->
+-- 
+2.43.0
 
-Let me go over this... Thanks!
-
-> We may want to combine this change and with my change so that your iovec
-> changes can be re-used, because that is a very nice feature.
->
-
-Sounds good. Thanks again!
-
-Best,
-
-Vinicius
