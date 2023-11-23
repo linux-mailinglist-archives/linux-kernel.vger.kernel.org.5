@@ -2,229 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF017F5665
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5A47F5670
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343878AbjKWCZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 21:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        id S1344054AbjKWCao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 21:30:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjKWCZW (ORCPT
+        with ESMTP id S229789AbjKWCam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 21:25:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382C5DA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700706327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4fZhNq8GJeX9SWeHe/i+bqnWhN/Cr+deFv7p3LiotmY=;
-        b=G2eFvk7pTdtjF39uwJQWPcZfmvgVziHO5a7Bop4VtB00+h/sb1hvk+mcW8cuD0UbsipEnE
-        Ez74C5jfiCe7BU8r93y1sQl/0vkOVjwxnu6znTgECN4TEyTMdF4kMqNPZQhPyGjHQvig8V
-        iZtiQQvsBCRDLSQD9TrkExw/gLh/3SI=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-92-Qd0N8JloPVS-qEgtsrqFvg-1; Wed, 22 Nov 2023 21:25:25 -0500
-X-MC-Unique: Qd0N8JloPVS-qEgtsrqFvg-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c1f17f0198so368844a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:25:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700706325; x=1701311125;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4fZhNq8GJeX9SWeHe/i+bqnWhN/Cr+deFv7p3LiotmY=;
-        b=fn1k6WaRzp81pEFVGbkQiLCVgdG8DEM8RurtwVnxS9vlbEMl6uboSLKXH/jJW/X4hJ
-         DtEoLBI1IF4oUm3IjyRjJc3HNjXf4ieHSZWXdOIslqVZyOaVtzPL4lNpydljWrWnfOCy
-         Dc0XnnzZkvJFYM51UMN3SC/776mFBa5mo1M4h8bD5U62GOrW0j4OS7Z13slsFaoo4O9S
-         gsNlDwiSYwuV0SfaLfirFVkOmFo/tTomS6QQ2Z7oRfDhzdh0KRJ9kLIPZdA2KBNyJEKM
-         RlBlUQaqXPsJAReckPgUMDeCgkWmXZ5mDoOnUEGAE385u+I+nfqvR+Zo0TxWlhj8EOfF
-         kU+A==
-X-Gm-Message-State: AOJu0Ywv3j+Sc1JF9+c6buW9FYuhVMRJBruxD2WmveFqSaDNTAJxPL+9
-        Gda+A0UMP1JfQDCvZGnRl9KhU5TT6uKoiXppBgLxeKeVFZ8a7TIhuuS+f7hzePNc5LXG+9USJ7p
-        nG3EMIEFRecHa85HUv9x2tCT1
-X-Received: by 2002:a05:6a20:8e27:b0:18a:d8ba:ca4c with SMTP id y39-20020a056a208e2700b0018ad8baca4cmr4605136pzj.52.1700706324638;
-        Wed, 22 Nov 2023 18:25:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGxR7M/YEWGyFnEtNUc5LBO0hyjZ/IXAwm0JsZfrzv3JEa1H0xAKSCsRQjwMBfMFkkL/yrBvw==
-X-Received: by 2002:a05:6a20:8e27:b0:18a:d8ba:ca4c with SMTP id y39-20020a056a208e2700b0018ad8baca4cmr4605122pzj.52.1700706324252;
-        Wed, 22 Nov 2023 18:25:24 -0800 (PST)
-Received: from [10.72.112.224] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id a16-20020a170902ecd000b001cf5d59c739sm100589plh.271.2023.11.22.18.25.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 18:25:23 -0800 (PST)
-Message-ID: <748532c2-9382-0a3c-8acd-c8261f741174@redhat.com>
-Date:   Thu, 23 Nov 2023 10:25:18 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] ceph: quota: Fix invalid pointer access if
- get_quota_realm return ERR_PTR
-Content-Language: en-US
-To:     Wenchao Hao <haowenchao2@huawei.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.de>, ceph-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20231123015340.3935321-1-haowenchao2@huawei.com>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20231123015340.3935321-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Wed, 22 Nov 2023 21:30:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A23D191
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:30:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31687C433C7;
+        Thu, 23 Nov 2023 02:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700706647;
+        bh=RG/9HtREZC7P8kyrlN4x4dzPHdA++B0V9olP3M7OUxM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DMe2UTHVVzp6Vd+lr4hmm0DPL7Jkdf583jhx3bp2HJDrWVvSS/eSHbzpw8o0WC79I
+         De+VfG9nNgyN66NA96EEu0+fzeaNFUmBl2dkeUAItWZFxwiLxyKg9gkK5yBE2QLPKe
+         AuwDyuJSl0Og4XVtfQ8nbuxqltvr57WaEX6UAkwfwz4p9Gr0SEl937aB6mmCYvlAiB
+         nRWSCwD+FZHbSYu8adrpqVu1GU7zfC5tNemKkp910hmpmaGZr6YQrhHPPUg+dloSVl
+         +TS6bzwWDddF9yMXGF4gs5wJKUUiLevYVhuuzpFLLCH18W5Lra2ghkI9t5FvXoKaK1
+         bI3tYuXD3SGDA==
+Date:   Thu, 23 Nov 2023 11:30:43 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        paulmck@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH 1/2] bootconfig: Support appending initrd config to
+ embedded one
+Message-Id: <20231123113043.26d103fe1fac8fdd2bf5ae1d@kernel.org>
+In-Reply-To: <20231121231342.193646-2-oss@malat.biz>
+References: <20231121231342.193646-1-oss@malat.biz>
+        <20231121231342.193646-2-oss@malat.biz>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 22 Nov 2023 00:13:41 +0100
+Petr Malat <oss@malat.biz> wrote:
 
-On 11/23/23 09:53, Wenchao Hao wrote:
-> This issue is reported by smatch that get_quota_realm() might return
-> ERR_PTR but we did not handle it. It's not a immediate bug, while we
-> still should address it to avoid potential bugs if get_quota_realm()
-> is changed to return other ERR_PTR in future.
->
-> Set ceph_snap_realm's pointer in get_quota_realm()'s to address this
-> issue, the pointer would be set to NULL if get_quota_realm() failed
-> to get struct ceph_snap_realm, so no ERR_PTR would happen any more.
->
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+> When both embedded and initrd boot configs are present, initrd config is
+> preferred. Introduce CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD option, which
+> allows appending the initrd config to the embedded one.
+> 
+> We handle embedded boot config in-place to avoid allocations, which will
+> be handy for early parameters support.
+> 
+> Signed-off-by: Petr Malat <oss@malat.biz>
 > ---
-> V3:
->   - Remove redundant variable initialization in ceph_quota_is_same_realm
->
-> V2:
->   - Fix all potential invalid pointer access caused by get_quota_realm
->   - Update commit comment and point it's not a immediate bug
->
->   fs/ceph/quota.c | 39 ++++++++++++++++++++++-----------------
->   1 file changed, 22 insertions(+), 17 deletions(-)
->
-> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
-> index 9d36c3532de1..b25906a5bfbb 100644
-> --- a/fs/ceph/quota.c
-> +++ b/fs/ceph/quota.c
-> @@ -197,10 +197,10 @@ void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc)
->   }
->   
->   /*
-> - * This function walks through the snaprealm for an inode and returns the
-> - * ceph_snap_realm for the first snaprealm that has quotas set (max_files,
-> + * This function walks through the snaprealm for an inode and set the
-> + * realmp with the first snaprealm that has quotas set (max_files,
->    * max_bytes, or any, depending on the 'which_quota' argument).  If the root is
-> - * reached, return the root ceph_snap_realm instead.
-> + * reached, set the realmp with the root ceph_snap_realm instead.
->    *
->    * Note that the caller is responsible for calling ceph_put_snap_realm() on the
->    * returned realm.
-> @@ -211,10 +211,9 @@ void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc)
->    * this function will return -EAGAIN; otherwise, the snaprealms walk-through
->    * will be restarted.
->    */
-> -static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
-> -					       struct inode *inode,
-> -					       enum quota_get_realm which_quota,
-> -					       bool retry)
-> +static int get_quota_realm(struct ceph_mds_client *mdsc, struct inode *inode,
-> +			   enum quota_get_realm which_quota,
-> +			   struct ceph_snap_realm **realmp, bool retry)
->   {
->   	struct ceph_client *cl = mdsc->fsc->client;
->   	struct ceph_inode_info *ci = NULL;
-> @@ -222,8 +221,10 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
->   	struct inode *in;
->   	bool has_quota;
->   
-> +	if (realmp)
-> +		*realmp = NULL;
->   	if (ceph_snap(inode) != CEPH_NOSNAP)
-> -		return NULL;
-> +		return 0;
->   
->   restart:
->   	realm = ceph_inode(inode)->i_snap_realm;
-> @@ -250,7 +251,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
->   				break;
->   			ceph_put_snap_realm(mdsc, realm);
->   			if (!retry)
-> -				return ERR_PTR(-EAGAIN);
-> +				return -EAGAIN;
->   			goto restart;
->   		}
->   
-> @@ -259,8 +260,11 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
->   		iput(in);
->   
->   		next = realm->parent;
-> -		if (has_quota || !next)
-> -		       return realm;
-> +		if (has_quota || !next) {
-> +			if (realmp)
-> +				*realmp = realm;
-> +			return 0;
-> +		}
->   
->   		ceph_get_snap_realm(mdsc, next);
->   		ceph_put_snap_realm(mdsc, realm);
-> @@ -269,7 +273,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
->   	if (realm)
->   		ceph_put_snap_realm(mdsc, realm);
->   
-> -	return NULL;
-> +	return 0;
->   }
->   
->   bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
-> @@ -277,6 +281,7 @@ bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
->   	struct ceph_mds_client *mdsc = ceph_sb_to_mdsc(old->i_sb);
->   	struct ceph_snap_realm *old_realm, *new_realm;
->   	bool is_same;
+>  include/linux/bootconfig.h |  10 ++-
+>  init/Kconfig               |   9 +++
+>  init/main.c                |  62 ++++++++++--------
+>  lib/bootconfig-data.S      |   3 +-
+>  lib/bootconfig.c           | 129 +++++++++++++++++++++++++++----------
+>  5 files changed, 146 insertions(+), 67 deletions(-)
+> 
+> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+> index ca73940e26df..88bbcffa82d5 100644
+> --- a/include/linux/bootconfig.h
+> +++ b/include/linux/bootconfig.h
+> @@ -281,7 +281,10 @@ static inline int __init xbc_node_compose_key(struct xbc_node *node,
+>  }
+>  
+>  /* XBC node initializer */
+> -int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
+> +int __init xbc_init(char *buf, size_t size, const char **emsg, int *epos);
+> +
+> +/* Append XBC data */
+> +int __init xbc_append(const char *data, size_t size, const char **emsg, int *epos);
+>  
+>  /* XBC node and size information */
+>  int __init xbc_get_info(int *node_size, size_t *data_size);
+> @@ -291,10 +294,11 @@ void __init xbc_exit(void);
+>  
+>  /* XBC embedded bootconfig data in kernel */
+>  #ifdef CONFIG_BOOT_CONFIG_EMBED
+> -const char * __init xbc_get_embedded_bootconfig(size_t *size);
+> +char * __init xbc_get_embedded_bootconfig(size_t *size);
+>  #else
+> -static inline const char *xbc_get_embedded_bootconfig(size_t *size)
+> +static inline char *xbc_get_embedded_bootconfig(size_t *size)
+>  {
+> +	*size = 0;
+>  	return NULL;
+>  }
+>  #endif
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 6d35728b94b2..9161d2dbad0c 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1339,6 +1339,15 @@ config BOOT_CONFIG_EMBED
+>  
+>  	  If unsure, say N.
+>  
+> +config BOOT_CONFIG_EMBED_APPEND_INITRD
+
+With the early param handling feature, this must be enabled always because
+without this feature, the early params are set by embedded bootconfig, but
+that will be replaced by initrd bootconfig.
+
+
+> +	bool "Append initrd bootconfig to the embedded one"
+> +	depends on BOOT_CONFIG_EMBED && BLK_DEV_INITRD
+> +	default n
+> +	help
+> +	  By default if both embedded bootconfig and initrd bootconfig are
+> +	  found, initrd bootconfig is preferred. If this option is set, initrd
+> +	  bootconfig gets appended to the embedded one.
+> +
+>  config BOOT_CONFIG_EMBED_FILE
+>  	string "Embedded bootconfig file path"
+>  	depends on BOOT_CONFIG_EMBED
+> diff --git a/init/main.c b/init/main.c
+> index 436d73261810..0cd738f7f0cf 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -267,6 +267,9 @@ static void * __init get_boot_config_from_initrd(size_t *_size)
+>  	u32 *hdr;
+>  	int i;
+>  
+> +	if (_size)
+> +		*_size = 0;
+> +
+>  	if (!initrd_end)
+>  		return NULL;
+>  
+> @@ -309,6 +312,8 @@ static void * __init get_boot_config_from_initrd(size_t *_size)
+>  #else
+>  static void * __init get_boot_config_from_initrd(size_t *_size)
+>  {
+> +	if (_size)
+> +		*_size = 0;
+>  	return NULL;
+>  }
+>  #endif
+> @@ -404,16 +409,16 @@ static int __init warn_bootconfig(char *str)
+>  static void __init setup_boot_config(void)
+>  {
+>  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+> -	const char *msg, *data;
+> +	const char *msg, *initrd_data;
+>  	int pos, ret;
+> -	size_t size;
+> -	char *err;
+> +	size_t initrd_size, embeded_size = 0;
+> +	char *err, *embeded_data = NULL;
+>  
+>  	/* Cut out the bootconfig data even if we have no bootconfig option */
+> -	data = get_boot_config_from_initrd(&size);
+> +	initrd_data = get_boot_config_from_initrd(&initrd_size);
+>  	/* If there is no bootconfig in initrd, try embedded one. */
+> -	if (!data)
+> -		data = xbc_get_embedded_bootconfig(&size);
+> +	if (!initrd_data || IS_ENABLED(CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD))
+> +		embeded_data = xbc_get_embedded_bootconfig(&embeded_size);
+
+Thus, this part can be simply get both initrd and embedded one.
+
+Thank you,
+
+>  
+>  	strscpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+>  	err = parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+> @@ -426,7 +431,7 @@ static void __init setup_boot_config(void)
+>  	if (err)
+>  		initargs_offs = err - tmp_cmdline;
+>  
+> -	if (!data) {
+> +	if (!initrd_data && !embeded_data) {
+>  		/* If user intended to use bootconfig, show an error level message */
+>  		if (bootconfig_found)
+>  			pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+> @@ -435,28 +440,29 @@ static void __init setup_boot_config(void)
+>  		return;
+>  	}
+>  
+> -	if (size >= XBC_DATA_MAX) {
+> -		pr_err("bootconfig size %ld greater than max size %d\n",
+> -			(long)size, XBC_DATA_MAX);
+> -		return;
+> -	}
+> -
+> -	ret = xbc_init(data, size, &msg, &pos);
+> -	if (ret < 0) {
+> -		if (pos < 0)
+> -			pr_err("Failed to init bootconfig: %s.\n", msg);
+> -		else
+> -			pr_err("Failed to parse bootconfig: %s at %d.\n",
+> -				msg, pos);
+> -	} else {
+> -		xbc_get_info(&ret, NULL);
+> -		pr_info("Load bootconfig: %ld bytes %d nodes\n", (long)size, ret);
+> -		/* keys starting with "kernel." are passed via cmdline */
+> -		extra_command_line = xbc_make_cmdline("kernel");
+> -		/* Also, "init." keys are init arguments */
+> -		extra_init_args = xbc_make_cmdline("init");
+> -	}
+> +	ret = xbc_init(embeded_data, embeded_size, &msg, &pos);
+> +	if (ret < 0)
+> +		goto err0;
+> +
+> +	/* Call append even if no data are there as embedded bootconfig is in .init */
+> +	ret = xbc_append(initrd_data, initrd_size, &msg, &pos);
+> +	if (ret < 0)
+> +		goto err0;
+> +
+> +	xbc_get_info(&ret, NULL);
+> +	pr_info("Load bootconfig: %ld bytes %d nodes\n", (long)(embeded_size + initrd_size), ret);
+> +	/* keys starting with "kernel." are passed via cmdline */
+> +	extra_command_line = xbc_make_cmdline("kernel");
+> +	/* Also, "init." keys are init arguments */
+> +	extra_init_args = xbc_make_cmdline("init");
+>  	return;
+> +
+> +err0:	if (pos < 0)
+> +		pr_err("Failed to init bootconfig: %s.\n", msg);
+> +	else
+> +		pr_err("Failed to parse %s bootconfig: %s at %zu.\n",
+> +				pos < embeded_size ? "embedded" : "initrd",
+> +				msg, pos < embeded_size ? pos : pos - embeded_size);
+>  }
+>  
+>  static void __init exit_boot_config(void)
+> diff --git a/lib/bootconfig-data.S b/lib/bootconfig-data.S
+> index ef85ba1a82f4..f447e24eb8fa 100644
+> --- a/lib/bootconfig-data.S
+> +++ b/lib/bootconfig-data.S
+> @@ -2,9 +2,10 @@
+>  /*
+>   * Embed default bootconfig in the kernel.
+>   */
+> -	.section .init.rodata, "aw"
+> +	.section .init.data, "aw"
+>  	.global embedded_bootconfig_data
+>  embedded_bootconfig_data:
+>  	.incbin "lib/default.bconf"
+> +	.byte 0
+>  	.global embedded_bootconfig_data_end
+>  embedded_bootconfig_data_end:
+> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+> index c59d26068a64..841163ce5313 100644
+> --- a/lib/bootconfig.c
+> +++ b/lib/bootconfig.c
+> @@ -15,13 +15,13 @@
+>  
+>  #ifdef CONFIG_BOOT_CONFIG_EMBED
+>  /* embedded_bootconfig_data is defined in bootconfig-data.S */
+> -extern __visible const char embedded_bootconfig_data[];
+> -extern __visible const char embedded_bootconfig_data_end[];
+> +extern __visible char embedded_bootconfig_data[];
+> +extern __visible char embedded_bootconfig_data_end[];
+>  
+> -const char * __init xbc_get_embedded_bootconfig(size_t *size)
+> +char * __init xbc_get_embedded_bootconfig(size_t *size)
+>  {
+>  	*size = embedded_bootconfig_data_end - embedded_bootconfig_data;
+> -	return (*size) ? embedded_bootconfig_data : NULL;
+> +	return *size ? embedded_bootconfig_data : NULL;
+>  }
+>  #endif
+>  
+> @@ -48,6 +48,7 @@ const char * __init xbc_get_embedded_bootconfig(size_t *size)
+>  static struct xbc_node *xbc_nodes __initdata;
+>  static int xbc_node_num __initdata;
+>  static char *xbc_data __initdata;
+> +static bool xbc_data_allocated __initdata;
+>  static size_t xbc_data_size __initdata;
+>  static struct xbc_node *last_parent __initdata;
+>  static const char *xbc_err_msg __initdata;
+> @@ -846,13 +847,14 @@ static int __init xbc_verify_tree(void)
+>  }
+>  
+>  /* Need to setup xbc_data and xbc_nodes before call this. */
+> -static int __init xbc_parse_tree(void)
+> +static int __init xbc_parse_tree(int offset)
+>  {
+>  	char *p, *q;
+>  	int ret = 0, c;
+>  
+> -	last_parent = NULL;
+> -	p = xbc_data;
+> +	if (!offset)
+> +		last_parent = NULL;
+> +	p = xbc_data + offset;
+>  	do {
+>  		q = strpbrk(p, "{}=+;:\n#");
+>  		if (!q) {
+> @@ -906,18 +908,42 @@ static int __init xbc_parse_tree(void)
+>   */
+>  void __init xbc_exit(void)
+>  {
+> -	xbc_free_mem(xbc_data, xbc_data_size);
+> +	if (xbc_data_allocated)
+> +		xbc_free_mem(xbc_data, xbc_data_size);
+>  	xbc_data = NULL;
+>  	xbc_data_size = 0;
+> +	xbc_data_allocated = 0;
+>  	xbc_node_num = 0;
+>  	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
+>  	xbc_nodes = NULL;
+>  	brace_index = 0;
+>  }
+>  
+> +static int xbc_parse_and_verify_tree(int offset, int *epos, const char **emsg)
+> +{
 > +	int ret;
->   
->   restart:
->   	/*
-> @@ -286,9 +291,9 @@ bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
->   	 * dropped and we can then restart the whole operation.
->   	 */
->   	down_read(&mdsc->snap_rwsem);
-> -	old_realm = get_quota_realm(mdsc, old, QUOTA_GET_ANY, true);
-> -	new_realm = get_quota_realm(mdsc, new, QUOTA_GET_ANY, false);
-> -	if (PTR_ERR(new_realm) == -EAGAIN) {
-> +	get_quota_realm(mdsc, old, QUOTA_GET_ANY, &old_realm, true);
-> +	ret = get_quota_realm(mdsc, new, QUOTA_GET_ANY, &new_realm, false);
-> +	if (ret == -EAGAIN) {
->   		up_read(&mdsc->snap_rwsem);
->   		if (old_realm)
->   			ceph_put_snap_realm(mdsc, old_realm);
-> @@ -492,8 +497,8 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
->   	bool is_updated = false;
->   
->   	down_read(&mdsc->snap_rwsem);
-> -	realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
-> -				QUOTA_GET_MAX_BYTES, true);
-> +	get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
-> +				QUOTA_GET_MAX_BYTES, &realm, true);
+> +
+> +	ret = xbc_parse_tree(offset);
+> +	if (!ret) {
+> +		ret = xbc_verify_tree();
+> +		if (!ret)
+> +			return xbc_node_num;
+> +	}
+> +
+> +	if (epos)
+> +		*epos = xbc_err_pos;
+> +	if (emsg)
+> +		*emsg = xbc_err_msg;
+> +
+> +	xbc_exit();
+> +	return ret;
+> +}
+> +
+>  /**
+>   * xbc_init() - Parse given XBC file and build XBC internal tree
+> - * @data: The boot config text original data
+> + * @data: Null terminated boot config data, that can be directly
+> + *        modified by the parser and will exist till xbc_exit()
+> + *        or xbc_append() is called.
+>   * @size: The size of @data
+>   * @emsg: A pointer of const char * to store the error message
+>   * @epos: A pointer of int to store the error position
+> @@ -930,10 +956,8 @@ void __init xbc_exit(void)
+>   * @epos will be updated with the error position which is the byte offset
+>   * of @buf. If the error is not a parser error, @epos will be -1.
+>   */
+> -int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+> +int __init xbc_init(char *data, size_t size, const char **emsg, int *epos)
+>  {
+> -	int ret;
+> -
+>  	if (epos)
+>  		*epos = -1;
+>  
+> @@ -942,44 +966,79 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+>  			*emsg = "Bootconfig is already initialized";
+>  		return -EBUSY;
+>  	}
+> -	if (size > XBC_DATA_MAX || size == 0) {
+> +	if (size > XBC_DATA_MAX || (size == 0 && data != NULL)) {
+>  		if (emsg)
+>  			*emsg = size ? "Config data is too big" :
+>  				"Config data is empty";
+>  		return -ERANGE;
+>  	}
+>  
+> -	xbc_data = xbc_alloc_mem(size + 1);
+> -	if (!xbc_data) {
+> -		if (emsg)
+> -			*emsg = "Failed to allocate bootconfig data";
+> -		return -ENOMEM;
+> -	}
+> -	memcpy(xbc_data, data, size);
+> -	xbc_data[size] = '\0';
+> -	xbc_data_size = size + 1;
+> -
+>  	xbc_nodes = xbc_alloc_mem(sizeof(struct xbc_node) * XBC_NODE_MAX);
+>  	if (!xbc_nodes) {
+>  		if (emsg)
+>  			*emsg = "Failed to allocate bootconfig nodes";
+> -		xbc_exit();
+>  		return -ENOMEM;
+>  	}
+>  	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
+>  
+> -	ret = xbc_parse_tree();
+> -	if (!ret)
+> -		ret = xbc_verify_tree();
+> +	if (!data)
+> +		return 0;
+> +	xbc_data = data;
+> +	xbc_data_size = size;
+> +	return xbc_parse_and_verify_tree(0, epos, emsg);
+> +}
+>  
+> -	if (ret < 0) {
+> -		if (epos)
+> -			*epos = xbc_err_pos;
+> +/**
+> + * xbc_append() - Append data to already existing XBC tree
+> + * @data: Boot config data, which are copied by the function.
+> + * @size: The size of @data
+> + * @emsg: A pointer of const char * to store the error message
+> + * @epos: A pointer of int to store the error position
+> + */
+> +int __init xbc_append(const char *data, size_t size, const char **emsg, int *epos)
+> +{
+> +	size_t new_size, parse_start;
+> +	char *new_data;
+> +
+> +	new_size = xbc_data_size + size;
+> +	if (new_size > XBC_DATA_MAX) {
+>  		if (emsg)
+> -			*emsg = xbc_err_msg;
+> -		xbc_exit();
+> -	} else
+> -		ret = xbc_node_num;
+> +			*emsg = "Merged config data is too big";
+> +		return -ERANGE;
+> +	}
+> +	if (new_size == 0) {
+> +		if (data) {
+> +			if (emsg)
+> +				*emsg = "Appended data is empty";
+> +			return -ERANGE;
+> +		}
+> +		return 0;
+> +	}
+>  
+> -	return ret;
+> +	new_data = xbc_alloc_mem(new_size);
+> +	if (!new_data) {
+> +		if (emsg)
+> +			*emsg = "Failed to allocate bootconfig data";
+> +		return -ENOMEM;
+> +	}
+> +
+> +	if (xbc_data_size) {
+> +		memcpy(new_data, xbc_data, xbc_data_size - 1);
+> +		new_data[xbc_data_size - 1] = '\n';
+> +		parse_start = xbc_data_size - 1;
+> +	} else {
+> +		parse_start = 0;
+> +	}
+> +	memcpy(new_data + xbc_data_size, data, size);
+> +	new_data[new_size - 1] = 0;
+> +	if (xbc_data_allocated)
+> +		xbc_free_mem(xbc_data, xbc_data_size);
+> +	xbc_data_allocated = 1;
+> +	xbc_data = new_data;
+> +	xbc_data_size = new_size;
+> +
+> +	if (!data)
+> +		return 0;
+> +
+> +	return xbc_parse_and_verify_tree(parse_start, epos, emsg);
+>  }
+> -- 
+> 2.30.2
+> 
 
-Some extra white spaces here.
 
-Otherwise LGTM.
-
-I will adjust it and applying it to the testing branch.
-
-Thanks
-
-- Xiubo
-
->   	up_read(&mdsc->snap_rwsem);
->   	if (!realm)
->   		return false;
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
