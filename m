@@ -2,154 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0DD7F65AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769517F65AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345745AbjKWRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:44:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S1345646AbjKWRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjKWRoB (ORCPT
+        with ESMTP id S229526AbjKWRnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:44:01 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC3710D0;
-        Thu, 23 Nov 2023 09:44:06 -0800 (PST)
-Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sbln958xWz6875y;
-        Fri, 24 Nov 2023 01:42:37 +0800 (CST)
-Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
- lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 23 Nov 2023 17:44:02 +0000
-From:   <shiju.jose@huawei.com>
-To:     <linux-cxl@vger.kernel.org>, <linux-mm@kvack.org>,
-        <dave@stgolabs.net>, <jonathan.cameron@huawei.com>,
-        <dave.jiang@intel.com>, <alison.schofield@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <dan.j.williams@intel.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
-        <Yazen.Ghannam@amd.com>, <rientjes@google.com>,
-        <jiaqiyan@google.com>, <tony.luck@intel.com>, <Jon.Grimm@amd.com>,
-        <dave.hansen@linux.intel.com>, <rafael@kernel.org>,
-        <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <jthoughton@google.com>,
-        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
-        <pgonda@google.com>, <duenwen@google.com>,
-        <mike.malvestuto@intel.com>, <gthelen@google.com>,
-        <wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
-        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
-        <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [PATCH v3 00/11] cxl: Add support for CXL feature commands, CXL device patrol scrub control and DDR5 ECS control features
-Date:   Fri, 24 Nov 2023 01:43:43 +0800
-Message-ID: <20231123174355.1176-1-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.35.1.windows.2
+        Thu, 23 Nov 2023 12:43:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081E410C2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:43:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8729C433C8;
+        Thu, 23 Nov 2023 17:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700761427;
+        bh=1GRk6pF6ONArbuEDYzf53o3CAsRNhMgYXX01fUitKEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EUK/QVte4vbuMVsB7J0ZDQXQPfx5ZzqhBZOhhYXYl+f0qLTL1oOdCbPQ8soI+D9Ee
+         lLr90oOKzn2mI92pdKjbW39eFkQ0GSOJjcyT6adnMdiDnhRB3xMjBD5TgAH4bV6NWh
+         zUYM5BmACPrvUX0Thlj/wUOp31f3cOuJrbJejyUoKR2etkkH1ile+WN036EMVW2DqT
+         u6oOAbS5e4UkOdxtE5rqKgQ0AqfTWN7qYbgnZsGCaXYUVB0crrskCXVWkx/q9UsmMf
+         cZPM91apJKntl3C6x/aRusganoJT+ab/o4O+hbp3yxgKP8ous4VJPWd+HHW8z9aZlX
+         c6tMeQ7jEcPyQ==
+Date:   Thu, 23 Nov 2023 17:43:43 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
+Message-ID: <ZV+PTynfbRmF0trU@finisterre.sirena.org.uk>
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.122.247.234]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500006.china.huawei.com (7.191.161.198)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="42Lt/E9P87lWIhco"
+Content-Disposition: inline
+In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shiju Jose <shiju.jose@huawei.com>
 
-1. Add support for CXL feature mailbox commands.
-2. Add CXL device scrub driver supporting patrol scrub control and DDR5 ECS
-control features.
-3. Add scrub driver supports configuring memory scrubs in the system.
-4. Add scrub attributes for DDR5 ECS control to the memory scrub driver.
-5. Register CXL device patrol scrub and ECS with scrub control driver.
-6. Add documentation for CXL memory device scrub control attributes.
+--42Lt/E9P87lWIhco
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The QEMU series to support these features is available here,
-https://lore.kernel.org/qemu-devel/20231114124711.1128-1-shiju.jose@huawei.com/T/#t
+On Thu, Nov 23, 2023 at 03:49:14PM +0100, Neil Armstrong wrote:
+> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
 
-Changes
-v2 -> v3:
-1. Changes for comments from Davidlohr, Thanks.
- - Updated cxl scrub kconfig
- - removed usage of the flag is_support_feature from
-   the function cxl_mem_get_supported_feature_entry().
- - corrected spelling error.
- - removed unnecessary debug message.
- - removed export feature commands to the userspace.
-2. Possible fix for the warnings/errors reported by kernel
-   test robot.
-3. Add documentation for the common scrub configure atrributes.
+> The WCD9390/WCD9395 Soundwire Slaves will be used by the
 
-v1 -> v2:
-1. Changes for comments from Dave Jiang, Thanks.
- - Split patches.
- - reversed xmas tree declarations.
- - declared flags as enums.
- - removed few unnecessary variable initializations.
- - replaced PTR_ERR_OR_ZERO() with IS_ERR() and PTR_ERR().
- - add auto clean declarations.
- - replaced while loop with for loop.
- - Removed allocation from cxl_get_supported_features() and
-   cxl_get_feature() and make change to take allocated memory
-   pointer from the caller.
- - replaced if/else with switch case.
- - replaced sprintf() with sysfs_emit() in 2 places.
- - replaced goto label with return in few functions.
-2. removed unused code for supported attributes from ecs.
-3. Included following common patch for scrub configure driver
-   to this series.
-   "memory: scrub: Add scrub driver supports configuring memory scrubbers
-    in the system"
+Please avoid using outdated terminology, "device" is probably a good
+alternative here.  There are some usages in APIs that need to be updated
+but still, good to avoid where possible.
 
-Shiju Jose (11):
-  cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox command
-  cxl/mbox: Add GET_FEATURE mailbox command
-  cxl/mbox: Add SET_FEATURE mailbox command
-  cxl/memscrub: Add CXL device patrol scrub control feature
-  cxl/memscrub: Add CXL device DDR5 ECS control feature
-  memory: scrub: Add scrub driver supports configuring memory scrubs in
-    the system
-  cxl/memscrub: Register CXL device patrol scrub with scrub configure
-    driver
-  memory: scrub: Add scrub control attributes for the DDR5 ECS
-  cxl/memscrub: Register CXL device DDR5 ECS with scrub configure driver
-  memory: scrub: sysfs: Add Documentation for set of common scrub
-    attributes
-  cxl: scrub: sysfs: Add Documentation for CXL memory device scrub
-    control attributes
+> +static struct wcd939x_sdw_ch_info wcd939x_sdw_tx_ch_info[] = {
+> +	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
+> +	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
+> +	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_1_4_PORT, BIT(2)),
+> +	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_1_4_PORT, BIT(3)),
+> +	// TOFIX support ADC3/4 & DMIC0/1 on port 2
+> +	//WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
+> +	//WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
+> +	//WCD_SDW_CH(WCD939X_DMIC0, WCD939X_ADC_DMIC_1_2_PORT, BIT(2)),
+> +	//WCD_SDW_CH(WCD939X_DMIC1, WCD939X_ADC_DMIC_1_2_PORT, BIT(3)),
 
- .../testing/sysfs-class-cxl-scrub-configure   | 135 +++
- .../ABI/testing/sysfs-class-scrub-configure   |  82 ++
- drivers/cxl/Kconfig                           |  23 +
- drivers/cxl/core/Makefile                     |   1 +
- drivers/cxl/core/mbox.c                       |  59 ++
- drivers/cxl/core/memscrub.c                   | 989 ++++++++++++++++++
- drivers/cxl/cxlmem.h                          | 120 +++
- drivers/cxl/pci.c                             |   6 +
- drivers/memory/Kconfig                        |   1 +
- drivers/memory/Makefile                       |   1 +
- drivers/memory/scrub/Kconfig                  |  11 +
- drivers/memory/scrub/Makefile                 |   6 +
- drivers/memory/scrub/memory-scrub.c           | 481 +++++++++
- include/memory/memory-scrub.h                 |  90 ++
- 14 files changed, 2005 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
- create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
- create mode 100644 drivers/cxl/core/memscrub.c
- create mode 100644 drivers/memory/scrub/Kconfig
- create mode 100644 drivers/memory/scrub/Makefile
- create mode 100755 drivers/memory/scrub/memory-scrub.c
- create mode 100755 include/memory/memory-scrub.h
+Why are these commented out?
 
--- 
-2.34.1
+> +static int wcd9390_interrupt_callback(struct sdw_slave *slave,
+> +				      struct sdw_slave_intr_status *status)
+> +{
+> +	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
+> +	struct irq_domain *slave_irq = wcd->slave_irq;
+> +	u32 sts1, sts2, sts3;
+> +
+> +	do {
+> +		handle_nested_irq(irq_find_mapping(slave_irq, 0));
+> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_0, &sts1);
+> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_1, &sts2);
+> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_2, &sts3);
+> +
+> +	} while (sts1 || sts2 || sts3);
+> +
+> +	return IRQ_HANDLED;
+> +}
 
+We do this in the other Qualcomm drivers but it doesn't seem ideal to
+just ignore the interrupts.
+
+> +static int wcd939x_sdw_component_bind(struct device *dev, struct device *master,
+> +				      void *data)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void wcd939x_sdw_component_unbind(struct device *dev,
+> +					 struct device *master, void *data)
+> +{
+> +}
+> +
+> +static const struct component_ops wcd939x_sdw_component_ops = {
+> +	.bind = wcd939x_sdw_component_bind,
+> +	.unbind = wcd939x_sdw_component_unbind,
+> +};
+
+Do these need to be provided if they can legitimately be empty?
+
+--42Lt/E9P87lWIhco
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfj08ACgkQJNaLcl1U
+h9AbPQf9HwduNNNq58Fi9Zk4pDIkhiO6nVd+QB5hkOPoAqoUexbSojnNREgdQUy/
+S5Ek1XNG04jXfE7MYvLpIEO6bhwa6uv/Zn7UM3i0EDIzd2qXT4vH6Ce4/pl2+IsK
+3bcbiKFHCpSQRCbzay9Fm4DUdMXbEIpBeZmMznljBtZmF7UIj1xVLJQEsEiwWJ7G
+8NTb1aJ9QauPhZgkcuizCmNrZkQseSioyDmFZPZlD6TmofHqz2A8MiI5oLQVQr7s
+zvFENMqhOHPxwb9b/orlGQqf0tKdoZZDO66P0b3g242Z2KItP/Aasq4FiQTJ24LP
+/69tGglcrDDBrHEBUmmx6ULgLVUoCw==
+=YBBq
+-----END PGP SIGNATURE-----
+
+--42Lt/E9P87lWIhco--
