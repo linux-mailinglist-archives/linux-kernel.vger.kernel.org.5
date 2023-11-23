@@ -2,106 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289967F6725
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1777F679D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjKWTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
+        id S232584AbjKWTgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKWTdW (ORCPT
+        with ESMTP id S231366AbjKWTgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:33:22 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29558D47;
-        Thu, 23 Nov 2023 11:33:28 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c876f1e44dso14938081fa.0;
-        Thu, 23 Nov 2023 11:33:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700768006; x=1701372806; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/hq7LNXGTuldiV4ecttMMHQLmxEW4ioDA8UB5OvVq6I=;
-        b=FAGRUWPCXyj6exxd8QaqT3B9IdqRb54vWGM/tMjKTawkrYUcK7C0tSoTGfbsMjVpRo
-         4dVDLMpwFBZQpjuPUShK62PMEP1VHEEGr0mVWO0x0NvQKTvBd+D2BZoDhY3Thq5DfNdr
-         TCBAqMqQAi740vulbw7u15kw/5GH6MlN0H9sDjnlBw+I5xWMo0niJEIJCB7gGRnNX/he
-         1t9ZpzDLeNUpsXYByRdwOlwD7+7nMCdaljBAwRQ4spqfyEhoSzDP/Ews2UUrqbgC4XYP
-         J/ZRBOKqtdB1R3foyTwpnfz4yiUhTpmw9xQGVuOHeBPkgUe5OPQNoIGYiL9x6NvZe3U+
-         kExw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700768006; x=1701372806;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/hq7LNXGTuldiV4ecttMMHQLmxEW4ioDA8UB5OvVq6I=;
-        b=ORI4NU2QgMN1qQegL3AtgOX+2BKRogKqJKavZb+ECssQfxpBTmzfHcxfYnv/KS17xy
-         SL4/hUySM/TJ2pczrDTXyKuZ2DNp926o1rbqEt+/D4Vbq7YMgGT5xpyhIW4DPF8iYWMb
-         RoiSDNRntk3DesphtOQE+TtCHGorHLguIV2Bj+h95IZ08MZGcesbpY57d7+3vCGPVKf8
-         DsmsLaWeFeNJVC9G/ZXVhdlQdXiO+qpMvJutviJsf00Rb4DMLX88Yixwnrcku4TyMA5V
-         1MRxejgHWqOiTrBVLOl5Cv0Q9L36cbSpwHUHsTIChLHAjoJRiO7A+zdJjaulpXUt4/my
-         UJaA==
-X-Gm-Message-State: AOJu0YwHs1yDMG98avfdHWwMinNzTFy3HnTxdbPEmlUBkSw2Nl3U2UcR
-        o92CbHoTQcStMVegHaKltKg=
-X-Google-Smtp-Source: AGHT+IEpZV8AAS3AX/kSyCq/TvjTy4lvHHyqL6QV8NqZ0ODQESSmWB93J1AVOkRbP2EeuZ27xtYNUg==
-X-Received: by 2002:a2e:3a0f:0:b0:2c8:7962:cdc2 with SMTP id h15-20020a2e3a0f000000b002c87962cdc2mr223068lja.3.1700768005622;
-        Thu, 23 Nov 2023 11:33:25 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id a4-20020adfeec4000000b0033130644c87sm2442265wrp.54.2023.11.23.11.33.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 11:33:25 -0800 (PST)
-Message-ID: <655fa905.df0a0220.49d9b.7afd@mx.google.com>
-X-Google-Original-Message-ID: <ZV+pAo5jt0N9/AE2@Ansuel-xps.>
-Date:   Thu, 23 Nov 2023 20:33:22 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Jie Luo <quic_luoj@quicinc.com>, Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-References: <20231120135041.15259-4-ansuelsmth@gmail.com>
- <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
- <20231121144244.GA1682395-robh@kernel.org>
- <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
- <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
- <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
- <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
- <c697488a-d34c-4c98-b4c7-64aef2fe583f@lunn.ch>
- <ZV9jM7ve3Kl6ZxSl@shell.armlinux.org.uk>
- <e32d5c84-7a88-4d9f-868f-98514deae6e9@lunn.ch>
+        Thu, 23 Nov 2023 14:36:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50635B7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:35:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B49C433C9;
+        Thu, 23 Nov 2023 19:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700768122;
+        bh=GV33Ja8p/x8b4Sn/8W6w24BkBB0SuBPzuOK/VUIfmCU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kzffbtMp78WBKeyMMfCa4mEGqUq9lzjkw2fDZTauERL5arVXwl0L+1GKOwJ0zDTVR
+         eYH+EvwoAsbd9P1wNr9SBPQ2DZShOpfEVeO+k14jEkyA7+y89PDy++akk+k3g7uLGQ
+         fiYmBDQDUiNYohvD7gFwNOwWhc7XJw+iDoFVlv80=
+Date:   Thu, 23 Nov 2023 19:35:19 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v4 3/6] tty: serial: amba-pl011: cleanup driver
+Message-ID: <2023112351-liable-handbag-d120@gregkh>
+References: <20231123-mbly-uart-v4-0-7f913a74ff89@bootlin.com>
+ <20231123-mbly-uart-v4-3-7f913a74ff89@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <e32d5c84-7a88-4d9f-868f-98514deae6e9@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231123-mbly-uart-v4-3-7f913a74ff89@bootlin.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -110,72 +56,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 03:57:58PM +0100, Andrew Lunn wrote:
-> On Thu, Nov 23, 2023 at 02:35:31PM +0000, Russell King (Oracle) wrote:
-> > On Thu, Nov 23, 2023 at 03:27:05PM +0100, Andrew Lunn wrote:
-> > > > Just to be more precise qca807x can operate in 3 different mode:
-> > > > (this is controlled by the MODE_CFG bits)
-> > > 
-> > > > - QSGMII: 5 copper port
-> > > 
-> > > 4 slots over QSGMII, plus the second SERDES is connected to the MAC
-> > > using SGMII/1000BaseX?
-> > > 
-> > > > - PSGMII: 5 copper port
-> > > 
-> > > 5 slots over QSGMII, the second SERDES is idle?
-> > > 
-> > > > - PSGMII: 4 copper port + 1 combo (that can be both fiber or copper)
-> > > 
-> > > 5 slots over QSGMII, with the second SERDES connected to an SFP cage.
-> > > 
-> > > Are ports 1-4 always connected to the P/Q SGMII. Its only port 5 which
-> > > can use the second SERDES?
-> > 
-> > I think what would really help here is if there was an ascii table to
-> > describe the configurations, rather than trying to put it into words.
+On Thu, Nov 23, 2023 at 02:42:41PM +0100, Théo Lebrun wrote:
+> Follow recommandations from:
 > 
-> Yes.
+>     $ ./scripts/checkpatch.pl --strict --file \
+>             drivers/tty/serial/amba-pl011.c
 > 
-> And also for ipq4019. We need to merge these two threads of
-> conversation, since in the end they are probably the same driver, same
-> device tree etc.
->
+> It does NOT fix alerts relative to TIOCMBIT which will be dealt with in
+> another patch. Fixes following alerts:
+> 
+>     CHECK: Alignment should match open parenthesis
+>     CHECK: Blank lines aren't necessary after an open brace '{'
+>     CHECK: Comparison to NULL could be written [...]
+>     CHECK: Lines should not end with a '('
+>     CHECK: Please don't use multiple blank lines
+>     CHECK: Please use a blank line after function/struct/union/enum declarations
+>     CHECK: Prefer using the BIT macro
+>     CHECK: Unbalanced braces around else statement
+>     CHECK: Unnecessary parentheses around [...]
+>     CHECK: braces {} should be used on all arms of this statement
+>     CHECK: spaces preferred around that '/' (ctx:VxV)
+>     CHECK: spaces preferred around that '|' (ctx:VxV)
+>     ERROR: do not initialise statics to false
+>     WARNING: Comparisons should place the constant on the right side of the test
+>     WARNING: Possible unnecessary 'out of memory' message
+>     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+>     WARNING: Prefer [subsystem eg: netdev]_info([subsystem]dev, ... then dev_info(dev, ... then pr_info(...  to printk(KERN_INFO ...
+>     WARNING: quoted string split across lines
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  drivers/tty/serial/amba-pl011.c | 147 +++++++++++++++++++---------------------
+>  1 file changed, 71 insertions(+), 76 deletions(-)
 
-For everyone that missed Robert response in patch 12 let me quote him
-also here.
+This patch does not apply.
 
-"
-Hi Andrew,
-I think that the description is confusing.
-QCA807x supports 3 different modes:
-1. PSGMII (5 copper ports)
-2. PSGMII (4 copper ports + 1 combo port)
-3. QSGMII+SGMII
+And really, you should have broken it up into smaller pieces and most of
+them would have applied :(
 
-So, in case option 2 is selected then the combo port can also be used for
-1000Base-X and 100Base-FX modules or copper and it will autodetect the
-exact media.
-This is supported via the SFP op-s and I have been using it without issues
-for a while.
+Please rebase and break it up and resend.
 
-I have not tested option 3 in combination with SFP to the copper
-module so I cant
-say whether that works.
-From what I can gather from the typical usage examples in the
-datasheet, this QSMII+SGMII
-mode is basically intended as a backward compatibility thing as only
-QCA SoC-s have PSGMII
-support so that you could still use SoC-s with QSGMII and SGMII support only.
+thanks,
 
-So there is no way to control the SerDes-es individually, only the
-global mode can be changed via
-the Chip configuration register in the Combo port.
-
-You can see the block diagram of this PHY in this public PDF on page 2[1].
-
-[1] https://content.codico.com/fileadmin/media/download/datasheets/qualcomm/qualcomm_qca8075.pdf
-"
-
--- 
-	Ansuel
+greg k-h
