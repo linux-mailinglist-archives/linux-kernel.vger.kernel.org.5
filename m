@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193D47F6737
+	by mail.lfdr.de (Postfix) with ESMTP id C19787F673A
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjKWTeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:34:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S229727AbjKWTeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjKWTeE (ORCPT
+        with ESMTP id S229602AbjKWTeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:34:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6281FD46;
-        Thu, 23 Nov 2023 11:34:11 -0800 (PST)
+        Thu, 23 Nov 2023 14:34:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7F3D48;
+        Thu, 23 Nov 2023 11:34:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700768051; x=1732304051;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7pUMEDgOXETK0P7eUQYqpgkIhoD1c+hcpjhL1V6yer4=;
-  b=jYA+oiM9jmx9IpzALF+ygytG/AAHBEfJc23z7tPKySF3TbHao35Pl/iF
-   tNdw+dpeCQaUypUr0Jv+nMk9JxtTRmClA2NxsTAzG2/iBeC4w6dgyraxk
-   boQDte2grQJpy6xX6Y5dDaPzRMr5dw0HSJAykuIbHF7LJgJVDeY6w4MU1
-   E+gMl1YunMl+R+8Fvhdxmx9bqK0lbCSVIud/jfMqpx9XPwiqv5RczgKes
-   zHdw2/xNSbE8elE8zdJ/de/bvjqXgl3ElnJMJf54/E+Dig/LNwNSVZTaB
-   Ap5FU5tZDvSbhlLR6LSyY6h9Pxv+tNEYMzwOJQnZUOzTW3U+XUIYdKZVP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371671397"
+  t=1700768049; x=1732304049;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mMbruSBIhN6yytGf1T9i3S2OJs+TIbgzVI2rHK9D8Qk=;
+  b=Au9e3QJB3SvyLr5it7gQxHFcz001FuyLw3VAMsQkhdpkhni5T3DbGNF/
+   /OPR86KNHfjz4hB/mtiSMSu22qw+mZS4oJ7nOjAWZo23Mo1gLWShbxELE
+   Cn4uEulsjeazNvYXOeLpbIwuSzsLqD0G/QS6oZmP//6Lsu8XVVOqH9YeC
+   X+1pDK+SjGDQmibYYk6MhojQoql+mxD+93z6vskrgh8Z76/fKucft/+WO
+   Z6nAj7rwH777NyAPgkb3x192QqA17gFRHmvHdRddvqwjNF7pdDQmwccLc
+   A4E/ol24aaqnDEjghbl3hoUfI0oOIvdaqib5973lV1ZNEBbOG5/MbOp8c
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="372482106"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="371671397"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:09 -0800
+   d="scan'208";a="372482106"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771062219"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833506149"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="771062219"
+   d="scan'208";a="833506149"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2023 11:33:59 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 23 Nov 2023 11:33:59 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6E71C1C7; Thu, 23 Nov 2023 21:33:58 +0200 (EET)
+        id 848641A7; Thu, 23 Nov 2023 21:33:58 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,12 +75,13 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v2 00/21] pinctrl: Convert struct group_desc to use struct pingroup
-Date:   Thu, 23 Nov 2023 21:31:28 +0200
-Message-ID: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 01/21] pinctrl: qcom: lpass-lpi: Replace kernel.h with what is being used
+Date:   Thu, 23 Nov 2023 21:31:29 +0200
+Message-ID: <20231123193355.3400852-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
+References: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -92,78 +93,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct group_desc has a lot of duplication with struct pingroup.
-Deduplicate that by embeddind the latter in the former and convert
-users.
+Replace kernel.h with what exactly is being used, i.e. array_size.h.
 
-Linus, assuming everything is fine, I can push this to my tree.
-Or you can apply it (assumming all CIs and people are happy with
-the series).
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-NB. This series contains previously sent patches for Qualcomm and
-Nuovoton. Here the updated version for Qualcomm that splits previous
-patch to two and fixes compilation warnings.
-
-NB. The function_desc is in plan to follow the similar deduplication.
-
-In v2:
-- added a few patches to fix multiple compile-time errors (LKP)
-- added tag (Jonathan)
-
-v1: https://lore.kernel.org/r/20231122164040.2262742-1-andriy.shevchenko@linux.intel.com
-
-Andy Shevchenko (21):
-  pinctrl: qcom: lpass-lpi: Replace kernel.h with what is being used
-  pinctrl: qcom: lpass-lpi: Remove unused member in struct lpi_pingroup
-  pinctrl: equilibrium: Use temporary variable to hold pins
-  pinctrl: imx: Use temporary variable to hold pins
-  pinctrl: core: Make pins const in struct group_desc
-  pinctrl: equilibrium: Convert to use struct pingroup
-  pinctrl: keembay: Convert to use struct pingroup
-  pinctrl: nuvoton: Convert to use struct pingroup and
-    PINCTRL_PINGROUP()
-  pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
-  pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
-  pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
-  pinctrl: core: Embed struct pingroup into struct group_desc
-  pinctrl: bcm: Convert to use grp member
-  pinctrl: equilibrium: Convert to use grp member
-  pinctrl: imx: Convert to use grp member
-  pinctrl: ingenic: Convert to use grp member
-  pinctrl: keembay: Convert to use grp member
-  pinctrl: mediatek: Convert to use grp member
-  pinctrl: renesas: Convert to use grp member
-  pinctrl: starfive: Convert to use grp member
-  pinctrl: core: Remove unused members from struct group_desc
-
- drivers/pinctrl/bcm/pinctrl-ns.c              |  4 +-
- drivers/pinctrl/core.c                        | 13 +++---
- drivers/pinctrl/core.h                        | 19 +++++---
- drivers/pinctrl/freescale/pinctrl-imx.c       | 44 +++++++++----------
- drivers/pinctrl/mediatek/pinctrl-moore.c      | 13 +++---
- drivers/pinctrl/mediatek/pinctrl-moore.h      |  7 +--
- drivers/pinctrl/mediatek/pinctrl-paris.h      |  7 +--
- drivers/pinctrl/nuvoton/pinctrl-wpcm450.c     |  9 ++--
- drivers/pinctrl/pinctrl-equilibrium.c         | 39 ++++++++--------
- drivers/pinctrl/pinctrl-ingenic.c             | 27 +++++-------
- drivers/pinctrl/pinctrl-keembay.c             |  6 +--
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.h      |  6 +--
- .../pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c   | 16 -------
- .../pinctrl/qcom/pinctrl-sc8280xp-lpass-lpi.c | 20 ---------
- .../pinctrl/qcom/pinctrl-sm6115-lpass-lpi.c   | 20 ---------
- .../pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c   | 15 -------
- .../pinctrl/qcom/pinctrl-sm8350-lpass-lpi.c   | 16 -------
- .../pinctrl/qcom/pinctrl-sm8450-lpass-lpi.c   | 24 ----------
- .../pinctrl/qcom/pinctrl-sm8550-lpass-lpi.c   | 24 ----------
- .../pinctrl/qcom/pinctrl-sm8650-lpass-lpi.c   | 24 ----------
- drivers/pinctrl/renesas/pinctrl-rza1.c        |  2 +-
- drivers/pinctrl/renesas/pinctrl-rza2.c        | 10 ++---
- drivers/pinctrl/renesas/pinctrl-rzg2l.c       |  6 +--
- drivers/pinctrl/renesas/pinctrl-rzv2m.c       |  6 +--
- .../starfive/pinctrl-starfive-jh7100.c        |  8 ++--
- .../starfive/pinctrl-starfive-jh7110.c        |  8 ++--
- 26 files changed, 106 insertions(+), 287 deletions(-)
-
+diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
+index 206b2c0ca828..2017bc80314d 100644
+--- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
++++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
+@@ -6,8 +6,8 @@
+ #ifndef __PINCTRL_LPASS_LPI_H__
+ #define __PINCTRL_LPASS_LPI_H__
+ 
++#include <linux/array_size.h>
+ #include <linux/bits.h>
+-#include <linux/kernel.h>
+ 
+ #include "../core.h"
+ 
 -- 
 2.43.0.rc1.1.gbec44491f096
 
