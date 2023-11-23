@@ -2,94 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFDB7F6141
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9647F613E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345734AbjKWOSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S1345724AbjKWORw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345730AbjKWOSC (ORCPT
+        with ESMTP id S1345534AbjKWORu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:18:02 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820DFB9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:18:07 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 38C2A61E5FE03;
-        Thu, 23 Nov 2023 15:17:34 +0100 (CET)
-Message-ID: <ac27ba40-0f44-4503-a167-25e4f1211900@molgen.mpg.de>
-Date:   Thu, 23 Nov 2023 15:17:33 +0100
+        Thu, 23 Nov 2023 09:17:50 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2067.outbound.protection.outlook.com [40.107.92.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C23C19E;
+        Thu, 23 Nov 2023 06:17:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=em5LLrAz4DoNAM+RHUf7o6wlvaf15HO/yE9+VSeJb8tzhyjANJDxVtpmZAUJ2qpU+1HjnLDe+zhYYGlKmuVnFw93wjShpB+1iTFUCFWgEBBoi6lQK4BV0so/4OggjbQ5yXDK0Jx2B1FCA7jrM4gc0Rsi7qaK4Re8BsmSUkOD0a18bOmo9i10sfBQcWbApDTpQ5UptnfxfhUlRcBnWpEmSRognmW4ecdoTdUfKEyP/uYbBHfA/xCMtQYbJCAX/7XOhYc7mbApRTFjqV2A+3yp77RqMwwh3fwAQr1ZL+UIZ2X38MKDwOg8/RYZzBxsL+p06VFgQ67klkzOtWW0cJjl2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9yv71PrJCMDp1YaR3fr+ovin7dssBb6PqrBXNPA0Tkc=;
+ b=nOgcbZLVeGICJn3mLSFbCdlV1oe9lVyFT5KLI+wpzOrjlvA5i0z3NYbwzz+b3M82EdXWY0cC8pjmWswTxDic+a6Qo2H7yy/JQzgNFm5SkF3eXEk6gISRyOypFcKCpqoEebbkeGXSGEdNZgvLqmetoooDG+/tGWyKbszsuNDh00aJ/tuLjs0EF5mmJ1cwmz4G9uCJO0RQVEc8QdiyJshgZRWZXO7dweG8dZb9PyUcHBWWyee+ffp1sK8O8W21Ej3xTAzDfbf6jBCRtvZzR1uEEEgof0j08oJV7x9QwKO2MrE4j6ri0nqDReVCArGIWQlAcUco6hLmxInrfVUbGLIYDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9yv71PrJCMDp1YaR3fr+ovin7dssBb6PqrBXNPA0Tkc=;
+ b=pvAR5mV+FOtKOmQPZiAVz0VrHAlmVgdQ04gjaKNlV50OIgduFmEC4FliE+fo13LbLI24lRbtkD0OZvNtOoy+KIA3mDpcoeQMvFW3448J4EKUjAOPQoGjAG5Xg12ES3np2JQb//6BNVTyUnGn/xik/t2kLprKvKFqJEqlc1Y5Z7V6qtJr8dtAxJXZJIXvQY/XyqOTW/3vqot2kQ3d3FrTDqRrIO4aK/m4y7yti6OdgLCJvMvvqj/kCRCaFYgHKIztRcKnuQVtMA6myOERQmh/Yzzsl7RXAYf5mfOS5c4tXYh1pj9KJp8opsOHIWPeH19+VV1lH7/SZJuAn2KRqZJTQQ==
+Received: from SN7PR04CA0095.namprd04.prod.outlook.com (2603:10b6:806:122::10)
+ by MW3PR12MB4442.namprd12.prod.outlook.com (2603:10b6:303:55::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Thu, 23 Nov
+ 2023 14:17:54 +0000
+Received: from SN1PEPF0002529E.namprd05.prod.outlook.com
+ (2603:10b6:806:122:cafe::cf) by SN7PR04CA0095.outlook.office365.com
+ (2603:10b6:806:122::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20 via Frontend
+ Transport; Thu, 23 Nov 2023 14:17:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SN1PEPF0002529E.mail.protection.outlook.com (10.167.242.5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.12 via Frontend Transport; Thu, 23 Nov 2023 14:17:53 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 23 Nov
+ 2023 06:17:48 -0800
+Received: from [10.41.21.79] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 23 Nov
+ 2023 06:17:43 -0800
+Message-ID: <0903863d-f5b2-6caa-c75f-889e47cab058@nvidia.com>
+Date:   Thu, 23 Nov 2023 19:47:41 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Powered off Philips TV sends corrupt EDID causing flickering
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <c9e3a8f1-d053-4203-a364-0d0703fafd19@molgen.mpg.de>
- <87leaqm5sl.fsf@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v7] ACPI: processor: reduce CPUFREQ thermal reduction pctg
+ for Tegra241
 Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <87leaqm5sl.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     <rafael@kernel.org>, <rui.zhang@intel.com>, <lenb@kernel.org>,
+        <lpieralisi@kernel.org>, <guohanjun@huawei.com>,
+        <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <treding@nvidia.com>,
+        <jonathanh@nvidia.com>, <bbasu@nvidia.com>, <sanjayc@nvidia.com>,
+        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
+        <jbrasen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <20231123121433.12089-1-sumitg@nvidia.com>
+ <ZV9bGtUsjF1v1oIW@bogus>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <ZV9bGtUsjF1v1oIW@bogus>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002529E:EE_|MW3PR12MB4442:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e794569-7809-42be-8b84-08dbec2efbbe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qL5B66N/YYomB81EoKQZxgKlW/uq+mPpR5X21+iITIrW+7lzbNhwCSu9yPR8dwWSPNYymR6JUkfNXsBtGkMhZKARFlKWvdp4vomnCQB/GO19Iaj3/nKABGQEQHDPpbCnRSbsaR8K+hm7TveqpcsSU6W6nPLjL5vklHpeHkPnyKbLOejg6QYmdn+wyLkHHqWJtU1rhayKsivI/UNbesiDyycvixHKcFcKLqij9wPVBpHW5D0RlfStSeUAyHKdeQ2ZYi/lZ17kPWTUC0vm0BXFcCY2zjB2T9BTfxXTE7iqYSwlHl8Hc5xf9cGXBiAWYvsYs4q7aGzQjW9uEP3WOLG0N9ILlRPD+vr7Zu9pokOT84zvTAFtM87BeS1zUYnoDsQMmKS9OomQljcAppy521Oz1doKyaJW4RwMlVbZ0D7+X1xbBbMit6P31SYpYnvvGT8mVzumc8z4xaChDT4/bNLmUpBSxgG/rq0x8Sv9g1LU/wfhBxpQEyncuE7jJabVBZEIGlJtsbE3oysL7Kzh5QGe8Pdg3OVQqItuCn+B9lC7aXCcZUQk63Cazf+QFdZQaZSX222Py9UcUEj9aDOaJY+JAnJ2MeZF+Dv5rXRksseKq9iexwA7zFrKoNuL6frH1YsBm1tgWSYcoks7rOpw6AGZezJAJhb7RRVNGGh4jjha2unwmGK+YetslV13p5DoTHiSmNYdIj/D0B7rAuOWfkjgxWsqybzBhIM4bCg7+hmODdo2QaU8PoZVlCqgSoF48tH2heQJ6aRIs3VzlILD88RS9YGsRXteThEOYmeBCazDpI9Pt1IwQAs/Rkfm8P3ZuuZs
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230173577357003)(230922051799003)(230273577357003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(36840700001)(46966006)(40470700004)(40460700003)(54906003)(336012)(426003)(83380400001)(53546011)(2616005)(36860700001)(107886003)(47076005)(316002)(8676002)(4326008)(5660300002)(8936002)(41300700001)(7416002)(2906002)(478600001)(16526019)(26005)(6916009)(16576012)(70206006)(70586007)(31696002)(86362001)(82740400003)(7636003)(356005)(36756003)(40480700001)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 14:17:53.7870
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e794569-7809-42be-8b84-08dbec2efbbe
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002529E.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4442
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jani,
 
 
-Thank you for your reply.
-
-Am 22.11.23 um 11:38 schrieb Jani Nikula:
-> On Tue, 21 Nov 2023, Paul Menzel wrote:
-
->> Connecting a USB Type-C port replicator [1] to the only USB Type-C port
->> of the Dell XPS 13 9360 with Debian sid/unstable and Debian’s Linux
->> kernel 6.10.5, and then connecting a Philips 40PFL5206H/12 TV device,
->> that is powered off or in standby, to the HDMI port, Linux logs:
-
-[…]
-
-> Depending on how the port replicator works, this may not come from the
-> TV at all.
+On 23/11/23 19:30, Sudeep Holla wrote:
+> External email: Use caution opening links or attachments
 > 
-> And all of this probably depends on GPU and driver, which are not
-> mentioned.
+> 
+> On Thu, Nov 23, 2023 at 05:44:33PM +0530, Sumit Gupta wrote:
+>> From: Srikar Srimath Tirumala <srikars@nvidia.com>
+>>
+>> Current implementation of processor_thermal performs software throttling
+>> in fixed steps of "20%" which can be too coarse for some platforms.
+>> We observed some performance gain after reducing the throttle percentage.
+>> Change the CPUFREQ thermal reduction percentage and maximum thermal steps
+>> to be configurable. Also, update the default values of both for Nvidia
+>> Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
+>> and accordingly the maximum number of thermal steps are increased as they
+>> are derived from the reduction percentage.
+>>
+>> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+>> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>
+>> Sending this patch separately as the other patch in the series is
+>> applied by Rafael in v6[1]. Revision history before this version is
+>> in the cover letter of v6[1].
+>>
+>> Please review and provide ACK if looks fine.
+>>
+> 
+> For arm64 specific changes(a minor nit below though),
+> 
+> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+> 
+> 
+> [...]
+> 
 
-Sorry for just mentioning the laptop model. It uses the device below:
+Thank you.
 
-     00:02.0 VGA compatible controller [0300]: Intel Corporation HD 
-Graphics 620 [8086:5916] (rev 02) (prog-if 00 [VGA controller])
+>> diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+>> new file mode 100644
+>> index 000000000000..d524f2cd6044
+>> --- /dev/null
+>> +++ b/drivers/acpi/arm64/thermal_cpufreq.c
+>> @@ -0,0 +1,20 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +#include <linux/acpi.h>
+>> +
+>> +#include "../internal.h"
+>> +
+>> +#define SMCCC_SOC_ID_T241      0x036b0241
+>> +
+> 
+> [nit] We really need to find better place to define this globally and not
+> locally at each usage site like this. We already have it in GICv3 driver.
+> But that can come as a cleanup later if it causes issue for merging this
+> change.
+> 
+> --
+> Regards,
+> Sudeep
 
-> If it's i915, please see [1] on how to file a bug.
+Sure, will check and send a separate patch later on top.
 
-Thank you for taking the time to tell me the proper forum. I created the 
-two issues below:
-
-1.  EDID has corrupt header [2]
-2.  No image on Philips TV when turning on while connected over 
-HDMI/USB-C port replicator (`[drm] *ERROR* Link Training Unsuccessful`) [3]
-
-
-Kind regards,
-
-Paul
-
-
-> [1] https://drm.pages.freedesktop.org/intel-docs/how-to-file-i915-bugs.html
-[2]: https://gitlab.freedesktop.org/drm/intel/-/issues/9705
-[3]: https://gitlab.freedesktop.org/drm/intel/-/issues/9707
+Best Regards,
+Sumit Gupta
