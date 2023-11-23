@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4292B7F6795
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D93947F678F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjKWTfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        id S229588AbjKWTfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbjKWTel (ORCPT
+        with ESMTP id S229939AbjKWTeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:34:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7339170B;
-        Thu, 23 Nov 2023 11:34:32 -0800 (PST)
+        Thu, 23 Nov 2023 14:34:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A5D198D;
+        Thu, 23 Nov 2023 11:34:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700768072; x=1732304072;
+  t=1700768066; x=1732304066;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NE+17+HWJqu1tvwDbF/Yy56Y9wnjeE8kjUUulypb5zo=;
-  b=F7T6g53DVGvLosjpkJL9xLKusamlgREYPsDbB4KeM75flvrAJya4c41v
-   nrjrIE9auqAwHE7Mi9woNf7tOKJdeafoRJuZoJT5wp81Ym0OBsRpMouWF
-   EmD1h6CxLNNNONM0K48cZQTWigUukYZ7XbaR/Gd1E4NvvZ85ZZE1T/AY5
-   U4nk8gmQ7GTnVw75XGOuaywrpQOFcpaBy1AAyjtNxB2psgJn3A+xaSnFE
-   BcomtdfF/fQeyw0yFM5Ki8G3LgpNw/XiqQig2qeId8vKkKjymPXGmwboe
-   KaG/YHzC4M1grs7HumIq/rFLKqEIse4sA4QZC1rFhx8yDDRF4qj3ohjy6
+  bh=sVrQMG6+2GAUAidaCzSxGKkLGLuxJJfZImVu6UcJOZo=;
+  b=BM4xiSE0LW4wI5j8/vsMuH22EFGRr4y0Nxx4HVPRloxCxA3MUfuwIEzZ
+   u+Qcf+oQY6+GydC9x3aM2wfZXEpDleAMjbow6JFCH7IMqIcmMNC5yZ4xI
+   JffgpvdmLh6bb4fl0yKelKZpgSw5MXOiyoff8YZSl942tbDBDxWewAr48
+   EAxKCzBygUXkbAYcBPVxg3RZ3evdOx0ECUA2EbJCMhe/Yz34+8J8XTGMd
+   zylbPsHOqCvRz0+DCf+q1+D954w/XRgMYXCbyt8KL98B2YF4ovM1nB6fR
+   havTZss4RNE55FqdannyeMeLBUJfLhYuixOwPTrU/1wwhP5HE+A5dgIcP
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371671537"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="372482224"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="371671537"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:26 -0800
+   d="scan'208";a="372482224"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771062268"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833506174"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="771062268"
+   d="scan'208";a="833506174"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2023 11:34:17 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 23 Nov 2023 11:34:17 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 657F38FE; Thu, 23 Nov 2023 21:33:59 +0200 (EET)
+        id 736D09EF; Thu, 23 Nov 2023 21:33:59 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v2 16/21] pinctrl: ingenic: Convert to use grp member
-Date:   Thu, 23 Nov 2023 21:31:44 +0200
-Message-ID: <20231123193355.3400852-17-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 17/21] pinctrl: keembay: Convert to use grp member
+Date:   Thu, 23 Nov 2023 21:31:45 +0200
+Message-ID: <20231123193355.3400852-18-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
 References: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
@@ -97,53 +97,22 @@ Convert drivers to use grp member embedded in struct group_desc.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-ingenic.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/pinctrl/pinctrl-keembay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index 393873de910a..6806fede5df4 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -3756,17 +3756,17 @@ static int ingenic_pinmux_set_mux(struct pinctrl_dev *pctldev,
+diff --git a/drivers/pinctrl/pinctrl-keembay.c b/drivers/pinctrl/pinctrl-keembay.c
+index 87d328853ae4..b1349ee22799 100644
+--- a/drivers/pinctrl/pinctrl-keembay.c
++++ b/drivers/pinctrl/pinctrl-keembay.c
+@@ -945,7 +945,7 @@ static int keembay_set_mux(struct pinctrl_dev *pctldev, unsigned int fun_sel,
  		return -EINVAL;
  
- 	dev_dbg(pctldev->dev, "enable function %s group %s\n",
--		func->name, grp->name);
-+		func->name, grp->grp.name);
+ 	/* Change modes for pins in the selected group */
+-	pin = *grp->pins;
++	pin = *grp->grp.pins;
+ 	pin_mode = *(u8 *)(func->data);
  
- 	mode = (uintptr_t)grp->data;
- 	if (mode <= 3) {
--		for (i = 0; i < grp->num_pins; i++)
--			ingenic_pinmux_set_pin_fn(jzpc, grp->pins[i], mode);
-+		for (i = 0; i < grp->grp.npins; i++)
-+			ingenic_pinmux_set_pin_fn(jzpc, grp->grp.pins[i], mode);
- 	} else {
- 		pin_modes = grp->data;
- 
--		for (i = 0; i < grp->num_pins; i++)
--			ingenic_pinmux_set_pin_fn(jzpc, grp->pins[i], pin_modes[i]);
-+		for (i = 0; i < grp->grp.npins; i++)
-+			ingenic_pinmux_set_pin_fn(jzpc, grp->grp.pins[i], pin_modes[i]);
- 	}
- 
- 	return 0;
-@@ -4293,12 +4293,12 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < chip_info->num_groups; i++) {
- 		const struct group_desc *group = &chip_info->groups[i];
-+		const struct pingroup *grp = &group->grp;
- 
--		err = pinctrl_generic_add_group(jzpc->pctl, group->name,
--				group->pins, group->num_pins, group->data);
-+		err = pinctrl_generic_add_group(jzpc->pctl, grp->name, grp->pins, grp->npins,
-+						group->data);
- 		if (err < 0) {
--			dev_err(dev, "Failed to register group %s\n",
--					group->name);
-+			dev_err(dev, "Failed to register group %s\n", grp->name);
- 			return err;
- 		}
- 	}
+ 	val = keembay_read_reg(kpc->base1 + KEEMBAY_GPIO_MODE, pin);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
