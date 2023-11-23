@@ -2,170 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04E87F59B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7847E7F59BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbjKWICQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S1344904AbjKWIDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbjKWICO (ORCPT
+        with ESMTP id S229543AbjKWIDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:02:14 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CA0DD;
-        Thu, 23 Nov 2023 00:02:20 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AN82B9x072621;
-        Thu, 23 Nov 2023 02:02:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700726531;
-        bh=g6wWUN8jjBOlUmxcHtC2+a4xYlrZy6VZVbhcpI/kdKc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=IsXpjCwN3vH4W2iJHM9JbR9qY6yrenq5VJtIDnU7mq0VRCKycw9fSakjTV1m1sNoL
-         GnC25e4+vlSG7KcCbxrm8Cah9rTuKXjSVCMghsfDssJ3GaoLbQzPdmzfgYHglC7Sbq
-         XbyFlbXYxRd0H7PWU5bBL6cLtagoxZ/UN4iOGr+0=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AN82B9r099683
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Nov 2023 02:02:11 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 23
- Nov 2023 02:02:10 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 23 Nov 2023 02:02:10 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AN829bm039602;
-        Thu, 23 Nov 2023 02:02:10 -0600
-Date:   Thu, 23 Nov 2023 13:32:04 +0530
-From:   Jai Luthra <j-luthra@ti.com>
-To:     Ronald Wahl <rwahl@gmx.de>
-CC:     <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ronald Wahl <ronald.wahl@raritan.com>
-Subject: Re: [PATCH] dmaengine: ti: k3-psil-am62: Fix SPI PDMA data
-Message-ID: <akeklf5f3alqemdlssdgimqqqvkvbtqbbq3pxtsgkykma4fv3o@4op25kcmguja>
-References: <20231030190113.16782-1-rwahl@gmx.de>
+        Thu, 23 Nov 2023 03:03:32 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40921B3;
+        Thu, 23 Nov 2023 00:03:36 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 967F710004A;
+        Thu, 23 Nov 2023 11:03:35 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 967F710004A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700726615;
+        bh=lKtCLctmBBF1Tsb0SyxySTIx7meumO6usFrm+TS9QSU=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=D4HCV6dFilbsWayXzzkcs2T3NjL+YalHW9kY4+EXk8KX8O8DVINwNEMKhE1m/Jt98
+         DFKEZnQ4TuySorJZWAqyH1hva8f0bl7O9vE7Qobb20zuD5INDosOQ8b6FUcIm1TJVa
+         rqCJkqK806c8WyR57ONIIyCGuDreWGDfE5pNIja7xaaOCJh4ILZThAhJZS3Pil9V4Z
+         AA6YMS1B0yvlB78T7At+bPtUp3CwF5FV/0XNuk7eSKgGdrRrhhbRHFOYVRN/rpkXQg
+         JUngGqB34jZ319nISBEcC0l987OrKgiz/G5uG8DyLXmESFsMBxH6r5fiH4briEGsjR
+         s/jlm5GYwRLoA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 23 Nov 2023 11:03:34 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 11:03:34 +0300
+Date:   Thu, 23 Nov 2023 11:03:34 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg
+ tracepoints
+Message-ID: <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-2-ddrokosov@salutedevices.com>
+ <20231123072126.jpukmc6rqmzckdw2@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gg4vsso4b4udgkiv"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231030190113.16782-1-rwahl@gmx.de>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231123072126.jpukmc6rqmzckdw2@google.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181550 [Nov 23 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 06:37:00 #22507858
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---gg4vsso4b4udgkiv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello Shakeel,
 
-Hi Ronald,
+Thank you for quick review!
+Please find my thoughts below.
 
-Thanks for the patch.
+On Thu, Nov 23, 2023 at 07:21:26AM +0000, Shakeel Butt wrote:
+> On Wed, Nov 22, 2023 at 01:01:55PM +0300, Dmitry Rokosov wrote:
+> > Sometimes it is necessary to understand in which memcg tracepoint event
+> > occurred. The function cgroup_name() is a useful tool for this purpose.
+> > To integrate cgroup_name() into the existing memcg tracepoints, this
+> > patch introduces a new tracepoint template for the begin() and end()
+> > events, utilizing static __array() to store the cgroup name.
+> > 
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > ---
+> >  include/trace/events/vmscan.h | 77 +++++++++++++++++++++++++++++------
+> >  mm/vmscan.c                   | 10 ++---
+> >  2 files changed, 70 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+> > index d2123dd960d5..9b49cd120ae9 100644
+> > --- a/include/trace/events/vmscan.h
+> > +++ b/include/trace/events/vmscan.h
+> > @@ -141,19 +141,47 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_direct_reclaim_b
+> >  );
+> >  
+> >  #ifdef CONFIG_MEMCG
+> > -DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_memcg_reclaim_begin,
+> >  
+> > -	TP_PROTO(int order, gfp_t gfp_flags),
+> > +DECLARE_EVENT_CLASS(mm_vmscan_memcg_reclaim_begin_template,
+> >  
+> > -	TP_ARGS(order, gfp_flags)
+> > +	TP_PROTO(int order, gfp_t gfp_flags, const struct mem_cgroup *memcg),
+> > +
+> > +	TP_ARGS(order, gfp_flags, memcg),
+> > +
+> > +	TP_STRUCT__entry(
+> > +		__field(int, order)
+> > +		__field(unsigned long, gfp_flags)
+> > +		__array(char, name, NAME_MAX + 1)
+> > +	),
+> > +
+> > +	TP_fast_assign(
+> > +		__entry->order = order;
+> > +		__entry->gfp_flags = (__force unsigned long)gfp_flags;
+> > +		cgroup_name(memcg->css.cgroup,
+> > +			__entry->name,
+> > +			sizeof(__entry->name));
+> 
+> Any reason not to use cgroup_ino? cgroup_name may conflict and be
+> ambiguous.
 
-On Oct 30, 2023 at 20:01:13 +0100, Ronald Wahl wrote:
-> AM62x has 3 SPI channels where each channel has 4 TX and 4 RX threads.
-> This also fixes the thread numbers.
->=20
+I actually didn't consider it, as the cgroup name serves as a clear tag
+for filtering the appropriate cgroup in the entire trace file. However,
+you are correct that there might be conflicts with cgroup names.
+Therefore, it might be better to display both tags: ino and name. What
+do you think on this?
 
-Please add the Fixes tag so this gets backported to stable
-Fixes: 5ac6bfb58777 ("dmaengine: ti: k3-psil: Add AM62x PSIL and PDMA data")
-
-With that change,
-
-Reviewed-by: Jai Luthra <j-luthra@ti.com>
-
-> Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-> ---
->  drivers/dma/ti/k3-psil-am62.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/dma/ti/k3-psil-am62.c b/drivers/dma/ti/k3-psil-am62.c
-> index 2b6fd6e37c61..1272b1541f61 100644
-> --- a/drivers/dma/ti/k3-psil-am62.c
-> +++ b/drivers/dma/ti/k3-psil-am62.c
-> @@ -74,7 +74,9 @@ static struct psil_ep am62_src_ep_map[] =3D {
->  	PSIL_SAUL(0x7505, 21, 35, 8, 36, 0),
->  	PSIL_SAUL(0x7506, 22, 43, 8, 43, 0),
->  	PSIL_SAUL(0x7507, 23, 43, 8, 44, 0),
-> -	/* PDMA_MAIN0 - SPI0-3 */
-> +	/* PDMA_MAIN0 - SPI0-2 */
-> +	PSIL_PDMA_XY_PKT(0x4300),
-> +	PSIL_PDMA_XY_PKT(0x4301),
->  	PSIL_PDMA_XY_PKT(0x4302),
->  	PSIL_PDMA_XY_PKT(0x4303),
->  	PSIL_PDMA_XY_PKT(0x4304),
-> @@ -85,8 +87,6 @@ static struct psil_ep am62_src_ep_map[] =3D {
->  	PSIL_PDMA_XY_PKT(0x4309),
->  	PSIL_PDMA_XY_PKT(0x430a),
->  	PSIL_PDMA_XY_PKT(0x430b),
-> -	PSIL_PDMA_XY_PKT(0x430c),
-> -	PSIL_PDMA_XY_PKT(0x430d),
->  	/* PDMA_MAIN1 - UART0-6 */
->  	PSIL_PDMA_XY_PKT(0x4400),
->  	PSIL_PDMA_XY_PKT(0x4401),
-> @@ -141,7 +141,9 @@ static struct psil_ep am62_dst_ep_map[] =3D {
->  	/* SAUL */
->  	PSIL_SAUL(0xf500, 27, 83, 8, 83, 1),
->  	PSIL_SAUL(0xf501, 28, 91, 8, 91, 1),
-> -	/* PDMA_MAIN0 - SPI0-3 */
-> +	/* PDMA_MAIN0 - SPI0-2 */
-> +	PSIL_PDMA_XY_PKT(0xc300),
-> +	PSIL_PDMA_XY_PKT(0xc301),
->  	PSIL_PDMA_XY_PKT(0xc302),
->  	PSIL_PDMA_XY_PKT(0xc303),
->  	PSIL_PDMA_XY_PKT(0xc304),
-> @@ -152,8 +154,6 @@ static struct psil_ep am62_dst_ep_map[] =3D {
->  	PSIL_PDMA_XY_PKT(0xc309),
->  	PSIL_PDMA_XY_PKT(0xc30a),
->  	PSIL_PDMA_XY_PKT(0xc30b),
-> -	PSIL_PDMA_XY_PKT(0xc30c),
-> -	PSIL_PDMA_XY_PKT(0xc30d),
->  	/* PDMA_MAIN1 - UART0-6 */
->  	PSIL_PDMA_XY_PKT(0xc400),
->  	PSIL_PDMA_XY_PKT(0xc401),
-> --
-> 2.41.0
->=20
->=20
-
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---gg4vsso4b4udgkiv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmVfBvcACgkQQ96R+SSa
-cUUS+w//RB6GAiJF81otCVYaaLgSajvu6778w/cIdpS5J/cQHUoQaXwb1MZcAhG3
-F1YEbargIGsgfN+PXnO+CEz2VvOsxi6ZwnTULm5Iq67V1oqNTpXr0WyqR+7+cR+T
-savjw8ygkPlh8++MV9Ywnh3nefb6nKIzq5AgHM11RqXvjVn26P7vE1H+ZVIGTBPm
-53+e1R7App3/va/buN+lI4H+1ogji/mDeQcC1Xe0wkJ8q5lj43QJr7FTJ+j4cUaf
-JPE46HFoMSkR6fWV6RfP3+QhPSmJXdQ//l1xWNqCZV2lOwK2Sukh91uMuC5jFMFn
-EvH1L3PuG5xRlRfwKuAVD6UAy+Y5seiN2gpp8smZYWPDmk14ErCA9G29An4pI9jo
-InwDLaMRJpeQ/7nw+svQVjiGpBYdcQSFP5rOhYd5DBOSz6c4HATA5ipk2iUEDPEN
-Sqh4kp/FvJoWs1GtUFDVY+ozEsl8g6X3uIrQgfC4yTdorWsq/JLXe0ts9qtfCqbD
-IAyKbKIgNm5NwHvcDshysRrsvEkUa/iSCF0yrgF25cytkEpiVBDW1Sxzq/bvEhx+
-k3ZJkeVh20xU6thh65004utiLxsZmmNKRkejVyNnUvkaQhM1pTbKfUqsOS+ZPx8O
-QmA4wx1yJQTcYYrPJInHVrMpV8Obk7mwivNxiah4XNABSdwcVsA=
-=8GWr
------END PGP SIGNATURE-----
-
---gg4vsso4b4udgkiv--
+-- 
+Thank you,
+Dmitry
