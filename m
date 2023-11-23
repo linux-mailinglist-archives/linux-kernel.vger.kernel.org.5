@@ -2,59 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7F77F5FAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014C87F5FC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345403AbjKWNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S1345413AbjKWNML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345271AbjKWNDy (ORCPT
+        with ESMTP id S1345271AbjKWNMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:03:54 -0500
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609251B3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:03:59 -0800 (PST)
-Message-ID: <2a9fda42-0c7a-420b-81cc-653861a3dcd8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700744637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4k0ixZay+gLfSmMuVIyaxBUa4dhlk5WLLLau0tHRBM8=;
-        b=wLbXBpiD+ljXahcZN+NxDMvTV6jSgBzfTJka4QlAr6sZXPxs0FnkVeRDinVPWw6Eqip17P
-        ctm10QBEINJ2Dk7U0Sar9J7SJG4lUrGaja5pi5wEq935YHwZfKyBlcYzM5CojY7vj9vrnP
-        iRzo+IbdTP9dcKWPQ3GdhPf1uJaegPQ=
-Date:   Thu, 23 Nov 2023 21:03:48 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH 5/8] drm/bridge: it66121: Add a helper function to read
- chip id
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
+        Thu, 23 Nov 2023 08:12:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD31A8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:12:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B246C433C7;
+        Thu, 23 Nov 2023 13:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700745135;
+        bh=VBAn7FZcvw1drif9KzTmaabLPVAYO4zX2eeQPqBTwFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nSfg5H2PW95uhmCyWswaCk18HBzNnUr8lrZC9/jswVOaVEk9Necoc/3PSsg/eWI+c
+         nUSNVQiBVNuTkdJG4ZroseK0fKTuKodiCnTfp5VBFncFM3thhaeXbqdq7/1OyUlFkh
+         hvhoTdxdxKP2qiIgsXRrtgQ8aW/glFRtrG5pk0o8niH7Far3mtrppzle/A5KWCQFN1
+         0J9D7XnhqZQWKtQ8+7lAsz1DeizPazr+k6Se4xCbJkyOxPi+pXbCyvcnpPCySfoTu/
+         nxY4zeQuXLH9O0FYHNYyhAuFpYV+0VZCYLV3awl8R2o5zjol3Qy1blkTCXoR/k3lKT
+         V10Lsp2N5sNOQ==
+Date:   Thu, 23 Nov 2023 14:11:56 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jan Kara <jack@suse.cz>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-6-sui.jingfeng@linux.dev>
- <CAA8EJprkDpjuHEi5R01p4XNvFBr94BvXhr7AZCLr6dC8Mk=yPw@mail.gmail.com>
- <7602cd83-0e05-4e11-9bd1-10eb1d48a507@linux.dev>
- <CAA8EJprFjdrQtegJd5HyzGYQaMawwQOhvkE=SNqsdsBCrtfDTA@mail.gmail.com>
- <14f859f2-6661-4955-932b-1ae22ae134fe@linux.dev>
- <CAA8EJppnB-FbnS20eJg1jwKP7pQwV_etYkQg2YW75SEO8kF9MA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJppnB-FbnS20eJg1jwKP7pQwV_etYkQg2YW75SEO8kF9MA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] i915: make inject_virtual_interrupt() void
+Message-ID: <20231123-randlage-instinkt-e458628d2d7c@brauner>
+References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
+ <20231122-vfs-eventfd-signal-v2-1-bd549b14ce0c@kernel.org>
+ <ZV6buHrQy2+CJ7xX@debian-scheme>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZV6buHrQy2+CJ7xX@debian-scheme>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,158 +110,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> > +	if (!vgpu->msi_trigger)
+> > +		return;
+> > +	eventfd_signal(vgpu->msi_trigger, 1);
+> >  }
+> 
+> I think it's a little simpler to write as
+>     if (vgpu->msi_trigger)
+>             eventfd_signal(vgpu->msi_trigger, 1);
 
-
-On 2023/11/23 15:48, Dmitry Baryshkov wrote:
-> On Thu, 23 Nov 2023 at 07:37, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->> Hi,
->>
->>
->> On 2023/11/16 21:00, Dmitry Baryshkov wrote:
->>> On Thu, 16 Nov 2023 at 14:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->>>> Hi,
->>>>
->>>>
->>>> On 2023/11/15 00:06, Dmitry Baryshkov wrote:
->>>>> On Tue, 14 Nov 2023 at 17:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->>>>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>>>>>
->>>>>> Read the required chip id data back by calling regmap_bulk_read() once,
->>>>>> reduce the number of local variables needed in it66121_probe() function.
->>>>>> And store its values into struct it66121_ctx, as it will be used latter.
->>>>>>
->>>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->>>>>> ---
->>>>>>     drivers/gpu/drm/bridge/ite-it66121.c | 47 ++++++++++++++++++++--------
->>>>>>     1 file changed, 34 insertions(+), 13 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
->>>>>> index 7e473beefc79..f36d05331f25 100644
->>>>>> --- a/drivers/gpu/drm/bridge/ite-it66121.c
->>>>>> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
->>>>>> @@ -313,6 +313,9 @@ struct it66121_ctx {
->>>>>>                    bool auto_cts;
->>>>>>            } audio;
->>>>>>            const struct it66121_chip_info *info;
->>>>>> +       u16 vender_id;
->>>>>> +       u16 device_id;
->>>>>> +       u8 revision;
->>>>> There is no need to store them, they are not used by the driver anywhere.
->>>>>
->>>>>>     };
->>>>>>
->>>>>>     static inline struct it66121_ctx *bridge_to_it66121(struct drm_bridge *bridge)
->>>>>> @@ -399,6 +402,30 @@ static void it66121_hw_reset(struct it66121_ctx *ctx)
->>>>>>            gpiod_set_value(ctx->gpio_reset, 0);
->>>>>>     }
->>>>>>
->>>>>> +static int it66121_read_chip_id(struct it66121_ctx *ctx, bool verbose)
->>>>>> +{
->>>>>> +       u8 id[4];
->>>>>> +       int ret;
->>>>>> +
->>>>>> +       ret = regmap_bulk_read(ctx->regmap, IT66121_VENDOR_ID0_REG, id, 4);
->>>>>> +       if (ret < 0) {
->>>>>> +               dev_err(ctx->dev, "Failed to read chip ID: %d\n", ret);
->>>>>> +               return ret;
->>>>>> +       }
->>>>>> +
->>>>>> +       ctx->vender_id = (u16)id[1] << 8 | id[0];
->>>>>> +       ctx->device_id = ((u16)(id[3] & IT66121_DEVICE_ID1_MASK) << 8 | id[2]);
->>>>>> +       /* Revision is shared with DEVICE_ID1 */
->>>>>> +       ctx->revision = FIELD_GET(IT66121_REVISION_MASK, id[3]);
->>>>>> +
->>>>>> +       if (verbose) {
->>>>>> +               dev_info(ctx->dev, "Found ITE66121: 0x%x%x, revision: %u\n",
->>>>>> +                        ctx->vender_id, ctx->device_id, ctx->revision);
->>>>>> +       }
->>>>>> +
->>>>>> +       return 0;
->>>>>> +}
->>>>>> +
->>>>>>     static inline int it66121_preamble_ddc(struct it66121_ctx *ctx)
->>>>>>     {
->>>>>>            return regmap_write(ctx->regmap, IT66121_MASTER_SEL_REG, IT66121_MASTER_SEL_HOST);
->>>>>> @@ -1561,7 +1588,6 @@ static const char * const it66121_supplies[] = {
->>>>>>
->>>>>>     static int it66121_probe(struct i2c_client *client)
->>>>>>     {
->>>>>> -       u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
->>>>>>            int ret;
->>>>>>            struct it66121_ctx *ctx;
->>>>>>            struct device *dev = &client->dev;
->>>>>> @@ -1603,19 +1629,13 @@ static int it66121_probe(struct i2c_client *client)
->>>>>>            if (IS_ERR(ctx->regmap))
->>>>>>                    return PTR_ERR(ctx->regmap);
->>>>>>
->>>>>> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
->>>>>> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID1_REG, &vendor_ids[1]);
->>>>>> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID0_REG, &device_ids[0]);
->>>>>> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID1_REG, &device_ids[1]);
->>>>>> -
->>>>>> -       /* Revision is shared with DEVICE_ID1 */
->>>>>> -       revision_id = FIELD_GET(IT66121_REVISION_MASK, device_ids[1]);
->>>>>> -       device_ids[1] &= IT66121_DEVICE_ID1_MASK;
->>>>>> +       ret = it66121_read_chip_id(ctx, false);
->>>>>> +       if (ret)
->>>>>> +               return ret;
->>>>>>
->>>>>> -       if ((vendor_ids[1] << 8 | vendor_ids[0]) != ctx->info->vid ||
->>>>>> -           (device_ids[1] << 8 | device_ids[0]) != ctx->info->pid) {
->>>>>> +       if (ctx->vender_id != ctx->info->vid ||
->>>>>> +           ctx->device_id != ctx->info->pid)
->>>> Q: There is no need to store them, they are not used by the driver anywhere.
->>>>
->>>> A: Here it is used, it is also used by the 0007-patch to get the entity(instance)-specific data.
->>> And the patch 7 will be changed once you have proper i2c client struct
->>> registered.
->>>
->>>> Since it6610 was introduced, this is used for chip identifying.
->>>> It can also be used with in debugfs context, to show who I am.
->>> I'd say, there is little point in whoami debugfs files. Debugfs is for
->>> the useful information.
->> Sinceit6610 was introduced, how do you know what the device it66121 driver is
->> binding? Printing model specific information is common practice for a
->> large driver. Especially if you can only able to debug remotely where
->> only a SSH is given.
-> cat /sys/bus/i2c/devices/.../name
-
-No, this is not enough. This is also not straight-forward.
-Because the system will have multiple i2c device. This is
-a bit hard to find which one is corresponding to the it66121.
-
-This is needed during the development and debug phase.
-We will also want to know the vendor id, device id and revision id.
-As those chip id are constant values, matching those chip id against
-the values in datasheet is a kind of sanity test. Which helps us to
-know if the i2c regmap(the communication channel) has been setup
-successfully or not.
-
-
->> You could see debugfs of drm/etnaviv for a
->> reference. It is common to testing a large driver running on 20+
->> machines with various hardware model.
->>
->>
->>>>>>                    return -ENODEV;
->>>>>> -       }
->>>>>>
->>>>>>            ctx->bridge.funcs = &it66121_bridge_funcs;
->>>>>>            ctx->bridge.of_node = dev->of_node;
->>>>>> @@ -1633,7 +1653,8 @@ static int it66121_probe(struct i2c_client *client)
->>>>>>
->>>>>>            drm_bridge_add(&ctx->bridge);
->>>>>>
->>>>>> -       dev_info(dev, "IT66121 revision %d probed\n", revision_id);
->>>>>> +       dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
->>>>>> +                ctx->vender_id, ctx->device_id, ctx->revision);
->>>>>>
->>>>>>            return 0;
->>>>>>     }
->>>>>> --
->>>>>> 2.34.1
->>>>>>
->>>
->
->
+Good point. I folded that suggestion into the patch.
