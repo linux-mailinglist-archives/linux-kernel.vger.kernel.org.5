@@ -2,173 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623777F5AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888367F5AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjKWJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:06:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S231571AbjKWJHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbjKWJG1 (ORCPT
+        with ESMTP id S229477AbjKWJHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:06:27 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2054.outbound.protection.outlook.com [40.107.22.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5599DD49
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:06:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aXGzoF9pr9Ue92h3jeQlOOnWpyFXPZWXR0V7s04sFZ2/ILBxToXxhTBSnpj8XH7PDi4HlIhmRZgDNnt2AFEwyow6B9Iwixnf7N7XmLYndXSoo4tCnROaEgsqWju6w2atXnDVkH+L9J15x43pdtmRKJcqqK+6Z3t17QNsa98OsWQcUskvWJTeIPTUUdM/UIpxRin9pSdC09R3W5+t3CTekJASrWc/BmNiSDcc1H3dmdC06QzRsPSY5/gaAYaammdcDfZwA0y+M6IBUypoiwlFk/zbhx8X6lNRmCMU4TGEy9kTIf+zRjNmZD67zjh+2D5mNzP7uZdHcr0ePQbGwC33Dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9LcfLLWOwvmLUuv3C8ICY+wJp7LYDauljJUxsB7j8mQ=;
- b=Y1AYvE/9thV2JF6WTd3Bw27herUB+6RkLVn6qjgyTH0RxHNDiC6ZFTSQKIWZy40bnlBNue3NQrYyFIQnIRWfaw0GuY1OcMW7TwltEVRSfqH2fLIPIcE7PyMNRJmnMlzGoFYiPqQbJgZ7Pmft40pubTluyTXDUCCDIVfZxp3e5cS7lcUyfu7YW3pb6WgDj6i13c8H13n/gCWZ5dDylsh5sBYFNeud8bFTUClkbdOvDlumofybbsBRKw4z7xGnRktT1ObDtuYzdzvvWbdb2xMAFDf2ByEq/I3mjJMoE3+gXQAd/rjxE0XXU+nbXq/IcgFlZMRC3pon0MNbhmgojer0Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LcfLLWOwvmLUuv3C8ICY+wJp7LYDauljJUxsB7j8mQ=;
- b=RtYI1DzfTzK0wy9B5UEHO2SA2q3A8S5whzbsIv3+jDP+9pYjz3iFsTz8tceHg39a2/DXpAGL3cIrzGn01RFaqE7LY3Ry4uvvg3IVJQ+ODaR21EVm6H0+mj+RsIAQXmLyWWq68cTuf/+DUJvfBLMk1vPNAvfghcbJYSaezPcjJIM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
- by AS8PR04MB8899.eurprd04.prod.outlook.com (2603:10a6:20b:42e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.13; Thu, 23 Nov
- 2023 09:06:30 +0000
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::faf7:684b:c6ba:e191]) by DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::faf7:684b:c6ba:e191%5]) with mapi id 15.20.7025.017; Thu, 23 Nov 2023
- 09:06:30 +0000
-Message-ID: <da13e561-0b3b-401b-966f-9a54e2e9c36b@nxp.com>
-Date:   Thu, 23 Nov 2023 11:06:27 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: fsl_xcvr: refine the requested phy clock frequency
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, shengjiu.wang@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Language: en-US
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-In-Reply-To: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR01CA0154.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:aa::23) To DU2PR04MB8774.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::21)
+        Thu, 23 Nov 2023 04:07:10 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B96911F;
+        Thu, 23 Nov 2023 01:07:16 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AN7moTE006500;
+        Thu, 23 Nov 2023 03:07:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=C
+        QEcGnmpDO93SDrwP512rHsSsbmnvatbnvLk+ZJOvg0=; b=dsHAIbAtfKPaE0jHY
+        o8z0beiOqJpfCQgljITQUa1DtYQ1ZBdsyZOg7Zdt84pe6/VYvQFbas4Hr1YUdUQe
+        U+TmwbXjYlXlXYE8WmcIV5F/hJ1EtRQcwqlzT3LFQppJV+DnuvqbCQX/D23yIZg5
+        Vv795dxWfylSmBchsiT/GBiRb9QALmLtTpP9FkqPlZZr2PMSHMLiSBfY7xDQE9A+
+        8CI0nW1qwHd36WmUg6tLz/AxuNSh/aC7B4Ytn754wM2Gg2l1RAmVeJtdChGhJBMl
+        /MNNgQUTWN/EAd1qYUFhHTGy4W1ojvjj6B+DtN3rqWkM1jJo1vmi8tGcH/VMsY6d
+        vF/qw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj2dj1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 03:07:02 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 23 Nov
+ 2023 09:07:00 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Thu, 23 Nov 2023 09:07:00 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2BA8EB12;
+        Thu, 23 Nov 2023 09:07:00 +0000 (UTC)
+From:   Maciej Strozek <mstrozek@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek <mstrozek@opensource.cirrus.com>
+Subject: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ connection
+Date:   Thu, 23 Nov 2023 09:06:58 +0000
+Message-ID: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|AS8PR04MB8899:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1565f127-24f8-445c-066f-08dbec037b09
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BtPz6WzaoczrDJePdpMRI7rzcoBB5Xc+ei+pfcdyFhL0mdG/cSqfknGiqUHTcL7gihIBbLWqVr8kKkHtUesmOpmRQJN9u5KYu7UQWXfmccxxiTFMT5rFgPegRjh96l5HX665gPXMuZhn5scNgE5X67QWzhj63NkY0UKdaaVYOJwSoD4RR0XiRNkJqhCmY/I/RQ+Ln9l75PbNM2L1KvzA2OedNbNKEsLgTIx7mzQgR1lbXGFcoo/nIRaBa3RMKaZpMs/2o//34mMwuDlN9ZlwnzIFtlsknW+JFZGXMm/coQcCJGKRC5oVup+eetbYiI228jXVlaYcRVDkxo/qkEG+n+yo/n6QWFDuJ7obkgPygPGG0ZjtQPxLePookxueJiCobw5qNfvEoZIeL7xRnsN2pH7Mda/O3xbOIHeR9vYHJexH4MSXR+InXUe+7jz/Svclb8RzHsf4aE2lq8qXVHwUSul8WnEeLhtbW8nh4nACCX8pQ0KqTXkIJL4tTb8BmaKcgoN0CAavWcxzMK2DaYafgrm0g+k+xUfmR1EGdTBcYpG5LSHfXZ+QBxyWVr318OEY6WCZ1i1D5SSkFaCSeMmFEMWgVpRMVssZHfBc/xYmMGb86zywZhF7TZ7/1CcZZXOF+6UYhvaXwi91jSKJSWh1Mbl3IGUAotOVN0eBZ/GKMmA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(396003)(366004)(376002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(6512007)(2616005)(83380400001)(26005)(316002)(66946007)(66556008)(66476007)(478600001)(6486002)(53546011)(6506007)(921008)(6666004)(7416002)(44832011)(5660300002)(41300700001)(2906002)(86362001)(31696002)(38100700002)(36756003)(4326008)(31686004)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjQ3QWFEQjlVWGhtczB6ZGFteG5tejJ1bis2UWtCK3FXV05MOW5ON3ZCVEJJ?=
- =?utf-8?B?TlBWQ2ZENGNieTF6ZTJVNVhSRFA1akFzTk9TMzV2RFVpRE1yK0t2clBpcFBo?=
- =?utf-8?B?cWY1YjE3eEZWRWRVa1BsUHFKSzk1cmtiNW9nL3RLZ2RjUlVucXNDVUZnZFJi?=
- =?utf-8?B?VGtGM3ZoanpaM1dSK0QvQW11dlowNlU3R2hkZkxvS3M5bkowYnJqVlpOY2V0?=
- =?utf-8?B?MDVYV2FqQUx5ZzlDS0R5OFh5M3pVcjZ2TkdISS9acTBvdTcwTGR6UTlBSXNR?=
- =?utf-8?B?dU9XQ1VONUE2d2pPSGVRSXBBa0JoMW10bTEyVCtFcVRkQ01WMmU4WGQ2ZlNI?=
- =?utf-8?B?cTMwUUZWQmdpbDBMNW1sRzZ3KzZUZi9TL2tOaDVTeUo3Szl2NlM2WU9OSVdq?=
- =?utf-8?B?RkpBYWZXMFh1c1BCL3lBNkJ4RytweTBYRmtoTW5yN0MxbzNsT1hPN1IzdFFP?=
- =?utf-8?B?a05EbEpUTUhObTlVd0FETGJtTEphbzUrekRPNXJnZGdKV3lsTVlNWHd5YzRQ?=
- =?utf-8?B?SEU2NUJRcVZDRjF5MU5qOFBhUUtqZ1FScHA4WEFVT3BpSnZHQ3JqcWE2T0FF?=
- =?utf-8?B?RG05dHpNVWdOb1N3MUhlS2FYbjd3T1g0d1c4OWF1TExXeUZzeFExeG9pWEY0?=
- =?utf-8?B?SUtqcFpER3JVS0M4Mlk3SnVYTEtieCtIOU1WZTB0cUVUOEIra0ZZaWhXZndI?=
- =?utf-8?B?OGFqd0RXekRlaUNBNXVEZ2NNYU96Q2JtdEJmdS9VUnNhSXpqeUlObjZsUm5T?=
- =?utf-8?B?OTNndXc2Nlh1Q0lvK0VORC95VmVjOHhGWW5nek00SUs4Y0VSUUFSZVFSVEJY?=
- =?utf-8?B?UmtmaWU4VjRrb1ZZcEJnRmhudUQrQjhjWXZBRGVTaWl2VnB3Qzh1MVVwYVly?=
- =?utf-8?B?TTJoSjZ0a1Z3VkFhQ0tRQUZHVVZMSnRub01kVU02d29zQnVMbUNvblB2U0Vv?=
- =?utf-8?B?dFZqOWtwbno0b1J1aWwyRjZVT1ZtMndiK1gyeVlSZkRaaG8weEFqTU9SWklT?=
- =?utf-8?B?VXR4bmFrRk5OT0diV1NkaDJVelBaRDhJWFNneURBMGRFc1BLVml0UmZqSllw?=
- =?utf-8?B?TlExQk1KRE9YenNaRkUrZFpUV2lPM0hCcTVjYTdmUUN4dTBKM3pwTE1JN0dG?=
- =?utf-8?B?Zm9tUDYvaTR5cExZZVRkN2VkYnNhT3hMc3IxVXRGRk9SMUZ3MjE1UXYvK2tY?=
- =?utf-8?B?WVZxNzVvV0NSM09JVHRBTGJJRnpTM1Rma1AwZnhvbjJ0dnFqOWxYcThqTWFX?=
- =?utf-8?B?eTNmTWVNeGJNUkpPUnErY3ZqcWhweW44cmo0ejhYckYxRW5FUWNZMVczdTEy?=
- =?utf-8?B?ZzJHbjN6QWVnaENEbUdCK0FyalBrZksrNTVTeXF0NEs0bFB1eVEyRitnTE1l?=
- =?utf-8?B?YXMzOENYekw0clhzNjZIYmVZMmdPVnJvYzRGZ3RLZlNJVjh6bUV3UjlIMTFa?=
- =?utf-8?B?MWY5eVMyNVdIYmpVblMvMDJrR0VnZW9YZ3NYWHIzS1dxcjdVcFZIdmd5eUJW?=
- =?utf-8?B?ZHg4TTRjZGhDY0JaKy80TERmMmtrRUxZa2VVU3B6STNmK2hFcnFicnNXTVZB?=
- =?utf-8?B?cEdZcnUwYkpYSUdsVmVVQTE1S3h6cGMxQWljZ0VubG45a0ZoVUgvWkgzRm1k?=
- =?utf-8?B?ZjhyMGxROGFSQXRibDhYcS9RYVVCbkdRMHAwRGlocVNkQlBwMm03NDZ4bU0v?=
- =?utf-8?B?YmE4a2J1SVBzRkZzMW5LMHZSUEt4Uyt2VzdSR1RZcjJhaklTUkJSQ0YwV2VQ?=
- =?utf-8?B?R0wwSXZ3K3hmNU4rTm1hM3ZPazd0VHpVOVdzRGxNS29mN09TaXhKcjFmTkgx?=
- =?utf-8?B?NUludjNKeHlhL2FlR2RLK0hSUEFoVitIYk01N0JhdnpVbk9odHVxTmRERnlh?=
- =?utf-8?B?NjJ4VUR4dWFvN01jVXY1Y0p6cFVDNGVVYnI1d1JnLzhqTUxyREZHNm9KbzIy?=
- =?utf-8?B?andYaks4cEhRR3czYmtsVGVlM3JNZDJhemoyWXptZlZDbjVDV3B0eEVIUnhh?=
- =?utf-8?B?bkdpNHpIYklQYkhxMW1hYzVIOTNoUGxHcVp2QzJaNFA4bDFRNWxNR0VmbDN5?=
- =?utf-8?B?U3lOVUtQeGdCSGZMZnplRVlLTFI1blJsWk1LdWgrOFAyc3dTcnRLUk5INWl4?=
- =?utf-8?B?VUxDY3pqM28xUG5USGpuYlphRjl4Z2wvNVZKZWFpSzQ0TURoc2VhQTZXMVFu?=
- =?utf-8?B?RWc9PQ==?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1565f127-24f8-445c-066f-08dbec037b09
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 09:06:30.1792
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JDIgj+gbFqKgBrNbnaCHsDTaYOGDweyKs/5ud0voKYXAUz0ackMSzav4gP9gTcnvsuFiTpbQz59a6ZTL5ss9YQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8899
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ZsPDVuih4DDNKJzQX-pIXadPFntShLCz
+X-Proofpoint-GUID: ZsPDVuih4DDNKJzQX-pIXadPFntShLCz
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/2023 3:14 AM, Shengjiu Wang wrote:
-> As the input phy clock frequency will divided by 2 by default
-> on i.MX8MP with the implementation of clk-imx8mp-audiomix driver,
-> So the requested frequency need to be updated.
->
-> The relation of phy clock is:
->      sai_pll_ref_sel
->         sai_pll
->            sai_pll_bypass
->               sai_pll_out
->                  sai_pll_out_div2
->                     earc_phy_cg
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Add a polling mechanism that will keep the driver operational even in
+absence of physical IRQ connection. If IRQ line is detected, the driver
+will continue working as usual, in case of missing IRQ line it will
+fallback to the polling mechanism introduced in this change.
+This will support users which choose not to connect an IRQ line as it
+is not critical to part's operation.
 
-Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+V4 -> V5: Do not use hpload interrupt with the new polling function
+V3 -> V4:
+	- Removed unnecesary else and indentation
+	- Changed cs43130_wait_for_completion return codes and updated callers
+	  accordingly
+	- Changed approach for checking for presence of IRQ connection: see if
+	  client->irq equals 0 which seems to be a standard way of checking it
+	  used by other drivers (instead of inspecting
+	  devm_request_threaded_irq error code)
+V2 -> V3: Amended changelog message and subject line
+V1 -> V2: Add changelog message
 
-Thanks,
-Iulia
+ sound/soc/codecs/cs43130.c | 77 ++++++++++++++++++++++++++------------
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 55 insertions(+), 23 deletions(-)
 
-> ---
->   sound/soc/fsl/fsl_xcvr.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-> index 77f8e2394bf9..f0fb33d719c2 100644
-> --- a/sound/soc/fsl/fsl_xcvr.c
-> +++ b/sound/soc/fsl/fsl_xcvr.c
-> @@ -358,7 +358,7 @@ static int fsl_xcvr_en_aud_pll(struct fsl_xcvr *xcvr, u32 freq)
->   	struct device *dev = &xcvr->pdev->dev;
->   	int ret;
->   
-> -	freq = xcvr->soc_data->spdif_only ? freq / 10 : freq;
-> +	freq = xcvr->soc_data->spdif_only ? freq / 5 : freq;
->   	clk_disable_unprepare(xcvr->phy_clk);
->   	ret = clk_set_rate(xcvr->phy_clk, freq);
->   	if (ret < 0) {
-> @@ -409,7 +409,7 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
->   	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->   	u32 m_ctl = 0, v_ctl = 0;
->   	u32 r = substream->runtime->rate, ch = substream->runtime->channels;
-> -	u32 fout = 32 * r * ch * 10 * 2;
-> +	u32 fout = 32 * r * ch * 10;
->   	int ret = 0;
->   
->   	switch (xcvr->mode) {
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 02e7f45b9208..0f3ead84665f 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -326,6 +326,34 @@ static int cs43130_set_pll(struct snd_soc_component *component, int pll_id, int
+ 	return ret;
+ }
+
++static int cs43130_wait_for_completion(struct cs43130_private *cs43130, struct completion *to_poll,
++					int time)
++{
++	int stickies, offset, flag, ret;
++
++	if (cs43130->has_irq_line) {
++		ret = wait_for_completion_timeout(to_poll, msecs_to_jiffies(time));
++		if (ret == 0)
++			return -ETIMEDOUT;
++		else
++			return 0; // Discard number of jiffies left till timeout and return success
++	}
++
++	if (to_poll == &cs43130->xtal_rdy) {
++		offset = 0;
++		flag = CS43130_XTAL_RDY_INT;
++	} else if (to_poll == &cs43130->pll_rdy) {
++		offset = 0;
++		flag = CS43130_PLL_RDY_INT;
++	} else {
++		return -EINVAL;
++	}
++
++	return regmap_read_poll_timeout(cs43130->regmap, CS43130_INT_STATUS_1 + offset,
++					stickies, (stickies & flag),
++					1000, time * 1000);
++}
++
+ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				 enum cs43130_mclk_src_sel src)
+ {
+@@ -364,14 +392,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+-			if (ret == 0) {
+-				dev_err(cs43130->dev, "Timeout waiting for XTAL_READY interrupt\n");
+-				return -ETIMEDOUT;
++			if (ret) {
++				dev_err(cs43130->dev, "Error waiting for XTAL_READY interrupt: %d\n", ret);
++				return ret;
+ 			}
+ 		}
+
+@@ -400,14 +427,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+-			if (ret == 0) {
+-				dev_err(cs43130->dev, "Timeout waiting for XTAL_READY interrupt\n");
+-				return -ETIMEDOUT;
++			if (ret) {
++				dev_err(cs43130->dev, "Error waiting for XTAL_READY interrupt: %d\n", ret);
++				return ret;
+ 			}
+ 		}
+
+@@ -416,14 +442,13 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				   CS43130_PLL_RDY_INT_MASK, 0);
+ 		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 				   CS43130_PDN_PLL_MASK, 0);
+-		ret = wait_for_completion_timeout(&cs43130->pll_rdy,
+-						  msecs_to_jiffies(100));
++		ret = cs43130_wait_for_completion(cs43130, &cs43130->pll_rdy, 100);
+ 		regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 				   CS43130_PLL_RDY_INT_MASK,
+ 				   1 << CS43130_PLL_RDY_INT_SHIFT);
+-		if (ret == 0) {
+-			dev_err(cs43130->dev, "Timeout waiting for PLL_READY interrupt\n");
+-			return -ETIMEDOUT;
++		if (ret) {
++			dev_err(cs43130->dev, "Error waiting for PLL_READY interrupt: %d\n", ret);
++			return ret;
+ 		}
+
+ 		regmap_update_bits(cs43130->regmap, CS43130_SYS_CLK_CTL_1,
+@@ -2053,7 +2078,7 @@ static int cs43130_hpload_proc(struct cs43130_private *cs43130,
+ 	regmap_read(cs43130->regmap, CS43130_INT_MASK_4, &msk);
+ 	if (!ret) {
+ 		dev_err(cs43130->dev, "Timeout waiting for HPLOAD interrupt\n");
+-		return -1;
++		return -ETIMEDOUT;
+ 	}
+
+ 	dev_dbg(cs43130->dev, "HP load stat: %x, INT_MASK_4: %x\n",
+@@ -2548,13 +2573,19 @@ static int cs43130_i2c_probe(struct i2c_client *client)
+ 	init_completion(&cs43130->pll_rdy);
+ 	init_completion(&cs43130->hpload_evt);
+
+-	ret = devm_request_threaded_irq(cs43130->dev, client->irq,
+-					NULL, cs43130_irq_thread,
+-					IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+-					"cs43130", cs43130);
+-	if (ret != 0) {
+-		dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
+-		goto err;
++	if (!client->irq) {
++		dev_dbg(cs43130->dev, "IRQ not found, will poll instead\n");
++		cs43130->has_irq_line = 0;
++	} else {
++		ret = devm_request_threaded_irq(cs43130->dev, client->irq,
++						NULL, cs43130_irq_thread,
++						IRQF_ONESHOT | IRQF_TRIGGER_LOW,
++						"cs43130", cs43130);
++		if (ret != 0) {
++			dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
++			goto err;
++		}
++		cs43130->has_irq_line = 1;
+ 	}
+
+ 	cs43130->mclk_int_src = CS43130_MCLK_SRC_RCO;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index d3f595bbd3ba..dbdb5b262f1b 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -508,6 +508,7 @@ struct	cs43130_private {
+ 	struct gpio_desc		*reset_gpio;
+ 	unsigned int			dev_id; /* codec device ID */
+ 	int				xtal_ibias;
++	bool				has_irq_line;
+
+ 	/* shared by both DAIs */
+ 	struct mutex			clk_mutex;
+--
+2.34.1
+
