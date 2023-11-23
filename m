@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F22E17F611B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA39D7F5FBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345713AbjKWOKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        id S1345407AbjKWNLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345703AbjKWOKT (ORCPT
+        with ESMTP id S1345271AbjKWNK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:10:19 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E271B2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:10:26 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c887d1fb8fso11772991fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1700748624; x=1701353424; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=43S2JKE+XlknJ7InMXn72r82rK7OdZlK6EXXoJcK908=;
-        b=QaxrnGOPE1u1Bcz5geVkJpyyAk9FFayQKerfYtl5JPw9v8EEvs+WeooNyX/oB5lsdZ
-         AxnrFHYtmPZqktmY8HByDMDGdANuNNnp0Rpai0FXCv35o6eIE7vH91Os2KoWd3HODdTe
-         M/67FEYXkV+DojfdGF4gLZgd03M1t917bKN3FLFm+FIIMyoi9eUjKwQ0B/Tq9zGq1OJE
-         tzEkCDwZEU8ARGMzKCALqMu3s9oGlsHw5cBnidqtZkQnK/ZJEYP24TwDcdQjIBkGv5GL
-         aF470SyaNBwhWibJVE6cjdjXyfX1hhk0oKYEmv1/+YRL2a1LWuSzaXGJpuem32xJ4QWq
-         YHsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700748624; x=1701353424;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=43S2JKE+XlknJ7InMXn72r82rK7OdZlK6EXXoJcK908=;
-        b=N4Jc24JcvttRMLA11EbqqACuvyJlCkeURUxpuDnoXYcEoDkLzqJDpy/gnyHLYtQCP+
-         uyj3jQ1EuNxSjvFjkJxTOxP1t5raD6Dc95RpI/gESpQcsdL7XwKb4orLSrOm13dt6p4T
-         aQLFcWGImXQ0u4UcpFTZ1BW4X03rYIQ/YoPJNJHe4WV4Uo4vlIElvT6T9UpqxbGzEwre
-         +NklgV0owZv6jGGaWtYm+UAjo63M7a92x4PVioUigNVZxUjPigKi619c8K9IVFkLzezg
-         mUxbKrlsh5PuoKk+r4fYXDiUnzr5pRIXDhijGYJfQzAbvGzkhWCf2a4cgOOp0/fn+Cjg
-         m03w==
-X-Gm-Message-State: AOJu0Yzjz3zD9JLP1kGSmTunT97LmDSu/Tb+kb43jG4L8gQCjT2vsuVN
-        yQmQxZtyHJs+WX8pKql3sF4a4g==
-X-Google-Smtp-Source: AGHT+IGR67MWtHuwOUSa+u9XjVDIwxf3b32UIItBRs2GxWoQZuo7TGo/Wf88EpY0wZmq4V317MYyOQ==
-X-Received: by 2002:a2e:9842:0:b0:2c8:8025:1c8e with SMTP id e2-20020a2e9842000000b002c880251c8emr3716596ljj.17.1700748624167;
-        Thu, 23 Nov 2023 06:10:24 -0800 (PST)
-Received: from airbuntu (host109-151-228-202.range109-151.btcentralplus.com. [109.151.228.202])
-        by smtp.gmail.com with ESMTPSA id t17-20020a05600c451100b0040b379e8526sm1386686wmo.25.2023.11.23.06.10.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 06:10:23 -0800 (PST)
-Date:   Tue, 21 Nov 2023 23:01:50 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH] sched/pelt: avoid underestimate of task utilization
-Message-ID: <20231121230150.eq2kc72bvyn6ltur@airbuntu>
-References: <20231122140119.472110-1-vincent.guittot@linaro.org>
+        Thu, 23 Nov 2023 08:10:59 -0500
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70CE0A1;
+        Thu, 23 Nov 2023 05:11:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+        Content-Type; bh=SirAb/jEBgE0qrD2TgpJrt8NLd9ku9glI9AfL5GoTu0=;
+        b=k3WG98rbUbwEasrQMMFPZf53UA2LR6/FQjctIhuVngLjcrP+oGLsAHT4ZCRCL/
+        6BNKe/ZvfqbKYuKCaQ7xSiZMEFFKUWqzvPKcJ0zx1ND5ilrd4sF/yboVJXrBpuHZ
+        DjAicfeDvoeCIJq7UBFKzAGr6wDpgV9P9zWDQ/NEcUG9Q=
+Received: from [172.23.69.7] (unknown [121.32.254.149])
+        by zwqz-smtp-mta-g4-0 (Coremail) with SMTP id _____wDXf9deSV9lRwv0Cw--.64556S2;
+        Thu, 23 Nov 2023 20:45:20 +0800 (CST)
+Message-ID: <7a1297c3-25d4-41d8-b421-ab1dda2973f2@126.com>
+Date:   Thu, 23 Nov 2023 20:45:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231122140119.472110-1-vincent.guittot@linaro.org>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net/mlx5e: Fix a race in command alloc flow
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, jackm@dev.mellanox.co.il,
+        ogerlitz@mellanox.com, roland@purestorage.com, eli@mellanox.com,
+        dinghui@sangfor.com.cn, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231121115251.588436-1-lishifeng1992@126.com>
+ <20231122120245.GC4760@unreal>
+From:   Shifeng Li <lishifeng1992@126.com>
+In-Reply-To: <20231122120245.GC4760@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: _____wDXf9deSV9lRwv0Cw--.64556S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGryfAF4xGr45WFy8CFW3KFg_yoWrGw1rpr
+        yfGr47AFn5GFnrtrn7Xr4jq3W8A39rK345GF1v9F1xWan8Aa4kZw1Ikr40g34UZ3yYqFyU
+        JayDKa48Jr43XaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcmi_UUUUU=
+X-Originating-IP: [121.32.254.149]
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1wUxr153c4CXgAAAsB
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 15:01, Vincent Guittot wrote:
-> It has been reported that thread's util_est can significantly decrease as
-> a result of sharing the CPU with other threads. The use case can be easily
-> reproduced with a periodic task TA that runs 1ms and sleeps 100us.
-> When the task is alone on the CPU, its max utilization and its util_est is
-> around 888. If another similar task starts to run on the same CPU, TA will
-> have to share the CPU runtime and its maximum utilization will decrease
-> around half the CPU capacity (512) then TA's util_est will follow this new
-> maximum trend which is only the result of sharing the CPU with others
-> tasks. Such situation can be detected with runnable_avg wich is close or
-> equal to util_avg when TA is alone but increases above util_avg when TA
-> shares the CPU with other threads and wait on the runqueue.
+On 2023/11/22 20:02, Leon Romanovsky wrote:
+> On Tue, Nov 21, 2023 at 03:52:51AM -0800, Shifeng Li wrote:
+>> Fix a cmd->ent use after free due to a race on command entry.
+>> Such race occurs when one of the commands releases its last refcount and
+>> frees its index and entry while another process running command flush
+>> flow takes refcount to this command entry. The process which handles
+>> commands flush may see this command as needed to be flushed if the other
+>> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+>> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+>> the spin lock.
+>>
+>> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+>> [70013.081968]
+>> [70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
+>> [70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
+>> [70013.082028] Workqueue: events aer_isr
+>> [70013.082053] Call Trace:
+>> [70013.082067]  dump_stack+0x8b/0xbb
+>> [70013.082086]  print_address_description+0x6a/0x270
+>> [70013.082102]  kasan_report+0x179/0x2c0
+>> [70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
+>> [70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
+>> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+>> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+>> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+>> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+>> [70013.082390]  ? __pm_runtime_resume+0x58/0x70
+>> [70013.082409]  pci_device_remove+0xf3/0x280
+>> [70013.082426]  ? pcibios_free_irq+0x10/0x10
+>> [70013.082439]  device_release_driver_internal+0x1c3/0x470
+>> [70013.082453]  pci_stop_bus_device+0x109/0x160
+>> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+>> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+>> [70013.082493]  aer_isr+0x7d2/0x960
+>> [70013.082510]  ? aer_get_device_error_info+0x420/0x420
+>> [70013.082526]  ? __schedule+0x821/0x2040
+>> [70013.082536]  ? strscpy+0x85/0x180
+>> [70013.082543]  process_one_work+0x65f/0x12d0
+>> [70013.082556]  worker_thread+0x87/0xb50
+>> [70013.082563]  ? __kthread_parkme+0x82/0xf0
+>> [70013.082569]  ? process_one_work+0x12d0/0x12d0
+>> [70013.082571]  kthread+0x2e9/0x3a0
+>> [70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
+>> [70013.082592]  ret_from_fork+0x1f/0x40
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
+> I'm curious how did you get this error? I would expect to see some sort
+> of lock in upper level which prevents it.
+> 
+The logical relationship of this error is as follows:
 
-So effectively if have two always running tasks on the same CPU their util_est
-will converge to 1024 instead of 512 now, right?
+                   aer_recover_work                    |             ent->work
+------------------------------------------------------+---------------------------------
+aer_recover_work_func                                 |
+|- pcie_do_recovery                                   |
+   |- report_error_detected                            |
+     |- mlx5_pci_err_detected                          |cmd_work_handler
+       |- mlx5_enter_error_state                       |  |- cmd_alloc_index
+         |- enter_error_state                          |    |- lock cmd->alloc_lock
+           |- mlx5_cmd_flush                           |    |- clear_bit
+             |- mlx5_cmd_trigger_completions           |    |- unlock cmd->alloc_lock
+               |- lock cmd->alloc_lock                 |
+               |- vector = ~dev->cmd.vars.bitmask      |
+               |- for_each_set_bit                     |
+                 |- cmd_ent_get(cmd->ent_arr[i]) (UAF) |
+               |- unlock cmd->alloc_lock               |  |- cmd->ent_arr[ent->idx] = ent
 
-I guess this is more accurate, yes. And I think this will hit the same
-limitation we can hit with uclamp_max. If for example there are two tasks that
-are 650 if they run alone, they would appear as 1024 now (instead of 512) if
-they share the CPU because combined running there will be no idle time on the
-CPU and appear like always running tasks, I think.
+The cmd->ent_arr[ent->idx] assignment and the bit clearing are not protected by the cmd->alloc_lock in cmd_work_handler().
 
-If I got it right, I think this should not be a problem in practice because the
-only reason these two tasks will be stuck on the same CPU is because the load
-balancer can't do anything about it to spread them; which indicates the system
-must be busy anyway. Once there's more idle time elsewhere, they should be
-spread and converge to 650 again.
+> Thanks
 
-Not my forte, but LGTM anyway.
-
-
-Cheers
-
---
-Qais Yousef
