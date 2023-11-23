@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACE57F641B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7557F6421
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345028AbjKWQkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        id S229957AbjKWQks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKWQkH (ORCPT
+        with ESMTP id S229510AbjKWQkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:40:07 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56D5DD;
-        Thu, 23 Nov 2023 08:40:13 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7597940E0257;
-        Thu, 23 Nov 2023 16:40:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LqBXCnrJpKOI; Thu, 23 Nov 2023 16:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700757609; bh=ReRjYVadwY+865FlobuR5wcJUj8JlrwxeGT4ZGKVa4s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CTWcnNotIVPtq2mv+TMP/V+jjYXbjl9KNh1eXXcKPvj+AclKGajEsdAD37WinvTie
-         B0RIOFDEKve2w3koO+uhEK7hJJRujm6ONP4rGPoDDvRJ08dvprms/4lVMZCyavGT7J
-         42p7ll8/08DjIXMCH4ErVeUtFyK3eVwRz/USTNNONPQtfHsoVwNRAPzxD35GoQyxWw
-         cJwmxkE1Vzatb0cN4FJKrP7WxIiWScfrQ2sOKV6UH4eGeSVurDO9TeHb8QlVjiUqNn
-         Z7EbHlc2j/QiZtgFrxMuhghyVAz89nkoIngRvnUueI+PLcnbu8TrW0tU9UhRiHiKo3
-         pvnBtoVWtdCUWUKKxmIHGsN1LCr8v4ClE2DuCa7qM4c8r/hWpNY1d+Lt5cbTyA3L3a
-         hOBy2XHa9yGVRqlKF6y1COUOLXmH+CIA/90AnF1ghhe6E8U1YZ4aVr7zUL+R+FW9Le
-         AQxk6OE5iOoV5ieooR7fjYckJDMGSTYD7BeWTxg8PBLzFP8XqCAI+UYf608c49Jv5M
-         oAm0oJvIb0IomgDV5JzTmBaRkqKt33+KDI3G37aEzhyqq8Bx76JiZ1kMBzkIH8Jmfd
-         oZCtiIYY2fu48j0Hu6b2DBob6bGGHlQnhQX36QQE7F5nmeH8mmZxTJw7GmeO0dOHX7
-         wdCVbz9PKE2MCMPczI/m5twI=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A89740E014B;
-        Thu, 23 Nov 2023 16:39:56 +0000 (UTC)
-Date:   Thu, 23 Nov 2023 17:39:51 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Robert Richter <rric@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Sergey Temerkhanov <s.temerkhanov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yeqi Fu <asuk4.q@gmail.com>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] EDAC, thunderx: fix possible out-of-bounds string access.
-Message-ID: <20231123163951.GFZV+AV8pNL6pUwxNH@fat_crate.local>
-References: <20231122222007.3199885-1-arnd@kernel.org>
- <20231123115812.GBZV8+VHPKYmKB/sva@fat_crate.local>
- <f018b794-8af5-4c08-ae7f-0528a3e0f0e8@embeddedor.com>
- <20231123143019.GDZV9h+zIVj5pBQySh@fat_crate.local>
- <ece872de-46fa-4138-959d-28e76e6b5edb@embeddedor.com>
+        Thu, 23 Nov 2023 11:40:46 -0500
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC0E9E;
+        Thu, 23 Nov 2023 08:40:49 -0800 (PST)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ANG3c34030687;
+        Thu, 23 Nov 2023 11:40:34 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3uhxk5th5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 11:40:34 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3ANGeXlA054156
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 23 Nov 2023 11:40:33 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 23 Nov 2023 11:40:32 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 23 Nov 2023 11:40:32 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 23 Nov 2023 11:40:32 -0500
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3ANGeHrp019795;
+        Thu, 23 Nov 2023 11:40:19 -0500
+From:   Marcelo Schmitt <marcelo.schmitt@analog.com>
+To:     <paul.cercueil@analog.com>, <Michael.Hennerich@analog.com>,
+        <lars@metafoo.de>, <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <marcelo.schmitt1@gmail.com>
+CC:     Marcelo Schmitt <marcelo.schmitt@analog.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/7] iio: adc: ad7091r-base: Set alert config and drvdata
+Date:   Thu, 23 Nov 2023 13:40:16 -0300
+Message-ID: <b485b1ccafad79f9ac3bb1a6b5e6d68b24ad4ad5.1700751907.git.marcelo.schmitt1@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
+References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ece872de-46fa-4138-959d-28e76e6b5edb@embeddedor.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: tMV_NfkCYfUQUWC2e0eqRdhy9nEZz62Z
+X-Proofpoint-ORIG-GUID: tMV_NfkCYfUQUWC2e0eqRdhy9nEZz62Z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311060001
+ definitions=main-2311230122
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 08:41:33AM -0600, Gustavo A. R. Silva wrote:
-> To avoid that, I would just say (in the changelog text) that this patch
-> is fixing some -Wstringop-overflow warnings, without specifying any
-> commit ID.
+Write 1 to bit 4 in the configuration register to set ALERT/BUSY/GPO pin
+to be used as ALERT.
+Set device driver data so it can be retrieved when handling alert
+events, avoiding null pointer dereference.
 
-Doh, obviously.
+Fixes: <ca69300173b6> (iio: adc: Add support for AD7091R5 ADC)
+Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+---
+ drivers/iio/adc/ad7091r-base.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-I hope Arnd is reading this. :-)
-
-Thx, lemme do that.
-
+diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
+index 8e252cde735b..3ecac3164446 100644
+--- a/drivers/iio/adc/ad7091r-base.c
++++ b/drivers/iio/adc/ad7091r-base.c
+@@ -28,6 +28,7 @@
+ #define AD7091R_REG_RESULT_CONV_RESULT(x)   ((x) & 0xfff)
+ 
+ /* AD7091R_REG_CONF */
++#define AD7091R_REG_CONF_ALERT_EN   BIT(4)
+ #define AD7091R_REG_CONF_AUTO   BIT(8)
+ #define AD7091R_REG_CONF_CMD    BIT(10)
+ 
+@@ -232,9 +233,16 @@ int ad7091r_probe(struct device *dev, const char *name,
+ 	iio_dev->channels = chip_info->channels;
+ 
+ 	if (irq) {
++		ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
++					 AD7091R_REG_CONF_ALERT_EN, BIT(4));
++		if (ret)
++			return ret;
++
++		dev_set_drvdata(st->dev, iio_dev);
+ 		ret = devm_request_threaded_irq(dev, irq, NULL,
+-				ad7091r_event_handler,
+-				IRQF_TRIGGER_FALLING | IRQF_ONESHOT, name, st);
++						ad7091r_event_handler,
++						IRQF_TRIGGER_FALLING |
++						IRQF_ONESHOT, name, st);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
-Regards/Gruss,
-    Boris.
+2.42.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
