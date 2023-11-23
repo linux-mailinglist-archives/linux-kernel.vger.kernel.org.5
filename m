@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AFA7F6085
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE93D7F6089
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345533AbjKWNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S1345549AbjKWNmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345633AbjKWNkp (ORCPT
+        with ESMTP id S1345536AbjKWNmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:40:45 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151D2D42;
-        Thu, 23 Nov 2023 05:40:50 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A03BB1BF210;
-        Thu, 23 Nov 2023 13:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700746849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aNsWgng4IthX8Dyj2PdimJwFQSUwFngI8Cl8W1jSZbY=;
-        b=XLzvxMc3JyA80XZ7DzFZE1c/zFyrU9gpu/UfROvpF+Y+didEbBGxAASiVYnFOhD4SJ4ioJ
-        oI4+F4Q+dITEq9ItZgKaeUgagzezayOpdaQHHwA6CswlCjApW5djMeUSGuQyDD56RuejtM
-        FWUQufdGb4K+DfcvnvulPNrwWy+BXIRar+/uz4T+nB38Jnqu8PW7QGCOD41Ur/WoEThVs3
-        /vzwN/rs0Hi4P/R+t0cxm6AkaNKkIM9GxqO4Zc5+ISUPe/453+DF8ljyHJfCHq6V8IOceT
-        LIMkt4PSQy/Qgemzx7pOVlPO8Qum4RmdYFqeOWjG4zfm6o+3/Ux9h6urN/7JfQ==
-Date:   Thu, 23 Nov 2023 14:40:45 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [RFC PATCH net-next v2 06/10] net: ethtool: Introduce a command
- to list PHYs on an interface
-Message-ID: <20231123144045.57574132@device.home>
-In-Reply-To: <97c04999-c3fe-421e-a8eb-642aff647536@lunn.ch>
-References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
-        <20231117162323.626979-7-maxime.chevallier@bootlin.com>
-        <97c04999-c3fe-421e-a8eb-642aff647536@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 23 Nov 2023 08:42:15 -0500
+Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1981F9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qzDYok5oSedbjSII7O6os148H5o+A9vUBxaMvgxecfA=; b=CuVKMau+FTzX3AXW7KCMXVUHKl
+        YfKdpXuCb+4yuztswtlvNNd4yGvdqdnpnYylqNaJZGbKpaPZ+0BtOwrhXJh8kcM61FfUHLTY9Oni6
+        Q6F/4ZyQmNU8doDndFglcqLH65C9bSR0EygiFoCSFEuYIHloCCZxqBzmdrp5c/OkF+ZenUpqnPxFG
+        ONbLeHkmcFv65XvgL+5kQ3hDGotw80XIPIiLhwRfrTEy0NlMr08wsXIG3SXRYBzjuGm8mRKLoDpTE
+        vNHCZw0kEOjACXHwOeaU7iUChT9EOReye7CAqlSMHrym+IllVu7PtQNkc3H86XjmvLi+3OGJ4CprX
+        rIpJGVDg==;
+Received: from [167.98.27.226] (helo=rainbowdash)
+        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1r69yC-004SaQ-3J; Thu, 23 Nov 2023 13:42:17 +0000
+Received: from ben by rainbowdash with local (Exim 4.97)
+        (envelope-from <ben@rainbowdash>)
+        id 1r69yC-00000000LEO-1fTp;
+        Thu, 23 Nov 2023 13:42:16 +0000
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] riscv: declare overflow_stack as exported from traps.c
+Date:   Thu, 23 Nov 2023 13:42:14 +0000
+Message-Id: <20231123134214.81481-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.37.2.352.g3c44437643
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Sender: srv_ts003@codethink.com
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 02:40:27 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+The percpu area overflow_stacks is exported from arch/riscv/kernel/traps.c
+for use in the entry code, but is not declared anywhere. Add the relevant
+declaration to arch/riscv/include/asm/stacktrace.h to silence the following
+sparse warning:
 
-> > +ethnl_phy_reply_size(const struct ethnl_req_info *req_base,
-> > +		     struct netlink_ext_ack *extack)
-> > +{
-> > +	struct phy_device_node *pdn;
-> > +	struct phy_device *phydev;
-> > +	struct link_topology *lt;
-> > +	unsigned long index;
-> > +	size_t size;
-> > +
-> > +	lt = &req_base->dev->link_topo;
-> > +
-> > +	size = nla_total_size(0);
-> > +
-> > +	xa_for_each(&lt->phys, index, pdn) {
-> > +		phydev = pdn->phy;
-> > +
-> > +		/* ETHTOOL_A_PHY_INDEX */
-> > +		size += nla_total_size(sizeof(u32));
-> > +
-> > +		/* ETHTOOL_A_DRVNAME */
-> > +		size += nla_total_size(strlen(phydev->drv->name));
-> > +
-> > +		/* ETHTOOL_A_NAME */
-> > +		size += nla_total_size(strlen(dev_name(&phydev->mdio.dev)));
-> > +
-> > +		/* ETHTOOL_A_PHY_UPSTREAM_TYPE */
-> > +		size += nla_total_size(sizeof(u8));
-> > +
-> > +		/* ETHTOOL_A_PHY_ID */
-> > +		size += nla_total_size(sizeof(u32));
-> > +
-> > +		if (phy_on_sfp(phydev)) {
-> > +			/* ETHTOOL_A_PHY_UPSTREAM_SFP_NAME */
-> > +			if (sfp_get_name(pdn->parent_sfp_bus))
-> > +				size += nla_total_size(strlen(sfp_get_name(pdn->parent_sfp_bus)));  
-> 
-> Have you tried a modular build?
+arch/riscv/kernel/traps.c:395:1: warning: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
 
-Now that you mention it, no. I did try with CONFIG_SFP disabled, but
-not as a module, I'll add it to my test suite.
+We don't add the stackinfo_get_overflow() call as for some of the other
+architectures as this doesn't seem to be used yet, so just silence the
+warning.
 
-> 
-> sfp_get_name() could be in a module, and then you will get linker
-> errors. It is all a bit messy calling into phylib from ethtool :-(
-> 
-> This might actually be the only function you need? If so, its small
-> enough you can move it into a header as a static inline function.
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+---
+ arch/riscv/include/asm/stacktrace.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-It's the only one indeed, so as add it as a header function then.
-
-Thanks,
-
-Maxime
-
->        Andrew
+diff --git a/arch/riscv/include/asm/stacktrace.h b/arch/riscv/include/asm/stacktrace.h
+index f7e8ef2418b9..b1495a7e06ce 100644
+--- a/arch/riscv/include/asm/stacktrace.h
++++ b/arch/riscv/include/asm/stacktrace.h
+@@ -21,4 +21,9 @@ static inline bool on_thread_stack(void)
+ 	return !(((unsigned long)(current->stack) ^ current_stack_pointer) & ~(THREAD_SIZE - 1));
+ }
+ 
++
++#ifdef CONFIG_VMAP_STACK
++DECLARE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack);
++#endif /* CONFIG_VMAP_STACK */
++
+ #endif /* _ASM_RISCV_STACKTRACE_H */
+-- 
+2.37.2.352.g3c44437643
 
