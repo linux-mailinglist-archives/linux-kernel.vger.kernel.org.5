@@ -2,269 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B5D7F622B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2670C7F6232
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjKWO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S1345963AbjKWPAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWO70 (ORCPT
+        with ESMTP id S1345966AbjKWPAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:59:26 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C254D44
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:59:32 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50aa698b384so3620e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:59:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700751570; x=1701356370; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjsWntyf3ek48ZMQ86Tl47VHUhxQBToAw1VMl26tGwI=;
-        b=ypfUEMC1zhDbP8TPD+o/xxlQVco6ux0itqjb/6qbuuj+MLiwJJQHHiaSYOn8c9jnBj
-         GLVjNVIYwWMPCby4k/rffYQAr6Gk61jcY15KNhZU3b7lvNwnA6x7GGGDflxtqNJKv/dt
-         iKLaQGL5PumCedxR4gACm+G3Vy1Ypr+cFlKscGHYkfcdn6ZSD46GY1MELmN2QAKtKIRC
-         o1rCfvFtOIFURduE0ulPvD+OYP5YEghn91pvOST8bC85fOII/L/2fGfjZEeBgdAUw1ay
-         vtmKxr9JNKO1meE3Q6moNJ4NLK2D408XpEcGSIPYYeuZyvnY0SAiU9MLrdRlmoD5LQfd
-         SrqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700751570; x=1701356370;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rjsWntyf3ek48ZMQ86Tl47VHUhxQBToAw1VMl26tGwI=;
-        b=vZpnPFlGNcyHCU5Kuso84+9NyQlvS3TV8Yox24Qnw5iSmIZS5XqbC0E/pmjZa+n10n
-         j8uqxx41xR90rKnUg81HzZxx2V9quUpxh0OE9pf7dHikKbtGINgOUKOVRPpRYcLwm/xs
-         YjRK5FdNcr2HDN8DNTeIm9SyPduQzF8fsR01NDiFvAdhK5qHZ/ZXBqDVMGFGcmoJLMIq
-         FuFq0FEIjFdeoRm1j38ucl63rzpp1NJ+lCEZpZMCUVI6ltlHufJstdIJ3fKVrBXT9TcZ
-         r+0iyB0y51NHHM4T5GU+O6eGRI3VTVyH4UTXsuS45XSy8GNldA1U3tmV+vqTuqTaEo+e
-         YqbA==
-X-Gm-Message-State: AOJu0YwCz9RKAbgqstFVz/rxDKmniadYpUYlXnLeWwu6CoyNL7CFyB+A
-        bN469Rdk5tE5+PzdtbZwo7y61nVYVT+K81jSg5Yo7A==
-X-Google-Smtp-Source: AGHT+IHIl/WBZ2iDyzl0IR+ziEaFAWIlCfOa3lmlYRCwgZw978+0QVt/5bBPs7XrHN1JL0NxP4OnuWDIrySOcoIbrbs=
-X-Received: by 2002:a19:ad43:0:b0:504:7b50:ec9a with SMTP id
- s3-20020a19ad43000000b005047b50ec9amr144412lfd.1.1700751569826; Thu, 23 Nov
- 2023 06:59:29 -0800 (PST)
+        Thu, 23 Nov 2023 10:00:42 -0500
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2047.outbound.protection.outlook.com [40.107.15.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A73A4;
+        Thu, 23 Nov 2023 07:00:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fbB6TfSMBEUXaaI0BJnPFf/qErN2BIRn/Mq8E26TNq/oBejEBwd6HkbWKElajri4UqX9RvTwZg6fLBzdpEffrX+3wRLhQvQvYzfxDu8ZBMqPIo8GNINAuAiwzjTWQXabxcA/RjhySw60hbb+j4eJRIuoouyX76eKeOkZuxMOya+NlKf5IyQuZU+h8z3J8Mq2pWFTuhJ3sya/mZwcOsCSSUI5z0rCRozK6k8lWe1WwNJTMA0d7Ks19JaJ4eljDu8PdnXWcTypqcK+zZJDzWDzhv+O/vA2gk/Hiigz9/ZyEReSoClJfq0isxdp7sdkfrqrOEbGK16Y1V+5JPSt8GWJUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=piInE089yVllZdOKd0m0VLSO2hbslUGk0OHC228YHrw=;
+ b=jA7wLnxuRQE2kVdXQHFW4vcZ4+xjyf7ek98010t+owu72WO9qBz2pcjAfQOpCVJ8Dj9PxWNaxkfcORAxu9Uu73W9l8u32wka/LsE/LGMrZt6frWQddT/I2uB6rBb+EdqKj1HmlEb1CJafZelxh6PNssdLRux1AJtaTkKD1j9LhYYILBXfNNb9xugfuRl+aryEhe+7iwI6VDWaZ35dMprOfXHMQiV9W3y3zLq1IZdhWeaYzEW159pOExjIFIe/RWamY1FfHKNRhxgwf0POze8ZMOWedUkHTOUZy8399iACp/b7z/y3VH/aVyHDsUTEPRfg7jSrhP2+MPRHxNaiEZZaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=piInE089yVllZdOKd0m0VLSO2hbslUGk0OHC228YHrw=;
+ b=ZO3hUeOgj6Qt/f1zlzIvQnD47IcBO+tnu/WvZqkUqCfzRpUo7fiyT5cvUNkGxm1VSHzHEOqTa1keTszb+xVXWJT7ZD2wSlYgypzEjNe+dp4DHwEZ+Z5pxtVCvNtKNd8ibeRdr5tcqCZy+iAcQyw1lXMDyDaxiwTwSbOB8qmeG8g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
+ by PAXPR04MB9424.eurprd04.prod.outlook.com (2603:10a6:102:2b2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
+ 2023 15:00:44 +0000
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::c688:1f14:2ab1:c78a]) by VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::c688:1f14:2ab1:c78a%4]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
+ 15:00:44 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        kuninori.morimoto.gx@renesas.com, daniel.baluta@gmail.com,
+        robh+dt@kernel.org, iuliana.prodan@nxp.com, shengjiu.wang@nxp.com,
+        linux-imx@nxp.com
+Subject: [PATCH v2 0/2] Introduce playback-only/capture-only DAI link
+Date:   Thu, 23 Nov 2023 17:00:10 +0200
+Message-Id: <20231123150012.154096-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0135.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::14) To VI1PR04MB5151.eurprd04.prod.outlook.com
+ (2603:10a6:803:61::28)
 MIME-Version: 1.0
-References: <VI1P193MB0752058FAECD2AC1E5E68D7399B3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <CACT4Y+Ya4yTvAmaELJN5st3GJYo1KKzC9qw9sdD0g3jb48O7tg@mail.gmail.com>
- <VI1P193MB075265616010AF82CE201ADD99B1A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <CACT4Y+ZE8DO1u6NHATXC9tfcVS4diM0LO4r3cQ15HaGHVoFAbQ@mail.gmail.com> <VI1P193MB075296EFE305E5A6C3A4701699B9A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-In-Reply-To: <VI1P193MB075296EFE305E5A6C3A4701699B9A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 23 Nov 2023 15:59:17 +0100
-Message-ID: <CACT4Y+akBeAOBhyxj4jBmOOS73+yVRJvh0rSXfDV8dt_aAGkwg@mail.gmail.com>
-Subject: Re: [RFC PATCH] kasan: Record and report more information
-To:     Juntong Deng <juntong.deng@outlook.com>,
-        Marco Elver <elver@google.com>
-Cc:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5151:EE_|PAXPR04MB9424:EE_
+X-MS-Office365-Filtering-Correlation-Id: a26895dc-427d-4f8d-0f82-08dbec34f5f4
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MkebQSbs0HBhUPLCZR9ffckFkYkX0hf9EhRoCJJbGcvthSxHIZt+9csopf1DPQ/lzt7IKwv5VHb8Zk30nPLyxM3PqqgMrmvWLJZUDGYhqd+Nqc4EFJfBXj7OrjrRE2xOcgIrLnUcX8qFtDP3XN0nrn+ZIPYC4UL6qXgwVwL72kqvX5K+rvlqhlGzkAdvMShqCQE5F0MB1jY21tXCn2/GyG1X6i8dUkN3w8hf9xUrn5X7Zb7ugP6EfTFF/+ZG2xbUb+VRLIfzyhsYdoIgxXuBeRBqFMl5qJJxzazwAiIurAMoPlOGq1Om7ZZeESfu38Wab7+fOGGiY1F72b2W6PUHrfwNYFy8AWKeB88tgF0ZfQiNM4SPmplyhQ80jqdCDfYvzydMHC8FJA0+UvPsH5F9BblXF/Y1QzP4PHkpb+PkEz/BEw53xyCSu5qhyL+TkHu9hhgImmKKQ4bKoRUPlv988tx/vTmHAUmoOZ525dN7DZZK9e4hSOgmvg8oHkp/8q5hu+Acz2WrHriP8fiETo0COS73MVEl8pEO80v4DFvoZrhioGSa65pl4aoqfP1eGVA68zmT5O4aB1AfsXnvzZ3QePcnpbZ7m3iEN8iPPlcViME=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(366004)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(44832011)(1076003)(2616005)(5660300002)(8676002)(6512007)(52116002)(4744005)(6506007)(4326008)(8936002)(2906002)(26005)(66946007)(66476007)(66556008)(966005)(6486002)(316002)(6666004)(478600001)(38350700005)(41300700001)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gU77x0FoCnxK5d337W9Ceghzn4V7yjxrDedMX7KyPP8iEkDmRSztZGMJRqTx?=
+ =?us-ascii?Q?72vQW7jFigvxcIbIdL/3P4ljUTvWmsrYx2RTDmhXXQw3uSG+w9KrMlWe98tB?=
+ =?us-ascii?Q?RVUDSOmYR841ktlnhkQKj2Qg28WmNNiC0IK00CnZyvPLkReggGD1PRjV5tbc?=
+ =?us-ascii?Q?thBRIGjJuAF3+ZcwNGLoYCYgMS3n53qyMiQXllRjDBthiqbI6IqmMl7yqh7q?=
+ =?us-ascii?Q?+f/N3KhKEk5m1LEHMZsEYCWvcOk6hMjRUNnXvGiUeK9ubzdBKZSXShiYKpaV?=
+ =?us-ascii?Q?2tAkcMYtX3P0PhgKtgW2JVO57SCbZ/w2vP9gtJH3iv2nmyrd9K+KoDl+m3wC?=
+ =?us-ascii?Q?LQBddsUTCtJ28fjFHtXHZapg6HpXKyrgJDz+K1AFQNFWjBB39EJTz5h6xFLc?=
+ =?us-ascii?Q?JatQSqCyIYgPJDnUnlUKvpC3Ne/KagzCJVB929dRBXSyrwDfdyIcdWVrFBpL?=
+ =?us-ascii?Q?wrLuIuOofSirwi2yub9+rO6OfaBq4VEG81iNtc2IP91ycwS2PwvO1vYB75+p?=
+ =?us-ascii?Q?AucnkDe2CBk5B5su7iG35Cg5NELrtBRTWzqOjlZLZb1AZM7SldIbkm2vZK+P?=
+ =?us-ascii?Q?JMwNt3ns/BkqaHt6XhAQPm9MmEKU9psgYE0Grxi6bx97DQQtj7HkwbGucVUf?=
+ =?us-ascii?Q?F6Ha1KEYu/ABxmo1bx5pS+YWYw1p7aiZcEJOT5G1qo6WApP4HPxkYcRSc2kX?=
+ =?us-ascii?Q?9s74dVTYwgmT/lF+Nzp90kG6e2m1rgaMg2OYLymld67C4sPpxfRMk1gQKAaM?=
+ =?us-ascii?Q?1cKUjXnz5gIBxDZFLMv3r5Ch75vU3fXT2ZNmwGmK8QrvIgOKmSb8G7OmbnT0?=
+ =?us-ascii?Q?MtWc+GY+Kav9nu0tPUWBa8J3mYqz7O2qCFgjaeD/TsN1BZa1k44mx5fEF/cx?=
+ =?us-ascii?Q?gHdtDxFMPIfx5duAH5HqpP0QHonEubENiKWiAKo12G7EC53FMh3GrcEO8PT3?=
+ =?us-ascii?Q?jPbfBzml3if9tjBcu7PrOpnVIvoX/z9TFrLykBgn7NXT/d1dc1NWX95rVY1p?=
+ =?us-ascii?Q?1k7QaQSZydWLv2Y7UqXJgCwPpp5Cffk0lKN9ZiusWwHwkgRrHzO5bD+cyKAT?=
+ =?us-ascii?Q?aZAg1En9tRSPWcPygVuPq27IecIxXS3Ub/9sX3jt5NoOiSn/L51lqy3xFvU7?=
+ =?us-ascii?Q?f2FV0oorvXcYUwbYNnOx3ddMXWGUC6TMxuhhF3i+Wj+c0YzevqvSxnd705y3?=
+ =?us-ascii?Q?NVTGNDB7fssPUHN1hXj8qxWNE+m/zZ2gJmFLsIvietq1Yi8dxEC2qp3GtchQ?=
+ =?us-ascii?Q?lD8NB9FuAMYoDYGW0c1yXnj3uPcUu/PU84GwtQg8sQW3ZmTAAl8qt2C3j1AU?=
+ =?us-ascii?Q?0RgftuyEiMaoTBa0NxtaZTzmXbHaEHt7J09B1E/Eb3R/JFbIs3PL5YmCOwar?=
+ =?us-ascii?Q?WSQR0bax8Eg3lJBdb/cCWPnI99g81g7B8kWqM71chTul8vBUQHofEi8QvoZt?=
+ =?us-ascii?Q?Kmy5iRrWEg7IIQOWlvj2oh5GhPt76tIwsruxoP6CxYiu66KBoEA3GQhHMZjP?=
+ =?us-ascii?Q?93BNR5WEK2xBRPUGQxtfKa/9muJ/C5puaZ0uu7OyhWGSPOeqvZndSRt9tPzW?=
+ =?us-ascii?Q?suzhtH+oAJGiHzcqcAK/mFEMAMVua547FEZi5/hM?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a26895dc-427d-4f8d-0f82-08dbec34f5f4
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 15:00:44.2489
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wHbYls/2/JQrUxHdJDHCrACTblfv1PbGvqf80oWMHKcZNuZQpjKDdboAF9NjdYvXLoZKEUW2e4mtSgTC3G7ULg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9424
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 11:06, Juntong Deng <juntong.deng@outlook.com> wrote:
->
-> On 2023/11/20 19:06, Dmitry Vyukov wrote:
-> > On Wed, 15 Nov 2023 at 22:53, Juntong Deng <juntong.deng@outlook.com> wrote:
-> >>
-> >> On 2023/11/14 15:27, Dmitry Vyukov wrote:
-> >>> On Mon, 13 Nov 2023 at 22:17, Juntong Deng <juntong.deng@outlook.com> wrote:
-> >>>>
-> >>>> Record and report more information to help us find the cause of
-> >>>> the bug (for example, bugs caused by subtle race condition).
-> >>>>
-> >>>> This patch adds recording and showing CPU number and timestamp at
-> >>>> allocation and free (controlled by CONFIG_KASAN_EXTRA_INFO), and
-> >>>> adds recording and showing timestamp at error occurrence (CPU number
-> >>>> is already shown by dump_stack_lvl). The timestamps in the report use
-> >>>> the same format and source as printk.
-> >>>>
-> >>>> In order to record CPU number and timestamp at allocation and free,
-> >>>> corresponding members need to be added to the relevant data structures,
-> >>>> which may lead to increased memory consumption.
-> >>>>
-> >>>> In Generic KASAN, members are added to struct kasan_track. Since in
-> >>>> most cases, alloc meta is stored in the redzone and free meta is
-> >>>> stored in the object or the redzone, memory consumption will not
-> >>>> increase much.
-> >>>>
-> >>>> In SW_TAGS KASAN and HW_TAGS KASAN, members are added to
-> >>>> struct kasan_stack_ring_entry. Memory consumption increases as the
-> >>>> size of struct kasan_stack_ring_entry increases (this part of the
-> >>>> memory is allocated by memblock), but since this is configurable,
-> >>>> it is up to the user to choose.
-> >>>>
-> >>>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> >>>> ---
-> >>>>    lib/Kconfig.kasan      | 11 +++++++++++
-> >>>>    mm/kasan/common.c      |  5 +++++
-> >>>>    mm/kasan/kasan.h       |  9 +++++++++
-> >>>>    mm/kasan/report.c      | 28 ++++++++++++++++++++++------
-> >>>>    mm/kasan/report_tags.c | 18 ++++++++++++++++++
-> >>>>    mm/kasan/tags.c        | 15 +++++++++++++++
-> >>>>    6 files changed, 80 insertions(+), 6 deletions(-)
-> >>>>
-> >>>> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> >>>> index fdca89c05745..d9611564b339 100644
-> >>>> --- a/lib/Kconfig.kasan
-> >>>> +++ b/lib/Kconfig.kasan
-> >>>> @@ -207,4 +207,15 @@ config KASAN_MODULE_TEST
-> >>>>             A part of the KASAN test suite that is not integrated with KUnit.
-> >>>>             Incompatible with Hardware Tag-Based KASAN.
-> >>>>
-> >>>> +config KASAN_EXTRA_INFO
-> >>>> +       bool "Record and report more information"
-> >>>> +       depends on KASAN
-> >>>> +       help
-> >>>> +         Record and report more information to help us find the cause of
-> >>>> +         the bug. The trade-off is potentially increased memory consumption
-> >>>> +         (to record more information).
-> >>>> +
-> >>>> +         Currently the CPU number and timestamp are additionally recorded
-> >>>> +         at allocation and free.
-> >>>
-> >>> Hi Juntong,
-> >>>
-> >>> Thanks for working on this.
-> >>>
-> >>
-> >>
-> >> Thanks for your reply!
-> >>
-> >>
-> >>> As a KASAN developer I understand what this is doing, but I am trying
-> >>> to think from a position of a user that does not know details of KASAN
-> >>> implementation. From this position it may be useful to say somewhere
-> >>> that information is recorded "per heap allocation". Perhaps something
-> >>> like:
-> >>>
-> >>> "Currently the CPU number and timestamp are additionally recorded for
-> >>> each heap block at allocation and free time".
-> >>
-> >>
-> >> Yes, I agree, that is a better expression.
-> >>
-> >>
-> >>>
-> >>> Also it's unclear what the memory consumption increase is. You say
-> >>> "potentially|, so may it not increase at all? If it increases, by how
-> >>> much? I obviously want more information, if I can afford it, but I
-> >>> can't understand if I can or not based on this description. I would
-> >>> assume that this may be a problem only for small/embedded devices.
-> >>> Can we provide some ballpark estimation of the memory consumption
-> >>> increase? And somehow say that's probably not an issue for larger
-> >>> machines?
-> >>>
-> >>
-> >>
-> >> How about this expression?
-> >>
-> >> Currently, in order to record CPU number and timestamp, the data
-> >> structure to record allocation and free information will increase
-> >> by 12 bytes.
-> >>
-> >> In Generic KASAN, this affects all allocations less than 32 bytes.
-> >> In SW_TAGS KASAN and HW_TAGS KASAN, depending on the stack_ring_size
-> >> boot parameter increases the memory consumption by
-> >> 12 * stack_ring_size bytes.
-> >
-> > Let's go with this version.
-> >
-> >
-> >>>>    endif # KASAN
-> >>>> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> >>>> index 256930da578a..7a81566d9d66 100644
-> >>>> --- a/mm/kasan/common.c
-> >>>> +++ b/mm/kasan/common.c
-> >>>> @@ -20,6 +20,7 @@
-> >>>>    #include <linux/module.h>
-> >>>>    #include <linux/printk.h>
-> >>>>    #include <linux/sched.h>
-> >>>> +#include <linux/sched/clock.h>
-> >>>>    #include <linux/sched/task_stack.h>
-> >>>>    #include <linux/slab.h>
-> >>>>    #include <linux/stacktrace.h>
-> >>>> @@ -50,6 +51,10 @@ void kasan_set_track(struct kasan_track *track, gfp_t flags)
-> >>>>    {
-> >>>>           track->pid = current->pid;
-> >>>>           track->stack = kasan_save_stack(flags, true);
-> >>>> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> >>>> +       track->cpu = raw_smp_processor_id();
-> >>>> +       track->ts_nsec = local_clock();
-> >>>
-> >>> What does "local_" mean? Is this clock value comparable across CPUs?
-> >>>
-> >>
-> >>
-> >> No, local_clock is the local CPU clock and cannot be used for comparison
-> >> across CPUs, I made a mistake here.
-> >>
-> >> I delved into the clock subsystem of the Linux kernel today and I found
-> >> that we have two choices.
-> >>
-> >> - sched_clock(): based on jiffies, high performance, but on some
-> >> hardware, it will drift between CPUs.
-> >>
-> >> - ktime_get_boot_fast_ns(): based on clocksource, highly accurate,
-> >> can be compared between CPUs, but performance is worse (seqlock).
-> >>
-> >> I tested 100000 calls respectively on my laptop, the average of
-> >> sched_clock() is 17ns and the average of ktime_get_boot_fast_ns()
-> >> is 25ns.
-> >>
-> >> ktime_get_boot_fast_ns() takes about 1.5 times as long as sched_clock().
-> >>
-> >> With Generic KASAN enabled, the average of one memory allocation is
-> >> 3512ns on my laptop.
-> >>
-> >> Personally, I prefer ktime_get_boot_fast_ns() because it is more
-> >> accurate and the extra time is insignificant for the time required for
-> >> one memory allocation with Generic KASAN enabled.
-> >>
-> >> But maybe using ktime_get_boot_fast_ns() would have a more serious
-> >> impact on small/embedded devices.
-> >>
-> >> Which do you think is the better choice?
-> >
-> > I don't have a strong preference.
-> >
-> > Re drift of sched_clock(), do you mean unsynchronized RDTSC on
-> > different cores? I had the impression that RDTSC is synchronized
-> > across cores on all recent CPUs/systems.
-> >
->
->
-> After discussions with Marco Elver, I now think that perhaps continuing
-> to use local_clock() is a better option.
->
-> The full discussion with Marco Elver can be found at
-> https://groups.google.com/g/kasan-dev/c/zmxwYv8wZTg
->
-> Because local_clock() is the clock source used by printk and is the
-> default clock source for ftrace.
->
-> Using local_clock() as the clock source for KASAN reports makes it
-> easier to correlate the timestamps of allocations, frees, and errors
-> with the timestamps of other events in the system.
->
-> This is perhaps more important than being able to accurately compare
-> across CPUs.
->
-> What do you think?
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
+This patchseries allows users to specify a link only direction with
+audio-graph-card2.
 
-If other similar tools (kfence, ftrace, printk) use local_clock(),
-then it's reasonable to use it in kasan as well.
+Changes since v1 - https://lore.kernel.org/lkml/20230801082433.548206-1-daniel.baluta@oss.nxp.com/T/
+	- used audio-graph-card2 instead of simple-card as we are
+	  deprecting simple-card.
+
+Daniel Baluta (2):
+  ASoC: audio-graph-card2: Introduce playback-only/capture only DAI link
+    flags
+  ASoC: dt-bindings: audio-graph-port: Document new DAI link flags
+    playback-only/capture-only
+
+ .../bindings/sound/audio-graph-port.yaml      |  6 ++++++
+ include/sound/simple_card_utils.h             |  3 +++
+ sound/soc/generic/audio-graph-card2.c         |  6 ++++++
+ sound/soc/generic/simple-card-utils.c         | 19 +++++++++++++++++++
+ 4 files changed, 34 insertions(+)
+
+-- 
+2.25.1
+
