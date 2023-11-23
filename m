@@ -2,193 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94EA7F59F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF017F59F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344911AbjKWIZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:25:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        id S1344939AbjKWI1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbjKWIZr (ORCPT
+        with ESMTP id S1344922AbjKWI1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:25:47 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05F8B9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:25:53 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bd33a450fdso457064a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700727953; x=1701332753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x8iwBupcT3hR7TdREkRDPApB+NZD7yQfnGBIetxepY8=;
-        b=HwewnmTDU+TaGctNuyEZlsupUfleH3vyZVoceoHrO71OO0lz7cgma6oSZIbX3VpeCF
-         5AXcAilJCOLJaz5IZBXQtOdEDSgH9O7E0ECJ8UGC7PvXb3GpsR5vejYObusPpjrikvtp
-         3ZnTUH9C0+Ff8tYL2Y9OzD/7mx+025ZV5/vX7726bcdleJz+Ds2IKbZV7pksloSlD8Jj
-         SDpAarYFeTHoxyVFFrvs8ZJl8y2p0UGxKBQWcch2CTvSTZZFYBBUPyLHfmwWPEslgqZB
-         fGPRnn7lpi8tPThI9LlQ7pwgKc3qjhhs5NUTF0MLCtDmGwNxLs8HuSnTJK0p3YmEJnHR
-         M4GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700727953; x=1701332753;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x8iwBupcT3hR7TdREkRDPApB+NZD7yQfnGBIetxepY8=;
-        b=wkkGa6qtWf11uyTpHIRFz8nZynxNu89fcrqWR2E1eotVWBaXYRkNTiLcUU8E8pWr77
-         cO+4bu9Y2ZOS07U55sNci/IDY9oTh4MUusmLb2a7FMUA3z6pA6/uHke0jpiGt1tcoJVr
-         B8dXnVX9XGEXhrxd9ny/aepOIJv/hYZ+rgfy3FJeSU0+AXVcRhGtgaLodRTw519/mxtC
-         oh+iTN/E36qywgTxZORK3pk4yAbmhnEW1NvHV99Pef3mPdhnSZvcNlsbbGpYUn0ohVTw
-         rrJM9Lr9/pP9yQDCZfoWqI++5jr+2HsHNrsKyu6HH3isgCmxHfqCJSFTNvkwZoNrhlKa
-         8dgg==
-X-Gm-Message-State: AOJu0YxqwpsZJ0dCeu8ILUH/vitOHUl+F3sbDtSsJutTNbZwAEY4irof
-        peleo9miCXKlMDuqA1HTwWvadQ==
-X-Google-Smtp-Source: AGHT+IHIqVvat3WFgW7bSGIN3IhC9C4vTopTqfpdV2Xu/qtEpuLymttnUvDdmZXr+/gA2lPD1xkW2Q==
-X-Received: by 2002:a17:90a:1950:b0:27d:2663:c5f4 with SMTP id 16-20020a17090a195000b0027d2663c5f4mr5601350pjh.47.1700727953287;
-        Thu, 23 Nov 2023 00:25:53 -0800 (PST)
-Received: from localhost.localdomain ([2001:c10:ff04:0:1000:0:1:4])
-        by smtp.gmail.com with ESMTPSA id nm3-20020a17090b19c300b00285139b71cdsm1017481pjb.11.2023.11.23.00.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 00:25:52 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     dianders@chromium.org
-Cc:     akpm@linux-foundation.org, kernelfans@gmail.com,
-        lecopzer.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, lizhe.67@bytedance.com, pmladek@suse.com
-Subject: Re: [PATCH v2] softlockup: serialized softlockup's log
-Date:   Thu, 23 Nov 2023 16:25:46 +0800
-Message-Id: <20231123082546.7842-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <CAD=FV=VwaL7VSpEir6Ocyh3cttk8Abj5ZJ61h_CrPkYzYZDRYQ@mail.gmail.com>
-References: <CAD=FV=VwaL7VSpEir6Ocyh3cttk8Abj5ZJ61h_CrPkYzYZDRYQ@mail.gmail.com>
+        Thu, 23 Nov 2023 03:27:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66852D43
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700728040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=clHFl9DyukhU/KNoZLAq0QP1VqRYJXancPu2G75tCi0=;
+        b=dwv0s4GwYTTp3oANrUkSlik/LXGZ+viG81ul6mJUCDrdMLxs4VNpbR/6O+M8uCd/p1+3zJ
+        fovcJM0yaHQvVOUGtm7TXuVJ8luMXudaxZJichxx+Bv6xigso6XTH2u7fVV3luDymWx/w1
+        YgJPIH2JHFki0f7uHTo9fpLDkjgwpLE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-141-xbU-EiHFNt2UCn3fOV12Bg-1; Thu, 23 Nov 2023 03:27:17 -0500
+X-MC-Unique: xbU-EiHFNt2UCn3fOV12Bg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 574DB101A53B;
+        Thu, 23 Nov 2023 08:27:16 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C8B82026D4C;
+        Thu, 23 Nov 2023 08:27:12 +0000 (UTC)
+Date:   Thu, 23 Nov 2023 16:27:09 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     eric_devolder@yahoo.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
+        geert@linux-m68k.org, tsbogend@alpha.franken.de,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, frederic@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, samitolvanen@google.com,
+        juerg.haefliger@canonical.com, arnd@arndb.de,
+        rmk+kernel@armlinux.org.uk, linus.walleij@linaro.org,
+        sebastian.reichel@collabora.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, anshuman.khandual@arm.com,
+        ziy@nvidia.com, masahiroy@kernel.org, ndesaulniers@google.com,
+        mhiramat@kernel.org, ojeda@kernel.org, thunder.leizhen@huawei.com,
+        xin3.li@intel.com, tj@kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, tsi@tuyoix.net,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: Potential config regression after 89cde455 ("kexec: consolidate
+ kexec and crash options into kernel/Kconfig.kexec")
+Message-ID: <ZV8M3aUTdt2BWaAP@MiWiFi-R3L-srv>
+References: <CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com>
+ <ZVwMzXxWkgonIAfc@MiWiFi-R3L-srv>
+ <CALrw=nG8xsYw7XKyL_VMHtKiaBcQCKvC8UVp-C9-BdeN4A1Daw@mail.gmail.com>
+ <CALrw=nH-vcROja2W23rUKEEZMZhxsQiNB4P_ZZQ-XhPHAJGxrg@mail.gmail.com>
+ <ZV3LKVOokpx2WvKp@MiWiFi-R3L-srv>
+ <CALrw=nGadgbwuNAFacatz-agpGn9NvtgaCUXu73MzAzZq07k-g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CALrw=nGadgbwuNAFacatz-agpGn9NvtgaCUXu73MzAzZq07k-g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 15:22:12 -0800, dianders@chromium.org wrote:
->>
->> On Wed, 22 Nov 2023 18:02:12 +0800 lizhe.67@bytedance.com wrote:
->>
->> > From: Li Zhe <lizhe.67@bytedance.com>
->> >
->> > If multiple CPUs trigger softlockup at the same time with
->> > 'softlockup_all_cpu_backtrace=0', the softlockup's logs will appear
->> > staggeredly in dmesg, which will affect the viewing of the logs for
->> > developer. Since the code path for outputting softlockup logs is not
->> > a kernel hotspot and the performance requirements for the code are
->> > not strict, locks are used to serialize the softlockup log output to
->> > improve the readability of the logs.
->>
->> Seems reasonable, but...
->>
->> > --- a/kernel/watchdog.c
->> > +++ b/kernel/watchdog.c
->> > @@ -28,6 +28,8 @@
->> >  #include <linux/kvm_para.h>
->> >
->> >  static DEFINE_MUTEX(watchdog_mutex);
->> > +/* This lock is used to prevent concurrent actions of softlockup output logs */
->> > +static DEFINE_SPINLOCK(watchdog_output_lock);
->>
->> It would be a little neater to reduce the scope of this - move the
->> definition into that little code block in watchdog_timer_fn() where it
->> is actually used.
->
->That's where Li Zhe had it in v1. I actually requested it move to a
->larger scope since I think we'll want a future patch that also uses
->the same lock for hardlockup and I was thinking of sending that out
->after Li Zhe's patch lands. Specifically, I've seen cases on arm64
->when pseudo-NMI isn't enabled that we can end up with a soft lockup
->triggering while we're waiting for a backtrace of a hardlockup (since
->we wait 10 seconds if a CPU isn't responding to the request to
->backtrace it).
+On 11/22/23 at 09:47am, Ignat Korchagin wrote:
+> On Wed, Nov 22, 2023 at 9:34 AM Baoquan He <bhe@redhat.com> wrote:
+> >
+> > On 11/21/23 at 09:43am, Ignat Korchagin wrote:
+> > > On Tue, Nov 21, 2023 at 7:53 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
+> > > >
+> > > > On Tue, Nov 21, 2023 at 1:50 AM Baoquan He <bhe@redhat.com> wrote:
+> > > > >
+> > > > > Eric DeVolder's Oracle mail address is not available anymore, add his
+> > > > > current mail address he told me.
+> > > >
+> > > > Thank you!
+> > > >
+> > > > > On 11/20/23 at 10:52pm, Ignat Korchagin wrote:
+> > > > > > Good day!
+> > > > > >
+> > > > > > We have recently started to evaluate Linux 6.6 and noticed that we
+> > > > > > cannot disable CONFIG_KEXEC anymore, but keep CONFIG_CRASH_DUMP
+> > > > > > enabled. It seems to be related to commit 89cde455 ("kexec:
+> > > > > > consolidate kexec and crash options into kernel/Kconfig.kexec"), where
+> > > > > > a CONFIG_KEXEC dependency was added to CONFIG_CRASH_DUMP.
+> > > > > >
+> > > > > > In our current kernel (Linux 6.1) we only enable CONFIG_KEXEC_FILE
+> > > > > > with enforced signature check to support the kernel crash dumping
+> > > > > > functionality and would like to keep CONFIG_KEXEC disabled for
+> > > > > > security reasons [1].
+> > > > > >
+> > > > > > I was reading the long commit message, but the reason for adding
+> > > > > > CONFIG_KEXEC as a dependency for CONFIG_CRASH_DUMP evaded me. And I
+> > > > > > believe from the implementation perspective CONFIG_KEXEC_FILE should
+> > > > > > suffice here (as we successfully used it for crashdumps on Linux 6.1).
+> > > > > >
+> > > > > > Is there a reason for adding this dependency or is it just an
+> > > > > > oversight? Would some solution of requiring either CONFIG_KEXEC or
+> > > > > > CONFIG_KEXEC_FILE work here?
+> > > > >
+> > > > > I searched the patch history, found Eric didn't add the dependency on
+> > > > > CONFIG_KEXEC at the beginning. Later a linux-next building failure with
+> > > > > randconfig was reported, in there CONFIG_CRASH_DUMP enabled, while
+> > > > > CONFIG_KEXEC is disabled. Finally Eric added the KEXEC dependency for
+> > > > > CRASH_DUMP. Please see below link for more details:
+> > > > >
+> > > > > https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle.com/T/#u
+> > > >
+> > > > Thank you for digging this up. However I'm still confused, because
+> > > > this is exactly how we configure Linux 6.1 (although we do have
+> > > > CONFIG_KEXEC_FILE enabled) and we don't have any problems. I believe
+> > > > we did not investigate this issue properly.
+> > >
+> > > I did some preliminary investigation for this. If I patch out the
+> > > dependency on CONFIG_KEXEC the kernel builds just fine for x86
+> > > (without CONFIG_CRASH_HOTPLUG - which is probably another issue) - so
+> > > this was the previous behaviour. I can see that the reported error is
+> > > for arm architecture and was able to reproduce it with a simple cross
+> > > compiler in Debian. However, I think it is still somehow related to
+> > > this patchset as the previous kernels (up to 6.5) build fine with just
+> > > CONFIG_CRASH_DUMP and without CONFIG_KEXEC for arm as well. So even
+> > > for arm it was introduced in 6.6.
+> >
+> > Thanks for the information.
+> >
+> > I haven't run the reproducer of issue reported on Eric's old patchset,
+> > while checkout to kernel 6.1, only s390 selected KEXEC for CRASH_DUMP
+> > already. And with the ARM building breakage, the simplest idea is
+> > to select KEXEC only for ARM or S390 CRASH_DUMP. I plan to try the
+> > reproducer later. If you have any idea or draft patch, please feel free
+> > to post.
+> 
+> The thing is - before 6.6 even ARM did not require KEXEC for
+> CRASH_DUMP (at least to successfully compile), so I think we should
+> understand what changed first before adding a dependency for ARM. I'll
+> try to investigate more, if I have time.
 
-In my opinion, I think both definition methods are OK. But for the
-original patch, it is more appropriate to put the definition inside
-the function. I will send a v3 patch. Looking forward to your patches
-for the hardlockup.
+I did a cross compiling of arm on x86_64, it clearly requires KEXEC for
+CRASH_DUMP if the select of KEXEC for CRASH_DUMP is removed and
+CONFIG_KEXEC=n is set.
 
->
->I've also been testing hardlockup (with pseudo-NMI enabled) and I also
->notice similar problems with hardlockup itself. Specifically, I'm
->looking at a an output currently that looks like this:
->
->[  102.619905] lkdtm: Performing direct entry HARDLOCKUP
->[  112.037900] Watchdog detected hard LOCKUP on cpu 1
->[  112.038031] Watchdog detected hard LOCKUP on cpu 7
->[  112.042872] Modules linked in:
->[  112.047807] Modules linked in:
->...
->
->...but I'd also be OK with limiting the scope until I send my later
->patch, so up to you.
->
->
->> >  #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HARDLOCKUP_DETECTOR_SPARC64)
->> >  # define WATCHDOG_HARDLOCKUP_DEFAULT 1
->> > @@ -514,6 +516,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->> >               /* Start period for the next softlockup warning. */
->> >               update_report_ts();
->> >
->> > +             spin_lock(&watchdog_output_lock);
->>
->> The hrtimer callout function is called from [soft]irq context, yes?
->> Doesn't lockdep get upset when we take a spinlock in such a context?
->
->I don't think so, but I could certainly be wrong. As far as I knew:
->
->* spin_lock_irqsave / spin_unlock_irqrestore: Always safe to call,
->whether from normal context or IRQ context. Saves whether IRQs were
->disabled or not, then disables them, then restores them to how they
->were before.
->
->* spin_lock_irq, spin_unlock_irq: Safe to call as long as you're _not_
->in IRQ context (because spin_lock_irq disables IRQs and
->spin_unlock_irq unconditionally re-enables them)
->
->* spin_lock / spin_unlock: Safe to call as long as you _are_ in IRQ
->context. Being in IRQ context means IRQs are already disabled so the
->function doesn't need to disable/reenable them. Also safe to call if
->no users of this spinlock ever run in IRQ context.
->
->The reason for all that complexity is to specifically to avoid:
->
->1. spin_lock(&my_lock);
->2. IRQ fires off
->3. In IRQ context: spin_lock(&my_lock);
->
->...because that would make us spin forever.
->
+1) building error, only copy the first one:
+==========================================
+In file included from ../include/linux/ima.h:13,
+                 from ../security/keys/key.c:16:
+../include/linux/kexec.h:38:2: error: #error KEXEC_SOURCE_MEMORY_LIMIT not defined
+   38 | #error KEXEC_SOURCE_MEMORY_LIMIT not defined
+      |  ^~~~~
+../include/linux/kexec.h:42:2: error: #error KEXEC_DESTINATION_MEMORY_LIMIT not defined
+   42 | #error KEXEC_DESTINATION_MEMORY_LIMIT not defined
+      |  ^~~~~
+../include/linux/kexec.h:46:2: error: #error KEXEC_CONTROL_MEMORY_LIMIT not defined
+   46 | #error KEXEC_CONTROL_MEMORY_LIMIT not defined
+      |  ^~~~~
+../include/linux/kexec.h:54:2: error: #error KEXEC_CONTROL_PAGE_SIZE not defined
+   54 | #error KEXEC_CONTROL_PAGE_SIZE not defined
+      |  ^~~~~
+../include/linux/kexec.h:58:2: error: #error KEXEC_ARCH not defined
+   58 | #error KEXEC_ARCH not defined
+      |  ^~~~~
+In file included from ../drivers/misc/pvpanic/pvpanic.c:13:
 
-I can't aggree with you more.
+2) Kconfig items I enabled:
+====
+CONFIG_CRASH_CORE=y
+CONFIG_KEXEC_CORE=y
+# CONFIG_KEXEC is not set
+CONFIG_CRASH_DUMP=y
 
->
->Just to be sure, I just tried with lockdep and things seemed OK.
->Specifically, I did:
->
->sysctl -w kernel.softlockup_panic=0
->sysctl -w kernel.softlockup_all_cpu_backtrace=0
->for i in $(seq 3); do
->  echo SOFTLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT&
->done
->
->I got no lockdep splats and things seemed synchronized. Of course, the
->system was in pretty bad shape because the "provoke-crash" module
->never gets out of its soft lockup, but that's part for the course and
->why on our systems we run with kernel.softlockup_panic=1. I guess that
->also means I'd be happy with this now:
 
-I also did the same test, things seemed OK.
 
->
->Tested-by: Douglas Anderson <dianders@chromium.org>
+3) KEXEC select is dropped so as not to enable KEXEC automatically:
+=====
+diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+index 7aff28ded2f4..1cc3b1c595d7 100644
+--- a/kernel/Kconfig.kexec
++++ b/kernel/Kconfig.kexec
+@@ -97,7 +97,6 @@ config CRASH_DUMP
+        depends on ARCH_SUPPORTS_KEXEC
+        select CRASH_CORE
+        select KEXEC_CORE
+-       select KEXEC
+        help
+          Generate crash dump after being started by kexec.
+          This should be normally only set in special crash dump kernels
+> 
+> > diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+> > index 7aff28ded2f4..382dcd8d7a9d 100644
+> > --- a/kernel/Kconfig.kexec
+> > +++ b/kernel/Kconfig.kexec
+> > @@ -97,7 +97,7 @@ config CRASH_DUMP
+> >         depends on ARCH_SUPPORTS_KEXEC
+> >         select CRASH_CORE
+> >         select KEXEC_CORE
+> > -       select KEXEC
+> > +       select KEXEC if (ARM || S390)
+> >
+> >
+> > arch/s390/Kconfig in kernel 6.1:
+> > config CRASH_DUMP
+> >         bool "kernel crash dumps"
+> >         select KEXEC
+> >         help
+> >           Generate crash dump after being started by kexec.
+> >           Crash dump kernels are loaded in the main kernel with kexec-tools
+> >           into a specially reserved region and then later executed after
+> >           a crash by kdump/kexec.
+> >           Refer to <file:Documentation/s390/zfcpdump.rst> for more details on this.
+> >           This option also enables s390 zfcpdump.
+> >           See also <file:Documentation/s390/zfcpdump.rst>
+> >
+> > >
+> > > > > And besides, the newly added CONFIG_CRASH_HOTPLUG also needs
+> > > > > CONFIG_KEXEC if the elfcorehdr is allowed to be manipulated when
+> > > > > cpu/memory hotplug hapened.
+> > > >
+> > > > This still feels like a regression to me: any crash dump support
+> > > > should be independent of KEXEC syscalls being present. While probably
+> > > > the common case (including us) that the crashing kernel and recovery
+> > > > kernel are the same, they don't have to be. We need kexec syscall in
+> > > > the crashing kernel, but crashdump support in the recovery kernel (but
+> > > > the recovery kernel not having the kexec syscalls should be totally
+> > > > fine). If we do require some code definitions from kexec - at most we
+> > > > should put them under CONFIG_KEXEC_CORE.
+> > > >
+> > > > > Thanks
+> > > > > Baoquan
+> > > > >
+> > >
+> > > Ignat
+> > >
+> >
+> 
 
-Thank you very much for your test!
