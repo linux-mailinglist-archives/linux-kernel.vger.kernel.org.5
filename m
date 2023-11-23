@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2807F6898
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 150CC7F689B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjKWVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 16:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S229743AbjKWVLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 16:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWVFb (ORCPT
+        with ESMTP id S229453AbjKWVLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 16:05:31 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA1C91
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:05:37 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-548034455d9so304900a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:05:37 -0800 (PST)
+        Thu, 23 Nov 2023 16:11:51 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284A2A3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:11:57 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507f63fcbf6so389194e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:11:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700773536; x=1701378336; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700773915; x=1701378715; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw4Kok7jUVVa6uXmeOLPYM7OZwu0CQxt+Y+R1sPjnuc=;
-        b=JBA/GjjHHaBvaOdTp0NYiF1I/mnpByicEXxy+Alu3Gjrm7W9tv5WkuufhznMQwstRG
-         wBoL+uphSwLaC8+yztyyNPkt+nUytbmHs5QQv0/c8nWfJ8GFrSm9+UYTWpIxBAsa9afR
-         3GceCgfwiy0PG5jLjbK7ksgaYFv77mLKB8xAn7y2/gU3TllKpPBXRLePFP1jK+A+hURC
-         z38pzU655A2hy3qHq2wBzq3Drwl9IXzykDTRIiq7BqSsVecvyBGGPR0FLbyBtPy5A/AI
-         +Ahn3RWnolrwRQuPpmiAj8wioDklSL9Vj1ww97D0zWsOKgHl2RSSoowyp1PTNJ8Cdlg8
-         iqAQ==
+        bh=gmvIaEqBj6Deu/JeKDksUIpW27xW+EwbBrD/IEgkMIE=;
+        b=c19EXjfBE3AHq3EEP5PyTDmDkM5/2ER2uh4cxRXr40zI1UjQ00l/2WQ6n7sb2aNQdx
+         gLoee2zbIVQm2yEOdyWXTf8FWKtSRIQCQztr9fOM57PEl8kExJIhCLejN1iIz8NYweJ9
+         4sGUYOEkyNkXd1snOeLWyyolEI5IQBj4fQ+VYJVVIilt/8E6yAOkri/1wOEK/bEMlBxi
+         yLzeI4CafXU6kJ5H0shh2NFQkeQbJSSZawmnTdIEcm+HE9/QSPh0hY1XJ8016g43ukBo
+         zxmsw7ytZ3WqB0zQLEdCq3ew63HogJ9YGLr1gnCIBJWwZQk/cVO/u2bLRsRgrup0kV/N
+         lmqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700773536; x=1701378336;
+        d=1e100.net; s=20230601; t=1700773915; x=1701378715;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw4Kok7jUVVa6uXmeOLPYM7OZwu0CQxt+Y+R1sPjnuc=;
-        b=EbxAsdWJ3O0H8XiXhBwjCYduoFqNsR1WI18brAXjfIt8ituDgnJhJrqTtGUNSWlyUz
-         KhCqVu5Frl8kKbyDKRjMr+mVJEixNpAsj5vOgbRYBJQ/nj6UHT67kA00egAfafY8IsTP
-         0mVyUI08A8jxiLA1WOVAv0uwK/EHJ0o5J30hbSy0exkpbPBhWOmPrR1dRt6NOcN4Bbb0
-         T4E6PdPDbMbRoPSV4hBryBTDYjYYEwO/MGxfuULgDhV/XaWGI7XK4G0iEk6GHkfNTrVR
-         H6FKxAjvNm0U3fvlCgs/umoyjsIDusFVgWgawj+xcnjdlnW8FdIfGEnMKWeO4yAJNX7x
-         pmfA==
-X-Gm-Message-State: AOJu0YwldgToBj3MI8yi4HENdd06vtYS2P611ysSXKR0S0U6QqfwF61W
-        AD3lYklGEV0VXuGPzxNCbIc=
-X-Google-Smtp-Source: AGHT+IFTjWJCNmIm2tUQW+6hyPYaSjLQg37gElGwWHj+v1lMNJ2DsJfdbEpF4w7K9GOagah3vYvN7A==
-X-Received: by 2002:a50:ec96:0:b0:543:6222:e37c with SMTP id e22-20020a50ec96000000b005436222e37cmr328621edr.0.1700773535794;
-        Thu, 23 Nov 2023 13:05:35 -0800 (PST)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id c13-20020aa7df0d000000b0054386466f56sm1011724edy.60.2023.11.23.13.05.35
+        bh=gmvIaEqBj6Deu/JeKDksUIpW27xW+EwbBrD/IEgkMIE=;
+        b=uUWu8RDYa4OxGDJ9Q9CMTnMGr9Mz2DSBlHONFe1zp/7ZayIkHDhlJzKFuyRfx9tKeY
+         xplSkRMVv46VDQ10/5EFtK0IZxfSu9InvMW0NVt7NLdrhLCWJ/4/xzFjGF/hAb8wou6z
+         HKDIzA/pFotCmY7m4lP6+7DRFIOEjDWgJF+A/hbH1dBPY4+J7+DhGCSNnGCtacSRbhuz
+         2uUVJkRXbeU1UqFhE9HL0L9dRa1wl2nHKCdlpBSNHnTXzdWYsVV2Ge6tRP43HlA5YtVZ
+         maJvyPgY2VkBkgaVBAdVqjYpYkXP8x5UAeb2sw7gh0nqYJmifO3FHCqlGjjDaTFUMmFg
+         cZ0Q==
+X-Gm-Message-State: AOJu0YzYbxzL7davv4CeNGC2Gz8KxmnKum3M8XjnqhEvuSDa6/v7j5le
+        tgGgCOPB+AJeJhQSMIM5LqM=
+X-Google-Smtp-Source: AGHT+IFKn/XU2BMprJTesVrXmPsGtmy0MuYfdX+NEV/yzZFIgeuEfgvTVEk5P2nPzCHH3hanh7BIPQ==
+X-Received: by 2002:a05:6512:1091:b0:50a:7806:d0db with SMTP id j17-20020a056512109100b0050a7806d0dbmr355448lfg.4.1700773915186;
+        Thu, 23 Nov 2023 13:11:55 -0800 (PST)
+Received: from [192.168.0.101] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id b14-20020aa7dc0e000000b00548a258227asm1038698edu.30.2023.11.23.13.11.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 13:05:35 -0800 (PST)
-Message-ID: <4df855f1-77e9-44a2-a024-aa5c7d661642@gmail.com>
-Date:   Thu, 23 Nov 2023 22:05:34 +0100
+        Thu, 23 Nov 2023 13:11:54 -0800 (PST)
+Message-ID: <b98d32fa-6860-4ef0-9c45-6602cfc5880e@gmail.com>
+Date:   Thu, 23 Nov 2023 22:11:54 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] staging: rtl8192e: renamed variable
- HTIOTActIsMgntUseCCK6M
+Subject: Re: [PATCH v3 0/5] staging: rtl8192e: renaming 5 different variables
+ patch series
 Content-Language: en-US
 To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 References: <20231123144337.13112-1-garyrookard@fastmail.org>
- <20231123144337.13112-6-garyrookard@fastmail.org>
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20231123144337.13112-6-garyrookard@fastmail.org>
+In-Reply-To: <20231123144337.13112-1-garyrookard@fastmail.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,52 +75,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/23/23 15:43, Gary Rookard wrote:
-> Renamed from Pascal/CamelCase to Snake case the variable
-> HTIOTActIsMgntUseCCK6M.
-> HTIOTActIsMgntUseCCK6M -> ht_iot_act_is_mgnt_use_cck_6m
+> Hi,
+> 
+> This patch series renames (5) different variables from Pascal/CamelCase to
+> Snake case.
+> 
+> Patch 1/5) renamed variable HTMcsToDataRate
+> Patch 2/5) renamed variable TxCountToDataRate
+> Patch 3/5) renamed variable IsHtHalfNmodeAps
+> Patch 4/5) renamed variable HTIOTPeerDetermine
+> Patch 5/5) renamed variable HTIOTActIsMgntUseCCK6M
 > 
 > Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
 > Driver/module rtl8192e compiles.
 > 
-> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> Regards,
+> Gary
+> 
 > ---
-> v3: Corrected versioning fron v1 -> v3, includes change history.
-> v2: v2 was Skipped over..v3 corrects this.
+> v3: Corrected versioning from v1 -> v3, includes change history.
+> v2: v2 was skipped over..v3 corrects this.
 > v1: Style and compile issues, asked to redo.
 > 
->   drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> Gary Rookard (5):
+>    staging: rtl8192e; renamed variable HTMcsToDataRate
+>    staging: rtl8192e: renamed variable TXCountToDataRate
+>    staging: rtl8192e: renamed variable IsHTHalfNmodeAPs
+>    staging: rtl8192e: renamed variable HTIOTPeerDetermine
+>    staging: rtl8192e: renamed variable HTIOTActIsMgntUseCCK6M
 > 
-> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> index 0873c19ca051..f43249fd78d7 100644
-> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> @@ -207,7 +207,7 @@ static void ht_iot_peer_determine(struct rtllib_device *ieee)
->   	netdev_dbg(ieee->dev, "IOTPEER: %x\n", ht_info->IOTPeer);
->   }
->   
-> -static u8 HTIOTActIsMgntUseCCK6M(struct rtllib_device *ieee,
-> +static u8 ht_iot_act_is_mgnt_use_cck_6m(struct rtllib_device *ieee,
->   				 struct rtllib_network *network)
+>   drivers/staging/rtl8192e/rtl819x_HTProc.c    | 18 +++++++++---------
+>   drivers/staging/rtl8192e/rtllib.h            |  4 ++--
+>   drivers/staging/rtl8192e/rtllib_softmac.c    |  2 +-
+>   drivers/staging/rtl8192e/rtllib_softmac_wx.c |  2 +-
+>   4 files changed, 13 insertions(+), 13 deletions(-)
+> 
 
-CHECK: Alignment should match open parenthesis
-#33: FILE: drivers/staging/rtl8192e/rtl819x_HTProc.c:211:
-+static u8 ht_iot_act_is_mgnt_use_cck_6m(struct rtllib_device *ieee,
-  				 struct rtllib_network *network)
+So beside the two
+CHECK: Alignment should match open parenthesis issues everything else is OK.
 
-Please use checkpatch on your patches. Alignment issues can be fixed up 
-by you. CamelCase oft not when the variable did not change within your 
-patch.
-
->   {
->   	u8	retValue = 0;
-> @@ -675,7 +675,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
->   		ht_iot_peer_determine(ieee);
->   
->   		ht_info->iot_action = 0;
-> -		bIOTAction = HTIOTActIsMgntUseCCK6M(ieee, pNetwork);
-> +		bIOTAction = ht_iot_act_is_mgnt_use_cck_6m(ieee, pNetwork);
->   		if (bIOTAction)
->   			ht_info->iot_action |= HT_IOT_ACT_MGNT_USE_CCK_6M;
->   		bIOTAction = HTIOTActIsCCDFsync(ieee);
-
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
