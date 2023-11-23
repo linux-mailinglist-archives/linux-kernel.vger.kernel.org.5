@@ -2,155 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AF97F697B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 00:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7F07F699B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 00:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjKWXKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 18:10:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
+        id S229718AbjKWXeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 18:34:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWXKx (ORCPT
+        with ESMTP id S229453AbjKWXeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 18:10:53 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2115.outbound.protection.outlook.com [40.107.20.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0BFD6C;
-        Thu, 23 Nov 2023 15:10:57 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BX8o3TJQA+gUUBT6FFqIMhkTTHfJgiqoPKHNV3vuDA7710Z+pEdwLRqwlx1pha5CkfHS1QhEtkqM4S9zEAMA+vuBWulIGvzgW4MdZpLq0yQM/+KKinzESiL94Wl8EpLsNwrpvpwsZOZw5dgndHcx99Tqiiiuf6gxgKqmjSxrt4hl7EFGzLP/h0/GafxWHax/+Y1XLpL6FCuFPXleQfusT4fxDHAE7a9hnwx+GKQ6IMewnsHUbk782/xAt+jhTWqs6yJlohAcsiBGkkIERgQm83Txz8VVSgkAeWcXMXIdeNot0M/WiGgyoRl9Ke0sKsGC6PaDWWOkCWKvlpsrapWxEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IW1hhqk1tmClJo5fANf/z6MV6R42CF8w2lyY181lNG8=;
- b=O3IlgBcEdKfra76Y7OXFvYIGdaGupnUfC/N5dm00QEY88vy0exWCz8YG/e3KNmP9eEBYRyTLl4tPPQxR3RqtmpOgoRmJy0+Dv8WtffxA2d0N5s27crdruIXP517OcCKJdXbNZsd+MZH7IMtxDIV2mKwPL1veFLu4cCc6u3ftyQ2SIoZVq/rrE9V1ZcXVCw5P3BwDveaablBZWIGVOtdtN13K8AC2OTHEgMvLWdolBt16Sl8TAZoaxh704+RAPXMMKKWGgjY9AOSxODbU0SUQqifS2+F+qcf7KZWlPwipuQNFX/zXF5KOYmPaeqdVvouWV17wgHblZrDSp2Tq/3asjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IW1hhqk1tmClJo5fANf/z6MV6R42CF8w2lyY181lNG8=;
- b=WIrlOu7UiJaeBfTXO7VGzqof/xjZWFj3mZ4aYt5zf5mHOEv+8FWFeGde5P4lmPDNo0GmJDYK1pBNS/+OHIw2fobiWlwY1ROReV5rH1SH3YFDSlb1NIstcA9yRaE1oaK4p+3D+sgGQMPiaw8L6U1xs070Cp+/Km+q2ISSClLvP+w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axentia.se;
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
- by DU0PR02MB9704.eurprd02.prod.outlook.com (2603:10a6:10:42c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Thu, 23 Nov
- 2023 23:10:55 +0000
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::eb7e:2017:35fb:d31b]) by AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::eb7e:2017:35fb:d31b%7]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
- 23:10:55 +0000
-Message-ID: <0cee5543-711d-3d6e-f416-18889badff18@axentia.se>
-Date:   Fri, 24 Nov 2023 00:10:53 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 05/10] drivers/i2c/busses: Don't let i2c adapters declare
- I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
-Content-Language: sv-SE
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231118180504.1785-1-hkallweit1@gmail.com>
- <20231118180504.1785-6-hkallweit1@gmail.com>
-From:   Peter Rosin <peda@axentia.se>
-In-Reply-To: <20231118180504.1785-6-hkallweit1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: GV3P280CA0104.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:150:8::24) To AM0PR02MB4436.eurprd02.prod.outlook.com
- (2603:10a6:208:ed::15)
+        Thu, 23 Nov 2023 18:34:23 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853DCD50
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 15:34:28 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 0A910320094F;
+        Thu, 23 Nov 2023 18:34:24 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 23 Nov 2023 18:34:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1700782464; x=1700868864; bh=7S
+        oP/9+oMDHq5e1ZFZuMCyNkdAMjmxHmQZZ7tv03aps=; b=A6jZUsMudUpHsYWkPv
+        +9Eg94nSym349rYVXA4Rt747HuJLVFxR0UO5zKtKoO0pRflTZP7TbJ8IpVaAAy8S
+        N8JFT3CEudpWWxpGN8uqfrRgOZQ9sBQLKJujv+aZV/GE43WmQ4fwknpCZMkrA1/P
+        55aUFII/h5d+O0/9I5JBWEjan5mmGpqu1RkMPlbE1Ds+QD7MF5ITEfpfxCyd6lUl
+        YAsY7mylk4tKpzg5C+Eq4SrgIzoBPiCRQiV8gBzCW0ebJeYn3Nlcut5PKFP+uHx5
+        5dUhaee8+M/KStXexjaE/6jLhyK/uz1r8yzVhXHjeuQvZ14PAUSZA+eJuDBwekFK
+        m/lg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700782464; x=1700868864; bh=7SoP/9+oMDHq5
+        e1ZFZuMCyNkdAMjmxHmQZZ7tv03aps=; b=VV8YIAF+NBgSqGIzWbz+XiVcmonFC
+        uiatPMuhvPE3DMgijhrs7hJC1JX5vOtsahLJUfW78i2nDfGG8Plz5ys7JI8h83oy
+        XWK/pz7sMEsks9GfzpZKFucaDH0TezfR7XpFsis3Zx1KBKO9wpU7idhCGxYgkziY
+        2O4vteNlLjh/vyEOrS8Rh70dRU5FeR3F221IxqNyK7wCtlJvspnooAotzJyFJXzw
+        4pMuYquosP1Jax9jqLapCFzd+Vk9sMh3srNT8lHzwyhSLvtoFYAjxISlFe1tJfyH
+        jWG/KqRfYOYLkxkjrzt+3pEuUJWCfkLBO5gi/VDZPKfhHymi2ATJcstjQ==
+X-ME-Sender: <xms:gOFfZcBximcby0pIL6Xc636xYmFLB9-oBB7H9AU5NZzsRkM4izyrLQ>
+    <xme:gOFfZegKGx0fOJ_rjW_rRYcmJAC7p7rL-u32KtCEazlqnpWPqboIyvvzUiKrgi3T7
+    gC85CsKqj8ARG6Ev6s>
+X-ME-Received: <xmr:gOFfZflskOXqWiEpp3xOmkvvQ7yJeeoqSUeNlVmGSF4RpMvYKbWA2F5wkc8X6mULPk8OsBKxJLZVPI91OP7yHzOtQpsYkcyr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehgedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfhgfhffvvefuffgjkfggtgesthdtredttdertdenucfhrhhomhepifgrrhih
+    ucftohhokhgrrhguuceoghgrrhihrhhoohhkrghrugesfhgrshhtmhgrihhlrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeefleffhfegtefffefgfedugeehhfdvueefffegkeejvdeg
+    leeiueelkeeiuddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:gOFfZSyI1SjnhveGMbsVOzMCZhEoYUTt2lsAJDxdrhYLKsABRMn4yg>
+    <xmx:gOFfZRRHFiiX5E51KaB2fzUXR3SEKg6q5eXe3n36cE2ygLLanenasw>
+    <xmx:gOFfZdbXrnRjc-f-v2Klpy-3yko0fi6BpSNtyZU5mZzgPJRx8Uy5mQ>
+    <xmx:gOFfZceis29BXf9rnQtljIIcmNbNf3t5YkMOQS0L9uOUKnzIlTCVIw>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 Nov 2023 18:34:23 -0500 (EST)
+References: <20231123144337.13112-1-garyrookard@fastmail.org>
+ <20231123144337.13112-3-garyrookard@fastmail.org>
+ <5ff4d268-2fcb-4d55-819a-e2650731b91f@gmail.com>
+User-agent: mu4e 1.10.6; emacs 29.1
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] staging: rtl8192e: renamed variable
+ TXCountToDataRate
+Date:   Thu, 23 Nov 2023 18:19:25 -0500
+In-reply-to: <5ff4d268-2fcb-4d55-819a-e2650731b91f@gmail.com>
+Message-ID: <87v89svybm.fsf@fastmail.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|DU0PR02MB9704:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f56eba4-05f9-4115-6f95-08dbec79721a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YrXBx9lgpwb8mpc5eG7sn31ZD/1eZJR63AMErTMdWIRuTqQBXsJsJ2eQj+TtNYlgIBzy4UqGreUQlLCxx/DlW9IeHNwM7Kr+CAswjrIsjojLrCwSZhhiAoViEsQ+uPj3Vw2kipyXu93NANsyXZRlrmZMENkWVKDvhgambRlH3gbwcrvCZjBx6fC3IoP5+et0JNyz0/dnMvq87SrpqzTxls+IcoJ48iVXy9uv1U3h6AKKyAcFo6L7qtPdpGM+qZ+gXU+0PVYwxQoFL9wZ9UHk7tVIBs/7NYk0lm24Ck25tnh9Wl49S428KKzpNqihvVyAqO6CjP4HtBBkL/d0K/7KrGS5qa5k2Xw4awPRmOeE4bDHXF8UhQu95urJuc6C9Kujn5A9jvCgSh7zoNVcrwusWTc3LKCW16/3GQGWfNwGpliuoN+zpqg0niU2Em9g8JfBEG9kYHAvWHEaaG5l1WLQXma5/W7RiUnuV4j00uKRK5KKQNngE43dgTbRtOgczFN2Bp08IKmseY6uJWfFAbhnOkvUPRYY4wbV6qG0nC3iLuL0M0LZT0gBBEE5qkzsn2RpjRJDq13ex2bIB41oWgouub3grxo0Ae8QUyNk7oxPyWKhshLlMfGDldVdgAamEYebZgEanv2hLbnTxnfZ2IXJfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39840400004)(366004)(346002)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(31686004)(26005)(6486002)(2616005)(6512007)(6506007)(66899024)(110136005)(2906002)(66946007)(4744005)(8936002)(8676002)(4326008)(86362001)(31696002)(5660300002)(4001150100001)(41300700001)(478600001)(66556008)(316002)(66476007)(36756003)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UTV3S2VTOVZ0cjFEUFlpYi9tLys0dzlUcWEyTXNJdFpjRTFXczF5SzRGRmNL?=
- =?utf-8?B?UjBIbkxYZmt0d1JjVXljTkpwWEw0bG5yZS92ZndPeG1MVUFYcVlUaS81TldU?=
- =?utf-8?B?NlpZMnVHK0dETUhkTjFVSzlLaU44R255SHhqSHAxSW9mZGswK05KVnBnUi91?=
- =?utf-8?B?YUQxOHh2NGxUSWxtR2lhNEFpcUp3VzBFa0gzWTE1ZUZtczhhdldhbzRXRDRt?=
- =?utf-8?B?RjgrK1BqMnl5dDBIcngxcU1TTzBSSkE3eDFSemM1UUY3VElkejNrbXpOMzdl?=
- =?utf-8?B?ZHhsbzlYb1JwTDdzS2R5eHNzRUhGUGpYY2tmSFdhMDE0Yy9FNjhSRVMxUTRT?=
- =?utf-8?B?QlZ0YXZCcWczZ2J0dHNXM3kzYnRnT2JXMHkwREpRbUxSMC9CZXYybURURnBZ?=
- =?utf-8?B?TzhxRTBHQ0hXZjcwd1c2bElyTXBBTERTOUtvbXMvMEtZaFJXM1JkSlBxWUFk?=
- =?utf-8?B?WXI5MXBsaVdzQ09wVWRWcGMvWVoxcitvK0xBUVI3ckFxV2gyYkpmT3poY25T?=
- =?utf-8?B?NXlXMkFhZFdJNzVIci80bko4ZFNKWHlTbHNTVG85bXR1U0NiTFZoQTBISW5h?=
- =?utf-8?B?VHJyaHV3T01YTm5wNlNhQ25zeE1kdUpyNFhXZlZncmNNWXRiMGNMODJkMmxv?=
- =?utf-8?B?RnVjZEFhSG1VT1pIaTNTdDFGcmpQWHhOM25jNldlc2xJMTRQVUFFVytKeFAr?=
- =?utf-8?B?SCtJbHJmMEkxSFlieG01dWF1Tm9kWVk4L0ZCcSt6VUpaOVVuUmhiSGxGbTN0?=
- =?utf-8?B?ckpsd0RZRTNmTVQrTUhKRGhtU0laVVhEK0pZbzVuL0JVbnRBQndBVlRiMzVU?=
- =?utf-8?B?Mm4rQlF0emNFV2tBbllRbk90UzJpK0JoZklkM2JBQk9DaW4xbkZaUTIrSkRZ?=
- =?utf-8?B?dExGRmFncytKd3J5SjV3WWNSMjhnSkM0eWpyM1dCZ045UHpZNEtQOVk1bDFa?=
- =?utf-8?B?bktrejFQRFNmL1puZ29reEFaWDFSVE1NQ0hGcVpJbXM4VjNyQ3VScHFSWkIz?=
- =?utf-8?B?QThlQkFoNEY2bjl1QXZHOE1NWHF6dGtyMzMxNGdMcUdDVjVxZW1kOWF4OFhI?=
- =?utf-8?B?Rlk4cW1paGIwV2ZuN0tCd3hZN2pRSnFWQ0dZZ0JkZHVhZFZ1dVlMa2pKcmwz?=
- =?utf-8?B?THVwZGxwM2ZyZWMzdzFQOFdyZE1FUVBabUZuVURGNU16NTM1OERwY0ViNGFI?=
- =?utf-8?B?bENLU29kZitNV1ZXM1pPTUFCUlpaWnM2dzMxcTIxVWpJS0k1RXB1a3Iwcmhj?=
- =?utf-8?B?dHhocnkwNWkxa0FLVGNxNCt0c0VpMnFpQkdCS2lnTSt2SzJGc0w4U1ZyYjFP?=
- =?utf-8?B?QTN6WTBwVlJpRmRlUkduT1N0TXdvNTdQVGY2VGU3NGlHVkI4bExhMmg3Qk9a?=
- =?utf-8?B?bVZ2WXQ2dllmTzEyTVJ5NS82dEVvQVNOeGs2YThQbTVMQVZuM0hxd2pSOHR4?=
- =?utf-8?B?c2VBSlhTU1dUckorRTNTV1o0Y0dWMzJXN25nUzVvb1dFR2JwK2dGOUpmOVpo?=
- =?utf-8?B?ZkpkNVFHdzdaR2w0NXZ5dmtlT1diT2IyeW85Y2dXaUsybUZQNGZ2VEp5YVlD?=
- =?utf-8?B?M29BTGRQQ2Z1azdiYXluQjY1SWdybjYybmhCdTk5cDEwQ1BDbkJsR29TSjhX?=
- =?utf-8?B?aVFPZlAxTFhyMnNQempjc0JvYXlGdnhaR01IMXVSRkwya0lhQmxNWDlTZlRK?=
- =?utf-8?B?emNkSVhkUXRDS2o4VzVlb1JxQ1hPZ2VIbURnNzhFRWZNUkhmc2V4UUJzaUFr?=
- =?utf-8?B?ZnE0QVdUS3g0NkdPZllrLzlWc2t6ZUF3YjRySncvUXI4ejFEMDQzYXVneTli?=
- =?utf-8?B?aEZVN3N1M24reEltNEJyMHFoKzU3NmZuYUdEbjhCL0VpSEtYVGdvV05pbElR?=
- =?utf-8?B?V2ViTGlqdmhUT1hCUEdkd0dYYXRrbU1KcHJaY21VSldNdzdSeURKejdQNVJH?=
- =?utf-8?B?andSQWZOT0tuLy8vQWdpYkR4WXB2ODJPVXFBaWd1SHpjRnlZL3FnTWNzb1pq?=
- =?utf-8?B?UHdvZWI4Y0h0bVhQTXFZTjlCd2diam50MVFVNzRmLzNaMFMxTkR5Z2Zod0Zp?=
- =?utf-8?B?eGtiSUs4Y1BwUDltaUpFUkhNcU9pUWtMVFE2bktvdndNelgyQTBYRm14ZEpC?=
- =?utf-8?Q?llv/6+L82gcx8cauJEB7vP0xJ?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f56eba4-05f9-4115-6f95-08dbec79721a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 23:10:55.4865
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bZGs06IbLofBpEv6UGVoa3xI1XTezElwreIggpIx2DS0H6l2fBNzMfhFT4hBGpcW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB9704
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
 
-2023-11-18 at 19:04, Heiner Kallweit wrote:
-> diff --git a/drivers/i2c/busses/i2c-kempld.c b/drivers/i2c/busses/i2c-kempld.c
-> index e01d75308..9076ae4d7 100644
-> --- a/drivers/i2c/busses/i2c-kempld.c
-> +++ b/drivers/i2c/busses/i2c-kempld.c
-> @@ -283,8 +283,8 @@ static const struct i2c_algorithm kempld_i2c_algorithm = {
->  static const struct i2c_adapter kempld_i2c_adapter = {
->  	.owner		= THIS_MODULE,
->  	.name		= "i2c-kempld",
-> -	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD |
-> -			  I2C_CLASS_DEPRECATED,
-> +	.class		= I2C_CLASS_HWMON |
-> +	I2C_CLASS_DEPRECATED,
+Philipp Hortmann <philipp.g.hortmann@gmail.com> writes:
 
-The above is less than ideal...
+> On 11/23/23 15:43, Gary Rookard wrote:
+>> Renamed from Pascal/CamelCase to Snake case the variable
+>> TXCountToDataRate.
+>> TXCountToDataRate -> tx_count_to_data_rate
+>> Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
+>> Driver/module rtl8192e compiles.
+>> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+>> ---
+>> v3: Corrected versioning from v1 -> v3, includes change history.
+>> v2: v2 was skipped over..v3 corrects this.
+>> v1 Style and compile issues, asked to redo.
+>>   drivers/staging/rtl8192e/rtl819x_HTProc.c    | 2 +-
+>>   drivers/staging/rtl8192e/rtllib.h            | 2 +-
+>>   drivers/staging/rtl8192e/rtllib_softmac_wx.c | 2 +-
+>>   3 files changed, 3 insertions(+), 3 deletions(-)
+>> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> index 280e335cbb6d..fb8294f31a60 100644
+>> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> @@ -114,7 +114,7 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
+>>   	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
+>>   }
+>>   -u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate)
+>> +u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
+>>   {
+>>   	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
+>>   				   0x24, 0x30, 0x48, 0x60, 0x6c};
+>> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+>> index d2cf3cfaaaba..0226a69f40c3 100644
+>> --- a/drivers/staging/rtl8192e/rtllib.h
+>> +++ b/drivers/staging/rtl8192e/rtllib.h
+>> @@ -1783,7 +1783,7 @@ extern u16 MCS_DATA_RATE[2][2][77];
+>>   u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
+>>   void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
+>>   bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
+>> -u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate);
+>> +u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
+>>   int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
+>>   int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
+>>   int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb);
+>> diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+>> index f32584291704..28aba1d610f7 100644
+>> --- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+>> +++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+>> @@ -208,7 +208,7 @@ int rtllib_wx_get_rate(struct rtllib_device *ieee,
+>>   {
+>>   	u32 tmp_rate;
+>>   -	tmp_rate = TxCountToDataRate(ieee,
+>> +	tmp_rate = tx_count_to_data_rate(ieee,
+>>   				     ieee->softmac_stats.CurrentShowTxate);
+>>   	wrqu->bitrate.value = tmp_rate * 500000;
+>>   
+>
+> CHECK: Alignment should match open parenthesis
+> #61: FILE: drivers/staging/rtl8192e/rtllib_softmac_wx.c:212:
+> +	tmp_rate = tx_count_to_data_rate(ieee,
+>  				     ieee->softmac_stats.CurrentShowTxate)
+Yes, I'm guilty of ignoring the addional CHECKS in my patch
+diff. Cleanup only allows one type of correction per patch. They are
+going to be included in a follow up patch series that I'm working on.
+If this is unacceptable thinking on my part then I will stand corrected.
 
-It should obviously be:
+P.S.
+Sorry, but they have been gone over with checkpatch and codespell.
 
--	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD |
--			  I2C_CLASS_DEPRECATED,
-+	.class		= I2C_CLASS_HWMON | I2C_CLASS_DEPRECATED,
+Regards,
+Gary
 
-Cheers,
-Peter
+
