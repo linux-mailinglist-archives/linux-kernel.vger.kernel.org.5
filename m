@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 756F27F5C43
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8806A7F5C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344603AbjKWK0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        id S231793AbjKWK2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKWK0e (ORCPT
+        with ESMTP id S229477AbjKWK2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:26:34 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 19A16101
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:26:40 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C6AE1042;
-        Thu, 23 Nov 2023 02:27:25 -0800 (PST)
-Received: from [10.1.37.168] (XHFQ2J9959.cambridge.arm.com [10.1.37.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0484B3F73F;
-        Thu, 23 Nov 2023 02:26:35 -0800 (PST)
-Message-ID: <118eb2d3-d504-49f0-b7f2-f29b64a8f404@arm.com>
-Date:   Thu, 23 Nov 2023 10:26:34 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
+        Thu, 23 Nov 2023 05:28:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031AEA2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:28:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A234DC433C7;
+        Thu, 23 Nov 2023 10:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700735337;
+        bh=YhnOgKb2HAgfRZJlLItv/GqeZsKs3OM8UHl1ijMKxjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WoXweuAQESjvyceY8KEXy9vCgVDJkmCItfhpir1XxYQcnSSejtSjt13FT3Convr5U
+         ONbXwgvG73PvCRDQ1IMXL7tFGiL1eMSucELyRykTDVB/b2YPZnUesA9rIP6PwTVYQn
+         CoE+cpRlX29/eUf0oOIQeEEaOVKNWXX2XaSYtgl3S9E1G/bSsC8C5nRgULd0/Pc2Xh
+         nLfNaZFeALOnbTOOV6YyihvwNox5lHj8nlj/uEicsDm8TcAeSpRU+uoYgnylZmUPdE
+         j7RAdjICN0gKyZKWhki8TLcmNct8xSSWUZEnY0P642dS6l2S1e+/7leDr8y3gQF1yp
+         cDWcg8BfeBxcQ==
+Date:   Thu, 23 Nov 2023 11:28:47 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231115163018.1303287-2-ryan.roberts@arm.com>
- <89a9fe07-a5c5-4a99-b588-e6145053c58f@redhat.com>
- <1459f78b-e80c-4f21-bc65-f0ab259d348a@arm.com>
- <08ef2c36-2b9c-4b96-9d1d-68cca0f68ba5@redhat.com>
- <2d027a8d-adfb-481d-89ea-c99139e669aa@arm.com>
- <2618b024-6a95-4bfc-a08d-59d86e9931e5@redhat.com>
- <d639ab17-8f6b-438d-bdcd-91924185b462@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <d639ab17-8f6b-438d-bdcd-91924185b462@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH RFT v3 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <20231123-derivate-freikarte-6de8984caf85@brauner>
+References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
+ <20231120-clone3-shadow-stack-v3-2-a7b8ed3e2acc@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231120-clone3-shadow-stack-v3-2-a7b8ed3e2acc@kernel.org>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,287 +70,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 14:15, David Hildenbrand wrote:
-> On 16.11.23 15:13, David Hildenbrand wrote:
->> On 16.11.23 14:49, Ryan Roberts wrote:
->>> On 16/11/2023 13:20, David Hildenbrand wrote:
->>>> On 16.11.23 12:20, Ryan Roberts wrote:
->>>>> On 16/11/2023 11:03, David Hildenbrand wrote:
->>>>>> On 15.11.23 17:30, Ryan Roberts wrote:
->>>>>>> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
->>>>>>> maps a physically contiguous block of memory, all belonging to the same
->>>>>>> folio, with the same permissions, and for shared mappings, the same
->>>>>>> dirty state. This will likely improve performance by a tiny amount due
->>>>>>> to batching the folio reference count management and calling set_ptes()
->>>>>>> rather than making individual calls to set_pte_at().
->>>>>>>
->>>>>>> However, the primary motivation for this change is to reduce the number
->>>>>>> of tlb maintenance operations that the arm64 backend has to perform
->>>>>>> during fork, as it is about to add transparent support for the
->>>>>>> "contiguous bit" in its ptes. By write-protecting the parent using the
->>>>>>> new ptep_set_wrprotects() (note the 's' at the end) function, the
->>>>>>> backend can avoid having to unfold contig ranges of PTEs, which is
->>>>>>> expensive, when all ptes in the range are being write-protected.
->>>>>>> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
->>>>>>> in the child, the backend does not need to fold a contiguous range once
->>>>>>> they are all populated - they can be initially populated as a contiguous
->>>>>>> range in the first place.
->>>>>>>
->>>>>>> This change addresses the core-mm refactoring only, and introduces
->>>>>>> ptep_set_wrprotects() with a default implementation that calls
->>>>>>> ptep_set_wrprotect() for each pte in the range. A separate change will
->>>>>>> implement ptep_set_wrprotects() in the arm64 backend to realize the
->>>>>>> performance improvement as part of the work to enable contpte mappings.
->>>>>>>
->>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>> ---
->>>>>>>      include/linux/pgtable.h |  13 +++
->>>>>>>      mm/memory.c             | 175 +++++++++++++++++++++++++++++++---------
->>>>>>>      2 files changed, 150 insertions(+), 38 deletions(-)
->>>>>>>
->>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>>>> index af7639c3b0a3..1c50f8a0fdde 100644
->>>>>>> --- a/include/linux/pgtable.h
->>>>>>> +++ b/include/linux/pgtable.h
->>>>>>> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct mm_struct
->>>>>>> *mm, unsigned long addres
->>>>>>>      }
->>>>>>>      #endif
->>>>>>>      +#ifndef ptep_set_wrprotects
->>>>>>> +struct mm_struct;
->>>>>>> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
->>>>>>> +                unsigned long address, pte_t *ptep,
->>>>>>> +                unsigned int nr)
->>>>>>> +{
->>>>>>> +    unsigned int i;
->>>>>>> +
->>>>>>> +    for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
->>>>>>> +        ptep_set_wrprotect(mm, address, ptep);
->>>>>>> +}
->>>>>>> +#endif
->>>>>>> +
->>>>>>>      /*
->>>>>>>       * On some architectures hardware does not set page access bit when
->>>>>>> accessing
->>>>>>>       * memory page, it is responsibility of software setting this bit.
->>>>>>> It brings
->>>>>>> diff --git a/mm/memory.c b/mm/memory.c
->>>>>>> index 1f18ed4a5497..b7c8228883cf 100644
->>>>>>> --- a/mm/memory.c
->>>>>>> +++ b/mm/memory.c
->>>>>>> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma,
->>>>>>> struct vm_area_struct *src_vma
->>>>>>>              /* Uffd-wp needs to be delivered to dest pte as well */
->>>>>>>              pte = pte_mkuffd_wp(pte);
->>>>>>>          set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
->>>>>>> -    return 0;
->>>>>>> +    return 1;
->>>>>>> +}
->>>>>>> +
->>>>>>> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
->>>>>>> +                struct page *anchor, unsigned long anchor_vaddr)
->>>>>>> +{
->>>>>>> +    unsigned long offset;
->>>>>>> +    unsigned long vaddr;
->>>>>>> +
->>>>>>> +    offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
->>>>>>> +    vaddr = anchor_vaddr + offset;
->>>>>>> +
->>>>>>> +    if (anchor > page) {
->>>>>>> +        if (vaddr > anchor_vaddr)
->>>>>>> +            return 0;
->>>>>>> +    } else {
->>>>>>> +        if (vaddr < anchor_vaddr)
->>>>>>> +            return ULONG_MAX;
->>>>>>> +    }
->>>>>>> +
->>>>>>> +    return vaddr;
->>>>>>> +}
->>>>>>> +
->>>>>>> +static int folio_nr_pages_cont_mapped(struct folio *folio,
->>>>>>> +                      struct page *page, pte_t *pte,
->>>>>>> +                      unsigned long addr, unsigned long end,
->>>>>>> +                      pte_t ptent, bool *any_dirty)
->>>>>>> +{
->>>>>>> +    int floops;
->>>>>>> +    int i;
->>>>>>> +    unsigned long pfn;
->>>>>>> +    pgprot_t prot;
->>>>>>> +    struct page *folio_end;
->>>>>>> +
->>>>>>> +    if (!folio_test_large(folio))
->>>>>>> +        return 1;
->>>>>>> +
->>>>>>> +    folio_end = &folio->page + folio_nr_pages(folio);
->>>>>>> +    end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
->>>>>>> +    floops = (end - addr) >> PAGE_SHIFT;
->>>>>>> +    pfn = page_to_pfn(page);
->>>>>>> +    prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
->>>>>>> +
->>>>>>> +    *any_dirty = pte_dirty(ptent);
->>>>>>> +
->>>>>>> +    pfn++;
->>>>>>> +    pte++;
->>>>>>> +
->>>>>>> +    for (i = 1; i < floops; i++) {
->>>>>>> +        ptent = ptep_get(pte);
->>>>>>> +        ptent = pte_mkold(pte_mkclean(ptent));
->>>>>>> +
->>>>>>> +        if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
->>>>>>> +            pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
->>>>>>> +            break;
->>>>>>> +
->>>>>>> +        if (pte_dirty(ptent))
->>>>>>> +            *any_dirty = true;
->>>>>>> +
->>>>>>> +        pfn++;
->>>>>>> +        pte++;
->>>>>>> +    }
->>>>>>> +
->>>>>>> +    return i;
->>>>>>>      }
->>>>>>>        /*
->>>>>>> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated
->>>>>>> page
->>>>>>> - * is required to copy this pte.
->>>>>>> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
->>>>>>> + * (always gte 1), or -EAGAIN if one preallocated page is required to
->>>>>>> copy the
->>>>>>> + * first pte.
->>>>>>>       */
->>>>>>>      static inline int
->>>>>>> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct
->>>>>>> *src_vma,
->>>>>>> -         pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
->>>>>>> -         struct folio **prealloc)
->>>>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct
->>>>>>> *src_vma,
->>>>>>> +          pte_t *dst_pte, pte_t *src_pte,
->>>>>>> +          unsigned long addr, unsigned long end,
->>>>>>> +          int *rss, struct folio **prealloc)
->>>>>>>      {
->>>>>>>          struct mm_struct *src_mm = src_vma->vm_mm;
->>>>>>>          unsigned long vm_flags = src_vma->vm_flags;
->>>>>>>          pte_t pte = ptep_get(src_pte);
->>>>>>>          struct page *page;
->>>>>>>          struct folio *folio;
->>>>>>> +    int nr = 1;
->>>>>>> +    bool anon;
->>>>>>> +    bool any_dirty = pte_dirty(pte);
->>>>>>> +    int i;
->>>>>>>            page = vm_normal_page(src_vma, addr, pte);
->>>>>>> -    if (page)
->>>>>>> +    if (page) {
->>>>>>>              folio = page_folio(page);
->>>>>>> -    if (page && folio_test_anon(folio)) {
->>>>>>> -        /*
->>>>>>> -         * If this page may have been pinned by the parent process,
->>>>>>> -         * copy the page immediately for the child so that we'll always
->>>>>>> -         * guarantee the pinned page won't be randomly replaced in the
->>>>>>> -         * future.
->>>>>>> -         */
->>>>>>> -        folio_get(folio);
->>>>>>> -        if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
->>>>>>> -            /* Page may be pinned, we have to copy. */
->>>>>>> -            folio_put(folio);
->>>>>>> -            return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
->>>>>>> -                         addr, rss, prealloc, page);
->>>>>>> +        anon = folio_test_anon(folio);
->>>>>>> +        nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
->>>>>>> +                        end, pte, &any_dirty);
->>>>>>> +
->>>>>>> +        for (i = 0; i < nr; i++, page++) {
->>>>>>> +            if (anon) {
->>>>>>> +                /*
->>>>>>> +                 * If this page may have been pinned by the
->>>>>>> +                 * parent process, copy the page immediately for
->>>>>>> +                 * the child so that we'll always guarantee the
->>>>>>> +                 * pinned page won't be randomly replaced in the
->>>>>>> +                 * future.
->>>>>>> +                 */
->>>>>>> +                if (unlikely(page_try_dup_anon_rmap(
->>>>>>> +                        page, false, src_vma))) {
->>>>>>> +                    if (i != 0)
->>>>>>> +                        break;
->>>>>>> +                    /* Page may be pinned, we have to copy. */
->>>>>>> +                    return copy_present_page(
->>>>>>> +                        dst_vma, src_vma, dst_pte,
->>>>>>> +                        src_pte, addr, rss, prealloc,
->>>>>>> +                        page);
->>>>>>> +                }
->>>>>>> +                rss[MM_ANONPAGES]++;
->>>>>>> +                VM_BUG_ON(PageAnonExclusive(page));
->>>>>>> +            } else {
->>>>>>> +                page_dup_file_rmap(page, false);
->>>>>>> +                rss[mm_counter_file(page)]++;
->>>>>>> +            }
->>>>>>>              }
->>>>>>> -        rss[MM_ANONPAGES]++;
->>>>>>> -    } else if (page) {
->>>>>>> -        folio_get(folio);
->>>>>>> -        page_dup_file_rmap(page, false);
->>>>>>> -        rss[mm_counter_file(page)]++;
->>>>>>> +
->>>>>>> +        nr = i;
->>>>>>> +        folio_ref_add(folio, nr);
->>>>>>>          }
->>>>>>>            /*
->>>>>>> @@ -968,24 +1051,28 @@ copy_present_pte(struct vm_area_struct *dst_vma,
->>>>>>> struct
->>>>>>> vm_area_struct *src_vma,
->>>>>>>           * in the parent and the child
->>>>>>>           */
->>>>>>>          if (is_cow_mapping(vm_flags) && pte_write(pte)) {
->>>>>>> -        ptep_set_wrprotect(src_mm, addr, src_pte);
->>>>>>> +        ptep_set_wrprotects(src_mm, addr, src_pte, nr);
->>>>>>>              pte = pte_wrprotect(pte);
->>>>>>
->>>>>> You likely want an "any_pte_writable" check here instead, no?
->>>>>>
->>>>>> Any operations that target a single indiividual PTE while multiple PTEs are
->>>>>> adjusted are suspicious :)
->>>>>
->>>>> The idea is that I've already constrained the batch of pages such that the
->>>>> permissions are all the same (see folio_nr_pages_cont_mapped()). So if the
->>>>> first
->>>>> pte is writable, then they all are - something has gone badly wrong if some
->>>>> are
->>>>> writable and others are not.
->>>>
->>>> I wonder if it would be cleaner and easier to not do that, though.
->>>>
->>>> Simply record if any pte is writable. Afterwards they will *all* be R/O and you
->>>> can set the cont bit, correct?
->>>
->>> Oh I see what you mean - that only works for cow mappings though. If you have a
->>> shared mapping, you won't be making it read-only at fork. So if we ignore
->>> pte_write() state when demarking the batches, we will end up with a batch of
->>> pages with a mix of RO and RW in the parent, but then we set_ptes() for the
->>> child and those pages will all have the permissions of the first page of the
->>> batch.
->>
->> I see what you mean.
->>
->> After fork(), all anon pages will be R/O in the parent and the child.
->> Easy. If any PTE is writable, wrprotect all in the parent and the child.
->>
->> After fork(), all shared pages can be R/O or R/W in the parent. For
->> simplicity, I think you can simply set them all R/O in the child. So if
->> any PTE is writable, wrprotect all in the child.
+On Mon, Nov 20, 2023 at 11:54:30PM +0000, Mark Brown wrote:
+> Unlike with the normal stack there is no API for configuring the the shadow
+> stack for a new thread, instead the kernel will dynamically allocate a new
+> shadow stack with the same size as the normal stack. This appears to be due
+> to the shadow stack series having been in development since before the more
+> extensible clone3() was added rather than anything more deliberate.
 > 
-> Or better: if any is R/O, set them all R/O. Otherwise just leave them as is.
-
-I've just come back to this to code it up, and want to clarify this last
-comment; I'm already going to have to collect any_writable for the anon case, so
-I will already have that info for the shared case too. I think you are
-suggesting I *additionally* collect any_readonly, then in the shared case, I
-only apply wrprotect if (any_writable && any_readonly). i.e. only apply
-wrprotect if there is a mix of permissions for the batch, otherwise all the
-permissions are the same (either all RW or all RO) and I can elide the wrprotet.
-Is that what you meant?
-
-
+> Add a parameter to clone3() specifying the size of a shadow stack for
+> the newly created process.  If no shadow stack is specified then the
+> existing implicit allocation behaviour is maintained.
 > 
-> But devil is in the detail.
+> If the architecture does not support shadow stacks the shadow stack size
+> parameter must be zero, architectures that do support the feature are
+> expected to enforce the same requirement on individual systems that lack
+> shadow stack support.
 > 
+> Update the existing x86 implementation to pay attention to the newly added
+> arguments, in order to maintain compatibility we use the existing behaviour
+> if no shadow stack is specified. Minimal validation is done of the supplied
+> parameters, detailed enforcement is left to when the thread is executed.
+> Since we are now using more fields from the kernel_clone_args we pass that
+> into the shadow stack code rather than individual fields.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/x86/include/asm/shstk.h | 11 ++++++---
+>  arch/x86/kernel/process.c    |  2 +-
+>  arch/x86/kernel/shstk.c      | 59 ++++++++++++++++++++++++++++++--------------
+>  include/linux/sched/task.h   |  1 +
+>  include/uapi/linux/sched.h   |  4 +++
+>  kernel/fork.c                | 22 +++++++++++++++--
+>  6 files changed, 74 insertions(+), 25 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+> index 42fee8959df7..8be7b0a909c3 100644
+> --- a/arch/x86/include/asm/shstk.h
+> +++ b/arch/x86/include/asm/shstk.h
+> @@ -6,6 +6,7 @@
+>  #include <linux/types.h>
+>  
+>  struct task_struct;
+> +struct kernel_clone_args;
+>  struct ksignal;
+>  
+>  #ifdef CONFIG_X86_USER_SHADOW_STACK
+> @@ -16,8 +17,8 @@ struct thread_shstk {
+>  
+>  long shstk_prctl(struct task_struct *task, int option, unsigned long arg2);
+>  void reset_thread_features(void);
+> -unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clone_flags,
+> -				       unsigned long stack_size);
+> +unsigned long shstk_alloc_thread_stack(struct task_struct *p,
+> +				       const struct kernel_clone_args *args);
+>  void shstk_free(struct task_struct *p);
+>  int setup_signal_shadow_stack(struct ksignal *ksig);
+>  int restore_signal_shadow_stack(void);
+> @@ -26,8 +27,10 @@ static inline long shstk_prctl(struct task_struct *task, int option,
+>  			       unsigned long arg2) { return -EINVAL; }
+>  static inline void reset_thread_features(void) {}
+>  static inline unsigned long shstk_alloc_thread_stack(struct task_struct *p,
+> -						     unsigned long clone_flags,
+> -						     unsigned long stack_size) { return 0; }
+> +						     const struct kernel_clone_args *args)
+> +{
+> +	return 0;
+> +}
+>  static inline void shstk_free(struct task_struct *p) {}
+>  static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
+>  static inline int restore_signal_shadow_stack(void) { return 0; }
+> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> index b6f4e8399fca..a9ca80ea5056 100644
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -207,7 +207,7 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+>  	 * is disabled, new_ssp will remain 0, and fpu_clone() will know not to
+>  	 * update it.
+>  	 */
+> -	new_ssp = shstk_alloc_thread_stack(p, clone_flags, args->stack_size);
+> +	new_ssp = shstk_alloc_thread_stack(p, args);
+>  	if (IS_ERR_VALUE(new_ssp))
+>  		return PTR_ERR((void *)new_ssp);
+>  
+> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> index 59e15dd8d0f8..a14f47d70dfb 100644
+> --- a/arch/x86/kernel/shstk.c
+> +++ b/arch/x86/kernel/shstk.c
+> @@ -191,38 +191,61 @@ void reset_thread_features(void)
+>  	current->thread.features_locked = 0;
+>  }
+>  
+> -unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
+> -				       unsigned long stack_size)
+> +unsigned long shstk_alloc_thread_stack(struct task_struct *tsk,
+> +				       const struct kernel_clone_args *args)
+>  {
+>  	struct thread_shstk *shstk = &tsk->thread.shstk;
+> +	unsigned long clone_flags = args->flags;
+>  	unsigned long addr, size;
+>  
+>  	/*
+>  	 * If shadow stack is not enabled on the new thread, skip any
+> -	 * switch to a new shadow stack.
+> +	 * implicit switch to a new shadow stack and reject attempts to
+> +	 * explciitly specify one.
+>  	 */
+> -	if (!features_enabled(ARCH_SHSTK_SHSTK))
+> -		return 0;
+> +	if (!features_enabled(ARCH_SHSTK_SHSTK)) {
+> +		if (args->shadow_stack_size)
+> +			return (unsigned long)ERR_PTR(-EINVAL);
+>  
+> -	/*
+> -	 * For CLONE_VFORK the child will share the parents shadow stack.
+> -	 * Make sure to clear the internal tracking of the thread shadow
+> -	 * stack so the freeing logic run for child knows to leave it alone.
+> -	 */
+> -	if (clone_flags & CLONE_VFORK) {
+> -		shstk->base = 0;
+> -		shstk->size = 0;
+>  		return 0;
+>  	}
+>  
+>  	/*
+> -	 * For !CLONE_VM the child will use a copy of the parents shadow
+> -	 * stack.
+> +	 * If the user specified a shadow stack then do some basic
+> +	 * validation and use it, otherwise fall back to a default
+> +	 * shadow stack size if the clone_flags don't indicate an
+> +	 * allocation is unneeded.
+>  	 */
+> -	if (!(clone_flags & CLONE_VM))
+> -		return 0;
+> +	if (args->shadow_stack_size) {
+> +		size = args->shadow_stack_size;
+> +
+> +		if (size < 8)
+> +			return (unsigned long)ERR_PTR(-EINVAL);
 
+It would probably be useful to add a
+#define SHADOW_STACK_SIZE_MIN 8
+instead of a raw number here.
+
+Any reasonably maximum that should be assumed here? IOW, what happens if
+userspace starts specifying 4G shadow_stack_size with each clone3() call
+for lolz?
+
+And I think we should move the shadow_stack_size validation into
+clone3_shadow_stack_valid() instead of having each architecture do it's
+own thing in their own handler. IOW, share as much common code as
+possible. Another reason to wait for that arm support to land...
+
+> +	} else {
+> +		/*
+> +		 * For CLONE_VFORK the child will share the parents
+> +		 * shadow stack.  Make sure to clear the internal
+> +		 * tracking of the thread shadow stack so the freeing
+> +		 * logic run for child knows to leave it alone.
+> +		 */
+> +		if (clone_flags & CLONE_VFORK) {
+> +			shstk->base = 0;
+> +			shstk->size = 0;
+> +			return 0;
+> +		}
+
+Why is the CLONE_VFORK handling only necessary if shadow_stack_size is
+unset? In general, a comment or explanation on the interaction between
+CLONE_VFORK and shadow_stack_size would be helpful.
+
+> +
+> +		/*
+> +		 * For !CLONE_VM the child will use a copy of the
+> +		 * parents shadow stack.
+> +		 */
+> +		if (!(clone_flags & CLONE_VM))
+> +			return 0;
+> +
+> +		size = args->stack_size;
+> +
+> +	}
+>  
+> -	size = adjust_shstk_size(stack_size);
+> +	size = adjust_shstk_size(size);
+>  	addr = alloc_shstk(0, size, 0, false);
+>  	if (IS_ERR_VALUE(addr))
+>  		return addr;
+> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+> index a23af225c898..e86a09cfccd8 100644
+> --- a/include/linux/sched/task.h
+> +++ b/include/linux/sched/task.h
+> @@ -41,6 +41,7 @@ struct kernel_clone_args {
+>  	void *fn_arg;
+>  	struct cgroup *cgrp;
+>  	struct css_set *cset;
+> +	unsigned long shadow_stack_size;
+>  };
+>  
+>  /*
+> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> index 3bac0a8ceab2..a998b6d0c897 100644
+> --- a/include/uapi/linux/sched.h
+> +++ b/include/uapi/linux/sched.h
+> @@ -84,6 +84,8 @@
+>   *                kernel's limit of nested PID namespaces.
+>   * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
+>   *                a file descriptor for the cgroup.
+> + * @shadow_stack_size: Specify the size of the shadow stack to allocate
+> + *                     for the child process.
+>   *
+>   * The structure is versioned by size and thus extensible.
+>   * New struct members must go at the end of the struct and
+> @@ -101,12 +103,14 @@ struct clone_args {
+>  	__aligned_u64 set_tid;
+>  	__aligned_u64 set_tid_size;
+>  	__aligned_u64 cgroup;
+> +	__aligned_u64 shadow_stack_size;
+>  };
+>  #endif
+>  
+>  #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
+>  #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
+>  #define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
+> +#define CLONE_ARGS_SIZE_VER3 96 /* sizeof fourth published struct */
+>  
+>  /*
+>   * Scheduling policies
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 10917c3e1f03..b8ca8194bca5 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -3067,7 +3067,9 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
+>  		     CLONE_ARGS_SIZE_VER1);
+>  	BUILD_BUG_ON(offsetofend(struct clone_args, cgroup) !=
+>  		     CLONE_ARGS_SIZE_VER2);
+> -	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER2);
+> +	BUILD_BUG_ON(offsetofend(struct clone_args, shadow_stack_size) !=
+> +		     CLONE_ARGS_SIZE_VER3);
+> +	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER3);
+>  
+>  	if (unlikely(usize > PAGE_SIZE))
+>  		return -E2BIG;
+> @@ -3110,6 +3112,7 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
+>  		.tls		= args.tls,
+>  		.set_tid_size	= args.set_tid_size,
+>  		.cgroup		= args.cgroup,
+> +		.shadow_stack_size	= args.shadow_stack_size,
+
+Mild personal ocd: Can you keep the all aligned, please?
+
+>  	};
+>  
+>  	if (args.set_tid &&
+> @@ -3150,6 +3153,21 @@ static inline bool clone3_stack_valid(struct kernel_clone_args *kargs)
+>  	return true;
+>  }
+>  
+> +/**
+> + * clone3_shadow_stack_valid - check and prepare shadow stack
+> + * @kargs: kernel clone args
+> + *
+> + * Verify that shadow stacks are only enabled if supported.
+> + */
+> +static inline bool clone3_shadow_stack_valid(struct kernel_clone_args *kargs)
+> +{
+> +	if (!kargs->shadow_stack_size)
+> +		return true;
+> +
+> +	/* The architecture must check support on the specific machine */
+> +	return IS_ENABLED(CONFIG_ARCH_HAS_USER_SHADOW_STACK);
+> +}
+> +
+>  static bool clone3_args_valid(struct kernel_clone_args *kargs)
+>  {
+>  	/* Verify that no unknown flags are passed along. */
+> @@ -3172,7 +3190,7 @@ static bool clone3_args_valid(struct kernel_clone_args *kargs)
+>  	    kargs->exit_signal)
+>  		return false;
+>  
+> -	if (!clone3_stack_valid(kargs))
+> +	if (!clone3_stack_valid(kargs) || !clone3_shadow_stack_valid(kargs))
+>  		return false;
+>  
+>  	return true;
+> 
+> -- 
+> 2.30.2
+> 
