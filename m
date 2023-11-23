@@ -2,102 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6CD7F5D34
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87FA7F5D38
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344903AbjKWLC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
+        id S1344898AbjKWLFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:05:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbjKWLCw (ORCPT
+        with ESMTP id S229542AbjKWLFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:02:52 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6C6D67;
-        Thu, 23 Nov 2023 03:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1700737362;
-        bh=uqbk3lyeqSjwPRhuNVxLOm4uc+e6PUbNsNGKGUbeIeg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=iyceZfyQVViQ82WYOcVcZ3y8up/cjELd3RnGCnxCtDVEh/Zdegj+Tdx+Q6R9CdMR2
-         ufdh6WYHbLsidP6MHaX27LNzygxAa4UQG3lxH0RJrtLXsxNggd3NFS67DNAra/5yzJ
-         KtKZLWiLvuPFOaEQkqAZPXsfRceh7q/qS5GjjygijnLUR8AJgn++JFpcba1aH+Lp4x
-         Kvgnz9wzcGN5Jff6NgAhZ/Gn2c1ZnP34y/764x88gSJC9YFj4o9kPHjN2KmXTmrpow
-         HxbkjRbzEXlnzxSSvNVHJFxcL8aZ1mW9BoNz0iKYg0a1gnQBAoJv0ivTtNGxXgXByd
-         0dtv+xpjv7WHA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SbZvh2jNPz4xRn;
-        Thu, 23 Nov 2023 22:02:40 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Zhao Ke <ke.zhao@shingroup.cn>
-Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, shenghui.qu@shingroup.cn,
-        luming.yu@shingroup.cn, dawei.li@shingroup.cn
-Subject: Re: [PATCH v1] powerpc: Add PVN support for HeXin C2000 processor
-In-Reply-To: <2023112317-ebook-dreamless-0cfe@gregkh>
-References: <20231123093611.98313-1-ke.zhao@shingroup.cn>
- <2023112317-ebook-dreamless-0cfe@gregkh>
-Date:   Thu, 23 Nov 2023 22:02:35 +1100
-Message-ID: <871qcgspf8.fsf@mail.lhotse>
+        Thu, 23 Nov 2023 06:05:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A814BA
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:05:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C85C433C7;
+        Thu, 23 Nov 2023 11:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700737521;
+        bh=kmSnZk3RczC2wW7hFftznkdHr9ZkDg70PDOUA+ZVjaE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M9YhBGVoZhY2hbzM62ATfyVt/7tQ/oQ/qZpdbJ2qea36LpolKDbmowhX0AC5g7lLk
+         sieaJZf1+aJIe6RlnZFwpUWbe/PNidPyvX1032SN/Lwqzuba5orpijIZqVQRxHnO8W
+         LRftkoW7bXxIrXatQbuFQGzAdw2elNRJIxC3rIjn2qQVQcfC9JkzCiX6xGNFCITeE3
+         AOg4JIWtddSPTOo6FzQGoFztM6o4Hy4i/nts34VgnTPpGB8h4PDw8YDdN3d0w6RELS
+         lnxhloqHqGtyXUCmF3Imyl4OpgK7uvUX4NtIedFziLAPEYOAuGarmedGM1FejKTB+G
+         xC85zbozSZrPA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rich Felker <dalias@libc.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Richard Weinberger <richard@nod.at>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v3 0/6] Treewide: enable -Wmissing-prototypes
+Date:   Thu, 23 Nov 2023 12:05:00 +0100
+Message-Id: <20231123110506.707903-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> writes:
-> On Thu, Nov 23, 2023 at 05:36:11PM +0800, Zhao Ke wrote:
->> HeXin Tech Co. has applied for a new PVN from the OpenPower Community
->> for its new processor C2000. The OpenPower has assigned a new PVN
->> and this newly assigned PVN is 0x0066, add pvr register related
->> support for this PVN.
->> 
->> Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
->> Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
->> ---
->> 	v0 -> v1:
->> 	- Fix .cpu_name with the correct description
->> ---
->> ---
->>  arch/powerpc/include/asm/reg.h            |  1 +
->>  arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
->>  arch/powerpc/kvm/book3s_pr.c              |  1 +
->>  arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
->>  arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
->>  drivers/misc/cxl/cxl.h                    |  3 ++-
->>  6 files changed, 23 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
->> index 4ae4ab9090a2..7fd09f25452d 100644
->> --- a/arch/powerpc/include/asm/reg.h
->> +++ b/arch/powerpc/include/asm/reg.h
->> @@ -1361,6 +1361,7 @@
->>  #define PVR_POWER8E	0x004B
->>  #define PVR_POWER8NVL	0x004C
->>  #define PVR_POWER8	0x004D
->> +#define PVR_HX_C2000	0x0066
->>  #define PVR_POWER9	0x004E
->>  #define PVR_POWER10	0x0080
->>  #define PVR_BE		0x0070
->
-> Why is this not in sorted order?
+From: Arnd Bergmann <arnd@arndb.de>
 
-It's semantically sorted :D
+Hi Andrew,
 
-ie. HX_C2000 is most similar to POWER8, but is newer than it.
+I think all other patches I have sent for -Wmissing-prototypes have made it
+into linux-next by now, these ones either got an Ack from the respective
+maintainers, or never got a reply. I just merged a few patches from my
+previous series into the asm-generic tree, these are not in linux-next
+today but should be for the next next. I also resent the powerpc patches
+to make sure they get merged soon.
 
-PVR_BE is out of place, I'll fix that.
+Can you pick these six up into -mm for v6.8?
 
-cheers
+Quoting from my description to patch 6/6:
+  "At this point, there are five architectures with a number of known
+   regressions: alpha, nios2, mips, sh and sparc. In the previous version
+   of this patch, I had turned off the missing prototype warnings for the 15
+   architectures that still had issues, but since there are only five left,
+   I think we can leave the rest to the maintainers (Cc'd here) as well."
+
+The series is also likely to cause occasional build regressions on linux-next
+as developers add new code that misses prototypes. Hopefully this should
+be resolved by the time the patches make it into a release and everyone
+gets the warnings right away.
+
+    Arnd
+
+Arnd Bergmann (6):
+  ida: make 'ida_dump' static
+  jffs2: mark __jffs2_dbg_superblock_counts() static
+  sched: fair: move unused stub functions to header
+  x86: sta2x11: include header for sta2x11_get_instance() prototype
+  usb: fsl-mph-dr-of: mark fsl_usb2_mpc5121_init() static
+  Makefile.extrawarn: turn on missing-prototypes globally
+
+ arch/x86/pci/sta2x11-fixup.c     |  1 +
+ drivers/usb/host/fsl-mph-dr-of.c |  2 +-
+ fs/jffs2/debug.c                 |  2 +-
+ kernel/sched/fair.c              | 13 -------------
+ kernel/sched/sched.h             | 11 +++++++++++
+ lib/test_ida.c                   |  2 +-
+ scripts/Makefile.extrawarn       |  4 ++--
+ 7 files changed, 17 insertions(+), 18 deletions(-)
+
+-- 
+2.39.2
+
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: x86@kernel.org
