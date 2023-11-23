@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43087F5C0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F537F5C11
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344360AbjKWKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        id S235154AbjKWKQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:16:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKWKQJ (ORCPT
+        with ESMTP id S234620AbjKWKQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:16:09 -0500
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCE79F;
-        Thu, 23 Nov 2023 02:16:13 -0800 (PST)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id 4ED651A1F9E;
-        Thu, 23 Nov 2023 11:16:10 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1700734570; bh=IdlZbZ9FL5iny9zKRN7ZMCUL5Jenf+2OfYnJsvJqcig=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DDPSK0lGkfZJHOQZNuLlkLCLbHz1wjzqVXLySg3Q8z8v7t5gijyPAbAiww7BW4rQr
-         X2EHNtMdFNvELQGkgNrK29IfFgUDgjQUmz9dd+wWZuWnxYFT9HUPPY/tIjAr/4Z7Al
-         LCbuCRwmyx01ek0FkLAGYG8vqjsa3KscngzQWmOLXmSMp5woK+anXKMYENadtfWAxO
-         4mvc7VDKq40/5hTwubz8kifMxUhkDWkl8oEpJYxKuIkSGXypzDhcoE9I4CU5hYWWQ1
-         4JPUyw025ZJ6Qux1IpbkqUH/wC+OyAm2Y3txJyL3Mm0XJYDyM6WznR/dLWgi1+vEqY
-         AdxDvgM/iHMNg==
-Date:   Thu, 23 Nov 2023 11:16:08 +0100
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Jianxiong Gao <jxgao@google.com>
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Message-ID: <20231123111608.17727968@meshulam.tesarici.cz>
-In-Reply-To: <20231108101347.77cab795@meshulam.tesarici.cz>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
-        <20231103171447.02759771.pasic@linux.ibm.com>
-        <20231103214831.26d29f4d@meshulam.tesarici.cz>
-        <20231107182420.0bd8c211.pasic@linux.ibm.com>
-        <20231108101347.77cab795@meshulam.tesarici.cz>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Thu, 23 Nov 2023 05:16:42 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A047FD62;
+        Thu, 23 Nov 2023 02:16:45 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AN6l0Ll006611;
+        Thu, 23 Nov 2023 04:16:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=Ufd5pw5Di+iMf5j
+        O8XXprPxu8mrSlk4TCzLJhhSyc9k=; b=YAmd5uyRTBZLydJZNSh7a5Sz4FmNMfq
+        a9lhs8rTI9ohwLrPwsrN5tR1TJ7SUhqIaBTqO1Vot7ky8p06JBhkMqFXScO/9j70
+        cCBnw3+YznIisa2PcWFa/dZJXEjXiGoMfEntmpDOIxBoQ1FNzPt1XFxHZx1h6fBe
+        uKkjRD4oSy71z1XXP9yqYyebQ86YrRssBvLT4kCxVJEKLQvDBjBMLKUkLCyBrX4y
+        /04WT46WtR25uR8j8PmYWUYpyTgvuS0JRSDPwzCvr7gozxC/c01TF7J1LthbC051
+        0G3YEssrNNuj3lSNAdSp2+PZmVx6ApcZy30+OxbvngFOThHK3wBuEPA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uetjpdkgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 04:16:38 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 23 Nov
+ 2023 10:16:36 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Thu, 23 Nov 2023 10:16:36 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D1DB915B4;
+        Thu, 23 Nov 2023 10:16:36 +0000 (UTC)
+Date:   Thu, 23 Nov 2023 10:16:36 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-ID: <20231123101636.GN32655@ediswmail.ad.cirrus.com>
+References: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: hxzEozEIxy2CRk1PkWzNY4DNHDyME87-
+X-Proofpoint-ORIG-GUID: hxzEozEIxy2CRk1PkWzNY4DNHDyME87-
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everybody,
+On Thu, Nov 23, 2023 at 09:06:58AM +0000, Maciej Strozek wrote:
+> Add a polling mechanism that will keep the driver operational even in
+> absence of physical IRQ connection. If IRQ line is detected, the driver
+> will continue working as usual, in case of missing IRQ line it will
+> fallback to the polling mechanism introduced in this change.
+> This will support users which choose not to connect an IRQ line as it
+> is not critical to part's operation.
+> 
+> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> ---
 
-I don't think I have ever seen an answer to my question regarding
-alignment constraints on swiotlb bounce buffers:
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-On Wed, 8 Nov 2023 10:13:47 +0100
-Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> wrote:
-
->[...]
-> To sum it up, there are two types of alignment:
->=20
-> 1. specified by a device's min_align_mask; this says how many low
->    bits of a buffer's physical address must be preserved,
->=20
-> 2. specified by allocation size and/or the alignment parameter;
->    this says how many low bits in the first IO TLB slot's physical
->    address must be zero.
->=20
-> I hope somebody can confirm or correct this summary before I go
-> and break something. You know, it's not like cleanups in SWIOTLB
-> have never broken anything.  ;-)
-
-If no answer means that nobody knows, then based on my understanding the
-existing code (both implementation and users), I can assume that this
-is the correct interpretation.
-
-I'm giving it a few more days. If there's still no reaction, expect a
-beautiful documentation patch and a less beautiful cleanup patch in the
-next week.
-
-Petr T
+Thanks,
+Charles
