@@ -2,302 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A3F7F56CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDFB7F56D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344590AbjKWDK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 22:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
+        id S1344389AbjKWDMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 22:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344449AbjKWDKV (ORCPT
+        with ESMTP id S232615AbjKWDMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 22:10:21 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57A23D48;
-        Wed, 22 Nov 2023 19:10:24 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id E4D7020B74C4; Wed, 22 Nov 2023 19:10:23 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E4D7020B74C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1700709023;
-        bh=zge+TQFwXGx9zNXcHD09zsfe5McbZNNhO/IEkAckKVM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iAFN63n9SE1RgVIab3JOrK9ll9qHaKIFkOz8tMFxWp5qDGZ71cWZNOmRwkCZtwU4p
-         g4xt8dsaR53C75JBszyExnLp4fmqRQaVt18Gou3A5SMDCQu6VUbjtTO/rvF9foc92P
-         qwEYH83jEIwPXG5OOQkt3vDC26G3laTw4DSzG0SU=
-From:   longli@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Long Li <longli@microsoft.com>
-Subject: [Patch v1 4/4] RDMA/mana_ib: query device capabilities
-Date:   Wed, 22 Nov 2023 19:10:10 -0800
-Message-Id: <1700709010-22042-5-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1700709010-22042-1-git-send-email-longli@linuxonhyperv.com>
-References: <1700709010-22042-1-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 22 Nov 2023 22:12:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FA319D;
+        Wed, 22 Nov 2023 19:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700709133; x=1732245133;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mSKD3BunRLxqAt/sN5FuFA7OLE8wOF1ps3cvzngk/nc=;
+  b=ToxWiljGHdBONZD/z6zLyFQXHweCtATIU81iXTdr3f5xRsWAI4aoByeL
+   sXxW40NigVuuniuVNcYQA9ocR7UoP0PG+d35vEz5V8iVao/LkvIbihnpf
+   Utc1Z2gk6dYeBDIzxNQEIfCPTxLjoNPfXdqrVQ82mHhKNzX+6no4/1cMV
+   VHjSvO8O+9SfcZ7tzSOgAx62GOOJbPg6PsomOQT8tgbEpAumiCMH9j3O2
+   bxEyAT+E9hxIaW+IEQLMjmYfHs2vilcrd5IAXPp5XiGgvhURdB9IarXW2
+   wMB5zYZoOzA1Wgq+LDPGHNvhYtNjkxmSkIXK94FBET+AyUsys+s3KQpe3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="13744876"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="13744876"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 19:12:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="8712747"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Nov 2023 19:12:10 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r608O-00019o-0t;
+        Thu, 23 Nov 2023 03:12:08 +0000
+Date:   Thu, 23 Nov 2023 11:11:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     SungHwan Jung <onenowy@gmail.com>, "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     oe-kbuild-all@lists.linux.dev, SungHwan Jung <onenowy@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] platform/x86: acer-wmi: add fan speed monitoring
+ for Predator PHN16-71
+Message-ID: <202311230750.psygl1ot-lkp@intel.com>
+References: <20231122065534.3668-3-onenowy@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122065534.3668-3-onenowy@gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+Hi SungHwan,
 
-With RDMA device handle created, use it to query on hardware capabilities
-and cache this information for future query requests to the driver.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/cq.c      |  2 +-
- drivers/infiniband/hw/mana/device.c  |  6 +++
- drivers/infiniband/hw/mana/main.c    | 59 +++++++++++++++++++++++-----
- drivers/infiniband/hw/mana/mana_ib.h | 51 ++++++++++++++++++++++++
- drivers/infiniband/hw/mana/qp.c      |  6 ++-
- include/net/mana/gdma.h              |  1 +
- 6 files changed, 112 insertions(+), 13 deletions(-)
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7-rc2 next-20231122]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index d141cab8a1e6..71064f17c235 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -26,7 +26,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		return err;
- 	}
- 
--	if (attr->cqe > MAX_SEND_BUFFERS_PER_QUEUE) {
-+	if (attr->cqe > mdev->adapter_caps.max_requester_sq_size) {
- 		ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
- 		return -EINVAL;
- 	}
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 5e5aa75230c2..06f53df072bb 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -99,6 +99,12 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		goto free_error_eq;
- 	}
- 
-+	ret = mana_ib_query_adapter_caps(dev);
-+	if (ret) {
-+		ibdev_dbg(&dev->ib_dev, "Failed to get device caps");
-+		goto destroy_adapter;
-+	}
-+
- 	ret = ib_register_device(&dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 4f4343d14041..bf27fa395a67 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -486,18 +486,14 @@ int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
- int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
- 			 struct ib_udata *uhw)
- {
--	props->max_qp = MANA_MAX_NUM_QUEUES;
--	props->max_qp_wr = MAX_SEND_BUFFERS_PER_QUEUE;
--
--	/*
--	 * max_cqe could be potentially much bigger.
--	 * As this version of driver only support RAW QP, set it to the same
--	 * value as max_qp_wr
--	 */
--	props->max_cqe = MAX_SEND_BUFFERS_PER_QUEUE;
-+	struct mana_ib_dev *dev = container_of(ibdev,
-+			struct mana_ib_dev, ib_dev);
- 
-+	props->max_qp = dev->adapter_caps.max_qp_count;
-+	props->max_qp_wr = dev->adapter_caps.max_requester_sq_size;
-+	props->max_cqe = dev->adapter_caps.max_requester_sq_size;
-+	props->max_mr = dev->adapter_caps.max_mr_count;
- 	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
--	props->max_mr = MANA_IB_MAX_MR;
- 	props->max_send_sge = MAX_TX_WQE_SGL_ENTRIES;
- 	props->max_recv_sge = MAX_RX_WQE_SGL_ENTRIES;
- 
-@@ -624,3 +620,46 @@ int mana_ib_create_error_eq(struct mana_ib_dev *dev)
- 
- 	return 0;
- }
-+
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *dev)
-+{
-+	struct mana_ib_query_adapter_caps_resp resp = {};
-+	struct mana_ib_query_adapter_caps_req req = {};
-+	struct mana_ib_adapter_caps *caps = &dev->adapter_caps;
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_GET_ADAPTER_CAP, sizeof(req),
-+			     sizeof(resp));
-+	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
-+	req.hdr.dev_id = dev->gdma_dev->dev_id;
-+
-+	err = mana_gd_send_request(dev->gdma_dev->gdma_context, sizeof(req),
-+				   &req, sizeof(resp), &resp);
-+
-+	if (err) {
-+		ibdev_err(&dev->ib_dev,
-+			  "Failed to query adapter caps err %d", err);
-+		return err;
-+	}
-+
-+	caps->max_sq_id = resp.max_sq_id;
-+	caps->max_rq_id = resp.max_rq_id;
-+	caps->max_cq_id = resp.max_cq_id;
-+	caps->max_qp_count = resp.max_qp_count;
-+	caps->max_cq_count = resp.max_cq_count;
-+	caps->max_mr_count = resp.max_mr_count;
-+	caps->max_pd_count = resp.max_pd_count;
-+	caps->max_inbound_read_limit = resp.max_inbound_read_limit;
-+	caps->max_outbound_read_limit = resp.max_outbound_read_limit;
-+	caps->mw_count = resp.mw_count;
-+	caps->max_srq_count = resp.max_srq_count;
-+	caps->max_requester_sq_size = resp.max_requester_sq_size;
-+	caps->max_responder_sq_size = resp.max_responder_sq_size;
-+	caps->max_requester_rq_size = resp.max_requester_rq_size;
-+	caps->max_responder_rq_size = resp.max_responder_rq_size;
-+	caps->max_inline_data_size = resp.max_inline_data_size;
-+	caps->max_send_wqe_size = MAX_TX_WQE_SGL_ENTRIES;
-+	caps->max_recv_wqe_size = MAX_RX_WQE_SGL_ENTRIES;
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 4286caf0d67c..d7a56b075fbc 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -27,11 +27,33 @@
-  */
- #define MANA_IB_MAX_MR		0xFFFFFFu
- 
-+struct mana_ib_adapter_caps {
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+};
-+
- struct mana_ib_dev {
- 	struct ib_device ib_dev;
- 	struct gdma_dev *gdma_dev;
- 	struct gdma_queue *fatal_err_eq;
- 	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
- 	struct xarray rq_to_qp_lookup_table;
- };
- 
-@@ -96,6 +118,7 @@ struct mana_ib_rwq_ind_table {
- };
- 
- enum mana_ib_command_code {
-+	MANA_IB_GET_ADAPTER_CAP = 0x30001,
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
- };
-@@ -120,6 +143,32 @@ struct mana_ib_destroy_adapter_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_ib_query_adapter_caps_req {
-+	struct gdma_req_hdr hdr;
-+}; /*HW Data */
-+
-+struct mana_ib_query_adapter_caps_resp {
-+	struct gdma_resp_hdr hdr;
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+}; /* HW Data */
-+
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 				 mana_handle_t *gdma_region);
- 
-@@ -193,4 +242,6 @@ int mana_ib_create_adapter(struct mana_ib_dev *mdev);
- 
- int mana_ib_destroy_adapter(struct mana_ib_dev *mdev);
- 
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mdev);
-+
- #endif
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 7ff9c8364551..7211e93d999c 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -130,7 +130,8 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		return ret;
- 	}
- 
--	if (attr->cap.max_recv_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
-+	if (attr->cap.max_recv_wr >
-+			mdev->adapter_caps.max_requester_sq_size) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Requested max_recv_wr %d exceeding limit\n",
- 			  attr->cap.max_recv_wr);
-@@ -302,7 +303,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	if (port < 1 || port > mc->num_ports)
- 		return -EINVAL;
- 
--	if (attr->cap.max_send_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
-+	if (attr->cap.max_send_wr >
-+			mdev->adapter_caps.max_requester_sq_size) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Requested max_send_wr %d exceeding limit\n",
- 			  attr->cap.max_send_wr);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index e32c75639557..c1850ec7faae 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -155,6 +155,7 @@ struct gdma_general_req {
- 
- #define GDMA_MESSAGE_V1 1
- #define GDMA_MESSAGE_V2 2
-+#define GDMA_MESSAGE_V3 3
- 
- struct gdma_general_resp {
- 	struct gdma_resp_hdr hdr;
+url:    https://github.com/intel-lab-lkp/linux/commits/SungHwan-Jung/platform-x86-acer-wmi-Add-platform-profile-and-mode-key-support-for-Predator-PHN16-71/20231122-151512
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231122065534.3668-3-onenowy%40gmail.com
+patch subject: [PATCH v2 2/2] platform/x86: acer-wmi: add fan speed monitoring for Predator PHN16-71
+config: x86_64-buildonly-randconfig-004-20231123 (https://download.01.org/0day-ci/archive/20231123/202311230750.psygl1ot-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231123/202311230750.psygl1ot-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311230750.psygl1ot-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: drivers/platform/x86/acer-wmi.o: in function `acer_platform_probe':
+>> acer-wmi.c:(.text+0x27f5): undefined reference to `devm_hwmon_device_register_with_info'
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
