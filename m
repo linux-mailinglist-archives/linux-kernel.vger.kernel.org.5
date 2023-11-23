@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD15B7F5661
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E467F5660
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbjKWCXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 21:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
+        id S235006AbjKWCWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 21:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjKWCXP (ORCPT
+        with ESMTP id S234719AbjKWCWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 21:23:15 -0500
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D52B112;
-        Wed, 22 Nov 2023 18:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-        Content-Type; bh=UlxvLHjBs0+KVhlcvFETRh+wWbRujxcqONaLwY9ZXkY=;
-        b=pOZl2CHy15CILlb/xweooyqCmAppWfRvdwQNMDPqEadI6gqKwPiZphD9h5UR6u
-        eI88+VXUshcG0fwFS2LtIEMRk3QuVvjpCex3rfvHpKl9lMcuQZJplkkVnrvjs9UA
-        TIlSnT0E6/HxLUbqeGfm2TzAUUtnK9wuMP72snhyFeb9M=
-Received: from [172.23.69.7] (unknown [121.32.254.149])
-        by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD3XznVtl5lJaXiCw--.59075S2;
-        Thu, 23 Nov 2023 10:20:07 +0800 (CST)
-Message-ID: <3cfe509b-ca24-47a7-931c-fe620c2dab7c@126.com>
-Date:   Thu, 23 Nov 2023 10:20:03 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net/mlx5e: Fix a race in command alloc flow
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, jackm@dev.mellanox.co.il,
-        ogerlitz@mellanox.com, roland@purestorage.com, eli@mellanox.com,
-        dinghui@sangfor.com.cn, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121115251.588436-1-lishifeng1992@126.com>
- <20231122120245.GC4760@unreal>
-From:   Shifeng Li <lishifeng1992@126.com>
-In-Reply-To: <20231122120245.GC4760@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Wed, 22 Nov 2023 21:22:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4341A8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:22:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB0ADC433C8;
+        Thu, 23 Nov 2023 02:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700706131;
+        bh=JjpRzvqk7rGbitnp+bRWtZKcgw+/OkruS5I8jMUqY14=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gXER3oo2lGXYnylgbw3OWj1qwy+PhijCHuMi0fyzW5Zar4P3X5z8IpqPBaA7nw7rZ
+         hBVTKn//lij7Eelu98gonJqsI6ZSWZLPdixlt8fzn7wq3HWnE7lruzYAA50p/92BBI
+         Ocqzcep/6zqvWjPN2c0OjdCqDEdKqbj3D89+uMp/m7oUhrjLZMiYjROIdtD4Y3gnja
+         y28+lh+RxVkSeB7X+hahBvoVCrU1m9fecHozXJP1Kc5CNSEwgOVLPgsgdg8Y29Ar1n
+         moE4KVgjs2I+5W3IjTt2utMR8AfeQ4KPvqJgoxCzz5QcFIm9ry8Htma7EbUhxGT0HD
+         zq4tlA3a9P5vQ==
+Date:   Thu, 23 Nov 2023 11:22:07 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Petr Malat <oss@malat.biz>,
+        linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] bootconfig: Apply early options from embedded
+ config
+Message-Id: <20231123112207.417b502144a01fc94ad6f87d@kernel.org>
+In-Reply-To: <325042d6-ddd0-4278-a082-9587af77cabe@paulmck-laptop>
+References: <20231121231342.193646-1-oss@malat.biz>
+        <20231121231342.193646-3-oss@malat.biz>
+        <4a67b4bb-d211-4726-8f43-d3f159127dd9@infradead.org>
+        <325042d6-ddd0-4278-a082-9587af77cabe@paulmck-laptop>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _____wD3XznVtl5lJaXiCw--.59075S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGryfAF4xGr45WFy8CFW3KFg_yoW5Cw45pr
-        yxGw47AFn5Krsxtrn7Xw4jq3W8J397Kw15GF1v9r1xWwsaya4kAa4Ikr4jg34UX3yjqa47
-        JayDKFy8Xr4fX3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jeD73UUUUU=
-X-Originating-IP: [121.32.254.149]
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1xgxr153c3k9gwABsN
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 20:02, Leon Romanovsky wrote:
-> On Tue, Nov 21, 2023 at 03:52:51AM -0800, Shifeng Li wrote:
->> Fix a cmd->ent use after free due to a race on command entry.
->> Such race occurs when one of the commands releases its last refcount and
->> frees its index and entry while another process running command flush
->> flow takes refcount to this command entry. The process which handles
->> commands flush may see this command as needed to be flushed if the other
->> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
->> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
->> the spin lock.
->>
->> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
->> [70013.081968]
->> [70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
->> [70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
->> [70013.082028] Workqueue: events aer_isr
->> [70013.082053] Call Trace:
->> [70013.082067]  dump_stack+0x8b/0xbb
->> [70013.082086]  print_address_description+0x6a/0x270
->> [70013.082102]  kasan_report+0x179/0x2c0
->> [70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
->> [70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
->> [70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
->> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
->> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
->> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
->> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
->> [70013.082390]  ? __pm_runtime_resume+0x58/0x70
->> [70013.082409]  pci_device_remove+0xf3/0x280
->> [70013.082426]  ? pcibios_free_irq+0x10/0x10
->> [70013.082439]  device_release_driver_internal+0x1c3/0x470
->> [70013.082453]  pci_stop_bus_device+0x109/0x160
->> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
->> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
->> [70013.082493]  aer_isr+0x7d2/0x960
->> [70013.082510]  ? aer_get_device_error_info+0x420/0x420
->> [70013.082526]  ? __schedule+0x821/0x2040
->> [70013.082536]  ? strscpy+0x85/0x180
->> [70013.082543]  process_one_work+0x65f/0x12d0
->> [70013.082556]  worker_thread+0x87/0xb50
->> [70013.082563]  ? __kthread_parkme+0x82/0xf0
->> [70013.082569]  ? process_one_work+0x12d0/0x12d0
->> [70013.082571]  kthread+0x2e9/0x3a0
->> [70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
->> [70013.082592]  ret_from_fork+0x1f/0x40
-> 
-> I'm curious how did you get this error? I would expect to see some sort
-> of lock in upper level which prevents it.
-> 
-Just inject AER unrecoverable error to pci BDF device corresponding to 
-the network card constantly and I get this error.
+On Wed, 22 Nov 2023 15:38:03 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Thanks
-> Thanks
+> On Wed, Nov 22, 2023 at 02:47:30PM -0800, Randy Dunlap wrote:
+> > Hi--
+> > 
+> > On 11/21/23 15:13, Petr Malat wrote:
+> > > Eliminate all allocations in embedded config handling to allow calling
+> > > it from arch_setup and applying early options.
+> > > 
+> > > Config stored in initrd can't be used for early options, because initrd
+> > > is set up after early options are processed.
+> > > 
+> > > Add this information to the documentation and also to the option
+> > > description.
+> > > 
+> > > Signed-off-by: Petr Malat <oss@malat.biz>
+> > > ---
+> > >  Documentation/admin-guide/bootconfig.rst |   3 +
+> > >  init/Kconfig                             |   4 +-
+> > >  init/main.c                              | 141 ++++++++++++++++++-----
+> > >  lib/bootconfig.c                         |  20 +++-
+> > >  4 files changed, 132 insertions(+), 36 deletions(-)
+> > > 
+> > > diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
+> > > index 91339efdcb54..fb085f696f9b 100644
+> > > --- a/Documentation/admin-guide/bootconfig.rst
+> > > +++ b/Documentation/admin-guide/bootconfig.rst
+> > > @@ -161,6 +161,9 @@ Boot Kernel With a Boot Config
+> > >  There are two options to boot the kernel with bootconfig: attaching the
+> > >  bootconfig to the initrd image or embedding it in the kernel itself.
+> > >  
+> > > +Early options may be specified only in the embedded bootconfig, because
+> > > +they are processed before the initrd.
+> > > +
+> > 
+> > I'm confused by which options are early options. Are they specified or
+> > described somewhere?
+> > How does a user know which options are "early" options?
+> 
+> I don't claim to know the full answer to this question, but those
+> declared with early_param() are ones that I have run into.  There are
+> a few hundred of these.  I believe that there are at least a few more
+> where the parsing is done manually directly out of the buffer, and
+> some of those might well also qualify as "early".
+> 
+> Would it make sense to add an "EARLY" to the long list of restrictions
+> in Documentation/admin-guide/kernel-parameters.rst?
 
+Agreed. For the bootconfig, we need to do this...
+
+BTW, we also need to make a block-list for some early params. some of those
+MUST be passed from the bootloader. E.g. initrd address and size will be
+passed from the bootloader via commandline. Thus such params in the embedded
+bootconfig should be filtered at the build time.
+
+Thank you,
+
+> 
+> 							Thanx, Paul
+> 
+> > >  Attaching a Boot Config to Initrd
+> > >  ---------------------------------
+> > >  
+> > > diff --git a/init/Kconfig b/init/Kconfig
+> > > index 9161d2dbad0c..04de756c935e 100644
+> > > --- a/init/Kconfig
+> > > +++ b/init/Kconfig
+> > > @@ -1310,7 +1310,9 @@ config BOOT_CONFIG
+> > >  	  Extra boot config allows system admin to pass a config file as
+> > >  	  complemental extension of kernel cmdline when booting.
+> > >  	  The boot config file must be attached at the end of initramfs
+> > > -	  with checksum, size and magic word.
+> > > +	  with checksum, size and magic word. Note that early options may
+> > > +	  be specified in the embedded bootconfig only. Early options
+> > > +	  specified in initrd bootconfig will not be applied.
+> > >  	  See <file:Documentation/admin-guide/bootconfig.rst> for details.
+> > >  
+> > >  	  If unsure, say Y.
+> > > diff --git a/init/main.c b/init/main.c
+> > > index 0cd738f7f0cf..9aac59673a3a 100644
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > 
+> > []
+> > 
+> > > +
+> > > +static int __init setup_boot_config_early(void)
+> > >  {
+> > >  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+> > > -	const char *msg, *initrd_data;
+> > > -	int pos, ret;
+> > > -	size_t initrd_size, embeded_size = 0;
+> > > -	char *err, *embeded_data = NULL;
+> > > +	static int prev_rtn __initdata;
+> > > +	struct xbc_node *root, *knode, *vnode;
+> > > +	char *embeded_data, *err;
+> > > +	const char *val, *msg;
+> > > +	size_t embeded_size;
+> > > +	int ret, pos;
+> > 
+> > It hurts my eyes to see "embeded" here.
+> > 
+> > Thanks.
+> > -- 
+> > ~Randy
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
