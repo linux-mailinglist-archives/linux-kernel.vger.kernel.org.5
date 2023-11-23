@@ -2,134 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAEE7F59ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDEF7F59EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344917AbjKWIX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S232769AbjKWIXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234607AbjKWIXz (ORCPT
+        with ESMTP id S229477AbjKWIXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:23:55 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49D4B9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:23:37 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b845ba9ba9so389602b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:23:37 -0800 (PST)
+        Thu, 23 Nov 2023 03:23:40 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1F9D42
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:23:46 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2856254bd74so341621a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700727817; x=1701332617; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1700727826; x=1701332626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R14KQrnkHNFRdO9mhYlsM5M9jjV7l8QM7u5sQXfd9nU=;
-        b=InXb7p0yjbXxPjRdkOpV2nqAxmYbM7Hue+5Z4zOeQ2QFf1EjDkGsCND8lcHuLNXOBk
-         WXvgb5ZqP7sFgmA+3PWfwtJi5ZyXg9SXBUL2sBmn0Z77rHTuPfG8IOuV5YtG9nbMPML8
-         AKUe+EeLMU93tV/lscKSHS/2T8zFOd2Cr/t5APB8miKrUqrRAQs9MLtRpiCHD1mWomfo
-         JRYx/NbLOQVwudZ1LxKOOSi5dib6wRxtYnCMpM5bQh6AsZ5PeSZrCnqGaKCTNWaPpaXH
-         5NcbOjTkOAiJ2sFogQp0hrF92mrpLcwC69Wuz+YfaTmoQiBbLeezqwlYuvI2kEaqOr0S
-         CJmQ==
+        bh=gxyQvllrMD+S9nUR2i6XqgEe1Uz/MXq2oi0l9PmN/sI=;
+        b=YwNiy1T7grxEyt7Xng/CF/khp7hKSiJOPq8+ISS7jrggHEkeVI4+U5yXPVbKODTCUY
+         GHAGIpA8eqVFeCLBwiwAem5PgAbEA79j6sMpL+6LciKiV/WbFK7TNY8DEqECZpuS4EsP
+         EPwK3plzbk/yRQD/Uccbcb0SAVyBorQnpYoadIkVQse6tGjH0SEPt/BcIUGM0OEGyyIZ
+         4FInmJ3ey/z9SE8npeQ8PXBSxxAlceFLup/3RlUNc4w8+lgcgrqufy2HP0lFrqX8VQp1
+         c5RBN9NyCDYm0v4oDLnJfMcD6jHFtb/9VZlPQk4Z3/4mbHDyY7YTcU1oj57wPOchy8GM
+         uRjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700727817; x=1701332617;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700727826; x=1701332626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R14KQrnkHNFRdO9mhYlsM5M9jjV7l8QM7u5sQXfd9nU=;
-        b=g8NXGS5XFhCuvyc1E6/9iWDmDPgznXQ4fP+f2eqlrIlBUS+1p8QdxsLw8H+Wvf7tvx
-         T7Hf77lYv5x+neFrwIS8AZU89zgqmJCs5r2Solzi535NzpdNWxRNHLycZbKyvS7XfohR
-         3brj7Ad0YBlJJKUKFrmpG0JLz+gFdNXLAkqxusZD+N/s4ujB1AxVUMXcTuSd5sB6vIc2
-         ep6QSlEqtVrzBJcp/J2s0T4dXP6AlpqojgxofbMV+ukUECZLg/hIvW5Ie7eav52uFRjV
-         VRZW+E2rpeE8uaTAQD43d8bclOPLOFHixLGWzMzDOouA83538NUynfDGPhMIDkTeRG6d
-         B+cQ==
-X-Gm-Message-State: AOJu0YwtlDCqMeT/ZXCA5NBQaRzCnEalYYWIgJ9HG0QmZWYshxyoMdTH
-        qVtU25bzB1Tchkj7G5PUvB+0gQ==
-X-Google-Smtp-Source: AGHT+IGPcLJ1KgHuH7jtX+GxplyfsA3kfJcfi1kWnHtlfZ+0Pnp0NwJ/f30Bs0VvEvvBNIwASZLvXw==
-X-Received: by 2002:a05:6808:996:b0:3a7:55f2:552d with SMTP id a22-20020a056808099600b003a755f2552dmr5118500oic.58.1700727816986;
-        Thu, 23 Nov 2023 00:23:36 -0800 (PST)
-Received: from localhost.localdomain ([203.208.189.13])
-        by smtp.gmail.com with ESMTPSA id v25-20020a62a519000000b006b76cb6523dsm689239pfm.165.2023.11.23.00.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 00:23:35 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     akpm@linux-foundation.org
-Cc:     dianders@chromium.org, kernelfans@gmail.com,
-        lecopzer.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, pmladek@suse.com, lizhe.67@bytedance.com
-Subject: Re: [PATCH v2] softlockup: serialized softlockup's log
-Date:   Thu, 23 Nov 2023 16:23:28 +0800
-Message-Id: <20231123082328.7671-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20231122140521.85c66b789625e8d270722b3c@linux-foundation.org>
-References: <20231122140521.85c66b789625e8d270722b3c@linux-foundation.org>
+        bh=gxyQvllrMD+S9nUR2i6XqgEe1Uz/MXq2oi0l9PmN/sI=;
+        b=DPLwFU7Bgryb95JQrujiY/qq+58OeYxdha7OWC0J4MbCZExTgchvYfzMZXv58QSvs5
+         YFFrjkaBW/cwGKTasn2PalBuCeZ7dlENXKzd1JYxGlqfbrXYEzR9HAdkMc3jZ21jbdHN
+         N8z6TGNh7kD5A6o4LW2EJxAeTbk5TI6axgFfrSnQBv6Jfi7mWA3KQUHcW5mh2H8iwtJk
+         zblgrFxN2H7EKfkoEKRE9JQMFNZsY8pW8NBS2gkyATFKETVhR45zARa30LSapfTNla67
+         MT9Uy7mSvl/aw3dKxvHiX9tpzoLziyo5GR+zBlwYIowKX8YH3sdkjcpeBsOw8hS7WN43
+         4qUw==
+X-Gm-Message-State: AOJu0Yzzk36cvvPXos2yzQiWUWK9FSBLppm4Ddjz91kaA7Vy9cpur7im
+        eyzowaQ7kEPR7R72qpY4Kmm/noPYl0z4tnoj08oqlQ==
+X-Google-Smtp-Source: AGHT+IFi7qsrLCSSOcApqa1ERtzIeHUoDbf3aFgi2HK5T0smIgc+93Gp6aWh+OLekkrorVduK4kKcUAuqv35kcpbqDE=
+X-Received: by 2002:a17:90b:3803:b0:27d:882f:e6c5 with SMTP id
+ mq3-20020a17090b380300b0027d882fe6c5mr4440955pjb.9.1700727825600; Thu, 23 Nov
+ 2023 00:23:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+References: <20231123073652.507034-1-bhe@redhat.com> <20231123073652.507034-2-bhe@redhat.com>
+In-Reply-To: <20231123073652.507034-2-bhe@redhat.com>
+From:   Ignat Korchagin <ignat@cloudflare.com>
+Date:   Thu, 23 Nov 2023 08:23:34 +0000
+Message-ID: <CALrw=nEO3A2MPeSXhO3=cPdrAFB07sQcnjNN5V5jj2YcqAZ+bQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        akpm@linux-foundation.org, eric_devolder@yahoo.com,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 14:05:21 -0800 akpm@linux-foundation.org wrote:
-
->> From: Li Zhe <lizhe.67@bytedance.com>
->> 
->> If multiple CPUs trigger softlockup at the same time with
->> 'softlockup_all_cpu_backtrace=0', the softlockup's logs will appear
->> staggeredly in dmesg, which will affect the viewing of the logs for
->> developer. Since the code path for outputting softlockup logs is not
->> a kernel hotspot and the performance requirements for the code are
->> not strict, locks are used to serialize the softlockup log output to
->> improve the readability of the logs.
+On Thu, Nov 23, 2023 at 7:37=E2=80=AFAM Baoquan He <bhe@redhat.com> wrote:
 >
->Seems reasonable, but...
+> Ignat Korchagin complained that a potential config regression was
+> introduced by commit 89cde455915f ("kexec: consolidate kexec and
+> crash options into kernel/Kconfig.kexec"). Before the commit,
+> CONFIG_CRASH_DUMP has no dependency on CONFIG_KEXEC. After the commit,
+> CRASH_DUMP selects KEXEC. That enforces system to have CONFIG_KEXEC=3Dy
+> as long as CONFIG_CRASH_DUMP=3DY which people may not want.
 >
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -28,6 +28,8 @@
->>  #include <linux/kvm_para.h>
->>  
->>  static DEFINE_MUTEX(watchdog_mutex);
->> +/* This lock is used to prevent concurrent actions of softlockup output logs */
->> +static DEFINE_SPINLOCK(watchdog_output_lock);
+> In Ignat's case, he sets CONFIG_CRASH_DUMP=3Dy, CONFIG_KEXEC_FILE=3Dy and
+> CONFIG_KEXEC=3Dn because kexec_load interface could have security issue i=
+f
+> kernel/initrd has no chance to be signed and verified.
 >
->It would be a little neater to reduce the scope of this - move the
->definition into that little code block in watchdog_timer_fn() where it
->is actually used.
-
-Yes. For this patch, it is more appropriate to put the definition in
-watchdog_timer_fn(). It can be moved out in subsequent patches if
-necessary. I will send a v3 patch to move it in watchdog_timer_fn().
-Thanks for your advice.
-
->>  #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HARDLOCKUP_DETECTOR_SPARC64)
->>  # define WATCHDOG_HARDLOCKUP_DEFAULT	1
->> @@ -514,6 +516,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->>  		/* Start period for the next softlockup warning. */
->>  		update_report_ts();
->>  
->> +		spin_lock(&watchdog_output_lock);
+> CRASH_DUMP has select of KEXEC because Eric, author of above commit,
+> met a LKP report of build failure when posting patch of earlier version.
+> Please see below link to get detail of the LKP report:
 >
->The hrtimer callout function is called from [soft]irq context, yes? 
-
-Yes.
-
->Doesn't lockdep get upset when we take a spinlock in such a context?
-
-My test results are the same as Doug Anderson's, things seemed OK.
-
+>     https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@orac=
+le.com/T/#u
 >
->>  		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
->>  			smp_processor_id(), duration,
->>  			current->comm, task_pid_nr(current));
->> @@ -523,6 +526,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->>  			show_regs(regs);
->>  		else
->>  			dump_stack();
->> +		spin_unlock(&watchdog_output_lock);
->>  
->>  		if (softlockup_all_cpu_backtrace) {
->>  			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
+> In fact, that LKP report is triggered because arm's <asm/kexec.h> is
+> wrapped in CONFIG_KEXEC ifdeffery scope. That is wrong. CONFIG_KEXEC
+> controls the enabling/disabling of kexec_load interface, but not kexec
+> feature. Removing the wrongly added CONFIG_KEXEC ifdeffery scope in
+> <asm/kexec.h> of arm allows us to drop the select KEXEC for CRASH_DUMP.
+
+Hm... With the patch, when cross compiling for arm and
+CONFIG_KEXEC_CORE=3Dy
+# CONFIG_KEXEC is not set
+CONFIG_CRASH_DUMP=3Dy
+
+I get the following linker error at the end:
+
+  CALL    scripts/checksyscalls.sh
+  UPD     include/generated/utsversion.h
+  CC      init/version-timestamp.o
+  LD      .tmp_vmlinux.kallsyms1
+arm-linux-gnueabi-ld: kernel/kexec_core.o: in function `kimage_free':
+kexec_core.c:(.text+0xf5c): undefined reference to `machine_kexec_cleanup'
+arm-linux-gnueabi-ld: kernel/kexec_core.o: in function `__crash_kexec':
+kexec_core.c:(.text+0x15bc): undefined reference to `machine_crash_shutdown=
+'
+arm-linux-gnueabi-ld: kexec_core.c:(.text+0x15c4): undefined reference
+to `machine_kexec'
+arm-linux-gnueabi-ld: kernel/kexec_core.o: in function `kernel_kexec':
+kexec_core.c:(.text+0x1a04): undefined reference to `machine_kexec'
+make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
+make[1]: *** [/home/ignat/git/linux-upstream/Makefile:1154: vmlinux] Error =
+2
+make: *** [Makefile:234: __sub-make] Error 2
+
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/arm/include/asm/kexec.h | 4 ----
+>  kernel/Kconfig.kexec         | 1 -
+>  2 files changed, 5 deletions(-)
+>
+> diff --git a/arch/arm/include/asm/kexec.h b/arch/arm/include/asm/kexec.h
+> index e62832dcba76..a8287e7ab9d4 100644
+> --- a/arch/arm/include/asm/kexec.h
+> +++ b/arch/arm/include/asm/kexec.h
+> @@ -2,8 +2,6 @@
+>  #ifndef _ARM_KEXEC_H
+>  #define _ARM_KEXEC_H
+>
+> -#ifdef CONFIG_KEXEC
+> -
+>  /* Maximum physical address we can use pages from */
+>  #define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
+>  /* Maximum address we can reach in physical address mode */
+> @@ -82,6 +80,4 @@ static inline struct page *boot_pfn_to_page(unsigned lo=
+ng boot_pfn)
+>
+>  #endif /* __ASSEMBLY__ */
+>
+> -#endif /* CONFIG_KEXEC */
+> -
+>  #endif /* _ARM_KEXEC_H */
+> diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+> index 7aff28ded2f4..1cc3b1c595d7 100644
+> --- a/kernel/Kconfig.kexec
+> +++ b/kernel/Kconfig.kexec
+> @@ -97,7 +97,6 @@ config CRASH_DUMP
+>         depends on ARCH_SUPPORTS_KEXEC
+>         select CRASH_CORE
+>         select KEXEC_CORE
+> -       select KEXEC
+>         help
+>           Generate crash dump after being started by kexec.
+>           This should be normally only set in special crash dump kernels
+> --
+> 2.41.0
+>
