@@ -2,45 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10007F55EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9577F55ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjKWBdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 20:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        id S232201AbjKWBef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 20:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWBdM (ORCPT
+        with ESMTP id S229453AbjKWBec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 20:33:12 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 7436912A;
-        Wed, 22 Nov 2023 17:33:17 -0800 (PST)
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id D4D2F6027E05F;
-        Thu, 23 Nov 2023 09:33:06 +0800 (CST)
-Message-ID: <a9032c3a-8221-11fb-ed15-2c57c3933d28@nfschina.com>
-Date:   Thu, 23 Nov 2023 09:33:06 +0800
+        Wed, 22 Nov 2023 20:34:32 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A200711F
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:34:38 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77d6f853ba0so35413085a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:34:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700703278; x=1701308078; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FVvQm7dNdcrEw+By/HnAz+p8UyFgjuaek7oRs10lPJY=;
+        b=GdL6/VlN7tTsAvSXSMeqcyi4qeYwx513sH2bpcKD5XY2fbQBZwe8Ib2mLPeqX+GvQS
+         ljgVSzwAe1X/upLY1mymTowYH15xz1G4JduBmDfTx6vc6s/47a9XkLv+KpBjSV+YHH3p
+         0dYjDmcDgwxMFyA3WfVNH2TtoqM1I4ZHgsodSRBEUZu3786HkEnByhamZ6bIzCJWSL/N
+         FKMAjOVl8k4qt6wfwOYcwm3uMY9DC+dTd+f2I2gIobT8oQBwcY74vRPc8Lo0AhLxWlLT
+         +T6L8rahZSeH+IeFCGm4ObDBLS9EdLSwSu2j/++dUFjupM6PhzixNbMcv0VB4ax5zjWJ
+         TopQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700703278; x=1701308078;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FVvQm7dNdcrEw+By/HnAz+p8UyFgjuaek7oRs10lPJY=;
+        b=WhCihjA4HmjBWL5A7OYPsEwgs34N4H7g+76Q+CF+d2tCKn0OGVXIrI9UaGbOCwhS5G
+         lwMzEwl28TAAKZ+geIpHwwVz9kiaMT8gRWxvld5dLIWJNZPYGXeHZWgNMBD4gm3faBtr
+         VfmNGjmxYzw0zMLnjiOjvg5KkqVZFHHPZ5+ucIzrpLCuzw5AxdKxN9+PyghqpcolisyB
+         G0hLvpwKH+ylpyroSl7orRfirsEv0+8zbmAhlbFncPT0y0UQaRbSqdP8ayWsvSp/Ljrt
+         2CZOl/UH2CXMxkyBdigMQbCwNrKv+vwk7qt7l6jYxFjeMppzmzQPcl8nWUbwNDGBhUnP
+         N4Ew==
+X-Gm-Message-State: AOJu0YyA/8I6+DLV/u5zfYfRli3inzUzeTthvde3jgElBZwXTORIJu3y
+        EO+Cx1gauQqgC7y2QI0dbwI=
+X-Google-Smtp-Source: AGHT+IHx11EczPrIFISk6oINBDdC+aE6H1v5VzuBWLY0gV6CordtkXc/Q14nS5mEopntoBTUpp8S8w==
+X-Received: by 2002:a05:620a:1712:b0:773:fa62:39fe with SMTP id az18-20020a05620a171200b00773fa6239femr2160568qkb.1.1700703277644;
+        Wed, 22 Nov 2023 17:34:37 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id vz18-20020a05620a495200b0077d5c5af0c1sm62097qkn.6.2023.11.22.17.34.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 17:34:36 -0800 (PST)
+Message-ID: <019eb41e-6052-414f-90d4-cd192fa3fe04@gmail.com>
+Date:   Wed, 22 Nov 2023 20:34:27 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH wireless-next 2/2] rtlwifi: rtl8821ae: phy: fix an
- undefined bitwise shift behavior
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     pkshih@realtek.com, kvalo@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, lizetao1@huawei.com,
-        linville@tuxdriver.com, Larry.Finger@lwfinger.net,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-In-Reply-To: <2ec14802-78b0-4a3f-a730-19e95ec8d359@suswa.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.5.0
+Subject: Re: Radeon regression in 6.6 kernel
+Content-Language: en-CA, en-US
+To:     Phillip Susi <phill@thesusis.net>,
+        Alex Deucher <alexdeucher@gmail.com>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87bkbodp51.fsf@vps.thesusis.net>
+ <CADnq5_Nh4wCFY10Ha9dTGWvehPCdY2zxfERtFuoeF5_xA+P=QA@mail.gmail.com>
+ <87r0kircdo.fsf@vps.thesusis.net>
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <87r0kircdo.fsf@vps.thesusis.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------27nbuB0IZ3H2JpCGJkZb2mlG"
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,68 +101,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 21:02, Dan Carpenter wrote:
-> On Wed, Nov 22, 2023 at 05:02:12PM +0800, Su Hui wrote:
->> Clang staic checker warning:
->> drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:184:49:
->> 	The result of the left shift is undefined due to shifting by '32',
->> 	which is greater or equal to the width of type 'u32'.
->> 	[core.UndefinedBinaryOperatorResult]
->>
->> If the value of the right operand is negative or is greater than or
->> equal to the width of the promoted left operand, the behavior is
->> undefined.[1][2]
->>
->> For example, when using different gcc's compilation optimizaation options
->> (-O0 or -O2), the result of '(u32)data << 32' is different. One is 0, the
->> other is old value of data. Adding an u64 cast to fix this problem.
->>
->> [1]:https://stackoverflow.com/questions/11270492/what-does-the-c-
->> standard-say-about-bitshifting-more-bits-than-the-width-of-type
->> [2]:https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
->>
->> Fixes: 21e4b0726dc6 ("rtlwifi: rtl8821ae: Move driver from staging to regular tree")
->> Signed-off-by: Su Hui <suhui@nfschina.com>
->> ---
->>   drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
->> index 6df270e29e66..89713e0587b5 100644
->> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
->> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
->> @@ -106,7 +106,7 @@ u32 rtl8821ae_phy_query_bb_reg(struct ieee80211_hw *hw, u32 regaddr,
->>   		regaddr, bitmask);
->>   	originalvalue = rtl_read_dword(rtlpriv, regaddr);
->>   	bitshift = _rtl8821ae_phy_calculate_bit_shift(bitmask);
->> -	returnvalue = (originalvalue & bitmask) >> bitshift;
->> +	returnvalue = (u64)(originalvalue & bitmask) >> bitshift;
-> This is a right shift, not a left shift. << vs >>.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------27nbuB0IZ3H2JpCGJkZb2mlG
+Content-Type: multipart/mixed; boundary="------------JaUbo0Dk7JfrrXuVg05JtlSM";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Phillip Susi <phill@thesusis.net>, Alex Deucher <alexdeucher@gmail.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+ dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Message-ID: <019eb41e-6052-414f-90d4-cd192fa3fe04@gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87bkbodp51.fsf@vps.thesusis.net>
+ <CADnq5_Nh4wCFY10Ha9dTGWvehPCdY2zxfERtFuoeF5_xA+P=QA@mail.gmail.com>
+ <87r0kircdo.fsf@vps.thesusis.net>
+In-Reply-To: <87r0kircdo.fsf@vps.thesusis.net>
 
-Hi,
+--------------JaUbo0Dk7JfrrXuVg05JtlSM
+Content-Type: multipart/mixed; boundary="------------0UWsNpAWAXtLgwX61eP4ohzW"
 
-It's same for right shift and having a really weird result.
+--------------0UWsNpAWAXtLgwX61eP4ohzW
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The result of '(u32)data >> 32' is different when using different compiler.
-Clang: "(unsigned int)41 >> 32" = 2077469672
-Gcc: "(unsigned int)41 >> 32" = 0
->
->>   
->>   	rtl_dbg(rtlpriv, COMP_RF, DBG_TRACE,
->>   		"BBR MASK=0x%x Addr[0x%x]=0x%x\n",
->> @@ -128,7 +128,7 @@ void rtl8821ae_phy_set_bb_reg(struct ieee80211_hw *hw,
->>   		originalvalue = rtl_read_dword(rtlpriv, regaddr);
->>   		bitshift = _rtl8821ae_phy_calculate_bit_shift(bitmask);
->>   		data = ((originalvalue & (~bitmask)) |
->> -			((data << bitshift) & bitmask));
->> +			(((u64)data << bitshift) & bitmask));
-> The checker is printing an accurate warning, however, I'm not sure the
-> fix is correct.  Obviously, shift wrapping is bad and your patch would
-> eliminate that possibility.  However, data is a u32 so we end up
-> discarding the high 32 bits.  I can imagine a different static checker
-> would complain about that.
+On 2023-11-21 17:05, Phillip Susi wrote:
+> Alex Deucher <alexdeucher@gmail.com> writes:
+>=20
+>> Does reverting 56e449603f0ac580700621a356d35d5716a62ce5 alone fix it?
+>> Can you also attach your full dmesg log for the failed suspend?
+>=20
+> No, it doesn't.  Here is the full syslog from the boot with only that
+> revert:
+>=20
 
-Oh, it's my negligence...
+Thank you Phillip for verifying this.
 
-Su Hui
+BTW, luben.tuikov@amd.com should absolutely bounce for everyone sending e=
+mails to it. Not sure why it is still active.
+My new email is the one this email is coming from.
+--=20
+Regards,
+Luben
 
+--------------0UWsNpAWAXtLgwX61eP4ohzW
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------0UWsNpAWAXtLgwX61eP4ohzW--
+
+--------------JaUbo0Dk7JfrrXuVg05JtlSM--
+
+--------------27nbuB0IZ3H2JpCGJkZb2mlG
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZV6sIwUDAAAAAAAKCRBMFUeUMaM0r0PV
+AP0WuXBGxTcRLZ2DRrGpYBHu4m7v0WRi1i3elruWFZVUtAEAsqEfv7eS3EOHFkUAGpjnAdrE4sQB
+BVYPLJdOYTd4pA0=
+=2dlN
+-----END PGP SIGNATURE-----
+
+--------------27nbuB0IZ3H2JpCGJkZb2mlG--
