@@ -2,126 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE227F5A48
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4E07F5A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344964AbjKWIlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S1344954AbjKWIlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKWIlm (ORCPT
+        with ESMTP id S234607AbjKWIlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:41:42 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626D1D7E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:41:26 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso550846b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700728886; x=1701333686; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=awyDGbhYoRPdZVH0aev31LUF7PKhT9Q8DrIpkivvDV8=;
-        b=ZBGLIWVhWcFoABspHbvKAt4+lkjqsOjyZPnmGl0FN2UTb0v2IddTr9bKz/1wGfTz/d
-         f3mWgJIBACxecHDnu0Lb1xFZXewj4fSKZ4z+n9v2hQ4y/3VDd65OmNjGEIO0DPyuzk3f
-         VUt1zA7gNE3j68OmHfaxUTbA+FXeHfbnk3109dhMrkMiPMdz8F8/nutXtBUk/rP6J8JR
-         rQzDOaCl0eUTyHRkfDg2xyuh5qM7b1Evq/jsGMOW0PciMq1/D+Z52R9IEOZyIR40jdsw
-         MIvwItx81qVhzx+xU00aw30A4IaNQKlxFIliIXq+A2gJC6yy2pCqW2MUxvOAy6izC3vF
-         EHcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700728886; x=1701333686;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=awyDGbhYoRPdZVH0aev31LUF7PKhT9Q8DrIpkivvDV8=;
-        b=OmrTFH/LwAButAfTt8KAqH477t0mHmEb7VBQeBUmkZ+p5XPmsvnSWRhWbYmBybNa/j
-         /cNIJ996TOSVf0xQSx+MMCNKOsSq++WnZfvdM1nXJEN3LhA4mudux4py1jDlRO5vhU05
-         iHTUi1i4aXiaDD8qFtq8lcRQH0kqTqL/bo7bHVJ1QcePtaAQTj75oNpvHo6RmLFpfANf
-         hDhF6aF2mOd9T4uaaI0Vz3dD1gy9mUodZ+/XEL8UQUEnzZ3XqS3mhvMR1fZMjWUT1lNo
-         MvcatEuCDARYm3pHHHANGKkV8lHiQaCd8ndP82K/OW9FinTBq6rlCD8lE96mJOdcf8gr
-         2AbQ==
-X-Gm-Message-State: AOJu0Yw1CSErPvPDSi7hzgiJ7oZTr0d22d9anoIhIKHVy26R7cwb04wb
-        26xXXVrmfobwOIa5jBwkF87KUA==
-X-Google-Smtp-Source: AGHT+IGQSOA0PAjcjaqobuKl7FOMr4dcsYV2eqHcm1j6ikiQzdHGM7M4ZEas1bb0eiqUEMbkC/A+0A==
-X-Received: by 2002:a05:6a00:1f1a:b0:6cb:a2fa:1e0e with SMTP id be26-20020a056a001f1a00b006cba2fa1e0emr5132705pfb.9.1700728885887;
-        Thu, 23 Nov 2023 00:41:25 -0800 (PST)
-Received: from localhost.localdomain ([203.208.189.10])
-        by smtp.gmail.com with ESMTPSA id e22-20020aa78c56000000b006cbb582fe6csm710578pfd.204.2023.11.23.00.41.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 00:41:25 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     dianders@chromium.org, akpm@linux-foundation.org, pmladek@suse.com,
-        lecopzer.chen@mediatek.com, kernelfans@gmail.com
-Cc:     linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        lizhe.67@bytedance.com
-Subject: [PATCH v3] softlockup: serialized softlockup's log
-Date:   Thu, 23 Nov 2023 16:40:22 +0800
-Message-Id: <20231123084022.10302-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
+        Thu, 23 Nov 2023 03:41:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A272D5E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:41:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2913EC433C8;
+        Thu, 23 Nov 2023 08:41:10 +0000 (UTC)
+Message-ID: <f051fb9c-7dd3-45ec-94ff-94b921b2b7ff@xs4all.nl>
+Date:   Thu, 23 Nov 2023 09:41:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] media: visl: Fix params permissions/defaults
+ mismatch
+Content-Language: en-US, nl
+To:     Detlev Casanova <detlev.casanova@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-media@vger.kernel.org,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20231024191027.305622-1-detlev.casanova@collabora.com>
+ <20231024191027.305622-2-detlev.casanova@collabora.com>
+ <e647782f-6ed5-4d1f-b318-2d83d713b9b1@xs4all.nl> <4879622.31r3eYUQgx@arisu>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <4879622.31r3eYUQgx@arisu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Zhe <lizhe.67@bytedance.com>
+On 22/11/2023 17:38, Detlev Casanova wrote:
+> On Wednesday, November 22, 2023 10:56:20 A.M. EST Hans Verkuil wrote:
+>> On 24/10/2023 21:09, Detlev Casanova wrote:
+>>> `false` was used as the keep_bitstream_buffers parameter permissions.
+>>> This looks more like a default value for the parameter, so change it to
+>>> 0 to avoid confusion.
+>>>
+>>> Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
+>>> Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+>>> ---
+>>>
+>>>  drivers/media/test-drivers/visl/visl-core.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/test-drivers/visl/visl-core.c
+>>> b/drivers/media/test-drivers/visl/visl-core.c index
+>>> 9970dc739ca5..df6515530fbf 100644
+>>> --- a/drivers/media/test-drivers/visl/visl-core.c
+>>> +++ b/drivers/media/test-drivers/visl/visl-core.c
+>>> @@ -74,7 +74,7 @@ MODULE_PARM_DESC(visl_dprintk_nframes,
+>>>
+>>>  		 " the number of frames to trace with dprintk");
+>>>  
+>>>  bool keep_bitstream_buffers;
+>>>
+>>> -module_param(keep_bitstream_buffers, bool, false);
+>>> +module_param(keep_bitstream_buffers, bool, 0);
+>>
+>> ???
+>>
+>> This last parameter is the permission, it makes no sense that this
+>> is either 0 or false: then nobody can see it in /sys/modules/.
+> 
+> It makes sense if we want it set when the module is loaded only. This way, we 
+> don't have to manage the parameters values changing while work is being done 
+> and keep it simple.
+> It could be made readable if that looks better, but there is no real need for 
+> it to be read either.
 
-If multiple CPUs trigger softlockup at the same time with
-'softlockup_all_cpu_backtrace=0', the softlockup's logs will appear
-staggeredly in dmesg, which will affect the viewing of the logs for
-developer. Since the code path for outputting softlockup logs is not
-a kernel hotspot and the performance requirements for the code are
-not strict, locks are used to serialize the softlockup log output to
-improve the readability of the logs.
+Why not? It makes it easy to read what this module option's value is.
 
-Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
----
-Changelogs:
+I now see that both visl and vidtv uses 0 a lot, so I'm OK with this
+patch for consistency.
 
-v1->v2:
-- define the lock outside the scope of function
-- add precondition 'softlockup_all_cpu_backtrace=0' in commit message
+But I think especially these test-drivers should use 0444 instead of 0
+so you can see how the test driver is configured. That might actually
+be relevant when writing tests using these drivers.
 
-v2->v3:
-- define the lock inside the scope of function
+Perhaps separate patches for visl and vidtv that change 0 to 0444 for all
+the module parameters?
 
- kernel/watchdog.c | 3 +++
- 1 file changed, 3 insertions(+)
+Regards,
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 5cd6d4e26915..bf30a6fac665 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -448,6 +448,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	struct pt_regs *regs = get_irq_regs();
- 	int duration;
- 	int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
-+	static DEFINE_SPINLOCK(watchdog_output_lock);
- 
- 	if (!watchdog_enabled)
- 		return HRTIMER_NORESTART;
-@@ -514,6 +515,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
- 
-+		spin_lock(&watchdog_output_lock);
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -523,6 +525,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			show_regs(regs);
- 		else
- 			dump_stack();
-+		spin_unlock(&watchdog_output_lock);
- 
- 		if (softlockup_all_cpu_backtrace) {
- 			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
--- 
-2.20.1
+	Hans
+
+> 
+>> Typically this is 0444 if it is readable only, or 0644 if it can be
+>> written by root.
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>>>  MODULE_PARM_DESC(keep_bitstream_buffers,
+>>>  
+>>>  		 " keep bitstream buffers in debugfs after streaming is 
+> stopped");
+> 
 
