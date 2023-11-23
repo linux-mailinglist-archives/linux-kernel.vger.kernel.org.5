@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD1A7F659A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CE27F659D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjKWRiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:38:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        id S1345674AbjKWRjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:39:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWRiS (ORCPT
+        with ESMTP id S1345621AbjKWRjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:38:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0D3189
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:38:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32238C433D9;
-        Thu, 23 Nov 2023 17:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700761104;
-        bh=Yw6Y36ErXAJIavqLBexXl3lguY2vTWpO+ADAlK9isC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S3dFS4mk9+zqoMSDzNRYX4a7q0zN2SB+nJXO53+w3a+g9Hjmc5PF3JytQHH+okqDe
-         OKdoDF2lSatcZdn4fOZom7H2C/OJ6jpgoWOYexLTXRt2iYpdU2kyt0OgJyECkY5EB3
-         1QUubQpzlv5VJu/Tdqdtbk7+e/4PJAZzUU4b4Zo1cKPTnGJB/3SXrnPnEjLAlghs/3
-         btsfc3dxxGMxsQLEJ8Pj7dG74en7eo7GTTGmP3tg7hxuTLWgfDErgFGy0MAZMOUa2K
-         sE5bJRtTerrBgxq/PWfZSfFON6od6oWddYy9kxyonTBoAP4hiqt2BQz0CXLogFZAUx
-         W3qlONMHoBSJQ==
-Date:   Thu, 23 Nov 2023 17:38:21 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] ASoC: codec: wcd-mbhc-v2: add support when connected
- behind an USB-C audio mux
-Message-ID: <ZV+ODbskjFe5louc@finisterre.sirena.org.uk>
-References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-3-21d4ad9276de@linaro.org>
+        Thu, 23 Nov 2023 12:39:14 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D3C189
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:39:20 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-db40898721fso1048345276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:39:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700761160; x=1701365960; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VjgH4EkUYchg4j5kMkgkHWQ0qshINLgkzgLZ6QI8pc8=;
+        b=CwJkkPF9buPkAhjEFB+mIeK09lyeEShpuNljFbAvK54Za2hvYDgwQPxXEyNtLvpfWO
+         /+izahTpZbZv9y2ceEJqj1wdH7qipeX8ShHruYgBRQ2n2eb0MDY4gvbMXKFl6CbFZwno
+         /IB6s3iQg+pAiupphZz2nABkXoL6qIER100vZyz+GHc7A4wzdLt8ovnE4BoAZzPATB3H
+         1zcrCpxfT2Bl4uAQS9ZgSpYia2MwGHKWZLdlHO0O/pv9iThPSET/BOfxzMn0nBm0jWXV
+         ZjXss5qUULdhRDyv0kzriDLmO2A5AhWlwbUqN93Jc2UFAo2G4ErOnmsYWCeuNkRSvBPl
+         teBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700761160; x=1701365960;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VjgH4EkUYchg4j5kMkgkHWQ0qshINLgkzgLZ6QI8pc8=;
+        b=ueh2iAi8kzDnOumUUSGEvpOdRihk8VSlKA2Dyz9orly6n4hiPofXLsSHg/gCEyUevo
+         xtZZM/M9D8SyUs4GhTYcGp1l6VHHqGqMxPP79Hjw4Qa1Pt+007Wqxyes3Lvdxc6Fov8F
+         Ki5qDZnC0BKzd4rNhR1XTsU4o3Uecmbhc2nnrjHiVGOXLozoNIbViCbTkUWEGOhxMBrV
+         hEhzvA/W9DcY4RViWsNqgJ+h+4cCCXcyYT97T+DLM+4NIS9O9V0K6bx7sJe+CpSQJZIT
+         GzbVuR5dIbqHLr7dL7lJ0CgvDcwNWhwMae7C/EJlQGN0mcOvnEHAxeTb3d4gGhDSkYRH
+         1lJg==
+X-Gm-Message-State: AOJu0YyiG4NLjE7jX0L424Rxia7fyydSYaFIV0RUAuR5ewp+vsrM+r4e
+        8R2mPxNB3hfRPoHx7CTHQRcksQtgeoRHojLWWzMd9MtlnczleZX+
+X-Google-Smtp-Source: AGHT+IGBZtcTHAbj2wdNf4qoa5a7G0j9kuSPQXq5UsQCdvUM1YHbdFfUVoz/McPrY9b6Ui2wjsez126KRpqKrjfM69M=
+X-Received: by 2002:a25:5845:0:b0:d9a:e129:92a1 with SMTP id
+ m66-20020a255845000000b00d9ae12992a1mr5443261ybb.54.1700761159972; Thu, 23
+ Nov 2023 09:39:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zYYvbpAWCNy9mneV"
-Content-Disposition: inline
-In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-3-21d4ad9276de@linaro.org>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <79301d04-c0cb-4740-8a6d-27a889b65daf@linux.dev> <CAA8EJpom5kAbDkacOdqp6BR7YPfmCSXaQfDYRVcLf9eGmi64CQ@mail.gmail.com>
+ <121163c9-0d56-47ad-a12e-e67390fef2b4@linux.dev> <CAA8EJpowjhX=LL-9cnQL4pfCei63zNkCGW5wGOeeFxcnFpNCVA@mail.gmail.com>
+ <00ba2245-0e48-4b21-bcd4-29dfb728e408@linux.dev> <CAA8EJpoiehS2wS3ri_DggzxeEfLY4yK7X6c+bCFKvkwSce6r+A@mail.gmail.com>
+ <77c3ad35-24e4-4bf4-87a1-f48e13a6b838@linux.dev>
+In-Reply-To: <77c3ad35-24e4-4bf4-87a1-f48e13a6b838@linux.dev>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 23 Nov 2023 19:39:08 +0200
+Message-ID: <CAA8EJpoAOeb_zGBwGPN0ymo=ZJk3_jFamhF3Qede-9uBvXpK0g@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,33 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 23 Nov 2023 at 19:04, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+> Hi,
+>
+>
+> On 2023/11/23 16:08, Dmitry Baryshkov wrote:
+> >>> The host can not specify the
+> >>> DRM_BRIDGE_ATTACH_NO_CONNECTOR flag, it will cause a warning here. And
+> >>> it can not omit the flag (as otherwise the first bridge will create a
+> >>> connector, without consulting the second bridge).
+> >> The semantics of DRM_BRIDGE_ATTACH_NO_CONNECTOR flagare implement-defined,
+> > No, they are not. Semantics are pretty simple: do not create the
+> > drm_connector instance. Pass the flag to the next bridge in the chain.
+> >
+> >> for our case, I could just ignore it if their
+> >> don't have a signal(DT or ACPI) tell me that there are multiple bridges
+> >> in the chain. This depend on community's attitude.
+> > Ignoring a flag is a bad idea.
+>
+>
+> Can you also read the code in the bridge/lontium-lt8912.c please?
+> when flags == 0 is true, the lt8912 driver will just create
+> a drm_connector instance in the drm bridge drivers. The behavior
+> is similar with this patch in the perspective of spirit.
+>
+> And the most important thing is that no matter what the flag the upstream
+> port is passed, lt8912 just always pass the DRM_BRIDGE_ATTACH_NO_CONNECTOR
+> flags to the next bridge. Does this count as a kind of ignore? or
+>
+> This is to say that both the lt8912 and the tfp410 drm bridge drivers are
+> allowing create a drm_connector manually in drm bridge drivers. They didn't
+> being asked to move the drm_connector related code to display controller
+> driver. I don't know why I can't follow this way?
 
---zYYvbpAWCNy9mneV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is called 'legacy'.
 
-On Thu, Nov 23, 2023 at 03:49:13PM +0100, Neil Armstrong wrote:
+>
+> Do you really read the code before do comments or I failed to understand something?
 
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(wcd_mbhc_typec_report_unplug);
 
-ASoC is generally EXPORT_SYMBOL_GPL.
-
---zYYvbpAWCNy9mneV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfjgwACgkQJNaLcl1U
-h9Borgf/WCcOu17PlfQEP8LcwwF7WliMIbDFpt7Sn3t6UjtZ4dG8lxo/wdWm3/zC
-9a4IqCgD7yJT+N6iGTEzfXw4G9ql6x0QKA3eJhLPlcDHPUhm7K0Hk0NJZUltNSve
-FScbROkncl72dzXhp3xmED1Xx+S+9lcLgQBE+LS8cYH6ifUPIe2zY2PLdzw1XQT7
-jajx1PGVE7trmzx9cymbbNAGbL2At5yqdR/biX3O6ckzY3kkNThWIwAdPedZdn/S
-kr/daf4kTS0ciuGI2RdeI6ZxhXt+BDEeW3Nf2pOF1ezaSnPm89GeoufjrkE3uIQm
-XvoszEBrtSkSv7oM0ASB2XyrRjkH1w==
-=aPTl
------END PGP SIGNATURE-----
-
---zYYvbpAWCNy9mneV--
+-- 
+With best wishes
+Dmitry
