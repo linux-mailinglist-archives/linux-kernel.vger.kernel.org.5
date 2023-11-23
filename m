@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A177F6498
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A987F649C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345151AbjKWRAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
+        id S1345177AbjKWRAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235279AbjKWRAD (ORCPT
+        with ESMTP id S231207AbjKWRAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:00:03 -0500
+        Thu, 23 Nov 2023 12:00:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8A10C1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B372C433CA;
-        Thu, 23 Nov 2023 16:59:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0A3D41
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9510EC43397;
+        Thu, 23 Nov 2023 17:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700758800;
-        bh=saYxe/NoTX0miZmb5XKxxLdDu9x5vl+RmTWfCOD6DjM=;
+        s=k20201202; t=1700758802;
+        bh=EvzPaWl4rEWWAqN92zDuxih44+QveIo6CQqfvVtHmxQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=PDd6yTtbeRsj6wOggVxLqAbMolmiQE6qQ8JQMjxsTnac9OnBXaBn5wL341k2RT5iW
-         MJwed2MKyls/spX4p0h0Qy09Zi4t8xmrAikNeHjzWYqUX2oFd/RWh3qB8YOzO1rFh6
-         e7cDyh90llt5V42LLzMzVkVM9UgccW2zQwk9ei/zeLmCAykMldI/MfY6tE4jtWAKLH
-         7ROICKqUWkOLgoUOsG/w+1glGUDQJcy3jn7OFhf1LBq3TGPEl0tnHmZR3jwypcliZL
-         5191BU3/KsCypMK/8YrOif/0LJ1KFG8YItDu84lMN7C/FKY0ghU84hrMggCeLmQ8iF
-         6xZz0V0uaO9zg==
+        b=Ut51JJ2B31MOyFR3mR2gsVC1yQJUTnd2mInxrcNp6lXSoTIHMr6anHzBixsognlP/
+         ATUOchYc+UKMA3zGAjkvppOWxiokiEu+uYPaPnrIONO3YRtkruLyAPzVSPfE7AbIC+
+         9lUSCrewRfLkLgcJuUdg7g/PTXgt2KrVVWoa5opbf1RM6E64gBDR7zT+JWZs5YZrhP
+         K2P4DYJMZ23yHKAv4XGHHdTH2RgRZlq58RuieGmAJDlewM/gSB95zR8oInLZOGVoco
+         ls0t1bfjcfvhoZi46iN1OJXzxbMkEhK8YevIhDGzFxvEDtJZX+2Go4raS8IAfTKBeg
+         SX/kMRMjp42TQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Chancel Liu <chancel.liu@nxp.com>, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231123091815.21933-1-johan+linaro@kernel.org>
-References: <20231123091815.21933-1-johan+linaro@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix up bad merge
-Message-Id: <170075879786.2448402.7389319315728304933.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 16:59:57 +0000
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+References: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+Subject: Re: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-Id: <170075880043.2448402.15081787699005605640.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 17:00:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -54,16 +54,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 10:18:15 +0100, Johan Hovold wrote:
-> A recent change to address pops and clicks with codecs like WSA883X
-> touched the same code paths as a fix for clearing DAI parameters and
-> resulted in a bad merge.
-> 
-> Specifically, commit f0220575e65a ("ASoC: soc-dai: add flag to mute and
-> unmute stream during trigger") made mute at stream close conditional,
-> while commit 3efcb471f871 ("ASoC: soc-pcm.c: Make sure DAI parameters
-> cleared if the DAI becomes inactive") moved that same mute call back to
-> soc_pcm_hw_clean().
+On Thu, 23 Nov 2023 09:06:58 +0000, Maciej Strozek wrote:
+> Add a polling mechanism that will keep the driver operational even in
+> absence of physical IRQ connection. If IRQ line is detected, the driver
+> will continue working as usual, in case of missing IRQ line it will
+> fallback to the polling mechanism introduced in this change.
+> This will support users which choose not to connect an IRQ line as it
+> is not critical to part's operation.
 > 
 > [...]
 
@@ -73,8 +70,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-pcm: fix up bad merge
-      commit: 3841d8a563a7473ceb7415ecfe577e20b2a66d37
+[1/1] ASoC: cs43130: Allow driver to work without IRQ connection
+      commit: fa91703dc2e010e48a230dc92967cb5ae23f8680
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
