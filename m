@@ -2,122 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B2B7F5E8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC227F5E8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345182AbjKWL6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S1345201AbjKWL6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345199AbjKWL6Q (ORCPT
+        with ESMTP id S1345171AbjKWL6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:58:16 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D83ED6E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:58:22 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 77D6C660739C;
-        Thu, 23 Nov 2023 11:58:20 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700740701;
-        bh=NUR7NWmLJG7x3qkoi7nPz/LMqTSzR6NXYNSINLPbFko=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LIjrCro2/jqzussd+3G5b/ksbF+N7x0hbAl/xffwiaEBVWI4oNSOStDCEdvIwSr0N
-         PSb8YNLyCgeYEsow8ZZ4cox4a8m7dk/pYduxd+msa7nLDyxEEVe6zSj3CmVAyP0GjO
-         G/W1HNhEsX5aUkQD8HRB8z781UdIA+xotevHOkJ4yvW4yLUKUQxFBqxdUfTR0eZnw9
-         cRyOTvP5+4rHFXR0M0XxX3JMcqOtfAUZ7ki5ttq+/o1tkTn5yl8ueIRLVet5/qcA7b
-         /71XSIATnecHQW1iLGQryC+UedZ6imRZD7BX5MUsfRH9+WFiGS/sZW2Er7LIHQH+mb
-         GIcVRCzUwovvA==
-Message-ID: <3eef79bd-d271-4916-b3f0-220a5ce984ba@collabora.com>
-Date:   Thu, 23 Nov 2023 12:58:17 +0100
+        Thu, 23 Nov 2023 06:58:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D8AD47
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:58:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7262BC433C7;
+        Thu, 23 Nov 2023 11:58:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700740703;
+        bh=6rq3wbNnETxmGO38nmjeAXuf2R7yIaTdB+RurHtR94s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ReK8N3T9qK44A4ISJlFiWiFFDjP+AZ13R55LmXzAECstsIG0PbM/mCm8RJjxXX5hJ
+         kP9D7KIB7sZeE8u/K9w89wgKRsDzRyuI1K1TmykhD4+SS9syKgtHAlrXwy4uOs4s5D
+         321wrppn1hKNaJDxT2IFPnSGOgehxTCQNAMkfwxw84yZrQqxk8E/0dARIP0r4fXcg0
+         uhN2iyBqwUOSBX+64+bJscIjZV/wajbCSQwZz/AiiwVlWMpUss+Ok1+A+8bTrOfUzJ
+         1iw9GrbgfP87j6gT92nwY0dNnSZgxR9o6HL8O9Q7GuJmoZzqD7aYCNQDWN3qCkDKlt
+         ZZ03JRsa1RdbA==
+Date:   Thu, 23 Nov 2023 11:58:19 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] e1000e: Use pcie_capability_read_word() for
+ reading LNKSTA
+Message-ID: <20231123115819.GC6339@kernel.org>
+References: <20231121123428.20907-1-ilpo.jarvinen@linux.intel.com>
+ <20231121123428.20907-4-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        steven.price@arm.com
-Cc:     boris.brezillon@collabora.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231123115029.68422-1-angelogioacchino.delregno@collabora.com>
- <2bd59614-49d8-4829-861e-3b95c44008df@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <2bd59614-49d8-4829-861e-3b95c44008df@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231121123428.20907-4-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/11/23 12:57, Krzysztof Kozlowski ha scritto:
-> On 23/11/2023 12:50, AngeloGioacchino Del Regno wrote:
->> Some SoCs may be equipped with a GPU containing two core groups
->> and this is exactly the case of Samsung's Exynos 5422 featuring
->> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
->> is partial, as this driver currently supports using only one
->> core group and that's reflected on all parts of it, including
->> the power on (and power off, previously to this patch) function.
->>
->> The issue with this is that even though executing the soft reset
->> operation should power off all cores unconditionally, on at least
->> one platform we're seeing a crash that seems to be happening due
->> to an interrupt firing which may be because we are calling power
->> transition only on the first core group, leaving the second one
->> unchanged, or because ISR execution was pending before entering
->> the panfrost_gpu_power_off() function and executed after powering
->> off the GPU cores, or all of the above.
->>
->> Finally, solve this by introducing a new panfrost_gpu_suspend_irq()
->> helper function and changing the panfrost_device_suspend() flow to
->>   1. Mask and clear all interrupts: we don't need nor want any, as
->>      for power_off() we are polling PWRTRANS, but we anyway don't
->>      want GPU IRQs to fire while it is suspended/powered off;
->>   2. Call synchronize_irq() after that to make sure that any pending
->>      ISR is executed before powering off the GPU Shaders/Tilers/L2
->>      hence avoiding unpowered registers R/W; and
->>   3. Ignore the core_mask and ask the GPU to poweroff both core groups
->>
->> Of course it was also necessary to add a `irq` variable to `struct
->> panfrost_device` as we need to get that in panfrost_gpu_power_off()
->> for calling synchronize_irq() on it.
->>
->> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
->> [Regression detected on Odroid HC1, Exynos5422, Mali-T628 MP6]
->> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>
->> Changes in v2:
->>   - Fixed the commit hash of "Really power off [...]"
->>   - Actually based on a clean next-20231121
->>   - Renamed "irq" to "gpu_irq" as per Boris' suggestion
->>   - Moved the IRQ mask/clear/sync to a helper function and added
->>     a call to that in panfrost_device.c instead of doing that in
->>     panfrost_gpu_power_off().
->>
->> NOTE: I didn't split 1+2 from 3 as suggested by Boris, and I'm sending
->> this one without waiting for feedback on my reasons for that which I
->> explained as a reply to v1 because the former couldn't be applied to
->> linux-next, and I want to unblock Krzysztof ASAP to get this tested.
->>
+On Tue, Nov 21, 2023 at 02:34:28PM +0200, Ilpo Järvinen wrote:
+> Use pcie_capability_read_word() for reading LNKSTA and remove the
+> custom define that matches to PCI_EXP_LNKSTA.
 > 
-> This does not compile.
+> As only single user for cap_offset remains, replace it with a call to
+> pci_pcie_cap(). Instead of e1000_adapter, make local variable out of
+> pci_dev because both users are interested in it.
 > 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I really have to take a break. My brain starts failing, as I can see.
-
-Sorry.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
