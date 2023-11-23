@@ -2,161 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1C97F5DC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4137F5DCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345030AbjKWL0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        id S1345071AbjKWL07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344916AbjKWL0c (ORCPT
+        with ESMTP id S1345069AbjKWL0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:26:32 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D335AA3;
-        Thu, 23 Nov 2023 03:26:36 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 59A74100008;
-        Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 59A74100008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700738795;
-        bh=bOO7CqfbeqtPu+OvgUpTnWR1nT+4YgvDziG8YR8E+zI=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=cEDyq9OYl745EnFlXfacIqCYjLi1H8hvHNG2CVYAnSZ9OFzEldRj5Glk3hqlJWUlf
-         Gc2repLUHUA8qt5aslnitk9JVq0j+Xm711idaOyICzj7+39w3U1jm+NRvlmztPQ0fk
-         qrX6UKpc9ZdWHUlyWSki1m9RReZgvIq4H8O0vWgcb823End1mA8feWWdyamFr++ndv
-         +5mlbdyauF/g8tYivDT/D9/U4EIpsLbxnwlkZP9jeKrkHLOEcAtc4FQZ7LNpB8jgoE
-         f/xmEAbTA2mhpYf/deqxAMojE1Cum+WEFaootu+PVPROy/5nAU4xaFE3W5eRNbMULP
-         UJVpCLrVAxlLw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
- 2023 14:26:34 +0300
-Date:   Thu, 23 Nov 2023 14:26:29 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Michal Hocko <mhocko@suse.com>, <shakeelb@google.com>
-CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
-        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
-        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
-        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
-References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
- <20231122100156.6568-3-ddrokosov@salutedevices.com>
- <ZV3WnIJMzxT-Zkt4@tiehlicka>
- <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
- <ZV4BK0wbUAZBIhmA@tiehlicka>
- <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+        Thu, 23 Nov 2023 06:26:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC65D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:26:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700738817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eFq+BEnbZxFqfaT3CQSP/UqcZPRY8UI20FDoLhF4BDY=;
+        b=U+wxMOnRV8Da0pw7a1ofpqaId2euhZFwR/vnCiJCVH30jZ9g0+P55IKxVClthGuDhyTy4Y
+        teJ0Z5+ls/OXt0zkhGx1IOQYUWZuB7JuIs/G6TxhTUiVUBj9OjwPa9f+mjW1N5F1q0qqWl
+        qeXrNYmQJEocZGY7BWoqrUt7Ah2g4UQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-SFqZnqLgO1mc-JxxuPn-KA-1; Thu, 23 Nov 2023 06:26:56 -0500
+X-MC-Unique: SFqZnqLgO1mc-JxxuPn-KA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a0627211f11so10639066b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:26:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700738815; x=1701343615;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eFq+BEnbZxFqfaT3CQSP/UqcZPRY8UI20FDoLhF4BDY=;
+        b=aRGQUPtetk/Pbx/dTUPV+7/Jg5Bp8QgFGO4KqXwvs7APupVy9cZV8UunzFQ+riehiZ
+         UJAVtupv+XDFjeIm4gqnDXGIimFMche6ufgwmGAUw1BDn5Mi7IVu42EHn73rw/00IK6/
+         GBBWSZiWW4Q+XpIkRIrgsQ5Yp7265L1ddZ+Eer4zhcczCDYKbh3aNsis5vPN9gEiyOl7
+         1VDY8Vg+93h9voswDc1SM2udgMuBGEUDOt6h6Wi+z/QG432pdAL/fpDyMu8tSryZiHgI
+         xfGNN8SDQHq8aTVygn5EWvn5pXaXJ7dWTFJ3f6iUOfxARD8s52cVanfWx/3mSJmrtphF
+         uQ9g==
+X-Gm-Message-State: AOJu0YwhXer5Iikd+vaTYwVuUZfbwhsMx2hr5BgweXSNPanCdzSspViF
+        XH/FmAyHFplWG/AJr7jlq/zTDiSo0Mm7gAJI1d94SaPR5HNQrf29eESS1oVJSV4/ioFfA+giSpU
+        i4MkM1V7N4RmM+1idwgSQVLSE8Ox8N42l
+X-Received: by 2002:a17:906:74ca:b0:9dd:5609:55b9 with SMTP id z10-20020a17090674ca00b009dd560955b9mr3755032ejl.2.1700738815109;
+        Thu, 23 Nov 2023 03:26:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEjzqKBEB+IvSpAaThccpRNjrOFH6OqB69C/kRlQ9A8H7EgXahNy9IVIIpsA621BAYcN16LSw==
+X-Received: by 2002:a17:906:74ca:b0:9dd:5609:55b9 with SMTP id z10-20020a17090674ca00b009dd560955b9mr3755014ejl.2.1700738814760;
+        Thu, 23 Nov 2023 03:26:54 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-213.dyn.eolo.it. [146.241.241.213])
+        by smtp.gmail.com with ESMTPSA id fy21-20020a170906b7d500b009e603786444sm665877ejb.90.2023.11.23.03.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 03:26:54 -0800 (PST)
+Message-ID: <5327988fc5d02f3352be66b5f0a2ca9a468ef1da.camel@redhat.com>
+Subject: Re: [PATCH 1/4 net] qca_spi: Fix SPI thread creation
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Stefan Wahren <wahrenst@gmx.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 23 Nov 2023 12:26:53 +0100
+In-Reply-To: <20231121163004.21232-2-wahrenst@gmx.net>
+References: <20231121163004.21232-1-wahrenst@gmx.net>
+         <20231121163004.21232-2-wahrenst@gmx.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181556 [Nov 23 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 09:18:00 #22508170
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal, Shakeel,
+On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
+> The qca_spi driver create/stop the SPI kernel thread in case
+> of netdev_open/close. This is a big issue because it allows
+> userspace to prevent from restarting the SPI thread after
+> ring parameter changes (e.g. signals which stop the thread).
+> This could be done by terminating a script which changes
+> the ring parameter in a loop.
+>=20
+> So fix this by moving create/stop of the SPI kernel into
+> the init/uninit ops. The open/close ops could be realized just
+> by 'park/unpark' the SPI kernel thread.
+>=20
+> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA=
+7000")
+> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+> ---
+>  drivers/net/ethernet/qualcomm/qca_spi.c | 35 ++++++++++++++++---------
+>  1 file changed, 23 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethern=
+et/qualcomm/qca_spi.c
+> index bec723028e96..b11a998b2456 100644
+> --- a/drivers/net/ethernet/qualcomm/qca_spi.c
+> +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+> @@ -580,6 +580,11 @@ qcaspi_spi_thread(void *data)
+>  	netdev_info(qca->net_dev, "SPI thread created\n");
+>  	while (!kthread_should_stop()) {
+>  		set_current_state(TASK_INTERRUPTIBLE);
+> +		if (kthread_should_park()) {
+> +			kthread_parkme();
+> +			continue;
+> +		}
+> +
+>  		if ((qca->intr_req =3D=3D qca->intr_svc) &&
+>  		    !qca->txr.skb[qca->txr.head])
+>  			schedule();
+> @@ -679,25 +684,17 @@ qcaspi_netdev_open(struct net_device *dev)
+>  	qca->sync =3D QCASPI_SYNC_UNKNOWN;
+>  	qcafrm_fsm_init_spi(&qca->frm_handle);
+>=20
+> -	qca->spi_thread =3D kthread_run((void *)qcaspi_spi_thread,
+> -				      qca, "%s", dev->name);
+> -
+> -	if (IS_ERR(qca->spi_thread)) {
+> -		netdev_err(dev, "%s: unable to start kernel thread.\n",
+> -			   QCASPI_DRV_NAME);
+> -		return PTR_ERR(qca->spi_thread);
+> -	}
+> -
+>  	ret =3D request_irq(qca->spi_dev->irq, qcaspi_intr_handler, 0,
+>  			  dev->name, qca);
+>  	if (ret) {
+>  		netdev_err(dev, "%s: unable to get IRQ %d (irqval=3D%d).\n",
+>  			   QCASPI_DRV_NAME, qca->spi_dev->irq, ret);
+> -		kthread_stop(qca->spi_thread);
+>  		return ret;
+>  	}
+>=20
+>  	/* SPI thread takes care of TX queue */
+> +	kthread_unpark(qca->spi_thread);
+> +	wake_up_process(qca->spi_thread);
 
-Sorry for pinging you here, but I don't quite understand your decision
-on this patchset.
+The above looks racy: after 'request_irq()' the interrupt handler can
+raise an irq before the thread being unparked.
 
-Is it a NAK or not? If it's not, should I consider redesigning
-something? For instance, introducing stub functions to
-remove ifdefs from shrink_node_memcgs().
+Additionally I think you can drop the 'if (qca->spi_thread)' in
+qcaspi_intr_handler()
 
-Thank you for taking the time to look into this!
+Cheers,
 
-On Wed, Nov 22, 2023 at 09:57:27PM +0300, Dmitry Rokosov wrote:
-> On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
-> > On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
-> > > Hello Michal,
-> > > 
-> > > Thank you for the quick review!
-> > > 
-> > > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
-> > > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
-> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > > > > Currently, it is not possible to trace this point from non-direct
-> > > > > reclaim paths.
-> > > > 
-> > > > Is this really true? AFAICS we have
-> > > > mm_vmscan_lru_isolate
-> > > > mm_vmscan_lru_shrink_active
-> > > > mm_vmscan_lru_shrink_inactive
-> > > > 
-> > > > which are in the vry core of the memory reclaim. Sure post processing
-> > > > those is some work.
-> > > 
-> > > Sure, you are absolutely right. In the usual scenario, the memcg
-> > > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
-> > > tracepoints you mentioned and analyze them. However, there is one
-> > > potential issue. Enabling these tracepoints will trigger the reclaim
-> > > events show for all pages. Although we can filter them per pid, we
-> > > cannot filter them per cgroup. Nevertheless, there are times when it
-> > > would be extremely beneficial to comprehend the effectiveness of the
-> > > reclaim process within the relevant cgroup. For this reason, I am adding
-> > > the cgroup name to the memcg tracepoints and implementing a cumulative
-> > > tracepoint for memcg shrink (LRU + slab)."
-> > 
-> > I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
-> > easier to postprocess per memcg reclaim. But you could do that just by
-> > adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
-> > does this matter for kswapd and other global reclaim contexts? 
-> 
-> From my point of view, kswapd and other non-direct reclaim paths are
-> important for memcg analysis because they also influence the memcg
-> reclaim statistics.
-> 
-> The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
-> direct memcg reclaim flow, such as:
->     - a direct write to the 'reclaim' node
->     - changing 'max' and 'high' thresholds
->     - raising the 'force_empty' mechanism
->     - the charge path
->     - etc.
-> 
-> However, it doesn't cover global reclaim contexts, so it doesn't provide
-> us with the full memcg reclaim statistics.
-> 
-> -- 
-> Thank you,
-> Dmitry
+Paolo
 
--- 
-Thank you,
-Dmitry
