@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748427F67A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48497F67A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjKWTi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S229664AbjKWTjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjKWTim (ORCPT
+        with ESMTP id S229477AbjKWTjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:38:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB31993
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700768243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmOn5+FX7gFongPnnuombqlFZm27jJX8g7knRz4U4Fc=;
-        b=Tm9POf0VUvJ6IlPmwpWos+8bxsDPJVfUTvl4x3TYcJ4jwG28IFLi592SLP+yUPhgJgSnM3
-        2C1WRWXALzzPN2Ki0j5R/huaKYitO5MklpLHwjBNAPv64hBRko5tZa3JpwqqA6gxbJSXbl
-        C86aQcBa718MeP6kHWYQ5EMfoonEIww=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-97tkLO_lMMus0et7M8vDFw-1; Thu, 23 Nov 2023 14:37:22 -0500
-X-MC-Unique: 97tkLO_lMMus0et7M8vDFw-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1f9efc41382so457fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:37:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700768242; x=1701373042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xmOn5+FX7gFongPnnuombqlFZm27jJX8g7knRz4U4Fc=;
-        b=TPpzVGIMTakgSEU2FdTWEa3VgKwpne/47y5Z/zn3xC1vPtjUdBdZCcWA5ZA0HunoJ+
-         JaeeFca9wvnsqgTxm6AMpq/QTk2pXyZqPyGJoGJd4fa7UUuqNFXIhihiEvCOZvCgOmVn
-         4+J8G6JX8n/ZONxzC4c0zkQz7j0Lru14Sx5cR/DmVjukFMlsL/bVqtbDO9EsQRxTYSiX
-         QbGhRzY7smiwYUJY5nLcV4V4HhABOQtkBvigC+aJwjSjeoJWjmT22kz2XXPHUulGDYTx
-         AVG0VVD+hiKUd+iF2YJD6PqtT2GZ4EPxxkIvfHIVaOuQgY1Ac7Q8jfr75o1Kii6cNPL5
-         O0iQ==
-X-Gm-Message-State: AOJu0YzDfyXkD3W5R3UcsmfO9EK5HvKLDmcSQPbM1sPtGYn0r9CW2bbO
-        RBLgSfVX400WJdWCzweSYs7SN8DOV9IDvG/4L2wXtKLPXk4er8cp4Iid390qoBxt9k+6FwfcuYI
-        o0BiAULsKnfVXFWZk/wOySiQr
-X-Received: by 2002:a05:6870:d0a:b0:1f9:5346:2121 with SMTP id mk10-20020a0568700d0a00b001f953462121mr357560oab.4.1700768241736;
-        Thu, 23 Nov 2023 11:37:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkKmRMwIRaB3Ih9vdlTMJmgge2PoiF567J/ze233V1+FMKyortqkbCHa/MQ2E7l3VCDMjKhQ==
-X-Received: by 2002:a05:6870:d0a:b0:1f9:5346:2121 with SMTP id mk10-20020a0568700d0a00b001f953462121mr357535oab.4.1700768241485;
-        Thu, 23 Nov 2023 11:37:21 -0800 (PST)
-Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id kd26-20020a05622a269a00b00421b14f7e7csm690038qtb.48.2023.11.23.11.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 11:37:21 -0800 (PST)
-Date:   Thu, 23 Nov 2023 14:37:18 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
- hugepd processing
-Message-ID: <ZV-p7haI5SmIYACs@x1n>
-References: <20231116012908.392077-1-peterx@redhat.com>
- <20231116012908.392077-7-peterx@redhat.com>
- <ZVsYMMJpmFV2T/Zc@infradead.org>
- <ZVzT5_3Zn-Y-6xth@x1n>
- <ZV21GCbG48nTLDzn@infradead.org>
- <ZV4co7wcI-_wK91F@x1n>
- <57be0ed0-f1d7-4583-9a5f-3ed7deb0ea97@csgroup.eu>
+        Thu, 23 Nov 2023 14:39:44 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CB1D43;
+        Thu, 23 Nov 2023 11:39:47 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8B11F120010;
+        Thu, 23 Nov 2023 22:39:44 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8B11F120010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700768384;
+        bh=3yNZRyHWMdnnlqHBz7P8oLgTMmMyWNxQ6iEoDg0G7sA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=dvmOZBOqdWu3rS3gcaqdktBkeo0jLcSQM3wfFcsJheGAJUxm0HNz0wSIXCHXTOUad
+         TKQ3dh8V4f3rZTWvFyy1vdvwTLoxVhkhp/WclxT8me8cF3FaI/KTH9MR4UZtATL9K1
+         lMzlk7woD6o6eokd/aev2ytEPBlbRcbkvEtG8YdMeWKBGCgQg5pLppUTLTV7NFIzN0
+         XRX5PnCLeFobjS87/I2mw2Qm2t0W5MxgoI6rC8yyRGuH2CKNHd1pjQUAVHUWqosAgK
+         X023mS6oDLWKitT8ii1dEaCKQAPD+36KbNMpbuKNDMm/85MZkvSGRxsxevd8Qmp5HG
+         tuMp2LOngGJeg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 23 Nov 2023 22:39:44 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 23 Nov 2023 22:39:44 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>, <muchun.song@linux.dev>, <mhocko@suse.com>,
+        <akpm@linux-foundation.org>
+CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v3 0/2] mm: memcg: improve vmscan tracepoints
+Date:   Thu, 23 Nov 2023 22:39:35 +0300
+Message-ID: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <57be0ed0-f1d7-4583-9a5f-3ed7deb0ea97@csgroup.eu>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181569 [Nov 23 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/23 18:34:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/23 18:34:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 17:02:00 #22509098
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 06:22:33PM +0000, Christophe Leroy wrote:
-> > For fast-gup I think the hugepd code is in use, however for walk_page_*
-> > apis hugepd code shouldn't be reached iiuc as we have the hugetlb specific
-> > handling (walk_hugetlb_range()), so anything within walk_pgd_range() to hit
-> > a hugepd can be dead code to me (but note that this "dead code" is good
-> > stuff to me, if one would like to merge hugetlb instead into generic mm).
-> 
-> Not sure what you mean here. What do you mean by "dead code" ?
-> A hugepage directory can be plugged at any page level, from PGD to PMD.
-> So the following bit in walk_pgd_range() is valid and not dead:
-> 
-> 		if (is_hugepd(__hugepd(pgd_val(*pgd))))
-> 			err = walk_hugepd_range((hugepd_t *)pgd, addr, next, walk, PGDIR_SHIFT);
+The motivation behind this commit is to enhance the traceability and
+understanding of memcg events. By integrating the function cgroup_ino()
+into the existing memcg tracepoints, this patch series introduces a new
+tracepoint template for the begin() and end() events. It utilizes a new
+entry field ino to store the cgroup ino, enabling developers to easily
+identify the cgroup associated with a specific memcg tracepoint event.
 
-IMHO it boils down to the question on whether hugepd is only used in
-hugetlbfs.  I think I already mentioned that above, but I can be more
-explicit; what I see is that from higher stack in __walk_page_range():
+Additionally, this patch series introduces new shrink_memcg tracepoints
+to facilitate non-direct memcg reclaim tracing and debugging.
 
-	if (is_vm_hugetlb_page(vma)) {
-		if (ops->hugetlb_entry)
-			err = walk_hugetlb_range(start, end, walk);
-	} else
-		err = walk_pgd_range(start, end, walk);
+Changes v3 since v2 at [2]:
+    - use cgroup_ino() instead of cgroup_name() for memcg tracepoints
+      because cgroup_name() acquires a global rw_lock, which can
+      potentially slow down the system
+    - introduce a stub macro for each shrink_memcg tracepoint to avoid
+      using ifdefs within the common vmscan code."
 
-It means to me as long as the vma is hugetlb, it'll not trigger any code in
-walk_pgd_range(), but only walk_hugetlb_range().  Do you perhaps mean
-hugepd is used outside hugetlbfs?
+Changes v2 since v1 at [1]:
+    - change the position of the "memcg" parameter to ensure backward
+      compatibility with userspace tools that use memcg tracepoints
+    - add additional CONFIG_MEMCG ifdefs to prevent the use of memcg
+      tracepoints when memcg is disabled
 
-Thanks,
+Links:
+    [1] https://lore.kernel.org/all/20231101102837.25205-1-ddrokosov@salutedevices.com/
+    [2] https://lore.kernel.org/all/20231123071945.25811-1-ddrokosov@salutedevices.com/
+
+Dmitry Rokosov (2):
+  mm: memcg: print out cgroup ino in the memcg tracepoints
+  mm: memcg: introduce new event to trace shrink_memcg
+
+ include/trace/events/vmscan.h | 95 ++++++++++++++++++++++++++++++-----
+ mm/vmscan.c                   | 17 +++++--
+ 2 files changed, 95 insertions(+), 17 deletions(-)
 
 -- 
-Peter Xu
+2.36.0
 
