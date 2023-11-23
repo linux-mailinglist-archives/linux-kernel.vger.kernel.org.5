@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0D07F6211
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6627F6216
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345940AbjKWOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:53:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53098 "EHLO
+        id S1345933AbjKWOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345953AbjKWOxE (ORCPT
+        with ESMTP id S1345818AbjKWOxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:53:04 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F13D5A;
-        Thu, 23 Nov 2023 06:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700751185;
-        bh=kh8MN+tohcYad5prvT/b0FWzLXPRU8fWPeJHBzGWwvc=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=WBAil4xUcYdR4k7+silgIJWW/sui/d8QxHDvGmYlsyNgS4GLXMoirr7t3Dwr+PDxC
-         H4+kc6UuZBOxSLAOVO23jmoenQ13e5PHr3sTGFt9Eq4Ln000dLvyQOW+tdI08nCn9Y
-         ZcbGWDYho5XGDOt9dsEhnYzFCPHXIkYLSRk57KKk=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B31BF1281379;
-        Thu, 23 Nov 2023 09:53:05 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id Ozg8Q6Lac-23; Thu, 23 Nov 2023 09:53:05 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700751185;
-        bh=kh8MN+tohcYad5prvT/b0FWzLXPRU8fWPeJHBzGWwvc=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=WBAil4xUcYdR4k7+silgIJWW/sui/d8QxHDvGmYlsyNgS4GLXMoirr7t3Dwr+PDxC
-         H4+kc6UuZBOxSLAOVO23jmoenQ13e5PHr3sTGFt9Eq4Ln000dLvyQOW+tdI08nCn9Y
-         ZcbGWDYho5XGDOt9dsEhnYzFCPHXIkYLSRk57KKk=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9D90212809DB;
-        Thu, 23 Nov 2023 09:53:04 -0500 (EST)
-Message-ID: <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
-Subject: Re: Fwd: sign-file.c:149:17: warning: implicit declaration of
- function =?UTF-8?Q?=E2=80=98ENGINE=5Fload=5Fbuiltin=5Fengines=E2=80=99?=
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dennis Clarke <dclarke@blastwave.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Keyrings <keyrings@vger.kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Nov 2023 09:53:02 -0500
-In-Reply-To: <e110cfff-08f9-4bbc-6b69-0d67ae6562b6@blastwave.org>
-References: <1fca50c4-6d7b-4c9b-bcea-4df17e2c2e7e@gmail.com>
-         <e110cfff-08f9-4bbc-6b69-0d67ae6562b6@blastwave.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Thu, 23 Nov 2023 09:53:49 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393E9D50
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:53:56 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5cc636d8a21so8366987b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700751235; x=1701356035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hng7atoCf6aq1nFffZNGfN/YBOYveUc0TKmABRfWrB0=;
+        b=xDS2D+5TICLhxq2ynKnVCUuGzMKUTwm58I8eQ2uHsASwJ55sOQfBZ+8ZydSyq0++Iz
+         VTXmY3TAbrq8MPKcr5rGW0gqwTt8PVeh1JS7zY07WMuOvIW2bTlZ9dCXVGXA7EveHg9+
+         j5kvLj6W9vYdDj9byFfQfN+GvmBdT/dpKqEIzOo35pAJTtf3rMkn2AaVsojmsh/PxiSG
+         Evkd0dzMMeg53BG1lkmawaoNB9eUA38zsO0PcDTSFxzm78h8FPKNl4Z3nxHbKb3U2BQ9
+         RuVRRf2xvAa5mERi90bfn1ihsMrYLX3I0h9xxuAgFtf2jkPG05438oCkXYP5lOur/vVP
+         6rNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700751235; x=1701356035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hng7atoCf6aq1nFffZNGfN/YBOYveUc0TKmABRfWrB0=;
+        b=B6/FAa51i5ffkFT4qTJBQYLLzZEw+ZiIVXNge82Q9ycGNAzjnxQ5QiCMKW/SpiENPs
+         0rfG5wa2nl5RIJ3FQlHXkLbC0kU4AnEhtfwmcFTWiogDaRTuzJSR18KBGlMNygqHVWNL
+         udJczcq3e5V2MHS3Ll8XEwFHgu71dPKRgAFrBujXcKfTa6u2UvOYcsejQbIAoar20s4V
+         OsdKpqb2PJViDPSAhnX2jl+nkcjprWiQPxeuOauKiZxNoSEXTY0s9LIdqrO4VaBeK4b2
+         51ux0yz3MYJU0FrrPrRLiHg1crC6i3jam0uZEpHg1uw7yoIO63kU68pDtGQROsFEbIvC
+         yHlA==
+X-Gm-Message-State: AOJu0YwaZfPUBpNviRRUKkGCi6NIPzXYzheNXtYaksmsrQBzid7IdbMb
+        fmjqvlBzW2FuW+Ei24DvqIr+uSYEXaz7du10o/XKPQ==
+X-Google-Smtp-Source: AGHT+IGURWX4SQN9Qat66MW6pT/slPHMNeNkf7JUZYLrhKJ4LBXbN1slma6cln+C5UcPVSm4twoIuLVS7OgepAKwVKI=
+X-Received: by 2002:a81:6dce:0:b0:5cc:475d:ce0a with SMTP id
+ i197-20020a816dce000000b005cc475dce0amr5492125ywc.9.1700751235427; Thu, 23
+ Nov 2023 06:53:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231122175039.2289945-1-andriy.shevchenko@linux.intel.com> <20231122175039.2289945-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231122175039.2289945-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Nov 2023 15:53:44 +0100
+Message-ID: <CACRpkdbXjixVG+g7Yiqm6ki-xzgKUPQ7tUG4VuLH5gBGpwD=TQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] pinctrl: baytrail: Factor out byt_gpio_force_input_mode()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-17 at 00:34 -0500, Dennis Clarke wrote:
-> On 11/16/23 18:41, Bagas Sanjaya wrote:
-> > Hi,
-> > 
-> > I notice a bug report on Bugzilla [1]. Quoting from it:
-> > 
-> <snip>
-> > > Not related to
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=215750 but I *feel*
-> > > that this code needs a hug.
-> > 
-> > See Bugzilla for the full thread.
-> > 
-> > AFAIK, this looks like a bug when the kernel is compiled against
-> > custom (non-system) version of OpenSSL library.
-> > 
-> 
-> I do not know what you could possibly mean. There is nothing "custom"
-> about OpenSSL. For that matter the gcc compiler I am using was also
-> built by me. Works fine. The sign-file.c source compiles fine.
+On Wed, Nov 22, 2023 at 6:51=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-This has all the hallmarks of an openssl compiled without engine
-support; is the symbol OPENSSL_NO_ENGINE set?  And which distro did you
-get this library from?
+> There is a piece of code that it being used at least twice.
+> Factor it out.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-James
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
