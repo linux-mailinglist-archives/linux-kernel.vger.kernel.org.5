@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E696A7F6806
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792F17F680F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbjKWUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 15:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S230486AbjKWUFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 15:05:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWUCI (ORCPT
+        with ESMTP id S230174AbjKWUFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 15:02:08 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDD4B0;
-        Thu, 23 Nov 2023 12:02:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=vvGpKeVBKct7mdmTRc3KhUoKAd20inhURZrMxjX4/5E=; b=V0qjOBP1Ij+ha4/POp+VZeQR//
-        UdKuun1a7BjxgkPtpTT0nsDtpZ2UK+2ls8JYdZdIr/RBhKBgCU8XTotvz1jZs5vQd+D7itwEzW5Wk
-        hTg7DwCY4w/jTODhGDoKlzb9uLZIWldL8VJ32CJzcFd62+63feQBO4Org7+ZzrZQCTJw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6Ftk-0011vP-30; Thu, 23 Nov 2023 21:02:04 +0100
-Date:   Thu, 23 Nov 2023 21:02:04 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, kernel@quicinc.com
-Subject: Re: [PATCH net-next v3 3/3] net: stmmac: Add driver support for
- DWMAC5 fault IRQ Support
-Message-ID: <f5438fff-9682-42d4-822d-4f4f7020e114@lunn.ch>
-References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
- <62eaaace3713751cb1ecac3163e857737107ca0e.1700737841.git.quic_jsuraj@quicinc.com>
+        Thu, 23 Nov 2023 15:05:00 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523BD10D2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:04:58 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-51f64817809so225778a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:04:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700769898; x=1701374698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RSloKbp86UiyOswV753VKR+ULy2TcPDIFU6JTx1BHg8=;
+        b=Y/GYq1bjZBdjVgnR8UnEtq1heRxvHfI230VlpgMlZothiuWI/pihUUw9hIvlyrSINk
+         JhOFYUCiEWUJaltZ9wXK1noXwZ/xhfQmgcrNz2xraL0+uQCnnhMs/VEJd1KfEaxhROjp
+         vno9sES4buCXMLkpp7v8nlGVsuOY4o1BkmkeTTN+BPD1Fqhgkz4gmMvr0CODC8+ULzUN
+         TKG95r01blvAEB5JGjNEQS+bfW4+LRozpxoENOxCrsW3rMl0sxrrag7MtIUoPYjquSCo
+         9L6O22OOWoqRC/u68dcqo/A7CdoMC6oHHMvR1EEly8Fp1iCLKGFq/SRLy24kgRS39JEN
+         N9jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700769898; x=1701374698;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RSloKbp86UiyOswV753VKR+ULy2TcPDIFU6JTx1BHg8=;
+        b=YMUoMhxsLVwMAi/Ok+3JgBpa/r68j+iYgYIfJw7UOb/X+ex10+Kzhi6OtJchptHDCV
+         NfqrtQDF3yK4wXL0OYNAjNUprqw9BCjwpO3LCEiQUHPU5/J9TPDzuTdAzK7efGmMnYoZ
+         8pxNMxrBcKpd1wtVZ/sM0tGBg28RqBeGm1KUeOWjI02L/hsy14/Wa/uYDT0AAKUQcLPk
+         1CFcJn6xu9l5x9ZNabkOKJhf9vokA/SWrYmOS6jg40tia+5k29Rfz1Lv9TWzXWhdyhCB
+         VX2Dj3fPlzatlt5nQlyPFZOI+je64bnEaXOuGlw4sg1jdmELiTWLvKiuQgF54MwNW5/1
+         z+ag==
+X-Gm-Message-State: AOJu0YxOJsXvavqHLO8c5OgDao1iqCSXATWWFETA/E55iNDclKgSfs/2
+        JTVKFESEVByb1EjTMHxJZoAQ2Q==
+X-Google-Smtp-Source: AGHT+IFkd3TNIFngcpqmaOP6yzGlh39X9sE8ua0oX03sz71V9GSS4EYsfgihju9WseoKWmkyNlYZlA==
+X-Received: by 2002:a05:6a20:e11a:b0:185:a0eb:8574 with SMTP id kr26-20020a056a20e11a00b00185a0eb8574mr901433pzb.5.1700769897643;
+        Thu, 23 Nov 2023 12:04:57 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id z12-20020aa791cc000000b006c0316485f9sm1604516pfa.64.2023.11.23.12.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 12:04:57 -0800 (PST)
+Message-ID: <dd7290ed-800f-4523-864d-45b5c2dc93cf@kernel.dk>
+Date:   Thu, 23 Nov 2023 13:04:56 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62eaaace3713751cb1ecac3163e857737107ca0e.1700737841.git.quic_jsuraj@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] nvme link failure fixes
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+        linux-nvme@lists.infradead.org
+Cc:     Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20231122224719.4042108-1-arnd@kernel.org>
+ <ca200ed6-a70e-401e-b862-f690368e0266@kernel.dk>
+ <a9ef56fa-725f-4d18-b408-ce0ba13c2d6e@app.fastmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <a9ef56fa-725f-4d18-b408-ce0ba13c2d6e@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -702,6 +718,10 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
->  	if (stmmac_res->irq < 0)
->  		return stmmac_res->irq;
->  
-> +	ret = stmmac_get_fault_intr_config(pdev, stmmac_res);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "Fault interrupt not present\n");
+On 11/22/23 11:25 PM, Arnd Bergmann wrote:
+> On Thu, Nov 23, 2023, at 02:42, Jens Axboe wrote:
+>> On 11/22/23 3:47 PM, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> There are still a couple of link failures that I tried to address
+>>> with a previous patch. I've split up the missing bits into smaller
+>>> patches and tried to explain the bugs in more detail.
+>>>
+>>> With these applied, randconfig builds work again. Please either
+>>> merge them or treat them as bug reports and find a different fix,
+>>> I won't do another version.
+>>
+>> Applied, but had to hand-apply hunk 9 of patch 3 due to a previous
+>> attempt at this:
+>>
+>> commit 23441536b63677cb2ed9b1637d8ca70315e44bd0
+>> Author: Hannes Reinecke <hare@suse.de>
+>> Date:   Tue Nov 14 14:18:21 2023 +0100
+>>
+>>     nvme-tcp: only evaluate 'tls' option if TLS is selected
+> 
+> Ok, thanks for merging my changes! The commit from Hannes
+> is what I had in my v1 for this, and it was a correct fix
+> as well, my patch 3/3 was just a more elaborate way to do
+> the same thing that I did since Hannes did not like my
+> version at first.
+> 
+> The 23441536b6 commit was not in linux-next yesterday, so
+> it looks like our patches crossed paths on the same day.
 
-This fault/saftey/foobar interrupt is optional? So printing any error
-message it is missing does not seem like a good idea.
+yeah, it was just recently merged, which is probably why it wasn't there
+yet and you didn't see it. Not a big deal, easy enough to resolve - just
+wanted to make sure you knew about it. It should all be heading upstream
+shortly, just sent out the pull.
 
-	Andrew
+-- 
+Jens Axboe
+
