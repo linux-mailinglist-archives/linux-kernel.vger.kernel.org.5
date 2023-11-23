@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C2D7F624C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123B27F6255
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345983AbjKWPHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S1346000AbjKWPJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:09:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345960AbjKWPHX (ORCPT
+        with ESMTP id S1345968AbjKWPJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:07:23 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE43D41;
-        Thu, 23 Nov 2023 07:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=9Ianm+oK/3Nrdav46TrJiBmP/52mNqCzayho+jiWIkU=; b=ljBTLiaf1hJ76JNKk8LoCzMwbV
-        ZcJZ6xDa65NxGWrtUcU+4hzgpRmHVIZ6Fceuf3Ba86xE0awdKaDt9XttJ7Q5OMuZ6zw8weIkusY+o
-        ZacLC42AjFuLQvez3RIj8MXx51Ugy6QIp0O9ZhH0Rw5N/CQ74oOBupwnOruQ313iegow=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6BIQ-0010N2-G5; Thu, 23 Nov 2023 16:07:14 +0100
-Date:   Thu, 23 Nov 2023 16:07:14 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <6eb2e061-5fcb-434a-ad43-370788075597@lunn.ch>
-References: <20231120135041.15259-1-ansuelsmth@gmail.com>
- <20231120135041.15259-4-ansuelsmth@gmail.com>
- <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
- <20231121144244.GA1682395-robh@kernel.org>
- <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
- <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
- <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
- <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
+        Thu, 23 Nov 2023 10:09:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3F1A4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:09:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3070C433C8;
+        Thu, 23 Nov 2023 15:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700752156;
+        bh=+c9SEek8h8usTjzD3WgxNQAR1+4ctQ4AQ4en0fWUy/o=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=WnzPAinAyN8E6iANQ3h7hicUWYWRG2VfCzsudsFkF99aolnpz7Jp6QbJUAGeP3Ue7
+         wBGdqRc256ZChoj5oQ6DS/Poj44WhVJ/CJXXUil4vZXm6nVvAzsiFVQdeqR01WRyaN
+         PCkr4feiPQbLq7QtRL7OUf15ZLFwrX4o7+c3bY8EWA0d1qDiKDlvw994jFZhbI20gI
+         4NkzYGnWEXUUEgUevbKmzaJCwGOAjT20AeLcoXTkR9HBZC7ZMvcewoOVzl9uodifNR
+         qHXcqOXRJdG/gdaslG4ppguroMXTN/8GDrbmtDg/dJW5fVmclj/9GMF43WRi2JRewg
+         Ii/xuTsFF5SEw==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Adam Green <greena88@gmail.com>
+In-Reply-To: <20231116-topic-amlogic-upstream-fix-rk8xx-devid-auto-v2-1-3f1bad68ab9d@linaro.org>
+References: <20231116-topic-amlogic-upstream-fix-rk8xx-devid-auto-v2-1-3f1bad68ab9d@linaro.org>
+Subject: Re: (subset) [PATCH v2] mfd: rk8xx: fixup devices registration
+ with PLATFORM_DEVID_AUTO
+Message-Id: <170075215540.1376129.9613156325295712570.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 15:09:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> compatible = "ethernet-phy-package", "qca807x-phy-package";
+On Thu, 16 Nov 2023 15:05:13 +0100, Neil Armstrong wrote:
+> Since commit 210f418f8ace ("mfd: rk8xx: Add rk806 support"), devices are
+> registered with "0" as id, causing devices to not have an automatic device id
+> and prevents having multiple RK8xx PMICs on the same system.
 > 
-> With "ethernet-phy-package" a must and "qca807x-phy-package" used only
-> if additional property are used.
+> Properly pass PLATFORM_DEVID_AUTO to devm_mfd_add_devices() and since
+> it will ignore the cells .id with this special value, also cleanup
+> by removing all now ignored cells .id values.
 > 
-> My current idea was to use select and base everything on the possible
-> PHY compatible (and it does work, tested by adding bloat in the DT
-> example and seeing if the schema was rejected). Had this idea since the
-> compatible would never be used.
+> [...]
 
-The DT people are unhappy with PHYs don't use compatibles, so
-validation does not work. It probably too late to add compatibles to
-very PHY driver. But this is new development work, we don't have any
-history. So we can add a compatible per package to make the validation
-tools work.
+Applied, thanks!
 
-So for parsing the tree in the kernel we look for
-'ethernet-phy-package'. For validating the tree using the yaml tools
-we use the 'qca807x-phy-package'.
+[1/1] mfd: rk8xx: fixup devices registration with PLATFORM_DEVID_AUTO
+      commit: a6f86de216cd36e0f57f5797df7361c8900f93e6
 
-	   Andrew
+--
+Lee Jones [李琼斯]
+
