@@ -2,130 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD187F5F30
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD137F5F38
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345326AbjKWMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S1345348AbjKWMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345292AbjKWMme (ORCPT
+        with ESMTP id S1345340AbjKWMn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:42:34 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08321A4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:42:38 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1ce5b72e743so135415ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:42:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700743358; x=1701348158; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wsML6oh+GFk07kkCjNMgU6G52KimBnWTxLnO5BIWqh8=;
-        b=VEM2g8RRQVlLFa61beHZwrgIPBWYPwTL8NYwgwNdMw/n+7fHnxT4RCpwHdFLFa91Qq
-         RBTRk5qjElTlI81AKT4aMw0SDmLtA/zZYFFryYFM/xMMcPhqnGUidBq36AKqeLEUPz28
-         jk/SvmPZ9EmExefHQQenLamMH0teeSeqfGY6WSgXipOWVu9Octv9IBQ+5So/hg0L7bT4
-         7yZOumP4Z6SbyEULSolU9fENGzNmY29fj6j6C0QvmEbn5/nCDLqZ5PybC+Jzad3BFF8B
-         83h/QtHsmC+CMP+laeXrK2P+tHL6yWXWIP1sIY32/T0btZML5lJ+FwCM1WZWayUsx5cU
-         ZeaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700743358; x=1701348158;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wsML6oh+GFk07kkCjNMgU6G52KimBnWTxLnO5BIWqh8=;
-        b=hQK7bu1MwI156rmKg0h0ib094BDrQ+C4irro9AKZCEa3JbqtoEM7dEzRv95wSiYWDL
-         +jnnazRfuuJ5QEUYRO1O6mmorCg3NSyP8oXamyZUBsqQrWQihRv1SKNVKqKCcI4+c1dT
-         ToWMrkdr0x90p5y5AamluMvgWj0eja/047EaO/yMhocv+nfyn7fCcKQnn2Aki6nzGfYH
-         6Pl76TVewJVX3rtPFHqHdYrYyBdg0n04v+LmosdIBcCJcb2SkHdZIrSAatmRF/Eu9Ibm
-         XRrT20Egt0C1YzXC1YzwSf/+mbherI8yVoJxQJgDMS+CGuE0I6zGe6h2uA0vtRyuuAA6
-         J3zg==
-X-Gm-Message-State: AOJu0YwgIJ2Xypvm1pUkvylzFmy08lN/SB/k3MyKXS0IuRKTu12SoSYN
-        Pj93mT/V6aO2lnajP4PwmXVuTa0uwIBjjXQf9+TCGA==
-X-Google-Smtp-Source: AGHT+IH6oXxgHLto7XAEMgVh0kI6+HnoNSfdi2ehuIln65JCtq2WYnEootglsdIqrw5cPMghkfJ9JajTNBp3Ks/Dt+E=
-X-Received: by 2002:a17:902:f811:b0:1c2:446:5259 with SMTP id
- ix17-20020a170902f81100b001c204465259mr473845plb.19.1700743357726; Thu, 23
- Nov 2023 04:42:37 -0800 (PST)
+        Thu, 23 Nov 2023 07:43:59 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C35D44;
+        Thu, 23 Nov 2023 04:44:02 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ANChT1e93020939, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ANChT1e93020939
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Nov 2023 20:43:29 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 23 Nov 2023 20:43:29 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Thu, 23 Nov
+ 2023 20:43:20 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: [PATCH net-next v12 00/13] Add Realtek automotive PCIe driver
+Date:   Thu, 23 Nov 2023 20:43:00 +0800
+Message-ID: <20231123124313.1398570-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
- <2023112332-award-fanciness-2bcf@gregkh> <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
- <2023112306-diner-jawline-c7dc@gregkh>
-In-Reply-To: <2023112306-diner-jawline-c7dc@gregkh>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 23 Nov 2023 13:42:26 +0100
-Message-ID: <CANp29Y6MrCiiwXO4YJ0D8+YHRBY_4ii090mVq+rZ1EjXJH8Stg@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     xingwei lee <xrivendell7@gmail.com>,
-        "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
-        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.210.160]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 10:41=E2=80=AFAM gregkh@linuxfoundation.org
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Nov 23, 2023 at 10:32:26AM +0100, Aleksandr Nogikh wrote:
-> > On Thu, Nov 23, 2023 at 9:55=E2=80=AFAM gregkh@linuxfoundation.org
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
-> > > > Hi. I have reproduced this bug with repro.txt and repro.c below:
-> > > >
-> > > > repro.txt
-> > > > r0 =3D openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, =
-0x0)
-> > > > ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)=3D{{0x0, 0xfff=
-f,
-> > > > 0x3}, 'syz0\x00'})
-> > > > ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
-> > >
-> > > You are using fault injection, which, by it's very name, causes fault=
-s :)
-> >
-> > But those injected failures (that do not break the kernel, but just
-> > emulate an error returned from a function that should be expected to
-> > sometimes return an error) still should not lead to general protection
-> > fault panics, shouldn't they?
->
-> It all depends on what exactly the fault is happening for.  Some
-> allocations in the kernel just "will not fail ever" so when you add
-> fault injection testing, you are doing things that really can not ever
-> happen.
+This series includes adding realtek automotive ethernet driver 
+and adding rtase ethernet driver entry in MAINTAINERS file.
 
-Just in case - are you aware of any specific examples where fault
-injection injects failures that should never ever happen? All
-automatic kernel testing would benefit by making it not do this then.
+This ethernet device driver for the PCIe interface of 
+Realtek Automotive Ethernet Switch,applicable to 
+RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-From what I see in the code, fault injection already takes care of
-avoiding such problems:
-https://elixir.bootlin.com/linux/latest/source/mm/failslab.c#L25
-https://elixir.bootlin.com/linux/latest/source/mm/fail_page_alloc.c#L30
+v1 -> v2:
+- Remove redundent debug message.
+- Modify coding rule.
+- Remove other function codes not related to netdev.
 
->
-> So the proof is first on the reporter, prove that this type of fault
-> _can_ actually happen, and then, make a fix to properly handle it.
-> Don't expect us to make a fix for something that can not actually occur,
-> as that would be pointless (hint, we have been down this path before, it
-> doesn't work...)
->
-> thanks,
->
-> greg k-h
+v2 -> v3:
+- Remove SR-IOV function - We will add the SR-IOV function together when
+uploading the vf driver in the future.
+- Remove other unnecessary code and macro.
+
+v3 -> v4:
+- Remove function prototype - Our driver does not use recursion, so we
+have reordered the code and removed the function prototypes.
+- Define macro precisely - Improve macro code readability to make the
+source code cleaner.
+
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
+
+v5 -> v6:
+- Some old macro definitions have been removed and replaced with the
+lastest usage.
+- Replace s32 with int to ensure consistency.
+- Clearly point out the objects of the service and remove unnecessary
+struct.
+
+v6 -> v7:
+- Split this driver into multiple patches.
+- Reorganize this driver code and remove redundant code to make this
+driver more concise.
+
+v7 -> v8:
+- Add the function to calculate time mitigation and the function to 
+calculate packet number mitigation. Users can use these two functions 
+to calculate the reg value that needs to be set for the mitigation value
+they want to set.
+- This device is usually used in automotive embedded systems. The page
+pool api will use more memory in receiving packets and requires more 
+verification, so we currently do not plan to use it in this patch.
+
+v8 -> v9:
+- Declare functions that are not extern as static functions and increase
+the size of the character array named name in the rtase_int_vector struct
+to correct the build warning noticed by the kernel test robot.
+
+v9 -> v10:
+- Currently we change to use the page pool api. However, when we allocate
+more than one page to an rx buffer, it will cause system errors
+in some cases. Therefore, we set the rx buffer to fixed size with 3776
+(PAGE_SIZE - SKB_DATA_ALIGN(sizeof(skb_shared_info) )), and the maximum 
+value of mtu is set to 3754(rx buffer size - VLAN_ETH_HLEN - ETH_FCS_LEN).
+- When ndo_tx_timeout is called, it will dump some device information,
+which can be used for debugging.
+- When the mtu is greater than 1500, the device supports checksums
+but not TSO.
+- Fix compiler warnning.
+
+v10 -> v11:
+- Added error handling of rtase_init_ring().
+- Modify the error related to asymmetric pause in rtase_get_settings.
+- Fix compiler error.
+
+v11 -> v12:
+- Use pm_sleep_ptr and related macros.
+- Remove multicast filter limit.
+- Remove VLAN support and CBS offload functions. 
+- Remove redundent code.
+- Fix compiler warnning.
+
+Justin Lai (13):
+  rtase: Add pci table supported in this module
+  rtase: Implement the .ndo_open function
+  rtase: Implement the rtase_down function
+  rtase: Implement the interrupt routine and rtase_poll
+  rtase: Implement hardware configuration function
+  rtase: Implement .ndo_start_xmit function
+  rtase: Implement a function to receive packets
+  rtase: Implement net_device_ops
+  rtase: Implement pci_driver suspend and resume function
+  rtase: Implement ethtool function
+  rtase: Add a Makefile in the rtase folder
+  realtek: Update the Makefile and Kconfig in the realtek folder
+  MAINTAINERS: Add the rtase ethernet driver entry
+
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  335 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2366 +++++++++++++++++
+ 6 files changed, 2736 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
+-- 
+2.34.1
+
