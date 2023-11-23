@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 123B27F6255
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4CB7F6259
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346000AbjKWPJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        id S1346003AbjKWPKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:10:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345968AbjKWPJL (ORCPT
+        with ESMTP id S1345968AbjKWPKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:09:11 -0500
+        Thu, 23 Nov 2023 10:10:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3F1A4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:09:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3070C433C8;
-        Thu, 23 Nov 2023 15:09:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAFCD41
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:10:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CB3C433C8;
+        Thu, 23 Nov 2023 15:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700752156;
-        bh=+c9SEek8h8usTjzD3WgxNQAR1+4ctQ4AQ4en0fWUy/o=;
+        s=k20201202; t=1700752239;
+        bh=GrCfOdky6KNJjNJ8E6fqLtWu4tum/bJIEaA+gGu5VLw=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WnzPAinAyN8E6iANQ3h7hicUWYWRG2VfCzsudsFkF99aolnpz7Jp6QbJUAGeP3Ue7
-         wBGdqRc256ZChoj5oQ6DS/Poj44WhVJ/CJXXUil4vZXm6nVvAzsiFVQdeqR01WRyaN
-         PCkr4feiPQbLq7QtRL7OUf15ZLFwrX4o7+c3bY8EWA0d1qDiKDlvw994jFZhbI20gI
-         4NkzYGnWEXUUEgUevbKmzaJCwGOAjT20AeLcoXTkR9HBZC7ZMvcewoOVzl9uodifNR
-         qHXcqOXRJdG/gdaslG4ppguroMXTN/8GDrbmtDg/dJW5fVmclj/9GMF43WRi2JRewg
-         Ii/xuTsFF5SEw==
+        b=WBZCK6JDKty6AftLqkLykG1Umyj3B/rM3ito0gNW3a5LedbPUkkEwT0aBtWDQ27nh
+         loDcAF5kt/0aFE4ADmtkojEyRn8AN8et83fmoANl73lCL+EOaooqkPhta1TYh3LVz1
+         PKog3Q+I0x+WQhFPnWoHFo/2hd6tWoIL5umhlQUdr0s4AyEI22FB9eIqhR4oALSjs9
+         NgLDD6vV0N7nDqi1+xZ7OKyAYVFOYNWk45l+w0iv80iZYzY6YJFamh4xshT0lf4Toh
+         soPMM2Oc36GpPnatU+U6Xlf5DcOxVqvzw68yDKtOYdebiIdo1xoMBM5dfIzGMikkWY
+         kat5oSK0qcRdg==
 From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Adam Green <greena88@gmail.com>
-In-Reply-To: <20231116-topic-amlogic-upstream-fix-rk8xx-devid-auto-v2-1-3f1bad68ab9d@linaro.org>
-References: <20231116-topic-amlogic-upstream-fix-rk8xx-devid-auto-v2-1-3f1bad68ab9d@linaro.org>
-Subject: Re: (subset) [PATCH v2] mfd: rk8xx: fixup devices registration
- with PLATFORM_DEVID_AUTO
-Message-Id: <170075215540.1376129.9613156325295712570.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 15:09:15 +0000
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Andrew Davis <afd@ti.com>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231116224121.302150-1-afd@ti.com>
+References: <20231116224121.302150-1-afd@ti.com>
+Subject: Re: [PATCH 1/2] leds: tca6507: Use devm_gpiochip_add_data() to
+ simplify remove path
+Message-Id: <170075223827.1377245.12365647707765746523.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 15:10:38 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,21 +51,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 15:05:13 +0100, Neil Armstrong wrote:
-> Since commit 210f418f8ace ("mfd: rk8xx: Add rk806 support"), devices are
-> registered with "0" as id, causing devices to not have an automatic device id
-> and prevents having multiple RK8xx PMICs on the same system.
+On Thu, 16 Nov 2023 16:41:20 -0600, Andrew Davis wrote:
+> Use devm version of gpiochip add function to handle removal for us.
 > 
-> Properly pass PLATFORM_DEVID_AUTO to devm_mfd_add_devices() and since
-> it will ignore the cells .id with this special value, also cleanup
-> by removing all now ignored cells .id values.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] mfd: rk8xx: fixup devices registration with PLATFORM_DEVID_AUTO
-      commit: a6f86de216cd36e0f57f5797df7361c8900f93e6
+[1/2] leds: tca6507: Use devm_gpiochip_add_data() to simplify remove path
+      commit: 50b683a8b9884f032c3d268b8a68df799219e91b
+[2/2] leds: tca6507: Use devm_led_classdev_register() to simplify remove path
+      commit: 612af3a44921f21c361a369899fec61698aa08e1
 
 --
 Lee Jones [李琼斯]
