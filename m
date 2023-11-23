@@ -2,300 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A271B7F55C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED667F55C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjKWBHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 20:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S231793AbjKWBLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 20:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjKWBHR (ORCPT
+        with ESMTP id S231430AbjKWBLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 20:07:17 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A891B2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:07:22 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b587bd1a63so659604b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:07:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700701641; x=1701306441; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhI6Kj7SOax34YHTzSZB20BhWZZOv5y6Dq/HW0ZZ0cE=;
-        b=byt9e5k+FEOWMz8rBK5EWxIXT55meJ6SflAQ3ltm0MdrCeaRUOzy88qHUKAyMyQ0Uk
-         x8bMHY0Bs60CqPaUwi053o/Dj0dNBbKlh5O7GYdnLqB3Fj9uajv713EBd1vwC6PDn5RO
-         or+Rfk0xNGRyyhKOIiQzqW+7F+McH5SxlJpW8j0TtYAgt6whYjvaCO0nRzVixmHTIYpP
-         IFoHllVqHY9Ga9DGNbf4dvH8S4dgiEKqFOCsfq0iCKD493JAbkr5nqXXFK9oFpZk/1kM
-         1NdJntEBzJ90LNMxkN9bjPS1RNmlloSLzebupnn+n3p6X8AyYuX2RrOoxKPBz46/hzBQ
-         Ri6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700701641; x=1701306441;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dhI6Kj7SOax34YHTzSZB20BhWZZOv5y6Dq/HW0ZZ0cE=;
-        b=XiPpHG3hRTXwxzTt2+Fe/6F4xPBUr5KtUHbWtOucxvKUggMhl0Fsj9RhTWMMNvxTJ5
-         hxkiqZ7Q2TYeI33/srMvsd4GFXfUM1yRTfZmxJZxXtRe+LGl37BtoFomx0wfTty44yiD
-         MURqi6z6MkSZWteNNDhr8angqsx8nrXb+lkJ5RtFQJRUX4QDGfX6BftQSVCOJ4q5O/gZ
-         b2A6Rsa5b6LkKLgEY6XGscWUduZETNCmJdS31UbLTemdNsaAsxTdXsKoeAc459Ig00iS
-         6oreQAwEHdxtv6Uhi4ePY+bfpvspmzRGmN0mQ1v2mUBiLjZ8vTCkiVz+VBsF0rhb7P0y
-         +iKQ==
-X-Gm-Message-State: AOJu0Yz3P/v7s3j/zihm/FHrdhBoDJ1uWcosyaXasOEdKmz0y5xmOe3G
-        dGh4dPvx4ytrzQSRTiG3GSULwA==
-X-Google-Smtp-Source: AGHT+IGtf5Axj1D2CvTbndBHVJQCV0DJBvlAfN1QZAlbbbFDC4Q+5Vxo325iBr8SInwl65y/GBOOYw==
-X-Received: by 2002:a05:6808:14d1:b0:3b2:f500:6ee0 with SMTP id f17-20020a05680814d100b003b2f5006ee0mr550134oiw.28.1700701641228;
-        Wed, 22 Nov 2023 17:07:21 -0800 (PST)
-Received: from ghost (cpe-70-95-50-247.san.res.rr.com. [70.95.50.247])
-        by smtp.gmail.com with ESMTPSA id pt9-20020a0568709e4900b001f4d34ae2ecsm70243oab.23.2023.11.22.17.07.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 17:07:20 -0800 (PST)
-Date:   Wed, 22 Nov 2023 17:07:18 -0800
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Andrea Parri <parri.andrea@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, rehn@rivosinc.com,
-        paulmck@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com
-Subject: Re: [RFC PATCH] membarrier: riscv: Provide core serializing command
-Message-ID: <ZV6lxsRmuN7bYFnD@ghost>
-References: <mhng-b720eb90-633f-498b-a487-0cfdc9f00ddd@palmer-ri-x1c9>
- <65e98129-0617-49ca-9802-8e3a46d58d29@efficios.com>
- <ZU0sliwUQJyNAH1y@andrea>
+        Wed, 22 Nov 2023 20:11:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6C6BC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700701903; x=1732237903;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=LLFUCyh0/O6FZPKXRj+qBugyD0+GKU+7g/ajgvE49ak=;
+  b=O4ZGhAB+yIs/kPMLdd/n8S8x35e/ZJlYTt3hTw1RhnHzjOCNz64OKa26
+   jq5rJDLRwvhG5YvkSIp2MHK87felmUMyQ4VJI0amFsTVkIzAtfxZEKH16
+   tzG9FylzvoWk8pn5CL5j2B7uROgYqrc7qSatSWzUn9U5uXKZayaMNNg3E
+   4UAmRKk8uFRKm9DoVd6NYCZzhsw2gBSsEOnfm+XErXy50vvnaWqok4NOJ
+   rhiRvEXfcLMmfA58DKp0OZQyUQRfq+apUMp3ul1yAlwNxMUzoUsSJQX8F
+   tb79chxr077K6teXeyM2xEV6Lc7yDhz8Z9hZvoCZmPqMJtJZyFbw4bjDT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371526691"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="371526691"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 17:11:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="940444906"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="940444906"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 17:11:42 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 22 Nov 2023 17:11:41 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 17:11:41 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 22 Nov 2023 17:11:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GBAs5liqP1SW5k8EH0YC/x7DDmaFTVqmnRxL/mfxQIF50/P/7pZwLvx2lbjWOZz9Dijfut7k65DD0aGvp6choUH5Ss2gN9/38xWUPaK2aRrNDrUlM9bLUj56gjpf6Pl/1TStRir1fUG7pKMBydo8mav9Cggpuc4zb6Fc+J2yIcrDvNV/oO9Ey8VEkJvbI+fbfGmB/LJ6PMChvoPGU8WcJxtKNfMt/Z4HVY+E1HKx74+wPo8DD0VzHZ8b/DYSPUApSbnVenRtiE2ONOtpxO/KCv5EnHNR3MJb344HJSAziUnrxnVNt3bRxmdAIEsoAVghuuRA+FV6LzdNLsedg9RGZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J1nPZLwbC8ELc2zHSR0BPSvkpV/2UPK6KtMbjeG0Uas=;
+ b=Sfe1CMwMW1O25TVooJEKZN4PjfqTpTrDXOYtR2JXAnlQvdn9WQf9nKp+/bsAG3kZqMDuq3Mt7QONwItA0wBEX1NQlM7RszgIHecQYq18Aor8LnhPZE/mEZSYNCFJHiIKYfGfbe/g+zRKzf2QFgrioXrPDitFclu3KWJdriAlmmEKB4I0jyLU3hmJLIsqw82Nsj9smYIIh7Qgobtu5TTEq5euZxvF6F3cNkL7qbGbrAjgmTMKiVGeH8tFqBRVIB6fK4h+dr3EtJ0dAuxaj3q4PvMyEpLoPyh+mK8cnsmg4AeNIqNjDwsh6XjSM27t65Vb65BSS7hiLAsKuJ7MZPC1NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by DM4PR11MB5261.namprd11.prod.outlook.com (2603:10b6:5:388::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
+ 2023 01:11:14 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::3d83:82ce:9f3b:7e20]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::3d83:82ce:9f3b:7e20%5]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
+ 01:11:14 +0000
+Message-ID: <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
+Date:   Thu, 23 Nov 2023 09:09:38 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To:     Peng Zhang <zhangpeng362@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <ying.huang@intel.com>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+From:   Yin Fengwei <fengwei.yin@intel.com>
+In-Reply-To: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0051.apcprd02.prod.outlook.com
+ (2603:1096:4:196::10) To CO1PR11MB4820.namprd11.prod.outlook.com
+ (2603:10b6:303:6f::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZU0sliwUQJyNAH1y@andrea>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|DM4PR11MB5261:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4031455f-ec45-4961-0570-08dbebc11600
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1SLwohBizQzwR6r6uLU6Jy6bRUDwyJ/wYZSSmw8Cj8OCrxalgFurBMMswWj6ZKhOYoZm3/leFR2zx+PitQ/qx/AIShsEnotq+c05V35Yx0wqtHmBg+NFT8yE5InaEbtF/RY4IohtkBOims9MS77eHWyXkPqmWRFDf8xyzT7y22W6+EaF7t/J8O2B8sAMtFCBXZQMgZR8XJMOHDrvBM/7P5k7br5bnIhsCu9uI21epalB6knYuirUoOrzWbq5REElORE8TogPuz3XxQytEHmxWxcl2G4kwPaJb66PlmJ7PEJcO0zZsTOkUFEJCI+QLt8xYXs5GiNKCUx1+HXdNQvPVIO6mp3N11oMc0x6ssLLa2GSp1BHoENFgxwALBJSl4kzRqW//ffysX7aHFJpFTTeYjcbT3AZz8JE+bvdyiMWf8jfmRLK3Y3jyKzANsUXmbKtWRhzpZbo53ak37NUZh+KO+puneRqllVgAzM1EZxhPRCJdIu5WG18dNh9rsGLndTmIvEaksxSY795JGNrwZypRVdN8TTmRu9x7ncEG4E9DjYsa76/kDG4B8IzapQC+aetG7UZ6HqKmQTS0VL77HJWTlFQxdX0y3paguQYiqnWFbYqBwRjh8oqNg1P+vwc4NaC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(366004)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(41300700001)(36756003)(5660300002)(86362001)(7416002)(31696002)(2906002)(6512007)(82960400001)(53546011)(6506007)(2616005)(26005)(83380400001)(966005)(6486002)(478600001)(6666004)(38100700002)(4326008)(8676002)(8936002)(31686004)(66556008)(66476007)(66946007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0Vibm9EeU9LVmlWdzYvSGRoR3R1WkdkMWpJMVEwaUVlWDN1U0QzZzM3RmlY?=
+ =?utf-8?B?d3A3UStLYWd6ZHdnK1MyT2FLbEtHT0d1UWM2eFBJaUFnZGtrME4zcVk5VlVW?=
+ =?utf-8?B?ckEzbjAvMVVLUnVvZXJlcng1TXZSYVpqRSttVG56REQ2ZmVwT21RUmxGVXJz?=
+ =?utf-8?B?U2FyTDAwY3RvcXZGUWRjR1E1N2V0MnBpNGp1M1dvRkswMHJvcWs4ZEFKQ1k3?=
+ =?utf-8?B?NjdLeTRGbU8vcjZHWGhkd2wwTTJjWHl2VTlKM0ptRmNEWnA2Vis2VWpwazhC?=
+ =?utf-8?B?ZzduZFNiSVZGaGxGZFhXeEd0VFBrbHZWTlgydkhrNitsUEsycTgrckc5ZWZw?=
+ =?utf-8?B?OXNDNURmWVFXbjNzakR3REZpSCtEeGZNZzljK1puVDZWVkZhTzRTSjhsTGNx?=
+ =?utf-8?B?TEdIRjhnUllMNnlMMGIxR0lSRmJIaElaUjJoTEg0UHBUclpJZHJBSDFBSGFx?=
+ =?utf-8?B?SnBGVERNbUxTNTJNNytkeWF0VXU1QmxKV3o5TnpjUDV0K3YrMk9Rem4rYVVG?=
+ =?utf-8?B?WVk3LzNHN2FYWnRyMFlBdFRlUWU1NDFodUl2NjY3NEVub0l0aUtUQ25QOW1F?=
+ =?utf-8?B?N2RCNnBjdzZROEQrWmxpVHNtSjF2dGF3TXJVS3pwTUhLM2pMN1p5VjVmZHhX?=
+ =?utf-8?B?NGpDdk8rQXNFSmFKZmpTR1hDZ1dLWUptZnN6a1ROSnhMRE1DTXMrWGdYdTZm?=
+ =?utf-8?B?U3VtUnhxa0lkdVhseFdzbktQcmYvaDVGWFRoTHY4M3haeXl2N2RRNVUxMU1Y?=
+ =?utf-8?B?UXl0M0FtWFA3SVRjUTZqNTBNRU1OTjErTm1JZGVLYWVuaFRnMXI1K0liSkow?=
+ =?utf-8?B?Ukt4RTlyaFZOd3RoRDVrQkphYmltckRXcG9GUitySlZ5c2h0N1A0Uzh0YjAx?=
+ =?utf-8?B?RHFtb2YxaDJzUEVISWRCc25Xazl0NkFEeldCYUdmYzloa3hMOXczc2NyU0I0?=
+ =?utf-8?B?ZW4weFpDUVhDU3JkVzRSSWI2N0ZjTEMwRmRndGcvSUhKLy9rMEpiTFQzMWZz?=
+ =?utf-8?B?eHJNb1JGWDNWaFRjcXdkWTBXN3lhZHdHR1JmL2VQVExYK0lNMnJCMDQ3UkFT?=
+ =?utf-8?B?OXFzTnd4Y0VzWVJEcEpLZTlJVmprVW1vTjlBYm5zNER3eUVQMkhGWktRa1BB?=
+ =?utf-8?B?K2pNVVpNQkZuRm82VFVQNnpvNzhWMGRPR25TQzhQNVFrQk5uVHF5MWZYaUdu?=
+ =?utf-8?B?TEhmTnR3N3R4NStWWmVLbWxPaFdLeC9nTm90RGFxVTl6aFNlcldlQ3NITENM?=
+ =?utf-8?B?NUVLVnhSWGxhMnRvVmE3V0pYVWZsZFA0Q2NVOTlCOXVUbTJjaGJXNnFaM05Z?=
+ =?utf-8?B?WnVGY1g4Zlg4N1YzZW5TWVdWeU1Jbkp1QkxKaVFpeHdxR2dTcUNWVzdwazI2?=
+ =?utf-8?B?RHRZZ2p3blFpOEUrUkZwb3FXNGh4ZmkvNnZwMVlOaUhYcnpoUy9DbjNJajlJ?=
+ =?utf-8?B?QXY5bnh1c2UvNTlFMXVzZ0FmN0lpMzRjVHZ3R1dJNW5GYlZpTy85Y2VJRWoy?=
+ =?utf-8?B?dEJISFpBRWI5cjdYbWVlVFpiL1N4eVlmY2FhYVlpUzFZeW5VWkV2ZzZtQ0NR?=
+ =?utf-8?B?TmdIcm5kdzB0bXMrSFNPZjZvMCtIcnNyMHo1TDhUTkx3b29KakJoMXMwSUUz?=
+ =?utf-8?B?YkVZY242T3FCQWFsdzBYMVpnWS9LOS95RFgzcExsQURkaDdtc2paZ2dwelVk?=
+ =?utf-8?B?R2FhWGNnbThlMGthdzFWaHM4dDZLN3BENytxZFJ0V1FCSWVmcXpsVTRXMndl?=
+ =?utf-8?B?UTVGeENjSUwxOW5iREYyazJjVTVTS0tINmZBbFFTQ2l1eXY2L0R3Yjd1UkNm?=
+ =?utf-8?B?cnRzRDRFcnRWT2ErdkZ1RkFHSjMwOFhjU2ZMcnFRV1YwWCtTZFhoLzM5Vjg3?=
+ =?utf-8?B?ZWRUM2xpcUwvS2h4QjIyRGRvMzBCT1k5SHZ0bG9iazBCaDNYYjNEK21GcmhM?=
+ =?utf-8?B?Szg0bU0xRk9NWGdGYURpYU5meTgzTkhGRkIwczhRMFZqU3lqcHU1N0FmdDZV?=
+ =?utf-8?B?WndhVkY2VTBvRXU2VFZkQy9lSGlxRnVsNkRxL2FocmRDeU5ORmJNMVBMTmht?=
+ =?utf-8?B?UFFBWllBVU9pekpQSDVuSHlzVU5OYzBTcTFtRGxkZUx3VkpRd2xsMzAvdVVZ?=
+ =?utf-8?Q?xfMnBCc/zIJfD4HeDsnP4EJlI?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4031455f-ec45-4961-0570-08dbebc11600
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 01:11:13.6744
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E1acK8kxGxBcrRPtVloWRDe4CYvBVbEPy/oXhZwntmFcEF1ljv0vq8K40O1Pn+L1Xi2h1YCLPTC7E35ZF+8PMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5261
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 08:24:58PM +0100, Andrea Parri wrote:
-> Mathieu, all,
+Hi Peng,
+
+On 11/22/23 22:00, Peng Zhang wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
 > 
-> Sorry for the delay,
+> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+> in application, which leading to an unexpected performance issue[1].
 > 
-> > AFAIR this patch implements sync_core_before_usermode which gets used by
-> > membarrier_mm_sync_core_before_usermode() to handle the uthread->kthread->uthread
-> > case. It relies on switch_mm issuing a core serializing instruction as well.
-> > 
-> > Looking at RISC-V switch_mm(), I see that switch_mm() calls:
-> > 
-> >   flush_icache_deferred(next, cpu);
-> > 
-> > which only issues a fence.i if a deferred icache flush was required. We're
-> > missing the part that sets the icache_stale_mask cpumask bits when a
-> > MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE is invoked.
+> This caused by temporarily cleared pte during a read/modify/write update
+> of the pte, eg, do_numa_page()/change_pte_range().
 > 
-> [...]
+> For the data segment of the user-mode program, the global variable area
+> is a private mapping. After the pagecache is loaded, the private anonymous
+> page is generated after the COW is triggered. Mlockall can lock COW pages
+> (anonymous pages), but the original file pages cannot be locked and may
+> be reclaimed. If the global variable (private anon page) is accessed when
+> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
 > 
-> > The only part where I think you may want to keep some level of deferred
-> > icache flushing as you do now is as follows:
-> > 
-> > - when membarrier MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE is invoked,
-> >   call a new architecture hook which sets cpumask bits in the mm context
-> >   that tells the next switch_mm on each cpu to issue fence.i for that mm.
-> > - keep something like flush_icache_deferred as you have now.
-> > 
-> > Otherwise, I fear the overhead of a very expensive fence.i would be too
-> > much when processes registering with MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE
-> > and start doing fence.i on each and every switch_mm().
-> > 
-> > So you'd basically rely on membarrier to only issue IPIs to the CPUs which are
-> > currently running threads belonging to the mm, and handle the switch_mm with
-> > the sync_core_before_usermode() for uthread->kthread->uthread case, and implement
-> > a deferred icache flush for the typical switch_mm() case.
+> At this time, the original private file page may have been reclaimed.
+> If the page cache is not available at this time, a major fault will be
+> triggered and the file will be read, causing additional overhead.
 > 
-> I've (tried to) put this together and obtained the two patches reported below.
-> Please let me know if this aligns with your intentions and/or there's interest
-> in a proper submission.
+> Fix this by rechecking the pte by holding ptl in filemap_fault() before
+> triggering a major fault.
 > 
->   Andrea
+> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
 > 
-> 
-> From e7d07a6c04b2565fceedcd71c2175e7df7e11d96 Mon Sep 17 00:00:00 2001
-> From: Andrea Parri <parri.andrea@gmail.com>
-> Date: Thu, 9 Nov 2023 11:03:00 +0100
-> Subject: [PATCH 1/2] locking: Introduce prepare_sync_core_cmd()
-> 
-> Introduce an architecture function that architectures can use to set
-> up ("prepare") SYNC_CORE commands.
-> 
-> The function will be used by RISC-V to update its "deferred icache-
-> flush" data structures (icache_stale_mask).
-> 
-> Architectures defining prepare_sync_core_cmd() static inline need to
-> select ARCH_HAS_PREPARE_SYNC_CORE_CMD.
-> 
-> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->  include/linux/sync_core.h | 16 +++++++++++++++-
->  init/Kconfig              |  3 +++
->  kernel/sched/membarrier.c |  1 +
->  3 files changed, 19 insertions(+), 1 deletion(-)
+>  mm/filemap.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> diff --git a/include/linux/sync_core.h b/include/linux/sync_core.h
-> index 013da4b8b3272..67bb9794b8758 100644
-> --- a/include/linux/sync_core.h
-> +++ b/include/linux/sync_core.h
-> @@ -17,5 +17,19 @@ static inline void sync_core_before_usermode(void)
->  }
->  #endif
->  
-> -#endif /* _LINUX_SYNC_CORE_H */
-> +#ifdef CONFIG_ARCH_HAS_PREPARE_SYNC_CORE_CMD
-> +#include <asm/sync_core.h>
-> +#else
-> +/*
-> + * This is a dummy prepare_sync_core_cmd() implementation that can be used on
-> + * all architectures which provide unconditional core serializing instructions
-> + * in switch_mm().
-> + * If your architecture doesn't provide such core serializing instructions in
-> + * switch_mm(), you may need to write your own functions.
-> + */
-> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
-> +{
-> +}
-> +#endif
->  
-> +#endif /* _LINUX_SYNC_CORE_H */
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 6d35728b94b2b..61f5f982ca451 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1972,6 +1972,9 @@ source "kernel/Kconfig.locks"
->  config ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->  	bool
->  
-> +config ARCH_HAS_PREPARE_SYNC_CORE_CMD
-> +	bool
-> +
->  config ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
->  	bool
->  
-> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-> index 2ad881d07752c..58f801e013988 100644
-> --- a/kernel/sched/membarrier.c
-> +++ b/kernel/sched/membarrier.c
-> @@ -320,6 +320,7 @@ static int membarrier_private_expedited(int flags, int cpu_id)
->  		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
->  			return -EPERM;
->  		ipi_func = ipi_sync_core;
-> +		prepare_sync_core_cmd(mm);
->  	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
->  		if (!IS_ENABLED(CONFIG_RSEQ))
->  			return -EINVAL;
-> -- 
-> 2.34.1
-> 
-> 
-> From 617896a1d58a5f8b0e5895dbc928a54e0461d959 Mon Sep 17 00:00:00 2001
-> From: Andrea Parri <parri.andrea@gmail.com>
-> Date: Tue, 7 Nov 2023 21:08:06 +0100
-> Subject: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-> 
-> RISC-V uses xRET instructions on return from interrupt and to go back
-> to user-space; the xRET instruction is not core serializing.
-> 
-> Use FENCE.I for providing core serialization as follows:
-> 
->  - by calling sync_core_before_usermode() on return from interrupt (cf.
->    ipi_sync_core()),
-> 
->  - via switch_mm() and sync_core_before_usermode() (respectively, for
->    uthread->uthread and kthread->uthread transitions) to go back to
->    user-space.
-> 
-> On RISC-V, the serialization in switch_mm() is activated by resetting
-> the icache_stale_mask of the mm at prepare_sync_core_cmd().
-> 
-> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-> Suggested-by: Palmer Dabbelt <palmer@dabbelt.com>
-> ---
->  .../membarrier-sync-core/arch-support.txt     |  2 +-
->  arch/riscv/Kconfig                            |  3 +++
->  arch/riscv/include/asm/sync_core.h            | 23 +++++++++++++++++++
->  3 files changed, 27 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/include/asm/sync_core.h
-> 
-> diff --git a/Documentation/features/sched/membarrier-sync-core/arch-support.txt b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> index 23260ca449468..a17117d76e6d8 100644
-> --- a/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> +++ b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> @@ -44,7 +44,7 @@
->      |    openrisc: | TODO |
->      |      parisc: | TODO |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: | TODO |
->      |       sparc: | TODO |
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 9c48fecc67191..b70a0b9ea3ee7 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -27,14 +27,17 @@ config RISCV
->  	select ARCH_HAS_GCOV_PROFILE_ALL
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_HAS_KCOV
-> +	select ARCH_HAS_MEMBARRIER_SYNC_CORE
->  	select ARCH_HAS_MMIOWB
->  	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->  	select ARCH_HAS_PMEM_API
-> +	select ARCH_HAS_PREPARE_SYNC_CORE_CMD
->  	select ARCH_HAS_PTE_SPECIAL
->  	select ARCH_HAS_SET_DIRECT_MAP if MMU
->  	select ARCH_HAS_SET_MEMORY if MMU
->  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
->  	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
-> +	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
->  	select ARCH_HAS_SYSCALL_WRAPPER
->  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->  	select ARCH_HAS_UBSAN_SANITIZE_ALL
-> diff --git a/arch/riscv/include/asm/sync_core.h b/arch/riscv/include/asm/sync_core.h
-> new file mode 100644
-> index 0000000000000..8be5e07d641ab
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/sync_core.h
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_RISCV_SYNC_CORE_H
-> +#define _ASM_RISCV_SYNC_CORE_H
-> +
-> +/*
-> + * RISC-V implements return to user-space through an xRET instruction,
-> + * which is not core serializing.
-> + */
-> +static inline void sync_core_before_usermode(void)
-> +{
-> +	asm volatile ("fence.i" ::: "memory");
-> +}
-> +
-> +/*
-> + * Ensure the next switch_mm() on every CPU issues a core serializing
-> + * instruction for the given @mm.
-> + */
-> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
-> +{
-> +	cpumask_setall(&mm->context.icache_stale_mask);
-> +}
-> +
-> +#endif /* _ASM_RISCV_SYNC_CORE_H */
-> -- 
-> 2.34.1
-> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 71f00539ac00..bb5e6a2790dc 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  			mapping_locked = true;
+>  		}
+>  	} else {
+> +		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+> +						  vmf->address, &vmf->ptl);
+> +		if (ptep) {
+> +			/*
+> +			 * Recheck pte with ptl locked as the pte can be cleared
+> +			 * temporarily during a read/modify/write update.
+> +			 */
+> +			if (unlikely(!pte_none(ptep_get(ptep))))
+> +				ret = VM_FAULT_NOPAGE;
+> +			pte_unmap_unlock(ptep, vmf->ptl);
+> +			if (unlikely(ret))
+> +				return ret;
+> +		}
+I am curious. Did you try not to take PTL here and just check whether PTE is not NONE?
 
-This looks good to me, can you send out a non-RFC? I just sent out
-patches to support userspace fence.i:
-https://lore.kernel.org/linux-riscv/20231122-fencei-v1-0-bec0811cb212@rivosinc.com/T/#t.
 
-- Charlie
+Regards
+Yin, Fengwei
 
+> +
+>  		/* No page in the page cache at all */
+>  		count_vm_event(PGMAJFAULT);
+>  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
