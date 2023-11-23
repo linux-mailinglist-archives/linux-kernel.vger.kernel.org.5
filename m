@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D61687F621B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA987F621E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345895AbjKWOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S1345959AbjKWOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345950AbjKWOy3 (ORCPT
+        with ESMTP id S1345956AbjKWOyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:54:29 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D78DD66
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:54:35 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5ac376d311aso9387397b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:54:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700751274; x=1701356074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SRvtJNZozpO0bnie9sd9zh5ke0kldmBEFtw2MsgOEU0=;
-        b=mkG7RxcOGHGD1Svy91l5iyaLhXFAtN0FPpQsflgm9H9pNivjRKUD6t7kC/qFFZxFE/
-         T26YFg+qz61P2r22INtnRmrHKKIfkp1oKTh/wpjLBcQbACFFbR8jVw1sZLl2Y46Qilbw
-         vgpW5XfjrtOwEvz0ewhfrQ/U60tN3odC4iT5LE3diyR8U7Da8Q/6CJYAs7R6DGHzavEB
-         rYpQzh/E1Fy5aj0KU5AkdSGlw57fI7fhkZiE4zzV7vTwBD6ZmOPlk9lg0OIqlNb2hHAD
-         Su0tp3aWjIGg6ep0FGAtwSp8/ZQ3lrrFg3iN0ICtFZgwnio9J5Op+H0x8x7hHsH97z9j
-         xU0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700751274; x=1701356074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SRvtJNZozpO0bnie9sd9zh5ke0kldmBEFtw2MsgOEU0=;
-        b=e6uFUG4A11bZyEQFkdrIPZOb7hF58+eMWnmjSTRBYGVYIhdZSGO4RNreBarfM+Ek2C
-         82x0tqA4ipr5i7LA+Z2ywyB4k9GjK676CTq9JwGIvQRFCfjPJ/YeVtdQErJKmzpRw5ck
-         cHL8OwJMiKlPf2Gqff4R8C4xCcZTPa1gSj1w/T3ccL+AW/yk0nt3sH7bkgxNyDsvaiI8
-         uXbjqtspHH8+PSu5kiJeWXtYWlFzsNmPqSre/4RzWnuC2ul4NGrv7VQ6GtQwF2SLw62r
-         8819AZZvhpeaIc86Tu/d7OjzmM6XAEwxnLG4vlipBPcJ2sXifH8Li4XyTJXgPsalN54E
-         yrXg==
-X-Gm-Message-State: AOJu0Yw6d6c/cjLURH1mvA9yA5qisGgkRlk3aAjoz4GfLpsvBb+DJZVS
-        xPG4De1yP2UJ0+RZ/6fXiE/aXuWxlYY5WyqCEU6z7MuwqsRMBtJGeJs=
-X-Google-Smtp-Source: AGHT+IEqHGUy8srm+W2fOIN/DF+rCJy6HEwoShEzTGFqCsOxU8MZDzOqoPECz3axzRKlSd8vE4exbeUo5+mR58vqu+s=
-X-Received: by 2002:a81:6c04:0:b0:5ad:a3f9:1b10 with SMTP id
- h4-20020a816c04000000b005ada3f91b10mr5685572ywc.10.1700751274772; Thu, 23 Nov
- 2023 06:54:34 -0800 (PST)
+        Thu, 23 Nov 2023 09:54:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69E1D60
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:54:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D66C433C8;
+        Thu, 23 Nov 2023 14:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700751289;
+        bh=WVecSFWfBVZt7eHFDKvJJUv63uzdwj5MUayfwitPJng=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=UI1vN4bXnDluSjqdzluU7xIHm1q2q0PduZMPaBxZJNaJFOJ8QeiJY2xs9hZwjej8A
+         +PbvFS5rsJlmivgH6c6kLlwfzU6HhVXxgudulfWfC2pJDrSa30qmQ831rZziWqvWTX
+         0ZTeDoyQb73HrG4lHjq1NZh6KXTWZMBa2cm9AhRBC4zXO5gZahAWOjQPKE5H3gS61W
+         4M+KsuvhlrywqvebBe9DXy3Z1A021BSGy9Gacewbag8698aktWkWy1RXzeOHVrcVDM
+         dadaNEHK6UkxJZAFziVEce8EvU2ezt2howCEwqd9Y5gCbiOKkE+yo7VgBYK2nGyQ22
+         sQUNpIgoP94DA==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231116105319.957600-1-f.suligoi@asem.it>
+References: <20231116105319.957600-1-f.suligoi@asem.it>
+Subject: Re: [PATCH v7 0/2] backlight: mp3309c: Add support for MPS MP3309C
+Message-Id: <170075128649.1369133.8551722036774346120.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 14:54:46 +0000
 MIME-Version: 1.0
-References: <20231122175039.2289945-1-andriy.shevchenko@linux.intel.com> <20231122175039.2289945-4-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231122175039.2289945-4-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Nov 2023 15:54:23 +0100
-Message-ID: <CACRpkdZo3W6ServvKQV5KpBuOqXYPE=OCVoLvC1kA585H=vMDA@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] pinctrl: baytrail: Simplify code with cleanup helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 6:51=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, 16 Nov 2023 11:53:17 +0100, Flavio Suligoi wrote:
+> This patchset (rebased on v6.7.0-rc1 kernel version):
+> 
+> - includes and updates the mps,mp3309c.yaml dt bindings file:
+>     - Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+>     Note: the patch related to this file was previously a separate patch
+>           and sent in two versions (v1 and v2).
+>           It has now been included in this patchset, starting with the
+>           version v6.
+> - adds the related device driver to support the MPS MP3309C backlight chip
+> - adds missed history of previous versions
+> - adds missed "Acked-by" and "Reviewed-by" added in previous versions
+> 
+> [...]
 
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in the driver.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Applied, thanks!
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+[1/2] dt-bindings: backlight: mp3309c: remove two required properties
+      commit: 87f33a1b8f7e3d223fc331fe54fd8ec337dc9cb9
+[2/2] backlight: mp3309c: Add support for MPS MP3309C
+      commit: 2e914516a58cf86bd0e42c7d3e25c81d44ec2ab8
 
-Yours,
-Linus Walleij
+--
+Lee Jones [李琼斯]
+
