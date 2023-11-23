@@ -2,288 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D4F7F584F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A341D7F5832
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344799AbjKWGfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S1344760AbjKWG2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344782AbjKWGfV (ORCPT
+        with ESMTP id S229737AbjKWG2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:35:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE25D67
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:35:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700721327; x=1732257327;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=N9m7SpOVWldYJ8ChnXCbRIb7PdFe7q1FmrM2X3JuN5w=;
-  b=ZKv/jMPqW2tStNLbMNA1wwhQDspIM1HZZ2dU6ZJKW/3aIsSzpGRdls4K
-   UdT0ASKaM6yugjfrxSAy1UB6dHDd7hXGnr72lWm7MVoiAJ1GbfhwlYw29
-   OXnTNjfNvcvkk5ahym1KstatGDYYV9FfM/IHJfSFkt//Odc08XREp918O
-   NUFdHRYBIUBWdAuTN+4G2fQ9Pa5ueE3R0O2EgWcpqGfaad53KYqzvXUuK
-   9cb8SZFkt9YZ+DO6/IrYxK6Vz1qZqM+D7PPYZFho3u1r9Mr1ADjvKx8RN
-   QEThfWFcVYWfOwes5cXzQ58twBOeg3zJHK916T6aDkBjwJbej6fzbgty5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456541783"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="scan'208";a="456541783"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 22:35:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1098698439"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="scan'208";a="1098698439"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 22:35:25 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 22:35:25 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 22:35:25 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 22:35:25 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 22 Nov 2023 22:35:24 -0800
+        Thu, 23 Nov 2023 01:28:21 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2050.outbound.protection.outlook.com [40.107.212.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B15AD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:28:27 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dkur1vYs8/lGB5J2DD0T8biNshB+ngms2wOsBX9XbeiXTU+wJIEm7UeWE5Cl9ZfbrI88spq8XDWIrvCJ4lTqd3UH9DCPh1X/dXsfJYvOe3T7OI4UheT/RPeFJmqC4qcji9COtMO4dFuejIRoVmUioSP5/M3i4I1+SdFh58ZFrgi+Vu+U/QKsOWMhMcPFkPqPHLGD/kc2tutMF7t5vwnBQt5tvaFVNs/U9I5IWfvN4KsFGZBWd259YGgmZVJqbSw2Vlh6sqyTxckctNtlUiDm7VYT/ZZsjP9qLekUMPrGCIepsfv8POWsDZjtGM2KiWVCzqjYwVZQlU9q2TJbP4Nvwg==
+ b=erfEyoSkAYmyHHuM/9yAjasIu2PFdqXGnyuo+O2E7qqm1QAGOZpctQwMSxeP5WR4wQ6OSrYMtUdn7CKgKaBVM6R7K3MfiLCfVrfcLLqD4nndC3StINMwdfJwcbTvzBPYOmPRq6x9ku4D4UtJ7T/ktlV4qIRn21EEALAQj2rBUdzcB2aQN4A2rKr8MtbR1MRLYD19xa9G/Me24dE0tXj+eOASFHKq0tfSjVBD7Bv/QOLynrQ9huEdqkpJQgMcFdwHzDoOZhjyryitPY5dfMfcBFVGaHiNZHSlnlNjJoFVAvmPCY1WJS1ljjPhHJZPsnlLyXeNnQaP6qZ6L2wY/oY9Eg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xl2vIlz9Rx2wfctzeaJXKx2eaI9u2Vl4okxkE0H6mfQ=;
- b=LpI5cnvAfedV1ZcmIvQljE+FpOnRu7uv1mNGl0sXhQIEN/3YN2DHgiBkl16SO//sNG1uBldJgnxArkJk+vvCxnbp4xXzu2qT7rt99QjcM/HWwSRZ1X1lh//gtpsz7ixMNNXGIgnl+9q2Dgh8Wd4Oyjv9UZ1gld+rnetxbKkhvGuxxn4N27aukDdWHapC3CLQMNZeFZ0vc8FAnttiFsjnFWq2zLW4KfPSQOgD82zLp86dhsk5JvLAq5ug/8O1mFfgydWgkjRMCoqXRomgy8IjCTlywqjs+PZqm0oWJiCzKINZi7dCqKbVtue/06runOPyPFb6xrRWLpJ70Vj+H8htGQ==
+ bh=PMdN8nYSx4Eemcc1GPPEt9xpGQEmhE/LTCD4UkN5+ag=;
+ b=AWbd/uezGHXiC5yihXRdh7DO4PJMjX7sd6M4HTjjbZtC+HkW1QUDeGW0/gkUTUfcOWhu55xWiWFm3rKn2s0HYA3J3UqhZlp/Mls3LtN5zW2sqTDcgmb0/2+FbCISVw3E9w2lB6URh8K5yHqhBEKx9R6QGt9mW0VGkyy8TdbvHDSggEZE0aL10/WV7MkP0jGCOK6x6Kf84Cm6PnKK60PaZT2jOgY0ZPGcQtxgXYXhyOesyS3V7m4SIIPBmoJefTNu42IIg6NMrbm6cph3Der1+d4ms6j/bh6JJ2602DA6Z2QOcadYtAKsXi/sGwy2dQ5bmiKsbqe49AqXH8hAbsrWyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PMdN8nYSx4Eemcc1GPPEt9xpGQEmhE/LTCD4UkN5+ag=;
+ b=ZeLnl1cn2sImjqdCXJaVH/2DDPREHPOb1Y5h0jldrXtFy3aH4c8wIsx1zI/rkk96OZF9azs30LssXGlM6ezS8SLiwdf58ixLxeK5K3EwMb3BPBRneugLQg3p95ubYz5WEcR4IPXGJVF1T3uJyi2JQBo4Tps1RWOMaTYbgv9muGZyCZdRAa3bTu/Ht4kbjms6SIjQVYYV4raB2bdGLOWbcpWU8q1vJYe6Z/PWfoveuZW5op5iiWl1It5x1JBki2veJ+DDP6CA/VHXnacFSf25ix4tH8dYUfXB/Gc1K1EaQ9fVHTczFdgYJgMRuVBbz/wqaxNnhrg3ya7Jq6c0T04KGQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
- by CY8PR11MB6868.namprd11.prod.outlook.com (2603:10b6:930:5c::13) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by DS7PR12MB6069.namprd12.prod.outlook.com (2603:10b6:8:9f::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Thu, 23 Nov
- 2023 06:35:18 +0000
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::24ce:9f48:bce:5ade]) by MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::24ce:9f48:bce:5ade%7]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
- 06:35:18 +0000
-Date:   Thu, 23 Nov 2023 14:26:13 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "andrey.konovalov@linux.dev" <andrey.konovalov@linux.dev>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
+ 2023 06:28:25 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca%6]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
+ 06:28:25 +0000
+Message-ID: <101e5ffa-acf3-459c-85f4-7f36a63b125a@nvidia.com>
+Date:   Wed, 22 Nov 2023 22:28:04 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH mm] slub, kasan: improve interaction of KASAN and
- slub_debug poisoning
-Message-ID: <ZV7whSufeIqslzzN@feng-clx>
-References: <20231122231202.121277-1-andrey.konovalov@linux.dev>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231122231202.121277-1-andrey.konovalov@linux.dev>
-X-ClientProxiedBy: SI2P153CA0016.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::17) To MN0PR11MB6304.namprd11.prod.outlook.com
- (2603:10b6:208:3c0::7)
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20231122162950.3854897-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR08CA0060.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::37) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|CY8PR11MB6868:EE_
-X-MS-Office365-Filtering-Correlation-Id: a39392f8-aefc-4f8b-75cf-08dbebee5bac
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|DS7PR12MB6069:EE_
+X-MS-Office365-Filtering-Correlation-Id: c31fb7de-e9f3-4543-37ad-08dbebed65a1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: brQbWZTLNpqhdsd8ErRE5JhryRK2vYx0KOFQsj64Yg6wPNYQ6u2eos2Ho33jJmHr9ZRz5HnKuO6q3/at7d7fgls02qbsgpSMr9K6FS+4EE/A5HJUvl0TnrlFi64J2wf6M4ru70zottBwE6gUXTPa4ZV3z+AlTnzhK40/AhnR6f8oKZHK7qBeZ0Rx875k+5oR/YajC26QPqKfwjDXdsnjOF+MTpTwfWq+0LrSrjylxoqUYZZog4fjsSHSvGvrWTaF8p8KiXtujk18B9PJps7WEsVZXsW21oJEKrRfp6fnrCUYW5/T7SHK+nFOomA/9JnFkTL+1zpXZ/RdGhHciQFLA3nFUargMi8Y0dE90p13uvpThxLWWaMyHHlne17DaJwx/TV+42OGOaGSsWxqB1x8SNklfe6FPmoV1ylrd3cOBvS+5qwKWRyapS+L0QCtCykIUmkhGKTz8+UYEWm/5ojBajLbdygeb0K80a3nlMgdxd4NCdp+fm7p5JnkH/PQEsuriCm5QHdfbgSnvDYLn+xCDYLEhhmH8QnQ/8aA3485YpCygcz9WSsg16bhllIDkLSh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(39860400002)(136003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(9686003)(6512007)(41300700001)(33716001)(83380400001)(5660300002)(26005)(82960400001)(4326008)(44832011)(6506007)(7416002)(8676002)(8936002)(478600001)(86362001)(6486002)(66556008)(66476007)(38100700002)(6666004)(2906002)(6916009)(316002)(54906003)(66946007);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: fSa6oPi/IH6fdFwly0hAmjz9UqVpWhFe7qS0S0LLiXadyKXNYyLTLr9i0WecLm2E7D5JzhQiB2XnrWlMwZV1D9SFBr5Ld3O9IwJ/KZUNcjkwXS7qbhm1KEYeb8qfAHEwoCyFiavZ7MFQCaA8yGi5oWQJAoXiXc1PHwYAswiR2UKublb3TOEMY3Nfkix0bGtn2hRHS72bt9Lr6AHVVwcjeJZDqEyaE5oMptCCmLi0daXSyI1/cyNiuNdnguBtbbUWrPRCKGToDoZ5VaG4VsVeF/LVtDLL3tgyGj6QOLZFf43udjR9gKh689NdKwRJ0qwjqQRH0S5Xs8PzYX1CFsSYTLz9BoL8wFVLX2ZlmXSavNLPyha1OnMsiWk86ZX70vzKNp9HIjgXdJxq7abVo0ZW8OjmO9nD+RurR28SfGGlwZB+h5jZvF0yLO9NqKlxywtW58Vv/RaQRYnEORk0F63YuqHRiO0KlYQTLAVzyoLWor0sPo3BY4uhYoAtRdYoQuRfaWPOU9RYnaiqPXi5brvZjna5KIuii28tbVzQzF7T7eta9qbRk3ifnRP+Cm68XbjFCLs2hyR2t5tsFn83MnaRRuQdrU2K5zTgMJpf+XmGnAoAzpRGQaRWWIBB6BauUd5WoTvP8hpWc8SStQDnvOXTHOaGmLLMMg8v0On9qawJ5L4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(346002)(366004)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(2906002)(8936002)(8676002)(4326008)(31696002)(86362001)(7416002)(5660300002)(921008)(41300700001)(36756003)(83380400001)(53546011)(6512007)(6506007)(2616005)(38100700002)(110136005)(31686004)(66476007)(66556008)(316002)(66946007)(478600001)(6666004)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?x0RiTcjRLpN/Mv1IPhKVAEqOBGFiDu0XDGELDotRnmqL+8kh6/zx2impQCH8?=
- =?us-ascii?Q?mS92OImYqE9LKqOBA+bt/mqeSWaPxwRH4rJ6xm2Y2AE9Pq4bh0X1rR2OxqdX?=
- =?us-ascii?Q?1lWo4bLmL0HeyzWZinpUac7nrEuXX9g0nIHBq6Qx53q3GzyGo2g07SbkXUZG?=
- =?us-ascii?Q?Ns17APEqlxFy2up6xp5lL8KsDp787/fPVXnbKp/EF/9wJxarsIzw3w0aVR+1?=
- =?us-ascii?Q?/NLTcFsGbs7Ik7gf3hbYAVfpl29R97khrwhjkqBIwyqxqHMYlcM0RvN+3Toj?=
- =?us-ascii?Q?IMWZJa1PFWjKvRJ3VOjUwTDctfdYEjG4J8Ad8O94Oa8ohzo7ZolC7Zi1GDx0?=
- =?us-ascii?Q?0ixqMnY5LJX0Fco3tuRJDfLd7iG6axmxmjm9pVSjAtqT+ktLCiJMQP0frbvy?=
- =?us-ascii?Q?w/xVw4uzzJdif+5Ru2bSF4Z+DJxQSKG7jhJqNd/XLv7bS7qRbUMH2wX9mqMu?=
- =?us-ascii?Q?Ahgdg73VPMHQb89I1hFhj6FB7QgujN8jQwuKyR00QhLeBncFxNWCWcNM0QJW?=
- =?us-ascii?Q?kXvCnyLqs6eKfyGsKJzCBnpLVLKCvVrkeH5oSWg2uEkC6YDLzFkp+1oZube7?=
- =?us-ascii?Q?QKC1gQwxXnJIrvIGquZL9eZrWzXeIlviZ1ATRhZoIuVyO1wRLW+iGWq9FcNC?=
- =?us-ascii?Q?LTUoSyf2D4R11AXg5QGnjat7/FQ7Wi59touKY6dB+IkJpiDRO4g33TrswLNk?=
- =?us-ascii?Q?0AS2SWUMoV0CdMWSNibSZQdG6VIOqILyeH73y6h9d6pPNXcH9Khr9pelf3pn?=
- =?us-ascii?Q?0k1u3r6Kq6vAco928XZlpZmtNicjn86ltCSE7UarogxtAOxE6HAeXzr47UEB?=
- =?us-ascii?Q?sbFimiyWHZoxzUv86qvHqdUMxQHjWkNcsL2UlYyGjSR9WO2KjveTe4WqPfqK?=
- =?us-ascii?Q?6KYVCVxEqt2QInKheuBc9Lk70jM20Wwtq6Z5cxPm0BKyHCheLqVlFvvI+AqD?=
- =?us-ascii?Q?P6cljSPMA1u9myJB2ash9mXF4EALCzVZpYpKEGUij2UyRiqTpXWQBNMfWvX/?=
- =?us-ascii?Q?QEQfzQBWcWNj8wEJQX4/V/suxfaN7ySzARazNAVqwf/YkqNH5R86uDVv3OvQ?=
- =?us-ascii?Q?Y2eUq9ON7OkNP5AHGOo+1g4Y/QkEoGhvvNbE0OySEdl5EhsQcyl4U70vuUHS?=
- =?us-ascii?Q?VQ4CQJyUPVWpayFhxUnCRyVMKg3SfInlNXimhxKffXoZGJ83OvqjXoCiH3dC?=
- =?us-ascii?Q?D7yM6asxhsY2PxTEGWXhSoAl/JkLNn1cGkhCpNDsRBgmlNqB5x2n48OLUC8L?=
- =?us-ascii?Q?6QDihxbON4yC5RphSW4xq6E5/hjtRgOaANCqkxSAwBDDA9ztRSFyshrj952K?=
- =?us-ascii?Q?4LDjuITG+PCKdFoMmpsJQk6W15Uc7epxucndkHkOyOLZRm0cu0YsyFl/aATU?=
- =?us-ascii?Q?XOwAtJwwmBgcGu5XeCFY6jcdP2MyeavCOlWLELliUkQ1kC/WxbhUl54fGK/g?=
- =?us-ascii?Q?f1afsJuqBkDoHad92kYjbXccXHbY+WNX8a1btYkQasfXolqf6BmvqJHOV8E+?=
- =?us-ascii?Q?0wOYRXlazXqyq3YtF/76XgQ4zlwkjE/CfonGWtdmH3pHG5Xmk9ibQgl5B0Zs?=
- =?us-ascii?Q?wkNPWfCj8+lCBjWT4/7WZkLJ4Y8xJjTA2J9EoTB9?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a39392f8-aefc-4f8b-75cf-08dbebee5bac
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ek1sTVRPREhXUkhZM2FqOXZ2UlFPYjFvbUlOWGdob0JGSVNJaTFoUk1HdXdm?=
+ =?utf-8?B?bTBsS2twbUg0NXFOdlBaU0hFUUhlV3JabVU0Vk9RalJuWHg0K1hDOXlvWllo?=
+ =?utf-8?B?NWZNM05nVEhTeEtGWjRGL0tRVGxmN0U2OHI5MmJrQVZOWXVoN3pnbGRJOExQ?=
+ =?utf-8?B?YXFaUG5hbzRzWC9SNlNKODk2aStDaXEvc3luSVRRMURidmgvZzFuUmNLS3V5?=
+ =?utf-8?B?RTJiaExQK0paMjNkd3JNR0V4T3prdGFJR3FDOFpDcnV3ZHRrMUR5VFlxTUQ2?=
+ =?utf-8?B?YVZtdWJQMjU3QzNlYXoyZlYxVHFLL201MzJzNnhpemZOSmFJQzk5eERPL21W?=
+ =?utf-8?B?M3J6NTNyRnVUdk0wVmw5NWg5UnZiTElnU09BWTJZeEcwQ0FFTjd0MXA2aGVu?=
+ =?utf-8?B?TU1EUlV4Wk1kelRtUEZRRnhXNGRsV0YzYmhCUjROTCtyMlpEOU0rc002ekRM?=
+ =?utf-8?B?aUFkYlMvS0k5Q2RsUGUxbEZldEpGc0w0OXJkUzM2OWVvaGdxMEFEYnA2ZlE1?=
+ =?utf-8?B?RkpPWGNtM2Q1Mm8rU1FlYk54MWtqNk9abXJ4WVMrWXNZNndhMzk2Vmx5b01z?=
+ =?utf-8?B?eXJtZzVFdDJXZ3lWeGo5RmdSbHM2U2NrWWxtd3BraVF4d1ZRZXNQV0hKVitD?=
+ =?utf-8?B?dVJrUE9aNzcweXV2QngyVm8zNmxFKzZlclpDaVBBeHJOL0lSU2NYQVpRSUlY?=
+ =?utf-8?B?dndZRnpBdG1sWGlncEEzT0tGbnNqOFg4WEdEdkF5azFTSGorU0dWU1BObzJm?=
+ =?utf-8?B?bUtITWlFOU1BRXNCT1pJbW5jRDZSYzkzVG9QazFaRE1mSzRnRXVFZzZzQmRx?=
+ =?utf-8?B?Qm9CTnZYYVZGOEp5R1BSZVozK2NnVTJRMUgzWlpVT3o5NXFjZlpiS3ZmQzJS?=
+ =?utf-8?B?U3huMTZDaTB3cHJMT0xsRi9vV3RvbGNydHRacVVMOG5RditVYnkvSjNkaGU5?=
+ =?utf-8?B?alBaRlJ4T3JqOFdWQlVsQ1dKNWFUSk1MOThSVlBldGFXRnVyN2M2d3MxK2Nq?=
+ =?utf-8?B?dVA0L2RwcDRjMHhsOGlydGcwQml0UDR1M0tiRUxWNW9KQUlXTy9JM1ZSc3h3?=
+ =?utf-8?B?OU5tV0lnWjNaSGw5M3k5aGJyNmIvbkEvNGp3RXE4dTZGTFJTMnV3T0NwR2Vq?=
+ =?utf-8?B?N0NBd3JHdzNQZFBUUG1WZGRRYWpVNFFwR0RzVGZaQ3JPbXFxSDJ1cE0rbTly?=
+ =?utf-8?B?aVY3ZjZ0aXV5OUYxeWloeks1N0tzSXVZeERNWWUzS0pqSllPd3lNejJROFRo?=
+ =?utf-8?B?SC9UQnhSMkFPaXV5dmJRQVBPajhxWVVNNkEwS3JkdFllcU9SeTlJa1Qvc3lT?=
+ =?utf-8?B?WmQvdkNUckJWRE9jM2RaaGIzTkFDUFdvZnhrM0VaVklCbmNveVZhU3pCT0cy?=
+ =?utf-8?B?Q1lWeldqNVo3aDNSYXI4OXhDaHFhNTBDSjRkaUdveW9aZk9qS2xDSzN1MStw?=
+ =?utf-8?B?ZFYzbHkzd1JhL3lEd3ZMRUpUSE5TQjlhMXhUVHUzS2FPdEFyQ2l6bGdZVzRE?=
+ =?utf-8?B?d0hUdmVIZ3ZOWVlWY1Q2Nm5rOTZxNzF2WWlyOERGenA3NFhkSzJlVHUvSG5h?=
+ =?utf-8?B?ZDRnTWdtVnU0aUttOEpRWGJDQk1oT3JRdkU0UkVINzVhQlVzTVZudkVJWEdp?=
+ =?utf-8?B?Rm1ZUDJVQTYxZ3B1TnczdjVnN0lpSUZhSHgwR1k5WUM4bWc3NFlLMTdRQlNJ?=
+ =?utf-8?B?MUdMZ2RENmEvN3E0ckFFL0sxcUZNdjRWV3pqK21OZWYrTm5hYkZlVTN1bytT?=
+ =?utf-8?B?UGJ6dXRoMitQNzQ3VEJQOU8vNFJBSzhRWHFkR0p6NmZ1Z29pc1k2RG9vWkx3?=
+ =?utf-8?B?MU5Tb1FqZmlDaWtiNGJvRVJzbEFSZUo2d3lzRFhJZGZOczdJOWpYRkJQMVNT?=
+ =?utf-8?B?YTQraWdXS1JiN3NZaTdvQ2ROZTlQZkw2TE1pbDFSdVJvVjNObWJjWjJCVUhP?=
+ =?utf-8?B?ajhkdjQxQ1JxRmJOZ3BOYUdPNGp4SXp3T2dHT0d3OS9ydWREY1JnQVcvK3lB?=
+ =?utf-8?B?Q3BKak1UVzNTbTVEM1B5S1dHL0JId0dQREtWTmFYMDduRUdYQmtibC91OWZ1?=
+ =?utf-8?B?eU1sU1J3LzIvbGVXejBzQm84YjhEMmZzSzdFTHk4WENLcVZWQnNIa0JMUVhM?=
+ =?utf-8?B?Rm5FUllVSnNqNXIzQjVLV3NSTmtIR1VsemJ2SmYveFovaEt1WkMwQ28xSWlR?=
+ =?utf-8?B?OUE9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c31fb7de-e9f3-4543-37ad-08dbebed65a1
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 06:35:17.6929
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 06:28:24.9113
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R11T4pA7dFg/0B+3Sh3b/v4/WZAmXfHbyqTqOrS6Zl/EmDyCYEMlc0xJ87xcDfJK4ooWYqZv2kfJ3baN8oTyOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6868
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: w/achWDwmnGGEV8b5EJtFjxbhudOQv18rytBazb1HXTLM+YwCSk3neIPekk0bxLdlnn28kAyppPUBmZ1+akLsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6069
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrey,
+On 11/22/23 08:29, Ryan Roberts wrote:
+...
+> Prerequisites
+> =============
+> 
+> Some work items identified as being prerequisites are listed on page 3 at [8].
+> The summary is:
+> 
+> | item                          | status                  |
+> |:------------------------------|:------------------------|
+> | mlock                         | In mainline (v6.7)      |
+> | madvise                       | In mainline (v6.6)      |
+> | compaction                    | v1 posted [9]           |
+> | numa balancing                | Investigated: see below |
+> | user-triggered page migration | In mainline (v6.7)      |
+> | khugepaged collapse           | In mainline (NOP)       |
+> 
+> On NUMA balancing, which currently ignores any PTE-mapped THPs it encounters,
+> John Hubbard has investigated this and concluded that it is A) not clear at the
+> moment what a better policy might be for PTE-mapped THP and B) questions whether
+> this should really be considered a prerequisite given no regression is caused
+> for the default "small-sized THP disabled" case, and there is no correctness
+> issue when it is enabled - its just a potential for non-optimal performance.
+> (John please do elaborate if I haven't captured this correctly!)
 
-On Thu, Nov 23, 2023 at 07:12:02AM +0800, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@google.com>
-> 
-> When both KASAN and slub_debug are enabled, when a free object is being
-> prepared in setup_object, slub_debug poisons the object data before KASAN
-> initializes its per-object metadata.
-> 
-> Right now, in setup_object, KASAN only initializes the alloc metadata,
-> which is always stored outside of the object. slub_debug is aware of
-> this and it skips poisoning and checking that memory area.
-> 
-> However, with the following patch in this series, KASAN also starts
-> initializing its free medata in setup_object. As this metadata might be
-> stored within the object, this initialization might overwrite the
-> slub_debug poisoning. This leads to slub_debug reports.
-> 
-> Thus, skip checking slub_debug poisoning of the object data area that
-> overlaps with the in-object KASAN free metadata.
-> 
-> Also make slub_debug poisoning of tail kmalloc redzones more precise when
-> KASAN is enabled: slub_debug can still poison and check the tail kmalloc
-> allocation area that comes after the KASAN free metadata.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> ---
-> 
-> Andrew, please put this patch right before "kasan: use stack_depot_put
-> for Generic mode".
-> ---
->  mm/slub.c | 41 ++++++++++++++++++++++++++---------------
->  1 file changed, 26 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 63d281dfacdb..782bd8a6bd34 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -870,20 +870,20 @@ static inline void set_orig_size(struct kmem_cache *s,
->  				void *object, unsigned int orig_size)
->  {
->  	void *p = kasan_reset_tag(object);
-> +	unsigned int kasan_meta_size;
->  
->  	if (!slub_debug_orig_size(s))
->  		return;
->  
-> -#ifdef CONFIG_KASAN_GENERIC
->  	/*
-> -	 * KASAN could save its free meta data in object's data area at
-> -	 * offset 0, if the size is larger than 'orig_size', it will
-> -	 * overlap the data redzone in [orig_size+1, object_size], and
-> -	 * the check should be skipped.
-> +	 * KASAN can save its free meta data inside of the object at offset 0.
-> +	 * If this meta data size is larger than 'orig_size', it will overlap
-> +	 * the data redzone in [orig_size+1, object_size]. Thus, we adjust
-> +	 * 'orig_size' to be as at least as big as KASAN's meta data.
->  	 */
-> -	if (kasan_metadata_size(s, true) > orig_size)
-> -		orig_size = s->object_size;
-> -#endif
-> +	kasan_meta_size = kasan_metadata_size(s, true);
-> +	if (kasan_meta_size > orig_size)
-> +		orig_size = kasan_meta_size;
+That's accurate. I actually want to continue looking into this (Mel
+Gorman's recent replies to v6 provided helpful touchstones to the NUMA
+reasoning leading up to the present day), and maybe at least bring
+pte-thps into rough parity with THPs with respect to NUMA.
 
-'orig_size' is to save the orignal request size for kmalloc object,
-and its main purpose is to detect the memory wastage of kmalloc
-objects, see commit 6edf2576a6cc "mm/slub: enable debugging memory
-wasting of kmalloc"
+But that really doesn't seem like something that needs to happen first,
+especially since the outcome might even be, "first, do no harm"--as in,
+it's better as-is. We'll see.
 
-Setting "orig_size = s->object_size" was to skip the wastage check
-and the redzone sanity check for this 'wasted space'.
-
-So it's better not to set 'kasan_meta_size' to orig_size.
-
-And from the below code, IIUC, the orig_size is not used in fixing
-the boot problem found by Hyeonggon?
-
-Thanks,
-Feng
-
->  
->  	p += get_info_end(s);
->  	p += sizeof(struct track) * 2;
-> @@ -1192,7 +1192,7 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
->  {
->  	u8 *p = object;
->  	u8 *endobject = object + s->object_size;
-> -	unsigned int orig_size;
-> +	unsigned int orig_size, kasan_meta_size;
->  
->  	if (s->flags & SLAB_RED_ZONE) {
->  		if (!check_bytes_and_report(s, slab, object, "Left Redzone",
-> @@ -1222,12 +1222,23 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
->  	}
->  
->  	if (s->flags & SLAB_POISON) {
-> -		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON) &&
-> -			(!check_bytes_and_report(s, slab, p, "Poison", p,
-> -					POISON_FREE, s->object_size - 1) ||
-> -			 !check_bytes_and_report(s, slab, p, "End Poison",
-> -				p + s->object_size - 1, POISON_END, 1)))
-> -			return 0;
-> +		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON)) {
-> +			/*
-> +			 * KASAN can save its free meta data inside of the
-> +			 * object at offset 0. Thus, skip checking the part of
-> +			 * the redzone that overlaps with the meta data.
-> +			 */
-> +			kasan_meta_size = kasan_metadata_size(s, true);
-> +			if (kasan_meta_size < s->object_size - 1 &&
-> +			    !check_bytes_and_report(s, slab, p, "Poison",
-> +					p + kasan_meta_size, POISON_FREE,
-> +					s->object_size - kasan_meta_size - 1))
-> +				return 0;
-> +			if (kasan_meta_size < s->object_size &&
-> +			    !check_bytes_and_report(s, slab, p, "End Poison",
-> +					p + s->object_size - 1, POISON_END, 1))
-> +				return 0;
-> +		}
->  		/*
->  		 * check_pad_bytes cleans up on its own.
->  		 */
-> -- 
-> 2.25.1
 > 
+> If there are no disagreements about removing numa balancing from the list, then
+> that just leaves compaction which is in review on list at the moment.
+> 
+> I really would like to get this series (and its remaining comapction
+> prerequisite) in for v6.8. I accept that it may be a bit optimistic at this
+> point, but lets see where we get to with review?
+> 
+> 
+> Testing
+> =======
+> 
+> The series includes patches for mm selftests to enlighten the cow and khugepaged
+> tests to explicitly test with small-order THP, in the same way that PMD-order
+> THP is tested. The new tests all pass, and no regressions are observed in the mm
+> selftest suite. I've also run my usual kernel compilation and java script
+> benchmarks without any issues.
+> 
+> Refer to my performance numbers posted with v6 [6]. (These are for small-sized
+> THP only - they do not include the arm64 contpte follow-on series).
+> 
+> John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
+> some workloads at [10]. (Observed using v6 of this series as well as the arm64
+> contpte series).
+> 
+
+Testing continues. Some workloads do even much better than than 10x,
+it's quite remarkable and glorious to see. :)  I can send more perf data
+perhaps in a few days or a week, if there is still doubt about the
+benefits.
+
+That was with the v6 series, though. I'm about to set up and run with
+v7, and expect to provide a tested by tag for functionality, sometime
+soon (in the next few days), if machine availability works out as
+expected.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
