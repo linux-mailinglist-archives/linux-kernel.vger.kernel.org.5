@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096B37F68B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF47D7F68C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 23:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjKWVhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 16:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S229873AbjKWVts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 16:49:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWVhe (ORCPT
+        with ESMTP id S229453AbjKWVtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 16:37:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413581B6;
-        Thu, 23 Nov 2023 13:37:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700775459; x=1732311459;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a9vuTp+5HGIasH4n8zztYclp8mSI7lzeBuXs6F3Akaw=;
-  b=U0JOUSiExZx1AFmFp85Za7zO95WNeYNf+4kOAYuo1J0wyi5+CdxKUdig
-   FWxaqNNvQtDtz5MkLu1YOkgo/3e3N35xYJ7gl1HievpEAeKuVS0W1ERLq
-   0/L0SMTz+jT9q3eAvhyU0ASVRIs1lyrBlrosrS2Gyyk2Nydr3ruPY+qs3
-   iZ3U49tnjMymgx2c99HpJMsF9DftIBKwUK4//yxrj84escC3Dg9L5btn7
-   AytCUdtSCIAUMnAAElAuvPeT7uy37v3fs5KjX1zHyvRvgPMgQu+6o//Go
-   TAfhSI9HgXG4ZzZ60EwQ0qCJYinoecJ3d+Tgf0xZamdnqQ1vyMTRMXf6o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382730665"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="382730665"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 13:37:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="837893805"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="837893805"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 13:37:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1r6HO9-0000000GYZt-2UPV;
-        Thu, 23 Nov 2023 23:37:33 +0200
-Date:   Thu, 23 Nov 2023 23:37:33 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        lech.perczak@camlingroup.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] serial: sc16is7xx: improve regmap debugfs by using one
- regmap per port
-Message-ID: <ZV_GHRhqCdeCHV_a@smile.fi.intel.com>
-References: <20231030211447.974779-1-hugo@hugovil.com>
+        Thu, 23 Nov 2023 16:49:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52090D62
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:49:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844DCC433C7;
+        Thu, 23 Nov 2023 21:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700776192;
+        bh=ChruaeO872rftytl509GOtmQz0j11PGUCH8A/6iytsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NPvW/UXmQAkbjpaCxOG4Pi2qMzTjyn9qSa5VYZ1sNPcssByNblU9o9LLcvT1yIt8g
+         xqAdKGHTdo40MqRWSj0y2cOrU3Sk80EkPVIZMXOSBezR7cKDb6bIqK8giI+E3VFnQo
+         Ju+DyMGeSXYEN2KMQMXQyH7cgyduWHsv83UHTv19RsChb8iQVkFFZzGKSS1eIiV/kg
+         c3aYogpMsqqcHg/+Fj6yZ08wCKdgp/fExbpAIVp4yrPZT0K3j5BnSPt1sZnIXD1Oa4
+         C3xBPcov+lyzaM2uHhr4TInpO8dFmkPwi/icoWZw9/G3YbGqb0uLxMnuDyHOMjdeEU
+         jvp28jEodMVsA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AED2840094; Thu, 23 Nov 2023 18:49:49 -0300 (-03)
+Date:   Thu, 23 Nov 2023 18:49:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
+ priority than sysfs/json
+Message-ID: <ZV/I/Trfz7StsLsf@kernel.org>
+References: <20231123042922.834425-1-irogers@google.com>
+ <ZV9jq1C0TUh8MbeU@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fV3_UamHcGusUVyo23OW6tRnmSc_tohuDf1KTf4F_os1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231030211447.974779-1-hugo@hugovil.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fV3_UamHcGusUVyo23OW6tRnmSc_tohuDf1KTf4F_os1g@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,94 +66,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 05:14:47PM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> 
-> With this current driver regmap implementation, it is hard to make sense
-> of the register addresses displayed using the regmap debugfs interface,
-> because they do not correspond to the actual register addresses documented
-> in the datasheet. For example, register 1 is displayed as registers 04 thru
-> 07:
-> 
-> $ cat /sys/kernel/debug/regmap/spi0.0/registers
->   04: 10 -> Port 0, register offset 1
->   05: 10 -> Port 1, register offset 1
->   06: 00 -> Port 2, register offset 1 -> invalid
->   07: 00 -> port 3, register offset 1 -> invalid
->   ...
-> 
-> The reason is that bits 0 and 1 of the register address correspond to the
-> channel (port) bits, so the register address itself starts at bit 2, and we
-> must 'mentally' shift each register address by 2 bits to get its real
-> address/offset.
-> 
-> Also, only channels 0 and 1 are supported by the chip, so channel mask
-> combinations of 10b and 11b are invalid, and the display of these
-> registers is useless.
-> 
-> This patch adds a separate regmap configuration for each port, similar to
-> what is done in the max310x driver, so that register addresses displayed
-> match the register addresses in the chip datasheet. Also, each port now has
-> its own debugfs entry.
-> 
-> Example with new regmap implementation:
-> 
-> $ cat /sys/kernel/debug/regmap/spi0.0-port0/registers
-> 1: 10
-> 2: 01
-> 3: 00
+Em Thu, Nov 23, 2023 at 07:18:57AM -0800, Ian Rogers escreveu:
+> On Thu, Nov 23, 2023 at 6:37 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Wed, Nov 22, 2023 at 08:29:22PM -0800, Ian Rogers wrote:
+> > > This is a large behavioral change:
+> > > 1) the scope of the change means it should bake on linux-next and I
+> > > don't believe should be a 6.7-rc fix.
+
+> > I'm happy for this to bake, but I do think it needs to be backported for the
+> > sake of users, especially given that it *restores* the old behaviour.
+
+> It is going to change the behavior for a far larger set of users. I'm
+> also concerned that:
+
+> ```
+> $ perf list
 > ...
-> 
-> $ cat /sys/kernel/debug/regmap/spi0.0-port1/registers
-> 1: 10
-> 2: 01
-> 3: 00
-> 
-> As an added bonus, this also simplifies some operations (read/write/modify)
-> because it is no longer necessary to manually shift register addresses.
+>   cpu-cycles OR cpu/cpu-cycles/                      [Kernel PMU event]
+> ...
+> ```
 
-This change might be problematic, i.e. ...
+> implies that cpu/cpu-cycles/ is a synonym for cpu-cycles, which is no
+> longer true (or pick another event from sysfs whose name is the same
+> as a legacy event). I'm not sure what a fix in perf list for this
+> would look like.
 
-...
+It is a mess, indeed, cpu-cycles should be equivalent to
+cpu/cpu-cycles/, map to the same HW PMU counter.
 
->  		regmap_update_bits(
->  			s->regmap,
-> -			SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
-> +			SC16IS7XX_IOCONTROL_REG,
->  			SC16IS7XX_IOCONTROL_MODEM_A_BIT |
->  			SC16IS7XX_IOCONTROL_MODEM_B_BIT, s->mctrl_mask);
+But by now I think we need to just reword the output of perf list to not
+equate those events, and instead provide a more informative output, if
+that is at all possible.
 
-...if this happens inside another regmap operation it might collide with this
-as there is no more shared locking (and if driver is going to be converted to
-use an external lock, the one in regmap might be disabled). But I haven't
-checked anyhow deeply this, so just a heads up for the potential issue.
+Something like:
 
-...
+Legacy events:
 
-> -	ret = regmap_read(regmap,
-> -			  SC16IS7XX_LSR_REG << SC16IS7XX_REG_SHIFT, &val);
-> +	ret = regmap_read(regmaps[0], SC16IS7XX_LSR_REG, &val);
+cpu-cycles: some nice explanation about the intent for this one (Ingo's
+probably).
 
-Here is a probe, most likely no issues.
+And then:
 
->  	if (ret < 0)
->  		return -EPROBE_DEFER;
+PMU events: (and this is even less clear :-()
 
-...
+cpu/cpu-cycles/: other nice explanation about the intent for this one,
+if different, on this arch, for the "legacy" cpu-cycles one.
 
-> +static const char *sc16is7xx_regmap_name(unsigned int port_id)
-> +{
-> +	static char buf[6];
-> +
-> +	snprintf(buf, sizeof(buf), "port%d", port_id);
+The original intent, that I called "Ingo's" was to try to somehow
+generalize some concepts (CPU cycles, for instante) so that we could get
+a rough idea that would allow us to somehow compare results using the
+tools over different architectures (and micro-arches, etc).
 
-Should be %u.
+I think that with these generic names we're now in damage control mode:
+what matters is to keep what people got used to to continue to hold. And
+that is what I think is the main argument here.
 
-> +	return buf;
-> +}
+And I really think we should just head people like Hector (perf power
+users) and provide a way to aggregate "cycles" over all cores, probably
+not in the default output, but in a really simple way, as he seems to
+want that and I would'n t be surprised that that may be something useful
+after all 8-).
 
--- 
-With Best Regards,
-Andy Shevchenko
+So back to checking why this patch isn't working in some of the
+container arches I test this whole shebang, sigh.
 
-
+- Arnaldo
