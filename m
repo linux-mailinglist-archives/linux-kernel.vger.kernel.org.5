@@ -2,210 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083C17F5C14
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23607F5C17
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344449AbjKWKRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S234814AbjKWKRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKWKRW (ORCPT
+        with ESMTP id S234607AbjKWKRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:17:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D759092;
-        Thu, 23 Nov 2023 02:17:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700734648; x=1732270648;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=IXRF73O9rc9T97NWfG5rmiT8ZEXtuUNqrJz3pThVEvY=;
-  b=CEfE+T3j/AM7zIV/gzh7gx4W9ebcFeVl9AFgFM5q106MaBcaHhkC0aus
-   5qAiw7EiX+4GVwL8neTLPuLR+ZwNeHq8t7SFRS86c49sRQKkh4dIz3lhO
-   DhbJKbnMsTev3nyifi21aan5Xnei1UlfObg9JUmJE9ZjpUeHYZ7ipgAX0
-   ad6TxJpSfGcnHccpJ3WpgxB7QES+sBlWANP8z3IowRRvNXEMj28t/RwPe
-   +MAy3BXeDcIgWbiHoioFMvzgGnPPq1gydKpNkGnfxBlZ4XuVCLh5LM/P9
-   TpuRJ7rbo34KC+HA66ZRpiy7uCOpnzZUlvBCyCOCLqTGetK2HwMEjFOkh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="377266901"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="377266901"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:17:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="15615449"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Nov 2023 02:17:28 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 23 Nov 2023 02:17:27 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 23 Nov 2023 02:17:27 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 23 Nov 2023 02:17:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aKySUSZqiHtLv0xuHdh9FIZjJje+/eGS/unVTXQam5bHEshORGgItjyy6mLbwCRvtlFf+iP7ksOVqxngiQwnsKKMCsyJtu7CiQ2ORoO/shidTJDYtvCSvAsTC6faK0o0sMAgAW7ezmsYvPOOqakU/vFna224sFyBDO3GhcRFYa+wyNe7RJJOMqYH+GYHAgpRPfELirkas5vXdF9M8llSsnUFfugyt8AuNsaiyaHjkMlV6P0kQYWkWuUfdWV7rCaQ3Zbal3+zcTJqrZ8+U9yi4XBRRK8A0xR9FFQ3IcrsMKAXlQ4ZDM5SyYJ68bBAGK1hoQ799NiEjYITBkb9KVCg6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XYAaIgdXtZU6+KBYYGUTKR5ROFVwvVEOmU8f+pkH+uA=;
- b=gtiNFY4C3QYXuahr3Cp3yCj8PNJYWfFRAG4yeSui1ZhqS4bDXTzE5xEMO7BopZFkPB8R3qlMpGPnwdJAnqssm+hXabg+9Y+uV9oECx+qYExYeyuvIiR4+dcTa458jrt1PtxdcPza4TSTKLpNvWTS9DCWRIsXQyPblU508hKEk394lgoYUab+Dukxi1KEOV4Qrq/QdUwYFbf0V3yfih1fqRNEe4yBP75LakP17+rHoVhS/OghN2YtZdqxUEj3DGrT4/dyzxYwKdozg1L+RPVd1Uw+DmOnRAuPDrCBLWRcQBbkIBlP8V1ksN7Lvl3B3JXIOOTRtxrVeb50oCGmnzHcWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
- by SA1PR11MB6845.namprd11.prod.outlook.com (2603:10b6:806:29f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
- 2023 10:17:25 +0000
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3]) by MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3%7]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
- 10:17:24 +0000
-Message-ID: <2c2d0641-002c-4ce6-9df4-bc633e602721@intel.com>
-Date:   Thu, 23 Nov 2023 11:17:17 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v1] net: stmmac: xgmac: Disable FPE MMC interrupts
-To:     Furong Xu <0x1207@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>
-CC:     <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <xfr@outlook.com>,
-        <rock.xu@nio.com>
-References: <20231123093538.2216633-1-0x1207@gmail.com>
-Content-Language: en-US
-From:   Wojciech Drewek <wojciech.drewek@intel.com>
-In-Reply-To: <20231123093538.2216633-1-0x1207@gmail.com>
+        Thu, 23 Nov 2023 05:17:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5181AD48
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:17:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700734668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BSpKpo4O4iiJunkafEGTSLneyzxvVWYkfJt2rrOos2k=;
+        b=LfZleArhOqCNYxVTUJYSiINoh1fOm4YzqyFI/GfmYBYCq/Jvm8SJ/UKXLqwPPUoVYkTUAc
+        ZYZt/+rYpzf9Wt0yO2IGfJ7wSRWpvOWXSTIGn+lz17TUV3/BMEecYI8R8HfLqgpXHJLJKl
+        yvpVx3PpNObKf7I7rCAE+0t9hr7g7j0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-271-0XdCXAVfMV2U9ak8hWGykg-1; Thu, 23 Nov 2023 05:17:46 -0500
+X-MC-Unique: 0XdCXAVfMV2U9ak8hWGykg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-548e6717ab7so67078a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:17:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700734666; x=1701339466;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=BSpKpo4O4iiJunkafEGTSLneyzxvVWYkfJt2rrOos2k=;
+        b=nMHANR9Zd4/kDa+JXh2WmivYNJ+hoJWPIUJtLChXK+nPB5WErAsD79MLWVP9rd+jE3
+         wnj2FTP/sxDtbFDgSckvRzWz29XT4t3dbfflvltlUhys8ei/bpi6tfbR/i86gi5rLVXq
+         3P5rlN4nqjiCsoFhxLG28+VOuiw2R0McGpt6GZOj0kyBrQ1fx36yAHA6LGxmz8Iagu2p
+         MS7kUDWpIXFXIPOHH4w3HjckUfMoofirLdGr/NZgnyfd3emMBNxnrzQ/zts20t0gqpZh
+         u+z773eM93fZzJ5j5c1XcIQoto5rXKn52c51YvmKlMksAiLGxFxpNns2lgt2P71s32e8
+         0Vog==
+X-Gm-Message-State: AOJu0YycM+aDDNsArfFryxX51Rq5QePHi7rjT6Kme0Yj/5UpfCP3kXKS
+        Q3dARRw03TP3t4V8+pd64UH01+4AH5j9QI1A5AZJAxggdSFhV3Nvr8ZAQO6W8nLKnDXriii/jhH
+        NMfna+OcK9SPt+BQ3+qzEAC3j
+X-Received: by 2002:aa7:ca41:0:b0:549:aeb:4f8e with SMTP id j1-20020aa7ca41000000b005490aeb4f8emr3495952edt.4.1700734665794;
+        Thu, 23 Nov 2023 02:17:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGV2rt46oNutILQDl/fbaKsy+1nsv9w1ooHRAhPaK/Ceb3py1DfDTeXb6gNqX+a/LGmebwSeA==
+X-Received: by 2002:aa7:ca41:0:b0:549:aeb:4f8e with SMTP id j1-20020aa7ca41000000b005490aeb4f8emr3495934edt.4.1700734665406;
+        Thu, 23 Nov 2023 02:17:45 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-213.dyn.eolo.it. [146.241.241.213])
+        by smtp.gmail.com with ESMTPSA id l17-20020a056402345100b00546d9d81ec8sm481013edc.93.2023.11.23.02.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 02:17:45 -0800 (PST)
+Message-ID: <15c047f8121a501d8fbef8713d2d9e1fd4a564ad.camel@redhat.com>
+Subject: Re: [net-next PATCH v3 1/2] octeontx2-af: Add new mbox to support
+ multicast/mirror offload
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Suman Ghosh <sumang@marvell.com>, sgoutham@marvell.com,
+        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lcherian@marvell.com, jerinj@marvell.com, horms@kernel.org,
+        wojciech.drewek@intel.com
+Date:   Thu, 23 Nov 2023 11:17:43 +0100
+In-Reply-To: <20231121094346.3621236-2-sumang@marvell.com>
+References: <20231121094346.3621236-1-sumang@marvell.com>
+         <20231121094346.3621236-2-sumang@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0122.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b9::6) To MW4PR11MB5776.namprd11.prod.outlook.com
- (2603:10b6:303:183::9)
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|SA1PR11MB6845:EE_
-X-MS-Office365-Filtering-Correlation-Id: 135f1670-20d8-4cd6-2106-08dbec0d633b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xsa1jjEzxEiKwKyR9taGsZqzsEy/ZMi1K+O33tiY1IWHIZMz5Bcl+E+2wfRZc1dK2T9LLXVQdRWOD5/DoANoJ6NjvzaJW5X9JwI4gHi/rKz+5tw4NNsbdYdj2Tz7sZeRQngQWzTlzgWejl4RUEucD/SUbw+AqYAuMZajuBFYSr7fGWkudwktcOkHfHdOwjft+5WBUUNeldO8uqsowFMIVJK76pnS9kJDbE4TW93VkF7SwfnCIZAclcM0aXz0BuRg8pkpSsLbnCla1U4np7e7ysdb3oJBzKVyaimK61BeKJw5bGQtO1X7YjPa647cgNCMILlIdyOaGsSY5BLz3zmz4MIoW971xJn7K/BZbbsOJRJ7n13KCMKAL4vAZgRwqyrSWxVXF/MfG8xFOxMQa5GJR8Z0Q1AGkzKgYWAKCwdvUged0zZCq47aZ9oX/U7dHxLjxLnNa+DFu45z2fvMHIoA5sNVToVKkJSH8gtQQH0mtBak5KlPSP0sFSeQMmJr4TJa2RPI0ilUGxIhWajpwLxSF77LjX6FHZVLrnGbgbNzraaeNtMAiwi4XTq7szm854pStJktsnaSyD3hcAqjwAX/H923prPS4xNdUzfvTRLeIzMJ0Jkhu1VCT2SB/hXxeB3lyGZiLJReLC58czcy0IWVyTvVuaW/YWHtuDc0dYNajCg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(39860400002)(366004)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(26005)(53546011)(6666004)(2616005)(6512007)(6506007)(44832011)(5660300002)(8676002)(41300700001)(4326008)(8936002)(2906002)(7416002)(478600001)(6486002)(316002)(66556008)(110136005)(66946007)(66476007)(31696002)(86362001)(36756003)(38100700002)(82960400001)(921008)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MmUzeGZ2eWJBd1l1YmVzS1YycUF1aXNmb0xXaDl5MUVkTmVTUHdKV3RnZGww?=
- =?utf-8?B?UmpqM3BmcHlCRGdYd29CUGxERWdlbm9TWkVCU0RLelNKTXQzWlpvMFN3ckZK?=
- =?utf-8?B?Zmo5emt0VXZaL0o2dE05NnpkU3d2alRJaVNTZDNXVXppdFRsZnZ3VTc5OFM4?=
- =?utf-8?B?SjlGMFM0TzNQZHBjRS8vZE1XWlhpdThiQXNWdEh0K25sQTlRMDlrSVFHcnVU?=
- =?utf-8?B?enZ2Rms2ZjlKRDMzeVdlem0vYUNRdjNsSU5hTTVjZ1BtUHF0RmlOeTJ5TTRO?=
- =?utf-8?B?ak9oUjdsaHo1UnlibS9sK2hXRk9jYzd4Y0FYYW1rdjVNMVBJeWhvelVLbHRu?=
- =?utf-8?B?VzFTR0RxMGhxeDVGRStQK21tSUtybVVLSU5wQ1RzcnZJTHlzQUluQjdJU2li?=
- =?utf-8?B?L3JvY0VnUTAvYmh1T0dKY1M3dHQ3UGU1RlRsSEFCMFpwMXNHRThXNkZEcTU1?=
- =?utf-8?B?Nno1Y1p4S1Q4a2lqRkd6VzdoUjhmQUZkbXhJeXJPV3QwdFFIMVJicEJxa2Iy?=
- =?utf-8?B?cmZtMzJLUzZ2RlJWaTQxamJUZThwQjF2L3VqTGg3bE5YWmVreHdNM2E2d1g5?=
- =?utf-8?B?YUZRSlVBb1RMbEVRUzBycWJaYTAvcm1XODJWU2U3UDU3R21QdnZudHh6MzZa?=
- =?utf-8?B?TzZKVGV5TVBTVlFhNnk2RHNMdDExeFpLcTdkMHN5bUlLV015dzEvTWR4SGF3?=
- =?utf-8?B?QW01SU1NZkk0TUJXdjdaQks4S1dWcWFnRjdwdC8xbUxITTdsdTJmLzViRHZY?=
- =?utf-8?B?L3NwalljWVBIbklnbmxiYUpLN0VRdzFYYjF3QythQXpsK2Vyb3lUUllSd095?=
- =?utf-8?B?RHczWThndURzcjU0d3A1UWR3dXFlT09JSG1KQ0gzQUpGRHNseXkydFNnWG1i?=
- =?utf-8?B?dVFhRGl4S2VNOWVjWDFOVjVMM3oxSlN3SFIxUllJaEZwc2Q3MEh5bFFDVjVI?=
- =?utf-8?B?RXhtTklJWHhIVkwxcG93Vm1zMjVOUUZoZmRTM3QwbUNJVDMveFh0NUJpS2RF?=
- =?utf-8?B?U3pCRU4xTlA2QjhISUVDRzM0L0NpekE0Z0NiMjU3NmFaOS9scUpZcGpxSmwv?=
- =?utf-8?B?dmdWQldndm1iYUNtWnV1NkxYcGtMWFJ5MjJiVkV2R3hqUHBDRG5VZ3V6Qkdh?=
- =?utf-8?B?TTl3MFZIdkd0QTkyUFRNa0svSlJaR0Y1V0orWVdIVDRsbzNKOGVvc3dUcHJB?=
- =?utf-8?B?YnZNTm9XZHFUVjBoMHQ5NHczK282ZzRNMFZmY1Q4VWtpdkl5Y21iWkJhYmFs?=
- =?utf-8?B?MHBiN3pJVVFHVHVhZ2xyYVhCV0hYQXVHWnV0bnE1bnROU1kycXQxRmNxZGVH?=
- =?utf-8?B?dUhRZ2s1RWtReHNTWW9IOE1pUC8rYXl4ZThmTmVtSGI3RVdyL3FOODBvVTVE?=
- =?utf-8?B?eDBKR2RVS2pUZTEwWlhmT1ZVZzY3R0RiZFB6MWhSeU9mc3M0YWVIZFU1ai93?=
- =?utf-8?B?TStsZ1l6S0FIMk5pSzdpMVhkVTB1NjFxb2tIclBMTk1OM2JMYmxpOHdLcEFC?=
- =?utf-8?B?aEkzMGkvalUxeSt5dXFDaWJ1MThsTmZmTlFMeE9kWnlwQ3U4VEZXMXBxSjNJ?=
- =?utf-8?B?SXBTT1JqMFlTR3hYbXpTQWdMN051eXBRMXE4RFJVR2JpN3M4R0Fmd2JrUElk?=
- =?utf-8?B?UFVkNDl2dktvZEtjVFVWWnVNaEsxVzdqcTJKd2RpY1JEZHdFVFB6NndwdFU4?=
- =?utf-8?B?ZEJ0eWs2TFhZQTI4M2htdDRFTnZhbWlpY3ArbXhxaEJEcFZQc3FRS2pvNkJs?=
- =?utf-8?B?YjV4dVNUMnpRZTNQcXM4ZlNSeU45eEhUcXBySXc5Mzlkc1ZndW15UHFCbTIy?=
- =?utf-8?B?bWRqWHlQTDVZZy82dW91TE1mRWNjbWJ2MVNUWHhSUFl6TXhNcnZmRXN6c0FZ?=
- =?utf-8?B?NVljekJRNi9vRjVOUGFGNFBtYmFnQkhJQUYvTzQ3dlQ2UlBjOVJoa2pqczZJ?=
- =?utf-8?B?eVFHajRmMmZsWEdLcndMR2RIMXVHNXNlblo2QzVVWmdFWmJScXI1WG9uUTRQ?=
- =?utf-8?B?NDFodVBTVEpGT3FyNEpnSlZzL3JkMjFDSVJvZklrNFRYUzdrUDJmOWUvc3Ey?=
- =?utf-8?B?dW5CdHJucVc5bFlVb2Y2Qk1DQzNDcS8wYkU2MENXR1pmUGRibDNjSEdncUdm?=
- =?utf-8?B?NU9vWTBkL28xY2toREJRK3Jid2hNUUduSWJhMjhGMUVpdWlkc0ZJemgrVnVG?=
- =?utf-8?B?dVE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 135f1670-20d8-4cd6-2106-08dbec0d633b
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 10:17:24.9067
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gghMma4RwJviONGMh46UmCFluwWaVBpcNonR3VSxuVJ9WHN7CEGi2ZQNcFwIFOAM7mdN5DJ5u+pURT1tFJMzpsc9sIXXLCUe8vXGe41pgcE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6845
-X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-11-21 at 15:13 +0530, Suman Ghosh wrote:
+[...]
+> +static int nix_add_mce_list_entry(struct rvu *rvu,
+> +				  struct nix_hw *nix_hw,
+> +				  struct nix_mcast_grp_elem *elem,
+> +				  struct nix_mcast_grp_update_req *req)
+> +{
+> +	struct mce *tmp_mce[NIX_MCE_ENTRY_MAX];
+
+If I read correctly the above struct is is 256 bytes wide. Do you
+really need to put so much data on the stack this deep?=20
 
 
-On 23.11.2023 10:35, Furong Xu wrote:
-> Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
-> by default") leaves the FPE(Frame Preemption) MMC interrupts enabled.
-> Now we disable FPE TX and RX interrupts too.
+> +	u32 num_entry =3D req->num_mce_entry;
+> +	struct nix_mce_list *mce_list;
+> +	struct mce *mce;
+> +	int i;
+> +
+> +	mce_list =3D &elem->mcast_mce_list;
+> +	for (i =3D 0; i < num_entry; i++) {
+> +		mce =3D kzalloc(sizeof(*mce), GFP_KERNEL);
+> +		if (!mce)
+> +			goto free_mce;
+> +
+> +		mce->pcifunc =3D req->pcifunc[i];
+> +		mce->channel =3D req->channel[i];
+> +		mce->rq_rss_index =3D req->rq_rss_index[i];
+> +		mce->dest_type =3D req->dest_type[i];
+> +		mce->is_active =3D 1;
+> +		hlist_add_head(&mce->node, &mce_list->head);
+> +		tmp_mce[i] =3D mce;
+> +		mce_list->count++;
+> +	}
+> +
+> +	mce_list->max +=3D num_entry;
+> +
+> +	/* Dump the updated list to HW */
+> +	if (elem->dir =3D=3D NIX_MCAST_INGRESS)
+> +		return nix_update_ingress_mce_list_hw(rvu, nix_hw, elem);
+> +
+> +	nix_update_egress_mce_list_hw(rvu, nix_hw, elem);
+> +	return 0;
+> +
+> +free_mce:
+> +	while (i) {
+> +		hlist_del(&tmp_mce[i-1]->node);
+> +		kfree(tmp_mce[i-1]);
 
-Hi,
-Thanks for the patch, one question:
-Why do we have to disable them?
+Minor nit: checkpatch complains about the above: spaces are needed
+around '-'.
 
-> 
-> Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
-> Signed-off-by: Furong Xu <0x1207@gmail.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> index ea4910ae0921..cdd7fbde2bfa 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> @@ -177,8 +177,10 @@
->  #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
->  #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
->  
-> +#define MMC_XGMAC_FPE_TX_INTR_MASK	0x204
->  #define MMC_XGMAC_TX_FPE_FRAG		0x208
->  #define MMC_XGMAC_TX_HOLD_REQ		0x20c
-> +#define MMC_XGMAC_FPE_RX_INTR_MASK	0x224
->  #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
->  #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
->  #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
-> @@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+> +		mce_list->count--;
+> +		i--;
+> +	}
+> +
+> +	return -ENOMEM;
+> +}
+> +
+>  static int nix_update_mce_list_entry(struct nix_mce_list *mce_list,
+>  				     u16 pcifunc, bool add)
 >  {
->  	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
->  	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
-> +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_TX_INTR_MASK);
-> +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_RX_INTR_MASK);
->  	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+
+[...]
+> @@ -3237,13 +3473,30 @@ static int nix_setup_mcast(struct rvu *rvu, struc=
+t nix_hw *nix_hw, int blkaddr)
+>  	int err, size;
+> =20
+>  	size =3D (rvu_read64(rvu, blkaddr, NIX_AF_CONST3) >> 16) & 0x0F;
+> -	size =3D (1ULL << size);
+> +	size =3D BIT_ULL(size);
+> +
+> +	/* Allocate bitmap for rx mce entries */
+> +	mcast->mce_counter[NIX_MCAST_INGRESS].max =3D 256UL << MC_TBL_SIZE;
+> +	err =3D rvu_alloc_bitmap(&mcast->mce_counter[NIX_MCAST_INGRESS]);
+> +	if (err)
+> +		return -ENOMEM;
+> +
+> +	/* Allocate bitmap for tx mce entries */
+> +	mcast->mce_counter[NIX_MCAST_EGRESS].max =3D MC_TX_MAX;
+> +	err =3D rvu_alloc_bitmap(&mcast->mce_counter[NIX_MCAST_EGRESS]);
+> +	if (err) {
+> +		rvu_free_bitmap(&mcast->mce_counter[NIX_MCAST_INGRESS]);
+> +		return -ENOMEM;
+> +	}
+> =20
+>  	/* Alloc memory for multicast/mirror replication entries */
+>  	err =3D qmem_alloc(rvu->dev, &mcast->mce_ctx,
+> -			 (256UL << MC_TBL_SIZE), size);
+> -	if (err)
+> +			 mcast->mce_counter[NIX_MCAST_INGRESS].max, size);
+> +	if (err) {
+> +		rvu_free_bitmap(&mcast->mce_counter[NIX_MCAST_INGRESS]);
+> +		rvu_free_bitmap(&mcast->mce_counter[NIX_MCAST_EGRESS]);
+>  		return -ENOMEM;
+> +	}
+> =20
+>  	rvu_write64(rvu, blkaddr, NIX_AF_RX_MCAST_BASE,
+>  		    (u64)mcast->mce_ctx->iova);
+> @@ -3256,8 +3509,12 @@ static int nix_setup_mcast(struct rvu *rvu, struct=
+ nix_hw *nix_hw, int blkaddr)
+>  	size =3D rvu_read64(rvu, blkaddr, NIX_AF_MC_MIRROR_CONST) & 0xFFFF;
+>  	err =3D qmem_alloc(rvu->dev, &mcast->mcast_buf,
+>  			 (8UL << MC_BUF_CNT), size);
+> -	if (err)
+> +	if (err) {
+> +		rvu_free_bitmap(&mcast->mce_counter[NIX_MCAST_INGRESS]);
+> +		rvu_free_bitmap(&mcast->mce_counter[NIX_MCAST_EGRESS]);
+> +		qmem_free(rvu->dev, mcast->mce_ctx);
+
+AFAICS, the above lines frees struct that was already allocated prior
+to this patch. It looks like a fix possibly worthy a separate patch.
+
+[...]
+> +static void nix_mcast_update_mce_entry(struct rvu *rvu, u16 pcifunc, u8 =
+is_active)
+> +{
+> +	struct nix_mcast_grp_elem *elem;
+> +	struct nix_mcast_grp *mcast_grp;
+> +	struct nix_hw *nix_hw;
+> +	int blkaddr;
+> +
+> +	blkaddr =3D rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+> +	nix_hw =3D get_nix_hw(rvu->hw, blkaddr);
+> +	if (!nix_hw)
+> +		return;
+> +
+> +	mcast_grp =3D &nix_hw->mcast_grp;
+> +
+> +	mutex_lock(&mcast_grp->mcast_grp_lock);
+> +	list_for_each_entry(elem, &mcast_grp->mcast_grp_head, list) {
+> +		struct nix_mce_list *mce_list;
+> +		struct mce *mce;
+> +
+> +		/* Iterate the group elements and disable the element which
+> +		 * received the disable request.
+> +		 */
+> +		mce_list =3D &elem->mcast_mce_list;
+> +		hlist_for_each_entry(mce, &mce_list->head, node) {
+> +			if (mce->pcifunc =3D=3D pcifunc) {
+> +				if (is_active)
+> +					mce->is_active =3D 1;
+> +				else
+> +					mce->is_active =3D 0;
+
+just:
+
+				mce->is_active =3D is_active;
+
+> +
+> +				break;
+> +			}
+> +		}
+> +
+> +		/* Dump the updated list to HW */
+> +		if (elem->dir =3D=3D NIX_MCAST_INGRESS)
+> +			nix_update_ingress_mce_list_hw(rvu, nix_hw, elem);
+> +		else
+> +			nix_update_egress_mce_list_hw(rvu, nix_hw, elem);
+> +
+> +		/* Update the multicast index in NPC rule */
+> +		nix_mcast_update_action(rvu, elem);
+> +	}
+> +	mutex_unlock(&mcast_grp->mcast_grp_lock);
+> +}
+> +
+>  int rvu_mbox_handler_nix_lf_start_rx(struct rvu *rvu, struct msg_req *re=
+q,
+>  				     struct msg_rsp *rsp)
+>  {
+
+[...]
+> @@ -5797,3 +6134,327 @@ int rvu_mbox_handler_nix_bandprof_get_hwinfo(stru=
+ct rvu *rvu, struct msg_req *re
+> =20
+>  	return 0;
 >  }
->  
+> +
+> +static struct nix_mcast_grp_elem *rvu_nix_mcast_find_grp_elem(struct nix=
+_mcast_grp *mcast_grp,
+> +							      u32 mcast_grp_idx)
+> +{
+> +	struct nix_mcast_grp_elem *iter, *result_iter =3D NULL;
+> +
+> +	mutex_lock(&mcast_grp->mcast_grp_lock);
+> +	list_for_each_entry(iter, &mcast_grp->mcast_grp_head, list) {
+> +		if (iter->mcast_grp_idx =3D=3D mcast_grp_idx) {
+> +			result_iter =3D iter;
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&mcast_grp->mcast_grp_lock);
+> +
+> +	return result_iter;
+
+What prevents 'result_iter' from being freed at this point? (and
+causing a later UaF)
+
+> +}
+> +
+> +int rvu_nix_mcast_get_mce_index(struct rvu *rvu, u16 pcifunc, u32 mcast_=
+grp_idx)
+> +{
+> +	struct nix_mcast_grp_elem *elem;
+> +	struct nix_mcast_grp *mcast_grp;
+> +	struct nix_hw *nix_hw;
+> +	int blkaddr;
+> +
+> +	blkaddr =3D rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+> +	nix_hw =3D get_nix_hw(rvu->hw, blkaddr);
+> +	if (!nix_hw)
+> +		return NIX_AF_ERR_INVALID_NIXBLK;
+> +
+> +	mcast_grp =3D &nix_hw->mcast_grp;
+> +	elem =3D rvu_nix_mcast_find_grp_elem(mcast_grp, mcast_grp_idx);
+> +	if (!elem)
+> +		return NIX_AF_ERR_INVALID_MCAST_GRP;
+> +
+> +	return elem->mce_start_index;
+> +}
+> +
+> +void rvu_nix_mcast_flr_free_entries(struct rvu *rvu, u16 pcifunc)
+> +{
+> +	struct nix_mcast_grp_destroy_req dreq =3D { 0 };
+> +	struct nix_mcast_grp_update_req ureq =3D { 0 };
+> +	struct nix_mcast_grp_update_rsp ursp =3D { 0 };
+> +	struct nix_mcast_grp_elem *elem, *tmp;
+> +	struct nix_mcast_grp *mcast_grp;
+> +	struct nix_hw *nix_hw;
+> +	int blkaddr;
+> +
+> +	blkaddr =3D rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+> +	nix_hw =3D get_nix_hw(rvu->hw, blkaddr);
+> +	if (!nix_hw)
+> +		return;
+> +
+> +	mcast_grp =3D &nix_hw->mcast_grp;
+> +
+> +	mutex_lock(&mcast_grp->mcast_grp_lock);
+> +	list_for_each_entry_safe(elem, tmp, &mcast_grp->mcast_grp_head, list) {
+> +		struct nix_mce_list *mce_list;
+> +		struct hlist_node *tmp;
+> +		struct mce *mce;
+> +
+> +		/* If the pcifunc which created the multicast/mirror
+> +		 * group received an FLR, then delete the entire group.
+> +		 */
+> +		if (elem->pcifunc =3D=3D pcifunc) {
+> +			mutex_unlock(&mcast_grp->mcast_grp_lock);
+> +			/* Delete group */
+> +			dreq.hdr.pcifunc =3D elem->pcifunc;
+> +			dreq.mcast_grp_idx =3D elem->mcast_grp_idx;
+> +			rvu_mbox_handler_nix_mcast_grp_destroy(rvu, &dreq, NULL);
+> +			mutex_lock(&mcast_grp->mcast_grp_lock);
+
+What prevents 'tmp' from being removed and freed while the
+'mcast_grp_lock' is not held? there are other similar chunks later.
+
+I'm under the impression that all the multicast data is touched under
+the rtnl lock protection so the above lock does not matter much, but I
+really did not validate such impression/guess.
+
+Generally speaking the lock schema here looks complex and hard to
+follow: a more descriptive changelog will help.
+
+Cheers,
+
+Paolo
+
