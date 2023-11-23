@@ -2,110 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4A87F6320
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5437F6329
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346210AbjKWPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:37:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
+        id S1346143AbjKWPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346206AbjKWPhj (ORCPT
+        with ESMTP id S1346072AbjKWPiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:37:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33A110FA
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:37:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FEA5C433C7;
-        Thu, 23 Nov 2023 15:37:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700753861;
-        bh=uQXiq96nO9VqagRTVjE4tsnRbIa5zMx/56VxvD4vqmc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MNbX5XYoqyBOdgPdCyGzkWB4YkNNJx6Bb6oX+qx8Q66cZfm3KBHY+aafog/SV6IFL
-         +rsfrj+JI8rU872TJebCWAvHnhKhkpFt92dlQlKtgkB6ulGXBgBmgNkte9YwWzYnWh
-         6Wh/0gBvUrnet0wg1xSvGqMNlYpZ2NxE54kxpzMTpqx3hczB1PiNI3SsxxOdaa3rkn
-         RpTmcDL98KGaLcTavywN1D6rp7FipD/6ygRWtUilwXJ3KMnl3c20hEVQjraOopyvY8
-         9eD/yuTL8K+rqNLTS/xGb6pQiueDvG51NyX4i03cDGd7VfqQik9mczivvqVTV+vWvK
-         maaAzVZrWWQxg==
+        Thu, 23 Nov 2023 10:38:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0921AE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=s7ekhSuoXxWlw3uFMenhrsDmT0xI7DRa/z1sU8Z+EW4=; b=L/HubkwKeFULvuKpdH+LQqMTRj
+        e8DkQyvYc9norxdz5rus6WwdDaASMKeKSWAi7uP6vG3pbZr32kgA5AoZVQdeA2Jti4KHWSVd2LTYa
+        +IBv2B9FqQ1xgGlwzRFOoa4Vqy5OG7uOkzuhqnOkuAMEUjJ1tQ6Dp4jqtQz6XyQ0fOv9k9xNXQJyG
+        GJtD1L3S37xtaAagdZIDmO7t+ah4bg7tVgTFUmxbAiWnRnVp58bE4fkvKVTUD5CR/TL4nouVog+R9
+        PNK5JT9pic/gBOT/LNYY2DdQpD2Gn+q9cDWOEad1/zTsSqBDPOsA1NLNnWkfHdU9XG4K6AtebfDbm
+        2zJgIgxA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r6BmU-007ftN-2B; Thu, 23 Nov 2023 15:38:18 +0000
+Date:   Thu, 23 Nov 2023 15:38:18 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Chun Ng <chunn@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Ankita Garg <ankitag@nvidia.com>
+Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
+Message-ID: <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
+References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
+ <ZV7eHE2Fxb75oRpG@archie.me>
 MIME-Version: 1.0
-Date:   Thu, 23 Nov 2023 16:37:36 +0100
-From:   Michael Walle <mwalle@kernel.org>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Stu Hsieh <stu.hsieh@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Subject: Re: [PATCH v4 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs
- calculation
-In-Reply-To: <CAAOTY__LqKkj7Exg=wr0QUD-AQ_i3adXLUSdT2M_oYj7iCBAKQ@mail.gmail.com>
-References: <20230905084922.3908121-1-mwalle@kernel.org>
- <20230905084922.3908121-2-mwalle@kernel.org>
- <93576c3b04c8378c5c9296ec7a6585d9@kernel.org>
- <CAAOTY__LqKkj7Exg=wr0QUD-AQ_i3adXLUSdT2M_oYj7iCBAKQ@mail.gmail.com>
-Message-ID: <27e0368bb6dd44cd8d176c824cbfe464@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV7eHE2Fxb75oRpG@archie.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
->> > mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
->> > always have the CRTC with id 0, the ext id 1 and the third id 2. This
->> > is only true if the paths are all available. But paths are optional
->> > (see
->> > also comment in mtk_drm_kms_init()), e.g. the main path might not be
->> > enabled or available at all. Then the CRTC IDs will shift one up, e.g.
->> > ext will be 0 and the third path will be 1.
->> >
->> > To fix that, dynamically calculate the IDs by the presence of the
->> > paths.
->> >
->> > While at it, make the return code a signed one and return -ENOENT if no
->> > path is found and handle the error in the callers.
->> >
->> > Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting
->> > possible_crtc way")
->> > Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->> > Signed-off-by: Michael Walle <mwalle@kernel.org>
->> > Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->> > Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->> 
->> Is there anything wrong with these two patches? They are now lingering
->> around for more than two months.
->> 
->> Unfortunately, patch 2/2 won't apply anymore because of commit
->> 01389b324c97 ("drm/mediatek: Add connector dynamic selection
->> capability). And I'm a bit puzzled for what the crtc_id is used
->> there because I guess it will have the same problem this patch
->> fixes.
+On Thu, Nov 23, 2023 at 12:07:40PM +0700, Bagas Sanjaya wrote:
+> Anyway, I'm adding this regression to regzbot:
 > 
-> Please base on the latest kernel version to fix.
+> #regzbot ^introduced: v6.0..v6.1
 
-Of course, but the question is how to fix it. Maybe Jason-JH.Lin
-can help here.
+this is not a regression.  close it, you idiot.
 
-In any case, please pick patch 1/2, it's independent of the second
-patch and should still apply.
 
--michael
