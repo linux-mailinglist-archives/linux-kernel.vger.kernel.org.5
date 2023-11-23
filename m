@@ -2,188 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEF47F630D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A90D7F630E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346097AbjKWPdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
+        id S1346105AbjKWPd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346038AbjKWPdO (ORCPT
+        with ESMTP id S1346099AbjKWPdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:33:14 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 169DED41;
-        Thu, 23 Nov 2023 07:33:20 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2682412FC;
-        Thu, 23 Nov 2023 07:34:06 -0800 (PST)
-Received: from [10.57.3.62] (unknown [10.57.3.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26E853F6C4;
-        Thu, 23 Nov 2023 07:33:18 -0800 (PST)
-Message-ID: <fb8fd583-cd18-8383-dcca-b3d601a9ff7a@arm.com>
-Date:   Thu, 23 Nov 2023 15:33:16 +0000
+        Thu, 23 Nov 2023 10:33:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E112BD54
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:33:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDA9C433D9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 15:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700753610;
+        bh=PVY0LzeEkDmnEjIm5dx7ChkB52X+cfmniynJvTefMpY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jg59GbM0ifip+kgf3VVWM4cetDw7IiyyOP5NT19QGqFCuaQHFWXcZjFPriqLOV5MQ
+         oww/npT4bQ/5J7jy++dY1Kk9ogEPile6jOVJsggqlUIYGDq3DiQKO6dUGTjnVHcbqC
+         phjKYXNAhm4zsX8sWAS+kzjLKIIOnXLFguH5iQM0RO32nRk5G/FPbG4QVcw7sGFQEE
+         afrBEFiJ6fqc+w+eqjNPEmUVTKmGGvfNsdqvLbmeAZ+HBg9003Rpbq068dR2BVNKF6
+         amqNCVGfYfNL7MjrDPnYzjEuIyDVIyB6XMafo9Y9gh5szeJWokHVdhXR1BS3vixOsG
+         inVaDcqfaqYnA==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2c5b7764016so11356091fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:33:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YzrTRIQ6fELvtMg9OTOGWj2TQURkbTdzlYxi18clPBIpG3wSSqN
+        pXebvZ/oo1muRWjrNOT9JpExYIY5bgJFdetcIA==
+X-Google-Smtp-Source: AGHT+IGkv3jtC6yED7yzjQMquybVRXRlSlDjxaeykoa+oyjWq2OAFtm+coBnLi9fc9I1lYhs+7TaTrvkkdYxfj3ADpU=
+X-Received: by 2002:a2e:3210:0:b0:2c5:137d:6baa with SMTP id
+ y16-20020a2e3210000000b002c5137d6baamr2618012ljy.14.1700753608585; Thu, 23
+ Nov 2023 07:33:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
- counting threshold feature
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Namhyung Kim <namhyung@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, will@kernel.org,
-        mark.rutland@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231113112507.917107-1-james.clark@arm.com>
- <20231113112507.917107-4-james.clark@arm.com>
- <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
- <0058ca82-e55b-4490-90d0-871afce787c7@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <0058ca82-e55b-4490-90d0-871afce787c7@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230905084922.3908121-1-mwalle@kernel.org> <20230905084922.3908121-2-mwalle@kernel.org>
+ <93576c3b04c8378c5c9296ec7a6585d9@kernel.org>
+In-Reply-To: <93576c3b04c8378c5c9296ec7a6585d9@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 23 Nov 2023 23:33:17 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__LqKkj7Exg=wr0QUD-AQ_i3adXLUSdT2M_oYj7iCBAKQ@mail.gmail.com>
+Message-ID: <CAAOTY__LqKkj7Exg=wr0QUD-AQ_i3adXLUSdT2M_oYj7iCBAKQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs calculation
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     =?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Stu Hsieh <stu.hsieh@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Michael:
 
+Michael Walle <mwalle@kernel.org> =E6=96=BC 2023=E5=B9=B411=E6=9C=8821=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:44=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Hi,
+>
+> > mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
+> > always have the CRTC with id 0, the ext id 1 and the third id 2. This
+> > is only true if the paths are all available. But paths are optional
+> > (see
+> > also comment in mtk_drm_kms_init()), e.g. the main path might not be
+> > enabled or available at all. Then the CRTC IDs will shift one up, e.g.
+> > ext will be 0 and the third path will be 1.
+> >
+> > To fix that, dynamically calculate the IDs by the presence of the
+> > paths.
+> >
+> > While at it, make the return code a signed one and return -ENOENT if no
+> > path is found and handle the error in the callers.
+> >
+> > Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting
+> > possible_crtc way")
+> > Suggested-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+> > Signed-off-by: Michael Walle <mwalle@kernel.org>
+> > Reviewed-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+> > Tested-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+>
+> Is there anything wrong with these two patches? They are now lingering
+> around for more than two months.
+>
+> Unfortunately, patch 2/2 won't apply anymore because of commit
+> 01389b324c97 ("drm/mediatek: Add connector dynamic selection
+> capability). And I'm a bit puzzled for what the crtc_id is used
+> there because I guess it will have the same problem this patch
+> fixes.
 
-On 21/11/2023 10:33, Suzuki K Poulose wrote:
-> On 20/11/2023 21:31, Namhyung Kim wrote:
->> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
->>>
->>> Add documentation for the new Perf event open parameters and
->>> the threshold_max capability file.
->>>
->>> Signed-off-by: James Clark <james.clark@arm.com>
->>> ---
->>>   Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
->>>   1 file changed, 56 insertions(+)
->>>
->>> diff --git a/Documentation/arch/arm64/perf.rst
->>> b/Documentation/arch/arm64/perf.rst
->>> index 1f87b57c2332..36b8111a710d 100644
->>> --- a/Documentation/arch/arm64/perf.rst
->>> +++ b/Documentation/arch/arm64/perf.rst
->>> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as
->>> needed.
->>>     
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
->>>   .. _tools/lib/perf/tests/test-evsel.c:
->>>     
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
->>> +
->>> +Event Counting Threshold
->>> +==========================================
->>> +
->>> +Overview
->>> +--------
->>> +
->>> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
->>> +events whose count meets a specified threshold condition. For
->>> example if
->>> +threshold_compare is set to 2 ('Greater than or equal'), and the
->>> +threshold is set to 2, then the PMU counter will now only increment by
->>> +when an event would have previously incremented the PMU counter by 2 or
->>> +more on a single processor cycle.
->>> +
->>> +To increment by 1 after passing the threshold condition instead of the
->>> +number of events on that cycle, add the 'threshold_count' option to the
->>> +commandline.
->>> +
->>> +How-to
->>> +------
->>> +
->>> +The threshold, threshold_compare and threshold_count values can be
->>> +provided per event:
->>> +
->>> +.. code-block:: sh
->>> +
->>> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
->>> +            -e
->>> dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
->>
->> Can you please explain this a bit more?
->>
->> I guess the first event counts stall_slot PMU if the event if it's
->> greater than or equal to 2.  And as threshold_count is not set,
->> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
->>
->> OTOH, dtlb_walk will count 1 if it sees an event less than 10.
->> Is my understanding correct?
-> 
-> That is correct. The behavior is described in the paragraph above.
-> But I agree that it would be really helpful if we explained with the
-> example above.
-> 
+Please base on the latest kernel version to fix.
 
-Yeah I can add a description of how the example behaves.
+Regards,
+Chun-Kuang.
 
->>
->>> +
->>> +And the following comparison values are supported:
->>> +
->>> +.. code-block::
->>> +
->>> +  0: Not-equal
->>> +  1: Equals
->>> +  2: Greater-than-or-equal
->>> +  3: Less-than
->>
->> So the above values are for threashold_compare, right?
->> It'd be nice if it's more explicit.
-
-Yep I agree, I can label this with threshold_compare.
-
->>
->> Similarly, it'd be helpful to have a description for the
->> threshold and threshold_count fields.
-> 
-> Agreed.
-> 
-> Suzuki
-> 
-
-Yeah I'll add explicit descriptions for each field.
-
-Thanks for the review.
-
-> 
-> 
->>
->> Thanks,
->> Namhyung
->>
->>> +
->>> +The maximum supported threshold value can be read from the caps of each
->>> +PMU, for example:
->>> +
->>> +.. code-block:: sh
->>> +
->>> +  cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
->>> +
->>> +  0x000000ff
->>> +
->>> +If a value higher than this is given, then it will be silently clamped
->>> +to the maximum. The highest possible maximum is 4095, as the config
->>> +field for threshold is limited to 12 bits, and the Perf tool will
->>> refuse
->>> +to parse higher values.
->>> +
->>> +If the PMU doesn't support FEAT_PMUv3_TH, then threshold_max will read
->>> +0, and both threshold and threshold_compare will be silently ignored.
->>> +threshold_max will also read as 0 on aarch32 guests, even if the host
->>> +is running on hardware with the feature.
->>> -- 
->>> 2.34.1
->>>
->>>
-> 
-> 
+>
+> -michael
+>
+> > ---
+> > v4:
+> >  - return -ENOENT if mtk_drm_find_possible_crtc_by_comp() doesn't find
+> >    any path
+> > v3:
+> >  - use data instead of priv_n->data
+> >  - fixed typos
+> >  - collected Rb and Tb tags
+> > v2:
+> >  - iterate over all_drm_private[] to get any vdosys
+> >  - new check if a path is available
+> > ---
+> >  drivers/gpu/drm/mediatek/mtk_dpi.c          |  5 +-
+> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 75 ++++++++++++++++-----
+> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  3 +-
+> >  drivers/gpu/drm/mediatek/mtk_dsi.c          |  5 +-
+> >  4 files changed, 68 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > index 2f931e4e2b60..f9250f7ee706 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > @@ -796,7 +796,10 @@ static int mtk_dpi_bind(struct device *dev, struct
+> > device *master, void *data)
+> >               return ret;
+> >       }
+> >
+> > -     dpi->encoder.possible_crtcs =3D
+> > mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->dev);
+> > +     ret =3D mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->dev);
+> > +     if (ret < 0)
+> > +             goto err_cleanup;
+> > +     dpi->encoder.possible_crtcs =3D ret;
+> >
+> >       ret =3D drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL,
+> >                               DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > index 771f4e173353..83ae75ecd858 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > @@ -507,6 +507,27 @@ static bool mtk_drm_find_comp_in_ddp(struct device
+> > *dev,
+> >       return false;
+> >  }
+> >
+> > +static bool mtk_ddp_path_available(const unsigned int *path,
+> > +                                unsigned int path_len,
+> > +                                struct device_node **comp_node)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     if (!path)
+> > +             return false;
+> > +
+> > +     for (i =3D 0U; i < path_len; i++) {
+> > +             /* OVL_ADAPTOR doesn't have a device node */
+> > +             if (path[i] =3D=3D DDP_COMPONENT_DRM_OVL_ADAPTOR)
+> > +                     continue;
+> > +
+> > +             if (!comp_node[path[i]])
+> > +                     return false;
+> > +     }
+> > +
+> > +     return true;
+> > +}
+> > +
+> >  int mtk_ddp_comp_get_id(struct device_node *node,
+> >                       enum mtk_ddp_comp_type comp_type)
+> >  {
+> > @@ -522,25 +543,47 @@ int mtk_ddp_comp_get_id(struct device_node *node,
+> >       return -EINVAL;
+> >  }
+> >
+> > -unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device
+> > *drm,
+> > -                                             struct device *dev)
+> > +int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm, struct
+> > device *dev)
+> >  {
+> >       struct mtk_drm_private *private =3D drm->dev_private;
+> > -     unsigned int ret =3D 0;
+> > -
+> > -     if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path,
+> > private->data->main_len,
+> > -                                  private->ddp_comp))
+> > -             ret =3D BIT(0);
+> > -     else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
+> > -                                       private->data->ext_len, private=
+->ddp_comp))
+> > -             ret =3D BIT(1);
+> > -     else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
+> > -                                       private->data->third_len, priva=
+te->ddp_comp))
+> > -             ret =3D BIT(2);
+> > -     else
+> > -             DRM_INFO("Failed to find comp in ddp table\n");
+> > +     const struct mtk_mmsys_driver_data *data;
+> > +     struct mtk_drm_private *priv_n;
+> > +     int i =3D 0, j;
+> > +
+> > +     for (j =3D 0; j < private->data->mmsys_dev_num; j++) {
+> > +             priv_n =3D private->all_drm_private[j];
+> > +             data =3D priv_n->data;
+> > +
+> > +             if (mtk_ddp_path_available(data->main_path, data->main_le=
+n,
+> > +                                        priv_n->comp_node)) {
+> > +                     if (mtk_drm_find_comp_in_ddp(dev, data->main_path=
+,
+> > +                                                  data->main_len,
+> > +                                                  priv_n->ddp_comp))
+> > +                             return BIT(i);
+> > +                     i++;
+> > +             }
+> > +
+> > +             if (mtk_ddp_path_available(data->ext_path, data->ext_len,
+> > +                                        priv_n->comp_node)) {
+> > +                     if (mtk_drm_find_comp_in_ddp(dev, data->ext_path,
+> > +                                                  data->ext_len,
+> > +                                                  priv_n->ddp_comp))
+> > +                             return BIT(i);
+> > +                     i++;
+> > +             }
+> > +
+> > +             if (mtk_ddp_path_available(data->third_path, data->third_=
+len,
+> > +                                        priv_n->comp_node)) {
+> > +                     if (mtk_drm_find_comp_in_ddp(dev, data->third_pat=
+h,
+> > +                                                  data->third_len,
+> > +                                                  priv_n->ddp_comp))
+> > +                             return BIT(i);
+> > +                     i++;
+> > +             }
+> > +     }
+> >
+> > -     return ret;
+> > +     DRM_INFO("Failed to find comp in ddp table\n");
+> > +     return -ENOENT;
+> >  }
+> >
+> >  int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp
+> > *comp,
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> > b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> > index febcaeef16a1..6a95df72de0a 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> > @@ -277,8 +277,7 @@ static inline bool mtk_ddp_comp_disconnect(struct
+> > mtk_ddp_comp *comp, struct dev
+> >
+> >  int mtk_ddp_comp_get_id(struct device_node *node,
+> >                       enum mtk_ddp_comp_type comp_type);
+> > -unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device
+> > *drm,
+> > -                                             struct device *dev);
+> > +int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm, struct
+> > device *dev);
+> >  int mtk_ddp_comp_init(struct device_node *comp_node, struct
+> > mtk_ddp_comp *comp,
+> >                     unsigned int comp_id);
+> >  enum mtk_ddp_comp_type mtk_ddp_comp_get_type(unsigned int comp_id);
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> > b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> > index d8bfc2cce54d..d67e5c61a9b9 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> > @@ -843,7 +843,10 @@ static int mtk_dsi_encoder_init(struct drm_device
+> > *drm, struct mtk_dsi *dsi)
+> >               return ret;
+> >       }
+> >
+> > -     dsi->encoder.possible_crtcs =3D mtk_drm_find_possible_crtc_by_com=
+p(drm,
+> > dsi->host.dev);
+> > +     ret =3D mtk_drm_find_possible_crtc_by_comp(drm, dsi->host.dev);
+> > +     if (ret < 0)
+> > +             goto err_cleanup_encoder;
+> > +     dsi->encoder.possible_crtcs =3D ret;
+> >
+> >       ret =3D drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
+> >                               DRM_BRIDGE_ATTACH_NO_CONNECTOR);
