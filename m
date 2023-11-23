@@ -2,175 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A387F5ED7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262477F5ED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345243AbjKWMPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        id S1345246AbjKWMO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345253AbjKWMPQ (ORCPT
+        with ESMTP id S1345222AbjKWMOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:15:16 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2058.outbound.protection.outlook.com [40.107.7.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26003D5C;
-        Thu, 23 Nov 2023 04:15:22 -0800 (PST)
+        Thu, 23 Nov 2023 07:14:54 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6C8B2;
+        Thu, 23 Nov 2023 04:14:59 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKlLEQX04e4A+LKyJFrzVX7xpiN+al4REMJSjyG3w5n35L6wJSFRbp/LgN6XU0robopm77ppT/tGRHN3Qhw9gcd1pC6EIGa9CSEFgIsvhvWLAN4pdGuhKGHBDk7pfBrE0ijoxX/Py8S9t3XVwd9YIj3ZDXfMcK2V/Mrvua+7GsXm0P9dpkzfF/Pmd0gDpg6/Deu4bRJV67FXxzJZKp/EPdzLXWts4u7ue3j9S8tiI3ibJiYCUNdrljUxbWd1uQwtUF/ByCg2yar5lEr+If7J58s2l93RzZ/uj4m0gqSGtAw2MTYDnFNbCxWf0gnvo68d1XxNNyInOiWiBFlZq2cfKA==
+ b=bpiUTnt3SQqQyoKiseAwm+rzJy0K4usUDLljw1jt9W+Sww9Nc0yom132lWNTgjySysFVKTrAnpgsRPn22swkpv0x51zwuGPMfK8U0hf7AAYOLQNlUbUaIBtvt6RAHhIZ47GPiFRCTZf8mpW/s5In2u8qoh7JHJqA+uEFcLeMixJ/gXv6mqFdV9QAztDqLu9qS9TCQM52ILMd+F9BG6NxtnPbizH1w66a7gNJcZKPwBkh+/SFjddzeJRPaRSie2F4Y52HqXh6GxSYBlXUaVWGvuOk5XHfdOaMLjL4o2xUP3DVx0J4qZspjrzhOZfBGGpig/mf6oDd6XSXtYStF9gS2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AIfnaEo4N2Z/UP01LfKx32JgwuHl3fG1jrAMsr9MbfE=;
- b=NRfK34uDBnCE97LlboktJe5Vo4n+3a+OpZkyuo9SF7h3G4rFKOu8Mru8nimghunslYfJUcORCp2w+y9RsY9pY8Q2iLNxBOERaFv9LB8Rr5DESIIpz0smWDIde30bU86M0WM6OGTPYa6guZIR8zBx4+HlhVZYHrZv6zqVDZk2VQP46DjMecJv5cMxxa+hx040GFowydu56pL18hWmU7Sa2KQ1Oq3trL9pVrTGJ2A9yLfNHRRGTC/J9f5hXU8e82Lt+oD1pEPdocc/0XcH9Y0G+B7ykFJhOSyaUFpV70Qd81Ea7EvE6HTvdERZ9a1pHhY2SFuBkoacv7LB6Kw3Jitq8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ bh=f+Bjx/GznAj44/mYZXQdXN0P5krgPusnwR776WlxgEA=;
+ b=nTgWgm8CURoebpsGop43Gv81sIHz5n8bb4dKL99jPF3oHTXBmrl6lIWYP9Z0KV60BsR0Ykv/FxJMS/fM4i6ROsDUn+FJ2EDfw09BKMFX9U/n8exfIwzajJrDP21I8DcoYlWJgaV4t4huSjfBzPziq1NOrXc+lo+YIog/2Y3qevEPCS3eFpmRgZ4k0TLKEuOv5DNFLS3h4c0vSL+N1f5yR9MOscffWkD6p7FDXpRXndSBUXQRHIgzR4aBHHGFX0KPx/XAGOiUiplGgmvFw801BSKb1s8v3W0cZa5bZtSZg6ZhVgVypVqLFSoKtWzqF4XWBgDxSsIBwvgjtps8tBeGmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AIfnaEo4N2Z/UP01LfKx32JgwuHl3fG1jrAMsr9MbfE=;
- b=1ggO+kOlnsXUHOAovCCunEaUvCrn3b7mZgqtPe1bFkLatzZPqZbWscKJqZ+c8/khv/vILkc3NDQFoCsbAeTJUbjsjCfkMo3OHY0bAGA5T8hKkAuayWVeN2tyGAcheaRIdxwXKzXBCnYVME1+I24zg/nWjuAFnx9HCZo2H6novIo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by DU0PR08MB8423.eurprd08.prod.outlook.com (2603:10a6:10:405::12) with
+ bh=f+Bjx/GznAj44/mYZXQdXN0P5krgPusnwR776WlxgEA=;
+ b=lfijEx4vwLo5vxsRmMhwBh9VKUbp7FsHpazOzGamnS80xBIbZcCi6/tdD/c3s/0MxeMFgOnk41MRBCR1WVcHKXgTVGQj5RK3y5doUN0hGZ47XLBJuDVeWFQZD+FwvpIYI7XFCXR6OwgQ5OaMCQuEZqcwZYlurHUMRl1xH34105alxuJfKoIf6PZd23BCSgTih6xcgl7gYZuNuJ3Ze8WA0rOIdwo7OBaUc/0+6iZUvF+PF/N7b9P7lnLFzYOGoy3ceo0lxyHsrqKUx/IMcrdS+mvsvUwl+FIkfibsKlOMm6FiKWwisq+mipLtrkysqW2KCvo1AZaT7vVPDkfmjKSBqQ==
+Received: from CH0PR03CA0410.namprd03.prod.outlook.com (2603:10b6:610:11b::22)
+ by CH2PR12MB4277.namprd12.prod.outlook.com (2603:10b6:610:ae::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
- 2023 12:15:17 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
- 12:15:17 +0000
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-Date:   Thu, 23 Nov 2023 13:14:14 +0100
-Subject: [PATCH RFC WIP 2/2] net: stmmac: dwmac-rk: add support for PHY
- wake on LAN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231123-dwmac-rk_phy_wol-v1-2-bf4e718081b9@wolfvision.net>
-References: <20231123-dwmac-rk_phy_wol-v1-0-bf4e718081b9@wolfvision.net>
-In-Reply-To: <20231123-dwmac-rk_phy_wol-v1-0-bf4e718081b9@wolfvision.net>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        David Wu <david.wu@rock-chips.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Javier Carrasco <javier.carrasco@wolfvision.net>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700741701; l=948;
- i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=L+4DG9qvsMLMaPm6QeM3H7V9nATvHLre3SHjaPYMid8=;
- b=pgp8Dm0BP4blHZcJ6r6YuxjSY6KhK5aZmtXcCHc46Fomuu2r6XJc9kJp3akfP8aSSdfvCmes1
- 2MhbndH2oPCBVdU65liKUO8KJv5AeKbDvzTMGMEHvtavryS0STVmNvJ
-X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-ClientProxiedBy: VI1PR06CA0227.eurprd06.prod.outlook.com
- (2603:10a6:802:2c::48) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
+ 2023 12:14:57 +0000
+Received: from SN1PEPF0002636A.namprd02.prod.outlook.com
+ (2603:10b6:610:11b:cafe::59) by CH0PR03CA0410.outlook.office365.com
+ (2603:10b6:610:11b::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19 via Frontend
+ Transport; Thu, 23 Nov 2023 12:14:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF0002636A.mail.protection.outlook.com (10.167.241.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.12 via Frontend Transport; Thu, 23 Nov 2023 12:14:56 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 23 Nov
+ 2023 04:14:40 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 23 Nov
+ 2023 04:14:40 -0800
+Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Thu, 23 Nov 2023 04:14:35 -0800
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <rafael@kernel.org>, <rui.zhang@intel.com>, <lenb@kernel.org>,
+        <lpieralisi@kernel.org>, <guohanjun@huawei.com>,
+        <sudeep.holla@arm.com>, <linux-acpi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
+        <sumitg@nvidia.com>, <sanjayc@nvidia.com>, <ksitaraman@nvidia.com>,
+        <srikars@nvidia.com>, <jbrasen@nvidia.com>
+Subject: [Patch v7] ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
+Date:   Thu, 23 Nov 2023 17:44:33 +0530
+Message-ID: <20231123121433.12089-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU0PR08MB8423:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea339c67-63f0-46ae-1854-08dbec1dd37b
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636A:EE_|CH2PR12MB4277:EE_
+X-MS-Office365-Filtering-Correlation-Id: 04ba36ff-e825-4a8a-84bc-08dbec1dce8c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QUl1IOReLpf3dxNKBZ5HHm+HQLAXmOxuNx598HnUiyXD9dJWACLU86hvaQ0BbY1KZ5yDFv9S+sp1SXSLGmr03LQfRoJXsvuaGgD/h6ymjrV99dhcgvyuvHKEPq/s4GdPKRylyZ3Oeqr1ip3ZmuT233nS88DED/zfzCX1UGXPXQ6u+xMebMLakToFFy7cYI5k+UQebNCzW7aH7kQQK7qnTHovyC/hc/Bu5exnw5jvH3kOREz9aLdy0BPtsp/o9JHaJIKV45IXPYJPwD5ZEvnbEKJrN+ganF9TXHRgIIAibxj9gfZeU7/4o5IgZDxVC+mn/bHwho1keOfu7YWyQP1bh3puQs4eqZcWnrLaRt31CgldGlFhfhe3HgFvVfd/iJ0dSGJ9uBFUqnR33poOW5YDV0GSGJN0eELnJ7NGBwSCIZ1/NHbillvNtJVq/UfPurHrDYX4hnTMbizBtnop/OQyT4FSxo7dAZSG/Mt9K+shypOpO0ETAx5b6xYmwYZepvo9gYe1zR+Qix/II2RjRcDClegtjO9SZfmb2QAMpm2dC7kEWk2Loai4yhUAPh/9zSfB/QHimdXSIV5+KzWCVzcWE3W0skX2mhLbZw2dT6B6FeP3qz1b66poPwBlt1764Ea9K69UbR2CO4FxqLxGcpLWWg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(346002)(366004)(39850400004)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(921008)(26005)(2906002)(7416002)(4744005)(38100700002)(66556008)(66946007)(2616005)(107886003)(44832011)(5660300002)(41300700001)(8936002)(4326008)(8676002)(6486002)(86362001)(38350700005)(478600001)(66476007)(36756003)(110136005)(316002)(6512007)(6666004)(52116002)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVg3QkhHOTl2MlJEbDVvSW5DQ0NmZStVWDdJeTU1bUpYcFNQWUQzazIyQlpZ?=
- =?utf-8?B?ckNwbWdpdEd5UVgwcGlYM2dmSENsTmNmdS8xMlNTQnliY1NsRFI0enJLZ054?=
- =?utf-8?B?MUhzQWpBMzNFbjJhSXM2aGpPczdEUm5hMFJ3UjNhLzN2OFFaSmd2WUFlbEgy?=
- =?utf-8?B?RG5sKzltanN2d1o0ZVY4ZHJKZTRDTmxWS2U1QXRyK3I3VkdOOXpKL3JVUjJz?=
- =?utf-8?B?T1huWDkzMENjYUV3OHlRcDRQQVFlbzFXRVZBVWt6RmJNRFVVSHpJeFFrc2Zm?=
- =?utf-8?B?ZDhMZHhWR1d2TGRtdnQ2NXhibUFPRmViSktvUHVNZzlOdkJRV3Z5Z3FzLzFD?=
- =?utf-8?B?NGx2aUkxd1crekNLbHpvMGczTkN0elpHcWVKMW14MWFhUlA0RTZyYzdGN09O?=
- =?utf-8?B?K1A2Zmx1Zm5HTy9jRnVUejM2SlVrclBwVTZ4UW5IZXNxTnVGRzJVeG1qdFpn?=
- =?utf-8?B?WEdFWnlTdlVJaktSbzI4czRKL1JWeWVJWW9rQWhkRE0zSEhGYnNsWjBwQ01y?=
- =?utf-8?B?WktYUlJ0UFc3S3FSN3ZWSUxFQy94cjRLZnU5eUNKcnYrTk5HbU1BMmtCUUVq?=
- =?utf-8?B?QkRMdnQydURiNkJaNmxFSUpDRU5Fb2MvMVFYMHM1b3VGQW5UVm9EdVhFM3Js?=
- =?utf-8?B?ZlZ1S0VyT2gwS2Y0Vkd6VVRUWXRGdjY3SjZmWXRUSDEwNWJ0UHV4NmlJa3Rr?=
- =?utf-8?B?dHlvd3I2S2JkM3ZZQ3VZakxSbWU1SE92SGZwUDdPYjduZm5Qd2luaXlFQmhm?=
- =?utf-8?B?bWtCSDhGUXEwNjhUM2xLZUFlSGplVFJ3TFJUNXYxS05KRTRrbnpYeTdaWERt?=
- =?utf-8?B?Y0VmMEdaUitwZ3BUWW40OEI0Y21rRjV3N095OHVSVUU5RlhpdGNWdFRnQkJi?=
- =?utf-8?B?Z2FxWjdkOTNoQkZ4VFR1cm1rVE1DQlJFNDNYSE1kZGYzZlIvYS8zR0VoemNL?=
- =?utf-8?B?UEJzeW9QUjhySzNaOWQzYnVmQVNvOStXYm45bnRJN05BNTIrQWxRMld1a2w3?=
- =?utf-8?B?UE8zOFVEcVNjOGVnVXhvUUpKQkVIQjJqSlpSbDN2bHpsc2dlS0FQbW0wdmZG?=
- =?utf-8?B?RTNIWUVRcnBZUVhmak80RURCblE5RTd6RENaQ3NjenhlK0ZxZm05bWgvSjl2?=
- =?utf-8?B?dXFwRVl0OU85SVFZOFU5NWRkWVQwMFVXNVhWeWtkTmd0aXZqMHBTZWVLVVhn?=
- =?utf-8?B?R1FpQjJQZEJTU0VYR1FLcFJCK0xHTEFXOUZncStRMzFuTUFWSFljUDR6NlZo?=
- =?utf-8?B?ZVd2UTQxRE1sTU45bklIaEVqTHFpM0FFdUU2OS9IVHZidm1Qc0JuSmlTQ3dE?=
- =?utf-8?B?SG00cnp5Tm5hOU05aDUrUE9QMGFRL0QzNWZucTZSZWdUcHluc3Q3ZnJBUjgv?=
- =?utf-8?B?UGdPUmFMWkE0SU1DNFhVQWpnZHJqaklxTGlGakgraGkzM1Y4d21lZldjOFNX?=
- =?utf-8?B?L2pOa3U1TXNHVGdEa041WXdaYzJ6R25pdVBPVWdHOUZZUGxXNllrREhSbGJG?=
- =?utf-8?B?NUhIOXpSR3hlT21uWTRRUWd1NWgxMStWSGVONW1nK3pGUFZyNWFuQjlJWnVC?=
- =?utf-8?B?WGR5Y29MUngyd1JNbTRYbmhPeFFmTzk5cGFYYy80RUhVK3NDWDhDVTZWZmNQ?=
- =?utf-8?B?VzRmQkhWd3I0NUpLdXhyN1lLcm84QmlEQXVMTXRsNHVueHpkR01nK3c1UVpq?=
- =?utf-8?B?WFQva0RHRDFoVUhRZUJQUEJ3Z2lUNVNtU00xVWZpVW96Z3B1Mk83Qm1RS3lK?=
- =?utf-8?B?QUJlUkxpbWFQOGk2d3plZVBsc0dWMEN6WkR4SVBPRms5R1pmeXZCQ2I0ZlZD?=
- =?utf-8?B?M0dQYXE3V0N4NjV2a2kxb3hkd1BXNUJIckV2NUIxRWYxUVBPbTBpVjBrWUFS?=
- =?utf-8?B?QnBBY3FsNGxQQXBOM2xvM0E2UUNpSnhhZzROYldEMnZSWXdzY0pnWG1QU0pw?=
- =?utf-8?B?alV4UWs5bWI4YTMyTmR2eDZoVktiTXIwMjdxSWNvOU9YaGFLYzU3VHFsNENP?=
- =?utf-8?B?cU5VT1o4NUJtNTZLQ0FFTnphOGhENWpNU1lBZlBmcFVqeGpBTUl5SHc0cG9Z?=
- =?utf-8?B?VDFFTCtrdVBjZnM0bkV6UE9TaGVTSjNCMUk1aDljZmZhczZ6c2E5dCswZFNl?=
- =?utf-8?B?WVhrYWo0RjJGZ01mY2J4MEtmdy9uRXo2Y2ZBQStkWHdFNzlTRWJ3b3paRTlY?=
- =?utf-8?Q?HPHj2SW+E48yzhJbWxFXIng=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea339c67-63f0-46ae-1854-08dbec1dd37b
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 12:15:05.0661
+X-Microsoft-Antispam-Message-Info: aOk3A/ewSPbCFi5pFUAowz211dZn1bvyewgnKfE15vmtjpLqlcvmSh0+nLgjz2cNNPj4ilgCh/WrKG9tTwI+4eGh2y5zEy19avIiZyBST07nV/B8NYBO0HrfjaMfDsCn3sStffekW9fuNcQYgu0USb5tmblRPKZvPDtNUQWe6B79NvaSEGOzmSC6v4k50LAIg0wzkwqVnhnAU3jlaOB6A/kT2zoQutXiufdrJMp81NvgKdFR5E/60S2G47jOqLb6H2SLlnp1KBdyeIBFQtRAmdMrffVU7tYMMlGfLHKiLXaBInrMqreAHBFa5eCcR2gmu8IFddaxmXyEILPUN9+Ff6HjLBpVS1LdMEieF+8R/kVb4fWu7BJQbFQM7Zx385YYiorKPKajeUwomHTj/hMNWxwNCsuyZDdtSC6VvetbezZI1rpbOYMcl1WPVV2X6FLzhgHlX1rmWnRYMSxIa3NcO6MehGf4DHMZe3rw0Arhe5AokpGATO3aNraQXOs6t2OuJ1T0JEJojhV82AaWF5a0wJApkSH60FLiw4yY8mosFK8Wnwm83n05hRCPLhm50LONgNkpbyrKaQ4xctuzvkqqoU5VidTlcrhOjDB7I0N2TB8jrjxE/HxTGiyTHW3NHOaw7ygZ/psmqZT4PkCZdvW0B/wyXY2vDYMBBdIBG4ISrdfaWSykWROc5IGLrT75SDSdXDJegQraj6OCBFMfzdNvggYgUmcxSaBSOVZhGIVlUXJ0uM4aQa2Trfziqdg+ZQfROjMexf6BTSVVYYf2ZahhZFtlp4ooA2EFxsCFre3AMYcvv2khoJIXQrNn75TQgt0MUrHTUIZ8Quw/E3FLYIhZUw==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(40460700003)(110136005)(316002)(54906003)(70206006)(70586007)(7696005)(36756003)(336012)(426003)(26005)(1076003)(2616005)(107886003)(478600001)(921008)(7636003)(82740400003)(356005)(36860700001)(83380400001)(86362001)(47076005)(966005)(2906002)(7416002)(5660300002)(40480700001)(8676002)(8936002)(41300700001)(4326008)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 12:14:56.4704
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yUT45QtFPuoIXKLDaGmqkWphvweITQZnFmd5deET9wEJWYAqcagJZi4Lf/zlqisvzRQEjwPye9xGGPrjKAPchKnDlyOa06HkqAuptN3Mfeg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB8423
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04ba36ff-e825-4a8a-84bc-08dbec1dce8c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636A.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4277
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PHY WOL will be used if the rockhip,phy-wol property is defined. MAC WOL
-will be preferred otherwise.
+From: Srikar Srimath Tirumala <srikars@nvidia.com>
 
-Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+Current implementation of processor_thermal performs software throttling
+in fixed steps of "20%" which can be too coarse for some platforms.
+We observed some performance gain after reducing the throttle percentage.
+Change the CPUFREQ thermal reduction percentage and maximum thermal steps
+to be configurable. Also, update the default values of both for Nvidia
+Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
+and accordingly the maximum number of thermal steps are increased as they
+are derived from the reduction percentage.
+
+Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-index 382e8de1255d..c543566b4f90 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-@@ -1694,6 +1694,11 @@ static struct rk_priv_data *rk_gmac_setup(struct platform_device *pdev,
- 	dev_info(dev, "integrated PHY? (%s).\n",
- 		 bsp_priv->integrated_phy ? "yes" : "no");
- 
-+	if (of_property_read_bool(dev->of_node, "rockchip,phy-wol"))
-+		plat->flags |= STMMAC_FLAG_USE_PHY_WOL;
-+	else
-+		plat->flags &= ~STMMAC_FLAG_USE_PHY_WOL;
+Sending this patch separately as the other patch in the series is
+applied by Rafael in v6[1]. Revision history before this version is
+in the cover letter of v6[1].
+
+Please review and provide ACK if looks fine.
+
+v6[6] -> 7:
+- Patch 2: remove CONFIG_HAVE_ARM_SMCCC_DISCOVERY ifdef check [Sudeep].
+         : replace SMCC macro with CONFIG_ARM64 in internal.h [Sudeep].
+
+[1] https://lore.kernel.org/lkml/20231109183322.28039-1-sumitg@nvidia.com/
+
+ drivers/acpi/arm64/Makefile          |  1 +
+ drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++
+ drivers/acpi/internal.h              |  9 +++++
+ drivers/acpi/processor_thermal.c     | 49 +++++++++++++++++++++++-----
+ 4 files changed, 70 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+
+diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
+index 143debc1ba4a..726944648c9b 100644
+--- a/drivers/acpi/arm64/Makefile
++++ b/drivers/acpi/arm64/Makefile
+@@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT) 	+= gtdt.o
+ obj-$(CONFIG_ACPI_APMT) 	+= apmt.o
+ obj-$(CONFIG_ARM_AMBA)		+= amba.o
+ obj-y				+= dma.o init.o
++obj-y				+= thermal_cpufreq.o
+diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+new file mode 100644
+index 000000000000..d524f2cd6044
+--- /dev/null
++++ b/drivers/acpi/arm64/thermal_cpufreq.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/acpi.h>
 +
- 	bsp_priv->pdev = pdev;
++#include "../internal.h"
++
++#define SMCCC_SOC_ID_T241      0x036b0241
++
++int acpi_arch_thermal_cpufreq_pctg(void)
++{
++	s32 soc_id = arm_smccc_get_soc_id_version();
++
++	/*
++	 * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
++	 * reduce the CPUFREQ Thermal reduction percentage to 5%.
++	 */
++	if (soc_id == SMCCC_SOC_ID_T241)
++		return 5;
++
++	return 0;
++}
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 8cd2d15dec11..bcef1ce1aed9 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -90,6 +90,15 @@ int acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp);
+ int acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp);
+ int acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp);
  
- 	return bsp_priv;
-
++#ifdef CONFIG_ARM64
++int acpi_arch_thermal_cpufreq_pctg(void);
++#else
++static inline int acpi_arch_thermal_cpufreq_pctg(void)
++{
++	return 0;
++}
++#endif
++
+ /* --------------------------------------------------------------------------
+                      Device Node Initialization / Removal
+    -------------------------------------------------------------------------- */
+diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
+index b7c6287eccca..1219adb11ab9 100644
+--- a/drivers/acpi/processor_thermal.c
++++ b/drivers/acpi/processor_thermal.c
+@@ -17,6 +17,8 @@
+ #include <acpi/processor.h>
+ #include <linux/uaccess.h>
+ 
++#include "internal.h"
++
+ #ifdef CONFIG_CPU_FREQ
+ 
+ /* If a passive cooling situation is detected, primarily CPUfreq is used, as it
+@@ -26,12 +28,21 @@
+  */
+ 
+ #define CPUFREQ_THERMAL_MIN_STEP 0
+-#define CPUFREQ_THERMAL_MAX_STEP 3
+ 
+-static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
++static int cpufreq_thermal_max_step __read_mostly = 3;
++
++/*
++ * Minimum throttle percentage for processor_thermal cooling device.
++ * The processor_thermal driver uses it to calculate the percentage amount by
++ * which cpu frequency must be reduced for each cooling state. This is also used
++ * to calculate the maximum number of throttling steps or cooling states.
++ */
++static int cpufreq_thermal_reduction_pctg __read_mostly = 20;
+ 
+-#define reduction_pctg(cpu) \
+-	per_cpu(cpufreq_thermal_reduction_pctg, phys_package_first_cpu(cpu))
++static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_step);
++
++#define reduction_step(cpu) \
++	per_cpu(cpufreq_thermal_reduction_step, phys_package_first_cpu(cpu))
+ 
+ /*
+  * Emulate "per package data" using per cpu data (which should really be
+@@ -71,7 +82,7 @@ static int cpufreq_get_max_state(unsigned int cpu)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	return CPUFREQ_THERMAL_MAX_STEP;
++	return cpufreq_thermal_max_step;
+ }
+ 
+ static int cpufreq_get_cur_state(unsigned int cpu)
+@@ -79,7 +90,7 @@ static int cpufreq_get_cur_state(unsigned int cpu)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	return reduction_pctg(cpu);
++	return reduction_step(cpu);
+ }
+ 
+ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+@@ -92,7 +103,7 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	reduction_pctg(cpu) = state;
++	reduction_step(cpu) = state;
+ 
+ 	/*
+ 	 * Update all the CPUs in the same package because they all
+@@ -113,7 +124,8 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+ 		if (!policy)
+ 			return -EINVAL;
+ 
+-		max_freq = (policy->cpuinfo.max_freq * (100 - reduction_pctg(i) * 20)) / 100;
++		max_freq = (policy->cpuinfo.max_freq *
++			    (100 - reduction_step(i) * cpufreq_thermal_reduction_pctg)) / 100;
+ 
+ 		cpufreq_cpu_put(policy);
+ 
+@@ -126,10 +138,29 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+ 	return 0;
+ }
+ 
++static void acpi_thermal_cpufreq_config(void)
++{
++	int cpufreq_pctg = acpi_arch_thermal_cpufreq_pctg();
++
++	if (!cpufreq_pctg)
++		return;
++
++	cpufreq_thermal_reduction_pctg = cpufreq_pctg;
++
++	/*
++	 * Derive the MAX_STEP from minimum throttle percentage so that the reduction
++	 * percentage doesn't end up becoming negative. Also, cap the MAX_STEP so that
++	 * the CPU performance doesn't become 0.
++	 */
++	cpufreq_thermal_max_step = (100 / cpufreq_pctg) - 2;
++}
++
+ void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy)
+ {
+ 	unsigned int cpu;
+ 
++	acpi_thermal_cpufreq_config();
++
+ 	for_each_cpu(cpu, policy->related_cpus) {
+ 		struct acpi_processor *pr = per_cpu(processors, cpu);
+ 		int ret;
+@@ -190,7 +221,7 @@ static int acpi_processor_max_state(struct acpi_processor *pr)
+ 
+ 	/*
+ 	 * There exists four states according to
+-	 * cpufreq_thermal_reduction_pctg. 0, 1, 2, 3
++	 * cpufreq_thermal_reduction_step. 0, 1, 2, 3
+ 	 */
+ 	max_state += cpufreq_get_max_state(pr->id);
+ 	if (pr->flags.throttling)
 -- 
-2.39.2
+2.17.1
 
