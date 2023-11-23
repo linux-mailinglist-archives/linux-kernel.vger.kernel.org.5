@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9427F5ECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C847F5ECC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345237AbjKWMN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1345242AbjKWMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345215AbjKWMNY (ORCPT
+        with ESMTP id S1345215AbjKWMM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:13:24 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92FC11F;
-        Thu, 23 Nov 2023 04:13:29 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548f74348f7so1150907a12.2;
-        Thu, 23 Nov 2023 04:13:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700741608; x=1701346408; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lEDS1xDbHv2bX/Af0XP8lgFHd9wrBccG/R9qGzxmb30=;
-        b=LtfsVzEL+U6XXigthT3aNp6Dgr7jKM8OB7M4GTmpLZ8Z9FdKdDFEJsvbQ3ZEtnGVBS
-         mbK72HEKfwgpOkcfF6CI8UlMcjhEar4lu+7KhNQI8p3sa0whF74adPNFqF7aBk9ZnIRT
-         xahxzEcInPRjNtIE+gQ3X47gsQ4d4iAkV158wLJ7A+laPHZ+OXTwU1o6kmC3gwf6VLZE
-         xeUJjbne6lwbcIQTuLreoXEAsNl82zhlckgGQQ1s2RGWYtTURg/42oRD6izDRY0F0m96
-         WPguEbNk78vmNc8dBdXRJK3XiUBZRrc29vuGgnCAqMTttsF1/N9zpW52c5HT4Y6uuvew
-         Ipxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700741608; x=1701346408;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lEDS1xDbHv2bX/Af0XP8lgFHd9wrBccG/R9qGzxmb30=;
-        b=Qzg/6IUz2Ot3g8hoLeNguvPX+meoRJghFxbEhhcgw8FC6XB+j+5PMEGZ+wGMttm4VC
-         Q00Krtuv4kOiPabBtCIHJrC+qedZbM3bTouRQ/N5hZ3yR9Mv0InEfLN5CVnLViv3uFMG
-         XzsTpffeqBHLBpfx+4VPWe+n9TnK4pbO6OJKnBDyJp2UV2N77fE7kqoUGp20bmg2rrBn
-         2pNMVCuPN04CsvVrWbK+NoUVEceptFux8k04X4UUJRCq4gCJLCMk9bTNw2Y99NL3GxK9
-         /1qADfAad84Ut+OT5Emg0T4lPDyJpGI7dnBESWL3MVc1Y4MFvT3Wx5iGqm3ZVk/5SeyG
-         wOFw==
-X-Gm-Message-State: AOJu0YxwxjyRRDn7WJoA7aWrw0aj7ICcwdEHU/MCVE3QZl0y93h5qhGr
-        aKAr5KZ+3UfC8dJE4g2nHoTRAPcMtMM=
-X-Google-Smtp-Source: AGHT+IFU08KnhdZcRouB/Uhp9IfkcPQcB/iEiRn39XYcoO3ubI7l6bxVHt4kxeSzgbITJsxT8WP31Q==
-X-Received: by 2002:aa7:d9d5:0:b0:548:89b7:f590 with SMTP id v21-20020aa7d9d5000000b0054889b7f590mr4373603eds.35.1700741608161;
-        Thu, 23 Nov 2023 04:13:28 -0800 (PST)
-Received: from fedora.. (dh207-99-119.xnet.hr. [88.207.99.119])
-        by smtp.googlemail.com with ESMTPSA id by10-20020a0564021b0a00b0054868b36118sm580678edb.32.2023.11.23.04.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 04:13:27 -0800 (PST)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH] arm64: dts: qcom: ipq8074: Add QUP4 SPI node
-Date:   Thu, 23 Nov 2023 13:12:54 +0100
-Message-ID: <20231123121324.1046164-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 23 Nov 2023 07:12:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3C691
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:13:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30465C433C7;
+        Thu, 23 Nov 2023 12:13:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700741582;
+        bh=42j8yCIGOIsdbYfWKArHt6YgWjhLYwGUak0TSa8oLCU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UlJdv0lXQ6T1VSpJnR8JE9zxFg2rCDgSn8m0Ep2KHp6YA9n8T4Tzs1xiNMSiYdOD/
+         sRjRA+4T8cyH5auQADLfeXR+nmphrtH+ZVwkl0yhbBinRdYGvhiQ6X4TrC+Kge1Xmf
+         UiEyAUy5ylyXgPcmIho7+QBePr4SPpzNAbDTpeRM=
+Date:   Thu, 23 Nov 2023 12:12:56 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
+Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
+Message-ID: <2023112312-certified-substance-007c@gregkh>
+References: <20231118025748.2778044-1-mmaurer@google.com>
+ <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
+ <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
+ <2023112314-tubby-eligibly-007a@gregkh>
+ <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add node to support the QUP4 SPI controller inside of IPQ8074.
-Some devices use this bus to communicate to a Bluetooth controller.
+On Thu, Nov 23, 2023 at 08:38:45PM +0900, Masahiro Yamada wrote:
+> On Thu, Nov 23, 2023 at 6:05 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Nov 22, 2023 at 01:04:09PM -0800, Matthew Maurer wrote:
+> > > > So, even if you enable CONFIG_MODVERSIONS,
+> > > > nothing is checked for Rust.
+> > > > Genksyms computes a CRC from "int foo", and
+> > > > the module subsystem confirms it is a "int"
+> > > > variable.
+> > > >
+> > > > We know this check always succeeds.
+> > > >
+> > > > Why is this useful?
+> > > The reason this is immediately useful is that it allows us to have Rust
+> > > in use with a kernel where C modules are able to benefit from MODVERSIONS
+> > > checking. The check would effectively be a no-op for now, as you have correctly
+> > > determined, but we could refine it to make it more restrictive later.
+> > > Since the
+> > > existing C approach errs on the side of "it could work" rather than "it will
+> > > work", I thought being more permissive was the correct initial solution.
+> >
+> > But it's just providing "fake" information to the CRC checker, which
+> > means that the guarantee of a ABI check is not true at all.
+> >
+> > So the ask for the user of "ensure that the ABI checking is correct" is
+> > being circumvented here, and any change in the rust side can not be
+> > detected at all.
+> >
+> > The kernel is a "whole", either an option works for it, or it doesn't,
+> > and you are splitting that guarantee here by saying "modversions will
+> > only work for a portion of the kernel, not the whole thing" which is
+> > going to cause problems for when people expect it to actually work
+> > properly.
+> >
+> > So, I'd strongly recommend fixing this for the rust code if you wish to
+> > allow modversions to be enabled at all.
+> >
+> > > With regards to future directions that likely won't work for loosening it:
+> > > Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
+> > > teach genksyms to open it up and split out the pieces for specific functions.
+> > > Extending genksyms to parse Rust would also not solve the situation -
+> > > layouts are allowed to differ across compiler versions or even (in rare
+> > > cases) seemingly unrelated code changes.
+> >
+> > What do you mean by "layout" here?  Yes, the crcs can be different
+> > across compiler versions and seemingly unrelated code changes (genksyms
+> > is VERY fragile) but that's ok, that's not what you are checking here.
+> > You want to know if the rust function signature changes or not from the
+> > last time you built the code, with the same compiler and options, that's
+> > all you are verifying.
+> >
+> > > Future directions that might work for loosening it:
+> > > * Generating crcs from debuginfo + compiler + flags
+> > > * Adding a feature to the rust compiler to dump this information. This
+> > > is likely to
+> > >   get pushback because Rust's current stance is that there is no ability to load
+> > >   object code built against a different library.
+> >
+> > Why not parse the function signature like we do for C?
+> >
+> > > Would setting up Rust symbols so that they have a crc built out of .rmeta be
+> > > sufficient for you to consider this useful? If not, can you help me understand
+> > > what level of precision would be required?
+> >
+> > What exactly does .rmeta have to do with the function signature?  That's
+> > all you care about here.
+> 
+> 
+> 
+> 
+> rmeta is generated per crate.
+> 
+> CRC is computed per symbol.
+> 
+> They have different granularity.
+> It is weird to refuse a module for incompatibility
+> of a symbol that it is not using at all.
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I agree, this should be on a per-symbol basis, so the Rust
+infrastructure in the kernel needs to be fixed up to support this
+properly, not just ignored like this patchset does.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index d8e8a5cded64..1b9e50edc892 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -744,6 +744,20 @@ blsp1_i2c3: i2c@78b7000 {
- 			status = "disabled";
- 		};
- 
-+		blsp1_spi4: spi@78b8000 {
-+			compatible = "qcom,spi-qup-v2.2.1";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x78b8000 0x600>;
-+			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_BLSP1_QUP4_SPI_APPS_CLK>,
-+				 <&gcc GCC_BLSP1_AHB_CLK>;
-+			clock-names = "core", "iface";
-+			dmas = <&blsp_dma 18>, <&blsp_dma 19>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+
- 		blsp1_i2c5: i2c@78b9000 {
- 			compatible = "qcom,i2c-qup-v2.2.1";
- 			#address-cells = <1>;
--- 
-2.42.0
+thanks,
 
+greg k-h
