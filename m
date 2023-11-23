@@ -2,178 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766A17F570E
+	by mail.lfdr.de (Postfix) with ESMTP id CA4D47F570F
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232873AbjKWDbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 22:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S1344489AbjKWDdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 22:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjKWDbE (ORCPT
+        with ESMTP id S232584AbjKWDdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 22:31:04 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770611AB;
-        Wed, 22 Nov 2023 19:31:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=R2W1eIGoN44WfeZqoSJKCknBFLhg1MSvdghZBej8Tto=; b=41r6vZ8a0N5C3aFfaYIGG3Nt0+
-        w3Wk45OWIBchNx7QWgxcgGk46uyazknOwo6LSarraXU0NkFLrQhUmbSFQejl4OYdVtn+LZGZlV1Zk
-        r/YlMNC4pQdIepOfwnD2IWi1WitSCbjq3+02JW0KXua8igRoE0YY8hYTujInIJaLRFC8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r60QS-000wAv-CM; Thu, 23 Nov 2023 04:30:48 +0100
-Date:   Thu, 23 Nov 2023 04:30:48 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
-References: <20231120135041.15259-1-ansuelsmth@gmail.com>
- <20231120135041.15259-4-ansuelsmth@gmail.com>
- <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
- <20231121144244.GA1682395-robh@kernel.org>
- <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
- <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
+        Wed, 22 Nov 2023 22:33:00 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBB010E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 19:33:06 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-6cb66fbc63dso363965b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 19:33:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700710386; x=1701315186; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+9/kRqzLkNKRzwVrj9WmdNAZ3JcQwplUOpQg0pAAow=;
+        b=Qwhifr429SwLMPhXcHy48O45dx/TsXV9D2B3nrismfBIkdKx+AGJgXhTHyI9MDcI1V
+         oMMeMGzYFSjZLj49dmAZ7SZItL1bcuxzlKWF/2j8d0rASvZjUUPxbIJVJ7KQoR2rxEgM
+         6QWZ2xW5ixGTD2Jue4Jz4F/eHLtJjzMjI9y40xe41T7jCFKKClAmmbWL1FMk2T2vbJoH
+         8tztvaOpOWHPziRdYgYwgXLXdUk3TgdOeq+wqvnZ/AOZ/d69Py3YNTEkFYKUm2Mot8tm
+         iLoodCrzBoruHuQtqmqYRPMi4T7UBNVlQJaFFGNviABA1HQZYCD4i+13pwe0dXlKMs4f
+         muXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700710386; x=1701315186;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+9/kRqzLkNKRzwVrj9WmdNAZ3JcQwplUOpQg0pAAow=;
+        b=ruBmflZouyvGXTf6AwTRBiASvSgxTCO8K0apG23wQc5AfJm+d7RE2bJPd+JKdwrE+I
+         xRYogrFuZvilWRZ0OHmpTvYhmboISVBHv0FvflfT345YSB4nP4wDyLa2CCOej/7rKZMo
+         TO/R5bs9BRmLdcfUPtU1QwTIuzjujpu4G4J3C8LkMzhWaqE2W+A+YZ/vV39Xs/0TTa1z
+         i02okHNjlIOtTwtrMl6feEXMmr/wBH/xbN24XD/uSLPhpJxRITKWz9GRG6Lp7fVKJILr
+         8xsAwqx5ims5YSUSvj9YYUHfKO3YXPs41G/TLINrNBA/G8RPAV6UGpSuB02UMPkT8XZm
+         DJUg==
+X-Gm-Message-State: AOJu0YwY6PDQu9edeNb6Ita81ieKiRtGQAA79HO/nkSQlOE3cbqYeRbU
+        B9JgvrISLkJ4UOeTCmDKrc26O136/xhzMRlZ
+X-Google-Smtp-Source: AGHT+IHZW0SifGuNsysVOaOrKzD0LPSi06IM1rOaNU5cXwcTZumlC4ElWnGhwlsOAevDGXK40nqWAg==
+X-Received: by 2002:a05:6a20:6a0a:b0:18a:b5c3:55da with SMTP id p10-20020a056a206a0a00b0018ab5c355damr2082478pzk.10.1700710385676;
+        Wed, 22 Nov 2023 19:33:05 -0800 (PST)
+Received: from [10.84.152.29] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id p3-20020a62ab03000000b0068fb783d0c6sm220644pff.141.2023.11.22.19.33.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 19:33:05 -0800 (PST)
+Message-ID: <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
+Date:   Thu, 23 Nov 2023 11:32:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Dave Chinner <david@fromorbit.com>
+References: <20231122232515.177833-1-kent.overstreet@linux.dev>
+ <20231122232515.177833-3-kent.overstreet@linux.dev>
+From:   Qi Zheng <arch0.zheng@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20231122232515.177833-3-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,WEIRD_QUOTING autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 07:32:22PM +0100, Christian Marangi wrote:
-> On Tue, Nov 21, 2023 at 03:45:42PM +0100, Andrew Lunn wrote:
-> > > > I do think we need somewhere to put package properties. But i don't
-> > > > think phy-mode is such a property. At the moment, i don't have a good
-> > > > example of a package property.
-> > > 
-> > > What about power supplies and reset/enable lines?
-> > 
-> > Yes, good point. I can imagine some packages sharing regulators. Reset
-> > might also be shared, but it makes things messy to handle.
-> >
-> 
-> Sooooo.... Sorry if I insist but I would really love to have something
-> ""stable"" to move this further. (the changes are easy enough so it's
-> really a matter of finding a good DT structure)
-> 
-> Maybe a good idea would be summarize the concern and see what solution
-> was proposed:
-> 
-> Concern list:
-> 1. ethernet-phy-package MUST be placed in mdio node (not in ethernet,
->    the example was wrong anyway) and MUST have an addr
-> 
->    Current example doesn't have an addr. I would prefer this way but
->    no problem in changing this.
-> 
->    Solution:
->      - Add reg to the ethernet-phy-package node with the base address of
->        the PHY package (base address = the first PHY address of the
->        package)
+Hi Kent,
 
-Yes.
+On 2023/11/23 07:25, Kent Overstreet wrote:
+> This adds a new callback method to shrinkers which they can use to
+> describe anything relevant to memory reclaim about their internal state,
+> for example object dirtyness.
 
->        We will have a PHY node with the same address of the PHY package
->        node. Each PHY node in the PHY package node will have reg set to
->        the REAL address in the mdio bus.
+I have no objection to this proposal, but maybe it would be better to
+place this feature under CONFIG_SHRINKER_DEBUG?
 
-Basically Yes. I actually think the first sentence is not 100%
-correct. It could be all the package configuration registers are in
-the base address, without an actual PHY. The PHYs then follow at
-addresses above it. I can also imagine a case where the first PHY in
-the package is not used, so its not listed at all. So i think it
-should be "We often have a PHY node with the same address of the PHY
-package node."
+Hi Roman, what do you think?
 
-> 3. phy-mode is problematic.
+Also +CC Dave.
+
+More comments below.
+
 > 
->    It's an optional value to enforce a specific mode for each PHY in the
->    package. For complex configuration the mode won't be defined.
+> This patch also adds shrinkers_to_text(), which reports on the top 10
+> shrinkers - by object count - in sorted order, to be used in OOM
+> reporting.
 > 
->    Solution:
->     - Rename it to package-phy-mode to make it less confusing.
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>   include/linux/shrinker.h |  6 +++-
+>   mm/shrinker.c            | 73 +++++++++++++++++++++++++++++++++++++++-
+>   2 files changed, 77 insertions(+), 2 deletions(-)
 > 
->     - Add an additional function that PHY package can use to make custom
->       validation on the mode for every PHY attached (in the PHY package).
-> 
->       Would make it less clear but more flexible for complex
->       configuration. Maybe both solution can be implemented and the
->       special function is used if the mode is not defined?
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index 1a00be90d93a..968c55474e78 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -24,6 +24,8 @@ struct shrinker_info {
+>   	struct shrinker_info_unit *unit[];
+>   };
+>   
+> +struct seq_buf;
+> +
+>   /*
+>    * This struct is used to pass information from page reclaim to the shrinkers.
+>    * We consolidate the values for easier extension later.
+> @@ -80,10 +82,12 @@ struct shrink_control {
+>    * @flags determine the shrinker abilities, like numa awareness
+>    */
+>   struct shrinker {
+> +	const char *name;
+>   	unsigned long (*count_objects)(struct shrinker *,
+>   				       struct shrink_control *sc);
+>   	unsigned long (*scan_objects)(struct shrinker *,
+>   				      struct shrink_control *sc);
+> +	void (*to_text)(struct seq_buf *, struct shrinker *);
 
-The description you give is that there are two SERDES, and both could
-be connected to a MAC. What does package-phy-mode represent then? 
+The "to_text" looks a little strange, how about naming it
+"stat_objects"?
 
-Luo Jie patch for the qca8084 seems to have the same issue. It has two
-SERDES/PMA, and both could be connected to the MACs. So it seems like
-QCA devices don't actually fit this model. If we want to describe the
-package link mode, we probably need to list each PMA, and have a
-property in the PMA node indicating what link mode the PMA is
-operating at.
+>   
+>   	long batch;	/* reclaim batch size, 0 = default */
+>   	int seeks;	/* seeks to recreate an obj */
+> @@ -110,7 +114,6 @@ struct shrinker {
+>   #endif
+>   #ifdef CONFIG_SHRINKER_DEBUG
+>   	int debugfs_id;
+> -	const char *name;
 
-At least for the moment, its not clear we actually need this at
-all. It seems like the phy-mode is all we need. The PHY driver should
-know what values are valid per port, and so can validate the value.
+The name will only be allocated memory when the CONFIG_SHRINKER_DEBUG is
+enabled, otherwise its value is NULL. So you can't move it out and use
+it while CONFIG_SHRINKER_DEBUG is disabled.
 
-> 4. Not finding a correct place to put PHY package info.
-> 
->    I'm still convinced the mdio node is the correct place.
->    - PHY package are PHY in bundle so they are actual PHY
->    - We already have in the mdio node special handling (every DSA switch
->      use custom compatible and PHY ID is not used to probe them
->      normally)
->    - Node this way won't be treated as PHY as they won't match the PHY
->      node name pattern and also won't have the compatible pattern for
->      PHY.
+>   	struct dentry *debugfs_entry;
+>   #endif
+>   	/* objs pending delete, per node */
+> @@ -135,6 +138,7 @@ __printf(2, 3)
+>   struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>   void shrinker_register(struct shrinker *shrinker);
+>   void shrinker_free(struct shrinker *shrinker);
+> +void shrinkers_to_text(struct seq_buf *);
+>   
+>   static inline bool shrinker_try_get(struct shrinker *shrinker)
+>   {
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index dd91eab43ed3..4976dbac4c83 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -1,8 +1,9 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   #include <linux/memcontrol.h>
+> +#include <linux/rculist.h>
+>   #include <linux/rwsem.h>
+> +#include <linux/seq_buf.h>
+>   #include <linux/shrinker.h>
+> -#include <linux/rculist.h>
+>   #include <trace/events/vmscan.h>
+>   
+>   #include "internal.h"
+> @@ -807,3 +808,73 @@ void shrinker_free(struct shrinker *shrinker)
+>   	call_rcu(&shrinker->rcu, shrinker_free_rcu_cb);
+>   }
+>   EXPORT_SYMBOL_GPL(shrinker_free);
+> +
+> +void shrinker_to_text(struct seq_buf *out, struct shrinker *shrinker)
+> +{
+> +	struct shrink_control sc = { .gfp_mask = GFP_KERNEL, };
+> +
+> +	seq_buf_puts(out, shrinker->name);
+> +	seq_buf_printf(out, " objects: %lu\n", shrinker->count_objects(shrinker, &sc));
+> +
+> +	if (shrinker->to_text) {
+> +		shrinker->to_text(out, shrinker);
+> +		seq_buf_puts(out, "\n");
+> +	}
+> +}
+> +
+> +/**
+> + * shrinkers_to_text - Report on shrinkers with highest usage
+> + *
+> + * This reports on the top 10 shrinkers, by object counts, in sorted order:
+> + * intended to be used for OOM reporting.
+> + */
+> +void shrinkers_to_text(struct seq_buf *out)
+> +{
+> +	struct shrinker *shrinker;
+> +	struct shrinker_by_mem {
+> +		struct shrinker	*shrinker;
+> +		unsigned long	mem;
 
-We do need a compatible for the package. The kernel is unlikely to use
-it, but the validation tools will. Each package can have its own DT
-properties, so we need a .yaml to describe those properties. So i
-would expect to have a "qca807x-package" compatible, which then lists
-the tx driver strength etc. The PHYs within the package don't need
-compatible, they are just linux PHYs, probed using the same code as
-PHYs outside of a package.
+The "mem" also looks a little strange, how about naming it
+"freeable"?
 
-    Andrew
+> +	} shrinkers_by_mem[10];
+> +	int i, nr = 0;
+> +
+> +	if (!mutex_trylock(&shrinker_mutex)) {
+> +		seq_buf_puts(out, "(couldn't take shrinker lock)");
+> +		return;
+> +	}
+
+We now have lockless method (RCU + refcount) to iterate shrinker_list,
+please refer to shrink_slab().
+
+Thanks,
+Qi
+
+> +
+> +	list_for_each_entry(shrinker, &shrinker_list, list) {
+> +		struct shrink_control sc = { .gfp_mask = GFP_KERNEL, };
+> +		unsigned long mem = shrinker->count_objects(shrinker, &sc);
+> +
+> +		if (!mem || mem == SHRINK_STOP || mem == SHRINK_EMPTY)
+> +			continue;
+> +
+> +		for (i = 0; i < nr; i++)
+> +			if (mem < shrinkers_by_mem[i].mem)
+> +				break;
+> +
+> +		if (nr < ARRAY_SIZE(shrinkers_by_mem)) {
+> +			memmove(&shrinkers_by_mem[i + 1],
+> +				&shrinkers_by_mem[i],
+> +				sizeof(shrinkers_by_mem[0]) * (nr - i));
+> +			nr++;
+> +		} else if (i) {
+> +			i--;
+> +			memmove(&shrinkers_by_mem[0],
+> +				&shrinkers_by_mem[1],
+> +				sizeof(shrinkers_by_mem[0]) * i);
+> +		} else {
+> +			continue;
+> +		}
+> +
+> +		shrinkers_by_mem[i] = (struct shrinker_by_mem) {
+> +			.shrinker = shrinker,
+> +			.mem = mem,
+> +		};
+> +	}
+> +
+> +	for (i = nr - 1; i >= 0; --i)
+> +		shrinker_to_text(out, shrinkers_by_mem[i].shrinker);
+> +
+> +	mutex_unlock(&shrinker_mutex);
+> +}
