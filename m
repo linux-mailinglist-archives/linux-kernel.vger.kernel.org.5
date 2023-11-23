@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2380D7F5917
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02207F5918
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343905AbjKWHVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
+        id S1344862AbjKWHVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjKWHVN (ORCPT
+        with ESMTP id S1344843AbjKWHVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:21:13 -0500
+        Thu, 23 Nov 2023 02:21:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B36109
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:21:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6922C433C7;
-        Thu, 23 Nov 2023 07:21:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72D9109
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:21:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 561C7C433C9;
+        Thu, 23 Nov 2023 07:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700724079;
-        bh=OP0/bY80RUPFBGCPYyA8H/XM+iSF8+mpGICoK9yfeTw=;
+        s=k20201202; t=1700724082;
+        bh=CsnrSxt8LqWz3IlU5RxL7FNAeARoDHTOQPwscn2bFpU=;
         h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=a2QxUt5hPAYdSv3pkgDlCmYd9J5S4ZvTSjKklcxb5FgAe7kl18KTTEF4Ph1gci4ln
-         HpTNFH/hIzzIhKo9r+ZGXOK8+u4TV11OtiJ9uly8uIAlsc0/vUpjeUt5hWGYESEQEr
-         AMbdENmDoT6CrFeJf1Wa/Kj6JiUPH6WisQ1d6ubpCAVcexlPZzarCoWDfHv+T/uGpJ
-         Pzv7njLLnnQkl096K9LDtGD6dEAG+2BKUHGifkYM48tZ9w9byE++8r22bf3fdAhYT9
-         etbuG78QaUrCmBzPP/VT+fgZbJl++nnG4FT8xwzwyYQheWscFCdhBJ4z7k069pIASO
-         ZIIRlikA3suwQ==
+        b=EN5QnXGXMDpptcghyw9o8SG+qqcVf9CJSLaF+/zuGzWvy2Q8pJP7X2cFJm+m68l1K
+         Dav99GsszboT1/jgiSD5AHfFbyTo636ngZSDVVPLJFobKHVuLFhc5S+yWxtcWRaGxh
+         puSffdbv4LTlcE6rXhgZ/Bi9/liIxUEMaUIOy7VW1yXWjFgbwY0OTZXjuXH9p84ONP
+         JRCtLH7tCSKExOiLna09iAeB0pnLBligL1YUHIXWPkm4ufNdwXIo/jhWCXWedkMry5
+         OoYA4WH+/fVz+mkGDR8pcBxkWFVVMZPu5EAcsMjrJUIaAIYqEj4ctub9uGMZoUjcv5
+         BaO3F6CTiFNRw==
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231120190740.339350-1-krzysztof.kozlowski@linaro.org>
-References: <20231120190740.339350-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] soundwire: qcom: drop unneeded
- qcom_swrm_stream_alloc_ports() cleanup
-Message-Id: <170072407531.674978.2652900488518504446.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 12:51:15 +0530
+In-Reply-To: <20231120174720.239610-1-krzysztof.kozlowski@linaro.org>
+References: <20231120174720.239610-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] soundwire: stream: constify sdw_port_config when
+ adding devices
+Message-Id: <170072407994.674978.4727113730635083960.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 12:51:19 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,19 +54,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 20 Nov 2023 20:07:39 +0100, Krzysztof Kozlowski wrote:
-> The cleanup in "err" goto label clears bits from pconfig array which is
-> a local variable.  This does not have any effect outside of this
-> function, so drop this useless code.
+On Mon, 20 Nov 2023 18:47:20 +0100, Krzysztof Kozlowski wrote:
+> sdw_stream_add_master() and sdw_stream_add_slave() do not modify
+> contents of passed sdw_port_config, so it can be made const for code
+> safety and as documentation of expected usage.
 > 
 > 
 
 Applied, thanks!
 
-[1/2] soundwire: qcom: drop unneeded qcom_swrm_stream_alloc_ports() cleanup
-      commit: 5c68b66d4d7eff8cdb6f508f8537faa30c5faa6d
-[2/2] soundwire: qcom: move sconfig in qcom_swrm_stream_alloc_ports() out of critical section
-      commit: 5bdc61ef45007908df9d8587111c7a5a552bdd46
+[1/1] soundwire: stream: constify sdw_port_config when adding devices
+      commit: 21f4c443731fdb064c0dd31a743aafd0b075156c
 
 Best regards,
 -- 
