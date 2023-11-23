@@ -2,51 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ADB7F649E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B777F64A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345276AbjKWRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:00:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        id S1345420AbjKWRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:00:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjKWRAG (ORCPT
+        with ESMTP id S230015AbjKWRAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:00:06 -0500
+        Thu, 23 Nov 2023 12:00:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5BF10E9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 712E7C433CA;
-        Thu, 23 Nov 2023 17:00:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D791E10F0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15857C433CC;
+        Thu, 23 Nov 2023 17:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700758808;
-        bh=zGd8DxX1wjCChLzUne6ijJYjDDvfRf0xhdz0NGOau8E=;
+        s=k20201202; t=1700758811;
+        bh=8F/jiguRcq32VOINzefmDyYIkXt/3k3NK5/RQR1wYU0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YuFMepwnkk1Ibv/ZBmbqWCCs12vo6vaJDeqmnjEUC+86kx0cM3RNA7ub58tJbDhbn
-         Dy5FDpgrzCZxQU2wrFwjxPvHsOwNp+u1LSlBGJ1nuYPcS8k6CqZHYXPrCtPoBGW9Ql
-         2FqtrnIYIAWr9J8GjDh+R5wLbY5UlFAC9exhti2D2qXdC9ampGxp/oTSBPqxK2GGSw
-         jrP7UR7A9Et4XcPvvbeb93IkXA6vVKcshp3UyvG/G3QNLuIOzQNlVzkR4BiXROuAG5
-         1shAK1QFDS8rtSFNVFOdISztpU5b0+504LUZuIGeOX4uuGu2JgbxHhyE07FsxlAgle
-         MlvqzVtg7vzoQ==
+        b=MtCQPBEXWTX4xUsNeYiJze7scCumxb+pLoonCyIRI3n/ioJzllWZCfbTm679Z2sxX
+         KSA/OIwXxihNsDYi5Tw8H+l7+2FnI0exz8p3+aDp/ZCcqWyK2WGR0VRKyiuMgGLdQ6
+         MKe4G90ieENhC5dz5UVGt8ezJ72xxQHe2Sk82kBZcDvDY8XEMWkrgtBpav1ePSDfOH
+         30lmj1nMaq4fA0VJLGrPHFNXsv95i5MbNcKDnwvG4C0jOmX4xm458D68Z6PEuf1vXl
+         mWjeZPv/Xo2xWEhFc8GMXsJPfXtYP/jrAU3hcPKeYRSCmxbkeK7lYzbTQz8H10G6wJ
+         vc7V4ZGJIRHHQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     pierre-louis.bossart@linux.intel.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
-        perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
-        trevor.wu@mediatek.com, tinghan.shen@mediatek.com,
-        u.kleine-koenig@pengutronix.de, kuninori.morimoto.gx@renesas.com,
-        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wenst@chromium.org,
-        kernel@collabora.com
-In-Reply-To: <20231123084454.20471-1-angelogioacchino.delregno@collabora.com>
-References: <20231123084454.20471-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186: Add Google Steelix
- topology compatible
-Message-Id: <170075880330.2448402.15081642632125216155.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 17:00:03 +0000
+To:     nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        shengjiu.wang@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: refine the requested phy clock
+ frequency
+Message-Id: <170075880893.2448402.4841454362054924374.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 17:00:08 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -61,11 +53,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 09:44:54 +0100, AngeloGioacchino Del Regno wrote:
-> Add the machine compatible and topology filename for the Google Steelix
-> MT8186 Chromebook to load the correct SOF topology file.
+On Thu, 23 Nov 2023 09:14:53 +0800, Shengjiu Wang wrote:
+> As the input phy clock frequency will divided by 2 by default
+> on i.MX8MP with the implementation of clk-imx8mp-audiomix driver,
+> So the requested frequency need to be updated.
 > 
+> The relation of phy clock is:
+>     sai_pll_ref_sel
+>        sai_pll
+>           sai_pll_bypass
+>              sai_pll_out
+>                 sai_pll_out_div2
+>                    earc_phy_cg
 > 
+> [...]
 
 Applied to
 
@@ -73,8 +74,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: mediatek: mt8186: Add Google Steelix topology compatible
-      commit: 505c83212da5bfca95109421b8f5d9f8c6cdfef2
+[1/1] ASoC: fsl_xcvr: refine the requested phy clock frequency
+      commit: 347ecf29a68cc8958fbcbd26ef410d07fe9d82f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
