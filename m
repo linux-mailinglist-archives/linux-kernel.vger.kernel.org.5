@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1A37F5B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138627F5B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233062AbjKWJkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S232584AbjKWJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbjKWJkm (ORCPT
+        with ESMTP id S232847AbjKWJkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:40:42 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C10D44;
-        Thu, 23 Nov 2023 01:40:48 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-548f74348f7so935828a12.2;
+        Thu, 23 Nov 2023 04:40:43 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D41983;
+        Thu, 23 Nov 2023 01:40:49 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a013d22effcso79256566b.2;
         Thu, 23 Nov 2023 01:40:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1700732447; x=1701337247; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H76sh9TJa21kiF09BweriFrW/UpEK7sOhe75l5gn76g=;
-        b=P6jsYGK+PkGCtqcrsOkv/NvaKGPptDbS0hmIdsWyEigfD4B0YQu1ulFB67U0jTIg3E
-         +wCorITWSXEIlvEjli0drGFFc3i2JRndKy+1xufl+KV1XmCmDVXo72HwbC5S7EYgEaNS
-         dTXV7lsTdDI8pi+G8DnEHtwpN1Lp9kNf7IIo3RPpLlUfz3zbQzlwTURSdXHrCYb9Qn0v
-         8HGTAf4kHdxSKmx/BXP7XD9x0BVXMuZuAbkBhuQG1mQT9RE3cpQBxvRkKciwy0nt3/wJ
-         Ef/oDRXm0OFSln5dholtwdIOG6HwMc3TGEnZbangYYurg89UgeaZy4a4hnywRPGXXRkR
-         I1jw==
+        bh=jjxI0Bhxo2VvjdWdUiaiba2vg3SpmPuRCWUjk40Qtf4=;
+        b=j2/H56+ZwIFVlZup3UwVyk6iSD77UAlOjrxEVIe29S6lG65BJ5uAAi43kuOxK/AACp
+         7CqA1XxkITHR52EGjZb4Pyip54dczO8R/epUIWEN8FlWC4V5oZxS5MkBI7ANk6AVUlKk
+         HQz3wuHyqm1IDDmQ8guwD4KJC04Po3/ZooctSYjz5qbq2CqXH7kSe7fY+Ji91uD0Fyr/
+         sXfKsWxWPRzDImrNvN/co4tHyKfSBJwN4ydHbe6uU5DnTFPMkriMjKD69trZj6FNzP4N
+         X6+cmwCxVezZ7gFSQjVZyDQp54am9xUhgxoqkyB1qt35lHzZ4BVXIKwW4nSkwTj0P7d/
+         9PJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1700732447; x=1701337247;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H76sh9TJa21kiF09BweriFrW/UpEK7sOhe75l5gn76g=;
-        b=Ow+2n3H8KANk94UmPTvDl+0zXB1G+cUSoNOQ9OkN7Lk5lRrQpiKI3PIZ5/Bk3OBDcT
-         BFClPNxxdH9CM86aXqNMwvzUuNCM14Ih5/jlpxCE3svshx9tSGgXVddDWOe3PUIuR7he
-         j8gJVIo2dddsl6nmSda+3Q85jXZ4Tw8uy3yuuMZ+0CJ6WKh5Kg6LUXHKNLbFcVQ2Wqlk
-         VdQLRg/fiWfUNKZc9p6DBlzTYAvmB+YOppTqJeG25B/O5Iaf5TiokiqbkEaqV5kEE25r
-         YtHq5WX4HVd+VVUkmnCpWbDSBrDDXmAp4qZF6OQcEtVVkQB/P5aNkreYjh56Mhmoqrds
-         1n+w==
-X-Gm-Message-State: AOJu0Yy8gP5vSnCP7GjBY4ZUb+aI1f/Yw86LTSvqa2kUitrNYcSSp9MG
-        xevqe2beYKViCuq0FW/uvFQ=
-X-Google-Smtp-Source: AGHT+IEn690wfubKb/UyQpCV8u5r9s/J7YoDjXMPpmRF+BSrF8lwfJHZHGsK4X3ZCynniFHKeVNcKA==
-X-Received: by 2002:a17:906:14d:b0:9e0:5d5c:aa6d with SMTP id 13-20020a170906014d00b009e05d5caa6dmr3302730ejh.20.1700732446363;
-        Thu, 23 Nov 2023 01:40:46 -0800 (PST)
+        bh=jjxI0Bhxo2VvjdWdUiaiba2vg3SpmPuRCWUjk40Qtf4=;
+        b=LeLlZqTLT/V2k4Tsqv3zOXUB9rwtBAl3294Bj0Hqre1Je8FOjGKvL8zNcTDQGu8k/l
+         9KWtBHlPQcWG/W6tg1/1RTnfsm82ZavNS+0k4On3CqhMXmZTkHfn6inDAtfh+7jBrFus
+         SthS+o3t+2Bb32LQGF+xwHlHcI65TGd20w8Pwn0kfhaydO0p3g/33RPq8VWowJi0xlXv
+         W2qCgRDmN/w4VzUvUZlnIDGv6PtLaq7ihkK4bElCcyeciQt6QLT0O+9V17eVXTOaKkxz
+         HpAGFS5pzjQL9v7hHzuLVjAFv+tVzW0AX6tSk0wyQ95/xXr6J/Re9aJpqKQ98R1Pcgm3
+         ygHw==
+X-Gm-Message-State: AOJu0YyvCFpnU/JAj171g2jiACopLRInl58CB8+5VzS1z1z+EPKAPGvj
+        GAivX8LpMmV/ujvcaa7kJ7E=
+X-Google-Smtp-Source: AGHT+IECDb65WJFfHKu5SLZ2mOzLFfopB3AUFOLDwQ98H15uIbQ5s5jWEv8KNWp+97LCJrRr5q5rCA==
+X-Received: by 2002:a17:907:9087:b0:9bf:63b2:b6e2 with SMTP id ge7-20020a170907908700b009bf63b2b6e2mr3326670ejb.26.1700732447203;
+        Thu, 23 Nov 2023 01:40:47 -0800 (PST)
 Received: from zotac.lan. (dynamic-2a01-0c23-c0f2-3200-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.45
+        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 23 Nov 2023 01:40:46 -0800 (PST)
 From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>, Dave Airlie <airlied@redhat.com>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>
 Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jocelyn Falempe <jfalempe@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 02/20] drivers/gpu/drm/mgag200/mgag200_i2c.c: remove I2C_CLASS_DDC support
-Date:   Thu, 23 Nov 2023 10:40:22 +0100
-Message-ID: <20231123094040.592-3-hkallweit1@gmail.com>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v5 03/20] drm/amd/display: remove I2C_CLASS_DDC support
+Date:   Thu, 23 Nov 2023 10:40:23 +0100
+Message-ID: <20231123094040.592-4-hkallweit1@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231123094040.592-1-hkallweit1@gmail.com>
 References: <20231123094040.592-1-hkallweit1@gmail.com>
@@ -85,23 +88,28 @@ be used in new code. So we can remove this class completely now.
 
 Preferably this series should be applied via the i2c tree.
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Harry Wentland <harry.wentland@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
 ---
- drivers/gpu/drm/mgag200/mgag200_i2c.c |    1 -
+v2:
+- adjust tag in commit subject
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mgag200/mgag200_i2c.c b/drivers/gpu/drm/mgag200/mgag200_i2c.c
-index 0c48bdf3e..423eb302b 100644
---- a/drivers/gpu/drm/mgag200/mgag200_i2c.c
-+++ b/drivers/gpu/drm/mgag200/mgag200_i2c.c
-@@ -106,7 +106,6 @@ int mgag200_i2c_init(struct mga_device *mdev, struct mga_i2c_chan *i2c)
- 	i2c->data = BIT(info->i2c.data_bit);
- 	i2c->clock = BIT(info->i2c.clock_bit);
- 	i2c->adapter.owner = THIS_MODULE;
--	i2c->adapter.class = I2C_CLASS_DDC;
- 	i2c->adapter.dev.parent = dev->dev;
- 	i2c->dev = dev;
- 	i2c_set_adapdata(&i2c->adapter, i2c);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 6f99f6754..ae1edc6ab 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -7529,7 +7529,6 @@ create_i2c(struct ddc_service *ddc_service,
+ 	if (!i2c)
+ 		return NULL;
+ 	i2c->base.owner = THIS_MODULE;
+-	i2c->base.class = I2C_CLASS_DDC;
+ 	i2c->base.dev.parent = &adev->pdev->dev;
+ 	i2c->base.algo = &amdgpu_dm_i2c_algo;
+ 	snprintf(i2c->base.name, sizeof(i2c->base.name), "AMDGPU DM i2c hw bus %d", link_index);
 
