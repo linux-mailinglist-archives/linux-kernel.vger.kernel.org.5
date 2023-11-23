@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186BE7F6222
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128F17F6226
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345956AbjKWOzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
+        id S229538AbjKWO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345953AbjKWOy5 (ORCPT
+        with ESMTP id S229462AbjKWO6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:54:57 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46418A4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:55:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc2b8deb23so1702255ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700751303; x=1701356103; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h2L9RZQCLrY6hnoGQSRaHIShkzJvXSmWVmVciwD8dPI=;
-        b=ar4QBzlNYkzcOWXQuhmlEgBDYF/iHx2Cmt4RcKpNyeqS757vPEyBbhfNUw7WhN/60D
-         wdBM+7+YJKxgESmQb/xSrdg/66XMrUxKrVL8F4VCDMXtuRocvuJbiqPE2Lj/t22usN3k
-         7qUBbucC26s/tAIeUOOtbNmec9PcWO2ugNlodoDD760vbuxoMWhkem3sKmtDaGYImAbt
-         97lg9m2NQtCEC1WXUdzZMCUS+IY3Gwt65zBPAxg9fUew93vLTrGXvd8omy1htKdC53Ew
-         LB8WZFaHWWFVS5LxJnOE3umEj6OXk4MugjhnDRrqM9OD39QEmutdXu4khJE0lfxg9F2b
-         Irdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700751303; x=1701356103;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h2L9RZQCLrY6hnoGQSRaHIShkzJvXSmWVmVciwD8dPI=;
-        b=FPsHxEbCoXyd98CmkbZBdhTbDKF+uU+P9AdwLgbP/HmSjG8M+fJ8sGKIxqhN2JtaRB
-         nIC4JsRBrlZm5u9SW5XsTRPGt77NfrGexr7oVcnTl8yhOGroFqTISCr1x/x+ovGHBhBy
-         8wkzPvqH+IlsayR1eFYeT9NULzdcobnAtjs1WtV5aGIiN1FrFjvuRchKAeFeOcLDu4z3
-         Z6Yc/QFJBOQcK/r5L91eymLxuDTRygVOk2RUDjkgEVVU1FzdUyHXwvRFvJpRN/cHWhr2
-         AX/gqRQAYwg9hzMoMeTfhGh/RTiC0O22aiay8d9tg8knD/o9hwyY/9migTnoo+BuRY1K
-         YRFA==
-X-Gm-Message-State: AOJu0YzsBwrWpuMyFZn7lxtZzKKofG1WEcMU99W/woudiSK8THjHzg7D
-        2lLZDjQUsfc4FENHT60dVhIQRA==
-X-Google-Smtp-Source: AGHT+IFQYMG+AU20J3AxvuSv1xousG7ERMkfwLb9nS1M6laQRLzK1D3gA3xh7TZXiTiUPbrUtQ9S6A==
-X-Received: by 2002:a17:902:e808:b0:1cf:732d:fc0d with SMTP id u8-20020a170902e80800b001cf732dfc0dmr6296045plg.1.1700751302634;
-        Thu, 23 Nov 2023 06:55:02 -0800 (PST)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170902d50b00b001acae9734c0sm1443035plg.266.2023.11.23.06.55.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 06:55:02 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-nvme@lists.infradead.org, Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231122224719.4042108-1-arnd@kernel.org>
-References: <20231122224719.4042108-1-arnd@kernel.org>
-Subject: Re: [PATCH v3 0/3] nvme link failure fixes
-Message-Id: <170075130149.89858.13911253468594961473.b4-ty@kernel.dk>
-Date:   Thu, 23 Nov 2023 07:55:01 -0700
+        Thu, 23 Nov 2023 09:58:10 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81903A4;
+        Thu, 23 Nov 2023 06:58:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kfGgqTUyQW3nytRqECKvTmNuGYaEc5iawnb0wTmFF4A=; b=Y/2HyafF1/CBVlx6o7AHGy62st
+        Gm9gu1nVAEutBUdDIjHMwfkLNLqbI1m1VHolp8rQW+6gOHdjpnNNuGyYCG8HuIBzE4tOLIju+dUfs
+        0WMLyF7NHK2zIwS60kgXpFYwVnCE6tvex1Kf1Sxx7/N19xriJ+1Ewj/Y6SQgBieBOK8c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6B9S-0010J5-97; Thu, 23 Nov 2023 15:57:58 +0100
+Date:   Thu, 23 Nov 2023 15:57:58 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Jie Luo <quic_luoj@quicinc.com>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <e32d5c84-7a88-4d9f-868f-98514deae6e9@lunn.ch>
+References: <20231120135041.15259-1-ansuelsmth@gmail.com>
+ <20231120135041.15259-4-ansuelsmth@gmail.com>
+ <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
+ <20231121144244.GA1682395-robh@kernel.org>
+ <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
+ <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
+ <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
+ <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
+ <c697488a-d34c-4c98-b4c7-64aef2fe583f@lunn.ch>
+ <ZV9jM7ve3Kl6ZxSl@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-26615
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV9jM7ve3Kl6ZxSl@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 22 Nov 2023 23:47:16 +0100, Arnd Bergmann wrote:
-> There are still a couple of link failures that I tried to address
-> with a previous patch. I've split up the missing bits into smaller
-> patches and tried to explain the bugs in more detail.
+On Thu, Nov 23, 2023 at 02:35:31PM +0000, Russell King (Oracle) wrote:
+> On Thu, Nov 23, 2023 at 03:27:05PM +0100, Andrew Lunn wrote:
+> > > Just to be more precise qca807x can operate in 3 different mode:
+> > > (this is controlled by the MODE_CFG bits)
+> > 
+> > > - QSGMII: 5 copper port
+> > 
+> > 4 slots over QSGMII, plus the second SERDES is connected to the MAC
+> > using SGMII/1000BaseX?
+> > 
+> > > - PSGMII: 5 copper port
+> > 
+> > 5 slots over QSGMII, the second SERDES is idle?
+> > 
+> > > - PSGMII: 4 copper port + 1 combo (that can be both fiber or copper)
+> > 
+> > 5 slots over QSGMII, with the second SERDES connected to an SFP cage.
+> > 
+> > Are ports 1-4 always connected to the P/Q SGMII. Its only port 5 which
+> > can use the second SERDES?
 > 
-> With these applied, randconfig builds work again. Please either
-> merge them or treat them as bug reports and find a different fix,
-> I won't do another version.
-> 
-> [...]
+> I think what would really help here is if there was an ascii table to
+> describe the configurations, rather than trying to put it into words.
 
-Applied, thanks!
+Yes.
 
-[1/3] nvme: target: fix nvme_keyring_id() references
-      commit: d78abcbabe7e98bb4baa4dea87550806944790ed
-[2/3] nvme: target: fix Kconfig select statements
-      commit: 65e2a74c44ddfa174b700f5da2d1d29b4ba6639b
-[3/3] nvme: tcp: fix compile-time checks for TLS mode
-      commit: 0e6c4fe782e683ff55a27fbb10e9c6b5c241533b
+And also for ipq4019. We need to merge these two threads of
+conversation, since in the end they are probably the same driver, same
+device tree etc.
 
-Best regards,
--- 
-Jens Axboe
-
-
-
+       Andrew
