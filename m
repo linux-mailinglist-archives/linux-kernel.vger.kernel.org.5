@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D46137F5B7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6ACE7F5B7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbjKWJmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        id S1343940AbjKWJmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbjKWJk4 (ORCPT
+        with ESMTP id S235103AbjKWJk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:40:56 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEB810CF;
-        Thu, 23 Nov 2023 01:41:00 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a002562bd8bso135524166b.0;
-        Thu, 23 Nov 2023 01:41:00 -0800 (PST)
+        Thu, 23 Nov 2023 04:40:57 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23262BA;
+        Thu, 23 Nov 2023 01:41:01 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54a945861c6so930698a12.3;
+        Thu, 23 Nov 2023 01:41:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700732458; x=1701337258; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700732459; x=1701337259; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pq+FEnQba7Sk+IX5HM84oJaaaLkn3lu8uiYE4NrIrFw=;
-        b=fQ5A0zqCst/xtjHsSgPmt1rCFNsbOWd3YRJQ3gQRYNcaBsY9RJbu28Eip1orCYrHfA
-         IKyRuY/c3qqiNr+HdAVIgMpUxjwV/uWpyjYH/zmALwRc7TLxj6X1iJs12VnbsFDOp/LJ
-         rL/onbKmDUUfIYbS1upJn21YSUutXkN7SGdSAiNJUjDfxzsxFSvgArH0hqLG6f1CuAGC
-         m2y6pjV2fuuBAqjP6KB0SSEzGoAqKhcCSgPGmyfOUhJ2P+OKIz3i6BF8jWUyAfALnUQl
-         qyYcCcTCfVREg8qX2UegJijmQYyksiwz8Ru4onwcs0EnM0akDmh5E0usdC3tdq8pXBk9
-         B9Vg==
+        bh=bqROwQG7N3qrkO1+o2zNL4maIfyYwDDg69jSMCtjk0o=;
+        b=YcZ2kT8o0amxp7yzda3BKjoxqUfndekc9RHOUhsMw69tTOUwFcY+CPSZDqqWUztLmU
+         dxsKq5RthFoB8XjTN6xSEYaiJYgDu04/kOGfcW5ABsnXaYkoIx2k5u9FhZMrQFYftvtP
+         YuxJWp+OQRWNdRce8r4KR3n1NL+jkwC0rUFeCNFYbQWehyFTlHTrmMfp3ssqFyJIQkDx
+         hVuHYCY3VGDfK26eKrAfHri+QFHjkXm5UWAfuW5Od/leOs6DyZVd0ZTMGqGaxfbOyClp
+         D3tYEhSzDjToEZURYideJdWm1woihPwsDEh/iRC8XSCV9KFNdeEtQ0Y+o6jefBMW9nDU
+         b3NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700732458; x=1701337258;
+        d=1e100.net; s=20230601; t=1700732459; x=1701337259;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pq+FEnQba7Sk+IX5HM84oJaaaLkn3lu8uiYE4NrIrFw=;
-        b=mOHLh7o4k7B/d2//uL25lr+jzkJb37Kv8McWgS26lvtDuEc5MslHU6hKB2rmbWrHWQ
-         ewUP6m2ZDcZegHRvTWu5fIkH8IwoHcL4NYvFn3AEnVjC5nYbP8CyM+327611AFuL7IZI
-         61Zt2eOoncFPEz2uWIHuWcweUo5kdqgl4F0WGdZoiNtSkcflARvmC4OCyAK6fwE+8JTl
-         O0Dp4QZwZy0Ca18hqp/fYMtZI3rQnD3bGem1qiNJfE+es459u+joEhBJkxg99ggwGbm0
-         xhG8Hh2zxTVEq24eJmW6Ze7zLhq9iEjBH2Wn52gCN8xaGImYarihk3SVxrat3ZnEEdFs
-         OkBA==
-X-Gm-Message-State: AOJu0Yxi6hvtunOPtx2aLacAXqdJUWNzJ8UQXuZPMaVMBaXAsTq+/a+S
-        BicrjRjJ/E6wLqIsLiOyGW0=
-X-Google-Smtp-Source: AGHT+IHo0GBiadovOU1BBR1oWkASv65VH9/WnHAU5a3ZhwF8MBuNzgNR/J1hpFuh5wSinOqeTq7u8w==
-X-Received: by 2002:a17:906:78c:b0:a04:e1e7:d14c with SMTP id l12-20020a170906078c00b00a04e1e7d14cmr1774196ejc.32.1700732458571;
-        Thu, 23 Nov 2023 01:40:58 -0800 (PST)
+        bh=bqROwQG7N3qrkO1+o2zNL4maIfyYwDDg69jSMCtjk0o=;
+        b=rxsCuGE0SLWJdFPaRUUqYs8IUTVOClwbFeqPB+LJ4Clwbb+zRKozJfW39pNYRJDvXj
+         snDAbzey3KxUwmY1LrWkWxvohL6qfx5YmyhfkRwa2iws+E91JHTtoHjx1kKICJ6/j9i0
+         RJztH0YIAqKW++ZVVJl3wCj2Fs2URRzJu9IRgi0gvs8NRswxCWgdRPlES8xoWzfbanGm
+         HSzEsSVsyFcrh0UAf+G6xKO4e61I1QDZbpqWm8UvbnSxbrFFg/BGPicJH1a/ZuKTju1C
+         eLFBRgON7hwVqvDY0DMO4N3qPtvjYPmkS10a8OhRqcMDVv1uHDTKzRsmXI7Nbniex1Ae
+         FE/Q==
+X-Gm-Message-State: AOJu0YzUeS9yjagzZ16kTUu0mPeOyVw6eeBmF/K8ckQTcvwH0dhtdB9S
+        XVO1bcY/LAPcwqnvd/RlLJM=
+X-Google-Smtp-Source: AGHT+IFzDKDdw9ToYZGoNPeCiTiYjGf6iU2HQh3DpjZwk9f0pHAhcqea5zBWX9e6oLqquOqcr6+iMA==
+X-Received: by 2002:a17:906:28d:b0:a00:131c:bc3e with SMTP id 13-20020a170906028d00b00a00131cbc3emr3342294ejf.11.1700732459394;
+        Thu, 23 Nov 2023 01:40:59 -0800 (PST)
 Received: from zotac.lan. (dynamic-2a01-0c23-c0f2-3200-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.57
+        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 01:40:58 -0800 (PST)
+        Thu, 23 Nov 2023 01:40:59 -0800 (PST)
 From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Xinliang Liu <xinliang.liu@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Dave Airlie <airlied@redhat.com>
 Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 16/20] drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c: remove I2C_CLASS_DDC support
-Date:   Thu, 23 Nov 2023 10:40:36 +0100
-Message-ID: <20231123094040.592-17-hkallweit1@gmail.com>
+Subject: [PATCH v5 17/20] drivers/gpu/drm/ast/ast_i2c.c: remove I2C_CLASS_DDC support
+Date:   Thu, 23 Nov 2023 10:40:37 +0100
+Message-ID: <20231123094040.592-18-hkallweit1@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231123094040.592-1-hkallweit1@gmail.com>
 References: <20231123094040.592-1-hkallweit1@gmail.com>
@@ -75,7 +70,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,23 +85,23 @@ be used in new code. So we can remove this class completely now.
 
 Preferably this series should be applied via the i2c tree.
 
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c |    1 -
+ drivers/gpu/drm/ast/ast_i2c.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c
-index 410bd019b..e6e48651c 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c
-@@ -81,7 +81,6 @@ int hibmc_ddc_create(struct drm_device *drm_dev,
- 		     struct hibmc_connector *connector)
- {
- 	connector->adapter.owner = THIS_MODULE;
--	connector->adapter.class = I2C_CLASS_DDC;
- 	snprintf(connector->adapter.name, I2C_NAME_SIZE, "HIS i2c bit bus");
- 	connector->adapter.dev.parent = drm_dev->dev;
- 	i2c_set_adapdata(&connector->adapter, connector);
+diff --git a/drivers/gpu/drm/ast/ast_i2c.c b/drivers/gpu/drm/ast/ast_i2c.c
+index 0e845e7ac..e5d3f7121 100644
+--- a/drivers/gpu/drm/ast/ast_i2c.c
++++ b/drivers/gpu/drm/ast/ast_i2c.c
+@@ -120,7 +120,6 @@ struct ast_i2c_chan *ast_i2c_create(struct drm_device *dev)
+ 		return NULL;
+ 
+ 	i2c->adapter.owner = THIS_MODULE;
+-	i2c->adapter.class = I2C_CLASS_DDC;
+ 	i2c->adapter.dev.parent = dev->dev;
+ 	i2c->dev = dev;
+ 	i2c_set_adapdata(&i2c->adapter, i2c);
 
