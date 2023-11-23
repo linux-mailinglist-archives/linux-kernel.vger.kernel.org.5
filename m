@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 693B47F5D83
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B627F5D86
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344959AbjKWLNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
+        id S1344979AbjKWLNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344907AbjKWLNY (ORCPT
+        with ESMTP id S1344939AbjKWLNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:13:24 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 251B5D49;
-        Thu, 23 Nov 2023 03:13:30 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56C701042;
-        Thu, 23 Nov 2023 03:14:16 -0800 (PST)
-Received: from [10.57.70.183] (unknown [10.57.70.183])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 502F33F73F;
-        Thu, 23 Nov 2023 03:13:28 -0800 (PST)
-Message-ID: <2ba7bab4-daee-4883-acd4-ec9a10c82103@arm.com>
-Date:   Thu, 23 Nov 2023 11:13:13 +0000
+        Thu, 23 Nov 2023 06:13:40 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE6AB9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:13:47 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so8795731fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:13:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700738025; x=1701342825; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BVOejPj0G54Lit2Uyo96eZ6bkXM9HZIazx2Np37e5CI=;
+        b=J6KdDANSk7WrZCqXaX6P2xp440vkaa5mad8JOkvkTKraKHbuMq3Wa7bCFWvAgdTxXU
+         gsCroILaBHXsSQLuirsMDJTo+hgmJw6qbtcJONlOZx/nHKWmSF08+yNhm+wgoYUysOOZ
+         1XLHAOQTQi3Tj94SwourTLBHK8fiF8iLDfRH8aGNufFd1UT72NyaoVadVO69/11LPv1M
+         zBBkE1VwAlO4yvtrucHv9pRXyT+jClxFNsWnuwJOt+ZhkxQoW260cpQ5XYKBDGr5Uozd
+         PCpsvN0RXVBYyB96WaiesuF5xmuN2DsDrt7DFnYUIIU7zlPAr7NiNcsKEi77+gYIEd2T
+         3wMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700738025; x=1701342825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BVOejPj0G54Lit2Uyo96eZ6bkXM9HZIazx2Np37e5CI=;
+        b=E2yL+0WDqRhOIwOFU1sXOBPkgREYmhqWFNPqloSI9Z1rno6ovag40l/ZA2x+yZ5Ri0
+         XijI9h7NQ2bVKLvj0xXFNh4AQ8+1pK6xxABOxo8vQVsnUaBcR5VhGRH3Kbf9YI7a8sdz
+         qluDQNCtw4Si1wuBZsp4Ox4Y698q5xg5fG5hz8djItAGwyvzW4s6Ap7oK5SGobLkrW3Y
+         urrW+EMsEiwflf4FRLf+YwfZbODoF7DnkEou0ctGHw2ejGIRqshhm2RK7ghMYkudLjB2
+         fl3I05Fyh113+6WKjXICOb9SuAbrhLrFfOFCs5BUQga/lavYa/jmQVN9cxbQuS2mAxHO
+         Bm8Q==
+X-Gm-Message-State: AOJu0YxwvuMKOOv7gaFGJxZzAApUvXxVAydB6zgXEE0dLnnCd2oLQGld
+        YjRd5ue+LJWkcLS2m0/BYTIFNXU5vwxuFweTDf8=
+X-Google-Smtp-Source: AGHT+IEGg5VfnCETwTajEapRt0obuhE0/nk0jzOVjxAmRtmGkRRcnk8xi5p89NpdZrTjIxyKqZ70HP5HK6obg5YSRuQ=
+X-Received: by 2002:a2e:90cf:0:b0:2c6:ee73:a20e with SMTP id
+ o15-20020a2e90cf000000b002c6ee73a20emr3583861ljg.33.1700738025304; Thu, 23
+ Nov 2023 03:13:45 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu: Don't reserve IOVA when address and size are zero
-To:     Ashish Mhetre <amhetre@nvidia.com>, joro@8bytes.org,
-        will@kernel.org, robh@kernel.org, treding@nvidia.com
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20231123061201.16614-1-amhetre@nvidia.com>
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231123061201.16614-1-amhetre@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-17-ryncsn@gmail.com>
+ <87sf4yaajv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87sf4yaajv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Thu, 23 Nov 2023 19:13:27 +0800
+Message-ID: <CAMgjq7Ba9inFHCqoZSNY_gFUv=UEVEC8FvG+V7-7Qpv027tEmQ@mail.gmail.com>
+Subject: Re: [PATCH 16/24] mm/swap: reduce scope of get_swap_device in swapin path
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-23 6:12 am, Ashish Mhetre wrote:
-> When the bootloader/firmware doesn't setup the framebuffers, their
-> address and size are zero in "iommu-addresses" property. If we intend to
-> use display driver in kernel without framebuffer then it's causing
-> the display IOMMU mappings to fail as IOVA is reserved with size and
-> address as zero.
+Huang, Ying <ying.huang@intel.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=8822=E6=
+=97=A5=E5=91=A8=E4=B8=89 08:38=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Kairui Song <ryncsn@gmail.com> writes:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > Move get_swap_device into swapin_readahead, simplify the code
+> > and prepare for follow up commits.
+>
+> No.  Please don't do this.  Please check the get/put_swap_device() usage
+> rule in the comments of get_swap_device().
+>
+> "
+>  * When we get a swap entry, if there aren't some other ways to
+>  * prevent swapoff, such as the folio in swap cache is locked, page
+>  * table lock is held, etc., the swap entry may become invalid because
+>  * of swapoff.  Then, we need to enclose all swap related functions
+>  * with get_swap_device() and put_swap_device(), unless the swap
+>  * functions call get/put_swap_device() by themselves.
+> "
+>
+> This is to simplify the reasoning about swapoff and swap entry.
+>
+> Why does it bother you?
 
-Can you clarify the problem there? Looking at the code in 
-iova_reserve_iommu_regions() I'm guessing it's that "region->start + 
-region->length - 1" underflows so reserve_iova() actually ends up 
-reserving the entire valid IOVA space?
+Hi Ying,
 
-> An ideal solution would be firmware removing the "iommu-addresses"
-> property and corresponding "memory-region" if display is not present.
-> But the kernel should be able to handle this by checking for size and
-> address of IOVA and skipping the IOVA reservation if both are 0.
+This is trying to reduce LOC, avoid a trivial si read, and make error
+checking logic easier to refactor in later commits.
 
-Surely it doesn't make sense to reserve a 0-length region at *any* base 
-address? The symptom above wouldn't be quite the same if the base was 
-nonzero, but corrupting the rbtree with an entry where pfn_hi < pfn_lo 
-would definitely not be good either.
+And besides there is one trivial change I forgot to include in this
+commit, get_swap_device can be put after swap_cache_get_folio in
+swapin_readahead, since swap_cache_get_folio doesn't need to hold the
+swap device, so in cache hit case this get/put_swap_device() can be
+saved.
 
-> Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
-> Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
-> ---
->   drivers/iommu/of_iommu.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index 157b286e36bf..150ef65d357a 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -255,6 +255,10 @@ void of_iommu_get_resv_regions(struct device *dev, struct list_head *list)
->   				size_t length;
->   
->   				maps = of_translate_dma_region(np, maps, &iova, &length);
-> +				if (iova == 0 && length == 0) {
-> +					dev_dbg(dev, "Skipping IOVA reservation as address and size are zero\n");
+The comment also mentioned:
 
-FWIW I'd be inclined to log a visible warning that firmware is giving us 
-nonsense.
+"Then, we need to enclose all swap related functions with
+get_swap_device() and put_swap_device(), unless the swap functions
+call get/put_swap_device() by themselves"
 
-Thanks,
-Robin.
-
-> +					continue;
-> +				}
->   				type = iommu_resv_region_get_type(dev, &phys, iova, length);
->   
->   				region = iommu_alloc_resv_region(iova, length, prot, type,
+So I think it should be OK to do this.
