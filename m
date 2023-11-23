@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792F17F680F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805237F6825
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjKWUFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 15:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
+        id S229588AbjKWUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 15:09:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjKWUFA (ORCPT
+        with ESMTP id S229453AbjKWUJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 15:05:00 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523BD10D2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:04:58 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-51f64817809so225778a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700769898; x=1701374698; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RSloKbp86UiyOswV753VKR+ULy2TcPDIFU6JTx1BHg8=;
-        b=Y/GYq1bjZBdjVgnR8UnEtq1heRxvHfI230VlpgMlZothiuWI/pihUUw9hIvlyrSINk
-         JhOFYUCiEWUJaltZ9wXK1noXwZ/xhfQmgcrNz2xraL0+uQCnnhMs/VEJd1KfEaxhROjp
-         vno9sES4buCXMLkpp7v8nlGVsuOY4o1BkmkeTTN+BPD1Fqhgkz4gmMvr0CODC8+ULzUN
-         TKG95r01blvAEB5JGjNEQS+bfW4+LRozpxoENOxCrsW3rMl0sxrrag7MtIUoPYjquSCo
-         9L6O22OOWoqRC/u68dcqo/A7CdoMC6oHHMvR1EEly8Fp1iCLKGFq/SRLy24kgRS39JEN
-         N9jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700769898; x=1701374698;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RSloKbp86UiyOswV753VKR+ULy2TcPDIFU6JTx1BHg8=;
-        b=YMUoMhxsLVwMAi/Ok+3JgBpa/r68j+iYgYIfJw7UOb/X+ex10+Kzhi6OtJchptHDCV
-         NfqrtQDF3yK4wXL0OYNAjNUprqw9BCjwpO3LCEiQUHPU5/J9TPDzuTdAzK7efGmMnYoZ
-         8pxNMxrBcKpd1wtVZ/sM0tGBg28RqBeGm1KUeOWjI02L/hsy14/Wa/uYDT0AAKUQcLPk
-         1CFcJn6xu9l5x9ZNabkOKJhf9vokA/SWrYmOS6jg40tia+5k29Rfz1Lv9TWzXWhdyhCB
-         VX2Dj3fPlzatlt5nQlyPFZOI+je64bnEaXOuGlw4sg1jdmELiTWLvKiuQgF54MwNW5/1
-         z+ag==
-X-Gm-Message-State: AOJu0YxOJsXvavqHLO8c5OgDao1iqCSXATWWFETA/E55iNDclKgSfs/2
-        JTVKFESEVByb1EjTMHxJZoAQ2Q==
-X-Google-Smtp-Source: AGHT+IFkd3TNIFngcpqmaOP6yzGlh39X9sE8ua0oX03sz71V9GSS4EYsfgihju9WseoKWmkyNlYZlA==
-X-Received: by 2002:a05:6a20:e11a:b0:185:a0eb:8574 with SMTP id kr26-20020a056a20e11a00b00185a0eb8574mr901433pzb.5.1700769897643;
-        Thu, 23 Nov 2023 12:04:57 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id z12-20020aa791cc000000b006c0316485f9sm1604516pfa.64.2023.11.23.12.04.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 12:04:57 -0800 (PST)
-Message-ID: <dd7290ed-800f-4523-864d-45b5c2dc93cf@kernel.dk>
-Date:   Thu, 23 Nov 2023 13:04:56 -0700
+        Thu, 23 Nov 2023 15:09:27 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B2DD41;
+        Thu, 23 Nov 2023 12:09:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kJeXbrZOUj5rdzQgMSVZ1x5SEGn76ScEL3QEZ1NKcyQ=; b=LBjjJT7IFEDSq0m8h8vvBvJyD0
+        nWRfw7B1eziTxK7FD4qioH+tRKnZ0FbjBSIJcz/T1HkID8VqR6rR4zPZUnzqR/XmcdViq97zNcH64
+        atippMG8swE/5F/CnxUiG4S5UWT3D0dot5dRY6OHWOaw4XRkrkeFX9luXSTR1/Fwez1U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6G0r-0011wP-Ri; Thu, 23 Nov 2023 21:09:25 +0100
+Date:   Thu, 23 Nov 2023 21:09:25 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Heiko Schocher <heiko.schocher@gmail.com>
+Cc:     netdev@vger.kernel.org, Heiko Schocher <hs@denx.de>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: fec: fix probing of fec1 when fec0 is not probed yet
+Message-ID: <132aca53-6570-41a4-b2b2-0907d74f9b31@lunn.ch>
+References: <20231123132744.62519-1-hs@denx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] nvme link failure fixes
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        linux-nvme@lists.infradead.org
-Cc:     Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        linux-kernel@vger.kernel.org
-References: <20231122224719.4042108-1-arnd@kernel.org>
- <ca200ed6-a70e-401e-b862-f690368e0266@kernel.dk>
- <a9ef56fa-725f-4d18-b408-ce0ba13c2d6e@app.fastmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <a9ef56fa-725f-4d18-b408-ce0ba13c2d6e@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123132744.62519-1-hs@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 11:25 PM, Arnd Bergmann wrote:
-> On Thu, Nov 23, 2023, at 02:42, Jens Axboe wrote:
->> On 11/22/23 3:47 PM, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> There are still a couple of link failures that I tried to address
->>> with a previous patch. I've split up the missing bits into smaller
->>> patches and tried to explain the bugs in more detail.
->>>
->>> With these applied, randconfig builds work again. Please either
->>> merge them or treat them as bug reports and find a different fix,
->>> I won't do another version.
->>
->> Applied, but had to hand-apply hunk 9 of patch 3 due to a previous
->> attempt at this:
->>
->> commit 23441536b63677cb2ed9b1637d8ca70315e44bd0
->> Author: Hannes Reinecke <hare@suse.de>
->> Date:   Tue Nov 14 14:18:21 2023 +0100
->>
->>     nvme-tcp: only evaluate 'tls' option if TLS is selected
+On Thu, Nov 23, 2023 at 02:27:43PM +0100, Heiko Schocher wrote:
+> it is possible that fec1 is probed before fec0. On SoCs
+> with FEC_QUIRK_SINGLE_MDIO set (which means fec1 uses mii
+> from fec0) init of mii fails for fec1 when fec0 is not yet
+> probed, as fec0 setups mii bus. In this case fec_enet_mii_init
+> for fec1 returns with -ENODEV, and so fec1 never comes up.
 > 
-> Ok, thanks for merging my changes! The commit from Hannes
-> is what I had in my v1 for this, and it was a correct fix
-> as well, my patch 3/3 was just a more elaborate way to do
-> the same thing that I did since Hannes did not like my
-> version at first.
+> Return here with -EPROBE_DEFER so interface gets later
+> probed again.
 > 
-> The 23441536b6 commit was not in linux-next yesterday, so
-> it looks like our patches crossed paths on the same day.
+> Found this on imx8qxp based board, using 2 ethernet interfaces,
+> and from time to time, fec1 interface came not up.
+> 
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> ---
+> 
+>  drivers/net/ethernet/freescale/fec_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index c3b7694a7485..d956f95e7a65 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -2445,7 +2445,7 @@ static int fec_enet_mii_init(struct platform_device *pdev)
+>  			mii_cnt++;
+>  			return 0;
+>  		}
+> -		return -ENOENT;
+> +		return -EPROBE_DEFER;
 
-yeah, it was just recently merged, which is probably why it wasn't there
-yet and you didn't see it. Not a big deal, easy enough to resolve - just
-wanted to make sure you knew about it. It should all be heading upstream
-shortly, just sent out the pull.
+I think this has been tried before.
 
--- 
-Jens Axboe
+Are there any issues with the mii_cnt++; I thought the previous
+attempt as this had problems with the wrong mdio bus being assigned to
+fep->mii_bus ? But i could be remembering wrongly.
 
+	Andrew
