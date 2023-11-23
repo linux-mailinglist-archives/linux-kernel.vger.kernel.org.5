@@ -2,73 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755197F55A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3794B7F55A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjKWAvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 19:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        id S232448AbjKWAwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 19:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjKWAvi (ORCPT
+        with ESMTP id S232185AbjKWAwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 19:51:38 -0500
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C961995
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 16:51:05 -0800 (PST)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cf6e930886so3805465ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 16:51:05 -0800 (PST)
+        Wed, 22 Nov 2023 19:52:07 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59B6A3;
+        Wed, 22 Nov 2023 16:51:36 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso192721f8f.2;
+        Wed, 22 Nov 2023 16:51:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700700695; x=1701305495; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FFSRqxyM60XZYlWMe+LxLHgfBXsOYKs0Arhl5TpCQS8=;
+        b=bmJY+GWq3HWahs4EB4IcBFCKr1jWEWsUmI39qTWI7a6JgFRrQDLrkOwr2SHVDtfNx9
+         H20fSBXyqclmaofznlPdgljsYj+r53IuuZbIyaFTIMNRnr1pIfFNV9qDCQh6o3YQHlQf
+         CKsBXEn2Vr2rk7RzshD9NtJ/Sp0MIWUQ2JFzq48X1KJh3/Kw+typNZ6kBZrriqSNNOAP
+         M2hSva8TsLOysae6m79iY8yqe1eg7PaZ7gPVVrCibPTFcaR5dQYFcnWZOsL+SwsOSvAK
+         5BjMFCVg4QYw+b9f2jcnIxpXnbg3udrx1EbH4JLcc1epdh+8UhFdpkqBy28G4YfUg//6
+         c4uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700700665; x=1701305465;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bfaq3AGm/sS947+EXYZkYbQDgCTkoeK5QjpYHRGeaQE=;
-        b=of3WrgbmOIUiOf5MMMJozaQmiYxC/GIrgVkSpTIUVkhHPVtqDBL6We3jwuiS+Ywq62
-         11yZAlfe8O95aZl/2QP520pz1x9Qtn6zuG/2rfwHEEh+3inZSixUJviT3Ef0ZT8dnlha
-         Br4+Yi/D0k5raopCjlzwV28kXBYv4lYC8VZ7lGUnqjWJHft1+x4zQM0ojQbNTm98ymJY
-         EdQIfSPJw47ZqOSaI9/z6w3gx2TazfmHkFKjuULpyjQJcQxu58EPVoIn48KV6M1nveGd
-         X03/9vTccXyS95JYrfrcjmgJwvM5tDpDKG24Id/6Eq+ieown6joKxSBxXaOzhMbBphjq
-         sGzw==
-X-Gm-Message-State: AOJu0YxpkGdaF/P3pMpFbkDP8oje3RZh8vM+UK0zw26anuKfTs51kzWI
-        km7bh9aF1yBzljd8mhtKTSmIdNiXwf6C2e2Hnjfd3zMzxgkR
-X-Google-Smtp-Source: AGHT+IHNEr5gMdS49EOKTW7KIMbyCzSLuZCXXqA+iEwJCfZrK8tyshnPTdNLkZ784dCLq9Em/RATfkY3EhtkvklY2BxYCEyoLhfI
+        d=1e100.net; s=20230601; t=1700700695; x=1701305495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FFSRqxyM60XZYlWMe+LxLHgfBXsOYKs0Arhl5TpCQS8=;
+        b=KmRJZVNDneDJEQ6QEo9KU3Ne/Yg01ezaGRtGzl3IYxDrWSHzH1pekaQXAfTnEl/sYS
+         UbTTF8l/OWzrKT22Wu7ro7TvvRTusryCJQHw/ZtdUOFWykSTx+RLaCSQ2QUwKTr2mcej
+         DC+jxH7bHA7nqVcrDfSU/pRA12NiX3nczLYE+NFD6v1eht7B+lcmPUzfu+q6H+6GMCJz
+         NwwPm7Lx7oKfz2bIPI43ftQVxu5TTwG112MjCs4+qMvvk3PaRKi5Bl7zRY0kTIOSXJUt
+         WW6EEcKHwyqHLsqyE+Agw51rNohb8G+HV88+9ieNjSSxXvVo249Dc+X7SxBNSsavMt0S
+         w/bQ==
+X-Gm-Message-State: AOJu0YwpfV/imgQ6saqnmbghI0/A8qa5aHE2aJJR0Xye5C/XLycT2GVw
+        2q/c02Gdq3Kn29s3bILmkOO3j1JgEJTxk45Ge1E=
+X-Google-Smtp-Source: AGHT+IFsZynBqDZU07UjtjyWcGDEoU4r8+d4uBQx87ACMaj5T1mQc/a3y5MZDETnfbK00TiUJQ8Ke8+6cd2ruagK5V8=
+X-Received: by 2002:a05:6000:144f:b0:332:caa9:72b2 with SMTP id
+ v15-20020a056000144f00b00332caa972b2mr3445384wrx.3.1700700695019; Wed, 22 Nov
+ 2023 16:51:35 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:b487:b0:1cc:281a:8463 with SMTP id
- y7-20020a170902b48700b001cc281a8463mr928981plr.7.1700700664887; Wed, 22 Nov
- 2023 16:51:04 -0800 (PST)
-Date:   Wed, 22 Nov 2023 16:51:04 -0800
-In-Reply-To: <tencent_1A577926DC937A2360297AE3B6C454D76605@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000000099060ac73bb2@google.com>
-Subject: Re: [syzbot] [mptcp?] KMSAN: uninit-value in mptcp_incoming_options
-From:   syzbot <syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231120144642.591358648@infradead.org> <20231120154948.708762225@infradead.org>
+ <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com>
+ <20231122111517.GR8262@noisy.programming.kicks-ass.net> <20231122124134.GP4779@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231122124134.GP4779@noisy.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Nov 2023 16:51:23 -0800
+Message-ID: <CAADnVQKhpjt0pojdYGXpeyMvJnCUVvyrRKCmHg3cKYjAs-HDmA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Nov 22, 2023 at 4:41=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+>
+> +/*
+> + * Emit the various CFI preambles, see the large comment about FineIBT
+> + * in arch/x86/kernel/alternative.c
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+.. and in cfi.h ..
+which will have a copy-paste from your other email?
 
-Reported-and-tested-by: syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com
+>                 prog->bpf_func =3D (void *)image + ctx.prog_offset;
+>                 prog->jited =3D 1;
+>                 prog->jited_len =3D proglen - ctx.prog_offset; // XXX?
 
-Tested on:
+Just drop XXX.
 
-commit:         c2d5304e Merge tag 'platform-drivers-x86-v6.7-2' of gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1756c634e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e32016b84cf917ca
-dashboard link: https://syzkaller.appspot.com/bug?extid=b834a6b2decad004cfa1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14d59a34e80000
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1431,6 +1431,9 @@ struct bpf_prog_aux {
+>         struct bpf_kfunc_desc_tab *kfunc_tab;
+>         struct bpf_kfunc_btf_tab *kfunc_btf_tab;
+>         u32 size_poke_tab;
+> +#ifdef CONFIG_FINEIBT
+> +       struct bpf_ksym ksym_prefix;
+> +#endif
+>         struct bpf_ksym ksym;
+>         const struct bpf_prog_ops *ops;
+>         struct bpf_map **used_maps;
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -683,6 +683,23 @@ void bpf_prog_kallsyms_add(struct bpf_pr
+>         fp->aux->ksym.prog =3D true;
+>
+>         bpf_ksym_add(&fp->aux->ksym);
+> +
+> +#ifdef CONFIG_FINEIBT
+> +       /*
+> +        * When FineIBT, code in the __cfi_foo() symbols can get executed
+> +        * and hence unwinder needs help.
+> +        */
 
-Note: testing is done by a robot and is best-effort only.
+I like the idea!
+
+> +       if (cfi_mode !=3D CFI_FINEIBT)
+> +               return;
+
+The cfi_mode var needs to be global along with enum ?
+Or some new helper function from arch/x86 ?
+
+> +
+> +       snprintf(fp->aux->ksym_prefix.name, KSYM_NAME_LEN,
+> +                "__cfi_%s", fp->aux->ksym.name);
+> +
+> +       prog->aux->ksym_prefix.start =3D (unsigned long) prog->bpf_func -=
+ 16;
+> +       prog->aux->ksym_prefix.end   =3D (unsigned long) prog->bpf_func;
+> +
+> +       bpf_ksym_add(&fp->aux->ksym_prefix);
+> +#endif
+>  }
+>
+>  void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+
+and handle deletion of ksym_prefix here.
+
+I think it's shaping up nicely.
+Pls resend both patches as a set and cc bpf @ vger.
+BPF CI will pick it up and test on arm64, x86-64, s390 with gcc and clang.
+We don't do CONFIG_*IBT testing automatically, but
+I can manually try that after the holidays.
