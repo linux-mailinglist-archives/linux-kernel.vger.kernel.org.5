@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39A77F5B18
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197B27F5B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbjKWJcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        id S232356AbjKWJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWJcW (ORCPT
+        with ESMTP id S231793AbjKWJcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:32:22 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229CD19E;
-        Thu, 23 Nov 2023 01:32:29 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5094727fa67so852167e87.3;
-        Thu, 23 Nov 2023 01:32:29 -0800 (PST)
+        Thu, 23 Nov 2023 04:32:32 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9535ADD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:32:39 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1ce5b72e743so108695ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:32:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700731947; x=1701336747; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tqEJ9Wsu9O4u7Ifl6pZ1YDAaPyCTLMsbbJ4KpzLqR9M=;
-        b=WBYdpA2uJh485xa1UMp0bVUiKwfXPnC+e/G0ZnrpY2/7JB+Y7gAg11qbLB4lWq5fa5
-         zyHYX4z3jgWPbyruYfjxyT2F7aZcbbrj/Ne/4EgJA15VrGGYvEIFq/CfLD5ldCu1utdr
-         xvO/RbIkgixdciZ4ZeunItPc6ZZl2GU+GJ65jZwzFbmkpIYfzc9mOaPDC7mAkVWZFus+
-         lZdyNS2S9mpXvAzhqPxP1qYPIyDAOc9RQQMF3ox3mgj1tQ69gfVMrPLG6w/G1AHlrLjZ
-         JXOHX3qaoUWqeDtgByXIxdYrvhBPoYUlMBu3vmcxMgedInLAmIwGBKb5vtOTzODoIOLY
-         rZhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700731947; x=1701336747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1700731959; x=1701336759; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tqEJ9Wsu9O4u7Ifl6pZ1YDAaPyCTLMsbbJ4KpzLqR9M=;
-        b=JFAMv0wduZ0oZ29l1zX5zkZygs7OYbrF2Tf/M/x0ARRsS+LxF1dZdoULh6Ucdzi2Ba
-         tiuGxyY3XsjNNqcRbuG8fVItvG327yI8ZHaCxBzRlozKPJLLn5oDjRe9egc1bQ1ffEps
-         uNCxQevrdwENQUf8heLtXpPwkpZSo0FImwv9qBpKCjL+4FW6TKFRjjbplIkwxuobvOHQ
-         B//pbEIVtDyytAr0/Ej42FVhXEfZK9fP7gtAKzQ+CVdJIJo6AUf+JPQTq4yY2RSWcFks
-         epRHPvoQRHmC91ptDeEGLT6UfqBEeSjbmZWmkQfXELF/ERtoxWNLzTClVaEWfRjq6p1A
-         ISzg==
-X-Gm-Message-State: AOJu0YxnSysB3YesRvqIlve1ZjtLCXVRUCn+zUXJ/wKaY6HyXu+rDogJ
-        rtS2Q6pNrXu4ZAk19CVhnjg=
-X-Google-Smtp-Source: AGHT+IEEH3l1v05pUmE2AaeJ8W/B4nA+a7iA1maBjDbATrhvBv1FofrOnDthOQ+pWUtvH83CSBIElw==
-X-Received: by 2002:ac2:4911:0:b0:507:9d70:b297 with SMTP id n17-20020ac24911000000b005079d70b297mr2872785lfi.60.1700731947096;
-        Thu, 23 Nov 2023 01:32:27 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id p15-20020a19f00f000000b0050a7052409fsm135201lfc.121.2023.11.23.01.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 01:32:26 -0800 (PST)
-Date:   Thu, 23 Nov 2023 12:32:24 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>, Marc Zyngier <maz@kernel.org>,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Message-ID: <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
-References: <20231122182419.30633-1-fancer.lancer@gmail.com>
- <20231122182419.30633-2-fancer.lancer@gmail.com>
- <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
+        bh=vg2oX9GVI0kS/noOuJCQjC9JixpUFNyRl5zhQzr8FOM=;
+        b=PvNmGO2nOx0eclcNXcpegW62Y3wfg+mrhlxMLriRogxqOLEsu1/Vkqsf4jrsDi3rRv
+         yLiWkykqYfaHd4nqEuR0AKf95cohOKXFQ5zBtq7sgz41Y+t/djZtiS0k3/uM6A68Eo1e
+         s7lIrZ0qH0zjM/hRoXaKkx248uVQoEg7thhhagCyHOLsAbeBcN5rNLRKsZj+/yTdMBUQ
+         CeiEL977NYMPdvPnbtMmi6Euf4x8rVEZ11a71TMbpCbUEf6PPK7eLn6UjC4BsheYBlSi
+         me/mWO6nPJb1Cn6iGaoVh2xY1cSZ/0Zt/KK8VW01Es7Cwg+lfKs10qf9O7Irv7DK5qQ7
+         JR9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700731959; x=1701336759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vg2oX9GVI0kS/noOuJCQjC9JixpUFNyRl5zhQzr8FOM=;
+        b=TZSpTpU+FayxRqYr2e4l74WEqMuRFjFI8nL5P4cslCtMrYNMxXpwz/ZUTa7I5m/OSX
+         I1MM7kPiSh4dhUDwaoLG8VOj7Ys3WWhBFqfcwGyJhBKJGedxq7sfsSF2bI+ezQfbFIAt
+         vhlC2FCybkRAVXgDQVaR4wuLgNeiF4YXM3vnmU/2f3neXsIe71V0eUk2wTtUeAdl2G7h
+         kPAk6N1X+nSk6I67UwFs2jUuTyDSeHBMiOFwAx/C0ZTRJIeJqBpZThkZWVu9X5lelOtB
+         lH3H46TBg+oDnkwpFSKN7LlDsPW60buDRw8Zop6xwcMDR00ZXVEy/+yCZ0Z2tVFUI21j
+         MmEw==
+X-Gm-Message-State: AOJu0Yy22a+nx0mBZ2OglOyaCoSunmsqIus/4vtUXMqKx3wjnXzkLxt8
+        QbX7SgBGdrJXxTC2XnOaKPZlyFlZ797WfZASqhRaKg==
+X-Google-Smtp-Source: AGHT+IEVA1wv/X7Ck9L/Fo/SledU+PyhSbpPMagAeGLNdxr8mHH0XrGC/g/LdyNjQ3tDc1P1sJ4xT9sTfj1k8QokvuM=
+X-Received: by 2002:a17:902:b782:b0:1cf:89e2:4960 with SMTP id
+ e2-20020a170902b78200b001cf89e24960mr141262pls.6.1700731958610; Thu, 23 Nov
+ 2023 01:32:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
+ <2023112332-award-fanciness-2bcf@gregkh>
+In-Reply-To: <2023112332-award-fanciness-2bcf@gregkh>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 23 Nov 2023 10:32:26 +0100
+Message-ID: <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     xingwei lee <xrivendell7@gmail.com>,
+        "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
+        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,47 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
-
-On Wed, Nov 22, 2023 at 08:35:01PM +0100, Arnd Bergmann wrote:
-> On Wed, Nov 22, 2023, at 19:23, Serge Semin wrote:
-> > dmi_early_remap() has been defined as ioremap_cache() which on MIPS32 gets
-> > to be converted to the VM-based mapping. DMI early remapping is performed
-> > at the setup_arch() stage with no VM available. So calling the
-> > dmi_early_remap() for MIPS32 causes the system to crash at the early boot
-> > time. Fix that by converting dmi_early_remap() to the uncached remapping
-> > which is always available on both 32 and 64-bits MIPS systems.
+On Thu, Nov 23, 2023 at 9:55=E2=80=AFAM gregkh@linuxfoundation.org
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
+> > Hi. I have reproduced this bug with repro.txt and repro.c below:
 > >
-> > Fixes: be8fa1cb444c ("MIPS: Add support for Desktop Management Interface (DMI)")
-> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> > ---
-> >  arch/mips/include/asm/dmi.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/mips/include/asm/dmi.h b/arch/mips/include/asm/dmi.h
-> > index 27415a288adf..525aad1572d1 100644
-> > --- a/arch/mips/include/asm/dmi.h
-> > +++ b/arch/mips/include/asm/dmi.h
-> > @@ -5,7 +5,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/memblock.h>
-> > 
-> > -#define dmi_early_remap(x, l)		ioremap_cache(x, l)
-> > +#define dmi_early_remap(x, l)		ioremap_uc(x, l)
-> 
+> > repro.txt
+> > r0 =3D openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
+> > ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)=3D{{0x0, 0xffff,
+> > 0x3}, 'syz0\x00'})
+> > ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
+>
+> You are using fault injection, which, by it's very name, causes faults :)
 
-> Please don't use ioremap_uc() in new code, we are in the (long)
-> process of removing it from the kernel for everything except
-> x86-32, and it already returns NULL on most of them.
-> 
-> Would the normal ioremap() work for you here? It seems to
-> do the same thing as ioremap_uc() on mips and a couple of 
-> other architectures that have not yet killed it off.
+But those injected failures (that do not break the kernel, but just
+emulate an error returned from a function that should be expected to
+sometimes return an error) still should not lead to general protection
+fault panics, shouldn't they?
 
-Ok. Thanks for the heads up. I'll fix the patch to be using ioremap()
-in v2. ioremap_uc() is just an macro-alias of ioremap() on MIPS.
+--=20
+Aleksandr
 
--Serge(y)
-
-> 
->    Arnd
+>
+> Can you reproduce it without causing faults in the kernel?  And if so,
+> can you create a patch to fix this?
+>
+> thanks,
+>
+> greg k-h
+>
