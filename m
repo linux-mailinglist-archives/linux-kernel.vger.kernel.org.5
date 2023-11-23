@@ -2,191 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B04E7F5D77
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8035D7F5D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344937AbjKWLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        id S1344952AbjKWLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjKWLMN (ORCPT
+        with ESMTP id S1344907AbjKWLM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:12:13 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639E6D4A;
-        Thu, 23 Nov 2023 03:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700737905; x=1701342705; i=j.neuschaefer@gmx.net;
-        bh=qHIRuVjw/0Toi1F/14ZNchv8iBh7eioF0IAeNc5thr0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
-         In-Reply-To;
-        b=kwIYoWcKf67p1X692kNow6H37zBF24YUt6Xkd6M4CMY1ehkBcCXux1PX+qqg54+N
-         9W5HjPZfuyjU24UXlxL21Y5aG0uw2a8FCTRtiIuMvjjb4Cza+L1+i4r6+IRExoj/1
-         ZPoTJ0hGvUDDW7uaBo3xIADYrkRSTx7Eed1jd6iyYXeXbjlhRHkecGuyMlrgFBSXD
-         NzLV+8XRXDIjsI5R/tvDH/NazNeskEsLgN02dCTl45HJ9FgunP5ybjZ7KZXLqDWvg
-         BrKopGUqj3c3bs/pULYSpRQT1WIQ1VaSTozOLIDMe2WuAgjqe44VSqoseS10tNbpX
-         VXa3UoVBv797ILuVdg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([89.0.47.44]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1HZo-1r3NX91GaQ-002snb; Thu, 23
- Nov 2023 12:11:45 +0100
-Date:   Thu, 23 Nov 2023 12:11:42 +0100
-From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Subject: Re: [PATCH v1 02/17] pinctrl: nuvoton: Convert to use struct
- pingroup and PINCTRL_PINGROUP()
-Message-ID: <ZV8zbizJO8yNEomn@probook>
-References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
- <20231122164040.2262742-3-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9hHdmhEn3QkQ/1K+"
-Content-Disposition: inline
-In-Reply-To: <20231122164040.2262742-3-andriy.shevchenko@linux.intel.com>
-X-Provags-ID: V03:K1:zjNy6ebVKDzd7AEE0/nsnKTw50ViiRNCHikw/qZ5yzvBoxpjpTz
- HuFhbYVNf3YEHc9MbVHMPqFM13ooVqoYIlO28oTqTO3TqRj4iSbysfuAMyOnYgsCh5FQ78z
- P7qOIwLX0a6l3eskPKk8wB5tHRAjmBptshJd+ljjDbEOIKGogudpPxVTdxC+iTqvsT+hcJd
- eDREktDD+IHC114QUAtOw==
-UI-OutboundReport: notjunk:1;M01:P0:y+PsMVlI0gs=;Ai/+ZpDC7M5bugNmYWGO9L7vFlz
- 2WubMq9jgvakIfRSscOQi5KlOlKYuGVb+i5EPcics8R7b0xcRLibYn4OTTpSNQGaQTOJwGw+8
- W4Q7pdLyoguKl7d5ELtHOlnjYBTnAEchLrHDprAzbT0pm4liSqW8yiHWpqJeT0qPa/DE3Pja3
- Q5Z2Y98XPiMRaRwkVMZc/EkqAP/qgXNkCrQMBJjev4vsYF1CeRJsKYsDu3Y+r5cWsDlip1bbt
- vBgM4fOGvzsRhlEdNat8Y3n/Vgqez30ywuxPD5Gy9T75fx4ADPyPC/zL/O+fAwTPTkCE9w/TH
- nFZXcqSRDEuvtC/cS8QcRdQzyq90i08o/Ne46BrCHyvjRQrgiNDVmhusLkBNG4MX53zGiTLj8
- nt4OD5BbGGo+Je6mXJQELxmwRF6Mb2+7rdL4P03yd1pE/VCccXBX5CbP2bJMM4MyhNvAS4Pai
- mVqi+GCEoLYrGHaqjsPfI4eeU8gaTgM0llwyjOpFhBOVT1be9I+IKHNsFiPSGh1lf1FRKPGl1
- 9n1HRfnC1seURAZXzes1f6cqrFKXQ9EfXNRNL8SKKeD0KCBqBzX+v/DHtSP2R19yz34QA+w2l
- pSdPWj6cKhIoQAI1NWcL1OTfCwc5nlAKwOK5emPDX0Y9lwfy69hVy0AM26iQ4Imz0/HOnvlwJ
- E/6O84+5RqeNF7X8N1ENFoobAgv7I3Eowqv2q+cKfY70CU0yACWDlWiqcvbLqGDYdr7gmEFeh
- rtLZS67dX+nGhL6my4VZgHcO4MD7nzV6e6nftkcod5Q9IQLys+9N8X416dOtY1POJVzUdr9Nu
- JjdU+yjhnFPMjzKXoL4TAUV+0nfxg2EeXJkr9WwLuksEvi3MaCIQH0Nxo45AvvtCWNlDRkKKl
- 2lecIiakBCmUUHEd+TtOVn7C/tUQpKC4oQkcVFg4MwdOMwcDVpyueYk3V0Kf75V8+Wlv8lXqD
- p/T/U2cfwpE9tGZ5jDR/SNDkWxs=
+        Thu, 23 Nov 2023 06:12:57 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E075B1AE;
+        Thu, 23 Nov 2023 03:13:02 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548f853fc9eso1038744a12.1;
+        Thu, 23 Nov 2023 03:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700737981; x=1701342781; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2ETRJxI0jYA8eO15FtbRSONvqohxyMW+Q9fmUG4iFDY=;
+        b=IEUGmk8vbD/lXdKN7pZDE9//YQNbs5F2SBAt9gb60LD6kAQ6YUwklv9ClN1r8N/Vsl
+         qgsEFTPFvtWLWdkt9++MY6dNJczuQwpQKgO+VFNx8t4oMSLz4sL88FlsmERHG4Q2qRWT
+         zCLPJ/m2DIpzNdV5PJx9G1MyxAHxNhGJ7fA9YVsGbfrqKZih06UB0C58+Q7rlczhDP1p
+         w9eTzMIyi4zSEFGMU87O83mCCFpg4Kh+rvFOKUtoz/l94RjjiMwdmxjeSiXRLMUHMZnT
+         iTw3LsSTgb1JgvAPZIEDL7EzHJbwN57+5QEtNlBbIlRS5uZRlRzgZPIb8oiI5tb/3DaA
+         9esQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700737981; x=1701342781;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2ETRJxI0jYA8eO15FtbRSONvqohxyMW+Q9fmUG4iFDY=;
+        b=HhYiNfghHpCMeroE6ONkWthZak/BdoQyI9+sJBjbboxd/h5eDfUsaZa/jhhb2qR4pB
+         Qe3ElKC581IDa4EMKJ54SwHsrqGzm4yJ9KvCg9sBfJk4bu4dwfM8eyVZleOfIk2RQEtu
+         RnL5qgLc5+XoSzWSDSaKks+KJi/fuXR10SLuLroZIYz/mFge6l6gT66cEakAIS9+h/ik
+         mhzMksUeB9t1RB/Ri91Ma6olY4hsShsphTxfqopV34XHyvgq8BDYNUs9u0gLsmQIGb6m
+         8DfRSY3kCKpfOhxM+pqZuvYSAEzi/JweM/PQP43fkRo+0TOGsPRO0aRylgzcGjO/0xqK
+         3/ag==
+X-Gm-Message-State: AOJu0Yw/c4iXDk6IlEdBLiotLKBOCpUjIkMMZMh2mkAwZBEf53DUnbPO
+        qVKy2h68m0KABla/tkvDnNU=
+X-Google-Smtp-Source: AGHT+IGDcx2v11UllY0MPwVs59OUelQ1fQzHkONutC5jBwKmQP7TQh2iBL8GZFvs8pVUkQNqXV7mWg==
+X-Received: by 2002:a17:906:340e:b0:9e5:fdd7:f521 with SMTP id c14-20020a170906340e00b009e5fdd7f521mr3755277ejb.41.1700737981121;
+        Thu, 23 Nov 2023 03:13:01 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d183:a5d9:39a9:cd13])
+        by smtp.gmail.com with ESMTPSA id kz15-20020a17090777cf00b009fd50aa6984sm646420ejc.83.2023.11.23.03.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 03:13:00 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net: make config lines follow common pattern
+Date:   Thu, 23 Nov 2023 12:12:56 +0100
+Message-Id: <20231123111256.10757-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Kconfig parser is quite relaxed when parsing config definition lines.
+However, there are just a few config definition lines that do not follow
+the common regular expression 'config [0-9A-Z]', i.e., there are only a few
+cases where config is not followed by exactly one whitespace.
 
---9hHdmhEn3QkQ/1K+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To simplify life for kernel developers that use basic regular expressions
+to find and extract kernel configs, make all config lines follow this
+common pattern.
 
-On Wed, Nov 22, 2023 at 06:35:34PM +0200, Andy Shevchenko wrote:
-> The pin control header provides struct pingroup and PINCTRL_PINGROUP() ma=
-cro.
-> Utilize them instead of open coded variants in the driver.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+No functional change, just helpful stylistic clean-up.
 
-Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/net/ethernet/cavium/Kconfig |  4 +--
+ net/caif/Kconfig                    |  2 +-
+ net/netfilter/ipvs/Kconfig          | 54 ++++++++++++++---------------
+ net/unix/Kconfig                    |  2 +-
+ 4 files changed, 31 insertions(+), 31 deletions(-)
 
-Thanks.
+diff --git a/drivers/net/ethernet/cavium/Kconfig b/drivers/net/ethernet/cavium/Kconfig
+index ca742cc146d7..fe4203b1bc5f 100644
+--- a/drivers/net/ethernet/cavium/Kconfig
++++ b/drivers/net/ethernet/cavium/Kconfig
+@@ -32,7 +32,7 @@ config THUNDER_NIC_VF
+ 	help
+ 	  This driver supports Thunder's NIC virtual function
+ 
+-config	THUNDER_NIC_BGX
++config THUNDER_NIC_BGX
+ 	tristate "Thunder MAC interface driver (BGX)"
+ 	depends on 64BIT && PCI
+ 	select PHYLIB
+@@ -42,7 +42,7 @@ config	THUNDER_NIC_BGX
+ 	  This driver supports programming and controlling of MAC
+ 	  interface from NIC physical function driver.
+ 
+-config	THUNDER_NIC_RGX
++config THUNDER_NIC_RGX
+ 	tristate "Thunder MAC interface driver (RGX)"
+ 	depends on 64BIT && PCI
+ 	select PHYLIB
+diff --git a/net/caif/Kconfig b/net/caif/Kconfig
+index 87205251cc25..1eb271125eb0 100644
+--- a/net/caif/Kconfig
++++ b/net/caif/Kconfig
+@@ -22,7 +22,7 @@ menuconfig CAIF
+ 	See Documentation/networking/caif for a further explanation on how to
+ 	use and configure CAIF.
+ 
+-config  CAIF_DEBUG
++config CAIF_DEBUG
+ 	bool "Enable Debug"
+ 	depends on CAIF
+ 	default n
+diff --git a/net/netfilter/ipvs/Kconfig b/net/netfilter/ipvs/Kconfig
+index 2a3017b9c001..db6df2ca129d 100644
+--- a/net/netfilter/ipvs/Kconfig
++++ b/net/netfilter/ipvs/Kconfig
+@@ -26,7 +26,7 @@ menuconfig IP_VS
+ 
+ if IP_VS
+ 
+-config	IP_VS_IPV6
++config IP_VS_IPV6
+ 	bool "IPv6 support for IPVS"
+ 	depends on IPV6 = y || IP_VS = IPV6
+ 	select NF_DEFRAG_IPV6
+@@ -35,14 +35,14 @@ config	IP_VS_IPV6
+ 
+ 	  Say Y if unsure.
+ 
+-config	IP_VS_DEBUG
++config IP_VS_DEBUG
+ 	bool "IP virtual server debugging"
+ 	help
+ 	  Say Y here if you want to get additional messages useful in
+ 	  debugging the IP virtual server code. You can change the debug
+ 	  level in /proc/sys/net/ipv4/vs/debug_level
+ 
+-config	IP_VS_TAB_BITS
++config IP_VS_TAB_BITS
+ 	int "IPVS connection table size (the Nth power of 2)"
+ 	range 8 20 if !64BIT
+ 	range 8 27 if 64BIT
+@@ -76,34 +76,34 @@ config	IP_VS_TAB_BITS
+ 
+ comment "IPVS transport protocol load balancing support"
+ 
+-config	IP_VS_PROTO_TCP
++config IP_VS_PROTO_TCP
+ 	bool "TCP load balancing support"
+ 	help
+ 	  This option enables support for load balancing TCP transport
+ 	  protocol. Say Y if unsure.
+ 
+-config	IP_VS_PROTO_UDP
++config IP_VS_PROTO_UDP
+ 	bool "UDP load balancing support"
+ 	help
+ 	  This option enables support for load balancing UDP transport
+ 	  protocol. Say Y if unsure.
+ 
+-config	IP_VS_PROTO_AH_ESP
++config IP_VS_PROTO_AH_ESP
+ 	def_bool IP_VS_PROTO_ESP || IP_VS_PROTO_AH
+ 
+-config	IP_VS_PROTO_ESP
++config IP_VS_PROTO_ESP
+ 	bool "ESP load balancing support"
+ 	help
+ 	  This option enables support for load balancing ESP (Encapsulation
+ 	  Security Payload) transport protocol. Say Y if unsure.
+ 
+-config	IP_VS_PROTO_AH
++config IP_VS_PROTO_AH
+ 	bool "AH load balancing support"
+ 	help
+ 	  This option enables support for load balancing AH (Authentication
+ 	  Header) transport protocol. Say Y if unsure.
+ 
+-config  IP_VS_PROTO_SCTP
++config IP_VS_PROTO_SCTP
+ 	bool "SCTP load balancing support"
+ 	select LIBCRC32C
+ 	help
+@@ -112,7 +112,7 @@ config  IP_VS_PROTO_SCTP
+ 
+ comment "IPVS scheduler"
+ 
+-config	IP_VS_RR
++config IP_VS_RR
+ 	tristate "round-robin scheduling"
+ 	help
+ 	  The robin-robin scheduling algorithm simply directs network
+@@ -121,7 +121,7 @@ config	IP_VS_RR
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+  
+-config	IP_VS_WRR
++config IP_VS_WRR
+ 	tristate "weighted round-robin scheduling"
+ 	help
+ 	  The weighted robin-robin scheduling algorithm directs network
+@@ -134,7 +134,7 @@ config	IP_VS_WRR
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_LC
++config IP_VS_LC
+ 	tristate "least-connection scheduling"
+ 	help
+ 	  The least-connection scheduling algorithm directs network
+@@ -144,7 +144,7 @@ config	IP_VS_LC
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_WLC
++config IP_VS_WLC
+ 	tristate "weighted least-connection scheduling"
+ 	help
+ 	  The weighted least-connection scheduling algorithm directs network
+@@ -154,8 +154,8 @@ config	IP_VS_WLC
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config  IP_VS_FO
+-		tristate "weighted failover scheduling"
++config IP_VS_FO
++	tristate "weighted failover scheduling"
+ 	help
+ 	  The weighted failover scheduling algorithm directs network
+ 	  connections to the server with the highest weight that is
+@@ -164,7 +164,7 @@ config  IP_VS_FO
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config  IP_VS_OVF
++config IP_VS_OVF
+ 	tristate "weighted overflow scheduling"
+ 	help
+ 	  The weighted overflow scheduling algorithm directs network
+@@ -175,7 +175,7 @@ config  IP_VS_OVF
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_LBLC
++config IP_VS_LBLC
+ 	tristate "locality-based least-connection scheduling"
+ 	help
+ 	  The locality-based least-connection scheduling algorithm is for
+@@ -189,7 +189,7 @@ config	IP_VS_LBLC
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config  IP_VS_LBLCR
++config IP_VS_LBLCR
+ 	tristate "locality-based least-connection with replication scheduling"
+ 	help
+ 	  The locality-based least-connection with replication scheduling
+@@ -207,7 +207,7 @@ config  IP_VS_LBLCR
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_DH
++config IP_VS_DH
+ 	tristate "destination hashing scheduling"
+ 	help
+ 	  The destination hashing scheduling algorithm assigns network
+@@ -217,7 +217,7 @@ config	IP_VS_DH
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_SH
++config IP_VS_SH
+ 	tristate "source hashing scheduling"
+ 	help
+ 	  The source hashing scheduling algorithm assigns network
+@@ -227,7 +227,7 @@ config	IP_VS_SH
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_MH
++config IP_VS_MH
+ 	tristate "maglev hashing scheduling"
+ 	help
+ 	  The maglev consistent hashing scheduling algorithm provides the
+@@ -246,7 +246,7 @@ config	IP_VS_MH
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_SED
++config IP_VS_SED
+ 	tristate "shortest expected delay scheduling"
+ 	help
+ 	  The shortest expected delay scheduling algorithm assigns network
+@@ -259,7 +259,7 @@ config	IP_VS_SED
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_NQ
++config IP_VS_NQ
+ 	tristate "never queue scheduling"
+ 	help
+ 	  The never queue scheduling algorithm adopts a two-speed model.
+@@ -272,7 +272,7 @@ config	IP_VS_NQ
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_TWOS
++config IP_VS_TWOS
+ 	tristate "weighted random twos choice least-connection scheduling"
+ 	help
+ 	  The weighted random twos choice least-connection scheduling
+@@ -318,7 +318,7 @@ config IP_VS_MH_TAB_INDEX
+ 
+ comment 'IPVS application helper'
+ 
+-config	IP_VS_FTP
++config IP_VS_FTP
+ 	tristate "FTP protocol helper"
+ 	depends on IP_VS_PROTO_TCP && NF_CONNTRACK && NF_NAT && \
+ 		NF_CONNTRACK_FTP
+@@ -334,7 +334,7 @@ config	IP_VS_FTP
+ 	  If you want to compile it in kernel, say Y. To compile it as a
+ 	  module, choose M here. If unsure, say N.
+ 
+-config	IP_VS_NFCT
++config IP_VS_NFCT
+ 	bool "Netfilter connection tracking"
+ 	depends on NF_CONNTRACK
+ 	help
+@@ -342,7 +342,7 @@ config	IP_VS_NFCT
+ 	  connection state to be exported to the Netfilter framework
+ 	  for filtering purposes.
+ 
+-config	IP_VS_PE_SIP
++config IP_VS_PE_SIP
+ 	tristate "SIP persistence engine"
+ 	depends on IP_VS_PROTO_UDP
+ 	depends on NF_CONNTRACK_SIP
+diff --git a/net/unix/Kconfig b/net/unix/Kconfig
+index 28b232f281ab..5f2502977042 100644
+--- a/net/unix/Kconfig
++++ b/net/unix/Kconfig
+@@ -21,7 +21,7 @@ config UNIX_SCM
+ 	depends on UNIX
+ 	default y
+ 
+-config	AF_UNIX_OOB
++config AF_UNIX_OOB
+ 	bool
+ 	depends on UNIX
+ 	default y
+-- 
+2.17.1
 
->  drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/=
-nuvoton/pinctrl-wpcm450.c
-> index 0cff44b07b29..4589900244c7 100644
-> --- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-> +++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-> @@ -474,9 +474,8 @@ enum {
->  #undef WPCM450_GRP
->  };
-> =20
-> -static struct group_desc wpcm450_groups[] =3D {
-> -#define WPCM450_GRP(x) { .name =3D #x, .pins =3D x ## _pins, \
-> -			.num_pins =3D ARRAY_SIZE(x ## _pins) }
-> +static struct pingroup wpcm450_groups[] =3D {
-> +#define WPCM450_GRP(x) PINCTRL_PINGROUP(#x, x ## _pins, ARRAY_SIZE(x ## =
-_pins))
->  	WPCM450_GRPS
->  #undef WPCM450_GRP
->  };
-> @@ -852,7 +851,7 @@ static int wpcm450_get_group_pins(struct pinctrl_dev =
-*pctldev,
->  				  const unsigned int **pins,
->  				  unsigned int *npins)
->  {
-> -	*npins =3D wpcm450_groups[selector].num_pins;
-> +	*npins =3D wpcm450_groups[selector].npins;
->  	*pins  =3D wpcm450_groups[selector].pins;
-> =20
->  	return 0;
-> @@ -901,7 +900,7 @@ static int wpcm450_pinmux_set_mux(struct pinctrl_dev =
-*pctldev,
->  	struct wpcm450_pinctrl *pctrl =3D pinctrl_dev_get_drvdata(pctldev);
-> =20
->  	wpcm450_setfunc(pctrl->gcr_regmap, wpcm450_groups[group].pins,
-> -			wpcm450_groups[group].num_pins, function);
-> +			wpcm450_groups[group].npins, function);
-> =20
->  	return 0;
->  }
-> --=20
-> 2.43.0.rc1.1.gbec44491f096
->=20
-
---9hHdmhEn3QkQ/1K+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmVfM24ACgkQCDBEmo7z
-X9s6kQ/9FPGH46fURmUk0S/+zlgZKVtDIOldB02JGZTZ/rh43+6rFimcMZyEOlPt
-Iv2ayCrzPHBvgeRMsIdjSCQmtd8XYpLMrkvcir3exY+crh1YGKkyV8RdMJH1RY4a
-C/vRxiZ0684SCsbp1mF03LBU+b96lpFxbxwSdGvLJJMV3yIxe5eADpzZcmyVWzOy
-Q4F7135UoIFZvDgeptqWbygX6poDcHwG4XOPfTYPit1obw4C9lSuIIbepKnWTe9W
-Ut2dTCCIhi0as5InSkuHVSdAuTiOtwcaxPe0uxyhlu+2Wup5ibtz8cL5FfJ1cSEu
-D6KUjGfNUDovRkcgsDBgPSkLl/6miLMNCZ5bWlTvjYXE3C7hSH9PI1vicWhZh0GB
-fLTApAj38g5kdUOcfa+1+Zwv+x2I9dSwdXycqhCF7evDmUbIqwNe1W+dU9RhOX8r
-cFCjFW04uG2nR0ivbf6M3vnqwxGyERCVEj3r5SGimlW9h67E4PHou3p7adEGxwOg
-Rblhxt6s2TlmUvM07L9tjWYLhWBkOgr1+P5xfMVkpcvwUZAa/dwj5bf+qgtoJk9O
-vt8hpySZt8nXp0ynOK9YuVHRdb325ScArKv+sw6rZusAK9Jsq/EIBqOTLvcodCQi
-IgttVi+NmWwrA+ZLB5codjpKhZMPXeA0XEaWAxgu0PZ5PlJRvA4=
-=f6qz
------END PGP SIGNATURE-----
-
---9hHdmhEn3QkQ/1K+--
