@@ -2,144 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78F17F5AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623777F5AC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjKWJGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S230256AbjKWJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:06:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjKWJGA (ORCPT
+        with ESMTP id S232291AbjKWJG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:06:00 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056ECD69
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:06:04 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A0129660738E;
-        Thu, 23 Nov 2023 09:06:01 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700730362;
-        bh=jXx0AZxK0x/3x229o8gedk/6QPlybYeQFVHL/LcCTj8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZSp86ftyTaaRQ1uCyPN0eOAAmXLdLz+oOdzcxBeABdqLPtswej1z5nVQj2WLuVB35
-         2yuuRJUU8TjK4IAowsJVj2LRWBngf1dLfc2U4SqkoiJPIbp2DlnFz6jGMVG/dZMHaQ
-         z12bNmCYM65GsdnU3hGAsEtkmQCQBr73UD/NOJ+lXOXuUVi60Y5UkVAiidyhKdWXrt
-         TnUMkoloHlHX663vqHVpzOiLGL0AWM7Z4QcDg5xJp15giD05mAlqAPC/dpF4zvnhBo
-         b9TS12tqrFhXs/iHkIPO8jLsAPW6hAslJdiwi9F77GDI3Ws7aCmbvN0XNu0oUmDf16
-         /5Pey2NHXtIwA==
-Date:   Thu, 23 Nov 2023 10:05:57 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put
- drm-shmem pages
-Message-ID: <20231123100557.05a49343@collabora.com>
-In-Reply-To: <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-16-dmitry.osipenko@collabora.com>
-        <20231110115354.356c87f7@collabora.com>
-        <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Thu, 23 Nov 2023 04:06:27 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2054.outbound.protection.outlook.com [40.107.22.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5599DD49
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:06:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aXGzoF9pr9Ue92h3jeQlOOnWpyFXPZWXR0V7s04sFZ2/ILBxToXxhTBSnpj8XH7PDi4HlIhmRZgDNnt2AFEwyow6B9Iwixnf7N7XmLYndXSoo4tCnROaEgsqWju6w2atXnDVkH+L9J15x43pdtmRKJcqqK+6Z3t17QNsa98OsWQcUskvWJTeIPTUUdM/UIpxRin9pSdC09R3W5+t3CTekJASrWc/BmNiSDcc1H3dmdC06QzRsPSY5/gaAYaammdcDfZwA0y+M6IBUypoiwlFk/zbhx8X6lNRmCMU4TGEy9kTIf+zRjNmZD67zjh+2D5mNzP7uZdHcr0ePQbGwC33Dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9LcfLLWOwvmLUuv3C8ICY+wJp7LYDauljJUxsB7j8mQ=;
+ b=Y1AYvE/9thV2JF6WTd3Bw27herUB+6RkLVn6qjgyTH0RxHNDiC6ZFTSQKIWZy40bnlBNue3NQrYyFIQnIRWfaw0GuY1OcMW7TwltEVRSfqH2fLIPIcE7PyMNRJmnMlzGoFYiPqQbJgZ7Pmft40pubTluyTXDUCCDIVfZxp3e5cS7lcUyfu7YW3pb6WgDj6i13c8H13n/gCWZ5dDylsh5sBYFNeud8bFTUClkbdOvDlumofybbsBRKw4z7xGnRktT1ObDtuYzdzvvWbdb2xMAFDf2ByEq/I3mjJMoE3+gXQAd/rjxE0XXU+nbXq/IcgFlZMRC3pon0MNbhmgojer0Hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9LcfLLWOwvmLUuv3C8ICY+wJp7LYDauljJUxsB7j8mQ=;
+ b=RtYI1DzfTzK0wy9B5UEHO2SA2q3A8S5whzbsIv3+jDP+9pYjz3iFsTz8tceHg39a2/DXpAGL3cIrzGn01RFaqE7LY3Ry4uvvg3IVJQ+ODaR21EVm6H0+mj+RsIAQXmLyWWq68cTuf/+DUJvfBLMk1vPNAvfghcbJYSaezPcjJIM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
+ by AS8PR04MB8899.eurprd04.prod.outlook.com (2603:10a6:20b:42e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.13; Thu, 23 Nov
+ 2023 09:06:30 +0000
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::faf7:684b:c6ba:e191]) by DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::faf7:684b:c6ba:e191%5]) with mapi id 15.20.7025.017; Thu, 23 Nov 2023
+ 09:06:30 +0000
+Message-ID: <da13e561-0b3b-401b-966f-9a54e2e9c36b@nxp.com>
+Date:   Thu, 23 Nov 2023 11:06:27 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: fsl_xcvr: refine the requested phy clock frequency
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, shengjiu.wang@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Language: en-US
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+In-Reply-To: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR01CA0154.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::23) To DU2PR04MB8774.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e1::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|AS8PR04MB8899:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1565f127-24f8-445c-066f-08dbec037b09
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BtPz6WzaoczrDJePdpMRI7rzcoBB5Xc+ei+pfcdyFhL0mdG/cSqfknGiqUHTcL7gihIBbLWqVr8kKkHtUesmOpmRQJN9u5KYu7UQWXfmccxxiTFMT5rFgPegRjh96l5HX665gPXMuZhn5scNgE5X67QWzhj63NkY0UKdaaVYOJwSoD4RR0XiRNkJqhCmY/I/RQ+Ln9l75PbNM2L1KvzA2OedNbNKEsLgTIx7mzQgR1lbXGFcoo/nIRaBa3RMKaZpMs/2o//34mMwuDlN9ZlwnzIFtlsknW+JFZGXMm/coQcCJGKRC5oVup+eetbYiI228jXVlaYcRVDkxo/qkEG+n+yo/n6QWFDuJ7obkgPygPGG0ZjtQPxLePookxueJiCobw5qNfvEoZIeL7xRnsN2pH7Mda/O3xbOIHeR9vYHJexH4MSXR+InXUe+7jz/Svclb8RzHsf4aE2lq8qXVHwUSul8WnEeLhtbW8nh4nACCX8pQ0KqTXkIJL4tTb8BmaKcgoN0CAavWcxzMK2DaYafgrm0g+k+xUfmR1EGdTBcYpG5LSHfXZ+QBxyWVr318OEY6WCZ1i1D5SSkFaCSeMmFEMWgVpRMVssZHfBc/xYmMGb86zywZhF7TZ7/1CcZZXOF+6UYhvaXwi91jSKJSWh1Mbl3IGUAotOVN0eBZ/GKMmA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(396003)(366004)(376002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(6512007)(2616005)(83380400001)(26005)(316002)(66946007)(66556008)(66476007)(478600001)(6486002)(53546011)(6506007)(921008)(6666004)(7416002)(44832011)(5660300002)(41300700001)(2906002)(86362001)(31696002)(38100700002)(36756003)(4326008)(31686004)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjQ3QWFEQjlVWGhtczB6ZGFteG5tejJ1bis2UWtCK3FXV05MOW5ON3ZCVEJJ?=
+ =?utf-8?B?TlBWQ2ZENGNieTF6ZTJVNVhSRFA1akFzTk9TMzV2RFVpRE1yK0t2clBpcFBo?=
+ =?utf-8?B?cWY1YjE3eEZWRWRVa1BsUHFKSzk1cmtiNW9nL3RLZ2RjUlVucXNDVUZnZFJi?=
+ =?utf-8?B?VGtGM3ZoanpaM1dSK0QvQW11dlowNlU3R2hkZkxvS3M5bkowYnJqVlpOY2V0?=
+ =?utf-8?B?MDVYV2FqQUx5ZzlDS0R5OFh5M3pVcjZ2TkdISS9acTBvdTcwTGR6UTlBSXNR?=
+ =?utf-8?B?dU9XQ1VONUE2d2pPSGVRSXBBa0JoMW10bTEyVCtFcVRkQ01WMmU4WGQ2ZlNI?=
+ =?utf-8?B?cTMwUUZWQmdpbDBMNW1sRzZ3KzZUZi9TL2tOaDVTeUo3Szl2NlM2WU9OSVdq?=
+ =?utf-8?B?RkpBYWZXMFh1c1BCL3lBNkJ4RytweTBYRmtoTW5yN0MxbzNsT1hPN1IzdFFP?=
+ =?utf-8?B?a05EbEpUTUhObTlVd0FETGJtTEphbzUrekRPNXJnZGdKV3lsTVlNWHd5YzRQ?=
+ =?utf-8?B?SEU2NUJRcVZDRjF5MU5qOFBhUUtqZ1FScHA4WEFVT3BpSnZHQ3JqcWE2T0FF?=
+ =?utf-8?B?RG05dHpNVWdOb1N3MUhlS2FYbjd3T1g0d1c4OWF1TExXeUZzeFExeG9pWEY0?=
+ =?utf-8?B?SUtqcFpER3JVS0M4Mlk3SnVYTEtieCtIOU1WZTB0cUVUOEIra0ZZaWhXZndI?=
+ =?utf-8?B?OGFqd0RXekRlaUNBNXVEZ2NNYU96Q2JtdEJmdS9VUnNhSXpqeUlObjZsUm5T?=
+ =?utf-8?B?OTNndXc2Nlh1Q0lvK0VORC95VmVjOHhGWW5nek00SUs4Y0VSUUFSZVFSVEJY?=
+ =?utf-8?B?UmtmaWU4VjRrb1ZZcEJnRmhudUQrQjhjWXZBRGVTaWl2VnB3Qzh1MVVwYVly?=
+ =?utf-8?B?TTJoSjZ0a1Z3VkFhQ0tRQUZHVVZMSnRub01kVU02d29zQnVMbUNvblB2U0Vv?=
+ =?utf-8?B?dFZqOWtwbno0b1J1aWwyRjZVT1ZtMndiK1gyeVlSZkRaaG8weEFqTU9SWklT?=
+ =?utf-8?B?VXR4bmFrRk5OT0diV1NkaDJVelBaRDhJWFNneURBMGRFc1BLVml0UmZqSllw?=
+ =?utf-8?B?TlExQk1KRE9YenNaRkUrZFpUV2lPM0hCcTVjYTdmUUN4dTBKM3pwTE1JN0dG?=
+ =?utf-8?B?Zm9tUDYvaTR5cExZZVRkN2VkYnNhT3hMc3IxVXRGRk9SMUZ3MjE1UXYvK2tY?=
+ =?utf-8?B?WVZxNzVvV0NSM09JVHRBTGJJRnpTM1Rma1AwZnhvbjJ0dnFqOWxYcThqTWFX?=
+ =?utf-8?B?eTNmTWVNeGJNUkpPUnErY3ZqcWhweW44cmo0ejhYckYxRW5FUWNZMVczdTEy?=
+ =?utf-8?B?ZzJHbjN6QWVnaENEbUdCK0FyalBrZksrNTVTeXF0NEs0bFB1eVEyRitnTE1l?=
+ =?utf-8?B?YXMzOENYekw0clhzNjZIYmVZMmdPVnJvYzRGZ3RLZlNJVjh6bUV3UjlIMTFa?=
+ =?utf-8?B?MWY5eVMyNVdIYmpVblMvMDJrR0VnZW9YZ3NYWHIzS1dxcjdVcFZIdmd5eUJW?=
+ =?utf-8?B?ZHg4TTRjZGhDY0JaKy80TERmMmtrRUxZa2VVU3B6STNmK2hFcnFicnNXTVZB?=
+ =?utf-8?B?cEdZcnUwYkpYSUdsVmVVQTE1S3h6cGMxQWljZ0VubG45a0ZoVUgvWkgzRm1k?=
+ =?utf-8?B?ZjhyMGxROGFSQXRibDhYcS9RYVVCbkdRMHAwRGlocVNkQlBwMm03NDZ4bU0v?=
+ =?utf-8?B?YmE4a2J1SVBzRkZzMW5LMHZSUEt4Uyt2VzdSR1RZcjJhaklTUkJSQ0YwV2VQ?=
+ =?utf-8?B?R0wwSXZ3K3hmNU4rTm1hM3ZPazd0VHpVOVdzRGxNS29mN09TaXhKcjFmTkgx?=
+ =?utf-8?B?NUludjNKeHlhL2FlR2RLK0hSUEFoVitIYk01N0JhdnpVbk9odHVxTmRERnlh?=
+ =?utf-8?B?NjJ4VUR4dWFvN01jVXY1Y0p6cFVDNGVVYnI1d1JnLzhqTUxyREZHNm9KbzIy?=
+ =?utf-8?B?andYaks4cEhRR3czYmtsVGVlM3JNZDJhemoyWXptZlZDbjVDV3B0eEVIUnhh?=
+ =?utf-8?B?bkdpNHpIYklQYkhxMW1hYzVIOTNoUGxHcVp2QzJaNFA4bDFRNWxNR0VmbDN5?=
+ =?utf-8?B?U3lOVUtQeGdCSGZMZnplRVlLTFI1blJsWk1LdWgrOFAyc3dTcnRLUk5INWl4?=
+ =?utf-8?B?VUxDY3pqM28xUG5USGpuYlphRjl4Z2wvNVZKZWFpSzQ0TURoc2VhQTZXMVFu?=
+ =?utf-8?B?RWc9PQ==?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1565f127-24f8-445c-066f-08dbec037b09
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 09:06:30.1792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JDIgj+gbFqKgBrNbnaCHsDTaYOGDweyKs/5ud0voKYXAUz0ackMSzav4gP9gTcnvsuFiTpbQz59a6ZTL5ss9YQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8899
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 01:04:56 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+On 11/23/2023 3:14 AM, Shengjiu Wang wrote:
+> As the input phy clock frequency will divided by 2 by default
+> on i.MX8MP with the implementation of clk-imx8mp-audiomix driver,
+> So the requested frequency need to be updated.
+>
+> The relation of phy clock is:
+>      sai_pll_ref_sel
+>         sai_pll
+>            sai_pll_bypass
+>               sai_pll_out
+>                  sai_pll_out_div2
+>                     earc_phy_cg
+>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-> On 11/10/23 13:53, Boris Brezillon wrote:
-> > Hm, there was no drm_gem_shmem_get_pages_sgt() call here, why should we
-> > add a drm_gem_shmem_get_pages()? What we should do instead is add a
-> > drm_gem_shmem_get_pages() for each drm_gem_shmem_get_pages_sgt() we
-> > have in the driver (in panfrost_mmu_map()), and add
-> > drm_gem_shmem_put_pages() calls where they are missing
-> > (panfrost_mmu_unmap()).
-> >   
-> >> +		if (err)
-> >> +			goto err_free;
-> >> +	}
-> >> +
-> >>  	return bo;
-> >> +
-> >> +err_free:
-> >> +	drm_gem_shmem_free(&bo->base);
-> >> +
-> >> +	return ERR_PTR(err);
-> >>  }
-> >>  
-> >>  struct drm_gem_object *
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> >> index 770dab1942c2..ac145a98377b 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> >> @@ -504,7 +504,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
-> >>  		if (IS_ERR(pages[i])) {
-> >>  			ret = PTR_ERR(pages[i]);
-> >>  			pages[i] = NULL;
-> >> -			goto err_pages;
-> >> +			goto err_unlock;
-> >>  		}
-> >>  	}
-> >>  
-> >> @@ -512,7 +512,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
-> >>  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
-> >>  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
-> >>  	if (ret)
-> >> -		goto err_pages;
-> >> +		goto err_unlock;  
-> > Feels like the panfrost_gem_mapping object should hold a ref on the BO
-> > pages, not the BO itself, because, ultimately, the user of the BO is
-> > the GPU. This matches what I was saying about moving get/put_pages() to
-> > panfrost_mmu_map/unmap(): everytime a panfrost_gem_mapping becomes
-> > active, to want to take a pages ref, every time it becomes inactive,
-> > you should release the pages ref.  
-> 
-> The panfrost_mmu_unmap() is also used by shrinker when BO is purged. I'm
-> unhappy with how icky it all becomes if unmap is made to put pages.
+Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
 
-Why, that's exactly what's supposed to happen. If you mmu_unmap(), that
-means you no longer need the pages ref you got.
+Thanks,
+Iulia
 
-> 
-> Previously map() was implicitly allocating pages with get_sgt() and then
-> pages were implicitly released by drm_gem_shmem_free(). A non-heap BO is
-> mapped when it's created by Panfrost, hence the actual lifetime of pages
-> is kept unchanged by this patch.
-
-But the whole point of making it explicit is to control when pages are
-needed or not, isn't it. The fact we mmu_map() the BO at open time, and
-keep it mapped until it's not longer referenced is an implementation
-choice, and I don't think having pages_put() in mmu_unmap() changes
-that.
-
-> The implicit allocation is turned into
-> explicit one, i.e. pages are explicitly allocated before BO is mapped.
-> 
-
+> ---
+>   sound/soc/fsl/fsl_xcvr.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> index 77f8e2394bf9..f0fb33d719c2 100644
+> --- a/sound/soc/fsl/fsl_xcvr.c
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -358,7 +358,7 @@ static int fsl_xcvr_en_aud_pll(struct fsl_xcvr *xcvr, u32 freq)
+>   	struct device *dev = &xcvr->pdev->dev;
+>   	int ret;
+>   
+> -	freq = xcvr->soc_data->spdif_only ? freq / 10 : freq;
+> +	freq = xcvr->soc_data->spdif_only ? freq / 5 : freq;
+>   	clk_disable_unprepare(xcvr->phy_clk);
+>   	ret = clk_set_rate(xcvr->phy_clk, freq);
+>   	if (ret < 0) {
+> @@ -409,7 +409,7 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
+>   	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+>   	u32 m_ctl = 0, v_ctl = 0;
+>   	u32 r = substream->runtime->rate, ch = substream->runtime->channels;
+> -	u32 fout = 32 * r * ch * 10 * 2;
+> +	u32 fout = 32 * r * ch * 10;
+>   	int ret = 0;
+>   
+>   	switch (xcvr->mode) {
