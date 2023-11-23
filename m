@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E737F587F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E4B7F5889
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbjKWGnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S231645AbjKWGs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbjKWGnQ (ORCPT
+        with ESMTP id S229737AbjKWGsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:43:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D07F112
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:43:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700721802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Y6v5Xhwln7tu/9zxftOsUtL05MptTTj1UHVhZFfC54=;
-        b=BC3KbxyY1cqWZHExLgz5VzrUmHGWFze0yQzZNNjt96zxXpMgdGteh1fzFufC++tZZI2v7d
-        MZI2Zr8baoMJcwtrvTWetFhx8RZ37zeV84zS+IbUn1mlzHwNM9DS4iSkd1SGutJmJDl0hM
-        vYy1yOpDvSJyvYFeUQ5aYBA5HINYyOY=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-401-BqVzwA5QM0yqoEDGqaRxug-1; Thu, 23 Nov 2023 01:43:21 -0500
-X-MC-Unique: BqVzwA5QM0yqoEDGqaRxug-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2800fffc08eso168480a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:43:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700721799; x=1701326599;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Y6v5Xhwln7tu/9zxftOsUtL05MptTTj1UHVhZFfC54=;
-        b=drdvimiQZa29aLpK6CdxcXlQLYZHPeB4227bn0RX3w9fQmW+O0WNvJXqNBQ7h/W6tF
-         /R5wI9biMZYC7HSJ8TEr6Z22wYEu0P870iAlIXE+RsfXocxP+9NwzPjlQMs0NVzEJHuc
-         HWL/0VzFnEigc9yO9fgG7rUY7peN6T0nYansgV77TUqZIMriBwzD90KsCJQhWQj8vFw9
-         j+bqAusO4GS0h+OIPLYo2qIB5A4sG0PxRADliNhDRA2+ZvlJtkBdlTDIg7WhVbFScS9q
-         dp+m3jFBKtKFf1KPkjop5JYX4wnqBNhqAvwWdfuFMYcrMfGLf6895Ov6dA3WLJRouXPt
-         +tWA==
-X-Gm-Message-State: AOJu0Ywjau2uidYRooXT7F6JMyvCUnfed1uDkrHNNjdKZBQ7QepRXyZ2
-        Hm01P3WOp+XUuqIWiiw7uVERnck2GTF88dffE3zhUs4Ue9r9YMABjrI7BznO74/IQLwQ16jVV7o
-        U47acJUDjXUSWIFVDmE2rArxTcbHh5+w61+RBrA==
-X-Received: by 2002:a17:902:d486:b0:1cc:3c2c:fa1a with SMTP id c6-20020a170902d48600b001cc3c2cfa1amr5191037plg.4.1700721799477;
-        Wed, 22 Nov 2023 22:43:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGqJ7t5K0G/lG65L6yMQON3n741jzN2NtB/hlBiB4j/kh7OASHj0JQgIsOvheK+O1VEnunV1Q==
-X-Received: by 2002:a17:902:d486:b0:1cc:3c2c:fa1a with SMTP id c6-20020a170902d48600b001cc3c2cfa1amr5191028plg.4.1700721799075;
-        Wed, 22 Nov 2023 22:43:19 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id a4-20020a1709027d8400b001c9d968563csm538754plm.79.2023.11.22.22.43.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 22:43:18 -0800 (PST)
-Message-ID: <d5cc3cf1-7b39-9ca3-adf2-224007c751fe@redhat.com>
-Date:   Thu, 23 Nov 2023 14:43:15 +0800
+        Thu, 23 Nov 2023 01:48:25 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7E5AD;
+        Wed, 22 Nov 2023 22:48:31 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN19fC4027423;
+        Thu, 23 Nov 2023 06:48:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=RYOEdN/p5Ny3t5mDHy6Fv03Bj+dIJIXS9d6jKHwYuqY=;
+ b=Tq1TMn0tAb1/wM81xxvkoPCTk74j2UJ1bdlsEIiAREd6cFkhgCtEilYmRnrbeuPdu8/f
+ A5Y5YAP3TCm6fQahsUuysposhF3et9Eo6uFWQOBvRkQ3ZBgWhpaCqxriR1ifrlEI+W7N
+ 95DPdpqp2rZ+4x8prXS+sdsTbAToBOIXMMdr4BUT2JIQ9DYPfbrN6w+Yto8etKQLKE99
+ SxSl/vI+3+aJb7lSUq6d+XVmLc8BQAEk+3VAhIVgy3KtAIrixwdSxBI3C94muHdqOCDs
+ 5kWli6h7qqNZHXpj25g3bvX0sUTe8x0VSazjm/xIora+l6qCfbJQbScrjLAU391bO7sp zA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhey5aj4a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 06:48:21 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AN6mK0I011791
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 06:48:20 GMT
+Received: from hu-imrashai-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 22 Nov 2023 22:48:15 -0800
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+Subject: [PATCH V5 0/4] Add support for Qualcomm ECPRI clock controller
+Date:   Thu, 23 Nov 2023 12:17:31 +0530
+Message-ID: <20231123064735.2979802-1-quic_imrashai@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] KVM: selftests: aarch64: Remove unused functions from
- vpmu test
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20231122221526.2750966-1-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20231122221526.2750966-1-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YglHcXbqRHdIyLPCxtFIwgvGeSAOSRWo
+X-Proofpoint-GUID: YglHcXbqRHdIyLPCxtFIwgvGeSAOSRWo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_04,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=875
+ lowpriorityscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ bulkscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230045
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
+The ECPRI clock controller support for QDU1000 and QRU1000. The clock
+controller has a special branch which requires an additional memory to
+be enabled/disabled before the branch ops.
 
-Those functions might be useful for other pmu tests. Recently I just 
-wrote a pmu_event_filter_test[1] and use the enable_counter().
+Changes since v4:
+ - Aligned the lines as per the review comments
+ - Used the clk_hw_get_name implicitly in WARN as per the review comments
 
-There may have more pmu tests which can use the helper functions, so I 
-think we can keep it now. And in my series[1], I have moved them into 
-the lib/ as the helper function.
+Changes since v3:
+ - Updated the bindings description as per the review comments
+ - Updated mem ops and ecpricc driver patches as per the review comments
 
-[1]https://lore.kernel.org/all/20231123063750.2176250-1-shahuang@redhat.com/
+Changes since v2:
+ - Updated the mem ops implementation as per the latest review comments
+ - Updated the ecpricc driver as per the review comments
 
-Thanks,
-Shaoqin
+Changes since v1:
+ - Updated the dt-bindings
+ - Modified mem ops logic as per the review comments
+ - Update all the hex values to lowercase
+ - Aligned the clock entries in DT as per the review comment
 
-On 11/23/23 06:15, Raghavendra Rao Ananta wrote:
-> vpmu_counter_access's disable_counter() carries a bug that disables
-> all the counters that are enabled, instead of just the requested one.
-> Fortunately, it's not an issue as there are no callers of it. Hence,
-> instead of fixing it, remove the definition entirely.
-> 
-> Remove enable_counter() as it's unused as well.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->   .../selftests/kvm/aarch64/vpmu_counter_access.c  | 16 ----------------
->   1 file changed, 16 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> index 5ea78986e665f..e2f0b720cbfcf 100644
-> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> @@ -94,22 +94,6 @@ static inline void write_sel_evtyper(int sel, unsigned long val)
->   	isb();
->   }
->   
-> -static inline void enable_counter(int idx)
-> -{
-> -	uint64_t v = read_sysreg(pmcntenset_el0);
-> -
-> -	write_sysreg(BIT(idx) | v, pmcntenset_el0);
-> -	isb();
-> -}
-> -
-> -static inline void disable_counter(int idx)
-> -{
-> -	uint64_t v = read_sysreg(pmcntenset_el0);
-> -
-> -	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
-> -	isb();
-> -}
-> -
->   static void pmu_disable_reset(void)
->   {
->   	uint64_t pmcr = read_sysreg(pmcr_el0);
+Previous series:
+v4 - https://lore.kernel.org/linux-arm-msm/20231117095558.3313877-1-quic_imrashai@quicinc.com/
+v3 - https://lore.kernel.org/linux-arm-msm/20231106103027.3988871-1-quic_imrashai@quicinc.com/
+v2 - https://lore.kernel.org/linux-arm-msm/20231011090028.1706653-1-quic_imrashai@quicinc.com/
+v1 - https://lore.kernel.org/linux-arm-msm/20230808051407.647395-1-quic_imrashai@quicinc.com/
+
+Imran Shaik (3):
+  dt-bindings: clock: qcom: Add ECPRICC clocks for QDU1000 and QRU1000
+  clk: qcom: Add ECPRICC driver support for QDU1000 and QRU1000
+  arm64: dts: qcom: qdu1000: Add ECPRI clock controller
+
+Taniya Das (1):
+  clk: qcom: branch: Add mem ops support for branch2 clocks
+
+ .../bindings/clock/qcom,qdu1000-ecpricc.yaml  |   68 +
+ arch/arm64/boot/dts/qcom/qdu1000.dtsi         |   14 +
+ drivers/clk/qcom/Kconfig                      |    9 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-branch.c                 |   38 +
+ drivers/clk/qcom/clk-branch.h                 |   21 +
+ drivers/clk/qcom/ecpricc-qdu1000.c            | 2456 +++++++++++++++++
+ .../dt-bindings/clock/qcom,qdu1000-ecpricc.h  |  147 +
+ 8 files changed, 2754 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,qdu1000-ecpricc.yaml
+ create mode 100644 drivers/clk/qcom/ecpricc-qdu1000.c
+ create mode 100644 include/dt-bindings/clock/qcom,qdu1000-ecpricc.h
+
+-- 
+2.25.1
 
