@@ -2,135 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A039A7F5C3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712567F5C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344639AbjKWKY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S1344484AbjKWKYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbjKWKYV (ORCPT
+        with ESMTP id S229477AbjKWKYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:24:21 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ECBD53
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:24:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC196C433CC;
-        Thu, 23 Nov 2023 10:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700735066;
-        bh=E9JPif25pazlOYty7nCzaERj32nzmZMSxpFxRlKuuM0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMqFrFAMEcoP4QtKWT6Q0nMkef5uI20M/3Ythh/kFv+F2kp0ak0Jj2mi2D60jcho5
-         MlfgVXkOjpa0fnQEf0U/pq0KniULHSDK/6iI/R3NPpWQif1v4pny7NbJMnZPQk0340
-         ExGjeYqSyotLt9YC+N+azcludQtubYAjc7ougD9uu4OvsFV96p+oK7NJLaAp2/E2Xn
-         4m31tkYIYrY07gpUYoM/QwGb3azNOQgPN6ZTjez+wxd9GEvHHwJFMfrHEg6+4Klc3e
-         mJc1/zBCPaeJz2uM7AYYlX+Pn4B5YPwXGoMw9H00v6AGR5CFkRo3Ffpxvr4vgXYAqa
-         tfIJLhaY/ZSqw==
-From:   Michael Walle <mwalle@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michael Walle <mwalle@kernel.org>
-Subject: [PATCH 2/2] drm/panel-simple: add Evervision VGG644804 panel entry
-Date:   Thu, 23 Nov 2023 11:24:04 +0100
-Message-Id: <20231123102404.2022201-2-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231123102404.2022201-1-mwalle@kernel.org>
-References: <20231123102404.2022201-1-mwalle@kernel.org>
+        Thu, 23 Nov 2023 05:24:11 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E16F92;
+        Thu, 23 Nov 2023 02:24:17 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-da819902678so706064276.1;
+        Thu, 23 Nov 2023 02:24:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700735056; x=1701339856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQufmsQMrPSkS7WJd7xjAFVYdq3ncbNsEnifCOHUlJ4=;
+        b=c1w5lpwkBRCalQEcDHdI5znR7E4SfdUccIlrGeuryHTZ9ycpxEMi0dNR743VX7SkRI
+         wsjm1Di/y+kdmxlyV5+mvfCFTajFb8GYpVcU/xvbpFQ5iFMC9xaiTZ6xnr14QuVrZ1hB
+         cnHzD2XlKFASImIzChCPYDKS8aifhwBONlHYZOWOfG4Ph56FXk3TVDZ1EQbjKCgdzXct
+         ufcp5rXl0Jhx+rBhkhyPSFZLry3tPwPyZmTL07UZu4ncO2cmWVkK6yzP+vR4ohaBcAoz
+         Mf+SDCKIgu9PrFan10S/GM6YITkllDZQOhUKKBzr5+f2JqlWOoOom7OmagDIlH/bqC8V
+         uk7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700735056; x=1701339856;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MQufmsQMrPSkS7WJd7xjAFVYdq3ncbNsEnifCOHUlJ4=;
+        b=LgSYqmBqQTOkQax1fnDpCSglxlCu7Std3n2vybwADUutF80yDnIrUCI3jPvkjZgslK
+         xUNcoz7YISrA5VhdAtsqepQLbA9HKJ2Hr7eGSNxXhx9bs1t2nQrC+65iD93WreQf15iB
+         f6bnDb0OL7wQck+1sAdnsLubXl8upcJzXJw4ckq7tF62uwZSiaFKnLjfmZmGs52hBOvf
+         13tEK0U/3RlYY62yn4qVqXJqkuOJWTy7UHBrVA2RO6zzrBYvgkZGXcSyyfR9+oRY4PZ7
+         cuI0R003Ykn0IRLhW9ObJYJZnCLeph70XSFYEm18PCAuovI6lkViJ+qfJAGBFZNpjuQ6
+         joQA==
+X-Gm-Message-State: AOJu0YzJpXUFdO97JKQbzxSqn+pKBanfVs56M1zoIdazOqQ9XLN2V5Iv
+        JedOZmd75KYxEc9xqFHwuh0=
+X-Google-Smtp-Source: AGHT+IENgIG/WZEXSmFCwcoG/xkUbrQpBfoOkPI+26QxfSOl6uNAZx8VFJ+tevbjUvS1yTo6nh0i8g==
+X-Received: by 2002:a25:b309:0:b0:d91:c3fe:6144 with SMTP id l9-20020a25b309000000b00d91c3fe6144mr4983504ybj.3.1700735056068;
+        Thu, 23 Nov 2023 02:24:16 -0800 (PST)
+Received: from localhost ([74.48.130.204])
+        by smtp.gmail.com with ESMTPSA id z6-20020a256646000000b00da0c63aa9f1sm237492ybm.20.2023.11.23.02.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 02:24:15 -0800 (PST)
+Date:   Thu, 23 Nov 2023 18:24:05 +0800
+From:   Furong Xu <0x1207@gmail.com>
+To:     Wojciech Drewek <wojciech.drewek@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <xfr@outlook.com>,
+        <rock.xu@nio.com>
+Subject: Re: [PATCH net v1] net: stmmac: xgmac: Disable FPE MMC interrupts
+Message-ID: <20231123182405.00006454@gmail.com>
+In-Reply-To: <2c2d0641-002c-4ce6-9df4-bc633e602721@intel.com>
+References: <20231123093538.2216633-1-0x1207@gmail.com>
+        <2c2d0641-002c-4ce6-9df4-bc633e602721@intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Timings taken from the datasheet, although sometimes there are just
-typical values and it's not clear if they are no min and max values or
-if you must use the typical value exactly. To make things worse, there
-is no back porch but only a combined sync and back porch length.
+On Thu, 23 Nov 2023 11:17:17 +0100
+Wojciech Drewek <wojciech.drewek@intel.com> wrote:
 
-Unfortunately, there is not public datasheet. Therefore, here are the
-relevant timings:
-                 | min |  typ   | max |
------------------+-----+--------+-----+
-CLK frequency    |  -  | 25.175 |  -  |
-HS period        |  -  |   800  |  -  |
-HS pulse width   |  5  |    30  |  -  |
-HS-DEN time      | 112 |   144  | 175 |
-DEN pulse width  |  -  |   640  |  -  |
-VS pulse width   |  1  |     3  |  5  |
-VS-DEN time      |  -  |    35  |  -  |
-VS period        |  -  |   525  |  -  |
+> On 23.11.2023 10:35, Furong Xu wrote:
+> > Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+> > by default") leaves the FPE(Frame Preemption) MMC interrupts enabled.
+> > Now we disable FPE TX and RX interrupts too.  
+> 
+> Hi,
+> Thanks for the patch, one question:
+> Why do we have to disable them?
+> 
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
- drivers/gpu/drm/panel/panel-simple.c | 30 ++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+The original commit aeb18dd07692 by Jose Abreu says:
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 9367a4572dcf..26702a847b63 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1973,6 +1973,33 @@ static const struct panel_desc eink_vb3300_kca = {
- 	.connector_type = DRM_MODE_CONNECTOR_DPI,
- };
- 
-+static const struct display_timing evervision_vgg644804_timing = {
-+	.pixelclock = { 25175000, 25175000, 25175000 },
-+	.hactive = { 640, 640, 640 },
-+	.hfront_porch = { 16, 16, 16 },
-+	.hback_porch = { 82, 114, 170 },
-+	.hsync_len = { 5, 30, 30 },
-+	.vactive = { 480, 480, 480 },
-+	.vfront_porch = { 10, 10, 10 },
-+	.vback_porch = { 30, 32, 34 },
-+	.vsync_len = { 1, 3, 5 },
-+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-+		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE |
-+		 DISPLAY_FLAGS_SYNC_POSEDGE,
-+};
-+
-+static const struct panel_desc evervision_vgg644804 = {
-+	.timings = &evervision_vgg644804_timing,
-+	.num_timings = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 115,
-+		.height = 86,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
-+};
-+
- static const struct display_timing evervision_vgg804821_timing = {
- 	.pixelclock = { 27600000, 33300000, 50000000 },
- 	.hactive = { 800, 800, 800 },
-@@ -4334,6 +4361,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "eink,vb3300-kca",
- 		.data = &eink_vb3300_kca,
-+	}, {
-+		.compatible = "evervision,vgg644804",
-+		.data = &evervision_vgg644804,
- 	}, {
- 		.compatible = "evervision,vgg804821",
- 		.data = &evervision_vgg804821,
--- 
-2.39.2
+    MMC interrupts were being enabled, which is not what we want because it
+    will lead to a storm of interrupts that are not handled at all. Fix it
+    by disabling all MMC interrupts for XGMAC.
+
+> > 
+> > Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+> > Signed-off-by: Furong Xu <0x1207@gmail.com>
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > index ea4910ae0921..cdd7fbde2bfa 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > @@ -177,8 +177,10 @@
+> >  #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
+> >  #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+> >  
+> > +#define MMC_XGMAC_FPE_TX_INTR_MASK	0x204
+> >  #define MMC_XGMAC_TX_FPE_FRAG		0x208
+> >  #define MMC_XGMAC_TX_HOLD_REQ		0x20c
+> > +#define MMC_XGMAC_FPE_RX_INTR_MASK	0x224
+> >  #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
+> >  #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
+> >  #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
+> > @@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+> >  {
+> >  	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
+> >  	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
+> > +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_TX_INTR_MASK);
+> > +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_RX_INTR_MASK);
+> >  	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+> >  }
+> >    
 
