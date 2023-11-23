@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5BD7F5CB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2277F5CB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344753AbjKWKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        id S1344766AbjKWKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjKWKmh (ORCPT
+        with ESMTP id S229542AbjKWKnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:42:37 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B4D1B3;
-        Thu, 23 Nov 2023 02:42:44 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f6efd64so859286e87.2;
-        Thu, 23 Nov 2023 02:42:44 -0800 (PST)
+        Thu, 23 Nov 2023 05:43:35 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBDB1BE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:43:42 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5be30d543c4so513407a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700736162; x=1701340962; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrnV7nS3OBUBQAMEeIHmejCmPI+DcGisAbLFB1tJJtQ=;
-        b=ihKsQelF2Kp1+pl96PMTqiTbLQQPnrSpURkqKgxbEzNYIbw/fMzYFgBlcc7RdyHn+p
-         lA1L83OraB+VyZwL6o+hZgOp7kxSRWJfPy7rInxqKWzzwfKRCeu0WtBrRv/sySgfOqgP
-         1OZntgL/lJnuX8bhgAHIcWHZ2w67+ojk+e6RajSBicH/1/zvqA4N5YdySQuUeQ9AYWrW
-         vspsMmWwhaFqr9RLPI2rxRNZP3fHf9jCb9iy4OLBM+nhYuMRThWPCWDXxY8FHAo7R2X9
-         BmGE3hZm0hWKdwc6/AXUts7ohGl+XmPHO9y1NbH06XTTtaiZK43eRIV8kzMAgs597ViJ
-         BxYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700736162; x=1701340962;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1700736222; x=1701341022; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xrnV7nS3OBUBQAMEeIHmejCmPI+DcGisAbLFB1tJJtQ=;
-        b=nNNXLZpzmgwetx58MFkjOG4/jAtVtHt8Qhp72RExjJjuSjnnDgHepJxrYDB4m6yG4I
-         SpVVKmm+FamfuHxX1nzLWCILbEjGwOhgO3BbGShNH6HYI1HDbJiNFFKeZmHGx5z8zRGk
-         mxP/6dv7cKLu3GZIT3Y1DPxhcmZbz8Ja8+deTnTnwvpY+ej9x757pm7xNa39GseylDUm
-         NkLochNvz/HYvpv+/la4zgBtm54xjWS4IVQmvhkir3TzFUlLkbvYdtUT7l6QfzlrOppi
-         3TXp4soEbAU2ru/gNs0JRl6ZFyijXQkG7wLVf2UKgceRjm6QEI7cbwKMjuCBSKz7hijN
-         27xA==
-X-Gm-Message-State: AOJu0YxBkiaTNEEnw5A93z0VpbE6keAP6MhylOaG0rnL8E0J7+OGnkXw
-        OHSRkgzL/Vf+236ypTcMJ+o=
-X-Google-Smtp-Source: AGHT+IEuC/FGMJEnoXd87iYw2NkrDXJnpZSKeimjdsQ3wY+a6LvOITJ0oxi7Cu1NFybJIeJdq/Tumw==
-X-Received: by 2002:a05:6512:1584:b0:503:f:1343 with SMTP id bp4-20020a056512158400b00503000f1343mr4033443lfb.19.1700736162201;
-        Thu, 23 Nov 2023 02:42:42 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id u5-20020ac25185000000b004fe47879d93sm152758lfi.106.2023.11.23.02.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 02:42:41 -0800 (PST)
-Date:   Thu, 23 Nov 2023 13:42:39 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
-Message-ID: <ehlzzv37o4exdn4smmu653wzjdotzdv3dhr3bduvemxssp37ro@sgegnyprquk4>
-References: <20231122182419.30633-1-fancer.lancer@gmail.com>
- <20231122182419.30633-6-fancer.lancer@gmail.com>
- <20231123101854.GF636165@kernel.org>
+        bh=6sXx1tqGc4gio/QqB9Zb7ckRSF4i2cZOS4lFJoNm/Vo=;
+        b=ciBEmrJg9nD8dBXHPjNsCi0nFqo5mPhOKfU9lqwTi+vXtkrFcNFH2oUUXjkgZ07Ewl
+         oXT+q1Gwu6CfJvc/+nAwpWd48G9sQCEExhQf4YUQDGLiNqPydHWeQamOYIOUkFKc/ZJ0
+         AvkHPeeZT5ildW7jHYeU3CTZRpErLvqUxju4ajKZ5XutNPkq7uUODuPVM4kyQgRaLKU/
+         Cc4J1CWD0mHDByE5WrrqLx5kMPaYK5Qz+vOYcQYU1/YLSX+Ix6bAE201EkfHR4uR4CNx
+         GpndpUd6Nw6q9a2c7GYNJ+jdfdxoJFRGYQCT1tl6TmNwpnIG4nxGEtckK9hxVs9m7Er+
+         IoqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700736222; x=1701341022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6sXx1tqGc4gio/QqB9Zb7ckRSF4i2cZOS4lFJoNm/Vo=;
+        b=YC10Xmw62Ol/yOqAUWr7Cx7peERpqiBczgDDQMcRhhwijKtiWTDqpaUGwpXkhReWeg
+         np2n8v2cE/vTI52hmDXT/F0qtAurFdQOvm2Ifc9wK2dFlAVYEu+4Cera9CbNOmaj1uTZ
+         7/WxVcyAZBwaZFeQ2I+zrYBwo7b+MfmuqBIz6FrEJM+zogZ9uM69CrQe6ZgiM03QCxJH
+         6Oqbpl2GNb3SfnRC60hgnO/ZTOyQB0Bq3TZa8mU+acOxXwFqaJ1NHdt1UA8bYmBjOH4h
+         aU0DANWHjqQZL9+jY7kW+3P2Qa7yGHVQ/A64Me/y07FVqX5cZwS7P8NvNhlaaeEx6Q9u
+         ZSeg==
+X-Gm-Message-State: AOJu0Yx9tQu3mT1fUgfZEof8utunkhuCjl7GrgzqVt7hLvMKkACSuqU/
+        YLvkFMG+1F+VNGpCxVL6CxAdYZrX8SL3POzFULC3wA==
+X-Google-Smtp-Source: AGHT+IGQemXED5MdhPDs8hDtb2L/rF6Iac2SFIvvm1TlJvtt3KBDFlw9g5du469cf44grjodKd7ZU/U/xKDe/AsrzAY=
+X-Received: by 2002:a05:6a21:9982:b0:189:11e8:6237 with SMTP id
+ ve2-20020a056a21998200b0018911e86237mr5725421pzb.51.1700736221598; Thu, 23
+ Nov 2023 02:43:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123101854.GF636165@kernel.org>
+References: <20231118033859.726692-1-apatel@ventanamicro.com>
+ <20231118033859.726692-4-apatel@ventanamicro.com> <8c0f4eba-1923-4686-b07b-1f3b78b298e9@sifive.com>
+In-Reply-To: <8c0f4eba-1923-4686-b07b-1f3b78b298e9@sifive.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Thu, 23 Nov 2023 16:13:29 +0530
+Message-ID: <CAK9=C2U7gD2DC+zTGvSb+6uhmA=Y-nL2Mpn8tbp8R81g_6ruEA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] tty/serial: Add RISC-V SBI debug console based earlycon
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,69 +76,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike
-
-On Thu, Nov 23, 2023 at 12:18:54PM +0200, Mike Rapoport wrote:
-> Hi Serge,
-> 
-> On Wed, Nov 22, 2023 at 09:24:03PM +0300, Serge Semin wrote:
-> > Besides of the already described reasons the pages backended memory holes
-> > might be persistent due to having memory mapped IO spaces behind those
-> > ranges in the framework of flatmem kernel config. Add such note to the
-> > init_unavailable_range() method kdoc in order to point out to one more
-> > reason of having the function executed for such regions.
-> > 
-> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> > 
+On Wed, Nov 22, 2023 at 4:11=E2=80=AFAM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> Hi Anup,
+>
+> On 2023-11-17 9:38 PM, Anup Patel wrote:
+> > We extend the existing RISC-V SBI earlycon support to use the new
+> > RISC-V SBI debug console extension.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 > > ---
-> > 
-> > Please let me know if the IO-space pages must be initialized somehow
-> > differently rather relying on free_area_init() executing the
-> > init_unavailable_range() method.
-> 
+> >  drivers/tty/serial/Kconfig              |  2 +-
+> >  drivers/tty/serial/earlycon-riscv-sbi.c | 24 ++++++++++++++++++++----
+> >  2 files changed, 21 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> > index 732c893c8d16..1f2594b8ab9d 100644
+> > --- a/drivers/tty/serial/Kconfig
+> > +++ b/drivers/tty/serial/Kconfig
+> > @@ -87,7 +87,7 @@ config SERIAL_EARLYCON_SEMIHOST
+> >
+> >  config SERIAL_EARLYCON_RISCV_SBI
+> >       bool "Early console using RISC-V SBI"
+> > -     depends on RISCV_SBI_V01
+> > +     depends on RISCV_SBI
+> >       select SERIAL_CORE
+> >       select SERIAL_CORE_CONSOLE
+> >       select SERIAL_EARLYCON
+> > diff --git a/drivers/tty/serial/earlycon-riscv-sbi.c b/drivers/tty/seri=
+al/earlycon-riscv-sbi.c
+> > index 27afb0b74ea7..5351e1e31f45 100644
+> > --- a/drivers/tty/serial/earlycon-riscv-sbi.c
+> > +++ b/drivers/tty/serial/earlycon-riscv-sbi.c
+> > @@ -15,17 +15,33 @@ static void sbi_putc(struct uart_port *port, unsign=
+ed char c)
+> >       sbi_console_putchar(c);
+> >  }
+> >
+> > -static void sbi_console_write(struct console *con,
+> > -                           const char *s, unsigned n)
+> > +static void sbi_0_1_console_write(struct console *con,
+> > +                               const char *s, unsigned int n)
+> >  {
+> >       struct earlycon_device *dev =3D con->data;
+> >       uart_console_write(&dev->port, s, n, sbi_putc);
+> >  }
+> >
+> > +static void sbi_dbcn_console_write(struct console *con,
+> > +                                const char *s, unsigned int n)
+> > +{
+> > +     sbi_debug_console_write(n, __pa(s));
+>
+> This only works for strings in the linear mapping or the kernel mapping (=
+not
+> vmalloc, which includes the stack). So I don't think we can use __pa() he=
+re.
 
-> Maybe I'm missing something, but why do you need struct pages in the
-> IO space?
+In which case, we need extend sbi_debug_console_write() to
+do the va-to-pa conversion for both earlycon-riscv-sbi.c and
+hvc_riscv_sbi.c
 
-In my case at the very least that's due to having a SRAM device
-available in the middle of the MMIO-space. The region is getting
-mapped using the ioremap_wc() method (Uncached Write-Combine CA),
-which eventually is converted to calling get_vm_area() and
-ioremap_page_range() (see ioremap_prot() function on MIPS), which in
-its turn use the page structs for mapping. Another similar case is
-using ioremap_wc() in the PCIe outbound ATU space mapping of
-the graphic/video cards framebuffers.
+>
+> > +}
+> > +
+> >  static int __init early_sbi_setup(struct earlycon_device *device,
+> >                                 const char *opt)
+> >  {
+> > -     device->con->write =3D sbi_console_write;
+> > -     return 0;
+> > +     int ret =3D 0;
+> > +
+> > +     if (sbi_debug_console_available) {
+> > +             device->con->write =3D sbi_dbcn_console_write;
+> > +     } else {
+> > +             if (IS_ENABLED(CONFIG_RISCV_SBI_V01))
+>
+> "else if", no need for the extra block/indentation.
 
-In general having the pages array defined for the IO-memory is
-required for mapping the IO-space other than just uncached (my sram
-case for example) or, for instance, with special access attribute for
-the user-space (if I am not missing something in a way VM works in
-that case).
+Okay, I will update.
 
--Serge(y)
+>
+> Regards,
+> Samuel
+>
+> > +                     device->con->write =3D sbi_0_1_console_write;
+> > +             else
+> > +                     ret =3D -ENODEV;
+> > +     }
+> > +
+> > +     return ret;
+> >  }
+> >  EARLYCON_DECLARE(sbi, early_sbi_setup);
+>
 
-> 
-> > ---
-> >  mm/mm_init.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > index 077bfe393b5e..3fa33e2d32ba 100644
-> > --- a/mm/mm_init.c
-> > +++ b/mm/mm_init.c
-> > @@ -796,6 +796,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-> >   * - physical memory bank size is not necessarily the exact multiple of the
-> >   *   arbitrary section size
-> >   * - early reserved memory may not be listed in memblock.memory
-> > + * - memory mapped IO space
-> >   * - memory layouts defined with memmap= kernel parameter may not align
-> >   *   nicely with memmap sections
-> >   *
-> > -- 
-> > 2.42.1
-> > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
-> 
+Regards,
+Anup
