@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38A27F62A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7AA7F62B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346042AbjKWPXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        id S1346075AbjKWPYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346051AbjKWPXa (ORCPT
+        with ESMTP id S1346082AbjKWPYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:23:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9171010C0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:23:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BA4CC433C9;
-        Thu, 23 Nov 2023 15:23:33 +0000 (UTC)
-Date:   Thu, 23 Nov 2023 10:23:49 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
-        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
-        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
-        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v5] eventfs: Remove eventfs_file and just use
- eventfs_inode
-Message-ID: <20231123102349.110e4525@gandalf.local.home>
-In-Reply-To: <20231123112548.9603-A-hca@linux.ibm.com>
-References: <20231004165007.43d79161@gandalf.local.home>
-        <20231117142335.9674-A-hca@linux.ibm.com>
-        <20231117143829.9674-B-hca@linux.ibm.com>
-        <20231123112548.9603-A-hca@linux.ibm.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 23 Nov 2023 10:24:07 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2E210F1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:24:11 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-332e58d4219so299412f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700753050; x=1701357850; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qEinn40liA1Wq5VZRVw57Dr0obouosWn9g7g0dlK6JY=;
+        b=OGQl0c5ODriWH9Idn9Depm4X0hGii8sSYPfyBXkfxNAB9bBNaUX/fXi/tZgZMyfHrH
+         adhe1JLHXd1sDjXPwUGyO+kUVcF461SLrRP1343CLrFOBmDv0u54uL6ODquq0jdasBGT
+         dA9E/7YwJboDhNgccLH1Gnss9jbIPpX5jmxCfsoFrCPoU/cJ+pF5YNCpbXEQ9cnqIKSq
+         tdbdoOAOFxG0eLk1gBVux+2AAkS3zFzK5d3bggRj+tDl3GLZcUHpZfyuHwCluqjqCHTM
+         UdazQm06dBHVHdKwoYI6udf6x0ByLIwAR365jLn65gsoHhvX5nGR5o92S6jCoIBSRNx0
+         zo/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700753050; x=1701357850;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qEinn40liA1Wq5VZRVw57Dr0obouosWn9g7g0dlK6JY=;
+        b=tQtQCXjApTLTmoEbDQuVb2gB9yTAuFVHsywjSFsvlLL2OozkFg3Qtz6PcK8CycMGFg
+         1v6/mX7bSwXzMW8r42P8CBSFUlEAzRFFBUkyRTEdOYsQyI1C8qMzerccwyzBOA5rmOK7
+         wHZnWg/rXBmPEpAzILsZKvODxaBjhfIrxYtQcWs4NDi9n90gz84fVNUxgPumfH4dA4gD
+         EJxatThAelg+WB7/pYggb3/ZaV2ZzU2xjOlTqBe23dUUFMWrreJwYx2rUnERDv504n2n
+         A5709dha0/bs5pREVBRWqfFjSYHmQgD6QEBe/xgygilEaewvw9MBrCxSvp8Z+/3gOO0Q
+         yfaQ==
+X-Gm-Message-State: AOJu0YxsBHMZm7458E47u3pXOeAInnRsIuIeXMdJZHldYcCMHpUIiVHe
+        B8L5N6W2M1/2CB8Q7o3fuE9Pog==
+X-Google-Smtp-Source: AGHT+IH7pTy4FnZhd4fKfF3loD/98TfZSI67b0QPFriXigNT+iLnOj7QEw2V/Yr34spAxJ4w73j4Og==
+X-Received: by 2002:a05:6000:4028:b0:332:c593:16c with SMTP id cp40-20020a056000402800b00332c593016cmr3974822wrb.45.1700753049772;
+        Thu, 23 Nov 2023 07:24:09 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id n7-20020adff087000000b003316d1a3b05sm1880623wro.78.2023.11.23.07.24.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 07:24:09 -0800 (PST)
+Message-ID: <754f279b-dbe4-46fa-95c9-2cae0481584c@linaro.org>
+Date:   Thu, 23 Nov 2023 15:24:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/7] media: qcom: camss: Move VFE power-domain
+ specifics into vfe.c
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231118-b4-camss-named-power-domains-v5-0-55eb0f35a30a@linaro.org>
+ <20231118-b4-camss-named-power-domains-v5-4-55eb0f35a30a@linaro.org>
+ <84a97960-dfef-4d2f-8462-d3acb6f5a125@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <84a97960-dfef-4d2f-8462-d3acb6f5a125@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 12:25:48 +0100
-Heiko Carstens <hca@linux.ibm.com> wrote:
+On 23/11/2023 12:04, Konrad Dybcio wrote:
+>> +    const struct camss_resources *res = camss->res;
+>>       int i;
+>> +    int vfepd_num;
+>>       int ret;
+> Reverse-Christmas-tree, please
 
-> So, if it helps (this still happens with Linus' master branch):
-> 
-> create_dir_dentry() is called with a "struct eventfs_inode *ei" (second
-> parameter), which points to a data structure where "is_freed" is 1. Then it
-> looks like create_dir() returned "-EEXIST". And looking at the code this
-> combination then must lead to d_invalidate() incorrectly being called with
-> "-EEXIST" as dentry pointer.
-
-I haven't looked too much at the error codes, let me do that on Monday
-(it's currently Turkey weekend here in the US).
-
-But could you test this branch:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git  trace/core
-
-I have a bunch of fixes in that branch that may fix your issue. I just
-finished testing it and plan on pushing it to Linus before the next rc
-release.
-
-Thanks!
-
--- Steve
-
-
-> 
-> Now, I have no idea how the code should work, but it is quite obvious that
-> something is broken :)
-> 
-> Here the dump of the struct eventfs_inode that was passed to
-> create_file_dentry() when the crash happened:
-
+yes but ret last
