@@ -2,77 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE67F55C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348877F55CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 02:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbjKWBRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 20:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        id S230346AbjKWBS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 20:18:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbjKWBRA (ORCPT
+        with ESMTP id S229453AbjKWBSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 20:17:00 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FE7110
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:17:06 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5be10675134so418066a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:17:06 -0800 (PST)
+        Wed, 22 Nov 2023 20:18:25 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF192
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:18:31 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-2806cbd43b8so347682a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 17:18:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700702311; x=1701307111; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HRDfm5lmN9oWHrfQ6RGbONVD1D7o4JaIn9KZ+LQPA/I=;
+        b=EBCh9vWeg5KLbudqEqzwcN5PKz56TjyTBE5SgTUhf3ognGJRAgZxdhvmI7Rneb0j8y
+         j2TvO4rcYiEunKwHVoDsoabKNRXTt5S7aUp8J+7D6wpBJ1hyZT3u0zhEcZj7BWWEeoiC
+         LL/HPy1sQh10S+oLxJesG0p+zGEa2K+Hw193MCBpymkaDQj02dxyIv4ZkiO1qF/8XFTL
+         iallNQTlKOP7WXgj8nnXbTz3z4snp1t+dDgywZRg8PHJEfhQ+e+eymQan+GPaB/0WGH3
+         HmG8UzNk80fP9SsbLHPCrJ1ap28m/vf8iCh5YDZVf/BkHaP2FJ+hEz4TJ333RXaOmJH+
+         NKJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700702226; x=1701307026;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5oBx7EjQL2+FbBjMi5y16gf4kuvyAnZ3JgFtexzBUA=;
-        b=kBCOZ3aD54Ou3C9xD4NpDi/Cs0v4bVdFFIIcIMhLIDbM6qGlXvUG0llOlsWZ844TmW
-         RdlxVKIC++D7joVGS3cSOwofBz1lmDQktbUXOGenU83T2U2uYHr46k+TwwCzFfqwX0DQ
-         3PWloLbSQlc9+nkZQG27sC4Ft2b3PQ2xmknoA97TZf/uOmgPFhpf4HOINsVXtMiPOM7s
-         dLtiJfI1rn1S4+tdjSp3EsdMfGATgByxk2KSNWinEQ9jXSsvht2PI1WjfD5L5cxZvh7z
-         ZKgqNs8dwlEN9Pgr2MuQQnJY34qOV4ey2bfWCMn1kH1lFwQTSUfvnT7Ifmedm53eY1TF
-         gS1A==
-X-Gm-Message-State: AOJu0Yzj6Lb3yuWIXs2pIuk/+8B9Ed6euPD2XirC2D8AEiXSeHmYg7RQ
-        J9qMVcOqpHa2wz02kwKW1DbpX514dZ5ixBFYXe1N6BWBgL+l
-X-Google-Smtp-Source: AGHT+IGXO5tqvvyFWeJuKfwoIvQQp80K0szbB+GMH4jb8p0owJcdFApPgUPNAO08rqecCguHLqOIIprIGXF+tKVG4F2v1Pote9Tj
+        d=1e100.net; s=20230601; t=1700702311; x=1701307111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HRDfm5lmN9oWHrfQ6RGbONVD1D7o4JaIn9KZ+LQPA/I=;
+        b=h67cOUITBNKYzCLNkpmvMQnk8wwSkEMDHlkCNyeW6TlguNHfGoOmpB+cmYUKweMTE5
+         1UdikVbErXE+F85qPYqHQub5xiZWryHTbIYH2rQC6JnCd+68e47fgi2dkwu/+K9sYpIe
+         qyNtbx9jdZ1vmeA5Icw/NfPX/UuJprqK+Y0Lz8tDk0BiPvpwXVRPk+SXVpKBuKjD41Sp
+         CcQt1gQMAqsu7j7jFDWGS0bj5HU1mVgmQHbb4pGTBLuUpNnwyLrGkEaoqzzY7ONpoJ13
+         inPVWA9qiWy15v3bXYxnNnn1lygyVHtF09vk3KQ/JDZ/VJAa4DVEabEZBxn0A8di9vLf
+         3tJQ==
+X-Gm-Message-State: AOJu0YxXU1W9X4nuhSsDvg+jdj5hSSYezXnsx1iLVi9iyip/+327RGEv
+        vv3RoLLp8NIMpjq2LEEkDI0=
+X-Google-Smtp-Source: AGHT+IGiPmnbiCr8qnLgZAg5BZ3NCj3W2Rf9JG7Dmc59vfKQewrzihV4UcH7z/Y6mGAULjLnD3YGLQ==
+X-Received: by 2002:a17:90b:390e:b0:285:24bd:d8bb with SMTP id ob14-20020a17090b390e00b0028524bdd8bbmr4493019pjb.36.1700702311225;
+        Wed, 22 Nov 2023 17:18:31 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id a16-20020a170902ecd000b001cf5d59c739sm44126plh.271.2023.11.22.17.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 17:18:30 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 4BED510207143; Thu, 23 Nov 2023 08:18:26 +0700 (WIB)
+Date:   Thu, 23 Nov 2023 08:18:26 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Chun Ng <chunn@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Ankita Garg <ankitag@nvidia.com>
+Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
+Message-ID: <ZV6oYmVYsyYizvgg@archie.me>
+References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:bf10:b0:280:cd15:9692 with SMTP id
- c16-20020a17090abf1000b00280cd159692mr916159pjs.6.1700702226078; Wed, 22 Nov
- 2023 17:17:06 -0800 (PST)
-Date:   Wed, 22 Nov 2023 17:17:05 -0800
-In-Reply-To: <20231123004834.58534-1-kuniyu@amazon.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000de140060ac798cb@google.com>
-Subject: Re: [syzbot] [mptcp?] KMSAN: uninit-value in mptcp_incoming_options
-From:   syzbot <syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        kuniyu@amazon.com, linux-kernel@vger.kernel.org,
-        martineau@kernel.org, matthieu.baerts@tessares.net,
-        matttbe@kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oBSe3tCHKA7p0yt4"
+Content-Disposition: inline
+In-Reply-To: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+--oBSe3tCHKA7p0yt4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-and-tested-by: syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com
+On Wed, Nov 22, 2023 at 08:03:19PM +0000, Chun Ng wrote:
+> Hi,
+>=20
+> Recently I observed there is performance regression on system call mmap(.=
+=2E). I tried both vanilla kernels and Raspberry Pi kernels on a Raspberry =
+Pi 4 box and the results are pretty consistent among them.
+>=20
+> Bisection showed that the regression starts from k-6.1, and the latest va=
+nilla k-6.7 is still showing the same regression.
+>=20
+> The test program calls mmap/munmap for a 4K page with MAP_ANON and MAP_PR=
+IVATE flags, and ftrace is used to measure the time spent on the do_mmap(..=
+) call.=C2=A0 Measured time of a sample run with different vanilla kernel v=
+ersions are:
+> k-5.10 and k-6.0: ~157us
+> k-6.1: ~194us
+> k-6.7: ~214us
+> Results are pretty consistent across multiple runs with a small percentag=
+e variance.=C2=A0 Ftrace shows that latency of mmap_region(...) has increas=
+ed since k-6.1.=C2=A0=C2=A0An application that makes frequent mmap(..) call=
+s the accumulated extra latency is very noticeable.=20
 
-Tested on:
+Did you mean that v6.0 doesn't have this regression?
 
-commit:         c2d5304e Merge tag 'platform-drivers-x86-v6.7-2' of gi..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f3d6c8e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e32016b84cf917ca
-dashboard link: https://syzkaller.appspot.com/bug?extid=b834a6b2decad004cfa1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=139ddc4f680000
+Confused...
 
-Note: testing is done by a robot and is best-effort only.
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--oBSe3tCHKA7p0yt4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZV6oXwAKCRD2uYlJVVFO
+o3C7AP4snmZptoM1ihlFeB/5xpLDHZSoqPN2u/eqYYB2SY8R2gEAi5WXVXAcjnzt
+x6LuHUALRKh0Ndw9CLixARM1Duf1hws=
+=zXF1
+-----END PGP SIGNATURE-----
+
+--oBSe3tCHKA7p0yt4--
