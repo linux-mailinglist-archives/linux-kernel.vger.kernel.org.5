@@ -2,208 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640167F56B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837597F56B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 04:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344154AbjKWDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 22:06:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S1344284AbjKWDGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 22:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjKWDF7 (ORCPT
+        with ESMTP id S232584AbjKWDGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 22:05:59 -0500
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84A6CB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 19:06:05 -0800 (PST)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc2786a8ebso5567835ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 19:06:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700708765; x=1701313565;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=200c6290dZp+30BqwPrDPhDmzVg8rqeRi5BvQYSeqH4=;
-        b=jLdfOmDbvpK1+LO/GmmUScDhboWXwC2soMhb2CTvtJQt5Pg616h0YHgsx8y8ibo+YX
-         EcDzs0Nb7Eve6t+zZa2i5p3PIrHjwGopS2A+UCKv2zyHWyVLgVxEOcZvnA2HFDUYP8/9
-         2IRpJ4Hh9r77fg8q5HQhakXt/InvChYogQu7OicRUQyxDZ9DnyxnwbHB43JH44gNqEVv
-         w5pafB1tMfY3gAT4C4SHNPv4rEcH3kU+8UsDtL9Uq+EJ+SssUjVpxoIpKSveU4clithU
-         Maje8QjbeAQKJBg2v1/1kQQYQYdnxZbBx5vsQ74WZHczc2zvMCZMyZyS53RaeF8r0YQF
-         98TQ==
-X-Gm-Message-State: AOJu0YyvXFaKZ4R12xB1A6ciiotWxUgszfQkMB+aDI7v6FAGc7dHAUCk
-        0FtdlyU337I0wb7uTcA+M8tfTaDQ3QmU4cisnREyggaZl/Io
-X-Google-Smtp-Source: AGHT+IGOAw5qKRLiXKXZZMahIoemK6w9MZWc1Pkdv9xgGHhhlsKFZ7Zb8rPPQKCi3LBssFmhrm4Nv1Ja30JzegMmsOjPbamXjaMO
+        Wed, 22 Nov 2023 22:06:38 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B4CB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 19:06:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DQv+eTyNc4IRPEsuX5IyHcOO0DOyhq1o6yRRZkvunYc070ER4M2CzFaHZN98xiBTic0motrhvDaTO5KzDU4QN7gBBsGUJQpuww/TA3zNkoFt93X3GHxvdAO3Zg2CGVjbbMfpIirhctDOXr9xeSKMc9/wuVqlaCTdt0hrV+qk5p5/MzpseUWaVEaLR7grTyrMoHGt/dccI+s0oxGDZuF1HQHeuxaxvaAwknUK5fylU+EnlQetmwJyRX9D6d5wFrOBnCWcjZ+DBxDm5v3bQM7o6l9ufTfKlndPYVfbaPhrPLFgigbe28xLJXUqHN0eLflJjlr8WBx9SLox5/y/kMBKhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n1eAYCy1XdBsins6DYxMxY7TnoJhYfgmSDrbo/2LVeE=;
+ b=J0PSMLjhN5a66ywA4JuhJcowzaOi3d9pUqXfwQK1wDDOsU1k21DqOBdUCEgxcAb89UE/1v8QLAewz996yesm1BURtz+911+g0IouTcnpCXax46V67VohbxAP7C0EdLegd76pVV1YhILGnRasFO0QY3YpdEeorqMNKgB8mkGKOfVBVHe5h8YrFhqEhy5T88CLBe+gTIX06YA3BwL6J/ozDWoonjR8F5kjXDsp0JHI+rYYecJgnxIMZM0a8LpPrvRxhXbPV5ttzypuCpSCbDkbmOIx5vRPrHtk9glckIT3M8Q5b3l14e3UhI+iIFbnv6wAc/uvVisk35U7QcDOjyQpJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n1eAYCy1XdBsins6DYxMxY7TnoJhYfgmSDrbo/2LVeE=;
+ b=Nkgmj4cW8RJz4/2Emxtmi0LN/bMo+DH3yyOlCqfuF6pJjQIR2yTzTX4RhUQ4R9wQDSCE9CZwoDU1ORuck6om75QU/eIxnBA7WaQOFK1J/f866UaqTE/oqBvEM0LZjf6LRmN/cizdpz6UZdCjf/WvcBAsSAVFry4koMVmj3lhumJxkcNodcqgSd06XuuoBebVZGFhMZwfWRLU980F13pglShGHEQA6T3nvpxI+NwNsbANd7U7oJbwLRGcxBx8uJkUJ7KAZ41guYcmeOQjixKt6LxSR36RibhM6BUJmOaAb/M6/mAihU4Nzzt+F4hAdfH8FHqYoOBEoO5XKvJK94+fmw==
+Received: from PH7PR12MB7937.namprd12.prod.outlook.com (2603:10b6:510:270::21)
+ by LV2PR12MB5848.namprd12.prod.outlook.com (2603:10b6:408:173::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
+ 2023 03:06:42 +0000
+Received: from PH7PR12MB7937.namprd12.prod.outlook.com
+ ([fe80::3bcb:91ce:4206:c579]) by PH7PR12MB7937.namprd12.prod.outlook.com
+ ([fe80::3bcb:91ce:4206:c579%6]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
+ 03:06:42 +0000
+From:   Chun Ng <chunn@nvidia.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+CC:     Linux Regressions <regressions@lists.linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Ankita Garg <ankitag@nvidia.com>
+Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
+Thread-Topic: [REGRESSION]: mmap performance regression starting with k-6.1
+Thread-Index: AQHaHPR0v+xZPq8pBkqP4B8aQrrfrbCHHAEAgAAdy+c=
+Date:   Thu, 23 Nov 2023 03:06:42 +0000
+Message-ID: <PH7PR12MB79373516F591C102110B4251D6B9A@PH7PR12MB7937.namprd12.prod.outlook.com>
+References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
+ <ZV6oYmVYsyYizvgg@archie.me>
+In-Reply-To: <ZV6oYmVYsyYizvgg@archie.me>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR12MB7937:EE_|LV2PR12MB5848:EE_
+x-ms-office365-filtering-correlation-id: 31b0531f-98f9-4b44-8f46-08dbebd137d5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aR2b+GwPVwubC4XJL9gQcRGveG34prMVYoqe9oC32q146jKYczMRA2IXw33pvVHVHs6fo0TJVPWUqCnZltvah1CYu3/0kP1gIvTOV2lgw4mUgUATgSZW62ZhkYR84p5xZQvlsKedpY5wp4bY9s7X4Lf99FVFyei3ahXOmI3xscTELs92EigAw83p1sj5Fn/t6AK00v3AeBo0q4JOKdiNSRadKcySXBCY/VZzekQLJxnqBaN7F44Q9GVHL8XCZEeDm/SsrLik7VT/aYiqEewQGxC2NxBC5I2KVF8+1ZeC4eCKQoA7elR/+zJfcNMyYABVTC2kFIYezMn+CnDdOkvi3UXjMLnlyKUrwLRZmaBD6puBaN735Dv9qmWnwqGsYyS/oAOkXb7lB9TlxSiUa9bSOIIOQrLGrJhJnowOX+oEieW2B5LdRQiV3l1JmRS3gxFFt3V5Ex9Ldpv9jyMl7sSbjayDbMkF9NPBJJdW4iZUgpD8rj2rE0ngzDN6FOfDM5w9nuHeReHaGXOUmS9ASvHYYSrn6STeqoQMa3mNPprPBWdh4dOamxA5o29aaeSlVfstqImLkdaHFQW68pfVVu+JE17N6/GYTEX9tVqMbB61uJFSjHjG/sInOvUOjqJp13F3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB7937.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(39860400002)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(8676002)(2906002)(86362001)(71200400001)(6506007)(66556008)(7696005)(26005)(53546011)(8936002)(107886003)(9686003)(66446008)(66476007)(316002)(76116006)(64756008)(54906003)(4326008)(110136005)(66946007)(33656002)(91956017)(122000001)(38100700002)(478600001)(83380400001)(5660300002)(38070700009)(52536014)(55016003)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?0mPZzn246qwtT1+TPEWpYO3lR9khPP7TiW2NRuGu/g5H/ejpC4aGPFRLZs?=
+ =?iso-8859-1?Q?HUtwUUrGFJv1YRNmaWiWc8M6b3uy2KN8iN2TuVIUiPe/blkIauqQJa2lRv?=
+ =?iso-8859-1?Q?WwbC2700IZas7Lw5LyL82QQxLwcYxBxWtHqRk2KHLOI30tTb/xjauAvShU?=
+ =?iso-8859-1?Q?QBUYgjIEuVnrT5fChdTF2PU1fpy2ivjWcg0+Ax5h5yUwY8Wi8e4EU7Uuap?=
+ =?iso-8859-1?Q?5KjFpzpxc6lo368SsD3zRe/cEB7TJFeUwkjLbpaelne1d0wxlM8g9o/Rnr?=
+ =?iso-8859-1?Q?ofC/OOWD8VDZL6aVwFLdun5lFCzqsTdmLxK4Qpi8WxqbUKQbWTbC3BPt+7?=
+ =?iso-8859-1?Q?ZOrk2SoJKVmGkuEiDU/5JzQdnIuI/FkQo+NcaxMMflPx2Pols0fPnF8AfE?=
+ =?iso-8859-1?Q?jflHBpvA6ZZegiH+/i7sTWzW0fwCO7GxOgQt3XYB6KJx3k/KRC/Uv6CnQg?=
+ =?iso-8859-1?Q?OcTn74FiBCaEDOdqTmz4l5wKWasSopmPSOmKs8L6CsnNKKLVF7xTDUbzmu?=
+ =?iso-8859-1?Q?7Myucmz1nviD3SlbqNxNBhSiCsMMtjzLtejbAB9Fi08Z/gfaoGRnLaNY5V?=
+ =?iso-8859-1?Q?d97H9Lw6nd6MjdXTdGJrxNexjLFLBhTWw9aTgMA2MJA4bXUrwgJWEogrVA?=
+ =?iso-8859-1?Q?3tDVm6lCC6dJOWH0o/bo1yp5Fe8SZ+OpJgrrcCyoI+6RlIMjYBD8VBF7Oa?=
+ =?iso-8859-1?Q?6JHc+dzVD4KV3clCqnbI8ARgBDdm7PfIVwrRVcQox/oizPESIjLsLqaCIm?=
+ =?iso-8859-1?Q?HZq+rkos+KqqVfW5GsWpoTazdvPOSNq92KVBXO9ywajULaIYG86Um2IzrR?=
+ =?iso-8859-1?Q?FiAcNO92PXeWb8bapGjXguiJZYZJiBBAoQH9Mm93P6llYmLUrI9lpk/roX?=
+ =?iso-8859-1?Q?mawBwAMfA/6gj1Mz/AL8KPptCHIhjEyzPOCGl8KQLy0uYvZn0ny2qEqWon?=
+ =?iso-8859-1?Q?AeE2ehj1ki7snH58ljDsBbSzdSGFPFLfPbGD7hzd0lJ+A/Q27XpuSCWdrX?=
+ =?iso-8859-1?Q?dzovpA32oSOV1NqcqvIw3IF/fzwzxbkPmgCBs/fye2AwcIDioZEYZUPXsJ?=
+ =?iso-8859-1?Q?nAicWeRJ5f8uKI/GJ5Avru5T3GfLNrbLPP1P3CBTV2bxiBWIn3QjyErOQ3?=
+ =?iso-8859-1?Q?64tKdZJNKA3A8kRFvZfSVB+vGK7GtHGTTN2SBfIMyhDXiqz/KFGXei6cp6?=
+ =?iso-8859-1?Q?P7rUJKa2ILUR4SdZD2Vyhhes/2B95EhAT7ooG+0VZAkxcO9b7AkIXumDm7?=
+ =?iso-8859-1?Q?7uCg2oLOSfnO5LdJ68n/1scJfFLvNQs7Yp1bAwKVhpEqvnKBFswadYebNo?=
+ =?iso-8859-1?Q?xIkNiDs4L27pSbdm4gJBt07KPhUwpECcL/Q0J+l4rOUm0ecM4Z1qfAHYrF?=
+ =?iso-8859-1?Q?IwDP7sTVT9maU1iQlJj378shpQBUVXt7wRv7G5DrJR9ffrNCGssWES/wpc?=
+ =?iso-8859-1?Q?yA1Oi2elJT1bK5Bh0jhhQsjBAqVwJpnN+RGe76LeJ2LmJZmEvRt1NgJqHh?=
+ =?iso-8859-1?Q?WuIJdnRiTvcCAtzbseRUIbHhQrIfWHqsDwJzBcwpXC0l243O/eHeKvxExj?=
+ =?iso-8859-1?Q?6aLjmYgdl7o57AbCffDgCHABArwcRSTKuBEsknypVrEeZDBTfBz6sKiy9m?=
+ =?iso-8859-1?Q?r6vhJ2FO5d8Gk=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f7c6:b0:1cf:6935:1f43 with SMTP id
- h6-20020a170902f7c600b001cf69351f43mr936254plw.13.1700708765479; Wed, 22 Nov
- 2023 19:06:05 -0800 (PST)
-Date:   Wed, 22 Nov 2023 19:06:05 -0800
-In-Reply-To: <tencent_D3FF464CC98C2ED92ED18C9367E746E65206@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d53b43060ac91d56@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
-From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB7937.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31b0531f-98f9-4b44-8f46-08dbebd137d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2023 03:06:42.0203
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qSZ9Lzj82LlqhYZ6BGicjRwOhYMrKtyy6EF2Jgo248Ge72cdunV8KXrzDTZmrHFJuToJgM3OQ1o7AZxyo/XePw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5848
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in __sco_sock_close
-
-==================================================================
-BUG: KASAN: slab-use-after-free in sco_chan_del net/bluetooth/sco.c:170 [inline]
-BUG: KASAN: slab-use-after-free in __sco_sock_close+0x274/0x788 net/bluetooth/sco.c:456
-Read of size 8 at addr ffff0000c7299400 by task syz-executor661/9434
-
-CPU: 1 PID: 9434 Comm: syz-executor661 Not tainted 6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- __asan_report_load8_noabort+0x20/0x2c mm/kasan/report_generic.c:381
- sco_chan_del net/bluetooth/sco.c:170 [inline]
- __sco_sock_close+0x274/0x788 net/bluetooth/sco.c:456
- sco_sock_close net/bluetooth/sco.c:471 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1248
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- ____fput+0x20/0x30 fs/file_table.c:412
- task_work_run+0x230/0x2e0 kernel/task_work.c:180
- get_signal+0x13f4/0x15ec kernel/signal.c:2668
- do_signal arch/arm64/kernel/signal.c:1249 [inline]
- do_notify_resume+0x3bc/0x393c arch/arm64/kernel/signal.c:1302
- exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
- exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
- el0_svc+0x9c/0x158 arch/arm64/kernel/entry-common.c:679
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Allocated by task 9431:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- kmalloc_trace+0x70/0x88 mm/slab_common.c:1122
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- sco_conn_add+0xc4/0x2cc net/bluetooth/sco.c:134
- sco_connect net/bluetooth/sco.c:274 [inline]
- sco_sock_connect+0x2a0/0x848 net/bluetooth/sco.c:593
- __sys_connect_file net/socket.c:2050 [inline]
- __sys_connect+0x268/0x290 net/socket.c:2067
- __do_sys_connect net/socket.c:2077 [inline]
- __se_sys_connect net/socket.c:2074 [inline]
- __arm64_sys_connect+0x7c/0x94 net/socket.c:2074
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Freed by task 6094:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_free_info+0x38/0x5c mm/kasan/generic.c:522
- ____kasan_slab_free+0x144/0x1c0 mm/kasan/common.c:236
- __kasan_slab_free+0x18/0x28 mm/kasan/common.c:244
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x2ac/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- sco_conn_del+0x3b4/0x498 net/bluetooth/sco.c:210
- sco_connect_cfm+0xf0/0x948 net/bluetooth/sco.c:1363
- hci_connect_cfm include/net/bluetooth/hci_core.h:1935 [inline]
- hci_conn_failed+0x17c/0x2c0 net/bluetooth/hci_conn.c:1251
- hci_abort_conn_sync+0x688/0xe38 net/bluetooth/hci_sync.c:5428
- abort_conn_sync+0x5c/0x8c net/bluetooth/hci_conn.c:2910
- hci_cmd_sync_work+0x1cc/0x34c net/bluetooth/hci_sync.c:306
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-Last potentially related work creation:
- kasan_save_stack+0x40/0x6c mm/kasan/common.c:45
- __kasan_record_aux_stack+0xcc/0xe8 mm/kasan/generic.c:492
- kasan_record_aux_stack_noalloc+0x14/0x20 mm/kasan/generic.c:502
- kvfree_call_rcu+0xac/0x674 kernel/rcu/tree.c:3372
- drop_sysctl_table+0x2c8/0x410 fs/proc/proc_sysctl.c:1508
- drop_sysctl_table+0x2d8/0x410 fs/proc/proc_sysctl.c:1511
- unregister_sysctl_table+0x48/0x68 fs/proc/proc_sysctl.c:1529
- unregister_net_sysctl_table+0x20/0x30 net/sysctl_net.c:185
- mpls_dev_sysctl_unregister+0x88/0xc0 net/mpls/af_mpls.c:1447
- mpls_dev_notify+0x448/0x654 net/mpls/af_mpls.c:1659
- notifier_call_chain+0x1a4/0x510 kernel/notifier.c:93
- raw_notifier_call_chain+0x3c/0x50 kernel/notifier.c:461
- call_netdevice_notifiers_info net/core/dev.c:1995 [inline]
- call_netdevice_notifiers_extack net/core/dev.c:2033 [inline]
- call_netdevice_notifiers net/core/dev.c:2047 [inline]
- unregister_netdevice_many_notify+0xd44/0x17a8 net/core/dev.c:10967
- unregister_netdevice_many net/core/dev.c:11023 [inline]
- default_device_exit_batch+0x6c8/0x744 net/core/dev.c:11492
- ops_exit_list net/core/net_namespace.c:175 [inline]
- cleanup_net+0x5dc/0x8d0 net/core/net_namespace.c:614
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-The buggy address belongs to the object at ffff0000c7299400
- which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 0 bytes inside of
- freed 256-byte region [ffff0000c7299400, ffff0000c7299500)
-
-The buggy address belongs to the physical page:
-page:0000000073a3d90c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x107298
-head:0000000073a3d90c order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000840 ffff0000c0001b40 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000c7299300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000c7299380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff0000c7299400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff0000c7299480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff0000c7299500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
-Tested on:
-
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e32aa4e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=60bfed6b415fbd1fbb87
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12d17aa4e80000
-
+>> Did you mean that v6.0 doesn't have this regression?=0A=
+=0A=
+No, k-6.0 does NOT have this regression. The regression starts from k-6.1.=
+=0A=
+=0A=
+Best,=0A=
+Chun=0A=
+=0A=
+From:=A0Bagas Sanjaya=0A=
+Sent:=A0Wednesday, November 22, 2023 5:18 PM=0A=
+To:=A0Chun Ng; Linux Kernel Mailing List=0A=
+Cc:=A0Linux Regressions; Andrew Morton; Linux Memory Management List; Liam =
+R. Howlett; Ankita Garg=0A=
+Subject:=A0Re: [REGRESSION]: mmap performance regression starting with k-6.=
+1=0A=
+=0A=
+=0A=
+On Wed, Nov 22, 2023 at 08:03:19PM +0000, Chun Ng wrote:=0A=
+=0A=
+> Hi,=0A=
+=0A=
+>=0A=
+=0A=
+> Recently I observed there is performance regression on system call mmap(.=
+.). I tried both vanilla kernels and Raspberry Pi kernels on a Raspberry Pi=
+ 4 box and the results are pretty consistent among them.=0A=
+=0A=
+>=0A=
+=0A=
+> Bisection showed that the regression starts from k-6.1, and the latest va=
+nilla k-6.7 is still showing the same regression.=0A=
+=0A=
+>=0A=
+=0A=
+> The test program calls mmap/munmap for a 4K page with MAP_ANON and MAP_PR=
+IVATE flags, and ftrace is used to measure the time spent on the do_mmap(..=
+) call.=A0 Measured time of a sample run with different vanilla kernel vers=
+ions are:=0A=
+=0A=
+> k-5.10 and k-6.0: ~157us=0A=
+=0A=
+> k-6.1: ~194us=0A=
+=0A=
+> k-6.7: ~214us=0A=
+=0A=
+> Results are pretty consistent across multiple runs with a small percentag=
+e variance.=A0 Ftrace shows that latency of mmap_region(...) has increased =
+since k-6.1.=A0=A0An application that makes frequent mmap(..) calls the acc=
+umulated extra latency is very noticeable.=0A=
+=0A=
+=0A=
+=0A=
+Did you mean that v6.0 doesn't have this regression?=0A=
+=0A=
+=0A=
+=0A=
+Confused...=0A=
+=0A=
+=0A=
+=0A=
+--=0A=
+=0A=
+An old man doll... just what I always wanted! - Clara=
