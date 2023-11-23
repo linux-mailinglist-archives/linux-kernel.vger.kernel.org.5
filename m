@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698A67F5689
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310777F5685
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbjKWCqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 21:46:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S232704AbjKWCp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 21:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbjKWCqr (ORCPT
+        with ESMTP id S229789AbjKWCpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 21:46:47 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35393DA;
-        Wed, 22 Nov 2023 18:46:51 -0800 (PST)
-Received: from loongson.cn (unknown [10.2.5.213])
-        by gateway (Coremail) with SMTP id _____8AxJugZvV5l_Co8AA--.60562S3;
-        Thu, 23 Nov 2023 10:46:49 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxjNwYvV5lgkBKAA--.32617S2;
-        Thu, 23 Nov 2023 10:46:48 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, kvm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] LoongArch: KVM: Fix timer emulation with oneshot mode
-Date:   Thu, 23 Nov 2023 10:44:22 +0800
-Message-Id: <20231123024422.3754234-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+        Wed, 22 Nov 2023 21:45:24 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C7E191;
+        Wed, 22 Nov 2023 18:45:30 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id 006d021491bc7-58d205245feso30123eaf.0;
+        Wed, 22 Nov 2023 18:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700707530; x=1701312330; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8BY40MezrcROj3/F+9yGbhrX7rr/7MPMOcTvBUms6oE=;
+        b=UPslDqhvuuPkNgQNfztukeMUU81+GQpeDIoSpOLkOCaRWzSOUxJdrRjzkFTJARjPb2
+         z9C0AEzX8dnXi4uq5hFVJV8h6W7Uur0gvLgDwXI43SZeonhA2IfW0ja+WlTBdV1FioB1
+         vP0aKlYRGz9e0y1kEYjfYLz6xXflKuwMkymMu7Jedigc/68MfX/vZZB55EdzrG1GZr2Y
+         WRZefEVr4qaLjok8++4EKwjpi2MggQPBCh3MIMGubhxKL3M/7wo4nXt7aRuvv/uZpgQK
+         JpwAIVc39SigngyQEf4YQvKDKAuSsKokPCX0mc8qI54PRKGHK5XWcs7k5KaYEe/h3is1
+         Yn4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700707530; x=1701312330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8BY40MezrcROj3/F+9yGbhrX7rr/7MPMOcTvBUms6oE=;
+        b=MxRMItVqioJCdrODaw1l3Dm/nzQGdA6pJfe7h2omTOTY39JhSlDyzYI9s3nqLziP9g
+         5rZHBgT5Cs7bc53jwPhN0akz5DEnXkN1sLdH/0/sYwnZk+oFBQcdv1nn8mbyCGQrvB2i
+         npHkS/ficrvOo07xkYtBgMMDTcdpBRKjoXqJrbdjH3lQX4/T5R/rXCdCYVV82HdwVTTY
+         AUZ1GlppocftIIdFC/6G3CGAgnR66p1xVERZtdgN4OvLr1dhJ5Izz3cOJK18xvQ6IaFB
+         cPeynGIILpasMhik2COIXSOuemkDlF8KcNbzkVemQL/1xrzX+8XUu9VqqNkg3WULpJj3
+         /2qg==
+X-Gm-Message-State: AOJu0YxDHeTNygYoAXpzgI4feLmFosiz7nUE0dPzsaSH3vWGKa3Wqu9z
+        nqTY/jyjccgI1OyvArrEbhM8l7Z7O3Zv9g==
+X-Google-Smtp-Source: AGHT+IEKwbX1uokHFfShgnFs/nAmq1IE1FkfGzTJV4UGa3tzYd/TUvjxRtyu+cCgPPaI5QTLb959QA==
+X-Received: by 2002:a05:6870:f14f:b0:1f4:be52:b129 with SMTP id l15-20020a056870f14f00b001f4be52b129mr5540504oac.56.1700707529929;
+        Wed, 22 Nov 2023 18:45:29 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id l3-20020a62be03000000b006cb7feae74fsm167990pff.164.2023.11.22.18.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 18:45:29 -0800 (PST)
+From:   xu.xin.sc@gmail.com
+To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, xu.xin16@zte.com.cn,
+        xu xin <xu.xin.sc@gmail.com>
+Subject: [RFC PATCH] net/tipc: reduce tipc_node lock holding time in tipc_rcv
+Date:   Thu, 23 Nov 2023 02:45:10 +0000
+Message-Id: <20231123024510.2037882-1-xu.xin.sc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxjNwYvV5lgkBKAA--.32617S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKrW5tr1kWw47Gw4fGF47WrX_yoW7WF4kpF
-        WSkFyI9r18GryDG3W3Xan8Zwnxt393t3WfGrsrWay2yrnxX345XFW0gryxXFW5ArWfJF1S
-        vryrAwnIvF4rX3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
-        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU25EfUUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,152 +70,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When timer is fired with oneshot mode, CSR TVAL will be -1 rather than 0.
-There needs special handing for this situation. There are two scenarios
-when oneshot timer is fired. One scenario is that time is fired after
-exiting to host, CSR TVAL is set with 0 in order to inject hw interrupt,
-and -1 will assigned to CSR TVAL soon.
+From: xu xin <xu.xin.sc@gmail.com>
 
-The other situation is that timer is fired in VM and guest kernel is
-hanlding timer IRQ, IRQ is acked and is ready to set next expired timer
-value, then vm exits to host. Timer interrupt should not be inject at
-this point, else there will be spurious timer interrupt.
+Background
+==========
+As we know, for now, TIPC doesn't support RPS balance based on the port
+of tipc skb destination. The basic reason is the increased contention of
+node lock when the packets from the same link are distributed to
+different CPUs for processing, as mentioned in [1].
 
-Here hw timer irq status in CSR ESTAT is used to judge these two
-scenarios. If CSR TVAL is -1, the oneshot timer is fired; and if timer hw
-irq is on in CSR ESTAT register, it happens after exiting to host; else
-if timer hw irq is off, we think that it happens in vm and timer IRQ
-handler has already acked IRQ.
+Questions to talk
+=================
+Does tipc_link_rcv() really need hold the tipc_node's read or write lock?
+I tried to look through the procudure code of tipc_link_rcv, I didn't find
+the reason why it needs the lock. If tipc_link_rcv does need it, Can anyone
+tells me the reason, and if we can reduce it's holding time more.
 
-With this patch, runltp with version ltp20230516 passes to run in vm.
-And this patch is based on the patch series.
-https://lore.kernel.org/lkml/20231116023036.2324371-1-maobibo@loongson.cn/
+Advantage
+=========
+If tipc_link_rcv does not need the lock, with this patch applied, enabling
+RPS based destination port (my experimental code) can increase the tipc
+throughput by approximately 25% (in a 4-core cpu).
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+[1] commit 08bfc9cb76e2 ("flow_dissector: add tipc support")
+
+Signed-off-by: xu xin <xu.xin.sc@gmail.com>
 ---
-Changes in v2:
+ net/tipc/node.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-If vm is doing timer IRQ after timer is fired and then vm exits to host,
-CSR LOONGARCH_CSR_TVAL is set with 0. HW will set CSR LOONGARCH_CSR_TVAL
-with -1 and inject timer IRQ. KVM host clears timer IRQ then. With this
-method value of CSR LOONGARCH_CSR_TVAL will be -1 unchanged. Previous
-method will not inject timer IRQ, however LOONGARCH_CSR_TVAL will
-conitnue to go down from -1.
-
----
- arch/loongarch/kvm/timer.c | 65 +++++++++++++++++++++++++++++++-------
- 1 file changed, 53 insertions(+), 12 deletions(-)
-
-diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
-index 711982f9eeb5..6bc3292e779f 100644
---- a/arch/loongarch/kvm/timer.c
-+++ b/arch/loongarch/kvm/timer.c
-@@ -70,13 +70,17 @@ void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long timer_hz)
- void kvm_restore_timer(struct kvm_vcpu *vcpu)
- {
- 	unsigned long cfg, delta, period;
-+	unsigned long ticks, estat;
- 	ktime_t expire, now;
- 	struct loongarch_csrs *csr = vcpu->arch.csr;
+diff --git a/net/tipc/node.c b/net/tipc/node.c
+index 3105abe97bb9..2a036b8a7da3 100644
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -2154,14 +2154,15 @@ void tipc_rcv(struct net *net, struct sk_buff *skb, struct tipc_bearer *b)
+ 	/* Receive packet directly if conditions permit */
+ 	tipc_node_read_lock(n);
+ 	if (likely((n->state == SELF_UP_PEER_UP) && (usr != TUNNEL_PROTOCOL))) {
++		tipc_node_read_unlock(n);
+ 		spin_lock_bh(&le->lock);
+ 		if (le->link) {
+ 			rc = tipc_link_rcv(le->link, skb, &xmitq);
+ 			skb = NULL;
+ 		}
+ 		spin_unlock_bh(&le->lock);
+-	}
+-	tipc_node_read_unlock(n);
++	} else
++		tipc_node_read_unlock(n);
  
- 	/*
- 	 * Set guest stable timer cfg csr
-+	 * Disable timer before restore estat CSR register, avoid to
-+	 * get invalid timer interrupt for old timer cfg
- 	 */
- 	cfg = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_TCFG);
-+	write_gcsr_timercfg(0);
- 	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_ESTAT);
- 	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_TCFG);
- 	if (!(cfg & CSR_TCFG_EN)) {
-@@ -90,20 +94,47 @@ void kvm_restore_timer(struct kvm_vcpu *vcpu)
- 	 */
- 	hrtimer_cancel(&vcpu->arch.swtimer);
+ 	/* Check/update node state before receiving */
+ 	if (unlikely(skb)) {
+@@ -2169,12 +2170,13 @@ void tipc_rcv(struct net *net, struct sk_buff *skb, struct tipc_bearer *b)
+ 			goto out_node_put;
+ 		tipc_node_write_lock(n);
+ 		if (tipc_node_check_state(n, skb, bearer_id, &xmitq)) {
++			tipc_node_write_unlock(n);
+ 			if (le->link) {
+ 				rc = tipc_link_rcv(le->link, skb, &xmitq);
+ 				skb = NULL;
+ 			}
+-		}
+-		tipc_node_write_unlock(n);
++		} else
++			tipc_node_write_unlock(n);
+ 	}
  
-+	/*
-+	 * From LoongArch Reference Manual Volume 1 Chapter 7.6.2
-+	 * If oneshot timer is fired, CSR TVAL will be -1, there are two
-+	 * conditions:
-+	 *  1) timer is fired during exiting to host
-+	 *  2) timer is fired and vm is doing timer irq, and then exiting to
-+	 *     host. Host should not inject timer irq to avoid spurious
-+	 *     timer interrupt again
-+	 */
-+	ticks = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_TVAL);
-+	estat = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_ESTAT);
-+	if (!(cfg & CSR_TCFG_PERIOD) && (ticks > cfg)) {
-+		/*
-+		 * Writing 0 to LOONGARCH_CSR_TVAL will inject timer irq
-+		 * and set CSR TVAL with -1
-+		 */
-+		write_gcsr_timertick(0);
-+
-+		/*
-+		 * Writing CSR_TINTCLR_TI to LOONGARCH_CSR_TINTCLR will clear
-+		 * timer interrupt, and CSR TVAL keeps unchanged with -1,
-+		 * it avoids spurious timer interrupt
-+		 */
-+		if ((estat & CPU_TIMER) == 0)
-+			gcsr_write(CSR_TINTCLR_TI, LOONGARCH_CSR_TINTCLR);
-+		return;
-+	}
-+
- 	/*
- 	 * Set remainder tick value if not expired
- 	 */
- 	now = ktime_get();
- 	expire = vcpu->arch.expire;
-+	delta = 0;
- 	if (ktime_before(now, expire))
- 		delta = ktime_to_tick(vcpu, ktime_sub(expire, now));
--	else {
--		if (cfg & CSR_TCFG_PERIOD) {
--			period = cfg & CSR_TCFG_VAL;
--			delta = ktime_to_tick(vcpu, ktime_sub(now, expire));
--			delta = period - (delta % period);
--		} else
--			delta = 0;
-+	else if (cfg & CSR_TCFG_PERIOD) {
-+		period = cfg & CSR_TCFG_VAL;
-+		delta = ktime_to_tick(vcpu, ktime_sub(now, expire));
-+		delta = period - (delta % period);
-+
- 		/*
- 		 * Inject timer here though sw timer should inject timer
- 		 * interrupt async already, since sw timer may be cancelled
-@@ -122,15 +153,25 @@ void kvm_restore_timer(struct kvm_vcpu *vcpu)
-  */
- static void _kvm_save_timer(struct kvm_vcpu *vcpu)
- {
--	unsigned long ticks, delta;
-+	unsigned long ticks, delta, cfg;
- 	ktime_t expire;
- 	struct loongarch_csrs *csr = vcpu->arch.csr;
- 
- 	ticks = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_TVAL);
--	delta = tick_to_ns(vcpu, ticks);
--	expire = ktime_add_ns(ktime_get(), delta);
--	vcpu->arch.expire = expire;
--	if (ticks) {
-+	cfg = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_TCFG);
-+
-+	/*
-+	 * From LoongArch Reference Manual Volume 1 Chapter 7.6.2
-+	 * If period timer is fired, CSR TVAL will be reloaded from CSR TCFG
-+	 * If oneshot timer is fired, CSR TVAL will be -1
-+	 * Here judge one shot timer fired by checking whether TVAL is larger
-+	 * than TCFG
-+	 */
-+	if (ticks < cfg) {
-+		delta = tick_to_ns(vcpu, ticks);
-+		expire = ktime_add_ns(ktime_get(), delta);
-+		vcpu->arch.expire = expire;
-+
- 		/*
- 		 * HRTIMER_MODE_PINNED is suggested since vcpu may run in
- 		 * the same physical cpu in next time
-
-base-commit: c2d5304e6c648ebcf653bace7e51e0e6742e46c8
+ 	if (unlikely(rc & TIPC_LINK_UP_EVT))
 -- 
-2.39.3
+2.15.2
+
 
