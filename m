@@ -2,146 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 769517F65AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC05C7F65AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345646AbjKWRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40140 "EHLO
+        id S1345509AbjKWRoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjKWRnl (ORCPT
+        with ESMTP id S229526AbjKWRoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:43:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081E410C2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:43:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8729C433C8;
-        Thu, 23 Nov 2023 17:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700761427;
-        bh=1GRk6pF6ONArbuEDYzf53o3CAsRNhMgYXX01fUitKEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EUK/QVte4vbuMVsB7J0ZDQXQPfx5ZzqhBZOhhYXYl+f0qLTL1oOdCbPQ8soI+D9Ee
-         lLr90oOKzn2mI92pdKjbW39eFkQ0GSOJjcyT6adnMdiDnhRB3xMjBD5TgAH4bV6NWh
-         zUYM5BmACPrvUX0Thlj/wUOp31f3cOuJrbJejyUoKR2etkkH1ile+WN036EMVW2DqT
-         u6oOAbS5e4UkOdxtE5rqKgQ0AqfTWN7qYbgnZsGCaXYUVB0crrskCXVWkx/q9UsmMf
-         cZPM91apJKntl3C6x/aRusganoJT+ab/o4O+hbp3yxgKP8ous4VJPWd+HHW8z9aZlX
-         c6tMeQ7jEcPyQ==
-Date:   Thu, 23 Nov 2023 17:43:43 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
-Message-ID: <ZV+PTynfbRmF0trU@finisterre.sirena.org.uk>
-References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
+        Thu, 23 Nov 2023 12:44:01 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7C010D1;
+        Thu, 23 Nov 2023 09:44:06 -0800 (PST)
+Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SblnB2Vspz6K8sn;
+        Fri, 24 Nov 2023 01:42:38 +0800 (CST)
+Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
+ lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 23 Nov 2023 17:44:03 +0000
+From:   <shiju.jose@huawei.com>
+To:     <linux-cxl@vger.kernel.org>, <linux-mm@kvack.org>,
+        <dave@stgolabs.net>, <jonathan.cameron@huawei.com>,
+        <dave.jiang@intel.com>, <alison.schofield@intel.com>,
+        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+        <dan.j.williams@intel.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
+        <Yazen.Ghannam@amd.com>, <rientjes@google.com>,
+        <jiaqiyan@google.com>, <tony.luck@intel.com>, <Jon.Grimm@amd.com>,
+        <dave.hansen@linux.intel.com>, <rafael@kernel.org>,
+        <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+        <james.morse@arm.com>, <jthoughton@google.com>,
+        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
+        <pgonda@google.com>, <duenwen@google.com>,
+        <mike.malvestuto@intel.com>, <gthelen@google.com>,
+        <wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
+        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
+        <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
+        <linuxarm@huawei.com>, <shiju.jose@huawei.com>
+Subject: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox command
+Date:   Fri, 24 Nov 2023 01:43:44 +0800
+Message-ID: <20231123174355.1176-2-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.35.1.windows.2
+In-Reply-To: <20231123174355.1176-1-shiju.jose@huawei.com>
+References: <20231123174355.1176-1-shiju.jose@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="42Lt/E9P87lWIhco"
-Content-Disposition: inline
-In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.122.247.234]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500006.china.huawei.com (7.191.161.198)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Shiju Jose <shiju.jose@huawei.com>
 
---42Lt/E9P87lWIhco
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add support for GET_SUPPORTED_FEATURES mailbox command.
 
-On Thu, Nov 23, 2023 at 03:49:14PM +0100, Neil Armstrong wrote:
-> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
+CXL spec 3.0 section 8.2.9.6 describes optional device specific features.
+CXL devices supports features with changeable attributes.
+Get Supported Features retrieves the list of supported device specific
+features. The settings of a feature can be retrieved using Get Feature
+and optionally modified using Set Feature.
 
-> The WCD9390/WCD9395 Soundwire Slaves will be used by the
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+---
+ drivers/cxl/core/mbox.c | 23 ++++++++++++++++
+ drivers/cxl/cxlmem.h    | 59 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
 
-Please avoid using outdated terminology, "device" is probably a good
-alternative here.  There are some usages in APIs that need to be updated
-but still, good to avoid where possible.
+diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+index 36270dcfb42e..eb2741446b5f 100644
+--- a/drivers/cxl/core/mbox.c
++++ b/drivers/cxl/core/mbox.c
+@@ -1303,6 +1303,29 @@ int cxl_set_timestamp(struct cxl_memdev_state *mds)
+ }
+ EXPORT_SYMBOL_NS_GPL(cxl_set_timestamp, CXL);
+ 
++int cxl_get_supported_features(struct cxl_memdev_state *mds,
++						struct cxl_mbox_get_supp_feats_in *pi,
++						void *feats_out)
++{
++	struct cxl_mbox_cmd mbox_cmd;
++	int rc;
++
++	mbox_cmd = (struct cxl_mbox_cmd) {
++		.opcode = CXL_MBOX_OP_GET_SUPPORTED_FEATURES,
++		.size_in = sizeof(*pi),
++		.payload_in = pi,
++		.size_out = (size_t)pi->count,
++		.payload_out = feats_out,
++		.min_out = sizeof(struct cxl_mbox_get_supp_feats_out),
++	};
++	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
++	if (rc < 0)
++		return rc;
++
++	return 0;
++}
++EXPORT_SYMBOL_NS_GPL(cxl_get_supported_features, CXL);
++
+ int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+ 		       struct cxl_region *cxlr)
+ {
+diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+index a2fcbca253f3..d831dad748f5 100644
+--- a/drivers/cxl/cxlmem.h
++++ b/drivers/cxl/cxlmem.h
+@@ -506,6 +506,7 @@ enum cxl_opcode {
+ 	CXL_MBOX_OP_SET_TIMESTAMP	= 0x0301,
+ 	CXL_MBOX_OP_GET_SUPPORTED_LOGS	= 0x0400,
+ 	CXL_MBOX_OP_GET_LOG		= 0x0401,
++	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	= 0x0500,
+ 	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+ 	CXL_MBOX_OP_GET_PARTITION_INFO	= 0x4100,
+ 	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+@@ -740,6 +741,61 @@ struct cxl_mbox_set_timestamp_in {
+ 
+ } __packed;
+ 
++/* Get Supported Features CXL 3.0 Spec 8.2.9.6.1 */
++/*
++ * Get Supported Features input payload
++ * CXL rev 3.0 section 8.2.9.6.1; Table 8-75
++ */
++struct cxl_mbox_get_supp_feats_in {
++	__le32 count;
++	__le16 start_index;
++	u16 reserved;
++} __packed;
++
++/*
++ * Get Supported Features Supported Feature Entry
++ * CXL rev 3.0 section 8.2.9.6.1; Table 8-77
++ */
++/* Supported Feature Entry : Payload out attribute flags */
++#define CXL_FEAT_ENTRY_FLAG_CHANGABLE	BIT(0)
++#define CXL_FEAT_ENTRY_FLAG_DEEPEST_RESET_PERSISTENCE_MASK	GENMASK(3, 1)
++
++enum cxl_feat_attrib_value_persistence {
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_NONE = 0x0,
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_CXL_RESET = 0x1,
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_HOT_RESET = 0x2,
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_WARM_RESET = 0x3,
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_COLD_RESET = 0x4,
++	CXL_FEAT_ATTRIB_VALUE_PERSISTENCE_MAX
++};
++
++#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_ACROSS_FW_UPDATE_MASK	BIT(4)
++#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_DEFAULT_SEL_SUPPORT_MASK	BIT(5)
++#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_SAVED_SEL_SUPPORT_MASK	BIT(6)
++
++struct cxl_mbox_supp_feat_entry {
++	uuid_t uuid;
++	__le16 feat_index;
++	__le16 get_feat_size;
++	__le16 set_feat_size;
++	__le32 attrb_flags;
++	u8 get_feat_version;
++	u8 set_feat_version;
++	__le16 set_feat_effects;
++	u8 rsvd[18];
++}  __packed;
++
++/*
++ * Get Supported Features output payload
++ * CXL rev 3.0 section 8.2.9.6.1; Table 8-76
++ */
++struct cxl_mbox_get_supp_feats_out {
++	__le16 entries;
++	__le16 nsuppfeats_dev;
++	u32 reserved;
++	struct cxl_mbox_supp_feat_entry feat_entries[];
++} __packed;
++
+ /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
+ struct cxl_mbox_poison_in {
+ 	__le64 offset;
+@@ -867,6 +923,9 @@ void clear_exclusive_cxl_commands(struct cxl_memdev_state *mds,
+ 				  unsigned long *cmds);
+ void cxl_mem_get_event_records(struct cxl_memdev_state *mds, u32 status);
+ int cxl_set_timestamp(struct cxl_memdev_state *mds);
++int cxl_get_supported_features(struct cxl_memdev_state *mds,
++			       struct cxl_mbox_get_supp_feats_in *pi,
++			       void *feats_out);
+ int cxl_poison_state_init(struct cxl_memdev_state *mds);
+ int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+ 		       struct cxl_region *cxlr);
+-- 
+2.34.1
 
-> +static struct wcd939x_sdw_ch_info wcd939x_sdw_tx_ch_info[] = {
-> +	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
-> +	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
-> +	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_1_4_PORT, BIT(2)),
-> +	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_1_4_PORT, BIT(3)),
-> +	// TOFIX support ADC3/4 & DMIC0/1 on port 2
-> +	//WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
-> +	//WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
-> +	//WCD_SDW_CH(WCD939X_DMIC0, WCD939X_ADC_DMIC_1_2_PORT, BIT(2)),
-> +	//WCD_SDW_CH(WCD939X_DMIC1, WCD939X_ADC_DMIC_1_2_PORT, BIT(3)),
-
-Why are these commented out?
-
-> +static int wcd9390_interrupt_callback(struct sdw_slave *slave,
-> +				      struct sdw_slave_intr_status *status)
-> +{
-> +	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
-> +	struct irq_domain *slave_irq = wcd->slave_irq;
-> +	u32 sts1, sts2, sts3;
-> +
-> +	do {
-> +		handle_nested_irq(irq_find_mapping(slave_irq, 0));
-> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_0, &sts1);
-> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_1, &sts2);
-> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_2, &sts3);
-> +
-> +	} while (sts1 || sts2 || sts3);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-We do this in the other Qualcomm drivers but it doesn't seem ideal to
-just ignore the interrupts.
-
-> +static int wcd939x_sdw_component_bind(struct device *dev, struct device *master,
-> +				      void *data)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void wcd939x_sdw_component_unbind(struct device *dev,
-> +					 struct device *master, void *data)
-> +{
-> +}
-> +
-> +static const struct component_ops wcd939x_sdw_component_ops = {
-> +	.bind = wcd939x_sdw_component_bind,
-> +	.unbind = wcd939x_sdw_component_unbind,
-> +};
-
-Do these need to be provided if they can legitimately be empty?
-
---42Lt/E9P87lWIhco
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfj08ACgkQJNaLcl1U
-h9AbPQf9HwduNNNq58Fi9Zk4pDIkhiO6nVd+QB5hkOPoAqoUexbSojnNREgdQUy/
-S5Ek1XNG04jXfE7MYvLpIEO6bhwa6uv/Zn7UM3i0EDIzd2qXT4vH6Ce4/pl2+IsK
-3bcbiKFHCpSQRCbzay9Fm4DUdMXbEIpBeZmMznljBtZmF7UIj1xVLJQEsEiwWJ7G
-8NTb1aJ9QauPhZgkcuizCmNrZkQseSioyDmFZPZlD6TmofHqz2A8MiI5oLQVQr7s
-zvFENMqhOHPxwb9b/orlGQqf0tKdoZZDO66P0b3g242Z2KItP/Aasq4FiQTJ24LP
-/69tGglcrDDBrHEBUmmx6ULgLVUoCw==
-=YBBq
------END PGP SIGNATURE-----
-
---42Lt/E9P87lWIhco--
