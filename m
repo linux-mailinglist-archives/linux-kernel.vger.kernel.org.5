@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BAF7F66D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D1E7F66DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbjKWTAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S229866AbjKWTEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjKWTAr (ORCPT
+        with ESMTP id S229686AbjKWTE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:00:47 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A2CD60
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:00:53 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a00cbb83c80so170607066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:00:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700766052; x=1701370852; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=717qANo9IFyyNeZDc8GQKEAbOtQz1mcsrQpltrJlB1o=;
-        b=Xk7CfAlVyNKkX2Vsz77WJJPRrDVYtTIeRxT7W4JtfD2+wEcdVmDplQWrCZLk3hxycK
-         8aiKxPvtMjd7E6Sd0qNILxCNQDVGlEJUroia75Mnm5Txk+2EGLEGmyCWQfsf9ZrdzODW
-         glMoWu0iIZimI0zkDDgFPpxKlx1fbP7BlXsCw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700766052; x=1701370852;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=717qANo9IFyyNeZDc8GQKEAbOtQz1mcsrQpltrJlB1o=;
-        b=EK6kH560abzpD0C3YHH/RQIJFjcLqFy97/lGGr6gw9ZzGDG4yj9AmLVPMDki2jmkuO
-         V/mAGCuGGJg4J2QftVC7o1Fv+7TaU+jsGHvzQW3AcfIuplK4Dtj/lox7MXnxHhN9c/79
-         ZsBo49DZEl60pGVb41zcw6D2UhnJR9t3kYdJYZEaJVFVD5iMi9cHYeTU5QSHQ/AMvnaz
-         gxx5TqPYudnJ7hzL22vaTooEj0hZopTuPLGRjYbW8g+sDnYMh44ZZ7V1zfSPIjIgafth
-         9EM9nkBRByoKdH8cutniHJYOIK2iteLiqeasym1ShE4b/WlO3ujQthAleQ2YEERpM+cT
-         1zbA==
-X-Gm-Message-State: AOJu0YySG62DPdCuaehbC+jL9RBd84Fm/DDnYXKz3VZpHIlYWtITZ+r/
-        emKni3Y1CWfLriU/jvXDqQX1GeMlCDqPZApYiMGC0CmX
-X-Google-Smtp-Source: AGHT+IFPQzSowAd7V/nPo9KdNcP1n0K9G3C1IGmIaq9BAH1lJ+yECBYIj8rxRzRfxSHSuPDZZxX61g==
-X-Received: by 2002:a17:906:1f02:b0:9ff:a532:b122 with SMTP id w2-20020a1709061f0200b009ffa532b122mr182236ejj.7.1700766051987;
-        Thu, 23 Nov 2023 11:00:51 -0800 (PST)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id a1-20020a1709064a4100b009fc3845adc1sm1096040ejv.154.2023.11.23.11.00.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 11:00:51 -0800 (PST)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so168829466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 11:00:50 -0800 (PST)
-X-Received: by 2002:a17:906:6bcd:b0:a03:7de1:374f with SMTP id
- t13-20020a1709066bcd00b00a037de1374fmr179408ejs.25.1700766050187; Thu, 23 Nov
- 2023 11:00:50 -0800 (PST)
+        Thu, 23 Nov 2023 14:04:28 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEC719D;
+        Thu, 23 Nov 2023 11:04:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/SDYqZIXsdOyj0vjbWI2ClkLE18Ka/bdOsdj54i7Dpw=; b=k73At0T74i/QGx6XSEriGiSqoX
+        CilR8xNuoSc2MzKB3RIYMR10jhHrPgI7P72TWzf6UC+JcW1g798XIbibFF9pmGYzY4dEp7FAdsllE
+        ruQfBOaBDtPtrqQRf7xn1+mCuZrwuHPbqPo5mxFkSBQ8poR9wzcOtGWJ97qwxsCDI6lg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6Ezp-0011Zk-3s; Thu, 23 Nov 2023 20:04:17 +0100
+Date:   Thu, 23 Nov 2023 20:04:17 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        David Wu <david.wu@rock-chips.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH RFC WIP 0/2] net: stmmac: dwmac-rk: add support for PHY
+ wake on LAN
+Message-ID: <f023fbf0-3669-4617-bb60-77fde3255dc0@lunn.ch>
+References: <20231123-dwmac-rk_phy_wol-v1-0-bf4e718081b9@wolfvision.net>
 MIME-Version: 1.0
-References: <20231122163700.400507-1-michael.roth@amd.com> <170073547546.398.2637807593174571076.tip-bot2@tip-bot2>
-In-Reply-To: <170073547546.398.2637807593174571076.tip-bot2@tip-bot2>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Nov 2023 11:00:33 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg=JDhLdEry=U1-iO1foL_j5T37qVE6_MEHqvj31HO1Lw@mail.gmail.com>
-Message-ID: <CAHk-=wg=JDhLdEry=U1-iO1foL_j5T37qVE6_MEHqvj31HO1Lw@mail.gmail.com>
-Subject: Re: [tip: x86/mm] x86/mm: Ensure input to pfn_to_kaddr() is treated
- as a 64-bit type
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123-dwmac-rk_phy_wol-v1-0-bf4e718081b9@wolfvision.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 02:31, tip-bot2 for Michael Roth
-<tip-bot2@linutronix.de> wrote:
->
-> On 64-bit platforms, the pfn_to_kaddr() macro requires that the input
-> value is 64 bits in order to ensure that valid address bits don't get
-> lost when shifting that input by PAGE_SHIFT to calculate the physical
-> address to provide a virtual address for.
+> Setting the USE_PHY_WOL flag configures the PHY as expected (its driver
+> writes the MAC address and the interrupt configuration into the PHY
+> registers) and an interrupt is generated with every magic packet,
+> but only during normal operation i.e. there is no interrupt generation
+> in suspend-to-RAM.
 
-Bah. The commit is obviously fine, but can we please just get rid of
-that broken pfn_to_kaddr() thing entirely?
+Do you have a logic analyser connected? Can you see if the PHY is
+toggling its output pin? We then know if its a PHY problem, or a SoC
+problem.
 
-It's a bogus mis-spelling of pfn_to_virt(), and I don't know why that
-horrid thing exists. In *all* other situations we talk about "virt"
-for kernel virtual addresses, I don't know where that horrid "kaddr"
-came from (ie "virt_to_page()" and friends).
+> A (probably naive) wakeup-source property in the dt node does not help.
+> So now I am trying to find out why the PHY does not react in suspend and
+> why its interrupt is ignored in freeze mode, but I might be overlooking
+> some other important point to consider.
 
-Most notably, we have "virt_to_pfn()" being quite commonly used. We
-don't even have that kaddr_to_pfn(), which just shows *how* bogus this
-whole "pfn_to_kaddr()" crud is.
+What is the clock setup? Sometimes the MAC gives a clock to the
+PHY. Sometimes the PHY gives a lock to the MAC. If its MAC->PHY, and
+this clock is getting turned off, that might cause a problem.
 
-The good news is that there aren't a ton of users. Anybody willing to
-just do a search-and-replace and get rid of this pointless and wrong
-thing?
-
-Using "pfn_to_virt()" has the added advantage that we have a generic
-implementation of it that isn't duplicated pointlessly for N
-architectures, and that didn't have this bug:
-
-  static inline void *pfn_to_virt(unsigned long pfn)
-  {
-        return __va(pfn) << PAGE_SHIFT;
-  }
-  #define pfn_to_virt pfn_to_virt
-
-Hmm?
-
-Amusingly (or sadly), we have s390 holding up the flag of sanity, and having
-
-    #define pfn_to_kaddr(pfn)  pfn_to_virt(pfn)
-
-and then we'd only need to fix the hexagon version of that macro
-(since Hexagon made its own version, with the old bug - but I guess
-Hexagon is 32-bit only and hopefully never grows 64-bit (??) so maybe
-nobody cares).
-
-           Linus
+     Andrew
