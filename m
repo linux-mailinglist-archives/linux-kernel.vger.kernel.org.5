@@ -2,72 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A02207F5918
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F3B7F5919
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344862AbjKWHVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:21:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S1344866AbjKWHV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:21:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344843AbjKWHVQ (ORCPT
+        with ESMTP id S234114AbjKWHVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:21:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72D9109
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:21:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 561C7C433C9;
-        Thu, 23 Nov 2023 07:21:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700724082;
-        bh=CsnrSxt8LqWz3IlU5RxL7FNAeARoDHTOQPwscn2bFpU=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=EN5QnXGXMDpptcghyw9o8SG+qqcVf9CJSLaF+/zuGzWvy2Q8pJP7X2cFJm+m68l1K
-         Dav99GsszboT1/jgiSD5AHfFbyTo636ngZSDVVPLJFobKHVuLFhc5S+yWxtcWRaGxh
-         puSffdbv4LTlcE6rXhgZ/Bi9/liIxUEMaUIOy7VW1yXWjFgbwY0OTZXjuXH9p84ONP
-         JRCtLH7tCSKExOiLna09iAeB0pnLBligL1YUHIXWPkm4ufNdwXIo/jhWCXWedkMry5
-         OoYA4WH+/fVz+mkGDR8pcBxkWFVVMZPu5EAcsMjrJUIaAIYqEj4ctub9uGMZoUjcv5
-         BaO3F6CTiFNRw==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231120174720.239610-1-krzysztof.kozlowski@linaro.org>
-References: <20231120174720.239610-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] soundwire: stream: constify sdw_port_config when
- adding devices
-Message-Id: <170072407994.674978.4727113730635083960.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 12:51:19 +0530
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Thu, 23 Nov 2023 02:21:23 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDF9D41
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:21:28 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5cd1172b815so4295487b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700724088; x=1701328888; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=r8JBfcJ8qyLmIM0+mXWtuL3nULYBHmRUxetXZ1VMVrE=;
+        b=k6gEeW/I7K1+U+pkAV/RxMcpfNO+Fi8SyIv4pGYH3H+bnZeBtkFIWt1XFZQZNSBCPe
+         vjNgiLxHWyssJx+3SAtKuhfrSqZ8nQ163CMiSjU0jPo5d3ZdHwXefYcqO64tpf2N9PBU
+         6iLzdWcW0lAebJ9OIQ3Q3L0BtiIiLYI2tBc6fCbQ6Bm9T+4L6YbjaCcKaZePMzh3irCw
+         7NX231zmLmMXuO5Sem6pZW1xZFUE22j1J3wxUs554LxPmYQaWpRlrhwvSg1mNaHTwIlp
+         tTUxwRg3MAE3Iu00d0xxtXrZAhEINnttcJ9pbjyDIjjkfRKJWCLCrSXW+gqUkIdNrRW/
+         Td2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700724088; x=1701328888;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r8JBfcJ8qyLmIM0+mXWtuL3nULYBHmRUxetXZ1VMVrE=;
+        b=w3mIVJ95J1aVBhKtnyVmiVBurUxL5cv/0OYIua3RDIESekrqyOZt72QzgBw9aQdZ5a
+         F1xflJCY/7NlSQqxG+p4fJvk0HZRkLywifN1z2EQ1FHhJPtbGxmR+P/k37jp65GuVU75
+         usBj7l9GgGCngZvFJAfEeddQDFm0vBGUt48cYA6mApDKNBq7HwxXOrzDzX7pRtx7ObcN
+         YrEOs/BmJK/w0MC4kBQyCoyueOxQUTHKiZYQR+SzdTr47mjo+Lp3tkcRAVYueVRXKH+g
+         jZFZ1/m9axoeOZyENbAaCsr2idrljzts+I9LKAlJ9YeWlws/X8/+2yhoT2PPXO4KBQdz
+         1GzA==
+X-Gm-Message-State: AOJu0YyiLnmAeSIoJ4KsdQk7x78mexQfesZb52DuZe6eOjzbsu46DYsu
+        b3TRyC8dDRvVQ1UStzyJlugXDtGyrgQnHw==
+X-Google-Smtp-Source: AGHT+IFYdCsJQiQuLcEuCdROYl30YmhIrJJ8nUSo92pShPtyIO5a4M+pfwcgYC77/VUh4eoadKQB9NuNUVtgUQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a05:690c:4091:b0:5cc:a957:2557 with SMTP
+ id gb17-20020a05690c409100b005cca9572557mr62016ywb.0.1700724088168; Wed, 22
+ Nov 2023 23:21:28 -0800 (PST)
+Date:   Thu, 23 Nov 2023 07:21:26 +0000
+In-Reply-To: <20231122100156.6568-2-ddrokosov@salutedevices.com>
+Mime-Version: 1.0
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com> <20231122100156.6568-2-ddrokosov@salutedevices.com>
+Message-ID: <20231123072126.jpukmc6rqmzckdw2@google.com>
+Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg tracepoints
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
+        akpm@linux-foundation.org, kernel@sberdevices.ru,
+        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 20 Nov 2023 18:47:20 +0100, Krzysztof Kozlowski wrote:
-> sdw_stream_add_master() and sdw_stream_add_slave() do not modify
-> contents of passed sdw_port_config, so it can be made const for code
-> safety and as documentation of expected usage.
+On Wed, Nov 22, 2023 at 01:01:55PM +0300, Dmitry Rokosov wrote:
+> Sometimes it is necessary to understand in which memcg tracepoint event
+> occurred. The function cgroup_name() is a useful tool for this purpose.
+> To integrate cgroup_name() into the existing memcg tracepoints, this
+> patch introduces a new tracepoint template for the begin() and end()
+> events, utilizing static __array() to store the cgroup name.
 > 
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> ---
+>  include/trace/events/vmscan.h | 77 +++++++++++++++++++++++++++++------
+>  mm/vmscan.c                   | 10 ++---
+>  2 files changed, 70 insertions(+), 17 deletions(-)
 > 
+> diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+> index d2123dd960d5..9b49cd120ae9 100644
+> --- a/include/trace/events/vmscan.h
+> +++ b/include/trace/events/vmscan.h
+> @@ -141,19 +141,47 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_direct_reclaim_b
+>  );
+>  
+>  #ifdef CONFIG_MEMCG
+> -DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_memcg_reclaim_begin,
+>  
+> -	TP_PROTO(int order, gfp_t gfp_flags),
+> +DECLARE_EVENT_CLASS(mm_vmscan_memcg_reclaim_begin_template,
+>  
+> -	TP_ARGS(order, gfp_flags)
+> +	TP_PROTO(int order, gfp_t gfp_flags, const struct mem_cgroup *memcg),
+> +
+> +	TP_ARGS(order, gfp_flags, memcg),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(int, order)
+> +		__field(unsigned long, gfp_flags)
+> +		__array(char, name, NAME_MAX + 1)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->order = order;
+> +		__entry->gfp_flags = (__force unsigned long)gfp_flags;
+> +		cgroup_name(memcg->css.cgroup,
+> +			__entry->name,
+> +			sizeof(__entry->name));
 
-Applied, thanks!
-
-[1/1] soundwire: stream: constify sdw_port_config when adding devices
-      commit: 21f4c443731fdb064c0dd31a743aafd0b075156c
-
-Best regards,
--- 
-~Vinod
-
-
+Any reason not to use cgroup_ino? cgroup_name may conflict and be
+ambiguous.
