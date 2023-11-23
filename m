@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553EC7F680A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230C27F680E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjKWUEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 15:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        id S230096AbjKWUEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 15:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjKWUEn (ORCPT
+        with ESMTP id S229835AbjKWUEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 15:04:43 -0500
+        Thu, 23 Nov 2023 15:04:45 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2BCD40;
-        Thu, 23 Nov 2023 12:04:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE2F9;
+        Thu, 23 Nov 2023 12:04:51 -0800 (PST)
 Received: from arisu.hitronhub.home (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: detlev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F0D726607394;
-        Thu, 23 Nov 2023 20:04:47 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AFDC660739A;
+        Thu, 23 Nov 2023 20:04:49 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700769889;
-        bh=evQpatdSpAPghrML22AafRCMA0dH56j0IXL66sdx8zw=;
+        s=mail; t=1700769890;
+        bh=MDZ5s7wYAgtfoPDbCDwHCx8aRgjhFb0VxGXGz6Xsrxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=blq3IhC03Ed7uBL4SLJO08fgcc0CcrQOW7ElJV5uF3ewtwdDLtgN7x30F6LSX2J8u
-         2cKl3/I/jY/xK7996HrbEvofMc2MZzVC5EV6KomLJrRPPVvx8M6Roq0OweI4L0L4Ek
-         5aGimsviZIfq54XsfG2l2TGS4UxOZsEtsE9RTLOQxyEXp5h7zyfLSDrwSe8fu9Qpsq
-         8PEvIkuF1iyPS4TemJmIPvWw/dWWtAOYbShGL+hQ031FFFVVbUNT9wik5lvYGoT8yP
-         2y2rzCfj7JLSRPISlx/SnPZR5cIItilXEvZlNTKCm6A4uqLcmE/ZYemyiztH6MF16s
-         WjKIDebwC+EZw==
+        b=PnFAo/jveZwQF4QVlm0hO2ObePnKu7qgXPC49iYywOVG0OqUWLYUe0hfzyicnhum7
+         xi22QWKNhg/UmmKQhsTcfE/+Pg3O2LFSUmBNBkkBcO/aircL01whYky7NRltAt7WEF
+         +DMhTa8MGHmlhchk1tp/HwWschyzv7s/MiagENhpv8E2b/VyN2BNGI1ARgfPUuEwa8
+         SguA2gyFdJXXb2OBxrbHVagh350VSZTs2AP9r9KX7gpABNKB1Pbz6IixhndFTNFy/e
+         qQfPDCHDqihmgmRJlrN/M1L1CF3M1mVHbLH9KK75y/G/uU6xTuzG7ga3P7HIgrqyuK
+         +ecXvJ7Ke/FoQ==
 From:   Detlev Casanova <detlev.casanova@collabora.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-media@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc:     linux-media@vger.kernel.org,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Hans Verkuil <hverkuil@xs4all.nl>,
         Detlev Casanova <detlev.casanova@collabora.com>
-Subject: [PATCH v3 3/4] doc: visl: Document stable_output parameter
-Date:   Thu, 23 Nov 2023 14:57:46 -0500
-Message-ID: <20231123200451.148097-4-detlev.casanova@collabora.com>
+Subject: [PATCH v3 4/4] visl: Add codec specific variability on output frames
+Date:   Thu, 23 Nov 2023 14:57:47 -0500
+Message-ID: <20231123200451.148097-5-detlev.casanova@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231123200451.148097-1-detlev.casanova@collabora.com>
 References: <20231123200451.148097-1-detlev.casanova@collabora.com>
@@ -57,27 +57,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When running tests with different input data, the stable output frames
+could be too similar and hide possible issues.
+
+This commit adds variation by using some codec specific parameters.
+
+Only HEVC and H.264 support this.
+
 Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
 Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
 ---
- Documentation/admin-guide/media/visl.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/test-drivers/visl/visl-dec.c | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/Documentation/admin-guide/media/visl.rst b/Documentation/admin-guide/media/visl.rst
-index 4328c6c72d30..1a555e42a81a 100644
---- a/Documentation/admin-guide/media/visl.rst
-+++ b/Documentation/admin-guide/media/visl.rst
-@@ -49,6 +49,10 @@ Module parameters
-   visl_dprintk_frame_start, visl_dprintk_nframes, but controls the dumping of
-   buffer data through debugfs instead.
+diff --git a/drivers/media/test-drivers/visl/visl-dec.c b/drivers/media/test-drivers/visl/visl-dec.c
+index a6c878f0813a..60fca1ddadcd 100644
+--- a/drivers/media/test-drivers/visl/visl-dec.c
++++ b/drivers/media/test-drivers/visl/visl-dec.c
+@@ -272,6 +272,35 @@ static void visl_tpg_fill_sequence(struct visl_ctx *ctx,
+ 	}
+ }
  
-+- stable_output: Limit the information written on each output frame to make
-+  sure that, for a given input, the output frames are always exactly the same.
-+  This is useful for automated tests to check that output frames are correct.
++static bool visl_tpg_fill_codec_specific(struct visl_ctx *ctx,
++					 struct visl_run *run,
++					 char buf[], size_t bufsz)
++{
++	/*
++	 * To add variability, we need a value that is stable for a given
++	 * input but is different than already shown fields.
++	 * The pic order count value defines the display order of the frames
++	 * (which can be different than the decoding order that is shown with
++	 * the sequence number).
++	 * Therefore it is stable for a given input and will add a different
++	 * value that is more specific to the way the input is encoded.
++	 */
++	switch (ctx->current_codec) {
++	case VISL_CODEC_H264:
++		scnprintf(buf, bufsz,
++			  "H264: %u", run->h264.dpram->pic_order_cnt_lsb);
++		break;
++	case VISL_CODEC_HEVC:
++		scnprintf(buf, bufsz,
++			  "HEVC: %d", run->hevc.dpram->pic_order_cnt_val);
++		break;
++	default:
++		return false;
++	}
 +
- What is the default use case for this driver?
- ---------------------------------------------
++	return true;
++}
++
+ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
+ {
+ 	u8 *basep[TPG_MAX_PLANES][2];
+@@ -304,6 +333,13 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
+ 	frame_dprintk(ctx->dev, run->dst->sequence, "");
+ 	line++;
  
++	if (visl_tpg_fill_codec_specific(ctx, run, buf, TPG_STR_BUF_SZ)) {
++		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 16, buf);
++		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
++		frame_dprintk(ctx->dev, run->dst->sequence, "");
++		line++;
++	}
++
+ 	visl_get_ref_frames(ctx, buf, TPG_STR_BUF_SZ, run);
+ 
+ 	while ((line_str = strsep(&tmp, "\n")) && strlen(line_str)) {
 -- 
 2.41.0
 
