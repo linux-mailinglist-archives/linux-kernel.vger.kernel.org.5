@@ -2,66 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 745447F651E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B227F651F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345439AbjKWRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S1345402AbjKWRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345460AbjKWRS3 (ORCPT
+        with ESMTP id S1345475AbjKWRSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:18:29 -0500
+        Thu, 23 Nov 2023 12:18:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3ED46
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:18:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B6FEC433C9;
-        Thu, 23 Nov 2023 17:18:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E4910D3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:18:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE3B2C433C7;
+        Thu, 23 Nov 2023 17:18:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700759914;
-        bh=4uuYv4ivuEW0QNa8dUnLLuSPDWYlT69BIfr2llFRLnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VciWPKaDUoyUh1FepWZVBgnEAvCej2jGYm2TSGV21kR6rxT2wHdKYHWulmTMoEseV
-         QJusH27Z2ZudBxQ1B7xUrUc9F4ScACAMaLstO7vxgwRI77pW+krMbgdRx0Rrp9b8Q1
-         PNEsnqINMuYcAspPMGU0UN0hwXfgGqIxek4NNPZ/xITtRw2uXqBEuyw7S+v9NBAcFo
-         L0HW1CeTZJra/bOWhtwwHUl9sKInrZ7VuduC4xYij7KkMbxYpWUawG84Z046Kzoo14
-         R4WVMicENkQ6N3XbwHcxg/0VgPHaVVXdNT7du6iXWx1pXsOn8M4QQRqCGmpN4EhRX6
-         VePnpFLDsd0nQ==
-Date:   Thu, 23 Nov 2023 17:18:28 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        s=k20201202; t=1700759916;
+        bh=VfLbIw4uft5SCXKloHizPrPXh+pbMziShDpa3FrSeo4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=gRGFbDODAHk+10czz+dGtRvfja+tbJwqvf7hVnCBZy9cLg1Lb2WREsxyLk6BsvGxk
+         bcMo1D6CXY1tgd8nfb12lQyfgq4a/owNyRBHck8u4SWDkpmbLzzew69JQvIwAAiEEA
+         jfCldkI8VsBDEQOOf8e3KD91eRZbaACwwTbE6uKRJudd1AS9Siv3DO3qMN3Abf1mrE
+         inU8e8sbJ7w5tsib61s12NXwHAXeg+HSk5e5JUpwajhL35KItZM6FrkqAW86c4UoNe
+         IQYEHEM+X0YdeLMIOXBYbe/a/gQMb/u4dE+2Hhbt4daFXjEFog17CeMzMd78NwL4uH
+         yCKl9ytKEmBow==
+From:   Lee Jones <lee@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Xinlei Lee <xinlei.lee@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: display: mediatek: dsi: add compatible
- for MediaTek MT8195
-Message-ID: <20231123-wipe-starch-741e674c1f54@spud>
-References: <20231123133749.2030661-1-mwalle@kernel.org>
- <20231123133749.2030661-2-mwalle@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikita Travkin <nikita@trvn.ru>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231120-pm8916-dtsi-bms-lbc-v4-1-4f91056c8252@trvn.ru>
+References: <20231120-pm8916-dtsi-bms-lbc-v4-0-4f91056c8252@trvn.ru>
+ <20231120-pm8916-dtsi-bms-lbc-v4-1-4f91056c8252@trvn.ru>
+Subject: Re: (subset) [PATCH v4 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add
+ pm8916 vm-bms and lbc
+Message-Id: <170075991369.1460551.2059005870143755036.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 17:18:33 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gjaPXcNp/j7dUovY"
-Content-Disposition: inline
-In-Reply-To: <20231123133749.2030661-2-mwalle@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,29 +60,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 20 Nov 2023 19:03:03 +0500, Nikita Travkin wrote:
+> PM8916 (and probably some other similar pmics) have hardware blocks for
+> battery monitoring and charging. Add patterns for respecive nodes so the
+> devicetree for those blocks can be validated properly.
+> 
+> 
 
---gjaPXcNp/j7dUovY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
-On Thu, Nov 23, 2023 at 02:37:46PM +0100, Michael Walle wrote:
-> Add the compatible string for MediaTek MT8195 SoC, using the same DSI
-> block as the MT8183.
->=20
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
+[1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms and lbc
+      commit: 95f44ef666a6504a7c75def89fffacb0ae4bf52c
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+--
+Lee Jones [李琼斯]
 
---gjaPXcNp/j7dUovY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZV+JYwAKCRB4tDGHoIJi
-0k5mAQDNhAGJgE8ZQcNenl97mgSMbjnMQQZT1j8Z6HsCMI1JeQEAm8dsDuvsCcp8
-mPJKmSYIoy4Aes//J8lAQpbhat4N6wY=
-=3Y9w
------END PGP SIGNATURE-----
-
---gjaPXcNp/j7dUovY--
