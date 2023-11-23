@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CC97F61F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24247F61FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345987AbjKWOtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        id S1345970AbjKWOtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345944AbjKWOtZ (ORCPT
+        with ESMTP id S1345960AbjKWOt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:49:25 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97181D5A
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:49:26 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso6310315e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:49:26 -0800 (PST)
+        Thu, 23 Nov 2023 09:49:28 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF058D62
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:49:27 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b2c8e91afso6441015e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:49:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700750965; x=1701355765; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700750966; x=1701355766; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0E+hygzNzgI19puAa9jrq7+VWKSmgws2XGkK7F/jPqA=;
-        b=Q7ELjV5U7/QxnVV1MX3NbtspipSNiFPmTzsa/7jWrwQkAU6iXu2IX9UIIxU+DSWdkm
-         S+3ZH7NqraZCWwWHlyxREhVkPndImHTCoAgkdiC24/uK9Dk8Hyln4oO6TIdHeNfHzYo8
-         Ro0k0c/mAVLQ/j3PB5ohsxCUCRv0H10Ky7g87ou2ssFpp4LQnW8q7bb8e9/3+ovTTXX2
-         YdgKubgg+6VX+MEGRkydxvElu9PwkZqOyR+hWmDTtoKn9jpkcbh/BmfBE6Rj74Ra3Wmx
-         PayU739YCdJpf1hysRxFKu1TpFVSoRGvglgKT2hDty1YVXcmKkxLK+b+aEh99z8o1PM0
-         L9tw==
+        bh=PZJb2zIrSJ8v3P/6Bjl4RgbM/9JfHf6iAqKJeOq/ZYY=;
+        b=cUVMsUdiDvX629WX8z0pdNmeXJSBCYypGeLUe7UYYgtuBN8snMRIWZ5mt/tofKcjfO
+         ipL6+bSKbUbTQspCAO8pYZdZb00Pijce2z2y2jxZ6DKS+n5xzlSitWQYlv5wMAEmMpkM
+         f9305TqthDpzSvWGrk2bs8er4NHUdizyzF7SM+eQ4O/qVL4nMsk03ymOGTrFNtxVjggI
+         H3R1xItYhDAWDvxElh1Qx7sUEMsJu5oeSrklhqwAA3WLP47ASEunbd9MUN593KSJiNQh
+         bd6BWHH4ls5nIU/3EVqxhmd2Aq1wpkBy8ksiCm9qc9xLQyxvU7Ig4vtvBHULQTQuFY3g
+         FCcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700750965; x=1701355765;
+        d=1e100.net; s=20230601; t=1700750966; x=1701355766;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0E+hygzNzgI19puAa9jrq7+VWKSmgws2XGkK7F/jPqA=;
-        b=QflXMFEHkcj2Gl5WQ3pbe/TpC1M0jSlVLQ1fDJ99zRzIupUi5yf5ihksSm8SZ0OzRh
-         mQ9ablY2p1WfexexC1lSBJqsdgL4IK64jXwx5YvmxJ9NWWIWjhggygu1nUDVR8yM63qy
-         3B39G7ScNDggkjeP5KpFCtoO9sateLsIqsteO9JqBJ+1luPK0fipjAFXmw6nkllmy1j6
-         vG400s+1PseYUlfGeVsHI2XfqbWeZJiFIfDXGuQ4pvyA6BHuWc+H5RWC7bw1jvT491bB
-         4ilyPJHPihxvqFT11a3xTL3BEAb26ZrIviSvzc2Yif2/ATBaIhSZyV6O5a5msmK6W/fv
-         sSDQ==
-X-Gm-Message-State: AOJu0YyaRq7v+vkGsFtUtdgr0DXzz/2i1K1IoF+dQeZ/UzbBJJh+Q9LH
-        i++Q96ho0hNhlNt2Z5dcznPfUw==
-X-Google-Smtp-Source: AGHT+IFD8ASJ9HWdPHBDMMvSmXA+otm7+VmryfooYhL93mpzJdddCWUD3bv7KLJlewi/MK7Qo0YICA==
-X-Received: by 2002:a05:600c:3108:b0:409:703c:b9b1 with SMTP id g8-20020a05600c310800b00409703cb9b1mr4080006wmo.40.1700750964332;
-        Thu, 23 Nov 2023 06:49:24 -0800 (PST)
+        bh=PZJb2zIrSJ8v3P/6Bjl4RgbM/9JfHf6iAqKJeOq/ZYY=;
+        b=gZS8y75j6m/M+Y9SlOtxfD4H2MIF5vDJmP6ZjipsjpUlEUjfkwK86V5c49rJXg94Ey
+         9Z4xmtPX59r5NGw6ktX2sADdD417B2xKPCWsglbhnDvgvj/ev8WFXAar9VHjtitho4t1
+         zg2KIWqdhwfRKIPcBhaM5g2mD3aZk5YxjwHdZ0/L7PpAJH5hD3Z9okdSP0ZkWLYNHPiq
+         DXIUiY985br23cd/ea3kGHyoEMVc7JStB6qfWdm982akqU1cAEv0LoppH2DxYyNtlk2h
+         rtG1fjnQtBckCByLCP2t6ptqY4WHYg/Myy+0L/a0dmrSXZXSbvEh2i3UKT53SmXNR+yb
+         wzpA==
+X-Gm-Message-State: AOJu0YwCZROqxyqbroC5+8bLwOyFvajs9UObjtEhvli6S1U3VEEk+hky
+        r/LyHgi9EIb2dC7FQJ5mW59MJQ==
+X-Google-Smtp-Source: AGHT+IFetn0vXarmYGLnfF1WB3GERAs34m+qQkJ0z9yWb/bPyZ0X6HwU6xdzIDd3DIj6MUtLZcwuEA==
+X-Received: by 2002:a05:600c:4f52:b0:40a:28b1:70f8 with SMTP id m18-20020a05600c4f5200b0040a28b170f8mr4233025wmq.21.1700750965634;
+        Thu, 23 Nov 2023 06:49:25 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id r4-20020a05600c458400b004094d4292aesm2256135wmo.18.2023.11.23.06.49.23
+        by smtp.gmail.com with ESMTPSA id r4-20020a05600c458400b004094d4292aesm2256135wmo.18.2023.11.23.06.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 06:49:23 -0800 (PST)
+        Thu, 23 Nov 2023 06:49:25 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Thu, 23 Nov 2023 15:49:14 +0100
-Subject: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
+Date:   Thu, 23 Nov 2023 15:49:15 +0100
+Subject: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
+Message-Id: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
 References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
 In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -75,94 +75,124 @@ Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=104374;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=129825;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=CPdMLVBBupblvYCq1YEO4ajS54WuM/A4108RMJSTYGo=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlX2Zuv10Y5CaeGVV1YiUhY4sTloFT15jESwN7iuMi
- LZ/uwMyJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZV9mbgAKCRB33NvayMhJ0b9XD/
- 4vPU6VzL/Xwa8iSLm1/B9RJRsx5nRrncND11kSlbmSVnycqf/sRqOSJjlXqBTNsW97JL9dKJlTrUGH
- O6HWJPT1d210wU6WiAInbPnq1prr4uiwcJ8pWPg72TUL9gk7JwreUj3OlGx3jLQoAKMHMrpCULwwS0
- LAU+xA7IKM61PsKw3DbhHf6WRJEsy2yBzBBfiJ2mHe9tXlJCJNu3qF/NN+160jC5JAI7WRPQWhgS/s
- D06C9dQ0peqN7KfM6YO7J5zB3jBUs4gQtU+NzOs2GmqipSz/op6UocSSLr3QspA3U/AlfZClknkmbp
- mRhpZXxBWLe+Jbg7S+DooVheABiD5VfKIBd4taLGgKJ6I0chJcmIBIpfZtgeTqNOXuAKhPNjtfVsuo
- qnQiQlgxRWPj5AopS+3fsWInT/8b+8/hcIZ7jDt4xRUo5bVyqA05aTTzB/ujvwN6TyxRwdgu6tlA/6
- QvRwfW8eH7r3nmHT3FosbiDyFpJv8Ahr8fBtHGrjO4F9HX7gPeO4I7+qXxcu91VVTdCjCFMXiKuUKH
- Qfdl6ZOCZPQFxX9J0GCdVdBBDIhBPGuH1Te0BBzgVjsGfEIfv8hnSQmuAA5ixWgUOnwGGYERW76oh6
- t+OAqWlsM83hrOsxIit2q6GmXX+qbw+H7UQEMuFQPiD94jGPGgOUAFr79bOg==
+ bh=hR2jxszc9i4mAoCIMNEExFkSSG/t6QyU/NZKOiKBfl0=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlX2Zu0cYAhA1H/GXr8vFuWWlo3tHmqpthD+OhE7Lc
+ 05rkLueJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZV9mbgAKCRB33NvayMhJ0RyhD/
+ 9zxyMFd0mvIbuYdjSnTKvuelkwlO3qGs6kIalGVf8t+nebrz+JqEA905MAU6y1I1rWxHWrOPM/tDyc
+ s4kwpRIpReHSIj6TCf+S8AjH4vPGyM6udwXBA6EOBxUZsHgOjyTCGMruCqg70XIOuLGYzdgoUN5H0k
+ 7Mw1Abuh0D5EZLQFvTq1fJWHW3IT8XtSrz/ZMBPyLc8Cy7OeVv03iwB6AlEgqi0R9tSyWrTUByUFGq
+ HaSAX/7TILn6o3LTvqm/QGQMNSxDceZ4uUlVT4Ze06qG7vPMzbE5WfR1KmDPZ2G1x8+X4m5F0pbDqY
+ LyjWaERntoWbiSnVJKAK2l9kwnjVFK1lSP5LPIS+SKYvmAXpHIDqkygk9KJyaIsppbjihcRUMvCc/B
+ tFYpOwCYUhwxLR1Rxl/maGaSioozBBn8vCczs8lzHtTU8gW/+u8mgMC1VVCxOAUgkgG/BNNC7P6L1T
+ kkdgoUDlElByM1zTffSdKkS2/1zOC5++7qmcH8dinnTIIDR1b8HbdV2AxXzjG6W0Et2g3vIyfo/tOr
+ M6BpjlKle8FmEb01gnP98yPcRpiocSc/86Ks6q9bi1ERE9qhToQzwDj5km3CIa41USbAGsvXPcgp2L
+ IxgOekiSMaCSECey62iwSQQOPpzkXdAOBRjE2h26YEmdCZ1+KIIR7lm6Is+A==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
+Add the main WCD9390/WCD9395 Audio Codec driver to support:
+- 4 ADC inputs for up to 5 Analog Microphones
+- 4 DMIC inputs for up to 8 Digital Microphones
+- 4 Microphone BIAS
+- Stereo Headphone output
+- Mono EAR output
+- MBHC engine for Headset Detection
 
-The WCD9390/WCD9395 Soundwire Slaves will be used by the
-main WCD9390/WCD9395 Audio Codec driver to access registers
-and configure Soundwire RX and TX ports.
+It makes usage of the generic MBHC and CLSH generic code and
+the USB Type-C mux and switch helpers to gather USB-C Events
+in order to properly setup Headset Detection mechanism
+when connected behind the separate USB-C Mux subsystem.
+
+WCD9390/WCD9395 supports a PCM path for Playback instead
+of the actually implemented PDM playback, it will be
+implemented later.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- sound/soc/codecs/Kconfig       |   10 +
- sound/soc/codecs/Makefile      |    1 +
- sound/soc/codecs/wcd939x-sdw.c | 1591 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wcd939x.h     |  936 +++++++++++++++++++++++
- 4 files changed, 2538 insertions(+)
+ sound/soc/codecs/Kconfig       |    8 +
+ sound/soc/codecs/Makefile      |    6 +
+ sound/soc/codecs/wcd-clsh-v2.h |    1 +
+ sound/soc/codecs/wcd939x.c     | 3635 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 3650 insertions(+)
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 3429419ca694..1a29b38d4cb9 100644
+index 1a29b38d4cb9..31f26eb2f833 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -276,6 +276,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_WCD9335
- 	imply SND_SOC_WCD934X
- 	imply SND_SOC_WCD938X_SDW
-+	imply SND_SOC_WCD939X_SDW
- 	imply SND_SOC_LPASS_MACRO_COMMON
- 	imply SND_SOC_LPASS_RX_MACRO
- 	imply SND_SOC_LPASS_TX_MACRO
-@@ -2055,6 +2056,15 @@ config SND_SOC_WCD938X_SDW
+@@ -2056,8 +2056,16 @@ config SND_SOC_WCD938X_SDW
  	  The WCD9380/9385 is a audio codec IC Integrated in
  	  Qualcomm SoCs like SM8250.
  
-+config SND_SOC_WCD939X_SDW
-+	tristate "WCD9390/WCD9395 Codec - SDW"
-+	select REGMAP_IRQ
-+	depends on SOUNDWIRE
-+	select REGMAP_SOUNDWIRE
-+	help
-+	  The WCD9390/9395 is a audio codec IC Integrated in
-+	  Qualcomm SoCs like SM8650.
++config SND_SOC_WCD939X
++	depends on SND_SOC_WCD939X_SDW
++	tristate
++	depends on SOUNDWIRE || !SOUNDWIRE
++	select SND_SOC_WCD_CLASSH
 +
- config SND_SOC_WL1273
- 	tristate
- 
+ config SND_SOC_WCD939X_SDW
+ 	tristate "WCD9390/WCD9395 Codec - SDW"
++	select SND_SOC_WCD939X
++	select SND_SOC_WCD_MBHC
+ 	select REGMAP_IRQ
+ 	depends on SOUNDWIRE
+ 	select REGMAP_SOUNDWIRE
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 2078bb0d981e..c63e4c274ed4 100644
+index c63e4c274ed4..4fba9fbb6516 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
 @@ -312,6 +312,7 @@ snd-soc-wcd9335-objs := wcd9335.o
  snd-soc-wcd934x-objs := wcd934x.o
  snd-soc-wcd938x-objs := wcd938x.o
  snd-soc-wcd938x-sdw-objs := wcd938x-sdw.o
-+snd-soc-wcd939x-sdw-objs := wcd939x-sdw.o
++snd-soc-wcd939x-objs := wcd939x.o
+ snd-soc-wcd939x-sdw-objs := wcd939x-sdw.o
  snd-soc-wl1273-objs := wl1273.o
  snd-soc-wm-adsp-objs := wm_adsp.o
- snd-soc-wm0010-objs := wm0010.o
-diff --git a/sound/soc/codecs/wcd939x-sdw.c b/sound/soc/codecs/wcd939x-sdw.c
+@@ -702,6 +703,11 @@ ifdef CONFIG_SND_SOC_WCD938X_SDW
+ # avoid link failure by forcing sdw code built-in when needed
+ obj-$(CONFIG_SND_SOC_WCD938X) += snd-soc-wcd938x-sdw.o
+ endif
++obj-$(CONFIG_SND_SOC_WCD939X)	+= snd-soc-wcd939x.o
++ifdef CONFIG_SND_SOC_WCD939X_SDW
++# avoid link failure by forcing sdw code built-in when needed
++obj-$(CONFIG_SND_SOC_WCD939X) += snd-soc-wcd939x-sdw.o
++endif
+ obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+ obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
+ obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+diff --git a/sound/soc/codecs/wcd-clsh-v2.h b/sound/soc/codecs/wcd-clsh-v2.h
+index 4e3653058275..eeb9bc5b01e2 100644
+--- a/sound/soc/codecs/wcd-clsh-v2.h
++++ b/sound/soc/codecs/wcd-clsh-v2.h
+@@ -47,6 +47,7 @@ enum wcd_codec_version {
+ 	/* New CLSH after this */
+ 	WCD937X  = 2,
+ 	WCD938X  = 3,
++	WCD939X  = 4,
+ };
+ struct wcd_clsh_ctrl;
+ 
+diff --git a/sound/soc/codecs/wcd939x.c b/sound/soc/codecs/wcd939x.c
 new file mode 100644
-index 000000000000..3dda993f601a
+index 000000000000..47af08e6c0c8
 --- /dev/null
-+++ b/sound/soc/codecs/wcd939x-sdw.c
-@@ -0,0 +1,1591 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/sound/soc/codecs/wcd939x.c
+@@ -0,0 +1,3635 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
++ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2022-2023, Qualcomm Innovation Center, Inc. All rights reserved.
 + * Copyright (c) 2023, Linaro Limited
 + */
 +
@@ -170,2530 +200,3630 @@ index 000000000000..3dda993f601a
 +#include <linux/slab.h>
 +#include <linux/platform_device.h>
 +#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
 +#include <linux/kernel.h>
-+#include <linux/component.h>
 +#include <linux/pm_runtime.h>
-+#include <linux/irq.h>
-+#include <linux/irqdomain.h>
++#include <linux/component.h>
++#include <sound/tlv.h>
++#include <linux/of_gpio.h>
++#include <linux/of_graph.h>
 +#include <linux/of.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+#include <linux/soundwire/sdw_registers.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
 +#include <linux/regmap.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
++#include <linux/regulator/consumer.h>
++#include <linux/usb/typec_mux.h>
++#include <linux/usb/typec_altmode.h>
++
++#include "wcd-clsh-v2.h"
++#include "wcd-mbhc-v2.h"
 +#include "wcd939x.h"
 +
-+#define SWRS_SCP_HOST_CLK_DIV2_CTL_BANK(m) (0xE0 + 0x10 * (m))
++#define WCD939X_MAX_MICBIAS		(4)
++#define WCD939X_MAX_SUPPLY		(4)
++#define WCD939X_MBHC_MAX_BUTTONS	(8)
++#define TX_ADC_MAX			(4)
++#define WCD_MBHC_HS_V_MAX		1600
 +
-+static struct wcd939x_sdw_ch_info wcd939x_sdw_rx_ch_info[] = {
-+	WCD_SDW_CH(WCD939X_HPH_L, WCD939X_HPH_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_HPH_R, WCD939X_HPH_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_CLSH, WCD939X_CLSH_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_COMP_L, WCD939X_COMP_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_COMP_R, WCD939X_COMP_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_LO, WCD939X_LO_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_DSD_L, WCD939X_DSD_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_DSD_R, WCD939X_DSD_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_HIFI_PCM_L, WCD939X_HIFI_PCM_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_HIFI_PCM_R, WCD939X_HIFI_PCM_PORT, BIT(1)),
++enum {
++	WCD939X_VERSION_1_0 = 0,
++	WCD939X_VERSION_1_1,
++	WCD939X_VERSION_2_0,
 +};
 +
-+static struct wcd939x_sdw_ch_info wcd939x_sdw_tx_ch_info[] = {
-+	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_1_4_PORT, BIT(2)),
-+	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_1_4_PORT, BIT(3)),
-+	// TOFIX support ADC3/4 & DMIC0/1 on port 2
-+	//WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
-+	//WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
-+	//WCD_SDW_CH(WCD939X_DMIC0, WCD939X_ADC_DMIC_1_2_PORT, BIT(2)),
-+	//WCD_SDW_CH(WCD939X_DMIC1, WCD939X_ADC_DMIC_1_2_PORT, BIT(3)),
-+	WCD_SDW_CH(WCD939X_DMIC0, WCD939X_DMIC_0_3_MBHC_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_DMIC1, WCD939X_DMIC_0_3_MBHC_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_MBHC, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
-+	WCD_SDW_CH(WCD939X_DMIC2, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
-+	WCD_SDW_CH(WCD939X_DMIC3, WCD939X_DMIC_0_3_MBHC_PORT, BIT(3)),
-+	WCD_SDW_CH(WCD939X_DMIC4, WCD939X_DMIC_3_7_PORT, BIT(0)),
-+	WCD_SDW_CH(WCD939X_DMIC5, WCD939X_DMIC_3_7_PORT, BIT(1)),
-+	WCD_SDW_CH(WCD939X_DMIC6, WCD939X_DMIC_3_7_PORT, BIT(2)),
-+	WCD_SDW_CH(WCD939X_DMIC7, WCD939X_DMIC_3_7_PORT, BIT(3)),
++#define WCD939X_RATES_MASK (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
++			    SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
++			    SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000 |\
++			    SNDRV_PCM_RATE_384000)
++/* Fractional Rates */
++#define WCD939X_FRAC_RATES_MASK (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_88200 |\
++				 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_352800)
++#define WCD939X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S24_3LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
++
++/* Convert from vout ctl to micbias voltage in mV */
++#define WCD_VOUT_CTL_TO_MICB(v)		(1000 + (v) * 50)
++#define SWR_CLK_RATE_0P6MHZ		(600000)
++#define SWR_CLK_RATE_1P2MHZ		(1200000)
++#define SWR_CLK_RATE_2P4MHZ		(2400000)
++#define SWR_CLK_RATE_4P8MHZ		(4800000)
++#define SWR_CLK_RATE_9P6MHZ		(9600000)
++#define SWR_CLK_RATE_11P2896MHZ		(1128960)
++
++#define ADC_MODE_VAL_HIFI		0x01
++#define ADC_MODE_VAL_LO_HIF		0x02
++#define ADC_MODE_VAL_NORMAL		0x03
++#define ADC_MODE_VAL_LP			0x05
++#define ADC_MODE_VAL_ULP1		0x09
++#define ADC_MODE_VAL_ULP2		0x0B
++
++/* Z value defined in milliohm */
++#define WCD939X_ZDET_VAL_32		(32000)
++#define WCD939X_ZDET_VAL_400		(400000)
++#define WCD939X_ZDET_VAL_1200		(1200000)
++#define WCD939X_ZDET_VAL_100K		(100000000)
++
++/* Z floating defined in ohms */
++#define WCD939X_ZDET_FLOATING_IMPEDANCE	(0x0FFFFFFE)
++#define WCD939X_ZDET_NUM_MEASUREMENTS	(900)
++#define WCD939X_MBHC_GET_C1(c)		(((c) & 0xC000) >> 14)
++#define WCD939X_MBHC_GET_X1(x)		((x) & 0x3FFF)
++
++/* Z value compared in milliOhm */
++#define WCD939X_MBHC_IS_SECOND_RAMP_REQUIRED(z) false
++#define WCD939X_ANA_MBHC_ZDET_CONST	(1018 * 1024)
++
++enum {
++	WCD9390 = 0,
++	WCD9395 = 5,
 +};
 +
-+static struct sdw_dpn_prop wcd939x_rx_dpn_prop[WCD939X_MAX_RX_SWR_PORTS] = {
-+	{
-+		.num = WCD939X_HPH_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 2,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_CLSH_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 1,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_COMP_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 2,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_LO_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 1,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_DSD_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 2,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_HIFI_PCM_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 2,
-+		.simple_ch_prep_sm = true,
-+	}
++enum {
++	/* INTR_CTRL_INT_MASK_0 */
++	WCD939X_IRQ_MBHC_BUTTON_PRESS_DET = 0,
++	WCD939X_IRQ_MBHC_BUTTON_RELEASE_DET,
++	WCD939X_IRQ_MBHC_ELECT_INS_REM_DET,
++	WCD939X_IRQ_MBHC_ELECT_INS_REM_LEG_DET,
++	WCD939X_IRQ_MBHC_SW_DET,
++	WCD939X_IRQ_HPHR_OCP_INT,
++	WCD939X_IRQ_HPHR_CNP_INT,
++	WCD939X_IRQ_HPHL_OCP_INT,
++
++	/* INTR_CTRL_INT_MASK_1 */
++	WCD939X_IRQ_HPHL_CNP_INT,
++	WCD939X_IRQ_EAR_CNP_INT,
++	WCD939X_IRQ_EAR_SCD_INT,
++	WCD939X_IRQ_HPHL_PDM_WD_INT,
++	WCD939X_IRQ_HPHR_PDM_WD_INT,
++	WCD939X_IRQ_EAR_PDM_WD_INT,
++
++	/* INTR_CTRL_INT_MASK_2 */
++	WCD939X_IRQ_MBHC_MOISTURE_INT,
++	WCD939X_IRQ_HPHL_SURGE_DET_INT,
++	WCD939X_IRQ_HPHR_SURGE_DET_INT,
++	WCD939X_NUM_IRQS,
 +};
 +
-+static struct sdw_dpn_prop wcd939x_tx_dpn_prop[WCD939X_MAX_TX_SWR_PORTS] = {
-+	{
-+		.num = WCD939X_ADC_1_4_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 4,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_ADC_DMIC_1_2_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 4,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_DMIC_0_3_MBHC_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 4,
-+		.simple_ch_prep_sm = true,
-+	},
-+	{
-+		.num = WCD939X_DMIC_3_7_PORT,
-+		.type = SDW_DPN_SIMPLE,
-+		.min_ch = 1,
-+		.max_ch = 4,
-+		.simple_ch_prep_sm = true,
-+	}
++enum {
++	WCD_ADC1 = 0,
++	WCD_ADC2,
++	WCD_ADC3,
++	WCD_ADC4,
++	HPH_PA_DELAY,
 +};
 +
-+struct device *wcd939x_sdw_device_get(struct device_node *np)
++enum {
++	ADC_MODE_INVALID = 0,
++	ADC_MODE_HIFI,
++	ADC_MODE_LO_HIF,
++	ADC_MODE_NORMAL,
++	ADC_MODE_LP,
++	ADC_MODE_ULP1,
++	ADC_MODE_ULP2,
++};
++
++enum {
++	AIF1_PB = 0,
++	AIF1_CAP,
++	NUM_CODEC_DAIS,
++};
++
++static u8 tx_mode_bit[] = {
++	[ADC_MODE_INVALID] = 0x00,
++	[ADC_MODE_HIFI] = 0x01,
++	[ADC_MODE_LO_HIF] = 0x02,
++	[ADC_MODE_NORMAL] = 0x04,
++	[ADC_MODE_LP] = 0x08,
++	[ADC_MODE_ULP1] = 0x10,
++	[ADC_MODE_ULP2] = 0x20,
++};
++
++struct wcd939x_priv {
++	struct sdw_slave *tx_sdw_dev;
++	struct wcd939x_sdw_priv *sdw_priv[NUM_CODEC_DAIS];
++	struct device *txdev;
++	struct device *rxdev;
++	struct device_node *rxnode, *txnode;
++	struct regmap *regmap;
++	struct snd_soc_component *component;
++	/* micb setup lock */
++	struct mutex micb_lock;
++	/* typec handling */
++	bool typec_analog_mux;
++	struct typec_mux_dev *typec_mux;
++	struct typec_switch_dev *typec_sw;
++	enum typec_orientation typec_orientation;
++	unsigned long typec_mode;
++	struct typec_switch *typec_switch;
++	/* mbhc module */
++	struct wcd_mbhc *wcd_mbhc;
++	struct wcd_mbhc_config mbhc_cfg;
++	struct wcd_mbhc_intr intr_ids;
++	struct wcd_clsh_ctrl *clsh_info;
++	struct irq_domain *virq;
++	struct regmap_irq_chip *wcd_regmap_irq_chip;
++	struct regmap_irq_chip_data *irq_chip;
++	struct regulator_bulk_data supplies[WCD939X_MAX_SUPPLY];
++	struct snd_soc_jack *jack;
++	unsigned long status_mask;
++	s32 micb_ref[WCD939X_MAX_MICBIAS];
++	s32 pullup_ref[WCD939X_MAX_MICBIAS];
++	u32 hph_mode;
++	u32 tx_mode[TX_ADC_MAX];
++	int variant;
++	int reset_gpio;
++	u32 micb1_mv;
++	u32 micb2_mv;
++	u32 micb3_mv;
++	u32 micb4_mv;
++	int hphr_pdm_wd_int;
++	int hphl_pdm_wd_int;
++	int ear_pdm_wd_int;
++	bool comp1_enable;
++	bool comp2_enable;
++	bool ldoh;
++};
++
++static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
++static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
++
++struct wcd939x_mbhc_zdet_param {
++	u16 ldo_ctl;
++	u16 noff;
++	u16 nshift;
++	u16 btn5;
++	u16 btn6;
++	u16 btn7;
++};
++
++static struct wcd_mbhc_field wcd_mbhc_fields[WCD_MBHC_REG_FUNC_MAX] = {
++	WCD_MBHC_FIELD(WCD_MBHC_L_DET_EN, WCD939X_ANA_MBHC_MECH, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_GND_DET_EN, WCD939X_ANA_MBHC_MECH, 0x40),
++	WCD_MBHC_FIELD(WCD_MBHC_MECH_DETECTION_TYPE, WCD939X_ANA_MBHC_MECH, 0x20),
++	WCD_MBHC_FIELD(WCD_MBHC_MIC_CLAMP_CTL, WCD939X_MBHC_NEW_PLUG_DETECT_CTL, 0x30),
++	WCD_MBHC_FIELD(WCD_MBHC_ELECT_DETECTION_TYPE, WCD939X_ANA_MBHC_ELECT, 0x08),
++	WCD_MBHC_FIELD(WCD_MBHC_HS_L_DET_PULL_UP_CTRL, WCD939X_MBHC_NEW_INT_MECH_DET_CURRENT, 0x1F),
++	WCD_MBHC_FIELD(WCD_MBHC_HS_L_DET_PULL_UP_COMP_CTRL, WCD939X_ANA_MBHC_MECH, 0x04),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_PLUG_TYPE, WCD939X_ANA_MBHC_MECH, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_GND_PLUG_TYPE, WCD939X_ANA_MBHC_MECH, 0x08),
++	WCD_MBHC_FIELD(WCD_MBHC_SW_HPH_LP_100K_TO_GND, WCD939X_ANA_MBHC_MECH, 0x01),
++	WCD_MBHC_FIELD(WCD_MBHC_ELECT_SCHMT_ISRC, WCD939X_ANA_MBHC_ELECT, 0x06),
++	WCD_MBHC_FIELD(WCD_MBHC_FSM_EN, WCD939X_ANA_MBHC_ELECT, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_INSREM_DBNC, WCD939X_MBHC_NEW_PLUG_DETECT_CTL, 0x0F),
++	WCD_MBHC_FIELD(WCD_MBHC_BTN_DBNC, WCD939X_MBHC_NEW_CTL_1, 0x03),
++	WCD_MBHC_FIELD(WCD_MBHC_HS_VREF, WCD939X_MBHC_NEW_CTL_2, 0x03),
++	WCD_MBHC_FIELD(WCD_MBHC_HS_COMP_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0x08),
++	WCD_MBHC_FIELD(WCD_MBHC_IN2P_CLAMP_STATE, WCD939X_ANA_MBHC_RESULT_3, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_MIC_SCHMT_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0x20),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_SCHMT_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHR_SCHMT_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0x40),
++	WCD_MBHC_FIELD(WCD_MBHC_OCP_FSM_EN, WCD939X_HPH_OCP_CTL, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_BTN_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0x07),
++	WCD_MBHC_FIELD(WCD_MBHC_BTN_ISRC_CTL, WCD939X_ANA_MBHC_ELECT, 0x70),
++	WCD_MBHC_FIELD(WCD_MBHC_ELECT_RESULT, WCD939X_ANA_MBHC_RESULT_3, 0xFF),
++	WCD_MBHC_FIELD(WCD_MBHC_MICB_CTRL, WCD939X_ANA_MICB2, 0xC0),
++	WCD_MBHC_FIELD(WCD_MBHC_HPH_CNP_WG_TIME, WCD939X_HPH_CNP_WG_TIME, 0xFF),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHR_PA_EN, WCD939X_ANA_HPH, 0x40),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_PA_EN, WCD939X_ANA_HPH, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_HPH_PA_EN, WCD939X_ANA_HPH, 0xC0),
++	WCD_MBHC_FIELD(WCD_MBHC_SWCH_LEVEL_REMOVE, WCD939X_ANA_MBHC_RESULT_3, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_ANC_DET_EN, WCD939X_MBHC_CTL_BCS, 0x02),
++	WCD_MBHC_FIELD(WCD_MBHC_FSM_STATUS, WCD939X_MBHC_NEW_FSM_STATUS, 0x01),
++	WCD_MBHC_FIELD(WCD_MBHC_MUX_CTL, WCD939X_MBHC_NEW_CTL_2, 0x70),
++	WCD_MBHC_FIELD(WCD_MBHC_MOISTURE_STATUS, WCD939X_MBHC_NEW_FSM_STATUS, 0x20),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHR_GND, WCD939X_HPH_PA_CTL2, 0x40),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_GND, WCD939X_HPH_PA_CTL2, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_OCP_DET_EN, WCD939X_HPH_L_TEST, 0x01),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHR_OCP_DET_EN, WCD939X_HPH_R_TEST, 0x01),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHL_OCP_STATUS, WCD939X_DIGITAL_INTR_STATUS_0, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_HPHR_OCP_STATUS, WCD939X_DIGITAL_INTR_STATUS_0, 0x20),
++	WCD_MBHC_FIELD(WCD_MBHC_ADC_EN, WCD939X_MBHC_NEW_CTL_1, 0x08),
++	WCD_MBHC_FIELD(WCD_MBHC_ADC_COMPLETE, WCD939X_MBHC_NEW_FSM_STATUS, 0x40),
++	WCD_MBHC_FIELD(WCD_MBHC_ADC_TIMEOUT, WCD939X_MBHC_NEW_FSM_STATUS, 0x80),
++	WCD_MBHC_FIELD(WCD_MBHC_ADC_RESULT, WCD939X_MBHC_NEW_ADC_RESULT, 0xFF),
++	WCD_MBHC_FIELD(WCD_MBHC_MICB2_VOUT, WCD939X_ANA_MICB2, 0x3F),
++	WCD_MBHC_FIELD(WCD_MBHC_ADC_MODE, WCD939X_MBHC_NEW_CTL_1, 0x10),
++	WCD_MBHC_FIELD(WCD_MBHC_DETECTION_DONE, WCD939X_MBHC_NEW_CTL_1, 0x04),
++	WCD_MBHC_FIELD(WCD_MBHC_ELECT_ISRC_EN, WCD939X_ANA_MBHC_ZDET, 0x02),
++};
++
++static const struct regmap_irq wcd939x_irqs[WCD939X_NUM_IRQS] = {
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_BUTTON_PRESS_DET, 0, 0x01),
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_BUTTON_RELEASE_DET, 0, 0x02),
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_ELECT_INS_REM_DET, 0, 0x04),
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_ELECT_INS_REM_LEG_DET, 0, 0x08),
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_SW_DET, 0, 0x10),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHR_OCP_INT, 0, 0x20),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHR_CNP_INT, 0, 0x40),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHL_OCP_INT, 0, 0x80),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHL_CNP_INT, 1, 0x01),
++	REGMAP_IRQ_REG(WCD939X_IRQ_EAR_CNP_INT, 1, 0x02),
++	REGMAP_IRQ_REG(WCD939X_IRQ_EAR_SCD_INT, 1, 0x04),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHL_PDM_WD_INT, 1, 0x20),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHR_PDM_WD_INT, 1, 0x40),
++	REGMAP_IRQ_REG(WCD939X_IRQ_EAR_PDM_WD_INT, 1, 0x80),
++	REGMAP_IRQ_REG(WCD939X_IRQ_MBHC_MOISTURE_INT, 2, 0x02),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHL_SURGE_DET_INT, 2, 0x04),
++	REGMAP_IRQ_REG(WCD939X_IRQ_HPHR_SURGE_DET_INT, 2, 0x08),
++};
++
++static struct regmap_irq_chip wcd939x_regmap_irq_chip = {
++	.name = "wcd939x",
++	.irqs = wcd939x_irqs,
++	.num_irqs = ARRAY_SIZE(wcd939x_irqs),
++	.num_regs = 3,
++	.status_base = WCD939X_DIGITAL_INTR_STATUS_0,
++	.mask_base = WCD939X_DIGITAL_INTR_MASK_0,
++	.ack_base = WCD939X_DIGITAL_INTR_CLEAR_0,
++	.use_ack = 1,
++	.runtime_pm = true,
++	.irq_drv_data = NULL,
++};
++
++static int wcd939x_get_clk_rate(int mode)
 +{
-+	return bus_find_device_by_of_node(&sdw_bus_type, np);
++	int rate;
++
++	switch (mode) {
++	case ADC_MODE_ULP2:
++		rate = SWR_CLK_RATE_0P6MHZ;
++		break;
++	case ADC_MODE_ULP1:
++		rate = SWR_CLK_RATE_1P2MHZ;
++		break;
++	case ADC_MODE_LP:
++		rate = SWR_CLK_RATE_4P8MHZ;
++		break;
++	case ADC_MODE_NORMAL:
++	case ADC_MODE_LO_HIF:
++	case ADC_MODE_HIFI:
++	case ADC_MODE_INVALID:
++	default:
++		rate = SWR_CLK_RATE_9P6MHZ;
++		break;
++	}
++
++	return rate;
 +}
-+EXPORT_SYMBOL_GPL(wcd939x_sdw_device_get);
 +
-+int wcd939x_swr_get_current_bank(struct sdw_slave *sdev)
++static int wcd939x_set_swr_clk_rate(struct snd_soc_component *component, int rate, int bank)
 +{
-+	int bank;
++	u8 mask = (bank ? 0xF0 : 0x0F);
++	u8 val = 0;
 +
-+	bank = sdw_read(sdev, SDW_SCP_CTRL);
-+
-+	return ((bank & 0x40) ? 1 : 0);
-+}
-+EXPORT_SYMBOL_GPL(wcd939x_swr_get_current_bank);
-+
-+int wcd939x_sdw_hw_params(struct wcd939x_sdw_priv *wcd,
-+			  struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params,
-+			  struct snd_soc_dai *dai)
-+{
-+	struct sdw_port_config port_config[WCD939X_MAX_SWR_PORTS];
-+	unsigned long ch_mask;
-+	int i, j;
-+
-+	wcd->sconfig.ch_count = 1;
-+	wcd->active_ports = 0;
-+	for (i = 0; i < WCD939X_MAX_SWR_PORTS; i++) {
-+		ch_mask = wcd->port_config[i].ch_mask;
-+
-+		if (!ch_mask)
-+			continue;
-+
-+		for_each_set_bit(j, &ch_mask, 4)
-+			wcd->sconfig.ch_count++;
-+
-+		port_config[wcd->active_ports] = wcd->port_config[i];
-+		wcd->active_ports++;
++	switch (rate) {
++	case SWR_CLK_RATE_0P6MHZ:
++		val = 6;
++		break;
++	case SWR_CLK_RATE_1P2MHZ:
++		val = 5;
++		break;
++	case SWR_CLK_RATE_2P4MHZ:
++		val = 3;
++		break;
++	case SWR_CLK_RATE_4P8MHZ:
++		val = 1;
++		break;
++	case SWR_CLK_RATE_9P6MHZ:
++	default:
++		val = 0;
++		break;
 +	}
 +
-+	wcd->sconfig.bps = 1;
-+	wcd->sconfig.frame_rate = params_rate(params);
-+	if (wcd->is_tx)
-+		wcd->sconfig.direction = SDW_DATA_DIR_TX;
++	snd_soc_component_write_field(component, WCD939X_DIGITAL_SWR_TX_CLK_RATE, mask, val);
++
++	return 0;
++}
++
++static int wcd939x_io_init(struct snd_soc_component *component)
++{
++	snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
++				      WCD939X_BIAS_ANALOG_BIAS_EN, 1);
++	snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
++				      WCD939X_BIAS_PRECHRG_EN, 1);
++
++	/* 10 msec delay as per HW requirement */
++	usleep_range(10000, 10010);
++	snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
++				      WCD939X_BIAS_PRECHRG_EN, 0);
++
++	snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L,
++				      WCD939X_RDAC_HD2_CTL_L_HD2_RES_DIV_CTL_L, 0x15);
++	snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R,
++				      WCD939X_RDAC_HD2_CTL_R_HD2_RES_DIV_CTL_R, 0x15);
++	snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DMIC_CTL,
++				      WCD939X_CDC_DMIC_CTL_CLK_SCALE_EN, 1);
++
++	snd_soc_component_write_field(component, WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_ULP,
++				      WCD939X_FE_ICTRL_STG2CASC_ULP_ICTRL_SCBIAS_ULP0P6M, 1);
++	snd_soc_component_write_field(component, WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_ULP,
++				      WCD939X_FE_ICTRL_STG2CASC_ULP_VALUE, 4);
++
++	snd_soc_component_write_field(component, WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_ULP,
++				      WCD939X_FE_ICTRL_STG2MAIN_ULP_VALUE, 8);
++
++	snd_soc_component_write_field(component, WCD939X_MICB1_TEST_CTL_1,
++				      WCD939X_TEST_CTL_1_NOISE_FILT_RES_VAL, 7);
++	snd_soc_component_write_field(component, WCD939X_MICB2_TEST_CTL_1,
++				      WCD939X_TEST_CTL_1_NOISE_FILT_RES_VAL, 7);
++	snd_soc_component_write_field(component, WCD939X_MICB3_TEST_CTL_1,
++				      WCD939X_TEST_CTL_1_NOISE_FILT_RES_VAL, 7);
++	snd_soc_component_write_field(component, WCD939X_MICB4_TEST_CTL_1,
++				      WCD939X_TEST_CTL_1_NOISE_FILT_RES_VAL, 7);
++	snd_soc_component_write_field(component, WCD939X_TX_3_4_TEST_BLK_EN2,
++				      WCD939X_TEST_BLK_EN2_TXFE2_MBHC_CLKRST_EN, 0);
++
++	snd_soc_component_write_field(component, WCD939X_HPH_SURGE_EN,
++				      WCD939X_EN_EN_SURGE_PROTECTION_HPHL, 0);
++	snd_soc_component_write_field(component, WCD939X_HPH_SURGE_EN,
++				      WCD939X_EN_EN_SURGE_PROTECTION_HPHR, 0);
++
++	snd_soc_component_write_field(component, WCD939X_HPH_OCP_CTL,
++				      WCD939X_OCP_CTL_OCP_FSM_EN, 1);
++	snd_soc_component_write_field(component, WCD939X_HPH_OCP_CTL,
++				      WCD939X_OCP_CTL_SCD_OP_EN, 1);
++
++	snd_soc_component_write(component, WCD939X_E_CFG0,
++				WCD939X_CFG0_IDLE_STEREO |
++				WCD939X_CFG0_AUTO_DISABLE_ANC);
++
++	return 0;
++}
++
++static int wcd939x_sdw_connect_port(struct wcd939x_sdw_ch_info *ch_info,
++				    struct sdw_port_config *port_config,
++				    u8 enable)
++{
++	u8 ch_mask, port_num;
++
++	port_num = ch_info->port_num;
++	ch_mask = ch_info->ch_mask;
++
++	port_config->num = port_num;
++
++	if (enable)
++		port_config->ch_mask |= ch_mask;
 +	else
-+		wcd->sconfig.direction = SDW_DATA_DIR_RX;
-+
-+	wcd->sconfig.type = SDW_STREAM_PCM;
-+
-+	return sdw_stream_add_slave(wcd->sdev, &wcd->sconfig, &port_config[0],
-+				    wcd->active_ports, wcd->sruntime);
-+}
-+EXPORT_SYMBOL_GPL(wcd939x_sdw_hw_params);
-+
-+int wcd939x_sdw_free(struct wcd939x_sdw_priv *wcd,
-+		     struct snd_pcm_substream *substream,
-+		     struct snd_soc_dai *dai)
-+{
-+	sdw_stream_remove_slave(wcd->sdev, wcd->sruntime);
++		port_config->ch_mask &= ~ch_mask;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(wcd939x_sdw_free);
 +
-+int wcd939x_sdw_set_sdw_stream(struct wcd939x_sdw_priv *wcd,
-+			       struct snd_soc_dai *dai, void *stream,
-+			       int direction)
++static int wcd939x_connect_port(struct wcd939x_sdw_priv *wcd, u8 port_num, u8 ch_id, u8 enable)
 +{
-+	wcd->sruntime = stream;
-+
-+	return 0;
++	return wcd939x_sdw_connect_port(&wcd->ch_info[ch_id],
++					&wcd->port_config[port_num - 1],
++					enable);
 +}
-+EXPORT_SYMBOL_GPL(wcd939x_sdw_set_sdw_stream);
 +
-+static int wcd9390_update_status(struct sdw_slave *slave,
-+				 enum sdw_slave_status status)
++static int wcd939x_codec_enable_rxclk(struct snd_soc_dapm_widget *w,
++				      struct snd_kcontrol *kcontrol,
++				      int event)
 +{
-+	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
 +
-+	if (wcd->regmap && status == SDW_SLAVE_ATTACHED) {
-+		/* Write out any cached changes that happened between probe and attach */
-+		regcache_cache_only(wcd->regmap, false);
-+		return regcache_sync(wcd->regmap);
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++					      WCD939X_RX_SUPPLIES_RX_BIAS_ENABLE, 1);
++
++		/* Analog path clock controls */
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_CLK_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV2_CLK_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV4_CLK_EN, 1);
++
++		/* Digital path clock controls */
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD0_CLK_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD1_CLK_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD2_CLK_EN, 1);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++					      WCD939X_RX_SUPPLIES_VNEG_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++					      WCD939X_RX_SUPPLIES_VPOS_EN, 0);
++
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD2_CLK_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD1_CLK_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++					      WCD939X_CDC_DIG_CLK_CTL_RXD0_CLK_EN, 0);
++
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV4_CLK_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV2_CLK_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_RX_CLK_EN, 0);
++
++		snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++					      WCD939X_RX_SUPPLIES_RX_BIAS_ENABLE, 0);
++
++		break;
 +	}
 +
 +	return 0;
 +}
 +
-+static int wcd9390_bus_config(struct sdw_slave *slave,
-+			      struct sdw_bus_params *params)
++static int wcd939x_codec_hphl_dac_event(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
 +{
-+	sdw_write(slave, SWRS_SCP_HOST_CLK_DIV2_CTL_BANK(params->next_bank),
-+		  0x01);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_HPH_RDAC_CLK_CTL1,
++					      WCD939X_RDAC_CLK_CTL1_OPAMP_CHOP_CLK_EN, 0);
++
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_HPH_GAIN_CTL,
++					      WCD939X_CDC_HPH_GAIN_CTL_HPHL_RX_EN, 1);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L,
++					      WCD939X_RDAC_HD2_CTL_L_HD2_RES_DIV_CTL_L, 0x1D);
++		if (wcd939x->comp1_enable) {
++			snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_COMP_CTL_0,
++						      WCD939X_CDC_COMP_CTL_0_HPHL_COMP_EN, 1);
++			 /* 5msec compander delay as per HW requirement */
++			if (!wcd939x->comp2_enable ||
++			    (snd_soc_component_read(component,
++						    WCD939X_DIGITAL_CDC_COMP_CTL_0) & 1))
++				usleep_range(5000, 5010);
++
++			snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_TIMER1,
++						      WCD939X_TIMER1_AUTOCHOP_TIMER_CTL_EN, 0);
++		} else {
++			snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_COMP_CTL_0,
++						      WCD939X_CDC_COMP_CTL_0_HPHL_COMP_EN, 0);
++			snd_soc_component_write_field(component, WCD939X_HPH_L_EN,
++						      WCD939X_L_EN_GAIN_SOURCE_SEL, 1);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L,
++					      WCD939X_RDAC_HD2_CTL_L_HD2_RES_DIV_CTL_L, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_HPH_GAIN_CTL,
++					      WCD939X_CDC_HPH_GAIN_CTL_HPHL_RX_EN, 0);
++		break;
++	}
 +
 +	return 0;
 +}
 +
-+static int wcd9390_interrupt_callback(struct sdw_slave *slave,
-+				      struct sdw_slave_intr_status *status)
++static int wcd939x_codec_hphr_dac_event(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
 +{
-+	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
-+	struct irq_domain *slave_irq = wcd->slave_irq;
-+	u32 sts1, sts2, sts3;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
 +
-+	do {
-+		handle_nested_irq(irq_find_mapping(slave_irq, 0));
-+		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_0, &sts1);
-+		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_1, &sts2);
-+		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_2, &sts3);
++	dev_dbg(component->dev, "%s wname: %s event: %d\n", __func__,
++		w->name, event);
 +
-+	} while (sts1 || sts2 || sts3);
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_HPH_RDAC_CLK_CTL1,
++					      WCD939X_RDAC_CLK_CTL1_OPAMP_CHOP_CLK_EN, 0);
 +
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_HPH_GAIN_CTL,
++					      WCD939X_CDC_HPH_GAIN_CTL_HPHR_RX_EN, 1);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R,
++					      WCD939X_RDAC_HD2_CTL_R_HD2_RES_DIV_CTL_R, 0x1D);
++		if (wcd939x->comp2_enable) {
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_COMP_CTL_0,
++						      WCD939X_CDC_COMP_CTL_0_HPHR_COMP_EN, 1);
++			/* 5msec compander delay as per HW requirement */
++			if (!wcd939x->comp1_enable ||
++			    (snd_soc_component_read(component,
++						    WCD939X_DIGITAL_CDC_COMP_CTL_0) & 0x02))
++				usleep_range(5000, 5010);
++			snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_TIMER1,
++						      WCD939X_TIMER1_AUTOCHOP_TIMER_CTL_EN, 0);
++		} else {
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_COMP_CTL_0,
++						      WCD939X_CDC_COMP_CTL_0_HPHR_COMP_EN, 0);
++			snd_soc_component_write_field(component, WCD939X_HPH_R_EN,
++						      WCD939X_R_EN_GAIN_SOURCE_SEL, 1);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R,
++					      WCD939X_RDAC_HD2_CTL_R_HD2_RES_DIV_CTL_R, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_HPH_GAIN_CTL,
++					      WCD939X_CDC_HPH_GAIN_CTL_HPHR_RX_EN, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_ear_dac_event(struct snd_soc_dapm_widget *w,
++				       struct snd_kcontrol *kcontrol,
++				       int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_EAR_GAIN_CTL,
++					      WCD939X_CDC_EAR_GAIN_CTL_EAR_EN, 1);
++
++		snd_soc_component_write_field(component, WCD939X_EAR_DAC_CON,
++					      WCD939X_DAC_CON_DAC_SAMPLE_EDGE_SEL, 0);
++
++		/* 5 msec delay as per HW requirement */
++		usleep_range(5000, 5010);
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_PRE_DAC,
++					WCD_CLSH_STATE_EAR, CLS_AB_HIFI);
++
++		snd_soc_component_write_field(component, WCD939X_FLYBACK_VNEG_CTRL_4,
++					      WCD939X_VNEG_CTRL_4_ILIM_SEL, 0xD);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_EAR_DAC_CON,
++					      WCD939X_DAC_CON_DAC_SAMPLE_EDGE_SEL, 1);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_enable_hphr_pa(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int hph_mode = wcd939x->hph_mode;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (wcd939x->ldoh)
++			snd_soc_component_write_field(component, WCD939X_LDOH_MODE,
++						      WCD939X_MODE_LDOH_EN, 1);
++
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_PRE_DAC,
++					WCD_CLSH_STATE_HPHR, hph_mode);
++		wcd_clsh_set_hph_mode(wcd939x->clsh_info, CLS_H_HIFI);
++
++		if (hph_mode == CLS_H_LP || hph_mode == CLS_H_LOHIFI || hph_mode == CLS_H_ULP)
++			snd_soc_component_write_field(component,
++					WCD939X_HPH_REFBUFF_LP_CTL,
++					WCD939X_REFBUFF_LP_CTL_PREREF_FILT_BYPASS, 1);
++		if (hph_mode == CLS_H_LOHIFI)
++			snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++						       WCD939X_HPH_PWR_LEVEL, 0);
++
++		snd_soc_component_write_field(component, WCD939X_FLYBACK_VNEG_CTRL_4,
++					      WCD939X_VNEG_CTRL_4_ILIM_SEL, 0xD);
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHR_REF_ENABLE, 1);
++
++		if ((snd_soc_component_read(component, WCD939X_ANA_HPH) & 0x30) == 0x30)
++			usleep_range(2500, 2600); /* 2.5msec delay as per HW requirement */
++
++		set_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL1,
++					      WCD939X_PDM_WD_CTL1_PDM_WD_EN, 3);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (test_bit(HPH_PA_DELAY, &wcd939x->status_mask)) {
++			if (!wcd939x->comp2_enable)
++				usleep_range(20000, 20100);
++			else
++				usleep_range(7000, 7100);
++
++			if (hph_mode == CLS_H_LP || hph_mode == CLS_H_LOHIFI ||
++			    hph_mode == CLS_H_ULP)
++				snd_soc_component_write_field(component,
++						WCD939X_HPH_REFBUFF_LP_CTL,
++						WCD939X_REFBUFF_LP_CTL_PREREF_FILT_BYPASS, 0);
++			clear_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		}
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_TIMER1,
++					      WCD939X_TIMER1_AUTOCHOP_TIMER_CTL_EN, 1);
++		if (hph_mode == CLS_AB || hph_mode == CLS_AB_HIFI ||
++		    hph_mode == CLS_AB_LP || hph_mode == CLS_AB_LOHIFI)
++			snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++						      WCD939X_RX_SUPPLIES_REGULATOR_MODE, 1);
++
++		enable_irq(wcd939x->hphr_pdm_wd_int);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		disable_irq_nosync(wcd939x->hphr_pdm_wd_int);
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (!wcd939x->comp2_enable)
++			usleep_range(20000, 20100);
++		else
++			usleep_range(7000, 7100);
++
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHR_ENABLE, 0);
++
++		wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++				      WCD_EVENT_PRE_HPHR_PA_OFF);
++		set_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (test_bit(HPH_PA_DELAY, &wcd939x->status_mask)) {
++			if (!wcd939x->comp2_enable)
++				usleep_range(20000, 20100);
++			else
++				usleep_range(7000, 7100);
++			clear_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		}
++		wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++				      WCD_EVENT_POST_HPHR_PA_OFF);
++
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHR_REF_ENABLE, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL1,
++					      WCD939X_PDM_WD_CTL1_PDM_WD_EN, 0);
++
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_POST_PA,
++					WCD_CLSH_STATE_HPHR, hph_mode);
++		if (wcd939x->ldoh)
++			snd_soc_component_write_field(component, WCD939X_LDOH_MODE,
++						      WCD939X_MODE_LDOH_EN, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_enable_hphl_pa(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int hph_mode = wcd939x->hph_mode;
++
++	dev_dbg(component->dev, "%s wname: %s event: %d\n", __func__,
++		w->name, event);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (wcd939x->ldoh)
++			snd_soc_component_write_field(component, WCD939X_LDOH_MODE,
++						      WCD939X_MODE_LDOH_EN, 1);
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_PRE_DAC,
++					WCD_CLSH_STATE_HPHL, hph_mode);
++		wcd_clsh_set_hph_mode(wcd939x->clsh_info, CLS_H_HIFI);
++
++		if (hph_mode == CLS_H_LP || hph_mode == CLS_H_LOHIFI || hph_mode == CLS_H_ULP)
++			snd_soc_component_write_field(component,
++						WCD939X_HPH_REFBUFF_LP_CTL,
++						WCD939X_REFBUFF_LP_CTL_PREREF_FILT_BYPASS, 1);
++		if (hph_mode == CLS_H_LOHIFI)
++			snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++						       WCD939X_HPH_PWR_LEVEL, 0);
++
++		snd_soc_component_write_field(component, WCD939X_FLYBACK_VNEG_CTRL_4,
++					      WCD939X_VNEG_CTRL_4_ILIM_SEL, 0xD);
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHL_REF_ENABLE, 1);
++
++		if ((snd_soc_component_read(component, WCD939X_ANA_HPH) & 0x30) == 0x30)
++			usleep_range(2500, 2600); /* 2.5msec delay as per HW requirement */
++
++		set_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL0,
++					      WCD939X_PDM_WD_CTL0_PDM_WD_EN, 3);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (test_bit(HPH_PA_DELAY, &wcd939x->status_mask)) {
++			if (!wcd939x->comp1_enable)
++				usleep_range(20000, 20100);
++			else
++				usleep_range(7000, 7100);
++			if (hph_mode == CLS_H_LP || hph_mode == CLS_H_LOHIFI ||
++			    hph_mode == CLS_H_ULP)
++				snd_soc_component_write_field(component,
++						WCD939X_HPH_REFBUFF_LP_CTL,
++						WCD939X_REFBUFF_LP_CTL_PREREF_FILT_BYPASS, 0);
++			clear_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		}
++		snd_soc_component_write_field(component, WCD939X_HPH_NEW_INT_TIMER1,
++					      WCD939X_TIMER1_AUTOCHOP_TIMER_CTL_EN, 1);
++		if (hph_mode == CLS_AB || hph_mode == CLS_AB_HIFI ||
++		    hph_mode == CLS_AB_LP || hph_mode == CLS_AB_LOHIFI)
++			snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++						      WCD939X_RX_SUPPLIES_REGULATOR_MODE, 1);
++		enable_irq(wcd939x->hphl_pdm_wd_int);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		disable_irq_nosync(wcd939x->hphl_pdm_wd_int);
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (!wcd939x->comp1_enable)
++			usleep_range(20000, 20100);
++		else
++			usleep_range(7000, 7100);
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHL_ENABLE, 0);
++		wcd_mbhc_event_notify(wcd939x->wcd_mbhc, WCD_EVENT_PRE_HPHL_PA_OFF);
++		set_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/*
++		 * 7ms sleep is required if compander is enabled as per
++		 * HW requirement. If compander is disabled, then
++		 * 20ms delay is required.
++		 */
++		if (test_bit(HPH_PA_DELAY, &wcd939x->status_mask)) {
++			if (!wcd939x->comp1_enable)
++				usleep_range(21000, 21100);
++			else
++				usleep_range(7000, 7100);
++			clear_bit(HPH_PA_DELAY, &wcd939x->status_mask);
++		}
++		wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++				      WCD_EVENT_POST_HPHL_PA_OFF);
++		snd_soc_component_write_field(component, WCD939X_ANA_HPH,
++					      WCD939X_HPH_HPHL_REF_ENABLE, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL0,
++					      WCD939X_PDM_WD_CTL0_PDM_WD_EN, 0);
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_POST_PA,
++					WCD_CLSH_STATE_HPHL, hph_mode);
++		if (wcd939x->ldoh)
++			snd_soc_component_write_field(component, WCD939X_LDOH_MODE,
++						      WCD939X_MODE_LDOH_EN, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
++				       struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/*
++		 * Enable watchdog interrupt for HPHL
++		 */
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL0,
++					      WCD939X_PDM_WD_CTL0_PDM_WD_EN, 3);
++		/* For EAR, use CLASS_AB regulator mode */
++		snd_soc_component_write_field(component, WCD939X_ANA_RX_SUPPLIES,
++					      WCD939X_RX_SUPPLIES_REGULATOR_MODE, 1);
++		snd_soc_component_write_field(component, WCD939X_ANA_EAR_COMPANDER_CTL,
++					      WCD939X_EAR_COMPANDER_CTL_GAIN_OVRD_REG, 1);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* 6 msec delay as per HW requirement */
++		usleep_range(6000, 6010);
++		enable_irq(wcd939x->ear_pdm_wd_int);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		disable_irq_nosync(wcd939x->ear_pdm_wd_int);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_ANA_EAR_COMPANDER_CTL,
++					      WCD939X_EAR_COMPANDER_CTL_GAIN_OVRD_REG, 0);
++		/* 7 msec delay as per HW requirement */
++		usleep_range(7000, 7010);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_PDM_WD_CTL0,
++					      WCD939X_PDM_WD_CTL0_PDM_WD_EN, 0);
++		wcd_clsh_ctrl_set_state(wcd939x->clsh_info, WCD_CLSH_EVENT_POST_PA,
++					WCD_CLSH_STATE_EAR, CLS_AB_HIFI);
++		break;
++	}
++
++	return 0;
++}
++
++/* TX Controls */
++
++static int wcd939x_codec_enable_dmic(struct snd_soc_dapm_widget *w,
++				     struct snd_kcontrol *kcontrol,
++				     int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 dmic_clk_reg, dmic_clk_en_reg;
++	u8 dmic_ctl_shift = 0;
++	u8 dmic_clk_mask = 0;
++	u16 dmic2_left_en = 0;
++
++	switch (w->shift) {
++	case 0:
++	case 1:
++		dmic_clk_reg = WCD939X_DIGITAL_CDC_DMIC_RATE_1_2;
++		dmic_clk_en_reg = WCD939X_DIGITAL_CDC_DMIC1_CTL;
++		dmic_clk_mask = GENMASK(3, 0);
++		dmic_ctl_shift = 0;
++		break;
++	case 2:
++		dmic2_left_en = WCD939X_DIGITAL_CDC_DMIC2_CTL;
++		fallthrough;
++	case 3:
++		dmic_clk_reg = WCD939X_DIGITAL_CDC_DMIC_RATE_1_2;
++		dmic_clk_en_reg = WCD939X_DIGITAL_CDC_DMIC2_CTL;
++		dmic_clk_mask = GENMASK(7, 4);
++		dmic_ctl_shift = 1;
++		break;
++	case 4:
++	case 5:
++		dmic_clk_reg = WCD939X_DIGITAL_CDC_DMIC_RATE_3_4;
++		dmic_clk_en_reg = WCD939X_DIGITAL_CDC_DMIC3_CTL;
++		dmic_clk_mask = GENMASK(3, 0);
++		dmic_ctl_shift = 2;
++		break;
++	case 6:
++	case 7:
++		dmic_clk_reg = WCD939X_DIGITAL_CDC_DMIC_RATE_3_4;
++		dmic_clk_en_reg = WCD939X_DIGITAL_CDC_DMIC4_CTL;
++		dmic_clk_mask = GENMASK(7, 4);
++		dmic_ctl_shift = 3;
++		break;
++	default:
++		dev_err(component->dev, "%s: Invalid DMIC Selection\n", __func__);
++		return -EINVAL;
++	};
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_AMIC_CTL,
++					      BIT(dmic_ctl_shift), 0);
++		/* 250us sleep as per HW requirement */
++		usleep_range(250, 260);
++		if (dmic2_left_en)
++			snd_soc_component_write_field(component, dmic2_left_en, BIT(7), 1);
++		/* Setting DMIC clock rate to 2.4MHz */
++		snd_soc_component_write_field(component, dmic_clk_reg, dmic_clk_mask, 3);
++		snd_soc_component_write_field(component, dmic_clk_en_reg, BIT(3), 1);
++		/* enable clock scaling */
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DMIC_CTL,
++					      WCD939X_CDC_DMIC_CTL_CLK_SCALE_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_DMIC_CTL,
++					      WCD939X_CDC_DMIC_CTL_DMIC_DIV_BAK_EN, 1);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_AMIC_CTL,
++					      BIT(dmic_ctl_shift), 1);
++		if (dmic2_left_en)
++			snd_soc_component_write_field(component, dmic2_left_en, BIT(7), 0);
++		snd_soc_component_write_field(component, dmic_clk_en_reg, BIT(3), 0);
++		break;
++	}
++	return 0;
++}
++
++static int wcd939x_tx_swr_ctrl(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int bank;
++	int rate;
++
++	bank = (wcd939x_swr_get_current_bank(wcd939x->sdw_priv[AIF1_CAP]->sdev)) ? 0 : 1;
++	bank = bank ? 0 : 1;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (strnstr(w->name, "ADC", sizeof("ADC"))) {
++			int i = 0, mode = 0;
++
++			if (test_bit(WCD_ADC1, &wcd939x->status_mask))
++				mode |= tx_mode_bit[wcd939x->tx_mode[WCD_ADC1]];
++			if (test_bit(WCD_ADC2, &wcd939x->status_mask))
++				mode |= tx_mode_bit[wcd939x->tx_mode[WCD_ADC2]];
++			if (test_bit(WCD_ADC3, &wcd939x->status_mask))
++				mode |= tx_mode_bit[wcd939x->tx_mode[WCD_ADC3]];
++			if (test_bit(WCD_ADC4, &wcd939x->status_mask))
++				mode |= tx_mode_bit[wcd939x->tx_mode[WCD_ADC4]];
++
++			if (mode != 0) {
++				for (i = 0; i < ADC_MODE_ULP2; i++) {
++					if (mode & (1 << i)) {
++						i++;
++						break;
++					}
++				}
++			}
++			rate = wcd939x_get_clk_rate(i);
++			wcd939x_set_swr_clk_rate(component, rate, bank);
++			/* Copy clk settings to active bank */
++			wcd939x_set_swr_clk_rate(component, rate, !bank);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (strnstr(w->name, "ADC", sizeof("ADC"))) {
++			rate = wcd939x_get_clk_rate(ADC_MODE_INVALID);
++			wcd939x_set_swr_clk_rate(component, rate, !bank);
++			wcd939x_set_swr_clk_rate(component, rate, bank);
++		}
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_get_adc_mode(int val)
++{
++	int ret = 0;
++
++	switch (val) {
++	case ADC_MODE_INVALID:
++		ret = ADC_MODE_VAL_NORMAL;
++		break;
++	case ADC_MODE_HIFI:
++		ret = ADC_MODE_VAL_HIFI;
++		break;
++	case ADC_MODE_LO_HIF:
++		ret = ADC_MODE_VAL_LO_HIF;
++		break;
++	case ADC_MODE_NORMAL:
++		ret = ADC_MODE_VAL_NORMAL;
++		break;
++	case ADC_MODE_LP:
++		ret = ADC_MODE_VAL_LP;
++		break;
++	case ADC_MODE_ULP1:
++		ret = ADC_MODE_VAL_ULP1;
++		break;
++	case ADC_MODE_ULP2:
++		ret = ADC_MODE_VAL_ULP2;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int wcd939x_codec_enable_adc(struct snd_soc_dapm_widget *w,
++				    struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_TX_CLK_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV2_CLK_EN, 1);
++		set_bit(w->shift, &wcd939x->status_mask);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV2_CLK_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++					      WCD939X_CDC_ANA_CLK_CTL_ANA_TX_CLK_EN, 0);
++		clear_bit(w->shift, &wcd939x->status_mask);
++		break;
++	}
++
++	return 0;
++}
++
++static void wcd939x_tx_channel_config(struct snd_soc_component *component,
++				      int channel, int mode)
++{
++	int reg, mask;
++
++	switch (channel) {
++	case 0:
++		reg = WCD939X_ANA_TX_CH2;
++		mask = WCD939X_TX_CH2_HPF1_INIT;
++		break;
++	case 1:
++		reg = WCD939X_ANA_TX_CH2;
++		mask = WCD939X_TX_CH2_HPF2_INIT;
++		break;
++	case 2:
++		reg = WCD939X_ANA_TX_CH4;
++		mask = WCD939X_TX_CH4_HPF3_INIT;
++		break;
++	case 3:
++		reg = WCD939X_ANA_TX_CH4;
++		mask = WCD939X_TX_CH4_HPF4_INIT;
++		break;
++	default:
++		return;
++	}
++
++	snd_soc_component_write_field(component, reg, mask, mode);
++}
++
++static int wcd939x_adc_enable_req(struct snd_soc_dapm_widget *w,
++				  struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int mode;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_REQ_CTL,
++					      WCD939X_CDC_REQ_CTL_FS_RATE_4P8, 1);
++		snd_soc_component_write_field(component, WCD939X_DIGITAL_CDC_REQ_CTL,
++					      WCD939X_CDC_REQ_CTL_NO_NOTCH, 0);
++
++		wcd939x_tx_channel_config(component, w->shift, 1);
++		mode = wcd939x_get_adc_mode(wcd939x->tx_mode[w->shift]);
++		if (mode < 0) {
++			dev_info(component->dev, "Invalid ADC mode\n");
++			return -EINVAL;
++		}
++		switch (w->shift) {
++		case 0:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1,
++						      WCD939X_CDC_TX_ANA_MODE_0_1_TXD0_MODE,
++						      mode);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD0_CLK_EN, 1);
++			break;
++		case 1:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1,
++						      WCD939X_CDC_TX_ANA_MODE_0_1_TXD1_MODE,
++						      mode);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD1_CLK_EN, 1);
++			break;
++		case 2:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3,
++						      WCD939X_CDC_TX_ANA_MODE_2_3_TXD2_MODE,
++						      mode);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD2_CLK_EN, 1);
++			break;
++		case 3:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3,
++						      WCD939X_CDC_TX_ANA_MODE_2_3_TXD3_MODE,
++						      mode);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD3_CLK_EN, 1);
++			break;
++		default:
++			break;
++		}
++
++		wcd939x_tx_channel_config(component, w->shift, 0);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		switch (w->shift) {
++		case 0:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1,
++						      WCD939X_CDC_TX_ANA_MODE_0_1_TXD0_MODE, 0);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD0_CLK_EN, 0);
++			break;
++		case 1:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1,
++						      WCD939X_CDC_TX_ANA_MODE_0_1_TXD1_MODE, 0);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD1_CLK_EN, 0);
++			break;
++		case 2:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3,
++						      WCD939X_CDC_TX_ANA_MODE_2_3_TXD2_MODE, 0);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD2_CLK_EN, 0);
++			break;
++		case 3:
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3,
++						      WCD939X_CDC_TX_ANA_MODE_2_3_TXD3_MODE, 0);
++			snd_soc_component_write_field(component,
++						      WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						      WCD939X_CDC_DIG_CLK_CTL_TXD3_CLK_EN, 0);
++			break;
++		default:
++			break;
++		}
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_micbias_control(struct snd_soc_component *component,
++				   int micb_num, int req, bool is_dapm)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int micb_index = micb_num - 1;
++	u16 micb_reg;
++	u16 micb_field;
++
++	switch (micb_num) {
++	case MIC_BIAS_1:
++		micb_reg = WCD939X_ANA_MICB1;
++		micb_field = WCD939X_MICB1_ENABLE;
++		break;
++	case MIC_BIAS_2:
++		micb_reg = WCD939X_ANA_MICB2;
++		micb_field = WCD939X_MICB2_ENABLE;
++		break;
++	case MIC_BIAS_3:
++		micb_reg = WCD939X_ANA_MICB3;
++		micb_field = WCD939X_MICB3_ENABLE;
++		break;
++	case MIC_BIAS_4:
++		micb_reg = WCD939X_ANA_MICB4;
++		micb_field = WCD939X_MICB4_ENABLE;
++		break;
++	default:
++		dev_err(component->dev, "%s: Invalid micbias number: %d\n",
++			__func__, micb_num);
++		return -EINVAL;
++	};
++
++	switch (req) {
++	case MICB_PULLUP_ENABLE:
++		wcd939x->pullup_ref[micb_index]++;
++		if (wcd939x->pullup_ref[micb_index] == 1 &&
++		    wcd939x->micb_ref[micb_index] == 0)
++			snd_soc_component_write_field(component, micb_reg, micb_field, 2);
++		break;
++	case MICB_PULLUP_DISABLE:
++		if (wcd939x->pullup_ref[micb_index] > 0)
++			wcd939x->pullup_ref[micb_index]--;
++		if (wcd939x->pullup_ref[micb_index] == 0 &&
++		    wcd939x->micb_ref[micb_index] == 0)
++			snd_soc_component_write_field(component, micb_reg, micb_field, 0);
++		break;
++	case MICB_ENABLE:
++		wcd939x->micb_ref[micb_index]++;
++		if (wcd939x->micb_ref[micb_index] == 1) {
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						WCD939X_CDC_DIG_CLK_CTL_TXD3_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						WCD939X_CDC_DIG_CLK_CTL_TXD2_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						WCD939X_CDC_DIG_CLK_CTL_TXD1_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_DIG_CLK_CTL,
++						WCD939X_CDC_DIG_CLK_CTL_TXD0_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_ANA_CLK_CTL,
++						WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV2_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_DIGITAL_CDC_ANA_TX_CLK_CTL,
++						WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TXSCBIAS_CLK_EN, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_MICB1_TEST_CTL_2,
++						WCD939X_TEST_CTL_2_IBIAS_LDO_DRIVER, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_MICB2_TEST_CTL_2,
++						WCD939X_TEST_CTL_2_IBIAS_LDO_DRIVER, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_MICB3_TEST_CTL_2,
++						WCD939X_TEST_CTL_2_IBIAS_LDO_DRIVER, 1);
++			snd_soc_component_write_field(component,
++						WCD939X_MICB4_TEST_CTL_2,
++						WCD939X_TEST_CTL_2_IBIAS_LDO_DRIVER, 1);
++			snd_soc_component_write_field(component, micb_reg, micb_field, 1);
++			if (micb_num == MIC_BIAS_2)
++				wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++						      WCD_EVENT_POST_MICBIAS_2_ON);
++		}
++		if (micb_num == MIC_BIAS_2 && is_dapm)
++			wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++					      WCD_EVENT_POST_DAPM_MICBIAS_2_ON);
++		break;
++	case MICB_DISABLE:
++		if (wcd939x->micb_ref[micb_index] > 0)
++			wcd939x->micb_ref[micb_index]--;
++
++		if (wcd939x->micb_ref[micb_index] == 0 &&
++		    wcd939x->pullup_ref[micb_index] > 0)
++			snd_soc_component_write_field(component, micb_reg, micb_field, 2);
++		else if (wcd939x->micb_ref[micb_index] == 0 &&
++			 wcd939x->pullup_ref[micb_index] == 0) {
++			if (micb_num  == MIC_BIAS_2)
++				wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++						      WCD_EVENT_PRE_MICBIAS_2_OFF);
++
++			snd_soc_component_write_field(component, micb_reg, micb_field, 0);
++			if (micb_num  == MIC_BIAS_2)
++				wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++						      WCD_EVENT_POST_MICBIAS_2_OFF);
++		}
++		if (is_dapm && micb_num  == MIC_BIAS_2)
++			wcd_mbhc_event_notify(wcd939x->wcd_mbhc,
++					      WCD_EVENT_POST_DAPM_MICBIAS_2_OFF);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_enable_micbias(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	int micb_num = w->shift;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		wcd939x_micbias_control(component, micb_num, MICB_ENABLE, true);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* 1 msec delay as per HW requirement */
++		usleep_range(1000, 1100);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wcd939x_micbias_control(component, micb_num, MICB_DISABLE, true);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_codec_enable_micbias_pullup(struct snd_soc_dapm_widget *w,
++					       struct snd_kcontrol *kcontrol,
++					       int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	int micb_num = w->shift;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		wcd939x_micbias_control(component, micb_num,
++					MICB_PULLUP_ENABLE, true);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* 1 msec delay as per HW requirement */
++		usleep_range(1000, 1100);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wcd939x_micbias_control(component, micb_num,
++					MICB_PULLUP_DISABLE, true);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd939x_tx_mode_get(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	int path = e->shift_l;
++
++	ucontrol->value.enumerated.item[0] = wcd939x->tx_mode[path];
++
++	return 0;
++}
++
++static int wcd939x_tx_mode_put(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	int path = e->shift_l;
++
++	if (wcd939x->tx_mode[path] == ucontrol->value.enumerated.item[0])
++		return 0;
++
++	wcd939x->tx_mode[path] = ucontrol->value.enumerated.item[0];
++
++	return 1;
++}
++
++/* RX Controls */
++
++static int wcd939x_rx_hph_mode_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = wcd939x->hph_mode;
++
++	return 0;
++}
++
++static int wcd939x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	u32 mode_val;
++
++	mode_val = ucontrol->value.enumerated.item[0];
++
++	if (wcd939x->variant == WCD9390) {
++		if (mode_val == CLS_H_HIFI || mode_val == CLS_AB_HIFI) {
++			dev_info(component->dev, "%s: Invalid HPH Mode, default to CLS_H_ULP\n",
++				 __func__);
++			mode_val = CLS_H_ULP;
++		}
++	}
++	if (mode_val == CLS_H_NORMAL) {
++		dev_info(component->dev, "%s: Invalid HPH Mode, default to class_AB\n",
++			 __func__);
++		mode_val = CLS_H_ULP;
++	}
++
++	wcd939x->hph_mode = mode_val;
++
++	return 1;
++}
++
++static int wcd939x_ear_pa_gain_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	unsigned int reg;
++
++	reg = snd_soc_component_read(component, WCD939X_ANA_EAR_COMPANDER_CTL);
++
++	ucontrol->value.integer.value[0] = FIELD_GET(WCD939X_EAR_COMPANDER_CTL_EAR_GAIN,
++						     reg);
++	return 0;
++}
++
++static int wcd939x_ear_pa_gain_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++
++	snd_soc_component_write_field(component, WCD939X_ANA_EAR_COMPANDER_CTL,
++				      WCD939X_EAR_COMPANDER_CTL_EAR_GAIN,
++				      ucontrol->value.integer.value[0]);
++
++	return 1;
++}
++
++static int wcd939x_get_compander(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc;
++	bool hphr;
++
++	mc = (struct soc_mixer_control *)(kcontrol->private_value);
++	hphr = mc->shift;
++
++	if (hphr)
++		ucontrol->value.integer.value[0] = wcd939x->comp2_enable;
++	else
++		ucontrol->value.integer.value[0] = wcd939x->comp1_enable;
++
++	return 0;
++}
++
++static int wcd939x_set_compander(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct wcd939x_sdw_priv *wcd;
++	int value = ucontrol->value.integer.value[0];
++	int portidx;
++	struct soc_mixer_control *mc;
++	bool hphr;
++
++	mc = (struct soc_mixer_control *)(kcontrol->private_value);
++	hphr = mc->shift;
++
++	wcd = wcd939x->sdw_priv[AIF1_PB];
++
++	if (hphr)
++		wcd939x->comp2_enable = value;
++	else
++		wcd939x->comp1_enable = value;
++
++	portidx = wcd->ch_info[mc->reg].port_num;
++
++	if (value)
++		wcd939x_connect_port(wcd, portidx, mc->reg, true);
++	else
++		wcd939x_connect_port(wcd, portidx, mc->reg, false);
++
++	return 1;
++}
++
++static int wcd939x_ldoh_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = wcd939x->ldoh;
++
++	return 0;
++}
++
++static int wcd939x_ldoh_put(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	if (wcd939x->ldoh == ucontrol->value.integer.value[0])
++		return 0;
++
++	wcd939x->ldoh = ucontrol->value.integer.value[0];
++
++	return 1;
++}
++
++const char * const tx_master_ch_text[] = {
++	"ZERO", "SWRM_PCM_OUT", "SWRM_TX1_CH1", "SWRM_TX1_CH2", "SWRM_TX1_CH3",
++	"SWRM_TX1_CH4", "SWRM_TX2_CH1", "SWRM_TX2_CH2", "SWRM_TX2_CH3",
++	"SWRM_TX2_CH4", "SWRM_TX3_CH1", "SWRM_TX3_CH2", "SWRM_TX3_CH3",
++	"SWRM_TX3_CH4", "SWRM_PCM_IN",
++};
++
++const struct soc_enum tx_master_ch_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(tx_master_ch_text),
++			    tx_master_ch_text);
++
++static const char * const tx_mode_mux_text_wcd9390[] = {
++	"ADC_INVALID", "ADC_HIFI", "ADC_LO_HIF", "ADC_NORMAL", "ADC_LP",
++};
++
++static const struct soc_enum tx0_mode_mux_enum_wcd9390 =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, ARRAY_SIZE(tx_mode_mux_text_wcd9390),
++			tx_mode_mux_text_wcd9390);
++
++static const struct soc_enum tx1_mode_mux_enum_wcd9390 =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 1, ARRAY_SIZE(tx_mode_mux_text_wcd9390),
++			tx_mode_mux_text_wcd9390);
++
++static const struct soc_enum tx2_mode_mux_enum_wcd9390 =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 2, ARRAY_SIZE(tx_mode_mux_text_wcd9390),
++			tx_mode_mux_text_wcd9390);
++
++static const struct soc_enum tx3_mode_mux_enum_wcd9390 =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 3, ARRAY_SIZE(tx_mode_mux_text_wcd9390),
++			tx_mode_mux_text_wcd9390);
++
++static const char * const tx_mode_mux_text[] = {
++	"ADC_INVALID", "ADC_HIFI", "ADC_LO_HIF", "ADC_NORMAL", "ADC_LP",
++	"ADC_ULP1", "ADC_ULP2",
++};
++
++static const struct soc_enum tx0_mode_mux_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, ARRAY_SIZE(tx_mode_mux_text),
++			tx_mode_mux_text);
++
++static const struct soc_enum tx1_mode_mux_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 1, ARRAY_SIZE(tx_mode_mux_text),
++			tx_mode_mux_text);
++
++static const struct soc_enum tx2_mode_mux_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 2, ARRAY_SIZE(tx_mode_mux_text),
++			tx_mode_mux_text);
++
++static const struct soc_enum tx3_mode_mux_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 3, ARRAY_SIZE(tx_mode_mux_text),
++			tx_mode_mux_text);
++
++static const char * const rx_hph_mode_mux_text_wcd9390[] = {
++	"CLS_H_INVALID", "CLS_H_INVALID_1", "CLS_H_LP", "CLS_AB",
++	"CLS_H_LOHIFI", "CLS_H_ULP", "CLS_H_INVALID_2", "CLS_AB_LP",
++	"CLS_AB_LOHIFI",
++};
++
++static const char * const wcd939x_ear_pa_gain_text[] = {
++	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB", "G_0_DB",
++	"G_M1P5_DB", "G_M3_DB", "G_M4P5_DB",
++	"G_M6_DB", "G_7P5_DB", "G_M9_DB",
++	"G_M10P5_DB", "G_M12_DB", "G_M13P5_DB",
++	"G_M15_DB", "G_M16P5_DB", "G_M18_DB",
++};
++
++static const struct soc_enum rx_hph_mode_mux_enum_wcd9390 =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text_wcd9390),
++			    rx_hph_mode_mux_text_wcd9390);
++
++static SOC_ENUM_SINGLE_EXT_DECL(wcd939x_ear_pa_gain_enum,
++				wcd939x_ear_pa_gain_text);
++
++static const char * const rx_hph_mode_mux_text[] = {
++	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI",
++	"CLS_H_ULP", "CLS_AB_HIFI", "CLS_AB_LP", "CLS_AB_LOHIFI",
++};
++
++static const struct soc_enum rx_hph_mode_mux_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text),
++			    rx_hph_mode_mux_text);
++
++static const struct snd_kcontrol_new wcd9390_snd_controls[] = {
++	SOC_ENUM_EXT("EAR PA GAIN", wcd939x_ear_pa_gain_enum,
++		     wcd939x_ear_pa_gain_get, wcd939x_ear_pa_gain_put),
++
++	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum_wcd9390,
++		     wcd939x_rx_hph_mode_get, wcd939x_rx_hph_mode_put),
++
++	SOC_ENUM_EXT("TX0 MODE", tx0_mode_mux_enum_wcd9390,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX1 MODE", tx1_mode_mux_enum_wcd9390,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX2 MODE", tx2_mode_mux_enum_wcd9390,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX3 MODE", tx3_mode_mux_enum_wcd9390,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++};
++
++static const struct snd_kcontrol_new wcd9395_snd_controls[] = {
++	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
++		     wcd939x_rx_hph_mode_get, wcd939x_rx_hph_mode_put),
++
++	SOC_ENUM_EXT("TX0 MODE", tx0_mode_mux_enum,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX1 MODE", tx1_mode_mux_enum,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX2 MODE", tx2_mode_mux_enum,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++	SOC_ENUM_EXT("TX3 MODE", tx3_mode_mux_enum,
++		     wcd939x_tx_mode_get, wcd939x_tx_mode_put),
++};
++
++static const struct snd_kcontrol_new adc1_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new adc2_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new adc3_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new adc4_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic1_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic2_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic3_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic4_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic5_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic6_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic7_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic8_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new ear_rdac_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new hphl_rdac_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new hphr_rdac_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const char * const adc1_mux_text[] = {
++	"CH1_AMIC_DISABLE", "CH1_AMIC1", "CH1_AMIC2", "CH1_AMIC3", "CH1_AMIC4", "CH1_AMIC5"
++};
++
++static const struct soc_enum adc1_enum =
++	SOC_ENUM_SINGLE(WCD939X_TX_NEW_CH12_MUX, 0,
++			ARRAY_SIZE(adc1_mux_text), adc1_mux_text);
++
++static const struct snd_kcontrol_new tx_adc1_mux =
++	SOC_DAPM_ENUM("ADC1 MUX Mux", adc1_enum);
++
++static const char * const adc2_mux_text[] = {
++	"CH2_AMIC_DISABLE", "CH2_AMIC1", "CH2_AMIC2", "CH2_AMIC3", "CH2_AMIC4", "CH2_AMIC5"
++};
++
++static const struct soc_enum adc2_enum =
++	SOC_ENUM_SINGLE(WCD939X_TX_NEW_CH12_MUX, 3,
++			ARRAY_SIZE(adc2_mux_text), adc2_mux_text);
++
++static const struct snd_kcontrol_new tx_adc2_mux =
++	SOC_DAPM_ENUM("ADC2 MUX Mux", adc2_enum);
++
++static const char * const adc3_mux_text[] = {
++	"CH3_AMIC_DISABLE", "CH3_AMIC1", "CH3_AMIC3", "CH3_AMIC4", "CH3_AMIC5"
++};
++
++static const struct soc_enum adc3_enum =
++	SOC_ENUM_SINGLE(WCD939X_TX_NEW_CH34_MUX, 0,
++			ARRAY_SIZE(adc3_mux_text), adc3_mux_text);
++
++static const struct snd_kcontrol_new tx_adc3_mux =
++	SOC_DAPM_ENUM("ADC3 MUX Mux", adc3_enum);
++
++static const char * const adc4_mux_text[] = {
++	"CH4_AMIC_DISABLE", "CH4_AMIC1", "CH4_AMIC3", "CH4_AMIC4", "CH4_AMIC5"
++};
++
++static const struct soc_enum adc4_enum =
++	SOC_ENUM_SINGLE(WCD939X_TX_NEW_CH34_MUX, 3,
++			ARRAY_SIZE(adc4_mux_text), adc4_mux_text);
++
++static const struct snd_kcontrol_new tx_adc4_mux =
++	SOC_DAPM_ENUM("ADC4 MUX Mux", adc4_enum);
++
++static const char * const rdac3_mux_text[] = {
++	"RX3", "RX1"
++};
++
++static const struct soc_enum rdac3_enum =
++	SOC_ENUM_SINGLE(WCD939X_DIGITAL_CDC_EAR_PATH_CTL, 0,
++			ARRAY_SIZE(rdac3_mux_text), rdac3_mux_text);
++
++static const struct snd_kcontrol_new rx_rdac3_mux =
++	SOC_DAPM_ENUM("RDAC3_MUX Mux", rdac3_enum);
++
++static int wcd939x_get_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(comp);
++	struct wcd939x_sdw_priv *wcd;
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	int dai_id = mixer->shift;
++	int portidx, ch_idx = mixer->reg;
++
++	wcd = wcd939x->sdw_priv[dai_id];
++	portidx = wcd->ch_info[ch_idx].port_num;
++
++	ucontrol->value.integer.value[0] = wcd->port_enable[portidx];
++
++	return 0;
++}
++
++static const char *version_to_str(u32 version)
++{
++	switch (version) {
++	case WCD939X_VERSION_1_0:
++		return __stringify(WCD939X_1_0);
++	case WCD939X_VERSION_1_1:
++		return __stringify(WCD939X_1_1);
++	case WCD939X_VERSION_2_0:
++		return __stringify(WCD939X_2_0);
++	}
++	return NULL;
++}
++
++static int wcd939x_set_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(comp);
++	struct wcd939x_sdw_priv *wcd;
++	int ch_idx = mixer->reg;
++	int portidx;
++	int dai_id = mixer->shift;
++	bool enable;
++
++	wcd = wcd939x->sdw_priv[dai_id];
++
++	portidx = wcd->ch_info[ch_idx].port_num;
++	if (ucontrol->value.integer.value[0])
++		enable = true;
++	else
++		enable = false;
++
++	wcd->port_enable[portidx] = enable;
++
++	wcd939x_connect_port(wcd, portidx, ch_idx, enable);
++
++	return 1;
++}
++
++/* MBHC Related */
++
++static void wcd939x_mbhc_clk_setup(struct snd_soc_component *component,
++				   bool enable)
++{
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_1,
++				      WCD939X_CTL_1_RCO_EN, enable);
++}
++
++static void wcd939x_mbhc_mbhc_bias_control(struct snd_soc_component *component,
++					   bool enable)
++{
++	snd_soc_component_write_field(component, WCD939X_ANA_MBHC_ELECT,
++				      WCD939X_MBHC_ELECT_BIAS_EN, enable);
++}
++
++static void wcd939x_mbhc_program_btn_thr(struct snd_soc_component *component,
++					 int *btn_low, int *btn_high,
++					 int num_btn, bool is_micbias)
++{
++	int i, vth;
++
++	if (num_btn > WCD_MBHC_DEF_BUTTONS) {
++		dev_err(component->dev, "%s: invalid number of buttons: %d\n",
++			__func__, num_btn);
++		return;
++	}
++
++	for (i = 0; i < num_btn; i++) {
++		vth = ((btn_high[i] * 2) / 25) & 0x3F;
++		snd_soc_component_write_field(component, WCD939X_ANA_MBHC_BTN0 + i, 0xFC, vth);
++		dev_dbg(component->dev, "%s: btn_high[%d]: %d, vth: %d\n",
++			__func__, i, btn_high[i], vth);
++	}
++}
++
++static bool wcd939x_mbhc_micb_en_status(struct snd_soc_component *component, int micb_num)
++{
++	u8 val;
++
++	if (micb_num == MIC_BIAS_2) {
++		val = FIELD_GET(WCD939X_MICB2_ENABLE,
++				snd_soc_component_read(component, WCD939X_ANA_MICB2));
++		if (val == 1)
++			return true;
++	}
++
++	return false;
++}
++
++static void wcd939x_mbhc_hph_l_pull_up_control(struct snd_soc_component *component,
++					       int pull_up_cur)
++{
++	/* Default pull up current to 2uA */
++	if (pull_up_cur > HS_PULLUP_I_OFF || pull_up_cur < HS_PULLUP_I_3P0_UA ||
++	    pull_up_cur == HS_PULLUP_I_DEFAULT)
++		pull_up_cur = HS_PULLUP_I_2P0_UA;
++
++	dev_dbg(component->dev, "%s: HS pull up current:%d\n",
++		__func__, pull_up_cur);
++
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_INT_MECH_DET_CURRENT,
++				      WCD939X_MECH_DET_CURRENT_HSDET_PULLUP_CTL, pull_up_cur);
++}
++
++static int wcd939x_mbhc_request_micbias(struct snd_soc_component *component,
++					int micb_num, int req)
++{
++	return wcd939x_micbias_control(component, micb_num, req, false);
++}
++
++static void wcd939x_mbhc_micb_ramp_control(struct snd_soc_component *component,
++					   bool enable)
++{
++	if (enable) {
++		snd_soc_component_write_field(component, WCD939X_ANA_MICB2_RAMP,
++					      WCD939X_MICB2_RAMP_SHIFT_CTL, 3);
++		snd_soc_component_write_field(component, WCD939X_ANA_MICB2_RAMP,
++					      WCD939X_MICB2_RAMP_RAMP_ENABLE, 1);
++	} else {
++		snd_soc_component_write_field(component, WCD939X_ANA_MICB2_RAMP,
++					      WCD939X_MICB2_RAMP_RAMP_ENABLE, 0);
++		snd_soc_component_write_field(component, WCD939X_ANA_MICB2_RAMP,
++					      WCD939X_MICB2_RAMP_SHIFT_CTL, 0);
++	}
++}
++
++static int wcd939x_get_micb_vout_ctl_val(u32 micb_mv)
++{
++	/* min micbias voltage is 1V and maximum is 2.85V */
++	if (micb_mv < 1000 || micb_mv > 2850) {
++		pr_err("%s: unsupported micbias voltage\n", __func__);
++		return -EINVAL;
++	}
++
++	return (micb_mv - 1000) / 50;
++}
++
++static int wcd939x_mbhc_micb_adjust_voltage(struct snd_soc_component *component,
++					    int req_volt, int micb_num)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int cur_vout_ctl, req_vout_ctl;
++	int micb_reg, micb_val, micb_en, micb_en_field, micb_vout_ctl_field;
++	int ret = 0;
++
++	switch (micb_num) {
++	case MIC_BIAS_1:
++		micb_reg = WCD939X_ANA_MICB1;
++		micb_en_field = WCD939X_MICB1_ENABLE;
++		micb_vout_ctl_field = WCD939X_MICB1_VOUT_CTL;
++		break;
++	case MIC_BIAS_2:
++		micb_reg = WCD939X_ANA_MICB2;
++		micb_en_field = WCD939X_MICB2_ENABLE;
++		micb_vout_ctl_field = WCD939X_MICB2_VOUT_CTL;
++		break;
++	case MIC_BIAS_3:
++		micb_reg = WCD939X_ANA_MICB3;
++		micb_en_field = WCD939X_MICB3_ENABLE;
++		micb_vout_ctl_field = WCD939X_MICB1_VOUT_CTL;
++		break;
++	case MIC_BIAS_4:
++		micb_reg = WCD939X_ANA_MICB4;
++		micb_en_field = WCD939X_MICB4_ENABLE;
++		micb_vout_ctl_field = WCD939X_MICB2_VOUT_CTL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	mutex_lock(&wcd939x->micb_lock);
++
++	/*
++	 * If requested micbias voltage is same as current micbias
++	 * voltage, then just return. Otherwise, adjust voltage as
++	 * per requested value. If micbias is already enabled, then
++	 * to avoid slow micbias ramp-up or down enable pull-up
++	 * momentarily, change the micbias value and then re-enable
++	 * micbias.
++	 */
++	micb_val = snd_soc_component_read(component, micb_reg);
++	micb_en = (micb_val & micb_en_field) >> 6;
++	cur_vout_ctl = micb_val & micb_vout_ctl_field;
++
++	req_vout_ctl = wcd939x_get_micb_vout_ctl_val(req_volt);
++	if (req_vout_ctl < 0) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	if (cur_vout_ctl == req_vout_ctl) {
++		ret = 0;
++		goto exit;
++	}
++
++	dev_dbg(component->dev, "%s: micb_num: %d, cur_mv: %d, req_mv: %d, micb_en: %d\n",
++		__func__, micb_num, WCD_VOUT_CTL_TO_MICB(cur_vout_ctl),
++		 req_volt, micb_en);
++
++	if (micb_en == 0x1)
++		snd_soc_component_write_field(component, micb_reg, micb_en_field, 3);
++
++	snd_soc_component_write_field(component, micb_reg, micb_vout_ctl_field, req_vout_ctl);
++
++	if (micb_en == 0x1) {
++		snd_soc_component_write_field(component, micb_reg, micb_en_field, 1);
++		/*
++		 * Add 2ms delay as per HW requirement after enabling
++		 * micbias
++		 */
++		usleep_range(2000, 2100);
++	}
++exit:
++	mutex_unlock(&wcd939x->micb_lock);
++	return ret;
++}
++
++static int wcd939x_mbhc_micb_ctrl_threshold_mic(struct snd_soc_component *component,
++						int micb_num, bool req_en)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int micb_mv;
++
++	if (micb_num != MIC_BIAS_2)
++		return -EINVAL;
++	/*
++	 * If device tree micbias level is already above the minimum
++	 * voltage needed to detect threshold microphone, then do
++	 * not change the micbias, just return.
++	 */
++	if (wcd939x->micb2_mv >= WCD_MBHC_THR_HS_MICB_MV)
++		return 0;
++
++	micb_mv = req_en ? WCD_MBHC_THR_HS_MICB_MV : wcd939x->micb2_mv;
++
++	return wcd939x_mbhc_micb_adjust_voltage(component, micb_mv, MIC_BIAS_2);
++}
++
++static void wcd939x_mbhc_get_result_params(struct snd_soc_component *component,
++					   s16 *d1_a, u16 noff,
++						int32_t *zdet)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	int i;
++	int val, val1;
++	s16 c1;
++	s32 x1, d1;
++	s32 denom;
++	static const int mincode_param[] = {
++		3277, 1639, 820, 410, 205, 103, 52, 26
++	};
++
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MBHC_ZDET, 0x20, 0x20);
++	for (i = 0; i < WCD939X_ZDET_NUM_MEASUREMENTS; i++) {
++		regmap_read(wcd939x->regmap, WCD939X_ANA_MBHC_RESULT_2, &val);
++		if (val & 0x80)
++			break;
++	}
++	val = val << 0x8;
++	regmap_read(wcd939x->regmap, WCD939X_ANA_MBHC_RESULT_1, &val1);
++	val |= val1;
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MBHC_ZDET, 0x20, 0x00);
++	x1 = WCD939X_MBHC_GET_X1(val);
++	c1 = WCD939X_MBHC_GET_C1(val);
++	/* If ramp is not complete, give additional 5ms */
++	if (c1 < 2 && x1)
++		usleep_range(5000, 5050);
++
++	if (!c1 || !x1) {
++		dev_dbg(component->dev,
++			"%s: Impedance detect ramp error, c1=%d, x1=0x%x\n",
++			__func__, c1, x1);
++		goto ramp_down;
++	}
++	d1 = d1_a[c1];
++	denom = (x1 * d1) - (1 << (14 - noff));
++	if (denom > 0)
++		*zdet = (WCD939X_ANA_MBHC_ZDET_CONST * 1000) / denom;
++	else if (x1 < mincode_param[noff])
++		*zdet = WCD939X_ZDET_FLOATING_IMPEDANCE;
++
++	dev_dbg(component->dev, "%s: d1=%d, c1=%d, x1=0x%x, z_val=%d(milliOhm)\n",
++		__func__, d1, c1, x1, *zdet);
++ramp_down:
++	i = 0;
++	while (x1) {
++		regmap_read(wcd939x->regmap,
++			    WCD939X_ANA_MBHC_RESULT_1, &val);
++		regmap_read(wcd939x->regmap,
++			    WCD939X_ANA_MBHC_RESULT_2, &val1);
++		val = val << 0x08;
++		val |= val1;
++		x1 = WCD939X_MBHC_GET_X1(val);
++		i++;
++		if (i == WCD939X_ZDET_NUM_MEASUREMENTS)
++			break;
++	}
++}
++
++static void wcd939x_mbhc_zdet_ramp(struct snd_soc_component *component,
++				   struct wcd939x_mbhc_zdet_param *zdet_param,
++				   s32 *zl, int32_t *zr, s16 *d1_a)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(component->dev);
++	s32 zdet = 0;
++
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_ZDET_ANA_CTL,
++				      WCD939X_ZDET_ANA_CTL_MAXV_CTL, zdet_param->ldo_ctl);
++	snd_soc_component_update_bits(component, WCD939X_ANA_MBHC_BTN5, WCD939X_MBHC_BTN5_VTH,
++				      zdet_param->btn5);
++	snd_soc_component_update_bits(component, WCD939X_ANA_MBHC_BTN6, WCD939X_MBHC_BTN6_VTH,
++				      zdet_param->btn6);
++	snd_soc_component_update_bits(component, WCD939X_ANA_MBHC_BTN7, WCD939X_MBHC_BTN7_VTH,
++				      zdet_param->btn7);
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_ZDET_ANA_CTL,
++				      WCD939X_ZDET_ANA_CTL_RANGE_CTL, zdet_param->noff);
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_ZDET_RAMP_CTL,
++				      WCD939X_ZDET_RAMP_CTL_TIME_CTL, zdet_param->nshift);
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_ZDET_RAMP_CTL,
++				      WCD939X_ZDET_RAMP_CTL_ACC1_MIN_CTL, 6); /*acc1_min_63 */
++
++	if (!zl)
++		goto z_right;
++	/* Start impedance measurement for HPH_L */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_ZDET, 0x80, 0x80);
++	dev_dbg(component->dev, "%s: ramp for HPH_L, noff = %d\n",
++		__func__, zdet_param->noff);
++	wcd939x_mbhc_get_result_params(component, d1_a, zdet_param->noff, &zdet);
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_ZDET, 0x80, 0x00);
++
++	*zl = zdet;
++
++z_right:
++	if (!zr)
++		return;
++	/* Start impedance measurement for HPH_R */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_ZDET, 0x40, 0x40);
++	dev_dbg(component->dev, "%s: ramp for HPH_R, noff = %d\n",
++		__func__, zdet_param->noff);
++	wcd939x_mbhc_get_result_params(component, d1_a, zdet_param->noff, &zdet);
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_ZDET, 0x40, 0x00);
++
++	*zr = zdet;
++}
++
++static void wcd939x_wcd_mbhc_qfuse_cal(struct snd_soc_component *component,
++				       s32 *z_val, int flag_l_r)
++{
++	s16 q1;
++	int q1_cal;
++
++	q1 = snd_soc_component_read(component, WCD939X_DIGITAL_EFUSE_REG_21 + flag_l_r);
++	if (q1 & 0x80)
++		q1_cal = (10000 - ((q1 & 0x7F) * 10));
++	else
++		q1_cal = (10000 + (q1 * 10));
++	if (q1_cal > 0)
++		*z_val = ((*z_val) * 10000) / q1_cal;
++}
++
++static void wcd939x_wcd_mbhc_calc_impedance(struct snd_soc_component *component,
++					    u32 *zl, uint32_t *zr)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(component->dev);
++	s16 reg0, reg1, reg2, reg3, reg4;
++	s32 z1l, z1r, z1ls;
++	int z_mono, z_diff1, z_diff2;
++	bool is_fsm_disable = false;
++	struct wcd939x_mbhc_zdet_param zdet_param[] = {
++		{4, 0, 4, 0x08, 0x14, 0x18}, /* < 32ohm */
++		{4, 0, 6, 0x18, 0x60, 0x78}, /* 32ohm < Z < 400ohm */
++		{1, 4, 5, 0x18, 0x7C, 0x90}, /* 400ohm < Z < 1200ohm */
++		{1, 6, 7, 0x18, 0x7C, 0x90}, /* >1200ohm */
++	};
++	struct wcd939x_mbhc_zdet_param *zdet_param_ptr = NULL;
++	s16 d1_a[][4] = {
++		{0, 30, 90, 30},
++		{0, 30, 30, 6},
++		{0, 30, 30, 5},
++		{0, 30, 30, 5},
++	};
++	s16 *d1 = NULL;
++
++	reg0 = snd_soc_component_read(component, WCD939X_ANA_MBHC_BTN5);
++	reg1 = snd_soc_component_read(component, WCD939X_ANA_MBHC_BTN6);
++	reg2 = snd_soc_component_read(component, WCD939X_ANA_MBHC_BTN7);
++	reg3 = snd_soc_component_read(component, WCD939X_MBHC_CTL_CLK);
++	reg4 = snd_soc_component_read(component, WCD939X_MBHC_NEW_ZDET_ANA_CTL);
++
++	if (snd_soc_component_read(component, WCD939X_ANA_MBHC_ELECT) & 0x80) {
++		is_fsm_disable = true;
++		regmap_update_bits(wcd939x->regmap,
++				   WCD939X_ANA_MBHC_ELECT, 0x80, 0x00);
++	}
++
++	/* For NO-jack, disable L_DET_EN before Z-det measurements */
++	if (wcd939x->mbhc_cfg.hphl_swh)
++		regmap_update_bits(wcd939x->regmap,
++				   WCD939X_ANA_MBHC_MECH, 0x80, 0x00);
++
++	/* Turn off 100k pull down on HPHL */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_MECH, 0x01, 0x00);
++
++	/* Disable surge protection before impedance detection.
++	 * This is done to give correct value for high impedance.
++	 */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_HPH_SURGE_EN, 0xC0, 0x00);
++	/* 1ms delay needed after disable surge protection */
++	usleep_range(1000, 1010);
++
++	/* First get impedance on Left */
++	d1 = d1_a[1];
++	zdet_param_ptr = &zdet_param[1];
++	wcd939x_mbhc_zdet_ramp(component, zdet_param_ptr, &z1l, NULL, d1);
++
++	if (!WCD939X_MBHC_IS_SECOND_RAMP_REQUIRED(z1l))
++		goto left_ch_impedance;
++
++	/* Second ramp for left ch */
++	if (z1l < WCD939X_ZDET_VAL_32) {
++		zdet_param_ptr = &zdet_param[0];
++		d1 = d1_a[0];
++	} else if (z1l > WCD939X_ZDET_VAL_400 && z1l <= WCD939X_ZDET_VAL_1200) {
++		zdet_param_ptr = &zdet_param[2];
++		d1 = d1_a[2];
++	} else if (z1l > WCD939X_ZDET_VAL_1200) {
++		zdet_param_ptr = &zdet_param[3];
++		d1 = d1_a[3];
++	}
++	wcd939x_mbhc_zdet_ramp(component, zdet_param_ptr, &z1l, NULL, d1);
++
++left_ch_impedance:
++	if (z1l == WCD939X_ZDET_FLOATING_IMPEDANCE || z1l > WCD939X_ZDET_VAL_100K) {
++		*zl = WCD939X_ZDET_FLOATING_IMPEDANCE;
++		zdet_param_ptr = &zdet_param[1];
++		d1 = d1_a[1];
++	} else {
++		*zl = z1l / 1000;
++		wcd939x_wcd_mbhc_qfuse_cal(component, zl, 0);
++	}
++	dev_dbg(component->dev, "%s: impedance on HPH_L = %d(ohms)\n",
++		__func__, *zl);
++
++	/* Start of right impedance ramp and calculation */
++	wcd939x_mbhc_zdet_ramp(component, zdet_param_ptr, NULL, &z1r, d1);
++	if (WCD939X_MBHC_IS_SECOND_RAMP_REQUIRED(z1r)) {
++		if ((z1r > WCD939X_ZDET_VAL_1200 && zdet_param_ptr->noff == 0x6) ||
++		    (*zl) != WCD939X_ZDET_FLOATING_IMPEDANCE)
++			goto right_ch_impedance;
++		/* Second ramp for right ch */
++		if (z1r < WCD939X_ZDET_VAL_32) {
++			zdet_param_ptr = &zdet_param[0];
++			d1 = d1_a[0];
++		} else if (z1r > WCD939X_ZDET_VAL_400 && z1r <= WCD939X_ZDET_VAL_1200) {
++			zdet_param_ptr = &zdet_param[2];
++			d1 = d1_a[2];
++		} else if (z1r > WCD939X_ZDET_VAL_1200) {
++			zdet_param_ptr = &zdet_param[3];
++			d1 = d1_a[3];
++		}
++		wcd939x_mbhc_zdet_ramp(component, zdet_param_ptr, NULL, &z1r, d1);
++	}
++right_ch_impedance:
++	if (z1r == WCD939X_ZDET_FLOATING_IMPEDANCE || z1r > WCD939X_ZDET_VAL_100K) {
++		*zr = WCD939X_ZDET_FLOATING_IMPEDANCE;
++	} else {
++		*zr = z1r / 1000;
++		wcd939x_wcd_mbhc_qfuse_cal(component, zr, 1);
++	}
++	dev_dbg(component->dev, "%s: impedance on HPH_R = %d(ohms)\n",
++		__func__, *zr);
++
++	/* Mono/stereo detection */
++	if (*zl == WCD939X_ZDET_FLOATING_IMPEDANCE &&
++	    *zr == WCD939X_ZDET_FLOATING_IMPEDANCE) {
++		dev_dbg(component->dev,
++			"%s: plug type is invalid or extension cable\n",
++			__func__);
++		goto zdet_complete;
++	}
++	if (*zl == WCD939X_ZDET_FLOATING_IMPEDANCE || *zr == WCD939X_ZDET_FLOATING_IMPEDANCE ||
++	    (*zl < WCD_MONO_HS_MIN_THR && *zr > WCD_MONO_HS_MIN_THR) ||
++	    (*zl > WCD_MONO_HS_MIN_THR && *zr < WCD_MONO_HS_MIN_THR)) {
++		dev_dbg(component->dev,
++			"%s: Mono plug type with one ch floating or shorted to GND\n",
++			__func__);
++		wcd_mbhc_set_hph_type(wcd939x->wcd_mbhc, WCD_MBHC_HPH_MONO);
++		goto zdet_complete;
++	}
++
++	snd_soc_component_write_field(component, WCD939X_HPH_R_ATEST,
++				      WCD939X_R_ATEST_HPH_GND_OVR, 1);
++	snd_soc_component_write_field(component, WCD939X_HPH_PA_CTL2,
++				      WCD939X_PA_CTL2_HPHPA_GND_R, 1);
++	wcd939x_mbhc_zdet_ramp(component, &zdet_param[1], &z1ls, NULL, d1);
++	snd_soc_component_write_field(component, WCD939X_HPH_PA_CTL2,
++				      WCD939X_PA_CTL2_HPHPA_GND_R, 0);
++	snd_soc_component_write_field(component, WCD939X_HPH_R_ATEST,
++				      WCD939X_R_ATEST_HPH_GND_OVR, 0);
++	z1ls /= 1000;
++	wcd939x_wcd_mbhc_qfuse_cal(component, &z1ls, 0);
++	/* Parallel of left Z and 9 ohm pull down resistor */
++	z_mono = ((*zl) * 9) / ((*zl) + 9);
++	z_diff1 = (z1ls > z_mono) ? (z1ls - z_mono) : (z_mono - z1ls);
++	z_diff2 = ((*zl) > z1ls) ? ((*zl) - z1ls) : (z1ls - (*zl));
++	if ((z_diff1 * (*zl + z1ls)) > (z_diff2 * (z1ls + z_mono))) {
++		dev_dbg(component->dev, "%s: stereo plug type detected\n",
++			__func__);
++		wcd_mbhc_set_hph_type(wcd939x->wcd_mbhc, WCD_MBHC_HPH_STEREO);
++	} else {
++		dev_dbg(component->dev, "%s: MONO plug type detected\n",
++			__func__);
++		wcd_mbhc_set_hph_type(wcd939x->wcd_mbhc, WCD_MBHC_HPH_MONO);
++	}
++
++	/* Enable surge protection again after impedance detection */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_HPH_SURGE_EN, 0xC0, 0xC0);
++zdet_complete:
++	snd_soc_component_write(component, WCD939X_ANA_MBHC_BTN5, reg0);
++	snd_soc_component_write(component, WCD939X_ANA_MBHC_BTN6, reg1);
++	snd_soc_component_write(component, WCD939X_ANA_MBHC_BTN7, reg2);
++	/* Turn on 100k pull down on HPHL */
++	regmap_update_bits(wcd939x->regmap,
++			   WCD939X_ANA_MBHC_MECH, 0x01, 0x01);
++
++	/* For NO-jack, re-enable L_DET_EN after Z-det measurements */
++	if (wcd939x->mbhc_cfg.hphl_swh)
++		regmap_update_bits(wcd939x->regmap,
++				   WCD939X_ANA_MBHC_MECH, 0x80, 0x80);
++
++	snd_soc_component_write(component, WCD939X_MBHC_NEW_ZDET_ANA_CTL, reg4);
++	snd_soc_component_write(component, WCD939X_MBHC_CTL_CLK, reg3);
++	if (is_fsm_disable)
++		regmap_update_bits(wcd939x->regmap,
++				   WCD939X_ANA_MBHC_ELECT, 0x80, 0x80);
++}
++
++static void wcd939x_mbhc_gnd_det_ctrl(struct snd_soc_component *component,
++				      bool enable)
++{
++	if (enable) {
++		snd_soc_component_write_field(component, WCD939X_ANA_MBHC_MECH,
++					      WCD939X_MBHC_MECH_MECH_HS_G_PULLUP_COMP_EN, 1);
++		snd_soc_component_write_field(component, WCD939X_ANA_MBHC_MECH,
++					      WCD939X_MBHC_MECH_GND_DET_EN, 1);
++	} else {
++		snd_soc_component_write_field(component, WCD939X_ANA_MBHC_MECH,
++					      WCD939X_MBHC_MECH_GND_DET_EN, 0);
++		snd_soc_component_write_field(component, WCD939X_ANA_MBHC_MECH,
++					      WCD939X_MBHC_MECH_MECH_HS_G_PULLUP_COMP_EN, 0);
++	}
++}
++
++static void wcd939x_mbhc_hph_pull_down_ctrl(struct snd_soc_component *component,
++					    bool enable)
++{
++	snd_soc_component_write_field(component, WCD939X_HPH_PA_CTL2,
++				      WCD939X_PA_CTL2_HPHPA_GND_R, enable);
++	snd_soc_component_write_field(component, WCD939X_HPH_PA_CTL2,
++				      WCD939X_PA_CTL2_HPHPA_GND_L, enable);
++}
++
++static void wcd939x_mbhc_moisture_config(struct snd_soc_component *component)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	if (wcd939x->mbhc_cfg.moist_rref == R_OFF || wcd939x->typec_analog_mux) {
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL, R_OFF);
++		return;
++	}
++
++	/* Do not enable moisture detection if jack type is NC */
++	if (!wcd939x->mbhc_cfg.hphl_swh) {
++		dev_dbg(component->dev, "%s: disable moisture detection for NC\n",
++			__func__);
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL, R_OFF);
++		return;
++	}
++
++	snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++				      WCD939X_CTL_2_M_RTH_CTL, wcd939x->mbhc_cfg.moist_rref);
++}
++
++static void wcd939x_mbhc_moisture_detect_en(struct snd_soc_component *component, bool enable)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	if (enable)
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL,
++					      wcd939x->mbhc_cfg.moist_rref);
++	else
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL, R_OFF);
++}
++
++static bool wcd939x_mbhc_get_moisture_status(struct snd_soc_component *component)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	bool ret = false;
++
++	if (wcd939x->mbhc_cfg.moist_rref == R_OFF || wcd939x->typec_analog_mux) {
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL, R_OFF);
++		goto done;
++	}
++
++	/* Do not enable moisture detection if jack type is NC */
++	if (!wcd939x->mbhc_cfg.hphl_swh) {
++		dev_dbg(component->dev, "%s: disable moisture detection for NC\n",
++			__func__);
++		snd_soc_component_write_field(component, WCD939X_MBHC_NEW_CTL_2,
++					      WCD939X_CTL_2_M_RTH_CTL, R_OFF);
++		goto done;
++	}
++
++	/*
++	 * If moisture_en is already enabled, then skip to plug type
++	 * detection.
++	 */
++	if ((snd_soc_component_read(component, WCD939X_MBHC_NEW_CTL_2) & WCD939X_CTL_2_M_RTH_CTL))
++		goto done;
++
++	wcd939x_mbhc_moisture_detect_en(component, true);
++	/* Read moisture comparator status */
++	ret = ((snd_soc_component_read(component, WCD939X_MBHC_NEW_FSM_STATUS)
++				& 0x20) ? 0 : 1);
++
++done:
++	return ret;
++}
++
++static void wcd939x_mbhc_moisture_polling_ctrl(struct snd_soc_component *component,
++					       bool enable)
++{
++	snd_soc_component_write_field(component,
++				      WCD939X_MBHC_NEW_INT_MOISTURE_DET_POLLING_CTRL,
++				      WCD939X_MOISTURE_DET_POLLING_CTRL_MOIST_EN_POLLING, enable);
++}
++
++static const struct wcd_mbhc_cb mbhc_cb = {
++	.clk_setup = wcd939x_mbhc_clk_setup,
++	.mbhc_bias = wcd939x_mbhc_mbhc_bias_control,
++	.set_btn_thr = wcd939x_mbhc_program_btn_thr,
++	.micbias_enable_status = wcd939x_mbhc_micb_en_status,
++	.hph_pull_up_control_v2 = wcd939x_mbhc_hph_l_pull_up_control,
++	.mbhc_micbias_control = wcd939x_mbhc_request_micbias,
++	.mbhc_micb_ramp_control = wcd939x_mbhc_micb_ramp_control,
++	.mbhc_micb_ctrl_thr_mic = wcd939x_mbhc_micb_ctrl_threshold_mic,
++	.compute_impedance = wcd939x_wcd_mbhc_calc_impedance,
++	.mbhc_gnd_det_ctrl = wcd939x_mbhc_gnd_det_ctrl,
++	.hph_pull_down_ctrl = wcd939x_mbhc_hph_pull_down_ctrl,
++	.mbhc_moisture_config = wcd939x_mbhc_moisture_config,
++	.mbhc_get_moisture_status = wcd939x_mbhc_get_moisture_status,
++	.mbhc_moisture_polling_ctrl = wcd939x_mbhc_moisture_polling_ctrl,
++	.mbhc_moisture_detect_en = wcd939x_mbhc_moisture_detect_en,
++};
++
++static int wcd939x_get_hph_type(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = wcd_mbhc_get_hph_type(wcd939x->wcd_mbhc);
++
++	return 0;
++}
++
++static int wcd939x_hph_impedance_get(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	u32 zl, zr;
++	bool hphr;
++	struct soc_mixer_control *mc;
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	mc = (struct soc_mixer_control *)(kcontrol->private_value);
++	hphr = mc->shift;
++	wcd_mbhc_get_impedance(wcd939x->wcd_mbhc, &zl, &zr);
++	dev_dbg(component->dev, "%s: zl=%u(ohms), zr=%u(ohms)\n", __func__, zl, zr);
++	ucontrol->value.integer.value[0] = hphr ? zr : zl;
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new hph_type_detect_controls[] = {
++	SOC_SINGLE_EXT("HPH Type", 0, 0, UINT_MAX, 0,
++		       wcd939x_get_hph_type, NULL),
++};
++
++static const struct snd_kcontrol_new impedance_detect_controls[] = {
++	SOC_SINGLE_EXT("HPHL Impedance", 0, 0, UINT_MAX, 0,
++		       wcd939x_hph_impedance_get, NULL),
++	SOC_SINGLE_EXT("HPHR Impedance", 0, 1, UINT_MAX, 0,
++		       wcd939x_hph_impedance_get, NULL),
++};
++
++static int wcd939x_mbhc_init(struct snd_soc_component *component)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct wcd_mbhc_intr *intr_ids = &wcd939x->intr_ids;
++
++	intr_ids->mbhc_sw_intr = regmap_irq_get_virq(wcd939x->irq_chip,
++						     WCD939X_IRQ_MBHC_SW_DET);
++	intr_ids->mbhc_btn_press_intr = regmap_irq_get_virq(wcd939x->irq_chip,
++							    WCD939X_IRQ_MBHC_BUTTON_PRESS_DET);
++	intr_ids->mbhc_btn_release_intr = regmap_irq_get_virq(wcd939x->irq_chip,
++							      WCD939X_IRQ_MBHC_BUTTON_RELEASE_DET);
++	intr_ids->mbhc_hs_ins_intr = regmap_irq_get_virq(wcd939x->irq_chip,
++							 WCD939X_IRQ_MBHC_ELECT_INS_REM_LEG_DET);
++	intr_ids->mbhc_hs_rem_intr = regmap_irq_get_virq(wcd939x->irq_chip,
++							 WCD939X_IRQ_MBHC_ELECT_INS_REM_DET);
++	intr_ids->hph_left_ocp = regmap_irq_get_virq(wcd939x->irq_chip,
++						     WCD939X_IRQ_HPHL_OCP_INT);
++	intr_ids->hph_right_ocp = regmap_irq_get_virq(wcd939x->irq_chip,
++						      WCD939X_IRQ_HPHR_OCP_INT);
++
++	wcd939x->wcd_mbhc = wcd_mbhc_init(component, &mbhc_cb, intr_ids, wcd_mbhc_fields, true);
++	if (IS_ERR(wcd939x->wcd_mbhc))
++		return PTR_ERR(wcd939x->wcd_mbhc);
++
++	snd_soc_add_component_controls(component, impedance_detect_controls,
++				       ARRAY_SIZE(impedance_detect_controls));
++	snd_soc_add_component_controls(component, hph_type_detect_controls,
++				       ARRAY_SIZE(hph_type_detect_controls));
++
++	return 0;
++}
++
++static void wcd939x_mbhc_deinit(struct snd_soc_component *component)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	wcd_mbhc_deinit(wcd939x->wcd_mbhc);
++}
++
++/* END MBHC */
++
++static const struct snd_kcontrol_new wcd939x_snd_controls[] = {
++	/* RX Path */
++	SOC_SINGLE_EXT("HPHL_COMP Switch", WCD939X_COMP_L, 0, 1, 0,
++		       wcd939x_get_compander, wcd939x_set_compander),
++	SOC_SINGLE_EXT("HPHR_COMP Switch", WCD939X_COMP_R, 1, 1, 0,
++		       wcd939x_get_compander, wcd939x_set_compander),
++	SOC_SINGLE_EXT("HPHL Switch", WCD939X_HPH_L, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("HPHR Switch", WCD939X_HPH_R, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("CLSH Switch", WCD939X_CLSH, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("LO Switch", WCD939X_LO, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DSD_L Switch", WCD939X_DSD_L, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DSD_R Switch", WCD939X_DSD_R, 0, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_TLV("HPHL Volume", WCD939X_HPH_L_EN, 0, 20, 1, line_gain),
++	SOC_SINGLE_TLV("HPHR Volume", WCD939X_HPH_R_EN, 0, 20, 1, line_gain),
++	SOC_SINGLE_EXT("LDOH Enable Switch", SND_SOC_NOPM, 0, 1, 0,
++		       wcd939x_ldoh_get, wcd939x_ldoh_put),
++
++	/* TX Path */
++	SOC_SINGLE_EXT("ADC1 Switch", WCD939X_ADC1, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("ADC2 Switch", WCD939X_ADC2, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("ADC3 Switch", WCD939X_ADC3, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("ADC4 Switch", WCD939X_ADC4, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC0 Switch", WCD939X_DMIC0, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC1 Switch", WCD939X_DMIC1, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("MBHC Switch", WCD939X_MBHC, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC2 Switch", WCD939X_DMIC2, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC3 Switch", WCD939X_DMIC3, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC4 Switch", WCD939X_DMIC4, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC5 Switch", WCD939X_DMIC5, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC6 Switch", WCD939X_DMIC6, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC7 Switch", WCD939X_DMIC7, 1, 1, 0,
++		       wcd939x_get_swr_port, wcd939x_set_swr_port),
++	SOC_SINGLE_TLV("ADC1 Volume", WCD939X_ANA_TX_CH1, 0, 20, 0,
++		       analog_gain),
++	SOC_SINGLE_TLV("ADC2 Volume", WCD939X_ANA_TX_CH2, 0, 20, 0,
++		       analog_gain),
++	SOC_SINGLE_TLV("ADC3 Volume", WCD939X_ANA_TX_CH3, 0, 20, 0,
++		       analog_gain),
++	SOC_SINGLE_TLV("ADC4 Volume", WCD939X_ANA_TX_CH4, 0, 20, 0,
++		       analog_gain),
++};
++
++static const struct snd_soc_dapm_widget wcd939x_dapm_widgets[] = {
++	/*input widgets*/
++	SND_SOC_DAPM_INPUT("AMIC1"),
++	SND_SOC_DAPM_INPUT("AMIC2"),
++	SND_SOC_DAPM_INPUT("AMIC3"),
++	SND_SOC_DAPM_INPUT("AMIC4"),
++	SND_SOC_DAPM_INPUT("AMIC5"),
++
++	SND_SOC_DAPM_MIC("Analog Mic1", NULL),
++	SND_SOC_DAPM_MIC("Analog Mic2", NULL),
++	SND_SOC_DAPM_MIC("Analog Mic3", NULL),
++	SND_SOC_DAPM_MIC("Analog Mic4", NULL),
++	SND_SOC_DAPM_MIC("Analog Mic5", NULL),
++
++	/* TX widgets */
++	SND_SOC_DAPM_ADC_E("ADC1", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd939x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("ADC2", NULL, SND_SOC_NOPM, 1, 0,
++			   wcd939x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("ADC3", NULL, SND_SOC_NOPM, 2, 0,
++			   wcd939x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("ADC4", NULL, SND_SOC_NOPM, 3, 0,
++			   wcd939x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC1", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC2", NULL, SND_SOC_NOPM, 1, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC3", NULL, SND_SOC_NOPM, 2, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC4", NULL, SND_SOC_NOPM, 3, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC5", NULL, SND_SOC_NOPM, 4, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC6", NULL, SND_SOC_NOPM, 5, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC7", NULL, SND_SOC_NOPM, 6, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC8", NULL, SND_SOC_NOPM, 7, 0,
++			   wcd939x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("ADC1 REQ", SND_SOC_NOPM, 0, 0, NULL, 0,
++			     wcd939x_adc_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC2 REQ", SND_SOC_NOPM, 1, 0, NULL, 0,
++			     wcd939x_adc_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC3 REQ", SND_SOC_NOPM, 2, 0, NULL, 0,
++			     wcd939x_adc_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC4 REQ", SND_SOC_NOPM, 3, 0, NULL, 0,
++			     wcd939x_adc_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX("ADC1 MUX", SND_SOC_NOPM, 0, 0, &tx_adc1_mux),
++	SND_SOC_DAPM_MUX("ADC2 MUX", SND_SOC_NOPM, 0, 0, &tx_adc2_mux),
++	SND_SOC_DAPM_MUX("ADC3 MUX", SND_SOC_NOPM, 0, 0, &tx_adc3_mux),
++	SND_SOC_DAPM_MUX("ADC4 MUX", SND_SOC_NOPM, 0, 0, &tx_adc4_mux),
++
++	/* tx mixers */
++	SND_SOC_DAPM_MIXER_E("ADC1_MIXER", SND_SOC_NOPM, 0, 0,
++			     adc1_switch, ARRAY_SIZE(adc1_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC2_MIXER", SND_SOC_NOPM, 0, 0,
++			     adc2_switch, ARRAY_SIZE(adc2_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC3_MIXER", SND_SOC_NOPM, 0, 0,
++			     adc3_switch, ARRAY_SIZE(adc3_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC4_MIXER", SND_SOC_NOPM, 0, 0,
++			     adc4_switch, ARRAY_SIZE(adc4_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC1_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic1_switch, ARRAY_SIZE(dmic1_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC2_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic2_switch, ARRAY_SIZE(dmic2_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC3_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic3_switch, ARRAY_SIZE(dmic3_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC4_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic4_switch, ARRAY_SIZE(dmic4_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC5_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic5_switch, ARRAY_SIZE(dmic5_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC6_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic6_switch, ARRAY_SIZE(dmic6_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC7_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic7_switch, ARRAY_SIZE(dmic7_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC8_MIXER", SND_SOC_NOPM, 0, 0,
++			     dmic8_switch, ARRAY_SIZE(dmic8_switch), wcd939x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	/* micbias widgets */
++	SND_SOC_DAPM_SUPPLY("MIC BIAS1", SND_SOC_NOPM, MIC_BIAS_1, 0,
++			    wcd939x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS2", SND_SOC_NOPM, MIC_BIAS_2, 0,
++			    wcd939x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS3", SND_SOC_NOPM, MIC_BIAS_3, 0,
++			    wcd939x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS4", SND_SOC_NOPM, MIC_BIAS_4, 0,
++			    wcd939x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++
++	/* micbias pull up widgets */
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS1", SND_SOC_NOPM, MIC_BIAS_1, 0,
++			    wcd939x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS2", SND_SOC_NOPM, MIC_BIAS_2, 0,
++			    wcd939x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS3", SND_SOC_NOPM, MIC_BIAS_3, 0,
++			    wcd939x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS4", SND_SOC_NOPM, MIC_BIAS_4, 0,
++			    wcd939x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++
++	/* output widgets tx */
++	SND_SOC_DAPM_OUTPUT("ADC1_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("ADC2_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("ADC3_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("ADC4_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC1_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC2_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC3_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC4_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC5_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC6_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC7_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC8_OUTPUT"),
++
++	SND_SOC_DAPM_INPUT("IN1_HPHL"),
++	SND_SOC_DAPM_INPUT("IN2_HPHR"),
++	SND_SOC_DAPM_INPUT("IN3_EAR"),
++
++	/* rx widgets */
++	SND_SOC_DAPM_PGA_E("EAR PGA", WCD939X_ANA_EAR, 7, 0, NULL, 0,
++			   wcd939x_codec_enable_ear_pa,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_PGA_E("HPHL PGA", WCD939X_ANA_HPH, 7, 0, NULL, 0,
++			   wcd939x_codec_enable_hphl_pa,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_PGA_E("HPHR PGA", WCD939X_ANA_HPH, 6, 0, NULL, 0,
++			   wcd939x_codec_enable_hphr_pa,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_DAC_E("RDAC1", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd939x_codec_hphl_dac_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_DAC_E("RDAC2", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd939x_codec_hphr_dac_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_DAC_E("RDAC3", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd939x_codec_ear_dac_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX("RDAC3_MUX", SND_SOC_NOPM, 0, 0, &rx_rdac3_mux),
++
++	SND_SOC_DAPM_SUPPLY("VDD_BUCK", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("RXCLK", SND_SOC_NOPM, 0, 0,
++			    wcd939x_codec_enable_rxclk,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_SUPPLY_S("CLS_H_PORT", 1, SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_MIXER_E("RX1", SND_SOC_NOPM, 0, 0, NULL, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER_E("RX2", SND_SOC_NOPM, 0, 0, NULL, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER_E("RX3", SND_SOC_NOPM, 0, 0, NULL, 0, NULL, 0),
++
++	/* rx mixer widgets */
++	SND_SOC_DAPM_MIXER("EAR_RDAC", SND_SOC_NOPM, 0, 0,
++			   ear_rdac_switch, ARRAY_SIZE(ear_rdac_switch)),
++	SND_SOC_DAPM_MIXER("HPHL_RDAC", SND_SOC_NOPM, 0, 0,
++			   hphl_rdac_switch, ARRAY_SIZE(hphl_rdac_switch)),
++	SND_SOC_DAPM_MIXER("HPHR_RDAC", SND_SOC_NOPM, 0, 0,
++			   hphr_rdac_switch, ARRAY_SIZE(hphr_rdac_switch)),
++
++	/* output widgets rx */
++	SND_SOC_DAPM_OUTPUT("EAR"),
++	SND_SOC_DAPM_OUTPUT("HPHL"),
++	SND_SOC_DAPM_OUTPUT("HPHR"),
++};
++
++static const struct snd_soc_dapm_route wcd939x_audio_map[] = {
++	/* TX Path */
++	{"ADC1_OUTPUT", NULL, "ADC1_MIXER"},
++	{"ADC1_MIXER", "Switch", "ADC1 REQ"},
++	{"ADC1 REQ", NULL, "ADC1"},
++	{"ADC1", NULL, "ADC1 MUX"},
++	{"ADC1 MUX", "CH1_AMIC1", "AMIC1"},
++	{"ADC1 MUX", "CH1_AMIC2", "AMIC2"},
++	{"ADC1 MUX", "CH1_AMIC3", "AMIC3"},
++	{"ADC1 MUX", "CH1_AMIC4", "AMIC4"},
++	{"ADC1 MUX", "CH1_AMIC5", "AMIC5"},
++
++	{"ADC2_OUTPUT", NULL, "ADC2_MIXER"},
++	{"ADC2_MIXER", "Switch", "ADC2 REQ"},
++	{"ADC2 REQ", NULL, "ADC2"},
++	{"ADC2", NULL, "ADC2 MUX"},
++	{"ADC2 MUX", "CH2_AMIC1", "AMIC1"},
++	{"ADC2 MUX", "CH2_AMIC2", "AMIC2"},
++	{"ADC2 MUX", "CH2_AMIC3", "AMIC3"},
++	{"ADC2 MUX", "CH2_AMIC4", "AMIC4"},
++	{"ADC2 MUX", "CH2_AMIC5", "AMIC5"},
++
++	{"ADC3_OUTPUT", NULL, "ADC3_MIXER"},
++	{"ADC3_MIXER", "Switch", "ADC3 REQ"},
++	{"ADC3 REQ", NULL, "ADC3"},
++	{"ADC3", NULL, "ADC3 MUX"},
++	{"ADC3 MUX", "CH3_AMIC1", "AMIC1"},
++	{"ADC3 MUX", "CH3_AMIC3", "AMIC3"},
++	{"ADC3 MUX", "CH3_AMIC4", "AMIC4"},
++	{"ADC3 MUX", "CH3_AMIC5", "AMIC5"},
++
++	{"ADC4_OUTPUT", NULL, "ADC4_MIXER"},
++	{"ADC4_MIXER", "Switch", "ADC4 REQ"},
++	{"ADC4 REQ", NULL, "ADC4"},
++	{"ADC4", NULL, "ADC4 MUX"},
++	{"ADC4 MUX", "CH4_AMIC1", "AMIC1"},
++	{"ADC4 MUX", "CH4_AMIC3", "AMIC3"},
++	{"ADC4 MUX", "CH4_AMIC4", "AMIC4"},
++	{"ADC4 MUX", "CH4_AMIC5", "AMIC5"},
++
++	{"DMIC1_OUTPUT", NULL, "DMIC1_MIXER"},
++	{"DMIC1_MIXER", "Switch", "DMIC1"},
++
++	{"DMIC2_OUTPUT", NULL, "DMIC2_MIXER"},
++	{"DMIC2_MIXER", "Switch", "DMIC2"},
++
++	{"DMIC3_OUTPUT", NULL, "DMIC3_MIXER"},
++	{"DMIC3_MIXER", "Switch", "DMIC3"},
++
++	{"DMIC4_OUTPUT", NULL, "DMIC4_MIXER"},
++	{"DMIC4_MIXER", "Switch", "DMIC4"},
++
++	{"DMIC5_OUTPUT", NULL, "DMIC5_MIXER"},
++	{"DMIC5_MIXER", "Switch", "DMIC5"},
++
++	{"DMIC6_OUTPUT", NULL, "DMIC6_MIXER"},
++	{"DMIC6_MIXER", "Switch", "DMIC6"},
++
++	{"DMIC7_OUTPUT", NULL, "DMIC7_MIXER"},
++	{"DMIC7_MIXER", "Switch", "DMIC7"},
++
++	{"DMIC8_OUTPUT", NULL, "DMIC8_MIXER"},
++	{"DMIC8_MIXER", "Switch", "DMIC8"},
++
++	/* RX Path */
++	{"IN1_HPHL", NULL, "VDD_BUCK"},
++	{"IN1_HPHL", NULL, "CLS_H_PORT"},
++
++	{"RX1", NULL, "IN1_HPHL"},
++	{"RX1", NULL, "RXCLK"},
++	{"RDAC1", NULL, "RX1"},
++	{"HPHL_RDAC", "Switch", "RDAC1"},
++	{"HPHL PGA", NULL, "HPHL_RDAC"},
++	{"HPHL", NULL, "HPHL PGA"},
++
++	{"IN2_HPHR", NULL, "VDD_BUCK"},
++	{"IN2_HPHR", NULL, "CLS_H_PORT"},
++	{"RX2", NULL, "IN2_HPHR"},
++	{"RDAC2", NULL, "RX2"},
++	{"RX2", NULL, "RXCLK"},
++	{"HPHR_RDAC", "Switch", "RDAC2"},
++	{"HPHR PGA", NULL, "HPHR_RDAC"},
++	{"HPHR", NULL, "HPHR PGA"},
++
++	{"IN3_EAR", NULL, "VDD_BUCK"},
++	{"RX3", NULL, "IN3_EAR"},
++	{"RX3", NULL, "RXCLK"},
++
++	{"RDAC3_MUX", "RX3", "RX3"},
++	{"RDAC3_MUX", "RX1", "RX1"},
++	{"RDAC3", NULL, "RDAC3_MUX"},
++	{"EAR_RDAC", "Switch", "RDAC3"},
++	{"EAR PGA", NULL, "EAR_RDAC"},
++	{"EAR", NULL, "EAR PGA"},
++};
++
++static int wcd939x_set_micbias_data(struct wcd939x_priv *wcd939x)
++{
++	int vout_ctl_1, vout_ctl_2, vout_ctl_3, vout_ctl_4;
++
++	/* set micbias voltage */
++	vout_ctl_1 = wcd939x_get_micb_vout_ctl_val(wcd939x->micb1_mv);
++	vout_ctl_2 = wcd939x_get_micb_vout_ctl_val(wcd939x->micb2_mv);
++	vout_ctl_3 = wcd939x_get_micb_vout_ctl_val(wcd939x->micb3_mv);
++	vout_ctl_4 = wcd939x_get_micb_vout_ctl_val(wcd939x->micb4_mv);
++	if (vout_ctl_1 < 0 || vout_ctl_2 < 0 || vout_ctl_3 < 0 || vout_ctl_4 < 0)
++		return -EINVAL;
++
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MICB1, 0x3F, vout_ctl_1);
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MICB2, 0x3F, vout_ctl_2);
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MICB3, 0x3F, vout_ctl_3);
++	regmap_update_bits(wcd939x->regmap, WCD939X_ANA_MICB4, 0x3F, vout_ctl_4);
++
++	return 0;
++}
++
++static irqreturn_t wcd939x_wd_handle_irq(int irq, void *data)
++{
 +	return IRQ_HANDLED;
 +}
 +
-+static const struct reg_default wcd939x_defaults[] = {
-+	{ WCD939X_ANA_PAGE, 0x00 },
-+	{ WCD939X_ANA_BIAS, 0x00 },
-+	{ WCD939X_ANA_RX_SUPPLIES, 0x00 },
-+	{ WCD939X_ANA_HPH, 0x0c },
-+	{ WCD939X_ANA_EAR, 0x00 },
-+	{ WCD939X_ANA_EAR_COMPANDER_CTL, 0x02 },
-+	{ WCD939X_ANA_TX_CH1, 0x20 },
-+	{ WCD939X_ANA_TX_CH2, 0x00 },
-+	{ WCD939X_ANA_TX_CH3, 0x20 },
-+	{ WCD939X_ANA_TX_CH4, 0x00 },
-+	{ WCD939X_ANA_MICB1_MICB2_DSP_EN_LOGIC, 0x00 },
-+	{ WCD939X_ANA_MICB3_DSP_EN_LOGIC, 0x00 },
-+	{ WCD939X_ANA_MBHC_MECH, 0x39 },
-+	{ WCD939X_ANA_MBHC_ELECT, 0x08 },
-+	{ WCD939X_ANA_MBHC_ZDET, 0x00 },
-+	{ WCD939X_ANA_MBHC_RESULT_1, 0x00 },
-+	{ WCD939X_ANA_MBHC_RESULT_2, 0x00 },
-+	{ WCD939X_ANA_MBHC_RESULT_3, 0x00 },
-+	{ WCD939X_ANA_MBHC_BTN0, 0x00 },
-+	{ WCD939X_ANA_MBHC_BTN1, 0x10 },
-+	{ WCD939X_ANA_MBHC_BTN2, 0x20 },
-+	{ WCD939X_ANA_MBHC_BTN3, 0x30 },
-+	{ WCD939X_ANA_MBHC_BTN4, 0x40 },
-+	{ WCD939X_ANA_MBHC_BTN5, 0x50 },
-+	{ WCD939X_ANA_MBHC_BTN6, 0x60 },
-+	{ WCD939X_ANA_MBHC_BTN7, 0x70 },
-+	{ WCD939X_ANA_MICB1, 0x10 },
-+	{ WCD939X_ANA_MICB2, 0x10 },
-+	{ WCD939X_ANA_MICB2_RAMP, 0x00 },
-+	{ WCD939X_ANA_MICB3, 0x00 },
-+	{ WCD939X_ANA_MICB4, 0x00 },
-+	{ WCD939X_BIAS_CTL, 0x2a },
-+	{ WCD939X_BIAS_VBG_FINE_ADJ, 0x55 },
-+	{ WCD939X_LDOL_VDDCX_ADJUST, 0x01 },
-+	{ WCD939X_LDOL_DISABLE_LDOL, 0x00 },
-+	{ WCD939X_MBHC_CTL_CLK, 0x00 },
-+	{ WCD939X_MBHC_CTL_ANA, 0x00 },
-+	{ WCD939X_MBHC_ZDET_VNEG_CTL, 0x00 },
-+	{ WCD939X_MBHC_ZDET_BIAS_CTL, 0x46 },
-+	{ WCD939X_MBHC_CTL_BCS, 0x00 },
-+	{ WCD939X_MBHC_MOISTURE_DET_FSM_STATUS, 0x00 },
-+	{ WCD939X_MBHC_TEST_CTL, 0x00 },
-+	{ WCD939X_LDOH_MODE, 0x2b },
-+	{ WCD939X_LDOH_BIAS, 0x68 },
-+	{ WCD939X_LDOH_STB_LOADS, 0x00 },
-+	{ WCD939X_LDOH_SLOWRAMP, 0x50 },
-+	{ WCD939X_MICB1_TEST_CTL_1, 0x1a },
-+	{ WCD939X_MICB1_TEST_CTL_2, 0x00 },
-+	{ WCD939X_MICB1_TEST_CTL_3, 0xa4 },
-+	{ WCD939X_MICB2_TEST_CTL_1, 0x1a },
-+	{ WCD939X_MICB2_TEST_CTL_2, 0x00 },
-+	{ WCD939X_MICB2_TEST_CTL_3, 0x24 },
-+	{ WCD939X_MICB3_TEST_CTL_1, 0x9a },
-+	{ WCD939X_MICB3_TEST_CTL_2, 0x80 },
-+	{ WCD939X_MICB3_TEST_CTL_3, 0x24 },
-+	{ WCD939X_MICB4_TEST_CTL_1, 0x1a },
-+	{ WCD939X_MICB4_TEST_CTL_2, 0x80 },
-+	{ WCD939X_MICB4_TEST_CTL_3, 0x24 },
-+	{ WCD939X_TX_COM_ADC_VCM, 0x39 },
-+	{ WCD939X_TX_COM_BIAS_ATEST, 0xe0 },
-+	{ WCD939X_TX_COM_SPARE1, 0x00 },
-+	{ WCD939X_TX_COM_SPARE2, 0x00 },
-+	{ WCD939X_TX_COM_TXFE_DIV_CTL, 0x22 },
-+	{ WCD939X_TX_COM_TXFE_DIV_START, 0x00 },
-+	{ WCD939X_TX_COM_SPARE3, 0x00 },
-+	{ WCD939X_TX_COM_SPARE4, 0x00 },
-+	{ WCD939X_TX_1_2_TEST_EN, 0xcc },
-+	{ WCD939X_TX_1_2_ADC_IB, 0xe9 },
-+	{ WCD939X_TX_1_2_ATEST_REFCTL, 0x0b },
-+	{ WCD939X_TX_1_2_TEST_CTL, 0x38 },
-+	{ WCD939X_TX_1_2_TEST_BLK_EN1, 0xff },
-+	{ WCD939X_TX_1_2_TXFE1_CLKDIV, 0x00 },
-+	{ WCD939X_TX_1_2_SAR2_ERR, 0x00 },
-+	{ WCD939X_TX_1_2_SAR1_ERR, 0x00 },
-+	{ WCD939X_TX_3_4_TEST_EN, 0xcc },
-+	{ WCD939X_TX_3_4_ADC_IB, 0xe9 },
-+	{ WCD939X_TX_3_4_ATEST_REFCTL, 0x0b },
-+	{ WCD939X_TX_3_4_TEST_CTL, 0x38 },
-+	{ WCD939X_TX_3_4_TEST_BLK_EN3, 0xff },
-+	{ WCD939X_TX_3_4_TXFE3_CLKDIV, 0x00 },
-+	{ WCD939X_TX_3_4_SAR4_ERR, 0x00 },
-+	{ WCD939X_TX_3_4_SAR3_ERR, 0x00 },
-+	{ WCD939X_TX_3_4_TEST_BLK_EN2, 0xfb },
-+	{ WCD939X_TX_3_4_TXFE2_CLKDIV, 0x00 },
-+	{ WCD939X_TX_3_4_SPARE1, 0x00 },
-+	{ WCD939X_TX_3_4_TEST_BLK_EN4, 0xfb },
-+	{ WCD939X_TX_3_4_TXFE4_CLKDIV, 0x00 },
-+	{ WCD939X_TX_3_4_SPARE2, 0x00 },
-+	{ WCD939X_CLASSH_MODE_1, 0x40 },
-+	{ WCD939X_CLASSH_MODE_2, 0x3a },
-+	{ WCD939X_CLASSH_MODE_3, 0xf0 },
-+	{ WCD939X_CLASSH_CTRL_VCL_1, 0x7c },
-+	{ WCD939X_CLASSH_CTRL_VCL_2, 0x82 },
-+	{ WCD939X_CLASSH_CTRL_CCL_1, 0x31 },
-+	{ WCD939X_CLASSH_CTRL_CCL_2, 0x80 },
-+	{ WCD939X_CLASSH_CTRL_CCL_3, 0x80 },
-+	{ WCD939X_CLASSH_CTRL_CCL_4, 0x51 },
-+	{ WCD939X_CLASSH_CTRL_CCL_5, 0x00 },
-+	{ WCD939X_CLASSH_BUCK_TMUX_A_D, 0x00 },
-+	{ WCD939X_CLASSH_BUCK_SW_DRV_CNTL, 0x77 },
-+	{ WCD939X_CLASSH_SPARE, 0x80 },
-+	{ WCD939X_FLYBACK_EN, 0x4e },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_1, 0x0b },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_2, 0x45 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_3, 0x14 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_4, 0xdb },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_5, 0x83 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_6, 0x98 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_7, 0xa9 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_8, 0x68 },
-+	{ WCD939X_FLYBACK_VNEG_CTRL_9, 0x66 },
-+	{ WCD939X_FLYBACK_VNEGDAC_CTRL_1, 0xed },
-+	{ WCD939X_FLYBACK_VNEGDAC_CTRL_2, 0xf8 },
-+	{ WCD939X_FLYBACK_VNEGDAC_CTRL_3, 0xa6 },
-+	{ WCD939X_FLYBACK_CTRL_1, 0x65 },
-+	{ WCD939X_FLYBACK_TEST_CTL, 0x02 },
-+	{ WCD939X_RX_AUX_SW_CTL, 0x00 },
-+	{ WCD939X_RX_PA_AUX_IN_CONN, 0x01 },
-+	{ WCD939X_RX_TIMER_DIV, 0x32 },
-+	{ WCD939X_RX_OCP_CTL, 0x1f },
-+	{ WCD939X_RX_OCP_COUNT, 0x77 },
-+	{ WCD939X_RX_BIAS_EAR_DAC, 0xa0 },
-+	{ WCD939X_RX_BIAS_EAR_AMP, 0xaa },
-+	{ WCD939X_RX_BIAS_HPH_LDO, 0xa9 },
-+	{ WCD939X_RX_BIAS_HPH_PA, 0xaa },
-+	{ WCD939X_RX_BIAS_HPH_RDACBUFF_CNP2, 0xca },
-+	{ WCD939X_RX_BIAS_HPH_RDAC_LDO, 0x88 },
-+	{ WCD939X_RX_BIAS_HPH_CNP1, 0x82 },
-+	{ WCD939X_RX_BIAS_HPH_LOWPOWER, 0x82 },
-+	{ WCD939X_RX_BIAS_AUX_DAC, 0xa0 },
-+	{ WCD939X_RX_BIAS_AUX_AMP, 0xaa },
-+	{ WCD939X_RX_BIAS_VNEGDAC_BLEEDER, 0x50 },
-+	{ WCD939X_RX_BIAS_MISC, 0x00 },
-+	{ WCD939X_RX_BIAS_BUCK_RST, 0x08 },
-+	{ WCD939X_RX_BIAS_BUCK_VREF_ERRAMP, 0x44 },
-+	{ WCD939X_RX_BIAS_FLYB_ERRAMP, 0x40 },
-+	{ WCD939X_RX_BIAS_FLYB_BUFF, 0xaa },
-+	{ WCD939X_RX_BIAS_FLYB_MID_RST, 0x14 },
-+	{ WCD939X_HPH_L_STATUS, 0x04 },
-+	{ WCD939X_HPH_R_STATUS, 0x04 },
-+	{ WCD939X_HPH_CNP_EN, 0x80 },
-+	{ WCD939X_HPH_CNP_WG_CTL, 0x9a },
-+	{ WCD939X_HPH_CNP_WG_TIME, 0x14 },
-+	{ WCD939X_HPH_OCP_CTL, 0x28 },
-+	{ WCD939X_HPH_AUTO_CHOP, 0x56 },
-+	{ WCD939X_HPH_CHOP_CTL, 0x83 },
-+	{ WCD939X_HPH_PA_CTL1, 0x46 },
-+	{ WCD939X_HPH_PA_CTL2, 0x50 },
-+	{ WCD939X_HPH_L_EN, 0x80 },
-+	{ WCD939X_HPH_L_TEST, 0xe0 },
-+	{ WCD939X_HPH_L_ATEST, 0x50 },
-+	{ WCD939X_HPH_R_EN, 0x80 },
-+	{ WCD939X_HPH_R_TEST, 0xe0 },
-+	{ WCD939X_HPH_R_ATEST, 0x50 },
-+	{ WCD939X_HPH_RDAC_CLK_CTL1, 0x80 },
-+	{ WCD939X_HPH_RDAC_CLK_CTL2, 0x0b },
-+	{ WCD939X_HPH_RDAC_LDO_CTL, 0x33 },
-+	{ WCD939X_HPH_RDAC_CHOP_CLK_LP_CTL, 0x00 },
-+	{ WCD939X_HPH_REFBUFF_UHQA_CTL, 0x00 },
-+	{ WCD939X_HPH_REFBUFF_LP_CTL, 0x8e },
-+	{ WCD939X_HPH_L_DAC_CTL, 0x20 },
-+	{ WCD939X_HPH_R_DAC_CTL, 0x20 },
-+	{ WCD939X_HPH_SURGE_COMP_SEL, 0x55 },
-+	{ WCD939X_HPH_SURGE_EN, 0x19 },
-+	{ WCD939X_HPH_SURGE_MISC1, 0xa0 },
-+	{ WCD939X_HPH_SURGE_STATUS, 0x00 },
-+	{ WCD939X_EAR_EN, 0x22 },
-+	{ WCD939X_EAR_PA_CON, 0x44 },
-+	{ WCD939X_EAR_SP_CON, 0xdb },
-+	{ WCD939X_EAR_DAC_CON, 0x80 },
-+	{ WCD939X_EAR_CNP_FSM_CON, 0xb2 },
-+	{ WCD939X_EAR_TEST_CTL, 0x00 },
-+	{ WCD939X_EAR_STATUS_REG_1, 0x00 },
-+	{ WCD939X_EAR_STATUS_REG_2, 0x08 },
-+	{ WCD939X_FLYBACK_NEW_CTRL_2, 0x00 }, //??
-+	{ WCD939X_FLYBACK_NEW_CTRL_3, 0x00 }, //??
-+	{ WCD939X_FLYBACK_NEW_CTRL_4, 0x44 }, //??
-+	{ WCD939X_ANA_NEW_PAGE, 0x00 },
-+	{ WCD939X_HPH_NEW_ANA_HPH2, 0x00 },
-+	{ WCD939X_HPH_NEW_ANA_HPH3, 0x00 },
-+	{ WCD939X_SLEEP_CTL, 0x18 },
-+	{ WCD939X_SLEEP_WATCHDOG_CTL, 0x00 },
-+	{ WCD939X_MBHC_NEW_ELECT_REM_CLAMP_CTL, 0x00 },
-+	{ WCD939X_MBHC_NEW_CTL_1, 0x02 },
-+	{ WCD939X_MBHC_NEW_CTL_2, 0x05 },
-+	{ WCD939X_MBHC_NEW_PLUG_DETECT_CTL, 0xe9 },
-+	{ WCD939X_MBHC_NEW_ZDET_ANA_CTL, 0x0f },
-+	{ WCD939X_MBHC_NEW_ZDET_RAMP_CTL, 0x00 },
-+	{ WCD939X_MBHC_NEW_FSM_STATUS, 0x00 },
-+	{ WCD939X_MBHC_NEW_ADC_RESULT, 0x00 },
-+	{ WCD939X_TX_NEW_CH12_MUX, 0x11 },
-+	{ WCD939X_TX_NEW_CH34_MUX, 0x23 },
-+	{ WCD939X_DIE_CRACK_DET_EN, 0x00 },
-+	{ WCD939X_DIE_CRACK_DET_OUT, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_RDAC_GAIN_CTL, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_PA_GAIN_CTL_L, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_RDAC_VREF_CTL, 0x08 },
-+	{ WCD939X_HPH_NEW_INT_RDAC_OVERRIDE_CTL, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_PA_GAIN_CTL_R, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_PA_MISC1, 0x32 },
-+	{ WCD939X_HPH_NEW_INT_PA_MISC2, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_PA_RDAC_MISC, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_TIMER1, 0xfe },
-+	{ WCD939X_HPH_NEW_INT_TIMER2, 0x02 },
-+	{ WCD939X_HPH_NEW_INT_TIMER3, 0x4e },
-+	{ WCD939X_HPH_NEW_INT_TIMER4, 0x54 },
-+	{ WCD939X_HPH_NEW_INT_PA_RDAC_MISC2, 0x0b },
-+	{ WCD939X_HPH_NEW_INT_PA_RDAC_MISC3, 0x00 },
-+	{ WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L, 0xa0 },
-+	{ WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R, 0xa0 },
-+	{ WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_LOHIFI, 0x64 },
-+	{ WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_ULP, 0x01 },
-+	{ WCD939X_RX_NEW_INT_HPH_RDAC_LDO_LP, 0x11 },
-+	{ WCD939X_MBHC_NEW_INT_MOISTURE_DET_DC_CTRL, 0x57 },
-+	{ WCD939X_MBHC_NEW_INT_MOISTURE_DET_POLLING_CTRL, 0x01 },
-+	{ WCD939X_MBHC_NEW_INT_MECH_DET_CURRENT, 0x00 },
-+	{ WCD939X_MBHC_NEW_INT_ZDET_CLK_AND_MOISTURE_CTL_NEW, 0x47 },
-+	{ WCD939X_EAR_INT_NEW_CHOPPER_CON, 0xa8 },
-+	{ WCD939X_EAR_INT_NEW_CNP_VCM_CON1, 0x42 },
-+	{ WCD939X_EAR_INT_NEW_CNP_VCM_CON2, 0x22 },
-+	{ WCD939X_EAR_INT_NEW_DYNAMIC_BIAS, 0x00 },
-+	{ WCD939X_SLEEP_INT_WATCHDOG_CTL_1, 0x0a },
-+	{ WCD939X_SLEEP_INT_WATCHDOG_CTL_2, 0x0a },
-+	{ WCD939X_DIE_CRACK_INT_DET_INT1, 0x02 },
-+	{ WCD939X_DIE_CRACK_INT_DET_INT2, 0x60 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L2, 0xff },
-+	{ WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L1, 0x7f },
-+	{ WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L0, 0x3f },
-+	{ WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP1P2M, 0x1f },
-+	{ WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP0P6M, 0x0f },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L2L1, 0xd7 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L0, 0xc8 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_ULP, 0xc6 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L2L1, 0x95 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L0, 0x6a },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_ULP, 0x05 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_L2L1L0, 0xa5 },
-+	{ WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_ULP, 0x13 },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L2L1, 0x88 },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L0ULP, 0x42 },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_INT_L2, 0xff },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_INT_L1, 0x64 },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_INT_L0, 0x64 },
-+	{ WCD939X_TX_COM_NEW_INT_ADC_INT_ULP, 0x77 },
-+	{ WCD939X_DIGITAL_PAGE, 0x00 },
-+	{ WCD939X_DIGITAL_CHIP_ID0, 0x00 },
-+	{ WCD939X_DIGITAL_CHIP_ID1, 0x00 },
-+	{ WCD939X_DIGITAL_CHIP_ID2, 0x0e },
-+	{ WCD939X_DIGITAL_CHIP_ID3, 0x01 },
-+	{ WCD939X_DIGITAL_SWR_TX_CLK_RATE, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_RST_CTL, 0x03 },
-+	{ WCD939X_DIGITAL_TOP_CLK_CFG, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_ANA_CLK_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_DIG_CLK_CTL, 0xf0 },
-+	{ WCD939X_DIGITAL_SWR_RST_EN, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_PATH_MODE, 0x55 },
-+	{ WCD939X_DIGITAL_CDC_RX_RST, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_RX0_CTL, 0xfc },
-+	{ WCD939X_DIGITAL_CDC_RX1_CTL, 0xfc },
-+	{ WCD939X_DIGITAL_CDC_RX2_CTL, 0xfc },
-+	{ WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_COMP_CTL_0, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_ANA_TX_CLK_CTL, 0x1e },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A1_0, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A1_1, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A2_0, 0x63 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A2_1, 0x04 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A3_0, 0xac },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A3_1, 0x04 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A4_0, 0x1a },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A4_1, 0x03 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A5_0, 0xbc },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A5_1, 0x02 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A6_0, 0xc7 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_A7_0, 0xf8 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_C_0, 0x47 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_C_1, 0x43 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_C_2, 0xb1 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_C_3, 0x17 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R1, 0x4d },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R2, 0x29 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R3, 0x34 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R4, 0x59 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R5, 0x66 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R6, 0x87 },
-+	{ WCD939X_DIGITAL_CDC_HPH_DSM_R7, 0x64 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A1_0, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A1_1, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A2_0, 0x96 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A2_1, 0x09 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A3_0, 0xab },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A3_1, 0x05 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A4_0, 0x1c },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A4_1, 0x02 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A5_0, 0x17 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A5_1, 0x02 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A6_0, 0xaa },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_A7_0, 0xe3 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_C_0, 0x69 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_C_1, 0x54 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_C_2, 0x02 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_C_3, 0x15 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R1, 0xa4 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R2, 0xb5 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R3, 0x86 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R4, 0x85 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R5, 0xaa },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R6, 0xe2 },
-+	{ WCD939X_DIGITAL_CDC_EAR_DSM_R7, 0x62 },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_RX_0, 0x55 },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_RX_1, 0xa9 },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_0, 0x3d },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_1, 0x2e },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_2, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_0, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_1, 0xfc },
-+	{ WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_2, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_HPH_GAIN_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_EAR_GAIN_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_EAR_PATH_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_SWR_CLH, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_CLH_BYP, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_TX0_CTL, 0x68 },
-+	{ WCD939X_DIGITAL_CDC_TX1_CTL, 0x68 },
-+	{ WCD939X_DIGITAL_CDC_TX2_CTL, 0x68 },
-+	{ WCD939X_DIGITAL_CDC_TX_RST, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_REQ_CTL, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_RST, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_AMIC_CTL, 0x0f },
-+	{ WCD939X_DIGITAL_CDC_DMIC_CTL, 0x04 },
-+	{ WCD939X_DIGITAL_CDC_DMIC1_CTL, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_DMIC2_CTL, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_DMIC3_CTL, 0x01 },
-+	{ WCD939X_DIGITAL_CDC_DMIC4_CTL, 0x01 },
-+	{ WCD939X_DIGITAL_EFUSE_PRG_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_CTL, 0x2b },
-+	{ WCD939X_DIGITAL_CDC_DMIC_RATE_1_2, 0x11 },
-+	{ WCD939X_DIGITAL_CDC_DMIC_RATE_3_4, 0x11 },
-+	{ WCD939X_DIGITAL_PDM_WD_CTL0, 0x00 },
-+	{ WCD939X_DIGITAL_PDM_WD_CTL1, 0x00 },
-+	{ WCD939X_DIGITAL_PDM_WD_CTL2, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_MODE, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_MASK_0, 0xff },
-+	{ WCD939X_DIGITAL_INTR_MASK_1, 0xe7 },
-+	{ WCD939X_DIGITAL_INTR_MASK_2, 0x0e },
-+	{ WCD939X_DIGITAL_INTR_STATUS_0, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_STATUS_1, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_STATUS_2, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_CLEAR_0, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_CLEAR_1, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_CLEAR_2, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_LEVEL_0, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_LEVEL_1, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_LEVEL_2, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_SET_0, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_SET_1, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_SET_2, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_TEST_0, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_TEST_1, 0x00 },
-+	{ WCD939X_DIGITAL_INTR_TEST_2, 0x00 },
-+	{ WCD939X_DIGITAL_TX_MODE_DBG_EN, 0x00 },
-+	{ WCD939X_DIGITAL_TX_MODE_DBG_0_1, 0x00 },
-+	{ WCD939X_DIGITAL_TX_MODE_DBG_2_3, 0x00 },
-+	{ WCD939X_DIGITAL_LB_IN_SEL_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_LOOP_BACK_MODE, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_DAC_TEST, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_RX_0, 0x40 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_TX_0, 0x40 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_RX_1, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_TX_1, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_TX_2, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_0, 0x00 },
-+	{ WCD939X_DIGITAL_SWR_HM_TEST_1, 0x00 },
-+	{ WCD939X_DIGITAL_PAD_CTL_SWR_0, 0x8f },
-+	{ WCD939X_DIGITAL_PAD_CTL_SWR_1, 0x06 },
-+	{ WCD939X_DIGITAL_I2C_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_CDC_TX_TANGGU_SW_MODE, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_TEST_CTL_0, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_TEST_CTL_1, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_T_DATA_0, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_T_DATA_1, 0x00 },
-+	{ WCD939X_DIGITAL_PAD_CTL_PDM_RX0, 0xf1 },
-+	{ WCD939X_DIGITAL_PAD_CTL_PDM_RX1, 0xf1 },
-+	{ WCD939X_DIGITAL_PAD_CTL_PDM_TX0, 0xf1 },
-+	{ WCD939X_DIGITAL_PAD_CTL_PDM_TX1, 0xf1 },
-+	{ WCD939X_DIGITAL_PAD_CTL_PDM_TX2, 0xf1 },
-+	{ WCD939X_DIGITAL_PAD_INP_DIS_0, 0x00 },
-+	{ WCD939X_DIGITAL_PAD_INP_DIS_1, 0x00 },
-+	{ WCD939X_DIGITAL_DRIVE_STRENGTH_0, 0x00 },
-+	{ WCD939X_DIGITAL_DRIVE_STRENGTH_1, 0x00 },
-+	{ WCD939X_DIGITAL_DRIVE_STRENGTH_2, 0x00 },
-+	{ WCD939X_DIGITAL_RX_DATA_EDGE_CTL, 0x1f },
-+	{ WCD939X_DIGITAL_TX_DATA_EDGE_CTL, 0x80 },
-+	{ WCD939X_DIGITAL_GPIO_MODE, 0x00 },
-+	{ WCD939X_DIGITAL_PIN_CTL_OE, 0x00 },
-+	{ WCD939X_DIGITAL_PIN_CTL_DATA_0, 0x00 },
-+	{ WCD939X_DIGITAL_PIN_CTL_DATA_1, 0x00 },
-+	{ WCD939X_DIGITAL_PIN_STATUS_0, 0x00 },
-+	{ WCD939X_DIGITAL_PIN_STATUS_1, 0x00 },
-+	{ WCD939X_DIGITAL_DIG_DEBUG_CTL, 0x00 },
-+	{ WCD939X_DIGITAL_DIG_DEBUG_EN, 0x00 },
-+	{ WCD939X_DIGITAL_ANA_CSR_DBG_ADD, 0x00 },
-+	{ WCD939X_DIGITAL_ANA_CSR_DBG_CTL, 0x48 },
-+	{ WCD939X_DIGITAL_SSP_DBG, 0x00 },
-+	{ WCD939X_DIGITAL_MODE_STATUS_0, 0x00 },
-+	{ WCD939X_DIGITAL_MODE_STATUS_1, 0x00 },
-+	{ WCD939X_DIGITAL_SPARE_0, 0x00 },
-+	{ WCD939X_DIGITAL_SPARE_1, 0x00 },
-+	{ WCD939X_DIGITAL_SPARE_2, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_0, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_1, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_2, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_3, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_4, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_5, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_6, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_7, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_8, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_9, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_10, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_11, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_12, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_13, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_14, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_15, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_16, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_17, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_18, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_19, 0xff },
-+	{ WCD939X_DIGITAL_EFUSE_REG_20, 0x0e },
-+	{ WCD939X_DIGITAL_EFUSE_REG_21, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_22, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_23, 0xf6 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_24, 0x18 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_25, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_26, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_27, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_28, 0x00 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_29, 0x0f },
-+	{ WCD939X_DIGITAL_EFUSE_REG_30, 0x49 },
-+	{ WCD939X_DIGITAL_EFUSE_REG_31, 0x00 },
-+	{ WCD939X_DIGITAL_TX_REQ_FB_CTL_0, 0x88 },
-+	{ WCD939X_DIGITAL_TX_REQ_FB_CTL_1, 0x88 },
-+	{ WCD939X_DIGITAL_TX_REQ_FB_CTL_2, 0x88 },
-+	{ WCD939X_DIGITAL_TX_REQ_FB_CTL_3, 0x88 },
-+	{ WCD939X_DIGITAL_TX_REQ_FB_CTL_4, 0x88 },
-+	{ WCD939X_DIGITAL_DEM_BYPASS_DATA0, 0x55 },
-+	{ WCD939X_DIGITAL_DEM_BYPASS_DATA1, 0x55 },
-+	{ WCD939X_DIGITAL_DEM_BYPASS_DATA2, 0x55 },
-+	{ WCD939X_DIGITAL_DEM_BYPASS_DATA3, 0x01 },
-+	{ WCD939X_DIGITAL_DEM_SECOND_ORDER, 0x03 },
-+	{ WCD939X_DIGITAL_DSM_CTRL, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_0_STATIC_DATA_0, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_0_STATIC_DATA_1, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_0_STATIC_DATA_2, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_0_STATIC_DATA_3, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_1_STATIC_DATA_0, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_1_STATIC_DATA_1, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_1_STATIC_DATA_2, 0x00 },
-+	{ WCD939X_DIGITAL_DSM_1_STATIC_DATA_3, 0x00 },
-+	{ WCD939X_RX_TOP_PAGE, 0x00 },
-+	{ WCD939X_RX_TOP_TOP_CFG0, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_COMP_WR_LSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_COMP_WR_MSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_COMP_LUT, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_COMP_RD_LSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_COMP_RD_MSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_COMP_WR_LSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_COMP_WR_MSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_COMP_LUT, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_COMP_RD_LSB, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_COMP_RD_MSB, 0x00 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG1, 0x05 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG2, 0x08 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG3, 0x00 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG4, 0x00 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG5, 0x00 },
-+	{ WCD939X_RX_TOP_DSD0_DEBUG_CFG6, 0x00 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG1, 0x03 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG2, 0x08 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG3, 0x00 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG4, 0x00 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG5, 0x00 },
-+	{ WCD939X_RX_TOP_DSD1_DEBUG_CFG6, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_CFG0, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_CFG1, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_CFG0, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_CFG1, 0x00 },
-+	{ WCD939X_RX_TOP_PATH_CFG2, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_SEC0, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_SEC1, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_SEC2, 0x00 },
-+	{ WCD939X_RX_TOP_HPHL_PATH_SEC3, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_SEC0, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_SEC1, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_SEC2, 0x00 },
-+	{ WCD939X_RX_TOP_HPHR_PATH_SEC3, 0x00 },
-+	{ WCD939X_RX_TOP_PATH_SEC4, 0x00 },
-+	{ WCD939X_RX_TOP_PATH_SEC5, 0x00 },
-+	{ WCD939X_COMPANDER_HPHL_CTL0, 0x60 },
-+	{ WCD939X_COMPANDER_HPHL_CTL1, 0xdb },
-+	{ WCD939X_COMPANDER_HPHL_CTL2, 0xff },
-+	{ WCD939X_COMPANDER_HPHL_CTL3, 0x35 },
-+	{ WCD939X_COMPANDER_HPHL_CTL4, 0xff },
-+	{ WCD939X_COMPANDER_HPHL_CTL5, 0x00 },
-+	{ WCD939X_COMPANDER_HPHL_CTL6, 0x01 },
-+	{ WCD939X_COMPANDER_HPHL_CTL7, 0x08 },
-+	{ WCD939X_COMPANDER_HPHL_CTL8, 0x00 },
-+	{ WCD939X_COMPANDER_HPHL_CTL9, 0x00 },
-+	{ WCD939X_COMPANDER_HPHL_CTL10, 0x06 },
-+	{ WCD939X_COMPANDER_HPHL_CTL11, 0x12 },
-+	{ WCD939X_COMPANDER_HPHL_CTL12, 0x1e },
-+	{ WCD939X_COMPANDER_HPHL_CTL13, 0x2a },
-+	{ WCD939X_COMPANDER_HPHL_CTL14, 0x36 },
-+	{ WCD939X_COMPANDER_HPHL_CTL15, 0x3c },
-+	{ WCD939X_COMPANDER_HPHL_CTL16, 0xc4 },
-+	{ WCD939X_COMPANDER_HPHL_CTL17, 0x00 },
-+	{ WCD939X_COMPANDER_HPHL_CTL18, 0x0c },
-+	{ WCD939X_COMPANDER_HPHL_CTL19, 0x16 },
-+	{ WCD939X_R_CTL0, 0x60 },
-+	{ WCD939X_R_CTL1, 0xdb },
-+	{ WCD939X_R_CTL2, 0xff },
-+	{ WCD939X_R_CTL3, 0x35 },
-+	{ WCD939X_R_CTL4, 0xff },
-+	{ WCD939X_R_CTL5, 0x00 },
-+	{ WCD939X_R_CTL6, 0x01 },
-+	{ WCD939X_R_CTL7, 0x08 },
-+	{ WCD939X_R_CTL8, 0x00 },
-+	{ WCD939X_R_CTL9, 0x00 },
-+	{ WCD939X_R_CTL10, 0x06 },
-+	{ WCD939X_R_CTL11, 0x12 },
-+	{ WCD939X_R_CTL12, 0x1e },
-+	{ WCD939X_R_CTL13, 0x2a },
-+	{ WCD939X_R_CTL14, 0x36 },
-+	{ WCD939X_R_CTL15, 0x3c },
-+	{ WCD939X_R_CTL16, 0xc4 },
-+	{ WCD939X_R_CTL17, 0x00 },
-+	{ WCD939X_R_CTL18, 0x0c },
-+	{ WCD939X_R_CTL19, 0x16 },
-+	{ WCD939X_E_PATH_CTL, 0x00 },
-+	{ WCD939X_E_CFG0, 0x07 },
-+	{ WCD939X_E_CFG1, 0x3c },
-+	{ WCD939X_E_CFG2, 0x00 },
-+	{ WCD939X_E_CFG3, 0x00 },
-+	{ WCD939X_DSD_HPHL_PATH_CTL, 0x00 },
-+	{ WCD939X_DSD_HPHL_CFG0, 0x00 },
-+	{ WCD939X_DSD_HPHL_CFG1, 0x00 },
-+	{ WCD939X_DSD_HPHL_CFG2, 0x22 },
-+	{ WCD939X_DSD_HPHL_CFG3, 0x00 },
-+	{ WCD939X_DSD_HPHL_CFG4, 0x1a },
-+	{ WCD939X_DSD_HPHL_CFG5, 0x00 },
-+	{ WCD939X_DSD_HPHR_PATH_CTL, 0x00 },
-+	{ WCD939X_DSD_HPHR_CFG0, 0x00 },
-+	{ WCD939X_DSD_HPHR_CFG1, 0x00 },
-+	{ WCD939X_DSD_HPHR_CFG2, 0x22 },
-+	{ WCD939X_DSD_HPHR_CFG3, 0x00 },
-+	{ WCD939X_DSD_HPHR_CFG4, 0x1a },
-+	{ WCD939X_DSD_HPHR_CFG5, 0x00 },
++static struct irq_chip wcd_irq_chip = {
++	.name = "WCD939x",
 +};
 +
-+static bool wcd939x_rdwr_register(struct device *dev, unsigned int reg)
++static int wcd_irq_chip_map(struct irq_domain *irqd, unsigned int virq,
++			    irq_hw_number_t hw)
 +{
-+	switch (reg) {
-+	case WCD939X_ANA_PAGE:
-+	case WCD939X_ANA_BIAS:
-+	case WCD939X_ANA_RX_SUPPLIES:
-+	case WCD939X_ANA_HPH:
-+	case WCD939X_ANA_EAR:
-+	case WCD939X_ANA_EAR_COMPANDER_CTL:
-+	case WCD939X_ANA_TX_CH1:
-+	case WCD939X_ANA_TX_CH2:
-+	case WCD939X_ANA_TX_CH3:
-+	case WCD939X_ANA_TX_CH4:
-+	case WCD939X_ANA_MICB1_MICB2_DSP_EN_LOGIC:
-+	case WCD939X_ANA_MICB3_DSP_EN_LOGIC:
-+	case WCD939X_ANA_MBHC_MECH:
-+	case WCD939X_ANA_MBHC_ELECT:
-+	case WCD939X_ANA_MBHC_ZDET:
-+	case WCD939X_ANA_MBHC_BTN0:
-+	case WCD939X_ANA_MBHC_BTN1:
-+	case WCD939X_ANA_MBHC_BTN2:
-+	case WCD939X_ANA_MBHC_BTN3:
-+	case WCD939X_ANA_MBHC_BTN4:
-+	case WCD939X_ANA_MBHC_BTN5:
-+	case WCD939X_ANA_MBHC_BTN6:
-+	case WCD939X_ANA_MBHC_BTN7:
-+	case WCD939X_ANA_MICB1:
-+	case WCD939X_ANA_MICB2:
-+	case WCD939X_ANA_MICB2_RAMP:
-+	case WCD939X_ANA_MICB3:
-+	case WCD939X_ANA_MICB4:
-+	case WCD939X_BIAS_CTL:
-+	case WCD939X_BIAS_VBG_FINE_ADJ:
-+	case WCD939X_LDOL_VDDCX_ADJUST:
-+	case WCD939X_LDOL_DISABLE_LDOL:
-+	case WCD939X_MBHC_CTL_CLK:
-+	case WCD939X_MBHC_CTL_ANA:
-+	case WCD939X_MBHC_ZDET_VNEG_CTL:
-+	case WCD939X_MBHC_ZDET_BIAS_CTL:
-+	case WCD939X_MBHC_CTL_BCS:
-+	case WCD939X_MBHC_TEST_CTL:
-+	case WCD939X_LDOH_MODE:
-+	case WCD939X_LDOH_BIAS:
-+	case WCD939X_LDOH_STB_LOADS:
-+	case WCD939X_LDOH_SLOWRAMP:
-+	case WCD939X_MICB1_TEST_CTL_1:
-+	case WCD939X_MICB1_TEST_CTL_2:
-+	case WCD939X_MICB1_TEST_CTL_3:
-+	case WCD939X_MICB2_TEST_CTL_1:
-+	case WCD939X_MICB2_TEST_CTL_2:
-+	case WCD939X_MICB2_TEST_CTL_3:
-+	case WCD939X_MICB3_TEST_CTL_1:
-+	case WCD939X_MICB3_TEST_CTL_2:
-+	case WCD939X_MICB3_TEST_CTL_3:
-+	case WCD939X_MICB4_TEST_CTL_1:
-+	case WCD939X_MICB4_TEST_CTL_2:
-+	case WCD939X_MICB4_TEST_CTL_3:
-+	case WCD939X_TX_COM_ADC_VCM:
-+	case WCD939X_TX_COM_BIAS_ATEST:
-+	case WCD939X_TX_COM_SPARE1:
-+	case WCD939X_TX_COM_SPARE2:
-+	case WCD939X_TX_COM_TXFE_DIV_CTL:
-+	case WCD939X_TX_COM_TXFE_DIV_START:
-+	case WCD939X_TX_COM_SPARE3:
-+	case WCD939X_TX_COM_SPARE4:
-+	case WCD939X_TX_1_2_TEST_EN:
-+	case WCD939X_TX_1_2_ADC_IB:
-+	case WCD939X_TX_1_2_ATEST_REFCTL:
-+	case WCD939X_TX_1_2_TEST_CTL:
-+	case WCD939X_TX_1_2_TEST_BLK_EN1:
-+	case WCD939X_TX_1_2_TXFE1_CLKDIV:
-+	case WCD939X_TX_3_4_TEST_EN:
-+	case WCD939X_TX_3_4_ADC_IB:
-+	case WCD939X_TX_3_4_ATEST_REFCTL:
-+	case WCD939X_TX_3_4_TEST_CTL:
-+	case WCD939X_TX_3_4_TEST_BLK_EN3:
-+	case WCD939X_TX_3_4_TXFE3_CLKDIV:
-+	case WCD939X_TX_3_4_TEST_BLK_EN2:
-+	case WCD939X_TX_3_4_TXFE2_CLKDIV:
-+	case WCD939X_TX_3_4_SPARE1:
-+	case WCD939X_TX_3_4_TEST_BLK_EN4:
-+	case WCD939X_TX_3_4_TXFE4_CLKDIV:
-+	case WCD939X_TX_3_4_SPARE2:
-+	case WCD939X_CLASSH_MODE_1:
-+	case WCD939X_CLASSH_MODE_2:
-+	case WCD939X_CLASSH_MODE_3:
-+	case WCD939X_CLASSH_CTRL_VCL_1:
-+	case WCD939X_CLASSH_CTRL_VCL_2:
-+	case WCD939X_CLASSH_CTRL_CCL_1:
-+	case WCD939X_CLASSH_CTRL_CCL_2:
-+	case WCD939X_CLASSH_CTRL_CCL_3:
-+	case WCD939X_CLASSH_CTRL_CCL_4:
-+	case WCD939X_CLASSH_CTRL_CCL_5:
-+	case WCD939X_CLASSH_BUCK_TMUX_A_D:
-+	case WCD939X_CLASSH_BUCK_SW_DRV_CNTL:
-+	case WCD939X_CLASSH_SPARE:
-+	case WCD939X_FLYBACK_EN:
-+	case WCD939X_FLYBACK_VNEG_CTRL_1:
-+	case WCD939X_FLYBACK_VNEG_CTRL_2:
-+	case WCD939X_FLYBACK_VNEG_CTRL_3:
-+	case WCD939X_FLYBACK_VNEG_CTRL_4:
-+	case WCD939X_FLYBACK_VNEG_CTRL_5:
-+	case WCD939X_FLYBACK_VNEG_CTRL_6:
-+	case WCD939X_FLYBACK_VNEG_CTRL_7:
-+	case WCD939X_FLYBACK_VNEG_CTRL_8:
-+	case WCD939X_FLYBACK_VNEG_CTRL_9:
-+	case WCD939X_FLYBACK_VNEGDAC_CTRL_1:
-+	case WCD939X_FLYBACK_VNEGDAC_CTRL_2:
-+	case WCD939X_FLYBACK_VNEGDAC_CTRL_3:
-+	case WCD939X_FLYBACK_CTRL_1:
-+	case WCD939X_FLYBACK_TEST_CTL:
-+	case WCD939X_RX_AUX_SW_CTL:
-+	case WCD939X_RX_PA_AUX_IN_CONN:
-+	case WCD939X_RX_TIMER_DIV:
-+	case WCD939X_RX_OCP_CTL:
-+	case WCD939X_RX_OCP_COUNT:
-+	case WCD939X_RX_BIAS_EAR_DAC:
-+	case WCD939X_RX_BIAS_EAR_AMP:
-+	case WCD939X_RX_BIAS_HPH_LDO:
-+	case WCD939X_RX_BIAS_HPH_PA:
-+	case WCD939X_RX_BIAS_HPH_RDACBUFF_CNP2:
-+	case WCD939X_RX_BIAS_HPH_RDAC_LDO:
-+	case WCD939X_RX_BIAS_HPH_CNP1:
-+	case WCD939X_RX_BIAS_HPH_LOWPOWER:
-+	case WCD939X_RX_BIAS_AUX_DAC:
-+	case WCD939X_RX_BIAS_AUX_AMP:
-+	case WCD939X_RX_BIAS_VNEGDAC_BLEEDER:
-+	case WCD939X_RX_BIAS_MISC:
-+	case WCD939X_RX_BIAS_BUCK_RST:
-+	case WCD939X_RX_BIAS_BUCK_VREF_ERRAMP:
-+	case WCD939X_RX_BIAS_FLYB_ERRAMP:
-+	case WCD939X_RX_BIAS_FLYB_BUFF:
-+	case WCD939X_RX_BIAS_FLYB_MID_RST:
-+	case WCD939X_HPH_CNP_EN:
-+	case WCD939X_HPH_CNP_WG_CTL:
-+	case WCD939X_HPH_CNP_WG_TIME:
-+	case WCD939X_HPH_OCP_CTL:
-+	case WCD939X_HPH_AUTO_CHOP:
-+	case WCD939X_HPH_CHOP_CTL:
-+	case WCD939X_HPH_PA_CTL1:
-+	case WCD939X_HPH_PA_CTL2:
-+	case WCD939X_HPH_L_EN:
-+	case WCD939X_HPH_L_TEST:
-+	case WCD939X_HPH_L_ATEST:
-+	case WCD939X_HPH_R_EN:
-+	case WCD939X_HPH_R_TEST:
-+	case WCD939X_HPH_R_ATEST:
-+	case WCD939X_HPH_RDAC_CLK_CTL1:
-+	case WCD939X_HPH_RDAC_CLK_CTL2:
-+	case WCD939X_HPH_RDAC_LDO_CTL:
-+	case WCD939X_HPH_RDAC_CHOP_CLK_LP_CTL:
-+	case WCD939X_HPH_REFBUFF_UHQA_CTL:
-+	case WCD939X_HPH_REFBUFF_LP_CTL:
-+	case WCD939X_HPH_L_DAC_CTL:
-+	case WCD939X_HPH_R_DAC_CTL:
-+	case WCD939X_HPH_SURGE_COMP_SEL:
-+	case WCD939X_HPH_SURGE_EN:
-+	case WCD939X_HPH_SURGE_MISC1:
-+	case WCD939X_EAR_EN:
-+	case WCD939X_EAR_PA_CON:
-+	case WCD939X_EAR_SP_CON:
-+	case WCD939X_EAR_DAC_CON:
-+	case WCD939X_EAR_CNP_FSM_CON:
-+	case WCD939X_EAR_TEST_CTL:
-+	case WCD939X_FLYBACK_NEW_CTRL_2:
-+	case WCD939X_FLYBACK_NEW_CTRL_3:
-+	case WCD939X_FLYBACK_NEW_CTRL_4:
-+	case WCD939X_ANA_NEW_PAGE:
-+	case WCD939X_HPH_NEW_ANA_HPH2:
-+	case WCD939X_HPH_NEW_ANA_HPH3:
-+	case WCD939X_SLEEP_CTL:
-+	case WCD939X_SLEEP_WATCHDOG_CTL:
-+	case WCD939X_MBHC_NEW_ELECT_REM_CLAMP_CTL:
-+	case WCD939X_MBHC_NEW_CTL_1:
-+	case WCD939X_MBHC_NEW_CTL_2:
-+	case WCD939X_MBHC_NEW_PLUG_DETECT_CTL:
-+	case WCD939X_MBHC_NEW_ZDET_ANA_CTL:
-+	case WCD939X_MBHC_NEW_ZDET_RAMP_CTL:
-+	case WCD939X_TX_NEW_CH12_MUX:
-+	case WCD939X_TX_NEW_CH34_MUX:
-+	case WCD939X_DIE_CRACK_DET_EN:
-+	case WCD939X_HPH_NEW_INT_RDAC_GAIN_CTL:
-+	case WCD939X_HPH_NEW_INT_PA_GAIN_CTL_L:
-+	case WCD939X_HPH_NEW_INT_RDAC_VREF_CTL:
-+	case WCD939X_HPH_NEW_INT_RDAC_OVERRIDE_CTL:
-+	case WCD939X_HPH_NEW_INT_PA_GAIN_CTL_R:
-+	case WCD939X_HPH_NEW_INT_PA_MISC1:
-+	case WCD939X_HPH_NEW_INT_PA_MISC2:
-+	case WCD939X_HPH_NEW_INT_PA_RDAC_MISC:
-+	case WCD939X_HPH_NEW_INT_TIMER1:
-+	case WCD939X_HPH_NEW_INT_TIMER2:
-+	case WCD939X_HPH_NEW_INT_TIMER3:
-+	case WCD939X_HPH_NEW_INT_TIMER4:
-+	case WCD939X_HPH_NEW_INT_PA_RDAC_MISC2:
-+	case WCD939X_HPH_NEW_INT_PA_RDAC_MISC3:
-+	case WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L:
-+	case WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R:
-+	case WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_LOHIFI:
-+	case WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_ULP:
-+	case WCD939X_RX_NEW_INT_HPH_RDAC_LDO_LP:
-+	case WCD939X_MBHC_NEW_INT_MOISTURE_DET_DC_CTRL:
-+	case WCD939X_MBHC_NEW_INT_MOISTURE_DET_POLLING_CTRL:
-+	case WCD939X_MBHC_NEW_INT_MECH_DET_CURRENT:
-+	case WCD939X_MBHC_NEW_INT_ZDET_CLK_AND_MOISTURE_CTL_NEW:
-+	case WCD939X_EAR_INT_NEW_CHOPPER_CON:
-+	case WCD939X_EAR_INT_NEW_CNP_VCM_CON1:
-+	case WCD939X_EAR_INT_NEW_CNP_VCM_CON2:
-+	case WCD939X_EAR_INT_NEW_DYNAMIC_BIAS:
-+	case WCD939X_SLEEP_INT_WATCHDOG_CTL_1:
-+	case WCD939X_SLEEP_INT_WATCHDOG_CTL_2:
-+	case WCD939X_DIE_CRACK_INT_DET_INT1:
-+	case WCD939X_DIE_CRACK_INT_DET_INT2:
-+	case WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L2:
-+	case WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L1:
-+	case WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L0:
-+	case WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP1P2M:
-+	case WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP0P6M:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L2L1:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L0:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_ULP:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L2L1:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L0:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_ULP:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_L2L1L0:
-+	case WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_ULP:
-+	case WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L2L1:
-+	case WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L0ULP:
-+	case WCD939X_TX_COM_NEW_INT_ADC_INT_L2:
-+	case WCD939X_TX_COM_NEW_INT_ADC_INT_L1:
-+	case WCD939X_TX_COM_NEW_INT_ADC_INT_L0:
-+	case WCD939X_TX_COM_NEW_INT_ADC_INT_ULP:
-+	case WCD939X_DIGITAL_PAGE:
-+	case WCD939X_DIGITAL_SWR_TX_CLK_RATE:
-+	case WCD939X_DIGITAL_CDC_RST_CTL:
-+	case WCD939X_DIGITAL_TOP_CLK_CFG:
-+	case WCD939X_DIGITAL_CDC_ANA_CLK_CTL:
-+	case WCD939X_DIGITAL_CDC_DIG_CLK_CTL:
-+	case WCD939X_DIGITAL_SWR_RST_EN:
-+	case WCD939X_DIGITAL_CDC_PATH_MODE:
-+	case WCD939X_DIGITAL_CDC_RX_RST:
-+	case WCD939X_DIGITAL_CDC_RX0_CTL:
-+	case WCD939X_DIGITAL_CDC_RX1_CTL:
-+	case WCD939X_DIGITAL_CDC_RX2_CTL:
-+	case WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1:
-+	case WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3:
-+	case WCD939X_DIGITAL_CDC_COMP_CTL_0:
-+	case WCD939X_DIGITAL_CDC_ANA_TX_CLK_CTL:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A1_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A1_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A2_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A2_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A3_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A3_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A4_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A4_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A5_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A5_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A6_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_A7_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_C_0:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_C_1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_C_2:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_C_3:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R1:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R2:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R3:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R4:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R5:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R6:
-+	case WCD939X_DIGITAL_CDC_HPH_DSM_R7:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A1_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A1_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A2_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A2_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A3_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A3_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A4_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A4_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A5_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A5_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A6_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_A7_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_C_0:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_C_1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_C_2:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_C_3:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R1:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R2:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R3:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R4:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R5:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R6:
-+	case WCD939X_DIGITAL_CDC_EAR_DSM_R7:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_RX_0:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_RX_1:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_0:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_1:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_2:
-+	case WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_0:
-+	case WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_1:
-+	case WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_2:
-+	case WCD939X_DIGITAL_CDC_HPH_GAIN_CTL:
-+	case WCD939X_DIGITAL_CDC_EAR_GAIN_CTL:
-+	case WCD939X_DIGITAL_CDC_EAR_PATH_CTL:
-+	case WCD939X_DIGITAL_CDC_SWR_CLH:
-+	case WCD939X_DIGITAL_SWR_CLH_BYP:
-+	case WCD939X_DIGITAL_CDC_TX0_CTL:
-+	case WCD939X_DIGITAL_CDC_TX1_CTL:
-+	case WCD939X_DIGITAL_CDC_TX2_CTL:
-+	case WCD939X_DIGITAL_CDC_TX_RST:
-+	case WCD939X_DIGITAL_CDC_REQ_CTL:
-+	case WCD939X_DIGITAL_CDC_RST:
-+	case WCD939X_DIGITAL_CDC_AMIC_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC1_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC2_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC3_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC4_CTL:
-+	case WCD939X_DIGITAL_EFUSE_PRG_CTL:
-+	case WCD939X_DIGITAL_EFUSE_CTL:
-+	case WCD939X_DIGITAL_CDC_DMIC_RATE_1_2:
-+	case WCD939X_DIGITAL_CDC_DMIC_RATE_3_4:
-+	case WCD939X_DIGITAL_PDM_WD_CTL0:
-+	case WCD939X_DIGITAL_PDM_WD_CTL1:
-+	case WCD939X_DIGITAL_PDM_WD_CTL2:
-+	case WCD939X_DIGITAL_INTR_MODE:
-+	case WCD939X_DIGITAL_INTR_MASK_0:
-+	case WCD939X_DIGITAL_INTR_MASK_1:
-+	case WCD939X_DIGITAL_INTR_MASK_2:
-+	case WCD939X_DIGITAL_INTR_CLEAR_0:
-+	case WCD939X_DIGITAL_INTR_CLEAR_1:
-+	case WCD939X_DIGITAL_INTR_CLEAR_2:
-+	case WCD939X_DIGITAL_INTR_LEVEL_0:
-+	case WCD939X_DIGITAL_INTR_LEVEL_1:
-+	case WCD939X_DIGITAL_INTR_LEVEL_2:
-+	case WCD939X_DIGITAL_INTR_SET_0:
-+	case WCD939X_DIGITAL_INTR_SET_1:
-+	case WCD939X_DIGITAL_INTR_SET_2:
-+	case WCD939X_DIGITAL_INTR_TEST_0:
-+	case WCD939X_DIGITAL_INTR_TEST_1:
-+	case WCD939X_DIGITAL_INTR_TEST_2:
-+	case WCD939X_DIGITAL_TX_MODE_DBG_EN:
-+	case WCD939X_DIGITAL_TX_MODE_DBG_0_1:
-+	case WCD939X_DIGITAL_TX_MODE_DBG_2_3:
-+	case WCD939X_DIGITAL_LB_IN_SEL_CTL:
-+	case WCD939X_DIGITAL_LOOP_BACK_MODE:
-+	case WCD939X_DIGITAL_SWR_DAC_TEST:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_RX_0:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_TX_0:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_RX_1:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_TX_1:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_TX_2:
-+	case WCD939X_DIGITAL_PAD_CTL_SWR_0:
-+	case WCD939X_DIGITAL_PAD_CTL_SWR_1:
-+	case WCD939X_DIGITAL_I2C_CTL:
-+	case WCD939X_DIGITAL_CDC_TX_TANGGU_SW_MODE:
-+	case WCD939X_DIGITAL_EFUSE_TEST_CTL_0:
-+	case WCD939X_DIGITAL_EFUSE_TEST_CTL_1:
-+	case WCD939X_DIGITAL_PAD_CTL_PDM_RX0:
-+	case WCD939X_DIGITAL_PAD_CTL_PDM_RX1:
-+	case WCD939X_DIGITAL_PAD_CTL_PDM_TX0:
-+	case WCD939X_DIGITAL_PAD_CTL_PDM_TX1:
-+	case WCD939X_DIGITAL_PAD_CTL_PDM_TX2:
-+	case WCD939X_DIGITAL_PAD_INP_DIS_0:
-+	case WCD939X_DIGITAL_PAD_INP_DIS_1:
-+	case WCD939X_DIGITAL_DRIVE_STRENGTH_0:
-+	case WCD939X_DIGITAL_DRIVE_STRENGTH_1:
-+	case WCD939X_DIGITAL_DRIVE_STRENGTH_2:
-+	case WCD939X_DIGITAL_RX_DATA_EDGE_CTL:
-+	case WCD939X_DIGITAL_TX_DATA_EDGE_CTL:
-+	case WCD939X_DIGITAL_GPIO_MODE:
-+	case WCD939X_DIGITAL_PIN_CTL_OE:
-+	case WCD939X_DIGITAL_PIN_CTL_DATA_0:
-+	case WCD939X_DIGITAL_PIN_CTL_DATA_1:
-+	case WCD939X_DIGITAL_DIG_DEBUG_CTL:
-+	case WCD939X_DIGITAL_DIG_DEBUG_EN:
-+	case WCD939X_DIGITAL_ANA_CSR_DBG_ADD:
-+	case WCD939X_DIGITAL_ANA_CSR_DBG_CTL:
-+	case WCD939X_DIGITAL_SSP_DBG:
-+	case WCD939X_DIGITAL_SPARE_0:
-+	case WCD939X_DIGITAL_SPARE_1:
-+	case WCD939X_DIGITAL_SPARE_2:
-+	case WCD939X_DIGITAL_TX_REQ_FB_CTL_0:
-+	case WCD939X_DIGITAL_TX_REQ_FB_CTL_1:
-+	case WCD939X_DIGITAL_TX_REQ_FB_CTL_2:
-+	case WCD939X_DIGITAL_TX_REQ_FB_CTL_3:
-+	case WCD939X_DIGITAL_TX_REQ_FB_CTL_4:
-+	case WCD939X_DIGITAL_DEM_BYPASS_DATA0:
-+	case WCD939X_DIGITAL_DEM_BYPASS_DATA1:
-+	case WCD939X_DIGITAL_DEM_BYPASS_DATA2:
-+	case WCD939X_DIGITAL_DEM_BYPASS_DATA3:
-+	case WCD939X_DIGITAL_DEM_SECOND_ORDER:
-+	case WCD939X_DIGITAL_DSM_CTRL:
-+	case WCD939X_DIGITAL_DSM_0_STATIC_DATA_0:
-+	case WCD939X_DIGITAL_DSM_0_STATIC_DATA_1:
-+	case WCD939X_DIGITAL_DSM_0_STATIC_DATA_2:
-+	case WCD939X_DIGITAL_DSM_0_STATIC_DATA_3:
-+	case WCD939X_DIGITAL_DSM_1_STATIC_DATA_0:
-+	case WCD939X_DIGITAL_DSM_1_STATIC_DATA_1:
-+	case WCD939X_DIGITAL_DSM_1_STATIC_DATA_2:
-+	case WCD939X_DIGITAL_DSM_1_STATIC_DATA_3:
-+	case WCD939X_RX_TOP_PAGE:
-+	case WCD939X_RX_TOP_TOP_CFG0:
-+	case WCD939X_RX_TOP_HPHL_COMP_WR_LSB:
-+	case WCD939X_RX_TOP_HPHL_COMP_WR_MSB:
-+	case WCD939X_RX_TOP_HPHL_COMP_LUT:
-+	case WCD939X_RX_TOP_HPHR_COMP_WR_LSB:
-+	case WCD939X_RX_TOP_HPHR_COMP_WR_MSB:
-+	case WCD939X_RX_TOP_HPHR_COMP_LUT:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG1:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG2:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG3:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG4:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG1:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG2:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG3:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG4:
-+	case WCD939X_RX_TOP_HPHL_PATH_CFG0:
-+	case WCD939X_RX_TOP_HPHL_PATH_CFG1:
-+	case WCD939X_RX_TOP_HPHR_PATH_CFG0:
-+	case WCD939X_RX_TOP_HPHR_PATH_CFG1:
-+	case WCD939X_RX_TOP_PATH_CFG2:
-+	case WCD939X_RX_TOP_HPHL_PATH_SEC0:
-+	case WCD939X_RX_TOP_HPHL_PATH_SEC1:
-+	case WCD939X_RX_TOP_HPHL_PATH_SEC2:
-+	case WCD939X_RX_TOP_HPHL_PATH_SEC3:
-+	case WCD939X_RX_TOP_HPHR_PATH_SEC0:
-+	case WCD939X_RX_TOP_HPHR_PATH_SEC1:
-+	case WCD939X_RX_TOP_HPHR_PATH_SEC2:
-+	case WCD939X_RX_TOP_HPHR_PATH_SEC3:
-+	case WCD939X_RX_TOP_PATH_SEC4:
-+	case WCD939X_RX_TOP_PATH_SEC5:
-+	case WCD939X_COMPANDER_HPHL_CTL0:
-+	case WCD939X_COMPANDER_HPHL_CTL1:
-+	case WCD939X_COMPANDER_HPHL_CTL2:
-+	case WCD939X_COMPANDER_HPHL_CTL3:
-+	case WCD939X_COMPANDER_HPHL_CTL4:
-+	case WCD939X_COMPANDER_HPHL_CTL5:
-+	case WCD939X_COMPANDER_HPHL_CTL7:
-+	case WCD939X_COMPANDER_HPHL_CTL8:
-+	case WCD939X_COMPANDER_HPHL_CTL9:
-+	case WCD939X_COMPANDER_HPHL_CTL10:
-+	case WCD939X_COMPANDER_HPHL_CTL11:
-+	case WCD939X_COMPANDER_HPHL_CTL12:
-+	case WCD939X_COMPANDER_HPHL_CTL13:
-+	case WCD939X_COMPANDER_HPHL_CTL14:
-+	case WCD939X_COMPANDER_HPHL_CTL15:
-+	case WCD939X_COMPANDER_HPHL_CTL16:
-+	case WCD939X_COMPANDER_HPHL_CTL17:
-+	case WCD939X_COMPANDER_HPHL_CTL18:
-+	case WCD939X_COMPANDER_HPHL_CTL19:
-+	case WCD939X_R_CTL0:
-+	case WCD939X_R_CTL1:
-+	case WCD939X_R_CTL2:
-+	case WCD939X_R_CTL3:
-+	case WCD939X_R_CTL4:
-+	case WCD939X_R_CTL5:
-+	case WCD939X_R_CTL7:
-+	case WCD939X_R_CTL8:
-+	case WCD939X_R_CTL9:
-+	case WCD939X_R_CTL10:
-+	case WCD939X_R_CTL11:
-+	case WCD939X_R_CTL12:
-+	case WCD939X_R_CTL13:
-+	case WCD939X_R_CTL14:
-+	case WCD939X_R_CTL15:
-+	case WCD939X_R_CTL16:
-+	case WCD939X_R_CTL17:
-+	case WCD939X_R_CTL18:
-+	case WCD939X_R_CTL19:
-+	case WCD939X_E_PATH_CTL:
-+	case WCD939X_E_CFG0:
-+	case WCD939X_E_CFG1:
-+	case WCD939X_E_CFG2:
-+	case WCD939X_E_CFG3:
-+	case WCD939X_DSD_HPHL_PATH_CTL:
-+	case WCD939X_DSD_HPHL_CFG0:
-+	case WCD939X_DSD_HPHL_CFG1:
-+	case WCD939X_DSD_HPHL_CFG2:
-+	case WCD939X_DSD_HPHL_CFG3:
-+	case WCD939X_DSD_HPHL_CFG4:
-+	case WCD939X_DSD_HPHL_CFG5:
-+	case WCD939X_DSD_HPHR_PATH_CTL:
-+	case WCD939X_DSD_HPHR_CFG0:
-+	case WCD939X_DSD_HPHR_CFG1:
-+	case WCD939X_DSD_HPHR_CFG2:
-+	case WCD939X_DSD_HPHR_CFG3:
-+	case WCD939X_DSD_HPHR_CFG4:
-+	case WCD939X_DSD_HPHR_CFG5:
-+		return true;
-+	}
++	irq_set_chip_and_handler(virq, &wcd_irq_chip, handle_simple_irq);
++	irq_set_nested_thread(virq, 1);
++	irq_set_noprobe(virq);
 +
-+	return false;
++	return 0;
 +}
 +
-+static bool wcd939x_readonly_register(struct device *dev, unsigned int reg)
++static const struct irq_domain_ops wcd_domain_ops = {
++	.map = wcd_irq_chip_map,
++};
++
++static int wcd939x_irq_init(struct wcd939x_priv *wcd, struct device *dev)
 +{
-+	switch (reg) {
-+	case WCD939X_ANA_MBHC_RESULT_1:
-+	case WCD939X_ANA_MBHC_RESULT_2:
-+	case WCD939X_ANA_MBHC_RESULT_3:
-+	case WCD939X_MBHC_MOISTURE_DET_FSM_STATUS:
-+	case WCD939X_TX_1_2_SAR2_ERR:
-+	case WCD939X_TX_1_2_SAR1_ERR:
-+	case WCD939X_TX_3_4_SAR4_ERR:
-+	case WCD939X_TX_3_4_SAR3_ERR:
-+	case WCD939X_HPH_L_STATUS:
-+	case WCD939X_HPH_R_STATUS:
-+	case WCD939X_HPH_SURGE_STATUS:
-+	case WCD939X_EAR_STATUS_REG_1:
-+	case WCD939X_EAR_STATUS_REG_2:
-+	case WCD939X_MBHC_NEW_FSM_STATUS:
-+	case WCD939X_MBHC_NEW_ADC_RESULT:
-+	case WCD939X_DIE_CRACK_DET_OUT:
-+	case WCD939X_DIGITAL_CHIP_ID0:
-+	case WCD939X_DIGITAL_CHIP_ID1:
-+	case WCD939X_DIGITAL_CHIP_ID2:
-+	case WCD939X_DIGITAL_CHIP_ID3:
-+	case WCD939X_DIGITAL_INTR_STATUS_0:
-+	case WCD939X_DIGITAL_INTR_STATUS_1:
-+	case WCD939X_DIGITAL_INTR_STATUS_2:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_0:
-+	case WCD939X_DIGITAL_SWR_HM_TEST_1:
-+	case WCD939X_DIGITAL_EFUSE_T_DATA_0:
-+	case WCD939X_DIGITAL_EFUSE_T_DATA_1:
-+	case WCD939X_DIGITAL_PIN_STATUS_0:
-+	case WCD939X_DIGITAL_PIN_STATUS_1:
-+	case WCD939X_DIGITAL_MODE_STATUS_0:
-+	case WCD939X_DIGITAL_MODE_STATUS_1:
-+	case WCD939X_DIGITAL_EFUSE_REG_0:
-+	case WCD939X_DIGITAL_EFUSE_REG_1:
-+	case WCD939X_DIGITAL_EFUSE_REG_2:
-+	case WCD939X_DIGITAL_EFUSE_REG_3:
-+	case WCD939X_DIGITAL_EFUSE_REG_4:
-+	case WCD939X_DIGITAL_EFUSE_REG_5:
-+	case WCD939X_DIGITAL_EFUSE_REG_6:
-+	case WCD939X_DIGITAL_EFUSE_REG_7:
-+	case WCD939X_DIGITAL_EFUSE_REG_8:
-+	case WCD939X_DIGITAL_EFUSE_REG_9:
-+	case WCD939X_DIGITAL_EFUSE_REG_10:
-+	case WCD939X_DIGITAL_EFUSE_REG_11:
-+	case WCD939X_DIGITAL_EFUSE_REG_12:
-+	case WCD939X_DIGITAL_EFUSE_REG_13:
-+	case WCD939X_DIGITAL_EFUSE_REG_14:
-+	case WCD939X_DIGITAL_EFUSE_REG_15:
-+	case WCD939X_DIGITAL_EFUSE_REG_16:
-+	case WCD939X_DIGITAL_EFUSE_REG_17:
-+	case WCD939X_DIGITAL_EFUSE_REG_18:
-+	case WCD939X_DIGITAL_EFUSE_REG_19:
-+	case WCD939X_DIGITAL_EFUSE_REG_20:
-+	case WCD939X_DIGITAL_EFUSE_REG_21:
-+	case WCD939X_DIGITAL_EFUSE_REG_22:
-+	case WCD939X_DIGITAL_EFUSE_REG_23:
-+	case WCD939X_DIGITAL_EFUSE_REG_24:
-+	case WCD939X_DIGITAL_EFUSE_REG_25:
-+	case WCD939X_DIGITAL_EFUSE_REG_26:
-+	case WCD939X_DIGITAL_EFUSE_REG_27:
-+	case WCD939X_DIGITAL_EFUSE_REG_28:
-+	case WCD939X_DIGITAL_EFUSE_REG_29:
-+	case WCD939X_DIGITAL_EFUSE_REG_30:
-+	case WCD939X_DIGITAL_EFUSE_REG_31:
-+	case WCD939X_RX_TOP_HPHL_COMP_RD_LSB:
-+	case WCD939X_RX_TOP_HPHL_COMP_RD_MSB:
-+	case WCD939X_RX_TOP_HPHR_COMP_RD_LSB:
-+	case WCD939X_RX_TOP_HPHR_COMP_RD_MSB:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG5:
-+	case WCD939X_RX_TOP_DSD0_DEBUG_CFG6:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG5:
-+	case WCD939X_RX_TOP_DSD1_DEBUG_CFG6:
-+	case WCD939X_COMPANDER_HPHL_CTL6:
-+	case WCD939X_R_CTL6:
-+		return true;
++	wcd->virq = irq_domain_add_linear(NULL, 1, &wcd_domain_ops, NULL);
++	if (!(wcd->virq)) {
++		dev_err(dev, "%s: Failed to add IRQ domain\n", __func__);
++		return -EINVAL;
 +	}
-+	return false;
++
++	return devm_regmap_add_irq_chip(dev, wcd->regmap,
++					irq_create_mapping(wcd->virq, 0),
++					IRQF_ONESHOT, 0, &wcd939x_regmap_irq_chip,
++					&wcd->irq_chip);
 +}
 +
-+static bool wcd939x_readable_register(struct device *dev, unsigned int reg)
++static int wcd939x_soc_codec_probe(struct snd_soc_component *component)
 +{
-+	bool ret;
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++	struct sdw_slave *tx_sdw_dev = wcd939x->tx_sdw_dev;
++	struct device *dev = component->dev;
++	unsigned long time_left;
++	int ret, i;
 +
-+	ret = wcd939x_readonly_register(dev, reg);
-+	if (!ret)
-+		return wcd939x_rdwr_register(dev, reg);
++	time_left = wait_for_completion_timeout(&tx_sdw_dev->initialization_complete,
++						msecs_to_jiffies(2000));
++	if (!time_left) {
++		dev_err(dev, "soundwire device init timeout\n");
++		return -ETIMEDOUT;
++	}
++
++	snd_soc_component_init_regmap(component, wcd939x->regmap);
++
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret < 0)
++		return ret;
++
++	wcd939x->variant = snd_soc_component_read_field(component,
++							WCD939X_DIGITAL_EFUSE_REG_0,
++							WCD939X_EFUSE_REG_0_WCD939X_ID);
++
++	wcd939x->clsh_info = wcd_clsh_ctrl_alloc(component, WCD939X);
++	if (IS_ERR(wcd939x->clsh_info)) {
++		pm_runtime_put(dev);
++		return PTR_ERR(wcd939x->clsh_info);
++	}
++
++	wcd939x_io_init(component);
++
++	/* Set all interrupts as edge triggered */
++	for (i = 0; i < wcd939x_regmap_irq_chip.num_regs; i++) {
++		regmap_write(wcd939x->regmap,
++			     (WCD939X_DIGITAL_INTR_LEVEL_0 + i), 0);
++	}
++
++	pm_runtime_put(dev);
++
++	wcd939x->hphr_pdm_wd_int = regmap_irq_get_virq(wcd939x->irq_chip,
++						       WCD939X_IRQ_HPHR_PDM_WD_INT);
++	wcd939x->hphl_pdm_wd_int = regmap_irq_get_virq(wcd939x->irq_chip,
++						       WCD939X_IRQ_HPHL_PDM_WD_INT);
++	wcd939x->ear_pdm_wd_int = regmap_irq_get_virq(wcd939x->irq_chip,
++						      WCD939X_IRQ_EAR_PDM_WD_INT);
++
++	/* Request for watchdog interrupt */
++	ret = request_threaded_irq(wcd939x->hphr_pdm_wd_int, NULL, wcd939x_wd_handle_irq,
++				   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
++				   "HPHR PDM WD INT", wcd939x);
++	if (ret) {
++		dev_err(dev, "Failed to request HPHR WD interrupt (%d)\n", ret);
++		goto err_free_clsh_ctrl;
++	}
++
++	ret = request_threaded_irq(wcd939x->hphl_pdm_wd_int, NULL, wcd939x_wd_handle_irq,
++				   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
++				   "HPHL PDM WD INT", wcd939x);
++	if (ret) {
++		dev_err(dev, "Failed to request HPHL WD interrupt (%d)\n", ret);
++		goto err_free_hphr_pdm_wd_int;
++	}
++
++	ret = request_threaded_irq(wcd939x->ear_pdm_wd_int, NULL, wcd939x_wd_handle_irq,
++				   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
++				   "AUX PDM WD INT", wcd939x);
++	if (ret) {
++		dev_err(dev, "Failed to request Aux WD interrupt (%d)\n", ret);
++		goto err_free_hphl_pdm_wd_int;
++	}
++
++	/* Disable watchdog interrupt for HPH and AUX */
++	disable_irq_nosync(wcd939x->hphr_pdm_wd_int);
++	disable_irq_nosync(wcd939x->hphl_pdm_wd_int);
++	disable_irq_nosync(wcd939x->ear_pdm_wd_int);
++
++	switch (wcd939x->variant) {
++	case WCD9390:
++		ret = snd_soc_add_component_controls(component, wcd9390_snd_controls,
++						     ARRAY_SIZE(wcd9390_snd_controls));
++		if (ret < 0) {
++			dev_err(component->dev,
++				"%s: Failed to add snd ctrls for variant: %d\n",
++				__func__, wcd939x->variant);
++			goto err_free_ear_pdm_wd_int;
++		}
++		break;
++	case WCD9395:
++		ret = snd_soc_add_component_controls(component, wcd9395_snd_controls,
++						     ARRAY_SIZE(wcd9395_snd_controls));
++		if (ret < 0) {
++			dev_err(component->dev,
++				"%s: Failed to add snd ctrls for variant: %d\n",
++				__func__, wcd939x->variant);
++			goto err_free_ear_pdm_wd_int;
++		}
++		break;
++	default:
++		break;
++	}
++
++	ret = wcd939x_mbhc_init(component);
++	if (ret) {
++		dev_err(component->dev,  "mbhc initialization failed\n");
++		goto err_free_ear_pdm_wd_int;
++	}
++
++	return 0;
++
++err_free_ear_pdm_wd_int:
++	free_irq(wcd939x->ear_pdm_wd_int, wcd939x);
++err_free_hphl_pdm_wd_int:
++	free_irq(wcd939x->hphl_pdm_wd_int, wcd939x);
++err_free_hphr_pdm_wd_int:
++	free_irq(wcd939x->hphr_pdm_wd_int, wcd939x);
++err_free_clsh_ctrl:
++	wcd_clsh_ctrl_free(wcd939x->clsh_info);
 +
 +	return ret;
 +}
 +
-+static bool wcd939x_writeable_register(struct device *dev, unsigned int reg)
++static void wcd939x_soc_codec_remove(struct snd_soc_component *component)
 +{
-+	return wcd939x_rdwr_register(dev, reg);
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	wcd939x_mbhc_deinit(component);
++
++	free_irq(wcd939x->ear_pdm_wd_int, wcd939x);
++	free_irq(wcd939x->hphl_pdm_wd_int, wcd939x);
++	free_irq(wcd939x->hphr_pdm_wd_int, wcd939x);
++
++	wcd_clsh_ctrl_free(wcd939x->clsh_info);
 +}
 +
-+static bool wcd939x_volatile_register(struct device *dev, unsigned int reg)
++static int wcd939x_codec_set_jack(struct snd_soc_component *comp,
++				  struct snd_soc_jack *jack, void *data)
 +{
-+	if (reg <= WCD939X_BASE)
-+		return false;
++	struct wcd939x_priv *wcd = dev_get_drvdata(comp->dev);
 +
-+	if (wcd939x_readonly_register(dev, reg))
-+		return true;
++	if (jack)
++		return wcd_mbhc_start(wcd->wcd_mbhc, &wcd->mbhc_cfg, jack);
 +
-+	return false;
-+}
++	wcd_mbhc_stop(wcd->wcd_mbhc);
 +
-+static const struct regmap_config wcd939x_regmap_config = {
-+	.name = "wcd939x_csr",
-+	.reg_bits = 32,
-+	.val_bits = 8,
-+	.cache_type = REGCACHE_MAPLE,
-+	.reg_defaults = wcd939x_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(wcd939x_defaults),
-+	.max_register = WCD939X_MAX_REGISTER,
-+	.readable_reg = wcd939x_readable_register,
-+	.writeable_reg = wcd939x_writeable_register,
-+	.volatile_reg = wcd939x_volatile_register,
-+};
-+
-+static const struct sdw_slave_ops wcd9390_slave_ops = {
-+	.update_status = wcd9390_update_status,
-+	.interrupt_callback = wcd9390_interrupt_callback,
-+	.bus_config = wcd9390_bus_config,
-+};
-+
-+static int wcd939x_sdw_component_bind(struct device *dev, struct device *master,
-+				      void *data)
-+{
 +	return 0;
 +}
 +
-+static void wcd939x_sdw_component_unbind(struct device *dev,
-+					 struct device *master, void *data)
-+{
-+}
-+
-+static const struct component_ops wcd939x_sdw_component_ops = {
-+	.bind = wcd939x_sdw_component_bind,
-+	.unbind = wcd939x_sdw_component_unbind,
++static const struct snd_soc_component_driver soc_codec_dev_wcd939x = {
++	.name = "wcd939x_codec",
++	.probe = wcd939x_soc_codec_probe,
++	.remove = wcd939x_soc_codec_remove,
++	.controls = wcd939x_snd_controls,
++	.num_controls = ARRAY_SIZE(wcd939x_snd_controls),
++	.dapm_widgets = wcd939x_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wcd939x_dapm_widgets),
++	.dapm_routes = wcd939x_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(wcd939x_audio_map),
++	.set_jack = wcd939x_codec_set_jack,
++	.endianness = 1,
 +};
 +
-+static int wcd9390_probe(struct sdw_slave *pdev, const struct sdw_device_id *id)
++/* Get USB-C plug orientation to provide swap event for MBHC */
++static int wcd939x_typec_switch_set(struct typec_switch_dev *sw,
++				    enum typec_orientation orientation)
 +{
-+	struct device *dev = &pdev->dev;
-+	struct wcd939x_sdw_priv *wcd;
++	struct wcd939x_priv *wcd939x = typec_switch_get_drvdata(sw);
++
++	wcd939x->typec_orientation = orientation;
++
++	return 0;
++}
++
++static int wcd939x_typec_mux_set(struct typec_mux_dev *mux,
++				 struct typec_mux_state *state)
++{
++	struct wcd939x_priv *wcd939x = typec_mux_get_drvdata(mux);
++	unsigned int previous_mode = wcd939x->typec_mode;
++
++	if (!wcd939x->wcd_mbhc)
++		return -EINVAL;
++
++	if (wcd939x->typec_mode != state->mode) {
++		wcd939x->typec_mode = state->mode;
++
++		if (wcd939x->typec_mode == TYPEC_MODE_AUDIO)
++			return wcd_mbhc_typec_report_plug(wcd939x->wcd_mbhc);
++		else if (previous_mode == TYPEC_MODE_AUDIO)
++			return wcd_mbhc_typec_report_unplug(wcd939x->wcd_mbhc);
++	}
++
++	return 0;
++}
++
++static void wcd939x_dt_parse_micbias_info(struct device *dev, struct wcd939x_priv *wcd)
++{
++	struct device_node *np = dev->of_node;
++	u32 prop_val = 0;
++	int rc = 0;
++
++	rc = of_property_read_u32(np, "qcom,micbias1-microvolt",  &prop_val);
++	if (!rc)
++		wcd->micb1_mv = prop_val / 1000;
++	else
++		dev_info(dev, "%s: Micbias1 DT property not found\n", __func__);
++
++	rc = of_property_read_u32(np, "qcom,micbias2-microvolt",  &prop_val);
++	if (!rc)
++		wcd->micb2_mv = prop_val / 1000;
++	else
++		dev_info(dev, "%s: Micbias2 DT property not found\n", __func__);
++
++	rc = of_property_read_u32(np, "qcom,micbias3-microvolt", &prop_val);
++	if (!rc)
++		wcd->micb3_mv = prop_val / 1000;
++	else
++		dev_info(dev, "%s: Micbias3 DT property not found\n", __func__);
++
++	rc = of_property_read_u32(np, "qcom,micbias4-microvolt",  &prop_val);
++	if (!rc)
++		wcd->micb4_mv = prop_val / 1000;
++	else
++		dev_info(dev, "%s: Micbias4 DT property not found\n", __func__);
++}
++
++static bool wcd939x_swap_gnd_mic(struct snd_soc_component *component, bool active)
++{
++	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
++
++	if (!wcd939x->typec_analog_mux || !wcd939x->typec_switch)
++		return -EINVAL;
++
++	/* Report inversion via Type Switch of USBSS */
++	return typec_switch_set(wcd939x->typec_switch,
++				wcd939x->typec_orientation == TYPEC_ORIENTATION_REVERSE ?
++					TYPEC_ORIENTATION_NORMAL : TYPEC_ORIENTATION_REVERSE);
++}
++
++static int wcd939x_populate_dt_data(struct wcd939x_priv *wcd939x, struct device *dev)
++{
++	struct wcd_mbhc_config *cfg = &wcd939x->mbhc_cfg;
++	struct device_node *np;
 +	int ret;
 +
-+	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
-+	if (!wcd)
++	wcd939x->reset_gpio = of_get_named_gpio(dev->of_node, "reset-gpios", 0);
++	if (wcd939x->reset_gpio < 0)
++		return dev_err_probe(dev, wcd939x->reset_gpio,
++				     "Failed to get reset gpio\n");
++
++	wcd939x->supplies[0].supply = "vdd-rxtx";
++	wcd939x->supplies[1].supply = "vdd-io";
++	wcd939x->supplies[2].supply = "vdd-buck";
++	wcd939x->supplies[3].supply = "vdd-mic-bias";
++
++	ret = regulator_bulk_get(dev, WCD939X_MAX_SUPPLY, wcd939x->supplies);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to get supplies\n");
++
++	ret = regulator_bulk_enable(WCD939X_MAX_SUPPLY, wcd939x->supplies);
++	if (ret) {
++		regulator_bulk_free(WCD939X_MAX_SUPPLY, wcd939x->supplies);
++		return dev_err_probe(dev, ret, "Failed to enable supplies\n");
++	}
++
++	wcd939x_dt_parse_micbias_info(dev, wcd939x);
++
++	cfg->mbhc_micbias = MIC_BIAS_2;
++	cfg->anc_micbias = MIC_BIAS_2;
++	cfg->v_hs_max = WCD_MBHC_HS_V_MAX;
++	cfg->num_btn = WCD939X_MBHC_MAX_BUTTONS;
++	cfg->micb_mv = wcd939x->micb2_mv;
++	cfg->linein_th = 5000;
++	cfg->hs_thr = 1700;
++	cfg->hph_thr = 50;
++
++	wcd_dt_parse_mbhc_data(dev, cfg);
++
++	/*
++	 * Is node has a port and a valid remote endpoint
++	 * consider HP lines are connected to the USBSS part
++	 */
++	np = of_graph_get_remote_node(dev->of_node, 0, 0);
++	if (np) {
++		wcd939x->typec_analog_mux = true;
++		cfg->typec_analog_mux = true;
++		cfg->swap_gnd_mic = wcd939x_swap_gnd_mic;
++	}
++
++	return 0;
++}
++
++static int wcd939x_reset(struct wcd939x_priv *wcd939x)
++{
++	gpio_direction_output(wcd939x->reset_gpio, 0);
++	/* 20us sleep required after pulling the reset gpio to LOW */
++	usleep_range(20, 30);
++	gpio_set_value(wcd939x->reset_gpio, 1);
++	/* 20us sleep required after pulling the reset gpio to HIGH */
++	usleep_range(20, 30);
++
++	return 0;
++}
++
++static int wcd939x_codec_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dai->dev);
++	struct wcd939x_sdw_priv *wcd = wcd939x->sdw_priv[dai->id];
++
++	return wcd939x_sdw_hw_params(wcd, substream, params, dai);
++}
++
++static int wcd939x_codec_free(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dai->dev);
++	struct wcd939x_sdw_priv *wcd = wcd939x->sdw_priv[dai->id];
++
++	return wcd939x_sdw_free(wcd, substream, dai);
++}
++
++static int wcd939x_codec_set_sdw_stream(struct snd_soc_dai *dai,
++					void *stream, int direction)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dai->dev);
++	struct wcd939x_sdw_priv *wcd = wcd939x->sdw_priv[dai->id];
++
++	return wcd939x_sdw_set_sdw_stream(wcd, dai, stream, direction);
++}
++
++static const struct snd_soc_dai_ops wcd939x_sdw_dai_ops = {
++	.hw_params = wcd939x_codec_hw_params,
++	.hw_free = wcd939x_codec_free,
++	.set_stream = wcd939x_codec_set_sdw_stream,
++};
++
++static struct snd_soc_dai_driver wcd939x_dais[] = {
++	[0] = {
++		.name = "wcd939x-sdw-rx",
++		.playback = {
++			.stream_name = "WCD AIF1 Playback",
++			.rates = WCD939X_RATES_MASK | WCD939X_FRAC_RATES_MASK,
++			.formats = WCD939X_FORMATS,
++			.rate_max = 384000,
++			.rate_min = 8000,
++			.channels_min = 1,
++			.channels_max = 2,
++		},
++		.ops = &wcd939x_sdw_dai_ops,
++	},
++	[1] = {
++		.name = "wcd939x-sdw-tx",
++		.capture = {
++			.stream_name = "WCD AIF1 Capture",
++			.rates = WCD939X_RATES_MASK | WCD939X_FRAC_RATES_MASK,
++			.formats = WCD939X_FORMATS,
++			.rate_min = 8000,
++			.rate_max = 384000,
++			.channels_min = 1,
++			.channels_max = 4,
++		},
++		.ops = &wcd939x_sdw_dai_ops,
++	},
++};
++
++static int wcd939x_bind(struct device *dev)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dev);
++	unsigned int version, id1, status1;
++	int ret;
++
++	/*
++	 * Get USBSS type-c switch to send gnd/mic swap events
++	 * typec_switch is fetched now to avoid a probe deadlock since
++	 * the USBSS depends on the typec_mux register in wcd939x_probe()
++	 */
++	if (wcd939x->typec_analog_mux) {
++		wcd939x->typec_switch = fwnode_typec_switch_get(dev->fwnode);
++		if (IS_ERR(wcd939x->typec_switch))
++			return dev_err_probe(dev, PTR_ERR(wcd939x->typec_switch),
++					     "failed to acquire orientation-switch\n");
++	}
++
++	ret = component_bind_all(dev, wcd939x);
++	if (ret) {
++		dev_err(dev, "%s: Slave bind failed, ret = %d\n",
++			__func__, ret);
++		goto err_put_typec_switch;
++	}
++
++	wcd939x->rxdev = wcd939x_sdw_device_get(wcd939x->rxnode);
++	if (!wcd939x->rxdev) {
++		dev_err(dev, "could not find slave with matching of node\n");
++		ret = -EINVAL;
++		goto err_unbind;
++	}
++	wcd939x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd939x->rxdev);
++	wcd939x->sdw_priv[AIF1_PB]->wcd939x = wcd939x;
++
++	wcd939x->txdev = wcd939x_sdw_device_get(wcd939x->txnode);
++	if (!wcd939x->txdev) {
++		dev_err(dev, "could not find txslave with matching of node\n");
++		ret = -EINVAL;
++		goto err_put_rxdev;
++	}
++	wcd939x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd939x->txdev);
++	wcd939x->sdw_priv[AIF1_CAP]->wcd939x = wcd939x;
++	wcd939x->tx_sdw_dev = dev_to_sdw_dev(wcd939x->txdev);
++
++	/*
++	 * As TX is main CSR reg interface, which should not be suspended first.
++	 * explicitly add the dependency link
++	 */
++	if (!device_link_add(wcd939x->rxdev, wcd939x->txdev, DL_FLAG_STATELESS |
++			    DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink tx and rx\n");
++		ret = -EINVAL;
++		goto err_put_txdev;
++	}
++
++	if (!device_link_add(dev, wcd939x->txdev, DL_FLAG_STATELESS |
++					DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink wcd and tx\n");
++		ret = -EINVAL;
++		goto err_remove_rxtx_link;
++	}
++
++	if (!device_link_add(dev, wcd939x->rxdev, DL_FLAG_STATELESS |
++					DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink wcd and rx\n");
++		ret = -EINVAL;
++		goto err_remove_tx_link;
++	}
++
++	wcd939x->regmap = dev_get_regmap(&wcd939x->tx_sdw_dev->dev, NULL);
++	if (!wcd939x->regmap) {
++		dev_err(dev, "could not get TX device regmap\n");
++		ret = -EINVAL;
++		goto err_remove_rx_link;
++	}
++
++	ret = wcd939x_irq_init(wcd939x, dev);
++	if (ret) {
++		dev_err(dev, "%s: IRQ init failed: %d\n", __func__, ret);
++		goto err_remove_rx_link;
++	}
++
++	wcd939x->sdw_priv[AIF1_PB]->slave_irq = wcd939x->virq;
++	wcd939x->sdw_priv[AIF1_CAP]->slave_irq = wcd939x->virq;
++
++	ret = wcd939x_set_micbias_data(wcd939x);
++	if (ret < 0) {
++		dev_err(dev, "%s: bad micbias pdata\n", __func__);
++		goto err_remove_rx_link;
++	}
++
++	/* Check WCD9395 version */
++	regmap_read(wcd939x->regmap, WCD939X_DIGITAL_CHIP_ID1, &id1);
++	regmap_read(wcd939x->regmap, WCD939X_EAR_STATUS_REG_1, &status1);
++
++	if (id1 == 0)
++		version = ((status1 & 0x3) ? WCD939X_VERSION_1_1 : WCD939X_VERSION_1_0);
++	else if (id1 == 1)
++		version = WCD939X_VERSION_2_0;
++
++	dev_dbg(dev, "wcd939x version: %s\n", version_to_str(version));
++
++	ret = snd_soc_register_component(dev, &soc_codec_dev_wcd939x,
++					 wcd939x_dais, ARRAY_SIZE(wcd939x_dais));
++	if (ret) {
++		dev_err(dev, "%s: Codec registration failed\n",
++			__func__);
++		goto err_remove_rx_link;
++	}
++
++	return 0;
++
++err_remove_rx_link:
++	device_link_remove(dev, wcd939x->rxdev);
++err_remove_tx_link:
++	device_link_remove(dev, wcd939x->txdev);
++err_remove_rxtx_link:
++	device_link_remove(wcd939x->rxdev, wcd939x->txdev);
++err_put_txdev:
++	put_device(wcd939x->txdev);
++err_put_rxdev:
++	put_device(wcd939x->rxdev);
++err_unbind:
++	component_unbind_all(dev, wcd939x);
++err_put_typec_switch:
++	if (wcd939x->typec_analog_mux)
++		typec_switch_put(wcd939x->typec_switch);
++
++	return ret;
++}
++
++static void wcd939x_unbind(struct device *dev)
++{
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dev);
++
++	snd_soc_unregister_component(dev);
++	device_link_remove(dev, wcd939x->txdev);
++	device_link_remove(dev, wcd939x->rxdev);
++	device_link_remove(wcd939x->rxdev, wcd939x->txdev);
++	put_device(wcd939x->txdev);
++	put_device(wcd939x->rxdev);
++	component_unbind_all(dev, wcd939x);
++}
++
++static const struct component_master_ops wcd939x_comp_ops = {
++	.bind   = wcd939x_bind,
++	.unbind = wcd939x_unbind,
++};
++
++static int wcd939x_add_slave_components(struct wcd939x_priv *wcd939x,
++					struct device *dev,
++					struct component_match **matchptr)
++{
++	struct device_node *np;
++
++	np = dev->of_node;
++
++	wcd939x->rxnode = of_parse_phandle(np, "qcom,rx-device", 0);
++	if (!wcd939x->rxnode) {
++		dev_err(dev, "%s: Rx-device node not defined\n", __func__);
++		return -ENODEV;
++	}
++
++	of_node_get(wcd939x->rxnode);
++	component_match_add_release(dev, matchptr, component_release_of,
++				    component_compare_of, wcd939x->rxnode);
++
++	wcd939x->txnode = of_parse_phandle(np, "qcom,tx-device", 0);
++	if (!wcd939x->txnode) {
++		dev_err(dev, "%s: Tx-device node not defined\n", __func__);
++		return -ENODEV;
++	}
++	of_node_get(wcd939x->txnode);
++	component_match_add_release(dev, matchptr, component_release_of,
++				    component_compare_of, wcd939x->txnode);
++	return 0;
++}
++
++static int wcd939x_probe(struct platform_device *pdev)
++{
++	struct component_match *match = NULL;
++	struct wcd939x_priv *wcd939x = NULL;
++	struct device *dev = &pdev->dev;
++	int ret;
++
++	wcd939x = devm_kzalloc(dev, sizeof(struct wcd939x_priv),
++			       GFP_KERNEL);
++	if (!wcd939x)
 +		return -ENOMEM;
 +
-+	/**
-+	 * Port map index starts with 0, however the data port for this codec
-+	 * are from index 1
++	dev_set_drvdata(dev, wcd939x);
++	mutex_init(&wcd939x->micb_lock);
++
++	ret = wcd939x_populate_dt_data(wcd939x, dev);
++	if (ret) {
++		dev_err(dev, "%s: Fail to obtain platform data\n", __func__);
++		return -EINVAL;
++	}
++
++	/*
++	 * Is USBSS is used to mux analog lines,
++	 * register a typec mux/switch to get typec events
 +	 */
-+	if (of_property_read_bool(dev->of_node, "qcom,tx-port-mapping")) {
-+		wcd->is_tx = true;
-+		ret = of_property_read_u32_array(dev->of_node,
-+						 "qcom,tx-port-mapping",
-+						 &pdev->m_port_map[1],
-+						 WCD939X_MAX_TX_SWR_PORTS);
-+	} else {
-+		ret = of_property_read_u32_array(dev->of_node,
-+						 "qcom,rx-port-mapping",
-+						 &pdev->m_port_map[1],
-+						 WCD939X_MAX_RX_SWR_PORTS);
++	if (wcd939x->typec_analog_mux) {
++		struct typec_mux_desc mux_desc = {
++			.drvdata = wcd939x,
++			.fwnode = dev_fwnode(dev),
++			.set = wcd939x_typec_mux_set,
++		};
++		struct typec_switch_desc sw_desc = {
++			.drvdata = wcd939x,
++			.fwnode = dev_fwnode(dev),
++			.set = wcd939x_typec_switch_set,
++		};
++
++		wcd939x->typec_mux = typec_mux_register(dev, &mux_desc);
++		if (IS_ERR(wcd939x->typec_mux)) {
++			ret = dev_err_probe(dev, PTR_ERR(wcd939x->typec_mux),
++					    "failed to register typec mux\n");
++			goto err_disable_regulators;
++		}
++
++		wcd939x->typec_sw = typec_switch_register(dev, &sw_desc);
++		if (IS_ERR(wcd939x->typec_sw)) {
++			ret = dev_err_probe(dev, PTR_ERR(wcd939x->typec_sw),
++					    "failed to register typec switch\n");
++			goto err_unregister_typec_mux;
++		}
 +	}
 +
-+	if (ret < 0)
-+		dev_info(dev, "Static Port mapping not specified\n");
++	ret = wcd939x_add_slave_components(wcd939x, dev, &match);
++	if (ret)
++		goto err_unregister_typec_switch;
 +
-+	wcd->sdev = pdev;
-+	dev_set_drvdata(dev, wcd);
++	wcd939x_reset(wcd939x);
 +
-+	pdev->prop.scp_int1_mask = SDW_SCP_INT1_IMPL_DEF |
-+				   SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-+	pdev->prop.lane_control_support = true;
-+	pdev->prop.simple_clk_stop_capable = true;
-+	if (wcd->is_tx) {
-+		pdev->prop.source_ports = GENMASK(WCD939X_MAX_TX_SWR_PORTS, 0);
-+		pdev->prop.src_dpn_prop = wcd939x_tx_dpn_prop;
-+		wcd->ch_info = &wcd939x_sdw_tx_ch_info[0];
-+		pdev->prop.wake_capable = true;
-+	} else {
-+		pdev->prop.sink_ports = GENMASK(WCD939X_MAX_RX_SWR_PORTS, 0);
-+		pdev->prop.sink_dpn_prop = wcd939x_rx_dpn_prop;
-+		wcd->ch_info = &wcd939x_sdw_rx_ch_info[0];
-+	}
++	ret = component_master_add_with_match(dev, &wcd939x_comp_ops, match);
++	if (ret)
++		goto err_disable_regulators;
 +
-+	if (wcd->is_tx) {
-+		wcd->regmap = devm_regmap_init_sdw(pdev, &wcd939x_regmap_config);
-+		if (IS_ERR(wcd->regmap))
-+			return dev_err_probe(dev, PTR_ERR(wcd->regmap),
-+					     "Regmap init failed\n");
-+
-+		/* Start in cache-only until device is enumerated */
-+		regcache_cache_only(wcd->regmap, true);
-+	}
-+
-+	pm_runtime_set_autosuspend_delay(dev, 3000);
++	pm_runtime_set_autosuspend_delay(dev, 1000);
 +	pm_runtime_use_autosuspend(dev);
 +	pm_runtime_mark_last_busy(dev);
 +	pm_runtime_set_active(dev);
 +	pm_runtime_enable(dev);
-+
-+	ret = component_add(dev, &wcd939x_sdw_component_ops);
-+	if (ret)
-+		goto err_disable_rpm;
++	pm_runtime_idle(dev);
 +
 +	return 0;
 +
-+err_disable_rpm:
-+	pm_runtime_disable(dev);
-+	pm_runtime_set_suspended(dev);
-+	pm_runtime_dont_use_autosuspend(dev);
++err_unregister_typec_mux:
++	if (wcd939x->typec_analog_mux)
++		typec_mux_unregister(wcd939x->typec_mux);
++
++err_unregister_typec_switch:
++	if (wcd939x->typec_analog_mux)
++		typec_switch_unregister(wcd939x->typec_sw);
++
++err_disable_regulators:
++	regulator_bulk_disable(WCD939X_MAX_SUPPLY, wcd939x->supplies);
++	regulator_bulk_free(WCD939X_MAX_SUPPLY, wcd939x->supplies);
 +
 +	return ret;
 +}
 +
-+static int wcd9390_remove(struct sdw_slave *pdev)
++static void wcd939x_remove(struct platform_device *pdev)
 +{
 +	struct device *dev = &pdev->dev;
++	struct wcd939x_priv *wcd939x = dev_get_drvdata(dev);
 +
-+	component_del(dev, &wcd939x_sdw_component_ops);
++	component_master_del(dev, &wcd939x_comp_ops);
 +
 +	pm_runtime_disable(dev);
 +	pm_runtime_set_suspended(dev);
 +	pm_runtime_dont_use_autosuspend(dev);
 +
-+	return 0;
++	regulator_bulk_disable(WCD939X_MAX_SUPPLY, wcd939x->supplies);
++	regulator_bulk_free(WCD939X_MAX_SUPPLY, wcd939x->supplies);
 +}
 +
-+static const struct sdw_device_id wcd9390_slave_id[] = {
-+	SDW_SLAVE_ENTRY(0x0217, 0x10e, 0),
-+	{},
++#if defined(CONFIG_OF)
++static const struct of_device_id wcd939x_dt_match[] = {
++	{ .compatible = "qcom,wcd9390-codec" },
++	{ .compatible = "qcom,wcd9395-codec" },
++	{}
 +};
-+MODULE_DEVICE_TABLE(sdw, wcd9390_slave_id);
++MODULE_DEVICE_TABLE(of, wcd939x_dt_match);
++#endif
 +
-+static int __maybe_unused wcd939x_sdw_runtime_suspend(struct device *dev)
-+{
-+	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(dev);
-+
-+	if (wcd->regmap) {
-+		regcache_cache_only(wcd->regmap, true);
-+		regcache_mark_dirty(wcd->regmap);
-+	}
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused wcd939x_sdw_runtime_resume(struct device *dev)
-+{
-+	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(dev);
-+
-+	if (wcd->regmap) {
-+		regcache_cache_only(wcd->regmap, false);
-+		regcache_sync(wcd->regmap);
-+	}
-+
-+	pm_runtime_mark_last_busy(dev);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops wcd939x_sdw_pm_ops = {
-+	SET_RUNTIME_PM_OPS(wcd939x_sdw_runtime_suspend, wcd939x_sdw_runtime_resume, NULL)
-+};
-+
-+static struct sdw_driver wcd9390_codec_driver = {
-+	.probe = wcd9390_probe,
-+	.remove = wcd9390_remove,
-+	.ops = &wcd9390_slave_ops,
-+	.id_table = wcd9390_slave_id,
++static struct platform_driver wcd939x_codec_driver = {
++	.probe = wcd939x_probe,
++	.remove_new = wcd939x_remove,
 +	.driver = {
-+		.name = "wcd9390-codec",
-+		.pm = &wcd939x_sdw_pm_ops,
-+	}
++		.name = "wcd939x_codec",
++		.of_match_table = of_match_ptr(wcd939x_dt_match),
++		.suppress_bind_attrs = true,
++	},
 +};
-+module_sdw_driver(wcd9390_codec_driver);
 +
-+MODULE_DESCRIPTION("WCD939X SDW codec driver");
++module_platform_driver(wcd939x_codec_driver);
++MODULE_DESCRIPTION("WCD939X Codec driver");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/wcd939x.h b/sound/soc/codecs/wcd939x.h
-new file mode 100644
-index 000000000000..f26a433dec86
---- /dev/null
-+++ b/sound/soc/codecs/wcd939x.h
-@@ -0,0 +1,936 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef __WCD939X_H__
-+#define __WCD939X_H__
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+
-+#define WCD939X_BASE					   (0x3000)
-+#define WCD939X_ANA_PAGE				   (0x3000)
-+#define WCD939X_ANA_BIAS				   (0x3001)
-+#define WCD939X_BIAS_ANALOG_BIAS_EN	BIT(7)
-+#define WCD939X_BIAS_PRECHRG_EN	BIT(6)
-+#define WCD939X_BIAS_PRECHRG_CTL_MODE	BIT(5)
-+#define WCD939X_ANA_RX_SUPPLIES				   (0x3008)
-+#define WCD939X_RX_SUPPLIES_VPOS_EN	BIT(7)
-+#define WCD939X_RX_SUPPLIES_VNEG_EN	BIT(6)
-+#define WCD939X_RX_SUPPLIES_VPOS_PWR_LVL	BIT(3)
-+#define WCD939X_RX_SUPPLIES_VNEG_PWR_LVL	BIT(2)
-+#define WCD939X_RX_SUPPLIES_REGULATOR_MODE	BIT(1)
-+#define WCD939X_RX_SUPPLIES_RX_BIAS_ENABLE	BIT(0)
-+#define WCD939X_ANA_HPH					   (0x3009)
-+#define WCD939X_HPH_HPHL_ENABLE	BIT(7)
-+#define WCD939X_HPH_HPHR_ENABLE	BIT(6)
-+#define WCD939X_HPH_HPHL_REF_ENABLE	BIT(5)
-+#define WCD939X_HPH_HPHR_REF_ENABLE	BIT(4)
-+#define WCD939X_HPH_PWR_LEVEL	GENMASK(3, 2)
-+#define WCD939X_ANA_EAR					   (0x300a)
-+#define WCD939X_ANA_EAR_COMPANDER_CTL			   (0x300b)
-+#define WCD939X_EAR_COMPANDER_CTL_GAIN_OVRD_REG	BIT(7)
-+#define WCD939X_EAR_COMPANDER_CTL_EAR_GAIN	GENMASK(6, 2)
-+#define WCD939X_EAR_COMPANDER_CTL_COMP_DFF_BYP	BIT(1)
-+#define WCD939X_EAR_COMPANDER_CTL_COMP_DFF_CLK_EDGE	BIT(0)
-+#define WCD939X_ANA_TX_CH1				   (0x300e)
-+#define WCD939X_ANA_TX_CH2				   (0x300f)
-+#define WCD939X_TX_CH2_ENABLE	BIT(7)
-+#define WCD939X_TX_CH2_HPF1_INIT	BIT(6)
-+#define WCD939X_TX_CH2_HPF2_INIT	BIT(5)
-+#define WCD939X_TX_CH2_GAIN	GENMASK(4, 0)
-+#define WCD939X_ANA_TX_CH3				   (0x3010)
-+#define WCD939X_ANA_TX_CH4				   (0x3011)
-+#define WCD939X_TX_CH4_ENABLE	BIT(7)
-+#define WCD939X_TX_CH4_HPF3_INIT	BIT(6)
-+#define WCD939X_TX_CH4_HPF4_INIT	BIT(5)
-+#define WCD939X_TX_CH4_GAIN	GENMASK(4, 0)
-+#define WCD939X_ANA_MICB1_MICB2_DSP_EN_LOGIC		   (0x3012)
-+#define WCD939X_ANA_MICB3_DSP_EN_LOGIC			   (0x3013)
-+#define WCD939X_ANA_MBHC_MECH				   (0x3014)
-+#define WCD939X_MBHC_MECH_L_DET_EN	BIT(7)
-+#define WCD939X_MBHC_MECH_GND_DET_EN	BIT(6)
-+#define WCD939X_MBHC_MECH_MECH_DETECT_TYPE	BIT(5)
-+#define WCD939X_MBHC_MECH_HPHL_PLUG_TYPE	BIT(4)
-+#define WCD939X_MBHC_MECH_GND_PLUG_TYPE	BIT(3)
-+#define WCD939X_MBHC_MECH_MECH_HS_L_PULLUP_COMP_EN	BIT(2)
-+#define WCD939X_MBHC_MECH_MECH_HS_G_PULLUP_COMP_EN	BIT(1)
-+#define WCD939X_MBHC_MECH_SW_HPH_L_P_100K_TO_GND	BIT(0)
-+#define WCD939X_ANA_MBHC_ELECT				   (0x3015)
-+#define WCD939X_MBHC_ELECT_FSM_EN	BIT(7)
-+#define WCD939X_MBHC_ELECT_BTNDET_ISRC_CTL	GENMASK(6, 4)
-+#define WCD939X_MBHC_ELECT_ELECT_DET_TYPE	BIT(3)
-+#define WCD939X_MBHC_ELECT_ELECT_SCHMT_ISRC_CTL	GENMASK(2, 1)
-+#define WCD939X_MBHC_ELECT_BIAS_EN	BIT(0)
-+#define WCD939X_ANA_MBHC_ZDET				   (0x3016)
-+#define WCD939X_ANA_MBHC_RESULT_1			   (0x3017)
-+#define WCD939X_ANA_MBHC_RESULT_2			   (0x3018)
-+#define WCD939X_ANA_MBHC_RESULT_3			   (0x3019)
-+#define WCD939X_ANA_MBHC_BTN0				   (0x301a)
-+#define WCD939X_ANA_MBHC_BTN1				   (0x301b)
-+#define WCD939X_ANA_MBHC_BTN2				   (0x301c)
-+#define WCD939X_ANA_MBHC_BTN3				   (0x301d)
-+#define WCD939X_ANA_MBHC_BTN4				   (0x301e)
-+#define WCD939X_ANA_MBHC_BTN5				   (0x301f)
-+#define WCD939X_MBHC_BTN5_VTH	GENMASK(7, 2)
-+#define WCD939X_ANA_MBHC_BTN6				   (0x3020)
-+#define WCD939X_MBHC_BTN6_VTH	GENMASK(7, 2)
-+#define WCD939X_ANA_MBHC_BTN7				   (0x3021)
-+#define WCD939X_MBHC_BTN7_VTH	GENMASK(7, 2)
-+#define WCD939X_ANA_MICB1				   (0x3022)
-+#define WCD939X_MICB1_ENABLE	GENMASK(7, 6)
-+#define WCD939X_MICB1_VOUT_CTL	GENMASK(5, 0)
-+#define WCD939X_ANA_MICB2				   (0x3023)
-+#define WCD939X_MICB2_ENABLE	GENMASK(7, 6)
-+#define WCD939X_MICB2_VOUT_CTL	GENMASK(5, 0)
-+#define WCD939X_ANA_MICB2_RAMP				   (0x3024)
-+#define WCD939X_MICB2_RAMP_RAMP_ENABLE	BIT(7)
-+#define WCD939X_MICB2_RAMP_MB2_IN2P_SHORT_ENABLE	BIT(6)
-+#define WCD939X_MICB2_RAMP_ALLSW_OVRD_ENABLE	BIT(5)
-+#define WCD939X_MICB2_RAMP_SHIFT_CTL	GENMASK(4, 2)
-+#define WCD939X_MICB2_RAMP_USB_MGDET_MICB2_RAMP	GENMASK(1, 0)
-+#define WCD939X_ANA_MICB3				   (0x3025)
-+#define WCD939X_MICB3_ENABLE	GENMASK(7, 6)
-+#define WCD939X_ANA_MICB4				   (0x3026)
-+#define WCD939X_MICB4_ENABLE	GENMASK(7, 6)
-+#define WCD939X_BIAS_CTL				   (0x3028)
-+#define WCD939X_BIAS_VBG_FINE_ADJ			   (0x3029)
-+#define WCD939X_LDOL_VDDCX_ADJUST			   (0x3040)
-+#define WCD939X_LDOL_DISABLE_LDOL			   (0x3041)
-+#define WCD939X_MBHC_CTL_CLK				   (0x3056)
-+#define WCD939X_MBHC_CTL_ANA				   (0x3057)
-+#define WCD939X_MBHC_ZDET_VNEG_CTL			   (0x3058)
-+#define WCD939X_MBHC_ZDET_BIAS_CTL			   (0x3059)
-+#define WCD939X_MBHC_CTL_BCS				   (0x305a)
-+#define WCD939X_MBHC_MOISTURE_DET_FSM_STATUS		   (0x305b)
-+#define WCD939X_MBHC_TEST_CTL				   (0x305c)
-+#define WCD939X_LDOH_MODE				   (0x3067)
-+#define WCD939X_MODE_LDOH_EN	BIT(7)
-+#define WCD939X_MODE_PWRDN_STATE	BIT(6)
-+#define WCD939X_MODE_SLOWRAMP_EN	BIT(5)
-+#define WCD939X_MODE_VOUT_ADJUST	GENMASK(4, 3)
-+#define WCD939X_MODE_VOUT_COARSE_ADJ	GENMASK(2, 0)
-+#define WCD939X_LDOH_BIAS				   (0x3068)
-+#define WCD939X_LDOH_STB_LOADS				   (0x3069)
-+#define WCD939X_LDOH_SLOWRAMP				   (0x306a)
-+#define WCD939X_MICB1_TEST_CTL_1			   (0x306b)
-+#define WCD939X_TEST_CTL_1_NOISE_FILT_RES_VAL	GENMASK(7, 5)
-+#define WCD939X_TEST_CTL_1_EN_VREFGEN	BIT(4)
-+#define WCD939X_TEST_CTL_1_EN_LDO	BIT(3)
-+#define WCD939X_TEST_CTL_1_LDO_BLEEDER_I_CTRL	GENMASK(2, 0)
-+#define WCD939X_MICB1_TEST_CTL_2			   (0x306c)
-+#define WCD939X_TEST_CTL_2_IBIAS_VREFGEN	GENMASK(7, 6)
-+#define WCD939X_TEST_CTL_2_INRUSH_CURRENT_FIX_DIS	BIT(5)
-+#define WCD939X_TEST_CTL_2_IBIAS_LDO_DRIVER	GENMASK(2, 0)
-+#define WCD939X_MICB1_TEST_CTL_3			   (0x306d)
-+#define WCD939X_MICB2_TEST_CTL_1			   (0x306e)
-+#define WCD939X_MICB2_TEST_CTL_2			   (0x306f)
-+#define WCD939X_MICB2_TEST_CTL_3			   (0x3070)
-+#define WCD939X_MICB3_TEST_CTL_1			   (0x3071)
-+#define WCD939X_MICB3_TEST_CTL_2			   (0x3072)
-+#define WCD939X_MICB3_TEST_CTL_3			   (0x3073)
-+#define WCD939X_MICB4_TEST_CTL_1			   (0x3074)
-+#define WCD939X_MICB4_TEST_CTL_2			   (0x3075)
-+#define WCD939X_MICB4_TEST_CTL_3			   (0x3076)
-+#define WCD939X_TX_COM_ADC_VCM				   (0x3077)
-+#define WCD939X_TX_COM_BIAS_ATEST			   (0x3078)
-+#define WCD939X_TX_COM_SPARE1				   (0x3079)
-+#define WCD939X_TX_COM_SPARE2				   (0x307a)
-+#define WCD939X_TX_COM_TXFE_DIV_CTL			   (0x307b)
-+#define WCD939X_TX_COM_TXFE_DIV_START			   (0x307c)
-+#define WCD939X_TX_COM_SPARE3				   (0x307d)
-+#define WCD939X_TX_COM_SPARE4				   (0x307e)
-+#define WCD939X_TX_1_2_TEST_EN				   (0x307f)
-+#define WCD939X_TX_1_2_ADC_IB				   (0x3080)
-+#define WCD939X_TX_1_2_ATEST_REFCTL			   (0x3081)
-+#define WCD939X_TX_1_2_TEST_CTL				   (0x3082)
-+#define WCD939X_TX_1_2_TEST_BLK_EN1			   (0x3083)
-+#define WCD939X_TX_1_2_TXFE1_CLKDIV			   (0x3084)
-+#define WCD939X_TX_1_2_SAR2_ERR				   (0x3085)
-+#define WCD939X_TX_1_2_SAR1_ERR				   (0x3086)
-+#define WCD939X_TX_3_4_TEST_EN				   (0x3087)
-+#define WCD939X_TX_3_4_ADC_IB				   (0x3088)
-+#define WCD939X_TX_3_4_ATEST_REFCTL			   (0x3089)
-+#define WCD939X_TX_3_4_TEST_CTL				   (0x308a)
-+#define WCD939X_TX_3_4_TEST_BLK_EN3			   (0x308b)
-+#define WCD939X_TX_3_4_TXFE3_CLKDIV			   (0x308c)
-+#define WCD939X_TX_3_4_SAR4_ERR				   (0x308d)
-+#define WCD939X_TX_3_4_SAR3_ERR				   (0x308e)
-+#define WCD939X_TX_3_4_TEST_BLK_EN2			   (0x308f)
-+#define WCD939X_TEST_BLK_EN2_ADC2_INT1_EN	BIT(7)
-+#define WCD939X_TEST_BLK_EN2_ADC2_INT2_EN	BIT(6)
-+#define WCD939X_TEST_BLK_EN2_ADC2_SAR_EN	BIT(5)
-+#define WCD939X_TEST_BLK_EN2_ADC2_CMGEN_EN	BIT(4)
-+#define WCD939X_TEST_BLK_EN2_ADC2_CLKGEN_EN	BIT(3)
-+#define WCD939X_TEST_BLK_EN2_ADC12_VREF_NONL2	GENMASK(2, 1)
-+#define WCD939X_TEST_BLK_EN2_TXFE2_MBHC_CLKRST_EN	BIT(0)
-+#define WCD939X_TX_3_4_TXFE2_CLKDIV			   (0x3090)
-+#define WCD939X_TX_3_4_SPARE1				   (0x3091)
-+#define WCD939X_TX_3_4_TEST_BLK_EN4			   (0x3092)
-+#define WCD939X_TX_3_4_TXFE4_CLKDIV			   (0x3093)
-+#define WCD939X_TX_3_4_SPARE2				   (0x3094)
-+#define WCD939X_CLASSH_MODE_1				   (0x3097)
-+#define WCD939X_CLASSH_MODE_2				   (0x3098)
-+#define WCD939X_CLASSH_MODE_3				   (0x3099)
-+#define WCD939X_CLASSH_CTRL_VCL_1			   (0x309a)
-+#define WCD939X_CLASSH_CTRL_VCL_2			   (0x309b)
-+#define WCD939X_CLASSH_CTRL_CCL_1			   (0x309c)
-+#define WCD939X_CLASSH_CTRL_CCL_2			   (0x309d)
-+#define WCD939X_CLASSH_CTRL_CCL_3			   (0x309e)
-+#define WCD939X_CLASSH_CTRL_CCL_4			   (0x309f)
-+#define WCD939X_CLASSH_CTRL_CCL_5			   (0x30a0)
-+#define WCD939X_CLASSH_BUCK_TMUX_A_D			   (0x30a1)
-+#define WCD939X_CLASSH_BUCK_SW_DRV_CNTL			   (0x30a2)
-+#define WCD939X_CLASSH_SPARE				   (0x30a3)
-+#define WCD939X_FLYBACK_EN				   (0x30a4)
-+#define WCD939X_FLYBACK_VNEG_CTRL_1			   (0x30a5)
-+#define WCD939X_FLYBACK_VNEG_CTRL_2			   (0x30a6)
-+#define WCD939X_FLYBACK_VNEG_CTRL_3			   (0x30a7)
-+#define WCD939X_FLYBACK_VNEG_CTRL_4			   (0x30a8)
-+#define WCD939X_VNEG_CTRL_4_ILIM_SEL	GENMASK(7, 4)
-+#define WCD939X_VNEG_CTRL_4_PW_BUF_POS	GENMASK(3, 2)
-+#define WCD939X_VNEG_CTRL_4_PW_BUF_NEG	GENMASK(1, 0)
-+#define WCD939X_FLYBACK_VNEG_CTRL_5			   (0x30a9)
-+#define WCD939X_FLYBACK_VNEG_CTRL_6			   (0x30aa)
-+#define WCD939X_FLYBACK_VNEG_CTRL_7			   (0x30ab)
-+#define WCD939X_FLYBACK_VNEG_CTRL_8			   (0x30ac)
-+#define WCD939X_FLYBACK_VNEG_CTRL_9			   (0x30ad)
-+#define WCD939X_FLYBACK_VNEGDAC_CTRL_1			   (0x30ae)
-+#define WCD939X_FLYBACK_VNEGDAC_CTRL_2			   (0x30af)
-+#define WCD939X_FLYBACK_VNEGDAC_CTRL_3			   (0x30b0)
-+#define WCD939X_FLYBACK_CTRL_1				   (0x30b1)
-+#define WCD939X_FLYBACK_TEST_CTL			   (0x30b2)
-+#define WCD939X_RX_AUX_SW_CTL				   (0x30b3)
-+#define WCD939X_RX_PA_AUX_IN_CONN			   (0x30b4)
-+#define WCD939X_RX_TIMER_DIV				   (0x30b5)
-+#define WCD939X_RX_OCP_CTL				   (0x30b6)
-+#define WCD939X_RX_OCP_COUNT				   (0x30b7)
-+#define WCD939X_RX_BIAS_EAR_DAC				   (0x30b8)
-+#define WCD939X_RX_BIAS_EAR_AMP				   (0x30b9)
-+#define WCD939X_RX_BIAS_HPH_LDO				   (0x30ba)
-+#define WCD939X_RX_BIAS_HPH_PA				   (0x30bb)
-+#define WCD939X_RX_BIAS_HPH_RDACBUFF_CNP2		   (0x30bc)
-+#define WCD939X_RX_BIAS_HPH_RDAC_LDO			   (0x30bd)
-+#define WCD939X_RX_BIAS_HPH_CNP1			   (0x30be)
-+#define WCD939X_RX_BIAS_HPH_LOWPOWER			   (0x30bf)
-+#define WCD939X_RX_BIAS_AUX_DAC				   (0x30c0)
-+#define WCD939X_RX_BIAS_AUX_AMP				   (0x30c1)
-+#define WCD939X_RX_BIAS_VNEGDAC_BLEEDER			   (0x30c2)
-+#define WCD939X_RX_BIAS_MISC				   (0x30c3)
-+#define WCD939X_RX_BIAS_BUCK_RST			   (0x30c4)
-+#define WCD939X_RX_BIAS_BUCK_VREF_ERRAMP		   (0x30c5)
-+#define WCD939X_RX_BIAS_FLYB_ERRAMP			   (0x30c6)
-+#define WCD939X_RX_BIAS_FLYB_BUFF			   (0x30c7)
-+#define WCD939X_RX_BIAS_FLYB_MID_RST			   (0x30c8)
-+#define WCD939X_HPH_L_STATUS				   (0x30c9)
-+#define WCD939X_HPH_R_STATUS				   (0x30ca)
-+#define WCD939X_HPH_CNP_EN				   (0x30cb)
-+#define WCD939X_HPH_CNP_WG_CTL				   (0x30cc)
-+#define WCD939X_HPH_CNP_WG_TIME				   (0x30cd)
-+#define WCD939X_HPH_OCP_CTL				   (0x30ce)
-+#define WCD939X_OCP_CTL_OCP_CURR_LIMIT	GENMASK(7, 5)
-+#define WCD939X_OCP_CTL_OCP_FSM_EN	BIT(4)
-+#define WCD939X_OCP_CTL_SPARE_BITS	BIT(3)
-+#define WCD939X_OCP_CTL_SCD_OP_EN	BIT(1)
-+#define WCD939X_HPH_AUTO_CHOP				   (0x30cf)
-+#define WCD939X_HPH_CHOP_CTL				   (0x30d0)
-+#define WCD939X_HPH_PA_CTL1				   (0x30d1)
-+#define WCD939X_HPH_PA_CTL2				   (0x30d2)
-+#define WCD939X_PA_CTL2_HPHPA_GND_R	BIT(6)
-+#define WCD939X_PA_CTL2_HPHPA_GND_L	BIT(4)
-+#define WCD939X_PA_CTL2_GM3_CASCODE_CTL_NORMAL	GENMASK(1, 0)
-+#define WCD939X_HPH_L_EN				   (0x30d3)
-+#define WCD939X_L_EN_CONST_SEL_L	GENMASK(7, 6)
-+#define WCD939X_L_EN_GAIN_SOURCE_SEL	BIT(5)
-+#define WCD939X_L_EN_SPARE_BITS	GENMASK(4, 0)
-+#define WCD939X_HPH_L_TEST				   (0x30d4)
-+#define WCD939X_HPH_L_ATEST				   (0x30d5)
-+#define WCD939X_HPH_R_EN				   (0x30d6)
-+#define WCD939X_R_EN_CONST_SEL_R	GENMASK(7, 6)
-+#define WCD939X_R_EN_GAIN_SOURCE_SEL	BIT(5)
-+#define WCD939X_R_EN_SPARE_BITS	GENMASK(4, 0)
-+#define WCD939X_HPH_R_TEST				   (0x30d7)
-+#define WCD939X_HPH_R_ATEST				   (0x30d8)
-+#define WCD939X_R_ATEST_DACR_REF_ATEST1_CONN	BIT(7)
-+#define WCD939X_R_ATEST_LDO1_R_ATEST2_CONN	BIT(6)
-+#define WCD939X_R_ATEST_LDO_R_ATEST2_CAL	BIT(5)
-+#define WCD939X_R_ATEST_LDO2_R_ATEST2_CONN	BIT(4)
-+#define WCD939X_R_ATEST_LDO_1P65V_ATEST1_CONN	BIT(3)
-+#define WCD939X_R_ATEST_HPH_GND_OVR	BIT(1)
-+#define WCD939X_HPH_RDAC_CLK_CTL1			   (0x30d9)
-+#define WCD939X_RDAC_CLK_CTL1_OPAMP_CHOP_CLK_EN	BIT(7)
-+#define WCD939X_RDAC_CLK_CTL1_OPAMP_CHOP_CLK_DIV_CTRL	GENMASK(6, 4)
-+#define WCD939X_RDAC_CLK_CTL1_SPARE_BITS	GENMASK(3, 0)
-+#define WCD939X_HPH_RDAC_CLK_CTL2			   (0x30da)
-+#define WCD939X_HPH_RDAC_LDO_CTL			   (0x30db)
-+#define WCD939X_HPH_RDAC_CHOP_CLK_LP_CTL		   (0x30dc)
-+#define WCD939X_HPH_REFBUFF_UHQA_CTL			   (0x30dd)
-+#define WCD939X_REFBUFF_UHQA_CTL_SPARE_BITS	GENMASK(7, 6)
-+#define WCD939X_REFBUFF_UHQA_CTL_HPH_VNEGREG2_COMP_CTL_OV	BIT(5)
-+#define WCD939X_REFBUFF_UHQA_CTL_REFBUFN_RBIAS_ADJUST	BIT(4)
-+#define WCD939X_REFBUFF_UHQA_CTL_REFBUFP_IOUT_CTL	GENMASK(3, 2)
-+#define WCD939X_REFBUFF_UHQA_CTL_REFBUFN_IOUT_CTL	GENMASK(1, 0)
-+#define WCD939X_HPH_REFBUFF_LP_CTL			   (0x30de)
-+#define WCD939X_REFBUFF_LP_CTL_HPH_VNEGREG2_CURR_COMP	GENMASK(7, 6)
-+#define WCD939X_REFBUFF_LP_CTL_SPARE_BITS	GENMASK(5, 4)
-+#define WCD939X_REFBUFF_LP_CTL_EN_PREREF_FILT_STARTUP_CLKDIV	BIT(3)
-+#define WCD939X_REFBUFF_LP_CTL_PREREF_FILT_STARTUP_CLKDIV_CTL	GENMASK(2, 1)
-+#define WCD939X_REFBUFF_LP_CTL_PREREF_FILT_BYPASS	BIT(0)
-+#define WCD939X_HPH_L_DAC_CTL				   (0x30df)
-+#define WCD939X_HPH_R_DAC_CTL				   (0x30e0)
-+#define WCD939X_HPH_SURGE_COMP_SEL			   (0x30e1)
-+#define WCD939X_HPH_SURGE_EN				   (0x30e2)
-+#define WCD939X_EN_EN_SURGE_PROTECTION_HPHL	BIT(7)
-+#define WCD939X_EN_EN_SURGE_PROTECTION_HPHR	BIT(6)
-+#define WCD939X_EN_SEL_SURGE_COMP_IQ	GENMASK(5, 4)
-+#define WCD939X_EN_SURGE_VOLT_MODE_SHUTOFF_EN	BIT(3)
-+#define WCD939X_EN_LATCH_INTR_OP_STG_HIZ_EN	BIT(2)
-+#define WCD939X_EN_SURGE_LATCH_REG_RESET	BIT(1)
-+#define WCD939X_EN_SWTICH_VN_VNDAC_NSURGE_EN	BIT(0)
-+#define WCD939X_HPH_SURGE_MISC1				   (0x30e3)
-+#define WCD939X_HPH_SURGE_STATUS			   (0x30e4)
-+#define WCD939X_EAR_EN					   (0x30e9)
-+#define WCD939X_EAR_PA_CON				   (0x30ea)
-+#define WCD939X_EAR_SP_CON				   (0x30eb)
-+#define WCD939X_EAR_DAC_CON				   (0x30ec)
-+#define WCD939X_DAC_CON_DAC_SAMPLE_EDGE_SEL	BIT(7)
-+#define WCD939X_DAC_CON_REF_DBG_EN	BIT(6)
-+#define WCD939X_DAC_CON_REF_DBG_GAIN	GENMASK(5, 3)
-+#define WCD939X_DAC_CON_GAIN_DAC	GENMASK(2, 1)
-+#define WCD939X_DAC_CON_INV_DATA	BIT(0)
-+#define WCD939X_EAR_CNP_FSM_CON				   (0x30ed)
-+#define WCD939X_EAR_TEST_CTL				   (0x30ee)
-+#define WCD939X_EAR_STATUS_REG_1			   (0x30ef)
-+#define WCD939X_EAR_STATUS_REG_2			   (0x30f0)
-+#define WCD939X_FLYBACK_NEW_CTRL_2			   (0x30f6)
-+#define WCD939X_FLYBACK_NEW_CTRL_3			   (0x30f7)
-+#define WCD939X_FLYBACK_NEW_CTRL_4			   (0x30f8)
-+#define WCD939X_ANA_NEW_PAGE				   (0x3100)
-+#define WCD939X_HPH_NEW_ANA_HPH2			   (0x3101)
-+#define WCD939X_HPH_NEW_ANA_HPH3			   (0x3102)
-+#define WCD939X_SLEEP_CTL				   (0x3103)
-+#define WCD939X_SLEEP_WATCHDOG_CTL			   (0x3104)
-+#define WCD939X_MBHC_NEW_ELECT_REM_CLAMP_CTL		   (0x311f)
-+#define WCD939X_MBHC_NEW_CTL_1				   (0x3120)
-+#define WCD939X_CTL_1_RCO_EN	BIT(7)
-+#define WCD939X_CTL_1_ADC_MODE	BIT(4)
-+#define WCD939X_CTL_1_ADC_ENABLE	BIT(3)
-+#define WCD939X_CTL_1_DETECTION_DONE	BIT(2)
-+#define WCD939X_CTL_1_BTN_DBNC_CTL	GENMASK(1, 0)
-+#define WCD939X_MBHC_NEW_CTL_2				   (0x3121)
-+#define WCD939X_CTL_2_MUX_CTL	GENMASK(6, 4)
-+#define WCD939X_CTL_2_M_RTH_CTL	GENMASK(3, 2)
-+#define WCD939X_CTL_2_HS_VREF_CTL	GENMASK(1, 0)
-+#define WCD939X_MBHC_NEW_PLUG_DETECT_CTL		   (0x3122)
-+#define WCD939X_MBHC_NEW_ZDET_ANA_CTL			   (0x3123)
-+#define WCD939X_ZDET_ANA_CTL_AVERAGING_EN	BIT(7)
-+#define WCD939X_ZDET_ANA_CTL_MAXV_CTL	GENMASK(6, 4)
-+#define WCD939X_ZDET_ANA_CTL_RANGE_CTL	GENMASK(3, 0)
-+#define WCD939X_MBHC_NEW_ZDET_RAMP_CTL			   (0x3124)
-+#define WCD939X_ZDET_RAMP_CTL_ACC1_MIN_CTL	GENMASK(6, 4)
-+#define WCD939X_ZDET_RAMP_CTL_TIME_CTL	GENMASK(3, 0)
-+#define WCD939X_MBHC_NEW_FSM_STATUS			   (0x3125)
-+#define WCD939X_MBHC_NEW_ADC_RESULT			   (0x3126)
-+#define WCD939X_ADC_RESULT_VALUE	GENMASK(7, 0)
-+#define WCD939X_TX_NEW_CH12_MUX				   (0x3127)
-+#define WCD939X_TX_NEW_CH34_MUX				   (0x3128)
-+#define WCD939X_DIE_CRACK_DET_EN			   (0x312c)
-+#define WCD939X_DIE_CRACK_DET_OUT			   (0x312d)
-+#define WCD939X_HPH_NEW_INT_RDAC_GAIN_CTL		   (0x3132)
-+#define WCD939X_HPH_NEW_INT_PA_GAIN_CTL_L		   (0x3133)
-+#define WCD939X_PA_GAIN_CTL_L_EN_HPHPA_2VPK	BIT(7)
-+#define WCD939X_PA_GAIN_CTL_L_RX_SUPPLY_LEVEL	BIT(6)
-+#define WCD939X_PA_GAIN_CTL_L_DAC_DR_BOOST	BIT(5)
-+#define WCD939X_PA_GAIN_CTL_L_VALUE	GENMASK(4, 0)
-+#define WCD939X_HPH_NEW_INT_RDAC_VREF_CTL		   (0x3134)
-+#define WCD939X_HPH_NEW_INT_RDAC_OVERRIDE_CTL		   (0x3135)
-+#define WCD939X_HPH_NEW_INT_PA_GAIN_CTL_R		   (0x3136)
-+#define WCD939X_PA_GAIN_CTL_R_D_RCO_CLK_EN	BIT(7)
-+#define WCD939X_PA_GAIN_CTL_R_SPARE_BITS	GENMASK(6, 5)
-+#define WCD939X_PA_GAIN_CTL_R_VALUE	GENMASK(4, 0)
-+#define WCD939X_HPH_NEW_INT_PA_MISC1			   (0x3137)
-+#define WCD939X_HPH_NEW_INT_PA_MISC2			   (0x3138)
-+#define WCD939X_HPH_NEW_INT_PA_RDAC_MISC		   (0x3139)
-+#define WCD939X_HPH_NEW_INT_TIMER1			   (0x313a)
-+#define WCD939X_TIMER1_CURR_IDIV_CTL_CMPDR_OFF	GENMASK(7, 5)
-+#define WCD939X_TIMER1_CURR_IDIV_CTL_AUTOCHOP	GENMASK(4, 2)
-+#define WCD939X_TIMER1_AUTOCHOP_TIMER_CTL_EN	BIT(1)
-+#define WCD939X_HPH_NEW_INT_TIMER2			   (0x313b)
-+#define WCD939X_HPH_NEW_INT_TIMER3			   (0x313c)
-+#define WCD939X_HPH_NEW_INT_TIMER4			   (0x313d)
-+#define WCD939X_HPH_NEW_INT_PA_RDAC_MISC2		   (0x313e)
-+#define WCD939X_HPH_NEW_INT_PA_RDAC_MISC3		   (0x313f)
-+#define WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_L		   (0x3140)
-+#define WCD939X_RDAC_HD2_CTL_L_EN_HD2_RES_DIV_L	BIT(7)
-+#define WCD939X_RDAC_HD2_CTL_L_HD2_RES_DIV_PULLGND_L	BIT(6)
-+#define WCD939X_RDAC_HD2_CTL_L_HD2_RES_DIV_CTL_L	GENMASK(5, 0)
-+#define WCD939X_HPH_NEW_INT_RDAC_HD2_CTL_R		   (0x3141)
-+#define WCD939X_RDAC_HD2_CTL_R_EN_HD2_RES_DIV_R	BIT(7)
-+#define WCD939X_RDAC_HD2_CTL_R_HD2_RES_DIV_PULLGND_L	BIT(6)
-+#define WCD939X_RDAC_HD2_CTL_R_HD2_RES_DIV_CTL_R	GENMASK(5, 0)
-+#define WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_LOHIFI		   (0x3145)
-+#define WCD939X_RX_NEW_INT_HPH_RDAC_BIAS_ULP		   (0x3146)
-+#define WCD939X_RX_NEW_INT_HPH_RDAC_LDO_LP		   (0x3147)
-+#define WCD939X_MBHC_NEW_INT_MOISTURE_DET_DC_CTRL	   (0x31af)
-+#define WCD939X_MOISTURE_DET_DC_CTRL_ONCOUNT	GENMASK(6, 5)
-+#define WCD939X_MOISTURE_DET_DC_CTRL_OFFCOUNT	GENMASK(4, 0)
-+#define WCD939X_MBHC_NEW_INT_MOISTURE_DET_POLLING_CTRL	   (0x31b0)
-+#define WCD939X_MOISTURE_DET_POLLING_CTRL_HPHL_PA_EN	BIT(6)
-+#define WCD939X_MOISTURE_DET_POLLING_CTRL_DTEST_EN	GENMASK(5, 4)
-+#define WCD939X_MOISTURE_DET_POLLING_CTRL_MOIST_OVRD_POLLING	BIT(3)
-+#define WCD939X_MOISTURE_DET_POLLING_CTRL_MOIST_EN_POLLING	BIT(2)
-+#define WCD939X_MOISTURE_DET_POLLING_CTRL_MOIST_DBNC_TIME	GENMASK(1, 0)
-+#define WCD939X_MBHC_NEW_INT_MECH_DET_CURRENT		   (0x31b1)
-+#define WCD939X_MECH_DET_CURRENT_HSDET_PULLUP_CTL	GENMASK(4, 0)
-+#define WCD939X_MBHC_NEW_INT_ZDET_CLK_AND_MOISTURE_CTL_NEW (0x31b2)
-+#define WCD939X_EAR_INT_NEW_CHOPPER_CON			   (0x31b7)
-+#define WCD939X_EAR_INT_NEW_CNP_VCM_CON1		   (0x31b8)
-+#define WCD939X_EAR_INT_NEW_CNP_VCM_CON2		   (0x31b9)
-+#define WCD939X_EAR_INT_NEW_DYNAMIC_BIAS		   (0x31ba)
-+#define WCD939X_SLEEP_INT_WATCHDOG_CTL_1		   (0x31d0)
-+#define WCD939X_SLEEP_INT_WATCHDOG_CTL_2		   (0x31d1)
-+#define WCD939X_DIE_CRACK_INT_DET_INT1			   (0x31d3)
-+#define WCD939X_DIE_CRACK_INT_DET_INT2			   (0x31d4)
-+#define WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L2		   (0x31d5)
-+#define WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L1		   (0x31d6)
-+#define WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_L0		   (0x31d7)
-+#define WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP1P2M	   (0x31d8)
-+#define WCD939X_TX_COM_NEW_INT_FE_DIVSTOP_ULP0P6M	   (0x31d9)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L2L1	   (0x31da)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_L0		   (0x31db)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG1_ULP	   (0x31dc)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L2L1	   (0x31dd)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_L0	   (0x31de)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2MAIN_ULP	   (0x31df)
-+#define WCD939X_FE_ICTRL_STG2MAIN_ULP_VALUE	GENMASK(4, 0)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_L2L1L0	   (0x31e0)
-+#define WCD939X_TX_COM_NEW_INT_FE_ICTRL_STG2CASC_ULP	   (0x31e1)
-+#define WCD939X_FE_ICTRL_STG2CASC_ULP_ICTRL_SCBIAS_ULP0P6M	GENMASK(7, 4)
-+#define WCD939X_FE_ICTRL_STG2CASC_ULP_VALUE	GENMASK(3, 0)
-+#define WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L2L1		   (0x31e2)
-+#define WCD939X_TX_COM_NEW_INT_ADC_SCBIAS_L0ULP		   (0x31e3)
-+#define WCD939X_TX_COM_NEW_INT_ADC_INT_L2		   (0x31e4)
-+#define WCD939X_TX_COM_NEW_INT_ADC_INT_L1		   (0x31e5)
-+#define WCD939X_TX_COM_NEW_INT_ADC_INT_L0		   (0x31e6)
-+#define WCD939X_TX_COM_NEW_INT_ADC_INT_ULP		   (0x31e7)
-+#define WCD939X_DIGITAL_PAGE				   (0x3400)
-+#define WCD939X_DIGITAL_CHIP_ID0			   (0x3401)
-+#define WCD939X_DIGITAL_CHIP_ID1			   (0x3402)
-+#define WCD939X_DIGITAL_CHIP_ID2			   (0x3403)
-+#define WCD939X_DIGITAL_CHIP_ID3			   (0x3404)
-+#define WCD939X_DIGITAL_SWR_TX_CLK_RATE			   (0x3405)
-+#define WCD939X_DIGITAL_CDC_RST_CTL			   (0x3406)
-+#define WCD939X_DIGITAL_TOP_CLK_CFG			   (0x3407)
-+#define WCD939X_DIGITAL_CDC_ANA_CLK_CTL			   (0x3408)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV4_CLK_EN	BIT(5)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV2_CLK_EN	BIT(4)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_TX_CLK_EN	BIT(3)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV4_CLK_EN	BIT(2)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_RX_DIV2_CLK_EN	BIT(1)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_RX_CLK_EN	BIT(0)
-+#define WCD939X_CDC_ANA_CLK_CTL_ANA_TX_DIV2_CLK_EN	BIT(4)
-+#define WCD939X_DIGITAL_CDC_DIG_CLK_CTL			   (0x3409)
-+#define WCD939X_CDC_DIG_CLK_CTL_TXD3_CLK_EN	BIT(7)
-+#define WCD939X_CDC_DIG_CLK_CTL_TXD2_CLK_EN	BIT(6)
-+#define WCD939X_CDC_DIG_CLK_CTL_TXD1_CLK_EN	BIT(5)
-+#define WCD939X_CDC_DIG_CLK_CTL_TXD0_CLK_EN	BIT(4)
-+#define WCD939X_CDC_DIG_CLK_CTL_RXD2_CLK_EN	BIT(2)
-+#define WCD939X_CDC_DIG_CLK_CTL_RXD1_CLK_EN	BIT(1)
-+#define WCD939X_CDC_DIG_CLK_CTL_RXD0_CLK_EN	BIT(0)
-+#define WCD939X_DIGITAL_SWR_RST_EN			   (0x340a)
-+#define WCD939X_DIGITAL_CDC_PATH_MODE			   (0x340b)
-+#define WCD939X_DIGITAL_CDC_RX_RST			   (0x340c)
-+#define WCD939X_DIGITAL_CDC_RX0_CTL			   (0x340d)
-+#define WCD939X_DIGITAL_CDC_RX1_CTL			   (0x340e)
-+#define WCD939X_DIGITAL_CDC_RX2_CTL			   (0x340f)
-+#define WCD939X_DIGITAL_CDC_TX_ANA_MODE_0_1		   (0x3410)
-+#define WCD939X_CDC_TX_ANA_MODE_0_1_TXD1_MODE	GENMASK(7, 4)
-+#define WCD939X_CDC_TX_ANA_MODE_0_1_TXD0_MODE	GENMASK(3, 0)
-+#define WCD939X_DIGITAL_CDC_TX_ANA_MODE_2_3		   (0x3411)
-+#define WCD939X_CDC_TX_ANA_MODE_2_3_TXD3_MODE	GENMASK(7, 4)
-+#define WCD939X_CDC_TX_ANA_MODE_2_3_TXD2_MODE	GENMASK(3, 0)
-+#define WCD939X_DIGITAL_CDC_COMP_CTL_0			   (0x3414)
-+#define WCD939X_CDC_COMP_CTL_0_HPHL_COMP_EN	BIT(1)
-+#define WCD939X_CDC_COMP_CTL_0_HPHR_COMP_EN	BIT(0)
-+#define WCD939X_DIGITAL_CDC_ANA_TX_CLK_CTL		   (0x3417)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_MBHC_1P2M_CLK_EN	BIT(5)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TX3_ADC_CLK_EN	BIT(4)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TX2_ADC_CLK_EN	BIT(3)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TX1_ADC_CLK_EN	BIT(2)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TX0_ADC_CLK_EN	BIT(1)
-+#define WCD939X_CDC_ANA_TX_CLK_CTL_ANA_TXSCBIAS_CLK_EN	BIT(0)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A1_0		   (0x3418)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A1_1		   (0x3419)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A2_0		   (0x341a)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A2_1		   (0x341b)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A3_0		   (0x341c)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A3_1		   (0x341d)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A4_0		   (0x341e)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A4_1		   (0x341f)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A5_0		   (0x3420)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A5_1		   (0x3421)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A6_0		   (0x3422)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_A7_0		   (0x3423)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_C_0			   (0x3424)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_C_1			   (0x3425)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_C_2			   (0x3426)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_C_3			   (0x3427)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R1			   (0x3428)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R2			   (0x3429)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R3			   (0x342a)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R4			   (0x342b)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R5			   (0x342c)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R6			   (0x342d)
-+#define WCD939X_DIGITAL_CDC_HPH_DSM_R7			   (0x342e)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A1_0		   (0x342f)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A1_1		   (0x3430)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A2_0		   (0x3431)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A2_1		   (0x3432)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A3_0		   (0x3433)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A3_1		   (0x3434)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A4_0		   (0x3435)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A4_1		   (0x3436)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A5_0		   (0x3437)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A5_1		   (0x3438)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A6_0		   (0x3439)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_A7_0		   (0x343a)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_C_0			   (0x343b)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_C_1			   (0x343c)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_C_2			   (0x343d)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_C_3			   (0x343e)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R1			   (0x343f)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R2			   (0x3440)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R3			   (0x3441)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R4			   (0x3442)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R5			   (0x3443)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R6			   (0x3444)
-+#define WCD939X_DIGITAL_CDC_EAR_DSM_R7			   (0x3445)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_RX_0		   (0x3446)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_RX_1		   (0x3447)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_0		   (0x3448)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_1		   (0x3449)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_DSD_2		   (0x344a)
-+#define WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_0		   (0x344b)
-+#define WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_1		   (0x344c)
-+#define WCD939X_DIGITAL_CDC_EAR_GAIN_DSD_2		   (0x344d)
-+#define WCD939X_DIGITAL_CDC_HPH_GAIN_CTL		   (0x344e)
-+#define WCD939X_CDC_HPH_GAIN_CTL_HPH_STEREO_EN	BIT(4)
-+#define WCD939X_CDC_HPH_GAIN_CTL_HPHR_RX_EN	BIT(3)
-+#define WCD939X_CDC_HPH_GAIN_CTL_HPHL_RX_EN	BIT(2)
-+#define WCD939X_CDC_HPH_GAIN_CTL_HPHR_DSD_EN	BIT(1)
-+#define WCD939X_CDC_HPH_GAIN_CTL_HPHL_DSD_EN	BIT(0)
-+#define WCD939X_DIGITAL_CDC_EAR_GAIN_CTL		   (0x344f)
-+#define WCD939X_CDC_EAR_GAIN_CTL_EAR_EN	BIT(0)
-+#define WCD939X_DIGITAL_CDC_EAR_PATH_CTL		   (0x3450)
-+#define WCD939X_DIGITAL_CDC_SWR_CLH			   (0x3451)
-+#define WCD939X_CDC_SWR_CLH_CLH_CTL	GENMASK(7, 0)
-+#define WCD939X_DIGITAL_SWR_CLH_BYP			   (0x3452)
-+#define WCD939X_DIGITAL_CDC_TX0_CTL			   (0x3453)
-+#define WCD939X_DIGITAL_CDC_TX1_CTL			   (0x3454)
-+#define WCD939X_DIGITAL_CDC_TX2_CTL			   (0x3455)
-+#define WCD939X_DIGITAL_CDC_TX_RST			   (0x3456)
-+#define WCD939X_DIGITAL_CDC_REQ_CTL			   (0x3457)
-+#define WCD939X_CDC_REQ_CTL_TX3_WIDE_BAND	BIT(5)
-+#define WCD939X_CDC_REQ_CTL_TX2_WIDE_BAND	BIT(4)
-+#define WCD939X_CDC_REQ_CTL_TX1_WIDE_BAND	BIT(3)
-+#define WCD939X_CDC_REQ_CTL_TX0_WIDE_BAND	BIT(2)
-+#define WCD939X_CDC_REQ_CTL_FS_RATE_4P8	BIT(1)
-+#define WCD939X_CDC_REQ_CTL_NO_NOTCH	BIT(0)
-+#define WCD939X_DIGITAL_CDC_RST				   (0x3458)
-+#define WCD939X_DIGITAL_CDC_AMIC_CTL			   (0x345a)
-+#define WCD939X_DIGITAL_CDC_DMIC_CTL			   (0x345b)
-+#define WCD939X_CDC_DMIC_CTL_DMIC_LEGACY_SW_MODE	BIT(3)
-+#define WCD939X_CDC_DMIC_CTL_DMIC_DIV_BAK_EN	BIT(2)
-+#define WCD939X_CDC_DMIC_CTL_CLK_SCALE_EN	BIT(1)
-+#define WCD939X_CDC_DMIC_CTL_SOFT_RESET	BIT(0)
-+#define WCD939X_DIGITAL_CDC_DMIC1_CTL			   (0x345c)
-+#define WCD939X_DIGITAL_CDC_DMIC2_CTL			   (0x345d)
-+#define WCD939X_DIGITAL_CDC_DMIC3_CTL			   (0x345e)
-+#define WCD939X_DIGITAL_CDC_DMIC4_CTL			   (0x345f)
-+#define WCD939X_DIGITAL_EFUSE_PRG_CTL			   (0x3460)
-+#define WCD939X_DIGITAL_EFUSE_CTL			   (0x3461)
-+#define WCD939X_DIGITAL_CDC_DMIC_RATE_1_2		   (0x3462)
-+#define WCD939X_DIGITAL_CDC_DMIC_RATE_3_4		   (0x3463)
-+#define WCD939X_DIGITAL_PDM_WD_CTL0			   (0x3465)
-+#define WCD939X_PDM_WD_CTL0_HOLD_OFF	BIT(4)
-+#define WCD939X_PDM_WD_CTL0_TIME_OUT_SEL	BIT(3)
-+#define WCD939X_PDM_WD_CTL0_PDM_WD_EN	GENMASK(2, 0)
-+#define WCD939X_DIGITAL_PDM_WD_CTL1			   (0x3466)
-+#define WCD939X_PDM_WD_CTL1_HOLD_OFF	BIT(4)
-+#define WCD939X_PDM_WD_CTL1_TIME_OUT_SEL	BIT(3)
-+#define WCD939X_PDM_WD_CTL1_PDM_WD_EN	GENMASK(2, 0)
-+#define WCD939X_DIGITAL_PDM_WD_CTL2			   (0x3467)
-+#define WCD939X_DIGITAL_INTR_MODE			   (0x346a)
-+#define WCD939X_DIGITAL_INTR_MASK_0			   (0x346b)
-+#define WCD939X_DIGITAL_INTR_MASK_1			   (0x346c)
-+#define WCD939X_DIGITAL_INTR_MASK_2			   (0x346d)
-+#define WCD939X_DIGITAL_INTR_STATUS_0			   (0x346e)
-+#define WCD939X_DIGITAL_INTR_STATUS_1			   (0x346f)
-+#define WCD939X_DIGITAL_INTR_STATUS_2			   (0x3470)
-+#define WCD939X_DIGITAL_INTR_CLEAR_0			   (0x3471)
-+#define WCD939X_DIGITAL_INTR_CLEAR_1			   (0x3472)
-+#define WCD939X_DIGITAL_INTR_CLEAR_2			   (0x3473)
-+#define WCD939X_DIGITAL_INTR_LEVEL_0			   (0x3474)
-+#define WCD939X_DIGITAL_INTR_LEVEL_1			   (0x3475)
-+#define WCD939X_DIGITAL_INTR_LEVEL_2			   (0x3476)
-+#define WCD939X_DIGITAL_INTR_SET_0			   (0x3477)
-+#define WCD939X_DIGITAL_INTR_SET_1			   (0x3478)
-+#define WCD939X_DIGITAL_INTR_SET_2			   (0x3479)
-+#define WCD939X_DIGITAL_INTR_TEST_0			   (0x347a)
-+#define WCD939X_DIGITAL_INTR_TEST_1			   (0x347b)
-+#define WCD939X_DIGITAL_INTR_TEST_2			   (0x347c)
-+#define WCD939X_DIGITAL_TX_MODE_DBG_EN			   (0x347f)
-+#define WCD939X_DIGITAL_TX_MODE_DBG_0_1			   (0x3480)
-+#define WCD939X_DIGITAL_TX_MODE_DBG_2_3			   (0x3481)
-+#define WCD939X_DIGITAL_LB_IN_SEL_CTL			   (0x3482)
-+#define WCD939X_DIGITAL_LOOP_BACK_MODE			   (0x3483)
-+#define WCD939X_DIGITAL_SWR_DAC_TEST			   (0x3484)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_RX_0		   (0x3485)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_TX_0		   (0x3486)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_RX_1		   (0x3487)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_TX_1		   (0x3488)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_TX_2		   (0x3489)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_0			   (0x348a)
-+#define WCD939X_DIGITAL_SWR_HM_TEST_1			   (0x348b)
-+#define WCD939X_DIGITAL_PAD_CTL_SWR_0			   (0x348c)
-+#define WCD939X_DIGITAL_PAD_CTL_SWR_1			   (0x348d)
-+#define WCD939X_DIGITAL_I2C_CTL				   (0x348e)
-+#define WCD939X_DIGITAL_CDC_TX_TANGGU_SW_MODE		   (0x348f)
-+#define WCD939X_DIGITAL_EFUSE_TEST_CTL_0		   (0x3490)
-+#define WCD939X_DIGITAL_EFUSE_TEST_CTL_1		   (0x3491)
-+#define WCD939X_DIGITAL_EFUSE_T_DATA_0			   (0x3492)
-+#define WCD939X_DIGITAL_EFUSE_T_DATA_1			   (0x3493)
-+#define WCD939X_DIGITAL_PAD_CTL_PDM_RX0			   (0x3494)
-+#define WCD939X_DIGITAL_PAD_CTL_PDM_RX1			   (0x3495)
-+#define WCD939X_DIGITAL_PAD_CTL_PDM_TX0			   (0x3496)
-+#define WCD939X_DIGITAL_PAD_CTL_PDM_TX1			   (0x3497)
-+#define WCD939X_DIGITAL_PAD_CTL_PDM_TX2			   (0x3498)
-+#define WCD939X_DIGITAL_PAD_INP_DIS_0			   (0x3499)
-+#define WCD939X_DIGITAL_PAD_INP_DIS_1			   (0x349a)
-+#define WCD939X_DIGITAL_DRIVE_STRENGTH_0		   (0x349b)
-+#define WCD939X_DIGITAL_DRIVE_STRENGTH_1		   (0x349c)
-+#define WCD939X_DIGITAL_DRIVE_STRENGTH_2		   (0x349d)
-+#define WCD939X_DIGITAL_RX_DATA_EDGE_CTL		   (0x349e)
-+#define WCD939X_DIGITAL_TX_DATA_EDGE_CTL		   (0x349f)
-+#define WCD939X_DIGITAL_GPIO_MODE			   (0x34a0)
-+#define WCD939X_DIGITAL_PIN_CTL_OE			   (0x34a1)
-+#define WCD939X_DIGITAL_PIN_CTL_DATA_0			   (0x34a2)
-+#define WCD939X_DIGITAL_PIN_CTL_DATA_1			   (0x34a3)
-+#define WCD939X_DIGITAL_PIN_STATUS_0			   (0x34a4)
-+#define WCD939X_DIGITAL_PIN_STATUS_1			   (0x34a5)
-+#define WCD939X_DIGITAL_DIG_DEBUG_CTL			   (0x34a6)
-+#define WCD939X_DIGITAL_DIG_DEBUG_EN			   (0x34a7)
-+#define WCD939X_DIGITAL_ANA_CSR_DBG_ADD			   (0x34a8)
-+#define WCD939X_DIGITAL_ANA_CSR_DBG_CTL			   (0x34a9)
-+#define WCD939X_DIGITAL_SSP_DBG				   (0x34aa)
-+#define WCD939X_DIGITAL_MODE_STATUS_0			   (0x34ab)
-+#define WCD939X_DIGITAL_MODE_STATUS_1			   (0x34ac)
-+#define WCD939X_DIGITAL_SPARE_0				   (0x34ad)
-+#define WCD939X_DIGITAL_SPARE_1				   (0x34ae)
-+#define WCD939X_DIGITAL_SPARE_2				   (0x34af)
-+#define WCD939X_DIGITAL_EFUSE_REG_0			   (0x34b0)
-+#define WCD939X_EFUSE_REG_0_WCD939X_ID	GENMASK(4, 1)
-+#define WCD939X_EFUSE_REG_0_EFUSE_BLOWN	BIT(0)
-+#define WCD939X_DIGITAL_EFUSE_REG_1			   (0x34b1)
-+#define WCD939X_DIGITAL_EFUSE_REG_2			   (0x34b2)
-+#define WCD939X_DIGITAL_EFUSE_REG_3			   (0x34b3)
-+#define WCD939X_DIGITAL_EFUSE_REG_4			   (0x34b4)
-+#define WCD939X_DIGITAL_EFUSE_REG_5			   (0x34b5)
-+#define WCD939X_DIGITAL_EFUSE_REG_6			   (0x34b6)
-+#define WCD939X_DIGITAL_EFUSE_REG_7			   (0x34b7)
-+#define WCD939X_DIGITAL_EFUSE_REG_8			   (0x34b8)
-+#define WCD939X_DIGITAL_EFUSE_REG_9			   (0x34b9)
-+#define WCD939X_DIGITAL_EFUSE_REG_10			   (0x34ba)
-+#define WCD939X_DIGITAL_EFUSE_REG_11			   (0x34bb)
-+#define WCD939X_DIGITAL_EFUSE_REG_12			   (0x34bc)
-+#define WCD939X_DIGITAL_EFUSE_REG_13			   (0x34bd)
-+#define WCD939X_DIGITAL_EFUSE_REG_14			   (0x34be)
-+#define WCD939X_DIGITAL_EFUSE_REG_15			   (0x34bf)
-+#define WCD939X_DIGITAL_EFUSE_REG_16			   (0x34c0)
-+#define WCD939X_DIGITAL_EFUSE_REG_17			   (0x34c1)
-+#define WCD939X_DIGITAL_EFUSE_REG_18			   (0x34c2)
-+#define WCD939X_DIGITAL_EFUSE_REG_19			   (0x34c3)
-+#define WCD939X_DIGITAL_EFUSE_REG_20			   (0x34c4)
-+#define WCD939X_DIGITAL_EFUSE_REG_21			   (0x34c5)
-+#define WCD939X_DIGITAL_EFUSE_REG_22			   (0x34c6)
-+#define WCD939X_DIGITAL_EFUSE_REG_23			   (0x34c7)
-+#define WCD939X_DIGITAL_EFUSE_REG_24			   (0x34c8)
-+#define WCD939X_DIGITAL_EFUSE_REG_25			   (0x34c9)
-+#define WCD939X_DIGITAL_EFUSE_REG_26			   (0x34ca)
-+#define WCD939X_DIGITAL_EFUSE_REG_27			   (0x34cb)
-+#define WCD939X_DIGITAL_EFUSE_REG_28			   (0x34cc)
-+#define WCD939X_DIGITAL_EFUSE_REG_29			   (0x34cd)
-+#define WCD939X_DIGITAL_EFUSE_REG_30			   (0x34ce)
-+#define WCD939X_DIGITAL_EFUSE_REG_31			   (0x34cf)
-+#define WCD939X_DIGITAL_TX_REQ_FB_CTL_0			   (0x34d0)
-+#define WCD939X_DIGITAL_TX_REQ_FB_CTL_1			   (0x34d1)
-+#define WCD939X_DIGITAL_TX_REQ_FB_CTL_2			   (0x34d2)
-+#define WCD939X_DIGITAL_TX_REQ_FB_CTL_3			   (0x34d3)
-+#define WCD939X_DIGITAL_TX_REQ_FB_CTL_4			   (0x34d4)
-+#define WCD939X_DIGITAL_DEM_BYPASS_DATA0		   (0x34d5)
-+#define WCD939X_DIGITAL_DEM_BYPASS_DATA1		   (0x34d6)
-+#define WCD939X_DIGITAL_DEM_BYPASS_DATA2		   (0x34d7)
-+#define WCD939X_DIGITAL_DEM_BYPASS_DATA3		   (0x34d8)
-+#define WCD939X_DIGITAL_DEM_SECOND_ORDER		   (0x34d9)
-+#define WCD939X_DIGITAL_DSM_CTRL			   (0x34da)
-+#define WCD939X_DIGITAL_DSM_0_STATIC_DATA_0		   (0x34db)
-+#define WCD939X_DIGITAL_DSM_0_STATIC_DATA_1		   (0x34dc)
-+#define WCD939X_DIGITAL_DSM_0_STATIC_DATA_2		   (0x34dd)
-+#define WCD939X_DIGITAL_DSM_0_STATIC_DATA_3		   (0x34de)
-+#define WCD939X_DIGITAL_DSM_1_STATIC_DATA_0		   (0x34df)
-+#define WCD939X_DIGITAL_DSM_1_STATIC_DATA_1		   (0x34e0)
-+#define WCD939X_DIGITAL_DSM_1_STATIC_DATA_2		   (0x34e1)
-+#define WCD939X_DIGITAL_DSM_1_STATIC_DATA_3		   (0x34e2)
-+#define WCD939X_RX_TOP_PAGE				   (0x3500)
-+#define WCD939X_RX_TOP_TOP_CFG0				   (0x3501)
-+#define WCD939X_TOP_CFG0_HPH_DAC_RATE_SEL	BIT(1)
-+#define WCD939X_TOP_CFG0_PGA_UPDATE	BIT(0)
-+#define WCD939X_RX_TOP_HPHL_COMP_WR_LSB			   (0x3502)
-+#define WCD939X_RX_TOP_HPHL_COMP_WR_MSB			   (0x3503)
-+#define WCD939X_RX_TOP_HPHL_COMP_LUT			   (0x3504)
-+#define WCD939X_RX_TOP_HPHL_COMP_RD_LSB			   (0x3505)
-+#define WCD939X_RX_TOP_HPHL_COMP_RD_MSB			   (0x3506)
-+#define WCD939X_RX_TOP_HPHR_COMP_WR_LSB			   (0x3507)
-+#define WCD939X_RX_TOP_HPHR_COMP_WR_MSB			   (0x3508)
-+#define WCD939X_RX_TOP_HPHR_COMP_LUT			   (0x3509)
-+#define WCD939X_RX_TOP_HPHR_COMP_RD_LSB			   (0x350a)
-+#define WCD939X_RX_TOP_HPHR_COMP_RD_MSB			   (0x350b)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG1			   (0x350c)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG2			   (0x350d)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG3			   (0x350e)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG4			   (0x350f)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG5			   (0x3510)
-+#define WCD939X_RX_TOP_DSD0_DEBUG_CFG6			   (0x3511)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG1			   (0x3512)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG2			   (0x3513)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG3			   (0x3514)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG4			   (0x3515)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG5			   (0x3516)
-+#define WCD939X_RX_TOP_DSD1_DEBUG_CFG6			   (0x3517)
-+#define WCD939X_RX_TOP_HPHL_PATH_CFG0			   (0x351c)
-+#define WCD939X_HPHL_PATH_CFG0_INT_EN	BIT(1)
-+#define WCD939X_HPHL_PATH_CFG0_DLY_ZN_EN	BIT(0)
-+#define WCD939X_RX_TOP_HPHL_PATH_CFG1			   (0x351d)
-+#define WCD939X_HPHL_PATH_CFG1_DSM_SOFT_RST	BIT(5)
-+#define WCD939X_HPHL_PATH_CFG1_INT_SOFT_RST	BIT(4)
-+#define WCD939X_HPHL_PATH_CFG1_FMT_CONV	BIT(3)
-+#define WCD939X_HPHL_PATH_CFG1_IDLE_OVRD_EN	BIT(2)
-+#define WCD939X_HPHL_PATH_CFG1_RX_DC_DROOP_COEFF_SEL	GENMASK(1, 0)
-+#define WCD939X_RX_TOP_HPHR_PATH_CFG0			   (0x351e)
-+#define WCD939X_HPHR_PATH_CFG0_INT_EN	BIT(2)
-+#define WCD939X_HPHR_PATH_CFG0_DLY_ZN_EN	BIT(1)
-+#define WCD939X_RX_TOP_HPHR_PATH_CFG1			   (0x351f)
-+#define WCD939X_HPHR_PATH_CFG1_DSM_SOFT_RST	BIT(5)
-+#define WCD939X_HPHR_PATH_CFG1_INT_SOFT_RST	BIT(4)
-+#define WCD939X_HPHR_PATH_CFG1_FMT_CONV	BIT(3)
-+#define WCD939X_HPHR_PATH_CFG1_IDLE_OVRD_EN	BIT(2)
-+#define WCD939X_HPHR_PATH_CFG1_RX_DC_DROOP_COEFF_SEL	GENMASK(1, 0)
-+#define WCD939X_RX_TOP_PATH_CFG2			   (0x3520)
-+#define WCD939X_RX_TOP_HPHL_PATH_SEC0			   (0x3521)
-+#define WCD939X_RX_TOP_HPHL_PATH_SEC1			   (0x3522)
-+#define WCD939X_RX_TOP_HPHL_PATH_SEC2			   (0x3523)
-+#define WCD939X_RX_TOP_HPHL_PATH_SEC3			   (0x3524)
-+#define WCD939X_RX_TOP_HPHR_PATH_SEC0			   (0x3525)
-+#define WCD939X_RX_TOP_HPHR_PATH_SEC1			   (0x3526)
-+#define WCD939X_RX_TOP_HPHR_PATH_SEC2			   (0x3527)
-+#define WCD939X_RX_TOP_HPHR_PATH_SEC3			   (0x3528)
-+#define WCD939X_RX_TOP_PATH_SEC4			   (0x3529)
-+#define WCD939X_RX_TOP_PATH_SEC5			   (0x352a)
-+#define WCD939X_COMPANDER_HPHL_CTL0			   (0x3540)
-+#define WCD939X_COMPANDER_HPHL_CTL1			   (0x3541)
-+#define WCD939X_COMPANDER_HPHL_CTL2			   (0x3542)
-+#define WCD939X_COMPANDER_HPHL_CTL3			   (0x3543)
-+#define WCD939X_COMPANDER_HPHL_CTL4			   (0x3544)
-+#define WCD939X_COMPANDER_HPHL_CTL5			   (0x3545)
-+#define WCD939X_COMPANDER_HPHL_CTL6			   (0x3546)
-+#define WCD939X_COMPANDER_HPHL_CTL7			   (0x3547)
-+#define WCD939X_COMPANDER_HPHL_CTL8			   (0x3548)
-+#define WCD939X_COMPANDER_HPHL_CTL9			   (0x3549)
-+#define WCD939X_COMPANDER_HPHL_CTL10			   (0x354a)
-+#define WCD939X_COMPANDER_HPHL_CTL11			   (0x354b)
-+#define WCD939X_COMPANDER_HPHL_CTL12			   (0x354c)
-+#define WCD939X_COMPANDER_HPHL_CTL13			   (0x354d)
-+#define WCD939X_COMPANDER_HPHL_CTL14			   (0x354e)
-+#define WCD939X_COMPANDER_HPHL_CTL15			   (0x354f)
-+#define WCD939X_COMPANDER_HPHL_CTL16			   (0x3550)
-+#define WCD939X_COMPANDER_HPHL_CTL17			   (0x3551)
-+#define WCD939X_COMPANDER_HPHL_CTL18			   (0x3552)
-+#define WCD939X_COMPANDER_HPHL_CTL19			   (0x3553)
-+#define WCD939X_R_CTL0					   (0x3560)
-+#define WCD939X_R_CTL1					   (0x3561)
-+#define WCD939X_R_CTL2					   (0x3562)
-+#define WCD939X_R_CTL3					   (0x3563)
-+#define WCD939X_R_CTL4					   (0x3564)
-+#define WCD939X_R_CTL5					   (0x3565)
-+#define WCD939X_R_CTL6					   (0x3566)
-+#define WCD939X_R_CTL7					   (0x3567)
-+#define WCD939X_R_CTL8					   (0x3568)
-+#define WCD939X_R_CTL9					   (0x3569)
-+#define WCD939X_R_CTL10					   (0x356a)
-+#define WCD939X_R_CTL11					   (0x356b)
-+#define WCD939X_R_CTL12					   (0x356c)
-+#define WCD939X_R_CTL13					   (0x356d)
-+#define WCD939X_R_CTL14					   (0x356e)
-+#define WCD939X_R_CTL15					   (0x356f)
-+#define WCD939X_R_CTL16					   (0x3570)
-+#define WCD939X_R_CTL17					   (0x3571)
-+#define WCD939X_R_CTL18					   (0x3572)
-+#define WCD939X_R_CTL19					   (0x3573)
-+#define WCD939X_E_PATH_CTL				   (0x3580)
-+#define WCD939X_E_CFG0					   (0x3581)
-+#define WCD939X_CFG0_AUTO_DISABLE_ANC	BIT(2)
-+#define WCD939X_CFG0_AUTO_DISABLE_DSD	BIT(1)
-+#define WCD939X_CFG0_IDLE_STEREO	BIT(0)
-+#define WCD939X_E_CFG1					   (0x3582)
-+#define WCD939X_E_CFG2					   (0x3583)
-+#define WCD939X_E_CFG3					   (0x3584)
-+#define WCD939X_DSD_HPHL_PATH_CTL			   (0x3590)
-+#define WCD939X_DSD_HPHL_CFG0				   (0x3591)
-+#define WCD939X_DSD_HPHL_CFG1				   (0x3592)
-+#define WCD939X_DSD_HPHL_CFG2				   (0x3593)
-+#define WCD939X_DSD_HPHL_CFG3				   (0x3594)
-+#define WCD939X_DSD_HPHL_CFG4				   (0x3595)
-+#define WCD939X_DSD_HPHL_CFG5				   (0x3596)
-+#define WCD939X_DSD_HPHR_PATH_CTL			   (0x35a0)
-+#define WCD939X_DSD_HPHR_CFG0				   (0x35a1)
-+#define WCD939X_DSD_HPHR_CFG1				   (0x35a2)
-+#define WCD939X_DSD_HPHR_CFG2				   (0x35a3)
-+#define WCD939X_DSD_HPHR_CFG3				   (0x35a4)
-+#define WCD939X_DSD_HPHR_CFG4				   (0x35a5)
-+#define WCD939X_DSD_HPHR_CFG5				   (0x35a6)
-+#define WCD939X_MAX_REGISTER				   (WCD939X_DSD_HPHR_CFG5)
-+
-+#define WCD939X_MAX_SWR_PORTS		(6)
-+#define WCD939X_MAX_RX_SWR_PORTS	(6)
-+#define WCD939X_MAX_TX_SWR_PORTS	(4)
-+#define WCD939X_MAX_SWR_CH_IDS		(15)
-+
-+struct wcd939x_sdw_ch_info {
-+	int port_num;
-+	unsigned int ch_mask;
-+};
-+
-+#define WCD_SDW_CH(id, pn, cmask)	\
-+	[id] = {			\
-+		.port_num = pn,		\
-+		.ch_mask = cmask,	\
-+	}
-+
-+enum wcd939x_tx_sdw_ports {
-+	WCD939X_ADC_1_4_PORT = 1,
-+	WCD939X_ADC_DMIC_1_2_PORT,
-+	WCD939X_DMIC_0_3_MBHC_PORT,
-+	WCD939X_DMIC_3_7_PORT,
-+};
-+
-+enum wcd939x_tx_sdw_channels {
-+	WCD939X_ADC1,
-+	WCD939X_ADC2,
-+	WCD939X_ADC3,
-+	WCD939X_ADC4,
-+	WCD939X_DMIC0,
-+	WCD939X_DMIC1,
-+	WCD939X_MBHC,
-+	WCD939X_DMIC2,
-+	WCD939X_DMIC3,
-+	WCD939X_DMIC4,
-+	WCD939X_DMIC5,
-+	WCD939X_DMIC6,
-+	WCD939X_DMIC7,
-+};
-+
-+enum wcd939x_rx_sdw_ports {
-+	WCD939X_HPH_PORT = 1,
-+	WCD939X_CLSH_PORT,
-+	WCD939X_COMP_PORT,
-+	WCD939X_LO_PORT,
-+	WCD939X_DSD_PORT,
-+	WCD939X_HIFI_PCM_PORT,
-+};
-+
-+enum wcd939x_rx_sdw_channels {
-+	WCD939X_HPH_L,
-+	WCD939X_HPH_R,
-+	WCD939X_CLSH,
-+	WCD939X_COMP_L,
-+	WCD939X_COMP_R,
-+	WCD939X_LO,
-+	WCD939X_DSD_L,
-+	WCD939X_DSD_R,
-+	WCD939X_HIFI_PCM_L,
-+	WCD939X_HIFI_PCM_R,
-+};
-+
-+enum {
-+	WCD939X_SDW_DIR_RX,
-+	WCD939X_SDW_DIR_TX,
-+};
-+
-+struct wcd939x_priv;
-+struct wcd939x_sdw_priv {
-+	struct sdw_slave *sdev;
-+	struct sdw_stream_config sconfig;
-+	struct sdw_stream_runtime *sruntime;
-+	struct sdw_port_config port_config[WCD939X_MAX_SWR_PORTS];
-+	struct wcd939x_sdw_ch_info *ch_info;
-+	bool port_enable[WCD939X_MAX_SWR_CH_IDS];
-+	int active_ports;
-+	int num_ports;
-+	bool is_tx;
-+	struct wcd939x_priv *wcd939x;
-+	struct irq_domain *slave_irq;
-+	struct regmap *regmap;
-+};
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_WCD939X_SDW)
-+int wcd939x_sdw_free(struct wcd939x_sdw_priv *wcd,
-+		     struct snd_pcm_substream *substream,
-+		     struct snd_soc_dai *dai);
-+int wcd939x_sdw_set_sdw_stream(struct wcd939x_sdw_priv *wcd,
-+			       struct snd_soc_dai *dai,
-+			       void *stream, int direction);
-+int wcd939x_sdw_hw_params(struct wcd939x_sdw_priv *wcd,
-+			  struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params,
-+			  struct snd_soc_dai *dai);
-+
-+struct device *wcd939x_sdw_device_get(struct device_node *np);
-+int wcd939x_swr_get_current_bank(struct sdw_slave *sdev);
-+
-+#else
-+
-+static inline int wcd939x_sdw_free(struct wcd939x_sdw_priv *wcd,
-+				   struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *dai)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int wcd939x_sdw_set_sdw_stream(struct wcd939x_sdw_priv *wcd,
-+					     struct snd_soc_dai *dai,
-+					     void *stream, int direction)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int wcd939x_sdw_hw_params(struct wcd939x_sdw_priv *wcd,
-+					struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params,
-+					struct snd_soc_dai *dai)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline struct device *wcd939x_sdw_device_get(struct device_node *np)
-+{
-+	return NULL;
-+}
-+
-+static inline int wcd939x_swr_get_current_bank(struct sdw_slave *sdev)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_SND_SOC_WCD939X_SDW */
-+
-+#endif /* __WCD939X_H__ */
 
 -- 
 2.34.1
