@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 772D57F5B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1A37F5B43
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbjKWJkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:40:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S233062AbjKWJkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbjKWJkm (ORCPT
+        with ESMTP id S232766AbjKWJkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Nov 2023 04:40:42 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E92D41;
-        Thu, 23 Nov 2023 01:40:47 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a02d91ab199so82413266b.0;
-        Thu, 23 Nov 2023 01:40:47 -0800 (PST)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C10D44;
+        Thu, 23 Nov 2023 01:40:48 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-548f74348f7so935828a12.2;
+        Thu, 23 Nov 2023 01:40:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700732446; x=1701337246; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700732447; x=1701337247; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wi4R483zknpMUwj3cvaLHx1vmpa1j9N3buw1XNODPJU=;
-        b=SZ0US6wJvhCsJ+lGb5Ez5s0ViOWv3eK1VNTmyJ55EjaZda2L/1A7W/f0tl45aM3rJT
-         GUIJqKirQkvF97fr5Wp+ofbVsGRGvnXnoaPtxaRh38Gp4G/keA9wqQzNlanyOp/ELQD0
-         MPt3XnZ5gg/io5gI8LZStazTf5gpmTGHNIksF3cuPVKleBGspBME3N5C019RrjvAFgDH
-         CTg0vBpSi+ntPT65FDGTl5Qftd18V2qgxeqNC+UN4PbmL3N6wrL0iR/gjID9r9wv+vFS
-         ljaSkNH9q/65OcBG5jAhXvX4cTFSIFf8yeQ7ADWWosyqzMtPUx1nItpyT7GFrspSAvyo
-         H/GQ==
+        bh=H76sh9TJa21kiF09BweriFrW/UpEK7sOhe75l5gn76g=;
+        b=P6jsYGK+PkGCtqcrsOkv/NvaKGPptDbS0hmIdsWyEigfD4B0YQu1ulFB67U0jTIg3E
+         +wCorITWSXEIlvEjli0drGFFc3i2JRndKy+1xufl+KV1XmCmDVXo72HwbC5S7EYgEaNS
+         dTXV7lsTdDI8pi+G8DnEHtwpN1Lp9kNf7IIo3RPpLlUfz3zbQzlwTURSdXHrCYb9Qn0v
+         8HGTAf4kHdxSKmx/BXP7XD9x0BVXMuZuAbkBhuQG1mQT9RE3cpQBxvRkKciwy0nt3/wJ
+         Ef/oDRXm0OFSln5dholtwdIOG6HwMc3TGEnZbangYYurg89UgeaZy4a4hnywRPGXXRkR
+         I1jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700732446; x=1701337246;
+        d=1e100.net; s=20230601; t=1700732447; x=1701337247;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wi4R483zknpMUwj3cvaLHx1vmpa1j9N3buw1XNODPJU=;
-        b=jPWeN1RQ1fxqZTNVM05beDfnDHp6nPikTUBSz90/H9hnAXD55BvSiwPsWOEg5OTEMC
-         3mkInWPVLlSaUbYKBDeSRSrglbQUnldEYBLMIvM6iWlz538HzONjA6rP4AayVOMxMwk8
-         MPRU5tf66dKaGl2/R6hYKqpY18dE5SNWkBDBoLOBtjiKqbyL/fyffcDHpWkxQ0tMd5GI
-         BRINuMQkWdm61sopZYiF81YsYX2fVl9Cqem7VKvb13/r2sEWkRDikOSRFbyhJpYMfWw5
-         VFBR8wwWlmDFaYRbgejT3QglO+5R4/xvA/TeDTjFBCREvImrpDIuA8NWXKt7FV8ufDia
-         8KNQ==
-X-Gm-Message-State: AOJu0YxQ+H4mwDSiMhZ0yNNqre3L5a0bcv137n84Ti4J8cJxFhNi7l6x
-        vMRtNmgsK9i/VjkNZqTuMmI=
-X-Google-Smtp-Source: AGHT+IEtwKDYnzg1xKgfKy0ud4LFwlV0rfc9uAkIx75F9WsQAVnCrYCvhXmBXTNqAzq4Kf4OfYEh4Q==
-X-Received: by 2002:a17:906:7c57:b0:9fc:9b28:7ffc with SMTP id g23-20020a1709067c5700b009fc9b287ffcmr3285748ejp.17.1700732445589;
-        Thu, 23 Nov 2023 01:40:45 -0800 (PST)
+        bh=H76sh9TJa21kiF09BweriFrW/UpEK7sOhe75l5gn76g=;
+        b=Ow+2n3H8KANk94UmPTvDl+0zXB1G+cUSoNOQ9OkN7Lk5lRrQpiKI3PIZ5/Bk3OBDcT
+         BFClPNxxdH9CM86aXqNMwvzUuNCM14Ih5/jlpxCE3svshx9tSGgXVddDWOe3PUIuR7he
+         j8gJVIo2dddsl6nmSda+3Q85jXZ4Tw8uy3yuuMZ+0CJ6WKh5Kg6LUXHKNLbFcVQ2Wqlk
+         VdQLRg/fiWfUNKZc9p6DBlzTYAvmB+YOppTqJeG25B/O5Iaf5TiokiqbkEaqV5kEE25r
+         YtHq5WX4HVd+VVUkmnCpWbDSBrDDXmAp4qZF6OQcEtVVkQB/P5aNkreYjh56Mhmoqrds
+         1n+w==
+X-Gm-Message-State: AOJu0Yy8gP5vSnCP7GjBY4ZUb+aI1f/Yw86LTSvqa2kUitrNYcSSp9MG
+        xevqe2beYKViCuq0FW/uvFQ=
+X-Google-Smtp-Source: AGHT+IEn690wfubKb/UyQpCV8u5r9s/J7YoDjXMPpmRF+BSrF8lwfJHZHGsK4X3ZCynniFHKeVNcKA==
+X-Received: by 2002:a17:906:14d:b0:9e0:5d5c:aa6d with SMTP id 13-20020a170906014d00b009e05d5caa6dmr3302730ejh.20.1700732446363;
+        Thu, 23 Nov 2023 01:40:46 -0800 (PST)
 Received: from zotac.lan. (dynamic-2a01-0c23-c0f2-3200-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.44
+        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 01:40:45 -0800 (PST)
+        Thu, 23 Nov 2023 01:40:46 -0800 (PST)
 From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>, Sandy Huang <hjc@rock-chips.com>
+To:     Wolfram Sang <wsa@kernel.org>, Dave Airlie <airlied@redhat.com>
 Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 01/20] drivers/gpu/drm/rockchip: remove I2C_CLASS_DDC support
-Date:   Thu, 23 Nov 2023 10:40:21 +0100
-Message-ID: <20231123094040.592-2-hkallweit1@gmail.com>
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 02/20] drivers/gpu/drm/mgag200/mgag200_i2c.c: remove I2C_CLASS_DDC support
+Date:   Thu, 23 Nov 2023 10:40:22 +0100
+Message-ID: <20231123094040.592-3-hkallweit1@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231123094040.592-1-hkallweit1@gmail.com>
 References: <20231123094040.592-1-hkallweit1@gmail.com>
@@ -87,37 +85,23 @@ be used in new code. So we can remove this class completely now.
 
 Preferably this series should be applied via the i2c tree.
 
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c   |    1 -
- drivers/gpu/drm/rockchip/rk3066_hdmi.c |    1 -
- 2 files changed, 2 deletions(-)
+ drivers/gpu/drm/mgag200/mgag200_i2c.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 6e5b922a1..a7739b27c 100644
---- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -793,7 +793,6 @@ static struct i2c_adapter *inno_hdmi_i2c_adapter(struct inno_hdmi *hdmi)
- 	init_completion(&i2c->cmp);
- 
- 	adap = &i2c->adap;
--	adap->class = I2C_CLASS_DDC;
- 	adap->owner = THIS_MODULE;
- 	adap->dev.parent = hdmi->dev;
- 	adap->dev.of_node = hdmi->dev->of_node;
-diff --git a/drivers/gpu/drm/rockchip/rk3066_hdmi.c b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-index fa6e592e0..7a3f71aa2 100644
---- a/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
-@@ -725,7 +725,6 @@ static struct i2c_adapter *rk3066_hdmi_i2c_adapter(struct rk3066_hdmi *hdmi)
- 	init_completion(&i2c->cmpltn);
- 
- 	adap = &i2c->adap;
--	adap->class = I2C_CLASS_DDC;
- 	adap->owner = THIS_MODULE;
- 	adap->dev.parent = hdmi->dev;
- 	adap->dev.of_node = hdmi->dev->of_node;
+diff --git a/drivers/gpu/drm/mgag200/mgag200_i2c.c b/drivers/gpu/drm/mgag200/mgag200_i2c.c
+index 0c48bdf3e..423eb302b 100644
+--- a/drivers/gpu/drm/mgag200/mgag200_i2c.c
++++ b/drivers/gpu/drm/mgag200/mgag200_i2c.c
+@@ -106,7 +106,6 @@ int mgag200_i2c_init(struct mga_device *mdev, struct mga_i2c_chan *i2c)
+ 	i2c->data = BIT(info->i2c.data_bit);
+ 	i2c->clock = BIT(info->i2c.clock_bit);
+ 	i2c->adapter.owner = THIS_MODULE;
+-	i2c->adapter.class = I2C_CLASS_DDC;
+ 	i2c->adapter.dev.parent = dev->dev;
+ 	i2c->dev = dev;
+ 	i2c_set_adapdata(&i2c->adapter, i2c);
 
