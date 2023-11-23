@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DD27F59B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2067B7F59B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344925AbjKWH7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S1344930AbjKWH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:59:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbjKWH7Y (ORCPT
+        with ESMTP id S1344899AbjKWH7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:59:24 -0500
+        Thu, 23 Nov 2023 02:59:25 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407771B2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9724D1B9;
         Wed, 22 Nov 2023 23:59:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1700726371; x=1732262371;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7da/0iEnQCMxy/lLCWXMFnGwlTG2TiSr880zeoxTvII=;
-  b=L/HBexlhTOpnqTb9b5I3EvqTLF7hGl6h3DFzVNB703C+2Liq2imeKXRM
-   lSqL72jwiYAi5huJAXM0L7SI8jWQt9JmVPA53fxB0rGt75d69ZlwGaTSs
-   sfCmo47qEHy5TZxmhoX9S2h9lV7ZUApH0WuheRfOyMHUFgXpiy9GoM1cz
-   Rx0gaZTFl7Qa7y17OI+igJJGhrDjHNPIbuWTtZfYwjetL+2U3NFQpOjxb
-   UOzhTRFKCA3qaE8XzCmybnchcUMmY8Jmpns23gO5A7YYVbyvQMAZNHtaA
-   U1x6pLMAk0G6771b5ElB8fJEahbI8yNaENU2FfQjXfODD6S36n61Avn65
+  bh=G9oYg+Iq1Wk/nZE1kDxs2u68i2GAXss0BmqbCygDxi0=;
+  b=T2pKSbPbcYycOK870hKqSrbLRh8Wpj64v5D42DkUM8qt0XQozSl+xp3R
+   JezXtjtV6syf4C9uO7iNtpdasfeNr7mVQrKrCuc+jmR+m/Vvh1NuLt35y
+   BnZrLFSz9ZLx3O8SdsXax5gtr6r6nJK7lr457KpbAncU7c/gCVEOekS5e
+   1hWL4QQr0JDkEvimntztVAn7pT+zt10LtiHz6lzUOjyi4sQNhTZQ3m4t7
+   xBS2tKJAeWGvbTBLHPMkyjXiNGWf3gfqpwkkykYWCUlgg51bc3070ijsT
+   kZTpy3dGZMt1FFZVkTH40CQtII7wuoHd6BENjOVmlnfqC5hQxZoUYYQyG
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396126425"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396126433"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="396126425"
+   d="scan'208";a="396126433"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:29 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="8764988"
+   d="scan'208";a="8764989"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.41.107])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:14 -0800
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 23:59:17 -0800
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
@@ -46,9 +46,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         German Gomez <german.gomez@arm.com>,
         Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org
-Subject: [PATCH 4/8] perf tests: Skip record test if test_loop symbol is missing
-Date:   Thu, 23 Nov 2023 09:58:44 +0200
-Message-Id: <20231123075848.9652-5-adrian.hunter@intel.com>
+Subject: [PATCH 5/8] perf tests: Skip Arm64 callgraphs test if leafloop symbol is missing
+Date:   Thu, 23 Nov 2023 09:58:45 +0200
+Message-Id: <20231123075848.9652-6-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231123075848.9652-1-adrian.hunter@intel.com>
 References: <20231123075848.9652-1-adrian.hunter@intel.com>
@@ -65,76 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf record test depends on finding symbol test_loop in perf, and fails if
-perf has been stripped and no debug object is available. In that case, skip
-the test instead.
-
-Example:
-
- Note, building with perl support adds option -Wl,-E which causes the
- linker to add all (global) symbols to the dynamic symbol table. So the
- test_loop symbol, being global, does not get stripped unless NO_LIBPERL=1
-
- Before:
-
-  $ make NO_LIBPERL=1 -C tools/perf >/dev/null 2>&1
-  $ strip tools/perf/perf
-  $ tools/perf/perf buildid-cache -p `realpath tools/perf/perf`
-  $ tools/perf/perf test -v 'record tests'
-   91: perf record tests                                               :
-  --- start ---
-  test child forked, pid 118750
-  Basic --per-thread mode test
-  Per-thread record [Failed missing output]
-  Register capture test
-  Register capture test [Success]
-  Basic --system-wide mode test
-  System-wide record [Skipped not supported]
-  Basic target workload test
-  Workload record [Failed missing output]
-  test child finished with -1
-  ---- end ----
-  perf record tests: FAILED!
-
- After:
-
-  $ tools/perf/perf test -v 'record tests'
-   91: perf record tests                                               :
-  --- start ---
-  test child forked, pid 120025
-  perf does not have symbol 'test_loop'
-  perf is missing symbols - skipping test
-  test child finished with -2
-  ---- end ----
-  perf record tests: Skip
+The test "Check Arm64 callgraphs are complete in fp mode" depends on
+finding symbol leafloop in perf, and fails if perf has been stripped and no
+debug object is available. In that case, skip the test instead.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/tests/shell/record.sh | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tools/perf/tests/shell/test_arm_callgraph_fp.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/perf/tests/shell/record.sh b/tools/perf/tests/shell/record.sh
-index 29443b8e8876..1838b76e2282 100755
---- a/tools/perf/tests/shell/record.sh
-+++ b/tools/perf/tests/shell/record.sh
-@@ -8,10 +8,16 @@ shelldir=$(dirname "$0")
- # shellcheck source=lib/waiting.sh
- . "${shelldir}"/lib/waiting.sh
+diff --git a/tools/perf/tests/shell/test_arm_callgraph_fp.sh b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+index 66dfdfdad553..e342e6c8aa50 100755
+--- a/tools/perf/tests/shell/test_arm_callgraph_fp.sh
++++ b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+@@ -2,8 +2,14 @@
+ # Check Arm64 callgraphs are complete in fp mode
+ # SPDX-License-Identifier: GPL-2.0
  
++shelldir=$(dirname "$0")
 +# shellcheck source=lib/perf_has_symbol.sh
 +. "${shelldir}"/lib/perf_has_symbol.sh
 +
-+testsym="test_loop"
-+
-+skip_test_missing_symbol ${testsym}
-+
- err=0
- perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- testprog="perf test -w thloop"
--testsym="test_loop"
+ lscpu | grep -q "aarch64" || exit 2
  
- cleanup() {
-   rm -rf "${perfdata}"
++skip_test_missing_symbol leafloop
++
+ PERF_DATA=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
+ TEST_PROGRAM="perf test -w leafloop"
+ 
 -- 
 2.34.1
 
