@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CA47F65E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C44EB7F65E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbjKWSC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 13:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
+        id S230212AbjKWSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 13:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjKWSCz (ORCPT
+        with ESMTP id S229929AbjKWSC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 13:02:55 -0500
+        Thu, 23 Nov 2023 13:02:56 -0500
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A97AD41
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:03:01 -0800 (PST)
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6F810D2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:03:02 -0800 (PST)
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6D0DA40DB3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:02:59 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A28F94152B
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1700762579;
-        bh=WP2gJh9IkDa2VdWPrUfJ2njFac/+S8Z+9AfzFJLFWoY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=f5Ldjv9pUGqSgaGbA0bva+KuxN5R/wfZYGWZigFaI5BSBiBxH5oMVv05vSdDwbbGs
-         mNaUtc1uuRJCKiYgpDsyQd/OoRMZ1QaIQ8omijKEgphE2HYNWknfB/lb7KqU9YKWUx
-         LTRgA9iDA1Jbs37JEMpXifXhsrJhZiEYRBNrwjGuJd/QdiJtNUPtykA9Brsfp4beyE
-         ewqFqJeEg6KZgHTj+O1O2lIEHv+Tqql/n/5+jrJ4INwwng/+PKAIh7XT7QzENIyD2h
-         bxRq/hdl+oPi26s8TSnyTSRqTG/LdE5RrPo2RFDBrHSHjGOT5n2zlMh8A555wk2zPH
-         5WyGIAsIyw4tw==
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b310b5453so6026615e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:02:59 -0800 (PST)
+        s=20210705; t=1700762581;
+        bh=IZhERP1k0Mx/BUzQA+h6IX0Zi/l8fXxzweZfh/vGwZ8=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=bm0dFaWF0mhS5DLbODavbNYMvM69+E+3vjvIBl2Iba1Xzq28JNt72GpC1UqaE97t/
+         L/m8pg7pxbKA8V0plM0KjKDswRouZA757qXL6R4kaaw0MxtZsvW1N1+USaLxWBF5qU
+         //OZaIUhbxAb9Wr6S+W7rgaUWsrgBdfKYVW8WIteoJEDqJFXWR5azEAG6dOu/7/IYo
+         96IclmAWpq2gQEBn2b7K82bXKltxvO/l9U1xSpL47o22yORiufp9KYU+SIDoDs+6ne
+         p4MNgYQLM9oETvtwS4EZBrL1Jj8vpI0LWFKiQNW/bGmrHxC6ONbjvqlrVh32Zty7T+
+         cG9OXH4S4l5rA==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40b2977d7c5so5477955e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:03:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700762579; x=1701367379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WP2gJh9IkDa2VdWPrUfJ2njFac/+S8Z+9AfzFJLFWoY=;
-        b=GQKw/mYVJRHMP0aKKc04GR3Qj6Gyypc7yX74KtpBK98AueMB9hQejI9FMEINCsjRd/
-         EzPqjGTE0x+LaYNX8CpOJ4nV6bKkvj/qE0IBOSJgd/hdek6IJib3sG5TfoNengODCDtu
-         BVkMAjJIVsYv3e7e/KUcTMlwHy8X7U+99hOoPBPepfb2uJE4Nsvf2GxslZykYtx1yL6V
-         0MzSG4qX8nUpEilyOv4dtREugWSEtCj0hbLsYX2nIx99ex3lNR00GlcJ4WSYkyUzedXD
-         hd1reXix/rIc1UXgJQXZ63eRFjbyqTvTHJRB7gl/FbL7BpxcCraWVisLQi1HaI9Barkj
-         zaLQ==
-X-Gm-Message-State: AOJu0Yz91RWp4mU8nTZiRfz4eik1SDI4GRiKc+8ClfsbjOPRXohMPDTt
-        D0Z2dHAlndPWmvZoVZWuIvak/10Z/k6TzVmG8Yb20ys1AS+Mn2d18A/F2EZ0r2d4HJyqEVnj2s1
-        /1cIBDFYmE0MWCgE9aWdy1Xc7otUIOc4N7rviokGWSg==
-X-Received: by 2002:a5d:69cd:0:b0:332:c548:3ea4 with SMTP id s13-20020a5d69cd000000b00332c5483ea4mr141112wrw.49.1700762578974;
-        Thu, 23 Nov 2023 10:02:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFOXAShpF/8xaYBusYO0OA7vURr5brTXNPfzFyM6rdfglnmH7BI/RAPLtjwFbymjOjB7sGNUg==
-X-Received: by 2002:a5d:69cd:0:b0:332:c548:3ea4 with SMTP id s13-20020a5d69cd000000b00332c5483ea4mr141097wrw.49.1700762578644;
-        Thu, 23 Nov 2023 10:02:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700762581; x=1701367381;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IZhERP1k0Mx/BUzQA+h6IX0Zi/l8fXxzweZfh/vGwZ8=;
+        b=VdOVaR8Bym0dQkb+Wh9qalNtxzv+AKnGOGNfZwoOwirNpreyAAlWFsXH/G9ZdG74ON
+         EuMqYbRwksOcWahErqv/M8G2tLFevTrumw1ahkHxWwWwPbIaZhOjY1jNIR5TM2bw05QX
+         zJ7Vpo4vkhnY6jrdMOw6sEbuk/88+vqwuPPyw0pcbTyClRLWhqtncqOQRbkej2VSRZnR
+         0HVeFfTBU81F/My35+WvuApfSiUt1QgoInVVePCP9iHy9FpD9qIgdfiWa0elfThbr+Xt
+         EvLHtzQ7x6iey5koEJbXF9tsQ3Gk5Z/z3B2qvRMOEG8yvcVvO8Kjjo2RBwtMjor6ZsX/
+         2sOg==
+X-Gm-Message-State: AOJu0YyvD2vUjfSNetPPuexKqBfu9paEkkXUlUiq++/phOGUDXiV4hIO
+        hs6zW3ilFSV94v7zPuXdR2qQpk+UG7dHv717O9CEfE0xEmvq7ItlwroUR+oBxte75ItIjVNPCz1
+        Ta5si5o1P20E4vu8vXSKxvC365EsanZ3E0yoZFg4b4w==
+X-Received: by 2002:a05:600c:3b87:b0:401:b2c7:34a8 with SMTP id n7-20020a05600c3b8700b00401b2c734a8mr269710wms.7.1700762581181;
+        Thu, 23 Nov 2023 10:03:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGaRuyi+0akFvSjaF5Jn6MGpgnlz1tMo6K/RVM8k2sDbh9gA+jVmH6qtYWR9GxC0Qx5oSTDOQ==
+X-Received: by 2002:a05:600c:3b87:b0:401:b2c7:34a8 with SMTP id n7-20020a05600c3b8700b00401b2c734a8mr269696wms.7.1700762580759;
+        Thu, 23 Nov 2023 10:03:00 -0800 (PST)
 Received: from localhost ([2001:67c:1560:8007::aac:c15c])
-        by smtp.gmail.com with ESMTPSA id j14-20020adff54e000000b0032db8cccd3asm2302599wrp.114.2023.11.23.10.02.58
+        by smtp.gmail.com with ESMTPSA id v11-20020a05600c444b00b0040b3867a297sm1026777wmn.36.2023.11.23.10.02.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 10:02:58 -0800 (PST)
+        Thu, 23 Nov 2023 10:02:59 -0800 (PST)
 From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 To:     Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -68,45 +69,123 @@ To:     Richard Henderson <richard.henderson@linaro.org>,
         "H . Peter Anvin" <hpa@zytor.com>
 Cc:     linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] remove the last bits of a.out support
-Date:   Thu, 23 Nov 2023 18:02:40 +0000
-Message-Id: <20231123180246.750674-1-dimitri.ledkov@canonical.com>
+Subject: [PATCH 1/5] alpha: remove a.out support from tools/objstrip
+Date:   Thu, 23 Nov 2023 18:02:41 +0000
+Message-Id: <20231123180246.750674-2-dimitri.ledkov@canonical.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231123180246.750674-1-dimitri.ledkov@canonical.com>
+References: <20231123180246.750674-1-dimitri.ledkov@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was working on how linux-libc-dev headers are shipped in Ubuntu and
-stumbled upon seemingly unused and useless linux/a.out.h header. It
-seems like it is an accidental leftover at this point.
+As a.out support has been dropped from alpha port, drop a.out support
+and make ELF support required.
 
-Dimitri John Ledkov (5):
-  alpha: remove a.out support from tools/objstrip
-  alpha: stop shipping a.out.h uapi headers
-  m68k: stop shipping a.out.h uapi headers
-  x86: stop shipping a.out.h uapi headers
-  uapi: remove a.out.h uapi header
+Only performed a test build on x86 for native x86 and cross-compiled
+for alpha.
 
- arch/alpha/boot/tools/objstrip.c    |  52 +-----
- arch/alpha/include/uapi/asm/a.out.h |  92 ----------
- arch/m68k/include/uapi/asm/a.out.h  |  21 ---
- arch/x86/include/uapi/asm/a.out.h   |  21 ---
- include/uapi/Kbuild                 |   4 -
- include/uapi/linux/a.out.h          | 251 ----------------------------
- 6 files changed, 6 insertions(+), 435 deletions(-)
- delete mode 100644 arch/alpha/include/uapi/asm/a.out.h
- delete mode 100644 arch/m68k/include/uapi/asm/a.out.h
- delete mode 100644 arch/x86/include/uapi/asm/a.out.h
- delete mode 100644 include/uapi/linux/a.out.h
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+---
+ arch/alpha/boot/tools/objstrip.c | 52 ++++----------------------------
+ 1 file changed, 6 insertions(+), 46 deletions(-)
 
+diff --git a/arch/alpha/boot/tools/objstrip.c b/arch/alpha/boot/tools/objstrip.c
+index 7cf92d172d..91c0ad29e1 100644
+--- a/arch/alpha/boot/tools/objstrip.c
++++ b/arch/alpha/boot/tools/objstrip.c
+@@ -21,17 +21,12 @@
+ 
+ #include <sys/fcntl.h>
+ #include <sys/stat.h>
+-#include <sys/types.h>
+-
+-#include <linux/a.out.h>
+-#include <linux/coff.h>
+-#include <linux/param.h>
+-#ifdef __ELF__
+-# include <linux/elf.h>
+-# define elfhdr elf64_hdr
+-# define elf_phdr elf64_phdr
+-# define elf_check_arch(x) ((x)->e_machine == EM_ALPHA)
+-#endif
++
++#include <linux/elf.h>
++#define elfhdr elf64_hdr
++#define elf_phdr elf64_phdr
++#define elf_check_arch(x) ((x)->e_machine == EM_ALPHA)
++
+ 
+ /* bootfile size must be multiple of BLOCK_SIZE: */
+ #define BLOCK_SIZE	512
+@@ -55,13 +50,10 @@ main (int argc, char *argv[])
+     size_t nwritten, tocopy, n, mem_size, fil_size, pad = 0;
+     int fd, ofd, i, j, verbose = 0, primary = 0;
+     char buf[8192], *inname;
+-    struct exec * aout;		/* includes file & aout header */
+     long offset;
+-#ifdef __ELF__
+     struct elfhdr *elf;
+     struct elf_phdr *elf_phdr;	/* program header */
+     unsigned long long e_entry;
+-#endif
+ 
+     prog_name = argv[0];
+ 
+@@ -145,7 +137,6 @@ main (int argc, char *argv[])
+ 	exit(1);
+     }
+ 
+-#ifdef __ELF__
+     elf = (struct elfhdr *) buf;
+ 
+     if (memcmp(&elf->e_ident[EI_MAG0], ELFMAG, SELFMAG) == 0) {
+@@ -192,37 +183,6 @@ main (int argc, char *argv[])
+ 		    prog_name, (long) elf_phdr->p_vaddr,
+ 		    elf_phdr->p_vaddr + fil_size, offset);
+ 	}
+-    } else
+-#endif
+-    {
+-	aout = (struct exec *) buf;
+-
+-	if (!(aout->fh.f_flags & COFF_F_EXEC)) {
+-	    fprintf(stderr, "%s: %s is not in executable format\n",
+-		    prog_name, inname);
+-	    exit(1);
+-	}
+-
+-	if (aout->fh.f_opthdr != sizeof(aout->ah)) {
+-	    fprintf(stderr, "%s: %s has unexpected optional header size\n",
+-		    prog_name, inname);
+-	    exit(1);
+-	}
+-
+-	if (N_MAGIC(*aout) != OMAGIC) {
+-	    fprintf(stderr, "%s: %s is not an OMAGIC file\n",
+-		    prog_name, inname);
+-	    exit(1);
+-	}
+-	offset = N_TXTOFF(*aout);
+-	fil_size = aout->ah.tsize + aout->ah.dsize;
+-	mem_size = fil_size + aout->ah.bsize;
+-
+-	if (verbose) {
+-	    fprintf(stderr, "%s: extracting %#016lx-%#016lx (at %lx)\n",
+-		    prog_name, aout->ah.text_start,
+-		    aout->ah.text_start + fil_size, offset);
+-	}
+     }
+ 
+     if (lseek(fd, offset, SEEK_SET) != offset) {
 -- 
 2.34.1
 
