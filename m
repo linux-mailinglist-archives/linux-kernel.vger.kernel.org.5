@@ -2,382 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5EB7F6458
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F2B7F645C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbjKWQrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S1345079AbjKWQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:48:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKWQrb (ORCPT
+        with ESMTP id S229510AbjKWQsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:47:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB098AD;
-        Thu, 23 Nov 2023 08:47:37 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="423430454"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="423430454"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 08:47:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="802018855"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="802018855"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 08:47:31 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1r6CrO-0000000GPw7-3xQR;
-        Thu, 23 Nov 2023 18:47:26 +0200
-Date:   Thu, 23 Nov 2023 18:47:26 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     mitrutzceclan <mitrutzceclan@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <ZV-CHima8bpXcopc@smile.fi.intel.com>
-References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
- <20231123152331.5751-2-user@HYB-hhAwRlzzMZb>
+        Thu, 23 Nov 2023 11:48:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2F2C98;
+        Thu, 23 Nov 2023 08:48:25 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC1B712FC;
+        Thu, 23 Nov 2023 08:49:10 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.26.148])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B3353F7A6;
+        Thu, 23 Nov 2023 08:48:23 -0800 (PST)
+Date:   Thu, 23 Nov 2023 16:48:18 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Message-ID: <ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.arm.com>
+References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+ <86pm03z0kw.wl-maz@kernel.org>
+ <86o7fnyvrq.wl-maz@kernel.org>
+ <ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fW8exsmUg_9K09Oy6T4ZAvvD7ZbZN2sxODdqisZOR6mUA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231123152331.5751-2-user@HYB-hhAwRlzzMZb>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fW8exsmUg_9K09Oy6T4ZAvvD7ZbZN2sxODdqisZOR6mUA@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 05:23:22PM +0200, mitrutzceclan wrote:
-> From: Dumitru Ceclan <mitrutzceclan@gmail.com>
-
-Thank you for the update!
-My comments below.
-
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
+On Thu, Nov 23, 2023 at 07:14:21AM -0800, Ian Rogers wrote:
+> On Thu, Nov 23, 2023 at 6:23 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > > On Tue, 21 Nov 2023 13:40:31 +0000,
+> > > Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > [Adding key people on Cc]
+> > > >
+> > > > On Tue, 21 Nov 2023 12:08:48 +0000,
+> > > > Hector Martin <marcan@marcan.st> wrote:
+> > > > >
+> > > > > Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > > > > according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > > >
+> > > > I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > > > asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > > > the PMU, but nothing works anymore.
+> > > >
+> > > > The saving grace in my case is that Debian still ships a 6.1 perftool
+> > > > package, but that's obviously not going to last.
+> > > >
+> > > > I'm happy to test potential fixes.
+> > >
+> > > At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > > -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > > CPU):
+> >
+> > Looking at this with fresh(er) eyes, I think there's a userspace bug here,
+> > regardless of whether one believes it's correct to convert a named-pmu event to
+> > a PERF_TYPE_HARDWARE event directed at that PMU.
+> >
+> > It looks like the userspace tool is dropping the extended type ID after an
+> > initial probe, and requests events with plain PERF_TYPE_HARDWARE (without an
+> > extended type ID), which explains why we seem to get events from one PMU only.
+> >
+> > More detail below...
+> >
+> > Marc, if you have time, could you run the same commands (on the same kernel)
+> > with a perf tool build from v6.4?
+> >
+> > > <quote>
+> > > maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 0 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+> > >  apple_firestorm_pmu/cycles/ -e cycles ls
+> > > Using CPUID 0x00000000612f0280
+> > > Attempt to add: apple_icestorm_pmu/cycles=0/
+> > > ..after resolving event: apple_icestorm_pmu/cycles=0/
+> > > Opening: unknown-hardware:HG
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   config                           0xb00000000
+> > >   disabled                         1
+> > > ------------------------------------------------------------
+> >
+> > Here config[31:0] is 0 (PERF_COUNT_HW_CPU_CYCLES), and config[63:32] is 0xb,
+> > which is presumably the PMU ID for the apple_icestorm_pmu.
+> >
+> > The attr doesn't contain exclude_guest=1, so this will be rejected by the PMU
+> > driver due to its mode exclusion requirements.
+> >
+> > > sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+> > > sys_perf_event_open failed, error -95
+> >
+> > ... which is what we see here (this is EOPNOTSUPP, which __hw_perf_event_init()
+> > in drivers/perf/arm_pmu.c returns when the mode requested mode exclusion
+> > options aren't supported).
+> >
+> > So far, so good...
+> >
+> > > Attempt to add: apple_firestorm_pmu/cycles=0/
+> > > ..after resolving event: apple_firestorm_pmu/cycles=0/
+> > > Control descriptor is not initialized
+> > > Opening: apple_icestorm_pmu/cycles/
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> >
+> > ... but here, the extended type ID has been dropped, and this event is no
+> > longer directed towards the apple_firestorm_pmu PMU, so the kernel can direct
+> > this to *any* CPU PMU...
+> >
+> > > sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 3
+> >
+> > ... and *some* PMU accepts it.
+> >
+> > > Opening: apple_firestorm_pmu/cycles/
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> >
+> > Likewise here, no extended type ID...
+> >
+> > > sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+> > > Opening: cycles
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> >
+> > Likewise here, no extended type ID...
+> >
+> > > sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 5
+> > > arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
+> > > bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
+> > > Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
+> > > builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
+> > > builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
+> > > builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
+> > > builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
+> > > builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
+> > > builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
+> > > builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
+> > > builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
+> > > builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
+> > > builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
+> > > builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
+> > > builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
+> > > builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
+> > > builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
+> > > builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
+> > > builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
+> > > builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
+> > > apple_icestorm_pmu/cycles/: -1: 0 873709 0
+> > > apple_firestorm_pmu/cycles/: -1: 0 873709 0
+> > > cycles: -1: 0 873709 0
+> > > apple_icestorm_pmu/cycles/: 0 873709 0
+> > > apple_firestorm_pmu/cycles/: 0 873709 0
+> > > cycles: 0 873709 0
+> > >
+> > >  Performance counter stats for 'ls':
+> > >
+> > >      <not counted>      apple_icestorm_pmu/cycles/                                              (0.00%)
+> > >      <not counted>      apple_firestorm_pmu/cycles/                                             (0.00%)
+> > >      <not counted>      cycles                                                                  (0.00%)
+> > >
+> > >        0.000002250 seconds time elapsed
+> > >
+> > >        0.000000000 seconds user
+> > >        0.000000000 seconds sys
+> >
+> > So it looks like the tool has expanded the requested
+> > 'apple_icestorm_pmu/cycles/' event into three cycles events, each opened
+> > without an extended type ID.
+> >
+> > AFAICT, the kernel has done exactly what it has always done for
+> > PERF_TYPE_HARDWARE/PERF_COUNT_HW_CPU_CYCLES events: pick the first PMU which
+> > said it can handle them.
+> >
+> > > If I run the same thing on another CPU cluster (firestorm), I get
+> > > this:
+> > >
+> > > <quote>
+> > > maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 2 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+> > >  apple_firestorm_pmu/cycles/ -e cycles ls
+> > > Using CPUID 0x00000000612f0280
+> > > Attempt to add: apple_icestorm_pmu/cycles=0/
+> > > ..after resolving event: apple_icestorm_pmu/cycles=0/
+> > > Opening: unknown-hardware:HG
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   config                           0xb00000000
+> > >   disabled                         1
+> > > ------------------------------------------------------------
+> > > sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+> > > sys_perf_event_open failed, error -95
+> >
+> > Again, we see one request with an extended type ID, which fails due to mode exclusion requirements...
+> >
+> > > Attempt to add: apple_firestorm_pmu/cycles=0/
+> > > ..after resolving event: apple_firestorm_pmu/cycles=0/
+> > > Control descriptor is not initialized
+> > > Opening: apple_icestorm_pmu/cycles/
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> > > sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 3
+> > > Opening: apple_firestorm_pmu/cycles/
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> > > sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 4
+> > > Opening: cycles
+> > > ------------------------------------------------------------
+> > > perf_event_attr:
+> > >   type                             0 (PERF_TYPE_HARDWARE)
+> > >   size                             136
+> > >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > >   sample_type                      IDENTIFIER
+> > >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > >   disabled                         1
+> > >   inherit                          1
+> > >   enable_on_exec                   1
+> > >   exclude_guest                    1
+> > > ------------------------------------------------------------
+> >
+> > ... but all subsequent requests do not have an extended type ID, and the kernel
+> > directs these to whichever PMU accepts the event first...
+> >
+> > > sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 5
+> > > arch                  builtin-diff.o      builtin-mem.o        common-cmds.h    perf-completion.sh
+> > > bench                 builtin-evlist.c    builtin-probe.c      CREDITS          perf.h
+> > > Build                 builtin-evlist.o    builtin-probe.o      design.txt       perf-in.o
+> > > builtin-annotate.c    builtin-ftrace.c    builtin-record.c     dlfilters        perf-iostat
+> > > builtin-annotate.o    builtin-ftrace.o    builtin-record.o     Documentation    perf-iostat.sh
+> > > builtin-bench.c               builtin.h           builtin-report.c     FEATURE-DUMP     perf.o
+> > > builtin-bench.o               builtin-help.c      builtin-report.o     include          perf-read-vdso.c
+> > > builtin-buildid-cache.c  builtin-help.o      builtin-sched.c   jvmti            perf-sys.h
+> > > builtin-buildid-cache.o  builtin-inject.c    builtin-script.c  libapi   PERF-VERSION-FILE
+> > > builtin-buildid-list.c        builtin-inject.o    builtin-script.o     libperf          perf-with-kcore
+> > > builtin-buildid-list.o        builtin-kallsyms.c  builtin-stat.c       libsubcmd        pmu-events
+> > > builtin-c2c.c         builtin-kallsyms.o  builtin-stat.o       libsymbol        python
+> > > builtin-c2c.o         builtin-kmem.c      builtin-timechart.c  Makefile         python_ext_build
+> > > builtin-config.c      builtin-kvm.c       builtin-top.c        Makefile.config  scripts
+> > > builtin-config.o      builtin-kvm.o       builtin-top.o        Makefile.perf    tests
+> > > builtin-daemon.c      builtin-kwork.c     builtin-trace.c      MANIFEST         trace
+> > > builtin-daemon.o      builtin-list.c      builtin-version.c    perf             ui
+> > > builtin-data.c                builtin-list.o      builtin-version.o    perf-archive     util
+> > > builtin-data.o                builtin-lock.c      check-headers.sh     perf-archive.sh
+> > > builtin-diff.c                builtin-mem.c       command-list.txt     perf.c
+> > > apple_icestorm_pmu/cycles/: -1: 1035101 469125 469125
+> > > apple_firestorm_pmu/cycles/: -1: 1035035 469125 469125
+> > > cycles: -1: 1034653 469125 469125
+> > > apple_icestorm_pmu/cycles/: 1035101 469125 469125
+> > > apple_firestorm_pmu/cycles/: 1035035 469125 469125
+> > > cycles: 1034653 469125 469125
+> > >
+> > >  Performance counter stats for 'ls':
+> > >
+> > >          1,035,101      apple_icestorm_pmu/cycles/
+> > >          1,035,035      apple_firestorm_pmu/cycles/
+> > >          1,034,653      cycles
+> > >
+> > >        0.000001333 seconds time elapsed
+> > >
+> > >        0.000000000 seconds user
+> > >        0.000000000 seconds sys
+> > > </quote>
+> >
+> > ... and in this case the workload was run on a CPU affine ot that arbitrary
+> > PMU, hence we managed to count.
+> >
+> > So AFAICT, this is a userspace bug, maybe related to the way we probe for
+> > supported PMU features?
 > 
+> Probing PMU features is done by trying to perf_event_open events. For
+> extended types it is a cycles event on each core PMU:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/pmus.c?h=perf-tools-next#n532
 > 
+> The is_event_supported logic is here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/print-events.c?h=perf-tools-next#n232
 
-One blank line is enough here.
+Ah, so IIUC what's happening is:
 
-> Reviewed-by: Michael Walle <michael@walle.cc> # for gpio-regmap
-> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+1) Userspace tries to detect extended type support, with a cycles event
+   directed to one of the CPU PMUs. The attr for this does not have
+   exclude_guest set.
 
-...
+2) In the kernel, the core perf code sees the extended hw type id, and directs
+   this towards the correct PMU (apple_icestorm_pmu).
 
-> V5->V6
->  - No changes
+3) The PMU driver looks at the attr, sees exclude_guest is not set, and returns
+   -EOPNOTSUPP, exactly as it would regardless of whether the extended hw type
+   is used.
 
-Don't issue patches too often (minimum gap between versions is 24h).
+   Note: this happens to be a difference between x86 PMUs and the apple_* PMUs,
+   but this is a legitimate part of the perf ABI, not an arm-specific quirk or
+   bug.
 
-...
+4) Userspace receives -EOPNOTSUPP, and so decide the extended hw_type is not
+   supported (even though the kernel does support the extended hw type id, and
+   the event was rejected for orthogonal reasons).
 
-> +	help
-> +	  Say yes here to build support for Analog Devices AD7173 and similar ADC
-> +	  Currently supported models:
-> +	    AD7172-2,
-> +	    AD7173-8,
-> +	    AD7175-2,
-> +	    AD7176-2
+5) Userspace avoids the extended hw type, but still uses
+   PERF_EVENT_TYPE_HARDWARE events for named-pmu events.
 
-I would use
+Does that sound plausible to you, or have I misunderstood?
 
- - FOO
- - BAR
+From Marc's reply at:
 
-style that will reduce amount of potential churn if you need to add an entry at
-the end of this list.
+  https://lore.kernel.org/lkml/86edggzfxx.wl-maz@kernel.org/
 
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called ad7173.
+... with perf built from v6.4, the perf tool can open named pmu events without
+issue, and sets exclude_guest in the attr. So it seems like there's a mismatch
+between regular opening of events and probing for extended hw type that causes
+that to differ.
 
-...
+AFAICT, the kernel is doing the right thing here, but the userspace detection
+of extended type id support happens to differ from regular event opening, and
+mis-interprets -EOPNOTSUP as "the kernel doesn't support extended type IDs"
+rather than "The kernel was able to consume the extended type ID, but the
+specific PMU targetted said it doesn't support this attr".
 
-> +#include <linux/stddef.h>
+IIUC that means this'll be broken on older kernels (those before the extended
+hw type id support was introduced), too?
 
-You probably meant types.h here (it will include stddef, at least most of
-the code relies on that), which is currently absent.
+It sounds like we need to make (4) more robust? I'm not immediately sure how, 
+given the rats nest of returns in perf_event_open(), but I'm happy to try to
+help with that.
 
-...
+It also seems like (5) is a problem regardless. If the user asks for a named
+PMU event on an older kernel (before the extended hw type id was a thing), and
+the tool converts that to a plain PERF_EVENT_TYPE_HARDWARE event, it's liable
+to be handled by a different PMU than the one the user asked for.
 
-> +struct ad7173_device_info {
-> +	char *name;
-> +	unsigned int id;
-> +	unsigned int num_inputs;
-> +	unsigned int num_configs;
-> +	unsigned int num_channels;
-
-> +	unsigned char num_gpios;
-
-I would use u8 as you have done for cfg_slot, for example. As it holds a number
-and not a real character.
-
-> +	bool has_temp;
-> +	unsigned int clock;
-> +
-> +	const unsigned int *sinc5_data_rates;
-> +	unsigned int num_sinc5_data_rates;
-> +};
-
-...
-
-> +struct ad7173_channel_config {
-> +	u8 cfg_slot;
-> +	bool live;
-
-Perhaps a blank line?
-
-> +	/* Following fields are used to compare equality. */
-> +	struct_group(config_props,
-> +		bool bipolar;
-> +		bool input_buf;
-> +		u8 odr;
-> +		u8 ref_sel;
-> +	);
-> +};
-
-...
-
-> +struct ad7173_state {
-> +	const struct ad7173_device_info *info;
-> +	struct ad_sigma_delta sd;
-
-It might be better to embed that struct first. In any case you always can
-consult with `pahole` tool for data structure layouts.
-
-> +	struct ad7173_channel *channels;
-> +	struct regulator_bulk_data regulators[3];
-> +	unsigned int adc_mode;
-> +	unsigned int interface_mode;
-> +	unsigned int num_channels;
-> +	struct ida cfg_slots_status;
-> +	unsigned long long config_usage_counter;
-> +	unsigned long long *config_cnts;
-> +#if IS_ENABLED(CONFIG_GPIOLIB)
-> +	struct regmap *reg_gpiocon_regmap;
-> +	struct gpio_regmap *gpio_regmap;
-> +#endif
-> +};
-
-...
-
-> +static const char *const ad7173_ref_sel_str[] = {
-> +	[AD7173_SETUP_REF_SEL_EXT_REF]    = "refin",
-> +	[AD7173_SETUP_REF_SEL_EXT_REF2]   = "refin2",
-> +	[AD7173_SETUP_REF_SEL_INT_REF]    = "refout-avss",
-
-> +	[AD7173_SETUP_REF_SEL_AVDD1_AVSS] = "avdd"
-
-Leave trailing comma here as well.
-
-> +};
-
-...
-
-> +	struct device *dev = &st->sd.spi->dev;
-
-For example, here st->sd become a no-op at compile time (see above about
-placing sd to be the first member). The code generation can be checked
-(for the size) by bloat-o-meter.
-
-...
-
-> +static int ad7173_free_config_slot_lru(struct ad7173_state *st)
-
-> +static int ad7173_load_config(struct ad7173_state *st,
-> +			      struct ad7173_channel_config *cfg)
-
-Have you checked, btw, list_lru.h? Maybe all this can be simply changed by
-using existing library?
-
-...
-
-> +	return vref / (MICRO/MILLI);
-
-Wouldn't MILLI in the denominator just suffice?
-
-...
-
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		reg = st->channels[chan->address].cfg.odr;
-> +
-> +		*val = st->info->sinc5_data_rates[reg] / MILLI;
-> +		*val2 = (st->info->sinc5_data_rates[reg] % MILLI) * (MICRO/MILLI);
-> +
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	}
-
-> +	return -EINVAL;
-
-Make this 'default' case.
-
-...
-
-> +static int ad7173_update_scan_mode(struct iio_dev *indio_dev,
-> +				   const unsigned long *scan_mask)
-> +{
-> +	struct ad7173_state *st = iio_priv(indio_dev);
-> +	int i, ret;
-> +
-> +	for (i = 0; i < indio_dev->num_channels; i++) {
-> +		if (test_bit(i, scan_mask))
-> +			ret = ad7173_set_channel(&st->sd, i);
-> +		else
-> +			ret = ad_sd_write_reg(&st->sd, AD7173_REG_CH(i), 2, 0);
-
-> +
-
-Unneeded blank line.
-
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-
-> +static int ad7173_debug(struct iio_dev *indio_dev, unsigned int reg,
-> +			unsigned int writeval, unsigned int *readval)
-
-Hmm... The function suggests it debugs something or helps with debugging
-something. Without actual description is hard to understand the purpose.
-Can you add a top comment on this function with explanations?
-
-...
-
-> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(st->regulators),
-> +				      st->regulators);
-
-One line?
-
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to get regulators\n");
-
-...
-
-> +			return dev_err_probe(dev, -EINVAL,
-> +				"Input pin number out of range for pair (%d %d).", ain[0], ain[1]);
-
-Seems broken indentation.
-
-...
-
-> +		ret = fwnode_property_read_string(child, "adi,reference-select", &ref_label);
-> +		if (!ret) {
-> +			for (i = 0; i < ARRAY_SIZE(ad7173_ref_sel_str); i++)
-> +				if (strcmp(ref_label, ad7173_ref_sel_str[i]) == 0) {
-> +					ref_sel = i;
-> +					break;
-> +				}
-
-> +			if (i == ARRAY_SIZE(ad7173_ref_sel_str))
-> +				return dev_err_probe(dev, -EINVAL, "Invalid channel reference name %s", ref_label);
-
-Too long line.
-
-> +		} else if (ret != -EINVAL) {
-> +			return dev_err_probe(dev, ret, "Invalid channel reference value");
-> +		}
-
-
-Use standard pattern and it will be easier to see that 'else' is redundant.
-
-		if (ret == -EINVAL) // However I don't like this handling of
-				    // properties, but up to you and maintainer
-			ret = 0;
-		if (ret)
-			return dev_err_probe(...);
-
-
-BUT. Isn't it a home grown variant of fwnode_property_match_property_string()?
-
-...
-
-> +		ret = ad7173_get_ref_voltage_milli(st, (u8)ref_sel);
-
-Why casting?
-
-> +		if (ret < 0)
-> +			return dev_err_probe(dev, ret,
-> +					     "Cannot use reference %u", ref_sel);
-
-...
-
-> +			return dev_err_probe(dev, -EINVAL, "External reference 2 is only available on ad7173-8");
-
-Missing \n. Check all your messages that they are terminated with \n.
-
-...
-
-> +	struct ad7173_state *st;
-> +	struct iio_dev *indio_dev;
-> +	struct device *dev = &spi->dev;
-> +	int ret;
-
-Reversed xmas tree order?
-
-	struct device *dev = &spi->dev;
-	struct iio_dev *indio_dev;
-	struct ad7173_state *st;
-	int ret;
-
-...
-
-> +static const struct of_device_id ad7173_of_match[] = {
-> +	{ .compatible = "adi,ad7172-2",
-> +	  .data = &ad7173_device_info[ID_AD7172_2], },
-> +	{ .compatible = "adi,ad7173-8",
-> +	  .data = &ad7173_device_info[ID_AD7173_8], },
-> +	{ .compatible = "adi,ad7175-2",
-> +	  .data = &ad7173_device_info[ID_AD7175_2], },
-> +	{ .compatible = "adi,ad7176-2",
-> +	  .data = &ad7173_device_info[ID_AD7176_2], },
-
-Last inner commas are not needed.
-
-> +	{ }
-> +};
-
-...
-
-> +static const struct spi_device_id ad7173_id_table[] = {
-> +	{ "ad7172-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7172_2], },
-> +	{ "ad7173-8", (kernel_ulong_t)&ad7173_device_info[ID_AD7173_8], },
-> +	{ "ad7175-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7175_2], },
-> +	{ "ad7176-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7176_2], },
-
-Ditto.
-
-> +	{ }
-> +};
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Mark.
