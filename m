@@ -2,193 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3AA7F5B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E087F5B34
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbjKWJkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        id S229453AbjKWJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbjKWJkQ (ORCPT
+        with ESMTP id S232704AbjKWJkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:40:16 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A21D40;
-        Thu, 23 Nov 2023 01:40:22 -0800 (PST)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AN7qG3t027503;
-        Thu, 23 Nov 2023 10:39:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=lUxUp6tmkfOFrdiOoVwXWY/di91UGVjDVHT8X5t0fGk=; b=Mn
-        LB64HZVEOVKN4JBecYlTQIl8IomX3sDProAxSySMTixYch6vcAMnVlsEAmK5iFCQ
-        xocrPl8NMq+x/7KdquZeXoVT0OAR5RtfAN0tKygizChzVqCdmOEY1bSjEEB6MOq7
-        oxxxPFdJr1flmrvEzEHlWoy1GFhurFOjSMCyFozIoGDJ8MmqweBJY6LtK3CAAoEB
-        gLTODrHKtoXTv/57+SFm5XPz/Wq9Z27pOqML5ZIHxWG53LCZ0VyRgQwy03NedBAj
-        MtRm9o2YgFC/zaC2pkz6pFbBFmLP2+BRPrLnxMUeN42hpOmtkbHA4S7Urf0YeXLO
-        snT93mGR84fIZXx2uDJA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uhr89xr7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 10:39:56 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A101F10002A;
-        Thu, 23 Nov 2023 10:39:54 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9882F2138F7;
-        Thu, 23 Nov 2023 10:39:54 +0100 (CET)
-Received: from [10.201.21.240] (10.201.21.240) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 23 Nov
- 2023 10:39:53 +0100
-Message-ID: <d8df1a06-1bd1-43a6-abc1-d4a7826e9746@foss.st.com>
-Date:   Thu, 23 Nov 2023 10:39:51 +0100
+        Thu, 23 Nov 2023 04:40:40 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAE3BA;
+        Thu, 23 Nov 2023 01:40:46 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a02ba1f500fso90820566b.0;
+        Thu, 23 Nov 2023 01:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700732445; x=1701337245; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NrHROUSPlT4bN2lnsfzxw2GPuZ9Bx12dzaePQbmqgMk=;
+        b=YRH8dsZZk9QnOAjpL+Bw8Bdsz+fwftkhXCrw5yvpX4ix/rCwoVVTpEh3y4q0hUx7Ym
+         3pn1d2GyeELiSW3O/4eYHW8rd5z02SURbiu6by+8i3+Yq/l5VZEuYgzapG6bDIqC5Uzl
+         Xf9v/LZJfAJYcSSiJNFk3Cc1MFLNB6sS6KHQrx+KgmtkfC77+e/K7BSCT40olvzWSg4P
+         DdFerLQknXvU3nK91kIRDYwwNs4jeeWVLlhIM8nt2PiRVFankhNFNrUYo1PjlFbZ7Kxu
+         usdRP7bAS8KiLMJf/FauUyisdsnmzJlHVOS74eA2j3ceuNxETf00LWFT9T+4rhnnZyel
+         Oprg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700732445; x=1701337245;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NrHROUSPlT4bN2lnsfzxw2GPuZ9Bx12dzaePQbmqgMk=;
+        b=S/YxKJzfQlexp7Jc4goQwd5Fzww7imgsgWzDyRSJJFThsUI8BRR8odwWcPauJLr7Xd
+         7rE31cDT6koIdkl0aWk7/yiyn2RjT2ICq9MYbqvKeKWNYFEhSkKTV1kqpQEj2fTwcSQb
+         5lavIuDaRCndseIJVm4BhSJ4z++i6xooePE6An0QDDOwWUsAjBhhSAwvuHfRAGPBtPv8
+         /VY8DNTb+DVTxhpMKSt2bmz1Rv9nJ7ltr548GS0gILRlRCvkBsAmMuJTALf8oH6mOWdJ
+         Fzs9XpYzBk8Acpo1D/Trew0So+dRQaUGh+ci+KKBQMHnaBxC/osl5nMhD5fIRsoJ8z5e
+         4nmA==
+X-Gm-Message-State: AOJu0YwjnkDMK0GZCpF+YreMO6KEN8V8I3MXaNF/Kykgr6aQCGvAZBq9
+        rfHEqZFc24PG4VDH+/QRfJU=
+X-Google-Smtp-Source: AGHT+IH3UA4nrdAqScERrRmQjf0/m1eRztQQIu3xcCY1PXQ8GvVHymqtee93zJ05NL2jqGs5ig2nmA==
+X-Received: by 2002:a17:906:290:b0:a01:b9bd:878 with SMTP id 16-20020a170906029000b00a01b9bd0878mr3573689ejf.14.1700732444513;
+        Thu, 23 Nov 2023 01:40:44 -0800 (PST)
+Received: from zotac.lan. (dynamic-2a01-0c23-c0f2-3200-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:2223:8ff:fe18:310])
+        by smtp.gmail.com with ESMTPSA id s9-20020a1709066c8900b009e5ce1acb01sm546199ejr.103.2023.11.23.01.40.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 01:40:44 -0800 (PST)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+Subject: [PATCH v5 00/20] remove I2C_CLASS_DDC support
+Date:   Thu, 23 Nov 2023 10:40:20 +0100
+Message-ID: <20231123094040.592-1-hkallweit1@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/5] dt-bindings: stm32: add clocks and reset binding
- for stm32mp25 platform
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231122132156.158103-1-gabriel.fernandez@foss.st.com>
- <20231122132156.158103-4-gabriel.fernandez@foss.st.com>
- <90664758-9273-4ed7-b711-0abe45b4efed@linaro.org>
-Content-Language: en-US
-From:   Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
-In-Reply-To: <90664758-9273-4ed7-b711-0abe45b4efed@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.240]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_07,2023-11-22_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+Class-based device auto-detection is a legacy mechanism and shouldn't
+be used in new code. So we can remove this class completely now.
 
-On 11/22/23 20:03, Krzysztof Kozlowski wrote:
-> On 22/11/2023 14:21, gabriel.fernandez@foss.st.com wrote:
->> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->>
->> Adds clock and reset binding entries for STM32MP25 SoC family
->>
->> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->> ---
->>   .../bindings/clock/st,stm32mp25-rcc.yaml      |  76 +++
->>   include/dt-bindings/clock/st,stm32mp25-rcc.h  | 492 ++++++++++++++++++
->>   include/dt-bindings/reset/st,stm32mp25-rcc.h  | 165 ++++++
->>   3 files changed, 733 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
->>   create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
->>   create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
->> new file mode 100644
->> index 000000000000..8697ab6bc22c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
->> @@ -0,0 +1,76 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/st,stm32mp25-rcc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: STM32MP25 Reset Clock Controller
->> +
->> +maintainers:
->> +  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->> +
->> +description: |
->> +  The RCC hardware block is both a reset and a clock controller.
->> +  RCC makes also power management (resume/supend).
->> +
->> +  See also::
->> +    include/dt-bindings/clock/st,stm32mp25-rcc.h
->> +    include/dt-bindings/reset/st,stm32mp25-rcc.h
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - st,stm32mp25-rcc
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  '#clock-cells':
->> +    const: 1
->> +
->> +  '#reset-cells':
->> +    const: 1
->> +
->> +  clocks:
->> +    items:
->> +      - description: CK_SCMI_HSE High Speed External oscillator (8 to 48 MHz)
->> +      - description: CK_SCMI_HSI High Speed Internal oscillator (~ 64 MHz)
->> +      - description: CK_SCMI_MSI Low Power Internal oscillator (~ 4 MHz or ~ 16 MHz)
->> +      - description: CK_SCMI_LSE Low Speed External oscillator (32 KHz)
->> +      - description: CK_SCMI_LSI Low Speed Internal oscillator (~ 32 KHz)
->> +
->> +  clock-names:
->> +    items:
->> +      - const: hse
->> +      - const: hsi
->> +      - const: msi
->> +      - const: lse
->> +      - const: lsi
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - "#clock-cells"
->> +  - "#reset-cells"
-> If there is going to be respin, please use consistent quotes: either '
-> or ", in each place. No need to respin only for this.
->
-> ...
-ok i will use '
->> diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
->> new file mode 100644
->> index 000000000000..9876ee0dd1e4
->> --- /dev/null
->> +++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
->> @@ -0,0 +1,492 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
-> Any particular reason why do you need 3-clause BSD? Checkpatch asks for
-> different one, because that one clause is just annoying.
+Preferably this series should be applied via the i2c tree.
 
-Yes, the same file can also be used in other components, such as 
-TF-A/OPTEE, and can therefore have a dual licence.
+v2:
+- change tag in commit subject of patch 03
+- add ack tags
+v3:
+- fix a compile error in patch 5
+v4:
+- more ack and review tags
+v5:
+- more acks
 
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> Best regards,
-> Krzysztof
->
-Thanks
+---
 
-Best Regards,
-
-Gabriel
-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+ drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+ drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+ drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+ drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+ drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+ drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+ drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+ drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+ drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+ drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+ drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+ drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+ drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+ drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+ drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+ drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+ drivers/video/fbdev/cyber2000fb.c                 |    1 -
+ drivers/video/fbdev/i740fb.c                      |    1 -
+ drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
+ drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+ drivers/video/fbdev/s3fb.c                        |    1 -
+ drivers/video/fbdev/tdfxfb.c                      |    1 -
+ drivers/video/fbdev/tridentfb.c                   |    1 -
+ drivers/video/fbdev/via/via_i2c.c                 |    1 -
+ include/linux/i2c.h                               |    1 -
+ 31 files changed, 9 insertions(+), 47 deletions(-)
