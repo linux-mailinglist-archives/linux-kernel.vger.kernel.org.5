@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48B87F594A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C297F594C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjKWHd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S1344878AbjKWHeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbjKWHdw (ORCPT
+        with ESMTP id S234607AbjKWHeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:33:52 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7CCF9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:33:58 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507a0907896so658565e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:33:58 -0800 (PST)
+        Thu, 23 Nov 2023 02:34:02 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31053D43
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:34:07 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-332cc1f176bso377117f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:34:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700724836; x=1701329636; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700724845; x=1701329645; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
         bh=kgvXBNohR8MD/S64tYYRwwaWovhCkn1lBTqKUGMvwT8=;
-        b=eW7SX3+mo/BLuSEhaBJnYRfEmvuRt9hYY74ufjpTgbnQmScV1QR2tNtx4pjWOE87t/
-         sIPK9oMlkCUVUJEqtq9iLaS2wgektuBRa3ppbIzJY4Tf/PTZvBvEzYvQVxYkcTXIAsm+
-         Ub7CCnYTzNkZWKIgQKiOPnCMgO35lhGAKPNf3uy7HVZrLCFjkClk1y7lJcB8+biP+jl0
-         yCKXF4Jh3oW9IQxly9UJyR01kUDoa6oygijF/Rnl48TGs2a88aiOkhbrjQ+9rATfuKed
-         bDil+ROyweptnMkS4uBBkWoBKrCcaID969xWzUxLpHQj1g14gGPCCELMTi3rTU6fbM28
-         cT6Q==
+        b=Nz6T7V6nK7RmXnIkdrKOp+3Z+pLdSWND4pRLAStcnxcPIuT3S770KAsFxsIx1/py7S
+         YpocVNWgfFbXzH9jdnF1t5DNvAgRm1Y6y4Srd4aKNZMKsGdyaprTgWDudBSOK0ngRi18
+         KhsEzUVl2vMomkiXUV0Mscguz/IMzlY6PePr7qEBICcjSq0NqbccKSD04K87+rP3ufHx
+         AK8j1/1DtgPJsTOnZtLO1Mb1rtBt0/pT81H0joR7V2mJmAfU+JDk3jSfqOYO7jMOt8Cx
+         5VgkoFX9q9rsGhSJTORJldBOlpxZb1VN19UZeSlJA6TsKV/cGzIog+vejrosdLzrLcps
+         cPdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700724836; x=1701329636;
+        d=1e100.net; s=20230601; t=1700724845; x=1701329645;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=kgvXBNohR8MD/S64tYYRwwaWovhCkn1lBTqKUGMvwT8=;
-        b=v9OXmZun7ARtZSDw6iDo8LsMSfYiD22UiCvLKfFt5B+QBqc+qgo63ihoVSDqSmwiNZ
-         kmM4vpfmedQKmd5lYzAxgnfXCgwt7pv2Fn9whkGjPQ+LdtyNNwEa5LbJVcpuR0iHY5Ja
-         WW9gfx9oIYG9fzMaYGdLqfi3ln2HSHARAqHGLRjX9ygmQD2UDtPwttOryt2eJLZ4/B0Y
-         mvgdCqgtbpNAM65RKfKgQKajCU4z2XZI7IovGDxiZlnv9Syzqo3iIacr4dT7II+1u+ps
-         IwvhTACIuF1+04bt8iRhyFcynSAV37dbCJ+W/NP22L2aCWrqdmqzdy/FRImGukhcW37z
-         78AA==
-X-Gm-Message-State: AOJu0Yw5sudNzkHzWck9K4VR0ZACYbIxi+jFRT9f/8XWaGouM+SfCAf6
-        7oMzhY6kxy+l0znJLR8Zk52LtQ==
-X-Google-Smtp-Source: AGHT+IF9Bd1OF8yDR5vrntG+MsfNOhRw5LLZYWxEOZmarqJZqBKYGlMa/2cSF5ZsYBZ8onZ8B0Y3nQ==
-X-Received: by 2002:a05:6512:4007:b0:502:fdca:2eaa with SMTP id br7-20020a056512400700b00502fdca2eaamr4058963lfb.52.1700724836680;
-        Wed, 22 Nov 2023 23:33:56 -0800 (PST)
+        b=Gl88Uwt9w2Dei2KT1fdebqyjyusuLN2uQYZrPFmbcWayhriXcCwnAqTPQeX5rOu2lF
+         Iv/v8M9/9KkFXlRKmcbpcveDJmllMUqaGqwMtH2DE4OPeIgSmAJZsCh0gsLA8lWl6NQx
+         mw5lVnnn4zWD+ou1S8QKLj18PUI5Ld614JxQO3jw0NIqyN/tLf55PmBjoHzjX9bhI3NE
+         sy+M37r1SvSqLkMQIEO6d1qSggdGTQ1MAvhvqNi/Kg35JswUPiBeQjrEF30LAO4h6JhV
+         osv671JLy3uSXk+2e9ZhHLnY5Znqk8yr18oWvblVmBDtAGef/SZZc7mELWpmALGyWH/E
+         4p5g==
+X-Gm-Message-State: AOJu0YxSXcymRs6nxvKvzXhmv7SI/Yzn2MrgNExERb4wsP/KAlPRi5iE
+        tIQ4U9viYkzkZgkcyVVZx+Lkvw==
+X-Google-Smtp-Source: AGHT+IFTOfaEnZdLiKBndm03/NjhvxA52DVLcb1rEzd4jhT3Upz0/FMw8gWwhZpL1l+RJrwkHmBcbw==
+X-Received: by 2002:a5d:610a:0:b0:332:cada:84a with SMTP id v10-20020a5d610a000000b00332cada084amr2906072wrt.61.1700724845714;
+        Wed, 22 Nov 2023 23:34:05 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b003142e438e8csm816828wra.26.2023.11.22.23.33.55
+        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b003142e438e8csm816828wra.26.2023.11.22.23.34.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 23:33:56 -0800 (PST)
-Message-ID: <1b28be25-83b2-4ad4-aafd-7a7e3fa2b586@linaro.org>
-Date:   Thu, 23 Nov 2023 08:33:55 +0100
+        Wed, 22 Nov 2023 23:34:05 -0800 (PST)
+Message-ID: <8428006e-322b-4a2d-b298-71d997e74343@linaro.org>
+Date:   Thu, 23 Nov 2023 08:34:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: perf: riscv,pmu: drop unneeded quotes
+Subject: Re: [PATCH] dt-bindings: fsl,dpaa2-console: drop unneeded quotes
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+To:     Rob Herring <robh@kernel.org>, Li Yang <leoyang.li@nxp.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122224414.2809184-1-robh@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231122224419.2809361-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,13 +108,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122224414.2809184-1-robh@kernel.org>
+In-Reply-To: <20231122224419.2809361-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
