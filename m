@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC99A7F5D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9EE7F5D69
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345003AbjKWLFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:05:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        id S1344878AbjKWLGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344982AbjKWLFf (ORCPT
+        with ESMTP id S230150AbjKWLGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:05:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEB0D5C
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:05:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E19CC433C8;
-        Thu, 23 Nov 2023 11:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700737542;
-        bh=yqetw7zosrQdLVs1wXRaQ09UgUlARXEo96Fo2p9Et0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WLVP+wUGQg/KxAZFdxBrNZT5f8T7HhXpezp0CWAGFwL50Y5dvr2mz9b+x4oiB5oDu
-         4XPPiMay8e8kIOFCWpwEukgKOfjFhGpuhZObam4eMbAWXgcHw8tknT6FOsVzwVaQIe
-         11RcPm1vthHATIY/h5oI8d4CeaGEgc4WcRVRJ+8XNHWXe2P94KYktC3G4kCF6KD8D0
-         /OZ6wy/ulEXVI5sSh/tPegkqsVcGcQ0QBS/T9Llf5zLp3oW+Z92xpYKC9CRZQtRnTn
-         OGPgsRlZFDfUPtcQvC0gUuf1/e+5JuFyw4eKMGdY4XJaqLpm6aVE3yBAYndEInJVZC
-         jnoQ4Od1T9o9g==
-Date:   Thu, 23 Nov 2023 11:05:38 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v1 2/4] leds: trigger: gpio: Convert to use kstrtox()
-Message-ID: <20231123110538.GA1243364@google.com>
-References: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com>
- <20231103195310.948327-2-andriy.shevchenko@linux.intel.com>
+        Thu, 23 Nov 2023 06:06:49 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69BA1BE;
+        Thu, 23 Nov 2023 03:06:55 -0800 (PST)
+Received: from dggpemd200003.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SbZv41Zh9zMnNK;
+        Thu, 23 Nov 2023 19:02:08 +0800 (CST)
+Received: from [10.67.120.171] (10.67.120.171) by
+ dggpemd200003.china.huawei.com (7.185.36.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Thu, 23 Nov 2023 19:06:52 +0800
+Message-ID: <234619d9-c1ae-4663-9c4a-de6f18dcedba@huawei.com>
+Date:   Thu, 23 Nov 2023 19:06:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231103195310.948327-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: hisilicon/zip - add zip comp high perf
+ configuration
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <shenyang39@huawei.com>
+References: <20231121134024.114476-1-huangchenghai2@huawei.com>
+ <ZV3QSHgP6DgE6NkX@gondor.apana.org.au>
+From:   huangchenghai <huangchenghai2@huawei.com>
+In-Reply-To: <ZV3QSHgP6DgE6NkX@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.120.171]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200003.china.huawei.com (7.185.36.122)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Nov 2023, Andy Shevchenko wrote:
 
-> sscanf() is a heavy one and moreover requires additional boundary checks.
-> Convert driver to use kstrtou8() in gpio_trig_inverted_store().
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/leds/trigger/ledtrig-gpio.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/leds/trigger/ledtrig-gpio.c b/drivers/leds/trigger/ledtrig-gpio.c
-> index d91ae7fde3cf..8a30f9228186 100644
-> --- a/drivers/leds/trigger/ledtrig-gpio.c
-> +++ b/drivers/leds/trigger/ledtrig-gpio.c
-> @@ -53,14 +53,12 @@ static ssize_t gpio_trig_brightness_store(struct device *dev,
->  		struct device_attribute *attr, const char *buf, size_t n)
->  {
->  	struct gpio_trig_data *gpio_data = led_trigger_get_drvdata(dev);
-> -	unsigned desired_brightness;
-> +	u8 desired_brightness;
->  	int ret;
->  
-> -	ret = sscanf(buf, "%u", &desired_brightness);
-> -	if (ret < 1 || desired_brightness > 255) {
-> -		dev_err(dev, "invalid value\n");
-> -		return -EINVAL;
-> -	}
-> +	ret = kstrtou8(buf, 10, &desired_brightness);
+On Wed, Nov 22, 2023 at 05:56PM, Herbert Xu wrote:
 
-Where does 10 come from?
+> On Tue, Nov 21, 2023 at 09:40:24PM +0800, Chenghai Huang wrote:
+>> To meet specific application scenarios, the function of switching between
+>> the high performance mode and the high compression mode is added.
+>>
+>> Use the perf_mode=0/1 configuration to set the compression high-perf mode,
+>> 0(default, high compression mode), 1(high performance mode).
+>>
+>> Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
+> Is it still compatible with the software algorithm implementation
+> when in high performance mode, in both directions?
+>
+> Cheers,
 
-> +	if (ret)
-> +		return ret;
->  
->  	gpio_data->desired_brightness = desired_brightness;
->  
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
+The high performance mode only improves the performance of the compression
+direction, and it is compatible with the software algorithm implementation in
+both directions.
 
--- 
-Lee Jones [李琼斯]
+The v2 patch will be sent for adding comments "These two modes only apply to
+the compression direction." to the code and "crypto" prefix to the subject.
+
+Thanks,
+Chenghai
+
