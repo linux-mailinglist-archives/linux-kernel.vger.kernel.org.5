@@ -2,123 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7127F671F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193D47F6737
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjKWTaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S229876AbjKWTeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:34:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWTax (ORCPT
+        with ESMTP id S229687AbjKWTeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:30:53 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8C59A;
-        Thu, 23 Nov 2023 11:30:59 -0800 (PST)
-Received: from [192.168.1.103] (178.176.78.136) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 23 Nov
- 2023 22:30:56 +0300
-Subject: Re: [PATCH 03/13] net: ravb: Make write access to CXR35 first before
- accessing other EMAC registers
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
-        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <sergei.shtylyov@cogentembedded.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-4-claudiu.beznea.uj@bp.renesas.com>
- <c27d5dd1-bcdc-a79e-bf0b-a7e93f5d9545@omp.ru>
- <2545ffad-e970-499e-9192-ff89776e1946@tuxon.dev>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <2b1caad5-281b-4284-3ffe-3c50395c6d39@omp.ru>
-Date:   Thu, 23 Nov 2023 22:30:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 23 Nov 2023 14:34:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6281FD46;
+        Thu, 23 Nov 2023 11:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700768051; x=1732304051;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7pUMEDgOXETK0P7eUQYqpgkIhoD1c+hcpjhL1V6yer4=;
+  b=jYA+oiM9jmx9IpzALF+ygytG/AAHBEfJc23z7tPKySF3TbHao35Pl/iF
+   tNdw+dpeCQaUypUr0Jv+nMk9JxtTRmClA2NxsTAzG2/iBeC4w6dgyraxk
+   boQDte2grQJpy6xX6Y5dDaPzRMr5dw0HSJAykuIbHF7LJgJVDeY6w4MU1
+   E+gMl1YunMl+R+8Fvhdxmx9bqK0lbCSVIud/jfMqpx9XPwiqv5RczgKes
+   zHdw2/xNSbE8elE8zdJ/de/bvjqXgl3ElnJMJf54/E+Dig/LNwNSVZTaB
+   Ap5FU5tZDvSbhlLR6LSyY6h9Pxv+tNEYMzwOJQnZUOzTW3U+XUIYdKZVP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371671397"
+X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
+   d="scan'208";a="371671397"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771062219"
+X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
+   d="scan'208";a="771062219"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2023 11:33:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 6E71C1C7; Thu, 23 Nov 2023 21:33:58 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: [PATCH v2 00/21] pinctrl: Convert struct group_desc to use struct pingroup
+Date:   Thu, 23 Nov 2023 21:31:28 +0200
+Message-ID: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-In-Reply-To: <2545ffad-e970-499e-9192-ff89776e1946@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [178.176.78.136]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 23:48:29
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.136
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/21/2023 23:54:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 8:06:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 9:02 AM, claudiu beznea wrote:
+The struct group_desc has a lot of duplication with struct pingroup.
+Deduplicate that by embeddind the latter in the former and convert
+users.
 
-[...]
+Linus, assuming everything is fine, I can push this to my tree.
+Or you can apply it (assumming all CIs and people are happy with
+the series).
 
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> Hardware manual of RZ/G3S (and RZ/G2L) specifies the following on the
->>> description of CXR35 register (chapter "PHY interface select register
->>> (CXR35)"): "After release reset, make write-access to this register before
->>> making write-access to other registers (except MDIOMOD). Even if not need
->>> to change the value of this register, make write-access to this register
->>> at least one time. Because RGMII/MII MODE is recognized by accessing this
->>> register".
->>>
->>> The setup procedure for EMAC module (chapter "Setup procedure" of RZ/G3S,
->>> RZ/G2L manuals) specifies the E-MAC.CXR35 register is the first EMAC
->>> register that is to be configured.
->>>
->>> Note [A] from chapter "PHY interface select register (CXR35)" specifies
->>> the following:
->>> [A] The case which CXR35 SEL_XMII is used for the selection of RGMII/MII
->>> in APB Clock 100 MHz.
->>> (1) To use RGMII interface, Set ‘H’03E8_0000’ to this register.
->>> (2) To use MII interface, Set ‘H’03E8_0002’ to this register.
->>>
->>> Take into account these indication.
->>>
->>> Fixes: 1089877ada8d ("ravb: Add RZ/G2L MII interface support")
->>
->>    The bug fixes should be submitted separately and against the net.git repo...
-> 
-> OK, thanks for pointing it.
+NB. This series contains previously sent patches for Qualcomm and
+Nuovoton. Here the updated version for Qualcomm that splits previous
+patch to two and fixes compilation warnings.
 
-   And I think Linus' repo will do as well...
+NB. The function_desc is in plan to follow the similar deduplication.
 
-MBR, Sergey
+In v2:
+- added a few patches to fix multiple compile-time errors (LKP)
+- added tag (Jonathan)
+
+v1: https://lore.kernel.org/r/20231122164040.2262742-1-andriy.shevchenko@linux.intel.com
+
+Andy Shevchenko (21):
+  pinctrl: qcom: lpass-lpi: Replace kernel.h with what is being used
+  pinctrl: qcom: lpass-lpi: Remove unused member in struct lpi_pingroup
+  pinctrl: equilibrium: Use temporary variable to hold pins
+  pinctrl: imx: Use temporary variable to hold pins
+  pinctrl: core: Make pins const in struct group_desc
+  pinctrl: equilibrium: Convert to use struct pingroup
+  pinctrl: keembay: Convert to use struct pingroup
+  pinctrl: nuvoton: Convert to use struct pingroup and
+    PINCTRL_PINGROUP()
+  pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+  pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
+  pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
+  pinctrl: core: Embed struct pingroup into struct group_desc
+  pinctrl: bcm: Convert to use grp member
+  pinctrl: equilibrium: Convert to use grp member
+  pinctrl: imx: Convert to use grp member
+  pinctrl: ingenic: Convert to use grp member
+  pinctrl: keembay: Convert to use grp member
+  pinctrl: mediatek: Convert to use grp member
+  pinctrl: renesas: Convert to use grp member
+  pinctrl: starfive: Convert to use grp member
+  pinctrl: core: Remove unused members from struct group_desc
+
+ drivers/pinctrl/bcm/pinctrl-ns.c              |  4 +-
+ drivers/pinctrl/core.c                        | 13 +++---
+ drivers/pinctrl/core.h                        | 19 +++++---
+ drivers/pinctrl/freescale/pinctrl-imx.c       | 44 +++++++++----------
+ drivers/pinctrl/mediatek/pinctrl-moore.c      | 13 +++---
+ drivers/pinctrl/mediatek/pinctrl-moore.h      |  7 +--
+ drivers/pinctrl/mediatek/pinctrl-paris.h      |  7 +--
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c     |  9 ++--
+ drivers/pinctrl/pinctrl-equilibrium.c         | 39 ++++++++--------
+ drivers/pinctrl/pinctrl-ingenic.c             | 27 +++++-------
+ drivers/pinctrl/pinctrl-keembay.c             |  6 +--
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h      |  6 +--
+ .../pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c   | 16 -------
+ .../pinctrl/qcom/pinctrl-sc8280xp-lpass-lpi.c | 20 ---------
+ .../pinctrl/qcom/pinctrl-sm6115-lpass-lpi.c   | 20 ---------
+ .../pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c   | 15 -------
+ .../pinctrl/qcom/pinctrl-sm8350-lpass-lpi.c   | 16 -------
+ .../pinctrl/qcom/pinctrl-sm8450-lpass-lpi.c   | 24 ----------
+ .../pinctrl/qcom/pinctrl-sm8550-lpass-lpi.c   | 24 ----------
+ .../pinctrl/qcom/pinctrl-sm8650-lpass-lpi.c   | 24 ----------
+ drivers/pinctrl/renesas/pinctrl-rza1.c        |  2 +-
+ drivers/pinctrl/renesas/pinctrl-rza2.c        | 10 ++---
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       |  6 +--
+ drivers/pinctrl/renesas/pinctrl-rzv2m.c       |  6 +--
+ .../starfive/pinctrl-starfive-jh7100.c        |  8 ++--
+ .../starfive/pinctrl-starfive-jh7110.c        |  8 ++--
+ 26 files changed, 106 insertions(+), 287 deletions(-)
+
+-- 
+2.43.0.rc1.1.gbec44491f096
+
