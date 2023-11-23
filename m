@@ -2,174 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 218107F60BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E9F7F60BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345599AbjKWNrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S1345598AbjKWNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345597AbjKWNrh (ORCPT
+        with ESMTP id S1345529AbjKWNst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:47:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C96B1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700747264; x=1732283264;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+3ldtTDXARvqNtIx8SpOQNFanxpj2hF5Q8A+SDJI1ck=;
-  b=H32gT3cK8eccY9lx1FkN7TNXYLG4+zVTuZ/xhn3qqPNhOGnjZKBoF5BT
-   zWrpgMvxDHKaBzCeKcdjWJnD4Hyt+xV0wuak66GymtdFBs8AxPYE7q1a1
-   qHBKorHLWSBaJDtqFJB7Ns06hwJOKMKabJzz+gJbamds+/z1YZM21Fizw
-   j8sKLdPS+hM1ZjWVeoCt0HRYEVd2tssUMG/jHInilakvoPiRan+KSJV5Z
-   zb/SsPT6QGvI9+Az11wRMnmAPsvwy1oAkXkfDKw0zLldK6hT9MBoGHsPw
-   MJ3dIYJEqortDBuZ1B0AKA7w+9eJZToHjVhSSq2AM6E0eEnGt6VZlFq0S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389417767"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="389417767"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 05:47:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833431403"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="833431403"
-Received: from ckochhof-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.58.117])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 05:47:33 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 6F5A210A38A; Thu, 23 Nov 2023 16:47:31 +0300 (+03)
-Date:   Thu, 23 Nov 2023 16:47:31 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv3 10/14] x86/tdx: Convert shared memory back to private
- on kexec
-Message-ID: <20231123134731.4zc3nq7gpzrcrbos@box.shutemov.name>
-References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
- <20231115120044.8034-11-kirill.shutemov@linux.intel.com>
- <8277e9a1df4c3fd968edf670b0aa7dc1dd50dcf8.camel@intel.com>
- <20231121095859.36xiltn2gwgyxmwy@box.shutemov.name>
- <d7ac53b76217abbb9bc06717b76ec91a376ba210.camel@intel.com>
+        Thu, 23 Nov 2023 08:48:49 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BE91B2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:48:55 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507a5f2193bso940286e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1700747334; x=1701352134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wYJ9RINpWO/etmrdmn1FP6FlQ9EPAx5C4AtYkJeamEI=;
+        b=cuNGAaXJmWlRWqjJena6EFfVjKGaTvWz50yhLoPjEGVBOVDyrKuDtQAO2HT57j7tHQ
+         KnbtiC8F+y86KMXPGZ5Vz6Eoiee/j0izmlHp/DrfhkIZt/C+oCqtBUnsyWaiazNB7vaB
+         GDhgUMMzUIG+wmW+QS0seAE97+h3JBUuvBJP0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700747334; x=1701352134;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wYJ9RINpWO/etmrdmn1FP6FlQ9EPAx5C4AtYkJeamEI=;
+        b=Thltvn/uqedt7S8L4bMqv3f3s8vemJU8tXJY52lOMHse4FpOKEFdL8mLEzkedZkRIl
+         tT8VS0Ya15eBV1MnHMZIoY4VbVUm20gyVsbmB/yKwHSeqz9CCTU2aWt4cCzM3235DTI+
+         gM9/C7903ohQ6DwlL6trLBIerj4SRjfWCPPfXFNMqKeZfJVIHC3W4x4EdJwG98Xkqn70
+         vaq4aihFqyZXFRyoZJwx7cT9vBRiAEZRUAoVdTlUFQohrmOR0Y5/NZsd8WgJs0rb/yCU
+         5PV0PmtqyN9sXUSTxftXG1mpzecxwLuqK0PCi/5MW6CwQ0DmEMXTmKL/kIAADjj1AzOd
+         heVw==
+X-Gm-Message-State: AOJu0Yzxf3T4LFgD5Jzs+vOTQ23DBG5RJ3O208NH9HOG1B8pLhMsiU9B
+        961mFDjIuh0q+8etSekwa6tucA==
+X-Google-Smtp-Source: AGHT+IG4CVoPRUAn77ky2ffnCHCPrIVvxiwyxMrF5VOgYS9HaFefUSItqzrdzQkf09aJ01Bo2N1g3g==
+X-Received: by 2002:a19:7512:0:b0:50a:a31c:39b1 with SMTP id y18-20020a197512000000b0050aa31c39b1mr865785lfe.9.1700747333878;
+        Thu, 23 Nov 2023 05:48:53 -0800 (PST)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id t6-20020a056512068600b005094486b705sm199933lfe.16.2023.11.23.05.48.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 05:48:53 -0800 (PST)
+Message-ID: <b8df5f0c-a3cd-4cad-b1c6-db89686464fc@rasmusvillemoes.dk>
+Date:   Thu, 23 Nov 2023 14:48:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7ac53b76217abbb9bc06717b76ec91a376ba210.camel@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Content-Language: en-US, da
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Peter Rosin <peda@axentia.se>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <e731c0a9-7a5c-41c3-87aa-d6937b99d01a@rasmusvillemoes.dk>
+ <20231123103802.GA30056@wunner.de>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <20231123103802.GA30056@wunner.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 10:07:44AM +0000, Huang, Kai wrote:
-> On Tue, 2023-11-21 at 12:58 +0300, kirill.shutemov@linux.intel.com wrote:
-> > On Tue, Nov 21, 2023 at 03:46:41AM +0000, Huang, Kai wrote:
-> > > 
-> > > >  
-> > > > +static atomic_t conversions_in_progress;
-> > > > +static bool conversion_allowed = true;
-> > > > 
-> > > 
-> > > [...]
-> > > 
-> > > >  /* Used while preparing memory map entries for second kernel */
-> > > >  struct crash_memmap_data {
-> > > > @@ -107,6 +108,9 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
-> > > >  
-> > > >  	crash_smp_send_stop();
-> > > >  
-> > > > +	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> > > > +		x86_platform.guest.enc_kexec_unshare_mem(true);
-> > > > +
-> > > >  	cpu_emergency_disable_virtualization();
-> > > >  
-> > > >  	/*
-> > > > diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> > > > index 830425e6d38e..9fb302562bfd 100644
-> > > > --- a/arch/x86/kernel/reboot.c
-> > > > +++ b/arch/x86/kernel/reboot.c
-> > > > @@ -12,6 +12,7 @@
-> > > >  #include <linux/delay.h>
-> > > >  #include <linux/objtool.h>
-> > > >  #include <linux/pgtable.h>
-> > > > +#include <linux/kexec.h>
-> > > >  #include <acpi/reboot.h>
-> > > >  #include <asm/io.h>
-> > > >  #include <asm/apic.h>
-> > > > @@ -31,6 +32,7 @@
-> > > >  #include <asm/realmode.h>
-> > > >  #include <asm/x86_init.h>
-> > > >  #include <asm/efi.h>
-> > > > +#include <asm/tdx.h>
-> > > >  
-> > > >  /*
-> > > >   * Power off function, if any
-> > > > @@ -716,6 +718,9 @@ static void native_machine_emergency_restart(void)
-> > > >  
-> > > >  void native_machine_shutdown(void)
-> > > >  {
-> > > > +	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) && kexec_in_progress)
-> > > > +		x86_platform.guest.enc_kexec_unshare_mem(false);
-> > > > +
-> > > >  	/* Stop the cpus and apics */
-> > > >  #ifdef CONFIG_X86_IO_APIC
-> > > >  	/*
-> > > 
-> > > In native_machine_crash_shutdown() the "unshare" is called after
-> > > crash_smp_send_stop(), but here it's called before the stop_other_cpus().
-> > > 
-> > > I am wondering if you call "unshare" after stop_other_cpus(), can we guarantee
-> > > there's only one cpu running in both normal and crash kexec in which case you
-> > > might be able to get rid of the "conversions_in_progress" and
-> > > "conversion_allowed" above?
-> > 
-> > For normal kexec we need to keep other CPUs going so they can finish
-> > conversion cleanly and get us to the known state. Note that the conversion
-> > is not atomic wrt preemption.
+On 23/11/2023 11.38, Lukas Wunner wrote:
+> On Thu, Nov 23, 2023 at 11:07:16AM +0100, Rasmus Villemoes wrote:
+>> On 22/11/2023 15.53, Lukas Wunner wrote:
+>>> But if that patch gets accepted, we'd have *three* different modes:
+>>> RS-232, RS-485, RS-422.  A single GPIO seems insufficient to handle that.
+>>> You'd need at least two GPIOs.
+>>
+>> I don't see Crescent introducing any new gpio that needs to be handled.
+>> In fact, I can't even see why from the perspective of the software that
+>> rs422 isn't just rs232; there's no transmit enable pin that needs to be
+>> handled. But maybe the uart driver does something different in rs422
+>> mode; I assume he must have some update of some driver, since otherwise
+>> the new rs422 bit should be rejected by the core. So I can't really see
+>> the whole picture of that rs422 story.
 > 
-> Yeah makes sense.
+> The question is, could we conceivably have the need to support
+> switching between the three modes RS-232, RS-485, RS-422.
+> If yes, then the GPIO mux interface should probably allow for that.
 > 
-> Add a comment to explain this?  That would help to remind us when we look at the
-> code like years later.
-
-Okay, will do.
-
-> > In crash scenario we do the best effort: detect if we race with conversion
-> > and report. We cannot really wait for conversions to finish: we get into
-> > crash path with IRQs disabled and in generally unknown state.
-> > 
+> As a case in point, the Siemens IOT 2040 has two serial ports
+> which can be set to either of those three modes.  The signals
+> are routed to the same D-sub socket, but the pins used are
+> different.  See page 46 and 47 of this document:
 > 
-> Maybe it's good idea to add a TDVMCALL to query page status from the TDX module?
-> In that case we can avoid the inaccuracy when looking at the page table.
+> https://cache.industry.siemens.com/dl/files/658/109741658/att_899623/v1/iot2000_operating_instructions_enUS_en-US.pdf
+> 
+> The driver for this product is 8250_exar.c.  It's an Intel-based
+> product, so no devicetree, but it shows that such use cases exist.
 
-No. TDX module has no control over what memory is shared. Shared-EPT is in
-full control of VMM and therefore we have to track unshared memory on the
-guest side to make sure that VMM doesn't do silly things.
+OK. I did look at the mux-controller/mux-consumer bindings, but couldn't
+really make heads or tails of it, and there aren't a whole lot of
+examples in-tree. Also, the C API seems ... not quite what is needed
+here. I realize that's not really anything to do with the best way to
+describe the hardware, but that, plus the fact that the serial core
+already handles a number of gpios controlling circuitry related to
+rs485, was what made me go for one extra gpio.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+How would a mux-consumer description look?
+
+  mux-states = <&mux 0>, <&mux 1>;
+  mux-state-names = "rs485", "rs232";
+
+or should that be mux-controls? Would that be enough so that we're sure
+that if and when a rs422 state is needed that could easily be
+represented here?
+
+Now implementation-wise, there's the complication that switching the mux
+to/from rs485 mode must be done after/before the driver's ->rs485_config
+is called, to avoid the transceiver temporarily being activated (thus
+blocking/disturbing other traffic). That plus the need to mux_*_deselect
+the old mode means the consumer (serial core in this case) ends up with
+quite a lot of bookkeeping, and even more so taking error path into
+consideration.
+
+Rasmus
+
