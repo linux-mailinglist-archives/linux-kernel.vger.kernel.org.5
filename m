@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A987F638C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3307F638E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjKWQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:06:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
+        id S1344982AbjKWQG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjKWQGV (ORCPT
+        with ESMTP id S229851AbjKWQGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:06:21 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F3110C2;
-        Thu, 23 Nov 2023 08:06:27 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANFDGa7031479;
-        Thu, 23 Nov 2023 16:06:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=K+Wh+d8J7rh0s3Lq2zXWuaoXUK1T2X89T09eukRww1M=;
- b=MLL3UYjolqNRHyEYsKtnAvSX1s/BwBqQO/wo519WlXa1BoXsEhYHsu9V5wA8qqjnvn3i
- hA4UpfuwrbEGJ3NhbgDwLoDwaybiXe6A+LCfX6/fXcvSCwon10w7rQEasfGSf2f1rUDW
- 6dVyoW5zBO4mBnTQPBsTGwB/9MHanyFi2tTmMr6bWXoe3KIu+YMDI/KoMkU0cFvOUixa
- E4ctVMZWIvmRXCscjSxL4RJfHogooXsyZ0aIFplWMtUQiQLd+55A2u0Td/oyHxF57k7E
- DNphXWUd6dy32ZC/lzmaNiraByBLFK/CctChKvNzC8z7JuxFr5aRYY0oVAU+nFLLb4+R 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj969hev3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 16:06:08 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ANFcTCS015116;
-        Thu, 23 Nov 2023 16:06:08 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj969heuu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 16:06:08 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANFmjWs008996;
-        Thu, 23 Nov 2023 16:06:07 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uf7ktgb8g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 16:06:07 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ANG65QW66060694
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Nov 2023 16:06:05 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8717F2004D;
-        Thu, 23 Nov 2023 16:06:05 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 971C720040;
-        Thu, 23 Nov 2023 16:06:04 +0000 (GMT)
-Received: from osiris (unknown [9.171.55.214])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Nov 2023 16:06:04 +0000 (GMT)
-Date:   Thu, 23 Nov 2023 17:06:03 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
-        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
-        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
-        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v5] eventfs: Remove eventfs_file and just use
- eventfs_inode
-Message-ID: <20231123160603.9603-B-hca@linux.ibm.com>
-References: <20231004165007.43d79161@gandalf.local.home>
- <20231117142335.9674-A-hca@linux.ibm.com>
- <20231117143829.9674-B-hca@linux.ibm.com>
- <20231123112548.9603-A-hca@linux.ibm.com>
- <20231123102349.110e4525@gandalf.local.home>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123102349.110e4525@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uqkeVX_uUbIjzgxUDUo7AiPsxkAaIws4
-X-Proofpoint-ORIG-GUID: jBs3tPUlKG22GKF_qg4qexeGNwefmy1E
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 23 Nov 2023 11:06:55 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E627210E3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:07:00 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9fe0a598d8so975241276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:07:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700755620; x=1701360420; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gECdDvL3zdjhM1uOEUZS/mAxmnQq5h/GZkoU/9Sdfs0=;
+        b=bRnVi8b9AnYrq7qlDJgCkYwyekEAfZZMrgcuXg/E/wOJ7kwav0GFsGeM7lXZpsfiqS
+         9VEYAIgP/e11OGlyjreBDQ9YbmwxSynFv+MR+92rUxpTr0FMN09GHUTBFG7J9gkkLZXi
+         KgDQE7wuH5SZLabEOea/zAdOcyNh/tuhTMD4ciQoii1d9ALrrV2a0avOaMp89zgM0wuA
+         T3SUHfQ03tWD05t6VlAOsf5bNTMhLVQP2HS+KrNPzgDlNDhu6S1LHJGCP1vdpkBHPknL
+         VhoUsdIyPThIkk/FQadAwbKr4EeMN9lqW/t0z15loTqd7mPG/l3m0VImy8ZnjQXXD/IJ
+         Ec+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700755620; x=1701360420;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gECdDvL3zdjhM1uOEUZS/mAxmnQq5h/GZkoU/9Sdfs0=;
+        b=HoCkJ8TBARRwGvHR5yCJfwvEC4xJY310AxfwnM9hOdnVLkg6yfM60cO3n7bhQTlB0w
+         cnMh7aT6TakWqnQy9zPUMszUC9b0KDq07ihOG49kJJ3x6N8LNtapaH/rZE32+hE3W8kw
+         YPVky0hoKFWn9XGYar+47OsfXKbAv7NzHppb6D1pPNg3FaHQp+mJszQYZxlo19a0tGeo
+         qiEUUZXICixgc5sVO8dJvRA/bEpNypFflYbAJKJObu0QGn2Co/EH5Qsjk+wvhEYNcIOj
+         wMf+wrbPJkmK92dNIzwmjtPbifEj6R+KoFupSoQ49t7bk2X1d5c41gwWVKLsVFPrny1M
+         WFMw==
+X-Gm-Message-State: AOJu0YyxiSEIihQ+HLGzCBM8c86QZb/yZ9rze2uM7fG/qxCH6Qh1dMNO
+        pzEya2CHLM5p3X/8NxRKlzql+LZBr1c8yUHNeRLf4zUkeMWT2Bzb
+X-Google-Smtp-Source: AGHT+IG6rRchvB3o7IDoWGjkljYi/LHm1aTYwpKg5U+Xqyfaq7bFXS/QLI2PhPRLvXpmv8+CX2s4KbvZozP8qky2+KM=
+X-Received: by 2002:a25:9c44:0:b0:db4:25b7:5f8b with SMTP id
+ x4-20020a259c44000000b00db425b75f8bmr3554529ybo.63.1700755620065; Thu, 23 Nov
+ 2023 08:07:00 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- mlxscore=0 priorityscore=1501 clxscore=1015 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311230117
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <79301d04-c0cb-4740-8a6d-27a889b65daf@linux.dev> <CAA8EJpom5kAbDkacOdqp6BR7YPfmCSXaQfDYRVcLf9eGmi64CQ@mail.gmail.com>
+ <121163c9-0d56-47ad-a12e-e67390fef2b4@linux.dev> <CAA8EJpowjhX=LL-9cnQL4pfCei63zNkCGW5wGOeeFxcnFpNCVA@mail.gmail.com>
+ <00ba2245-0e48-4b21-bcd4-29dfb728e408@linux.dev> <CAA8EJpoiehS2wS3ri_DggzxeEfLY4yK7X6c+bCFKvkwSce6r+A@mail.gmail.com>
+ <963d7722-738f-4e46-bfb7-131027ca5341@linux.dev>
+In-Reply-To: <963d7722-738f-4e46-bfb7-131027ca5341@linux.dev>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 23 Nov 2023 18:06:48 +0200
+Message-ID: <CAA8EJpoTWoSYjyZL7ARQiAeWabcXymy6f-tAzPM3YO=C_GOOZw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,34 +77,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 10:23:49AM -0500, Steven Rostedt wrote:
-> On Thu, 23 Nov 2023 12:25:48 +0100
-> Heiko Carstens <hca@linux.ibm.com> wrote:
-> 
-> > So, if it helps (this still happens with Linus' master branch):
-> > 
-> > create_dir_dentry() is called with a "struct eventfs_inode *ei" (second
-> > parameter), which points to a data structure where "is_freed" is 1. Then it
-> > looks like create_dir() returned "-EEXIST". And looking at the code this
-> > combination then must lead to d_invalidate() incorrectly being called with
-> > "-EEXIST" as dentry pointer.
-> 
-> I haven't looked too much at the error codes, let me do that on Monday
-> (it's currently Turkey weekend here in the US).
-> 
-> But could you test this branch:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git  trace/core
-> 
-> I have a bunch of fixes in that branch that may fix your issue. I just
-> finished testing it and plan on pushing it to Linus before the next rc
-> release.
+On Thu, 23 Nov 2023 at 17:41, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+> Hi,
+>
+>
+> On 2023/11/23 16:08, Dmitry Baryshkov wrote:
+> >> The semantics of DRM_BRIDGE_ATTACH_NO_CONNECTOR flag are implement-defined,
+> > No, they are not. Semantics are pretty simple: do not create the
+> > drm_connector instance. Pass the flag to the next bridge in the chain.
+>
+>
+> Then, my problem is that do we allow create a drm_connector instance in drm bridge
+> driver nowadays?
 
-This is not that easy to reproduce, however you branch contains commit
-71cade82f2b5 ("eventfs: Do not invalidate dentry in create_file/dir_dentry()")
-which removes the d_invalidate() call.
-The crash I reported cannot happen anymore with that commit. I'll consider
-this fixed, and report again if this (or something else) still causes
-problems.
+Yes, if there is no DRM_BRIDGE_ATTACH_NO_CONNECTOR. But that's deprecated IMO.
 
-Thanks!
+-- 
+With best wishes
+Dmitry
