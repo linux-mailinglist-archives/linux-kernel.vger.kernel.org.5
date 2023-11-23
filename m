@@ -2,108 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD737F6019
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C6D7F602B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345445AbjKWNUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S1345457AbjKWNY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345271AbjKWNUJ (ORCPT
+        with ESMTP id S1345271AbjKWNY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:20:09 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C0D1B3;
-        Thu, 23 Nov 2023 05:20:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1700745616; x=1732281616;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fWNtfXHzXywCV3rJawk3X+XqobnQl2nUu8oA1ElHfxI=;
-  b=AboTjH3xu8fuu0PWuAzOb1DB5nU5Wy9Ma7KNcRTZK8Uu/CGLuqXUo6Sm
-   G6criFqY6MKpGlemc+mMMv1tDzjOyf90LMX3Qx9aNhF6EOxskr1vJxWb8
-   lqn7f0M08JTQXld/N2j/C3jqOjhU1wBajVSO8SmqW55CgWNNwWz58LlCs
-   Qj0eRkB2+ffzVb1LQhat01Efa8gIYQnC7q4ltsbpyGXSJ9RZEXl88gJMc
-   JCBA5TgoxgUmR0qDhNahh7fGXQGK6dxV+W1SEKtE1XMG99qREMEXuzkWv
-   6/E+XP56KkGLn2Zg1fpUQx45AJtYy932zOfcYY97gbPw6HhckeNb0fAzh
-   g==;
-X-CSE-ConnectionGUID: bvAY+6v1Q022ekVbEs8Vvw==
-X-CSE-MsgGUID: E6+Bsg93R3eTTQTJUaz5eQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="asc'?scan'208";a="12192189"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Nov 2023 06:20:16 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 23 Nov 2023 06:20:08 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 23 Nov 2023 06:20:06 -0700
-Date:   Thu, 23 Nov 2023 13:19:38 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: perf: riscv,pmu: drop unneeded quotes
-Message-ID: <20231123-nutlike-handiwork-2b24bffc64ac@wendy>
-References: <20231122224414.2809184-1-robh@kernel.org>
+        Thu, 23 Nov 2023 08:24:56 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1069A
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:25:02 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 511E866073AE;
+        Thu, 23 Nov 2023 13:25:00 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700745901;
+        bh=q/qh9Y0G0C6PaJAGrQxpJXazia6tayD76/VLLIh7ygE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Hj0rhfA1AIkEXPBO4AadPcUNOqdvX7wTEihgra/ekQEVK+9NSZzaocHiJdpsL+Oz9
+         e1bmS30rSGhl84cMrFM/+losPMlfQMbDu4PZ4DKixVzsXmvExvISv3dI7ixlczpW/Y
+         f1urCdmZuV8h/7psppney8NjvWhLIOsUIN+ZUTCxOCr9nj98DPNSUd/y8T4NjLud/c
+         ITz14jxA8i+0x0NIzYfka84nF23GJSSHrYV4BkKD+NHSp6DQTGVY91v3XJFUTvR+F8
+         3Wiy0axGQ5d3w24TpBFZ9NqQdHPcSX+cQESKXqK+ALUWe0CIhCYCY0yxBY0V3jULC/
+         /42/CdUimesbQ==
+Message-ID: <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
+Date:   Thu, 23 Nov 2023 14:24:57 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VwNbz+r5L7xIZna3"
-Content-Disposition: inline
-In-Reply-To: <20231122224414.2809184-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     steven.price@arm.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski@linaro.org, kernel@collabora.com
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+ <20231123113530.46191ded@collabora.com>
+ <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+ <20231123135933.34d643f7@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231123135933.34d643f7@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---VwNbz+r5L7xIZna3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Il 23/11/23 13:59, Boris Brezillon ha scritto:
+> On Thu, 23 Nov 2023 12:15:01 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>> Il 23/11/23 11:35, Boris Brezillon ha scritto:
+>>> On Thu, 23 Nov 2023 10:53:20 +0100
+>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> wrote:
+>>>    
+>>>> Some SoCs may be equipped with a GPU containing two core groups
+>>>> and this is exactly the case of Samsung's Exynos 5422 featuring
+>>>> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+>>>> is partial, as this driver currently supports using only one
+>>>> core group and that's reflected on all parts of it, including
+>>>> the power on (and power off, previously to this patch) function.
+>>>>
+>>>> The issue with this is that even though executing the soft reset
+>>>> operation should power off all cores unconditionally, on at least
+>>>> one platform we're seeing a crash that seems to be happening due
+>>>> to an interrupt firing which may be because we are calling power
+>>>> transition only on the first core group, leaving the second one
+>>>> unchanged, or because ISR execution was pending before entering
+>>>> the panfrost_gpu_power_off() function and executed after powering
+>>>> off the GPU cores, or all of the above.
+>>>>
+>>>> Finally, solve this by changing the power off flow to
+>>>>    1. Mask and clear all interrupts: we don't need nor want any, as
+>>>>       we are polling PWRTRANS anyway;
+>>>>    2. Call synchronize_irq() after that to make sure that any pending
+>>>>       ISR is executed before powering off the GPU Shaders/Tilers/L2
+>>>>       hence avoiding unpowered registers R/W; and
+>>>>    3. Ignore the core_mask and ask the GPU to poweroff both core groups
+>>>
+>>> Could we split that in two patches? 1+2 in one patch, and 3 in another.
+>>> These are two orthogonal fixes IMO.
+>>>    
+>>
+>> My initial idea was exactly that, but I opted for one patch doing 'em all
+>> because a "full fix" comprises all of 1+2+3: the third one without the
+>> first two and vice-versa may not fully resolve the issue that was seen
+>> on the HC1 board.
+> 
+> Guess it depends how you see it. I'd argue that these are 2 orthogonal
+> bugs, and the suspend fix might be worth backporting to older versions.
+> 
 
-On Wed, Nov 22, 2023 at 03:44:14PM -0700, Rob Herring wrote:
-> Drop unneeded quotes over simple string values to fix a soon to be
-> enabled yamllint warning:
->=20
->   [error] string value is redundantly quoted with any quotes (quoted-stri=
-ngs)
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Yes, but older versions are not affected by this regression because the GPU
+was never turned off for real... so this commit is really fixing just the
+issues that came out *because* of the "Really power off" commit, which is
+not worth backporting as we already saw one regression with that and doing
+such thing would be mostly dangerous.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+If your suggestion was to backport 1+2 instead, I disagree: there are no
+suspend instabilities in older kernel versions, so we'd be fixing something
+that anyway always worked fine for years.
+
+This is to say: the "Really power off" code should be treated like a commit
+that implements a new feature, rather than fixing an old one, *only* because
+there is a possibility to create regressions somehow (again, we already had
+one).
+
+At least IMO...
+
+>>
+>> So, while I agree that it'd be slightly more readable as a diff if those
+>> were two different commits I do have reasons against splitting.....
+> 
+> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
+> in when we power-off the cores, I think we'd be better off dropping
+> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
+> at [re]initialization time, and then have a separate series that fixes
+> the problem more generically.
+> 
+
+But that didn't work:
+https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+
+
+...while this "full" solution worked:
+https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
+
+https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
+
+
+...so this *is* a "quick fix" already... :-)
+
+>>>> +	gpu_write(pfdev, GPU_INT_MASK, 0);
+>>>> +	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+>>>> +
+>>>> +	/*
+>>>> +	 * Make sure that we don't have pending ISRs, otherwise we'll be
+>>>> +	 * reading and/or writing registers while the GPU is powered off
+>>>> +	 */
+>>>> +	synchronize_irq(pfdev->irq);
+>>>
+>>> Could we move that to a panfrost_gpu_suspend_irq() helper? I'm also not
+>>> sure making it part of panfrost_gpu_power_off() is a good idea. I'd
+>>> rather have this panfrost_gpu_suspend_irq() helper called from
+>>> panfrost_device_[runtime_]suspend(), along with
+>>> panfrost_{mmu,job}_suspend_irq().
+>>>    
+>>
+>> Okay I will move that to a helper, but I still want to clarify:
+>>    - For JOB, we're checking if panfrost_job_is_idle() before trying
+>>      to runtime_suspend() (hence before trying to power off cores),
+>>      so implicitly no interrupt can fire I guess? Though there could
+>>      still be a pending ISR there too.... mmh. Brain ticking :-)
+> 
+> There's indeed no reason to see job interrupts if we're asked to enter
+> suspend, but it's mostly a matter of safety/correctness. If, as
+> expected, there's no pending interrupt, the write(_INT_MASK) +
+> synchronize_irq() should be relatively cheap.
+> 
+>>    - For MMU, we're not checking anything, but I guess that if there
+>>      is no job, the mmu can't be doing anything at all?
+>>      ...but then you also gave me the doubt about that one as well.
+> 
+> Same here, if we've properly flushed all jobs, and handled all pending
+> interrupts, we shouldn't end up with pending MMU irqs when we're asked
+> to suspend. But the extra mask+synchronize_irq() buys us extra safety.
+> 
+>>
+>> What I think that would be sensible to do is to get this commit as
+>> a "clear" fix for the "Really power off" one, then have one or more
+>> additional commit(s) without any fixes tag to improve the IRQ suspend
+>> with the new mmu/job irq suspend helpers.
+> 
+> If you need a self-contained fix to avoid power transition interrupts
+> messing up with suspend, then, as I suggested, it might make more sense
+> to drop GPU_IRQ_POWER_CHANGED[_ALL] when writing GPU_INT_MASK, which
+> you want anyway, to avoid being interrupted when you do power
+> transitions.
+> 
+>>
+>> Of course *this* commit would introduce the panfrost_gpu_suspend_irq()
+>> helper directly, instead of moving the logic to a helper in a later one.
+>>
+>> Any reason against? :-)
+>>
+>>>> +
+>>>> +	/* Now it's safe to request poweroff for Shaders, Tilers and L2 */
+>>>
+>>> It was safe before too, it's just that we probably don't want to be
+>>
+>> In theory yes, in practice the Odroid HC1 board crashed :-P
+> 
+> Just to be clear, it's not the accesses to the PWROFF/PWRTRANS
+> registers in this function that were causing the crash, it's the fact we
+> were writing to those regs, and leaving the corresponding interrupt
+> unprocessed before returning from panfrost_device[_runtime]_suspend().
+> 
+>>
+>> P.S.: Joking! I understand what you're saying :-)
+> 
+> Okay, but the comment was still inaccurate :P.
+> 
+
+Hahaha! Fair! :-D
+
+>>
+>>> interrupted, if all we do is ignore the interrupts we receive, hence
+>>> the suggestion to not use GPU_IRQ_MASK_ALL, and only enable the
+>>> IRQs we care about instead.
+>>>    
+>>>> +	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+>>>>    	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+>>>>    					 val, !val, 1, 1000);
+>>>>    	if (ret)
+>>>> @@ -441,7 +451,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>>>>    	if (ret)
+>>>>    		dev_err(pfdev->dev, "tiler power transition timeout");
+>>>>    
+>>>> -	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
+>>>> +	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+>>>
+>>> I really think we should have a helper doing the 'write(PWROFF_{LO,HI} +
+>>> poll(PWRTRANS_{LO,HI})' sequence, similar to what's done here [1][2],
+>>> such that, once we got it right for one block, we have it working for
+>>> all of them. And if there's a fix to apply, it automatically applies
+>>> to all blocks without having to fix the same bug in each copy.
+>>>    
+>>
+>> ...technically yes, but practically this driver doesn't currently support any
+>> GPU that even fills the _LO registers.
+> 
+> Once we have a solution that works for all use cases, it can work for
+> the limited set we support at the moment :P.
+> 
+>>
+>> I guess that we can do that later?
+> 
+> Sure, that was more of a follow-up patch suggestion.
+> 
+
+Thanks for that.
+
+>>
+>> That's just to (paranoidly) avoid any risk to introduce other regressions in
+>> this merge window, since we're fixing one that shouldn't have happened in the
+>> first place...
+> 
+> Agreed, but if that's the goal, then I'd go for the simpler change I
+> suggested above (dropping GPU_IRQ_POWER_CHANGED[_ALL] from the
+> interrupt mask altogether). This way you don't have to worry about
+> receiving power transition interrupts in the first place, and you also
+> save interrupt context switching time when you power on the various
+> blocks.
+> 
+
+...but again, that wouldn't fully work, as per krzk's test.
+
+>>
+>>> Note that these panthor_gpu_block_power_{on,off}() helpers also handle
+>>> the case where power transitions are already in progress when you ask a
+>>> new power transition, which I don't think is checked in
+>>> panfrost_gpu_power_{off,on}().
+>>>    
+>>
+>> I admit I didn't analyze the panthor driver - but here, the only power transitions
+>> that may happen are either because of panfrost_gpu_power_on(), or because of
+>> panfrost_gpu_power_off(), and both are polling and blocking... so from what I
+>> understand, there's no possibility to have "another" power transition happening
+>> while calling poweron, or poweroff.
+> 
+> Well yes, in theory there's no reason to have more than one transition
+> happening at a given time (that's assuming power transition never time
+> out, or if they do, the system gets back to an idle state before we try
+> to do the next power transition). It's just that, if it ever happens,
+> for any reason, we'd be safe against this unexpected situation, for a
+> cost that's relatively low (just an extra register read if things are in
+> the expected idle state).
+> 
+> Definitely not saying we should do that in this patch, but I think we
+> should do anything we can do to improve robustness, assuming the cost
+> of these extra checks is acceptable (we're not really in a fastpath
+> here).
+
+There's a lot of room for improvement in Panfrost, on that I agree.
 
 Cheers,
-Conor.
+Angelo
 
---VwNbz+r5L7xIZna3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZV9RagAKCRB4tDGHoIJi
-0pBwAP0cuJ5+YBbNci6dtuViPbnpzFtnjRuPYpj7iZekyYXM6QD+IJJFLGfqJprA
-5v+CEke2yJopFXOGNr0Y9vZLmj/imQg=
-=G5Mg
------END PGP SIGNATURE-----
-
---VwNbz+r5L7xIZna3--
