@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6356B7F5D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052147F5D0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjKWK4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
+        id S233150AbjKWK4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjKWK4S (ORCPT
+        with ESMTP id S233170AbjKWK4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:56:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E6319D
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:56:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F109C433C7;
-        Thu, 23 Nov 2023 10:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700736984;
-        bh=gt9z2fXP8rR18XrcKMZMdsGzjLqvt8M1v9NHsKRxsQI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kdqybyTqD4Y4FUSQcMl/1rVo3cS1vANF+XUMlp6dCnJfWm4swPou6liKrJLJGuGTF
-         9OVNuoYabjtga9oPk8Cq2F+gKrZfqqspT3A6b57VIdgHbb4d08Vtwziw97SuKCyL+7
-         nKL3bMMzGirj1z287ajtWdQKQACthghTpoCdfZKUhH0iV26oXz71eQhLfnm3uMO3Hf
-         4kUWMXgbyO4F/RnL1BdYGv8uFXdQQpbZ7brh3Uxe8aXLIgX59W50HggzVfta0ED0VQ
-         WRIn3UDWShg4wBMiphUFfizpCK8LMFi9YEjdfyO++z9IW0PYbI6NU55jfGZw7zaZ7d
-         wKcdJYp8r+loA==
-Date:   Thu, 23 Nov 2023 10:56:20 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: Expand led_colors[] array
-Message-ID: <20231123105620.GG1184245@google.com>
-References: <20231030054757.3476-1-jszhang@kernel.org>
+        Thu, 23 Nov 2023 05:56:38 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4321B2;
+        Thu, 23 Nov 2023 02:56:44 -0800 (PST)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 058661F8DC;
+        Thu, 23 Nov 2023 11:56:43 +0100 (CET)
+Date:   Thu, 23 Nov 2023 11:56:39 +0100
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Francesco Dolcini <francesco@dolcini.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1] arm64: dts: imx8-apalis: set wifi regulator to
+ always-on
+Message-ID: <ZV8v5zd8G6f7BdN9@francesco-nb.int.toradex.com>
+References: <20231123104812.13906-1-francesco@dolcini.it>
+ <CAOMZO5A53XFbRBp6QXWoDVBr=J347_riO1wWgPLxczT3JcuwQA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231030054757.3476-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAOMZO5A53XFbRBp6QXWoDVBr=J347_riO1wWgPLxczT3JcuwQA@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023, Jisheng Zhang wrote:
+Hello Fabio,
 
-> commit 472d7b9e8141 ("dt-bindings: leds: Expand LED_COLOR_ID
-> definitions") expands LED_COLOR_ID definitions for dt-binding. However,
-> it doesn't expand the led_colors[] array in leds core, so if any of
-> the newly expaned LED_COLOR_ID definitions is used, the sysfs will
-> emit null in the led's name color part. Let's expand the led_colors[]
-> array too.
+On Thu, Nov 23, 2023 at 07:52:27AM -0300, Fabio Estevam wrote:
+> On Thu, Nov 23, 2023 at 7:48 AM Francesco Dolcini <francesco@dolcini.it> wrote:
+> >
+> > From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> >
+> > Make sure that the wifi regulator is always on. The wifi driver itself
+> > puts the wifi module into suspend mode. If we cut the power the driver
+> > will crash when resuming from suspend.
+> >
+> > Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> Before the commit:
-> /sys/class/leds # ls
-> (null):indicator-0
-> 
-> After the commit:
-> /sys/class/leds # ls
-> orange:indicator-0
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  drivers/leds/led-core.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> I think this one deserves a Fixes tag.
 
-This already exists as:
+Fixes: ad0de4ceb706 ("arm64: dts: freescale: add initial apalis imx8 aka quadmax module support")
 
-  a067943129b4e leds: core: Add more colors from DT bindings to led_colors
+Shawn, I assume you could just pick the Fixes tag without me sending a
+v2, if you disagree just speak-up.
 
--- 
-Lee Jones [李琼斯]
+Francesco
+
