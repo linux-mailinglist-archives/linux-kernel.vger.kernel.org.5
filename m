@@ -2,251 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7783C7F576B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D017F5772
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344624AbjKWEdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 23:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S1344627AbjKWEjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 23:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKWEdL (ORCPT
+        with ESMTP id S229481AbjKWEjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 23:33:11 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2011A4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:33:17 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so6710a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700713996; x=1701318796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wHYFGmfIL28khD5t+/nzZLl2KHtCKuHF6ms78F8Fe70=;
-        b=bjbDcBqiAdkd/f6YuNyg7kWJfGA+HBbnYK6Jz2PUooPz+hwv/1hCutqTEdmPyB4qvl
-         /9UC/jmIYz0c7hvL6n+xctqhDLENzkMx6wApJyyhJkCtdJ4XpHpXBdw6Vp63yclggK85
-         fAkKkddz4P4zsUd/QrvciVtsL8vz40MfvElYtl2AXRKQ3jCjP0nusyHYIzcJpDILZc+x
-         dgrFA7VQHj4LnYql1tco1qHnXmFwABVHk2tC2bwKq1C7T82WdLww8YFU2bi2GG8F3lYy
-         z+Ql2Ji2ZvFi6YaNhVcPLt+sbqCYjoc7E38Qo079BXccttZyRvAaY9xfqLCReqIReTRx
-         d8gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700713996; x=1701318796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wHYFGmfIL28khD5t+/nzZLl2KHtCKuHF6ms78F8Fe70=;
-        b=CuZ+Z9DWuKooQYZm8EAs84AAjR1F4vYKIVTBvSFiV2Dq6nHsIX6TPgSHPM6GxSUmSr
-         D5FEzCJ95HkNPtLvnMbpFydYUTgGTm61KJ6VgJdLkOf97q4Ics1UJDkSIMKBuIv6tltA
-         kzjELl9qn/wItisKrcqvL80f04KQ91uxCskGM/sHfN4FuebzOlXWa8vCVaHSqFQiL1kh
-         ovEqZjncrEE6eB09htpbsBU5al1XlGRur2GmoQnFoHA7ECFFkf1kJgnq4NI4UQeScK3R
-         UxiXdSSk0tQIIjwuB44DGWh7oy3FZnVfOg6lxUcKHsScWB6vMZY2SG7P7ysac7ah0n1L
-         mktQ==
-X-Gm-Message-State: AOJu0Yxtf21yQYzAHkvGwvRhmJWtMGKnADgt1c6a10twi57UpbAlEO5d
-        9f9kgX83U4ZqXyvUnZnmSlforABFkp0D/Up/1IrV2g==
-X-Google-Smtp-Source: AGHT+IHs5+fqXcXd6ogn/DfeaeTkDYlrlCqReCllXHbGsBBw6ajb2Kavkb8kz1MLsS7u9oYhFeF+v3hNOungmV1z2Y0=
-X-Received: by 2002:a05:6402:1cbc:b0:547:3f1:84e0 with SMTP id
- cz28-20020a0564021cbc00b0054703f184e0mr211893edb.7.1700713995667; Wed, 22 Nov
- 2023 20:33:15 -0800 (PST)
+        Wed, 22 Nov 2023 23:39:31 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2065.outbound.protection.outlook.com [40.107.243.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F4A1A5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:39:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X8OXPnvADxyi8uB5PXqXJntpflJ9il5DctCRxF3o05EMOjmx9jD5k1EsCZ4ZeXjTey6VjdFTkUSudG4n6bobQX3jPNu6Dyy/jfRK+szicoxYcEHiASiRHfWhNES/AvJxfFc1ow4z1m5dSh6ZNihb6C4Eu0hwGlt+2D4oXPhBiEplpDeWdS0FNl72b8R9RxBYaIOcgHdIOIMXe94RIQPrgqjTacCEXdlLwXMfRE7SBS9d87qZzPTCn0DT1sgf42eEhVB76RuPGs6QTIPm/XG6b+YW9n+DvOmAF1OPH6H9ca0MOTbCYb0oRkogQ++d88iKNrznvJdVfsv4hu94x/TdaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pX3GXZo3e7l8fwlxAsZGREOd5bTzt2Kkm0pkcl1fsUs=;
+ b=hOI7lWC7frpGzleTpp8uMVtOzSKPyvlnw5gjpG4SqlGLNDhUnNAcon9nirAjspJE+arPtMoZdZmYjKo40WHM1FVtgm/61NMtGwJZ+APZP5123z55REtvmtbzgNZ8ynoMdNkmHS5GfKUcI2oZpGmzJEBpfCweAUzNip5BHvvhFcx6aMVymfY7ds/ru2W8XHCM7n79SPPEBd/VVZgseLQysf/zUtq6DSDHnIR+z2haCnqePpKU9dq//nZfYmlLI5FQ3js1ixldS/ovPbL5YUgTAikzrAo6hgQVA+Te/gYsdXOh8VVY/TERJ2JvkBPtlMuebBTNBCqe33RgWH+j8aI0xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pX3GXZo3e7l8fwlxAsZGREOd5bTzt2Kkm0pkcl1fsUs=;
+ b=zA/l7vApRWlf4A34zANA5F86HjBlVbGDRsZi/s9d44UwkP1tHM/1H26QGdfrDSkcV5lDW/QZMpIfU/Ondbo9BTBCq6dq139zl0VeUrjYlQ74g5DjZmXdZmsSWm1AVa75vB0J/UMDQuPN7lFHeWOvfYuyoL41AD/kNlU+8l3MTNE=
+Received: from MW4PR03CA0268.namprd03.prod.outlook.com (2603:10b6:303:b4::33)
+ by DM4PR12MB5341.namprd12.prod.outlook.com (2603:10b6:5:39e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
+ 2023 04:39:30 +0000
+Received: from CO1PEPF000042A8.namprd03.prod.outlook.com
+ (2603:10b6:303:b4:cafe::ab) by MW4PR03CA0268.outlook.office365.com
+ (2603:10b6:303:b4::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.30 via Frontend
+ Transport; Thu, 23 Nov 2023 04:39:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1PEPF000042A8.mail.protection.outlook.com (10.167.243.37) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.12 via Frontend Transport; Thu, 23 Nov 2023 04:39:30 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
+ 2023 22:39:27 -0600
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
+ 2023 22:39:21 -0600
+Received: from xhdipdslab61.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Wed, 22 Nov 2023 22:39:19 -0600
+From:   Abhijit Gangurde <abhijit.gangurde@amd.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <Nipun.Gupta@amd.com>
+CC:     <puneet.gupta@amd.com>, <nikhil.agarwal@amd.com>,
+        <michal.simek@amd.com>, <git@amd.com>,
+        Abhijit Gangurde <abhijit.gangurde@amd.com>
+Subject: [PATCH v2 1/2] cdx: create sysfs bin files for cdx resources
+Date:   Thu, 23 Nov 2023 10:09:06 +0530
+Message-ID: <20231123043907.4134256-1-abhijit.gangurde@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
- <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
- <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com> <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
- <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com> <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
- <ZV38ParIEYWOjt6T@FVFF77S0Q05N> <CAP-5=fUxBv4kbXyLrD5G-=wyRh6tKEJMy5qX0_86wQXxT79dJw@mail.gmail.com>
- <ZV4nj-_q4hHaf8Wl@FVFF77S0Q05N> <CAP-5=fWtHYr9J2izkNmTpfKvdEdt0ViELJ1Gsih6H9XBTE83UA@mail.gmail.com>
- <ZV4yd3oz2Ykl/N5Q@kernel.org> <CAP-5=fU==+UoF64AZz5HAwcL2xSDxLfyS1Q+SQ0d2SGwFC8j5A@mail.gmail.com>
-In-Reply-To: <CAP-5=fU==+UoF64AZz5HAwcL2xSDxLfyS1Q+SQ0d2SGwFC8j5A@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 22 Nov 2023 20:33:03 -0800
-Message-ID: <CAP-5=fVE-GayAsg0PVf+WZuLh_KJAd2ErG2qvNROjhQOLYp=4w@mail.gmail.com>
-Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since v6.5
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Asahi Linux <asahi@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A8:EE_|DM4PR12MB5341:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20d699e6-94b2-464e-852f-08dbebde2ef4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AUoVQUXac8dr1j2gg7YgpyDMMStyk6qr09ZfA3cZBJ+c9etNconc90H3dmoaNZV+Nh8JXf9feSo0pA2kz7w7LKH1LpqaWuptUV5+2p3aRgoqypb7bnqiWb46taYVVtpNIRk8qFxpw4q7DH+S/nZOQEU7LxuWfsVon7Ep/cYMNG05SaO+tDlCBCEcKGXE6JGyGuEEd65cEy61Vh40hKOLvzXCB43DQIQxPat6JNSCudleIU/2Jd5D2x/GFzoROf4vPoB9U6eMfaaxKCnqITFhezH0krbuxQ2tde5DcbL+5QEF3uWfxkNTTXX/Gauj66FTAOF1UDnJzDX7ySHE9qdm9iIczNullhBC2fhDMRfvrdM70IrEMTE9YCCA/jke5yMypLzD3dDHk4chA+/plOYokhOZnO1Ri+3Uj5v6BhyBsEAE0p4ehFkHL55ITIKqdfCmlLAyuw0BrWpWUPzgOBqcjlLAk358Dmi6Vpq7+CNZWiCukRVkcev34JoTZyWURLMHiJIziWcZ61Ykf/4QghRkXTAk1lCq9BnAbHUaaNxHJYPe6NaJC5Cs0CgOePhlp/6boNSZNWFLmZ5SI/a4PDs0P2LYTTyDOXJeYScETfTej/aKLK7tXEpzuP+W8d6lgdfWtCj5gRA74eFynvVhJP9AvSv/Ky6pKtN78ohvt3K3jsEoBkl8z5+rhQSzvqfN/XOOVjP/6K+UTHBODInIrtRZiMFwXQmtomxfhrLvIEuUzjcXoJpMZjcxGOsv6F5ejQg49W9FdWjJYyA+i5yvSqp0mg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(396003)(136003)(230922051799003)(82310400011)(64100799003)(186009)(451199024)(1800799012)(46966006)(36840700001)(40470700004)(40460700003)(336012)(426003)(83380400001)(82740400003)(86362001)(36756003)(81166007)(356005)(47076005)(36860700001)(70586007)(70206006)(8936002)(8676002)(4326008)(316002)(54906003)(6636002)(41300700001)(40480700001)(110136005)(5660300002)(2906002)(44832011)(26005)(2616005)(1076003)(6666004)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 04:39:30.3288
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20d699e6-94b2-464e-852f-08dbebde2ef4
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A8.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5341
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 8:59=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Wed, Nov 22, 2023 at 8:55=E2=80=AFAM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Wed, Nov 22, 2023 at 08:29:58AM -0800, Ian Rogers escreveu:
-> > > I can look at doing an event parser change like:
-> > >
-> > > ```
-> > > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-e=
-vents.c
-> > > index aa2f5c6fc7fc..9a18fda525d2 100644
-> > > --- a/tools/perf/util/parse-events.c
-> > > +++ b/tools/perf/util/parse-events.c
-> > > @@ -986,7 +986,8 @@ static int config_term_pmu(struct perf_event_attr=
- *attr,
-> > >                                                           err_str,
-> > > /*help=3D*/NULL);
-> > >                        return -EINVAL;
-> > >                }
-> > > -               if (perf_pmu__supports_legacy_cache(pmu)) {
-> > > +               if (perf_pmu__supports_legacy_cache(pmu) &&
-> > > +                   !perf_pmu__have_event(pmu, term->val.str)) {
-> > >                        attr->type =3D PERF_TYPE_HW_CACHE;
-> > >                        return
-> > > parse_events__decode_legacy_cache(term->config, pmu->type,
-> > >                                                                 &attr=
-->config);
-> > > @@ -1004,10 +1005,15 @@ static int config_term_pmu(struct perf_event_=
-attr *attr,
-> > >                                                           err_str,
-> > > /*help=3D*/NULL);
-> > >                        return -EINVAL;
-> > >                }
-> > > -               attr->type =3D PERF_TYPE_HARDWARE;
-> > > -               attr->config =3D term->val.num;
-> > > -               if (perf_pmus__supports_extended_type())
-> > > -                       attr->config |=3D (__u64)pmu->type << PERF_PM=
-U_TYPE_SHIFT;
-> > > +               if (perf_pmu__have_event(pmu, term->val.str)) {
-> > > +                       /* If the PMU has a sysfs or json event prefe=
-r
-> > > it over legacy. ARM requires this. */
-> > > +                       term->term_type =3D PARSE_EVENTS__TERM_TYPE_U=
-SER;
-> > > +               } else {
-> > > +                       attr->type =3D PERF_TYPE_HARDWARE;
-> > > +                       attr->config =3D term->val.num;
-> > > +                       if (perf_pmus__supports_extended_type())
-> > > +                               attr->config |=3D (__u64)pmu->type <<
-> > > PERF_PMU_TYPE_SHIFT;
-> > > +               }
-> > >                return 0;
-> > >        }
-> > >        if (term->type_term =3D=3D PARSE_EVENTS__TERM_TYPE_USER ||
-> > > ```
-> > > (note: this is incomplete as term->val.str isn't populated for
-> > > PARSE_EVENTS__TERM_TYPE_HARDWARE)
-> >
-> > Yeah, I had to apply manually as your MUA mangled it, then it didn't
-> > build, had to remove some consts, then there was a struct member
-> > mistake, after all fixed I get to the patch below, but it now segfaults=
-,
-> > probably what you mention...
-> >
-> > root@roc-rk3399-pc:~# strace -e perf_event_open taskset -c 4,5 perf sta=
-t -v -e cycles,armv8_cortex_a53/cycles/,armv8_cortex_a72/cycles/ echo
-> > Using CPUID 0x00000000410fd082
-> > perf_event_open({type=3DPERF_TYPE_HARDWARE, size=3D0 /* PERF_ATTR_SIZE_=
-??? */, config=3D0x7<<32|PERF_COUNT_HW_CPU_CYCLES, sample_period=3D0, sampl=
-e_type=3D0, read_format=3D0, disabled=3D1, precise_ip=3D0 /* arbitrary skid=
- */, ...}, 0, -1, -1, PERF_FLAG_FD_CLOEXEC) =3D -1 ENOENT (No such file or =
-directory)
-> > --- SIGSEGV {si_signo=3DSIGSEGV, si_code=3DSEGV_MAPERR, si_addr=3DNULL}=
- ---
-> > +++ killed by SIGSEGV +++
-> > Segmentation fault
-> > root@roc-rk3399-pc:~#
->
-> Right, I have something further along that fails tests. I'll try to
-> send out an RFC today, but given the Intel behavior change =C2=AF\_(=E3=
-=83=84)_/=C2=AF
-> But Intel don't appear to have an issue having two things called, for
-> example, cycles and them both being a cycles event so they may not
-> care. It is only ARM's PMUs that appear broken in this way.
+Resource binary file contains the content of the memory regions.
+These resources<x> devices can be used to mmap the MMIO regions in
+the user-space.
 
-To workaround the PMU bug posted:
-https://lore.kernel.org/lkml/20231123042922.834425-1-irogers@google.com/
+Co-developed-by: Puneet Gupta <puneet.gupta@amd.com>
+Signed-off-by: Puneet Gupta <puneet.gupta@amd.com>
+Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+---
+ Changes in v2:
+ - None
 
-Thanks,
-Ian
+ Documentation/ABI/testing/sysfs-bus-cdx |   7 ++
+ drivers/cdx/cdx.c                       | 118 +++++++++++++++++++++++-
+ include/linux/cdx/cdx_bus.h             |  10 ++
+ 3 files changed, 134 insertions(+), 1 deletion(-)
 
-> Thanks,
-> Ian
->
-> > - Arnaldo
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
-nts.c
-> > index aa2f5c6fc7fc..1e648454cc49 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -976,7 +976,7 @@ static int config_term_pmu(struct perf_event_attr *=
-attr,
-> >                            struct parse_events_error *err)
-> >  {
-> >         if (term->type_term =3D=3D PARSE_EVENTS__TERM_TYPE_LEGACY_CACHE=
-) {
-> > -               const struct perf_pmu *pmu =3D perf_pmus__find_by_type(=
-attr->type);
-> > +               struct perf_pmu *pmu =3D perf_pmus__find_by_type(attr->=
-type);
-> >
-> >                 if (!pmu) {
-> >                         char *err_str;
-> > @@ -986,7 +986,8 @@ static int config_term_pmu(struct perf_event_attr *=
-attr,
-> >                                                            err_str, /*h=
-elp=3D*/NULL);
-> >                         return -EINVAL;
-> >                 }
-> > -               if (perf_pmu__supports_legacy_cache(pmu)) {
-> > +               if (perf_pmu__supports_legacy_cache(pmu) &&
-> > +                   !perf_pmu__have_event(pmu, term->val.str)) {
-> >                         attr->type =3D PERF_TYPE_HW_CACHE;
-> >                         return parse_events__decode_legacy_cache(term->=
-config, pmu->type,
-> >                                                                  &attr-=
->config);
-> > @@ -994,7 +995,7 @@ static int config_term_pmu(struct perf_event_attr *=
-attr,
-> >                         term->type_term =3D PARSE_EVENTS__TERM_TYPE_USE=
-R;
-> >         }
-> >         if (term->type_term =3D=3D PARSE_EVENTS__TERM_TYPE_HARDWARE) {
-> > -               const struct perf_pmu *pmu =3D perf_pmus__find_by_type(=
-attr->type);
-> > +               struct perf_pmu *pmu =3D perf_pmus__find_by_type(attr->=
-type);
-> >
-> >                 if (!pmu) {
-> >                         char *err_str;
-> > @@ -1004,10 +1005,15 @@ static int config_term_pmu(struct perf_event_at=
-tr *attr,
-> >                                                            err_str, /*h=
-elp=3D*/NULL);
-> >                         return -EINVAL;
-> >                 }
-> > -               attr->type =3D PERF_TYPE_HARDWARE;
-> > -               attr->config =3D term->val.num;
-> > -               if (perf_pmus__supports_extended_type())
-> > -                       attr->config |=3D (__u64)pmu->type << PERF_PMU_=
-TYPE_SHIFT;
-> > +               if (perf_pmu__have_event(pmu, term->val.str)) {
-> > +                       /* If the PMU has a sysfs or JSON event prefer =
-it over legacy. ARM requires this. */
-> > +                       term->type_term =3D PARSE_EVENTS__TERM_TYPE_USE=
-R;
-> > +               } else {
-> > +                       attr->type =3D PERF_TYPE_HARDWARE;
-> > +                       attr->config =3D term->val.num;
-> > +                       if (perf_pmus__supports_extended_type())
-> > +                           attr->config |=3D (__u64)pmu->type << PERF_=
-PMU_TYPE_SHIFT;
-> > +               }
-> >                 return 0;
-> >         }
-> >         if (term->type_term =3D=3D PARSE_EVENTS__TERM_TYPE_USER ||
+diff --git a/Documentation/ABI/testing/sysfs-bus-cdx b/Documentation/ABI/testing/sysfs-bus-cdx
+index 8c067ff99e54..e84277531414 100644
+--- a/Documentation/ABI/testing/sysfs-bus-cdx
++++ b/Documentation/ABI/testing/sysfs-bus-cdx
+@@ -98,6 +98,13 @@ Description:
+ 
+ 		  # echo 1 > /sys/bus/cdx/devices/.../remove
+ 
++What:		/sys/bus/cdx/devices/.../resource<N>
++Date:		July 2023
++Contact:	puneet.gupta@amd.com
++Description:
++		The resource binary file contains the content of the memory
++		regions. These files can be m'maped from userspace.
++
+ What:		/sys/bus/cdx/devices/.../modalias
+ Date:		July 2023
+ Contact:	nipun.gupta@amd.com
+diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
+index c5873980a9d3..4edf64f9e98d 100644
+--- a/drivers/cdx/cdx.c
++++ b/drivers/cdx/cdx.c
+@@ -78,6 +78,8 @@ static DEFINE_MUTEX(cdx_controller_lock);
+ 
+ static char *compat_node_name = "xlnx,versal-net-cdx";
+ 
++static void cdx_destroy_res_attr(struct cdx_device *cdx_dev, int num);
++
+ /**
+  * cdx_dev_reset - Reset a CDX device
+  * @dev: CDX device
+@@ -146,6 +148,7 @@ static int cdx_unregister_device(struct device *dev,
+ 		if (cdx_dev->enabled && cdx->ops->bus_disable)
+ 			cdx->ops->bus_disable(cdx, cdx_dev->bus_num);
+ 	} else {
++		cdx_destroy_res_attr(cdx_dev, MAX_CDX_DEV_RESOURCES);
+ 		kfree(cdx_dev->driver_override);
+ 		cdx_dev->driver_override = NULL;
+ 	}
+@@ -641,11 +644,105 @@ static void cdx_device_release(struct device *dev)
+ 	kfree(cdx_dev);
+ }
+ 
++static const struct vm_operations_struct cdx_phys_vm_ops = {
++#ifdef CONFIG_HAVE_IOREMAP_PROT
++	.access = generic_access_phys,
++#endif
++};
++
++/**
++ * cdx_mmap_resource - map a CDX resource into user memory space
++ * @fp: File pointer. Not used in this function, but required where
++ *      this API is registered as a callback.
++ * @kobj: kobject for mapping
++ * @attr: struct bin_attribute for the file being mapped
++ * @vma: struct vm_area_struct passed into the mmap
++ *
++ * Use the regular CDX mapping routines to map a CDX resource into userspace.
++ *
++ * Return: true on success, false otherwise.
++ */
++static int cdx_mmap_resource(struct file *fp, struct kobject *kobj,
++			     struct bin_attribute *attr,
++			     struct vm_area_struct *vma)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(kobj_to_dev(kobj));
++	int num = (unsigned long)attr->private;
++	struct resource *res;
++	unsigned long size;
++
++	res = &cdx_dev->res[num];
++	if (iomem_is_exclusive(res->start))
++		return -EINVAL;
++
++	/* Make sure the caller is mapping a valid resource for this device */
++	size = ((cdx_resource_len(cdx_dev, num) - 1) >> PAGE_SHIFT) + 1;
++	if (vma->vm_pgoff + vma_pages(vma) > size)
++		return -EINVAL;
++
++	/*
++	 * Map memory region and vm->vm_pgoff is expected to be an
++	 * offset within that region.
++	 */
++	vma->vm_page_prot = pgprot_device(vma->vm_page_prot);
++	vma->vm_pgoff += (cdx_resource_start(cdx_dev, num) >> PAGE_SHIFT);
++	vma->vm_ops = &cdx_phys_vm_ops;
++	return io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
++				  vma->vm_end - vma->vm_start,
++				  vma->vm_page_prot);
++}
++
++static void cdx_destroy_res_attr(struct cdx_device *cdx_dev, int num)
++{
++	int i;
++
++	/* removing the bin attributes */
++	for (i = 0; i < num; i++) {
++		struct bin_attribute *res_attr;
++
++		res_attr = cdx_dev->res_attr[i];
++		if (res_attr) {
++			sysfs_remove_bin_file(&cdx_dev->dev.kobj, res_attr);
++			kfree(res_attr);
++		}
++	}
++}
++
++#define CDX_RES_ATTR_NAME_LEN	10
++static int cdx_create_res_attr(struct cdx_device *cdx_dev, int num)
++{
++	struct bin_attribute *res_attr;
++	char *res_attr_name;
++	int ret;
++
++	res_attr = kzalloc(sizeof(*res_attr) + CDX_RES_ATTR_NAME_LEN, GFP_ATOMIC);
++	if (!res_attr)
++		return -ENOMEM;
++
++	res_attr_name = (char *)(res_attr + 1);
++
++	sysfs_bin_attr_init(res_attr);
++
++	cdx_dev->res_attr[num] = res_attr;
++	sprintf(res_attr_name, "resource%d", num);
++
++	res_attr->mmap = cdx_mmap_resource;
++	res_attr->attr.name = res_attr_name;
++	res_attr->attr.mode = 0600;
++	res_attr->size = cdx_resource_len(cdx_dev, num);
++	res_attr->private = (void *)(unsigned long)num;
++	ret = sysfs_create_bin_file(&cdx_dev->dev.kobj, res_attr);
++	if (ret)
++		kfree(res_attr);
++
++	return ret;
++}
++
+ int cdx_device_add(struct cdx_dev_params *dev_params)
+ {
+ 	struct cdx_controller *cdx = dev_params->cdx;
+ 	struct cdx_device *cdx_dev;
+-	int ret;
++	int ret, i;
+ 
+ 	cdx_dev = kzalloc(sizeof(*cdx_dev), GFP_KERNEL);
+ 	if (!cdx_dev)
+@@ -696,7 +793,26 @@ int cdx_device_add(struct cdx_dev_params *dev_params)
+ 		goto fail;
+ 	}
+ 
++	/* Create resource<N> attributes */
++	for (i = 0; i < MAX_CDX_DEV_RESOURCES; i++) {
++		if (cdx_resource_flags(cdx_dev, i) & IORESOURCE_MEM) {
++			/* skip empty resources */
++			if (!cdx_resource_len(cdx_dev, i))
++				continue;
++
++			ret = cdx_create_res_attr(cdx_dev, i);
++			if (ret != 0) {
++				dev_err(&cdx_dev->dev,
++					"cdx device resource<%d> file creation failed: %d", i, ret);
++				goto resource_create_fail;
++			}
++		}
++	}
++
+ 	return 0;
++resource_create_fail:
++	cdx_destroy_res_attr(cdx_dev, i);
++	device_del(&cdx_dev->dev);
+ fail:
+ 	/*
+ 	 * Do not free cdx_dev here as it would be freed in
+diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
+index db39835b93d2..3096c31d5b9f 100644
+--- a/include/linux/cdx/cdx_bus.h
++++ b/include/linux/cdx/cdx_bus.h
+@@ -154,6 +154,7 @@ struct cdx_device {
+ 	u8 bus_num;
+ 	u8 dev_num;
+ 	struct resource res[MAX_CDX_DEV_RESOURCES];
++	struct bin_attribute *res_attr[MAX_CDX_DEV_RESOURCES];
+ 	u8 res_count;
+ 	u64 dma_mask;
+ 	u16 flags;
+@@ -170,6 +171,15 @@ struct cdx_device {
+ #define to_cdx_device(_dev) \
+ 	container_of(_dev, struct cdx_device, dev)
+ 
++#define cdx_resource_start(dev, num)	((dev)->res[(num)].start)
++#define cdx_resource_end(dev, num)	((dev)->res[(num)].end)
++#define cdx_resource_flags(dev, num)	((dev)->res[(num)].flags)
++#define cdx_resource_len(dev, num) \
++	((cdx_resource_start((dev), (num)) == 0 &&	\
++	  cdx_resource_end((dev), (num)) ==		\
++	  cdx_resource_start((dev), (num))) ? 0 :	\
++	 (cdx_resource_end((dev), (num)) -		\
++	  cdx_resource_start((dev), (num)) + 1))
+ /**
+  * struct cdx_driver - CDX device driver
+  * @driver: Generic device driver
+-- 
+2.34.1
+
