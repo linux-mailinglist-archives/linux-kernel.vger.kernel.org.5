@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 280077F5DC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1C97F5DC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345046AbjKWL0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
+        id S1345030AbjKWL0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344916AbjKWL0n (ORCPT
+        with ESMTP id S1344916AbjKWL0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:26:43 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9BDA3;
-        Thu, 23 Nov 2023 03:26:49 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANBMd8S031207;
-        Thu, 23 Nov 2023 11:26:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=VH0Ci/rpAYdo+WALL8EYHchRqOJ7RDwJtyX1w6itlbs=;
- b=bgnkW2uNv2Bnbsmij7D3hdFGvmE3w6euoawqH7CGnWDAJtSOwlzEbp1T/LsGv4cywblj
- 2J6R2PDTQ3Hx7Ar5+oIC8zwvpfj8W7O+EU3ib3wcQnvhuc2Aj75bWT1ELzBX8kcbN4pz
- HSUOzkhquG/YYTI3L3P92a4RDzPAeFjRGF2U/hwOaoUEeuxly+MzHzh/wTZM0Gwg3YxD
- fGyqWo3WtMGlG77aq0rVHceMXSA2uUfKiyqd5W8K4xix3jjJGhJpAXDS4gvruCyfeYwj
- 9alJKtqoqP4tORRsTc+5dBUEstVQ0s/1LzZnzI65ujRLalSEIJYWlkSE+X5YT8LZwtyD Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj5t582a4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 11:26:20 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ANBMiTD031481;
-        Thu, 23 Nov 2023 11:26:19 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj5t5823t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 11:26:19 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANBImaf024649;
-        Thu, 23 Nov 2023 11:25:52 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf8kp6sb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 11:25:52 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ANBPox718809382
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Nov 2023 11:25:50 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A5D4020040;
-        Thu, 23 Nov 2023 11:25:50 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A027020043;
-        Thu, 23 Nov 2023 11:25:49 +0000 (GMT)
-Received: from osiris (unknown [9.171.55.214])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Nov 2023 11:25:49 +0000 (GMT)
-Date:   Thu, 23 Nov 2023 12:25:48 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
-        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
-        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
-        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v5] eventfs: Remove eventfs_file and just use
- eventfs_inode
-Message-ID: <20231123112548.9603-A-hca@linux.ibm.com>
-References: <20231004165007.43d79161@gandalf.local.home>
- <20231117142335.9674-A-hca@linux.ibm.com>
- <20231117143829.9674-B-hca@linux.ibm.com>
+        Thu, 23 Nov 2023 06:26:32 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D335AA3;
+        Thu, 23 Nov 2023 03:26:36 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 59A74100008;
+        Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 59A74100008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700738795;
+        bh=bOO7CqfbeqtPu+OvgUpTnWR1nT+4YgvDziG8YR8E+zI=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=cEDyq9OYl745EnFlXfacIqCYjLi1H8hvHNG2CVYAnSZ9OFzEldRj5Glk3hqlJWUlf
+         Gc2repLUHUA8qt5aslnitk9JVq0j+Xm711idaOyICzj7+39w3U1jm+NRvlmztPQ0fk
+         qrX6UKpc9ZdWHUlyWSki1m9RReZgvIq4H8O0vWgcb823End1mA8feWWdyamFr++ndv
+         +5mlbdyauF/g8tYivDT/D9/U4EIpsLbxnwlkZP9jeKrkHLOEcAtc4FQZ7LNpB8jgoE
+         f/xmEAbTA2mhpYf/deqxAMojE1Cum+WEFaootu+PVPROy/5nAU4xaFE3W5eRNbMULP
+         UJVpCLrVAxlLw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 14:26:34 +0300
+Date:   Thu, 23 Nov 2023 14:26:29 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Michal Hocko <mhocko@suse.com>, <shakeelb@google.com>
+CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
+ <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231117143829.9674-B-hca@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OELboezIwoX6pg5cZfvYSWvsLSwUT344
-X-Proofpoint-GUID: PoEQiENG78qGH0Z1x7RK-ZFXEssIUlsg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_09,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- impostorscore=0 adultscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- bulkscore=0 lowpriorityscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311230082
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181556 [Nov 23 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 09:18:00 #22508170
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,78 +90,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 03:38:29PM +0100, Heiko Carstens wrote:
-> On Fri, Nov 17, 2023 at 03:23:35PM +0100, Heiko Carstens wrote:
-> > I think this patch causes from time to time crashes when running ftrace
-> > selftests. In particular I guess there is a bug wrt error handling in this
-> > function (see below for call trace):
+Michal, Shakeel,
+
+Sorry for pinging you here, but I don't quite understand your decision
+on this patchset.
+
+Is it a NAK or not? If it's not, should I consider redesigning
+something? For instance, introducing stub functions to
+remove ifdefs from shrink_node_memcgs().
+
+Thank you for taking the time to look into this!
+
+On Wed, Nov 22, 2023 at 09:57:27PM +0300, Dmitry Rokosov wrote:
+> On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
+> > On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
+> > > Hello Michal,
+> > > 
+> > > Thank you for the quick review!
+> > > 
+> > > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> > > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > > Currently, it is not possible to trace this point from non-direct
+> > > > > reclaim paths.
+> > > > 
+> > > > Is this really true? AFAICS we have
+> > > > mm_vmscan_lru_isolate
+> > > > mm_vmscan_lru_shrink_active
+> > > > mm_vmscan_lru_shrink_inactive
+> > > > 
+> > > > which are in the vry core of the memory reclaim. Sure post processing
+> > > > those is some work.
+> > > 
+> > > Sure, you are absolutely right. In the usual scenario, the memcg
+> > > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+> > > tracepoints you mentioned and analyze them. However, there is one
+> > > potential issue. Enabling these tracepoints will trigger the reclaim
+> > > events show for all pages. Although we can filter them per pid, we
+> > > cannot filter them per cgroup. Nevertheless, there are times when it
+> > > would be extremely beneficial to comprehend the effectiveness of the
+> > > reclaim process within the relevant cgroup. For this reason, I am adding
+> > > the cgroup name to the memcg tracepoints and implementing a cumulative
+> > > tracepoint for memcg shrink (LRU + slab)."
 > > 
-> > > +static struct dentry *
-> > > +create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
-> > > +		   struct dentry *parent, const char *name, umode_t mode, void *data,
-> > > +		   const struct file_operations *fops, bool lookup)
-> > > +{
-> ...
-> > Note that the compare and swap instruction within d_invalidate() generates
-> > a specification exception because it operates on an invalid address
-> > (0xffffffffffffffef), which happens to be -EEXIST. So my assumption is that
-> > create_dir_dentry() has incorrect error handling and passes -EEXIST instead
-> > of a valid dentry pointer to d_invalidate().
-> > 
-> > But I leave it up to you to figure this out :)
+> > I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
+> > easier to postprocess per memcg reclaim. But you could do that just by
+> > adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
+> > does this matter for kswapd and other global reclaim contexts? 
 > 
-> Ok, wrong function quoted of course. But the rest of my statement
-> should be correct.
+> From my point of view, kswapd and other non-direct reclaim paths are
+> important for memcg analysis because they also influence the memcg
+> reclaim statistics.
+> 
+> The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
+> direct memcg reclaim flow, such as:
+>     - a direct write to the 'reclaim' node
+>     - changing 'max' and 'high' thresholds
+>     - raising the 'force_empty' mechanism
+>     - the charge path
+>     - etc.
+> 
+> However, it doesn't cover global reclaim contexts, so it doesn't provide
+> us with the full memcg reclaim statistics.
+> 
+> -- 
+> Thank you,
+> Dmitry
 
-So, if it helps (this still happens with Linus' master branch):
-
-create_dir_dentry() is called with a "struct eventfs_inode *ei" (second
-parameter), which points to a data structure where "is_freed" is 1. Then it
-looks like create_dir() returned "-EEXIST". And looking at the code this
-combination then must lead to d_invalidate() incorrectly being called with
-"-EEXIST" as dentry pointer.
-
-Now, I have no idea how the code should work, but it is quite obvious that
-something is broken :)
-
-Here the dump of the struct eventfs_inode that was passed to
-create_file_dentry() when the crash happened:
-
-crash> struct eventfs_inode 00000000eada7680
-struct eventfs_inode {
-  list = {
-    next = 0x10f802da0,
-    prev = 0x122
-  },
-  entries = 0x12c031328 <event_entries>,
-  name = 0x12b90bbac <__tpstrtab_xfs_alloc_vextent_exact_bno> "xfs_alloc_vextent_exact_bno",
-  children = {
-    next = 0xeada76a0,
-    prev = 0xeada76a0
-  },
-  dentry = 0x0,
-  d_parent = 0x107c75d40,
-  d_children = 0xeada5700,
-  entry_attrs = 0x0,
-  attr = {
-    mode = 0,
-    uid = {
-      val = 0
-    },
-    gid = {
-      val = 0
-    }
-  },
-  data = 0xeada6660,
-  {
-    llist = {
-      next = 0xeada7668
-    },
-    rcu = {
-      next = 0xeada7668,
-      func = 0x12ad2a5b8 <free_rcu_ei>
-    }
-  },
-  is_freed = 1,
-  nr_entries = 6
-}
+-- 
+Thank you,
+Dmitry
