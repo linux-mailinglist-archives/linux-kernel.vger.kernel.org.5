@@ -2,73 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754587F6588
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603387F658B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345436AbjKWRfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:35:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S1345511AbjKWRgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjKWRfg (ORCPT
+        with ESMTP id S229930AbjKWRgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:35:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98B8B9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:35:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27BCC433CC;
-        Thu, 23 Nov 2023 17:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700760942;
-        bh=/73LHzEUuMC+UbtJ5BdZY8QbIJypb3dNXKHEGBhyUfk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KY1lQexwEHntktudEDLo2U/ya2/15YkepNxQSkua05q8GbSv6SrrINT35F3cF/9SN
-         nVVuTeTKuFby1C2Q2H9+GAtGpc3HmEwhDoSMRjdrnDZ7qd8YIV7PXYL7d3b0tOSPW0
-         y7mw/lZsUVYDLUtrAv1a3ClM+o5NKYp0Gprp7NcVJrSepRcjEsTppbDPIu4rYAqPhq
-         CPn+qYP6jrRFi7gx+yV6h+UfDlNYqR+RSiEZM4yd6J+0quh157aUnC+PPHDcVK7GKV
-         v6z9a7G+dQuNhkhiiJDlH3d4BufRFhu6hioME38hjy6Ql6uspZzj41LliW1R+CMLeN
-         S/BNLPWNqi4TQ==
-Date:   Thu, 23 Nov 2023 17:35:38 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH RFT v3 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <ZV+NamY31GyANEe/@finisterre.sirena.org.uk>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231120-clone3-shadow-stack-v3-2-a7b8ed3e2acc@kernel.org>
- <20231123-derivate-freikarte-6de8984caf85@brauner>
- <ZV9Cz00vAKd7EwKD@finisterre.sirena.org.uk>
- <20231123-ausziehen-harpune-d020d47f964c@brauner>
+        Thu, 23 Nov 2023 12:36:08 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7A011F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:36:14 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r6Dca-0000Hu-Og; Thu, 23 Nov 2023 18:36:12 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r6DcZ-00B5cU-BT; Thu, 23 Nov 2023 18:36:11 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r6DcZ-006qY3-2G; Thu, 23 Nov 2023 18:36:11 +0100
+Date:   Thu, 23 Nov 2023 18:36:10 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Frieder Schrempf <frieder@fris.de>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Anand Moon <linux.amoon@gmail.com>,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Icenowy Zheng <uwu@icenowy.me>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] usb: misc: onboard_usb_hub: Add support for clock
+ input
+Message-ID: <20231123173610.d6ytwlpbpcqng5pv@pengutronix.de>
+References: <20231123134728.709533-1-frieder@fris.de>
+ <2023112329-augmented-ecology-0753@gregkh>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CndIlGpPnv8RlVC+"
+        protocol="application/pgp-signature"; boundary="vdyxpcye55rpoaff"
 Content-Disposition: inline
-In-Reply-To: <20231123-ausziehen-harpune-d020d47f964c@brauner>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023112329-augmented-ecology-0753@gregkh>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,55 +61,52 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---CndIlGpPnv8RlVC+
-Content-Type: text/plain; charset=us-ascii
+--vdyxpcye55rpoaff
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 23, 2023 at 05:33:05PM +0100, Christian Brauner wrote:
-> On Thu, Nov 23, 2023 at 12:17:19PM +0000, Mark Brown wrote:
+Hello,
 
-> > > > +		if (clone_flags & CLONE_VFORK) {
-> > > > +			shstk->base = 0;
-> > > > +			shstk->size = 0;
-> > > > +			return 0;
-> > > > +		}
+On Thu, Nov 23, 2023 at 01:55:57PM +0000, Greg Kroah-Hartman wrote:
+> On Thu, Nov 23, 2023 at 02:47:20PM +0100, Frieder Schrempf wrote:
+> > +	err =3D clk_prepare_enable(hub->clk);
+> > +	if (err) {
+> > +		dev_err(hub->dev, "failed to enable clock: %d\n", err);
+> > +		return err;
 
-> > > Why is the CLONE_VFORK handling only necessary if shadow_stack_size is
-> > > unset? In general, a comment or explanation on the interaction between
-> > > CLONE_VFORK and shadow_stack_size would be helpful.
+I suggest to use %pe (and ERR_PTR(err)) here.
 
-> > This is the existing implicit behaviour that clone() has, it's current
-> > ABI for x86.  The intent is that if the user has explicitly configured a
-> > shadow stack then we just do whatever they asked us to do, if they
+> > +	}
+>=20
+> But what happens if clk is not set here?
 
-> So what I'm asking is: if the calling process is suspended until the
-> child exits or exec's does it make sense for the child to even get a
-> shadow stack? I don't know the answer which is why I'm asking.
+clk_prepare_enable() just does "return 0" if the clk argument is NULL.
 
-We were initially doing some suppression of stack creation based on the
-flags but based on prior discussion we decided it wasn't worth it.
-There was some question about corner cases (IIRC the main one was
-posix_spawn()), but generally the thinking here was that since userspace
-explicitly asked for the shadow stack in the worst case it'll just be
-inefficient and userspace can fix things by just not doing that.  If we
-just create the shadow stack whenever it's requested then it makes the
-kernel side handling really simple to implement/verify and we don't have
-to worry about having missed any use cases with combinations of flags
-that we've not anticipated.
+> And doesn't clk_prepare_enable() print out a message if it fails?
 
---CndIlGpPnv8RlVC+
+clk_prepare_enable is silent on errors.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vdyxpcye55rpoaff
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVfjWoACgkQJNaLcl1U
-h9AaCAf9ESVElI0jUJmzKPT+rOMQcmn2utfrXnIajA0L2w8qephayJtaRS/cumi6
-x79EY3sWCc3/7DU8ZokCs+1hlLe2YXBcHChU9mPSM5r910muGEmRFmDNYvXT0MDx
-zTAxwD1JezQm/xx+eao6qAXcndvSWtQ07KRkY+7kGh48MaBu6ea7ZHGLX36KLU3D
-FGZ4pwQjZAEZniikVAMKqkMiZgPWLaklyuu86hpWa1m5m9t6j3O97Zc7zsT9EhvO
-+L9dshnSTGK00sGneVJrznPPUm6w+9xYsAO8YNFfVMDSEeezBH3nKHxDGaGONOyP
-jacIFPP64N2TZMtsNbsQpUCrFXE4DQ==
-=+O4D
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVfjYoACgkQj4D7WH0S
+/k60Sgf9EIMAyid9PgcCWUFFbJtFNmTeRepSh9ej1g3njBiFowXw/VM/cGKLZ6Pn
+REMlndIq0Qy3BuRWLVGhpwM90rYyHEAXUZvAbaFZ1MTZEeP7yy1DDOY8LYuj6M1I
+pxS837HVoDzyW7h+OdZn/PPcdi/JeUZJ+bB8noi0xI8HZB/eqQPs3GQzkV21kBaM
+Su8HU85R3S0Ut3tuHcZLPphYoYzAPQnkWkGd1yEVvRBES3wal5idus7BsfWCVA/t
+PmCu9WOZjuI4jwiaMe/4qYEaN//fEYATe+wkQbU0DY1qloJ/25G4vzrHblSaqBVz
+2Re9n6rYDZz57NAfip8wvdSBRwy/pw==
+=upyH
 -----END PGP SIGNATURE-----
 
---CndIlGpPnv8RlVC+--
+--vdyxpcye55rpoaff--
