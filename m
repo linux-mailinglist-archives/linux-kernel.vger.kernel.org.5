@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CB27F6532
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DBA7F6524
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345611AbjKWRT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S1345508AbjKWRS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjKWRTN (ORCPT
+        with ESMTP id S1345418AbjKWRS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:19:13 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C72D53
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:19:17 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5cc636d8a21so9534237b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700759957; x=1701364757; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZWk/RgHbKOlFY39aGIpjm5vZs/TIaAEJUzezOamB9tA=;
-        b=lgPEgfotXMvzK8cXSTLkl0svVRTVi/N2fmGN8N79B3nF4j50ZyNhAAxX2ryP9x/MtQ
-         v6gn9RCMR+hbA++nj3XzDwaVj7vI9qLrT+Qq/4JimW4u09V6+sDF0qVsk59LB7P/3emP
-         9e5yR1WePuJLUiqVD0fqMbE4oMpsA8W88XxvdsrS2cMelUZT0IvEY+ayajr7AlS6j4SB
-         +TZRUSOfO0xPAvxdK+vdDWUTtJN0D0yYZOnAuypa1bqPvXzzitD1A/2yvO/sR+WcGf8Q
-         LGh2CX5/7MBomZOvWVx3LQHnH3DVLVuTymicPoCTPhm5f8+PzRNILyWSW6H+TXNdmVs+
-         k1QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700759957; x=1701364757;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZWk/RgHbKOlFY39aGIpjm5vZs/TIaAEJUzezOamB9tA=;
-        b=TfP3sklf4OfMeVqt6FjYVuB5r4nyIor3nV/TP7ori3sNPIEQ42ESA6Alsu+bl39f3K
-         WpN/pDmtmWtH6ruhvMVFUZfjvrRbT1kVUwUTl6IXreAruP8k6itnkxkUr18/6KC4hGm6
-         fNBACb3eBUCbCHv6MjG56Li5qzfrAyG2E+cR55kGKUR018KkIlTH1sAjOIJ8WdzvAzPu
-         G+tGeA3JOD4HqP7FvZKUmiQ4YNKfbPKZettBjSLL2KNIPJsiG4GSkfxuADsk8+xLw/wO
-         sXAREqASVYgQaf1mSWV0+NJpbzhaa17I2wuTlCZzIg6iEHeZFyxz4kSwuHfEm6dDMrj1
-         g3XQ==
-X-Gm-Message-State: AOJu0YwC148eWADRc9rrTYtp6lBtI5lfzp0ORMGC0hYDjrTjO3Ju2iLf
-        B9XvTHK9IhDdfd8lnpfjHeuzghCzUYtXHb9GReA11A==
-X-Google-Smtp-Source: AGHT+IFwyFMR/NrdcChscDcLqQ70TVmEfxpocrRkYan5zonKuyVIeZHKpaW0fvUM00WVfJdfUBy1f7OPfUyE579mt2A=
-X-Received: by 2002:a0d:f986:0:b0:5c5:d898:e476 with SMTP id
- j128-20020a0df986000000b005c5d898e476mr17348ywf.33.1700759956922; Thu, 23 Nov
- 2023 09:19:16 -0800 (PST)
+        Thu, 23 Nov 2023 12:18:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B810D0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:19:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CF7C433C7;
+        Thu, 23 Nov 2023 17:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700759942;
+        bh=o2B91gSRao1cm4mdpvvnT+cSLBigCNcp+xOQKNDn4A4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iahmJvGwt/0+ze9HXyRn6fXTXrsOTmscoofcYH5cE64Jn+7Zl8OLC1CsQeuehJrOY
+         6Nj1HThnyqA4d+fAqJBUcrJxXD+QW0B5pIjUwP3GoYDMk0i2jNOWHXxCObeyDUEJPg
+         BK87uBg791nuLw0vqhA5LNrgFRDeXfzXCV28zeFMgyTI03tZoEtN5phBiD3/o1MaYP
+         bHJIRWj06VnuJSLrOEyQsSZGuoaf3eWlidsEtc1uc0u8MOPZOAt8EUGrYiwRaSEXjU
+         moXac9FzCSAkQ9lEp26WhADWaZJd124nbIfpyxM6Qqeo2RGdvvjSDZSG+dPnE3Kkhh
+         As2xxVshd2euA==
+Date:   Thu, 23 Nov 2023 17:18:55 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Xinlei Lee <xinlei.lee@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: phy: add compatible for Mediatek MT8195
+Message-ID: <20231123-atypical-gradation-d98b95e9c416@spud>
+References: <20231123133749.2030661-1-mwalle@kernel.org>
+ <20231123133749.2030661-3-mwalle@kernel.org>
 MIME-Version: 1.0
-References: <20231122060215.2074799-1-vigneshr@ti.com>
-In-Reply-To: <20231122060215.2074799-1-vigneshr@ti.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Nov 2023 18:18:41 +0100
-Message-ID: <CAPDyKFrsXSwyU-VsPEt1tYCPWk99XaNZ7kJGGWPEDEYBWaPktg@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci_am654: Drop lookup for deprecated ti,otap-del-sel
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ji3UuPhd3xxexBJ5"
+Content-Disposition: inline
+In-Reply-To: <20231123133749.2030661-3-mwalle@kernel.org>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,107 +71,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 at 07:05, Vignesh Raghavendra <vigneshr@ti.com> wrote:
->
-> ti,otap-del-sel has been deprecated since v5.7 and there are no users of
-> this property and no documentation in the DT bindings either.
-> Drop the fallback code looking for this property, this makes
-> sdhci_am654_get_otap_delay() much easier to read as all the TAP values
-> can be handled via a single iterator loop.
->
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Applied for next, thanks!
+--ji3UuPhd3xxexBJ5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Kind regards
-Uffe
+On Thu, Nov 23, 2023 at 02:37:47PM +0100, Michael Walle wrote:
+> Add the compatible string for MediaTek MT8195 SoC, using the same MIPI
+> D-PHY block as the MT8183.
+>=20
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-> ---
->
-> v2:
-> * Drop legacy_otapdly as pointed out by Adrian
->
-> v1: https://lore.kernel.org/r/20231110072535.2695134-1-vigneshr@ti.com
->
->  drivers/mmc/host/sdhci_am654.c | 37 ++++++----------------------------
->  1 file changed, 6 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index 967bd2dfcda1..d659c59422e1 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -141,7 +141,6 @@ static const struct timing_data td[] = {
->
->  struct sdhci_am654_data {
->         struct regmap *base;
-> -       bool legacy_otapdly;
->         int otap_del_sel[ARRAY_SIZE(td)];
->         int itap_del_sel[ARRAY_SIZE(td)];
->         int clkbuf_sel;
-> @@ -272,11 +271,7 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
->         sdhci_set_clock(host, clock);
->
->         /* Setup DLL Output TAP delay */
-> -       if (sdhci_am654->legacy_otapdly)
-> -               otap_del_sel = sdhci_am654->otap_del_sel[0];
-> -       else
-> -               otap_del_sel = sdhci_am654->otap_del_sel[timing];
-> -
-> +       otap_del_sel = sdhci_am654->otap_del_sel[timing];
->         otap_del_ena = (timing > MMC_TIMING_UHS_SDR25) ? 1 : 0;
->
->         mask = OTAPDLYENA_MASK | OTAPDLYSEL_MASK;
-> @@ -314,10 +309,7 @@ static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
->         u32 mask, val;
->
->         /* Setup DLL Output TAP delay */
-> -       if (sdhci_am654->legacy_otapdly)
-> -               otap_del_sel = sdhci_am654->otap_del_sel[0];
-> -       else
-> -               otap_del_sel = sdhci_am654->otap_del_sel[timing];
-> +       otap_del_sel = sdhci_am654->otap_del_sel[timing];
->
->         mask = OTAPDLYENA_MASK | OTAPDLYSEL_MASK;
->         val = (0x1 << OTAPDLYENA_SHIFT) |
-> @@ -577,32 +569,15 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
->         int i;
->         int ret;
->
-> -       ret = device_property_read_u32(dev, td[MMC_TIMING_LEGACY].otap_binding,
-> -                                &sdhci_am654->otap_del_sel[MMC_TIMING_LEGACY]);
-> -       if (ret) {
-> -               /*
-> -                * ti,otap-del-sel-legacy is mandatory, look for old binding
-> -                * if not found.
-> -                */
-> -               ret = device_property_read_u32(dev, "ti,otap-del-sel",
-> -                                              &sdhci_am654->otap_del_sel[0]);
-> -               if (ret) {
-> -                       dev_err(dev, "Couldn't find otap-del-sel\n");
-> -
-> -                       return ret;
-> -               }
-> -
-> -               dev_info(dev, "Using legacy binding ti,otap-del-sel\n");
-> -               sdhci_am654->legacy_otapdly = true;
-> -
-> -               return 0;
-> -       }
-> -
->         for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
->
->                 ret = device_property_read_u32(dev, td[i].otap_binding,
->                                                &sdhci_am654->otap_del_sel[i]);
->                 if (ret) {
-> +                       if (i == MMC_TIMING_LEGACY) {
-> +                               dev_err(dev, "Couldn't find mandatory ti,otap-del-sel-legacy\n");
-> +                               return ret;
-> +                       }
->                         dev_dbg(dev, "Couldn't find %s\n",
->                                 td[i].otap_binding);
->                         /*
-> --
-> 2.42.0
->
+Cheers,
+Conor.
+
+--ji3UuPhd3xxexBJ5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZV+JfwAKCRB4tDGHoIJi
+0vWUAQCIxBJSBYQxfxnK0ADmbM0UaJC+Lie7AsTjs/2zhG8mjgEAjeZIyAzwtVtq
++xaFexacDMYRWoecls9a4vRISuN+1wE=
+=mQTP
+-----END PGP SIGNATURE-----
+
+--ji3UuPhd3xxexBJ5--
