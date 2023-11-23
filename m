@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E95D7F5F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2557F5FA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345356AbjKWMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
+        id S1345395AbjKWNBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345271AbjKWMvW (ORCPT
+        with ESMTP id S1345271AbjKWNBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:51:22 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927631A8;
-        Thu, 23 Nov 2023 04:51:29 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cbe68095a3so472680b3a.3;
-        Thu, 23 Nov 2023 04:51:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700743889; x=1701348689; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lua/407sLR7U5g7Ynk/F+LhzLi2h/XJEhubjfBRyzWM=;
-        b=Mnc7UROOhWvLQSEPUeJ+YFi9OKXv/e+PO6Ic2xiVyQeZSevJE17+3Bsl/Xl84F4K9r
-         xR1woIhMAHnCiQbkTwZuymrq7TZYouo6/5MsZB5WvEXQjmy+YV/vMGHc4dIbH+LaBLCr
-         muUnJcNXkmbHOk04hW8IgX6O2ra7NA0/6u8zaVFrRqSt7bn7nXUhK8IuRWlNI/VhgPCu
-         Kt6feXDQ8CYC8wLETiUxdW1VLCTDa0V0mnijz51lu5WwYMo0fEzJSW8QLqERTUyxp92Q
-         KFRumfhe+YqGMzyxs8RpC4dlQWHH8t5zzELl1XiX5O1PNsXURIex2KrJ+SWT5faIif+g
-         w4VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700743889; x=1701348689;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lua/407sLR7U5g7Ynk/F+LhzLi2h/XJEhubjfBRyzWM=;
-        b=SQah+YOcZd/gp5gTQF2cpYrmK5FzFarR9gfPaJDYEgNDiDo4iJJsVG04T6bDsqqjsp
-         v8dGYJFUOEIwd+Ueu7RjwV3GEPa3Hv5M7vUMMqmiYgR2GXO0nttSXAd1rcxHNQ34KL6/
-         4aatx1Sasx7bfWHICONwxhPxufV3B7TG5t4zf61JLxLBn8QfPOAJLusjusn+85usoE9c
-         GLrA6+6o/sliaikoj7Q3WdGVR5l5HeLQYnmLyRRgi32hhHofLiGoGIyFsTERF7anXxPT
-         0oVdXjsvoaYgyFP/lwKrx/pQH4JShWXhEEG/DeeuK7onh0+7D8BNOLSWYpcp0lNnT7mg
-         pbpw==
-X-Gm-Message-State: AOJu0Yxz4y3mo+zQsNcfSkjXedSHWFUMSMdduEbeJS4SW2KrT5Ddr6MX
-        0vdkthYuq9HngB4hOj4PRGA=
-X-Google-Smtp-Source: AGHT+IHPjfg2D7ucdRYYUKQc6MDSWRv+kQYYT7mIt1RvV6aQz7kIkjD5Y2nMDmRJHpUcwd6d13d8bw==
-X-Received: by 2002:a05:6a00:180e:b0:6cb:8c91:682 with SMTP id y14-20020a056a00180e00b006cb8c910682mr6205845pfa.29.1700743888923;
-        Thu, 23 Nov 2023 04:51:28 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id p126-20020a634284000000b005b9288d51f0sm1285107pga.48.2023.11.23.04.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 04:51:28 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 46F561015D896; Thu, 23 Nov 2023 19:51:24 +0700 (WIB)
-Date:   Thu, 23 Nov 2023 19:51:24 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Arnas <arnasz616@gmail.com>
-Subject: Re: Fwd: [Regression] S3 Sleep Mode failures since Linux 6.x on Dell
- Inspiron 15 5593
-Message-ID: <ZV9KzFGSqFsJl4YA@archie.me>
-References: <585dcc9e-7e72-473a-98ec-4f06018d542f@gmail.com>
- <ZV4AP1GY3fHAxmtx@archie.me>
- <bbeb662d-78d0-4157-b062-b061eab66088@leemhuis.info>
+        Thu, 23 Nov 2023 08:01:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CBD9E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:01:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4233BC433C8;
+        Thu, 23 Nov 2023 13:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700744513;
+        bh=xIAMhuapJVQQBjY6+y+mVTC4wodPKLPUym8Oy9dNMIc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LayZ13SfX5yYFn7u+DOBREPibRs5rznBZ2ADm190tgXMZhfAVrBEhDBe9OrTOdNHF
+         mzXHIfc0IqapnZFNymtQOqlZcHEjn3FLTsLGNtIbj4+DJ7MT1nXe5w+L7tRz0kz6e7
+         nvsqWT8xIJyDH3mdMC1jXNjNR8JDFRyNwPi8EDLk=
+Date:   Thu, 23 Nov 2023 12:54:25 +0000
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     xingwei lee <xrivendell7@gmail.com>,
+        "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
+        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
+Message-ID: <2023112308-manhandle-defection-c551@gregkh>
+References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
+ <2023112332-award-fanciness-2bcf@gregkh>
+ <CANp29Y6ge-AhM+Byt3imGOpctRsgWiqBN-reuKvOJAzxBsTYLw@mail.gmail.com>
+ <2023112306-diner-jawline-c7dc@gregkh>
+ <CANp29Y6MrCiiwXO4YJ0D8+YHRBY_4ii090mVq+rZ1EjXJH8Stg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0roWu1Dj6Rps07pF"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bbeb662d-78d0-4157-b062-b061eab66088@leemhuis.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y6MrCiiwXO4YJ0D8+YHRBY_4ii090mVq+rZ1EjXJH8Stg@mail.gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 23, 2023 at 01:42:26PM +0100, Aleksandr Nogikh wrote:
+> On Thu, Nov 23, 2023 at 10:41 AM gregkh@linuxfoundation.org
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Nov 23, 2023 at 10:32:26AM +0100, Aleksandr Nogikh wrote:
+> > > On Thu, Nov 23, 2023 at 9:55 AM gregkh@linuxfoundation.org
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
+> > > > > Hi. I have reproduced this bug with repro.txt and repro.c below:
+> > > > >
+> > > > > repro.txt
+> > > > > r0 = openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
+> > > > > ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)={{0x0, 0xffff,
+> > > > > 0x3}, 'syz0\x00'})
+> > > > > ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
+> > > >
+> > > > You are using fault injection, which, by it's very name, causes faults :)
+> > >
+> > > But those injected failures (that do not break the kernel, but just
+> > > emulate an error returned from a function that should be expected to
+> > > sometimes return an error) still should not lead to general protection
+> > > fault panics, shouldn't they?
+> >
+> > It all depends on what exactly the fault is happening for.  Some
+> > allocations in the kernel just "will not fail ever" so when you add
+> > fault injection testing, you are doing things that really can not ever
+> > happen.
+> 
+> Just in case - are you aware of any specific examples where fault
+> injection injects failures that should never ever happen?
 
---0roWu1Dj6Rps07pF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, many places, it's come up in the past, but I can't find the
+specifics as some of us get 1000+ emails a day :)
 
-On Wed, Nov 22, 2023 at 05:55:20PM +0100, Linux regression tracking #update=
- (Thorsten Leemhuis) wrote:
-> On 22.11.23 14:21, Bagas Sanjaya wrote:
-> > On Tue, Sep 26, 2023 at 07:25:48AM +0700, Bagas Sanjaya wrote:
-> >> I notice a regression report on Bugzilla [1]. Quoting from it:
-> >>> I'm having some weird issues with sleep mode on any 6.x Linux kernel =
-version - it's a toss-up when I close the lid as to whether it will sleep p=
-roperly or not - when it fails, the screen will lock, but it will not actua=
-lly enter S3 sleep - it just blanks the screen, but the laptop stays on (an=
-d fan does too).
-> > [...]
-> >> #regzbot introduced: v5.15..v6.1 https://bugzilla.kernel.org/show_bug.=
-cgi?id=3D217950
-> >>
-> >> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217950
-> >=20
-> > Hi Thorsten and all,
->=20
-> Bagas, please ask me things like this in private. Developers get enough
-> mail already, we should try our best to not increase the amount too much
-> with stuff that is just there for regression tracking stuff.
+Search the archives?
 
-Thanks for the pro tip.
+> All
+> automatic kernel testing would benefit by making it not do this then.
 
->=20
-> > It seems like the BZ reporter is really busy with his college life; IOW
-> > he can only bisect in the winter break [1]. Should I mark this regressi=
-on
-> > as inconclusive for now?
->=20
-> Let's put it on regzbot's back-burner.
->=20
-> #regzbot backburner: will take a while until this is bisected
-> #regzbot ignore-activity
->=20
+I agree, so take a look at the allocation paths and see the ones that
+just can not fail and then do not cause a fault on them?  As an example,
+any "small" allocation that can be done in a way that can sleep (i.e.
+GFP_KERNEL) will never fail, right?  So don't add failures there.
 
-Thanks for the handling!
+Or any allocation at boot time, that's never going to fail as there's no
+memory pressure yet.  Look at the system and make smart faults, don't
+just blindly go poking at things and expect it all to work.
 
---=20
-An old man doll... just what I always wanted! - Clara
+good luck!
 
---0roWu1Dj6Rps07pF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZV9KwwAKCRD2uYlJVVFO
-o35oAQDoFPGsSeS0PpX/PIJJXi1UPNnPCUCfsAgPSjHS5ehV8QD/ezxLrWj+jpxC
-r3pi76SjlUG3gRAWA6s84IJVjT9oPgA=
-=mjAB
------END PGP SIGNATURE-----
-
---0roWu1Dj6Rps07pF--
+greg k-h
