@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186D97F616B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715287F6172
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345794AbjKWO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        id S1345823AbjKWO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345782AbjKWO06 (ORCPT
+        with ESMTP id S1345825AbjKWO1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:26:58 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39A3D4E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:27:04 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc281f1214so9479745ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:27:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700749624; x=1701354424;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GN5qYReHA7+3HZIUiyBId29+dQhRN6/2Els8qd4jr6U=;
-        b=olljuBOXYCzDh/lTwixu1JUMtcZTmFmfy400X0tRlwv22/GGcgrLhL5C0M0p3n5dRY
-         EJF2FXIPR9OAI+S1XQYsrAvloiVGFyO106NHpCNdVCobCKLKQswJt48ZxeEEy9GNmk2D
-         1L9EgCDxMY4wtGbB0/PnUK19GnJStj72JKaNfFXW5z7vWtJtwQSNv/whJqDET0j5V2Ju
-         sfCDK0299GqMaHkQ0gBUu0BeEUF6PYDE30aZpMqQjgllb/aa7WcYyUgQyz2lwzvkK1b8
-         ZsS+HRbjN3WJ8umtciOpSOPkrm8LQWGWCK1LSxPTvHiE+Uvt9FClhhQYsXHCJyQN3r+r
-         SdoQ==
-X-Gm-Message-State: AOJu0YzOcNNVJaibu4cz/3tuLVATQukmPXHP4Bpwo0NcegxRSVGbdNPN
-        auriT2JSizH7YbS+sGxyti7doAH7FGwQ10Xhn4v+Ckk+tuJd
-X-Google-Smtp-Source: AGHT+IHCUS1HXK6p9Kl61dbC+Ux77qGA9nMw4rs8ziEgp9oSqnY0lTmBb2b5SysR0PAKSwiFXOb1lTdsMV/F4PhjgLMl38KWjAiv
+        Thu, 23 Nov 2023 09:27:20 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B024D6E;
+        Thu, 23 Nov 2023 06:27:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=M6ECVnm5lgJVKodC0naisWfJUSuAnOVd88vm1FjK2XM=; b=I0uTW84KZwen/D/8drpmgWT+jO
+        tsfe8n/9Ooc8sjh12y9g0EpHz4/sDdjvPgmjtt7tAS87ULOgEuYGAv/TOIiweJxQgfq1spPWwD5QW
+        pcKsN9q2rzfa+vW9hMxtj0lM+4vE9SkZ8lnRpdlrQ1Mcno/YIaCvBNIzPeqOjLv1BSBE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6AfZ-00105f-3x; Thu, 23 Nov 2023 15:27:05 +0100
+Date:   Thu, 23 Nov 2023 15:27:05 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <c697488a-d34c-4c98-b4c7-64aef2fe583f@lunn.ch>
+References: <20231120135041.15259-1-ansuelsmth@gmail.com>
+ <20231120135041.15259-4-ansuelsmth@gmail.com>
+ <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
+ <20231121144244.GA1682395-robh@kernel.org>
+ <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
+ <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
+ <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
+ <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d2cc:b0:1cc:41b4:5154 with SMTP id
- n12-20020a170902d2cc00b001cc41b45154mr1596234plc.13.1700749624137; Thu, 23
- Nov 2023 06:27:04 -0800 (PST)
-Date:   Thu, 23 Nov 2023 06:27:03 -0800
-In-Reply-To: <tencent_93DC466109A02ECE6EC20CAE67D5C6CCD206@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032dcaa060ad2a1ec@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
-From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> Just to be more precise qca807x can operate in 3 different mode:
+> (this is controlled by the MODE_CFG bits)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> - QSGMII: 5 copper port
 
-Reported-and-tested-by: syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com
+4 slots over QSGMII, plus the second SERDES is connected to the MAC
+using SGMII/1000BaseX?
 
-Tested on:
+> - PSGMII: 5 copper port
 
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=128127f0e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=60bfed6b415fbd1fbb87
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=106f8c4f680000
+5 slots over QSGMII, the second SERDES is idle?
 
-Note: testing is done by a robot and is best-effort only.
+> - PSGMII: 4 copper port + 1 combo (that can be both fiber or copper)
+
+5 slots over QSGMII, with the second SERDES connected to an SFP cage.
+
+Are ports 1-4 always connected to the P/Q SGMII. Its only port 5 which
+can use the second SERDES?
+
+Does changing between QSGMII and PSGMII really change the protocol run
+over the multiplex link? The clock rate is slower, there are only 4
+multiplexed slots vs five? Or does it keep using PSGMII and leaves one slot
+
+I can see how it is messy to validate, if you only have phy-mode. So
+maybe MODE_CFG is a package property. You then can validate the
+phy-mode against MODE_CFG.
+
+	 Andrew
