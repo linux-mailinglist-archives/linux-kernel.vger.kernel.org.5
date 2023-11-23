@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BDD7F5829
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7077F582C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344746AbjKWGZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S1344772AbjKWGZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjKWGZI (ORCPT
+        with ESMTP id S233019AbjKWGZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:25:08 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E44319E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:25:14 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507bd19eac8so657483e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:25:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700720712; x=1701325512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xFOK9nMH1VcoZ2z6PVa19sLHI4+eJmqfxzPGi62CvS0=;
-        b=ZJ+b2T8DGyVbqwkw5kJGCssL/MOqW9LCxy4ajmFbJQpyVUVuSkLlvRYzEqrnREiia6
-         DL5Mqpn9NJdJUkUIIhmVsAupJ7E+/1DsdkPaRuTyWpurNAoQY28d3j+4+/4te182ZDmn
-         gbRj86IR2M5dVAKsLK49sJszhzuaH/HuukDZo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700720712; x=1701325512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xFOK9nMH1VcoZ2z6PVa19sLHI4+eJmqfxzPGi62CvS0=;
-        b=tSG9CaEx00QumCM4yx5fhRd5W7dPLDloQPUL0WC5j4025HxW3X3JWn3cZRK/wYAnjs
-         iQSeF9ZAAQktJfqAe+FPB3hwc7R+rvPNU6hoA7S1pwRndwNv53zKVlPN/d82DEW/sxDO
-         bbFmpVyMEVyzmUOH878pMhC3mAfi1R7W94yo7UMDh5PGInWICQcxYNMctRWPiYbsgPwu
-         HhQ/tZa7V3Ny9/XA2u9eLgFAu7G3G1OrmlEvHU03O1SAYA6wuTrV28hvWd41LXhwdhgA
-         GhFzWffnSeI7dbzk+cFlWvvNRdodtJHQXaCiPo/wbTZ3EZNe2A5IYuSTB2ajBkjzWe+x
-         3DcQ==
-X-Gm-Message-State: AOJu0Ywdsdgksag3O8lw9f2Z3X5Jx9DtEa8G792azxJroU7kWuJsMKtH
-        XnhNvgh/tdUL1Yanum0NhA9PvGXfaZ5UJIxd6mo6dGBOlCJ6W57X7RA=
-X-Google-Smtp-Source: AGHT+IFuPfRKfSodWyGjGtPPCFDTxGK/LY8CUSpBiO06DaoCkH39868TwRxSy06GbUtySSJqdraZ2vGVf5GKnhE/Gsg=
-X-Received: by 2002:ac2:520f:0:b0:505:6c99:bd7c with SMTP id
- a15-20020ac2520f000000b005056c99bd7cmr2959574lfl.57.1700720712087; Wed, 22
- Nov 2023 22:25:12 -0800 (PST)
+        Thu, 23 Nov 2023 01:25:35 -0500
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15E619E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:25:41 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id ED13A5C0162;
+        Thu, 23 Nov 2023 01:25:40 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 23 Nov 2023 01:25:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1700720740; x=1700807140; bh=/6
+        WiKh+BjmdjXgEeTZ2JO9etMpJThQQYsX1jFQdOsOo=; b=4hrkdbgSg3UCa9qwM3
+        q/pxx10fKttOlC11umZccw6vL+w7As257e9kAF9zbTxjSl+TsUFK881HwT91dt+K
+        Ferxb4dxDOQrhJyH6yesSDN69VLZWO+grxZhfbXO39sIQrHh3iKcLtnSEuFlNqqG
+        tEB5q06UxsU+z/+doVhO79DiRFHWe41BbPtgH6Tj/dclh5d2cSllQ4K3Q/L7J4Yj
+        D4lgjHEfgS8qFCL/g+JwRYyz+uUswcay5DPrPcTdfA2t2+aXCpg0TFV82H/6Gi1R
+        3ZOAtH9mZDzsMJkC83E44ZVBlYloqZ7jUpJFo/BzsR5jV/95lzUjfEh9sgPQsY4Y
+        9I2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700720740; x=1700807140; bh=/6WiKh+BjmdjX
+        gEeTZ2JO9etMpJThQQYsX1jFQdOsOo=; b=fjWeuEwEa+pCOU5mE/9NDjRE2Da/e
+        J5Rn+G5bg+QmDQoab3/1IZtKa9R+c3d5PT6vUF6WXAIYwUP0FV9GcmoyE4HYtzgM
+        M4muRjbNnQB/8obisWZO8Rfp+ACAsQqeWInPCZ+Zq3oa1IU9rFLR0uhhTLKyGx4E
+        Wf56VsNBXeL4xYM/bQy4L2qRGOxMqfKiZUIddMtWwuiaNSnL3ENzH5lVb2R9EhHW
+        S0g3WtfTD1MI3J4YMFHoVL2esNslDDodwYAvDn5e/Iyg5WjXbvYX8LmZpFkhQez0
+        nZMB7lJ/9Mt+jlfkAoRnD0kNuSFap3+PMe8yZUzDzwtwnwjXfYrxpuUSQ==
+X-ME-Sender: <xms:ZPBeZffSV2Tsn9FnExJq4DEqDLZuSexON6Bu7CfX_33uQC8N7Oh-UQ>
+    <xme:ZPBeZVPZmJbMIY5ThGYVdUU2PvXjhZQSt-Nuq1Zg-kRKqvgfYbcNA4mI5XmD31Q1w
+    gCjqWLbK5-XMdT7VmE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehvddgleegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:ZPBeZYhyObxWcSetOpSyArW4zgov8PrcQ4q7v66qrREMPT1OHaSxqw>
+    <xmx:ZPBeZQ9gn4tRp0Ce7IHahAHWDbKL7mJfpHvjOIaycYlpAK3H36jD2w>
+    <xmx:ZPBeZbskQW8-rR8bnl-wR-LdwGLAgThSyWZQp1OZxUnIcpmg07CGXA>
+    <xmx:ZPBeZRUEbXz7S3I0scUZzeHzmkSu1BDpTcVOdo2lLoK2ujW2tQ5axA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 66535B60089; Thu, 23 Nov 2023 01:25:40 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-References: <CAKpemQKo2gigO44amj=eFUXgUnUeSmiOoTbS8GdXMx3O07N1vg@mail.gmail.com>
-In-Reply-To: <CAKpemQKo2gigO44amj=eFUXgUnUeSmiOoTbS8GdXMx3O07N1vg@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 23 Nov 2023 14:25:01 +0800
-Message-ID: <CAGXv+5E4TXrPmhb++r3vMGA4WoPc=covi7_=zgLLcOhGt9UBgg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] regulator: mt6358: Add output voltage fine tuning
- to variable LDOs
-To:     Bret Joseph <bretjoseph@gmail.com>
-Cc:     angelogioacchino.delregno@collabora.com, broonie@kernel.org,
-        matthias.bgg@gmail.com, linux-kernel@vger.kernel.org,
-        zhiyong.tao@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <a9ef56fa-725f-4d18-b408-ce0ba13c2d6e@app.fastmail.com>
+In-Reply-To: <ca200ed6-a70e-401e-b862-f690368e0266@kernel.dk>
+References: <20231122224719.4042108-1-arnd@kernel.org>
+ <ca200ed6-a70e-401e-b862-f690368e0266@kernel.dk>
+Date:   Thu, 23 Nov 2023 07:25:13 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Jens Axboe" <axboe@kernel.dk>, "Arnd Bergmann" <arnd@kernel.org>,
+        linux-nvme@lists.infradead.org
+Cc:     "Keith Busch" <kbusch@kernel.org>,
+        "Christoph Hellwig" <hch@lst.de>,
+        "Sagi Grimberg" <sagi@grimberg.me>,
+        "Chaitanya Kulkarni" <kch@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] nvme link failure fixes
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bret,
+On Thu, Nov 23, 2023, at 02:42, Jens Axboe wrote:
+> On 11/22/23 3:47 PM, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> There are still a couple of link failures that I tried to address
+>> with a previous patch. I've split up the missing bits into smaller
+>> patches and tried to explain the bugs in more detail.
+>> 
+>> With these applied, randconfig builds work again. Please either
+>> merge them or treat them as bug reports and find a different fix,
+>> I won't do another version.
+>
+> Applied, but had to hand-apply hunk 9 of patch 3 due to a previous
+> attempt at this:
+>
+> commit 23441536b63677cb2ed9b1637d8ca70315e44bd0
+> Author: Hannes Reinecke <hare@suse.de>
+> Date:   Tue Nov 14 14:18:21 2023 +0100
+>
+>     nvme-tcp: only evaluate 'tls' option if TLS is selected
 
-On Thu, Nov 16, 2023 at 12:52=E2=80=AFAM Bret Joseph <bretjoseph@gmail.com>=
- wrote:
->
-> In mt6358-regulator.c
->
-> static const struct regulator_ops mt6358_volt_table_ops =3D {
->     .list_voltage =3D regulator_list_voltage_pickable_linear_range,
->     .map_voltage =3D regulator_map_voltage_pickable_linear_range,
->     .set_voltage_sel =3D regulator_set_voltage_sel_pickable_regmap,
->     .get_voltage_sel =3D mt6358_get_buck_voltage_sel /*regulator_get_volt=
-age_sel_pickable_regmap*/,
->     .set_voltage_time_sel =3D regulator_set_voltage_time_sel,
->     .enable =3D regulator_enable_regmap,
->     .disable =3D regulator_disable_regmap,
->     .is_enabled =3D regulator_is_enabled_regmap,
->     .get_status =3D mt6358_get_status,
-> };
->
-> the function [regulator_get_voltage_sel_pickable_regmap] causes a -EINVAL=
-=E2=80=AC when registering
->
-> vsim1 vusb vcamd vefuse vmch vcama1 vemc vmc vldo28 vsim2
->
-> using [mt6358_get_buck_voltage_sel] results in a successful probe
+Ok, thanks for merging my changes! The commit from Hannes
+is what I had in my v1 for this, and it was a correct fix
+as well, my patch 3/3 was just a more elaborate way to do
+the same thing that I did since Hannes did not like my
+version at first.
 
-Sure it will probe, but any values you read back will be bogus.
+The 23441536b6 commit was not in linux-next yesterday, so
+it looks like our patches crossed paths on the same day.
 
-Can you provide a dump of /sys/kernel/debug/regulator/regulator_summary
-and `grep ^1e..: /sys/kernel/debug/regmap/1000d000.pwrap/registers`,
-and also any relevant logs?
-
-ChenYu
+     Arnd
