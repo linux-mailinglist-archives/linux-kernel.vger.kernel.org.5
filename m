@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 320F57F61D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B565A7F61D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345877AbjKWOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S1345880AbjKWOpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345861AbjKWOpC (ORCPT
+        with ESMTP id S1345881AbjKWOpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:45:02 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB561B3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:45:09 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id B5A233200A9C;
-        Thu, 23 Nov 2023 09:45:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 23 Nov 2023 09:45:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700750708; x=
-        1700837108; bh=tAugLoT/cPPoDO0Am/a0BT8u3Z35YCoGxKsBr3EXnro=; b=M
-        QtI/AN/OWFiH6tb7WLOTkYq2+aUox/YLpAaGreo3QXK83UmUbsJoBiFHx3sa2HDX
-        posoADBbrUE8qmSYugyYRh2L9cMcmkRhkSILa6HKDaUGaqVcQmAo3fucLcSNApAt
-        JxExn15ZkrWhwv3ImYK3YP0nhO98Ujy4M1rMw/fvVFe5JEBZU1h3CuyUwPy+co/n
-        XUbxMXFRSC7dmxnuuo+y3YLdkdRmiGG5bIJcA1bN4KDp9cyd+K/Jhnt1QluMOkHV
-        mo45OeABQ2DwvKUdfTbt1WYwezFvUHKdznD8+c82P8SprU+n0cPSFIevDgf7eUIt
-        pTWfxfELfozEPXpY/rwOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700750708; x=
-        1700837108; bh=tAugLoT/cPPoDO0Am/a0BT8u3Z35YCoGxKsBr3EXnro=; b=u
-        GhkX2IzPqAziu5NrED4YvksIa8Fa0q8lHWf5LdQfI3cIeViAkvHnTN2Q1ne1w8Cs
-        NX4ik4/js08HYBVIBc2+Cafhjsjlds12/+pgf3pIMKr30xxrHMjjGkDSiJiWUeNC
-        gKSfEoQPLAEzHlrV5boTPWgXns40FSxEz6EX4s4X9ZWiT3eU85Q6Z0kAsXfpqe4v
-        yHl1IKmUMxGuvPuWdj448cpYVmcBkUs5sLDgfxmBUb9argPEBpFBIxoWnHsu4/+x
-        u5X1qMtLmPLwAxRq5U6Un81rTuvA7gMtWRJCHFuABMCSVmhy+QuwBBk9QOF6fPp2
-        hwjGJ2dCyQaVxSvDuN22g==
-X-ME-Sender: <xms:dGVfZfEa11BARTv6ZiHRB3lxn2t9t9fGaC4bBvgrMOZ_iZnzdgoXRQ>
-    <xme:dGVfZcUa7cnz7EHm4Gva_QATpuyPxlFs3kM_8fm2fIVbonvVWhhr56bZnTP0FeYS8
-    hiS7p5UrxpB8f5E-5s>
-X-ME-Received: <xmr:dGVfZRK8_Xqhc60T2vXivCj7yFrWU7gqF5TUGzgBkA4VqSDt0xzuCKL3BLFnGunMPsMSLHladG_aUt6DKmFvyjfNU2ZSDj1KL03JwCqtGcVo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehfedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
-    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
-    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
-    grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:dGVfZdGrfJb5hldhQ1USQVQPajALpOMp8g735F-El4iGkMK3e4eL6A>
-    <xmx:dGVfZVWyYvQQFZuJaCnQiZiVKW76syjy4evYLE-JUtFLnqa4qJzGEw>
-    <xmx:dGVfZYPogFccJutwfSLNFZnn9K7-qO4ECdf9T8QMOHXzYPsDA6gRFQ>
-    <xmx:dGVfZYS7njXMoAPIbho4Ev22NtdR34XJUVqCvx69oTR8PeUlBufY2Q>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Nov 2023 09:45:07 -0500 (EST)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v3 5/5] staging: rtl8192e: renamed variable HTIOTActIsMgntUseCCK6M
-Date:   Thu, 23 Nov 2023 09:43:37 -0500
-Message-ID: <20231123144337.13112-6-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231123144337.13112-1-garyrookard@fastmail.org>
-References: <20231123144337.13112-1-garyrookard@fastmail.org>
+        Thu, 23 Nov 2023 09:45:10 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EF6D62
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:45:17 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35ba5e00dc5so3311695ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1700750716; x=1701355516; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kuvt9r8KOWX1BiAT/c30zg7sLb0Byjj11/nVghaWWms=;
+        b=lTPit1XT2HPqY99IpgW4zsjpbwYHf/Zug/4mebpjf2E+kTgsUo+53jFl4ThIo3CAQP
+         IQheI+Q7o7JH8qAJtqSq2+KkdmzpyAU8Jw4fhMuChHoRJjI1PeN2xMKUvw2n02Kiu727
+         HpiytbvdCGbzfbep0y5hKZbLFEhwjgAHNkXBNGiTv1BMi+JTDDSbV6vJOoGT26Lw5ePd
+         1anxAif/020seGyo7abiSeIo6U3Jbrf7dRStSZQQcXbH9UVU8+vpbmPliP9tFuSGeeuX
+         qgZLOb5SwzwvrxV6ANM3cHDpSre2XID0uAlgU4B3WHJEoXDaGx1xheMtBHzZ/t+9SrAH
+         9wEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700750716; x=1701355516;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kuvt9r8KOWX1BiAT/c30zg7sLb0Byjj11/nVghaWWms=;
+        b=pZHlKG9wFjUn0ffGckdpMPS1cI2Y6yeQDy8zdBpikg1i8FBkahxJzA9SuUfOb0O5IY
+         GwpxtwUg0vf4uhOL55VW3XhQWeumbaT1Eb5woNIDsfzD6ZWPyoKOYtPVW0pViQ9UVtAm
+         vDh4Xj63ynWeKn4GIM178sQ8IU61fi82N0Clyd7tcfU6UJksqgj75g4gEe4XDzJPgd3E
+         tWWUYtR0gPqzz+hW24dp3g8O79zZOBJiicWb1lBnrnOq0ngv1tqikhTVOmUDNihWtGek
+         50Nvn9ETKCG/4ZLvW6Kjsufju1DnkBqandvlSrLSCoNqKb9rVSr7DePeRVcdewgnWR8S
+         TK3g==
+X-Gm-Message-State: AOJu0YyEt4WOeoe+vnx+l5bzL8Rbcie8cok1ZmSnXz7joSTF3IWqa6G7
+        vSdFYRB5byikfFX3rpCbCPWDRA==
+X-Google-Smtp-Source: AGHT+IE6CculVp3F9Rtnr1OLtgszPmbMIieHBv875RrP/HPj2Ga5BLKHDujelRLOHcuKwZeQTRYzTQ==
+X-Received: by 2002:a05:6e02:1285:b0:34f:70ec:d4cf with SMTP id y5-20020a056e02128500b0034f70ecd4cfmr5459643ilq.8.1700750716253;
+        Thu, 23 Nov 2023 06:45:16 -0800 (PST)
+Received: from ?IPV6:2605:a601:adae:4500:8976:165c:1b8d:1b61? ([2605:a601:adae:4500:8976:165c:1b8d:1b61])
+        by smtp.gmail.com with ESMTPSA id s2-20020a056e021a0200b0035aeaed5112sm391231ild.84.2023.11.23.06.45.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 06:45:16 -0800 (PST)
+Message-ID: <313e9a3e-0fe5-45e1-a164-1d55fb52898a@sifive.com>
+Date:   Thu, 23 Nov 2023 08:45:13 -0600
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] RISC-V: Add stubs for
+ sbi_console_putchar/getchar()
+Content-Language: en-US
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+References: <20231118033859.726692-1-apatel@ventanamicro.com>
+ <20231118033859.726692-2-apatel@ventanamicro.com>
+ <70ff59ea-378c-4d53-899a-eafffcad22fd@sifive.com>
+ <CAK9=C2U9aJDDd0JUhRqyLCF3dfyY5QBUrgyH+PKsT+pUKiB1xQ@mail.gmail.com>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAK9=C2U9aJDDd0JUhRqyLCF3dfyY5QBUrgyH+PKsT+pUKiB1xQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed from Pascal/CamelCase to Snake case the variable
-HTIOTActIsMgntUseCCK6M.
-HTIOTActIsMgntUseCCK6M -> ht_iot_act_is_mgnt_use_cck_6m
+Hi Anup,
 
-Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-Driver/module rtl8192e compiles.
+On 2023-11-23 4:38 AM, Anup Patel wrote:
+> On Wed, Nov 22, 2023 at 4:06 AM Samuel Holland
+> <samuel.holland@sifive.com> wrote:
+>> On 2023-11-17 9:38 PM, Anup Patel wrote:
+>>> The functions sbi_console_putchar() and sbi_console_getchar() are
+>>> not defined when CONFIG_RISCV_SBI_V01 is disabled so let us add
+>>> stub of these functions to avoid "#ifdef" on user side.
+>>>
+>>> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+>>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>>> ---
+>>>  arch/riscv/include/asm/sbi.h | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+>>> index 0892f4421bc4..66f3933c14f6 100644
+>>> --- a/arch/riscv/include/asm/sbi.h
+>>> +++ b/arch/riscv/include/asm/sbi.h
+>>> @@ -271,8 +271,13 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>>>                       unsigned long arg3, unsigned long arg4,
+>>>                       unsigned long arg5);
+>>>
+>>> +#ifdef CONFIG_RISCV_SBI_V01
+>>>  void sbi_console_putchar(int ch);
+>>>  int sbi_console_getchar(void);
+>>> +#else
+>>> +static inline void sbi_console_putchar(int ch) { }
+>>> +static inline int sbi_console_getchar(void) { return -ENOENT; }
+>>
+>> "The SBI call returns the byte on success, or -1 for failure."
+>>
+>> So -ENOENT is not really an appropriate value to return here.
+> 
+> Actually, I had -1 over here previously but based on GregKH's
+> suggestion, we are now returning proper Linux error code here.
+> 
+> Also, all users of sbi_console_getchar() onlyl expect a negative
+> value upon error so better to return proper Linux error code.
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
-v3: Corrected versioning fron v1 -> v3, includes change history.
-v2: v2 was Skipped over..v3 corrects this.
-v1: Style and compile issues, asked to redo.
+Alright, makes sense to me.
 
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 0873c19ca051..f43249fd78d7 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -207,7 +207,7 @@ static void ht_iot_peer_determine(struct rtllib_device *ieee)
- 	netdev_dbg(ieee->dev, "IOTPEER: %x\n", ht_info->IOTPeer);
- }
- 
--static u8 HTIOTActIsMgntUseCCK6M(struct rtllib_device *ieee,
-+static u8 ht_iot_act_is_mgnt_use_cck_6m(struct rtllib_device *ieee,
- 				 struct rtllib_network *network)
- {
- 	u8	retValue = 0;
-@@ -675,7 +675,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 		ht_iot_peer_determine(ieee);
- 
- 		ht_info->iot_action = 0;
--		bIOTAction = HTIOTActIsMgntUseCCK6M(ieee, pNetwork);
-+		bIOTAction = ht_iot_act_is_mgnt_use_cck_6m(ieee, pNetwork);
- 		if (bIOTAction)
- 			ht_info->iot_action |= HT_IOT_ACT_MGNT_USE_CCK_6M;
- 		bIOTAction = HTIOTActIsCCDFsync(ieee);
--- 
-2.41.0
+Regards,
+Samuel
 
