@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282557F5984
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F5B7F598E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344312AbjKWHoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
+        id S1344269AbjKWHrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjKWHoU (ORCPT
+        with ESMTP id S229477AbjKWHrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:44:20 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880C8E7;
-        Wed, 22 Nov 2023 23:44:26 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN5p9sG019102;
-        Thu, 23 Nov 2023 07:44:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ODq+VcjcMmK3OWQ4qwMAU23ZgLzdDzuPsqKbO1zYxSI=;
- b=BrX2xUsx3jWrJ1R1XCstV+ygot0GspjyJgPR0Ec30fHr69llr/7n6OlXX2qF4VE4cNlh
- DOKQpRnhC1P+iZZpLhmgF9PkykXNYgf+IuaEc70RzNSmGxQJx9lrX5KznuZk7kN6StcQ
- na+Qwr3VCxe82BTcL9WfvQcW/wY13oYQ/5SKNcP9ueD46r4T3V3KtALOSzhqXZr0mSYA
- u+aRxGQJ9s3jjmpUePdmESkXSpIc9p4Dl592Zzn4Xz3nqXqVKVQB+0OQxBiuYa9uiI9t
- Pxof+BOZbg74PqcnIo+J/ITT8ixnHrMsCdiqnubNP/ZZTKtF/fZXxPu5l9T6TT5b5NMs AQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhr5ps96c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 07:44:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AN7iLoi024807
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 07:44:21 GMT
-Received: from [10.216.59.116] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
- 2023 23:44:15 -0800
-Message-ID: <ab2952ea-1917-4b58-a0cf-64f3eba0b7c9@quicinc.com>
-Date:   Thu, 23 Nov 2023 13:14:11 +0530
+        Thu, 23 Nov 2023 02:47:47 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E987BA2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:47:53 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2802b744e52so1279983a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700725673; x=1701330473; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q2tnacSsEzYa51ZlaGyK1ojaRlmZcj0/ixkOd70T8dg=;
+        b=d0Vbu6y0PEw2LZNM9GP05slLpLb4Y5WYnlL/fyUGpX1vmD5SdAnGitR8MpuARcBhOE
+         +8981knXr0OtnpmBm536/+fBXaWVIVa3VkI7l0aJfbh+EZnhMlHun26Sh9yq5L4XcRCI
+         yOg8bGn8rEP2p5qY9sGkAE/ZE5G++s2Jra1NCB94t8WlCwJT8Dxa2VKVBRavK3zXu8mm
+         qjE6k7J2kVimcokbl+Zs3e+2o3O7aLtqnZeaO5WB4SNh84oqMsjydmFAji45TV2pCRCK
+         M7wxIZj94BZ1VEAcpVZmjgaKOcmTJOhrYFX7A6DTdnWRk3gjRjSolZXtZgsvsOy//hTg
+         mbgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700725673; x=1701330473;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q2tnacSsEzYa51ZlaGyK1ojaRlmZcj0/ixkOd70T8dg=;
+        b=tdvKCS4rlfliiZnVc8IhX/QdjYW0dd1ITK7gOeMzw9O8bRfb0o/VHGMT3He03PBTWA
+         bngeKn2NLRsgmYorGHClsO36PwKmaevyk/g3RciNmR2VzaAF7u/cihZaQqi05K1kWyaN
+         bFb5OSruvbB/GQVXrzx5Kf0+sfjuCQ5SNSAp6a0trUOQqo2K28FK+nGoYAOIE5uOaqt2
+         yUzBHdmHe+k4sbpvoq5e4bema8Top9K4V3fQaVr80znoiIo1by86hXmvRGwriHo+D+yH
+         /KvffiYw8jQBMMoj/Vxa6CVflC0myTKuQbGdDHTUQig5D4c/x3RAthVeDFHAqN8bKGAe
+         Q52w==
+X-Gm-Message-State: AOJu0Yyraaf7I5bS1gcL3QbWR+bI4atY1YLJt89ozSUMkolS7M+NYNzm
+        dB67GznhHotpJN9DVa1IJIVceQjKU4S2NLNHfS3+xA==
+X-Google-Smtp-Source: AGHT+IGkk8ZRZsV1LXij5Bfg7YKfFMnZXaF6Ux0a2LIY47nYfss1C6+eIsNNiH3HE53PQrtjwzilEAq4XhkHK9gaSbA=
+X-Received: by 2002:a17:90a:dc08:b0:285:6622:ed1 with SMTP id
+ i8-20020a17090adc0800b0028566220ed1mr1217400pjv.10.1700725673299; Wed, 22 Nov
+ 2023 23:47:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- bindings
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        <quic_wcheng@quicinc.com>, Conor Dooley <conor+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20231122191335.3058-1-quic_kriskura@quicinc.com>
- <4c323ab5-579f-41f5-ab77-c087136e4058@linaro.org>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <4c323ab5-579f-41f5-ab77-c087136e4058@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zZdZlOuvuxHtKt3sV6lJrgfqK5tiTUeC
-X-Proofpoint-ORIG-GUID: zZdZlOuvuxHtKt3sV6lJrgfqK5tiTUeC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_05,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- phishscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311230054
+References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
+ <20231103131821.1176294-2-vincent.guittot@linaro.org> <20231114205422.k5m6y4m5vnw7dvzj@airbuntu>
+ <CAKfTPtDMEes6V2xRHavAwWrVuiZBdFAsaaxv9=-psAZCTPQWKg@mail.gmail.com> <20231121211725.gaekv6svnqdiq5l4@airbuntu>
+In-Reply-To: <20231121211725.gaekv6svnqdiq5l4@airbuntu>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 23 Nov 2023 08:47:42 +0100
+Message-ID: <CAKfTPtDzAZMcuWOYYOOAjCyvrOQiqyHZJBFVbACAvTqo+pU1gQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] sched/schedutil: Rework performance estimation
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        rafael@kernel.org, viresh.kumar@linaro.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,78 +73,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 22 Nov 2023 at 23:01, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 11/22/23 08:38, Vincent Guittot wrote:
+>
+> > > > +unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+> > > > +                              unsigned long min,
+> > > > +                              unsigned long max)
+> > > > +{
+> > > > +     struct rq *rq = cpu_rq(cpu);
+> > > > +
+> > > > +     if (rt_rq_is_runnable(&rq->rt))
+> > > > +             return max;
+> > >
+> > > I think this breaks old behavior. When uclamp_is_used() the frequency of the RT
+> > > task is determined by uclamp_min; but you revert this to the old behavior where
+> > > we always return max, no? You should check for !uclamp_is_used(); otherwise let
+> > > the rest of the function exec as usual.
+> >
+> > Yes, I made a shortcut assuming that max would be adjusted to the max
+> > allowed freq for RT task whereas it's the min freq that is adjusted by
+> > uclamp and that should also be adjusted without uclamp. Let me fix
+> > that in effective_cpu_util and remove this early return from
+> > sugov_effective_cpu_perf()
+>
+> +1
+>
+> > > Can we rename this function please? It is not mapping anything, but applying
+> > > a dvfs headroom (I suggest apply_dvfs_headroom()). Which would make the comment
+> > > also unnecessary ;-)
+> >
+> > I didn't want to add unnecessary renaming which often confuses
+> > reviewers so I kept  the current function name. But this can the be
+> > rename in a follow up patch
+>
+> Okay.
+>
+> > > >  static void sugov_get_util(struct sugov_cpu *sg_cpu)
+> > > >  {
+> > > > -     unsigned long util = cpu_util_cfs_boost(sg_cpu->cpu);
+> > > > -     struct rq *rq = cpu_rq(sg_cpu->cpu);
+> > > > +     unsigned long min, max, util = cpu_util_cfs_boost(sg_cpu->cpu);
+> > > >
+> > > > -     sg_cpu->bw_dl = cpu_bw_dl(rq);
+> > > > -     sg_cpu->util = effective_cpu_util(sg_cpu->cpu, util,
+> > > > -                                       FREQUENCY_UTIL, NULL);
+> > > > +     util = effective_cpu_util(sg_cpu->cpu, util, &min, &max);
+> > > > +     sg_cpu->bw_min = map_util_perf(min);
+> > >
+> > > Hmm. I don't think we need to apply_dvfs_headroom() to min here. What's the
+> > > rationale to give headroom for min perf requirement? I think the headroom is
+> > > only required for actual util.
+> >
+> > This headroom only applies for bw_min that is used with
+> > cpufreq_driver_adjust_perf(). Currently it only takes cpu_bw_dl()
+>
+> It is also used in ignore_dl_rate_limit() - which is the user that caught my
+> eyes more.
+>
+> I have to admit, I always get caught out with the new adjust_perf stuff. The
+> down side of working on older LTS kernels for prolonged time :p
+>
+> > which seems too low because IRQ can preempt DL. So I added the average
+> > irq utilization into bw_min which is only an estimate and needs some
+> > headroom. That being said I can probably stay with current behavior
+> > for now and remove headroom
+>
+> I think this is more logical IMHO. DL should never need any headroom. And irq
+> needing headroom is questionable everytime I think about it. Does an irq storm
+> need a dvfs headroom? I don't think it's a clear cut answer, but I tend towards
+> no.
+>
+> > > And is it right to mix irq and uclamp_min with bw_min which is for DL? We might
+> >
+> > cpu_bw_dl() is not the actual utilization by DL task but the computed
+> > bandwidth which can be seen as min performance level
+>
+> Yep. That's why I am not in favour of a dvfs headroom for DL.
+>
+> But what I meant here is that in effective_cpu_util(), where we populate min
+> and max we have
+>
+>         if (min) {
+>                 /*
+>                  * The minimum utilization returns the highest level between:
+>                  * - the computed DL bandwidth needed with the irq pressure which
+>                  *   steals time to the deadline task.
+>                  * - The minimum performance requirement for CFS and/or RT.
+>                  */
+>                 *min = max(irq + cpu_bw_dl(rq), uclamp_rq_get(rq, UCLAMP_MIN));
+>
+> So if there was an RT/CFS task requesting a UCLAMP_MIN of 1024 for example,
+> bw_min will end up being too high, no?
 
+But at the end, we want at least uclamp_min for cfs or rt just like we
+want at least DL bandwidth for DL tasks
 
-On 11/23/2023 1:11 PM, Krzysztof Kozlowski wrote:
-> On 22/11/2023 20:13, Krishna Kurapati wrote:
->> The high speed related interrupts present on QC targets are as follows:
->>
->> dp/dm Irq's
->> These IRQ's directly reflect changes on the DP/DM pads of the SoC. These
->> are used as wakeup interrupts only on SoCs with non-QUSBb2 targets with
->> exception of SDM670/SDM845/SM6350.
->>
->> qusb2_phy irq
->> SoCs with QUSB2 PHY do not have separate DP/DM IRQs and expose only a
->> single IRQ whose behavior can be modified by the QUSB2PHY_INTR_CTRL
->> register. The required DPSE/DMSE configuration is done in
->> QUSB2PHY_INTR_CTRL register of phy address space.
->>
->> hs_phy_irq
->> This is completely different from the above two and is present on all
->> targets with exception of a few IPQ ones. The interrupt is not enabled by
->> default and its functionality is mutually exclusive of qusb2_phy on QUSB
->> targets and DP/DM on femto phy targets.
->>
->> The DTs of several QUSB2 PHY based SoCs incorrectly define "hs_phy_irq"
->> when they should have been "qusb2_phy_irq". On Femto phy targets, the
->> "hs_phy_irq" mentioned is either the actual "hs_phy_irq" or "pwr_event",
->> neither of which would never be triggered directly are non-functional
->> currently. The implementation tries to clean up this issue by addressing
->> the discrepencies involved and fixing the hs_phy_irq's in respective DT's.
->>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>   .../devicetree/bindings/usb/qcom,dwc3.yaml    | 125 ++++++++++--------
->>   1 file changed, 69 insertions(+), 56 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
->> index e889158ca205..4a46346e2ead 100644
->> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
->> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
->> @@ -17,20 +17,25 @@ properties:
->>             - qcom,ipq5018-dwc3
->>             - qcom,ipq5332-dwc3
->>             - qcom,ipq6018-dwc3
->> +          - qcom,ipq6018-dwc3-sec
-> 
-> I could not understand from commit msg why you are adding new compatible
-> and what it is supposed to fix.
-> 
-> The entire diff is huge thus difficult to review. Why fixing hs_phy_irq
-> causes three new interrupts being added?
-
-Some targets have two controllers where the second one is only HS 
-capable and doesn't have ss_phy_irq. In such cases to make it clear in 
-bindings, I added a suffix "-sec" and accordingly changed in DT as well. 
-Should've put this in commit text.
-
->>             - qcom,ipq8064-dwc3
->>             - qcom,ipq8074-dwc3
->>             - qcom,ipq9574-dwc3
->>             - qcom,msm8953-dwc3
->>             - qcom,msm8994-dwc3
->>             - qcom,msm8996-dwc3
->> +          - qcom,msm8996-dwc3-sec
->>             - qcom,msm8998-dwc3
->>             - qcom,qcm2290-dwc3
->>             - qcom,qcs404-dwc3
->>             - qcom,sa8775p-dwc3
->> +          - qcom,sa8775p-dwc3-ter
-> 
-> Ter?
-> 
-Tertiary controller.
-
-Regards,
-Krishna,
+>
+> Should we add another arg to sugov_effective_cpu_perf() to populate bw_min too
+> for the single user who wants it?
+>
+>
+> Thanks!
+>
+> --
+> Qais Yousef
