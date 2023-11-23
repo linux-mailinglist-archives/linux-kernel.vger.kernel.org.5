@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0E87F632C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2587B7F632A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346157AbjKWPkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
+        id S1346151AbjKWPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346072AbjKWPkT (ORCPT
+        with ESMTP id S1346072AbjKWPiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:40:19 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25140D54
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:40:25 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1DE8666071A9;
-        Thu, 23 Nov 2023 15:40:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700754023;
-        bh=Xqn2sXFj62/Y/c3FWwNnmnsBPgLhzVR5ahyoONS/xc8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mLTX5SY0lgBFAjJxoto4KiQx2tcWbtojYMr4smSJJuGr3Liq1a1QRut0bnAKuhZlr
-         a1HX9+Hr0G3Q6k3EVW/VxN586xR9d/JOkBEIpK4ENcc2VU8pv3/ztBd0FLcqfPM70F
-         e6kxPJKIM7hIDS1Q0FkQhVWpRdXOaN7Smf2x4hjNAONi1BEEjV3ah6UQaBuSntQYEj
-         sQ0D/CHfLBPh6aWcOCXvQNcJPCgiBvDyea966KqRnYxEQKEF5+V5NFWbTOUDhwoH13
-         ID2zPLv8nameWnf+PtIpv4xk+g/P7vcL3g4I1vrbwCixInTgne/fkxz5AsGi6tjyb9
-         vEpvFeT+i1apg==
-Date:   Thu, 23 Nov 2023 16:40:19 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org, kernel@collabora.com
-Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Message-ID: <20231123164019.629c91f9@collabora.com>
-In-Reply-To: <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
-References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
-        <20231123113530.46191ded@collabora.com>
-        <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
-        <20231123135933.34d643f7@collabora.com>
-        <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
-        <20231123145103.23b6eac9@collabora.com>
-        <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 23 Nov 2023 10:38:54 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38279C1;
+        Thu, 23 Nov 2023 07:39:01 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso12646121fa.3;
+        Thu, 23 Nov 2023 07:39:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700753939; x=1701358739; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X5QTDN/COfbPh5hWo0S55LVkpF8OpC4D7Gn+kAsnVaM=;
+        b=FLRWlJ4YycqQmX/t9mb9H0MYg5bSdDOwFevPr43+Ddy92WWRxaUCVMLn21OSa5to6s
+         uBLOPOwdIKPetbruNM/l1t1TFuPZtTlpB8CL9YH5tod0otI9N8ZTHintYfl3NFTXeK2Q
+         q0IbyMXBr7fDDk3icH6wJkHnAJ3J9aUjhP86XHTxzo9sT38SBJf+vCl6tt04Et4TmkNO
+         oygF4SUHBlRUPki/8nrATwsVMonvBESn6m+1Zqz8ATNoNRJLMpya80V2O22Efa/LG6X3
+         F9PjU8ekLCKNcGJ4zVsK7f1RAR1XwJ1Ke8zUutY+DZ5+HRIANvC7gUo4sf820FyE4IAT
+         M0iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700753939; x=1701358739;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5QTDN/COfbPh5hWo0S55LVkpF8OpC4D7Gn+kAsnVaM=;
+        b=irOXZ17kF5e/ro+lUE0zg+MJ/6bIhFDGKSil+LPXoth9kwAUwiwkzvICII/slQj/+E
+         O9u909htwAX6okJiKj3gLZgVO5ZmW+3aEYLSr6hLFmADvT1lQsmOMBf+rhbD+RYDwY6c
+         ztD2T/RMSISOYQ7K9KWr0vWrrYF7K8+ttILq3yLFcoPXHOMZ7l0IWE/HZIG9KTGOaYyj
+         p5gNvcgi8FffAEn93D8RH354jU9hI06vMCDCwTFZm5D4Y+G/QmessdyErR3ytzI1oNJx
+         r1mAwKhwsD5UbhurXzZuHZY8eRAUYg/SZT5ZlnyWr9LMYAggF1YPq0VgSFL6u/pVtnap
+         DIEA==
+X-Gm-Message-State: AOJu0YwzcU72EmCQVbBgjIspjlkL7I7RGho4Bwb8Brb2K2e7DvCVpkmR
+        PXr4OOfxCIg8HqkeKedQItI=
+X-Google-Smtp-Source: AGHT+IHomSdQ+41Hjzo6i7Clcyf/5GQNw82lEcTgP30RpuqoAvf3sXxd02xrsS0dBSM2Qe4A8z/Zjg==
+X-Received: by 2002:a2e:9e55:0:b0:2c5:70f:614a with SMTP id g21-20020a2e9e55000000b002c5070f614amr3380967ljk.17.1700753938803;
+        Thu, 23 Nov 2023 07:38:58 -0800 (PST)
+Received: from ?IPV6:2001:999:251:b686:cec4:d552:2937:637c? ([2001:999:251:b686:cec4:d552:2937:637c])
+        by smtp.gmail.com with ESMTPSA id y35-20020a2ebba3000000b002bcedacd726sm244401lje.25.2023.11.23.07.38.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 07:38:58 -0800 (PST)
+Message-ID: <74b0b808-7b97-4e53-a1a4-6e2e1274ecff@gmail.com>
+Date:   Thu, 23 Nov 2023 17:40:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mfd: twl6030-irq: Revert to use of_match_device()
+To:     Lee Jones <lee@kernel.org>
+Cc:     tony@atomide.com, robh@kernel.org, wens@csie.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231029114843.15553-1-peter.ujfalusi@gmail.com>
+ <20231123103756.GD1184245@google.com> <20231123104108.GF1184245@google.com>
+Content-Language: en-US
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20231123104108.GF1184245@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,122 +75,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 16:14:12 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
 
-> Il 23/11/23 14:51, Boris Brezillon ha scritto:
-> > On Thu, 23 Nov 2023 14:24:57 +0100
-> > AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > wrote:
-> >   
-> >>>>
-> >>>> So, while I agree that it'd be slightly more readable as a diff if those
-> >>>> were two different commits I do have reasons against splitting.....  
-> >>>
-> >>> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
-> >>> in when we power-off the cores, I think we'd be better off dropping
-> >>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
-> >>> at [re]initialization time, and then have a separate series that fixes
-> >>> the problem more generically.
-> >>>      
-> >>
-> >> But that didn't work:
-> >> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/  
-> > 
-> > I meant, your 'ignore-core_mask' fix + the
-> > 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
-> > 
-> > So,
-> > 
-> > https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
-> > +
-> > https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
-> >   
-> >>
-> >>
-> >> ...while this "full" solution worked:
-> >> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
-> >>
-> >> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
-> >>
-> >>
-> >> ...so this *is* a "quick fix" already... :-)  
-> > 
-> > It's a half-baked solution for the missing irq-synchronization-on-suspend
-> > issue IMHO. I understand why you want it all in one patch that can serve
-> > as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
-> > panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
-> > even simpler diff (see below), and then fully address the
-> > irq-synhronization-on-suspend issue in a follow-up patchset.
-> >   
-> > --->8---  
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> > index 09f5e1563ebd..6e2d7650cc2b 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> > @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
-> >          }
-> >   
-> >          gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-> > -       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
 
-We probably want a comment here:
-
-	/* Only enable the interrupts we care about. */
-
-> > +       gpu_write(pfdev, GPU_INT_MASK,
-> > +                 GPU_IRQ_MASK_ERROR |
-> > +                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
-> > +                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
-> >     
+On 23/11/2023 12:41, Lee Jones wrote:
+>>> @@ -368,10 +368,10 @@ int twl6030_init_irq(struct device *dev, int irq_num)
+>>>  	int			nr_irqs;
+>>>  	int			status;
+>>>  	u8			mask[3];
+>>> -	const int		*irq_tbl;
+>>> +	const struct of_device_id *of_id;
+>>>  
+>>> -	irq_tbl = device_get_match_data(dev);
+>>> -	if (!irq_tbl) {
+>>> +	of_id = of_match_device(twl6030_of_match, dev);
+>>
+>> I think you just dropped support for ACPI.
 > 
-> ...but if we do that, the next patch(es) will contain a partial revert of this
-> commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL)...
+> Ah, scrap that.  I was looking at the wrong part of 1e0c866887f4.
+> 
+> So what about the other drivers changed in the aforementioned commit?
 
-Why should we revert it? We're not processing the PWRTRANS interrupts
-in the interrupt handler, those should never have been enabled in the
-first place. The only reason we'd want to revert that change is if we
-decide to do have interrupt-based waits in the poweron/off
-implementation, which, as far as I'm aware, is not something we intend
-to do any time soon.
+Looking back at it again, I think only this patch is needed.
+This is not a real driver, it is using the twl core's device.
+The twl6030 is for sure broken, let me reply to the twl4030-power in a sec.
 
+> Ideally we'd have a call that covers all of the various probing APIs.
 > 
-> I'm not sure that it's worth changing this like that, then changing it back right
-> after :-\
+>> Rob, care to follow-up?
 > 
-> Anyway, if anyone else agrees with doing it and then partially revert, I have no
-> issues going with this one instead; what I care about ultimately is resolving the
-> regression ASAP :-)
-> 
-> Cheers,
-> Angelo
-> 
-> >          /*
-> >           * All in-flight jobs should have released their cycle
-> > @@ -425,11 +428,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
-> >   
-> >   void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-> >   {
-> > -       u64 core_mask = panfrost_get_core_mask(pfdev);
-> >          int ret;
-> >          u32 val;
-> >   
-> > -       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-> > +       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
-> >          ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
-> >                                           val, !val, 1, 1000);
-> >          if (ret)
-> > @@ -441,7 +443,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-> >          if (ret)
-> >                  dev_err(pfdev->dev, "tiler power transition timeout");
-> >   
-> > -       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-> > +       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
-> >          ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
-> >                                   val, !val, 0, 1000);
-> >          if (ret)
-> > 
-> >   
+> I'd still like Rob to comment.
 > 
 
+-- 
+Péter
