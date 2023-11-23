@@ -2,126 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220A57F5671
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A197F5679
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 03:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344244AbjKWCbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 21:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
+        id S1344097AbjKWCeW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 21:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344116AbjKWCbG (ORCPT
+        with ESMTP id S232694AbjKWCeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 21:31:06 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B070DA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:31:02 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27ff83feb29so382534a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 18:31:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700706661; x=1701311461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U7iDnp8t+KdyeiUT7D88qTOqMxvRmmiP2r4q7q2VrCw=;
-        b=m6oRr/ashOEGHxXSBYmK8cuDJfLqU1gwdiI4l++ERA9V/qRFW/RUUHRfnao1/iWRig
-         0eSNo0H91+yAY3DyFGYbKh1tS3pCOyEzdR0h3D3KCiUfiqYmcD1aqgbwqKi8rookcZP1
-         p4U5kwuM2He+Qh7YIxs03h+SkOS7I1gVUt5MqeJqJHrJ/S/LV8EtWsJmQlSAPksaNGTd
-         bf8nF/hxEhg/ElUuwcFVxshvce5+YZx1G9UrRVrn5oxGWlLYMgNOA+rjKEyGzJj0Q/zg
-         ZmnPhZoMS3LYDVHtNj3VYK+hhgzjln4LdnbA794xdBxPgp7UpacwhlhLHce0jD3JoSjL
-         MOVw==
+        Wed, 22 Nov 2023 21:34:21 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D2F191;
+        Wed, 22 Nov 2023 18:34:27 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5a9bc2ec556so287647a12.0;
+        Wed, 22 Nov 2023 18:34:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700706661; x=1701311461;
+        d=1e100.net; s=20230601; t=1700706867; x=1701311667;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U7iDnp8t+KdyeiUT7D88qTOqMxvRmmiP2r4q7q2VrCw=;
-        b=KWRg6I2WO6DHok87GOllBY/nBTzu/22hBOwA0NrerVrUlpjeyJx6nmGH+EhIqX1/GG
-         PpyvcjrMcjKWydSTYn256Y+gSTe1jSvZQTQYeo7RhguxbrKTG33T/fxkhEEZ0AZ0fS3S
-         pTkgsUGwolNB7qo2Rqj0y1Xvj808+5AqCSjQdId5eK0DaRb+Q4VYk+G1CGhYM79fZStb
-         JeL6rC1LsHtaSO/lHhyrKNulXn53e0qMrjoWN0bRZmO0W9umFkkqh6rcPixIpLCPgqSy
-         D1dgHIAx/n+eY2L9+R40nKA82eM1ofwJ6XHfbyFxQEIXIyGKv+np2qTwrF+fgkHlFefx
-         uPdg==
-X-Gm-Message-State: AOJu0YyrfUK4KGMOQVqPY7BmhKSq8HSj9ctu3veNHKc0CeWdAs19X+um
-        OPyTCDSz9hFrJtOBaB2nXknj4JgyCRPIg5aLA6o=
-X-Google-Smtp-Source: AGHT+IGGFUweecO5epVQcB0JiJi7vITOIzmn9FsdMPNQTFuozzvhOm6PKx7gcT4Fo3Sa9N0+DlQ5wf+9MN5SXTQsCX8=
-X-Received: by 2002:a17:90b:4d05:b0:280:c0:9d3f with SMTP id
- mw5-20020a17090b4d0500b0028000c09d3fmr4312829pjb.34.1700706661646; Wed, 22
- Nov 2023 18:31:01 -0800 (PST)
+        bh=1rMU5W4ernHWUIZiexvcWy6RAkAMVf7g6JwK9DSvkq8=;
+        b=IgGAG7dQT2eHdQzWe9gL4lkpPVtzUZhGx1rnDn1v2E71lN7a7sMQHNrzjHM1oesraP
+         LZHd97UqPWsDIxBT9XdKIE6GdUIjJEQLFDWYdWDmRmik4DjW1p7+52W2wSYptYUz1XP6
+         3uSG+CT8jVNsNvlLVk2y3wwSpa+OKl21dci2XItYkWlua3T3zE+A+mz8k4AR1xJObKFN
+         H/mt8SwD+boYKTbziovKW3BHC6Sj9nvp/uNkhNigXLCTQRVMKyE+s9dj1a77WOpP0lmO
+         2zKTEcLaTEEA/BEo+Wzi1q70PyuBjq2IsvoCJJer5UaSt5HEL4tT/ohqZ+qffubC0NbL
+         oANw==
+X-Gm-Message-State: AOJu0Yz+a5OX8zDztCtl1zRpMHVetDoEx5Q6XVzsyKABnO/mpKtLDKPE
+        Q40VDkQAmbmYFae41t2Hnp4m3fIeebjb51U32Ns=
+X-Google-Smtp-Source: AGHT+IHrecamqJieCNDa+tP1BGplPdjr+BA56TwTZFtRCjEOuU3hvaQmduwk7ziIMJu6iGK1hTdkXMfHJ8XAHNuUL5o=
+X-Received: by 2002:a05:6a20:1596:b0:18b:9b41:eb90 with SMTP id
+ h22-20020a056a20159600b0018b9b41eb90mr376147pzj.10.1700706867104; Wed, 22 Nov
+ 2023 18:34:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20231122231202.121277-1-andrey.konovalov@linux.dev> <CAB=+i9QFeQqSAhwY_BF-DZvZ9TL_rWz7nMOBhDWhXecamsn=dw@mail.gmail.com>
-In-Reply-To: <CAB=+i9QFeQqSAhwY_BF-DZvZ9TL_rWz7nMOBhDWhXecamsn=dw@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 23 Nov 2023 03:30:50 +0100
-Message-ID: <CA+fCnZdp4+2u8a6mhj_SbdmfQ4dWsXBS8O2W3gygzkctekUivw@mail.gmail.com>
-Subject: Re: [PATCH mm] slub, kasan: improve interaction of KASAN and
- slub_debug poisoning
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Feng Tang <feng.tang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+References: <20231122092703.3163191-1-tmricht@linux.ibm.com>
+In-Reply-To: <20231122092703.3163191-1-tmricht@linux.ibm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 22 Nov 2023 18:34:14 -0800
+Message-ID: <CAM9d7cjoniVhpb=xK8WSN1C80y4D25Tjedax9AmwPf1w2FsKrA@mail.gmail.com>
+Subject: Re: [PATCH linux-next] perf report: remove warning on missing raw
+ data for s390
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, svens@linux.ibm.com, gor@linux.ibm.com,
+        sumanthk@linux.ibm.com, hca@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 1:39=E2=80=AFAM Hyeonggon Yoo <42.hyeyoo@gmail.com>=
- wrote:
->
-> On Thu, Nov 23, 2023 at 8:12=E2=80=AFAM <andrey.konovalov@linux.dev> wrot=
-e:
-> >
-> > From: Andrey Konovalov <andreyknvl@google.com>
-> >
-> > When both KASAN and slub_debug are enabled, when a free object is being
-> > prepared in setup_object, slub_debug poisons the object data before KAS=
-AN
-> > initializes its per-object metadata.
-> >
-> > Right now, in setup_object, KASAN only initializes the alloc metadata,
-> > which is always stored outside of the object. slub_debug is aware of
-> > this and it skips poisoning and checking that memory area.
-> >
-> > However, with the following patch in this series, KASAN also starts
-> > initializing its free medata in setup_object. As this metadata might be
-> > stored within the object, this initialization might overwrite the
-> > slub_debug poisoning. This leads to slub_debug reports.
-> >
-> > Thus, skip checking slub_debug poisoning of the object data area that
-> > overlaps with the in-object KASAN free metadata.
-> >
-> > Also make slub_debug poisoning of tail kmalloc redzones more precise wh=
-en
-> > KASAN is enabled: slub_debug can still poison and check the tail kmallo=
-c
-> > allocation area that comes after the KASAN free metadata.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Thank you for looking at this quickly!
-> Unfortunately the problem isn't fixed yet with the patch.
->
-> I applied this on top of linux-next and built a kernel with the same conf=
-ig,
-> it is still stuck at boot.
+Hello,
 
-Ah, this is caused by a buggy version of "kasan: improve free meta
-storage in Generic KASAN", which made its way into linux-next.
-Reverting that patch should fix the issue. My patch that you bisected
-to exposes the buggy behavior.
+On Wed, Nov 22, 2023 at 1:27 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+>
+> Command
+>  # ./perf report -i /tmp/111 -D > /dev/null
+> emits an error message when a sample for event CRYPTO_ALL in the
+> perf.data file does not contain any raw data. This is ok.
+> Do not trigger this warning when the sample in the perf.data files
+> does not contain any raw data at all.
+> Check for availability of raw data for all events and return if
+> none is available.
+>
+> Output before:
+>  # ./perf report -i /tmp/111 -D > /dev/null
+>  Invalid CRYPTO_ALL raw data encountered
+>  Invalid CRYPTO_ALL raw data encountered
+>  Invalid CRYPTO_ALL raw data encountered
+>  #
+>
+> Output after:
+>  # ./perf report -i /tmp/111 -D > /dev/null
+>  #
+>
+> Fixes: b539deafbadb ("perf report: Add s390 raw data interpretation for PAI counters")
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
 
-Thanks!
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+> ---
+>  tools/perf/util/s390-sample-raw.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
+> index 29a744eeb71e..53383e97ec9d 100644
+> --- a/tools/perf/util/s390-sample-raw.c
+> +++ b/tools/perf/util/s390-sample-raw.c
+> @@ -51,8 +51,6 @@ static bool s390_cpumcfdg_testctr(struct perf_sample *sample)
+>         struct cf_trailer_entry *te;
+>         struct cf_ctrset_entry *cep, ce;
+>
+> -       if (!len)
+> -               return false;
+>         while (offset < len) {
+>                 cep = (struct cf_ctrset_entry *)(buf + offset);
+>                 ce.def = be16_to_cpu(cep->def);
+> @@ -234,10 +232,9 @@ struct pai_data {          /* Event number and value */
+>   */
+>  static bool s390_pai_all_test(struct perf_sample *sample)
+>  {
+> -       unsigned char *buf = sample->raw_data;
+>         size_t len = sample->raw_size;
+>
+> -       if (len < 0xa || !buf)
+> +       if (len < 0xa)
+>                 return false;
+>         return true;
+>  }
+> @@ -299,6 +296,10 @@ void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event,
+>         if (!evsel)
+>                 return;
+>
+> +       /* Check for raw data in sample */
+> +       if (!sample->raw_size || !sample->raw_data)
+> +               return;
+
+I was thinking it should check if evsel->attr.sample_type has
+PERF_SAMPLE_RAW.  But evsel__parse_sample() sets the
+sample->raw_data and ->raw_size only if it has the flag.
+So I think it's fine.
+
+Thanks,
+Namhyung
+
+
+> +
+>         /* Display raw data on screen */
+>         if (evsel->core.attr.config == PERF_EVENT_CPUM_CF_DIAG) {
+>                 if (!evsel->pmu)
+> --
+> 2.41.0
+>
+>
