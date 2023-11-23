@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FE07F60C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2A87F60CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345617AbjKWNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        id S1345606AbjKWNuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:50:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345594AbjKWNuU (ORCPT
+        with ESMTP id S1345614AbjKWNur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:50:20 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE634BA;
-        Thu, 23 Nov 2023 05:50:26 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cd2f1a198cso7138267b3.0;
-        Thu, 23 Nov 2023 05:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700747426; x=1701352226; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6HDmUWHoV/d+5kwt+BMpRMCcQ4EU+NPmBrVnqKEpBkk=;
-        b=fCsbMueaAqe4vmewoSW6onWlFPkdA2U7h8HtTHIvasxQCHpbOH41yE81KU0z+UTwfT
-         Q6v6Ixzn3SnDphaewcWX/b5CVS7iRGkd4+PgbrYMFTBp4I1i2TLcIghXOQobf4igitVD
-         VsjKcv3Ez9P3JuWLtAJiPNLOd5uuKBFFKjPNt3h0QEsCZqkDuhqdrAeexZT7iUKtVxuC
-         bJxWmaiuddbgNd8Mmc/r8j/ujlPyDLwj56ItH5UOQmklq4wcaDDlUV4FiTN+p1cYLcVw
-         ylw68GL8/87oG0ke43GUgNufcMHWrue4CFFbJ9Fe4pYALzNtw9DA42Cfb/6VI9CSsi7i
-         g3EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700747426; x=1701352226;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6HDmUWHoV/d+5kwt+BMpRMCcQ4EU+NPmBrVnqKEpBkk=;
-        b=Ly75E3m+s6TILhOAXuM8xDQflO2gP111O635uanFSq/gn92Ge3KSyrCqoH4JZ63p9e
-         6C92VpD6WL/+R+PTQKIfiT6bPpvbQ+qhVjS4mgGW8wa709RMu6UE2W+xi/RWpj1qKD+r
-         oM+viHAxovI7+5neqCCo1qRWZF8cECJYuwY+6PlHpCXM59/kT0AhkhhhRIdopVqIMBcC
-         OfaPonhaa9VChjd+7vGntIpVLh1w+/OofOJFhyjaV/jDkw+EMqa9AhVseTxR+S9kgMLF
-         RU2jzrELfjqLo+VKF+zGEafYghsk5F+DQWKCiSvUDk0QWT8LUxV5YpgOZNhIvqpsDumT
-         iryQ==
-X-Gm-Message-State: AOJu0Yyk9sfRcDKhWwFPBh6y0KJ9GklvwFD+X9mzGYsg2bu5RcikNWJQ
-        rvOO8fWPu3Ab2tF0vREBXp1G/Z9D0RbqK4ijqTc=
-X-Google-Smtp-Source: AGHT+IGZwjwRkgSJ7EnlxLUgRSgKWDT8jC/rPzRQg0Kq3WiN+CVcYva0UFJf/nOdcGZASDUiq8QSYhmkdlzne0lzNs4=
-X-Received: by 2002:a25:3409:0:b0:da0:3535:41f4 with SMTP id
- b9-20020a253409000000b00da0353541f4mr5712007yba.7.1700747426043; Thu, 23 Nov
- 2023 05:50:26 -0800 (PST)
+        Thu, 23 Nov 2023 08:50:47 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A2FBA;
+        Thu, 23 Nov 2023 05:50:54 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANCRMkX017382;
+        Thu, 23 Nov 2023 13:50:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=oZXD2fFXsHF5yC43lnl3y8lNittg+JTRjRA3khNNHHo=;
+ b=bl1iqIqJm9sStgYQqVPd+TXdlj+H1S1lv2FyKix0e8d80IcMqY44Mmt4QOle94DE4jz0
+ jHSKW5iWIpcidV8ebMuzLv0kXhpjkUzxobw3/WISuEZrdlbhTMH2j1wgQ1Dmglak3hz3
+ WY2WVOpNL5mjRt4ee89y8oP6OcjYp6G/QEiaoUNTqiRUEQtwV1zttHGh2Iwg7GTxKuUJ
+ GzsTDnGpzsNZhKSKRCY6FpuhJ2yZ7Zp4GvRNpP7pg6OM26379i5fYXbWLyZgXsvFSaoK
+ Menlwo1/oxJxen/SBtd5crV/v0A6mciAn2Pg5shrLG8s3vjL3vRZNngXR6M1URWK+cEF oA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj4hwgdfj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 13:50:50 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ANDonBC023871
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 13:50:49 GMT
+Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 23 Nov 2023 05:50:44 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <djakov@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V3 0/2] interconnect: qcom: Introduce interconnect drivers for X1E80100
+Date:   Thu, 23 Nov 2023 19:20:26 +0530
+Message-ID: <20231123135028.29433-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20231121151733.2015384-1-tmaimon77@gmail.com> <20231121151733.2015384-3-tmaimon77@gmail.com>
- <6aeb28f5-04c2-4723-9da2-d168025c307c@lunn.ch> <CAP6Zq1j0kyrg+uxkXH-HYqHz0Z4NwWRUGzprius=BPC9+WfKFQ@mail.gmail.com>
- <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
-In-Reply-To: <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Thu, 23 Nov 2023 15:50:14 +0200
-Message-ID: <CAP6Zq1jw9uLP_FQGR8=p3Y2NTP6XcNtzkJQ0dm3+xVNE1SpsVg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     alexandre.torgue@foss.st.com, tali.perry1@gmail.com,
-        edumazet@google.com, krzysztof.kozlowski+dt@linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com, benjaminfair@google.com,
-        openbmc@lists.ozlabs.org, joabreu@synopsys.com, joel@jms.id.au,
-        devicetree@vger.kernel.org, j.neuschaefer@gmx.net,
-        robh+dt@kernel.org, peppe.cavallaro@st.com,
-        linux-arm-kernel@lists.infradead.org, avifishman70@gmail.com,
-        venture@google.com, linux-kernel@vger.kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zEdJoelmjJw1LI26UaZtQV8E6x4p4G4M
+X-Proofpoint-ORIG-GUID: zEdJoelmjJw1LI26UaZtQV8E6x4p4G4M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=704
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230099
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+This series adds interconnect support for the Qualcomm X1E80100 platform,
+aka Snapdragon X Elite.
 
-On Wed, 22 Nov 2023 at 20:45, Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Wed, Nov 22, 2023 at 07:50:57PM +0200, Tomer Maimon wrote:
-> > Hi Andrew,
-> >
-> > Thanks for your comments
-> >
-> > On Tue, 21 Nov 2023 at 18:42, Andrew Lunn <andrew@lunn.ch> wrote:
-> > >
-> > > > +void npcm_dwmac_pcs_init(struct npcm_dwmac *dwmac, struct device *dev,
-> > > > +                      struct plat_stmmacenet_data *plat_dat)
-> > > > +{
-> > > > +     u16 val;
-> > > > +
-> > > > +     iowrite16((u16)(SR_MII_CTRL >> 9), dwmac->reg + IND_AC_BA_REG);
-> > > > +     val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > > > +     val |= PCS_RST;
-> > > > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > > > +
-> > > > +     while (val & PCS_RST)
-> > > > +             val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > > > +
-> > > > +     val &= ~(PCS_AN_ENABLE);
-> > > > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > > > +}
-> > >
-> > > Is this a licensed PCS implementation? Or home grown? If its been
-> > > licensed from somebody, it maybe should live in driver/net/pcs, so
-> > > others can reuse it when they license the same core.
->
-> > we are using DWC PCS, I don't see support for DWC PCS and I am not
-> > sure it is supposed to be supported at /drivers/net/pcs
->
-> I've not followed the naming used by Synopsys. Is DWC PCS the same as
-> XPCS? Does Synopsys have multiple PCS implementations?
->
-> > I do see a patch set to support DWC PCS but I don't think it answers my needs
-> > https://patchwork.ozlabs.org/project/netdev/patch/1559674736-2190-3-git-send-email-weifeng.voon@intel.com/
->
-> I _think_ this patch eventually got turned into
-> driver/net/pcs/pcs-xpcs.c
->
-> What exactly does it not do for you?
-Thanks for pointing me to Synopsys (DWC) PCS in pcs-xpcs.c I need to
-check if the driver follows all our SGMII needs
->
->      Andrew
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
 
-Best regards,
+V3:
+* Fix the index numbers of pcie_center_anoc nodes. [Georgi]
 
-Tomer
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Fixup required property ordering [Krzysztof]
+* Pickup Rbs.
+
+Dependencies: None
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+
+Rajendra Nayak (2):
+  dt-bindings: interconnect: Add Qualcomm X1E80100 SoC
+  interconnect: qcom: Add X1E80100 interconnect provider driver
+
+ .../interconnect/qcom,x1e80100-rpmh.yaml      |   83 +
+ drivers/interconnect/qcom/Kconfig             |    9 +
+ drivers/interconnect/qcom/Makefile            |    2 +
+ drivers/interconnect/qcom/x1e80100.c          | 2328 +++++++++++++++++
+ drivers/interconnect/qcom/x1e80100.h          |  192 ++
+ .../interconnect/qcom,x1e80100-rpmh.h         |  207 ++
+ 6 files changed, 2821 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,x1e80100-rpmh.yaml
+ create mode 100644 drivers/interconnect/qcom/x1e80100.c
+ create mode 100644 drivers/interconnect/qcom/x1e80100.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,x1e80100-rpmh.h
+
+-- 
+2.17.1
+
