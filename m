@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE0F7F6565
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7EF7F656E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345320AbjKWR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:28:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S1345608AbjKWRar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:30:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWR23 (ORCPT
+        with ESMTP id S230263AbjKWRae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:28:29 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9969D40
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:28:35 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r6DV3-0006fo-MD; Thu, 23 Nov 2023 18:28:25 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r6DV1-00B5Zc-Nb; Thu, 23 Nov 2023 18:28:23 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r6DV1-006qI9-E4; Thu, 23 Nov 2023 18:28:23 +0100
-Date:   Thu, 23 Nov 2023 18:28:23 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Walle <mwalle@kernel.org>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Xinlei Lee <xinlei.lee@mediatek.com>
-Subject: Re: [PATCH] dt-bindings: pwm: remove Xinlei's mail
-Message-ID: <20231123172823.4offrr7w4tsrhl4y@pengutronix.de>
-References: <20231123134716.2033769-1-mwalle@kernel.org>
+        Thu, 23 Nov 2023 12:30:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52E71710
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:30:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41090C433BB
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700760635;
+        bh=GcOst3/22+6cuv9lswU+ry4+GdAAZVPRN7gJdD9N6n4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qz7mod4/HwaHJK0JAB3ytD3MH8bBSYf8iVVbxyfCL1i/Zs6EaxhyzZ0+HRfgGgLRE
+         7KYF+Vw44ia7HO0mtZe6yNWu2wGG5dX7LTzWtPvh5MEXCxFa2Opa4yGNWXBwiqumzT
+         OQoZP7jTRMTNAN9wgg0KoDA+vKwqyQPTwQy/IXCqlURybqriy7jxNCQRmvtEEdhBEp
+         9Xj0bqmhY869YhySGf3rjhIWMZSOwhzaFPKHnbgQXjg1zVoB8XolM9ff6mKYt0gLHq
+         xg18bmw/eeDCgNR1WtWJ8g7EWNw/CAxaofPrCUhSgPJqL78JV0q0plchZ5E05HZRz6
+         e2oH4RK5uPd8w==
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2809b4d648bso914961a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:30:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YxMSdDYBW3XW0AHr6rh+V41/Qc2VDbjs39hnkJjcdb1YhrqdCRn
+        LU2KSCFvJ/j7lkWs7nBD8A5GGISjp6KswA95wR14pw==
+X-Google-Smtp-Source: AGHT+IHytp+/fh45uHnBzItufzEx7eCFYQ74dyRHbptCqeFGDEMvkjRENl6X2MFJeG5mhjUejhBp+JsLaOU1M3fpJ2s=
+X-Received: by 2002:a17:90b:1001:b0:285:6f1a:4a71 with SMTP id
+ gm1-20020a17090b100100b002856f1a4a71mr149425pjb.32.1700760634650; Thu, 23 Nov
+ 2023 09:30:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f2xwjnd6lnhuiwuu"
-Content-Disposition: inline
-In-Reply-To: <20231123134716.2033769-1-mwalle@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231121090624.1814733-1-liushixin2@huawei.com> <ZVyp5eETLTT0PCYj@tiehlicka>
+In-Reply-To: <ZVyp5eETLTT0PCYj@tiehlicka>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Thu, 23 Nov 2023 09:30:23 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuO=Y6frTxMbR92XhzuC8Z8ALDWFLq2Mj3t0j+C9YXOaJw@mail.gmail.com>
+Message-ID: <CAF8kJuO=Y6frTxMbR92XhzuC8Z8ALDWFLq2Mj3t0j+C9YXOaJw@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Liu Shixin <liushixin2@huawei.com>, Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 21, 2023 at 5:00=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+> > However, in swapcache_only mode, the scan count still increased when sc=
+an
+> > non-swapcache pages because there are large number of non-swapcache pag=
+es
+> > and rare swapcache pages in swapcache_only mode, and if the non-swapcac=
+he
+> > is skipped and do not count, the scan of pages in isolate_lru_folios() =
+can
+> > eventually lead to hung task, just as Sachin reported [2].
+>
+> I find this paragraph really confusing! I guess what you meant to say is
+> that a real swapcache_only is problematic because it can end up not
+> making any progress, correct?
+>
+> AFAIU you have addressed that problem by making swapcache_only anon LRU
+> specific, right? That would be certainly more robust as you can still
+> reclaim from file LRUs. I cannot say I like that because swapcache_only
+> is a bit confusing and I do not think we want to grow more special
 
---f2xwjnd6lnhuiwuu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That is my feeling as well. I don't like to have too many special
+purposes modes either. It makes the whole process much harder to
+reason. The comment seems to suggest it is not effective in some
+situations. I am wondering if we can address that situation more
+directly without the special mode. At the same time I am not very
+familiar with the reclaim code path yet. I need to learn more about
+this problem space to articulate my thoughts better . I can dig in
+more, I might ask a lot of silly questions.
 
-On Thu, Nov 23, 2023 at 02:47:16PM +0100, Michael Walle wrote:
-> Xinlei Lee's mail is bouncing:
->=20
-> <xinlei.lee@mediatek.com>: host mailgw02.mediatek.com[216.200.240.185] sa=
-id:
->     550 Relaying mail to xinlei.lee@mediatek.com is not allowed (in reply=
- to
->     RCPT TO command)
->=20
-> Remove it.
->=20
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
->  Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml=
- b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-> index 153e146df7d4..afcdeed4e88a 100644
-> --- a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-> +++ b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-> @@ -8,7 +8,6 @@ title: MediaTek DISP_PWM Controller
-> =20
->  maintainers:
->    - Jitao Shi <jitao.shi@mediatek.com>
-> -  - Xinlei Lee <xinlei.lee@mediatek.com>
+Chris
 
-Xinlei is also listed as maintainer in
-Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.yaml.
-
-Other than that:
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-because the address failed for me before, too.
-
-A confirmation by Jitao Shi would be nice ...
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---f2xwjnd6lnhuiwuu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVfi7YACgkQj4D7WH0S
-/k5yMwf+IRIOP4q0ZLwdNez1e51AqVrao/6E0dqPhU7Cq9ka5Y8zr4Xx9wW3jz2d
-QPab0hcPzDgVd64whCgXEbclBDZOKPaURAWxWxprmyt2g4cAtuT4BfSlJ6bgG0Fd
-GJu9xpHiwJDPFaheBWM25hBmwYTie/j+ARN0OY+O9feJDUl3df06YJ1+s1M7euB2
-IGpslcBOi1TRE83Ll9y6nyUMTHYEyq5ZnIgm7zT2SoAjvmsI5qcE3SmiNJJsig07
-nl5nLTnjWfDYGfqKDixCOOokSSqW50Y42b5uX+iCxEMKmHtjKRhLrYbKkAvJVoYo
-/Wl2zfP2UdZo4ZP6rHVTRel63p12lg==
-=d7mx
------END PGP SIGNATURE-----
-
---f2xwjnd6lnhuiwuu--
+> purpose reclaim types. Would it be possible/reasonable to instead put
+> swapcache pages on the file LRU instead?
+> --
+> Michal Hocko
+> SUSE Labs
+>
