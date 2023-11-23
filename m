@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448467F5D92
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724557F5D94
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345002AbjKWLRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
+        id S1345001AbjKWLRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344939AbjKWLRO (ORCPT
+        with ESMTP id S1344939AbjKWLRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:17:14 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62DDB9;
-        Thu, 23 Nov 2023 03:17:20 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DD3586607399;
-        Thu, 23 Nov 2023 11:17:18 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700738239;
-        bh=2iodxh4WFdUN0YUDs8e2jORssg12+fCUm/I386AK+n0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UtE+qT0blWGNvMpufqC2Ubyc9FWynPNxujH3YsMq8FjcF6hy5CTCxElfzz6oeV0sp
-         Lqou3s23pBgY8+WDrGh0n6JuLA8ZDWiT/1L6U6leovnk38fnvULQOWtUhPqBaD9yKs
-         7avw2udD0LiKgmSs5U0X67ave7Bh1MhfmGf53Xy9MC5ts/o6zUt6YibDSA0sWtWUOg
-         WV2WUUXnXgpW3kp71HqVO9nqMu/QevDthr/cMpznrMBEuuExabn2LR7bMAPSzzh0ba
-         XVqgdI+yUjWZNEDgEkEFmGHIDCSjwjSZJ15g+NK7GhK7VkHiSz0nonfDluE85sljnG
-         gORtC3C2h7j/w==
-Message-ID: <0311dcdd-1c70-41ff-b170-dc2782f7ea49@collabora.com>
-Date:   Thu, 23 Nov 2023 12:17:16 +0100
+        Thu, 23 Nov 2023 06:17:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7861B2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:17:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115C1C433C7;
+        Thu, 23 Nov 2023 11:17:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700738275;
+        bh=hdAwY6pJUbNmsGng/6X59o3TnqEMtaCUWwJVzwuRFAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXEVV/29h0yxgU8l4GqCzQD4uVEesWb8rWIjccTKfaaaVMTIeXqAbC8aTYrKgegmd
+         U2AKWY4wpwM93aI+dKVOVG9Hzfk6OeealrymJLOdGRMyTudTGtF26UcwFytbLLdvXx
+         cGfWE1TeSkvTq5EpT95/tOr1I5Ocz5RQpmG1OqcddAFnwJIbcB8ps2gCWDcZsE7G4J
+         4+a0ccFnyavo+nKN6zWxdeojBsiOItL0R9ER4jS4t/tPJtgr9+LkHoUygB08LDc5Zs
+         4Qxrk1zWGpENX0SMcJLhA06J5ezKsnx+pG3p6ljqP7pBX0rYIxsBHoJffHJCR76ajg
+         ZrogX4UcHiw7Q==
+Date:   Thu, 23 Nov 2023 11:17:51 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Chen Ni <nichen@iscas.ac.cn>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] mfd: intel-lpss: Use PCI APIs instead of
+ derefereincing
+Message-ID: <20231123111751.GB1243364@google.com>
+References: <20231106184052.1166579-1-andriy.shevchenko@linux.intel.com>
+ <20231106184052.1166579-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] dt-bindings: arm: mediatek: convert audsys and
- mt2701-afe-pcm to yaml
-Content-Language: en-US
-To:     Eugen Hristev <eugen.hristev@collabora.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        matthias.bgg@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        Rob Herring <robh@kernel.org>
-References: <20231016203915.9793-1-eugen.hristev@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231016203915.9793-1-eugen.hristev@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231106184052.1166579-2-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 16/10/23 22:39, Eugen Hristev ha scritto:
-> Convert the mediatek,audsys binding to YAML, together with the associated
-> binding bindings/sound/mt2701-afe-pcm.yaml .
+On Mon, 06 Nov 2023, Andy Shevchenko wrote:
+
+> We have a few PCI APIs that may be used instead of direct dereferencibg,
+> Using them will also provide better error codes.
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/intel-lpss-pci.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Please use spell-check on your commit messages.
 
+Let's not get complacent.
 
+> diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+> index ae5759200622..cf56cd3a40ee 100644
+> --- a/drivers/mfd/intel-lpss-pci.c
+> +++ b/drivers/mfd/intel-lpss-pci.c
+> @@ -37,13 +37,17 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
+> +	if (ret)
+> +		return ret;
+> +
+>  	info = devm_kmemdup(&pdev->dev, (void *)id->driver_data, sizeof(*info),
+>  			    GFP_KERNEL);
+>  	if (!info)
+>  		return -ENOMEM;
+>  
+> -	info->mem = &pdev->resource[0];
+> -	info->irq = pdev->irq;
+> +	info->mem = pci_resource_n(pdev, 0);
+> +	info->irq = pci_irq_vector(pdev, 0);
+>  
+>  	if (pci_match_id(ignore_resource_conflicts_ids, pdev))
+>  		info->ignore_resource_conflicts = true;
+> -- 
+> 2.40.0.1.gaa8946217a0b
+> 
+
+-- 
+Lee Jones [李琼斯]
