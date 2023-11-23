@@ -2,52 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE6E7F6269
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E877F626D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345999AbjKWPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
+        id S1346009AbjKWPOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjKWPNn (ORCPT
+        with ESMTP id S229602AbjKWPOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:13:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58468D48
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:13:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FL/UCiuHliXV7MBADISZtBc0gFLZf+Is7s7N/UtKGpw=; b=pdRcUvC7Smx688h0YdgU5biy2b
-        oMYl+gtqDzy1lsd9k3RSIPiaqUzfV0ZYt84JsBF/ZRf9G+cm005DNpPK5ezDilLhXekkLn70+/rpT
-        pV4Dph/LNu1qrrKuz/fgK0piu6ZEsPCjZcJuYWn6RMvaWVFez5JNmE6HTN+y+nrn+t1XSIki9MTtb
-        A+jDa+XmylAGG6jFyFtT4FRLebIlLdG0mspGSEslKUJkDJPwtWU0E7YW9h2Pazy2uF+DsPyse3fPy
-        5NGKcXBhKIRWCPD2PK96+slwrlHprCwZG1q7fNy4l+X9Uaztw0NbBDJCnMuxlJuewP4a3eYU8gFG1
-        I9/zromA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r6BOk-007eoV-Ey; Thu, 23 Nov 2023 15:13:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1084D300427; Thu, 23 Nov 2023 16:13:46 +0100 (CET)
-Date:   Thu, 23 Nov 2023 16:13:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: CONFIG_PROVE_RAW_LOCK_NESTING false positive?
-Message-ID: <20231123151345.GB38813@noisy.programming.kicks-ass.net>
-References: <99771ef3a4966a01fefd3adbb2ba9c3a75f97cf2.camel@infradead.org>
- <20231123150119.GA38813@noisy.programming.kicks-ass.net>
- <1AEB1DFF-1B2B-4B59-A093-C9DBD91C9DD2@infradead.org>
+        Thu, 23 Nov 2023 10:14:15 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060DCD53
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:14:17 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AD15766073B4;
+        Thu, 23 Nov 2023 15:14:15 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700752456;
+        bh=gdMPknQRML7UtA6O1j4YRuqTzW4N2Z3DzX3mVKrRUZ0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Yxjnoe2nGaK31xuhWBJPK3nU3cP8VnpGE3Rh81ZRRsmi4KbVBBID5DR2TmEbXcZ+d
+         4IRtC4oa0H8FsmY2wWKtNoi8XDNBxCMwJB76MA3/03MvHa7G9V3hsIxosQYftHSlHX
+         5uNjWcOnPrU//IQPUNvjcvz8r+M+mhEjzKN75ieahh4uacyiR3WHM+GaDacZ8GKqpP
+         EwpDzPtuH2rwWqbz7cBIsKFivdzXBpntYdXNEwNZKDdlg4yrKFAky4mpbFLEsji53o
+         4cL2AdipzUsRnQbPcv2rAaDFC+rrpw9rHEZ5d1SkrWm7afyrTGIpaTgOcLcRV/9FnU
+         IlBdHKmOnFTHg==
+Message-ID: <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
+Date:   Thu, 23 Nov 2023 16:14:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1AEB1DFF-1B2B-4B59-A093-C9DBD91C9DD2@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     steven.price@arm.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski@linaro.org, kernel@collabora.com
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+ <20231123113530.46191ded@collabora.com>
+ <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+ <20231123135933.34d643f7@collabora.com>
+ <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
+ <20231123145103.23b6eac9@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231123145103.23b6eac9@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,69 +66,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 03:05:15PM +0000, David Woodhouse wrote:
-> On 23 November 2023 15:01:19 GMT, Peter Zijlstra <peterz@infradead.org> wrote:
-> >On Thu, Nov 23, 2023 at 09:00:41AM +0000, David Woodhouse wrote:
-> >> Is this telling me that I'm no longer allowed to take a read_lock() in
-> >> a callback for an HRTIMER_MODE_ABS_HARD timer? Is that intentional?
-> >> 
-> >> If I must, I can probably cope with this by using read_trylock()
-> >> instead. The object being locked is a cache, and we opportunistically
-> >> try to use it from the fast path but fall back to a slow path in
-> >> process context which will revalidate and try again. So if someone
-> >> *has* taken the write lock, it's a fairly safe bet that the cache is
-> >> going to be invalidated and we were going to take the slow path anyway.
-> >> 
-> >> [   62.336965] =============================
-> >> [   62.336973] [ BUG: Invalid wait context ]
-> >> [   62.336992] 6.7.0-rc1+ #1437 Tainted: G          I       
-> >> [   62.337001] -----------------------------
-> >> [   62.337008] qemu-system-x86/1935 is trying to lock:
-> >> [   62.337017] ffffc900018fecc0 (&gpc->lock){....}-{3:3}, at: kvm_xen_set_evtchn_fast+0xe7/0x460 [kvm]
-> >> [   62.337133] other info that might help us debug this:
-> >> [   62.337142] context-{2:2}
-> >> [   62.337148] 2 locks held by qemu-system-x86/1935:
-> >> [   62.337156]  #0: ffff888108f780b0 (&vcpu->mutex){+.+.}-{4:4}, at: kvm_vcpu_ioctl+0x7f/0x730 [kvm]
-> >> [   62.337239]  #1: ffffc900018ff2d8 (&kvm->srcu){.?.+}-{0:0}, at: kvm_xen_set_evtchn_fast+0xcd/0x460 [kvm]
-> >> [   62.337339] stack backtrace:
-> >> [   62.337346] CPU: 7 PID: 1935 Comm: qemu-system-x86 Tainted: G          I        6.7.0-rc1+ #1437
-> >> [   62.337370] Hardware name: Intel Corporation S2600CW/S2600CW, BIOS SE5C610.86B.01.01.0008.021120151325 02/11/2015
-> >> [   62.337384] Call Trace:
-> >> [   62.337390]  <IRQ>
-> >> [   62.337395]  dump_stack_lvl+0x57/0x90
-> >> [   62.337407]  __lock_acquire+0x7bb/0xbb0
-> >> [   62.337416]  ? __lock_acquire+0x4f0/0xbb0
-> >> [   62.337425]  lock_acquire.part.0+0xad/0x240
-> >> [   62.337433]  ? kvm_xen_set_evtchn_fast+0xe7/0x460 [kvm]
-> >> [   62.337512]  ? rcu_is_watching+0xd/0x40
-> >> [   62.337520]  ? lock_acquire+0xf2/0x110
-> >> [   62.337529]  __raw_read_lock_irqsave+0x4e/0xa0
-> >> [   62.337538]  ? kvm_xen_set_evtchn_fast+0xe7/0x460 [kvm]
-> >> [   62.337604]  kvm_xen_set_evtchn_fast+0xe7/0x460 [kvm]
-> >> [   62.337669]  ? kvm_xen_set_evtchn_fast+0xcd/0x460 [kvm]
-> >> [   62.337734]  xen_timer_callback+0x86/0xc0 [kvm]
-> >
-> >xen_timer_callback is HRTIMER_MODE_ABS_HARD, which means it will still
-> >run in IRQ context for PREEMPT_RT.
-> >
-> >OTOH read_lock_irqsave() is not a raw spinlock and will be turned into a
-> >blocking lock.
-> >
-> >This then gives scheduling from IRQ context, which is somewhat frowned
-> >upon.
-> >
-> >Warning is real and valid.
+Il 23/11/23 14:51, Boris Brezillon ha scritto:
+> On Thu, 23 Nov 2023 14:24:57 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>>>>
+>>>> So, while I agree that it'd be slightly more readable as a diff if those
+>>>> were two different commits I do have reasons against splitting.....
+>>>
+>>> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
+>>> in when we power-off the cores, I think we'd be better off dropping
+>>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
+>>> at [re]initialization time, and then have a separate series that fixes
+>>> the problem more generically.
+>>>    
+>>
+>> But that didn't work:
+>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+> 
+> I meant, your 'ignore-core_mask' fix + the
+> 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
+> 
+> So,
+> 
+> https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
+> +
+> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+> 
+>>
+>>
+>> ...while this "full" solution worked:
+>> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
+>>
+>> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
+>>
+>>
+>> ...so this *is* a "quick fix" already... :-)
+> 
+> It's a half-baked solution for the missing irq-synchronization-on-suspend
+> issue IMHO. I understand why you want it all in one patch that can serve
+> as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
+> panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
+> even simpler diff (see below), and then fully address the
+> irq-synhronization-on-suspend issue in a follow-up patchset.
+> 
+> --->8---
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> index 09f5e1563ebd..6e2d7650cc2b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>          }
+>   
+>          gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+> -       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+> +       gpu_write(pfdev, GPU_INT_MASK,
+> +                 GPU_IRQ_MASK_ERROR |
+> +                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
+> +                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
+>   
+
+...but if we do that, the next patch(es) will contain a partial revert of this
+commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL)...
+
+I'm not sure that it's worth changing this like that, then changing it back right
+after :-\
+
+Anyway, if anyone else agrees with doing it and then partially revert, I have no
+issues going with this one instead; what I care about ultimately is resolving the
+regression ASAP :-)
+
+Cheers,
+Angelo
+
+>          /*
+>           * All in-flight jobs should have released their cycle
+> @@ -425,11 +428,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+>   
+>   void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>   {
+> -       u64 core_mask = panfrost_get_core_mask(pfdev);
+>          int ret;
+>          u32 val;
+>   
+> -       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
+> +       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+>          ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+>                                           val, !val, 1, 1000);
+>          if (ret)
+> @@ -441,7 +443,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>          if (ret)
+>                  dev_err(pfdev->dev, "tiler power transition timeout");
+>   
+> -       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
+> +       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+>          ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+>                                   val, !val, 0, 1000);
+>          if (ret)
 > 
 > 
-> ... or at least will be when PREEMPT_RT turns the read_lock into a mutex? 
 
-Right, this check specifically validates the RT lock nesting rules.
-
-> But there is no raw version of read_lock(). Can we have one please?
-
-Should be possible, but is somewhat non-trivial, it is very easy to
-create significant latencies with RW locks. Definitely not something I'm
-going to be able to do in a hurry.
-
-Also, I suspect Thomas is going to strongly suggest not going down that
-road and looking if this can be solved differently.
