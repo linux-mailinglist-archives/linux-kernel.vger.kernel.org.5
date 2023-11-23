@@ -2,52 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC887F61D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AB67F61D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345881AbjKWOpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
+        id S1345901AbjKWOpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:45:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345887AbjKWOpM (ORCPT
+        with ESMTP id S1345889AbjKWOp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:45:12 -0500
+        Thu, 23 Nov 2023 09:45:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC84D47
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:45:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCDC5C433CB;
-        Thu, 23 Nov 2023 14:45:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCACD6E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:45:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF182C433C7;
+        Thu, 23 Nov 2023 14:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700750719;
-        bh=xSS4XJ6jsV62nRxW5pw1LAIvE4xH/2T8q1MLLBd7+Jk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=st1k0okmO1npp2rBVOAMJV8vQk+sETYRZQoovYhJoEe57+4PXXMPuo4w5ZO03zIoZ
-         qoq6C7vIVAny4Po1a0G2rYOFMxW7a/2CJcY5FIasxSmwnaOVAZBB57e8bzB5Q9dHNd
-         X/0DUXnS6UjI6rglv/7hwsslR7U7IOdv4owPF1ZfHctD6MMkIb0OnX0QCX6eut5HcL
-         qN67KeJmjSsEvRSoMFwhmJnr1pem7Xck9mnLjnUZZRVUdJxrncQm1/HWHCOvUrhu5M
-         LjBdtj9I44nqAK3FMJhpSC2xotDDgQWskLVQEUTZoEqpwBQCz+qnKPO7ifN5lf0Boj
-         BRbJLZMWgebdw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3C9C340094; Thu, 23 Nov 2023 11:45:16 -0300 (-03)
-Date:   Thu, 23 Nov 2023 11:45:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        s=k20201202; t=1700750733;
+        bh=bT1natgUHAV2pltSpzU6DgaFw0V6aahioLBO9kKzbsU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ej3RnqfeBl+f6bLnJjWWYFn8ddrzuIPVkK/wqbJHEIUT64Mw/R09gU/aY3IK8XdzP
+         sFBL1uH4h61JolXRU0jNV78Yeq7NAVe+OrNll5cJbjYtK9FusW+jy3o7aNJblqA3Wp
+         JbSodm8CqOHYWGzykCBg3snxLcW+JrQ7GUBt+Ev+QUqAFBo15KqQR0/R+H4hm9kNdb
+         KFWUueEpA/otchr1rfHCEQSeaOFXamntLA10tQd9SdNW90FP3inMGOglgo1nHs1nBf
+         bkeaTBPdOHGiP1kUaA/w8vy2wI/EKECRJp1zKqFX2VpBeqjBvbjRarXDcmWPL+hpOz
+         R3f9L3LknuV4g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r6AxP-00Fnv3-Cw;
+        Thu, 23 Nov 2023 14:45:31 +0000
+Date:   Thu, 23 Nov 2023 14:45:30 +0000
+Message-ID: <86edggzfxx.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] perf/x86/amd: Reject branch stack for IBS events
-Message-ID: <ZV9lfJyyC7xawHBC@kernel.org>
-References: <20230602194513.1589179-1-namhyung@kernel.org>
- <c5a40920-0b14-b9b5-19ee-48c965bd12e3@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5a40920-0b14-b9b5-19ee-48c965bd12e3@amd.com>
-X-Url:  http://acmel.wordpress.com
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since v6.5
+In-Reply-To: <ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com>
+References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+        <86pm03z0kw.wl-maz@kernel.org>
+        <86o7fnyvrq.wl-maz@kernel.org>
+        <ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, marcan@marcan.st, acme@redhat.com, irogers@google.com, james.clark@arm.com, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,16 +69,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 06, 2023 at 10:08:43AM +0530, Ravi Bangoria escreveu:
-> On 03-Jun-23 1:15 AM, Namhyung Kim wrote:
-> > The AMD IBS PMU doesn't handle branch stacks, so it should not accept
-> > events with brstack.
-> > 
-> > Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Thu, 23 Nov 2023 14:23:10 +0000,
+Mark Rutland <mark.rutland@arm.com> wrote:
 > 
-> Reviewed-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > On Tue, 21 Nov 2023 13:40:31 +0000,
+> > Marc Zyngier <maz@kernel.org> wrote:
+> > > 
+> > > [Adding key people on Cc]
+> > > 
+> > > On Tue, 21 Nov 2023 12:08:48 +0000,
+> > > Hector Martin <marcan@marcan.st> wrote:
+> > > > 
+> > > > Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > > > according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > > 
+> > > I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > > asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > > the PMU, but nothing works anymore.
+> > > 
+> > > The saving grace in my case is that Debian still ships a 6.1 perftool
+> > > package, but that's obviously not going to last.
+> > > 
+> > > I'm happy to test potential fixes.
+> > 
+> > At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > CPU):
+> 
+> Looking at this with fresh(er) eyes, I think there's a userspace bug here,
+> regardless of whether one believes it's correct to convert a named-pmu event to
+> a PERF_TYPE_HARDWARE event directed at that PMU.
+> 
+> It looks like the userspace tool is dropping the extended type ID after an
+> initial probe, and requests events with plain PERF_TYPE_HARDWARE (without an
+> extended type ID), which explains why we seem to get events from one PMU only.
+> 
+> More detail below...
+> 
+> Marc, if you have time, could you run the same commands (on the same kernel)
+> with a perf tool build from v6.4?
 
-It seems this patch was not merged, can you please check?
+Here you go:
 
-- Arnaldo
+<quote>
+$ sudo taskset -c 0 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e  apple_firestorm_pmu/cycles/ -e cycles ls >/dev/null
+Using CPUID 0x00000000610f0280
+Attempting to add event pmu 'apple_icestorm_pmu' with 'cycles,' that may result in non-fatal errors
+After aliases, add event pmu 'apple_icestorm_pmu' with 'event,' that may result in non-fatal errors
+Attempting to add event pmu 'apple_firestorm_pmu' with 'cycles,' that may result in non-fatal errors
+After aliases, add event pmu 'apple_firestorm_pmu' with 'event,' that may result in non-fatal errors
+Control descriptor is not initialized
+------------------------------------------------------------
+perf_event_attr:
+  type                             10
+  size                             136
+  config                           0x2
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624462  cpu -1  group_fd -1  flags 0x8 = 3
+------------------------------------------------------------
+perf_event_attr:
+  type                             11
+  size                             136
+  config                           0x2
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624462  cpu -1  group_fd -1  flags 0x8 = 4
+------------------------------------------------------------
+perf_event_attr:
+  size                             136
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624462  cpu -1  group_fd -1  flags 0x8 = 5
+apple_icestorm_pmu/cycles/: -1: 1492180 724333 724333
+apple_firestorm_pmu/cycles/: -1: 0 724333 0
+cycles: -1: 0 724333 0
+apple_icestorm_pmu/cycles/: 1492180 724333 724333
+apple_firestorm_pmu/cycles/: 0 724333 0
+cycles: 0 724333 0
+
+ Performance counter stats for 'ls':
+
+         1,492,180      apple_icestorm_pmu/cycles/                                            
+     <not counted>      apple_firestorm_pmu/cycles/                                             (0.00%)
+     <not counted>      cycles                                                                  (0.00%)
+
+       0.000001917 seconds time elapsed
+
+       0.000000000 seconds user
+       0.000000000 seconds sys
+</quote>
+
+and on the other cluster:
+
+<quote>
+$ sudo taskset -c 2 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e  apple_firestorm_pmu/cycles/ -e cycles ls >/dev/null
+Using CPUID 0x00000000610f0280
+Attempting to add event pmu 'apple_icestorm_pmu' with 'cycles,' that may result in non-fatal errors
+After aliases, add event pmu 'apple_icestorm_pmu' with 'event,' that may result in non-fatal errors
+Attempting to add event pmu 'apple_firestorm_pmu' with 'cycles,' that may result in non-fatal errors
+After aliases, add event pmu 'apple_firestorm_pmu' with 'event,' that may result in non-fatal errors
+Control descriptor is not initialized
+------------------------------------------------------------
+perf_event_attr:
+  type                             10
+  size                             136
+  config                           0x2
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624466  cpu -1  group_fd -1  flags 0x8 = 3
+------------------------------------------------------------
+perf_event_attr:
+  type                             11
+  size                             136
+  config                           0x2
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624466  cpu -1  group_fd -1  flags 0x8 = 4
+------------------------------------------------------------
+perf_event_attr:
+  size                             136
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1624466  cpu -1  group_fd -1  flags 0x8 = 5
+apple_icestorm_pmu/cycles/: -1: 0 593209 0
+apple_firestorm_pmu/cycles/: -1: 1038247 593209 593209
+cycles: -1: 1037870 593209 593209
+apple_icestorm_pmu/cycles/: 0 593209 0
+apple_firestorm_pmu/cycles/: 1038247 593209 593209
+cycles: 1037870 593209 593209
+
+ Performance counter stats for 'ls':
+
+     <not counted>      apple_icestorm_pmu/cycles/                                              (0.00%)
+         1,038,247      apple_firestorm_pmu/cycles/                                           
+         1,037,870      cycles                                                                
+
+       0.000001500 seconds time elapsed
+
+       0.000000000 seconds user
+       0.000000000 seconds sys
+</quote>
+
+For the record, this is on a 6.6-rc6 kernel, userspace perf as of v6.4.0.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
