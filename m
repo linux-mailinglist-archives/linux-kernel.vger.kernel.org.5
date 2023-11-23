@@ -2,226 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 703537F5A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22667F5A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbjKWIek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
+        id S1344957AbjKWIgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjKWIeg (ORCPT
+        with ESMTP id S229543AbjKWIgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:34:36 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C27F1BF;
-        Thu, 23 Nov 2023 00:34:42 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5446c9f3a77so795997a12.0;
-        Thu, 23 Nov 2023 00:34:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700728481; x=1701333281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I+47/8CIqHGYdq/sfFIoPGjTRwH4Xn5HRY4OZWTE1ww=;
-        b=doY0ici/Y6FniAeb4GGr/ICMD7xawyewqdUXhPb6d6UTnOMptQAhMcUhG6eQa/IHRh
-         CFxdcmgZWeKuUVx7mTxNGqqrVidW4vSJQHGHyXyBkpvp84ShXCM4C2V5f9m9dnexF4s6
-         c68Dh2i/hbz4M5S5foplP7sK6r+iLHmlz9W4hKUNHfAZHbTIF7naVIC79mCIDq7HyM+L
-         ZPc14OkocJ281DYXjyITTF2ZcF9smmccXVqyejCQ8Or2CfFtrLWGJikmHEkp7l6PIrIx
-         XR7Ezyn0m2IoNRFqA9Dxa4GeI+sd/Xm/NcUt3cOrbZ4cjVSabnUo0rD42h48tB5qkkNr
-         9kQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700728481; x=1701333281;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+47/8CIqHGYdq/sfFIoPGjTRwH4Xn5HRY4OZWTE1ww=;
-        b=qJwa43Z8A8lJ4yiyBucdUf0oDQQaIsqd3qd6pg6Z32jl1Xe/7KVrT+vM9uLDuK9xpH
-         a5utTn6WX7cD+SDslq5Eo2wOwYzr90QioiAHHx70XplvgRtghGO59W2CwdeNpiQsetEP
-         C6qpqO1K2MuzLW4A2rBVklD+RIjCdMfbzbKy+GykxdSSpIKdNEvrcqMwAOu7yNpfyZ4T
-         ZiwYzFwEJFNXSK+r8Y/12f29EnfsiEKcgeZcpdpt3bdI6aVso2qxHdu4rHH3amdcjHLC
-         q6Oz2OWkscaB5gWhV61XoEd2fXTIf1Ft5gYGjcjtPlpZqrFAEzVXauOml6brwZL+LvBy
-         0+5w==
-X-Gm-Message-State: AOJu0Yy4Y0uUKO9ggbjLQV0fu9El48iLqd+J2WzfvJ5TIjLormP1EjWS
-        zQqRLS/yXBCHx90K0MvOCDLHjWBWJYE=
-X-Google-Smtp-Source: AGHT+IFNYbN1XOm9KzA7Lq8aiS9svVmcYvh53558Azn026CoMOIdCl33Wf0B1a31MMVckvjtYn4DXA==
-X-Received: by 2002:a17:906:c7c5:b0:9e2:bbc4:16cb with SMTP id dc5-20020a170906c7c500b009e2bbc416cbmr3489650ejb.49.1700728480582;
-        Thu, 23 Nov 2023 00:34:40 -0800 (PST)
-Received: from ?IPV6:2a01:c23:c0f2:3200:59ae:788f:5985:cbec? (dynamic-2a01-0c23-c0f2-3200-59ae-788f-5985-cbec.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:59ae:788f:5985:cbec])
-        by smtp.googlemail.com with ESMTPSA id gr19-20020a170906e2d300b009de11bcbbcasm479640ejb.175.2023.11.23.00.34.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 00:34:40 -0800 (PST)
-Message-ID: <266d2141-4615-4fd8-b603-aabb0e6e6860@gmail.com>
-Date:   Thu, 23 Nov 2023 09:34:40 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/20] remove I2C_CLASS_DDC support
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
-Cc:     linux-i2c@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jocelyn Falempe <jfalempe@redhat.com>,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>
-References: <20231120214624.9378-1-hkallweit1@gmail.com>
- <4e0cc556-a7eb-48ce-8226-0f5281f3ef0a@suse.de>
- <aeb96878-7ce0-48a9-b8f2-fdc9a3c0fc83@gmail.com>
- <c4c0a79d-4e0a-41c1-89b9-8df71ae6335c@suse.de>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <c4c0a79d-4e0a-41c1-89b9-8df71ae6335c@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 23 Nov 2023 03:36:37 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C4BA3;
+        Thu, 23 Nov 2023 00:36:43 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN5uFG8020347;
+        Thu, 23 Nov 2023 08:36:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=KS+/m9nHyzKzgmrMdQC5q6zJq3l/dRIOOPTKg2dYYcA=;
+ b=Z5nj7i8zAXRBVSxY/KNRA0L3ZuqVkpbP8573N8ZQjW4wqBE8uzpfFFg5tlrp8RfNooHc
+ mu8xFjzyX3t2x4RPD5Uz03WQLbGsj2SkNl+nZLBFhviLPODoCn7MhzstXLj6byiRi2QB
+ 5n4dYr6JbcGKAwM6v3PqUbQ9QvuD3rnY5NHmkVkt/199GJUGcUzAS3It6wXgyenFIwRa
+ IqMq4E4Rnt+dgxvGy9hQgiYie1JX7wgUsDIHCxv+qPwAKw1MITxWk2xlLR+I42q9DYAr
+ 8CknepEeGpr/8SUCT1raesJXCSyDpz1D/n4jRFmoZvbCX3KF+DxBAgxveXAPrpdURcgE ew== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhf6ktt4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 08:36:19 +0000
+Received: from pps.filterd (NASANPPMTA05.qualcomm.com [127.0.0.1])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AN8STLW030536;
+        Thu, 23 Nov 2023 08:36:18 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by NASANPPMTA05.qualcomm.com (PPS) with ESMTP id 3uhcusvqku-1;
+        Thu, 23 Nov 2023 08:36:18 +0000
+Received: from NASANPPMTA05.qualcomm.com (NASANPPMTA05.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AN8aIel008030;
+        Thu, 23 Nov 2023 08:36:18 GMT
+Received: from stor-dylan.qualcomm.com (stor-dylan.qualcomm.com [192.168.140.207])
+        by NASANPPMTA05.qualcomm.com (PPS) with ESMTP id 3AN8aIOr008026;
+        Thu, 23 Nov 2023 08:36:18 +0000
+Received: by stor-dylan.qualcomm.com (Postfix, from userid 359480)
+        id A872720A68; Thu, 23 Nov 2023 00:36:17 -0800 (PST)
+From:   Can Guo <quic_cang@quicinc.com>
+To:     quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
+        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v4 00/10] Enable HS-G5 support on SM8550
+Date:   Thu, 23 Nov 2023 00:36:06 -0800
+Message-Id: <1700728577-14729-1-git-send-email-quic_cang@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: FzMGpn3P2J14xA-SOZFynX_tRy8_yZX_
+X-Proofpoint-ORIG-GUID: FzMGpn3P2J14xA-SOZFynX_tRy8_yZX_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_06,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 priorityscore=1501 clxscore=1015 adultscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311230060
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.2023 09:19, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 23.11.23 um 08:16 schrieb Heiner Kallweit:
->> On 23.11.2023 07:56, Thomas Zimmermann wrote:
->>> Hi
->>>
->>> Am 20.11.23 um 22:46 schrieb Heiner Kallweit:
->>>> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
->>>> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
->>>> Class-based device auto-detection is a legacy mechanism and shouldn't
->>>> be used in new code. So we can remove this class completely now.
->>>>
->>>> Preferably this series should be applied via the i2c tree.
->>>>
->>>> v2:
->>>> - change tag in commit subject of patch 03
->>>> - add ack tags
->>>> v3:
->>>> - fix a compile error in patch 5
->>>> v4:
->>>> - more ack and review tags
->>>>
->>>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>>
->>> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->>>
->>> for the patches that don't already have my r-b.
->>>
->> This refers to which patches of the series?
->> Patches 8, 16, 18 are the remaining ones w/o A-b or R-b.
-> 
-> I've looked through the patchset. Feel free to add my a-b to patches 1 to 19; except for 2 and 17, which already have my r-b.
-> 
-> BTW I only received 19 patches. is there a patch 20/20?
-> 
-Yes, see here:
-https://patchwork.ozlabs.org/project/linux-i2c/patch/20231120214624.9378-21-hkallweit1@gmail.com/
-If you're subscribed to linux-i2c or linux-kernel list you should have received it.
+This series enables HS-G5 support on SM8550.
 
-> Best regards
-> Thomas
-> 
->>
->>> Best regards
->>> Thomas
->>>
->> Thanks, Heiner
->>
->>>>
->>>> ---
->>>>
->>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
->>>>    drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
->>>>    drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
->>>>    drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
->>>>    drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
->>>>    drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
->>>>    drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
->>>>    drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
->>>>    drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
->>>>    drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
->>>>    drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
->>>>    drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
->>>>    drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
->>>>    drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
->>>>    drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
->>>>    drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
->>>>    drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
->>>>    drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
->>>>    drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
->>>>    drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
->>>>    drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
->>>>    drivers/video/fbdev/core/fb_ddc.c                 |    1 -
->>>>    drivers/video/fbdev/cyber2000fb.c                 |    1 -
->>>>    drivers/video/fbdev/i740fb.c                      |    1 -
->>>>    drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
->>>>    drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
->>>>    drivers/video/fbdev/s3fb.c                        |    1 -
->>>>    drivers/video/fbdev/tdfxfb.c                      |    1 -
->>>>    drivers/video/fbdev/tridentfb.c                   |    1 -
->>>>    drivers/video/fbdev/via/via_i2c.c                 |    1 -
->>>>    include/linux/i2c.h                               |    1 -
->>>>    31 files changed, 9 insertions(+), 47 deletions(-)
->>>
->>
-> 
+This series is rebased on below changes from Mani -
+https://patchwork.kernel.org/project/linux-scsi/patch/20230908145329.154024-1-manivannan.sadhasivam@linaro.org/
+https://patchwork.kernel.org/project/linux-scsi/patch/20230908145329.154024-2-manivannan.sadhasivam@linaro.org/
+
+This series is tested on below HW combinations -
+SM8550 MTP + UFS4.0
+SM8550 QRD + UFS3.1
+SM8450 MTP + UFS3.1 (for regression test)
+SM8350 MTP + UFS3.1 (for regression test)
+
+Note that during reboot test on above platforms, I occasinally hit PA (PHY)
+error during the 2nd init, this is not related with this series. A fix for
+this is mentioned in below patchwork -
+
+https://patchwork.kernel.org/project/linux-scsi/patch/1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com/
+
+Also note that on platforms, which have two sets of UFS PHY settings are
+provided (say G4 and no-G4, G5 and no-G5). The two sets of PHY settings are
+basically programming different values to different registers, mixing the
+two sets and/or overwriting one set with another set is definitely not
+blessed by UFS PHY designers. For SM8550, this series will make sure we
+honor the rule. However, for old targets Mani and I will fix them in
+another series in future.
+
+v3 -> v4:
+1. Used .tbls_hs_overlay array instead of adding more tables with different names like .tbls_hs_g5
+
+v2 -> v3:
+1. Addressed comments from Andrew, Mani and Bart in patch #1
+2. Added patch #2 as per request from Andrew and Mani
+3. Added patch #4 to fix a common issue on old targets, it is not necessary
+   for this series, but put in this series only because it would be easier
+   to maintain and no need to rebase
+4. Addressed comments from Dmitry and Mani in patches to phy-qcom-qmp-ufs.c
+
+v1 -> v2:
+1. Removed 2 changes which were exposing power info in sysfs
+2. Removed 1 change which was moving data structs to phy-qcom-qmp-ufs.h
+3. Added one new change (the 1st one) to clean up usage of ufs_dev_params based on comments from Mani
+4. Adjusted the logic of UFS device version detection according to comments from Mani:
+	4.1 For HW version < 0x5, go through dual init
+ 	4.2 For HW version >= 0x5
+		a. If UFS device version is populated, one init is required
+		b. If UFS device version is not populated, go through dual init
+
+
+Bao D. Nguyen (1):
+  scsi: ufs: ufs-qcom: Add support for UFS device version detection
+
+Can Guo (9):
+  scsi: ufs: host: Rename structure ufs_dev_params to ufs_host_params
+  scsi: ufs: ufs-qcom: No need to set hs_rate after
+    ufshcd_init_host_param()
+  scsi: ufs: ufs-qcom: Setup host power mode during init
+  scsi: ufs: ufs-qcom: Limit negotiated gear to selected PHY gear
+  scsi: ufs: ufs-qcom: Allow the first init start with the maximum
+    supported gear
+  scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to hosts with HW version 5
+  scsi: ufs: ufs-qcom: Set initial PHY gear to max HS gear for HW ver 5
+    and newer
+  phy: qualcomm: phy-qcom-qmp-ufs: Rectify SM8550 UFS HS-G4 PHY Settings
+  phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed Gear 5 support for
+    SM8550
+
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
+ .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  12 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 202 ++++++++++++++++++---
+ drivers/ufs/host/ufs-exynos.c                      |   7 +-
+ drivers/ufs/host/ufs-hisi.c                        |  11 +-
+ drivers/ufs/host/ufs-mediatek.c                    |  12 +-
+ drivers/ufs/host/ufs-qcom.c                        |  92 +++++++---
+ drivers/ufs/host/ufs-qcom.h                        |   5 +-
+ drivers/ufs/host/ufshcd-pltfrm.c                   |  69 ++++---
+ drivers/ufs/host/ufshcd-pltfrm.h                   |  10 +-
+ 11 files changed, 317 insertions(+), 107 deletions(-)
+
+-- 
+2.7.4
 
