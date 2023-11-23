@@ -2,226 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224597F5BFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CE67F5C03
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbjKWKKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        id S232474AbjKWKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbjKWKK3 (ORCPT
+        with ESMTP id S229464AbjKWKMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:10:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4006C1A4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:10:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D203C433CA;
-        Thu, 23 Nov 2023 10:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700734234;
-        bh=b+gBzFEicDYyPBdquDhxVx41hU6QkjMteum/OQQW+Wk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ezixqIChb4fch9UNzYpEf4yWWP8O19wVCqthT5u/2TZr/2I3K6kZkK1nB0cUOaOJY
-         srpIy0bGhWwtL67p3D7omPP/lw8veZlURC/vfX7D5vHGA+ORDOqwupu2I1H8Za6jza
-         SHmitCZylj/pvf7PB3qvACBqbcniAgYQJbmM6K09EtBgElqg4Dd1TNNVmOwhSoCOBy
-         XCgH42KEAG8XPjmTSAk1p+ScWnUEr0ZUCKQwozsRlumJxiYApV+JxXhBQ9vc0Cjc4N
-         WQ8Z7VAFVFAS1HhowitHETcRUNw5FUtbZ44rRw1c9JVsgOyAnWni7XJWgSvURY56Xn
-         Rts5oIODjIiRw==
-Date:   Thu, 23 Nov 2023 11:10:24 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>, nd@arm.com
-Subject: Re: [PATCH RFT v3 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <20231123-geflattert-mausklick-63d8ebcacffb@brauner>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231121-urlaub-motivieren-c9d7ee1a6058@brauner>
- <ZVyg0WgILK35xjBn@arm.com>
- <ZVzWRIA9AfXHeWMW@finisterre.sirena.org.uk>
+        Thu, 23 Nov 2023 05:12:49 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20474BC;
+        Thu, 23 Nov 2023 02:12:55 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50aaaf6e58fso952536e87.2;
+        Thu, 23 Nov 2023 02:12:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700734373; x=1701339173; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eSzcGsR12Bka54XZ6rswtH5TghxihsOmy1TzXesau9Q=;
+        b=NDE/5f+0VE2fdJLJa0f03SEWXP3y6/6XDPkGq9+lDjbHE3+WKmZxgH0bn+wIKplrrW
+         +9AJLnAu5yd8olnbO880oDB3VPdLiouNUKM36fOVx788ZWHfF4xv+cM3JNtCeV9F0tdx
+         SJq2TVYP6t0e/muyX+0ZOUZ9qYBH0nqpn1bLoQkTTWRyBYRmZH3+0iu9vv40ozWvj5d1
+         huhQ0Jptye/PpoJsJml7yLApnMJSOPfEl6pNbdkSTb5U/vGsRB3ZHXsO4vWmYfwaFh5L
+         21SldY1omQ1xBcROe9Go9oO10Z69U4uSngQlgauRiU7BKmcU6dZ01AMrkdDWYp08bjCM
+         UdMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700734373; x=1701339173;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eSzcGsR12Bka54XZ6rswtH5TghxihsOmy1TzXesau9Q=;
+        b=AN/1uQHyVKpCDw0/pZOOo5EueF/ZOH2BuU//Fizc6GjbsreJbCXyUP0bwd5lNkiwte
+         s6qJRD6ViyJ3kqtb44PyoEiYnyKMdmhzFF3qLo3FFO7AQ782WFdJSB/Twvt0c0XnKqPu
+         x6EorhJTfe0OjqIZbFnSMK75EzQqcWIfUITke5Hd6r8A1fHgyLyEoLDILoLO3d+3yZYw
+         D+9eU206tsg1L6pboN76XFSgH0RPmGsF2rofQ0u1ehASNhoY9RXKTQ/rFDBCgwblzabo
+         MhYaDHbKaP/I2TgsmlvDN5wlLX7ZeN0HvbDC+qFZK82OGtky+arelyEY84N0/drIVpov
+         0TcQ==
+X-Gm-Message-State: AOJu0YwgfT9mriB0lhX0VCTQ+r5ghSiLIPV+FkMalVMf7lcJQDcvB+rg
+        as6L9NboYZNHM72ChpNankY=
+X-Google-Smtp-Source: AGHT+IGuVcMYF1AJtvzoDCxh96M1MRBrGHqCQvxbVJiV87fxLcd1l+rahWb0etAmuYGzUHsYHcsCOA==
+X-Received: by 2002:a19:5519:0:b0:504:4165:54ab with SMTP id n25-20020a195519000000b00504416554abmr1920923lfe.56.1700734373112;
+        Thu, 23 Nov 2023 02:12:53 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id i33-20020a0565123e2100b0050aab0d19e3sm143778lfv.123.2023.11.23.02.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 02:12:52 -0800 (PST)
+Date:   Thu, 23 Nov 2023 13:12:50 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
+        Aleksandar Rikalo <arikalo@gmail.com>,
+        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
+        Chao-ying Fu <cfu@wavecomp.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Yinglu Yang <yangyinglu@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] MIPS: mm: Fix some memory-related issues
+Message-ID: <b6jchnvezyy54lsq6mko572ltpjpudtobmfadtkjzhg6smni37@p24ye4uew2sz>
+References: <20231122182419.30633-1-fancer.lancer@gmail.com>
+ <20231122102900.68216218f77b61e342f37627@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVzWRIA9AfXHeWMW@finisterre.sirena.org.uk>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231122102900.68216218f77b61e342f37627@linux-foundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 04:09:40PM +0000, Mark Brown wrote:
-> On Tue, Nov 21, 2023 at 12:21:37PM +0000, Szabolcs Nagy wrote:
-> > The 11/21/2023 11:17, Christian Brauner wrote:
+On Wed, Nov 22, 2023 at 10:29:00AM -0800, Andrew Morton wrote:
+> On Wed, 22 Nov 2023 21:23:58 +0300 Serge Semin <fancer.lancer@gmail.com> wrote:
 > 
-> > > I have a few questions that are probably me just not knowing much about
-> > > shadow stacks so hopefully I'm not asking you write a thesis by
-> > > accident:
+> > Just recently I've rebased my MIPS32-related work from kernel 6.5-rc4 onto
+> > the latest kernel 6.7-rc1 and immediately got into a bootup-time
+> > mm-related bug (see patches 3-5 in this series). After fixing it I decided
+> > it was time to submit for review the generic MIPS code fixes which I have
+> > been collecting in my local repo for the last year. I was going to submit
+> > them a bit later after I finished working on a patchset with my SoC
+> > arch-specific changes, but since it was getting bigger and bigger, it
+> > turned to be reasonable to spill out the generic part of series right away
+> > especially seeing it might get to be useful in the most recent kernel.
 > 
-> One thing it feels like it's worth saying up front here is that shadow
-> stacks are userspace memory with special permissions and instructions
-> for access - they are mapped into the userspace address range and
-> userspace can directly interact with them in restricted ways.  For
-> example there's some thought to using shadow stacks in unwinders since
-> all the return addresses are stored in a single convenient block of
-> memory which it's much harder to corrupt.  Overflowing a shadow stack
-> results in userspace getting a memory access fault just as with other
-> memory access issues.
 
-Thanks for that summary.
+> It would have been better to separate out the two tiny unrelated MM
+> patches from this series. 
 
-> 
-> > > (2) With what other interfaces is implicit allocation and deallocation
-> > >     not consistent? I don't understand this argument. The kernel creates
-> > >     a shadow stack as a security measure to store return addresses. It
-> > >     seems to me exactly that the kernel should implicitly allocate and
-> > >     deallocate the shadow stack and not have userspace muck around with
-> > >     its size?
-> 
-> > the kernel is not supposed to impose stack size policy or a particular
-> > programming model that limits the stack management options nor prevent
-> > the handling of stack overflows.
-> 
-> The inconsistency here is with the management of the standard stack -
-> with the standard stack userspace passes an already allocated address
-> range to the kernel.  A constant tension during review of the shadow
-> stack interfaces has been that shadow stack memory is userspace memory
-> but the security constraints mean that we've come down on the side of
-> having a custom allocation syscall for it instead of using flags on
-> mmap() and friends like people often expect, and now having it allocated
-> as part of clone3().  The aim is to highlight that this difference is
+One of them isn't completely unrelated to the series content. The
+biggest problem I fixed in the patch
+[PATCH 3/7] mips: Fix max_mapnr being uninitialized on early stages
+Link: https://lore.kernel.org/linux-mips/20231122182419.30633-4-fancer.lancer@gmail.com/
+of this series. I was sure that it was a correct fix at least for
+having the pfn_valid() method working incorrectly, but I had doubts
+whether the memory mapped IO pages were supposed to be left
+uninitialized by the arch code relying on the init_unavailable_range()
+doing that especially seeing it was printing a warning about having
+unavailable ranges. If it turned out to be incorrect I would have
+needed to drop the patch
+[PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
+Link: https://lore.kernel.org/linux-mips/20231122182419.30633-6-fancer.lancer@gmail.com/
+and fix that problem too in the framework of the MIPS arch.
 
-So you have two interfaces for allocating a shadow stack. The first one
-is to explicitly alloc a shadow stack via the map_shadow_stack(). The
-second one is an implicit allocation during clone3() and you want to
-allow explicitly influencing that.
+My alternative assumption regarding that problem was that the
+arch-code should have used memblock_reserve() method for the IO
+ranges, so then the calls-chain:
+mem_init()
++-> memblock_free_all()
+    +-> free_low_memory_core_early()
+        +-> memmap_init_reserved_pages()
+            +-> memmap_init_reserved_pages(v)
+                +-> for_each_reserved_mem_region(region)
+                    +-> reserve_bootmem_region(start, end, nid);
+would have properly initialized the IO-pages reserved earlier by means
+of the memblock_reserve() method. But it turned out that
+reserve_bootmem_region() was available only when
+CONFIG_DEFERRED_STRUCT_PAGE_INIT was enabled which didn't seem to be
+widespreadly utilized in the arch code. Not finding a better option I
+decided to stick to the solution relying on the
+init_unavailable_range() method doing the trick and just fix the
+method kdoc. Seeing you accepted the patch
+[PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
+it was a correct decision.
 
-> deliberately chosen for specific reasons rather than just carelessness.
-> 
-> > > (3) Why is it safe for userspace to request the shadow stack size? What
-> > >     if they request a tiny shadow stack size? Should this interface
-> > >     require any privilege?
-> 
-> > user can allocate huge or tiny stacks already.
-> 
-> > and i think userspace can take control over shadow stack management:
-> > it can disable signals, start a clone child with stack_size == 1 page,
-> > map_shadow_stack and switch to it, enable signals. however this is
-> > complicated, leaks 1 page of kernel allocated shadow stack (+reserved
-> > guard page, i guess userspace could unmap, not sure if that works
-> > currently) and requires additional syscalls.
-> 
-> The other thing here is that if userspace gets this wrong it'll result
-> in the userspace process hitting the top of the stack and getting fatal
-> signals in a similar manner to what happens if it gets the size of
-> the standard stack wrong (the kernel allocation does mean that there
-> should always be guard pages and it's harder to overrun the stack and
-> corrupt adjacent memory).  There doesn't seem to be any meaningful risk
-> here over what userspace can already do to itself anyway as part of
-> thread allocation.
+> I'll steal them - if they later turn up via
+> the MIPS tree then that's OK.
 
-clone3() _aimed_ to cleanup the stack handling a bit but we had concerns
-that deviating too much from legacy clone() would mean userspace
-couldn't fully replace it. So we would have liked to clean up stack
-handling a lot more but there's limits to that. We do however perform
-basic sanity checks now.
+Ok. Thanks for picking them up. I'll drop those two patches from the
+series on v2.
 
-> 
-> > > (4) Why isn't the @stack_size argument I added for clone3() enough?
-> > >     If it is specified can't the size of the shadow stack derived from it?
-> 
-> > shadow stack only contains return addresses so it is proportional
-> > to the number of stack frames, not the stack size and it must
-> > account for sigaltstack too, not just the thread stack.
-> 
-> > if you make minimal assumptions about stack usage and ignore the
-> > sigaltstack issue then the worst case shadow stack requirement
-> > is indeed proportional to the stack_size, but this upper bound
-> > can be pessimistic and userspace knows the tradeoffs better.
-> 
-> It's also worth pointing out here that the existing shadow stack support
-> for x86 and in review code for arm64 make exactly these assumptions and
-> guesses at a shadow stack size based on the stack_size for the thread.
+-Serge(y)
 
-Ok.
-
-> There's just been a general lack of enthusiasm for the fact that due to
-> the need to store variables on the normal stack the resulting shadow
-> stack is very likely to be substantially overallocated but we can't
-> safely reduce the size without information from userspace.
-
-Ok.
-
-> 
-> > > And my current main objection is that shadow stacks were just released
-> > > to userspace. There can't be a massive amount of users yet - outside of
-> > > maybe early adopters.
-> 
-> > no upstream libc has code to enable shadow stacks at this point
-> > so there are exactly 0 users in the open. (this feature requires
-> > runtime support)
-> 
-> > the change is expected to allow wider deployability. (e.g. not
-> > just in glibc)
-> 
-> Right, and the lack of any userspace control of the shadow stack size
-> has been a review concern with the arm64 GCS series which I'm trying to
-> address here.  The main concern is that userspaces that start a lot of
-> threads are going to start using a lot more address space than they need
-> to when shadow stacks are enabled.  Given the fairly long deployment
-> pipeline from extending a syscall to end users who might be using the
-> feature in conjuction with imposing resource limits it does seem like a
-> reasonable problem to anticipate.
-
-Ok, I can see that argument.
-
-> 
-> > > The fact that there are other architectures that bring in a similar
-> > > feature makes me even more hesitant. If they have all agreed _and_
-> > > implemented shadow stacks and have unified semantics then we can
-> > > consider exposing control knobs to userspace that aren't implicitly
-> > > architecture specific currently.
-> 
-> To be clear the reason I'm working on this is that I've implemented the
-> arm64 support, I don't even have any access to x86 systems that have the
-
-Yes, I'm aware.
-
-> feature (hence the RFT in the subject line) - Rick Edgecombe did the x86
-> work.  The arm64 code is still in review, the userspace interface is
-> very similar to that for x86 and there doesn't seem to be any
-> controversy there which makes me expect that a change is likely.  Unlike
-> x86 we only have a spec and virtual implementations at present, there's
-> no immintent hardware, so we're taking our time with making sure that
-> everything is working well.  Deepak Gupta (in CC) has been reviewing the
-> series from the point of view of RISC-V.  I think we're all fairly well
-> aligned on the requirements here.
-
-I'm still not enthusiastic that we only have one implementation for this
-in the kernel. What's the harm in waiting until the arm patches are
-merged? This shouldn't result in chicken and egg: if the implementations
-are sufficiently similar then we can do an appropriate clone3()
-extension.
