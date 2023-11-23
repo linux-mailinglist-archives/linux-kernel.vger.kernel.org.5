@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D8C7F5734
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD837F572D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344592AbjKWEEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 23:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
+        id S1344554AbjKWED6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 23:03:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbjKWEDw (ORCPT
+        with ESMTP id S229481AbjKWEDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 23:03:52 -0500
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826381B6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:03:57 -0800 (PST)
-Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-4aff11732bdso160299e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:03:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700712236; x=1701317036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T7qPw5ycerKBMB3jFyF+3AvRZw5Lq7E7FvIBMNy6g4I=;
-        b=NjXH3vNJvAyIh5pb2bYXB3BqaOyWf/2Oj2LEA+5dgRbG4BNHs5QBlLa8rVwJXnwbNQ
-         vqaCZwAm5tytuM/BQ5al10sASm7UjBsu3a3/95LH5jNXM/zyMxPsMxQeWu6vm3MGf1Uy
-         d7WiHAfLC6v4bnwAvhFvCLLw3rrHc9ukJy23w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700712236; x=1701317036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T7qPw5ycerKBMB3jFyF+3AvRZw5Lq7E7FvIBMNy6g4I=;
-        b=Sm560zyjzWK3ZQB9FVui2FkQamC4rZ6WfaDofvLkl5ejzs+iJdwxEIfw+C3Mp8xcBE
-         7q2ssCp95WyEOYHaNzejJBsuMpKVE3uXNu1Bt5PyDiLdZGeQ8wEJiz0bV2Tfh5ir48YD
-         FvuOQNcilfLX3HqM0ykZXexfnrd/3nUx1aPLNnQUApl79+KGzRK1qG0HIgltqAh+M7MX
-         9vhGZDEUUemDwe1uM4mhEBVAoLRHiBBdrKTRZd0hOyJdvCfBANbvOw/AUWz3pBVJkTPp
-         3nBzUg1YX1fdtCIB+mMBTy8miM1q/p6haW/lE/4eL8pL+Pfgl8QA4alFNg5ovqTOkfBF
-         ynHw==
-X-Gm-Message-State: AOJu0YzJCDtppLHbe2oNbwGMzvb77K8yPqKRt0NycH1sbp530+P4Rulh
-        cARj8JBSZF+QxNUeFfk6UPBXRxRcHUgZkgPSZCePZw==
-X-Google-Smtp-Source: AGHT+IHEv8FQH3Av8pAElQ9qfERfjfmvO65gGkD4/bsfmu9pB1X3gTPTuDyn4/gzP/yQpR9bECLgDg==
-X-Received: by 2002:a1f:e784:0:b0:4ac:9a8:2f29 with SMTP id e126-20020a1fe784000000b004ac09a82f29mr4770504vkh.12.1700712236519;
+        Wed, 22 Nov 2023 23:03:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C142112;
         Wed, 22 Nov 2023 20:03:56 -0800 (PST)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id s45-20020a9f3670000000b007bb3e53712esm82402uad.36.2023.11.22.20.03.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 20:03:54 -0800 (PST)
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7ba962d534eso144787241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:03:54 -0800 (PST)
-X-Received: by 2002:a67:c088:0:b0:45f:8b65:28f0 with SMTP id
- x8-20020a67c088000000b0045f8b6528f0mr4023922vsi.12.1700712233600; Wed, 22 Nov
- 2023 20:03:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700712236; x=1732248236;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CoErI8R9kWQE4jfpj2fYDuPqAQ/RXoWzpsnmozO+rf8=;
+  b=j3X4FbQ247UaiEKiuneYKc1IpENrxdAxWJ83/6WoUoIe7cM36dMr6aMf
+   gYhx1o3azN68908/brbaT1CJT8zBTlC7Q868V6OZ+w/25eoZYU0VPWJ1w
+   PAoBTlkteIejexluNDyN/iySB3AGIUu5Gp3O9vtMIQ4ZNbr0NEsdubMGW
+   lfa6n82nwD6hejV/Kzj6PELwhxoZSj4XVeEHndNQAuF4cpFoWQDvpF0nZ
+   IOOZ1Kz87i9QWSMTQcDYM0WnYIB50xKiPLZZRClDNHsnCRcA0lCVfSyEg
+   Y8vYCt9TvE8RDBAufWhC6lQQbiMsuNoh5YYL6ypIMDWrVzAGK9h337Cvi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389347940"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="389347940"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 20:03:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="801925644"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="801925644"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 20:03:55 -0800
+Received: from debox1-desk4.lan (snpatel1-mobl.amr.corp.intel.com [10.209.89.91])
+        by linux.intel.com (Postfix) with ESMTP id 62B88580CA4;
+        Wed, 22 Nov 2023 20:03:55 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
+Subject: [PATCH V5 00/20] intel_pmc: Add telemetry API to read counters
+Date:   Wed, 22 Nov 2023 20:03:35 -0800
+Message-Id: <20231123040355.82139-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231103102533.69280-1-angelogioacchino.delregno@collabora.com> <20231103102533.69280-2-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231103102533.69280-2-angelogioacchino.delregno@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 23 Nov 2023 12:03:16 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhS_OckB3ap9Sq1U9D5b7605N=w4WyPjJoRJCSRxW5_5g@mail.gmail.com>
-Message-ID: <CAC=S1nhS_OckB3ap9Sq1U9D5b7605N=w4WyPjJoRJCSRxW5_5g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] clk: mediatek: clk-mux: Support custom parent
- indices for muxes
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, matthias.bgg@gmail.com,
-        wenst@chromium.org, msp@baylibre.com, amergnat@baylibre.com,
-        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 6:25=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Add support for customized parent indices for MediaTek muxes: this is
-> necessary for the case in which we want to exclude some clocks from
-> a mux's parent clocks list, where the exclusions are not from the
-> very bottom of the list but either in the middle or the beginning.
->
-> Example:
-> - MUX1 (all parents)
->   - parent1; idx=3D0
->   - parent2; idx=3D1
->   - parent3; idx=3D2
->
-> - MUX1 (wanted parents)
->   - parent1; idx=3D0
->   - parent3; idx=3D2
->
-> To achieve that add a `parent_index` array pointer to struct mtk_mux,
-> then in .set_parent(), .get_parent() callbacks check if this array
-> was populated and eventually get the index from that.
->
-> Also, to avoid updating all clock drivers for all SoCs, rename the
-> "main" macro to __GATE_CLR_SET_UPD_FLAGS (so, `__` was added) and
-> add the new member to it; furthermore, GATE_CLK_SET_UPD_FLAGS has
-> been reintroduced as being fully compatible with the older version.
->
-> The new parent_index can be specified with the new `_INDEXED`
-> variants of the MUX_GATE_CLR_SET_UPD_xxxx macros.
->
-> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+On newer Intel silicon, more IP counters are being added in Intel Platform
+Monitoring Technology (PMT) telemetry spaces hosted in MMIO.  There is a
+need for the intel_pmc_core driver and other drivers to access PMT hosted
+telemetry in the kernel using an API. This patchset adds driver APIs to
+allow registering and reading telemetry entries. It makes changes to the
+intel_pmc_core driver to use these interfaces to access the low power mode
+counters that are now exclusively available from PMT.
 
-Tested on MT8188 with a Type-C -> DP adapter to an extended display
-Gigabyte M32U.
-The DP output reacts smoothly to resolution switch and refresh rate
-change, and the internal eDP output also never freezes.
+David E. Box (15):
+  platform/x86/intel/vsec: Fix xa_alloc memory leak
+  platform/x86/intel/vsec: Move structures to header
+  platform/x86/intel/vsec: remove platform_info from vsec device
+    structure
+  platform/x86/intel/vsec: Use cleanup.h
+  platform/x86/intel/vsec: Assign auxdev parent by argument
+  platform/x86/intel/vsec: Add base address field
+  platform/x86/intel/pmt: Add header to struct intel_pmt_entry
+  platform/x86/intel/pmt: telemetry: Export API to read telemetry
+  platform/x86/intel/pmc: Allow pmc_core_ssram_init to fail
+  asm-generic/io.h: iounmap/ioport_unmap cleanup.h support
+  platform/x86/intel/pmc: Cleanup SSRAM discovery
+  platform/x86/intel/pmc/mtl: Use return value from
+    pmc_core_ssram_init()
+  platform/x86/intel/pmc: Find and register PMC telemetry entries
+  platform/x86/intel/pmc: Add debug attribute for Die C6 counter
+  platform/x86/intel/pmc: Show Die C6 counter on Meteor Lake
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
-Tested-by: Fei Shao <fshao@chromium.org>
+Gayatri Kammela (1):
+  platform/x86/intel/vsec: Add intel_vsec_register
+
+Rajvi Jingar (1):
+  platform/x86/intel/pmc: Display LPM requirements for multiple PMCs
+
+Xi Pardee (3):
+  platform/x86:intel/pmc: Call pmc_get_low_power_modes from platform
+    init
+  platform/x86/intel/pmc: Retrieve LPM information using Intel PMT
+  platform/x86/intel/pmc: Read low power mode requirements for MTL-M and
+    MTL-P
+
+ drivers/platform/x86/intel/pmc/Kconfig      |   1 +
+ drivers/platform/x86/intel/pmc/adl.c        |   2 +
+ drivers/platform/x86/intel/pmc/cnp.c        |   2 +
+ drivers/platform/x86/intel/pmc/core.c       | 190 +++++++++-----
+ drivers/platform/x86/intel/pmc/core.h       |  10 +-
+ drivers/platform/x86/intel/pmc/core_ssram.c | 263 +++++++++++++++++---
+ drivers/platform/x86/intel/pmc/icl.c        |  10 +-
+ drivers/platform/x86/intel/pmc/mtl.c        |  87 ++++++-
+ drivers/platform/x86/intel/pmc/spt.c        |  10 +-
+ drivers/platform/x86/intel/pmc/tgl.c        |   1 +
+ drivers/platform/x86/intel/pmt/class.c      |  43 +++-
+ drivers/platform/x86/intel/pmt/class.h      |  30 ++-
+ drivers/platform/x86/intel/pmt/crashlog.c   |   2 +-
+ drivers/platform/x86/intel/pmt/telemetry.c  | 193 +++++++++++++-
+ drivers/platform/x86/intel/pmt/telemetry.h  | 126 ++++++++++
+ drivers/platform/x86/intel/vsec.c           | 129 +++++-----
+ drivers/platform/x86/intel/vsec.h           |  45 +++-
+ include/asm-generic/io.h                    |   6 +
+ 18 files changed, 946 insertions(+), 204 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/pmt/telemetry.h
+
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.34.1
+
