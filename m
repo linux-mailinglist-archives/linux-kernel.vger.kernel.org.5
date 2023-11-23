@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83FD7F5D72
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B04E7F5D77
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344880AbjKWLLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S1344937AbjKWLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjKWLLh (ORCPT
+        with ESMTP id S229664AbjKWLMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:11:37 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19A11BD;
-        Thu, 23 Nov 2023 03:11:42 -0800 (PST)
+        Thu, 23 Nov 2023 06:12:13 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639E6D4A;
+        Thu, 23 Nov 2023 03:12:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700737862; x=1701342662; i=j.neuschaefer@gmx.net;
-        bh=LkE5Nuq5cpUfZVO4p3a9aPdP5nVFWe7nwzvBcr5GDNk=;
+        s=s31663417; t=1700737905; x=1701342705; i=j.neuschaefer@gmx.net;
+        bh=qHIRuVjw/0Toi1F/14ZNchv8iBh7eioF0IAeNc5thr0=;
         h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
          In-Reply-To;
-        b=S7iVe7/0DFJ2Glol27Dhh4tQ2/MSVm6hQfrQTYHOjexz+b3exqTH6gjYP/ugO0dJ
-         ywmNfO1UhMb720kxrgKEDi4jGPUGAHuManuT3bEKyfHmBWeFlQVGHaNeLDP5mBjx4
-         md8PO1K0ouI3ETbJYh6QpvvLPPDKB/P0UmcmTwKl+wpGJtmcbm/CnMiBgIzDDg10P
-         D+a+KXRbeDbEQKkjPmZqHFjfgXJiH4hpwyrgjc0aPj7T/oa9SrIH0X15+132g4w4l
-         0TB4B9/IyFZck9/7XBEjAFQ0OwnZrirjoJJBNWFx3A9/ZAvdYycYiks+0KnKlcm6n
-         0YCmGndubOBkrZkI4A==
+        b=kwIYoWcKf67p1X692kNow6H37zBF24YUt6Xkd6M4CMY1ehkBcCXux1PX+qqg54+N
+         9W5HjPZfuyjU24UXlxL21Y5aG0uw2a8FCTRtiIuMvjjb4Cza+L1+i4r6+IRExoj/1
+         ZPoTJ0hGvUDDW7uaBo3xIADYrkRSTx7Eed1jd6iyYXeXbjlhRHkecGuyMlrgFBSXD
+         NzLV+8XRXDIjsI5R/tvDH/NazNeskEsLgN02dCTl45HJ9FgunP5ybjZ7KZXLqDWvg
+         BrKopGUqj3c3bs/pULYSpRQT1WIQ1VaSTozOLIDMe2WuAgjqe44VSqoseS10tNbpX
+         VXa3UoVBv797ILuVdg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from probook ([89.0.47.44]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1rY1Ne2r3T-00gsCP; Thu, 23
- Nov 2023 12:11:01 +0100
-Date:   Thu, 23 Nov 2023 12:10:57 +0100
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1HZo-1r3NX91GaQ-002snb; Thu, 23
+ Nov 2023 12:11:45 +0100
+Date:   Thu, 23 Nov 2023 12:11:42 +0100
 From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
@@ -65,40 +65,41 @@ Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Subject: Re: [PATCH v1 00/17] pinctrl: Convert struct group_desc to use
- struct pingroup
-Message-ID: <ZV8zQZyT4Kwom-m_@probook>
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v1 02/17] pinctrl: nuvoton: Convert to use struct
+ pingroup and PINCTRL_PINGROUP()
+Message-ID: <ZV8zbizJO8yNEomn@probook>
 References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
+ <20231122164040.2262742-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ITcYWtdfuDR2w/Y2"
+        protocol="application/pgp-signature"; boundary="9hHdmhEn3QkQ/1K+"
 Content-Disposition: inline
-In-Reply-To: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
-X-Provags-ID: V03:K1:wGI5Xyg60PX5Zi8dLHVTABR+Ax9JUsCqbiZjKL4ncgCtAcMMEAg
- dvO2Gv8Fy9M1TFaBXJaUQ52G9VUbCo0zhirW5WpIJmiSbL4Ad71TGzG5CInLYjx4k0znTxp
- MsYKpvrDvhRcT8VzpTAal6yl9EyYSd4HX/pNnbueeTP18AtDFXhKZ/baUvLS1o0FqHAC39e
- kaH9t9h50tBeo/979hVUw==
-UI-OutboundReport: notjunk:1;M01:P0:mCrqrZi3U7U=;hjgkNsvydEYHgYUAxEqXVR1jW+v
- WAXa6jsttiV3Ln4DZ0S5+IfJl56rm95DOKlTbmcQr9WKDtczoY7w0WO7tCbq2TdsLZY4M/XNV
- gjlNSBVDMGmX6Dx+i1B4+IqZD7nYXCg8bpeUVskTtGD2ehd+tuYqiLrKaUZYt5YX5Bi6SxaZk
- SiafR5fV2qFEZqSfzgTb3+oyzR8LUbyJT3Ch8FXlvqXpYkz1y4rpe9td7RUV0RTzb303uZ84G
- dHbPwbngHJ4KbtY3l92y2SoCUiA2cDtF1if6HCE9uEysOZnYbxtOBQ8jhcc9HERdxHZk10q+o
- 0IcYykIaku/u4b3Y2qHwPM/lYiaeuJGZ3FjBMt/89ZPPId97BUvM34EE6lkv6iatlizmdH6k1
- 9Iz2dRT9uzWLof1mSy5aZwc6Q0Nhtn1sjOHwJevNOgn+uZdhoe58sxHP3tO2eWNs9ntxLuftr
- dxttOpDHjf699kxi7zl5jdx3jOINoildv+AVS25xKHTs3VQBkXk8mikzFSRWrqccciuqI8+bc
- pcD5A8NygGPERdmPNO5o56xYOLncor6g9sVhjh6s9Tj8vkqN94iLpNjo25E4CUH/5kHIOQBD1
- rLIvJ8xE/MPsbZH5F8VJmuNMyMv159TRsi+r9tp7MBinkypKzTlxsh6bj+DuYsf0dK6FzGKvA
- J3lvXIqSfDD9+1BRjI5XZBww/49z0+lFBMkd+5NTSlbugIVD5/qS9adHgeiZPmIABBK0RYTeM
- Oz74R7Jyp+sKVRS0zp7ME8ExUBQJxin4+XkDnqd3mC4MmD5c7AiV6QKuKHcY48LWKfkT0YDvv
- pludqeafs1x5RDFyz3R7XvuaGFjXVyq64BT0Fe0GeeCnq3HuianeceIzs+dH6lSkmV58QdfiH
- 1GPyNtEGK1v7vZz6hJoMkbkR36G+EnJNBQWGEWq1ExKq+NCHsm89f9ytrRtXmkg43No+v6wVP
- sgRCrNM1X0IPjxzWfH5ew/bkMSM=
+In-Reply-To: <20231122164040.2262742-3-andriy.shevchenko@linux.intel.com>
+X-Provags-ID: V03:K1:zjNy6ebVKDzd7AEE0/nsnKTw50ViiRNCHikw/qZ5yzvBoxpjpTz
+ HuFhbYVNf3YEHc9MbVHMPqFM13ooVqoYIlO28oTqTO3TqRj4iSbysfuAMyOnYgsCh5FQ78z
+ P7qOIwLX0a6l3eskPKk8wB5tHRAjmBptshJd+ljjDbEOIKGogudpPxVTdxC+iTqvsT+hcJd
+ eDREktDD+IHC114QUAtOw==
+UI-OutboundReport: notjunk:1;M01:P0:y+PsMVlI0gs=;Ai/+ZpDC7M5bugNmYWGO9L7vFlz
+ 2WubMq9jgvakIfRSscOQi5KlOlKYuGVb+i5EPcics8R7b0xcRLibYn4OTTpSNQGaQTOJwGw+8
+ W4Q7pdLyoguKl7d5ELtHOlnjYBTnAEchLrHDprAzbT0pm4liSqW8yiHWpqJeT0qPa/DE3Pja3
+ Q5Z2Y98XPiMRaRwkVMZc/EkqAP/qgXNkCrQMBJjev4vsYF1CeRJsKYsDu3Y+r5cWsDlip1bbt
+ vBgM4fOGvzsRhlEdNat8Y3n/Vgqez30ywuxPD5Gy9T75fx4ADPyPC/zL/O+fAwTPTkCE9w/TH
+ nFZXcqSRDEuvtC/cS8QcRdQzyq90i08o/Ne46BrCHyvjRQrgiNDVmhusLkBNG4MX53zGiTLj8
+ nt4OD5BbGGo+Je6mXJQELxmwRF6Mb2+7rdL4P03yd1pE/VCccXBX5CbP2bJMM4MyhNvAS4Pai
+ mVqi+GCEoLYrGHaqjsPfI4eeU8gaTgM0llwyjOpFhBOVT1be9I+IKHNsFiPSGh1lf1FRKPGl1
+ 9n1HRfnC1seURAZXzes1f6cqrFKXQ9EfXNRNL8SKKeD0KCBqBzX+v/DHtSP2R19yz34QA+w2l
+ pSdPWj6cKhIoQAI1NWcL1OTfCwc5nlAKwOK5emPDX0Y9lwfy69hVy0AM26iQ4Imz0/HOnvlwJ
+ E/6O84+5RqeNF7X8N1ENFoobAgv7I3Eowqv2q+cKfY70CU0yACWDlWiqcvbLqGDYdr7gmEFeh
+ rtLZS67dX+nGhL6my4VZgHcO4MD7nzV6e6nftkcod5Q9IQLys+9N8X416dOtY1POJVzUdr9Nu
+ JjdU+yjhnFPMjzKXoL4TAUV+0nfxg2EeXJkr9WwLuksEvi3MaCIQH0Nxo45AvvtCWNlDRkKKl
+ 2lecIiakBCmUUHEd+TtOVn7C/tUQpKC4oQkcVFg4MwdOMwcDVpyueYk3V0Kf75V8+Wlv8lXqD
+ p/T/U2cfwpE9tGZ5jDR/SNDkWxs=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -106,56 +107,86 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ITcYWtdfuDR2w/Y2
-Content-Type: text/plain; charset=us-ascii
+--9hHdmhEn3QkQ/1K+
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 22, 2023 at 06:35:32PM +0200, Andy Shevchenko wrote:
-> The struct group_desc has a lot of duplication with struct pingroup.=20
-> Deduplicate that by embeddind the latter in the former and convert
-> users.
-
-It is strange to me that struct pingroup was introduced without any
-reference to the pre-existing struct group_desc, but it's good to see
-them unified at last.
-
-Even better might be to move the definitions next to each other in the
-same file, so that anyone who finds one, also finds the other.
-
-
-Thanks,
-Jonathan
-
+On Wed, Nov 22, 2023 at 06:35:34PM +0200, Andy Shevchenko wrote:
+> The pin control header provides struct pingroup and PINCTRL_PINGROUP() ma=
+cro.
+> Utilize them instead of open coded variants in the driver.
 >=20
-> Linus, assuming everything is fine, I can push this to my tree.
-> Or you can apply it (assumming all CIs and people are happy with
-> the series).
->=20
-> NB. This series contains previously sent patches for Qualcomm and
-> Nuovoton. Here the updated version for Qualcomm that splits previous
-> patch to two and fixes compilation warnings.
->=20
-> NB. The function_desc is in plan to follow the similar deduplication.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
 
---ITcYWtdfuDR2w/Y2
+Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+
+Thanks.
+
+>  drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/=
+nuvoton/pinctrl-wpcm450.c
+> index 0cff44b07b29..4589900244c7 100644
+> --- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+> +++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+> @@ -474,9 +474,8 @@ enum {
+>  #undef WPCM450_GRP
+>  };
+> =20
+> -static struct group_desc wpcm450_groups[] =3D {
+> -#define WPCM450_GRP(x) { .name =3D #x, .pins =3D x ## _pins, \
+> -			.num_pins =3D ARRAY_SIZE(x ## _pins) }
+> +static struct pingroup wpcm450_groups[] =3D {
+> +#define WPCM450_GRP(x) PINCTRL_PINGROUP(#x, x ## _pins, ARRAY_SIZE(x ## =
+_pins))
+>  	WPCM450_GRPS
+>  #undef WPCM450_GRP
+>  };
+> @@ -852,7 +851,7 @@ static int wpcm450_get_group_pins(struct pinctrl_dev =
+*pctldev,
+>  				  const unsigned int **pins,
+>  				  unsigned int *npins)
+>  {
+> -	*npins =3D wpcm450_groups[selector].num_pins;
+> +	*npins =3D wpcm450_groups[selector].npins;
+>  	*pins  =3D wpcm450_groups[selector].pins;
+> =20
+>  	return 0;
+> @@ -901,7 +900,7 @@ static int wpcm450_pinmux_set_mux(struct pinctrl_dev =
+*pctldev,
+>  	struct wpcm450_pinctrl *pctrl =3D pinctrl_dev_get_drvdata(pctldev);
+> =20
+>  	wpcm450_setfunc(pctrl->gcr_regmap, wpcm450_groups[group].pins,
+> -			wpcm450_groups[group].num_pins, function);
+> +			wpcm450_groups[group].npins, function);
+> =20
+>  	return 0;
+>  }
+> --=20
+> 2.43.0.rc1.1.gbec44491f096
+>=20
+
+--9hHdmhEn3QkQ/1K+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmVfMyAACgkQCDBEmo7z
-X9tfixAAghfTTH5Cq8CFefsef3u1AwmB5dL8brGS/xkDMXHN/RwR0sn/Zr/kxANZ
-Ko9qr9vnCVoSmNi8MwdIRBGOugPq+ZnD40EXBsBtW0BzwkqH9U3tRMhbpucS7F+7
-k+BDoiMeVa7vBNvRQK6XltOa9KRlbppR6wmesPZkzsTJyk/iLCCNTcNBekW8KbQp
-HNCfDoQS0m4cpYW66VdUP7hgBleB/Fjn6ttt0udhrEuFFL5hlKLn87dEo43224nm
-o/DNGFVXXt9Mn+FxxWhhAx01nvc3TaGlCuLqbPXb8v/cyffRFY9SmRa1aJY21zJN
-vr/a+eW7RB5Pi3MAKu8hYEv6nG7Hu/GCN9/hRGpfCv6hat+qyQU0TGRuAmJTKLre
-PxlacpHbRhsGZByRg/sT1cfYA17+EMDuWHDIO7Yj06TNSJdZKO4ucPwdC4Q6zjJc
-pf+gQDIGOU+A/rLwh0HD4ZH30vavQ5uEj0xJhmsUmL+rb+EY78Xj90sGSXvrpCNE
-J/A/1gRjF670OFsRq8+4eMxZ3e5DUx/oNobi5IbAHNnfHh88kjlcYJ1TSBPkvIfR
-czTkc3e6E+n1whHAD9XzIdI+QuftgWXoHr2FFozxoH36a01YAM9t1WJX7BvLCS/9
-YL9i3b/NVhvojwn71TmOgomDm0aKznw/Q2QtJ9PYINrXbh1pyCU=
-=qPNB
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmVfM24ACgkQCDBEmo7z
+X9s6kQ/9FPGH46fURmUk0S/+zlgZKVtDIOldB02JGZTZ/rh43+6rFimcMZyEOlPt
+Iv2ayCrzPHBvgeRMsIdjSCQmtd8XYpLMrkvcir3exY+crh1YGKkyV8RdMJH1RY4a
+C/vRxiZ0684SCsbp1mF03LBU+b96lpFxbxwSdGvLJJMV3yIxe5eADpzZcmyVWzOy
+Q4F7135UoIFZvDgeptqWbygX6poDcHwG4XOPfTYPit1obw4C9lSuIIbepKnWTe9W
+Ut2dTCCIhi0as5InSkuHVSdAuTiOtwcaxPe0uxyhlu+2Wup5ibtz8cL5FfJ1cSEu
+D6KUjGfNUDovRkcgsDBgPSkLl/6miLMNCZ5bWlTvjYXE3C7hSH9PI1vicWhZh0GB
+fLTApAj38g5kdUOcfa+1+Zwv+x2I9dSwdXycqhCF7evDmUbIqwNe1W+dU9RhOX8r
+cFCjFW04uG2nR0ivbf6M3vnqwxGyERCVEj3r5SGimlW9h67E4PHou3p7adEGxwOg
+Rblhxt6s2TlmUvM07L9tjWYLhWBkOgr1+P5xfMVkpcvwUZAa/dwj5bf+qgtoJk9O
+vt8hpySZt8nXp0ynOK9YuVHRdb325ScArKv+sw6rZusAK9Jsq/EIBqOTLvcodCQi
+IgttVi+NmWwrA+ZLB5codjpKhZMPXeA0XEaWAxgu0PZ5PlJRvA4=
+=f6qz
 -----END PGP SIGNATURE-----
 
---ITcYWtdfuDR2w/Y2--
+--9hHdmhEn3QkQ/1K+--
