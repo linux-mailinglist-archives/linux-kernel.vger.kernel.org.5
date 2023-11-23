@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6508D7F5752
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5787F5753
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344558AbjKWEJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 23:09:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
+        id S1344573AbjKWEJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 23:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbjKWEJ2 (ORCPT
+        with ESMTP id S234509AbjKWEJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 23:09:28 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E1410DA;
-        Wed, 22 Nov 2023 20:07:52 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r610G-00073o-E4; Thu, 23 Nov 2023 05:07:48 +0100
-Message-ID: <27dc9607-fed3-4eb2-8c09-d8caf669cc1e@leemhuis.info>
-Date:   Thu, 23 Nov 2023 05:07:47 +0100
+        Wed, 22 Nov 2023 23:09:30 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE0A10E2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:08:47 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cf52e5e07eso11467525ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700712526; x=1701317326; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnAYolYzVC6+Ox+rXpGD2+5czZDHCkLmG8m5K79PKxU=;
+        b=PqAV0JPC5IJUeXEhqdUV3fWyhJ+nB73TgV5nKHv2UMY6FCh+p0ct6/eeEX3chWDIR9
+         9ha44sUPsvtfshevRhQMNVGxNXmiHODQbQjTM5gWriDG9UMJGYZ/0IKEYO3a7yydqQk5
+         Oqqkf3yYYRw9V4ZXnhFOb/SqAHq9yaGR234aLeWIq8WRVPjVBiBo693TNBYQpIFilbvN
+         NuLpbYr9sbprwS49MLmi3O2/70CapjsPrZATJCI8FTQreTuEg46aA+VwWmmXDtT7TGtH
+         xgXY1l1R81bVadg9agqz/AYshObEQIZjiO31PKYBEGHAAOQCToBKhacKuZPWxAfMaMq2
+         yEDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700712526; x=1701317326;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cnAYolYzVC6+Ox+rXpGD2+5czZDHCkLmG8m5K79PKxU=;
+        b=oZeJafwlGuy8VRKqD3AgCWo0JvwEAvwNB/Ryg/voQ+WCAINGAIdMXEguwV0E/MRPty
+         V12ijtUEYSeLbhp6on5MAqmOhyu5x35oPglXhdj61+6OrcTpO1vPie25EfV8lryk5ciH
+         FNUyva6H+UOe3qgtoCay7gJ7RdxNRsVU2jZatWQdPsuHgQpHI+zk5xNZ1jhZ1bt//8nO
+         2InDJeIjTnYq/aWc5Uf+9Ecpcd9qYJtDpeVjMyEkGcbutdMrOoQ+Fg+QCb0uG3wouqpu
+         HgX+WbBLkDGybKJsLzjSmvux6MwJS2ZimfD2a7sh2gkBxu906CP8O1eWF0Y6sfmDzdqG
+         0gjA==
+X-Gm-Message-State: AOJu0YxbO8YmfYPIJoRfsncr+hFfbq8aLaLg6MGvTdrCdrbRIVFAuFuf
+        /dPmlP7Bdg+V85srWGxGo6vqreczr2hpTQ==
+X-Google-Smtp-Source: AGHT+IHNj6ZMUmWR++f0+N8mRJHp8+6lTwyWnvyQTVZ4J3zq7/0EA7iXbgZbp8g8f2E1Hrz5vwgVdw==
+X-Received: by 2002:a17:902:74c8:b0:1cc:419e:cb4b with SMTP id f8-20020a17090274c800b001cc419ecb4bmr2314951plt.19.1700712525945;
+        Wed, 22 Nov 2023 20:08:45 -0800 (PST)
+Received: from AHUANG12-3ZHH9X.lenovo.com (220-143-202-94.dynamic-ip.hinet.net. [220.143.202.94])
+        by smtp.gmail.com with ESMTPSA id w5-20020a170902904500b001cf85115f3asm213264plz.235.2023.11.22.20.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 20:08:45 -0800 (PST)
+From:   Adrian Huang <adrianhuang0701@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Adrian Huang <adrianhuang0701@gmail.com>,
+        Adrian Huang <ahuang12@lenovo.com>
+Subject: [PATCH 1/1] ntp: Refine ntp_get_next_leap implementation
+Date:   Thu, 23 Nov 2023 12:08:18 +0800
+Message-Id: <20231123040818.24905-1-adrianhuang0701@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to
- CONFIG_MICROCODE_AMD)
-Content-Language: en-US, de-DE
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     lukas.bulwahn@gmail.com
-Cc:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
-          Linux regressions mailing list 
-          <regressions@lists.linux.dev>
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
-In-Reply-To: <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700712472;8e67d1a9;
-X-HE-SMSGID: 1r610G-00073o-E4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux kernel regression
-tracking. See link in footer if these mails annoy you.]
+From: Adrian Huang <ahuang12@lenovo.com>
 
-On 12.11.23 16:03, Linux regression tracking (Thorsten Leemhuis) wrote:
-> 
->> Commit e6bcfdd75d53 ("x86/microcode: Hide the config knob") removes config
->> MICROCODE_AMD, but left some references that have no effect on any kernel
->> build around.
->>
->> Clean up those remaining config references. No functional change.
->> [...]
-> 
-> That patch became 4d2b748305e96f ("x86/microcode: Remove remaining
-> references to CONFIG_MICROCODE_AMD"). Not totally sure, but from briefly
-> looking into things it seems likely that it causes a regression with
-> dracut that was just reported here:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=218136
+It is unnecessary to use the local variable 'ret' in the ntp_get_next_leap
+implementation function - just return KTIME_MAX directly and get rid of
+the local variable altogether.
 
-Linus doesn't consider this to be something that needs to be fixed (see
-the "from a user perspective things should still continue to work."
-later in this thread), so remove this from the tracking:
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+---
+ kernel/time/ntp.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-#regzbot resolve: Linus considers this nothing that needs fixing
-#regzbot ignore-activity
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 406dccb79c2b..af1a7e0c0f9d 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -379,12 +379,10 @@ u64 ntp_tick_length(void)
+  */
+ ktime_t ntp_get_next_leap(void)
+ {
+-	ktime_t ret;
+-
+ 	if ((time_state == TIME_INS) && (time_status & STA_INS))
+ 		return ktime_set(ntp_next_leap_sec, 0);
+-	ret = KTIME_MAX;
+-	return ret;
++
++	return KTIME_MAX;
+ }
+ 
+ /*
+-- 
+2.25.1
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
