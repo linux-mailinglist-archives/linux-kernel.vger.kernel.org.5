@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B037F5EC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811267F5EC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345221AbjKWMJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S1345224AbjKWMLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345196AbjKWMJ1 (ORCPT
+        with ESMTP id S1345206AbjKWMK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:09:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F706B2;
-        Thu, 23 Nov 2023 04:09:34 -0800 (PST)
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: laura.nao)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1AB2866073A6;
-        Thu, 23 Nov 2023 12:09:32 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700741373;
-        bh=YgxjoufhsvGqDqaZ2rAtBAbV9cjW8P3dw29HVw8u0y0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PoaVghDckL+d+hpKi62Z+OmLgjKqyQ7uJoVeV20xyXVmZ227HQCKD/v1hZLefB+Ph
-         wlPy5eIiPjgkYXd/W2YZZzFTHf+c3ihGYQN3QYCmDqxqfwS69khvdVi0DdvAQMxnMi
-         6/PDtfY5K6zdHmwbi0BFbZctgpstIBjiue9CS5K7nPW+BQaw6NKcF48qiH/PHGsW1g
-         mIZWlqwllvH7+CEUoYAcCFzoHeW+qhEgQ4dGcsifaswB3hMx1NeUVkylgwCg1yqnxX
-         tdI1H6dqdJ4MiT6+fHY6HKkRbeSdlaAr6PMQ4RKAgkySaMTCZ4JnMZK61yTRt5F/nq
-         5YbJOssjrklhw==
-From:   Laura Nao <laura.nao@collabora.com>
-To:     dan.carpenter@linaro.org
-Cc:     broonie@kernel.org, groeck@chromium.org, kernel@collabora.com,
-        kernelci@lists.linux.dev, laura.nao@collabora.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, rafael@kernel.org,
-        robh+dt@kernel.org, shuah@kernel.org
-Subject: Re: [RFC PATCH 0/2] Add a test to verify device probing on ACPI platforms
-Date:   Thu, 23 Nov 2023 13:09:42 +0100
-Message-Id: <20231123120942.33222-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <4f1283d4-1c50-4aba-ba54-b9ea975bf61d@moroto.mountain>
-References: <4f1283d4-1c50-4aba-ba54-b9ea975bf61d@moroto.mountain>
+        Thu, 23 Nov 2023 07:10:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9633110
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:11:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 840CEC433C7;
+        Thu, 23 Nov 2023 12:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700741463;
+        bh=qnasH8UWNMPUtgjQEvW2eT8JgdXzZT3PCcSdRHKQ5FM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZwYb4L6L98d49s5xNvMsX7zGFPCoBYTo1wQG0I8euS89JMXzN+8gRPehOFOIn4+lz
+         ZJbnjK8ldOQJhpK1D6p4eR92PBW0vlEe39JypbhneDPtG6idrh43EDztMXlJgIAS1j
+         5U+lQVL/OhR5HM176K/leiM2vchDv5vaRL2Ccph0YumHY83vFYpdZobhLBbBBypPJT
+         RqUFC2xEK3lkvoPM32d+SiaAcWb/hpd3YWjKgzVME/V2QUtFCosQSVD3grdh0oG7Pq
+         GGAMS2O+41+yjWkDF70N282fimA3fd/7oIAmMRD8g7RYKNpxfUG3nEsGmRFfCeZna/
+         f46nRHPHbhRtw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r68YC-0004Cf-1m;
+        Thu, 23 Nov 2023 13:11:21 +0100
+Date:   Thu, 23 Nov 2023 13:11:20 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Asuna Yang <spriteovo@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yangyu Chen <cyy@cyyself.name>
+Subject: Re: [PATCH v2] USB: serial: option: add Luat Air72*U series products
+Message-ID: <ZV9BaBBrn78i0x64@hovoldconsulting.com>
+References: <20231122141803.82844-1-SpriteOvO@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122141803.82844-1-SpriteOvO@gmail.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Your talk was interesting at Linux Plumbers.
+On Wed, Nov 22, 2023 at 10:18:03PM +0800, Asuna Yang wrote:
+> Update the USB serial option driver support for Luat Air72*U series
+> products.
 > 
-> https://www.youtube.com/watch?v=oE73eVSyFXQ [time +2:35]
+> ID 1782:4e00 Spreadtrum Communications Inc. UNISOC-8910
 > 
-> This is probably a stupid question, but why not just add something to
-> call_driver_probe() which creates a sysfs directory tree with all the
-> driver information?
+> T: Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 13 Spd=480 MxCh= 0
+> D: Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs= 1
+> P: Vendor=1782 ProdID=4e00 Rev=00.00
+> S: Manufacturer=UNISOC
+> S: Product=UNISOC-8910
+> C: #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=400mA
+> I: If#= 0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=rndis_host
+> E: Ad=82(I) Atr=03(Int.) MxPS= 8 Ivl=4096ms
+> I: If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
+> E: Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E: Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I: If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> E: Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E: Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I: If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> E: Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E: Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I: If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> E: Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E: Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 > 
+> Co-developed-by: Yangyu Chen <cyy@cyyself.name>
+> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> Signed-off-by: Asuna Yang <SpriteOvO@gmail.com>
 
-Thanks for the feedback! 
+Thanks for the v2.
 
-Improving the device driver model to publish driver and devices info was indeed another option we considered. We could have a debugfs entry storing this kind of information, similar to what devices_deferred does and in a standardized format. This would provide an interface that is easier to query at runtime for getting a list of devices that were probed correctly.
-This would cover devices with a driver that's built into the kernel or as a module; in view of catching also those cases where a device is not probed because the relevant config is not enabled, I think we'd still need another way of building a list of devices present on the platform to be used as reference.
+Can you say something about what the three serial interfaces are used
+for (and which is which)?
 
-The solution proposed in this RFC follows the same approach used for dt
-based platforms for simplicity. But if adding a new sysfs entry storing devices and driver info proves to be a viable option for upstream, we can surely explore it and improve the probe test to leverage that.
-
-Best,
-
-Laura
+Johan
