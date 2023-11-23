@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7F07F699B
+	by mail.lfdr.de (Postfix) with ESMTP id BA3717F699D
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 00:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjKWXeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 18:34:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S229831AbjKWXmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 18:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWXeX (ORCPT
+        with ESMTP id S229453AbjKWXmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 18:34:23 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853DCD50
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 15:34:28 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 0A910320094F;
-        Thu, 23 Nov 2023 18:34:24 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 23 Nov 2023 18:34:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1700782464; x=1700868864; bh=7S
-        oP/9+oMDHq5e1ZFZuMCyNkdAMjmxHmQZZ7tv03aps=; b=A6jZUsMudUpHsYWkPv
-        +9Eg94nSym349rYVXA4Rt747HuJLVFxR0UO5zKtKoO0pRflTZP7TbJ8IpVaAAy8S
-        N8JFT3CEudpWWxpGN8uqfrRgOZQ9sBQLKJujv+aZV/GE43WmQ4fwknpCZMkrA1/P
-        55aUFII/h5d+O0/9I5JBWEjan5mmGpqu1RkMPlbE1Ds+QD7MF5ITEfpfxCyd6lUl
-        YAsY7mylk4tKpzg5C+Eq4SrgIzoBPiCRQiV8gBzCW0ebJeYn3Nlcut5PKFP+uHx5
-        5dUhaee8+M/KStXexjaE/6jLhyK/uz1r8yzVhXHjeuQvZ14PAUSZA+eJuDBwekFK
-        m/lg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700782464; x=1700868864; bh=7SoP/9+oMDHq5
-        e1ZFZuMCyNkdAMjmxHmQZZ7tv03aps=; b=VV8YIAF+NBgSqGIzWbz+XiVcmonFC
-        uiatPMuhvPE3DMgijhrs7hJC1JX5vOtsahLJUfW78i2nDfGG8Plz5ys7JI8h83oy
-        XWK/pz7sMEsks9GfzpZKFucaDH0TezfR7XpFsis3Zx1KBKO9wpU7idhCGxYgkziY
-        2O4vteNlLjh/vyEOrS8Rh70dRU5FeR3F221IxqNyK7wCtlJvspnooAotzJyFJXzw
-        4pMuYquosP1Jax9jqLapCFzd+Vk9sMh3srNT8lHzwyhSLvtoFYAjxISlFe1tJfyH
-        jWG/KqRfYOYLkxkjrzt+3pEuUJWCfkLBO5gi/VDZPKfhHymi2ATJcstjQ==
-X-ME-Sender: <xms:gOFfZcBximcby0pIL6Xc636xYmFLB9-oBB7H9AU5NZzsRkM4izyrLQ>
-    <xme:gOFfZegKGx0fOJ_rjW_rRYcmJAC7p7rL-u32KtCEazlqnpWPqboIyvvzUiKrgi3T7
-    gC85CsKqj8ARG6Ev6s>
-X-ME-Received: <xmr:gOFfZflskOXqWiEpp3xOmkvvQ7yJeeoqSUeNlVmGSF4RpMvYKbWA2F5wkc8X6mULPk8OsBKxJLZVPI91OP7yHzOtQpsYkcyr>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehgedgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfhgfhffvvefuffgjkfggtgesthdtredttdertdenucfhrhhomhepifgrrhih
-    ucftohhokhgrrhguuceoghgrrhihrhhoohhkrghrugesfhgrshhtmhgrihhlrdhorhhgqe
-    enucggtffrrghtthgvrhhnpeefleffhfegtefffefgfedugeehhfdvueefffegkeejvdeg
-    leeiueelkeeiuddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:gOFfZSyI1SjnhveGMbsVOzMCZhEoYUTt2lsAJDxdrhYLKsABRMn4yg>
-    <xmx:gOFfZRRHFiiX5E51KaB2fzUXR3SEKg6q5eXe3n36cE2ygLLanenasw>
-    <xmx:gOFfZdbXrnRjc-f-v2Klpy-3yko0fi6BpSNtyZU5mZzgPJRx8Uy5mQ>
-    <xmx:gOFfZceis29BXf9rnQtljIIcmNbNf3t5YkMOQS0L9uOUKnzIlTCVIw>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Nov 2023 18:34:23 -0500 (EST)
-References: <20231123144337.13112-1-garyrookard@fastmail.org>
- <20231123144337.13112-3-garyrookard@fastmail.org>
- <5ff4d268-2fcb-4d55-819a-e2650731b91f@gmail.com>
-User-agent: mu4e 1.10.6; emacs 29.1
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] staging: rtl8192e: renamed variable
- TXCountToDataRate
-Date:   Thu, 23 Nov 2023 18:19:25 -0500
-In-reply-to: <5ff4d268-2fcb-4d55-819a-e2650731b91f@gmail.com>
-Message-ID: <87v89svybm.fsf@fastmail.org>
+        Thu, 23 Nov 2023 18:42:44 -0500
+Received: from mail.oetec.com (mail.oetec.com [108.160.241.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED93ED54;
+        Thu, 23 Nov 2023 15:42:50 -0800 (PST)
+Received: from [172.16.35.9] (cpe8c6a8d4d360a-cm8c6a8d4d3608.cpe.net.cable.rogers.com [99.253.151.152])
+        (authenticated bits=0)
+        by mail.oetec.com (8.17.1/8.16.1) with ESMTPSA id 3ANNgRFJ003137
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Thu, 23 Nov 2023 18:42:27 -0500 (EST)
+        (envelope-from dclarke@blastwave.org)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=blastwave.org;
+        s=default; t=1700782949;
+        bh=hsFZNRGRNb3gPeRURwxKxDmD5dc9IoFXqMPf63EGl/c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=LJY9STRPwlkzmTIbargG+dyhp+YYhuQsUb4dYydA4pe4XTZHbxgOPt77nFhMu3xw+
+         faDxiuHKnkLWX8H+j8xPM0JiYoyqcQnRSlooH8Dzjo5jQJkfvx9iYwQl33jZ/6aJGk
+         u0SL8gmaJzVXA1vbPlwx0sTzSDH7lB2bIgSdtHBZSJBHD/H6+lbHdS4gvddE1pbmFe
+         OwZVgu6pjIDy87x69ChaCjNwF26UHvtVNgOa8cDDGiiae01S73skJ1e1Y3XD1TEADa
+         ghPMvURd8FEzOg//eVvdah3jdboMkccp4SFLNdNrrwcfL+hzSffCvk1N46WjM9PpPM
+         dMP/Q5VWJGrRg==
+Message-ID: <7fce272f-65f5-9aa8-5f28-aeecb98a8ab4@blastwave.org>
+Date:   Thu, 23 Nov 2023 18:42:27 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: =?UTF-8?Q?Re=3a_Fwd=3a_sign-file=2ec=3a149=3a17=3a_warning=3a_impli?=
+ =?UTF-8?Q?cit_declaration_of_function_=e2=80=98ENGINE=5fload=5fbuiltin=5fen?=
+ =?UTF-8?B?Z2luZXPigJk=?=
+Content-Language: en-CA
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Keyrings <keyrings@vger.kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <1fca50c4-6d7b-4c9b-bcea-4df17e2c2e7e@gmail.com>
+ <e110cfff-08f9-4bbc-6b69-0d67ae6562b6@blastwave.org>
+ <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
+From:   Dennis Clarke <dclarke@blastwave.org>
+Organization: GENUNIX
+In-Reply-To: <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-oetec-MailScanner-Information: Please contact the ISP for more information
+X-oetec-MailScanner-ID: 3ANNgRFJ003137
+X-oetec-MailScanner: Found to be clean
+X-oetec-MailScanner-From: dclarke@blastwave.org
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/23/23 09:53, James Bottomley wrote:
+> On Fri, 2023-11-17 at 00:34 -0500, Dennis Clarke wrote:
+>> On 11/16/23 18:41, Bagas Sanjaya wrote:
+>>> Hi,
+>>>
+>>> I notice a bug report on Bugzilla [1]. Quoting from it:
+>>>
+>> <snip>
+>>>> Not related to
+>>>> https://bugzilla.kernel.org/show_bug.cgi?id=215750 but I *feel*
+>>>> that this code needs a hug.
+>>>
+>>> See Bugzilla for the full thread.
+>>>
+>>> AFAIK, this looks like a bug when the kernel is compiled against
+>>> custom (non-system) version of OpenSSL library.
+>>>
+>>
+>> I do not know what you could possibly mean. There is nothing "custom"
+>> about OpenSSL. For that matter the gcc compiler I am using was also
+>> built by me. Works fine. The sign-file.c source compiles fine.
+> 
+> This has all the hallmarks of an openssl compiled without engine
+> support; is the symbol OPENSSL_NO_ENGINE set?  And which distro did you
+> get this library from?
+> 
+> James
+> 
 
-Philipp Hortmann <philipp.g.hortmann@gmail.com> writes:
+I am looking into this. The code will likely age into some deprecated
+calls and I think that I may be way out on the edge here. However the
+code will need a pile of ifndef stuff and then call the correct future
+looking calls for OpenSSL 3.x etc etc etc ... the usual stuff
 
-> On 11/23/23 15:43, Gary Rookard wrote:
->> Renamed from Pascal/CamelCase to Snake case the variable
->> TXCountToDataRate.
->> TXCountToDataRate -> tx_count_to_data_rate
->> Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
->> Driver/module rtl8192e compiles.
->> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
->> ---
->> v3: Corrected versioning from v1 -> v3, includes change history.
->> v2: v2 was skipped over..v3 corrects this.
->> v1 Style and compile issues, asked to redo.
->>   drivers/staging/rtl8192e/rtl819x_HTProc.c    | 2 +-
->>   drivers/staging/rtl8192e/rtllib.h            | 2 +-
->>   drivers/staging/rtl8192e/rtllib_softmac_wx.c | 2 +-
->>   3 files changed, 3 insertions(+), 3 deletions(-)
->> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c
->> b/drivers/staging/rtl8192e/rtl819x_HTProc.c
->> index 280e335cbb6d..fb8294f31a60 100644
->> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
->> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
->> @@ -114,7 +114,7 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
->>   	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
->>   }
->>   -u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate)
->> +u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
->>   {
->>   	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
->>   				   0x24, 0x30, 0x48, 0x60, 0x6c};
->> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
->> index d2cf3cfaaaba..0226a69f40c3 100644
->> --- a/drivers/staging/rtl8192e/rtllib.h
->> +++ b/drivers/staging/rtl8192e/rtllib.h
->> @@ -1783,7 +1783,7 @@ extern u16 MCS_DATA_RATE[2][2][77];
->>   u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
->>   void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
->>   bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
->> -u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate);
->> +u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
->>   int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
->>   int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
->>   int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb);
->> diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
->> index f32584291704..28aba1d610f7 100644
->> --- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
->> +++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
->> @@ -208,7 +208,7 @@ int rtllib_wx_get_rate(struct rtllib_device *ieee,
->>   {
->>   	u32 tmp_rate;
->>   -	tmp_rate = TxCountToDataRate(ieee,
->> +	tmp_rate = tx_count_to_data_rate(ieee,
->>   				     ieee->softmac_stats.CurrentShowTxate);
->>   	wrqu->bitrate.value = tmp_rate * 500000;
->>   
->
-> CHECK: Alignment should match open parenthesis
-> #61: FILE: drivers/staging/rtl8192e/rtllib_softmac_wx.c:212:
-> +	tmp_rate = tx_count_to_data_rate(ieee,
->  				     ieee->softmac_stats.CurrentShowTxate)
-Yes, I'm guilty of ignoring the addional CHECKS in my patch
-diff. Cleanup only allows one type of correction per patch. They are
-going to be included in a follow up patch series that I'm working on.
-If this is unacceptable thinking on my part then I will stand corrected.
-
-P.S.
-Sorry, but they have been gone over with checkpatch and codespell.
-
-Regards,
-Gary
-
+Dennis Clarke
+RISC-V/SPARC/PPC/ARM/CISC
+UNIX and Linux spoken
 
