@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954017F5952
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFA67F5955
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjKWHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S229464AbjKWHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbjKWHe3 (ORCPT
+        with ESMTP id S230044AbjKWHfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:34:29 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC0D10D1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:34:35 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507be298d2aso698682e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:34:35 -0800 (PST)
+        Thu, 23 Nov 2023 02:35:19 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0B3F9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:35:25 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4079ed65471so3599875e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 23:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700724874; x=1701329674; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700724924; x=1701329724; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3JH+03ERdFU24BU5LeW5MTH8ZXebolsQqtSjYJ5C4k0=;
-        b=HsPNdAsytDDxrHPSrQtzAjEoz0KDkOlkMUn9nAVEb4p6rWaVpztHigD1VsOQBH/CDh
-         ZeIP30w0Hm4ea4LSB5EjXgBV6Qr08lHzZOSJn+C0GqSRUH+ZpBgmrqDCKzQaivJ00VGr
-         DG1VK5wPoxH/4DmTUKxApfbVZpWQwxJTezgT5JEbS5cY0EFIMYJGQUtdmI1+6OxjZSSI
-         rGlzhLNlo7pd74BvhK0t9nu5b56syqupkrVhIOvr46QaS3KHe+3bGYPbpA0yTS0D3e4B
-         RL+sHIGKHMkZ40roc5wJdBDGBGv7J+p852a4pmtb86CPnpfkknCr3dNP7m+m0CjrYh6R
-         GjmQ==
+        bh=lSzrC7ZrxU4Kft/S01xWqqcaPGdyXqrc5hyW3dwQG5E=;
+        b=EcYAAc9hm2Fh1767/dI3xMD49TmdQBnf5bGdJuotrBUDpJY/DjAa+aEjIWwE6R3WkU
+         m1ojnDPvknbV4SHhxM9uQuFpT88ZEFrX8+5Br3koSAXLnu3z1mySTP3LzQML+irCfuQj
+         bcZp6knVSgs+XS7lKtxy1zg52WP2D8e2ngt/gvkXKns5zZv3CNjjixMCo4LXhhFGov1J
+         8+HlcEKMPHYCkxCsBvVe4hJFv/e7OQPKJTFOZWne4JbYn2wRHeRbTntCWaiM9rlM4DW4
+         CG0Q0aju4sExrXQlE4bYEXNCVHAMdUDbk2cZri1WAseZBnbxiGjtqeAKx+2ZzVKsAHYg
+         DLEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700724874; x=1701329674;
+        d=1e100.net; s=20230601; t=1700724924; x=1701329724;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3JH+03ERdFU24BU5LeW5MTH8ZXebolsQqtSjYJ5C4k0=;
-        b=rRoVhEL6z2L/EeVVgvcdWz0v6v2t8DGe4JMoPGuw8cLkRK4mrPCmm6VazG2JK9r/np
-         r3lPqaBb6fSMdkT5gfV9QX6CiZDu960afaZehLGY4Hil1EofadLKhm/MA4WRMBt8afzW
-         Lw1j04DmMc0p0GdN9TgG53FA2YqdvVnFwluBww9YAetaSRNT8VyxLnXBHqgsYY46f37B
-         sBjKrxknQ3oDmRYY9m8PWcIhN/94dHtIsW1k/KgGim/kDP7WCND7OhLQUBl/43G9HQFf
-         jVaYlLTmY99E/bUDJXr41fcJmoGMbb8nb8gSUwIReskCRXCiuF4shFgHhOtSpY93hKBr
-         XFiQ==
-X-Gm-Message-State: AOJu0YzsRumoKTPp63KiCWt4dCHKQQkA5hnjoqmR4kSqwmY38dnKPVWI
-        ycNuX8cSFcmitkJhx8JGrgG1jA==
-X-Google-Smtp-Source: AGHT+IEcO36CRri24VcZjqmy+YCmrML21Y3CcbZ/l7itgXf4c/TFNArwVyJYTntbioFKBIoYB4ba2A==
-X-Received: by 2002:ac2:5e84:0:b0:50a:73a8:ae4f with SMTP id b4-20020ac25e84000000b0050a73a8ae4fmr3277674lfq.29.1700724873996;
-        Wed, 22 Nov 2023 23:34:33 -0800 (PST)
+        bh=lSzrC7ZrxU4Kft/S01xWqqcaPGdyXqrc5hyW3dwQG5E=;
+        b=kpQXlPrw1bFw9AC2UgTPU51yCOtKuG36I/UH0wZd1nMzY0xNry0Q/2bP12qRpFpw05
+         QMgSIhAa5rJWoVNP0hAScreA0xWPecJWnVvm7NtD/SM4Dnq20pcTWHZ/ofuxwR2zMPeZ
+         +jmF/25/sMFbkyGubiwASsqO8Ry1m7rXRXVWpEHBw1bt8mL0S7WE7PI56wjCMpWtYJ3M
+         ZowPamLk6uEYC3tTaok2zqs7h7P02NyOqvPnD3rgK7S2ha4k+zmXeOkUSsXiTc2eez+w
+         VrbA9LRB39AiD92MoTZJ2hrc9MiQ9U4O12IJ68mATj8qLz/wKkEBCgip6hgzWZ65GHFB
+         O5uA==
+X-Gm-Message-State: AOJu0Yzd6x3lqXjn0tk5DwalYxX8pHQH/qG/oDACJBWOHJCQALhdX1pn
+        wSKYopItCQH+s7Hzy1NqVPwJ6A==
+X-Google-Smtp-Source: AGHT+IFGxzFHzEj/DZN9AqA/K+4YGaf0tGmIE8phYiqpbRmrZfdFvoLpnMRzrTFzMAiZLL6Y6edmNQ==
+X-Received: by 2002:a05:6000:236:b0:331:6a48:6289 with SMTP id l22-20020a056000023600b003316a486289mr2989152wrz.58.1700724924261;
+        Wed, 22 Nov 2023 23:35:24 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b003142e438e8csm816828wra.26.2023.11.22.23.34.32
+        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b003142e438e8csm816828wra.26.2023.11.22.23.35.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 23:34:33 -0800 (PST)
-Message-ID: <1f5357b6-5d14-4ed2-966e-b023c4b2afaf@linaro.org>
-Date:   Thu, 23 Nov 2023 08:34:32 +0100
+        Wed, 22 Nov 2023 23:35:23 -0800 (PST)
+Message-ID: <8bba9fc3-f2c5-43d8-8bc5-4033c938274b@linaro.org>
+Date:   Thu, 23 Nov 2023 08:35:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: hisilicon: Merge hi3620-clock into
- hisilicon,sysctrl binding
+Subject: Re: [PATCH] dt-bindings: dma: Drop undocumented examples
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
+To:     Rob Herring <robh@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Wei Xu <xuwei5@hisilicon.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20231122235059.2966532-1-robh@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231122235050.2966280-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,13 +107,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122235059.2966532-1-robh@kernel.org>
+In-Reply-To: <20231122235050.2966280-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -124,12 +121,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/11/2023 00:50, Rob Herring wrote:
-> The hi3620-clock binding is simple and always a child of the
-> "hisilicon,sysctrl" node, so just add it into the hisilicon,sysctrl
-> binding and drop the old txt binding.
+> The compatibles "ti,omap-sdma" and "ti,dra7-dma-crossbar" aren't documented
+> by a schema which causes warnings:
+> 
+> Documentation/devicetree/bindings/dma/dma-controller.example.dtb: /example-0/dma-controller@48000000: failed to match any schema with compatible: ['ti,omap-sdma']
+> Documentation/devicetree/bindings/dma/dma-router.example.dtb: /example-0/dma-router@4a002b78: failed to match any schema with compatible: ['ti,dra7-dma-crossbar']
+> 
+> As no one has cared to fix them, just drop them.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
