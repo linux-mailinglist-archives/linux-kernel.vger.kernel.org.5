@@ -2,236 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FDC7F5FD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A057F5FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345423AbjKWNNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
+        id S1345450AbjKWNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345410AbjKWNNH (ORCPT
+        with ESMTP id S1345425AbjKWNM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:13:07 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D431B3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:13:13 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AB90066073AA;
-        Thu, 23 Nov 2023 13:13:11 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700745192;
-        bh=3kFwWUJbU4/lxJ40nu+0GvbCQS1lAHeNG0CTqSjmQNg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iAuuDLQ198JiU/0dmgWYxU8TMAZvQVkI9yVtsszovKmHetfksTFuE4ky5ETZxekxJ
-         FAjZ4IZ31So1ENZXQ2vMY5kshS160FworEkxWJfhyRJ9bnivrd88mBqXB0y+KddxuG
-         gqV/NLviXHXxI4BX7vsBEwowoKl5gWA5j9BSoRSrSonLI5H1tNrkPKhR0niVV8Y1bU
-         UiOjYayM+b7jU2KRVSeGjIFio6gdvj8/4Qb88g0BCnSaSni00ryb7WKvsYE44nV72K
-         pFrFxlETlPup3ycseY9eNnYZdZMm367wIdJLxwyXu06JZYJUeJSHX2BV40YWMso2SJ
-         08+SnAMFPsN3A==
-Date:   Thu, 23 Nov 2023 14:13:08 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v3] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Message-ID: <20231123141308.3ba50409@collabora.com>
-In-Reply-To: <20231123120521.147695-1-angelogioacchino.delregno@collabora.com>
-References: <20231123120521.147695-1-angelogioacchino.delregno@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 23 Nov 2023 08:12:28 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FB83D64;
+        Thu, 23 Nov 2023 05:12:31 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1C871042;
+        Thu, 23 Nov 2023 05:13:16 -0800 (PST)
+Received: from [10.57.4.190] (unknown [10.57.4.190])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25DA43F6C4;
+        Thu, 23 Nov 2023 05:12:28 -0800 (PST)
+Message-ID: <3a381307-81a2-40ab-a2bf-f899e3fd7c80@arm.com>
+Date:   Thu, 23 Nov 2023 13:13:27 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/pelt: avoid underestimate of task utilization
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+References: <20231122140119.472110-1-vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, rafael@kernel.org,
+        qyousef@layalina.io, mgorman@suse.de, bsegall@google.com,
+        rostedt@goodmis.org, linux-pm@vger.kernel.org,
+        dietmar.eggemann@arm.com, juri.lelli@redhat.com,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231122140119.472110-1-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 13:05:21 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
 
-> Some SoCs may be equipped with a GPU containing two core groups
-> and this is exactly the case of Samsung's Exynos 5422 featuring
-> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
-> is partial, as this driver currently supports using only one
-> core group and that's reflected on all parts of it, including
-> the power on (and power off, previously to this patch) function.
+
+On 11/22/23 14:01, Vincent Guittot wrote:
+> It has been reported that thread's util_est can significantly decrease as
+> a result of sharing the CPU with other threads. The use case can be easily
+> reproduced with a periodic task TA that runs 1ms and sleeps 100us.
+> When the task is alone on the CPU, its max utilization and its util_est is
+> around 888. If another similar task starts to run on the same CPU, TA will
+> have to share the CPU runtime and its maximum utilization will decrease
+> around half the CPU capacity (512) then TA's util_est will follow this new
+> maximum trend which is only the result of sharing the CPU with others
+> tasks. Such situation can be detected with runnable_avg wich is close or
+> equal to util_avg when TA is alone but increases above util_avg when TA
+> shares the CPU with other threads and wait on the runqueue.
 > 
-> The issue with this is that even though executing the soft reset
-> operation should power off all cores unconditionally, on at least
-> one platform we're seeing a crash that seems to be happening due
-> to an interrupt firing which may be because we are calling power
-> transition only on the first core group, leaving the second one
-> unchanged, or because ISR execution was pending before entering
-> the panfrost_gpu_power_off() function and executed after powering
-> off the GPU cores, or all of the above.
-> 
-> Finally, solve this by introducing a new panfrost_gpu_suspend_irq()
-> helper function and changing the panfrost_device_suspend() flow to
->  1. Mask and clear all interrupts: we don't need nor want any, as
->     for power_off() we are polling PWRTRANS, but we anyway don't
->     want GPU IRQs to fire while it is suspended/powered off;
->  2. Call synchronize_irq() after that to make sure that any pending
->     ISR is executed before powering off the GPU Shaders/Tilers/L2
->     hence avoiding unpowered registers R/W; and
->  3. Ignore the core_mask and ask the GPU to poweroff both core groups
-> 
-> Of course it was also necessary to add a `irq` variable to `struct
-> panfrost_device` as we need to get that in panfrost_gpu_power_off()
-> for calling synchronize_irq() on it.
-> 
-> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
-> [Regression detected on Odroid HC1, Exynos5422, Mali-T628 MP6]
-> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > ---
 > 
-> Changes in v3:
->  - Fix compile issue
+> This patch implements what I mentioned in [1]. I have been able to
+> reproduce such pattern with rt-app.
 > 
-> Changes in v2:
->  - Fixed the commit hash of "Really power off [...]"
->  - Actually based on a clean next-20231121
->  - Renamed "irq" to "gpu_irq" as per Boris' suggestion
->  - Moved the IRQ mask/clear/sync to a helper function and added
->    a call to that in panfrost_device.c instead of doing that in
->    panfrost_gpu_power_off().
+> [1] https://lore.kernel.org/lkml/CAKfTPtDd-HhF-YiNTtL9i5k0PfJbF819Yxu4YquzfXgwi7voyw@mail.gmail.com/#t
+
+Thanks Vincet for looking at it! I didn't have to to come
+back to this issue.
+
 > 
-> NOTE: I didn't split 1+2 from 3 as suggested by Boris, and I'm sending
-> this one without waiting for feedback on my reasons for that which I
-> explained as a reply to v1 because the former couldn't be applied to
-> linux-next, and I want to unblock Krzysztof ASAP to get this tested.
+>   kernel/sched/fair.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
 > 
->  drivers/gpu/drm/panfrost/panfrost_device.c |  1 +
->  drivers/gpu/drm/panfrost/panfrost_device.h |  1 +
->  drivers/gpu/drm/panfrost/panfrost_gpu.c    | 28 +++++++++++++++-------
->  drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
->  4 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index c90ad5ee34e7..b0a4f3e513f4 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -421,6 +421,7 @@ static int panfrost_device_runtime_suspend(struct device *dev)
->  		return -EBUSY;
->  
->  	panfrost_devfreq_suspend(pfdev);
-> +	panfrost_gpu_suspend_irq(pfdev);
->  	panfrost_gpu_power_off(pfdev);
->  
->  	return 0;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 0fc558db6bfd..f2b1d4afb9e9 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -94,6 +94,7 @@ struct panfrost_device {
->  	struct device *dev;
->  	struct drm_device *ddev;
->  	struct platform_device *pdev;
-> +	int gpu_irq;
->  
->  	void __iomem *iomem;
->  	struct clk *clock;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 09f5e1563ebd..2c09aede0945 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -425,11 +425,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
->  
->  void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  {
-> -	u64 core_mask = panfrost_get_core_mask(pfdev);
->  	int ret;
->  	u32 val;
->  
-> -	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-> +	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
->  	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
->  					 val, !val, 1, 1000);
->  	if (ret)
-> @@ -441,16 +440,29 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  	if (ret)
->  		dev_err(pfdev->dev, "tiler power transition timeout");
->  
-> -	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-> +	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
->  	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
->  				 val, !val, 0, 1000);
->  	if (ret)
->  		dev_err(pfdev->dev, "l2 power transition timeout");
->  }
->  
-> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 07f555857698..eeb505d28905 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4774,6 +4774,11 @@ static inline unsigned long task_util(struct task_struct *p)
+>   	return READ_ONCE(p->se.avg.util_avg);
+>   }
+>   
+> +static inline unsigned long task_runnable(struct task_struct *p)
 > +{
-> +	/* Disable all interrupts before suspending the GPU */
-> +	gpu_write(pfdev, GPU_INT_MASK, 0);
-> +	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-> +
-> +	/*
-> +	 * Make sure that we don't have pending ISRs, otherwise we'll be
-> +	 * reading and/or writing registers while the GPU is powered off
-
-I see this comment, plus the fact you call panfrost_gpu_suspend_irq()
-before panfrost_gpu_power_off() and I realize there might still be a
-misunderstanding. It's not the l2,shader,tiler-poweroff that causes the
-invalid reg access, it's what happens in the PM core after we've
-returned from panfrost_device_runtime_suspend() (power domain turned
-off). The register bank is still accessible when the sub-blocks are off,
-otherwise we wouldn't be able to power them on after a reset (which
-automatically powers off all the blocks, IIRC).
-
-> +	 */
-> +	synchronize_irq(pfdev->gpu_irq);
+> +	return READ_ONCE(p->se.avg.runnable_avg);
 > +}
 > +
->  int panfrost_gpu_init(struct panfrost_device *pfdev)
->  {
-> -	int err, irq;
-> +	int err;
->  
->  	err = panfrost_gpu_soft_reset(pfdev);
->  	if (err)
-> @@ -465,11 +477,11 @@ int panfrost_gpu_init(struct panfrost_device *pfdev)
->  
->  	dma_set_max_seg_size(pfdev->dev, UINT_MAX);
->  
-> -	irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
-> -	if (irq < 0)
-> -		return irq;
-> +	pfdev->gpu_irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
-> +	if (pfdev->gpu_irq < 0)
-> +		return pfdev->gpu_irq;
->  
-> -	err = devm_request_irq(pfdev->dev, irq, panfrost_gpu_irq_handler,
-> +	err = devm_request_irq(pfdev->dev, pfdev->gpu_irq, panfrost_gpu_irq_handler,
->  			       IRQF_SHARED, KBUILD_MODNAME "-gpu", pfdev);
->  	if (err) {
->  		dev_err(pfdev->dev, "failed to request gpu irq");
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> index 876fdad9f721..d841b86504ea 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
->  int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
-> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
->  
->  void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
->  void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
+>   static inline unsigned long _task_util_est(struct task_struct *p)
+>   {
+>   	struct util_est ue = READ_ONCE(p->se.avg.util_est);
+> @@ -4892,6 +4897,14 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+>   	if (task_util(p) > arch_scale_cpu_capacity(cpu_of(rq_of(cfs_rq))))
+>   		return;
+>   
+> +	/*
+> +	 * To avoid underestimate of task utilization, skip updates of ewma if
+> +	 * we cannot grant that thread got all CPU time it wanted.
+> +	 */
+> +	if ((ue.enqueued + UTIL_EST_MARGIN) < task_runnable(p))
+> +		goto done;
+> +
+> +
+>   	/*
+>   	 * Update Task's estimated utilization
+>   	 *
 
+That looks reasonable to do. I cannot test it right now on my pixel6.
+It should do the trick to the task util that we need in bigger apps
+than rt-app as well.
+
+Reviewed-by: Lukasz luba <lukasz.luba@arm.com>
