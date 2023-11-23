@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6687F5CEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A697F5CEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344837AbjKWKwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
+        id S229609AbjKWKwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235201AbjKWKwU (ORCPT
+        with ESMTP id S1344884AbjKWKwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:52:20 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475931BD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:52:26 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c887d1fb8fso9355791fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:52:26 -0800 (PST)
+        Thu, 23 Nov 2023 05:52:34 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9C8D67;
+        Thu, 23 Nov 2023 02:52:40 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cba45eeaf6so185640b3a.1;
+        Thu, 23 Nov 2023 02:52:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700736744; x=1701341544; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700736759; x=1701341559; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KlBw+J1DKtTqdlCO/c1cUzIzbtROUCDGWtDerK3Z8as=;
-        b=TjpNstBkzm0o+js6eFXimRn0h62B8Mho/bxO56s1U3NIaixHwmQKkVewWB6c7ciW+9
-         8TUm+YzkpjacYpFSjorIIWWHyf0Pei2MsVRu1HshmPXSnMuO8Stwx+voa2BLTqz67p6y
-         IAmHDS+GB3GHG8ZZ7BOShktMVao+UlC5Qp4AKp1mXn8uIel/yWTrd80wDEN+O8nFcdsE
-         uOiMqnRI/NlvEmsmXsRikJlOomfgW/C+2vDrwzpm4IX8sBZySojsZSPuMrTPVhRWOYl7
-         0BoABxAOsCYzQtdoq3CtZTDFrzS5v1rzimAsAicy9kmcqb20HAnTAM95TsChp/GS4lG9
-         0Qvg==
+        bh=nkePtrNuruXmd4CBUnZv9iSf3c++8/vF/GaVL8IUodI=;
+        b=AhUOw1xdVJzUMyFPnNovb6adKV2siiyuc7OVooNviH0mrreVZ1Tb+PETq8t3B5G3e/
+         ijAugzBnyTdZ2pW2X72qv0+DxmsQYd5CPNZHRwcoLH6ozBi65GGfanyjypBdzJZALwzt
+         tWRP4uNMxV4hdZ62jo9zWNdx4mLG4VHoL75GRWThjBEqQDHFDl1TKh41Vt+9HKCbgNH4
+         wKRUKihPjlIYuiNsPooXQVWA0Qg0JljjmFZChG7OmAaTMccMnuoJeechfV6yu8fjtibh
+         UNG+nT/3STKy+r1+eCs4mjl8dRNXmyghRcPGf934sk5c0p7/zCcNGpRkFvJDMbe6+tjr
+         FFtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700736744; x=1701341544;
+        d=1e100.net; s=20230601; t=1700736759; x=1701341559;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KlBw+J1DKtTqdlCO/c1cUzIzbtROUCDGWtDerK3Z8as=;
-        b=AcLe19lBldC3zfIiRRFZ5XKCTYLw2VmJ0foQCT2LDA+TDHLat2P1C2qeB4FszOVVHV
-         9Jiumv2iS4yE2xBHL7D/r+3e4/2xhSmzXtCZfUWYAqTTrxP94O7TVDM6nU5gOcjUDzhG
-         ifUQGjFd+gdTq2KWZy6NsRYBim5C7Czi/hzX5bqVG8vXKPTiAmkXDM2HaeFq9dPUsvel
-         i29Ok00Bk3CpPoBl1Cwr2o/6KdI4LDEIIkXrNetzbqRqU25DDJglL9x/wbsbXbTic+Ij
-         OmoZLX4tDI38RQzwSn/Ux3E/MiC79QKpw24BT0aeW4KXrJ+N9KUhT18IDh1fjPB+NmEn
-         aoOA==
-X-Gm-Message-State: AOJu0YxM+jGZDLb14eGeu+JQ+OCob9SyMRmGbdeQQCLkyHG4IKQqQ1Z2
-        nJa4PTBQRYDL763b9/OBXx08kZBWgGclMolWGEk=
-X-Google-Smtp-Source: AGHT+IFy+GdLH/BGXHcIl+Z3rWxvxH/CWpgB+pDVDbYP2pF0svbwAz0jWWBpfdzxDgZJSsjzgjCwsYAer7r8hl601rI=
-X-Received: by 2002:a2e:9b0f:0:b0:2c5:1ad3:7798 with SMTP id
- u15-20020a2e9b0f000000b002c51ad37798mr3042949lji.52.1700736744207; Thu, 23
- Nov 2023 02:52:24 -0800 (PST)
+        bh=nkePtrNuruXmd4CBUnZv9iSf3c++8/vF/GaVL8IUodI=;
+        b=wOqZ1fxQpIFjRnCe4vFYe6Dc9cpllDG2FoTDNh5iIwgtNzFpTQgJPKWHAm1cHPfm5p
+         DIbWxRrDCZ8BsYhRAqjDDSoPwAieorj+gLvJt6SjpO0eYT3KFXsw5uWwjqe7sFOt9Cv8
+         4Gj6z+oRpT2+St9Tu1cLpEU5sq7XlJyOKXz++sAevxCO7W7LGYd8EIRJKEevn4NrwrSY
+         4OohG3kumTK+I5Yr6/7gT/e2NRsS7D4wJ5yw2eK7Bghn+a5hqbBVcx79iQ/Ee4LDM3wr
+         vRQh3JO7EQCSSJ/GeZsyUUmx2lRUgw70eBw9aYr8ibbsgMI4qLqOXxAcHixINRhkuO4N
+         XdfQ==
+X-Gm-Message-State: AOJu0YxNV2//HqckN8CyiZb/p2CDLxUGvoFEjxpayR1Yw9Hb3BiVTN1s
+        W7PA/reOEF9QrFqzgSQY3N5GmdmJk44nlRHNyl6yuhAy
+X-Google-Smtp-Source: AGHT+IGlzqduhpVaTVgbiGUjI+xeIT+elH0cWBjuFr1bOqmX4DtEGJbfjntHWAyTaG3DDPu2iy+oZ99oRoSF0peWKwA=
+X-Received: by 2002:a05:6a20:3c92:b0:18b:1f5d:b105 with SMTP id
+ b18-20020a056a203c9200b0018b1f5db105mr6279100pzj.6.1700736759489; Thu, 23 Nov
+ 2023 02:52:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-9-ryncsn@gmail.com>
- <CAF8kJuPTp5AJPStY0U-Q+t7HhoZB2B9cSQJONJv+xvR3qhxd1g@mail.gmail.com>
-In-Reply-To: <CAF8kJuPTp5AJPStY0U-Q+t7HhoZB2B9cSQJONJv+xvR3qhxd1g@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Thu, 23 Nov 2023 18:52:06 +0800
-Message-ID: <CAMgjq7C8o+Jr=oaoo_q+pdUV4wpGk9DZJHX3y5Zt5R4dPErYwQ@mail.gmail.com>
-Subject: Re: [PATCH 08/24] mm/swap: check readahead policy per entry
-To:     Chris Li <chrisl@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+References: <20231123104812.13906-1-francesco@dolcini.it>
+In-Reply-To: <20231123104812.13906-1-francesco@dolcini.it>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 23 Nov 2023 07:52:27 -0300
+Message-ID: <CAOMZO5A53XFbRBp6QXWoDVBr=J347_riO1wWgPLxczT3JcuwQA@mail.gmail.com>
+Subject: Re: [PATCH v1] arm64: dts: imx8-apalis: set wifi regulator to always-on
+To:     Francesco Dolcini <francesco@dolcini.it>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,52 +78,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8821=E6=97=A5=
-=E5=91=A8=E4=BA=8C 15:54=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Currently VMA readahead is globally disabled when any rotate disk is
-> > used as swap backend. So multiple swap devices are enabled, if a slower
-> > hard disk is set as a low priority fallback, and a high performance SSD
-> > is used and high priority swap device, vma readahead is disabled global=
-ly.
-> > The SSD swap device performance will drop by a lot.
-> >
-> > Check readahead policy per entry to avoid such problem.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/swap_state.c | 12 +++++++-----
-> >  1 file changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index ff6756f2e8e4..fb78f7f18ed7 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -321,9 +321,9 @@ static inline bool swap_use_no_readahead(struct swa=
-p_info_struct *si, swp_entry_
-> >         return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_coun=
-t(entry) =3D=3D 1;
-> >  }
-> >
-> > -static inline bool swap_use_vma_readahead(void)
-> > +static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
-> >  {
-> > -       return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_rota=
-te_swap);
-> > +       return data_race(si->flags & SWP_SOLIDSTATE) && READ_ONCE(enabl=
-e_vma_readahead);
->
-> A very minor point:
-> I notice you change the order enable_vma_readahead to the last.
-> Normally if enable_vma_reachahead =3D=3D 0, there is no need to check the=
- si->flags.
-> The si->flags check is more expensive than simple memory load.
-> You might want to check enable_vma_readahead first then you can short
-> cut the more expensive part.
+Hi Francesco,
 
-Thanks, I'll improve this part.
+On Thu, Nov 23, 2023 at 7:48=E2=80=AFAM Francesco Dolcini <francesco@dolcin=
+i.it> wrote:
+>
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+>
+> Make sure that the wifi regulator is always on. The wifi driver itself
+> puts the wifi module into suspend mode. If we cut the power the driver
+> will crash when resuming from suspend.
+>
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+
+I think this one deserves a Fixes tag.
