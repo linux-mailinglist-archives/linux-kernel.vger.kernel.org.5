@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8F47F64D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016AC7F64DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345339AbjKWRFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        id S1345305AbjKWRGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345287AbjKWRFn (ORCPT
+        with ESMTP id S229983AbjKWRG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:05:43 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81641CB;
-        Thu, 23 Nov 2023 09:05:49 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DC5AA40E0195;
-        Thu, 23 Nov 2023 17:05:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id hkozHP8UPGsA; Thu, 23 Nov 2023 17:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700759144; bh=N6866AyEk35D3wyeN4/vh+11Z3gBWRfsdLnGQ+oqXnQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dm404St8Ku72srXLveKuecYQnT42cRmgEOYx2yddvOQTFEIFKifpkChBzp044mTVV
-         PVZKbEcpvF0Da9qaFK43oz7ZEEDW4QxnvMzI6ZmReZCONkYqayGLhmkBw+ZxnQCnJ5
-         Dc/aVRqGOYBcYZM4yChX886EXhjilXczZL+9ezyzkJ+a0PK6hGjJ82/JF6EAHM3v/5
-         aOQ+4W1vnepmsYrPmyWX2Mf9XhZ5QX+QWoI+p1YHxr7s0BJ+OypPn8Vkk2+vzJUD8C
-         e3ZkMhqOUMTHJU14rDQkCQ4Z76UPvKdDsf/N8ipmtwHO0WkBr1w+8bX/fwitAren0c
-         9SJYSKEygE7JYfENnWee7iAmwiLYJbw0iWps2thT1J3MzIzesjDzSwlR4XR+v0q887
-         3CNPM/8vfb1jMM8IY4BPhmHj4TjRsVWdWVzl2xMrySb5mcontKhjruNtEWBNQpp/ZP
-         3WTbKho0GDSTDoazvBHcs8A8yRLp52tEe+3DOnvUBBZG94wnaCNGaCqfMFzKt6zu0C
-         HFqpN9rEJ9cOytxv6JkU4Xj6E79ynE/hDEqsEYwrBPycN8i4VRyEilgdmUvY7hm/a3
-         92vpvWGhvuWIts1vIbA6dFnzo8B8cwSygQIHLnY+KzL6sqL60ywoBUoS1EnIPzOD2Z
-         0l+Qlq59EgoByv4WihS9hsic=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A4BB40E014B;
-        Thu, 23 Nov 2023 17:05:32 +0000 (UTC)
-Date:   Thu, 23 Nov 2023 18:05:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Robert Richter <rric@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Sergey Temerkhanov <s.temerkhanov@gmail.com>,
+        Thu, 23 Nov 2023 12:06:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C931BE;
+        Thu, 23 Nov 2023 09:06:33 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389448692"
+X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
+   d="scan'208";a="389448692"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 09:06:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="796376621"
+X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
+   d="scan'208";a="796376621"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 09:06:27 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1r6D9j-0000000GQ9P-1JPi;
+        Thu, 23 Nov 2023 19:06:23 +0200
+Date:   Thu, 23 Nov 2023 19:06:23 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     mitrutzceclan <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
         Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yeqi Fu <asuk4.q@gmail.com>, linux-edac@vger.kernel.org,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] EDAC, thunderx: fix possible out-of-bounds string access.
-Message-ID: <20231123170527.GGZV+GV+OKjHfdZiQR@fat_crate.local>
-References: <20231122222007.3199885-1-arnd@kernel.org>
+Subject: Re: [PATCH v6 2/2] iio: adc: ad7173: add AD7173 driver
+Message-ID: <ZV-Gj3boJ1LPYj5T@smile.fi.intel.com>
+References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
+ <20231123152331.5751-2-user@HYB-hhAwRlzzMZb>
+ <ZV-CHima8bpXcopc@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122222007.3199885-1-arnd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZV-CHima8bpXcopc@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 11:19:53PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Commit 1b56c90018f0 ("Makefile: Enable -Wstringop-overflow globally") exposes a
-> warning for a common bug in the usage of strncat():
-> 
-> drivers/edac/thunderx_edac.c: In function 'thunderx_ocx_com_threaded_isr':
-> drivers/edac/thunderx_edac.c:1136:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
->  1136 |                 strncat(msg, other, OCX_MESSAGE_SIZE);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/edac/thunderx_edac.c:1145:33: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
->  1145 |                                 strncat(msg, other, OCX_MESSAGE_SIZE);
->       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/edac/thunderx_edac.c:1150:33: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
->  1150 |                                 strncat(msg, other, OCX_MESSAGE_SIZE);
->       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/edac/thunderx_edac.c: In function 'thunderx_l2c_threaded_isr':
-> drivers/edac/thunderx_edac.c:1899:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
->  1899 |                 strncat(msg, other, L2C_MESSAGE_SIZE);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/edac/thunderx_edac.c: In function 'thunderx_ocx_lnk_threaded_isr':
-> drivers/edac/thunderx_edac.c:1220:17: error: 'strncat' specified bound 1024 equals destination size [-Werror=stringop-overflow=]
->  1220 |                 strncat(msg, other, OCX_MESSAGE_SIZE);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Apparently the author of this driver expected strncat() to behave the
-> way that strlcat() does, which uses the size of the destination buffer
-> as its third argument rather than the length of the source buffer.
-> The result is that there is no check on the size of the allocated
-> buffer.
-> 
-> Change it to use strncat().
-> 
-> Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/edac/thunderx_edac.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+On Thu, Nov 23, 2023 at 06:47:26PM +0200, Andy Shevchenko wrote:
+> On Thu, Nov 23, 2023 at 05:23:22PM +0200, mitrutzceclan wrote:
 
-Applied, thanks.
+...
+
+> > +static int ad7173_free_config_slot_lru(struct ad7173_state *st)
+> 
+> > +static int ad7173_load_config(struct ad7173_state *st,
+> > +			      struct ad7173_channel_config *cfg)
+> 
+> Have you checked, btw, list_lru.h? Maybe all this can be simply changed by
+> using existing library?
+
+Okay, it seems specific to MM, but maybe there something similar done which
+can be split into generic LRU library? In any case it seems too much for this
+nice series, so can you just add a comment on top of these functions to
+mention that it may be switched to a generic LRU implementation if one exists?
 
 -- 
-Regards/Gruss,
-    Boris.
+With Best Regards,
+Andy Shevchenko
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
