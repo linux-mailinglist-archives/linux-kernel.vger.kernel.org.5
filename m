@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 829667F6881
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1737F688F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 21:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjKWUgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 15:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
+        id S229588AbjKWUzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 15:55:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjKWUgV (ORCPT
+        with ESMTP id S229453AbjKWUzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 15:36:21 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B133FD48
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:36:27 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso8394595e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700771786; x=1701376586; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vvAaA3Q6o70anR4fOOtdChYIk/DBeFPv4ujSnCFXB64=;
-        b=cl/m6fiUf1/tBRtWqKEmW3PGEAu/HtipLjopUPNhiT6l+TjHHPho0SccEkTTj2ekgI
-         SuK8liIK+Gx1q20FCX/e4Hk+YbtYAiBXSAw79N7tm29brGx8la7SsIKBrcThWTro6vgy
-         WXIALhM4Ye6wewRHXHz2fpTndYrXoR1CY0g6s3Fok64QvzHXTTx672gIDVTql2D4hOB2
-         zI5Tl539viVUX3mVZjoxQadWLEjwnKI8nuYYEwL3SlSIkrDybOzkJJNCit3OmZaUCske
-         0u0ppIKVFQcSG5QFT0RhOQ3ZrlsswsRw4w1xBbfgSh/jeqAwTL8tyoI8EqLQcawg8Tan
-         JXRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700771786; x=1701376586;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vvAaA3Q6o70anR4fOOtdChYIk/DBeFPv4ujSnCFXB64=;
-        b=dMHri86dpC6LDdwWbzPCw0CVA1OMcqVUu4SpVKhRR7o9mkToBvNmei5h9sYoI5OFpE
-         UEyIgN4+uDv9BMSZS+S9SFr1tALx/4l/BpNEX/NUaY3skkAIZkqbfydaOMrNtQG7pToC
-         10eRHGN5fui8FWJXMmu9goSCmhEtfsx2U1thuDwYdOy6EkFKmj+Zcr30gaD2734GmgzX
-         cE5361GFkUORp3p6j8+JwSRTMngKSn2eMdwwceRwXXGT9XFXLNtXmXL2T/rNh3xJ0oU7
-         QZbaL19sPzLbc49XIE2mlpAgXgWyAxB40N1GKbWZweDCONVv7QvmkYLAUAJPOtOv8jcE
-         QQVA==
-X-Gm-Message-State: AOJu0Yxi35FFHxAAyBzUaxMnOCARTYvoQ36xpTR1I0tHSXekVqa5Ytqz
-        MOnK9/XgBCW0BGgsNeAYP6TL7FFPcAvGMw==
-X-Google-Smtp-Source: AGHT+IFMb80+oFOwT9z0aOfeRn6ziAAaWRySvnmUty/YOc+9Q1qx5YNiK4g9Ftbi86oPwU7znedZzA==
-X-Received: by 2002:a05:600c:484f:b0:40a:767a:7248 with SMTP id j15-20020a05600c484f00b0040a767a7248mr507520wmo.22.1700771785936;
-        Thu, 23 Nov 2023 12:36:25 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id n8-20020a05600c3b8800b0040b398f0585sm493028wms.9.2023.11.23.12.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 12:36:25 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2 2/2] x86/smp: Use atomic_try_cmpxchg in native_stop_other_cpus()
-Date:   Thu, 23 Nov 2023 21:34:23 +0100
-Message-ID: <20231123203605.3474745-2-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231123203605.3474745-1-ubizjak@gmail.com>
-References: <20231123203605.3474745-1-ubizjak@gmail.com>
+        Thu, 23 Nov 2023 15:55:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B8ED46
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 12:55:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D482C433C7;
+        Thu, 23 Nov 2023 20:55:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700772956;
+        bh=ljvADzGfj9Rw3shLMI/eqAb24E3mdeOe87KbCWGRLM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sLBWv7zMEqF+yj4oGEzvKcMfIXtrFLjMhTQZom5zp50tl+Iktoj/3JwIKiPnFQVGd
+         BkkOj0dFz+8dM/wfzZ4b1FbeU91gZ2vkIpCTfJv4+vUfaphrZiKKx2X1n0IJavE1q2
+         SAlPOGAjJ4DoygsIyUtme+JNPtVX1S0T4B37ObazruhxMaX3qgneYBuzBRMSf3fjzl
+         Bwa8LEh44ObfzVd/a6t59PzsFTeEinGyjXfrFOdeUOt+H2l0XbxCg9IrvUT4WTSfMX
+         ZNFlDLfXGsHgFtSC/jxzcl709RqUNsHz6wc+H0RVvsUg2tLTXNQE5CSVCq5wjW/YTG
+         oK/CqkpgoizvA==
+Date:   Thu, 23 Nov 2023 21:55:53 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Sergey Kozlov <serjk@netup.ru>, linux-i2c@vger.kernel.org,
+        Abylay Ospan <aospan@netup.ru>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/10] drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c:
+ Don't let i2c adapters declare I2C_CLASS_SPD support if they support
+ I2C_CLASS_HWMON
+Message-ID: <ZV+8WZk5ZKAmroED@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sergey Kozlov <serjk@netup.ru>, linux-i2c@vger.kernel.org,
+        Abylay Ospan <aospan@netup.ru>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231118180504.1785-1-hkallweit1@gmail.com>
+ <20231118180504.1785-9-hkallweit1@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PkoxvMO1/HFYCTOF"
+Content-Disposition: inline
+In-Reply-To: <20231118180504.1785-9-hkallweit1@gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,54 +61,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use atomic_try_cmpxchg() instead of atomic_cmpxchg(*ptr, old, new) == old.
 
-X86 CMPXCHG instruction returns success in ZF flag, so this change saves a
-compare after CMPXCHG.
+--PkoxvMO1/HFYCTOF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested by building a native Fedora-38 kernel and rebooting
-a 12-way SMP system using "shutdown -r" command some 100 times.
+On Sat, Nov 18, 2023 at 07:05:02PM +0100, Heiner Kallweit wrote:
+> After removal of the legacy eeprom driver the only remaining I2C
+> client device driver supporting I2C_CLASS_SPD is jc42. Because this
+> driver also supports I2C_CLASS_HWMON, adapters don't have to
+> declare support for I2C_CLASS_SPD if they support I2C_CLASS_HWMON.
+> It's one step towards getting rid of I2C_CLASS_SPD mid-term.
+>=20
+> Series was created supported by Coccinelle and its splitpatch.
+>=20
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-No functional change intended.
+As I want to apply this cleanup early in the cycle, could we have an ack
+for me to modify this subsystem, please?
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
-v2: Split from v1 patch.  Simplify commit entry and state
-    how the patch was tested.
----
- arch/x86/kernel/smp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> ---
+>  drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c b/drivers/=
+media/pci/netup_unidvb/netup_unidvb_i2c.c
+> index bd38ce444..46676f2c8 100644
+> --- a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+> +++ b/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+> @@ -289,7 +289,7 @@ static const struct i2c_algorithm netup_i2c_algorithm=
+ =3D {
+>  static const struct i2c_adapter netup_i2c_adapter =3D {
+>  	.owner		=3D THIS_MODULE,
+>  	.name		=3D NETUP_UNIDVB_NAME,
+> -	.class		=3D I2C_CLASS_HWMON | I2C_CLASS_SPD,
+> +	.class		=3D I2C_CLASS_HWMON,
+>  	.algo		=3D &netup_i2c_algorithm,
+>  };
+> =20
+>=20
 
-diff --git a/arch/x86/kernel/smp.c b/arch/x86/kernel/smp.c
-index 97f6f0cbb43a..2908e063d7d8 100644
---- a/arch/x86/kernel/smp.c
-+++ b/arch/x86/kernel/smp.c
-@@ -148,15 +148,16 @@ static int register_stop_handler(void)
- 
- static void native_stop_other_cpus(int wait)
- {
--	unsigned int this_cpu;
-+	unsigned int old_cpu, this_cpu;
- 	unsigned long flags, timeout;
- 
- 	if (reboot_force)
- 		return;
- 
- 	/* Only proceed if this is the first CPU to reach this code */
-+	old_cpu = -1;
- 	this_cpu = smp_processor_id();
--	if (atomic_cmpxchg(&stopping_cpu, -1, this_cpu) != -1)
-+	if (!atomic_try_cmpxchg(&stopping_cpu, &old_cpu, this_cpu))
- 		return;
- 
- 	/* For kexec, ensure that offline CPUs are out of MWAIT and in HLT */
--- 
-2.42.0
+--PkoxvMO1/HFYCTOF
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVfvFQACgkQFA3kzBSg
+KbZYAA//fQjEmBOFvualDjpGrgw79fieIiVp81NMn0isd0Yeru7pNMMn40Ce26y/
+zC1tWshvD26hOZ5k6siTw5Ia/+lYV62ft2RuInuh7duj2DV3gJ5nEZxvWsOnt1HG
+h3OuPDJaA/ZDL/M61Gn2zC8bvHMSTLjEfPorI1NKuKLzwJTkjl2pzCkX1mnnZEXK
+1qufBvlzHW5uFTNpV1ta5hG53nmYANKedqIswglmjI35Df0JZ5YdUblvNwnrWbx5
+Ws2GjHvv8UPry9VNMxc1I0QOfu/Yw+rv3j0CrFt3DEPkNL6rx6llpwyETNaaLpTz
+g8b6ZTy2YjXh1U1AlyyZqK662VhWRo+EOLok1Km9ZbLAfhMgfHthEKMICv2X4JPt
+oc4SY2alrTXIEDtK4eLhYMb8t5bCw09cmrnPa5yEe/DHUjW5HKpPH4WVx2v+3Pbe
+Cd9OgCEehueRRbo9r48JBGiHzUKmMPW4nzw1vKEgLsxyzyGhcS287oZf0+Ig8OVf
+wJu2ghinagfxYZM7hUYMfdv/pB52eWkDv/vvzgkGcNP8kNCJJB5SsL1AS8enwbDf
+7gLxVOhSiOJJeKT/8D1nTu7S1aaoFt2/eIbPfrNUwJhbhuQHe03bRI/0OaJuTmMD
+uTXkumGEtW+uFpakfoMqezP850oL9Ogh4Tvh5Gi+CIzwOkreGCw=
+=jKDE
+-----END PGP SIGNATURE-----
+
+--PkoxvMO1/HFYCTOF--
