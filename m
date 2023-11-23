@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7002B7F5DB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC20A7F5D67
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345018AbjKWLWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
+        id S1344989AbjKWLGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345019AbjKWLFn (ORCPT
+        with ESMTP id S235191AbjKWLFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:05:43 -0500
+        Thu, 23 Nov 2023 06:05:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E668D71
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:05:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDFCC433CD;
-        Thu, 23 Nov 2023 11:05:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A9CD54
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:05:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8CFC433C9;
+        Thu, 23 Nov 2023 11:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700737548;
-        bh=e+QnAKFOR6wNf8AU7caaDk1G44zPUvTIPn9eqgvKtVI=;
+        s=k20201202; t=1700737554;
+        bh=5+tWyKAC++2Xnrgn3NdMaK+q0ya4fE8D9fGwVpiP1Ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PspJpNl8eiPdZ9teU9sgGRq0899Z4qRquTRTMB3ArIInHB3Up/Nd1jNAK52qGJfw6
-         VwcSqNBj6wKq0fD5yXgSW27a59XD7QLOvPbuIspPpPRBkcfND/tpUKYcFGCF7v8Zsa
-         dgDyTwQGndIV8yWAWF26tuIPGfQKRXj1NO3DcnqV310BwDabCzlQwn1lCiuBVbFjHA
-         Z86z4PLYiZf9MHHOZgmqB8KbDB4rO/oWM3+PqBPki4n8eLgoRQ6LCVS7VPSNlti2tC
-         3KF5z4FbFLm2GWjTZYrI/5XmCiH2J5bKlvwiwgrOPc4LVeIRCaHUi1/MBiIDKhPy5d
-         Oiwg9eBSopTGQ==
+        b=iXbiFiobNLe2JxXPcmWo8nLzQzuJ0EtGXlolJinYPcK8B4Od9jeB6dYYWU2PW8lSJ
+         BTfn/20C6mIUm6KnKVQeLfRm+HqiNXQ8oCH9vNKLmuW7UOodeeKs53SgxP43UUPoSe
+         8Iz6MqbaJhXWowQn+jh8OjVf/qnu4NDtJWRpJlKqOzlWU4zMZ7zPLYmi1YEI0g4oEC
+         XVRgDyaGG2thEMkLswRlGbobUzOJ3FHm0aivGz6nvO4BDbcezPzh9l/PpE9NdLMX96
+         ywX7Dm1pTI5o9GhFTua14j7NbMXLxSj4wAD9bpq5ApXsxQVxQDfxgKt3Zza62nnT5P
+         sQ1jMRTTLFHGg==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -54,9 +54,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
         sparclinux@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v3 4/6] x86: sta2x11: include header for sta2x11_get_instance() prototype
-Date:   Thu, 23 Nov 2023 12:05:04 +0100
-Message-Id: <20231123110506.707903-5-arnd@kernel.org>
+Subject: [PATCH v3 5/6] usb: fsl-mph-dr-of: mark fsl_usb2_mpc5121_init() static
+Date:   Thu, 23 Nov 2023 12:05:05 +0100
+Message-Id: <20231123110506.707903-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231123110506.707903-1-arnd@kernel.org>
 References: <20231123110506.707903-1-arnd@kernel.org>
@@ -74,31 +74,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-sta2x11_get_instance() is a global function declared in asm/sta2x11.h,
-but this header is not included before the definition, causing a warning:
+This function is only called locally and should always have been static:
 
-arch/x86/pci/sta2x11-fixup.c:95:26: error: no previous prototype for 'sta2x11_get_instance' [-Werror=missing-prototypes]
+drivers/usb/host/fsl-mph-dr-of.c:291:5: error: no previous prototype for 'fsl_usb2_mpc5121_init' [-Werror=missing-prototypes]
 
-Add the missing #include.
-
-Fixes: 83125a3a189e ("x86, platform: Initial support for sta2x11 I/O hub")
+Fixes: 230f7ede6c2f ("USB: add USB EHCI support for MPC5121 SoC")
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/pci/sta2x11-fixup.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/host/fsl-mph-dr-of.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
-index 7368afc03998..8c8ddc4dcc08 100644
---- a/arch/x86/pci/sta2x11-fixup.c
-+++ b/arch/x86/pci/sta2x11-fixup.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-map-ops.h>
- #include <linux/swiotlb.h>
- #include <asm/iommu.h>
-+#include <asm/sta2x11.h>
+diff --git a/drivers/usb/host/fsl-mph-dr-of.c b/drivers/usb/host/fsl-mph-dr-of.c
+index 8508d37a2aff..6cdc3d805c32 100644
+--- a/drivers/usb/host/fsl-mph-dr-of.c
++++ b/drivers/usb/host/fsl-mph-dr-of.c
+@@ -288,7 +288,7 @@ static void fsl_usb2_mph_dr_of_remove(struct platform_device *ofdev)
+ #define PHYCTRL_LSFE		(1 << 1)	/* Line State Filter Enable */
+ #define PHYCTRL_PXE		(1 << 0)	/* PHY oscillator enable */
  
- #define STA2X11_SWIOTLB_SIZE (4*1024*1024)
- 
+-int fsl_usb2_mpc5121_init(struct platform_device *pdev)
++static int fsl_usb2_mpc5121_init(struct platform_device *pdev)
+ {
+ 	struct fsl_usb2_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	struct clk *clk;
 -- 
 2.39.2
 
