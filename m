@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BE37F68A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9B87F68AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjKWVPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 16:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        id S229805AbjKWVYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 16:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWVPG (ORCPT
+        with ESMTP id S229453AbjKWVYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 16:15:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8481A5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:15:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74259C433C7;
-        Thu, 23 Nov 2023 21:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700774112;
-        bh=tPDvNTF6lQgs9PwbaY+2NnDjcoV4Bkdql130mx3he5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IYWXp6jws2n5+lhs66eOrghIpdRqwujIZ0d1v0m7OuQbWAkGnFzuAOJDAIy+C4L1a
-         vVU9MhIPf9NzkYY0F0p+lMXkbG2ZIhtjIllki7jNYch4MKxKNU0CMiHgcPALLL/ds/
-         1K4AViDU/I3YVTaJiLo5SZFx8CzDtYEQ6kDuWQMxUQzc4rsGGh5B/GR4hlB9ZDD2RT
-         mN8kxB5/ANc1tCpPXYb0CF8A63knqKpHYpCgKeU95fgo0kRgDrtzhi4l3FAYoXlKAu
-         H65qQOtV14MHk1VZ5ZZrcpkXjQCTm3BqII/mAIamf6txGQHjJSCXebQFsLAv9p4HeX
-         5FG6Ri7FNdlaQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6BC540094; Thu, 23 Nov 2023 18:15:09 -0300 (-03)
-Date:   Thu, 23 Nov 2023 18:15:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>, Marc Zyngier <maz@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
- priority than sysfs/json
-Message-ID: <ZV/A3YhtMHsZZRQd@kernel.org>
-References: <20231123042922.834425-1-irogers@google.com>
- <ac4cf01d-4bb5-4b4d-bd87-bf05ddb67f2d@marcan.st>
- <ZV9fLgHshKGoAPYK@kernel.org>
+        Thu, 23 Nov 2023 16:24:11 -0500
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58297130
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:24:17 -0800 (PST)
+Date:   Thu, 23 Nov 2023 16:24:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700774655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZLXHI2Ndk3rHHsAuo56iifYdV0BTffvf5dGp9YUFqg=;
+        b=XxPzFZrtvipkxFgmFlx/ExysB/xnfphkaUcLFZbqpwUXkPvQsLc2IZXsi299cEJPyvv/14
+        pfZlRTUxePNx0ah8qULgO/bJzkahkISeivJkSuhB2Y/7Y6xSyf5zaU3Vwl2JSZjX1Uuv7S
+        NDq+tYptKfF1tikav+qzthg5l6luMeM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Qi Zheng <arch0.zheng@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Message-ID: <20231123212411.s6r5ekvkklvhwfra@moria.home.lan>
+References: <20231122232515.177833-1-kent.overstreet@linux.dev>
+ <20231122232515.177833-3-kent.overstreet@linux.dev>
+ <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZV9fLgHshKGoAPYK@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 23, 2023 at 11:18:22AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Nov 23, 2023 at 05:45:19PM +0900, Hector Martin escreveu:
-> > On 2023/11/23 13:29, Ian Rogers wrote:
-> > > The bulk of this change is updating all of the parse-events test
-> > > expectations so that if a sysfs/json event exists for a PMU the test
-> > > doesn't fail - a further sign, if it were needed, that the legacy
-> > > event priority was a known and tested behavior of the perf tool.
+On Thu, Nov 23, 2023 at 11:32:59AM +0800, Qi Zheng wrote:
+> > +	void (*to_text)(struct seq_buf *, struct shrinker *);
 > 
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > > This is a large behavioral change:
-> > > 1) the scope of the change means it should bake on linux-next and I
-> > > don't believe should be a 6.7-rc fix.
-> > > 2) a fixes tag and stable backport I don't think are appropriate. The
-> > > real reported issue is with the PMU driver. A backport would bring the
-> > > risk that later fixes, due to the large behavior change, wouldn't be
-> > > backported and past releases get regressed in scenarios like
-> > > hybrid. Backports for the perf tool are also less necessary than say a
-> > > buggy PMU driver, as distributions should be updating to the latest
-> > > perf tool regardless of what Linux kernel is being run (the perf tool
-> > > is backward compatible).
-> > 
-> > Tested-by: Hector Martin <marcan@marcan.st>
-> 
-> Thanks, applied locally, doing some tests and then will push for
-> linux-next to pick it up.
-> 
-> Mark, can I have your Reviewed-by or Acked-by?
+> The "to_text" looks a little strange, how about naming it
+> "stat_objects"?
 
-I'll collect those, but only after addressing these:
+The convention I've been using heavily in bcachefs is
+typename_to_text(), or type.to_text(), for debug reports. The
+consistency is nice.
 
-[perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.86.5/perf/perf-6.6.0-rc1.tar.xz
-[perfbuilder@five ~]$ time dm
-   1   100.09 almalinux:8                   : FAIL clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+3466+dfcbc058)
-    util/parse-events.c:1461:6: error: variable 'alias_rewrote_terms' is used uninitialized whenever '&&' condition is false [-Werror,-Wsometimes-uninitialized]
-            if (!parse_state->fake_pmu && perf_pmu__check_alias(pmu, &parsed_terms,
-                ^~~~~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1477:6: note: uninitialized use occurs here
-            if (alias_rewrote_terms &&
-                ^~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1461:6: note: remove the '&&' if its condition is always true
-            if (!parse_state->fake_pmu && perf_pmu__check_alias(pmu, &parsed_terms,
-                ^~~~~~~~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1401:26: note: initialize the variable 'alias_rewrote_terms' to silence this warning
-            bool alias_rewrote_terms;
-                                    ^
-                                     = false
-    1 error generated.
-    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
-   2   114.29 almalinux:9                   : FAIL clang version 15.0.7 (Red Hat 15.0.7-2.el9)
-    util/parse-events.c:1461:6: error: variable 'alias_rewrote_terms' is used uninitialized whenever '&&' condition is false [-Werror,-Wsometimes-uninitialized]
-            if (!parse_state->fake_pmu && perf_pmu__check_alias(pmu, &parsed_terms,
-                ^~~~~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1477:6: note: uninitialized use occurs here
-            if (alias_rewrote_terms &&
-                ^~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1461:6: note: remove the '&&' if its condition is always true
-            if (!parse_state->fake_pmu && perf_pmu__check_alias(pmu, &parsed_terms,
-                ^~~~~~~~~~~~~~~~~~~~~~~~~
-    util/parse-events.c:1401:26: note: initialize the variable 'alias_rewrote_terms' to silence this warning
-            bool alias_rewrote_terms;
-                                    ^
-                                     = false
-    1 error generated.
-    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+> 
+> >   	long batch;	/* reclaim batch size, 0 = default */
+> >   	int seeks;	/* seeks to recreate an obj */
+> > @@ -110,7 +114,6 @@ struct shrinker {
+> >   #endif
+> >   #ifdef CONFIG_SHRINKER_DEBUG
+> >   	int debugfs_id;
+> > -	const char *name;
+> 
+> The name will only be allocated memory when the CONFIG_SHRINKER_DEBUG is
+> enabled, otherwise its value is NULL. So you can't move it out and use
+> it while CONFIG_SHRINKER_DEBUG is disabled.
+
+Good catch
+
+> > +void shrinkers_to_text(struct seq_buf *out)
+> > +{
+> > +	struct shrinker *shrinker;
+> > +	struct shrinker_by_mem {
+> > +		struct shrinker	*shrinker;
+> > +		unsigned long	mem;
+> 
+> The "mem" also looks a little strange, how about naming it
+> "freeable"?
+
+The type is just used in this one function, but sure.
+
+> 
+> > +	} shrinkers_by_mem[10];
+> > +	int i, nr = 0;
+> > +
+> > +	if (!mutex_trylock(&shrinker_mutex)) {
+> > +		seq_buf_puts(out, "(couldn't take shrinker lock)");
+> > +		return;
+> > +	}
+> 
+> We now have lockless method (RCU + refcount) to iterate shrinker_list,
+> please refer to shrink_slab().
+
+Will do!
