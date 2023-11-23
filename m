@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807737F62B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588B77F62B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346051AbjKWP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+        id S1346067AbjKWP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346027AbjKWP0c (ORCPT
+        with ESMTP id S1346059AbjKWP0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:26:32 -0500
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CA4B2;
-        Thu, 23 Nov 2023 07:26:36 -0800 (PST)
-Received: from [192.168.1.107] (89-186-112-232.pool.digikabel.hu [89.186.112.232])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hs@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D2CCF87640;
-        Thu, 23 Nov 2023 16:26:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1700753194;
-        bh=tADxMhqmym43UtaltuF6ideItA5aCnkrDR4RpjiaUqs=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=xTBTLhosRSikzas9acB1UsbUoffinOBIu3tEnayeLY8j5J/RCVCfVRWTlrC7x6y7I
-         dsV8R7Pv44VIu7LzF0R+ZDA2+yU0w/P2kV0PJLXu/aVCOKmNp6yfZVyV8Ruj2SiIr7
-         bAAEQdwOK84GIHehfKt3tT7zX/YVax9ztrJgNAjBF+U99HfR8WQE4yjiWVhuosl5Dx
-         cUBdEizLTWGMCfA1OwayXaoGmy/3P/bP4RRRjRVL7MdTfYgVvfM0isGAdguR2fDNtJ
-         NNFEkhm0BxXTR0cPPx/H67C8Rnj2U1X291r9hTElzzPbg9E3Km3RUJ0ghKcINDVMWN
-         1AR3LHSZRKUXQ==
-Reply-To: hs@denx.de
-Subject: Re: [PATCH] net: fec: fix probing of fec1 when fec0 is not probed yet
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        netdev@vger.kernel.org, Heiko Schocher <heiko.schocher@gmail.com>
-Cc:     Clark Wang <xiaoning.wang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>, linux-kernel@vger.kernel.org
-References: <20231123132744.62519-1-hs@denx.de> <5992842.lOV4Wx5bFT@steina-w>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <1af63dea-e333-cef7-2bc6-bbf4eb8c3881@denx.de>
+        Thu, 23 Nov 2023 10:26:47 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2C3D5A;
+        Thu, 23 Nov 2023 07:26:52 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B949424000C;
+        Thu, 23 Nov 2023 15:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700753211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F1EYqlVYF1fJ33cC2a0Mertg3uhTJJ/NIkImZDHepJg=;
+        b=Qa0TaAX35przqfse0Y7pj19YS8keDDV1tZXDJA74SmXNXAAw+P/mEhobnbrAHkicEhQX7P
+        IylTzzUBtrXI3qMH6FqGegR7P9u8iB3YhnGTyAc2wFcm4yeLqw9a8oPJsTm5D0k6PF7m7N
+        m9WgwgEDDPnPNVkMAqZjnVagYxNfKsqjTrNNZ2e71Nf0hWcGA7ZfX/vd+THXdVEPovQFnq
+        f8WyYJKBKThZBAic8j3xqrrbKtNaOQ1qtSVQ1RNJryMKGvdYOOoluMOa6Vts7VRgH7mPiQ
+        mpJkztcNxwRKn7NnWd+p+2035Q0Xw8Im/92jbjxFVg95QZI8hJDCFac6SKHh3Q==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: [PATCH v2 01/21] MIPS: compressed: Use correct instruction for 64 bit code
 Date:   Thu, 23 Nov 2023 16:26:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Message-ID: <20231123152639.561231-2-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231123152639.561231-1-gregory.clement@bootlin.com>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <5992842.lOV4Wx5bFT@steina-w>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander,
+The code clearing BSS already use macro or use correct instruction
+depending if the CPU is 32 bits or 64 bits. However, a few
+instructions remained 32 bits only.
 
-On 23.11.23 16:11, Alexander Stein wrote:
-> Hello Heiko,
-> 
-> Am Donnerstag, 23. November 2023, 14:27:43 CET schrieb Heiko Schocher:
->> it is possible that fec1 is probed before fec0. On SoCs
->> with FEC_QUIRK_SINGLE_MDIO set (which means fec1 uses mii
->> from fec0) init of mii fails for fec1 when fec0 is not yet
->> probed, as fec0 setups mii bus. In this case fec_enet_mii_init
->> for fec1 returns with -ENODEV, and so fec1 never comes up.
->>
->> Return here with -EPROBE_DEFER so interface gets later
->> probed again.
->>
->> Found this on imx8qxp based board, using 2 ethernet interfaces,
->> and from time to time, fec1 interface came not up.
-> 
-> But FEC_QUIRK_SINGLE_MDIO is only set for imx28. How is this related to 
-> imx8qxp?
+By using the accurate MACRO, it is now possible to deal with memory
+address beyond 32 bits. As a side effect, when using 64bits processor,
+it also divides the loop number needed to clear the BSS by 2.
 
-Ah, yes ... customer uses NXP based kernel there is:
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-        /* board only enable one mii bus in default */
-        if (!of_get_property(np, "fsl,mii-exclusive", NULL))
-                fep->quirks |= FEC_QUIRK_SINGLE_MDIO;
-
-which is missing in mainline... nevertheless patch fixes a problem
-with boards having quirk FEC_QUIRK_SINGLE_MDIO set.
-
-> Will this also help for imx6ul when fec1 is almost always probed before fec0 
-> due to order of DT nodes?
-
-Yep, I think so...  do you have the chance to test such a setup?
-
-bye,
-Heiko
-> 
-> Best regards,
-> Alexander
-> 
->> Signed-off-by: Heiko Schocher <hs@denx.de>
->> ---
->>
->>  drivers/net/ethernet/freescale/fec_main.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/freescale/fec_main.c
->> b/drivers/net/ethernet/freescale/fec_main.c index
->> c3b7694a7485..d956f95e7a65 100644
->> --- a/drivers/net/ethernet/freescale/fec_main.c
->> +++ b/drivers/net/ethernet/freescale/fec_main.c
->> @@ -2445,7 +2445,7 @@ static int fec_enet_mii_init(struct platform_device
->> *pdev) mii_cnt++;
->>  			return 0;
->>  		}
->> -		return -ENOENT;
->> +		return -EPROBE_DEFER;
->>  	}
->>
->>  	bus_freq = 2500000; /* 2.5MHz by default */
-> 
-> 
-
+diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
+index 5795d0af1e1b2..d237a834b85ee 100644
+--- a/arch/mips/boot/compressed/head.S
++++ b/arch/mips/boot/compressed/head.S
+@@ -25,8 +25,8 @@
+ 	/* Clear BSS */
+ 	PTR_LA	a0, _edata
+ 	PTR_LA	a2, _end
+-1:	sw	zero, 0(a0)
+-	addiu	a0, a0, 4
++1:	PTR_S	zero, 0(a0)
++	PTR_ADDIU a0, a0, PTRSIZE
+ 	bne	a2, a0, 1b
+ 
+ 	PTR_LA	a0, (.heap)	     /* heap address */
 -- 
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+2.42.0
+
