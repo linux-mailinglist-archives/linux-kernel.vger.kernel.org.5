@@ -2,332 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F727F57E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 06:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9575D7F57E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 06:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344705AbjKWFtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 00:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S1344712AbjKWFuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 00:50:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjKWFtg (ORCPT
+        with ESMTP id S229994AbjKWFuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 00:49:36 -0500
-Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD18191
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 21:49:41 -0800 (PST)
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
- s=mx; t=1700718579; x=1700725779; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-Id: Date: Subject: Subject: Cc: To: To: From: From:
- Sender: Sender; bh=I8wBwaBN4IEu0DBz273a5ua+d1ZYV86s0JP4ZasTt0o=;
- b=ro/tmnjkQxJ3xy3n//Hrut05lvc06FjHPNBSGzBOAmILUYbdlAlFQi8G1jPxP/wjqY/BnqkvxquzohO7LPLTrhIoUHs1EtvtTbNdkczT2qTW4uJPCs8QrVDjQtM9Cv/PUZ6bxZBTWO8pXq59wXtEpxLkbQ2CdAGsGzgtxBQX2uYctF4pULopOmb7gW20ctb9etk/12YIfuJfAy4ehMz+txwM74HifmglZgnYeOTMcjp07BThsRPBxCXDUzDWy9tAw1eY262jO9dRmq6rsu6kW8hTYT/Z+SQfFCrjv2f9nHfmnIVccG8u/FqYD8c2nsM9g6yP57VrgBVHXpPKHQmpAg==
-X-Mailgun-Sending-Ip: 198.61.254.32
-X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
-Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 9691b5986cf9 with SMTP id
- 655ee7f3338167855b81ccf3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Nov 2023 05:49:39 GMT
-Sender: james@equiv.tech
-From:   James Seo <james@equiv.tech>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     James Seo <james@equiv.tech>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        Armin Wolf <W_Armin@gmx.de>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC v3] hwmon: (hp-wmi-sensors) Fix failure to load on EliteDesk 800 G6
-Date:   Wed, 22 Nov 2023 21:49:19 -0800
-Message-Id: <20231123054918.157098-1-james@equiv.tech>
+        Thu, 23 Nov 2023 00:50:10 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4AA60191;
+        Wed, 22 Nov 2023 21:50:16 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 519771042;
+        Wed, 22 Nov 2023 21:51:02 -0800 (PST)
+Received: from [10.163.39.193] (unknown [10.163.39.193])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B7683F6C4;
+        Wed, 22 Nov 2023 21:50:12 -0800 (PST)
+Message-ID: <0bcda96e-df9a-4342-af4e-e4485c33ff55@arm.com>
+Date:   Thu, 23 Nov 2023 11:20:10 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
+ counting threshold feature
+Content-Language: en-US
+To:     Namhyung Kim <namhyung@gmail.com>,
+        James Clark <james.clark@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231113112507.917107-1-james.clark@arm.com>
+ <20231113112507.917107-4-james.clark@arm.com>
+ <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,URI_TRY_3LD autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The EliteDesk 800 G6 stores a raw WMI string within the ACPI object in its
-BIOS corresponding to one instance of HPBIOS_PlatformEvents.Name. This is
-evidently a valid way of representing a WMI data item as far as the
-Microsoft ACPI-WMI mapper is concerned, but is preventing the driver from
-loading.
 
-This seems quite rare, but add support for such strings. Treating this as a
-quirk pretty much means adding that support anyway.
 
-Also clean up an oversight in update_numeric_sensor_from_wobj() in which
-the result of hp_wmi_strdup() was being used without error checking.
+On 11/21/23 03:01, Namhyung Kim wrote:
+> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
+>> Add documentation for the new Perf event open parameters and
+>> the threshold_max capability file.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
+>>  1 file changed, 56 insertions(+)
+>>
+>> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
+>> index 1f87b57c2332..36b8111a710d 100644
+>> --- a/Documentation/arch/arm64/perf.rst
+>> +++ b/Documentation/arch/arm64/perf.rst
+>> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
+>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
+>>  .. _tools/lib/perf/tests/test-evsel.c:
+>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+>> +
+>> +Event Counting Threshold
+>> +==========================================
+>> +
+>> +Overview
+>> +--------
+>> +
+>> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+>> +events whose count meets a specified threshold condition. For example if
+>> +threshold_compare is set to 2 ('Greater than or equal'), and the
+>> +threshold is set to 2, then the PMU counter will now only increment by
+>> +when an event would have previously incremented the PMU counter by 2 or
+>> +more on a single processor cycle.
+>> +
+>> +To increment by 1 after passing the threshold condition instead of the
+>> +number of events on that cycle, add the 'threshold_count' option to the
+>> +commandline.
+>> +
+>> +How-to
+>> +------
+>> +
+>> +The threshold, threshold_compare and threshold_count values can be
+>> +provided per event:
+>> +
+>> +.. code-block:: sh
+>> +
+>> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
+>> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
+> Can you please explain this a bit more?
+> 
+> I guess the first event counts stall_slot PMU if the event if it's
+> greater than or equal to 2.  And as threshold_count is not set,
+> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
 
-Reported-by: Lukasz Stelmach <l.stelmach@samsung.com>
-Closes: https://lore.kernel.org/linux-hwmon/7850a0bd-60e7-88f8-1d6c-0bb0e3234fdc@roeck-us.net/
-Tested-by: Lukasz Stelmach <l.stelmach@samsung.com>
-Signed-off-by: James Seo <james@equiv.tech>
----
+Hence without 'threshold_count' being set, the other two config requests
+will not have an effect, is that correct ?
 
-Changes v2->v3:
-* Fix checkpatch warnings
-  - Line break commit message differently (no non-whitespace changes)
-  - Use "unsigned int" instead of "unsigned"
-* Add Tested-by: from Lukasz Stelmach
+> 
+> OTOH, dtlb_walk will count 1 if it sees an event less than 10.
+> Is my understanding correct?
 
-Changes v1->v2:
-* Remove DMI-based workaround logic
-* Add full support for raw WMI strings
-  - Improve UTF-16 validation and conversion for the general case
-  - Support such strings if they occur in HPBIOS_BIOSEvent objects
-* Only use the result of hp_wmi_strdup() in update_numeric_sensor_from_wobj()
-  if the call succeeded
+'Equals' and 'Greater-than-or-equal' makes sense and are intuitive. Just
+wondering what will happen for 'Not-equal' and 'Less-than' - when would
+the counter count in such cases ?
 
-History:
-v2: https://lore.kernel.org/linux-hwmon/20231105192054.24833-1-james@equiv.tech/
-v1: https://lore.kernel.org/linux-hwmon/20231103181931.677796-1-james@equiv.tech/
-
----
-drivers/hwmon/hp-wmi-sensors.c | 127 ++++++++++++++++++++++++++++-----
- 1 file changed, 111 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/hwmon/hp-wmi-sensors.c b/drivers/hwmon/hp-wmi-sensors.c
-index 17ae62f88bbf..b5325d0e72b9 100644
---- a/drivers/hwmon/hp-wmi-sensors.c
-+++ b/drivers/hwmon/hp-wmi-sensors.c
-@@ -17,6 +17,8 @@
-  *     Available: https://github.com/linuxhw/ACPI
-  * [4] P. Rohár, "bmfdec - Decompile binary MOF file (BMF) from WMI buffer",
-  *     2017. [Online]. Available: https://github.com/pali/bmfdec
-+ * [5] Microsoft Corporation, "Driver-Defined WMI Data Items", 2017. [Online].
-+ *     Available: https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/driver-defined-wmi-data-items
-  */
- 
- #include <linux/acpi.h>
-@@ -24,6 +26,7 @@
- #include <linux/hwmon.h>
- #include <linux/jiffies.h>
- #include <linux/mutex.h>
-+#include <linux/nls.h>
- #include <linux/units.h>
- #include <linux/wmi.h>
- 
-@@ -395,6 +398,50 @@ struct hp_wmi_sensors {
- 	struct mutex lock;	/* Lock polling WMI and driver state changes. */
- };
- 
-+static bool is_raw_wmi_string(const u8 *pointer, u32 length)
-+{
-+	const u16 *ptr;
-+	u16 len;
-+
-+	/* WMI strings are length-prefixed UTF-16 [5]. */
-+	if (length <= sizeof(*ptr))
-+		return false;
-+
-+	length -= sizeof(*ptr);
-+	ptr = (const u16 *)pointer;
-+	len = *ptr;
-+
-+	return len <= length && !(len & 1);
-+}
-+
-+static char *convert_raw_wmi_string(const u8 *buf)
-+{
-+	const wchar_t *src;
-+	unsigned int cps;
-+	unsigned int len;
-+	char *dst;
-+	int i;
-+
-+	src = (const wchar_t *)buf;
-+
-+	/* Count UTF-16 code points. Exclude trailing null padding. */
-+	cps = *src / sizeof(*src);
-+	while (cps && !src[cps])
-+		cps--;
-+
-+	/* Each code point becomes up to 3 UTF-8 characters. */
-+	len = min(cps * 3, HP_WMI_MAX_STR_SIZE - 1);
-+
-+	dst = kmalloc((len + 1) * sizeof(*dst), GFP_KERNEL);
-+	if (!dst)
-+		return NULL;
-+
-+	i = utf16s_to_utf8s(++src, cps, UTF16_LITTLE_ENDIAN, dst, len);
-+	dst[i] = '\0';
-+
-+	return dst;
-+}
-+
- /* hp_wmi_strdup - devm_kstrdup, but length-limited */
- static char *hp_wmi_strdup(struct device *dev, const char *src)
- {
-@@ -412,6 +459,23 @@ static char *hp_wmi_strdup(struct device *dev, const char *src)
- 	return dst;
- }
- 
-+/* hp_wmi_wstrdup - hp_wmi_strdup, but for a raw WMI string */
-+static char *hp_wmi_wstrdup(struct device *dev, const u8 *buf)
-+{
-+	char *src;
-+	char *dst;
-+
-+	src = convert_raw_wmi_string(buf);
-+	if (!src)
-+		return NULL;
-+
-+	dst = hp_wmi_strdup(dev, strim(src));	/* Note: Copy is trimmed. */
-+
-+	kfree(src);
-+
-+	return dst;
-+}
-+
- /*
-  * hp_wmi_get_wobj - poll WMI for a WMI object instance
-  * @guid: WMI object GUID
-@@ -462,8 +526,14 @@ static int check_wobj(const union acpi_object *wobj,
- 	for (prop = 0; prop <= last_prop; prop++) {
- 		type = elements[prop].type;
- 		valid_type = property_map[prop];
--		if (type != valid_type)
-+		if (type != valid_type) {
-+			if (type == ACPI_TYPE_BUFFER &&
-+			    valid_type == ACPI_TYPE_STRING &&
-+			    is_raw_wmi_string(elements[prop].buffer.pointer,
-+					      elements[prop].buffer.length))
-+				continue;
- 			return -EINVAL;
-+		}
- 	}
- 
- 	return 0;
-@@ -480,7 +550,9 @@ static int extract_acpi_value(struct device *dev,
- 		break;
- 
- 	case ACPI_TYPE_STRING:
--		*out_string = hp_wmi_strdup(dev, strim(element->string.pointer));
-+		*out_string = element->type == ACPI_TYPE_BUFFER ?
-+			hp_wmi_wstrdup(dev, element->buffer.pointer) :
-+			hp_wmi_strdup(dev, strim(element->string.pointer));
- 		if (!*out_string)
- 			return -ENOMEM;
- 		break;
-@@ -861,7 +933,9 @@ update_numeric_sensor_from_wobj(struct device *dev,
- {
- 	const union acpi_object *elements;
- 	const union acpi_object *element;
--	const char *string;
-+	const char *new_string;
-+	char *trimmed;
-+	char *string;
- 	bool is_new;
- 	int offset;
- 	u8 size;
-@@ -885,11 +959,21 @@ update_numeric_sensor_from_wobj(struct device *dev,
- 	offset = is_new ? size - 1 : -2;
- 
- 	element = &elements[HP_WMI_PROPERTY_CURRENT_STATE + offset];
--	string = strim(element->string.pointer);
--
--	if (strcmp(string, nsensor->current_state)) {
--		devm_kfree(dev, nsensor->current_state);
--		nsensor->current_state = hp_wmi_strdup(dev, string);
-+	string = element->type == ACPI_TYPE_BUFFER ?
-+		convert_raw_wmi_string(element->buffer.pointer) :
-+		element->string.pointer;
-+
-+	if (string) {
-+		trimmed = strim(string);
-+		if (strcmp(trimmed, nsensor->current_state)) {
-+			new_string = hp_wmi_strdup(dev, trimmed);
-+			if (new_string) {
-+				devm_kfree(dev, nsensor->current_state);
-+				nsensor->current_state = new_string;
-+			}
-+		}
-+		if (element->type == ACPI_TYPE_BUFFER)
-+			kfree(string);
- 	}
- 
- 	/* Old variant: -2 (not -1) because it lacks the Size property. */
-@@ -996,11 +1080,15 @@ static int check_event_wobj(const union acpi_object *wobj)
- 			  HP_WMI_EVENT_PROPERTY_STATUS);
- }
- 
--static int populate_event_from_wobj(struct hp_wmi_event *event,
-+static int populate_event_from_wobj(struct device *dev,
-+				    struct hp_wmi_event *event,
- 				    union acpi_object *wobj)
- {
- 	int prop = HP_WMI_EVENT_PROPERTY_NAME;
- 	union acpi_object *element;
-+	acpi_object_type type;
-+	char *string;
-+	u32 value;
- 	int err;
- 
- 	err = check_event_wobj(wobj);
-@@ -1009,20 +1097,24 @@ static int populate_event_from_wobj(struct hp_wmi_event *event,
- 
- 	element = wobj->package.elements;
- 
--	/* Extracted strings are NOT device-managed copies. */
--
- 	for (; prop <= HP_WMI_EVENT_PROPERTY_CATEGORY; prop++, element++) {
-+		type = hp_wmi_event_property_map[prop];
-+
-+		err = extract_acpi_value(dev, element, type, &value, &string);
-+		if (err)
-+			return err;
-+
- 		switch (prop) {
- 		case HP_WMI_EVENT_PROPERTY_NAME:
--			event->name = strim(element->string.pointer);
-+			event->name = string;
- 			break;
- 
- 		case HP_WMI_EVENT_PROPERTY_DESCRIPTION:
--			event->description = strim(element->string.pointer);
-+			event->description = string;
- 			break;
- 
- 		case HP_WMI_EVENT_PROPERTY_CATEGORY:
--			event->category = element->integer.value;
-+			event->category = value;
- 			break;
- 
- 		default:
-@@ -1511,8 +1603,8 @@ static void hp_wmi_notify(u32 value, void *context)
- 	struct acpi_buffer out = { ACPI_ALLOCATE_BUFFER, NULL };
- 	struct hp_wmi_sensors *state = context;
- 	struct device *dev = &state->wdev->dev;
-+	struct hp_wmi_event event = {};
- 	struct hp_wmi_info *fan_info;
--	struct hp_wmi_event event;
- 	union acpi_object *wobj;
- 	acpi_status err;
- 	int event_type;
-@@ -1546,7 +1638,7 @@ static void hp_wmi_notify(u32 value, void *context)
- 
- 	wobj = out.pointer;
- 
--	err = populate_event_from_wobj(&event, wobj);
-+	err = populate_event_from_wobj(dev, &event, wobj);
- 	if (err) {
- 		dev_warn(dev, "Bad event data (ACPI type %d)\n", wobj->type);
- 		goto out_free_wobj;
-@@ -1577,6 +1669,9 @@ static void hp_wmi_notify(u32 value, void *context)
- out_free_wobj:
- 	kfree(wobj);
- 
-+	devm_kfree(dev, event.name);
-+	devm_kfree(dev, event.description);
-+
- out_unlock:
- 	mutex_unlock(&state->lock);
- }
-
-base-commit: c03cd01890c5e41138cc5709e37859bc917aab5d
--- 
-2.40.1
-
+  0: Not-equal
+  1: Equals
+  2: Greater-than-or-equal
+  3: Less-than
