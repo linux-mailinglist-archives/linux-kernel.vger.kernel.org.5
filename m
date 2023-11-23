@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E70C7F5D9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8B57F5DA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345023AbjKWLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:20:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S1345009AbjKWLVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345014AbjKWLUb (ORCPT
+        with ESMTP id S1345026AbjKWLU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:20:31 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96BD1BF
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:20:36 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28396255b81so621657a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:20:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1700738436; x=1701343236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cna4B9OkGYaAGZnmz7auaJoanPikLRaFUkJT1PNzdCg=;
-        b=UiMaSLy2jUmtlcZLLy/PgYN/k+XpFsV1tkwSFncyGjYr8bCBPwMuMtZ1/9c/mBZxK9
-         5EorwiG6ru/NpzWSM6KPvolIBPf1MCOE0OqdHY2HC9YGGMWBwTF8dbD7XrhOJM73cVAU
-         YTDhAvLTMwfTDVtaulg96oZHQ8YKydtr9E9fb5a848+8UWav7eaa0cXg8hJBjQHF31PH
-         rkYvuFmUK1OKjPNPa/2PmFMUMuf37pgkhu90Mfx5QcizTpmhFZGo1d1taWhZEVFotDPb
-         7v3vV1WFiAeSCmYuLtQBLXrdohRp3FFeC88ac72NyowDpJI+ZFy2govyfjQ2OHARq5pf
-         fAVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700738436; x=1701343236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cna4B9OkGYaAGZnmz7auaJoanPikLRaFUkJT1PNzdCg=;
-        b=XLoKsigHHaM8KEIGn/eicBND9Ft2jfeCSi+QufvcQYRNtR52sfByTw9h5VfJwVCNfo
-         l1lsjnSnBJjtlPccE34/kcLykPS3KTQvty61iE/u6bB8BtHOJZz+QseyXMGt7q7Vel9H
-         9o1aR/0RN1IV9TzmE8g0rVYyYADaSt3ZxezSNC74J0piHSbQ+HSOyE27zi9tFk6AhGl5
-         vzO3mTyLVmkiTPpi7JCgUijQZUGhYZ4tPwdOdSHgPA/4escK5qzNdfVu6yd50JM09AhC
-         yN8jH0fjaRzm7/McPo9mHyiauVdHPIkbokmk805X3v2KcjNRNt9DtDseTHnujSKwfDl2
-         L5Lg==
-X-Gm-Message-State: AOJu0YwZ40JBX+tc49t5bppiQRlnTnPZL26oqdal8QdiKg/BGtmYc3gD
-        yHFwJOBM1JqDcuawIWLd5YkEYWMJ4SstZcA72fxJGw==
-X-Google-Smtp-Source: AGHT+IHpAi31AQJzfI++IcN15h2i2fjElwAR2+A2cq4nCMgOSMsdXf8at6TXQhpec1XOEn9ZPz1TGslnfGloZZAtd7g=
-X-Received: by 2002:a17:90b:3014:b0:27d:dc9:c67d with SMTP id
- hg20-20020a17090b301400b0027d0dc9c67dmr4905828pjb.36.1700738436187; Thu, 23
- Nov 2023 03:20:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20231120135041.15259-1-ansuelsmth@gmail.com> <20231120135041.15259-13-ansuelsmth@gmail.com>
- <6593e6ae-3ae7-49e2-a6e9-c37f5a887fe3@lunn.ch>
-In-Reply-To: <6593e6ae-3ae7-49e2-a6e9-c37f5a887fe3@lunn.ch>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Thu, 23 Nov 2023 12:20:24 +0100
-Message-ID: <CA+HBbNFjmwtfJAON_BX9c9hqcBTsReMPm9ajPjFF_2z+LbARnw@mail.gmail.com>
-Subject: Re: [net-next RFC PATCH 12/14] dt-bindings: net: Document Qcom
- QCA807x PHY package
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Thu, 23 Nov 2023 06:20:57 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC01D5E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:21:02 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r67lO-0002zs-FS; Thu, 23 Nov 2023 12:20:54 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r67lM-00B1jJ-Ve; Thu, 23 Nov 2023 12:20:52 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r67lM-002zWv-2w;
+        Thu, 23 Nov 2023 12:20:52 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
         Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
         Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com
+Subject: [PATCH net-next v6 0/3] Fine-Tune Flow Control and Speed Configurations in Microchip KSZ8xxx DSA Driver
+Date:   Thu, 23 Nov 2023 12:20:48 +0100
+Message-Id: <20231123112051.713142-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 3:15=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > +  They feature 2 SerDes, one for PSGMII or QSGMII connection with
-> > +  MAC, while second one is SGMII for connection to MAC or fiber.
->
-> Can you connect 1/5 of the PSGMII SERDES to the SGMII SERDES? So
-> making use of the PHY as a media converter to connect to an SFP cage?
-> I assume the SGMII serdes can also do 1000BaseX?
->
-> How do you describe what the SGMII SERDES is connected to?
+changes v7:
+- move pause controls out of duplex scope
 
-Hi Andrew,
-I think that the description is confusing.
-QCA807x supports 3 different modes:
-1. PSGMII (5 copper ports)
-2. PSGMII (4 copper ports + 1 combo port)
-3. QSGMII+SGMII
+changes v5:
+- add Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+- use regs[S_BROADCAST_CTRL] instead of REG_SW_CTRL_4 as requested.
+- s/synchronous/symmetric/
+- make phylink_mac_link_up() not optional, as requested 
 
-So, in case option 2 is selected then the combo port can also be used for
-1000Base-X and 100Base-FX modules or copper and it will autodetect the
-exact media.
-This is supported via the SFP op-s and I have been using it without issues
-for a while.
+changes v4:
+- instead of downstream/upstream use CPU-port and PHY-port
+- adjust comments
+- minor fixes
 
-I have not tested option 3 in combination with SFP to the copper
-module so I cant
-say whether that works.
-From what I can gather from the typical usage examples in the
-datasheet, this QSMII+SGMII
-mode is basically intended as a backward compatibility thing as only
-QCA SoC-s have PSGMII
-support so that you could still use SoC-s with QSGMII and SGMII support onl=
-y.
+changes v3:
+- remove half duplex flow control configuration
+- add comments
+- s/stram/stream
 
-So there is no way to control the SerDes-es individually, only the
-global mode can be changed via
-the Chip configuration register in the Combo port.
+changes v2:
+- split the patch to upstream and downstream part
+- add comments
+- fix downstream register offset
+- fix CPU configuration
 
-You can see the block diagram of this PHY in this public PDF on page 2[1].
+This patch set focuses on enhancing the configurability of flow
+control, speed, and duplex settings in the Microchip KSZ8xxx DSA driver.
 
-[1] https://content.codico.com/fileadmin/media/download/datasheets/qualcomm=
-/qualcomm_qca8075.pdf
+The first patch allows more granular control over the CPU port's flow
+control, speed, and duplex settings. The second patch introduces a
+method for port configurations for port with integrated PHYs, primarily
+concerning flow control based on duplex mode.
 
->
->   Andrew
->
+Oleksij Rempel (3):
+  net: dsa: microchip: ksz8: Make flow control, speed, and duplex on CPU
+    port configurable
+  net: dsa: microchip: ksz8: Add function to configure ports with
+    integrated PHYs
+  net: dsa: microchip: make phylink_mac_link_up() not optional
 
+ drivers/net/dsa/microchip/ksz8.h       |   4 +
+ drivers/net/dsa/microchip/ksz8795.c    | 127 ++++++++++++++++++++++++-
+ drivers/net/dsa/microchip/ksz_common.c |   7 +-
+ 3 files changed, 132 insertions(+), 6 deletions(-)
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+-- 
+2.39.2
+
