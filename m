@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D190C7F60C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FE07F60C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345613AbjKWNtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S1345617AbjKWNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345606AbjKWNtp (ORCPT
+        with ESMTP id S1345594AbjKWNuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:49:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A42BA
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:49:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D77C433C8;
-        Thu, 23 Nov 2023 13:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700747391;
-        bh=Ran+HOMzMulZc35R1BVI8jtdePgjE69xnnBf17aaGis=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dfs5dufT0A6i43Pq8Ams02vvkPNKqgEAwDU8PicNGDsRwqNvJU/WmQaQgLBcU2Pqz
-         +qP+JikYVTz8YFKtsGdE0CR6CYmsEntuHy8jCTCRsOGLE1WfYJcpuZbg4qoczBAAln
-         QymN3/qmMpw1liIoINoi1iUtHyqAHaWTI0rZwshr3cC1Y6huoTg7sPJg6UicQKJ+iG
-         Y5b4YmlcpH1ciq2nCl5/z7DSjQUT1iMhPO0M4klutAI8syKBOSmWLca87JtZfgFqHs
-         2NA4eFEVpRh3/h50P7nK1XkzGySPdVXCNezLny/gOePAPkeWmuqualXIA6iN8VMpEu
-         /ClSGPDj3ZX+w==
-From:   Michael Walle <mwalle@kernel.org>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michael Walle <mwalle@kernel.org>
-Subject: [PATCH] dt-bindings: display: mediatek: dsi: remove Xinlei's mail
-Date:   Thu, 23 Nov 2023 14:49:27 +0100
-Message-Id: <20231123134927.2034024-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Thu, 23 Nov 2023 08:50:20 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE634BA;
+        Thu, 23 Nov 2023 05:50:26 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cd2f1a198cso7138267b3.0;
+        Thu, 23 Nov 2023 05:50:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700747426; x=1701352226; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6HDmUWHoV/d+5kwt+BMpRMCcQ4EU+NPmBrVnqKEpBkk=;
+        b=fCsbMueaAqe4vmewoSW6onWlFPkdA2U7h8HtTHIvasxQCHpbOH41yE81KU0z+UTwfT
+         Q6v6Ixzn3SnDphaewcWX/b5CVS7iRGkd4+PgbrYMFTBp4I1i2TLcIghXOQobf4igitVD
+         VsjKcv3Ez9P3JuWLtAJiPNLOd5uuKBFFKjPNt3h0QEsCZqkDuhqdrAeexZT7iUKtVxuC
+         bJxWmaiuddbgNd8Mmc/r8j/ujlPyDLwj56ItH5UOQmklq4wcaDDlUV4FiTN+p1cYLcVw
+         ylw68GL8/87oG0ke43GUgNufcMHWrue4CFFbJ9Fe4pYALzNtw9DA42Cfb/6VI9CSsi7i
+         g3EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700747426; x=1701352226;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6HDmUWHoV/d+5kwt+BMpRMCcQ4EU+NPmBrVnqKEpBkk=;
+        b=Ly75E3m+s6TILhOAXuM8xDQflO2gP111O635uanFSq/gn92Ge3KSyrCqoH4JZ63p9e
+         6C92VpD6WL/+R+PTQKIfiT6bPpvbQ+qhVjS4mgGW8wa709RMu6UE2W+xi/RWpj1qKD+r
+         oM+viHAxovI7+5neqCCo1qRWZF8cECJYuwY+6PlHpCXM59/kT0AhkhhhRIdopVqIMBcC
+         OfaPonhaa9VChjd+7vGntIpVLh1w+/OofOJFhyjaV/jDkw+EMqa9AhVseTxR+S9kgMLF
+         RU2jzrELfjqLo+VKF+zGEafYghsk5F+DQWKCiSvUDk0QWT8LUxV5YpgOZNhIvqpsDumT
+         iryQ==
+X-Gm-Message-State: AOJu0Yyk9sfRcDKhWwFPBh6y0KJ9GklvwFD+X9mzGYsg2bu5RcikNWJQ
+        rvOO8fWPu3Ab2tF0vREBXp1G/Z9D0RbqK4ijqTc=
+X-Google-Smtp-Source: AGHT+IGZwjwRkgSJ7EnlxLUgRSgKWDT8jC/rPzRQg0Kq3WiN+CVcYva0UFJf/nOdcGZASDUiq8QSYhmkdlzne0lzNs4=
+X-Received: by 2002:a25:3409:0:b0:da0:3535:41f4 with SMTP id
+ b9-20020a253409000000b00da0353541f4mr5712007yba.7.1700747426043; Thu, 23 Nov
+ 2023 05:50:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121151733.2015384-1-tmaimon77@gmail.com> <20231121151733.2015384-3-tmaimon77@gmail.com>
+ <6aeb28f5-04c2-4723-9da2-d168025c307c@lunn.ch> <CAP6Zq1j0kyrg+uxkXH-HYqHz0Z4NwWRUGzprius=BPC9+WfKFQ@mail.gmail.com>
+ <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
+In-Reply-To: <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Thu, 23 Nov 2023 15:50:14 +0200
+Message-ID: <CAP6Zq1jw9uLP_FQGR8=p3Y2NTP6XcNtzkJQ0dm3+xVNE1SpsVg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     alexandre.torgue@foss.st.com, tali.perry1@gmail.com,
+        edumazet@google.com, krzysztof.kozlowski+dt@linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com, benjaminfair@google.com,
+        openbmc@lists.ozlabs.org, joabreu@synopsys.com, joel@jms.id.au,
+        devicetree@vger.kernel.org, j.neuschaefer@gmx.net,
+        robh+dt@kernel.org, peppe.cavallaro@st.com,
+        linux-arm-kernel@lists.infradead.org, avifishman70@gmail.com,
+        venture@google.com, linux-kernel@vger.kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xinlei Lee's mail is bouncing:
+Hi Andrew,
 
-<xinlei.lee@mediatek.com>: host mailgw02.mediatek.com[216.200.240.185] said:
-    550 Relaying mail to xinlei.lee@mediatek.com is not allowed (in reply to
-    RCPT TO command)
+On Wed, 22 Nov 2023 at 20:45, Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Wed, Nov 22, 2023 at 07:50:57PM +0200, Tomer Maimon wrote:
+> > Hi Andrew,
+> >
+> > Thanks for your comments
+> >
+> > On Tue, 21 Nov 2023 at 18:42, Andrew Lunn <andrew@lunn.ch> wrote:
+> > >
+> > > > +void npcm_dwmac_pcs_init(struct npcm_dwmac *dwmac, struct device *dev,
+> > > > +                      struct plat_stmmacenet_data *plat_dat)
+> > > > +{
+> > > > +     u16 val;
+> > > > +
+> > > > +     iowrite16((u16)(SR_MII_CTRL >> 9), dwmac->reg + IND_AC_BA_REG);
+> > > > +     val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
+> > > > +     val |= PCS_RST;
+> > > > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
+> > > > +
+> > > > +     while (val & PCS_RST)
+> > > > +             val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
+> > > > +
+> > > > +     val &= ~(PCS_AN_ENABLE);
+> > > > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
+> > > > +}
+> > >
+> > > Is this a licensed PCS implementation? Or home grown? If its been
+> > > licensed from somebody, it maybe should live in driver/net/pcs, so
+> > > others can reuse it when they license the same core.
+>
+> > we are using DWC PCS, I don't see support for DWC PCS and I am not
+> > sure it is supposed to be supported at /drivers/net/pcs
+>
+> I've not followed the naming used by Synopsys. Is DWC PCS the same as
+> XPCS? Does Synopsys have multiple PCS implementations?
+>
+> > I do see a patch set to support DWC PCS but I don't think it answers my needs
+> > https://patchwork.ozlabs.org/project/netdev/patch/1559674736-2190-3-git-send-email-weifeng.voon@intel.com/
+>
+> I _think_ this patch eventually got turned into
+> driver/net/pcs/pcs-xpcs.c
+>
+> What exactly does it not do for you?
+Thanks for pointing me to Synopsys (DWC) PCS in pcs-xpcs.c I need to
+check if the driver follows all our SGMII needs
+>
+>      Andrew
 
-Remove it.
+Best regards,
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
- .../devicetree/bindings/display/mediatek/mediatek,dsi.yaml       | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.yaml
-index 4a7a9ff21996..8611319bed2e 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.yaml
-@@ -10,7 +10,6 @@ maintainers:
-   - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-   - Philipp Zabel <p.zabel@pengutronix.de>
-   - Jitao Shi <jitao.shi@mediatek.com>
--  - Xinlei Lee <xinlei.lee@mediatek.com>
- 
- description: |
-   The MediaTek DSI function block is a sink of the display subsystem and can
--- 
-2.39.2
-
+Tomer
