@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7E67F63B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC7B7F63B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjKWQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        id S229868AbjKWQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjKWQNy (ORCPT
+        with ESMTP id S229526AbjKWQOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:13:54 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE3FD64;
-        Thu, 23 Nov 2023 08:14:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=dBjA4zTKyiFFHKGNIIV3o3WzlHqH9tPy3OMPPVwLuyA=; b=5UBcdMKG8/sm7BB+rID1GoAq/v
-        PdbwNGBEJZ8P2rz/ThE5OTIgzsp1/1tKnk8W8x1X6kX+/uyI41fXQZ4tS0Wvfks+mXgkSQ+lk/8EJ
-        aTyLG4AfP7Cqkdxi4AvuQVWFkhqnWAbCkD+6Oc0/ec3aBP5n8wNn8gzLfM6Jlep4g1a0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6CKs-0010hr-Qn; Thu, 23 Nov 2023 17:13:50 +0100
-Date:   Thu, 23 Nov 2023 17:13:50 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH RFC] net: dsa: mv88e6xxx: Support LED control
-Message-ID: <c8c821f8-e170-44b3-a3f9-207cf7cb70e2@lunn.ch>
-References: <20231123-mv88e6xxx-leds-v1-1-3c379b3d23fb@linaro.org>
+        Thu, 23 Nov 2023 11:14:31 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C1019E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:14:37 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5ac376d311aso10106377b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:14:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700756077; x=1701360877; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ipzMNGrGtolaTuN+LIIgKEncct0aftDF2s8V+J8A68E=;
+        b=TB1au32u8m8eCO3UzV/gibdFPsdh5WsVOoeM3EqADr21c22opVoMNQkCvOooM127Wl
+         G2PJ0otm4EnQfy67H383gMAr32cNWvbLl/3MRk4APIVR1FMIIHaW1kFVbtM/ZcUXv/ly
+         h9SYLETXEGUx6WsYR0JhLnky5U+FlS1h6cyS6bEHtoQGxrqPxukBk44oWX59lQw1Bt7I
+         nrnZ++FSyM8TCdYoM3u0bBFrekieYqQ7RlbejqgHKprziT3+EBV5YAecmZndOhXeZu1m
+         xxMRujogWdPBWjC9Zjjale10DjBU9NtADu1hE39BWJkrOc/ioNJsXoEQ4wWbXu0lp/C6
+         Y4gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700756077; x=1701360877;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ipzMNGrGtolaTuN+LIIgKEncct0aftDF2s8V+J8A68E=;
+        b=k7DquqHuR9zxD0x4zfxQhZW33ZbxD6mmvLCDJrve0Y2SCCHHvurJYLqPtS5eUGiEel
+         hZbL9/wAbjgGXNGNhnkt2pTHcq8HZDy2J6tXV5AIJeinWAo+aP7ods4qo5bzMXBrdPAv
+         BQ6Md5Q1u7kae+L5WixJgKRobnvKhT7C4mPZP854MFLxAvNb2lz8PxnwU/KFoMthIERc
+         HFG/zG90sJG7/AOt4TAzynLrtJyXz7niAaEh5Dj1bzE/gGQ8nxGxskU3MQPOJt7O5b0Z
+         6parilBSukMPMDOCe8bAYeTQ7fgB3XQqGsP6Fp39XPinemUpdE/IBfO9PdLvlkRxdrF6
+         OVTA==
+X-Gm-Message-State: AOJu0YyKsoPU6Yxpqg8k71gZLHf2M0MHS29msYpf4uxGSF6UgJ5x4fut
+        6cspkh000QdXSdv/n3zxDD9IoF4LBPu91vh+Umy50g==
+X-Google-Smtp-Source: AGHT+IGVXCCNObF5Fssf2rOst5kdMHeHaWlMqNi98aNmC9WRf3QJ62k48s/V/HjbQ+uLlCBO8r4oX3qbTumAUwJj8zw=
+X-Received: by 2002:a05:690c:2891:b0:5cd:6004:3549 with SMTP id
+ ee17-20020a05690c289100b005cd60043549mr1455172ywb.27.1700756076780; Thu, 23
+ Nov 2023 08:14:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123-mv88e6xxx-leds-v1-1-3c379b3d23fb@linaro.org>
+References: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com> <20231123073901.meb7p4yzueg2lkou@vireshk-i7>
+In-Reply-To: <20231123073901.meb7p4yzueg2lkou@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Nov 2023 17:14:00 +0100
+Message-ID: <CAPDyKFrst+j89nPsrfAmkzGBLAwZ86WWQ_agnd6MHCfR+7FeFw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] cpufreq: qcom-nvmem: Fix power domain scaling
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,45 +77,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This DT config is not yet configuring everything: the netdev
-> default trigger is assigned by the hw acceleration callbacks are
-> not called, and there is no way to set the netdev sub-trigger
-> type from the device tree, such as if you want a gigabit link
-> indicator. This has to be done from userspace at this point.
+On Thu, 23 Nov 2023 at 08:39, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 14-11-23, 11:07, Stephan Gerhold wrote:
+> > The power domain scaling setup for QCS404 and MSM8909 in
+> > cpufreq-com-nvmem does not work correctly at the moment because the
+> > genpd core ignores all the performance state votes that are specified in
+> > the CPU OPP table. This happens because nothing in the driver makes the
+> > genpd core aware that the power domains are actively being consumed by
+> > the CPU.
+> >
+> > Fix this by marking the devices as runtime active. Also mark the devices
+> > to be in the "awake path" during system suspend so that performance
+> > state votes necessary for the CPU are preserved during system suspend.
+> >
+> > While all the patches in this series are needed for full functionality,
+> > the cpufreq and pmdomain patches can be merged independently. There is
+> > no compile-time dependency between those two.
+> >
+> > Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> > ---
+> > Changes in v3:
+> > - Drop patches with MSM8909 definitions that were applied already
+> > - Add extra patch to fix system suspend properly by using
+> >   device_set_awake_path() instead of dev_pm_syscore_device()
+> > - Set GENPD_FLAG_ACTIVE_WAKEUP for rpmpd so that performance state votes
+> >   needed by the CPU are preserved during suspend
+> > - Link to v2: https://lore.kernel.org/r/20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com
+>
+> Applied. Thanks.
+>
+> I picked the pmdomain patch too, lemme know if that needs to go via
+> some other tree.
 
-Yes, part of this is a known problem, and somewhere i have some code i
-was working on to fix some of these issues.
+Usually I should pick the pmdomain patches. Although, I thought it may
+be better to keep this series together.
 
-What i would really like to see happen is that the DSA core handles
-the registration of the LEDs, similar to how phylib does. The DT
-binding should be identical for all DSA devices, so there is no need
-for each driver to do its own parsing.
+Assuming you are going to send these as fixes for 6.7-rc[n]? In that
+case, I can just rebase my tree on a later rc if I find any problems.
 
-There are some WIP patches at
-
-https://github.com/lunn/linux.git leds-offload-support-reduced-auto-netdev
-
-which implement this. Feel free to make use of them.
-
-> +/* The following is a lookup table to check what rules we can support on a
-> + * certain LED given restrictions such as that some rules only work with fiber
-> + * (SFP) connections and some blink on activity by default.
-> + */
-> +#define MV88E6XXX_PORTS_0_3 (BIT(0)|BIT(1)|BIT(2)|BIT(3))
-> +#define MV88E6XXX_PORTS_4_5 (BIT(4)|BIT(5))
-> +#define MV88E6XXX_PORT_4 BIT(4)
-> +#define MV88E6XXX_PORT_5 BIT(5)
-> +
-> +/* Entries are listed in selector order */
-> +static const struct mv88e6xxx_led_hwconfig mv88e6xxx_led_hwconfigs[] = {
-
-You need to be careful with naming. These are probably specific to the
-6352. Different switches probably have different capabilities. So it
-would be good to have the names reflect the switch family they are
-valid for.
-
-When we come to add support for other switch families, i wounder how
-tables like this scale. Is there some things which can be shared, if
-we break the table up? I need to check the data sheets.
-
-	Andrew
+Kind regards
+Uffe
