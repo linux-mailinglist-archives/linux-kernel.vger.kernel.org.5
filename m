@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E9F7F60BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F30C7F60C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345598AbjKWNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        id S1345609AbjKWNtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345529AbjKWNst (ORCPT
+        with ESMTP id S1345592AbjKWNtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:48:49 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BE91B2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:48:55 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507a5f2193bso940286e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:48:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1700747334; x=1701352134; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wYJ9RINpWO/etmrdmn1FP6FlQ9EPAx5C4AtYkJeamEI=;
-        b=cuNGAaXJmWlRWqjJena6EFfVjKGaTvWz50yhLoPjEGVBOVDyrKuDtQAO2HT57j7tHQ
-         KnbtiC8F+y86KMXPGZ5Vz6Eoiee/j0izmlHp/DrfhkIZt/C+oCqtBUnsyWaiazNB7vaB
-         GDhgUMMzUIG+wmW+QS0seAE97+h3JBUuvBJP0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700747334; x=1701352134;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYJ9RINpWO/etmrdmn1FP6FlQ9EPAx5C4AtYkJeamEI=;
-        b=Thltvn/uqedt7S8L4bMqv3f3s8vemJU8tXJY52lOMHse4FpOKEFdL8mLEzkedZkRIl
-         tT8VS0Ya15eBV1MnHMZIoY4VbVUm20gyVsbmB/yKwHSeqz9CCTU2aWt4cCzM3235DTI+
-         gM9/C7903ohQ6DwlL6trLBIerj4SRjfWCPPfXFNMqKeZfJVIHC3W4x4EdJwG98Xkqn70
-         vaq4aihFqyZXFRyoZJwx7cT9vBRiAEZRUAoVdTlUFQohrmOR0Y5/NZsd8WgJs0rb/yCU
-         5PV0PmtqyN9sXUSTxftXG1mpzecxwLuqK0PCi/5MW6CwQ0DmEMXTmKL/kIAADjj1AzOd
-         heVw==
-X-Gm-Message-State: AOJu0Yzxf3T4LFgD5Jzs+vOTQ23DBG5RJ3O208NH9HOG1B8pLhMsiU9B
-        961mFDjIuh0q+8etSekwa6tucA==
-X-Google-Smtp-Source: AGHT+IG4CVoPRUAn77ky2ffnCHCPrIVvxiwyxMrF5VOgYS9HaFefUSItqzrdzQkf09aJ01Bo2N1g3g==
-X-Received: by 2002:a19:7512:0:b0:50a:a31c:39b1 with SMTP id y18-20020a197512000000b0050aa31c39b1mr865785lfe.9.1700747333878;
-        Thu, 23 Nov 2023 05:48:53 -0800 (PST)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id t6-20020a056512068600b005094486b705sm199933lfe.16.2023.11.23.05.48.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 05:48:53 -0800 (PST)
-Message-ID: <b8df5f0c-a3cd-4cad-b1c6-db89686464fc@rasmusvillemoes.dk>
-Date:   Thu, 23 Nov 2023 14:48:52 +0100
+        Thu, 23 Nov 2023 08:49:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D931B2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700747368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sxe/WLsh7nIXyyUO9oSfkk7wRCeEdhack6GYCW6HjJ0=;
+        b=d6RQLGwEBO/KlAePUon008cDe56jMQPKOtWWtyXUJ673ChcM/qmSsv3Z5nQn0ONU9MbXoe
+        rDu3IsqLJtbe4HBE6youQ+cF7LU0s8BIt7UboDOpa3TWjsShYbybjjiRTTHnqUICNaJ+Z1
+        GIWdfKK+tmyYOFrjJLn1mLoviv13VS8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-679-01FaU-9lNxS8bxXlt4ljHw-1; Thu,
+ 23 Nov 2023 08:49:25 -0500
+X-MC-Unique: 01FaU-9lNxS8bxXlt4ljHw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AEF9428004ED;
+        Thu, 23 Nov 2023 13:49:24 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0906B1121306;
+        Thu, 23 Nov 2023 13:49:23 +0000 (UTC)
+Date:   Thu, 23 Nov 2023 21:49:20 +0800
+From:   "bhe@redhat.com" <bhe@redhat.com>
+To:     "Liu, Yujie" <yujie.liu@intel.com>
+Cc:     lkp <lkp@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
+Message-ID: <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
+References: <20231114153253.241262-3-bhe@redhat.com>
+ <202311160431.BXPc7NO9-lkp@intel.com>
+ <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
+ <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
+ <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
- binding
-Content-Language: en-US, da
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Peter Rosin <peda@axentia.se>
-References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
- <20231120151056.148450-2-linux@rasmusvillemoes.dk>
- <20231122145344.GA18949@wunner.de>
- <e731c0a9-7a5c-41c3-87aa-d6937b99d01a@rasmusvillemoes.dk>
- <20231123103802.GA30056@wunner.de>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <20231123103802.GA30056@wunner.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 11.38, Lukas Wunner wrote:
-> On Thu, Nov 23, 2023 at 11:07:16AM +0100, Rasmus Villemoes wrote:
->> On 22/11/2023 15.53, Lukas Wunner wrote:
->>> But if that patch gets accepted, we'd have *three* different modes:
->>> RS-232, RS-485, RS-422.  A single GPIO seems insufficient to handle that.
->>> You'd need at least two GPIOs.
->>
->> I don't see Crescent introducing any new gpio that needs to be handled.
->> In fact, I can't even see why from the perspective of the software that
->> rs422 isn't just rs232; there's no transmit enable pin that needs to be
->> handled. But maybe the uart driver does something different in rs422
->> mode; I assume he must have some update of some driver, since otherwise
->> the new rs422 bit should be rejected by the core. So I can't really see
->> the whole picture of that rs422 story.
+On 11/17/23 at 10:01pm, Baoquan He wrote:
+> On 11/17/23 at 09:37am, Liu, Yujie wrote:
+> > Hi Baoquan,
+> > 
+> > On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
+> > > Hi,
+> > > 
+> > > On 11/16/23 at 05:04am, kernel test robot wrote:
+> > > > Hi Baoquan,
+> > > > 
+> > > > kernel test robot noticed the following build errors:
+> > > > 
+> > > > [auto build test ERROR on arm64/for-next/core]
+> > > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
+> > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > > And when submitting patch, we suggest to use '--base' as documented in
+> > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > > 
+> > > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
+> > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> > > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
+> > > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
+> > > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
+> > > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
+> > > > 
+> > > 
+> > > Thanks for reporting.
+> > > 
+> > > I met below failure when following the steps of provided reproducer.
+> > > Could anyone help check what's wrong with that?
+> > 
+> > Sorry this seems to be a bug in the reproducer. Could you please change
+> > the compiler parameter to "COMPILER=clang-16" and rerun the command? We
+> > will fix the issue ASAP.
+
+Any update for the reproducer? I would like to post v2 with the fix. I
+doubt it's the same issue as another report on this patch, while not
+quite sure.
+
 > 
-> The question is, could we conceivably have the need to support
-> switching between the three modes RS-232, RS-485, RS-422.
-> If yes, then the GPIO mux interface should probably allow for that.
+> Here you are. Thanks for your quick response.
+> ------------------------------
+> [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> Compiler will be installed in /root/0day
+> lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
+> /root/linux                                                                             
+> tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
+> PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+> make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
+> make[1]: Entering directory '/root/linux/build_dir'
+>   GEN     Makefile
+>   HOSTCC  scripts/basic/fixdep
+>   HOSTCC  scripts/kconfig/conf.o
+>   HOSTCC  scripts/kconfig/confdata.o
+>   HOSTCC  scripts/kconfig/expr.o
+>   HOSTCC  scripts/kconfig/lexer.lex.o
+>   HOSTCC  scripts/kconfig/menu.o
+>   HOSTCC  scripts/kconfig/parser.tab.o
+>   HOSTCC  scripts/kconfig/preprocess.o
+>   HOSTCC  scripts/kconfig/symbol.o
+>   HOSTCC  scripts/kconfig/util.o
+>   HOSTLD  scripts/kconfig/conf
+> #
+> # configuration written to .config
+> #
+> make[1]: Leaving directory '/root/linux/build_dir'
 > 
-> As a case in point, the Siemens IOT 2040 has two serial ports
-> which can be set to either of those three modes.  The signals
-> are routed to the same D-sub socket, but the pins used are
-> different.  See page 46 and 47 of this document:
+> > 
+> > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> > > Compiler will be installed in /root/0day
+> > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
+> > > get1: /pub/tools/llvm/files/: files/: Is a directory
+> > > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
+> > > clang crosstool install failed
+> > > Install clang compiler failed
+> > > setup_crosstool failed
+> > 
+> > 
 > 
-> https://cache.industry.siemens.com/dl/files/658/109741658/att_899623/v1/iot2000_operating_instructions_enUS_en-US.pdf
-> 
-> The driver for this product is 8250_exar.c.  It's an Intel-based
-> product, so no devicetree, but it shows that such use cases exist.
-
-OK. I did look at the mux-controller/mux-consumer bindings, but couldn't
-really make heads or tails of it, and there aren't a whole lot of
-examples in-tree. Also, the C API seems ... not quite what is needed
-here. I realize that's not really anything to do with the best way to
-describe the hardware, but that, plus the fact that the serial core
-already handles a number of gpios controlling circuitry related to
-rs485, was what made me go for one extra gpio.
-
-How would a mux-consumer description look?
-
-  mux-states = <&mux 0>, <&mux 1>;
-  mux-state-names = "rs485", "rs232";
-
-or should that be mux-controls? Would that be enough so that we're sure
-that if and when a rs422 state is needed that could easily be
-represented here?
-
-Now implementation-wise, there's the complication that switching the mux
-to/from rs485 mode must be done after/before the driver's ->rs485_config
-is called, to avoid the transceiver temporarily being activated (thus
-blocking/disturbing other traffic). That plus the need to mux_*_deselect
-the old mode means the consumer (serial core in this case) ends up with
-quite a lot of bookkeeping, and even more so taking error path into
-consideration.
-
-Rasmus
 
