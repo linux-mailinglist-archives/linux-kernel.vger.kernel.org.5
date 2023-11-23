@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03A17F5EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381467F5EF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345283AbjKWMWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S1345290AbjKWMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:23:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345255AbjKWMWe (ORCPT
+        with ESMTP id S1345255AbjKWMXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:22:34 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B051BE;
-        Thu, 23 Nov 2023 04:22:39 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id B520561E5FE04;
-        Thu, 23 Nov 2023 13:22:16 +0100 (CET)
-Message-ID: <6288389c-59cb-4eb4-bbe6-163413db7b7e@molgen.mpg.de>
-Date:   Thu, 23 Nov 2023 13:22:14 +0100
+        Thu, 23 Nov 2023 07:23:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEBED40
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700742201; x=1732278201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=QC7cpid/5csa3GQXLuq8gqKTos0lZQprxC+qxrXogYA=;
+  b=m0sBHxTXjD1VRSIsvCDrIO4L428KEM39HsixMFqZNzJMRP9q+oBqS1E0
+   cQMaZ0bkb+ehrPSyhVBLBtdlq7owr+5K0dXeGdaX6Y4cBasgiPIbVRTxZ
+   RVHFU0RjW2tH+x+jog+n4GEX1TZQypRCXR0RLwdnxhkEMnPqaRAq+As5N
+   oQcMQp9Rh7QzFbNtLzOEuqINOU/TuLMfLKaLvxtMr3g4j5ALbSWDqOHSI
+   P4aaba828T+oYDKjpQqPWHyDP42ZVdqJM7iiBMsfKK/+48rY2DiHeSoWD
+   Q99dOV023t7vFf7bqw+tBoZPN5i2VCaE8U0ohszaMBqudFtLqKhf8CY+5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5460799"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="5460799"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 04:23:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="760653019"
+X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
+   d="scan'208";a="760653019"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga007.jf.intel.com with SMTP; 23 Nov 2023 04:23:16 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 23 Nov 2023 14:23:16 +0200
+Date:   Thu, 23 Nov 2023 14:23:16 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kunwu Chan <chentao@kylinos.cn>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@gmail.com, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kunwu.chan@hotmail.com
+Subject: Re: [PATCH] drm/i915/display: Fix null pointer dereference in
+ intel_dp_aux_wait_done and intel_dp_aux_xfer
+Message-ID: <ZV9ENJIVKztrI2gs@intel.com>
+References: <20231123100431.34453-1-chentao@kylinos.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Unplugging USB-C charger cable causes `ucsi_acpi USBC000:00:
- ucsi_handle_connector_change: ACK failed (-110)`
-Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <b2466bc2-b62c-4328-94a4-b60af4135ba7@molgen.mpg.de>
- <ZVy5+AxnOZNmUZ15@kuha.fi.intel.com>
- <2bfe2311-27a6-46b5-8662-ba3cbb409f81@molgen.mpg.de>
- <ZV3CTg03IPnZTVL0@kuha.fi.intel.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <ZV3CTg03IPnZTVL0@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231123100431.34453-1-chentao@kylinos.cn>
+X-Patchwork-Hint: comment
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Heikki,
+On Thu, Nov 23, 2023 at 06:04:31PM +0800, Kunwu Chan wrote:
+> kasprintf() returns a pointer to dynamically allocated memory
+> which can be NULL upon failure. When "intel_dp->aux.name" is NULL,
+>  these error messages will trigger the null pointer dereference issue.
 
+How did you reach that conclusion?
 
-Am 22.11.23 um 09:56 schrieb Heikki Krogerus:
-> On Tue, Nov 21, 2023 at 03:25:59PM +0100, Paul Menzel wrote:
-
->> Am 21.11.23 um 15:08 schrieb Heikki Krogerus:
->>> On Tue, Nov 21, 2023 at 12:50:43PM +0100, Paul Menzel wrote:
->>
->>>> On the Dell XPS 13, BIOS 2.21.0 06/02/2022, with Debian sid/unstable and
->>>> Linux 6.5.10, when unplugging the (Dell) USB Type-C charger cable, Linux
->>>> logs the error below:
->>>>
->>>>       ucsi_acpi USBC000:00: ucsi_handle_connector_change: ACK failed (-110)
->>>>
->>>> As this is logged with level error, can this be somehow fixed?
->>>>
->>>>       drivers/usb/typec/ucsi/ucsi.c: dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
->>>>
->>>> Please find the output of `dmesg` attached.
->>>
->>> Thanks. The firmware not reacting to the ACK command is weird, but I'm
->>> not sure if it's critical. Does the interface continue working after
->>> that? Do you see the partner devices appearing under /sys/class/typec/
->>> when you plug them, and disappearing when you unplug them?
->>
->> ```
->> $ LANG= grep . /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000\:001/*
->> /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_max:0
->> /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_now:0
-
-[â€¦]
-
->> ```
->>
->> Now I unplugged the device, and the error is *not* logged. (I had a USB
->> Type-C port replicator plugged in during the day before.)
->>
->> The directory is still there:
->>
->> ```
->> $ LANG= grep . /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000\:001/*
->> /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_max:0
->> /sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_now:0
-
-[â€¦]
-
->> ```
->>
->> I guess, that is the wrong directory I look at though?
->>
->> (I am going to monitor the logs over the next days.)
 > 
-> Just list what you have in /sys/class/typec/ before and after plugging
-> a device to the port:
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp_aux.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
->          ls /sys/class/typec/
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux.c b/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> index 2e2af71bcd5a..398c9064eb09 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> @@ -67,7 +67,7 @@ intel_dp_aux_wait_done(struct intel_dp *intel_dp)
+>  	if (ret == -ETIMEDOUT)
+>  		drm_err(&i915->drm,
+>  			"%s: did not complete or timeout within %ums (status 0x%08x)\n",
+> -			intel_dp->aux.name, timeout_ms, status);
+> +			intel_dp->aux.name ? intel_dp->aux.name : "", timeout_ms, status);
+>  
+>  	return status;
+>  }
+> @@ -302,7 +302,7 @@ intel_dp_aux_xfer(struct intel_dp *intel_dp,
+>  		if (status != intel_dp->aux_busy_last_status) {
+>  			drm_WARN(&i915->drm, 1,
+>  				 "%s: not started (status 0x%08x)\n",
+> -				 intel_dp->aux.name, status);
+> +				 intel_dp->aux.name ? intel_dp->aux.name : "", status);
+>  			intel_dp->aux_busy_last_status = status;
+>  		}
+>  
+> @@ -362,7 +362,7 @@ intel_dp_aux_xfer(struct intel_dp *intel_dp,
+>  
+>  	if ((status & DP_AUX_CH_CTL_DONE) == 0) {
+>  		drm_err(&i915->drm, "%s: not done (status 0x%08x)\n",
+> -			intel_dp->aux.name, status);
+> +			intel_dp->aux.name ? intel_dp->aux.name : "", status);
+>  		ret = -EBUSY;
+>  		goto out;
+>  	}
+> @@ -374,7 +374,7 @@ intel_dp_aux_xfer(struct intel_dp *intel_dp,
+>  	 */
+>  	if (status & DP_AUX_CH_CTL_RECEIVE_ERROR) {
+>  		drm_err(&i915->drm, "%s: receive error (status 0x%08x)\n",
+> -			intel_dp->aux.name, status);
+> +			intel_dp->aux.name ? intel_dp->aux.name : "", status);
+>  		ret = -EIO;
+>  		goto out;
+>  	}
+> @@ -385,7 +385,7 @@ intel_dp_aux_xfer(struct intel_dp *intel_dp,
+>  	 */
+>  	if (status & DP_AUX_CH_CTL_TIME_OUT_ERROR) {
+>  		drm_dbg_kms(&i915->drm, "%s: timeout (status 0x%08x)\n",
+> -			    intel_dp->aux.name, status);
+> +			    intel_dp->aux.name ? intel_dp->aux.name : "", status);
+>  		ret = -ETIMEDOUT;
+>  		goto out;
+>  	}
+> @@ -401,7 +401,7 @@ intel_dp_aux_xfer(struct intel_dp *intel_dp,
+>  	if (recv_bytes == 0 || recv_bytes > 20) {
+>  		drm_dbg_kms(&i915->drm,
+>  			    "%s: Forbidden recv_bytes = %d on aux transaction\n",
+> -			    intel_dp->aux.name, recv_bytes);
+> +			    intel_dp->aux.name ? intel_dp->aux.name : "", recv_bytes);
+>  		ret = -EBUSY;
+>  		goto out;
+>  	}
+> -- 
+> 2.34.1
 
-Sorry, here you go:
-
-With charger:
-
-     $ ls /sys/class/typec/
-     port0  port0-partner
-
-After unplugging the charger:
-
-     $ LANG= ls /sys/class/typec/
-     port0
-
-By the way, Linux logs the ucsi_handle_connector_change line around five 
-second after unplugging the USB Type-C charger cable.
-
-
-Kind regards,
-
-Paul
-
-
-PS: In the logs since October 30th, I see the three distinct lines below:
-
-1.  ucsi_acpi USBC000:00: failed to re-enable notifications (-110)
-2.  ucsi_acpi USBC000:00: GET_CONNECTOR_STATUS failed (-110)
-3.  ucsi_acpi USBC000:00: ucsi_handle_connector_change: ACK failed (-110)
-
-Is it documented somewhere what -100 means?
+-- 
+Ville Syrjälä
+Intel
