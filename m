@@ -2,138 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A1B7F59A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CE97F59A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344884AbjKWHzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S232058AbjKWH52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:57:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKWHzh (ORCPT
+        with ESMTP id S229477AbjKWH5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:55:37 -0500
-Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF1AE7;
-        Wed, 22 Nov 2023 23:55:41 -0800 (PST)
-Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-        by mx0.infotecs.ru (Postfix) with ESMTP id A06161183A38;
-        Thu, 23 Nov 2023 10:55:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru A06161183A38
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-        t=1700726139; bh=aqIsOIcOR88OV8n3BzXeKdgT7SK6zBo4edh5EAZqIR8=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=VdXGVA+BiuT3uKxNtxMrkQA7lYGqD1MHRpZziko5De5IIGC3jmPg6CsuQpFaO6vZ1
-         SpRjN4QuhhvhygJ0HilkZ5yC02cKtTt2WUBCKVQ6zOgQdw4n+uRMhr3zgtYi411ZJK
-         PSfxHyv8E1GLEHz1mwMYmX6hPa3vl13hMlsHqHAY=
-Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
-        by mx0.infotecs-nt (Postfix) with ESMTP id 9DBA030A8C4A;
-        Thu, 23 Nov 2023 10:55:39 +0300 (MSK)
-From:   Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-To:     Paul Moore <paul@paul-moore.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Huw Davies <huw@codeweavers.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-Subject: Re: [PATCH net] calipso: Fix memory leak in netlbl_calipso_add_pass()
-Thread-Topic: [PATCH net] calipso: Fix memory leak in
- netlbl_calipso_add_pass()
-Thread-Index: AQHaHeJzdA++O1H3dkiA65HXAmqNZQ==
-Date:   Thu, 23 Nov 2023 07:55:39 +0000
-Message-ID: <0a6fff0d-61df-4ac5-ae8e-e2204c60ebb5@infotecs.ru>
-References: <20231122135242.2779058-1-Ilia.Gavrilov@infotecs.ru>
- <CAHC9VhTiq1xPXXsETNKRBOtfkB5wohVwhBeae+5QW9uV-h5vvg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTiq1xPXXsETNKRBOtfkB5wohVwhBeae+5QW9uV-h5vvg@mail.gmail.com>
-Accept-Language: ru-RU, en-US
-Content-Language: ru-RU
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.17.0.10]
-x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1A607E215D5A694783D4780659120150@infotecs.ru>
-Content-Transfer-Encoding: base64
+        Thu, 23 Nov 2023 02:57:25 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3694AA2;
+        Wed, 22 Nov 2023 23:57:32 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN4OuvR006167;
+        Thu, 23 Nov 2023 07:57:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=xT9mC5lx0ErBSkckehHdh13wVtvWEQZryXxBATcTRJw=;
+ b=UyGLY6reJYmK290YvCkxpr1vZxz2DimypKIOWWXKXPKwHR5/c58jNds9REsqq8cvKKvg
+ LGUAYkyHpv0WgXjC13s/E8k/mS7pzg6JMDGfix8C+fV9wcQ7Rsv1LkCF7x/Yu1ZbUUqW
+ 2r4tmR4Bo9BWCS9UnIKR1sYT4p3UvwVkpX1d7wevPFzL269+ItnNX3Yc+rTACHuG1jnn
+ R+GgpwcKyDqWRHdwO01uF7HnJUPwcQMLnIp7Ybkjwj04SIhTYgiumzCD559AL5pw4Hr0
+ tLfAxoaICpcVOvbxyW0G6GjdNljgVLl0OQi2IFHFXobAyceRgq2S03iqWQkSRpfHeVzX 0A== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhr5psac8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 07:57:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AN7vQZd023540
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 07:57:26 GMT
+Received: from [10.216.59.116] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
+ 2023 23:57:20 -0800
+Message-ID: <f7bc0564-8260-4254-b66b-b472ef73225e@quicinc.com>
+Date:   Thu, 23 Nov 2023 13:27:20 +0530
 MIME-Version: 1.0
-X-KLMS-Rule-ID: 5
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2023/11/23 06:48:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/11/23 06:11:00 #22507418
-X-KLMS-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <quic_wcheng@quicinc.com>, Conor Dooley <conor+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20231122191335.3058-1-quic_kriskura@quicinc.com>
+ <4c323ab5-579f-41f5-ab77-c087136e4058@linaro.org>
+ <ab2952ea-1917-4b58-a0cf-64f3eba0b7c9@quicinc.com>
+ <7f4d20fd-b975-47ab-8dfb-2a0eb3db04fc@linaro.org>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <7f4d20fd-b975-47ab-8dfb-2a0eb3db04fc@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rdU-o8uxm5bjbM06Njdx5lEv1Sg8bAZv
+X-Proofpoint-ORIG-GUID: rdU-o8uxm5bjbM06Njdx5lEv1Sg8bAZv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_05,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230055
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvMjIvMjMgMTg6NTYsIFBhdWwgTW9vcmUgd3JvdGU6DQo+IE9uIFdlZCwgTm92IDIyLCAy
-MDIzIGF0IDg6NTXigK9BTSBHYXZyaWxvdiBJbGlhIDxJbGlhLkdhdnJpbG92QGluZm90ZWNzLnJ1
-PiB3cm90ZToNCj4+DQo+PiBJZiBJUHY2IHN1cHBvcnQgaXMgZGlzYWJsZWQgYXQgYm9vdCAoaXB2
-Ni5kaXNhYmxlPTEpLA0KPj4gdGhlIGNhbGlwc29faW5pdCgpIC0+IG5ldGxibF9jYWxpcHNvX29w
-c19yZWdpc3RlcigpIGZ1bmN0aW9uIGlzbid0IGNhbGxlZCwNCj4+IGFuZCB0aGUgbmV0bGJsX2Nh
-bGlwc29fb3BzX2dldCgpIGZ1bmN0aW9uIGFsd2F5cyByZXR1cm5zIE5VTEwuDQo+PiBJbiB0aGlz
-IGNhc2UsIHRoZSBuZXRsYmxfY2FsaXBzb19hZGRfcGFzcygpIGZ1bmN0aW9uIGFsbG9jYXRlcyBt
-ZW1vcnkNCj4+IGZvciB0aGUgZG9pX2RlZiB2YXJpYWJsZSBidXQgZG9lc24ndCBmcmVlIGl0IHdp
-dGggdGhlIGNhbGlwc29fZG9pX2ZyZWUoKS4NCj4gDQo+IEl0IGxvb2tzIGxpa2UgYSBiZXR0ZXIg
-b3B0aW9uIHdvdWxkIGJlIHRvIHJldHVybiBhbiBlcnJvciBjb2RlIGluDQo+IG5ldGxibF9jYWxp
-cHNvX2FkZCgpIHNvIHdlIG5ldmVyIGFsbG9jYXRlIHRoZSBtZW1vcnkgaW4gdGhlIGZpcnN0DQo+
-IHBsYWNlLg0KPiANCj4gVW50ZXN0ZWQgcGF0Y2ggYmVsb3csIGNvcHktbi1wYXN0ZSdkIHNvIHRo
-ZXJlIGlzIGxpa2VseSB3aGl0ZXNwYWNlDQo+IGRhbWFnZSwgYnV0IHlvdSBnZXQgdGhlIGlkZWEu
-DQo+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L25ldGxhYmVsL25ldGxhYmVsX2NhbGlwc28uYyBiL25l
-dC9uZXRsYWJlbC9uZXRsYWJlbF9jYWxpcHNvLmMNCj4gaW5kZXggZjFkNWI4NDY1MjE3Li4yNmE1
-MDRkYzZlNTcgMTAwNjQ0DQo+IC0tLSBhL25ldC9uZXRsYWJlbC9uZXRsYWJlbF9jYWxpcHNvLmMN
-Cj4gKysrIGIvbmV0L25ldGxhYmVsL25ldGxhYmVsX2NhbGlwc28uYw0KPiBAQCAtNTQsOCArNTQs
-MzEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBubGFfcG9saWN5DQo+IGNhbGlwc29fZ2VubF9wb2xp
-Y3lbTkxCTF9DQUxJUFNPX0FfTUFYICsgMV0gPSB7DQo+ICAgICAgICAgW05MQkxfQ0FMSVBTT19B
-X01UWVBFXSA9IHsgLnR5cGUgPSBOTEFfVTMyIH0sDQo+IH07DQo+IA0KPiArc3RhdGljIGNvbnN0
-IHN0cnVjdCBuZXRsYmxfY2FsaXBzb19vcHMgKmNhbGlwc29fb3BzOw0KPiArDQo+ICsvKioNCj4g
-KyAqIG5ldGxibF9jYWxpcHNvX29wc19yZWdpc3RlciAtIFJlZ2lzdGVyIHRoZSBDQUxJUFNPIG9w
-ZXJhdGlvbnMNCj4gKyAqIEBvcHM6IG9wcyB0byByZWdpc3Rlcg0KPiArICoNCj4gKyAqIERlc2Ny
-aXB0aW9uOg0KPiArICogUmVnaXN0ZXIgdGhlIENBTElQU08gcGFja2V0IGVuZ2luZSBvcGVyYXRp
-b25zLg0KPiArICoNCj4gKyAqLw0KPiArY29uc3Qgc3RydWN0IG5ldGxibF9jYWxpcHNvX29wcyAq
-DQo+ICtuZXRsYmxfY2FsaXBzb19vcHNfcmVnaXN0ZXIoY29uc3Qgc3RydWN0IG5ldGxibF9jYWxp
-cHNvX29wcyAqb3BzKQ0KPiArew0KPiArICAgICAgIHJldHVybiB4Y2hnKCZjYWxpcHNvX29wcywg
-b3BzKTsNCj4gK30NCj4gK0VYUE9SVF9TWU1CT0wobmV0bGJsX2NhbGlwc29fb3BzX3JlZ2lzdGVy
-KTsNCj4gKw0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBuZXRsYmxfY2FsaXBzb19vcHMgKm5ldGxi
-bF9jYWxpcHNvX29wc19nZXQodm9pZCkNCj4gK3sNCj4gKyAgICAgICByZXR1cm4gUkVBRF9PTkNF
-KGNhbGlwc29fb3BzKTsNCj4gK30NCj4gKw0KPiAvKiBOZXRMYWJlbCBDb21tYW5kIEhhbmRsZXJz
-DQo+ICAgKi8NCj4gKw0KPiAvKioNCj4gICAqIG5ldGxibF9jYWxpcHNvX2FkZF9wYXNzIC0gQWRk
-cyBhIENBTElQU08gcGFzcyBET0kgZGVmaW5pdGlvbg0KPiAgICogQGluZm86IHRoZSBHZW5lcmlj
-IE5FVExJTksgaW5mbyBibG9jaw0KPiBAQCAtMTAwLDEwICsxMjMsMTMgQEAgc3RhdGljIGludCBu
-ZXRsYmxfY2FsaXBzb19hZGQoc3RydWN0IHNrX2J1ZmYNCj4gKnNrYiwgc3RydWN0IGdlbmxfaW5m
-byAqaW5mbykNCj4gew0KPiAgICAgICAgIGludCByZXRfdmFsID0gLUVJTlZBTDsNCj4gICAgICAg
-ICBzdHJ1Y3QgbmV0bGJsX2F1ZGl0IGF1ZGl0X2luZm87DQo+ICsgICAgICAgY29uc3Qgc3RydWN0
-IG5ldGxibF9jYWxpcHNvX29wcyAqb3BzID0gbmV0bGJsX2NhbGlwc29fb3BzX2dldCgpOw0KPiAN
-Cj4gICAgICAgICBpZiAoIWluZm8tPmF0dHJzW05MQkxfQ0FMSVBTT19BX0RPSV0gfHwNCj4gICAg
-ICAgICAgICAgIWluZm8tPmF0dHJzW05MQkxfQ0FMSVBTT19BX01UWVBFXSkNCj4gICAgICAgICAg
-ICAgICAgIHJldHVybiAtRUlOVkFMOw0KPiArICAgICAgIGlmICghb3BzKQ0KPiArICAgICAgICAg
-ICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOw0KPiANCj4gICAgICAgICBuZXRsYmxfbmV0bGlua19h
-dWRpdGluZm8oJmF1ZGl0X2luZm8pOw0KPiAgICAgICAgIHN3aXRjaCAobmxhX2dldF91MzIoaW5m
-by0+YXR0cnNbTkxCTF9DQUxJUFNPX0FfTVRZUEVdKSkgew0KPiBAQCAtMzYzLDI4ICszODksNiBA
-QCBpbnQgX19pbml0IG5ldGxibF9jYWxpcHNvX2dlbmxfaW5pdCh2b2lkKQ0KPiAgICAgICAgIHJl
-dHVybiBnZW5sX3JlZ2lzdGVyX2ZhbWlseSgmbmV0bGJsX2NhbGlwc29fZ25sX2ZhbWlseSk7DQo+
-IH0NCj4gDQo+IC1zdGF0aWMgY29uc3Qgc3RydWN0IG5ldGxibF9jYWxpcHNvX29wcyAqY2FsaXBz
-b19vcHM7DQo+IC0NCj4gLS8qKg0KPiAtICogbmV0bGJsX2NhbGlwc29fb3BzX3JlZ2lzdGVyIC0g
-UmVnaXN0ZXIgdGhlIENBTElQU08gb3BlcmF0aW9ucw0KPiAtICogQG9wczogb3BzIHRvIHJlZ2lz
-dGVyDQo+IC0gKg0KPiAtICogRGVzY3JpcHRpb246DQo+IC0gKiBSZWdpc3RlciB0aGUgQ0FMSVBT
-TyBwYWNrZXQgZW5naW5lIG9wZXJhdGlvbnMuDQo+IC0gKg0KPiAtICovDQo+IC1jb25zdCBzdHJ1
-Y3QgbmV0bGJsX2NhbGlwc29fb3BzICoNCj4gLW5ldGxibF9jYWxpcHNvX29wc19yZWdpc3Rlcihj
-b25zdCBzdHJ1Y3QgbmV0bGJsX2NhbGlwc29fb3BzICpvcHMpDQo+IC17DQo+IC0gICAgICAgcmV0
-dXJuIHhjaGcoJmNhbGlwc29fb3BzLCBvcHMpOw0KPiAtfQ0KPiAtRVhQT1JUX1NZTUJPTChuZXRs
-YmxfY2FsaXBzb19vcHNfcmVnaXN0ZXIpOw0KPiAtDQo+IC1zdGF0aWMgY29uc3Qgc3RydWN0IG5l
-dGxibF9jYWxpcHNvX29wcyAqbmV0bGJsX2NhbGlwc29fb3BzX2dldCh2b2lkKQ0KPiAtew0KPiAt
-ICAgICAgIHJldHVybiBSRUFEX09OQ0UoY2FsaXBzb19vcHMpOw0KPiAtfQ0KPiAtDQo+IC8qKg0K
-PiAgICogY2FsaXBzb19kb2lfYWRkIC0gQWRkIGEgbmV3IERPSSB0byB0aGUgQ0FMSVBTTyBwcm90
-b2NvbCBlbmdpbmUNCj4gICAqIEBkb2lfZGVmOiB0aGUgRE9JIHN0cnVjdHVyZQ0KPiANCg0KVGhh
-bmsgeW91IGZvciByZXZpZXcuIEknbGwgdGVzdCBhbmQgc2VuZCB0aGlzIGlkZWEgaW4gdGhlIG5l
-eHQgdmVyc2lvbi4NCg==
+
+
+On 11/23/2023 1:20 PM, Krzysztof Kozlowski wrote:
+> On 23/11/2023 08:44, Krishna Kurapati PSSNV wrote:
+>>
+>>
+>> On 11/23/2023 1:11 PM, Krzysztof Kozlowski wrote:
+>>> On 22/11/2023 20:13, Krishna Kurapati wrote:
+>>>> The high speed related interrupts present on QC targets are as follows:
+>>>>
+>>>> dp/dm Irq's
+>>>> These IRQ's directly reflect changes on the DP/DM pads of the SoC. These
+>>>> are used as wakeup interrupts only on SoCs with non-QUSBb2 targets with
+>>>> exception of SDM670/SDM845/SM6350.
+>>>>
+>>>> qusb2_phy irq
+>>>> SoCs with QUSB2 PHY do not have separate DP/DM IRQs and expose only a
+>>>> single IRQ whose behavior can be modified by the QUSB2PHY_INTR_CTRL
+>>>> register. The required DPSE/DMSE configuration is done in
+>>>> QUSB2PHY_INTR_CTRL register of phy address space.
+>>>>
+>>>> hs_phy_irq
+>>>> This is completely different from the above two and is present on all
+>>>> targets with exception of a few IPQ ones. The interrupt is not enabled by
+>>>> default and its functionality is mutually exclusive of qusb2_phy on QUSB
+>>>> targets and DP/DM on femto phy targets.
+>>>>
+>>>> The DTs of several QUSB2 PHY based SoCs incorrectly define "hs_phy_irq"
+>>>> when they should have been "qusb2_phy_irq". On Femto phy targets, the
+>>>> "hs_phy_irq" mentioned is either the actual "hs_phy_irq" or "pwr_event",
+>>>> neither of which would never be triggered directly are non-functional
+>>>> currently. The implementation tries to clean up this issue by addressing
+>>>> the discrepencies involved and fixing the hs_phy_irq's in respective DT's.
+>>>>
+>>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>>>> ---
+>>>>    .../devicetree/bindings/usb/qcom,dwc3.yaml    | 125 ++++++++++--------
+>>>>    1 file changed, 69 insertions(+), 56 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>>> index e889158ca205..4a46346e2ead 100644
+>>>> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>>> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>>> @@ -17,20 +17,25 @@ properties:
+>>>>              - qcom,ipq5018-dwc3
+>>>>              - qcom,ipq5332-dwc3
+>>>>              - qcom,ipq6018-dwc3
+>>>> +          - qcom,ipq6018-dwc3-sec
+>>>
+>>> I could not understand from commit msg why you are adding new compatible
+>>> and what it is supposed to fix.
+>>>
+>>> The entire diff is huge thus difficult to review. Why fixing hs_phy_irq
+>>> causes three new interrupts being added?
+>>
+>> Some targets have two controllers where the second one is only HS
+>> capable and doesn't have ss_phy_irq. In such cases to make it clear in
+>> bindings, I added a suffix "-sec" and accordingly changed in DT as well.
+>> Should've put this in commit text.
+> 
+> Where did you explain it in the commit msg? Why adding new compatibles
+> is squashed to this patch?
+> 
+Apologies. I meant I should've put the explanation in commit text which 
+I missed. Will do it while revising this patch.
+
+> You need separate commit with its own justification. I am not sure if
+> calling things secondary and tertiary scales. Please describe all the
+> differences and come with some reason for the naming.
+> 
+> 
+
+Sure, will separate out the new compatible additions and then make 
+different commits.
+
+Regards,
+Krishna,
+
+
