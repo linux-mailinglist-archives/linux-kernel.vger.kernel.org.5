@@ -2,144 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C847F5ECC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E427F5ED2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345242AbjKWMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        id S1345240AbjKWMNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:13:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345215AbjKWMM4 (ORCPT
+        with ESMTP id S1345243AbjKWMNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:12:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3C691
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:13:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30465C433C7;
-        Thu, 23 Nov 2023 12:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700741582;
-        bh=42j8yCIGOIsdbYfWKArHt6YgWjhLYwGUak0TSa8oLCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UlJdv0lXQ6T1VSpJnR8JE9zxFg2rCDgSn8m0Ep2KHp6YA9n8T4Tzs1xiNMSiYdOD/
-         sRjRA+4T8cyH5auQADLfeXR+nmphrtH+ZVwkl0yhbBinRdYGvhiQ6X4TrC+Kge1Xmf
-         UiEyAUy5ylyXgPcmIho7+QBePr4SPpzNAbDTpeRM=
-Date:   Thu, 23 Nov 2023 12:12:56 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
-Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
-Message-ID: <2023112312-certified-substance-007c@gregkh>
-References: <20231118025748.2778044-1-mmaurer@google.com>
- <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
- <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
- <2023112314-tubby-eligibly-007a@gregkh>
- <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
+        Thu, 23 Nov 2023 07:13:31 -0500
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDA199;
+        Thu, 23 Nov 2023 04:13:37 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id E9B033200AD3;
+        Thu, 23 Nov 2023 07:13:32 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 23 Nov 2023 07:13:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1700741612; x=1700828012; bh=bqTTK97AMSpZYhD615Hms/vz78ad6/G8f6h
+        LgVljG2E=; b=Mn6gZel2hDy2U4uSAOinnxIYhsA32Dx/zcfQZ4OrQb3O8oSTi1+
+        RUthCgCiYT7gNz5tzurx9Z87nMFqnK7kjKPd/O7A5VUOH7O92vmI1ln5y+yL6CIB
+        cn4iAH4KievCDLgXVP8VJO0Sp1lPkiv2DQ9RPkiIGR2xMVPbD18FIF8QF/eVBYEZ
+        E508qNeUGUzFJlMVl8VMZ5y82gOT+pSUBF+b+wOShNWv26Po99N/3NjEaT/VI6eo
+        neB+0Pe9fmBD9t0w/U5rGKrgTLYPloArKChr+A5oIpgky3v8KtIMQHT809fHTBdI
+        aJMQSzFYBRMf/uFzt5lkbePGW0D3GOnkrqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1700741612; x=1700828012; bh=bqTTK97AMSpZYhD615Hms/vz78ad6/G8f6h
+        LgVljG2E=; b=CWiHG2HCNR3PUb8Zber+487Gm0pSObixAc5WZjphYBU74QjOaX6
+        qpMCQUi//ILgW0v/HBj7dEJVID3N67HAEZ8tA9qUcTOcFIn13mWjYYpsxY07/6Wt
+        WHT03CR9vosF04wKel8cNgdALy1dXE7iavfb3IIRANiosvwvsndx93E3RfkoYy1C
+        EWbFh3xVD7smkjkYxNuI7vDw/4GfNI7okhTTwIUGYTR2E+bGKRslVeOOLBoYhQKb
+        y6x0ym88zjmHXSBT9vKXaC4B2wgUpxS2XcXr55TmWuP9EC1UMtG5YLLM0iIEyowW
+        9lLW6y2Yj8heNz/f4LyyIog6j8Sy6roYQTg==
+X-ME-Sender: <xms:60FfZay4e70_6RGnkS871rITuaJIl2ckwUu52XNbTdVD2y-fyEyR_Q>
+    <xme:60FfZWRFHoS33fQA1vb56UHjrTyUmFMm6UU2MlhV7WFZvRYFWj49Nr1rhv4EN1IDm
+    FonS-oWMADMnuuNWrs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehfedgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
+    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:60FfZcW7yxrzsBn8TlhRKH-cya1ihhj9bIuJs3jBgnnx6kfewA-KxQ>
+    <xmx:60FfZQhd8afvL4fAh3eG0g9LmMQIChgU1DB4OBy2E5VaI6HwQeKD4w>
+    <xmx:60FfZcCQ_UomU--4eeyinEfzfvXBZdlL9qdjNLrITwz-hgD2xFQwCw>
+    <xmx:7EFfZaRw49s2rdQCFi9_saUGyFFcxQ6Yy3ymEngrsxGUT6X0si9Xqg>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9E2B336A0075; Thu, 23 Nov 2023 07:13:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
+In-Reply-To: <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
+References: <20231122182419.30633-1-fancer.lancer@gmail.com>
+ <20231122182419.30633-2-fancer.lancer@gmail.com>
+ <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
+ <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
+Date:   Thu, 23 Nov 2023 12:13:11 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Serge Semin" <fancer.lancer@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>
+Cc:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Yinglu Yang" <yangyinglu@loongson.cn>,
+        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
+        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
+        "Aleksandar Rikalo" <arikalo@gmail.com>,
+        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
+        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 08:38:45PM +0900, Masahiro Yamada wrote:
-> On Thu, Nov 23, 2023 at 6:05 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Nov 22, 2023 at 01:04:09PM -0800, Matthew Maurer wrote:
-> > > > So, even if you enable CONFIG_MODVERSIONS,
-> > > > nothing is checked for Rust.
-> > > > Genksyms computes a CRC from "int foo", and
-> > > > the module subsystem confirms it is a "int"
-> > > > variable.
-> > > >
-> > > > We know this check always succeeds.
-> > > >
-> > > > Why is this useful?
-> > > The reason this is immediately useful is that it allows us to have Rust
-> > > in use with a kernel where C modules are able to benefit from MODVERSIONS
-> > > checking. The check would effectively be a no-op for now, as you have correctly
-> > > determined, but we could refine it to make it more restrictive later.
-> > > Since the
-> > > existing C approach errs on the side of "it could work" rather than "it will
-> > > work", I thought being more permissive was the correct initial solution.
-> >
-> > But it's just providing "fake" information to the CRC checker, which
-> > means that the guarantee of a ABI check is not true at all.
-> >
-> > So the ask for the user of "ensure that the ABI checking is correct" is
-> > being circumvented here, and any change in the rust side can not be
-> > detected at all.
-> >
-> > The kernel is a "whole", either an option works for it, or it doesn't,
-> > and you are splitting that guarantee here by saying "modversions will
-> > only work for a portion of the kernel, not the whole thing" which is
-> > going to cause problems for when people expect it to actually work
-> > properly.
-> >
-> > So, I'd strongly recommend fixing this for the rust code if you wish to
-> > allow modversions to be enabled at all.
-> >
-> > > With regards to future directions that likely won't work for loosening it:
-> > > Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
-> > > teach genksyms to open it up and split out the pieces for specific functions.
-> > > Extending genksyms to parse Rust would also not solve the situation -
-> > > layouts are allowed to differ across compiler versions or even (in rare
-> > > cases) seemingly unrelated code changes.
-> >
-> > What do you mean by "layout" here?  Yes, the crcs can be different
-> > across compiler versions and seemingly unrelated code changes (genksyms
-> > is VERY fragile) but that's ok, that's not what you are checking here.
-> > You want to know if the rust function signature changes or not from the
-> > last time you built the code, with the same compiler and options, that's
-> > all you are verifying.
-> >
-> > > Future directions that might work for loosening it:
-> > > * Generating crcs from debuginfo + compiler + flags
-> > > * Adding a feature to the rust compiler to dump this information. This
-> > > is likely to
-> > >   get pushback because Rust's current stance is that there is no ability to load
-> > >   object code built against a different library.
-> >
-> > Why not parse the function signature like we do for C?
-> >
-> > > Would setting up Rust symbols so that they have a crc built out of .rmeta be
-> > > sufficient for you to consider this useful? If not, can you help me understand
-> > > what level of precision would be required?
-> >
-> > What exactly does .rmeta have to do with the function signature?  That's
-> > all you care about here.
-> 
-> 
-> 
-> 
-> rmeta is generated per crate.
-> 
-> CRC is computed per symbol.
-> 
-> They have different granularity.
-> It is weird to refuse a module for incompatibility
-> of a symbol that it is not using at all.
 
-I agree, this should be on a per-symbol basis, so the Rust
-infrastructure in the kernel needs to be fixed up to support this
-properly, not just ignored like this patchset does.
 
-thanks,
+=E5=9C=A82023=E5=B9=B411=E6=9C=8823=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
+=E4=B8=8A=E5=8D=889:32=EF=BC=8CSerge Semin=E5=86=99=E9=81=93=EF=BC=9A
+> Hi Arnd
+>
+> On Wed, Nov 22, 2023 at 08:35:01PM +0100, Arnd Bergmann wrote:
+>> On Wed, Nov 22, 2023, at 19:23, Serge Semin wrote:
+>> > dmi_early_remap() has been defined as ioremap_cache() which on MIPS=
+32 gets
+>> > to be converted to the VM-based mapping. DMI early remapping is per=
+formed
+>> > at the setup_arch() stage with no VM available. So calling the
+>> > dmi_early_remap() for MIPS32 causes the system to crash at the earl=
+y boot
+>> > time. Fix that by converting dmi_early_remap() to the uncached rema=
+pping
+>> > which is always available on both 32 and 64-bits MIPS systems.
+>> >
+>> > Fixes: be8fa1cb444c ("MIPS: Add support for Desktop Management Inte=
+rface (DMI)")
+>> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+>> > ---
+>> >  arch/mips/include/asm/dmi.h | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/arch/mips/include/asm/dmi.h b/arch/mips/include/asm/dm=
+i.h
+>> > index 27415a288adf..525aad1572d1 100644
+>> > --- a/arch/mips/include/asm/dmi.h
+>> > +++ b/arch/mips/include/asm/dmi.h
+>> > @@ -5,7 +5,7 @@
+>> >  #include <linux/io.h>
+>> >  #include <linux/memblock.h>
+>> >=20
+>> > -#define dmi_early_remap(x, l)		ioremap_cache(x, l)
+>> > +#define dmi_early_remap(x, l)		ioremap_uc(x, l)
+>>=20
+>
+>> Please don't use ioremap_uc() in new code, we are in the (long)
+>> process of removing it from the kernel for everything except
+>> x86-32, and it already returns NULL on most of them.
+>>=20
+>> Would the normal ioremap() work for you here? It seems to
+>> do the same thing as ioremap_uc() on mips and a couple of=20
+>> other architectures that have not yet killed it off.
+>
+> Ok. Thanks for the heads up. I'll fix the patch to be using ioremap()
+> in v2. ioremap_uc() is just an macro-alias of ioremap() on MIPS.
 
-greg k-h
+Perhaps we need to fix ioremap_cache so it can give a KSEG1 address?
+AFAIK for Loongson DMI is located at cached memory so using ioremap_uc
+blindly will cause inconsistency.
+
+Thanks
+- Jiaxun
+
+>
+> -Serge(y)
+>
+>>=20
+>>    Arnd
+
+--=20
+- Jiaxun
