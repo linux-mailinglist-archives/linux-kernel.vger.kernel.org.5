@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DE67F5B0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADB67F5B11
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbjKWJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:27:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        id S232271AbjKWJ3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:29:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWJ1z (ORCPT
+        with ESMTP id S232181AbjKWJ3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:27:55 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D86ADD;
-        Thu, 23 Nov 2023 01:28:00 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AN9RsJf084120;
-        Thu, 23 Nov 2023 03:27:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700731674;
-        bh=LonyEqVOhXEOCtfZCFfFFF4BaDOFmpgVZfHtaMqFxzs=;
-        h=From:Date:Subject:To:CC;
-        b=QCvwnSxf8filjQOzypEHgBVe6L69k7q2pLl/pyfNppyl4gbBByp5TOyHu4JKFfCzm
-         KgbfSQbwr0caG8lrPj2gNIbmT33YXebReZoeEGhb4FVPTfOruzMUsL5kirRPvpaZoY
-         LlagExDQyT5p/GvU/ouNg5GFZKds35TP0c24tvMI=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AN9Rrmb016329
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Nov 2023 03:27:54 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 23
- Nov 2023 03:27:53 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 23 Nov 2023 03:27:53 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AN9RqnP001798;
-        Thu, 23 Nov 2023 03:27:53 -0600
-From:   Jai Luthra <j-luthra@ti.com>
-Date:   Thu, 23 Nov 2023 14:57:31 +0530
-Subject: [PATCH] dmaengine: ti: k3-psil-am62a: Fix SPI PDMA data
+        Thu, 23 Nov 2023 04:29:43 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA5AD4F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 01:29:49 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 207155C019E;
+        Thu, 23 Nov 2023 04:29:46 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 23 Nov 2023 04:29:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1700731786; x=1700818186; bh=/6
+        Jewe6s2lAA53NpQQ339J2KIqQZoaHRGTOK/DO562w=; b=3BjGUXa7ROSW9+KBsE
+        ZZDOV4JJt2L9vwcvIIRKpNKreGCXVGdmwdV1Rs/fhD15Y1mbHF5HWRVZ2QBKLnVW
+        yxChHrPogs9t3GaU1pYmIVHH9fvHpinULn2rlx3tY5U28HQv9LxihlKfysK3Ujxj
+        kH02DXm65Biede94fZu4User/nUeC17TLw0f5c5cDx5GkkXZk+0fb+mi6ECbP5NT
+        eA4sufiZOa7LGoDymo2lw44xXaJCqxY1uvNb1ODOyEsddsW4QTRCXK5bgMjZU5IX
+        DaoK5WWpDp42FG0qVTshqj7NzMimScDVkDVx1mQQdiG2ZAjFRq7R10l3ybnsTaqh
+        DvFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700731786; x=1700818186; bh=/6Jewe6s2lAA5
+        3NpQQ339J2KIqQZoaHRGTOK/DO562w=; b=kcmgiuMjPl/BWEwHRyPDYEXyzCYRt
+        nV3+mrn3JcvHMyhpk/JCuUPKmDMfj4MsDjJehrnPAOjENPji1JzlkmWTXr/A0BgY
+        aeSCtZERd/1ogaqNAFQe8Wh0BFQldTDPnps9/6mTogVcYjpKBcRnM+FfvRLm0Dps
+        esEsvQO2J8wyUVrHW7p76QEoo4EtSD8PN8U0gpE36NNjybyfYJehoiPhx7m1Fwk4
+        xP0P/JIG7bfjskm3o8tbqVFSMx3ADENQliRTuPGJgiYbcsUcPY2mOWnac6qoAQNE
+        CBn1qgNFwnty0UhZmyNwDFD7TdvfVss0Z22Ep0FNEYbVl2kJgKXaF4nTQ==
+X-ME-Sender: <xms:iBtfZSMKEECZwEV9ZP714va0nu9yPvN4wqWi2Z10Y_JmoFp53VyYPw>
+    <xme:iBtfZQ_fKaq-MDHU4A5YEoDeML--aa0XFc5VkuHf_tvGjNr25wDoy1DJpZpvUIVzD
+    bL7PgoEHrimzzljx18>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehfedgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvdefjeevfefhvdevjeeuheefieetvdduheeludevtdefhfekleduhfdvjedt
+    ieeinecuffhomhgrihhnpehlfihnrdhnvghtnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:iBtfZZTLb62AFDmmzt1LLsbLUMqjHHPGJFVBNYRxtHR23WcODO3ESQ>
+    <xmx:iBtfZSsS1JLCn9alYL7IEG6k2UnbCKJThpNQ7oWgxw8rmuiO4-ZzMw>
+    <xmx:iBtfZacihlKgYNoAaUoOrfEYQDXPxZeWej67eDumLlhl_NKLiplaMQ>
+    <xmx:ihtfZW0vPOCMKWwZTX17dJQF7MJabXP9p2oVv4e1g1g2IZpHTDtJjw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id CF1F9B60089; Thu, 23 Nov 2023 04:29:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231123-psil_fix-v1-1-6604d80819be@ti.com>
-X-B4-Tracking: v=1; b=H4sIAAIbX2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDQyNj3YLizJz4tMwKXRAvOc0w2SIlyUAJqLygKBUoDDYqOra2FgCOAk9
- tWgAAAA==
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ronald Wahl <rwahl@gmx.de>, Jai Luthra <j-luthra@ti.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2335; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=924hpPwJxhmNS3x60PJd3VL+xH0u9ptGMGFk0d3PDdg=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlXxsSvFh644Swbz0rcxw0sgevJgo0GO5Bk3ehs
- C0bG9Kp2x6JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZV8bEgAKCRBD3pH5JJpx
- Re7+D/94649Hcne8rnC//ihmcjnbMRGPhvZCFzfh4bZSZfMG3ZwTLWV99Zn0XHNtVMJHJtLuj0T
- 8PArSVP8843pYfZem4BTUWtaqJHy/y+vrilbds0aoegpl2TSxNPuBEoeD1ht0VcRlX82RBPDzNk
- Y2TzpRGhJGd7iGcMvka4zzwDRsDBEwkl7XJNUNYm8RwWA37bW7Ihw4v8TDLkqZzLdm85OiwQO89
- rOHmVFpVaODr7btlifx0zdULU6+1bcMJigWhpkPJg0GDLsnRFsJVxVZwxFlu8lNPjDE2E1XSkGC
- ckgcNy83k0rqGiIVVvLYku7ni74eMIwUKpyDVo+Tf2HYQsuN0AndGVV7SPwUtbJK3duycEcPbou
- 5iSuHarybsC851OXeGzs4H8cgYlRAa+3h3s8C2Dv+SdNpdpt8w/9/cA/ZtIFh//eCY+CIK0Ro72
- +OkkgosRBWGUJz3AdagS46yll+fQKfrts9pbujPlcXVIPi+l6BwMxvtaNYlbfIkSabZEJ3aAnEK
- aJ6xbYlm9cYE1RIxmXrt1vkX0aoSw5A+RJ0RwnDneVH5pU4hJiXm1Z/W5vpkkoEr9ClhFawfWKh
- GLoTIrNCH/fCY3H6+WqpgEXLqZGl9JtrEgR9NJqMky9Xx00jNSMMwbIuN3t1XSvLo455Wsnfwq4
- E69qMPEjyiAheXQ==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Message-Id: <94c2e04c-4c62-4ee1-8ae7-cbd675c5064e@app.fastmail.com>
+In-Reply-To: <20231123065708.91345-1-luxu.kernel@bytedance.com>
+References: <20231123065708.91345-1-luxu.kernel@bytedance.com>
+Date:   Thu, 23 Nov 2023 10:29:22 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Xu Lu" <luxu.kernel@bytedance.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        "Anup Patel" <anup@brainfault.org>,
+        "Atish Patra" <atishp@atishpatra.org>
+Cc:     dengliang.1214@bytedance.com,
+        "Xie Yongji" <xieyongji@bytedance.com>, lihangjing@bytedance.com,
+        "Muchun Song" <songmuchun@bytedance.com>,
+        punit.agrawal@bytedance.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [RFC PATCH V1 00/11] riscv: Introduce 64K base page
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,70 +94,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM62Ax has 3 SPI channels where each channel has 4x TX and 4x RX
-threads. Also fix the thread numbers to match what the firmware expects
-according to the PSI-L device description.
+On Thu, Nov 23, 2023, at 07:56, Xu Lu wrote:
+> Some existing architectures like ARM supports base page larger than 4K
+> as their MMU supports more page sizes. Thus, besides hugetlb page and
+> transparent huge page, there is another way for these architectures to
+> enjoy the benefits of fewer TLB misses without worrying about cost of
+> splitting and merging huge pages. However, on architectures with only
+> 4K MMU, larger base page is unavailable now.
+>
+> This patch series attempts to break through the limitation of MMU and
+> supports larger base page on RISC-V, which only supports 4K page size
+> now.
+>
+> The key idea to implement larger base page based on 4K MMU is to
+> decouple the MMU page from the base page in view of kernel mm, which we
+> denote as software page. In contrary to software page, we denote the MMU
+> page as hardware page. Below is the difference between these two kinds
+> of pages.
 
-Link: http://downloads.ti.com/tisci/esd/latest/5_soc_doc/am62ax/psil_cfg.html [1]
-Fixes: aac6db7e243a ("dmaengine: ti: k3-psil-am62a: Add AM62Ax PSIL and PDMA data")
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
-This is the same fix done for a different SoC (AM62) here:
-https://lore.kernel.org/all/20231030190113.16782-1-rwahl@gmx.de/
----
- drivers/dma/ti/k3-psil-am62a.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+We have played with this on arm32, but the conclusion is that it's
+almost never worth the memory overhead, as most workloads end up
+using several times the amount of physical RAM after each small
+file in the page cache and any sparse populated anonymous memory
+area explodes to up to 16 times the size.
 
-diff --git a/drivers/dma/ti/k3-psil-am62a.c b/drivers/dma/ti/k3-psil-am62a.c
-index ca9d71f91422..4cf9123b0e93 100644
---- a/drivers/dma/ti/k3-psil-am62a.c
-+++ b/drivers/dma/ti/k3-psil-am62a.c
-@@ -84,7 +84,9 @@ static struct psil_ep am62a_src_ep_map[] = {
- 	PSIL_SAUL(0x7505, 21, 35, 8, 36, 0),
- 	PSIL_SAUL(0x7506, 22, 43, 8, 43, 0),
- 	PSIL_SAUL(0x7507, 23, 43, 8, 44, 0),
--	/* PDMA_MAIN0 - SPI0-3 */
-+	/* PDMA_MAIN0 - SPI0-2 */
-+	PSIL_PDMA_XY_PKT(0x4300),
-+	PSIL_PDMA_XY_PKT(0x4301),
- 	PSIL_PDMA_XY_PKT(0x4302),
- 	PSIL_PDMA_XY_PKT(0x4303),
- 	PSIL_PDMA_XY_PKT(0x4304),
-@@ -95,8 +97,6 @@ static struct psil_ep am62a_src_ep_map[] = {
- 	PSIL_PDMA_XY_PKT(0x4309),
- 	PSIL_PDMA_XY_PKT(0x430a),
- 	PSIL_PDMA_XY_PKT(0x430b),
--	PSIL_PDMA_XY_PKT(0x430c),
--	PSIL_PDMA_XY_PKT(0x430d),
- 	/* PDMA_MAIN1 - UART0-6 */
- 	PSIL_PDMA_XY_PKT(0x4400),
- 	PSIL_PDMA_XY_PKT(0x4401),
-@@ -151,7 +151,9 @@ static struct psil_ep am62a_dst_ep_map[] = {
- 	/* SAUL */
- 	PSIL_SAUL(0xf500, 27, 83, 8, 83, 1),
- 	PSIL_SAUL(0xf501, 28, 91, 8, 91, 1),
--	/* PDMA_MAIN0 - SPI0-3 */
-+	/* PDMA_MAIN0 - SPI0-2 */
-+	PSIL_PDMA_XY_PKT(0xc300),
-+	PSIL_PDMA_XY_PKT(0xc301),
- 	PSIL_PDMA_XY_PKT(0xc302),
- 	PSIL_PDMA_XY_PKT(0xc303),
- 	PSIL_PDMA_XY_PKT(0xc304),
-@@ -162,8 +164,6 @@ static struct psil_ep am62a_dst_ep_map[] = {
- 	PSIL_PDMA_XY_PKT(0xc309),
- 	PSIL_PDMA_XY_PKT(0xc30a),
- 	PSIL_PDMA_XY_PKT(0xc30b),
--	PSIL_PDMA_XY_PKT(0xc30c),
--	PSIL_PDMA_XY_PKT(0xc30d),
- 	/* PDMA_MAIN1 - UART0-6 */
- 	PSIL_PDMA_XY_PKT(0xc400),
- 	PSIL_PDMA_XY_PKT(0xc401),
+On ppc64, using 64KB pages was way to get around limitations in
+their hashed MMU design, which had a much bigger performance impact
+because any page table access ends up being a cache miss. On arm64,
+there are some CPUs like the Fujitsu A64FX that are really bad at
+4KB pages and don't support 16KB pages, so this is the only real
+option.
 
----
-base-commit: 948112cbca96dba98bee51f2a064d28a947abf07
-change-id: 20231123-psil_fix-1123cf1c8db0
+You will see a notable performance benefit in synthetic benchmarks
+like speccpu with 64KB pages, or on specific computational
+workloads that have large densely packed memory chunks, but for
+real workloads, the usual answer is to just use transparent
+hugepages for larger mappings and a page size of no more than
+16KB for the page cache.
 
-Best regards,
--- 
-Jai Luthra <j-luthra@ti.com>
+With the work going into using folios in the kernel (see e.g.
+https://lwn.net/Articles/932386/), even the workloads that
+benefit from 64KB base pages should be better off with 4KB
+pages and just using the TLB hints for large folios.
 
+     Arnd
