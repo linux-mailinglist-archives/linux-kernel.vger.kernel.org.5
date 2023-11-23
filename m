@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D4C7F574E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508D7F5752
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 05:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbjKWEIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 23:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S1344558AbjKWEJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 23:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235218AbjKWEIR (ORCPT
+        with ESMTP id S235114AbjKWEJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 23:08:17 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58891722
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:06:00 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4ac4cd60370so141837e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700712351; x=1701317151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uB5imdoPod8S9hEhNPZ14DUI1/eZZtU6LRuwv6Kh2nc=;
-        b=POwUu8GZxKXJnLLlAm1XaQIkh9GYni4F4BzkP8ugLdCJL2QH5kwfXtQH2jHLmA4tw6
-         OSj7RSA/tcf1q7tQQpj8zBjm9IngVMO5FFlIgl9hPWIa8P3Vz6/cHuHAo91q8nlHf716
-         FuqaG4zEpUw8tWHpOpJaZ9AY9GVc8iAEB3LLE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700712351; x=1701317151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uB5imdoPod8S9hEhNPZ14DUI1/eZZtU6LRuwv6Kh2nc=;
-        b=kqVEyzd/eMkzAv0hUSmpUEcVhbGmNcdguzP4XQOnqiRfPMBeyXIOSI1Kaqhau2WXil
-         UXM8P5Hlc22lOTiHmhmv3a9Klsx6d1QzV8e7YD416uyxqjT5e2VeXrCqIVdiG5zTRmje
-         2atqOMBQRNSDCP3/p4VlhkCZTWzrbjNevADnE3BySfSjmgtIxHxZP2/iq+oxQem6o/wz
-         0Cf+EiSTjIaUbbEI4JKziy+scLifCiy/TkeXUzVcHU8Oy0BUU3Z3FG94/wYIWhN4c/Du
-         ZgR3HSWV3arxbrKs30GGq43qldD6gM+Pa7eJabZ5JapsFwNqdb7kJBr5pLaHVJ0+geUb
-         MVFg==
-X-Gm-Message-State: AOJu0YyiVc9OL1eDSGSgBv/f8/3WBAt5Q0zcZUB8z22HymRHqMOOyhG+
-        oh3erZgDpEXoN5R/aEPOgC2ak0q1F4SR16qMv6Qisg==
-X-Google-Smtp-Source: AGHT+IEgDqY8hgbAB0sAyOtzUvtQesijSdFyP7FbKM2sJ5M8mQtSe7vSSBu2MSXtIzZNBjmw+PPFvQ==
-X-Received: by 2002:a1f:49c3:0:b0:496:2e22:29e3 with SMTP id w186-20020a1f49c3000000b004962e2229e3mr3989815vka.1.1700712351259;
-        Wed, 22 Nov 2023 20:05:51 -0800 (PST)
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
-        by smtp.gmail.com with ESMTPSA id j188-20020a1f6ec5000000b004a8e99b9f45sm131960vkc.45.2023.11.22.20.05.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 20:05:50 -0800 (PST)
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-45da9180517so137750137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 20:05:49 -0800 (PST)
-X-Received: by 2002:a05:6102:1285:b0:462:a479:79fd with SMTP id
- jc5-20020a056102128500b00462a47979fdmr4441694vsb.23.1700712349221; Wed, 22
- Nov 2023 20:05:49 -0800 (PST)
+        Wed, 22 Nov 2023 23:09:28 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E1410DA;
+        Wed, 22 Nov 2023 20:07:52 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r610G-00073o-E4; Thu, 23 Nov 2023 05:07:48 +0100
+Message-ID: <27dc9607-fed3-4eb2-8c09-d8caf669cc1e@leemhuis.info>
+Date:   Thu, 23 Nov 2023 05:07:47 +0100
 MIME-Version: 1.0
-References: <20231103102533.69280-1-angelogioacchino.delregno@collabora.com> <20231103102533.69280-4-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231103102533.69280-4-angelogioacchino.delregno@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 23 Nov 2023 12:05:13 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhL-i7GhP=qRwf+Z_=K2Ee42ZceiPHAuQznsmP2ENXp9g@mail.gmail.com>
-Message-ID: <CAC=S1nhL-i7GhP=qRwf+Z_=K2Ee42ZceiPHAuQznsmP2ENXp9g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] clk: mediatek: mt8188-topckgen: Refactor parents
- for top_dp/edp muxes
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, matthias.bgg@gmail.com,
-        wenst@chromium.org, msp@baylibre.com, amergnat@baylibre.com,
-        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to
+ CONFIG_MICROCODE_AMD)
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     lukas.bulwahn@gmail.com
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+          Linux regressions mailing list 
+          <regressions@lists.linux.dev>
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+In-Reply-To: <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700712472;8e67d1a9;
+X-HE-SMSGID: 1r610G-00073o-E4
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 6:25=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> The top_dp and top_edp muxes can be both parented to either TVDPLL1
-> or TVDPLL2, two identically specced PLLs for the specific purpose of
-> giving out pixel clock: this becomes a problem when the MediaTek
-> DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
->
-> In the usecase of two simultaneous outputs (using two controllers),
-> it was seen that one of the displays would sometimes display garbled
-> output (if any at all) and this was because:
->  - top_edp was set to TVDPLL1, outputting X GHz
->  - top_dp was set to TVDPLL2, outputting Y GHz
->    - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
->  - top_dp is switched to TVDPLL1
->  - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
->  - eDP display is garbled
->
-> To solve this issue, remove all TVDPLL1 parents from `top_dp` and
-> all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
-> clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
-> able to use the right bit index for the new parents list.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-Tested on MT8188 with a Type-C -> DP adapter to an extended display
-Gigabyte M32U.
-The DP output reacts smoothly to resolution switch and refresh rate
-change, and the internal eDP output also never freezes.
+On 12.11.23 16:03, Linux regression tracking (Thorsten Leemhuis) wrote:
+> 
+>> Commit e6bcfdd75d53 ("x86/microcode: Hide the config knob") removes config
+>> MICROCODE_AMD, but left some references that have no effect on any kernel
+>> build around.
+>>
+>> Clean up those remaining config references. No functional change.
+>> [...]
+> 
+> That patch became 4d2b748305e96f ("x86/microcode: Remove remaining
+> references to CONFIG_MICROCODE_AMD"). Not totally sure, but from briefly
+> looking into things it seems likely that it causes a regression with
+> dracut that was just reported here:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=218136
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
-Tested-by: Fei Shao <fshao@chromium.org>
+Linus doesn't consider this to be something that needs to be fixed (see
+the "from a user perspective things should still continue to work."
+later in this thread), so remove this from the tracking:
+
+#regzbot resolve: Linus considers this nothing that needs fixing
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
