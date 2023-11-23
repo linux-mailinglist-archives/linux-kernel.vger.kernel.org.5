@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B777F64A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66887F64AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345420AbjKWRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        id S233080AbjKWRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbjKWRAH (ORCPT
+        with ESMTP id S235191AbjKWRAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:00:07 -0500
+        Thu, 23 Nov 2023 12:00:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D791E10F0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15857C433CC;
-        Thu, 23 Nov 2023 17:00:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3A093
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:00:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8ACBAC433CB;
+        Thu, 23 Nov 2023 17:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700758811;
-        bh=8F/jiguRcq32VOINzefmDyYIkXt/3k3NK5/RQR1wYU0=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=MtCQPBEXWTX4xUsNeYiJze7scCumxb+pLoonCyIRI3n/ioJzllWZCfbTm679Z2sxX
-         KSA/OIwXxihNsDYi5Tw8H+l7+2FnI0exz8p3+aDp/ZCcqWyK2WGR0VRKyiuMgGLdQ6
-         MKe4G90ieENhC5dz5UVGt8ezJ72xxQHe2Sk82kBZcDvDY8XEMWkrgtBpav1ePSDfOH
-         30lmj1nMaq4fA0VJLGrPHFNXsv95i5MbNcKDnwvG4C0jOmX4xm458D68Z6PEuf1vXl
-         mWjeZPv/Xo2xWEhFc8GMXsJPfXtYP/jrAU3hcPKeYRSCmxbkeK7lYzbTQz8H10G6wJ
-         vc7V4ZGJIRHHQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        shengjiu.wang@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1700702093-8008-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_xcvr: refine the requested phy clock
- frequency
-Message-Id: <170075880893.2448402.4841454362054924374.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 17:00:08 +0000
-MIME-Version: 1.0
+        s=k20201202; t=1700758826;
+        bh=sq9a7agLBKvujsPVZbWmPWMEPPyZt0vkGZvkg2sAwDM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=nu4zFTA6IbjtFqP8JW506Dqo6xPbJS2RLYSMpm2y48v/tKhtlSIMgk7YnL/FvN6Ph
+         G1W9fQqbS9n0iOOJ97pJYjPQG8p3B+A1pzp1iYblUtgj1a38t6GJJsegcH65rJXblP
+         NtrehgItcQFV5u4D5HtONWtPOs9yqogK1JvP0r19PXMXtMBy/S0O8JQ1G25Gdz4yaG
+         iltnq0IS/ftOAsvuLmHH7MzWwaI/O4BBIAFmRWBWA7LL+wnewg9CVMu58gKCtcViix
+         gDSe8NHkmF+wP7+pjOXI2OcJf/7Ac7i2Zxc4CjM37qYd1kbN9Ev6G9mhXcesfTNP7p
+         m0J3ZqqKrJ3Ew==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7448EC3959E;
+        Thu, 23 Nov 2023 17:00:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: axienet: Fix check for partial TX checksum
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170075882647.541.11957078215794048376.git-patchwork-notify@kernel.org>
+Date:   Thu, 23 Nov 2023 17:00:26 +0000
+References: <20231122004219.3504219-1-samuel.holland@sifive.com>
+In-Reply-To: <20231122004219.3504219-1-samuel.holland@sifive.com>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     radhey.shyam.pandey@amd.com, ariane.keller@tik.ee.ethz.ch,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, michal.simek@amd.com, pabeni@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,46 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 09:14:53 +0800, Shengjiu Wang wrote:
-> As the input phy clock frequency will divided by 2 by default
-> on i.MX8MP with the implementation of clk-imx8mp-audiomix driver,
-> So the requested frequency need to be updated.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 21 Nov 2023 16:42:17 -0800 you wrote:
+> Due to a typo, the code checked the RX checksum feature in the TX path.
 > 
-> The relation of phy clock is:
->     sai_pll_ref_sel
->        sai_pll
->           sai_pll_bypass
->              sai_pll_out
->                 sai_pll_out_div2
->                    earc_phy_cg
+> Fixes: 8a3b7a252dca ("drivers/net/ethernet/xilinx: added Xilinx AXI Ethernet driver")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
 > 
-> [...]
+>  drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to
+Here is the summary with links:
+  - [net] net: axienet: Fix check for partial TX checksum
+    https://git.kernel.org/netdev/net/c/fd0413bbf8b1
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks!
-
-[1/1] ASoC: fsl_xcvr: refine the requested phy clock frequency
-      commit: 347ecf29a68cc8958fbcbd26ef410d07fe9d82f4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
