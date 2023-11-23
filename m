@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E9E7F64EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96827F64F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345293AbjKWRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        id S1345248AbjKWRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjKWRKR (ORCPT
+        with ESMTP id S229462AbjKWRNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:10:17 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77C0CB
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:10:22 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so1559674a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:10:22 -0800 (PST)
+        Thu, 23 Nov 2023 12:13:39 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCDED4E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:13:45 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da3b4b7c6bdso1048123276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:13:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1700759421; x=1701364221; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3SFIzPt7TEX9nsF6CmEt2y+2kFBYceN5ADYmICOYrZM=;
-        b=WQ8S3eSst8h2CA0I6RYvHHQJtkMlslcg6CGqLiYHLzuhUfvfx+EuVzaBGn9xUqH93X
-         okddBTfi4TyXRbKtstu8Fr8er+QJHSPmACeeV8+f6Q0vnu7JBy8lGNl58XOSoJpJ4FUJ
-         TCLVkybbdBBsBqjYK95uzzEvREKEr5GvAuKx5nJRw9+1c/caiBsJErGlhGNdJhbttlR3
-         phzvqnBeaaga2JxTlry2/AgDOr4mZCJpOswXXiuEigxGwAfMQbFVCD3Re2al7mBHpJBn
-         hnjmGekwrCZLltIfwS6f8vECsYomq5tCRFPE6e3PAWtruOOX6l+YxIvFB3RFh2fMSwMI
-         w35w==
+        d=linaro.org; s=google; t=1700759625; x=1701364425; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bKNwCpnkd4HHouKuRGDnXl3uAXRtD1+lzSL7fC1Un1Y=;
+        b=yguYbwhSLCbKULZovv6wZH7UFFI8Af+Mo+t4Kdu/QUurD9MTjPfA9O5gp4BZeKVmTk
+         ddwqeavTnbUnmewreFzK8iEUc99jLHUh5FBO/4jbADAH3ul8iGACY6vcfz9+5aU6tPsp
+         ULDF67zAQGLh9wElRlhEuufLONoFWBN7KwRiC8EX/v3whp1ZmYn4g7AKBY/na1ay59bR
+         3/HQB0mnWVNVfCLzEIhKsQJetkMt4dA7H1PqDLdMzs/e1Pxbe97pVV9rwEPrYeJBcKS0
+         UwAN3gvNzEVWgbw7Rwk4nvDGEZgYb9+4IiVFuN2YwIchQ2Feo4efSGLOfx96ixnN8SI8
+         fmzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700759421; x=1701364221;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3SFIzPt7TEX9nsF6CmEt2y+2kFBYceN5ADYmICOYrZM=;
-        b=jtIayD5eq3MRBMO5YcGCZMGM+1kTjnsl8KtvfQd+k/Jq6+hfQeKcngeJyPeILRgjnW
-         6Ul2B87J7/VOQuyTJBsnKw2NW5foEKn+eUiQueABjq4VBsTKYKBR8hKXEJJCxF276W2A
-         XEJRlaSMXeHBYKmbwORMEEDISDg1pTQbhX9YAPW+0VmQ9Euk/uEW5t+U0olG8ckE9Sfp
-         ItNqwqOFnh7LwGpvNjzxTptRaUsHGifJri/ecsp7SxgJTlft1jDRhnttiTUukWlrBCkx
-         g4oKCwcClhhgFkNHVZb0JVNOrrYtgWVcqTPPgRA/swYcm0wHC24abNfaga5dkUWCAfQF
-         x4/g==
-X-Gm-Message-State: AOJu0YxnxbWwPeF3hrFI15EwfnbHnblT3Z2lPW8Xqca47HpQxsSknm5x
-        +vmZ5Q+lru2Tjs+SNTT6VpqIUA==
-X-Google-Smtp-Source: AGHT+IFCYKgtF3mjNW4AH91q6HDmr7WR4otmQC45N+hCgGoUwH/B1qJH8bZX7d0ZE0lapIiwwntAaw==
-X-Received: by 2002:a50:d747:0:b0:54a:b02e:1ffe with SMTP id i7-20020a50d747000000b0054ab02e1ffemr1648458edj.20.1700759421101;
-        Thu, 23 Nov 2023 09:10:21 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.3])
-        by smtp.gmail.com with ESMTPSA id p15-20020a05640210cf00b0054847e78203sm840661edu.29.2023.11.23.09.10.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 09:10:20 -0800 (PST)
-Message-ID: <a9760bbb-d06d-4914-b0d1-48a224f74858@tuxon.dev>
-Date:   Thu, 23 Nov 2023 19:10:17 +0200
+        d=1e100.net; s=20230601; t=1700759625; x=1701364425;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bKNwCpnkd4HHouKuRGDnXl3uAXRtD1+lzSL7fC1Un1Y=;
+        b=hb4vUgLKAGEBF2LKYhvTh7pVeeMjSzsfEYd2Xr+HE9KZuTE9mSiZGvC+zOSepEmQp5
+         lzNcm66RM2rukmJ4jTLa3YsAxcYk6L2NEsdCLLKQDyfxyVfuvXNIuaqmQ8qR5bX80dZU
+         vpI4DEb19sMsmNH2oWR2nBMKNjr735gX2asj5xFMl2huv0WCUyz4napJcbSqAFKOxxsA
+         FK8GJ+vKryAlrqlu3qyXPVF5NgVkzR344tu8R67wKR8ca6bWz/xZgMJ60AscPr2ZLn6g
+         rg24HvECfiaIaGT9W03ipgnCKb02hBdFRoQU3ew3czgGwdSr3CYL2ADfdOi//XLTIzd6
+         WD4A==
+X-Gm-Message-State: AOJu0YyPHmma1Fl4d3QE/Ft4oLLUJqfgBw7EGGBWhhPblHjA5Hq9Au8k
+        T+qBLN6rH7VFIjjF7FNRj62VnDcwFsB8HIb/gNPEwg==
+X-Google-Smtp-Source: AGHT+IGFr6g8jlQ3HN+XUNNaKBgc8oVfUM5jYKRK0VWTl7TjhJHxHFo9KjRuS+1jJjO2xdJg2ndmcfoZW2K0mOMBkR4=
+X-Received: by 2002:a25:6b06:0:b0:daf:76da:fe2b with SMTP id
+ g6-20020a256b06000000b00daf76dafe2bmr6007585ybc.10.1700759624759; Thu, 23 Nov
+ 2023 09:13:44 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/13] net: ravb: Rely on PM domain to enable refclk
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, p.zabel@pengutronix.de,
-        yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
-        biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        sergei.shtylyov@cogentembedded.com,
-        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-9-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdV=2_h2PW9K7zT3Hwqjdk6D2m_Dd09bqHtifAvVTM7Lrw@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdV=2_h2PW9K7zT3Hwqjdk6D2m_Dd09bqHtifAvVTM7Lrw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231117095531.1693753-1-treapking@chromium.org>
+In-Reply-To: <20231117095531.1693753-1-treapking@chromium.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Nov 2023 18:13:09 +0100
+Message-ID: <CAPDyKFqjcP2pAH8uo61Yc7wU76NM1aCMN6P1TaAoafCFfZSeWw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mtk-sd: Increase the verbosity of msdc_track_cmd_data
+To:     Pin-yen Lin <treapking@chromium.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        ot_shunxi.zhang@mediatek.corp-partner.google.com,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,122 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+On Fri, 17 Nov 2023 at 10:55, Pin-yen Lin <treapking@chromium.org> wrote:
+>
+> This log message is necessary for debugging, so enable it by default to
+> debug issues that are hard to reproduce locally.
+>
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+>
+> ---
+>
+>  drivers/mmc/host/mtk-sd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 97f7c3d4be6e..4469003f571e 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -1150,7 +1150,7 @@ static void msdc_recheck_sdio_irq(struct msdc_host *host)
+>  static void msdc_track_cmd_data(struct msdc_host *host, struct mmc_command *cmd)
+>  {
+>         if (host->error)
+> -               dev_dbg(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
+> +               dev_err(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
+>                         __func__, cmd->opcode, cmd->arg, host->error);
 
-On 23.11.2023 10:48, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> Thanks for your patch (which seems to have been delayed by 3 days, ouch)!
-> 
-> On Thu, Nov 23, 2023 at 5:35 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> For RZ/G3S and RZ/G2L SoCs the Ethernet's reference clock is part of the
->> Ethernet's power domain. It is controlled though CPG driver that is
->> providing the support for power domain that Ethernet belongs. Thus,
->> to be able to implement runtime PM (at least for RZ/G3S at the moment)
-> 
-> Why only for RZ/G3S?
+How critical is this? Should we perhaps use a dev_warn instead?
 
-(I'm copy pasting here what I already replied to Sergey)
+>  }
+>
 
-The reasons I've limited only to RZ/G3S are:
-1/ I don't have all the platforms to test it
-2/ on G1H this doesn't work. I tried to debugged it but I don't have a
-   platform at hand, only remotely, and is hardly to debug once the
-   ethernet fails to work: probe is working(), open is executed, PHY is
-   initialized and then TX/RX is not working... don't know why ATM.
-
-> 
->> w/o the need to add clock enable/disable specific calls in runtime PM
->> ops of ravb driver and interfere with other IP specific implementations,
->> add a new variable to struct_hw_info and enable the reference clock
->> based on the value of this variable (the variable states if reference
->> clock is part of the Ethernet's power domain).
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
->> --- a/drivers/net/ethernet/renesas/ravb.h
->> +++ b/drivers/net/ethernet/renesas/ravb.h
->> @@ -1043,6 +1043,7 @@ struct ravb_hw_info {
->>         unsigned nc_queues:1;           /* AVB-DMAC has RX and TX NC queues */
->>         unsigned magic_pkt:1;           /* E-MAC supports magic packet detection */
->>         unsigned half_duplex:1;         /* E-MAC supports half duplex mode */
->> +       unsigned refclk_in_pd:1;        /* Reference clock is part of a power domain. */
->>  };
->>
->>  struct ravb_private {
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 836fdb4b3bfd..ddd8cd2c0f89 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -2502,6 +2502,7 @@ static const struct ravb_hw_info gbeth_hw_info = {
->>         .tx_counters = 1,
->>         .carrier_counters = 1,
->>         .half_duplex = 1,
->> +       .refclk_in_pd = 1,
->>  };
->>
->>  static const struct of_device_id ravb_match_table[] = {
->> @@ -2749,12 +2750,14 @@ static int ravb_probe(struct platform_device *pdev)
->>                 goto out_release;
->>         }
->>
->> -       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
->> -       if (IS_ERR(priv->refclk)) {
->> -               error = PTR_ERR(priv->refclk);
->> -               goto out_release;
->> +       if (!info->refclk_in_pd) {
->> +               priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
->> +               if (IS_ERR(priv->refclk)) {
->> +                       error = PTR_ERR(priv->refclk);
->> +                       goto out_release;
->> +               }
->> +               clk_prepare_enable(priv->refclk);
->>         }
->> -       clk_prepare_enable(priv->refclk);
-> 
-> Is this patch really needed? It doesn't hurt to manually enable a
-> clock that is also under Runtime PM control.  Clock prepare/enable
-> refcounting will take care of that.
-
-I agree with that. I chose this path to not interfere w/ the comments
-ravb_runtime_nop() which I didn't understand. Also I fail to understand why
-the ravb_runtime_nop() is there...
-
-> 
->>
->>         if (info->gptp_ref_clk) {
->>                 priv->gptp_clk = devm_clk_get(&pdev->dev, "gptp");
->> @@ -2869,7 +2872,8 @@ static int ravb_probe(struct platform_device *pdev)
->>         if (info->ccc_gac)
->>                 ravb_ptp_stop(ndev);
->>  out_disable_refclk:
->> -       clk_disable_unprepare(priv->refclk);
->> +       if (!info->refclk_in_pd)
->> +               clk_disable_unprepare(priv->refclk);
->>  out_release:
->>         free_netdev(ndev);
->>  pm_runtime_put:
->> @@ -2890,7 +2894,8 @@ static void ravb_remove(struct platform_device *pdev)
->>         if (info->ccc_gac)
->>                 ravb_ptp_stop(ndev);
->>
->> -       clk_disable_unprepare(priv->refclk);
->> +       if (!info->refclk_in_pd)
->> +               clk_disable_unprepare(priv->refclk);
->>
->>         /* Set reset mode */
->>         ravb_write(ndev, CCC_OPC_RESET, CCC);
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Kind regards
+Uffe
