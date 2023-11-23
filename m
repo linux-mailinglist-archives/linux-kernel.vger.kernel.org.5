@@ -2,267 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D492C7F62A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A097F62A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346058AbjKWPXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S1346062AbjKWPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346049AbjKWPXX (ORCPT
+        with ESMTP id S1346061AbjKWPXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:23:23 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555A3C1;
-        Thu, 23 Nov 2023 07:23:30 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cf52e5e07eso14925065ad.0;
-        Thu, 23 Nov 2023 07:23:30 -0800 (PST)
+        Thu, 23 Nov 2023 10:23:32 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3563CD43;
+        Thu, 23 Nov 2023 07:23:38 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso1436779a12.1;
+        Thu, 23 Nov 2023 07:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700753010; x=1701357810; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=er0tOmx71t3kRF+sJtcJFohjaQYKHdu0ri/MYPaslMU=;
-        b=PIHroE1j75Bl12mxdFDtjDvfCO9RczOP8gAwsFaMZ8Ocx0di7RzKwb9jBD5gJwdPh1
-         jaLqtyTBvQjpHmgkp6PYGQ762r0onr9tdmqakAlgeigDyxL0bpfo+m1GG712Lpmz4iNI
-         JT56wT8udjqWzfrvege4zKLVCDIf1hIUIIR8FdGZ3LvXnb+HB5DuTnHlXyYNvvVDIF3N
-         NRTMOKlPJ7hgPz3rlRqn8bGh6wa1GQoR4RBy8f1MXxbgTx96Ai60pIrecpt7CMnKcVO1
-         SC9suXSZuoH5K3Lp5UhwKmVkPesgnwmDcadFO5gXCb/d1c8566Gs2Fy2bH9/5pdOwaa5
-         qItg==
+        d=gmail.com; s=20230601; t=1700753016; x=1701357816; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BLMaRNtmeOe3tEZqfnmo/Tb3QlfO/8+8xTr8EozY4WQ=;
+        b=R61k97spLHqCoQf3X7cgMJH/5AKdybkNgDl7PWtLCcAT1s7miCIjxUqWgXjfL6ZpcG
+         OUGL0jNMbym6LGsdpQaIZ0dxvg1D5Kvq5hCO9T9w1qpMt6NGJklev6nM6tczSzoP8rWg
+         bNmzooNHmGo5yr3IFrPL9S6h32NTchAwsDe8H5GDL7xhLj65LqXNroFInVmnZH+zdp1O
+         R07mapvVCOZIyibkfmv+CfUKOvaivbc9bm3g7J9YEkhvK1Vzjve7pRcMAReoUzv7497M
+         Hsj52qEWsQaQs91RNvnIg7jNwGj0JuVoJMiyk1sthDfPLJLLZjbC8d1zFDqmDWeaq4iK
+         /Ycg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700753010; x=1701357810;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=er0tOmx71t3kRF+sJtcJFohjaQYKHdu0ri/MYPaslMU=;
-        b=E4qzxzsnE74QY8i3FuSNHZ8KkDdg8fKWpc002eBqU3c/oTLJtZXD1nArVDB3wgi+WE
-         T7kqfln6xSIpk1+VzYvrbxbpcQJTY1Epe0WVHT70ZJbOGXEM3CLZ+Dv3BSr3ayVFswbP
-         7ucGWbCHpSEDl6LcCarINNbEf6RcP+bjeZVkO6yVoLnjWlNjx23B19avowSNe18xe907
-         Si9QJl17lbb1wjNI3ctMDfNCrDtw4uZj+bXT0oWtOp8Ds7jmh+nR6O1j400IzcLkRRiC
-         YMXpgxgZsCdxycU+CNDwHebhDS2jSEXr4q6BsocSsIrGD4OegTaZsYFvY/QL2QqCTTm8
-         Q4EQ==
-X-Gm-Message-State: AOJu0Yw5jFDhph5PaBjmtR+lU1rbxzUI5tSBnwSoih4oQBSpgVw3OM5Q
-        gRKJsd4iv38W/VZbrSzVomjjcPMdo8bBSQ==
-X-Google-Smtp-Source: AGHT+IHgAS4Tb9n7kVYDmGJ6n4Db7afPC11zCFXLxI0vV3gGFsQNzv4705dikKcZtJq5iAoNSU55PQ==
-X-Received: by 2002:a17:902:dac2:b0:1cc:644a:2129 with SMTP id q2-20020a170902dac200b001cc644a2129mr4275303plx.32.1700753009654;
-        Thu, 23 Nov 2023 07:23:29 -0800 (PST)
-Received: from localhost.localdomain ([110.46.146.116])
-        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b001c737950e4dsm418565plh.2.2023.11.23.07.23.27
+        d=1e100.net; s=20230601; t=1700753016; x=1701357816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BLMaRNtmeOe3tEZqfnmo/Tb3QlfO/8+8xTr8EozY4WQ=;
+        b=Dhl/+hypQfv5pIHdnG0Z7Ve4ANiOYg1YujBKGeJSiA173HK1O/FSsM/u+/KmdjdcIB
+         wAedhK60dU8sVL+DlsKY3RKvAkwB09h6G6Pb3L702hDE2Ad7Inu5Wu4RBkiuRE3oKIz2
+         pPmTocV0SilLE8q/mfopokg6FwFrNmqCdmuL4Pu3QXYUckL9Jea+/j2OWTBWJNdf8fl/
+         ehnjoj+kKBVaBpl4K0+PbSWOIr8DJKCm6SrvJsn4TqYkpvzDKaKPFueNiCEZWgeq3Aoi
+         EYV4GXj4jBhIJFNQpUTVxvU3tyJkyGDpMh2SHZAPxAeKVSZUGCppQ7fm53ndajbmkLeG
+         RTcw==
+X-Gm-Message-State: AOJu0YxHIuMp0DzJEkodipW42Pj7s9yG1g7doyxDpMPRAjmEsFD9KeUo
+        PmO/IiWHj8HwxZRbxxW+tX4=
+X-Google-Smtp-Source: AGHT+IFhvAoWJUpgF+ebzAvIpovp7flbvnXMNKnNOUjfiDgIp5Ai7GarunIV/4epWU2bTu3VjmpuyQ==
+X-Received: by 2002:a17:906:4146:b0:9d3:8d1e:cf0 with SMTP id l6-20020a170906414600b009d38d1e0cf0mr4657194ejk.54.1700753016381;
+        Thu, 23 Nov 2023 07:23:36 -0800 (PST)
+Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id lg18-20020a170906f89200b009737b8d47b6sm893970ejb.203.2023.11.23.07.23.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 07:23:29 -0800 (PST)
-From:   SungHwan Jung <onenowy@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     SungHwan Jung <onenowy@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: [PATCH v3 2/2] platform/x86: acer-wmi: add fan speed monitoring for Predator PHN16-71
-Date:   Fri, 24 Nov 2023 00:22:27 +0900
-Message-ID: <20231123152229.4920-3-onenowy@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231123152229.4920-1-onenowy@gmail.com>
-References: <20231123152229.4920-1-onenowy@gmail.com>
+        Thu, 23 Nov 2023 07:23:35 -0800 (PST)
+From:   mitrutzceclan <mitrutzceclan@gmail.com>
+X-Google-Original-From: mitrutzceclan <CeclanDumitru>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: [PATCH v6 1/2] dt-bindings: adc: add AD7173
+Date:   Thu, 23 Nov 2023 17:23:21 +0200
+Message-ID: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support CPU and GPU fan speed monitoring through WMI for Predator
-PHN16-71.
+From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 
-This patch depends on patch "platform/x86: acer-wmi: Add platform
-profile and mode key support for Predator PHN16-71"
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
-"select ACPI_VIDEO" cause recursive dependency and it is not recommended
-to use "select" for visible symbol, "select" has changed to "depends on".
-
-Signed-off-by: SungHwan Jung <onenowy@gmail.com>
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
- drivers/platform/x86/Kconfig    |  3 +-
- drivers/platform/x86/acer-wmi.c | 98 ++++++++++++++++++++++++++++++++-
- 2 files changed, 99 insertions(+), 2 deletions(-)
+V5->V6
+ - Moved global required property to proper placement
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 7e69fdacc..33ddb644e 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -177,7 +177,8 @@ config ACER_WMI
- 	depends on INPUT
- 	depends on RFKILL || RFKILL = n
- 	depends on ACPI_WMI
--	select ACPI_VIDEO
-+	depends on HWMON
-+	depends on ACPI_VIDEO
- 	select INPUT_SPARSEKMAP
- 	select LEDS_CLASS
- 	select NEW_LEDS
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index e3650dce0..f2f3b1c45 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -30,6 +30,7 @@
- #include <linux/input.h>
- #include <linux/input/sparse-keymap.h>
- #include <acpi/video.h>
-+#include <linux/hwmon.h>
- 
- MODULE_AUTHOR("Carlos Corbacho");
- MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
-@@ -96,6 +97,8 @@ enum acer_wmi_event_ids {
- 
- enum acer_wmi_predator_v4_sys_info_command {
- 	ACER_WMID_CMD_GET_PREDATOR_V4_BAT_STATUS = 0x02,
-+	ACER_WMID_CMD_GET_PREDATOR_V4_CPU_FAN_SPEED = 0x0201,
-+	ACER_WMID_CMD_GET_PREDATOR_V4_GPU_FAN_SPEED = 0x0601,
- };
- 
- static const struct key_entry acer_wmi_keymap[] __initconst = {
-@@ -241,6 +244,7 @@ struct hotkey_function_type_aa {
- #define ACER_CAP_TURBO_LED     BIT(8)
- #define ACER_CAP_TURBO_FAN     BIT(9)
- #define ACER_CAP_PLATFORM_PROFILE BIT(10)
-+#define ACER_CAP_FAN_SPEED_READ BIT(11)
- 
- /*
-  * Interface type flags
-@@ -353,7 +357,8 @@ static void __init set_quirks(void)
- 					 | ACER_CAP_TURBO_FAN;
- 
- 	if (quirks->predator_v4)
--		interface->capability |= ACER_CAP_PLATFORM_PROFILE;
-+		interface->capability |= ACER_CAP_PLATFORM_PROFILE |
-+					 ACER_CAP_FAN_SPEED_READ;
- }
- 
- static int __init dmi_matched(const struct dmi_system_id *dmi)
-@@ -1722,6 +1727,25 @@ static int acer_gsensor_event(void)
- 	return 0;
- }
- 
-+static int acer_get_fan_speed(int fan)
-+{
-+	if (quirks->predator_v4) {
-+		acpi_status status;
-+		u64 fanspeed;
+ .../bindings/iio/adc/adi,ad7173.yaml          | 178 ++++++++++++++++++
+ 1 file changed, 178 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..82e870122553
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,178 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		status = WMI_gaming_execute_u64(
-+			ACER_WMID_GET_GAMING_SYS_INFO_METHODID,
-+			fan == 0 ? ACER_WMID_CMD_GET_PREDATOR_V4_CPU_FAN_SPEED :
-+				   ACER_WMID_CMD_GET_PREDATOR_V4_GPU_FAN_SPEED,
-+			&fanspeed);
++title: Analog Devices AD7173 ADC
 +
-+		if (ACPI_FAILURE(status))
-+			return -EIO;
-+		return fanspeed >> 8;
-+	}
-+	return -EOPNOTSUPP;
-+}
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
 +
- /*
-  *  Predator series turbo button
-  */
-@@ -2476,6 +2500,8 @@ static u32 get_wmid_devices(void)
- 	return devices;
- }
- 
-+static int acer_wmi_hwmon_init(void);
++description: |
++  Analog Devices AD717X ADC's.
 +
- /*
-  * Platform device
-  */
-@@ -2505,6 +2531,9 @@ static int acer_platform_probe(struct platform_device *device)
- 			goto error_platform_profile;
- 	}
- 
-+	if (has_cap(ACER_CAP_FAN_SPEED_READ))
-+		err = acer_wmi_hwmon_init();
++  The AD717x family offer a complete integrated Sigma-Delta ADC solution which
++  can be used in high precision, low noise single channel applications (Life
++  Science measurements) or higher speed multiplexed applications (Factory Automation
++  PLC Input modules). The Sigma-Delta ADC is intended primarily for measurement
++  of signals close to DC but also delivers outstanding performance with input
++  bandwidths out to ~10kHz.
 +
- 	return err;
- 
- error_rfkill:
-@@ -2617,6 +2646,73 @@ static void __init create_debugfs(void)
- 			   &interface->debug.wmid_devices);
- }
- 
-+static umode_t acer_wmi_hwmon_is_visible(const void *data,
-+					 enum hwmon_sensor_types type, u32 attr,
-+					 int channel)
-+{
-+	switch (type) {
-+	case hwmon_fan:
-+		if (acer_get_fan_speed(channel) >= 0)
-+			return 0444;
-+		break;
-+	default:
-+		return 0;
-+	}
++  Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
 +
-+	return 0;
-+}
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
 +
-+static int acer_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-+			       u32 attr, int channel, long *val)
-+{
-+	int ret;
++  reg:
++    maxItems: 1
 +
-+	switch (type) {
-+	case hwmon_fan:
-+		ret = acer_get_fan_speed(channel);
-+		if (ret < 0)
-+			return ret;
-+		*val = ret;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
++  interrupts:
++    maxItems: 1
 +
-+	return 0;
-+}
++  '#address-cells':
++    const: 1
 +
-+static const struct hwmon_channel_info *const acer_wmi_hwmon_info[] = {
-+	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT, HWMON_F_INPUT), NULL
-+};
++  '#size-cells':
++    const: 0
 +
-+static const struct hwmon_ops acer_wmi_hwmon_ops = {
-+	.read = acer_wmi_hwmon_read,
-+	.is_visible = acer_wmi_hwmon_is_visible,
-+};
++  spi-max-frequency:
++    maximum: 20000000
 +
-+static const struct hwmon_chip_info acer_wmi_hwmon_chip_info = {
-+	.ops = &acer_wmi_hwmon_ops,
-+	.info = acer_wmi_hwmon_info,
-+};
++  refin-supply:
++    description: external reference supply, can be used as reference for conversion.
 +
-+static int acer_wmi_hwmon_init(void)
-+{
-+	struct device *dev = &acer_platform_device->dev;
-+	struct device *hwmon;
++  refin2-supply:
++    description: external reference supply, can be used as reference for conversion.
 +
-+	hwmon = devm_hwmon_device_register_with_info(dev, "acer",
-+						     &acer_platform_driver,
-+						     &acer_wmi_hwmon_chip_info,
-+						     NULL);
++  avdd-supply:
++    description: avdd supply, can be used as reference for conversion.
 +
-+	if (IS_ERR(hwmon)) {
-+		dev_err(dev, "Could not register acer hwmon device\n");
-+		return PTR_ERR(hwmon);
-+	}
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
 +
-+	return 0;
-+}
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
 +
- static int __init acer_wmi_init(void)
- {
- 	int err;
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      adi,reference-select:
++        description: |
++          Select the reference source to use when converting on
++          the specific channel. Valid values are:
++          refin      : REFIN(+)/REFIN(−).
++          refin2     : REFIN2(+)/REFIN2(−)
++          refout-avss: REFOUT/AVSS (Internal reference)
++          avdd       : AVDD
++
++          External reference refin2 only available on ad7173-8.
++          If not specified, internal reference used.
++        enum:
++          - refin
++          - refin2
++          - refout-avss
++          - avdd
++        default: refout-avss
++
++      bipolar:
++        type: boolean
++
++    required:
++      - reg
++      - diff-channels
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        compatible:
++          not:
++            contains:
++              const: adi,ad7173-8
++    then:
++      properties:
++        refin2-supply: false
++      patternProperties:
++        "^channel@[0-9a-f]$":
++          properties:
++            adi,reference-select:
++              enum:
++                - refin
++                - refout-avss
++                - avdd
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++        };
++      };
++    };
 -- 
-2.43.0
+2.42.0
 
