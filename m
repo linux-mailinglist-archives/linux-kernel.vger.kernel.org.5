@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1833D7F5AA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD67F5AAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjKWIzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        id S231127AbjKWI6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWIzE (ORCPT
+        with ESMTP id S229453AbjKWI6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:55:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6413392
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:55:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA498C433C9;
-        Thu, 23 Nov 2023 08:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700729711;
-        bh=a8bIfdWRjbbeVBGYW6CWhqPVbcXuU1WN/e10YeYK80Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H8/Tjm3JpVMhpB+KM7SMZzbHYF4Ry1DWiMCi14G6/nZU6W5eJCWqwhlceu4FHH/Db
-         0QMJsUhtZDlgMCH73xQ9CVrPEvDIbR7Pk1RzNoqPkg/sjMy0/Ci1znb7erU2GaobZ1
-         7UA3E/FoisWfHVUOr6Rmg+uFsu5PwCIkpC9hhv/s=
-Date:   Thu, 23 Nov 2023 08:55:08 +0000
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     xingwei lee <xrivendell7@gmail.com>
-Cc:     "syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com" 
-        <syzbot+786b124fe4ce4dc99357@syzkaller.appspotmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in joydev_connect
-Message-ID: <2023112332-award-fanciness-2bcf@gregkh>
-References: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
+        Thu, 23 Nov 2023 03:58:38 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A3111F;
+        Thu, 23 Nov 2023 00:58:42 -0800 (PST)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 52474201D4;
+        Thu, 23 Nov 2023 09:58:37 +0100 (CET)
+Date:   Thu, 23 Nov 2023 09:58:33 +0100
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Parth Pancholi <parth105105@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Parth Pancholi <parth.pancholi@toradex.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v1] arm64: dts: k3-am625-verdin: enable Verdin UART2
+Message-ID: <ZV8UOTSTl6spUXt5@francesco-nb.int.toradex.com>
+References: <20231121160436.1032364-1-parth105105@gmail.com>
+ <20231123071235.omgxs3ixnojpkfvu@greeter>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABOYnLyCRyK4qpS2X8ssA6yxCDtEWR3dSsee2Lm6VCQUyD07VQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231123071235.omgxs3ixnojpkfvu@greeter>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 07:55:50PM +0800, xingwei lee wrote:
-> Hi. I have reproduced this bug with repro.txt and repro.c below:
+Hello Nishanth,
+
+On Thu, Nov 23, 2023 at 01:12:35AM -0600, Nishanth Menon wrote:
+> On 17:04-20231121, Parth Pancholi wrote:
+> >  /* Verdin UART_2 */
+> >  &wkup_uart0 {
+> > -	/* FIXME: WKUP UART0 is used by DM firmware */
+> > -	status = "reserved";
+> > +	status = "okay";
+> >  };
+> > -- 
+> > 2.34.1
+> > 
 > 
-> repro.txt
-> r0 = openat$uinput(0xffffffffffffff9c, &(0x7f0000000500), 0x802, 0x0)
-> ioctl$UI_DEV_SETUP(r0, 0x405c5503, &(0x7f0000000080)={{0x0, 0xffff,
-> 0x3}, 'syz0\x00'})
-> ioctl$UI_DEV_CREATE(r0, 0x5501) (fail_nth: 51)
+> Do the &pinctrl_wkup_uart0 in verdin.dtsi hold good through these
+> variants?
+Yes.
 
-You are using fault injection, which, by it's very name, causes faults :)
+Let me add a little bit of context.
 
-Can you reproduce it without causing faults in the kernel?  And if so,
-can you create a patch to fix this?
+In general the way the Verdin AM62 (and Toradex SOM) is designed is that
+we have a standard pinmuxing on the module edge connector (SODIMM) and
+normally the carrier board that is mated with just implements it.
+It's absolutely possible to redefine it all, but to maximize
+compatibility across the family what we do at most is to reconfigure
+some pins as GPIO.
 
-thanks,
+Francesco
 
-greg k-h
