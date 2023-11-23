@@ -2,93 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 016AC7F64DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF50E7F64D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345305AbjKWRGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        id S1345287AbjKWRGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjKWRG1 (ORCPT
+        with ESMTP id S229981AbjKWRGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:06:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C931BE;
-        Thu, 23 Nov 2023 09:06:33 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389448692"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="389448692"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 09:06:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="796376621"
-X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="796376621"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 09:06:27 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1r6D9j-0000000GQ9P-1JPi;
-        Thu, 23 Nov 2023 19:06:23 +0200
-Date:   Thu, 23 Nov 2023 19:06:23 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     mitrutzceclan <mitrutzceclan@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <ZV-Gj3boJ1LPYj5T@smile.fi.intel.com>
-References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
- <20231123152331.5751-2-user@HYB-hhAwRlzzMZb>
- <ZV-CHima8bpXcopc@smile.fi.intel.com>
+        Thu, 23 Nov 2023 12:06:20 -0500
+Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C7E1AE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:06:26 -0800 (PST)
+Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-5bdfc1bb3eeso1893490a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:06:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700759186; x=1701363986;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yf11zIw9U1hiIYNefzB8bU+cyfTgmWMokVCBDmAj/ig=;
+        b=BL/GvBnrL8kW78m3IJjByDwU4XhFiKWGw8xcKQM8F+RIblOt1GCNkGH8GwBSSmglIg
+         cqtpQGArXR8D+9SvVibIGQ7wgqsm+w8zX9V4rKpq49PrVCb1waCPvpXkyJfHK+Yt3IKj
+         mZ+PIgU5LM2TnfQ2SkrZt2j7V6NpCtFW8h0eZ9tSQelj3o4k5jSU2K6HkdbLpby99ww5
+         voHDSVC6aoF0boNhqIfQ7FCAaybpss18m3XW8WE336bQaAFFVEoiNAmHT4cT5IjnscE6
+         cIe6t3at0O3G7g/rh8DhuPPDQGkcKgYRb2i8K55XJOXQYuBac2EKGilfPomUdzY+WKKR
+         dvHA==
+X-Gm-Message-State: AOJu0YzFrFOlt//vjHKokkbCw0WjVP3nVpFMuSLWURUOUcwbPADv4V9t
+        0xirW/pVm6GurFXrBMU5FNhiBskSw64Wj4YYfaKHxprzUGIc
+X-Google-Smtp-Source: AGHT+IFaW8lUP9iGdpM+V8LEdM2TkTQRYLAg8rSW6D5JBfiJHnbvXaMthVVsXAcs2MxWDZvsTXddYbcGvOx6c4/HRWVcUCElTkx0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZV-CHima8bpXcopc@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:3547:b0:27d:3322:68aa with SMTP id
+ lt7-20020a17090b354700b0027d332268aamr789618pjb.2.1700759183501; Thu, 23 Nov
+ 2023 09:06:23 -0800 (PST)
+Date:   Thu, 23 Nov 2023 09:06:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fb2f84060ad4da7f@google.com>
+Subject: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
+From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 06:47:26PM +0200, Andy Shevchenko wrote:
-> On Thu, Nov 23, 2023 at 05:23:22PM +0200, mitrutzceclan wrote:
+Hello,
 
-...
+syzbot found the following issue on:
 
-> > +static int ad7173_free_config_slot_lru(struct ad7173_state *st)
-> 
-> > +static int ad7173_load_config(struct ad7173_state *st,
-> > +			      struct ad7173_channel_config *cfg)
-> 
-> Have you checked, btw, list_lru.h? Maybe all this can be simply changed by
-> using existing library?
+HEAD commit:    037266a5f723 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fa37b7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af04b7c4d36966d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5b339d16ffa61fd512d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b86f2f680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b289f680000
 
-Okay, it seems specific to MM, but maybe there something similar done which
-can be split into generic LRU library? In any case it seems too much for this
-nice series, so can you just add a comment on top of these functions to
-mention that it may be switched to a generic LRU implementation if one exists?
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-037266a5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3611d88a1ea6/vmlinux-037266a5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/92866a30a4f7/bzImage-037266a5.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/083e689d86f3/mount_0.gz
 
--- 
-With Best Regards,
-Andy Shevchenko
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com
+
+R13: 0000000000000021 R14: 431bde82d7b634db R15: 00007ffc52cb10d0
+ </TASK>
+------------[ cut here ]------------
+memcpy: detected field-spanning write (size 3960) of single field "hdr1" at fs/ntfs3/index.c:1912 (size 16)
+WARNING: CPU: 2 PID: 5214 at fs/ntfs3/index.c:1912 indx_insert_into_buffer.isra.0+0xfb5/0x1280 fs/ntfs3/index.c:1912
+Modules linked in:
+CPU: 2 PID: 5214 Comm: syz-executor117 Not tainted 6.7.0-rc1-syzkaller-00344-g037266a5f723 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:indx_insert_into_buffer.isra.0+0xfb5/0x1280 fs/ntfs3/index.c:1912
+Code: c1 ca c1 fe c6 05 a3 cb 3d 0c 01 90 48 8b 74 24 70 b9 10 00 00 00 48 c7 c2 80 cf 03 8b 48 c7 c7 e0 cf 03 8b e8 8c e9 87 fe 90 <0f> 0b 90 90 e9 1b fe ff ff 48 c7 44 24 68 00 00 00 00 31 db e9 10
+RSP: 0018:ffffc900035c76e8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 00000000fffffff4 RCX: ffffffff814ca799
+RDX: ffff8880287393c0 RSI: ffffffff814ca7a6 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000005 R12: ffff888021065c00
+R13: ffff8880143ecc20 R14: ffff888029712800 R15: ffff888018fae018
+FS:  0000555556341380(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd80dde5e00 CR3: 0000000026243000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ indx_insert_entry+0x1a5/0x460 fs/ntfs3/index.c:1981
+ ni_add_name+0x4d9/0x820 fs/ntfs3/frecord.c:3055
+ ni_rename+0xa1/0x1a0 fs/ntfs3/frecord.c:3087
+ ntfs_rename+0x91f/0xec0 fs/ntfs3/namei.c:322
+ vfs_rename+0x13e0/0x1c30 fs/namei.c:4844
+ do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+ __do_sys_rename fs/namei.c:5042 [inline]
+ __se_sys_rename fs/namei.c:5040 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fd8160252a9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc52cb1068 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007ffc52cb1090 RCX: 00007fd8160252a9
+RDX: 00007fd816024370 RSI: 0000000020000a40 RDI: 0000000020000300
+RBP: 0000000000000002 R08: 00007ffc52cb0e06 R09: 00007ffc52cb10b0
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007ffc52cb108c
+R13: 0000000000000021 R14: 431bde82d7b634db R15: 00007ffc52cb10d0
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
