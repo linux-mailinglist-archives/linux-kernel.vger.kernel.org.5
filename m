@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0757F5E2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C877D7F5E33
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345116AbjKWLsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S1345119AbjKWLta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345109AbjKWLsO (ORCPT
+        with ESMTP id S1345105AbjKWLt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:48:14 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AE498;
-        Thu, 23 Nov 2023 03:48:20 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548ce28fd23so1059813a12.3;
-        Thu, 23 Nov 2023 03:48:20 -0800 (PST)
+        Thu, 23 Nov 2023 06:49:28 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B86B199
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:49:34 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c88b7e69dfso9374561fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:49:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700740099; x=1701344899; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=18T4h+PgamAj+KI6bp/QSD69CdQrdRYfbgvXoI1RLic=;
-        b=dlnqU4IpSvNUob3equ3CpY631Ljrg1tYvtolF//pMDerL2mOgfcuJaqfcUoZ8w6YYJ
-         xU0ANitdpt+SsuHnBXlPj2G1Wob+U8e3gcBdkamn4wDrzG7cdvyWpKouDYqQrBSsy9MK
-         VCnfgOz1EonSKAFrbK4GlxGjp0MAe37HzDr/qCrRF71pxCLk8a45PWC8dApEztxVtdqv
-         9RljQGXOs4UKVt8StrFvjJShlbduW1rZp1fbmWdE+dkPolpmWHllfIgiQs3zEroS5QAp
-         m0hMtHF0PpmjcumrYvwWeK54CpyvU4kSLU7ypyXWhiuMx90XQ53lD3YBxfi4HFSFJ1Nw
-         tGLQ==
+        d=linaro.org; s=google; t=1700740172; x=1701344972; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zodyNt8HU4L28WXiwaDHTNOJQKBgwAnxPffi7XClyJk=;
+        b=TqcoSxCGXlxkQisfvPMHs0KTR0U1e7BokgKL5LJCFpbZSsD6WmUKz7Tbbvrf8HWEpW
+         20QngTkecoT0uEQV6f1Lkygl9aAk4TncuKxZXPVyEVW8pAI+qk+6pROq4paCKWYEd44O
+         NToQhmZjblpsUA+XgkRYjxcpbiWjmR4yaVlqi1YEZkId+Ndv3u2LqPsX3nT9vM84YU2Z
+         fqqOp/XCQDeq7a4AS+N8l5bOUB94/KhR7XIEVW7r2IjkL26sqOfdZvqvgeYdSnXdezTS
+         I3ERqjzWugYIsoi9aypfatpq2UTR1lKzi72TsEgGr2L4h9JUD2ZeTAs5w1Kc8wsl4EU2
+         32fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700740099; x=1701344899;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=18T4h+PgamAj+KI6bp/QSD69CdQrdRYfbgvXoI1RLic=;
-        b=Jj6lWue7d4iwFm71MtMezGIquaZ5whtuc43SY6PEaLo2NueQ9CL39LU7kB6voI84Iz
-         0CRWLA8ifPwwX40GfhO/WgIxKPawkeOwf94P6fsifk9m49PWn2Ypu7mRjCdVX+Gr1tC+
-         fd/UsJITJWJKgNd21lCX/I+ItjbkARXZ+ALfI7pEBZpy5ES/LloIZtaPPRjEgnFN1MtK
-         11tDojMSTNtlPZ6pFr/iN+65VkwP6pJFw3x9pxf3Jvkff6gDCLClXUoPJ3Xi2Ix8Er7z
-         psEH//22OLgNwkwiHvjDbE1C0ByrvSuelW/RL58mbAGeIKmzyIpQ8khJuUrfKr5xkvlu
-         mMXw==
-X-Gm-Message-State: AOJu0Yx2wymRg+ulhnnpiHSmisKRAm8uZrO6AI/i2ZcjOGXehdX/WPUJ
-        ZF9oBrch+yqHMhFFGHtEmZ/ulEqEv2/gyA==
-X-Google-Smtp-Source: AGHT+IEbYAuGtC0y0bBEXSgDdMN9HKIUv8FGPxeyOmqBlLAHorj8Ux7M+9oPlUH3ZjoMcro6j2/wHw==
-X-Received: by 2002:a50:aadc:0:b0:540:77f8:240 with SMTP id r28-20020a50aadc000000b0054077f80240mr3939890edc.14.1700740099123;
-        Thu, 23 Nov 2023 03:48:19 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d183:a5d9:39a9:cd13])
-        by smtp.gmail.com with ESMTPSA id c3-20020a056402120300b00530bc7cf377sm563779edw.12.2023.11.23.03.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 03:48:18 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH RESEND] sparc: remove obsolete config ARCH_ATU
-Date:   Thu, 23 Nov 2023 12:48:15 +0100
-Message-Id: <20231123114815.819-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1700740172; x=1701344972;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zodyNt8HU4L28WXiwaDHTNOJQKBgwAnxPffi7XClyJk=;
+        b=CSOt5nN+cdmzu55TP8+L1oThphtdJ9nvuNXI9iYQStFLICGsHEVIzQvqmrbAmBDyYn
+         KXVut9DI4FvJw5kNWlt0g2aNUx49DZVwgogBMU8Yk+QNDcixkiP5IvuIhomKoEXAYtpd
+         np1XIeO7jMbZZdlvXagfG1qPjyAhYp3gh+zf3Mg6BLORJs5AV6kCiw1K75UedumyKuPq
+         LghOioXlPFablj0+ZsffjdHcoE4oV1HnYsZdszA5o2tHfw1ECh1TZcuc8tC7LYiNw92U
+         9iCcJKnuiBW54QBofImXelGUaw3S0pJn5aYbXcSDhftSXPywCpOOyyAhhGl9MW4Y/+/y
+         w1Zw==
+X-Gm-Message-State: AOJu0Yw+krK2oqmMBxTHxs4i6z2oIsanSGQ1z1xJ9FOzTZwBXslOEJXp
+        oT4DiYfuVBKZ0kIPR/c+nE0KWg==
+X-Google-Smtp-Source: AGHT+IEvzxF8Q9LmbNFSbHtl6ccN5a7PavFv9RBaNpiHxwVgHQErbC8TQdgSRKYphLN2YUDeVe6q4A==
+X-Received: by 2002:a2e:b604:0:b0:2c6:efc6:946f with SMTP id r4-20020a2eb604000000b002c6efc6946fmr3697514ljn.30.1700740172318;
+        Thu, 23 Nov 2023 03:49:32 -0800 (PST)
+Received: from [172.30.204.221] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id c12-20020a2e9d8c000000b002c505793a23sm164296ljj.109.2023.11.23.03.49.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 03:49:32 -0800 (PST)
+Message-ID: <2628b928-248b-41c7-81e2-4e4252d2b0f7@linaro.org>
+Date:   Thu, 23 Nov 2023 12:49:31 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/7] media: qcom: camss: Add support for named
+ power-domains
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231118-b4-camss-named-power-domains-v5-0-55eb0f35a30a@linaro.org>
+ <20231118-b4-camss-named-power-domains-v5-5-55eb0f35a30a@linaro.org>
+ <6e66875a-5cb1-42bc-86e0-b69cf73981c0@linaro.org>
+ <339c3efd-8d2b-4b71-8dc1-cdc30ab7bb8a@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <339c3efd-8d2b-4b71-8dc1-cdc30ab7bb8a@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before consolidation of commit 4965a68780c5 ("arch: define the
-ARCH_DMA_ADDR_T_64BIT config symbol in lib/Kconfig"), the config ARCH_ATU
-was used to control the state of the config ARCH_DMA_ADDR_T_64BIT. After
-this consolidation, the config ARCH_ATU has been without use and effect.
 
-Remove this obsolete config.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
+On 11/22/23 21:55, Bryan O'Donoghue wrote:
+> On 22/11/2023 19:55, Konrad Dybcio wrote:
+>>
+>>
+>> On 11/18/23 13:11, Bryan O'Donoghue wrote:
+>>> Right now we use fixed indexes to assign power-domains, with a
+>>> requirement for the TOP GDSC to come last in the list.
+>>>
+>>> Adding support for named power-domains means the declaration in the dtsi
+>>> can come in any order.
+>>>
+>>> After this change we continue to support the old indexing - if a SoC
+>>> resource declaration or the in-use dtb doesn't declare power-domain names
+>>> we fall back to the default legacy indexing.
+>>>
+>>>  From this point on though new SoC additions should contain named
+>>> power-domains, eventually we will drop support for legacy indexing.
+>>>
+>>> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> ---
+>> So, this commit should be a NOP within this series?
+>>
+>> res->pd_name isn't defined anywhere afaics
+>>
+>> Konrad
+> 
+> This series is mergeable though the linux-media tree standalone, yes.
+> 
+> Once merged, the dtsi change given in the cover letter will be submitted.
+What I meant to say is that something similar to [1] is missing to
+make use of the infra introduced with this patch.
 
- arch/sparc/Kconfig | 4 ----
- 1 file changed, 4 deletions(-)
+Konrad
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 49849790e66d..6b4d3182baae 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -112,10 +112,6 @@ config ARCH_PROC_KCORE_TEXT
- config CPU_BIG_ENDIAN
- 	def_bool y
- 
--config ARCH_ATU
--	bool
--	default y if SPARC64
--
- config STACKTRACE_SUPPORT
- 	bool
- 	default y if SPARC64
--- 
-2.17.1
-
+[1] https://git.codelinaro.org/bryan.odonoghue/kernel/-/commit/f43942091c01c1f263a6e7adbcd0ed8ce723a303
