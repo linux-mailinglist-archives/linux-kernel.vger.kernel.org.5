@@ -2,117 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE567F58EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4617F58F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 08:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344842AbjKWHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 02:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
+        id S1344846AbjKWHQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 02:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKWHPB (ORCPT
+        with ESMTP id S229737AbjKWHQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 02:15:01 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8AF83;
-        Wed, 22 Nov 2023 23:15:07 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AN5xPSU015289;
-        Thu, 23 Nov 2023 07:14:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dmtKlYR/zX+0yqgepCzSMKtDa2N/1FNfQNnT8kro9OM=;
- b=dZ4R6mCUqJc2srvA+dNf9aOHheXLbMY0UgLXbmDBpm54Imw26qmCbVh6m9rZ7ZbgKrWu
- cq1wHGCzUKYpSfx3tBlidjO5xtScJMr1SlffbJSqVprBBKjD8c7dzMvgbpfoA8IoVqes
- D6NlZitOf+xIRQbumipMUCIqhK8+bKLUAo6BhsLxS84nFUZINwZ+LQK3bdBMZZAYnqjd
- nL43/AfUhucjSaethwZHqY7xr+4mMkk61sPmO5quHC8vAT584jMXeA0DBq6IakhTeVMT
- mZ7ju2dlqjQ559meeaLi05STqqjNR2djuse6w1RC1Cy/DZJp8/AE+L3OdddMq2ptMAR2 cg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhvm0rqyd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 07:14:59 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AN7EwZo023792
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Nov 2023 07:14:58 GMT
-Received: from [10.216.58.146] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
- 2023 23:14:51 -0800
-Message-ID: <7167bbde-f958-42d6-bffc-4a00ee2beee9@quicinc.com>
-Date:   Thu, 23 Nov 2023 12:44:51 +0530
+        Thu, 23 Nov 2023 02:16:07 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4541983;
+        Wed, 22 Nov 2023 23:16:13 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54553e4888bso741443a12.2;
+        Wed, 22 Nov 2023 23:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700723772; x=1701328572; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1M3SJtzz5C3bUSDZkAmRVh+gZoP04r7fK3PelZP1IM=;
+        b=hYl0RoVJx1y6aquBrw4entzxtwbppWjJhKR08K807Zi8Xm0Si4YVaZetNDbRiEkEKF
+         +iqmnlwQo1HnuZt8bFUq2YStp9H056ohXKhVaiOYgDnlgU/CHErj7llZ7jSxPAMc8nER
+         bgEjk0E9mq8uNHPNm9o5wPQzfqbA5uvlLtuhK0lsD2s3UysDiKCl1BDnWJ0f0X7nwjKS
+         2WpdMwG9pMs5FBVCIJ7nXDFOkMZalCZv2MOyJqKUkolY0Vz6+QbIjcBXoWbJ/36yB4wS
+         92MyoEZPMMhl3d1Vcexfmhy3Anur53oLSlT7wd9bkPG4K05SVavwP3T1SixhN3VzAxpK
+         zcjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700723772; x=1701328572;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s1M3SJtzz5C3bUSDZkAmRVh+gZoP04r7fK3PelZP1IM=;
+        b=l1MHs7cpfonr28hAOCOfc3L+CfXipxc5xusFOYbKD9sZVnOdJEvuMgBGYc/dBA/Nu/
+         sJZ+2oA4FBpuoJU12OZbL2/rVj0jXRp9VZuktXuHQw85mWH0Zumdv4NuReT3ayWmm2W/
+         C/pu9XSuT7YrDBYIWtIPkO6WtjU1mV9GvHVtmXGdHy3LUVnLq/RSAjkZNL3ThSDyCdB/
+         dc8BBodaKhU9rmZ52B3VRap7/2qMCShMbmSG9jnLKmxug7Dy0VhZyYJvuORNjOey6psP
+         vUALV0Ium1/ntwBEx0K7vEiYiWrctoURPM7RQXgXYtfIwy9LethLvtx6bf8EDB04wpTm
+         TgCw==
+X-Gm-Message-State: AOJu0Yw8lmAWChoUZEENPrvHtWwiiwmUfak1ZSqS/hOyMF0H/zxudO/H
+        QDAOi5Mw2SN9nTSU/OE/3Bc=
+X-Google-Smtp-Source: AGHT+IG2lzFXoBD5/YVWF8Wdre51d/r4yqSFQ+l4y0uTZy+JK3Ss3+SAA6KwfCsX+vsojVfzrw7Cfg==
+X-Received: by 2002:a05:6402:31fc:b0:548:6870:7b73 with SMTP id dy28-20020a05640231fc00b0054868707b73mr1846198edb.41.1700723771352;
+        Wed, 22 Nov 2023 23:16:11 -0800 (PST)
+Received: from ?IPV6:2a01:c23:c0f2:3200:59ae:788f:5985:cbec? (dynamic-2a01-0c23-c0f2-3200-59ae-788f-5985-cbec.c23.pool.telefonica.de. [2a01:c23:c0f2:3200:59ae:788f:5985:cbec])
+        by smtp.googlemail.com with ESMTPSA id y26-20020aa7ccda000000b0053635409213sm328230edt.34.2023.11.22.23.16.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 23:16:10 -0800 (PST)
+Message-ID: <aeb96878-7ce0-48a9-b8f2-fdc9a3c0fc83@gmail.com>
+Date:   Thu, 23 Nov 2023 08:16:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/9] clk: qcom: add NSS clock Controller driver for
- Qualcomm IPQ5332
+Subject: Re: [PATCH v4 00/20] remove I2C_CLASS_DDC support
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231120214624.9378-1-hkallweit1@gmail.com>
+ <4e0cc556-a7eb-48ce-8226-0f5281f3ef0a@suse.de>
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20231121-ipq5332-nsscc-v2-0-a7ff61beab72@quicinc.com>
- <20231121-ipq5332-nsscc-v2-7-a7ff61beab72@quicinc.com>
- <1f643ec4-2f55-4fe3-8d66-a47241c25619@linaro.org>
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <1f643ec4-2f55-4fe3-8d66-a47241c25619@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mXdGPNOETakmGv54R-ba0ioccd8_ZmYE
-X-Proofpoint-ORIG-GUID: mXdGPNOETakmGv54R-ba0ioccd8_ZmYE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_04,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=640 mlxscore=0 adultscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311230050
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <4e0cc556-a7eb-48ce-8226-0f5281f3ef0a@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/23/2023 1:50 AM, Konrad Dybcio wrote:
+On 23.11.2023 07:56, Thomas Zimmermann wrote:
+> Hi
 > 
-> 
-> On 11/21/23 15:30, Kathiravan Thirumoorthy wrote:
->> Add Networking Sub System Clock Controller(NSSCC) driver for Qualcomm
->> IPQ5332 based devices.
+> Am 20.11.23 um 22:46 schrieb Heiner Kallweit:
+>> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+>> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+>> Class-based device auto-detection is a legacy mechanism and shouldn't
+>> be used in new code. So we can remove this class completely now.
 >>
->> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>> Preferably this series should be applied via the i2c tree.
+>>
+>> v2:
+>> - change tag in commit subject of patch 03
+>> - add ack tags
+>> v3:
+>> - fix a compile error in patch 5
+>> v4:
+>> - more ack and review tags
+>>
+>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> 
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
+> for the patches that don't already have my r-b.
+> 
+This refers to which patches of the series?
+Patches 8, 16, 18 are the remaining ones w/o A-b or R-b.
+
+> Best regards
+> Thomas
+> 
+Thanks, Heiner
+
+>>
 >> ---
-> LGTM except a single nit
-
-
-Thanks, will modify it as below
-
-MODULE_DESCRIPTION("QTI NSSCC IPQ5332 Driver");
-
-
+>>
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+>>   drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+>>   drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+>>   drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+>>   drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+>>   drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+>>   drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+>>   drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+>>   drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+>>   drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+>>   drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+>>   drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+>>   drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+>>   drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+>>   drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+>>   drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+>>   drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+>>   drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+>>   drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+>>   drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+>>   drivers/video/fbdev/cyber2000fb.c                 |    1 -
+>>   drivers/video/fbdev/i740fb.c                      |    1 -
+>>   drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
+>>   drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+>>   drivers/video/fbdev/s3fb.c                        |    1 -
+>>   drivers/video/fbdev/tdfxfb.c                      |    1 -
+>>   drivers/video/fbdev/tridentfb.c                   |    1 -
+>>   drivers/video/fbdev/via/via_i2c.c                 |    1 -
+>>   include/linux/i2c.h                               |    1 -
+>>   31 files changed, 9 insertions(+), 47 deletions(-)
 > 
->> +MODULE_DESCRIPTION("QTI NSS_CC MIAMI Driver");
-> 
-> Konrad
-> 
+
