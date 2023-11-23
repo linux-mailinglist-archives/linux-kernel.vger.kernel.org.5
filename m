@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F377F6350
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9DB7F6358
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346344AbjKWPsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:48:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
+        id S1346309AbjKWPtX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Nov 2023 10:49:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346247AbjKWPsd (ORCPT
+        with ESMTP id S1346241AbjKWPtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:48:33 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338B5199C;
-        Thu, 23 Nov 2023 07:48:25 -0800 (PST)
-Date:   Thu, 23 Nov 2023 16:48:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700754504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=GGBNiHGzoiIME5WzDOjeU6yIMJyG9M6+3L0+44mBOOU=;
-        b=nO+7OrY80am5M+YonKBgPmJZQEJpc+4FTIvn5KVhIZuOeejBhGHdeD+qF3ntVlY61tr8pt
-        eNEPDnaaj+ktU3lL09cGYnVGF9iVetY3lY60YiPtE8XtZQM94BclOMP6uqSiFyuADGX4uO
-        UF+L1al4+e38Hpmu0I7OVl+j3yX4YjyuYh0R/PUge/ejCIWuzIAuRQn1hTsSYrVLwAEZVq
-        5tArHtzBpGzgnhA/Ls599STBQxQk0aBeBp7tAw/4dqdFz8SFR5G/0N60oiE6uCBGPXrpqK
-        Dac7v5XMq9B2glZyJK5RUtPlkl+vX7sUVk+vhyT1W7kM477AjQF9qiJ0am+/wQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700754504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=GGBNiHGzoiIME5WzDOjeU6yIMJyG9M6+3L0+44mBOOU=;
-        b=ZXRMzurpnA7AjhGzxIOD+YKqZv/pEXZfPC7OoJeYJFTPDn/34lcWPpt55IWIIM4+u90R34
-        8zmbprgPqBczvBAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.7-rc2-rt1
-Message-ID: <20231123154822.7Tk-NOd9@linutronix.de>
+        Thu, 23 Nov 2023 10:49:08 -0500
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95061739;
+        Thu, 23 Nov 2023 07:48:55 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-db40849f2d5so1374713276.0;
+        Thu, 23 Nov 2023 07:48:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700754534; x=1701359334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B/SOfJqkoytaNeU5VNb3XcpwwjRQzzRj7rldaz7nZBI=;
+        b=Sm7KAx0nf8tkV6NjPxwBbDPmcGVhtaRCtwpk0fXfbNqZ5P2vGngcJqHKtEZS9ofKbG
+         SsMqsfwaMnlAlUIAVr4vQA02arcGel6ScVOWc9uJEdPWbKSqb5+/fQtJ8rX0FhvzJIOR
+         wvpwcTnee+ryjvnERDb8/QQM/WZktP02lPFbztCMR0HPub/C5bknDJnbR3YizojWfv+k
+         CPda9oZOIRTFPUBYjVmxPOlSdu3TwIeGDVp4XIwfnLAwhITg/OV7CTkWXZu/sWadh137
+         vAH7wmQHSVpv9MJiUA4mHo+DroTW1ValK4AdK/TJ5lKs2QIT4n01ppfzLOTNC9DdJtiP
+         FLaQ==
+X-Gm-Message-State: AOJu0YzLCvtbYIFd+djoYEhPW42cT+PrM86VQVTmdp/frykGDtljAdGy
+        j5SXfErDyocbmeqQHRwFR5E87gPktzcvAA==
+X-Google-Smtp-Source: AGHT+IHX5/6A+/91ntECrBYe7ZkS/3dV1LmLW0vKJWZFGHyo67w7SvpLlREvYJHhXIuogovjrjZyjg==
+X-Received: by 2002:a05:6902:4f4:b0:db4:2e2f:3ab4 with SMTP id w20-20020a05690204f400b00db42e2f3ab4mr2337886ybs.1.1700754534240;
+        Thu, 23 Nov 2023 07:48:54 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id i143-20020a25d195000000b00da086d6921fsm374865ybg.50.2023.11.23.07.48.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 07:48:53 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a877e0f0d8so16376927b3.1;
+        Thu, 23 Nov 2023 07:48:52 -0800 (PST)
+X-Received: by 2002:a0d:ccd0:0:b0:5a7:d8c8:aa17 with SMTP id
+ o199-20020a0dccd0000000b005a7d8c8aa17mr2762297ywd.13.1700754532458; Thu, 23
+ Nov 2023 07:48:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com> <20231120070024.4079344-2-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120070024.4079344-2-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Nov 2023 16:48:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWiJMDjHR72FfSQP9sWz2d-XOsPakvZ3HKRmZAakuPh1Q@mail.gmail.com>
+Message-ID: <CAMuHMdWiJMDjHR72FfSQP9sWz2d-XOsPakvZ3HKRmZAakuPh1Q@mail.gmail.com>
+Subject: Re: [PATCH 01/14] clk: renesas: rzg2l-cpg: Reuse code in rzg2l_cpg_reset()
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Code in rzg2l_cpg_reset() is equivalent with the combined code of
+> rzg2l_cpg_assert() and rzg2l_cpg_deassert(). There is no need to have
+> different versions thus re-use rzg2l_cpg_assert() and rzg2l_cpg_deassert().
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-I'm pleased to announce the v6.7-rc2-rt1 patch set. 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v6.8.
 
-Changes since v6.6-rt15
+Gr{oetje,eeting}s,
 
-  - Update to v6.7-rc2.
+                        Geert
 
-Known issues
-     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
-     hist" as trigger. It is not yet understood. The report is at
-	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The delta patch against v6.6-rt15 is can be found here:
- 
-     https://git.kernel.org/rt/linux-rt-devel/d/v6.7-rc2-rt1/v6.6-rt15
-
-You can get this release via the git tree at:
-
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.7-rc2-rt1
-
-The RT patch against v6.7-rc2 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patch-6.7-rc2-rt1.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patches-6.7-rc2-rt1.tar.xz
-
-Sebastian
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
