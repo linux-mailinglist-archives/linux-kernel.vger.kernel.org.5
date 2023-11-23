@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3886B7F5EFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9807F5F02
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 13:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345296AbjKWMYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 07:24:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S1345297AbjKWM2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 07:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345259AbjKWMYf (ORCPT
+        with ESMTP id S1345259AbjKWM2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 07:24:35 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3FA1BE
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:24:39 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0B0146601710;
-        Thu, 23 Nov 2023 12:24:36 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700742278;
-        bh=8M7OgbZSaIpWXuFVFIaRp2fTZ+ArHXOEMptApVN8sP8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fBIewKcIjj7pTwC8CWI+0K7YHnwVm/ZASFAZ9yCOQByK4uLaIkwcEbbzoN0cLfXUl
-         LbIDWE3X6Il9UCtKHQOFOdSoVKeeMMB1Ftlb+enJA2D5pUZ3qRr1BJzqZzp+Yc0ZpL
-         soqBQu21vXXRXi5yEmWoP07R11qTZqz8/b7O1ZAS7aRLz1ZXCR4s+LApnc+o1x1zbB
-         i3Df6i6JzyvU0BW9qg+fcTgiZAeP5iFxoqrZYAI86EXVwz/HouNZzTqqqVJi2Fdqqi
-         FbZeXAilAZyiOeEB+QUSkXerGTCc1KPzFjKYE9AIyF/aQG2qj98YepEbMRCt38h8Jr
-         endofMupZFq3w==
-Message-ID: <14113ca6-79af-e857-d9ee-b8cf7572abd5@collabora.com>
-Date:   Thu, 23 Nov 2023 15:24:32 +0300
+        Thu, 23 Nov 2023 07:28:30 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F37AB1A5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 04:28:35 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 171001042;
+        Thu, 23 Nov 2023 04:29:22 -0800 (PST)
+Received: from [10.1.37.168] (XHFQ2J9959.cambridge.arm.com [10.1.37.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 717033F7A6;
+        Thu, 23 Nov 2023 04:28:32 -0800 (PST)
+Message-ID: <42f9e03f-86ad-418e-a337-7aef202e6a5b@arm.com>
+Date:   Thu, 23 Nov 2023 12:28:31 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put drm-shmem
- pages
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-16-dmitry.osipenko@collabora.com>
- <20231110115354.356c87f7@collabora.com>
- <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
- <20231123100557.05a49343@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20231123100557.05a49343@collabora.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <89a9fe07-a5c5-4a99-b588-e6145053c58f@redhat.com>
+ <1459f78b-e80c-4f21-bc65-f0ab259d348a@arm.com>
+ <08ef2c36-2b9c-4b96-9d1d-68cca0f68ba5@redhat.com>
+ <2d027a8d-adfb-481d-89ea-c99139e669aa@arm.com>
+ <2618b024-6a95-4bfc-a08d-59d86e9931e5@redhat.com>
+ <d639ab17-8f6b-438d-bdcd-91924185b462@redhat.com>
+ <118eb2d3-d504-49f0-b7f2-f29b64a8f404@arm.com>
+ <15e2c6cb-e86d-417b-b83d-7c7459d5be8f@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <15e2c6cb-e86d-417b-b83d-7c7459d5be8f@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,194 +73,312 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 12:05, Boris Brezillon wrote:
-> On Thu, 23 Nov 2023 01:04:56 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> On 11/10/23 13:53, Boris Brezillon wrote:
->>> Hm, there was no drm_gem_shmem_get_pages_sgt() call here, why should we
->>> add a drm_gem_shmem_get_pages()? What we should do instead is add a
->>> drm_gem_shmem_get_pages() for each drm_gem_shmem_get_pages_sgt() we
->>> have in the driver (in panfrost_mmu_map()), and add
->>> drm_gem_shmem_put_pages() calls where they are missing
->>> (panfrost_mmu_unmap()).
->>>   
->>>> +		if (err)
->>>> +			goto err_free;
->>>> +	}
->>>> +
->>>>  	return bo;
->>>> +
->>>> +err_free:
->>>> +	drm_gem_shmem_free(&bo->base);
->>>> +
->>>> +	return ERR_PTR(err);
->>>>  }
->>>>  
->>>>  struct drm_gem_object *
->>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
->>>> index 770dab1942c2..ac145a98377b 100644
->>>> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
->>>> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
->>>> @@ -504,7 +504,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->>>>  		if (IS_ERR(pages[i])) {
->>>>  			ret = PTR_ERR(pages[i]);
->>>>  			pages[i] = NULL;
->>>> -			goto err_pages;
->>>> +			goto err_unlock;
->>>>  		}
->>>>  	}
->>>>  
->>>> @@ -512,7 +512,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->>>>  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
->>>>  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
->>>>  	if (ret)
->>>> -		goto err_pages;
->>>> +		goto err_unlock;  
->>> Feels like the panfrost_gem_mapping object should hold a ref on the BO
->>> pages, not the BO itself, because, ultimately, the user of the BO is
->>> the GPU. This matches what I was saying about moving get/put_pages() to
->>> panfrost_mmu_map/unmap(): everytime a panfrost_gem_mapping becomes
->>> active, to want to take a pages ref, every time it becomes inactive,
->>> you should release the pages ref.  
+On 23/11/2023 12:12, David Hildenbrand wrote:
+> On 23.11.23 11:26, Ryan Roberts wrote:
+>> On 16/11/2023 14:15, David Hildenbrand wrote:
+>>> On 16.11.23 15:13, David Hildenbrand wrote:
+>>>> On 16.11.23 14:49, Ryan Roberts wrote:
+>>>>> On 16/11/2023 13:20, David Hildenbrand wrote:
+>>>>>> On 16.11.23 12:20, Ryan Roberts wrote:
+>>>>>>> On 16/11/2023 11:03, David Hildenbrand wrote:
+>>>>>>>> On 15.11.23 17:30, Ryan Roberts wrote:
+>>>>>>>>> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
+>>>>>>>>> maps a physically contiguous block of memory, all belonging to the same
+>>>>>>>>> folio, with the same permissions, and for shared mappings, the same
+>>>>>>>>> dirty state. This will likely improve performance by a tiny amount due
+>>>>>>>>> to batching the folio reference count management and calling set_ptes()
+>>>>>>>>> rather than making individual calls to set_pte_at().
+>>>>>>>>>
+>>>>>>>>> However, the primary motivation for this change is to reduce the number
+>>>>>>>>> of tlb maintenance operations that the arm64 backend has to perform
+>>>>>>>>> during fork, as it is about to add transparent support for the
+>>>>>>>>> "contiguous bit" in its ptes. By write-protecting the parent using the
+>>>>>>>>> new ptep_set_wrprotects() (note the 's' at the end) function, the
+>>>>>>>>> backend can avoid having to unfold contig ranges of PTEs, which is
+>>>>>>>>> expensive, when all ptes in the range are being write-protected.
+>>>>>>>>> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
+>>>>>>>>> in the child, the backend does not need to fold a contiguous range once
+>>>>>>>>> they are all populated - they can be initially populated as a contiguous
+>>>>>>>>> range in the first place.
+>>>>>>>>>
+>>>>>>>>> This change addresses the core-mm refactoring only, and introduces
+>>>>>>>>> ptep_set_wrprotects() with a default implementation that calls
+>>>>>>>>> ptep_set_wrprotect() for each pte in the range. A separate change will
+>>>>>>>>> implement ptep_set_wrprotects() in the arm64 backend to realize the
+>>>>>>>>> performance improvement as part of the work to enable contpte mappings.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>>>>> ---
+>>>>>>>>>       include/linux/pgtable.h |  13 +++
+>>>>>>>>>       mm/memory.c             | 175
+>>>>>>>>> +++++++++++++++++++++++++++++++---------
+>>>>>>>>>       2 files changed, 150 insertions(+), 38 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>>>>>>> index af7639c3b0a3..1c50f8a0fdde 100644
+>>>>>>>>> --- a/include/linux/pgtable.h
+>>>>>>>>> +++ b/include/linux/pgtable.h
+>>>>>>>>> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct
+>>>>>>>>> mm_struct
+>>>>>>>>> *mm, unsigned long addres
+>>>>>>>>>       }
+>>>>>>>>>       #endif
+>>>>>>>>>       +#ifndef ptep_set_wrprotects
+>>>>>>>>> +struct mm_struct;
+>>>>>>>>> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
+>>>>>>>>> +                unsigned long address, pte_t *ptep,
+>>>>>>>>> +                unsigned int nr)
+>>>>>>>>> +{
+>>>>>>>>> +    unsigned int i;
+>>>>>>>>> +
+>>>>>>>>> +    for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+>>>>>>>>> +        ptep_set_wrprotect(mm, address, ptep);
+>>>>>>>>> +}
+>>>>>>>>> +#endif
+>>>>>>>>> +
+>>>>>>>>>       /*
+>>>>>>>>>        * On some architectures hardware does not set page access bit when
+>>>>>>>>> accessing
+>>>>>>>>>        * memory page, it is responsibility of software setting this bit.
+>>>>>>>>> It brings
+>>>>>>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>>>>>>> index 1f18ed4a5497..b7c8228883cf 100644
+>>>>>>>>> --- a/mm/memory.c
+>>>>>>>>> +++ b/mm/memory.c
+>>>>>>>>> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma,
+>>>>>>>>> struct vm_area_struct *src_vma
+>>>>>>>>>               /* Uffd-wp needs to be delivered to dest pte as well */
+>>>>>>>>>               pte = pte_mkuffd_wp(pte);
+>>>>>>>>>           set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+>>>>>>>>> -    return 0;
+>>>>>>>>> +    return 1;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
+>>>>>>>>> +                struct page *anchor, unsigned long anchor_vaddr)
+>>>>>>>>> +{
+>>>>>>>>> +    unsigned long offset;
+>>>>>>>>> +    unsigned long vaddr;
+>>>>>>>>> +
+>>>>>>>>> +    offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
+>>>>>>>>> +    vaddr = anchor_vaddr + offset;
+>>>>>>>>> +
+>>>>>>>>> +    if (anchor > page) {
+>>>>>>>>> +        if (vaddr > anchor_vaddr)
+>>>>>>>>> +            return 0;
+>>>>>>>>> +    } else {
+>>>>>>>>> +        if (vaddr < anchor_vaddr)
+>>>>>>>>> +            return ULONG_MAX;
+>>>>>>>>> +    }
+>>>>>>>>> +
+>>>>>>>>> +    return vaddr;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static int folio_nr_pages_cont_mapped(struct folio *folio,
+>>>>>>>>> +                      struct page *page, pte_t *pte,
+>>>>>>>>> +                      unsigned long addr, unsigned long end,
+>>>>>>>>> +                      pte_t ptent, bool *any_dirty)
+>>>>>>>>> +{
+>>>>>>>>> +    int floops;
+>>>>>>>>> +    int i;
+>>>>>>>>> +    unsigned long pfn;
+>>>>>>>>> +    pgprot_t prot;
+>>>>>>>>> +    struct page *folio_end;
+>>>>>>>>> +
+>>>>>>>>> +    if (!folio_test_large(folio))
+>>>>>>>>> +        return 1;
+>>>>>>>>> +
+>>>>>>>>> +    folio_end = &folio->page + folio_nr_pages(folio);
+>>>>>>>>> +    end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
+>>>>>>>>> +    floops = (end - addr) >> PAGE_SHIFT;
+>>>>>>>>> +    pfn = page_to_pfn(page);
+>>>>>>>>> +    prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
+>>>>>>>>> +
+>>>>>>>>> +    *any_dirty = pte_dirty(ptent);
+>>>>>>>>> +
+>>>>>>>>> +    pfn++;
+>>>>>>>>> +    pte++;
+>>>>>>>>> +
+>>>>>>>>> +    for (i = 1; i < floops; i++) {
+>>>>>>>>> +        ptent = ptep_get(pte);
+>>>>>>>>> +        ptent = pte_mkold(pte_mkclean(ptent));
+>>>>>>>>> +
+>>>>>>>>> +        if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
+>>>>>>>>> +            pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
+>>>>>>>>> +            break;
+>>>>>>>>> +
+>>>>>>>>> +        if (pte_dirty(ptent))
+>>>>>>>>> +            *any_dirty = true;
+>>>>>>>>> +
+>>>>>>>>> +        pfn++;
+>>>>>>>>> +        pte++;
+>>>>>>>>> +    }
+>>>>>>>>> +
+>>>>>>>>> +    return i;
+>>>>>>>>>       }
+>>>>>>>>>         /*
+>>>>>>>>> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated
+>>>>>>>>> page
+>>>>>>>>> - * is required to copy this pte.
+>>>>>>>>> + * Copy set of contiguous ptes.  Returns number of ptes copied if
+>>>>>>>>> succeeded
+>>>>>>>>> + * (always gte 1), or -EAGAIN if one preallocated page is required to
+>>>>>>>>> copy the
+>>>>>>>>> + * first pte.
+>>>>>>>>>        */
+>>>>>>>>>       static inline int
+>>>>>>>>> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct
+>>>>>>>>> *src_vma,
+>>>>>>>>> -         pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+>>>>>>>>> -         struct folio **prealloc)
+>>>>>>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct
+>>>>>>>>> *src_vma,
+>>>>>>>>> +          pte_t *dst_pte, pte_t *src_pte,
+>>>>>>>>> +          unsigned long addr, unsigned long end,
+>>>>>>>>> +          int *rss, struct folio **prealloc)
+>>>>>>>>>       {
+>>>>>>>>>           struct mm_struct *src_mm = src_vma->vm_mm;
+>>>>>>>>>           unsigned long vm_flags = src_vma->vm_flags;
+>>>>>>>>>           pte_t pte = ptep_get(src_pte);
+>>>>>>>>>           struct page *page;
+>>>>>>>>>           struct folio *folio;
+>>>>>>>>> +    int nr = 1;
+>>>>>>>>> +    bool anon;
+>>>>>>>>> +    bool any_dirty = pte_dirty(pte);
+>>>>>>>>> +    int i;
+>>>>>>>>>             page = vm_normal_page(src_vma, addr, pte);
+>>>>>>>>> -    if (page)
+>>>>>>>>> +    if (page) {
+>>>>>>>>>               folio = page_folio(page);
+>>>>>>>>> -    if (page && folio_test_anon(folio)) {
+>>>>>>>>> -        /*
+>>>>>>>>> -         * If this page may have been pinned by the parent process,
+>>>>>>>>> -         * copy the page immediately for the child so that we'll always
+>>>>>>>>> -         * guarantee the pinned page won't be randomly replaced in the
+>>>>>>>>> -         * future.
+>>>>>>>>> -         */
+>>>>>>>>> -        folio_get(folio);
+>>>>>>>>> -        if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+>>>>>>>>> -            /* Page may be pinned, we have to copy. */
+>>>>>>>>> -            folio_put(folio);
+>>>>>>>>> -            return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+>>>>>>>>> -                         addr, rss, prealloc, page);
+>>>>>>>>> +        anon = folio_test_anon(folio);
+>>>>>>>>> +        nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+>>>>>>>>> +                        end, pte, &any_dirty);
+>>>>>>>>> +
+>>>>>>>>> +        for (i = 0; i < nr; i++, page++) {
+>>>>>>>>> +            if (anon) {
+>>>>>>>>> +                /*
+>>>>>>>>> +                 * If this page may have been pinned by the
+>>>>>>>>> +                 * parent process, copy the page immediately for
+>>>>>>>>> +                 * the child so that we'll always guarantee the
+>>>>>>>>> +                 * pinned page won't be randomly replaced in the
+>>>>>>>>> +                 * future.
+>>>>>>>>> +                 */
+>>>>>>>>> +                if (unlikely(page_try_dup_anon_rmap(
+>>>>>>>>> +                        page, false, src_vma))) {
+>>>>>>>>> +                    if (i != 0)
+>>>>>>>>> +                        break;
+>>>>>>>>> +                    /* Page may be pinned, we have to copy. */
+>>>>>>>>> +                    return copy_present_page(
+>>>>>>>>> +                        dst_vma, src_vma, dst_pte,
+>>>>>>>>> +                        src_pte, addr, rss, prealloc,
+>>>>>>>>> +                        page);
+>>>>>>>>> +                }
+>>>>>>>>> +                rss[MM_ANONPAGES]++;
+>>>>>>>>> +                VM_BUG_ON(PageAnonExclusive(page));
+>>>>>>>>> +            } else {
+>>>>>>>>> +                page_dup_file_rmap(page, false);
+>>>>>>>>> +                rss[mm_counter_file(page)]++;
+>>>>>>>>> +            }
+>>>>>>>>>               }
+>>>>>>>>> -        rss[MM_ANONPAGES]++;
+>>>>>>>>> -    } else if (page) {
+>>>>>>>>> -        folio_get(folio);
+>>>>>>>>> -        page_dup_file_rmap(page, false);
+>>>>>>>>> -        rss[mm_counter_file(page)]++;
+>>>>>>>>> +
+>>>>>>>>> +        nr = i;
+>>>>>>>>> +        folio_ref_add(folio, nr);
+>>>>>>>>>           }
+>>>>>>>>>             /*
+>>>>>>>>> @@ -968,24 +1051,28 @@ copy_present_pte(struct vm_area_struct *dst_vma,
+>>>>>>>>> struct
+>>>>>>>>> vm_area_struct *src_vma,
+>>>>>>>>>            * in the parent and the child
+>>>>>>>>>            */
+>>>>>>>>>           if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+>>>>>>>>> -        ptep_set_wrprotect(src_mm, addr, src_pte);
+>>>>>>>>> +        ptep_set_wrprotects(src_mm, addr, src_pte, nr);
+>>>>>>>>>               pte = pte_wrprotect(pte);
+>>>>>>>>
+>>>>>>>> You likely want an "any_pte_writable" check here instead, no?
+>>>>>>>>
+>>>>>>>> Any operations that target a single indiividual PTE while multiple PTEs are
+>>>>>>>> adjusted are suspicious :)
+>>>>>>>
+>>>>>>> The idea is that I've already constrained the batch of pages such that the
+>>>>>>> permissions are all the same (see folio_nr_pages_cont_mapped()). So if the
+>>>>>>> first
+>>>>>>> pte is writable, then they all are - something has gone badly wrong if some
+>>>>>>> are
+>>>>>>> writable and others are not.
+>>>>>>
+>>>>>> I wonder if it would be cleaner and easier to not do that, though.
+>>>>>>
+>>>>>> Simply record if any pte is writable. Afterwards they will *all* be R/O
+>>>>>> and you
+>>>>>> can set the cont bit, correct?
+>>>>>
+>>>>> Oh I see what you mean - that only works for cow mappings though. If you
+>>>>> have a
+>>>>> shared mapping, you won't be making it read-only at fork. So if we ignore
+>>>>> pte_write() state when demarking the batches, we will end up with a batch of
+>>>>> pages with a mix of RO and RW in the parent, but then we set_ptes() for the
+>>>>> child and those pages will all have the permissions of the first page of the
+>>>>> batch.
+>>>>
+>>>> I see what you mean.
+>>>>
+>>>> After fork(), all anon pages will be R/O in the parent and the child.
+>>>> Easy. If any PTE is writable, wrprotect all in the parent and the child.
+>>>>
+>>>> After fork(), all shared pages can be R/O or R/W in the parent. For
+>>>> simplicity, I think you can simply set them all R/O in the child. So if
+>>>> any PTE is writable, wrprotect all in the child.
+>>>
+>>> Or better: if any is R/O, set them all R/O. Otherwise just leave them as is.
 >>
->> The panfrost_mmu_unmap() is also used by shrinker when BO is purged. I'm
->> unhappy with how icky it all becomes if unmap is made to put pages.
+>> I've just come back to this to code it up, and want to clarify this last
+>> comment; I'm already going to have to collect any_writable for the anon case, so
+>> I will already have that info for the shared case too. I think you are
+>> suggesting I *additionally* collect any_readonly, then in the shared case, I
+>> only apply wrprotect if (any_writable && any_readonly). i.e. only apply
+>> wrprotect if there is a mix of permissions for the batch, otherwise all the
+>> permissions are the same (either all RW or all RO) and I can elide the wrprotet.
+>> Is that what you meant?
 > 
-> Why, that's exactly what's supposed to happen. If you mmu_unmap(), that
-> means you no longer need the pages ref you got.
+> Yes. I suspect you might somehow be able to derive "any_readonly = nr -
+> !any_writable".
 
-The drm_gem_shmem_purge() frees the pages. If mmu_unmap() frees pages too, then it becomes odd for drm_gem_shmem_purge() that it needs to free pages that were already freed.
+Yep, nice.
 
->> Previously map() was implicitly allocating pages with get_sgt() and then
->> pages were implicitly released by drm_gem_shmem_free(). A non-heap BO is
->> mapped when it's created by Panfrost, hence the actual lifetime of pages
->> is kept unchanged by this patch.
 > 
-> But the whole point of making it explicit is to control when pages are
-> needed or not, isn't it. The fact we mmu_map() the BO at open time, and
-> keep it mapped until it's not longer referenced is an implementation
-> choice, and I don't think having pages_put() in mmu_unmap() changes
-> that.
+> Within a VMA, we really should only see:
+> * writable VMA: some might be R/O, some might be R/W
+> * VMA applicable to NUMA hinting: some might be PROT_NONE, others R/O or
+>   R/W
+> 
+> One could simply skip batching for now on pte_protnone() and focus on the
+> "writable" vs. "not-writable".
 
-Previously, when the last mmu_unmap() was done, the pages were not released.
-
-If you'll make unmap to put pages, then you can't map BO again because pages are released by the last put() of unmap. In order to keep the old pages allocation logic unchanged, the pages must be referenced while BO is alive, not while mapping is alive.
-
-Technically, the code can be changed to put pages on unmap. This requires adding special quirk to drm_gem_shmem_purge() and then for Panfrost pages should have the same lifetime as BO, hence why bother?
-
-
-diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index 5ee98b6f0c94..5492610802a1 100644
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -600,7 +600,9 @@ drm_gem_shmem_shrinker_put_pages_locked(struct drm_gem_shmem_object *shmem)
- 	if (shmem->evicted)
- 		return;
- 
--	drm_gem_shmem_free_pages(shmem);
-+	if (refcount_read(&shmem->pages_use_count))
-+		drm_gem_shmem_free_pages(shmem);
-+
- 	drm_vma_node_unmap(&obj->vma_node, dev->anon_inode->i_mapping);
- }
- 
-@@ -608,7 +610,8 @@ void drm_gem_shmem_purge_locked(struct drm_gem_shmem_object *shmem)
- {
- 	struct drm_gem_object *obj = &shmem->base;
- 
--	drm_WARN_ON(obj->dev, !drm_gem_shmem_is_purgeable(shmem));
-+	if (refcount_read(&shmem->pages_use_count))
-+		drm_WARN_ON(obj->dev, !drm_gem_shmem_is_purgeable(shmem));
- 
- 	drm_gem_shmem_shrinker_put_pages_locked(shmem);
- 	drm_gem_free_mmap_offset(obj);
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-index a6128e32f303..499964c43a7b 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-@@ -41,9 +41,6 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
- 		drm_gem_shmem_put_pages(&bo->base);
- 	}
- 
--	if (!bo->is_heap && !obj->import_attach)
--		drm_gem_shmem_put_pages(&bo->base);
--
- 	drm_gem_shmem_free(&bo->base);
- }
- 
-@@ -302,12 +299,6 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
- 	bo->noexec = !!(flags & PANFROST_BO_NOEXEC);
- 	bo->is_heap = !!(flags & PANFROST_BO_HEAP);
- 
--	if (!bo->is_heap) {
--		err = drm_gem_shmem_get_pages(shmem);
--		if (err)
--			goto err_free;
--	}
--
- 	return bo;
- 
- err_free:
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 01cd97011ea5..4ed4ba5df420 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -335,9 +335,13 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
- 		prot |= IOMMU_NOEXEC;
- 
- 	if (!obj->import_attach) {
--		ret = drm_gem_shmem_pin(shmem);
-+		ret = drm_gem_shmem_get_pages(shmem);
- 		if (ret)
- 			return ret;
-+
-+		ret = drm_gem_shmem_pin(shmem);
-+		if (ret)
-+			goto put_pages;
- 	}
- 
- 	sgt = drm_gem_shmem_get_pages_sgt(shmem);
-@@ -349,9 +353,18 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
- 	mmu_map_sg(pfdev, mapping->mmu, mapping->mmnode.start << PAGE_SHIFT,
- 		   prot, sgt);
- 	mapping->active = true;
-+
-+	if (!obj->import_attach)
-+		drm_gem_shmem_unpin(shmem);
-+
-+	return 0;
-+
- unpin:
- 	if (!obj->import_attach)
- 		drm_gem_shmem_unpin(shmem);
-+put_pages:
-+	if (!obj->import_attach)
-+		drm_gem_shmem_put_pages(shmem);
- 
- 	return ret;
- }
-@@ -360,6 +373,7 @@ void panfrost_mmu_unmap(struct panfrost_gem_mapping *mapping)
- {
- 	struct panfrost_gem_object *bo = mapping->obj;
- 	struct drm_gem_object *obj = &bo->base.base;
-+	struct drm_gem_shmem_object *shmem = &bo->base;
- 	struct panfrost_device *pfdev = to_panfrost_device(obj->dev);
- 	struct io_pgtable_ops *ops = mapping->mmu->pgtbl_ops;
- 	u64 iova = mapping->mmnode.start << PAGE_SHIFT;
-@@ -389,6 +403,9 @@ void panfrost_mmu_unmap(struct panfrost_gem_mapping *mapping)
- 	panfrost_mmu_flush_range(pfdev, mapping->mmu,
- 				 mapping->mmnode.start << PAGE_SHIFT, len);
- 	mapping->active = false;
-+
-+	if (!bo->is_heap && !obj->import_attach)
-+		drm_gem_shmem_put_pages_locked(shmem);
- }
- 
- static void mmu_tlb_inv_context_s1(void *cookie)
+I'm not sure we can simply "skip" batching on pte_protnone() since we will need
+to terminate the batch if we spot it. But if we have to look for it anyway, we
+might as well just terminate the batch when the value of pte_protnone()
+*changes*. I'm also proposing to take this approach for pte_uffd_wp() which also
+needs to be carefully preserved per-pte.
 
 
--- 
-Best regards,
-Dmitry
+> 
 
