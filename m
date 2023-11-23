@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4777F68A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3D27F68B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 22:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjKWVY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 16:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S229718AbjKWVcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 16:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWVYy (ORCPT
+        with ESMTP id S229453AbjKWVcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 16:24:54 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEAFD42;
-        Thu, 23 Nov 2023 13:25:01 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b845ba9ba9so740222b6e.3;
-        Thu, 23 Nov 2023 13:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700774700; x=1701379500; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=06m9r8pewc3sAhhWhDQGbaOQDXI7LPtwjYRXQISAdy0=;
-        b=FOziBpbmjKT9iRgjJNBxzFnOcZax01LXmuAEvbi+Ic88cNcKpLHqcplzesSWEIjHg7
-         w5kdOmY6i/0vRL66GGpgj8C+TYprZtJb/w9thXpxo7H3wgTkM3gYV3VALa0uMEzh3jbn
-         UESqvhyh3p8ZJXbAD85NRxqC9NIRsEguMtdA7Jyom1dPCGErYZ9DFxJKgLukVnhZeIHM
-         EpLHHv6oEKTWcLVw6qvHId3xlg2Gk1kWpDcMOlYoVO02iErqXQnhMLeyfKnnehfPu4fo
-         abTiWU92LXU4c4B3uFBcxIJsH6uux3AvtCtA+ehjkw9zaAX9VC53kYUY7xb9K+xJGWI+
-         deWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700774700; x=1701379500;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=06m9r8pewc3sAhhWhDQGbaOQDXI7LPtwjYRXQISAdy0=;
-        b=Fev+g9/dw7pUOOsRSzUlM6zAy7ASv3kwjJ9vvA4p5X1VgqSW/Av8YCvEPUOazVcXlS
-         3aNMQz8PWviQyBOabom+dpUpqnhfn8qMWXdMgeuPnia3VDrkhKYTjEhqYzMzJuSnHkJB
-         18Sl8pywj4NFkD/ner4+mBmB7LiIaU4HcJwWDj5x3F9KP7w+MxpkaW5w0Wu8DlifQKq3
-         7MYVTNyd7a0Ta4cQkd+tPuA/VOUEfmAark9syaJZV3uCfirvqbsVxVn+ydTqOrUEBtKU
-         oCHRImEJACMVi1X6vQfGf92P1F79ibAhA+lQ/15B8Gz9l2tjNnqPn2acU1yYWQ5WKgiA
-         E+/A==
-X-Gm-Message-State: AOJu0YwEv5VXgS9ud7/2ncC2jRTLwwzwY3LBcl/KIcKJigXlMDS1UaeP
-        BnRrvw1y5Fg48QAmaeaHJEI=
-X-Google-Smtp-Source: AGHT+IHy6TtasYU/FTTTvHqsqdEvKxviAQxRfVS/+34Avd+oUgZfbjTuiiDQsKL6giUCtGeACy0lbw==
-X-Received: by 2002:a05:6808:20a4:b0:3af:585:402a with SMTP id s36-20020a05680820a400b003af0585402amr777803oiw.39.1700774700496;
-        Thu, 23 Nov 2023 13:25:00 -0800 (PST)
-Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id o11-20020ae9f50b000000b0076cdc3b5beasm729367qkg.86.2023.11.23.13.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 13:24:59 -0800 (PST)
-Date:   Thu, 23 Nov 2023 16:24:59 -0500
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Mike Pattrick <mkp@redhat.com>, netdev@vger.kernel.org
-Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, Mike Pattrick <mkp@redhat.com>
-Message-ID: <655fc32bb506e_d14d4294b3@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20231123183835.635210-1-mkp@redhat.com>
-References: <20231123183835.635210-1-mkp@redhat.com>
-Subject: Re: [PATCH net-next] packet: Account for VLAN_HLEN in csum_start when
- virtio_net_hdr is enabled
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Thu, 23 Nov 2023 16:32:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0767AD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 13:32:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA4BC433CA;
+        Thu, 23 Nov 2023 21:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700775174;
+        bh=EJrVqrprMxLs4WMWlL05MhTf0n0/Q9nUsytRTZI/d+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZL3+ID0ndJJL3M/cuMNcG1XIlie8Hvdz9NNpc7AdcSp41bhttRGAOP7Nl7uQnxkeh
+         gbLpzILeqsOWMcdF+Wwe1s8FS4lJmt2bg2Ne4mDVJfwbEj6BCSQY3+8eSi8+LPwjUr
+         A5lgWeGYchJUQjRA21fOGpFqxDyMhIPmReuJJ25vm1AgrcXD8S4ebLNe8zOZA8a1B+
+         9DU091vhc+PlRY4bTHZMySJkD+S0G2YNn/7UkGDfk9NjJMx+QJ1D0PeqYL/WA+S2Nc
+         I9mBCi/5AbOQNUrI4TwcJmxcr0GxTljeY1Fbt38K2Aflk1f/D2qZjQNZwFFRu56HgT
+         VSC/vuK/KpE6A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A14DB40094; Thu, 23 Nov 2023 18:32:51 -0300 (-03)
+Date:   Thu, 23 Nov 2023 18:32:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Ian Rogers <irogers@google.com>, Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower
+ priority than sysfs/json
+Message-ID: <ZV/FA+tGFWkMhXiM@kernel.org>
+References: <20231123042922.834425-1-irogers@google.com>
+ <ZV9jq1C0TUh8MbeU@FVFF77S0Q05N.cambridge.arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV9jq1C0TUh8MbeU@FVFF77S0Q05N.cambridge.arm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,113 +63,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Pattrick wrote:
-> Af_packet provides checksum offload offsets to usermode applications
-> through struct virtio_net_hdr when PACKET_VNET_HDR is enabled on the
-> socket. For skbuffs with a vlan being sent to a SOCK_RAW socket,
-> af_packet will include the link level header and so csum_start needs
-> to be adjusted accordingly.
-
-Is this patch based on observing an incorrect offset in a workload,
-or on code inspection?
-
-As the referenced patch mentions, VLAN_HLEN adjustment is needed
-in macvtap because it pulls the vlan header from skb->vlan_tci. At
-which point skb->csum_start is wrong.
-
-"Commit f09e2249c4f5 ("macvtap: restore vlan header on user read")
- added this feature to macvtap. Commit 3ce9b20f1971 ("macvtap: Fix
- csum_start when VLAN tags are present") then fixed up csum_start."
-
-But the commit also mentions "Virtio, packet and uml do not insert
-the vlan header in the user buffer.". This situation has not changed.
-
-Packet sockets may receive packets with VLAN headers present, but
-unless they were inserted manually before passing to user, as macvtap
-does, this does not affect csum_start.
-
-Packet sockets support reading those skb->vlan_tci stored VLAN
-headers using AUXDATA.
-
-> Fixes: fd3a88625844 ("net: in virtio_net_hdr only add VLAN_HLEN to csum_start if payload holds vlan")
-
-The fix should target net, not net-next.
-
-> Signed-off-by: Mike Pattrick <mkp@redhat.com>
-> ---
->  net/packet/af_packet.c | 36 ++++++++++++++++++++++++++----------
->  1 file changed, 26 insertions(+), 10 deletions(-)
+Em Thu, Nov 23, 2023 at 02:37:31PM +0000, Mark Rutland escreveu:
+> Hi Ian,
 > 
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index a84e00b5904b..f6b602ffe383 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -2092,15 +2092,23 @@ static unsigned int run_filter(struct sk_buff *skb,
->  }
->  
->  static int packet_rcv_vnet(struct msghdr *msg, const struct sk_buff *skb,
-> -			   size_t *len, int vnet_hdr_sz)
-> +			   size_t *len, int vnet_hdr_sz,
-> +			   const struct sock *sk)
->  {
->  	struct virtio_net_hdr_mrg_rxbuf vnet_hdr = { .num_buffers = 0 };
-> +	int vlan_hlen;
->  
->  	if (*len < vnet_hdr_sz)
->  		return -EINVAL;
->  	*len -= vnet_hdr_sz;
->  
-> -	if (virtio_net_hdr_from_skb(skb, (struct virtio_net_hdr *)&vnet_hdr, vio_le(), true, 0))
-> +	if (sk->sk_type == SOCK_RAW && skb_vlan_tag_present(skb))
-> +		vlan_hlen = VLAN_HLEN;
-> +	else
-> +		vlan_hlen = 0;
-> +
-> +	if (virtio_net_hdr_from_skb(skb, (struct virtio_net_hdr *)&vnet_hdr,
-> +				    vio_le(), true, vlan_hlen))
->  		return -EINVAL;
->  
->  	return memcpy_to_msg(msg, (void *)&vnet_hdr, vnet_hdr_sz);
-> @@ -2368,13 +2376,21 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
->  		__set_bit(slot_id, po->rx_ring.rx_owner_map);
->  	}
->  
-> -	if (vnet_hdr_sz &&
-> -	    virtio_net_hdr_from_skb(skb, h.raw + macoff -
-> -				    sizeof(struct virtio_net_hdr),
-> -				    vio_le(), true, 0)) {
-> -		if (po->tp_version == TPACKET_V3)
-> -			prb_clear_blk_fill_status(&po->rx_ring);
-> -		goto drop_n_account;
-> +	if (vnet_hdr_sz) {
-> +		int vlan_hlen;
-> +
-> +		if (sk->sk_type == SOCK_RAW && skb_vlan_tag_present(skb))
-> +			vlan_hlen = VLAN_HLEN;
-> +		else
-> +			vlan_hlen = 0;
-> +
-> +		if (virtio_net_hdr_from_skb(skb, h.raw + macoff -
-> +					    sizeof(struct virtio_net_hdr),
-> +					    vio_le(), true, vlan_hlen)) {
-> +			if (po->tp_version == TPACKET_V3)
-> +				prb_clear_blk_fill_status(&po->rx_ring);
-> +			goto drop_n_account;
-> +		}
->  	}
->  
->  	if (po->tp_version <= TPACKET_V2) {
-> @@ -3464,7 +3480,7 @@ static int packet_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->  	packet_rcv_try_clear_pressure(pkt_sk(sk));
->  
->  	if (vnet_hdr_len) {
-> -		err = packet_rcv_vnet(msg, skb, &len, vnet_hdr_len);
-> +		err = packet_rcv_vnet(msg, skb, &len, vnet_hdr_len, sk);
->  		if (err)
->  			goto out_free;
->  	}
-> -- 
-> 2.40.1
+> Thanks for this!
+
+Yeah, it seems we're making progress, thanks for the continuous effort
+in getting this fixed!
+ 
+> On Wed, Nov 22, 2023 at 08:29:22PM -0800, Ian Rogers wrote:
+> > The perf tool has previously made legacy events the priority so with
+> > or without a PMU the legacy event would be opened:
+
+<SNIP> 
+
+> > The bulk of this change is updating all of the parse-events test
+> > expectations so that if a sysfs/json event exists for a PMU the test
+> > doesn't fail - a further sign, if it were needed, that the legacy
+> > event priority was a known and tested behavior of the perf tool.
+
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+ 
+> Regardless of my comments below, for this patch as-is:
+ 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+I'm collecting this even with the problems in some setups so far, thanks
+for providing it.
+ 
+> > ---
+> > This is a large behavioral change:
+> > 1) the scope of the change means it should bake on linux-next and I
+> > don't believe should be a 6.7-rc fix.
 > 
+> I'm happy for this to bake, but I do think it needs to be backported for the
+> sake of users, especially given that it *restores* the old behaviour.
+> 
+> > 2) a fixes tag and stable backport I don't think are appropriate.
+ 
+> For the sake of users I think a fixes tag and stable backport are necssary. In
+> practice distributions ship the perf tool associated with their stable kernel,
+> so (for better or worse) a stable backport is certainly necessary for distros
+> that'll use the v6.6 stable kernel.
 
+Which, as Ian mentioned, is a common misconception, as the lack of
+lockstep of perf/kernel versions was never properly stated in
+documentation, only in the source code, look for the
+evsel__disable_missing_features() function that tries to do whatever we
+managed to do from what was being asked (new features for old kernels)
+and the laconic responses from perf_event_open() given back to those
+requests.
 
+But the fact is that most if not all distros think perf is in lockstep
+with the kernel, which is not the intent.
+
+That said, for distros that do backports, this is one to be done, and
+for stable@kernel.org, yeah, I also think this is one to be flagged as
+that, but since this hybrid thing has such a miscoordinated
+user/kernel/arches history, with such great number of nuances and
+interpretations, I think we better continue to test it for a while, in
+perf-tools-next/perf-tools-next and linux-next, to the flag it for
+backports.
+ 
+> > The real reported issue is with the PMU driver. 
+> 
+> Having trawled through the driver and core perf code, I don't believe the PMU
+> driver is at fault. Please see my analysis at:
+> 
+>   https://lore.kernel.org/lkml/ZV9gThJ52slPHqlV@FVFF77S0Q05N.cambridge.arm.com/
+> 
+> ... where it looks like the perf tool is dropping the extended type ID in some
+> cases.
+ 
+> If you know of a specific bug in the PMU driver or perf core code, please let
+> me know and I will investigate. As it stands we have no evidence of a bug in
+> the PMU driver, and pretty clear evidence (as linked above) there there is
+> *some* issue in userspace. In the absence of such evidence, please don't assert
+> that there must be a kernel bug.
+ 
+> > A backport would bring the
+> > risk that later fixes, due to the large behavior change, wouldn't be
+> > backported and past releases get regressed in scenarios like
+> > hybrid. Backports for the perf tool are also less necessary than say a
+> > buggy PMU driver, as distributions should be updating to the latest
+> > perf tool regardless of what Linux kernel is being run (the perf tool
+> > is backward compatible).
+
+> As above I believe that a backport is necessary.
+
+Agreed, as we get this tested a bit.
+
+- Arnaldo
