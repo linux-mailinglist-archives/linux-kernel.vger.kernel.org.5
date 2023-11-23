@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA8E7F63C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20277F63C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 17:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbjKWQRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 11:17:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
+        id S229889AbjKWQRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 11:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKWQRk (ORCPT
+        with ESMTP id S229687AbjKWQRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 11:17:40 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D030510D0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:17:46 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b36339549so5629745e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:17:46 -0800 (PST)
+        Thu, 23 Nov 2023 11:17:42 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF96D10D8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:17:47 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b27726369so6937385e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 08:17:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700756265; x=1701361065; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700756266; x=1701361066; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D1QWKo5v1x3RldbHoETv2ObEXLCGaOLMr/Qq6NkPTAw=;
-        b=PuKHJoKZOgm6NKkcURNE+DT/ehuqGdHHOs25dDJque7EDpPzXvkgfe0G57xSgAXzl8
-         EasBU8v8YqqL3yGe1/98uicjkxfFpIRBoJDtNBUaLnh/MIkAmMHH5DjP/SSVD2H3zG7L
-         mQZiwekWNEP0XgfweP2TBNA/NUNnrx5Fd04YksUa2tqJMGyIl258Oyx3ia8oaHfNd0X0
-         RtDTQcNXScxMeMMoJ3Fn3R9qf9fS8csd9OBK5Uk9z78ckE+oRDb4yvBcjJ/e6aoK3Ot+
-         IcqTQdLnDw8ZK1JfakwjTEvOu9Os5jWwxpSYTW2OsnhMt4YwC7NAXfIz8hGnPp2oUUob
-         OrQQ==
+        bh=n+r17lnAn408XDZCP50GEiVUXSzg8gJpg2O6vmcLUw8=;
+        b=dOPgTB/tmckixtW9mlhQAh287zMg632un9YucwCsh8FGFic91g/NMXNWlQUl0Uxh55
+         gN9Hg3XxdI7qi25llctF4BJP1Xnk+gSEk9kWAnJWphE86H4MzpXJbHt6UKBmQSO9F8mu
+         N2zKMjGPmD0Rqbh/RWr/kABwLs/gQTX9Bgh8vL7t8kpGtfpCMJlR7MelnqtC1FwSG1fG
+         lhv5d9kzCY/afSej9gX2QT+SHQiwryBgdV68o59NLpJU9fcB8XIwy9wOWlme6J3KwXqA
+         x+O9r29bMnee27USakoFZt8ONRNNWRPAJ8iwu2dzLIUcpQ5WesOBRap9naCru/onD4iu
+         wLEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700756265; x=1701361065;
+        d=1e100.net; s=20230601; t=1700756266; x=1701361066;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D1QWKo5v1x3RldbHoETv2ObEXLCGaOLMr/Qq6NkPTAw=;
-        b=pKQNs+/zybkETKK6qvgdZ/XQ5tAaXgCrTQ7Lape0dNjBhASn0F/lferoTJF0SOZycC
-         NIDlr372Ar4gpfcsEPuLO9s92nnctZtvKdrdEvNdt6LlGpdohhsYI+laZ3KCNbkECRgy
-         ZWMpGIaMYUPaEVUHK533u9nTfjVD19fUjR4NN7DfKgnzIbaLtbFUJB9TWBjus8zrO2vy
-         oQRv5vy+tE3UmqV0XyTea1vqanHPPPzRSN4kLKmOifGHcWVdBjtR5Y8YWEy9NnPw84ql
-         8yEB192PtJosVV3ZOtqDwRDmAfkvcpFEV5zUslD1IO8XeRLLd+3UiVYRYXtMPwUglRGP
-         /tGA==
-X-Gm-Message-State: AOJu0YxlTOGHnLdrtHOWuepW4leT6T6onQQX9S+qOjpGj4+dymuaol/X
-        8QWvJBP98MHqdF5Ywfc83IwaMg==
-X-Google-Smtp-Source: AGHT+IHG1IHPzr5+pbBp8rozL88cTH/APU9g55yvH+q/8GEbtJ5D528qSdJUOc4Q7WvVqxqFHAVyUg==
-X-Received: by 2002:a05:600c:354c:b0:405:39b4:3145 with SMTP id i12-20020a05600c354c00b0040539b43145mr75899wmq.2.1700756265210;
-        Thu, 23 Nov 2023 08:17:45 -0800 (PST)
+        bh=n+r17lnAn408XDZCP50GEiVUXSzg8gJpg2O6vmcLUw8=;
+        b=UU5YudG0J8HIVAVHIb/YMz3fyT7jorMGdxCzkgN3wJCinACT7YdWe/k7j296rtPp4U
+         Q6ykRp3/KUQ3Xq3kJbXYGVe1TDj9vvUb7eP4f8UI6iuIE8TwC17wxZBdIxjj9NBJGNgi
+         LSTXBpPW32s0MGGbGzmnCe/IY1HQs8ogw/1lYn+DpHIDHfbP9QRquhn+qu6+MX0xOLlg
+         m8ICLako2OwhoWyikIRu9LnYFiTUnfZi7Qxv9IkcH5PsRAOLQMo+jt94iYRP9NWzLW4l
+         US/5odgFpaQnygm7LBwkcAdr1jl4uxA+Jy5LLE7aKbkTOyrxxbD6ijEdhBqYk2GfeZhb
+         8vug==
+X-Gm-Message-State: AOJu0YzPqnrLFV2ZT+r4cN2Lfy9kek48a+RAYzgMslw28iExkFwqZPnm
+        x6XVVEbAlYlD1qKmhqkZTDfhjg==
+X-Google-Smtp-Source: AGHT+IETz9wWM20n4EcOTVByPj1PCVyhgGlZT40Husp41oVXnYZX/66zd5tbmlbQ1MnFGe7B94ODEA==
+X-Received: by 2002:a05:600c:5252:b0:40b:36e7:1edf with SMTP id fc18-20020a05600c525200b0040b36e71edfmr17894wmb.26.1700756266142;
+        Thu, 23 Nov 2023 08:17:46 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id y3-20020adfee03000000b0032f7e832cabsm2052748wrn.90.2023.11.23.08.17.44
+        by smtp.gmail.com with ESMTPSA id y3-20020adfee03000000b0032f7e832cabsm2052748wrn.90.2023.11.23.08.17.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 08:17:44 -0800 (PST)
+        Thu, 23 Nov 2023 08:17:45 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Thu, 23 Nov 2023 17:17:41 +0100
-Subject: [PATCH v2 1/2] dt-bindings: power: meson-g12a-power: document ISP
- power domain
+Date:   Thu, 23 Nov 2023 17:17:42 +0100
+Subject: [PATCH v2 2/2] pmdomain: amlogic: meson-ee-pwrc: add support for
+ G12A ISP power domain
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231123-topic-amlogic-upstream-isp-pmdomain-v2-1-61f2fcf709e5@linaro.org>
+Message-Id: <20231123-topic-amlogic-upstream-isp-pmdomain-v2-2-61f2fcf709e5@linaro.org>
 References: <20231123-topic-amlogic-upstream-isp-pmdomain-v2-0-61f2fcf709e5@linaro.org>
 In-Reply-To: <20231123-topic-amlogic-upstream-isp-pmdomain-v2-0-61f2fcf709e5@linaro.org>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -73,50 +73,87 @@ Cc:     Daniel Scally <dan.scally@ideasonboard.com>,
         linux-pm@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=643;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2024;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=TxQCQp8KexETWz0DJ5Ct9muX5KYY3F1pMZr7p8jc1eY=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlX3smKF0j7nA9VBHAoArGETDgFABLBq+akOAUMfBw
- jks/YGWJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZV97JgAKCRB33NvayMhJ0c8+D/
- 95IVvCDmoe/Lg2/8P5KkyobwLXAIcequgCcdntyasiSIm4J1E1f86uko4BSsU5yVlpIaaTRrQ0N/3R
- y5hkNE24ppDxdjraw/K5W7Lu3ooELU0qiCiLJS46My/En8UXBv52LSI2RjzUA+IH/xXswYlvt8/RZj
- Cj1BmDSFmVewFPyctRF5r8YtaEsUQMhUd6lOxIP1OFE02wlQdklaRnjGH2DY6D4iFXg+NMwGUJ1Kt2
- eygrQ7B8TuV5alfnzgQvPvwBCws6dXOzVnufEGz6NcoZJoxCjcy+nLJhWa72KyVMFeiE0XT3x0mtC6
- Ru+l9E48F29MPVit+ijBGu1SkEfaL17/yqs5vJ6S40N+MfQ1Ta7A2pOQr855AsXn3ZTHPX1Vwp/FaK
- 5rspfLzkyL7WvQXVCGbK5C4/+i5ltdiJgq7UDpXcU5zfJNF3YnKDTnd7yaOuWdp9ihmGBi4kmbSjG4
- cvq2oPuLGlmsmVNw4gUoYj3kJIGwnIYtFzWGDNWgC3YJBktymd+L39jSAhdt+B4lxU2UaGk8OUTJDz
- fTm9YxSUls8SXyiRfkzZ9f/X0w0WDzqYXT166ul81xaq4aaAan4BQLwcPxoTgewYTPbMo/4jIcjKcv
- yDMMFdXEKi5qq6578gj4ZwfuR1+G27bQcwYruddf39cSSN9vfdIOFt6pTVYg==
+ bh=fh+alAeyQd+6EQRoyWWcZlg2EgCfV/yy1gc39wpItH8=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlX3smSfL7PHAK5roBnpOcsvqwWyGp7LGN11oKwPVT
+ UQBlg+yJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZV97JgAKCRB33NvayMhJ0Z9dD/
+ 42G8H2F1iQB1WalKUFK9EdFqjVyCmcLo/V0CzI3JvjfkodlcUDzbUl1Yd99otNMs8D0HfxPJGFY9V7
+ S5a35LlTmQcJGzduSmNwx19r86Il1n5jYAaNKGh0ADjUTNw5H5UxFdRNyiPApbLAkaFcV7xp/48zT5
+ qelZ+95Oe3Z2AO/FLGhGqdXNsnk/xh6v771/opSxU1tI6lF1G3q2lt2Of3tMFUdR1nlOVe6y+myG/s
+ kt4vQSN80oNtzmufuEYR6dkjISqaYUMe1S0tLyKCs65dR/tWJQSqxYOiB6zbGS08QHBqrK5CndugW7
+ vtG95szlgUb0BCiLenHWs+WwWEnw7uVZvgOklmDy4Em93txmKrI9vSzbV813kCYnrU5eur/Sa11Aoj
+ m+u+me8TFAy8WwXUUs5Cmj82EJjMDgjPaUo6KfeVj2AZKC8I6WaQPKMNLhrpzBmwJsAa5XZ+NMmk7w
+ 3tTVzvDhLW00ODmk66gjl+nKqk0+XaAbTSHOXll8GsY0hFe8Is435BP148EFL5p4SO0V+5xXFyAsno
+ 4wH0n0hT7rNDi0h7DhXGK1USBha363nImOMlJaB9wwSHM+HDGpE/rEYrzwzdRYlv60HMMl3DPXiMx9
+ ZNSUbihiMeaBe6NA+1gbpXF8hVJ7wGdQYAF7PqJwJOvFSG+PyUCRv3zRDEog==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MIPI ISP power domain ID to the G12A Power domains bindings header
+Add entries for the ISP power domain found in the Amlogic G12B SoC
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- include/dt-bindings/power/meson-g12a-power.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pmdomain/amlogic/meson-ee-pwrc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/include/dt-bindings/power/meson-g12a-power.h b/include/dt-bindings/power/meson-g12a-power.h
-index 44ec0c50e340..01fd0ac4dd08 100644
---- a/include/dt-bindings/power/meson-g12a-power.h
-+++ b/include/dt-bindings/power/meson-g12a-power.h
-@@ -10,5 +10,6 @@
- #define PWRC_G12A_VPU_ID		0
- #define PWRC_G12A_ETH_ID		1
- #define PWRC_G12A_NNA_ID		2
-+#define PWRC_G12A_ISP_ID		3
+diff --git a/drivers/pmdomain/amlogic/meson-ee-pwrc.c b/drivers/pmdomain/amlogic/meson-ee-pwrc.c
+index 0dd71cd814c5..fcec6eb610e4 100644
+--- a/drivers/pmdomain/amlogic/meson-ee-pwrc.c
++++ b/drivers/pmdomain/amlogic/meson-ee-pwrc.c
+@@ -47,6 +47,8 @@
  
- #endif
+ #define G12A_HHI_NANOQ_MEM_PD_REG0	(0x43 << 2)
+ #define G12A_HHI_NANOQ_MEM_PD_REG1	(0x44 << 2)
++#define G12A_HHI_ISP_MEM_PD_REG0	(0x45 << 2)
++#define G12A_HHI_ISP_MEM_PD_REG1	(0x46 << 2)
+ 
+ struct meson_ee_pwrc;
+ struct meson_ee_pwrc_domain;
+@@ -115,6 +117,13 @@ static struct meson_ee_pwrc_top_domain g12a_pwrc_nna = {
+ 	.iso_mask = BIT(16) | BIT(17),
+ };
+ 
++static struct meson_ee_pwrc_top_domain g12a_pwrc_isp = {
++	.sleep_reg = GX_AO_RTI_GEN_PWR_SLEEP0,
++	.sleep_mask = BIT(18) | BIT(19),
++	.iso_reg = GX_AO_RTI_GEN_PWR_ISO0,
++	.iso_mask = BIT(18) | BIT(19),
++};
++
+ /* Memory PD Domains */
+ 
+ #define VPU_MEMPD(__reg)					\
+@@ -231,6 +240,11 @@ static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_nna[] = {
+ 	{ G12A_HHI_NANOQ_MEM_PD_REG1, GENMASK(31, 0) },
+ };
+ 
++static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_isp[] = {
++	{ G12A_HHI_ISP_MEM_PD_REG0, GENMASK(31, 0) },
++	{ G12A_HHI_ISP_MEM_PD_REG1, GENMASK(31, 0) },
++};
++
+ #define VPU_PD(__name, __top_pd, __mem, __is_pwr_off, __resets, __clks)	\
+ 	{								\
+ 		.name = __name,						\
+@@ -269,6 +283,8 @@ static struct meson_ee_pwrc_domain_desc g12a_pwrc_domains[] = {
+ 	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
+ 	[PWRC_G12A_NNA_ID] = TOP_PD("NNA", &g12a_pwrc_nna, g12a_pwrc_mem_nna,
+ 				    pwrc_ee_is_powered_off),
++	[PWRC_G12A_ISP_ID] = TOP_PD("ISP", &g12a_pwrc_isp, g12a_pwrc_mem_isp,
++				    pwrc_ee_is_powered_off),
+ };
+ 
+ static struct meson_ee_pwrc_domain_desc gxbb_pwrc_domains[] = {
 
 -- 
 2.34.1
