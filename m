@@ -2,175 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2357F59D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF6B7F59D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 09:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjKWILt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 03:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
+        id S231744AbjKWIPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 03:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjKWILr (ORCPT
+        with ESMTP id S229477AbjKWIPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 03:11:47 -0500
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2060.outbound.protection.outlook.com [40.107.95.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F6CDD
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:11:53 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lYkIN1vcL2GzHiik0Zwn/qot5oCHgODeev3qEd5sSZyI8+0RofuwOG39ACSoYhh8Zv1dZUAzRxESGHSdwXOFLMQ73NqJBoB+L47+3LDe6kMOIsYM7ydaGnbcV0sc3FB3kb1VbtfoGjqRqgYW4RmUkprFqRwUkhK2Qv1GN4wuKL0Kw1L4S3ds0AisBvSB859OPQ+EB66OOFW4OHDvCax7x16lIToIu+Jii8cRq88LwqZE+f5WyfcqhWqAvFEiMfKF8cGPM/nObDeiJFkeLeGmzn8w936QCVAINOvl7HbaubU3egpEPIqyJRhzWfxkHBIJ7j87hBR8NnVeIv8gFRGB1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j/OGA91yjrWEzU130/irqVPfX6VtwaaC95LXnAOJN1U=;
- b=iip9M/pC0Xj9cLJQM5YR4tlD0PGWahuAqqMpHhpnGF60fA8wSrJPSAZpH3OJrWX7T+8Ff/PzaX1D8LlIHXAFxQ+wKYNrSlccZbmUDBVXjChqMSOVCwKDckpC+J544g67br7nMw6cQuDTKKzRxTHDSxiVDeQjLEK9cm2903RBwFJiGW9CRfn/NycrVuxi6+uwAKmeG3ydb+AxpSdYd7r/lhaaLRrHcFtZy6GCP8SJ32GV0W5e1TzZOztZUi0IiMmnufu50zq/R3DqIN7qDMX48kRCicVgpNSqm/wcOLTFEVJIBSZlVtpiIEUFgC3YLQj3rrhPbDf7LRodN2DMXs288g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j/OGA91yjrWEzU130/irqVPfX6VtwaaC95LXnAOJN1U=;
- b=pyflYm4gvULif2hfcjCG/T3IHp7yKLjBjQH6o4TFdypbz8haxGFrvOW5CPl36hlTza2Wv6nhTEeiwkGPAgybxpnGSNpDG4wtT4OKrft+iOvbAHp5lqlLv9M9tPam757ADhf5Zvxola8hORM83o/00TKYRYnX/VWHQ2eYsdNW03o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by CY8PR12MB7313.namprd12.prod.outlook.com (2603:10b6:930:53::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
- 2023 08:11:51 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
- 08:11:50 +0000
-Message-ID: <80ea6067-c531-4765-8576-265e565525fa@amd.com>
-Date:   Thu, 23 Nov 2023 09:11:46 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amdgpu: Fix cat debugfs amdgpu_regs_didt causes
- kernel null pointer
-Content-Language: en-US
-To:     Lu Yao <yaolu@kylinos.cn>, airlied@gmail.com, daniel@ffwll.ch
-Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231122093509.34302-1-yaolu@kylinos.cn>
- <20231123012234.5783-1-yaolu@kylinos.cn>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20231123012234.5783-1-yaolu@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0201.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ad::10) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CY8PR12MB7313:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b2e7dae-e44b-49a0-9513-08dbebfbd86e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F+O+GAheGHjpYn9uYY6ZIiySzHM1osl+e5hudzdASql7km+ddi7qI4ch0EdpdhzV3AX3MxV1TcyJ/lpoDic3rUis3D5MsMM16O6mAK0gfB+RvKRrJwApZiZali9tRlgIeGxGFK07iF0hxLFQZK+NzNBf1h43RASI67zg3sq1HjBusazIYdVFf2qVRjGWM06n3ozmt8PtUl43MJcRABwqYkDeAH10HUoh2YTJTIxhBIguYfOevETEgo5eL9Pr46TR2/TBwKGXNItjJY3cg7vn/MwnO8TdJHJUm2gzl4yP+Sqo0zGXd7v+SYiX8s/THGCDFJk6SiEHR2c3LCQQ2C2/4RSFls2FAqsLDkdDm6ewb6U8VNkLSTTtVTjKHllKL56WTvvAXOo2l2vBKBZ5B7UM0NSFd8O8An9hRHJDq7sLCAq+qNRmlo/Xt1v4DM/3BeawGYeRfmHI+73ehnj/6i6L5nUK+noDw9PNNQpj3rojl5XcdxnJJgAQP8fA1Ls/kNlxCXmqSk+gybdqopOVrRg4eVfTVcoukH9Rl1MSNWHodypebs9oHwdCBsAQZCkieQfEazoFAcq17Uom4fI60t7sdppOqU58uTi6+/lFAjnpMHrxK1ACw05HvtoRhzw2/KTV+QS8ZzDTqf0K8Wb/zZt7pA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(39860400002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(316002)(966005)(6486002)(31686004)(478600001)(6666004)(6512007)(66946007)(8676002)(83380400001)(26005)(4326008)(8936002)(66476007)(66556008)(2906002)(36756003)(38100700002)(41300700001)(86362001)(31696002)(6506007)(2616005)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ni9FdkdENkdpeDl3K2pJZmluNUdaMnlhNHNDOHRtZi9DNCtwZ2UyNUxqM1pS?=
- =?utf-8?B?REd0VW0rRmhGa21JM3U5bnNPMWdQNTNLVEhYUlZKWjJ3ZXpsWWJkcCsrZ2U2?=
- =?utf-8?B?VXZOL3lvb2lpQmtFeEZ1U0RZWjFVUVVzZWhyN0I2N2NzOEs2NFJRc2c3Q2hB?=
- =?utf-8?B?Q2J1TnpLL1hEUGtsY3Qramd6a2s4cjRRMnFLNXZoclVXeFdvaE51ZVQyWTdO?=
- =?utf-8?B?NmdzTGVPdmwzWUlvR1gzL1VIRldBNDVlMVFFaTJtOFZiYnBqd2xmNjVzRkEy?=
- =?utf-8?B?R2w5Y245M3NDV3pkTFhDT20zZ0JMYmFneFErSlozUWQ4citTemlpRCs3YjZW?=
- =?utf-8?B?Wjg2YVZJbW9RZElFZUZHcjlBYU5CT25BSnM4eHNQUGpoa0xWSGRiZ1RyeEdS?=
- =?utf-8?B?bVc0a2g5cFhLOHNoWC9hUDFJODNySW1Nd1ErMFpNQm9lTXU1eko3UVIzVitF?=
- =?utf-8?B?NFFsbWtPYUIxUjQwOHJGdzZWYXF1SGNxZVREUlFmcmJvbnY1NWo1ZUsvNWNF?=
- =?utf-8?B?MnBRbW5BWHhDWHBtSHZ0NVY2ckRheXk4OGlJYlJwTnIvWXR4QVFPZThPRzJ0?=
- =?utf-8?B?dmtFMnVneUdoL21MUXJKSnVqTnVKc1lzTmZPYkROSkl6Z2E2dEJ1c1RoSWxO?=
- =?utf-8?B?djNRU3pPRWJFYjBiby9Raks3TGZyUU8zYndyUUdZVWllR0pDb3NKcDRpb1I2?=
- =?utf-8?B?Mmc0MXcwajB2S2FheTZWOWxsTUpDZk4vOW1rOFUwb2ljVXlVQmZ1NDZaZnJw?=
- =?utf-8?B?QjhXZ1A4cHlDUVFsTnBFRmk3S1ZQNmFLYnBwZGNKNXJGbGkrcmo3NnVwL0pB?=
- =?utf-8?B?dys4Ujd6K0xxcnJxODNoUXlHU1NTTzFvRDV3b0xpbWpSWW9oc2RGNjFRT1VT?=
- =?utf-8?B?YmtPRE5oRkNDdmpBUitPWHZOeWhUZFU2b1Q4N2t2cERtanlQeXJ6ZWRSMkFO?=
- =?utf-8?B?VHZjR2pEcUJObEVlQlhwb1ZHNFFBeENDdFhSUjZ5dUx5bjdhL21zMXRIMUlB?=
- =?utf-8?B?MjFRVlF1LzVRakhtbXdLQ3ZjMnNtcmcrdU5uaG9UQlZHQ2lsaUNTRitSZjZT?=
- =?utf-8?B?bUdZeTRSM0VSUGJyNXpjVjMwRG9aVExCV2lUWkRtWFM2MmZ0VkxzeGd5N3VV?=
- =?utf-8?B?Z1p2dzAzemswMDlTU2M1Vi9yU3poUUZwZ1ZRWm1LSHM1LzFxOWZhcHNmVmV1?=
- =?utf-8?B?N0d0SFk0VENhVWNCckJkTFJscFk0eFlhQnMvN0F6dFpYZXJNZHUyUlFPaWh3?=
- =?utf-8?B?YUFmdGZZVXNTbHRBZVB4VEpRVVAzOWl2ZGI1bzdhMzgxeVR4eVE3VTVqMUpJ?=
- =?utf-8?B?SWFEMVdPZnBMR3BLL01rVDdXWmlRWjFia3YycXQ5bndZSkQ3NG10cVRweWxC?=
- =?utf-8?B?SEd4Mk1QbVB6cnBLUGpnMTZwN1VObCtiZWxIa2I3QXlFbm1PYmwxZnNvdEU2?=
- =?utf-8?B?ZWNxejROMStXQmhBWHk1dDBVZEIxQjVweW9NdnArYzBQbS9jOG5GdHR2QlFE?=
- =?utf-8?B?UW9Lb1BRT3pGRDhxSDZzL0pJUGpRc2dIbEE4bERPdjZHdHBOb0EyRnczUFNi?=
- =?utf-8?B?dTdtMnFycnkvYXUvdTNRd1JieDIvMURqallpT25Va0YxeU9UMXNjemVhWWlV?=
- =?utf-8?B?bzFRck9WNmVzZGZ4akdaY1cvNnRPOEx4byszb3VyTllVRmNEZktRRlMwTUJk?=
- =?utf-8?B?bFowbGQyeFB3Tkd3YlZENjBjRDFVRWpIYXhTMXJBL2hWYWJFZ0EwYWJQQVVH?=
- =?utf-8?B?a3pPb21rM1RRZFl6TCtBbW44dnlkNzlXb0JXMGVEMWxvYTJERk5ob29YM3dF?=
- =?utf-8?B?R1NkTDhVVS90alVHVnpyNnJmNklGNllUaTJYTXRIK2hna0ZZckpmSE5PWTZN?=
- =?utf-8?B?VTgrK3AyajB0SThKWjBzSVByOEtDNmd6czBDSk9IOWJHdWRvelhWajgzRDdW?=
- =?utf-8?B?blRiZGllYjBpK0xWZ2lIMlluSUgrMG9TM3ErbzB6TVJ1cHU0L0pKL21EaGg3?=
- =?utf-8?B?WGg5Mm5YenBYbmdneWRyWnVoamZJNmpPYjlsdnR2NTlmTU1Hend0NVMxOEtq?=
- =?utf-8?B?anpzS2pISFAvdkJiTzFEZEdlWGJyVW9ENGlyeHVDazMxQVlXWFJiRnI5WnZn?=
- =?utf-8?Q?EPZulcoi2np6+W3/VU1tns5cz?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b2e7dae-e44b-49a0-9513-08dbebfbd86e
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 08:11:50.4874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zlVNJOeoVDwaZtVOGaYtJp6QG0WrAvP1rP9UOmhRnpbv8qG8xKQZy67kPpGK3j5F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7313
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+        Thu, 23 Nov 2023 03:15:44 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771D2D41
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:15:50 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6bf2b098e43so698444b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 00:15:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700727350; x=1701332150; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CrEIDOduhti6InSDnRypg+BVJxqG3xXbxgAmhP0hxmM=;
+        b=x2rkB6udHXM79Gx1VkF6RrzD0tkl8Be5FgtE3leLVPPPHRlc3EdNlXYMpWS1WCQu15
+         jpB9m/m1cj39LXqICa4WRPMBzhRmRC7MdKehkFEZ6SKY+Cr21d0Ohza5FhK8wi1FRGbk
+         MwSle3fAAhUf8CUlZE5QA3qedYhd9XPLO7ebvQllVBP670LRNX2qrCXm94laDm3nVw+W
+         SFnTAd/1AYN2Jr/Tr5yme7rKS6ARtt3VUC/3sNhFijq/dZomO18mOpRxQ/E+Th0vTpPH
+         qJpY7AeLAVPnsYEJNmm3oh49t4jQj1w1hgwL4rT3aKTczffTP84nb03xP331TWGGfk/p
+         ITbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700727350; x=1701332150;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CrEIDOduhti6InSDnRypg+BVJxqG3xXbxgAmhP0hxmM=;
+        b=M1zthULYdtOnuLYAw9zoD5G3PIWzyUGtY0smKWsvT5tMW0QS9D5AVT107CF6wFdNFm
+         jMFsxTioBu2HlxaQm+nI2tLhtVudyU08gxlnvCSgrk8vaUmuKYTnxZJddPs4GxEDSr2L
+         GZ3JUZeylwRewWN26LPEzsQ6XGNG7HnEW5nWuvygxzxZi28Y8QWOV5QCLmZ+Jdh01k4X
+         GCVLuLrWCka4LT2CGGYaT0N6FnrDJQruQBS6n6UMfp8hbZm/NtfH0eETHGEvY0xJ6u7+
+         vQm8JyGWSy5dCj9VmESBLCJ2yU6FBPUR7Jp6tkoQ9POeLKSLACs5ZNfUGt3+U+zZK0a7
+         qZxw==
+X-Gm-Message-State: AOJu0Yxudgy0wiFzW+ohkPLLt9/BsP7M+vPGF5TEzqoPH02KbreS/Se+
+        wz8uS2tf/cfAFzZ1QO/QbGQzHR1ExCq8rw==
+X-Google-Smtp-Source: AGHT+IH9adT6B0i1q+P6CsoaxvjLgFLnosKLJplk4qIgLHNWoRCdaiFD4O87oq0Kh4mkVoq1iaj+K6sacIpqzQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a05:6a00:1da3:b0:6c4:ec00:2941 with SMTP
+ id z35-20020a056a001da300b006c4ec002941mr1201225pfw.4.1700727349918; Thu, 23
+ Nov 2023 00:15:49 -0800 (PST)
+Date:   Thu, 23 Nov 2023 08:15:47 +0000
+In-Reply-To: <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
+Mime-Version: 1.0
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-2-ddrokosov@salutedevices.com> <20231123072126.jpukmc6rqmzckdw2@google.com>
+ <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
+Message-ID: <20231123081547.7fbxd4ts3qohrioq@google.com>
+Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg tracepoints
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
+        akpm@linux-foundation.org, kernel@sberdevices.ru,
+        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 23.11.23 um 02:22 schrieb Lu Yao:
-> For 'AMDGPU_FAMILY_SI' family cards, in 'si_common_early_init' func, init
-> 'didt_rreg' and 'didt_wreg' to 'NULL'. But in func
-> 'amdgpu_debugfs_regs_didt_read/write', using 'RREG32_DIDT' 'WREG32_DIDT'
-> lacks of relevant judgment. And other 'amdgpu_ip_block_version' that use
-> these two definitions won't be added for 'AMDGPU_FAMILY_SI'.
->
-> So, add null pointer judgment before calling.
->
-> Signed-off-by: Lu Yao <yaolu@kylinos.cn>
+On Thu, Nov 23, 2023 at 11:03:34AM +0300, Dmitry Rokosov wrote:
+[...]
+> > > +		cgroup_name(memcg->css.cgroup,
+> > > +			__entry->name,
+> > > +			sizeof(__entry->name));
+> > 
+> > Any reason not to use cgroup_ino? cgroup_name may conflict and be
+> > ambiguous.
+> 
+> I actually didn't consider it, as the cgroup name serves as a clear tag
+> for filtering the appropriate cgroup in the entire trace file. However,
+> you are correct that there might be conflicts with cgroup names.
+> Therefore, it might be better to display both tags: ino and name. What
+> do you think on this?
+> 
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-
-> ---
-> Changes in v2:
->    1. Drop dev_err message.
->    2. Change error code from 'EPERM' to 'EOPNOTSUPP'
-> Link to v1: https://lore.kernel.org/all/20231122093509.34302-1-yaolu@kylinos.cn/
-> Thanks Christian for his comments.
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 6 ++++++
->   1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> index a53f436fa9f1..e098cd66fa2a 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> @@ -638,6 +638,9 @@ static ssize_t amdgpu_debugfs_regs_didt_read(struct file *f, char __user *buf,
->   	if (size & 0x3 || *pos & 0x3)
->   		return -EINVAL;
->   
-> +	if (adev->didt_rreg == NULL)
-> +		return -EOPNOTSUPP;
-> +
->   	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
->   	if (r < 0) {
->   		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
-> @@ -694,6 +697,9 @@ static ssize_t amdgpu_debugfs_regs_didt_write(struct file *f, const char __user
->   	if (size & 0x3 || *pos & 0x3)
->   		return -EINVAL;
->   
-> +	if (adev->didt_wreg == NULL)
-> +		return -EOPNOTSUPP;
-> +
->   	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
->   	if (r < 0) {
->   		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
-
+I can see putting cgroup name can avoid pre or post processing, so
+putting both are fine. Though keep in mind that cgroup_name acquires a
+lock which may impact the applications running on the system.
