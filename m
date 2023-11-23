@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 967117F633A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5977F6338
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346180AbjKWPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
+        id S1346163AbjKWPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:45:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346170AbjKWPpQ (ORCPT
+        with ESMTP id S229602AbjKWPpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:45:16 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619DAD7D;
-        Thu, 23 Nov 2023 07:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=oI9tlHNqD4QxkW24a4pt9udulwJ5LefdDiNx4SbY4Hg=; b=Hxr27Zh+P4/CYTb7GtoRuc+MJN
-        0EsLrqRCebyxCuydcI5pp6OYz0n3eEw6REViPI27LDe/zdqyn8LiOFb3+KDoy/sDAZCcSBxs9oA4+
-        lrqHcK1v+c/D1Yg3xBpI5movdX/unSXLHfMBrtKHwst9hXboBi7kMatCV3+QMCAOk/4I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6Bt9-0010Z5-Kt; Thu, 23 Nov 2023 16:45:11 +0100
-Date:   Thu, 23 Nov 2023 16:45:11 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Shiji Yang <yangshiji66@outlook.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: leds: add 'internet' and 'signal'
- function definitions
-Message-ID: <6d1a0be4-89b3-4c47-8763-4139904cc670@lunn.ch>
-References: <TYAP286MB0315F4D71698370875F58F6EBCAAA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
- <20231123112543.GD1243364@google.com>
+        Thu, 23 Nov 2023 10:45:08 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2D45C1;
+        Thu, 23 Nov 2023 07:45:14 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25C4512FC;
+        Thu, 23 Nov 2023 07:46:01 -0800 (PST)
+Received: from [10.57.3.62] (unknown [10.57.3.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DE0C3F6C4;
+        Thu, 23 Nov 2023 07:45:13 -0800 (PST)
+Message-ID: <4f959354-74c7-5240-bf8f-78a49fb34437@arm.com>
+Date:   Thu, 23 Nov 2023 15:45:11 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123112543.GD1243364@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
+ counting threshold feature
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Namhyung Kim <namhyung@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231113112507.917107-1-james.clark@arm.com>
+ <20231113112507.917107-4-james.clark@arm.com>
+ <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
+ <0bcda96e-df9a-4342-af4e-e4485c33ff55@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <0bcda96e-df9a-4342-af4e-e4485c33ff55@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,54 +54,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 11:25:43AM +0000, Lee Jones wrote:
-> Andrew, Florian,
+
+
+On 23/11/2023 05:50, Anshuman Khandual wrote:
 > 
-> Thoughts?
-
-Hi Lee
-
-Thanks for forwarding this.
-
-> On Mon, 06 Nov 2023, Shiji Yang wrote:
 > 
-> > These two types of LEDs are widely used in routers and NICs.
+> On 11/21/23 03:01, Namhyung Kim wrote:
+>> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
+>>> Add documentation for the new Perf event open parameters and
+>>> the threshold_max capability file.
+>>>
+>>> Signed-off-by: James Clark <james.clark@arm.com>
+>>> ---
+>>>  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
+>>>  1 file changed, 56 insertions(+)
+>>>
+>>> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
+>>> index 1f87b57c2332..36b8111a710d 100644
+>>> --- a/Documentation/arch/arm64/perf.rst
+>>> +++ b/Documentation/arch/arm64/perf.rst
+>>> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
+>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
+>>>  .. _tools/lib/perf/tests/test-evsel.c:
+>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+>>> +
+>>> +Event Counting Threshold
+>>> +==========================================
+>>> +
+>>> +Overview
+>>> +--------
+>>> +
+>>> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+>>> +events whose count meets a specified threshold condition. For example if
+>>> +threshold_compare is set to 2 ('Greater than or equal'), and the
+>>> +threshold is set to 2, then the PMU counter will now only increment by
+>>> +when an event would have previously incremented the PMU counter by 2 or
+>>> +more on a single processor cycle.
+>>> +
+>>> +To increment by 1 after passing the threshold condition instead of the
+>>> +number of events on that cycle, add the 'threshold_count' option to the
+>>> +commandline.
+>>> +
+>>> +How-to
+>>> +------
+>>> +
+>>> +The threshold, threshold_compare and threshold_count values can be
+>>> +provided per event:
+>>> +
+>>> +.. code-block:: sh
+>>> +
+>>> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
+>>> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
+>> Can you please explain this a bit more?
+>>
+>> I guess the first event counts stall_slot PMU if the event if it's
+>> greater than or equal to 2.  And as threshold_count is not set,
+>> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
+> 
+> Hence without 'threshold_count' being set, the other two config requests
+> will not have an effect, is that correct ?
 
-I would disagree with this. Routers and NICs are very generic
-terms. The Cisco router i have in the broom closet does not have a
-signal strength. It does not even have WiFi. It has no concept of
-Internet.
+Yeah I can mention this. It's implied because 0 is the default value of
+config fields, and 0 is a valid value for compare and count field, so
+threshold=0 has to be the way to disable it. But I can mention it
+explicitly.
 
-I would drop NIC and add more words to narrow routers down to a more
-specific class of routers, probably those found in homes, rented from
-an ISP, most don't actually do L3 routing, or at best, just NAT.
+> 
+>>
+>> OTOH, dtlb_walk will count 1 if it sees an event less than 10.
+>> Is my understanding correct?
+> 
+> 'Equals' and 'Greater-than-or-equal' makes sense and are intuitive. Just
+> wondering what will happen for 'Not-equal' and 'Less-than' - when would
+> the counter count in such cases ?
+> 
+>   0: Not-equal
+>   1: Equals
+>   2: Greater-than-or-equal
+>   3: Less-than
+> 
 
-> > The 'signal' LED is used to display the wireless signal strength.
-> > Usually, there are 3~4 LEDs in one group to indicate the signal
-> > strength, similar to the signal icon on a mobile phone.
+They would count when the event is not equal to or less than the
+threshold value on any cycle. Probably going into more detail would
+start to reproduce what's in the reference manual. All the pseudocode is
+in there which describes how it works.
 
-Maybe signal_strength. And is there any reason these cannot be used on
-a 5G modem to indicate 'mobile phone' like signal strength? So
-`similar to` is wrong, they could actually be used for that.
-
-At least the word wireless is used, not wifi. So its reasonably
-generic. Are there other signal strength indicators for other media?
-I've not seen powerline modems have such indicators. And with those
-SNR is more important than signal strength.
-
-> > The 'internet' LED can indicate whether the device can access a
-> > specific server. It's different from 'wan'. 'wan' usually indicates
-> > whether the WAN port is connected to the modem (internet services
-> > may still be unavailable). But the 'internet' shows if the device
-> > can successfully ping servers such as 8.8.8.8 to detect the internet
-> > connection status. When the router is running in AP only mode, we
-> > can even connect LAN port to the AC/modem to connect to the internet.
-> > In this case, the 'internet' LED should be on. On some routers, both
-> > 'internet' and 'wan' are available and can be controlled separately.
-
-I suggest some of this text appears in the header, to make their
-meaning clear. Also, document what WAN means. But care is needed,
-since these are networking wide concepts, not the very narrow market
-of an ISP rented boxes.
-
-    Andrew
+As for use cases, I'm not really sure. It probably wasn't any effort to
+add into the hardware with a single not gate, and something could have
+been missed if it wasn't added. You might be able to do things like
+count the inverse of something without having to open another event to
+subtract from to find what the inverse would be.
