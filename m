@@ -2,150 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 128EE7F663F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D697F661E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 19:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345669AbjKWS2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 13:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        id S230251AbjKWSWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 13:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWS2v (ORCPT
+        with ESMTP id S229462AbjKWSWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 13:28:51 -0500
-X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Nov 2023 10:28:50 PST
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE161A4;
-        Thu, 23 Nov 2023 10:28:50 -0800 (PST)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id F10C815A4FCE;
-        Thu, 23 Nov 2023 19:21:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1700763661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=gec4TYlOPlj2h/XodVWwhNNB/vj9qHRQL+92P5jpQ8w=;
-        b=OHpF74djNa3mrM0hW10/iktp8ZPnXytSFGpFjsV6W4WLkrrgwOyuiwptK8+sbB5Cn1Wp4k
-        661CPW2YoWCsrGgapRGj/zV/PBxM5aX0iof5B3c3JcjkhHlqPNDsI3aFWM2Id5xOpG5/uY
-        Ix7QgDqgGxbff+D8o6ZuuApeethjsvk=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        Petr Tesarik <petr@tesarici.cz>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [REGRESSION] USB ports do not work after suspend/resume cycle with v6.6.2
-Date:   Thu, 23 Nov 2023 19:20:46 +0100
-Message-ID: <5993222.lOV4Wx5bFT@natalenko.name>
+        Thu, 23 Nov 2023 13:22:08 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EA0DD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:22:14 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1f5d2e4326fso674540fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 10:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1700763733; x=1701368533; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QgSFVLXdiiVlFncJG5xnGMZmf3/Lcv/2SbxbrtDMVHM=;
+        b=zEn7F6RBkQg1dH+lgFglNvoTr4hfTWzcvCZOl7p+4Lqkb3KCsHK7DETy6Vbk9IyCzq
+         g803IXMLZXdNZGJ8BMyh3F+8ylJc+H0XWJEg+J2WqniB4SRnRyGUdvSjBBvDUTnZRAHl
+         s60gZPTbiC5t+oxZ7PKVLOBYUn8bjqY/9FtzoYB7RRmiC8YA1qKuzPzA25AHJOH7AfmP
+         TTL5Ta9ikXinurYqsRo/nPF4ikjXGYRQ7LsY3rMPGpfkxlaX6xPyVnHBeo3uLCyTJs+w
+         BKtcq/YTGjXdAWGPujZTFgoUF8Yt6k9a6uGhz5n9Il7EnMmse4KRcHSUHB0o36Hq74PM
+         od9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700763733; x=1701368533;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QgSFVLXdiiVlFncJG5xnGMZmf3/Lcv/2SbxbrtDMVHM=;
+        b=PfVSQs1cguSiorypRG+BgkprVEKrS7S+u5ohEgJL63DEFY6G+ZEGwi+8WDRT4QeDPE
+         3IZSP9o5cBBRKh2re84Pgi2iKaJbfUAUvv7/a2JYPrsE8qa2+KDl34lVT6WI41NA1U+6
+         0674qs9ekptzSo/GjitFrEyAAakRn9Q1tt7kHcGEM7vCoIID6QTfStcYVJgabKEndeT8
+         mV3V6Ke9k+bdgHSjCB+C8PuxV1ExSDuEUAS8lK3mVrQ3RTG+eNae0cq0J17lMcUTZasp
+         f3iTc4tvBvPhr8zQPCI79bVTtJ6o051i/zrv3iybQTfO4DbI7VU7a8a5Kp+3+oEgZxNP
+         eryw==
+X-Gm-Message-State: AOJu0YyNRwKeOQ+i9o/+tgympO0C7gPIGME1AfZ4R0j7TGNOKoFX/0nL
+        JkgOaMlcu3ePSFU9kpQd2TBfrw==
+X-Google-Smtp-Source: AGHT+IF3P8f9G8z9cBesH4gZimJTvSi3PylasM1ZQxb1/VVqU5icDdUiOk0n+6nNy/V0MrxC6p6jEg==
+X-Received: by 2002:a05:6870:c6a5:b0:1f0:597d:fe25 with SMTP id cv37-20020a056870c6a500b001f0597dfe25mr111773oab.45.1700763733463;
+        Thu, 23 Nov 2023 10:22:13 -0800 (PST)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:10:3ac8::7a9])
+        by smtp.gmail.com with ESMTPSA id d13-20020a0cf6cd000000b0067a063e606asm697875qvo.52.2023.11.23.10.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 10:22:12 -0800 (PST)
+Message-ID: <ded0b788f5896621cffd8f64c679ef375231b6d1.camel@ndufresne.ca>
+Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Esker Wong <esker@google.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Esker Wong <esker@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 23 Nov 2023 13:22:11 -0500
+In-Reply-To: <CANiDSCuD=Z2FVaSnejCfLnRJXUSE99GQkK=4tRAXBbxpUqEVHg@mail.gmail.com>
+References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
+         <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu>
+         <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
+         <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
+         <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
+         <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
+         <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
+         <CANiDSCunRRyod3Rg+L9ZsffOZyC7CKbMVTHX3u-n5iuNyZQk0w@mail.gmail.com>
+         <20231109000327.GE21616@pendragon.ideasonboard.com>
+         <CANiDSCuD=Z2FVaSnejCfLnRJXUSE99GQkK=4tRAXBbxpUqEVHg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4877866.31r3eYUQgx";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4877866.31r3eYUQgx
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org
-Date: Thu, 23 Nov 2023 19:20:46 +0100
-Message-ID: <5993222.lOV4Wx5bFT@natalenko.name>
-MIME-Version: 1.0
+Le jeudi 09 novembre 2023 =C3=A0 01:27 +0100, Ricardo Ribalda a =C3=A9crit=
+=C2=A0:
+> Hi Laurent
+>=20
+> On Thu, 9 Nov 2023 at 01:03, Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >=20
+> > Hi Ricardo,
+> >=20
+> > On Wed, Nov 08, 2023 at 11:46:40PM +0100, Ricardo Ribalda wrote:
+> > > On Wed, 8 Nov 2023 at 21:32, <nicolas@ndufresne.ca> wrote:
+> > > >=20
+> > > > The fact that you interpret the time from FRAME_SYNC to DQBUF (well=
+ the
+> > > > READ IO notification) as the actual latency is yours of course. It
+> > > > assumes that the camera on the other end does not introduce other
+> > >=20
+> > > We want to use this signal to measure how much power is used since we
+> > > start receiving the frame until we can use it.
+> > > I agree with you that the latency between capture and dqbuf should be
+> > > measured using the timestamp. That is not our use case here.
+> > >=20
+> > > > source of latency (or that these are negligible). You are also goin=
+g to
+> > > > introduce a lot of jitter, since it relies on when the OS decides t=
+o
+> > > > wake up your process.
+> > >=20
+> > > We have measured a jitter of around 2.5 msec, which is acceptable for=
+ our needs.
+> > >=20
+> > > > I think my opinion resides in if you can accurately *enough* implem=
+ent
+> > > > what the spec says for FRAME_SYNC then do it, otherwise just don't =
+lie.
+> > >=20
+> > > What the specs says is:
+> > > ```
+> > > Triggered immediately when the reception of a frame has begun
+> > > ```
+> > > In my opinion, that is true for usb devices, we are triggering it as
+> > > soon as the transfer has started to the eyes of the driver. We cannot
+> > > trigger earlier than that.
+> > >=20
+> > >=20
+> > > > I think for ISO, "after the first chunk" i a small lie, but accepta=
+ble.
+> > > > But for BULK, the way it was explained is that it will be always ve=
+ry
+> > > > close to DQBUF time. and it should not emit FRAME_SYNC for this typ=
+e of
+> > > > UVC device. If it fits other events fine of course, I'm just making=
+ a
+> > > > judgment on if its fits V4L2_EVENT_FRAME_SYNC or not.
+> > >=20
+> > > nit: I believe that you have swapped iso and bulk on this description
+> >=20
+> > I've confused the USB packet size and the UVC payload size. The latter
+> > is typically much bigger for bulk devices than isoc devices, but the
+> > former will be in similar order of magnitudes in a large number of
+> > cases, but not all cases.
+> >=20
+> > The URB size is the result of the USB packet size and number of packets
+> > per URB. The uvcvideo driver currently sets the number of packets per
+> > URB to 32 at most (and lowers it if the frame size is small, or if not
+> > enough memory can be allocated). This could be increased or made dynami=
+c
+> > in the future, as higher speeds typically benefit from larger URB sizes=
+.
+> > The packet size differs between bulk and isoc endpoints.
+> >=20
+> > For bulk, the packet size can be up to 512 bytes for USB 2.0 and 1024
+> > bytes for USB 3.0, and the device can select a smaller size. The larges=
+t
+> > URB size (again based on the current implementation of the uvcvideo
+> > driver) is thus 32 KiB.
+> >=20
+> > For isochronous the situation is more complicated. The term "packet" as
+> > used in the uvcvideo driver actually means all the data transferred in
+> > one service interval, thus made of multiple isoc packets. It is heavily
+> > dependent on the USB speed, and the device can advertise different
+> > supported sizes (which translate directly to the reserved bandwidth for
+> > the transfer), with the driver picking the smallest bandwidth large
+> > enough for the data rate required by the resolution and frame rate. The
+> > theoretical worst case is 1024 bytes per isoc packet * 16 isoc packets
+> > per burst * 6 burst per interval * 32 "packets" per URB, equal to 3 MiB=
+.
+> >=20
+> > Even with the largest URB size you have witnessed of ~1 MiB, we will en=
+d
+> > up lying quite a bit if we consider the URB completion callback for the
+> > first URB of the frame as indicating the start of reception.
+> >=20
+> > > > In term of accuracy, if timestamp was passed with the FRAME_SYNC ev=
+ent,
+> > > > it would not matter how fast your process the event anymore and gre=
+atly
+> > > > improve accuracy.
+> > >=20
+> > > +1 to that. If we could easily change the uAPI for FRAME_SYNC that
+> > > should definitely be implemented.
+> > >=20
+> > > > > Not to mention that the UVC timestamping requires a bit of love.
+> > > > >=20
+> > > > > @Laurent Pinchart, @Kieran Bingham  any progress reviewing :P :
+> > > > > https://patchwork.linuxtv.org/project/linux-media/list/?series=3D=
+10083
+> > > >=20
+> > > > Thanks for working on this by the way, hope someone will find the t=
+ime
+> > > > to review this. The timestamps should in theory provide a jitter fr=
+ee
+> > >=20
+> > > It already has a couple of Reviewed-by stamped in.... ;)
+> > >=20
+> > > > measurement of the delay Esker is trying to measure, and if it wasn=
+'t
+> > > > of bugs (and crazy complexity) it would in the worst case match the
+> > > > transfer time.
+> > >=20
+> > > Sorry to repeat myself, but just to avoid the confusion: Esker needs
+> > > to know how much power is used since we start receiving a frame until
+> > > it is available for dqbuf, not de frame latency.
+> >=20
+> > As I think everybody is aware, the earliest notification you get on the
+> > CPU side is the *end* of reception of the first URB, which can possibly
+> > be significantly later than the start of reception of the frame.
+> >=20
+> > Based on what I understand, the goal is to measure the CPU power
+> > consumption related to CPU processing of the frame. If that's the case,
+> > there's good and bad news. The good news is that the CPU doesn't proces=
+s
+> > the frame at all until the URB has been received (if you were to measur=
+e
+> > the power consumption of the USB host controller too, it would be a
+> > different story), so the delay shouldn't be a problem. The bad news is
+> > that I don't see how the information you're trying to get will help you=
+,
+> > as there's plenty of other things unrelated to the uvcvideo driver that
+> > can take CPU time while a frame is being received. That may not be any
+> > of my business, but from the point of view of the uvcvideo driver, I'm
+> > less inclined to accept a possibly significant V4L2_EVENT_FRAME_SYNC li=
+e
+> > if the use case ends up making little sense :-)
+>=20
+> Just to add some numbers to add some context:
+>=20
+>  V4L2_EVENT_FRAME_SYNC for BULK and ISO will be delayed from:
+> ```
+> Triggered immediately when the reception of a frame has begun
+> ```
+> one urb.
+>=20
+> For bulk devices this is a maximum of 0.05 msec (32KiB/600MBps)
 
-Hello.
+I lack a bit of knowledge on how to scale this to different devices, with
+different speed/framesize. My only bulk device is:
 
-Since v6.6.2 kernel release I'm experiencing a regression with regard to USB ports behaviour after a suspend/resume cycle.
+https://inogeni.com/product/4k2usb3/
 
-If a USB port is empty before suspending, after resuming the machine the port doesn't work. After a device insertion there's no reaction in the kernel log whatsoever, although I do see that the device gets powered up physically. If the machine is suspended with a device inserted into the USB port, the port works fine after resume.
+Which is USB 3.0, and have raw (NV12) resolution from 640x480 (max 60pfs) t=
+o 4K
+(max 30fps). What would the error look like with that ?
 
-This is an AMD-based machine with hci version 0x110 reported. As per the changelog between v6.6.1 and v6.6.2, 603 commits were backported into v6.6.2, and one of the commits was as follows:
+> For 1MiB transfer isoc devices (which is the biggest we have seen),
+> that is 1.8 msec.
+> In both cases, this is smaller than the jitter to process the event
+> itself by userspace.
+>=20
+> The time from V4L2_EVENT_FRAME_SYNC to DQBUF is around 30 msec.
+>=20
+> I do not know how much delay is considered acceptable... but if we
+> take the delay argument to the extreme, we could say that
+> V4L2_EVENT_FRAME_SYNC can never be implemented, because the event will
+> always be delayed by something.
 
-$ git log --oneline v6.6.1..v6.6.2 -- drivers/usb/host/xhci-pci.c
-14a51fa544225 xhci: Loosen RPM as default policy to cover for AMD xHC 1.1
+We have v4l2_event.timestamp for all events, so the jitter to process the e=
+vent
+by userpace can be removed reliably already.
 
-It seems that this commit explicitly enables runtime PM specifically for my platform. As per dmesg:
+Nicolas
 
-v6.6.1: quirks 0x0000000000000410
-v6.6.2: quirks 0x0000000200000410
+p.s. missed it earlier
 
-Here, bit 33 gets set, which, as expected, corresponds to:
-
-drivers/usb/host/xhci.h
-1895:#define XHCI_DEFAULT_PM_RUNTIME_ALLOW      BIT_ULL(33)
-
-This commit is backported from the upstream commit 4baf12181509, which is one of 16 commits of the following series named "xhci features":
-
-https://lore.kernel.org/all/20231019102924.2797346-1-mathias.nyman@linux.intel.com/
-
-It appears that there was another commit in this series, also from Basavaraj (in Cc), a5d6264b638e, which was not picked for v6.6.2, but which stated the following:
-
-	Use the low-power states of the underlying platform to enable runtime PM.
-	If the platform doesn't support runtime D3, then enabling default RPM will
-	result in the controller malfunctioning, as in the case of hotplug devices
-	not being detected because of a failed interrupt generation.
-
-It felt like this was exactly my case. So, I've conducted two tests:
-
-1. Reverted 14a51fa544225 from v6.6.2. With this revert the USB ports started to work fine, just as they did in v6.6.1.
-2. Left 14a51fa544225 in place, but also applied upstream a5d6264b638e on top of v6.6.2. With this patch added the USB ports also work after a suspend/resume cycle.
-
-This runtime PM enablement did also impact my AX200 Bluetooth device, resulting in long delays before headphones/speaker can connect, but I've solved this with btusb.enable_autosuspend=N. I think this has nothing to do with the original issue, and I'm OK with this workaround unless someone has got a different idea.
-
-With that, please consider either reverting 14a51fa544225 from the stable kernel, or applying a5d6264b638e in addition to it. Given the mainline kernel has got both of them, I'm in favour of applying additional commit to the stable kernel.
-
-I'm also Cc'ing all the people from our Mastodon discussion where I initially complained about the issue as well as about stable kernel branch stability:
-
-https://activitypub.natalenko.name/@oleksandr/statuses/01HFRXBYWMXF9G4KYPE3XHH0S8
-
-I'm not going to expand more on that in this email, especially given Greg indicated he read the conversation, but I'm open to continuing this discussion as I still think that current workflow brings visible issues to ordinary users, and hence some adjustments should be made.
-
-Thank you.
-
--- 
-Oleksandr Natalenko (post-factum)
---nextPart4877866.31r3eYUQgx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmVfl/4ACgkQil/iNcg8
-M0ulrQ//Xt84JG6lXBE8QmL1g5+ySG1xHeSN6zDDznT4ZIFG9MdrIOH4zxZc02Vi
-lzSkLMkbq0lyZnR4wCU8dsUorDwS5c6SCVQBtRATkJeozDR0IYJBD3uE/JgR2gKn
-PyIBS7ntQfykYOREBlX3BSCteHXRLDxGP6UsRq7EyW8Xv75BehI1b95xq0Rn/Qvi
-4TYrUFJ/sfEZho7yefAAuAmS40l6XaBYjr1xSd0aRfILZ7uf9+onSHpFEjmtzGyj
-22LkxYkEgzcECJey0PLL9zyHnvwkdj3tM5u3ZZdABsSB4FsVETpeqxWELdAnfzN5
-PCVuNDk3PAUiNPW2KwI88eyZJRovjiIHdsudSshdx/Uh/bojqFt6f6i+ttjcV+G9
-eLjfH8EM5p0+11VlcTensk12o/2p7tqRL8EmIjvNb0OuaAd6D5ufJZYFr1q5Q9BU
-nDHM2Ls6UfzK7OKU1QldFF42LqZBvi6TQEKvF+XsJYGDaSPnYe4gsmDQKudWt0qO
-J+X/WlizA1mAifYEsHpTQKex6wGWnLHU1TSjct/cNAEW1SASbw/Kv11xLOIgB4z+
-qZwJe7u/aqXwWNmPK9qMKWrNm4IhJB8KjUO95bwAMS5fAl8DhfksB/TTBukXciI9
-e3I/AGML88xEqrFGlvejz7ONMuJDudSRxNMax/1zgDBc64FOK5E=
-=uQfP
------END PGP SIGNATURE-----
-
---nextPart4877866.31r3eYUQgx--
-
-
+>=20
+> >=20
+> > --
+> > Regards,
+> >=20
+> > Laurent Pinchart
+>=20
+>=20
+>=20
 
