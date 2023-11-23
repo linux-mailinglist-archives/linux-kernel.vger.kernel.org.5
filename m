@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6627F6216
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5617F621A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345933AbjKWOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:53:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S1345946AbjKWOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345818AbjKWOxt (ORCPT
+        with ESMTP id S1345818AbjKWOyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:53:49 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393E9D50
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:53:56 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5cc636d8a21so8366987b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:53:56 -0800 (PST)
+        Thu, 23 Nov 2023 09:54:10 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4BCD54
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:54:17 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5ccf64439bdso9014087b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:54:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700751235; x=1701356035; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700751256; x=1701356056; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hng7atoCf6aq1nFffZNGfN/YBOYveUc0TKmABRfWrB0=;
-        b=xDS2D+5TICLhxq2ynKnVCUuGzMKUTwm58I8eQ2uHsASwJ55sOQfBZ+8ZydSyq0++Iz
-         VTXmY3TAbrq8MPKcr5rGW0gqwTt8PVeh1JS7zY07WMuOvIW2bTlZ9dCXVGXA7EveHg9+
-         j5kvLj6W9vYdDj9byFfQfN+GvmBdT/dpKqEIzOo35pAJTtf3rMkn2AaVsojmsh/PxiSG
-         Evkd0dzMMeg53BG1lkmawaoNB9eUA38zsO0PcDTSFxzm78h8FPKNl4Z3nxHbKb3U2BQ9
-         RuVRRf2xvAa5mERi90bfn1ihsMrYLX3I0h9xxuAgFtf2jkPG05438oCkXYP5lOur/vVP
-         6rNw==
+        bh=NQCVfDsgWY/zTEVOFXIzheR2Sa3G525xrhmxUR9vYaY=;
+        b=xTY/PLMpFbaFomzwHNSLOdlofBOgPClhPWKODikwkx3YFfRsqgS+hI9UCEW93DJ7KX
+         h+8y1RKlHZpt5yFkzM+BbuXjzOQpFZjqlpwn5+XH14+N7o4iWLF9PdS15kUTE9n+Unmy
+         8rqxy31EHiZCU3XyG8fF5G98qJEDPJg+wYq2LClQKmNd/MC9zbrEdtPRx5JrATlAfxNa
+         X7cunmGJp3VNOramYg2XGSSsQmpOgff+KeGnbTJXSLWr/YtajIxNDcab080kwfd9PLoZ
+         VGgVg+xLwIdHJK/DcNT+mwCGqx4yT2PhAdq+2hhbJHz7bInb346istmKe+DreM5/mpaO
+         Xrjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700751235; x=1701356035;
+        d=1e100.net; s=20230601; t=1700751256; x=1701356056;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hng7atoCf6aq1nFffZNGfN/YBOYveUc0TKmABRfWrB0=;
-        b=B6/FAa51i5ffkFT4qTJBQYLLzZEw+ZiIVXNge82Q9ycGNAzjnxQ5QiCMKW/SpiENPs
-         0rfG5wa2nl5RIJ3FQlHXkLbC0kU4AnEhtfwmcFTWiogDaRTuzJSR18KBGlMNygqHVWNL
-         udJczcq3e5V2MHS3Ll8XEwFHgu71dPKRgAFrBujXcKfTa6u2UvOYcsejQbIAoar20s4V
-         OsdKpqb2PJViDPSAhnX2jl+nkcjprWiQPxeuOauKiZxNoSEXTY0s9LIdqrO4VaBeK4b2
-         51ux0yz3MYJU0FrrPrRLiHg1crC6i3jam0uZEpHg1uw7yoIO63kU68pDtGQROsFEbIvC
-         yHlA==
-X-Gm-Message-State: AOJu0YwaZfPUBpNviRRUKkGCi6NIPzXYzheNXtYaksmsrQBzid7IdbMb
-        fmjqvlBzW2FuW+Ei24DvqIr+uSYEXaz7du10o/XKPQ==
-X-Google-Smtp-Source: AGHT+IGURWX4SQN9Qat66MW6pT/slPHMNeNkf7JUZYLrhKJ4LBXbN1slma6cln+C5UcPVSm4twoIuLVS7OgepAKwVKI=
-X-Received: by 2002:a81:6dce:0:b0:5cc:475d:ce0a with SMTP id
- i197-20020a816dce000000b005cc475dce0amr5492125ywc.9.1700751235427; Thu, 23
- Nov 2023 06:53:55 -0800 (PST)
+        bh=NQCVfDsgWY/zTEVOFXIzheR2Sa3G525xrhmxUR9vYaY=;
+        b=Xuccd3j18hWst1ivC0GXqp8LPA7SDnW+obRXbq9J6ZrRCOLkDWoE1n9XZSmDDuhutM
+         owgqYECLkUNoG3/umvCrISEInbIihP3wo1lG8H+/42Y8NiVEDw1J/w7zhJTEkLnWlVkg
+         iVcBo1sYa9lX1mSjJHwwU5GH6inMpbO8aTM5BD4r5iWK/QpBPotAk1Sy+ASk1jqgfTPG
+         GpBLNHnx+DhK745X5U9axoapT/XHjGnYNgvSxPRgO7eCMXQns8S4uctwfl4WijLyu+ql
+         q3fYPvhDyLEJfnQtKDIQcEr5WtvaCmdv2X+shj6WgeI2/nQuRprMp49/FCNSKnRCf5ck
+         Oe3w==
+X-Gm-Message-State: AOJu0YxOWDHymEojZ7iJPlohr6xjSJqTIe1C+UQKlsL2i2Q0t2VqWurM
+        8yX1hJWKS0l3HRVq6CLZX8OyquT7DQ/A+N2C5vDv8TcuqWO4ctFRxZg=
+X-Google-Smtp-Source: AGHT+IH7Rd4xWDlbVC5YrXQiBqLegP0WAhDlB1Gbob2IIRXsUjvJ1TZmETFwS+DNwRNcvADWUlL5b8s7EMfqmgNxeBU=
+X-Received: by 2002:a81:4fcd:0:b0:5cc:dfdf:7f40 with SMTP id
+ d196-20020a814fcd000000b005ccdfdf7f40mr2326675ywb.2.1700751256151; Thu, 23
+ Nov 2023 06:54:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20231122175039.2289945-1-andriy.shevchenko@linux.intel.com> <20231122175039.2289945-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231122175039.2289945-2-andriy.shevchenko@linux.intel.com>
+References: <20231122175039.2289945-1-andriy.shevchenko@linux.intel.com> <20231122175039.2289945-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231122175039.2289945-3-andriy.shevchenko@linux.intel.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Nov 2023 15:53:44 +0100
-Message-ID: <CACRpkdbXjixVG+g7Yiqm6ki-xzgKUPQ7tUG4VuLH5gBGpwD=TQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] pinctrl: baytrail: Factor out byt_gpio_force_input_mode()
+Date:   Thu, 23 Nov 2023 15:54:04 +0100
+Message-ID: <CACRpkdY8Crm1TVf_6kCZ1EhizymaxU6g4ik2UOYBoqLf8XBCLA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] pinctrl: baytrail: Move default strength
+ assignment to a switch-case
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
@@ -70,11 +71,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 6:51=E2=80=AFPM Andy Shevchenko
+On Wed, Nov 22, 2023 at 6:50=E2=80=AFPM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 
-> There is a piece of code that it being used at least twice.
-> Factor it out.
+> iWhen ->pin_config_set() is called from the GPIO library (assumed
+> GpioIo() ACPI resource), the argument can be 1, when, for example,
+> PullDefault is provided. In such case we supply sane default in
+> the driver. Move that default assingment to a switch-case, so
+> it will be consolidated in one place.
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
