@@ -2,394 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B837F5861
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D237F586B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344816AbjKWGiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S1344822AbjKWGjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:39:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344814AbjKWGiK (ORCPT
+        with ESMTP id S1344790AbjKWGjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:38:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C346118E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:38:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700721494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aUEQD5MfVaqhpzv7dhMTbTAwn2srimSeAW0TyOyP80I=;
-        b=GXEnUDdSlbI1mlKKQom5IB43FhzRfawoU5JLcFdDrtR7UoG2r827uoZAnweBj/j4vmAtMB
-        HkWGmtg/No+pPrNgd7HAYQblvSX4Kpu7Bpo1MgjxKH93+Hv07b709fjbwF6/643Y277Rnu
-        SNm6fB6FJb87pgNp1SAMbf9AvZRjdz4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-jWCAy0frMkSZiAgPkCwIKg-1; Thu, 23 Nov 2023 01:38:11 -0500
-X-MC-Unique: jWCAy0frMkSZiAgPkCwIKg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2D0D101D25D;
-        Thu, 23 Nov 2023 06:38:10 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D5E461C060AE;
-        Thu, 23 Nov 2023 06:38:10 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev
-Cc:     Shaoqin Huang <shahuang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 3/3] KVM: selftests: aarch64: Introduce pmu_event_filter_test
-Date:   Thu, 23 Nov 2023 01:37:45 -0500
-Message-Id: <20231123063750.2176250-4-shahuang@redhat.com>
-In-Reply-To: <20231123063750.2176250-1-shahuang@redhat.com>
-References: <20231123063750.2176250-1-shahuang@redhat.com>
+        Thu, 23 Nov 2023 01:39:20 -0500
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2041.outbound.protection.outlook.com [40.107.12.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6206EDD;
+        Wed, 22 Nov 2023 22:39:26 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IogbFmDTkQQJQ/jiv2Tq3K7gDvuwzxwqI6X2nVA0ql+3hH6bPawUVsIM1j4D4Ui6HUhQUAKs9nSo5Vf/mNPYiHXHjZgAAK1Y1zbqzjqyRubjcYY7t/jNDudhj00a4f6pt97HJ3FBPkV+bzA99+vTLR3rHzapdielWfnFzq5w9hpyrDMFxtj/I0+NfYxNnaFWadx64fNWAyFT1473UIEM/qPnwLDJ32pgblJFdjVNhc/M33fESk2kK7zqMQcPRGvAscSME659xa3d1TbA7Lk1XHlJgr4DMjjAiYLQUj29Gbgf3X7wERuTGopj/XGpin+8bsPdcCx3yEBzwzoH3ZGV7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UutUUN8AzAyI3z3nKT6yEjmdSvlk5zAyXrsBDLdlwdM=;
+ b=dgi9oXWcIcNsl7PvfzDx1ZORI7oTLl1c1MqJ9IzWzNtWqjpSgEunw+yjYkxYrZKTt24noG1WXtGRFOkPMBQsnUaIe2OlArJ9rL6RNrzBwRcLN8WyQ+8z7stNPsZNYJsKYWGmW78BjfBlH43arLXvfUMlDlbq45sMDnSgObjtjLxmCg1JY4sKu08sy4OccbiJ8HqtVEhZSZHjFKyL0Zv8wxQaHvYWvbjly1KACIwHjoM8YnzP1L7hS24MlWoAWj1hO5eZ+lPmDKamShHbBb8N3nEVYs5laoeEmFzFs3+dTslnUBsTis0j0+608m5+EIPikFMQPhKW25Usr/e+vJotCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UutUUN8AzAyI3z3nKT6yEjmdSvlk5zAyXrsBDLdlwdM=;
+ b=nfWuviEqe4iTXgZBf8A5L1npGhCcOigiIoTqPpOaMnSEx+IgssmI32owW03YieU+slqfBBIXVrXSRtifxnDljW/7Iu+WVdLQ7Imvdw9QccVeGg9aSYBqzixrKiXoGb4RuWms2eye68880yIiKYaG/6Sgc4TUbWxqYMeevPJOJg31SMh4TLgdakgLOkwrFiP0jb5/UELdk6CsgVEKtfJf/BybRAFRolooryAuMPOzP2ffphpbqlz9uyYkQbHYigU3nxRpD/x9U6+zDulrCo9ZSe2fnXBCfY614lgHuNfE5OadpzUe0BOE6Tk/CLNC5vDhnAWiUEEp26K/N0GMx/sZyA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MRZP264MB1542.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:b::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.12; Thu, 23 Nov 2023 06:39:23 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::5bfe:e2f2:6d89:8d97]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::5bfe:e2f2:6d89:8d97%3]) with mapi id 15.20.7046.012; Thu, 23 Nov 2023
+ 06:39:23 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pratyush Brahma <quic_pbrahma@quicinc.com>,
+        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
+        Sean Anderson <sean.anderson@seco.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+CC:     "xe-linux-external@cisco.com" <xe-linux-external@cisco.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/8] of: replace command line handling
+Thread-Topic: [PATCH 7/8] of: replace command line handling
+Thread-Index: AQHaE3ahtJVZ4EJB/0ejXwsHWvYB8LCHiKgA
+Date:   Thu, 23 Nov 2023 06:39:23 +0000
+Message-ID: <4fa98c8f-076f-4503-b46d-515b8c56bb6d@csgroup.eu>
+References: <20231110013817.2378507-1-danielwa@cisco.com>
+ <20231110013817.2378507-8-danielwa@cisco.com>
+In-Reply-To: <20231110013817.2378507-8-danielwa@cisco.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB1542:EE_
+x-ms-office365-filtering-correlation-id: 1d70d028-ede6-48d1-8145-08dbebeeee48
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lDcVI4i+1OTQ2J9yZa1Ckp/gm8g3WicB0h/Ml9xi4gQA3rDDRASM3vuw+QWwGUtq3uISJh/RSkukNLp+5qwG+dj+7g8/9MY6Rkr2eE8PejmSETOZZ0w2ZcMdjCARSlURMGDagxQxSO91+hxcOSntX3Yr//Z1zaGIhYmfDuka6I2OoTRYgCCJ7fYSQjCDmrFZBdGH02HRP9E35Zl+2z0erFcVqq8oRAsdCudupiLmApjBTO91TYCINFr07MIWdn0bgV+7eyre+7nu7XHIPT9xfLVE/mkZFP8Psf8pQe2Zn138a3k4f0vQfVeiE6pFwzBmrNtN3NUQDUzwAxCjbrix6VoefWGseUomArIYOn9rGR9AyGqZ+TCotDM6pVThZSBZtR6GNqogNbMYobFoavsiF19PWIk/lbgzmocHyBjMmH49v0ws348XM+YM/HpIWFQQGt+5DZSl4tiDW6hr3HX0CiG9cIJxiM0Odv7Hk/wLIoW5QJBrllufxvwJrq326XatzyGbYdtJmAMVDDVqo6ghOQV9vwj0ldM2viV0LdderAxmO7JD0Y/mWaqQ2mZ2fsZMqon/YCEbcRoihw1v6PHxEVBJdWgDrobxaS811KEWTpB3EUgZgrzuynIs2RCczwJHuA3aCQzmsd+4eKmCQBPYsrnN4752XZVQFSnIYX06t6j2S3wdfHlZmhF2UzgbfqlkcopKfEFvxeULlaHHVvmpfMsMJH6wJjUKGnimsphopgvVsbMh0jeDvXN2CblYrSZo
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(396003)(366004)(39860400002)(230173577357003)(230273577357003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(31686004)(921008)(38070700009)(66946007)(66556008)(76116006)(66476007)(66446008)(64756008)(54906003)(91956017)(110136005)(38100700002)(36756003)(122000001)(31696002)(86362001)(83380400001)(66574015)(26005)(6506007)(6512007)(2616005)(6486002)(2906002)(7416002)(316002)(478600001)(8676002)(5660300002)(4326008)(44832011)(71200400001)(41300700001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aERhdlVhaXNVMXdKNFR5bUxYbS9hZFFiSFZzd2dCN2FOeHpMUDdLSlBCSzFi?=
+ =?utf-8?B?VWs0OE5zM3ZFNFQybUFza2NQMmF3MUN6NnNaVXhzdnVFYXR3TlI4cWRTQnpN?=
+ =?utf-8?B?TTFJTk5GZlFGbWdQcUdPMmdOQS9VenN0TjcwWUtaVU55TFV6OGtTZ3N0THlm?=
+ =?utf-8?B?aFk4enBpeWRGOFdhbDJYc01ManJrdmFaMXUzWEZTOVlTNExYVDU0LzEwWWRL?=
+ =?utf-8?B?aEU0cG5YbjlOSEVBL2p6SFl2c0xBTzZwZWtsQUtNM1RMNXk0TCtyd3BJVGY0?=
+ =?utf-8?B?TVlCYmQwTWw0Zm95LzJEVzI0cGtETDN6aUhFWXNybjZkYW11N1VFUGtBcU55?=
+ =?utf-8?B?aU03Z0UxYU5qMmhGdXQ2YmlZV2hmMENSc2hod1dUa2drMStBSUtxZmh6U1RY?=
+ =?utf-8?B?K0dIZGtRZ2Jhb1BpcTY3SVFMSHRKRlNNZGIwaEFQRU9CQlZpbHUxMm9WOE5V?=
+ =?utf-8?B?c2o0MzR4N2YwSnpCWVNUUXZKQVZCaTM0UkNweGovUGNzMTJsYy80SDQzVXB1?=
+ =?utf-8?B?dUxOK0ViNVlyT1l2VmZPVGhuRmtQWEMxd0JyNjF4cVdXN3p3Yzlnb0VWZ1JH?=
+ =?utf-8?B?RE14UEs0QXRPZEVqV3BkZEN0RmxGcGZYVTFJdW9FdDBxaXJlLzg0ZWxmekFY?=
+ =?utf-8?B?QlhobXBTclVSV0xCYWcrWi80ZEk4V0J3TjRyQ3JlZ0xTYUs4WUo3K2ozUWVx?=
+ =?utf-8?B?aHZWSGkrWmVTSkdDUDNENG16d2xBdjFxMGh3L1JxbGpiTlpwTzE4RmhqQnFC?=
+ =?utf-8?B?NWM5d1pGZC92U2pBZFRLMERIWjdJZnRmU3ZHTGVqMVlzMytwOHdLNUwyZXdO?=
+ =?utf-8?B?Mms5THRxZGM4SUR1d1pwcSt2SjZuSHVuWVk5VTdWZW0rSkZwTGloVVIrR2Fo?=
+ =?utf-8?B?b3ViV21SbzFzOXpaem1BNVdFTk9NcHVNNE1KTVhtai9rdDhNeGZJMDgvUmRC?=
+ =?utf-8?B?dXpJRGcwaHhSSDcvU0pEc2E0V3JmV0JxTXJ6cTFGQS9TK2xHbnRHWWZVQjVv?=
+ =?utf-8?B?d2ZHQUZDZENhUG4zaU5QNXpMOVl3ZGo2TXpqN0svTnFTSkQzdlpWbzBXckov?=
+ =?utf-8?B?OTRDbFgyUHNVYjRlMGJUbmtXOVR5L2l0bGZKb2Q0cGI5VHVzRm5wUkd5cFlt?=
+ =?utf-8?B?R0J6eWRwZUZXOEhmLzFjb3NDOTNiREtBendzeE56ejgrNDhQVkJ5M1ZUeWpk?=
+ =?utf-8?B?WEhOWC9HUHV2ZUZJbzNpa2xQcUNWS1RNSjB5eWlTNHh4Z2hvTldadGQzQlZp?=
+ =?utf-8?B?Wm13RWxyU2JpTklWTEJDczQrSUt2SWYrMkZ1Z3BUYTAxOGN1bHB5blBETk81?=
+ =?utf-8?B?VWpYeThmdWVXeU5SYlJIRUYyUEp4c2pSaWN6Rk5RMVQ0c1dNa1A0akZwL1Ar?=
+ =?utf-8?B?cHM0MG1yQjF2ajFqQ1haOWVQMURqZ29mQzk0dGI2WjBUZEZYU2JzTVlweDU1?=
+ =?utf-8?B?dVMrbWQzemNQVjJyQ1BsczZSemRLQVdqVlJxeVF3VFJVd2locGJWSC9CaWtT?=
+ =?utf-8?B?WlM2dkRMRWR2SHlxUWxJQjdZN2x4UGZwcmhsRXlqbWJpODhoZUtUU2UwSllN?=
+ =?utf-8?B?M3FkZnRpUHNBYVlNNmlKY0t4SThwSUVnOVNUbmk4VWFXQWJXUWg5Q3J3RWQv?=
+ =?utf-8?B?Z21rMUVWNG1zWUpORlhzNHJQQVhLZ2NpYmZENkMyM3ZXeXp5U0FjbVVsZUtV?=
+ =?utf-8?B?dUtNM05wb05RQTdtQWIxNGFFWWNuNkcyaThldm1BM1RjdkYxYllvYWJ1a0x2?=
+ =?utf-8?B?Rnl1dmpnSTFDM3JtYitWRXErZUVvR1VWMGw2OWhkQXZzK3RKZkM2K0hySWI1?=
+ =?utf-8?B?elNialJ4OU5VeDRHMHZDdU53YnBGanJGNkh2U1h0N3FRUzZSbFVlaXhUTnVD?=
+ =?utf-8?B?QTNHZlpRU1V6cktGUkFPM1JROWhYcTllRFUyTGRySW0vT2ZINjBiWUtVL3Vz?=
+ =?utf-8?B?eGI0bzA3MUh5OEtPa0M1aFVGVDh5ZGo1UWhuL29Oc3dlSU8vbnhhZzBZNG9u?=
+ =?utf-8?B?OVFNdTkxd3hBaDgwbzlicXZsMm01djBwMUxGeXJFUjNSbU1wNmJBZ3VVRGV2?=
+ =?utf-8?B?WDI1Z3FJUXRUL05leUxjSWJxcVpVQSsrQ3AwVW0vMkhmbE1OcWdOYTg0M3FM?=
+ =?utf-8?Q?ZQ8nSrpMwjxCaSgMcp0lEl5X4?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A8A140911D8BBE489C8452051E720E28@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d70d028-ede6-48d1-8145-08dbebeeee48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2023 06:39:23.5265
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3kOhXNvUg1imBzlJd6vz7GKcgOgnJkPPxFEHy8A4TgKny5i+DqXFIvRu5MFMrzluSHUSpiPPh0nn8j17VTN3bQcCYKLOIO8sUATvJFIcof8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB1542
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce pmu_event_filter_test for arm64 platforms. The test configures
-PMUv3 for a vCPU, and sets different pmu event filter for the vCPU, and
-check if the guest can use those events which user allow and can't use
-those events which use deny.
-
-This test refactor the create_vpmu_vm() and make it a wrapper for
-__create_vpmu_vm(), which can let we do some extra init before
-KVM_ARM_VCPU_PMU_V3_INIT.
-
-This test choose the branches_retired and the instructions_retired
-event, and let guest use the two events in pmu. And check if the result
-is expected.
-
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../kvm/aarch64/pmu_event_filter_test.c       | 227 ++++++++++++++++++
- .../selftests/kvm/include/aarch64/vpmu.h      |   4 +
- .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  14 +-
- 4 files changed, 244 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index b60852c222ac..5f126e1a1dbf 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -155,6 +155,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
- TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
- TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
- TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
-+TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
- TEST_GEN_PROGS_aarch64 += aarch64/psci_test
- TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
- TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
-diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-new file mode 100644
-index 000000000000..a876f5c2033b
---- /dev/null
-+++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-@@ -0,0 +1,227 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * pmu_event_filter_test - Test user limit pmu event for guest.
-+ *
-+ * Copyright (c) 2023 Red Hat, Inc.
-+ *
-+ * This test checks if the guest only see the limited pmu event that userspace
-+ * sets, if the gust can use those events which user allow, and if the guest
-+ * can't use those events which user deny.
-+ * It also checks set invalid filter return the expected error.
-+ * This test runs only when KVM_CAP_ARM_PMU_V3 is supported on the host.
-+ */
-+#include <kvm_util.h>
-+#include <processor.h>
-+#include <vgic.h>
-+#include <vpmu.h>
-+#include <test_util.h>
-+#include <perf/arm_pmuv3.h>
-+
-+struct {
-+	uint64_t branches_retired;
-+	uint64_t instructions_retired;
-+} pmc_results;
-+
-+static struct vpmu_vm *vpmu_vm;
-+
-+#define FILTER_NR 10
-+
-+struct test_desc {
-+	const char *name;
-+	void (*check_result)(void);
-+	struct kvm_pmu_event_filter filter[FILTER_NR];
-+};
-+
-+#define __DEFINE_FILTER(base, num, act)		\
-+	((struct kvm_pmu_event_filter) {	\
-+		.base_event	= base,		\
-+		.nevents	= num,		\
-+		.action		= act,		\
-+	})
-+
-+#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
-+
-+#define EMPTY_FILTER	{ 0 }
-+
-+#define SW_INCR		0x0
-+#define INST_RETIRED	0x8
-+#define BR_RETIERD	0x21
-+
-+#define NUM_BRANCHES	10
-+
-+static void run_and_measure_loop(void)
-+{
-+	asm volatile(
-+		"	mov	x10, %[loop]\n"
-+		"1:	sub	x10, x10, #1\n"
-+		"	cmp	x10, #0x0\n"
-+		"	b.gt	1b\n"
-+		:
-+		: [loop] "r" (NUM_BRANCHES)
-+		: "x10", "cc");
-+}
-+
-+static void guest_code(void)
-+{
-+	uint64_t pmcr = read_sysreg(pmcr_el0);
-+
-+	pmu_disable_reset();
-+
-+	write_pmevtypern(0, BR_RETIERD);
-+	write_pmevtypern(1, INST_RETIRED);
-+	enable_counter(0);
-+	enable_counter(1);
-+	write_sysreg(pmcr | ARMV8_PMU_PMCR_E, pmcr_el0);
-+
-+	run_and_measure_loop();
-+
-+	write_sysreg(pmcr, pmcr_el0);
-+
-+	pmc_results.branches_retired = read_sysreg(pmevcntr0_el0);
-+	pmc_results.instructions_retired = read_sysreg(pmevcntr1_el0);
-+
-+	GUEST_DONE();
-+}
-+
-+static void pmu_event_filter_init(struct vpmu_vm *vm, void *arg)
-+{
-+	struct kvm_device_attr attr = {
-+		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
-+		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
-+	};
-+	struct kvm_pmu_event_filter *filter = (struct kvm_pmu_event_filter *)arg;
-+
-+	while (filter && filter->nevents != 0) {
-+		attr.addr = (uint64_t)filter;
-+		vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
-+		filter++;
-+	}
-+}
-+
-+static void create_vpmu_vm_with_filter(void *guest_code,
-+				       struct kvm_pmu_event_filter *filter)
-+{
-+	vpmu_vm = __create_vpmu_vm(guest_code, pmu_event_filter_init, filter);
-+}
-+
-+static void run_vcpu(struct kvm_vcpu *vcpu)
-+{
-+	struct ucall uc;
-+
-+	while (1) {
-+		vcpu_run(vcpu);
-+		switch (get_ucall(vcpu, &uc)) {
-+		case UCALL_DONE:
-+			return;
-+		default:
-+			TEST_FAIL("Unknown ucall %lu", uc.cmd);
-+		}
-+	}
-+}
-+
-+static void check_pmc_counting(void)
-+{
-+	uint64_t br = pmc_results.branches_retired;
-+	uint64_t ir = pmc_results.instructions_retired;
-+
-+	TEST_ASSERT(br && br == NUM_BRANCHES, "Branch instructions retired = "
-+		    "%lu (expected %u)", br, NUM_BRANCHES);
-+	TEST_ASSERT(ir, "Instructions retired = %lu (expected > 0)", ir);
-+}
-+
-+static void check_pmc_not_counting(void)
-+{
-+	uint64_t br = pmc_results.branches_retired;
-+	uint64_t ir = pmc_results.instructions_retired;
-+
-+	TEST_ASSERT(!br, "Branch instructions retired = %lu (expected 0)", br);
-+	TEST_ASSERT(!ir, "Instructions retired = %lu (expected 0)", ir);
-+}
-+
-+static void run_vcpu_and_sync_pmc_results(void)
-+{
-+	memset(&pmc_results, 0, sizeof(pmc_results));
-+	sync_global_to_guest(vpmu_vm->vm, pmc_results);
-+
-+	run_vcpu(vpmu_vm->vcpu);
-+
-+	sync_global_from_guest(vpmu_vm->vm, pmc_results);
-+}
-+
-+static void run_test(struct test_desc *t)
-+{
-+	pr_debug("Test: %s\n", t->name);
-+
-+	create_vpmu_vm_with_filter(guest_code, t->filter);
-+
-+	run_vcpu_and_sync_pmc_results();
-+
-+	t->check_result();
-+
-+	destroy_vpmu_vm(vpmu_vm);
-+}
-+
-+static struct test_desc tests[] = {
-+	{"without_filter", check_pmc_counting, { EMPTY_FILTER }},
-+	{"member_allow_filter", check_pmc_counting,
-+	 {DEFINE_FILTER(SW_INCR, 0), DEFINE_FILTER(INST_RETIRED, 0),
-+	  DEFINE_FILTER(BR_RETIERD, 0), EMPTY_FILTER}},
-+	{"member_deny_filter", check_pmc_not_counting,
-+	 {DEFINE_FILTER(SW_INCR, 1), DEFINE_FILTER(INST_RETIRED, 1),
-+	  DEFINE_FILTER(BR_RETIERD, 1), EMPTY_FILTER}},
-+	{"not_member_deny_filter", check_pmc_counting,
-+	 {DEFINE_FILTER(SW_INCR, 1), EMPTY_FILTER}},
-+	{"not_member_allow_filter", check_pmc_not_counting,
-+	 {DEFINE_FILTER(SW_INCR, 0), EMPTY_FILTER}},
-+	{ 0 }
-+};
-+
-+static void for_each_test(void)
-+{
-+	struct test_desc *t;
-+
-+	for (t = &tests[0]; t->name; t++)
-+		run_test(t);
-+}
-+
-+static void set_invalid_filter(struct vpmu_vm *vm, void *arg)
-+{
-+	struct kvm_pmu_event_filter invalid;
-+	struct kvm_device_attr attr = {
-+		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
-+		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
-+		.addr	= (uint64_t)&invalid,
-+	};
-+	int ret = 0;
-+
-+	/* The max event number is (1 << 16), set a range large than it. */
-+	invalid = __DEFINE_FILTER(BIT(15), BIT(15)+1, 0);
-+	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
-+	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter range "
-+		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
-+		    ret, errno);
-+
-+	ret = 0;
-+
-+	/* Set the Invalid action. */
-+	invalid = __DEFINE_FILTER(0, 1, 3);
-+	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
-+	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter action "
-+		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
-+		    ret, errno);
-+}
-+
-+static void test_invalid_filter(void)
-+{
-+	vpmu_vm = __create_vpmu_vm(guest_code, set_invalid_filter, NULL);
-+	destroy_vpmu_vm(vpmu_vm);
-+}
-+
-+int main(void)
-+{
-+	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
-+
-+	for_each_test();
-+
-+	test_invalid_filter();
-+}
-diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
-index e0cc1ca1c4b7..db97bfb07996 100644
---- a/tools/testing/selftests/kvm/include/aarch64/vpmu.h
-+++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
-@@ -18,6 +18,10 @@ struct vpmu_vm {
- 	int gic_fd;
- };
- 
-+struct vpmu_vm *__create_vpmu_vm(void *guest_code,
-+				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
-+				 void *arg);
-+
- struct vpmu_vm *create_vpmu_vm(void *guest_code);
- 
- void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
-diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
-index b3de8fdc555e..76ea03d607f1 100644
---- a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
-+++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
-@@ -7,8 +7,9 @@
- #include <vpmu.h>
- #include <perf/arm_pmuv3.h>
- 
--/* Create a VM that has one vCPU with PMUv3 configured. */
--struct vpmu_vm *create_vpmu_vm(void *guest_code)
-+struct vpmu_vm *__create_vpmu_vm(void *guest_code,
-+				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
-+				 void *arg)
- {
- 	struct kvm_vcpu_init init;
- 	uint8_t pmuver;
-@@ -50,12 +51,21 @@ struct vpmu_vm *create_vpmu_vm(void *guest_code)
- 		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
- 
- 	/* Initialize vPMU */
-+	if (init_pmu)
-+		init_pmu(vpmu_vm, arg);
-+
- 	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
- 	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
- 
- 	return vpmu_vm;
- }
- 
-+/* Create a VM that has one vCPU with PMUv3 configured. */
-+struct vpmu_vm *create_vpmu_vm(void *guest_code)
-+{
-+	return __create_vpmu_vm(guest_code, NULL, NULL);
-+}
-+
- void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm)
- {
- 	close(vpmu_vm->gic_fd);
--- 
-2.40.1
-
+DQoNCkxlIDEwLzExLzIwMjMgw6AgMDI6MzgsIERhbmllbCBXYWxrZXIgYSDDqWNyaXTCoDoNCj4g
+Um9iIEhlcnJpbmcgaGFzIGNvbXBsYWluZWQgYWJvdXQgdGhpcyBzZWN0aW9uIG9mIGNvZGUuIEkg
+cmVtb3ZlZCB0aGUNCg0KVGhpcyBraW5kIG9mIGNvbnNpZGVyYXRpb25zIHNob3VsZG4ndCBhcHBl
+YXIgaW4gdGhlIGNvbW1pdCBtZXNzYWdlLCBpdCANCm1heSBhcHBlYXIgYWZ0ZXIgdGhlIC0tLSBz
+byB0aGF0IGl0IGdldHMgZHJvcHBlZCB3aGVuIGFwcGx5aW5nLg0KDQo+IGNvbW1hbmQgbGluZSBo
+YW5kbGluZyBjb2RlIHRvIHRoZSBjbWRsaW5lLmggaGVhZGVyLiBUaGlzIGhvcGVmdWxseSBtYWtl
+cw0KPiBpdCBlYXNpZXIgZm9yIFJvYiB0byBtYWludGFpbiBpdCAoYXQgbGVhc3QgaGUgZG9lc24n
+dCBoYXZlIHRvIGxvb2sgYXQgaXQNCj4gZGlyZWN0bHkgYW55bW9yZSkuIEkgd291bGQgbGlrZSB0
+byBhZGQgYSBLY29uZmlnIG9wdGlvbiBjYWxsZWQNCj4gT0ZfREVQUkVDQVRFRF9DTURMSU5FIHdo
+aWNoIGFuIGFyY2hpdGVjdHVyZSB3b3VsZCBzZXQgaWYgaXQgdXNlcyB0aGlzIGNvZGUuDQoNCk5v
+dCBzdXJlIHRvIHVuZGVyc3RhbmQgd2hhdCB5b3Ugd2FudCB0byBkbyBhbmQgd2h5IHRoYXQgaXMg
+bmVlZGVkLiBXaHkgDQpjYW4ndCB0aGF0IHdvcmsgZm9yIGV2ZXJ5b25lID8gQXZvaWQgdW5uZWNl
+c3Nhcnkgb3B0aW9ucy4NCg0KPiBUaGlzIHdvdWxkIGFsbG93IGEgcGxhdGZvcm0gdG8gdXNlIHRo
+ZSBjbWRsaW5lLmggYW5kIHRoZSBhZGRlZCBmdW5jdGlvbg0KPiBkaXJlY3RseSBhbmQgcmVtb3Zl
+IHRoZSBLY29uZmlnIG9wdGlvbi4gVGhpcyBjaGFuZ2Ugd291bGQgYmUgaW4gYSBzdWJzZXF1ZW50
+DQo+IHBhdGNoLg0KDQp3b3VsZCBvciB3aWxsID8gTm90IHN1cmUgaXQgaXMgd29ydGggbWVudGlv
+bmluZyBpZiBpdCB3b24ndC4NCg0KPiANCj4gVGhpcyBjb2RlIHdhcyBib290IHRlc3RlZCBvbiBw
+b3dlcnBjIDMyYml0LCBwb3dlcnBjIDY0Yml0IHdpdGhvdXQNCj4gYW55IGdlbmVyaWMgY29tbWFu
+ZCBsaW5lIGNvbnZlcnNpb24uDQo+IA0KPiBDYzogeGUtbGludXgtZXh0ZXJuYWxAY2lzY28uY29t
+DQo+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBXYWxrZXIgPGRhbmllbHdhQGNpc2NvLmNvbT4NCj4g
+LS0tDQo+ICAgZHJpdmVycy9vZi9mZHQuYyAgICAgICAgfCAyMiArKystLS0tLS0tLS0tLS0tLS0t
+LS0tDQo+ICAgaW5jbHVkZS9saW51eC9jbWRsaW5lLmggfCAzMSArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAzNCBpbnNlcnRpb25zKCspLCAxOSBk
+ZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL29mL2ZkdC5jIGIvZHJpdmVy
+cy9vZi9mZHQuYw0KPiBpbmRleCBiZjUwMmJhOGRhOTUuLjFmYzFiMTdkMDRkYyAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9vZi9mZHQuYw0KPiArKysgYi9kcml2ZXJzL29mL2ZkdC5jDQo+IEBAIC0y
+Niw2ICsyNiw3IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L3NlcmlhbF9jb3JlLmg+DQo+ICAgI2lu
+Y2x1ZGUgPGxpbnV4L3N5c2ZzLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3JhbmRvbS5oPg0KPiAr
+I2luY2x1ZGUgPGxpbnV4L2NtZGxpbmUuaD4NCj4gICANCj4gICAjaW5jbHVkZSA8YXNtL3NldHVw
+Lmg+ICAvKiBmb3IgQ09NTUFORF9MSU5FX1NJWkUgKi8NCj4gICAjaW5jbHVkZSA8YXNtL3BhZ2Uu
+aD4NCj4gQEAgLTExODMsMjcgKzExODQsMTAgQEAgaW50IF9faW5pdCBlYXJseV9pbml0X2R0X3Nj
+YW5fY2hvc2VuKGNoYXIgKmNtZGxpbmUpDQo+ICAgDQo+ICAgCS8qIFJldHJpZXZlIGNvbW1hbmQg
+bGluZSAqLw0KPiAgIAlwID0gb2ZfZ2V0X2ZsYXRfZHRfcHJvcChub2RlLCAiYm9vdGFyZ3MiLCAm
+bCk7DQo+IC0JaWYgKHAgIT0gTlVMTCAmJiBsID4gMCkNCj4gLQkJc3Ryc2NweShjbWRsaW5lLCBw
+LCBtaW4obCwgQ09NTUFORF9MSU5FX1NJWkUpKTsNCj4gICANCj4gICBoYW5kbGVfY21kbGluZToN
+Cj4gLQkvKg0KPiAtCSAqIENPTkZJR19DTURMSU5FIGlzIG1lYW50IHRvIGJlIGEgZGVmYXVsdCBp
+biBjYXNlIG5vdGhpbmcgZWxzZQ0KPiAtCSAqIG1hbmFnZWQgdG8gc2V0IHRoZSBjb21tYW5kIGxp
+bmUsIHVubGVzcyBDT05GSUdfQ01ETElORV9GT1JDRQ0KPiAtCSAqIGlzIHNldCBpbiB3aGljaCBj
+YXNlIHdlIG92ZXJyaWRlIHdoYXRldmVyIHdhcyBmb3VuZCBlYXJsaWVyLg0KPiAtCSAqLw0KPiAt
+I2lmZGVmIENPTkZJR19DTURMSU5FDQo+IC0jaWYgZGVmaW5lZChDT05GSUdfQ01ETElORV9FWFRF
+TkQpDQo+IC0Jc3RybGNhdChjbWRsaW5lLCAiICIsIENPTU1BTkRfTElORV9TSVpFKTsNCj4gLQlz
+dHJsY2F0KGNtZGxpbmUsIENPTkZJR19DTURMSU5FLCBDT01NQU5EX0xJTkVfU0laRSk7DQo+IC0j
+ZWxpZiBkZWZpbmVkKENPTkZJR19DTURMSU5FX0ZPUkNFKQ0KPiAtCXN0cnNjcHkoY21kbGluZSwg
+Q09ORklHX0NNRExJTkUsIENPTU1BTkRfTElORV9TSVpFKTsNCj4gLSNlbHNlDQo+IC0JLyogTm8g
+YXJndW1lbnRzIGZyb20gYm9vdCBsb2FkZXIsIHVzZSBrZXJuZWwncyAgY21kbCovDQo+IC0JaWYg
+KCEoKGNoYXIgKiljbWRsaW5lKVswXSkNCj4gLQkJc3Ryc2NweShjbWRsaW5lLCBDT05GSUdfQ01E
+TElORSwgQ09NTUFORF9MSU5FX1NJWkUpOw0KPiAtI2VuZGlmDQo+IC0jZW5kaWYgLyogQ09ORklH
+X0NNRExJTkUgKi8NCj4gKw0KPiArCW9mX2RlcHJlY2F0ZWRfY21kbGluZV91cGRhdGUoY21kbGlu
+ZSwgcCwgbCk7DQo+ICAgDQo+ICAgCXByX2RlYnVnKCJDb21tYW5kIGxpbmUgaXM6ICVzXG4iLCAo
+Y2hhciAqKWNtZGxpbmUpOw0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9jbWRs
+aW5lLmggYi9pbmNsdWRlL2xpbnV4L2NtZGxpbmUuaA0KPiBpbmRleCBhOTQ3NThhMGYyNTcuLmM3
+NzJhZmI3MzQwZiAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9jbWRsaW5lLmgNCj4gKysr
+IGIvaW5jbHVkZS9saW51eC9jbWRsaW5lLmgNCj4gQEAgLTEwMyw0ICsxMDMsMzUgQEAgX19jbWRs
+aW5lX2FkZF9idWlsdGluKA0KPiAgIA0KPiAgICNkZWZpbmUgY21kbGluZV9nZXRfc3RhdGljX2J1
+aWx0aW4oZGVzdCkgXA0KPiAgIAkoQ01ETElORV9TVEFUSUNfUFJFUEVORCBDTURMSU5FX1NUQVRJ
+Q19BUFBFTkQpDQo+ICsNCj4gKyNpZm5kZWYgQ09ORklHX0dFTkVSSUNfQ01ETElORQ0KPiArc3Rh
+dGljIGlubGluZSBib29sIG9mX2RlcHJlY2F0ZWRfY21kbGluZV91cGRhdGUoY2hhciAqY21kbGlu
+ZSwgY29uc3QgY2hhciAqZHRfYm9vdGFyZ3MsIGludCBsZW5ndGgpDQoNCkFkZCBhIGNvbW1lbnQg
+ZXhwbGFpbmluZyB3aHkgaXQgaXMgZGVwcmVjYXRlZC4NCg0KPiArew0KPiArCWlmIChkdF9ib290
+YXJncyAhPSBOVUxMICYmIGxlbmd0aCA+IDApDQo+ICsJCXN0cmxjcHkoY21kbGluZSwgZHRfYm9v
+dGFyZ3MsIG1pbihsZW5ndGgsIENPTU1BTkRfTElORV9TSVpFKSk7DQo+ICsJLyoNCj4gKwkgKiBD
+T05GSUdfQ01ETElORSBpcyBtZWFudCB0byBiZSBhIGRlZmF1bHQgaW4gY2FzZSBub3RoaW5nIGVs
+c2UNCj4gKwkgKiBtYW5hZ2VkIHRvIHNldCB0aGUgY29tbWFuZCBsaW5lLCB1bmxlc3MgQ09ORklH
+X0NNRExJTkVfRk9SQ0UNCj4gKwkgKiBpcyBzZXQgaW4gd2hpY2ggY2FzZSB3ZSBvdmVycmlkZSB3
+aGF0ZXZlciB3YXMgZm91bmQgZWFybGllci4NCj4gKwkgKi8NCj4gKw0KPiArI2lmZGVmIENPTkZJ
+R19DTURMSU5FDQo+ICsjaWYgZGVmaW5lZChDT05GSUdfQ01ETElORV9FWFRFTkQpDQo+ICsJc3Ry
+bGNhdChjbWRsaW5lLCAiICIsIENPTU1BTkRfTElORV9TSVpFKTsNCj4gKwlzdHJsY2F0KGNtZGxp
+bmUsIENPTkZJR19DTURMSU5FLCBDT01NQU5EX0xJTkVfU0laRSk7DQo+ICsjZWxpZiBkZWZpbmVk
+KENPTkZJR19DTURMSU5FX0ZPUkNFKQ0KPiArCXN0cnNjcHkoY21kbGluZSwgQ09ORklHX0NNRExJ
+TkUsIENPTU1BTkRfTElORV9TSVpFKTsNCj4gKyNlbHNlDQo+ICsJLyogTm8gYXJndW1lbnRzIGZy
+b20gYm9vdCBsb2FkZXIsIHVzZSBrZXJuZWwncyAgY21kbCovDQo+ICsJaWYgKCEoKGNoYXIgKilj
+bWRsaW5lKVswXSkNCj4gKwkJc3Ryc2NweShjbWRsaW5lLCBDT05GSUdfQ01ETElORSwgQ09NTUFO
+RF9MSU5FX1NJWkUpOw0KPiAgICNlbmRpZg0KPiArI2VuZGlmIC8qIENPTkZJR19DTURMSU5FICov
+DQo+ICsJcmV0dXJuIHRydWU7DQo+ICt9DQo+ICsjZWxzZQ0KPiArc3RhdGljIGlubGluZSBib29s
+IG9mX2RlcHJlY2F0ZWRfY21kbGluZV91cGRhdGUoY2hhciAqY21kbGluZSwgY29uc3QgY2hhciAq
+ZHRfYm9vdGFyZ3MsIGludCBsZW5ndGgpIHsgcmV0dXJuIGZhbHNlOyB9DQo+ICsjZW5kaWYgLyog
+Q09ORklHX0dFTkVSSUNfQ01ETElORSAqLw0KPiArDQo+ICsNCj4gKyNlbmRpZiAvKiBfTElOVVhf
+Q01ETElORV9IICovDQo=
