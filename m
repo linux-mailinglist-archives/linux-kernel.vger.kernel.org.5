@@ -2,280 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5164E7F5E15
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8997F5E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 12:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345103AbjKWLnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 06:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S1345107AbjKWLoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 06:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345070AbjKWLna (ORCPT
+        with ESMTP id S1345070AbjKWLog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 06:43:30 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCF198
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:43:35 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C56AA6607399;
-        Thu, 23 Nov 2023 11:43:33 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700739814;
-        bh=U0wvK8MYhX15YyDgMNWd2SteQ9Ja2JnnJjiJ4hRV3bk=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=AipKP99pQsEMkeP/4tm/l4h3fKnhkt6Ac4x0k2sv+Ph2wx9kgN7jH/EiFonX1Gs5N
-         782B3G5ywoYoUHvFTS5WTeL7S+9WhRcqQqUyym1r4szIEbCPu7tWs3zIdxZVEzR4ZO
-         77o6Foa0+hfWXPM/FYWXQQ1jACJJxOVipYH/VKfhLQa18rzHIJ92frHN6cyfsplYND
-         PuxemQSYTU1K9iMtITjyARdFl5Ut4T0oPlm96FZQKn3V/IanC03hD/uFYJp95gtugY
-         5VkWLp7fcuxvchp+UTXi7s87cmrV0PHWRMNUgssr9dfK8gV5C4SlqJnDvE851FAwu1
-         4Xoani12PvnrQ==
-Message-ID: <a3ae6eb5-902b-4e33-9b14-a9dc3cc5056d@collabora.com>
-Date:   Thu, 23 Nov 2023 12:43:31 +0100
+        Thu, 23 Nov 2023 06:44:36 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CE7BC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:44:42 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c5071165d5so10081421fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 03:44:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700739881; x=1701344681; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KVW8XA5bzUo8eqk22K5VEvjyNNkbbnblzFQyRhQLgRc=;
+        b=b9X1F/fVFdOJysikpPD54txxYYv92EGPU9Ssyuh8M3C2FGG6ZxWHZ0758+eaSVqkQi
+         wnZKx54Xao062CVwfsKirh9M7Sza5plGE9V5xetdCDy/KdDSkVtNHzLvcWYAIAKmWTd1
+         YMXr2agOgSh0i0yuwsR32Hclc/71YngKZvL9cW0NQgmT+SBLs+RDmYjnjKlLhwFHjGyG
+         Rpm6Z+AAxHfble0IsMhx7YLvQvPzkYQtGl3GOnRl3coLvT084BF9uAitQ6IgtkDvl31f
+         GZ+7SUOIiCPTXTk1m5S/1nCPAvlZClnXdyH0MmKwUCixfSqU/2/MBXvW0VyoETAKD2cG
+         XfeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700739881; x=1701344681;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KVW8XA5bzUo8eqk22K5VEvjyNNkbbnblzFQyRhQLgRc=;
+        b=Aph2Amc7x4gWEgpYbq1IUybWoNVIkIapB/eg7TCE1s72LZWa1cKiojbNKINuppKipq
+         bEVtri6+8ITyNTOKpzUan6ZXo7tN6kgVdG/CI2uitSkUhw56jYljbZGrAhQMWY7aP/w1
+         0taZVEBLQq5GX++e92OmakFEFIC4//mKtDKykF2EZpfdS+6diqvBYNMy6XwcBOcFYszx
+         1uMasGEVW+DC3u7g+xep+wFpPP4CETYmOF0400uKh60kl/3zXlzPXq1esUS71EnB/jZC
+         I9jBSz5V8fSnxAs+uM81lpc6Y75IzCmeWKB54wWwySoQXcdmeCJuIU//xBB3fDFEqDu3
+         y/eQ==
+X-Gm-Message-State: AOJu0Yw0JTaDWZ4kHIke5D510iBvDPQx5bc36/dFea5U9vHwpN47vCDy
+        7Ixfe+pDiV67unEWqchB42Q3Iw==
+X-Google-Smtp-Source: AGHT+IH0pakFkfqc+E3mM99GckC/gqD782WjMYSnP3CbEroBmmgrEWC9XGMB9xC1wTLYk8jGpNMxhg==
+X-Received: by 2002:a05:651c:11cd:b0:2c8:33fd:ca8c with SMTP id z13-20020a05651c11cd00b002c833fdca8cmr3290024ljo.45.1700739881118;
+        Thu, 23 Nov 2023 03:44:41 -0800 (PST)
+Received: from [172.30.204.221] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002c884919bdfsm171902lji.10.2023.11.23.03.44.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 03:44:40 -0800 (PST)
+Message-ID: <8c43228b-43bc-419b-8620-b8f8401fa59a@linaro.org>
+Date:   Thu, 23 Nov 2023 12:44:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
+Subject: Re: [PATCH net-next v3 1/3] dt-bindings: net: qcom,ethqos: add
+ binding doc for fault IRQ for sa8775p
 Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org, kernel@collabora.com
-References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
- <20231123113530.46191ded@collabora.com>
- <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
-In-Reply-To: <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+Cc:     kernel@quicinc.com
+References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+ <ff458955a24c0cb4ba41158b8b53fbef00c8237d.1700737841.git.quic_jsuraj@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ff458955a24c0cb4ba41158b8b53fbef00c8237d.1700737841.git.quic_jsuraj@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/11/23 12:15, AngeloGioacchino Del Regno ha scritto:
-> Il 23/11/23 11:35, Boris Brezillon ha scritto:
->> On Thu, 23 Nov 2023 10:53:20 +0100
->> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> wrote:
->>
->>> Some SoCs may be equipped with a GPU containing two core groups
->>> and this is exactly the case of Samsung's Exynos 5422 featuring
->>> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
->>> is partial, as this driver currently supports using only one
->>> core group and that's reflected on all parts of it, including
->>> the power on (and power off, previously to this patch) function.
->>>
->>> The issue with this is that even though executing the soft reset
->>> operation should power off all cores unconditionally, on at least
->>> one platform we're seeing a crash that seems to be happening due
->>> to an interrupt firing which may be because we are calling power
->>> transition only on the first core group, leaving the second one
->>> unchanged, or because ISR execution was pending before entering
->>> the panfrost_gpu_power_off() function and executed after powering
->>> off the GPU cores, or all of the above.
->>>
->>> Finally, solve this by changing the power off flow to
->>>   1. Mask and clear all interrupts: we don't need nor want any, as
->>>      we are polling PWRTRANS anyway;
->>>   2. Call synchronize_irq() after that to make sure that any pending
->>>      ISR is executed before powering off the GPU Shaders/Tilers/L2
->>>      hence avoiding unpowered registers R/W; and
->>>   3. Ignore the core_mask and ask the GPU to poweroff both core groups
->>
->> Could we split that in two patches? 1+2 in one patch, and 3 in another.
->> These are two orthogonal fixes IMO.
->>
-> 
-> My initial idea was exactly that, but I opted for one patch doing 'em all
-> because a "full fix" comprises all of 1+2+3: the third one without the
-> first two and vice-versa may not fully resolve the issue that was seen
-> on the HC1 board.
-> 
-> So, while I agree that it'd be slightly more readable as a diff if those
-> were two different commits I do have reasons against splitting.....
-> 
->>>
->>> Of course it was also necessary to add a `irq` variable to `struct
->>> panfrost_device` as we need to get that in panfrost_gpu_power_off()
->>> for calling synchronize_irq() on it.
->>>
->>> Fixes: 123b431f8a5c ("drm/panfrost: Really power off GPU cores in 
->>> panfrost_gpu_power_off()")
->>> [Regression detected on Odroid HC1, Exynos 5422, Mali-T628 MP6]
->>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>> ---
->>>   drivers/gpu/drm/panfrost/panfrost_device.h |  1 +
->>>   drivers/gpu/drm/panfrost/panfrost_gpu.c    | 26 +++++++++++++++-------
->>>   2 files changed, 19 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h 
->>> b/drivers/gpu/drm/panfrost/panfrost_device.h
->>> index 0fc558db6bfd..b4feaa99e34f 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->>> @@ -94,6 +94,7 @@ struct panfrost_device {
->>>       struct device *dev;
->>>       struct drm_device *ddev;
->>>       struct platform_device *pdev;
->>> +    int irq;
->>
->> I know it's the only irq being stored at the panfrost_device level, but
->> I think it's clearer if we explicitly prefix it with gpu_.
->>
-> 
-> Makes sense, agreed.
-> 
->>>       void __iomem *iomem;
->>>       struct clk *clock;
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c 
->>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>> index 1cc55fb9c45b..30b395125155 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>> @@ -425,11 +425,21 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
->>>   void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->>>   {
->>> -    u64 core_mask = panfrost_get_core_mask(pfdev);
->>>       int ret;
->>>       u32 val;
->>> -    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & 
->>> core_mask);
->>> +    /* We are polling PWRTRANS and we don't need nor want interrupts */
->>
->> I kinda agree with that, but that's not exactly why we're
->> masking+syncing IRQs here. If that was the only reason, the right fix
->> would be to modify GPU_IRQ_MASK_ALL so it doesn't include the PWRTRANS
->> bits.
->>
->> This fix should cover more than just the power transition IRQ use case:
->> we want all IRQs to be disabled before the device is suspended.
->>
-> 
-> Eh I should reword that, effectively, because what I wrote as comments make
-> sense (as in, the logic of it completes) only if you read both of them "as one".
-> 
-> I'll do that in the new suspend irq helper :-)
-> 
->>> +    gpu_write(pfdev, GPU_INT_MASK, 0);
->>> +    gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
->>> +
->>> +    /*
->>> +     * Make sure that we don't have pending ISRs, otherwise we'll be
->>> +     * reading and/or writing registers while the GPU is powered off
->>> +     */
->>> +    synchronize_irq(pfdev->irq);
->>
->> Could we move that to a panfrost_gpu_suspend_irq() helper? I'm also not
->> sure making it part of panfrost_gpu_power_off() is a good idea. I'd
->> rather have this panfrost_gpu_suspend_irq() helper called from
->> panfrost_device_[runtime_]suspend(), along with
->> panfrost_{mmu,job}_suspend_irq().
->>
-> 
-> Okay I will move that to a helper, but I still want to clarify:
->   - For JOB, we're checking if panfrost_job_is_idle() before trying
->     to runtime_suspend() (hence before trying to power off cores),
->     so implicitly no interrupt can fire I guess? Though there could
->     still be a pending ISR there too.... mmh. Brain ticking :-)
->   - For MMU, we're not checking anything, but I guess that if there
->     is no job, the mmu can't be doing anything at all?
->     ...but then you also gave me the doubt about that one as well.
-> 
-> What I think that would be sensible to do is to get this commit as
-> a "clear" fix for the "Really power off" one, then have one or more
-> additional commit(s) without any fixes tag to improve the IRQ suspend
-> with the new mmu/job irq suspend helpers.
-> 
-> Of course *this* commit would introduce the panfrost_gpu_suspend_irq()
-> helper directly, instead of moving the logic to a helper in a later one.
-> 
-> Any reason against? :-)
-> 
->>> +
->>> +    /* Now it's safe to request poweroff for Shaders, Tilers and L2 */
->>
->> It was safe before too, it's just that we probably don't want to be
-> 
-> In theory yes, in practice the Odroid HC1 board crashed :-P
-> 
-> P.S.: Joking! I understand what you're saying :-)
-> 
->> interrupted, if all we do is ignore the interrupts we receive, hence
->> the suggestion to not use GPU_IRQ_MASK_ALL, and only enable the
->> IRQs we care about instead.
->>
->>> +    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
->>>       ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
->>>                        val, !val, 1, 1000);
->>>       if (ret)
->>> @@ -441,7 +451,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->>>       if (ret)
->>>           dev_err(pfdev->dev, "tiler power transition timeout");
->>> -    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
->>> +    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
->>
->> I really think we should have a helper doing the 'write(PWROFF_{LO,HI} +
->> poll(PWRTRANS_{LO,HI})' sequence, similar to what's done here [1][2],
->> such that, once we got it right for one block, we have it working for
->> all of them. And if there's a fix to apply, it automatically applies
->> to all blocks without having to fix the same bug in each copy.
->>
-> 
-> ...technically yes, but practically this driver doesn't currently support any
-> GPU that even fills the _LO registers.
-> 
-> I guess that we can do that later?
-> 
-> That's just to (paranoidly) avoid any risk to introduce other regressions in
-> this merge window, since we're fixing one that shouldn't have happened in the
-> first place...
-> 
->> Note that these panthor_gpu_block_power_{on,off}() helpers also handle
->> the case where power transitions are already in progress when you ask a
->> new power transition, which I don't think is checked in
->> panfrost_gpu_power_{off,on}().
->>
-> 
-> I admit I didn't analyze the panthor driver - but here, the only power transitions
-> that may happen are either because of panfrost_gpu_power_on(), or because of
-> panfrost_gpu_power_off(), and both are polling and blocking... so from what I
-> understand, there's no possibility to have "another" power transition happening
-> while calling poweron, or poweroff.
-> 
-> That would change if we start to selectively turn on and off a number of shaders
-> and/or a number of tilers (not all of them) depending on the workload, but we're
-> not doing that...
-> 
-> ...yet?
-> 
-> :-)
-> 
->>>       ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
->>>                        val, !val, 0, 1000);
->>
->> Not introduced by the patch, but I noticed args passed on the second
->> line are no longer aligned on the open parens.
->>
-> 
-> Yeah, fixing that for v2 :-)
-> 
 
-Sorry for the double reply - I just noticed that you're seeing this misalignment
-because I had a *local* commit introducing that but, on linux-next, this is not
-present, so there's no misalignment to fix........ :-)
 
-Cheers,
-Angelo
+On 11/23/23 12:38, Suraj Jaiswal wrote:
+> Add binding doc for fault IRQ. The fault IRQ will be
+> trigger for ECC,DPP,FSM error.
+trigerred
 
+spaces after commas
+
+> 
+> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+> ---
+You refer to the IRQ as "fault" in the commit messages, but call
+it "safety" in dt.. Any reason to that?
+
+Konrad
