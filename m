@@ -2,116 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532CB7F5B1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7E07F5BB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 10:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjKWJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 04:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S233157AbjKWJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 04:53:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKWJgN (ORCPT
+        with ESMTP id S232617AbjKWJxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 04:36:13 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C2B1AE;
-        Thu, 23 Nov 2023 01:36:19 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d64c1155a8so429762a34.2;
-        Thu, 23 Nov 2023 01:36:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700732179; x=1701336979; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dQhHNIKfWiIWad6NjUl3O8AGhzuURYHnVhK+SmvQomg=;
-        b=Urd7garV3JSeoh8vnLumPumoZFRb39usTX5jVzYuKhVXZlS0+aJHuQcUNROT8AQ8Ou
-         Vfx6qgDEhgxnVpA+NeRuUDdAf6/pw7Q2JxIXeQ4fcJVoWKqYWpre3Vl91Y7VnBz9TlTK
-         V7oJEGHIpQwS3Z1/t5BvtKCpLBdxgHCGs28VoWOpeXeuvRAQUwOXFXmHT1dgPkIXBlDf
-         mjsg2IQV0nIwi99Jwerpn1+enI3wzh+HMVcviqhObyW4dCW+u8HY2+fvAz/Y+FSTrXy5
-         q8QIPFUyEbIXDcA9VbCI20UhuEmN7ivQLD2kNEfA3O5eeIfW5+4RPeOGEJIsmExRm+25
-         ui/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700732179; x=1701336979;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dQhHNIKfWiIWad6NjUl3O8AGhzuURYHnVhK+SmvQomg=;
-        b=nV/wH5ITCGEQckMFPEkwnMRs9GX8etQgu7Igb+v/rU1pibHwYgO2lqT3ZcKoac4qzc
-         dOABTQWj+DdAPEFGcpcMuqiS1pIzGgQ5g1ycJ88wf9fUO17QGC41PJMZ87OryDyN8XWp
-         pvQ6i2/NI+/aBQQGPdZJ68FypW9ZuluHiopN8H9uw2AfN+q/VLcDcBGVE2oMWBFCGrjO
-         Nzyh06JJvrLePamUqq31VTUbyevV4EZbB91bEsd/W0JZV+MLOgN98y0w6ny1dNxcuM3R
-         nakoWY6set7xi4/CymFhCB3Xu/meCWj3XCIA540uLizEMPLpiCk1k+kmQZ+vOap/gxX6
-         4SJg==
-X-Gm-Message-State: AOJu0Yz9Iqit1gxWllkZkU8PyYtp4db+z2c7urR37OTrj96a3cYAJN2c
-        m2HpAEfYpCoWnpAcljUKrOU=
-X-Google-Smtp-Source: AGHT+IEpKb2YEB93s5BEDe/ctdnNVWLRYV7AcKyFu0sGdgnl4YodP6t5BrbO/0iA6SuVCzPswe8etA==
-X-Received: by 2002:a9d:6857:0:b0:6d6:4b8b:baf1 with SMTP id c23-20020a9d6857000000b006d64b8bbaf1mr5427820oto.23.1700732178744;
-        Thu, 23 Nov 2023 01:36:18 -0800 (PST)
-Received: from localhost.localdomain ([74.48.130.204])
-        by smtp.googlemail.com with ESMTPSA id o13-20020a635a0d000000b005a9b20408a7sm922970pgb.23.2023.11.23.01.36.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 01:36:18 -0800 (PST)
-From:   Furong Xu <0x1207@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net v1] net: stmmac: xgmac: Disable FPE MMC interrupts
-Date:   Thu, 23 Nov 2023 17:35:38 +0800
-Message-Id: <20231123093538.2216633-1-0x1207@gmail.com>
+        Thu, 23 Nov 2023 04:53:07 -0500
+Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8225D10D8;
+        Thu, 23 Nov 2023 01:45:56 -0800 (PST)
+X-QQ-mid: bizesmtp68t1700732180t6v5pcfw
+Received: from HX01040049.powercore.com.cn ( [125.94.202.196])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 23 Nov 2023 17:36:15 +0800 (CST)
+X-QQ-SSF: 01400000000000508000000A0000000
+X-QQ-FEAT: G3NsQplooNEqMvcyjlUA5SXVKY0py3l7/lOMYf/u8L8Rme6STHXbb+/Rj8CbQ
+        5ZzCJLQxgE8qCMCFU+b3jY4rCh6oCNqfvbsP2qBbMgFp8oRTVxCvTIIFym2Uz5gKpEDdZtO
+        9QOeSPZkREKQdWEn3xi7vfwak++IirBoAydSSAr580oumVHMj2npiHx6cadQ9U6jaKQM25i
+        MkyFxoQ7lBYpHUpPwu/PzdM3zYslJb0L5PofJIUABPlrqXuuncKOvopRXC8D07JE5NSNeBO
+        Jmv48gnvQDCsGY2UT6mv02JhUgu03xxq929KAoWGV4ydhqq/qDaNa2fYX2wERQrz+t2M/zr
+        ccTDv592x7QuoU/1CpNP5haArNTFgzN+SZTGv8j0Fyu7koNNsljnlYN1ohY0hP3yyKQHehR
+        7BPeTa8Mvh8=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 2317734377399214772
+From:   Zhao Ke <ke.zhao@shingroup.cn>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, shenghui.qu@shingroup.cn,
+        luming.yu@shingroup.cn, dawei.li@shingroup.cn,
+        Zhao Ke <ke.zhao@shingroup.cn>
+Subject: [PATCH v1] powerpc: Add PVN support for HeXin C2000 processor
+Date:   Thu, 23 Nov 2023 17:36:11 +0800
+Message-Id: <20231123093611.98313-1-ke.zhao@shingroup.cn>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrsz:qybglogicsvrsz3a-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
-by default") leaves the FPE(Frame Preemption) MMC interrupts enabled.
-Now we disable FPE TX and RX interrupts too.
+HeXin Tech Co. has applied for a new PVN from the OpenPower Community
+for its new processor C2000. The OpenPower has assigned a new PVN
+and this newly assigned PVN is 0x0066, add pvr register related
+support for this PVN.
 
-Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
-Signed-off-by: Furong Xu <0x1207@gmail.com>
+Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
+Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
 ---
- drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+	v0 -> v1:
+	- Fix .cpu_name with the correct description
+---
+---
+ arch/powerpc/include/asm/reg.h            |  1 +
+ arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
+ arch/powerpc/kvm/book3s_pr.c              |  1 +
+ arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
+ arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
+ drivers/misc/cxl/cxl.h                    |  3 ++-
+ 6 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-index ea4910ae0921..cdd7fbde2bfa 100644
---- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-@@ -177,8 +177,10 @@
- #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
- #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 4ae4ab9090a2..7fd09f25452d 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -1361,6 +1361,7 @@
+ #define PVR_POWER8E	0x004B
+ #define PVR_POWER8NVL	0x004C
+ #define PVR_POWER8	0x004D
++#define PVR_HX_C2000	0x0066
+ #define PVR_POWER9	0x004E
+ #define PVR_POWER10	0x0080
+ #define PVR_BE		0x0070
+diff --git a/arch/powerpc/kernel/cpu_specs_book3s_64.h b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+index c370c1b804a9..367c9f6d9be5 100644
+--- a/arch/powerpc/kernel/cpu_specs_book3s_64.h
++++ b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+@@ -238,6 +238,21 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.machine_check_early	= __machine_check_early_realmode_p8,
+ 		.platform		= "power8",
+ 	},
++	{	/* 2.07-compliant processor, HeXin C2000 processor */
++		.pvr_mask		= 0xffffffff,
++		.pvr_value		= 0x00660000,
++		.cpu_name		= "POWER8 (raw)",
++		.cpu_features		= CPU_FTRS_POWER8,
++		.cpu_user_features	= COMMON_USER_POWER8,
++		.cpu_user_features2	= COMMON_USER2_POWER8,
++		.mmu_features		= MMU_FTRS_POWER8,
++		.icache_bsize		= 128,
++		.dcache_bsize		= 128,
++		.cpu_setup		= __setup_cpu_power8,
++		.cpu_restore		= __restore_cpu_power8,
++		.machine_check_early	= __machine_check_early_realmode_p8,
++		.platform		= "power8",
++	},
+ 	{	/* 3.00-compliant processor, i.e. Power9 "architected" mode */
+ 		.pvr_mask		= 0xffffffff,
+ 		.pvr_value		= 0x0f000005,
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 9118242063fb..5b92619a05fd 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -604,6 +604,7 @@ static void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
+ 	case PVR_POWER8:
+ 	case PVR_POWER8E:
+ 	case PVR_POWER8NVL:
++	case PVR_HX_C2000:
+ 	case PVR_POWER9:
+ 		vcpu->arch.hflags |= BOOK3S_HFLAG_MULTI_PGSIZE |
+ 			BOOK3S_HFLAG_NEW_TLBIE;
+diff --git a/arch/powerpc/mm/book3s64/pkeys.c b/arch/powerpc/mm/book3s64/pkeys.c
+index 125733962033..c38f378e1942 100644
+--- a/arch/powerpc/mm/book3s64/pkeys.c
++++ b/arch/powerpc/mm/book3s64/pkeys.c
+@@ -89,7 +89,8 @@ static int __init scan_pkey_feature(void)
+ 			unsigned long pvr = mfspr(SPRN_PVR);
  
-+#define MMC_XGMAC_FPE_TX_INTR_MASK	0x204
- #define MMC_XGMAC_TX_FPE_FRAG		0x208
- #define MMC_XGMAC_TX_HOLD_REQ		0x20c
-+#define MMC_XGMAC_FPE_RX_INTR_MASK	0x224
- #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
- #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
- #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
-@@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+ 			if (PVR_VER(pvr) == PVR_POWER8 || PVR_VER(pvr) == PVR_POWER8E ||
+-			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9)
++			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9 ||
++				PVR_VER(pvr) == PVR_HX_C2000)
+ 				pkeys_total = 32;
+ 		}
+ 	}
+diff --git a/arch/powerpc/platforms/powernv/subcore.c b/arch/powerpc/platforms/powernv/subcore.c
+index 191424468f10..58e7331e1e7e 100644
+--- a/arch/powerpc/platforms/powernv/subcore.c
++++ b/arch/powerpc/platforms/powernv/subcore.c
+@@ -425,7 +425,8 @@ static int subcore_init(void)
+ 
+ 	if (pvr_ver != PVR_POWER8 &&
+ 	    pvr_ver != PVR_POWER8E &&
+-	    pvr_ver != PVR_POWER8NVL)
++	    pvr_ver != PVR_POWER8NVL &&
++		pvr_ver != PVR_HX_C2000)
+ 		return 0;
+ 
+ 	/*
+diff --git a/drivers/misc/cxl/cxl.h b/drivers/misc/cxl/cxl.h
+index 0562071cdd4a..9ac2991b29c7 100644
+--- a/drivers/misc/cxl/cxl.h
++++ b/drivers/misc/cxl/cxl.h
+@@ -836,7 +836,8 @@ static inline bool cxl_is_power8(void)
  {
- 	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
- 	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
-+	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_TX_INTR_MASK);
-+	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_RX_INTR_MASK);
- 	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+ 	if ((pvr_version_is(PVR_POWER8E)) ||
+ 	    (pvr_version_is(PVR_POWER8NVL)) ||
+-	    (pvr_version_is(PVR_POWER8)))
++	    (pvr_version_is(PVR_POWER8)) ||
++		(pvr_version_is(PVR_HX_C2000)))
+ 		return true;
+ 	return false;
  }
- 
 -- 
 2.34.1
 
