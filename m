@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D82D17F5807
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E61307F5809
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344749AbjKWGK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
+        id S1344738AbjKWGMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344704AbjKWGKY (ORCPT
+        with ESMTP id S231316AbjKWGMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:10:24 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C8C110
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:10:30 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32deb2809daso321939f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:10:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700719829; x=1701324629; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EhvG/cBSfaRPoasqLeuPzQWIXK6FL28oMwCUuCagJt0=;
-        b=IoB7xbz6od+a4wpRsS3qatfIwiQK9wtCdwYQ2HI4opP/Ns9uArd9ndVJk88NrrpGjR
-         zzEA8f8v4c2Qgv0UQ9UMQrhWkGItQxpeJokDAlLPCFsvBviKI4ONtM9t06+jpKqSi/Kv
-         CiJHpqkRdfmlGGvXGlBnkNe63XG3/A5ktUMTE6+CHteInsf+tSfLcDFaZYbJrUxBCLpe
-         UVDfAXYYQIJzW2wdZ75pYt7SkvxpUJuA2ZBvuxUomweTb6Qg7pXvb6dTd7fRkDaX3/ix
-         fYwZRgwI4b4o+IG5ZJo4azlzHkmhD4jpSEoZuBrANvhyJKiMHPIM5I0Y2Q3q0Tvi1KdC
-         8tnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700719829; x=1701324629;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EhvG/cBSfaRPoasqLeuPzQWIXK6FL28oMwCUuCagJt0=;
-        b=PGYKcqIIW9fhxoUDZ/ksEbYBldXpdZy7YNaF9ToVLS33FO7WPFvqqzk+j/9VqtI61s
-         VazVdbDInXjwluAc75VMD093ms4/g4mretJPRK6KaFwaAoBqfwnqW6T3XR25ZQbLOI58
-         ZvI5Q9ePYNwHpohBsbcvWsBvKzDwjQXOzt+Acf4RQTVCjK4BZOOEcuHgr5tpW46of6Bi
-         bNokr6ZBaTiV4XJvP0i7NV9QGu1Ym/CvZ1yLE+vsoRua2vCFAjB/M3Wwku8IXD8AZ0fl
-         iRwqOARkS0qN9+R2RVgO5VlHAzkSOLIj/MuPAS/iY2rc/0c+3PgADR0jP98HhtFwAQnx
-         52mw==
-X-Gm-Message-State: AOJu0YxyqfvzKoO7xMMdd+SKRtwtX1H9ardtg3cbCt+cm3YJB689hXix
-        +nbHXDqOHfSqAPuyn7cCI2k7YA==
-X-Google-Smtp-Source: AGHT+IG5E0J+F3kI7IYUeGWwGwjyH+HM0RRgSN6O6Q9IxonmzR/N7zH+77peiECJsn59NOfrikGrWA==
-X-Received: by 2002:a5d:5987:0:b0:332:c585:400d with SMTP id n7-20020a5d5987000000b00332c585400dmr2890916wri.10.1700719828609;
-        Wed, 22 Nov 2023 22:10:28 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id x12-20020adff64c000000b0032dcb08bf94sm602993wrp.60.2023.11.22.22.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 22:10:28 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Thu, 23 Nov 2023 09:10:25 +0300
-To:     oe-kbuild@lists.linux.dev, Umang Jain <umang.jain@ideasonboard.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c:507
- vchiq_ioc_await_completion() warn: inconsistent indenting
-Message-ID: <a4901693-b034-4a63-b97d-a6c2d9ddcb29@suswa.mountain>
+        Thu, 23 Nov 2023 01:12:19 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2085.outbound.protection.outlook.com [40.107.92.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A31C19D;
+        Wed, 22 Nov 2023 22:12:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WZNuIy3E63aBpdEm0B3q6/yVF2MlxWiKklT2kzkVCO7k5vKfFmSSAMpzOew4zRrVRDIHxPd8LjWhtANDnSvm0/LVKjfEuoezEpGNr/um4P4u7JnarLGnpSGE7nK1NE+ZmyqLMx3hS9/ykhz5M2WloyQ6yfBKCPWZoN3SlTaw3NjtRG6mcTxzAFLUABRp/2YrOHCvFAYZtpedJQoOoxF7gythJ2FGnt8aRiNJN/aZHgpDw2JnduPLn6xET9XYlvjpNrYJkrRUdV1OeJklkDJml+CY63mPW375efzaWB9H/CZ0KmS/gycdSgcgjpMpxUbO2tOyH1cCcTt9F9XYwI7oOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DsewroVGgFflXzhuj5kumgX+BUuSSpBaCj+bLWL0rwQ=;
+ b=DPZrYQ6VfJxnRozLCOrhFPRcxI4JHl1BQl+GOihpD8UikgLOhRwTmdkDYXe+V39gYaFhAaf0TiTT2VF+IYp5GroAzuOIQh0NRVbgVMiF6PH9sENNsfY7s8rKNV8+twXon8iE4mCVzfz8wBX+0cLDvYRKOXB/sYZSm6B7+MJUM1KD4ohz5VU+ntr2JPOxD8XZLerOO3q2OU8x4PhhcY+i4Cyen+KEAdCd+vBA/3yETkpdsgZXQiai5oKEBJPX61aQnNCMqwLexGXuNx29tMSKKoyoK/8z2O7XLQRlKppLKzUCo6Gug/Iati+dXBNnz6s25pNJHa/K2N8Gy/V4qoCz4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=8bytes.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DsewroVGgFflXzhuj5kumgX+BUuSSpBaCj+bLWL0rwQ=;
+ b=o/L6lebvrcHNnDzucTbwJ8eg2CjhkiKo1T65FIWSDGty10xdvkChDFjCz2b5Nn8Uiy7t/uZkUJv3sF0oOG4xQF9j5xV5xKsFBcPqYO3t6b0UeKDjIkxFvMw9JBQ02FN3LzR1OgfQamkLIdVII7r0WCgPeZkNc4H1dqur2kQbJTeC8kjGVZQSVyz9dakDiGG+haSWf1mxm1PdpFILXA4ep03AgSwULK8N991PlEzz+gVtbSJa6z9Rc42u0zVAMOqjL4Z7h8aOrrLSvZZMWMdRzDcW4YxFbA0B5q2TfXOlwiwNGjvxo25x3o4CdzQ5kVXR0juOII7yuo3G0FAGvi6RaA==
+Received: from BY3PR05CA0011.namprd05.prod.outlook.com (2603:10b6:a03:254::16)
+ by SA1PR12MB8095.namprd12.prod.outlook.com (2603:10b6:806:33f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Thu, 23 Nov
+ 2023 06:12:20 +0000
+Received: from CO1PEPF000044F3.namprd05.prod.outlook.com
+ (2603:10b6:a03:254:cafe::2) by BY3PR05CA0011.outlook.office365.com
+ (2603:10b6:a03:254::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18 via Frontend
+ Transport; Thu, 23 Nov 2023 06:12:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F3.mail.protection.outlook.com (10.167.241.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.12 via Frontend Transport; Thu, 23 Nov 2023 06:12:19 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 22 Nov
+ 2023 22:12:07 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 22 Nov
+ 2023 22:12:07 -0800
+Received: from amhetre.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Wed, 22 Nov 2023 22:12:04 -0800
+From:   Ashish Mhetre <amhetre@nvidia.com>
+To:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <robh@kernel.org>, <treding@nvidia.com>
+CC:     <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, Ashish Mhetre <amhetre@nvidia.com>
+Subject: [PATCH] iommu: Don't reserve IOVA when address and size are zero
+Date:   Thu, 23 Nov 2023 11:42:01 +0530
+Message-ID: <20231123061201.16614-1-amhetre@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F3:EE_|SA1PR12MB8095:EE_
+X-MS-Office365-Filtering-Correlation-Id: 08b28bd9-61a8-4250-ce16-08dbebeb2673
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Yww6NmGKgXsHlTMOOYWi9rHDou5qfo1muFvInFrsYpLDyfu017v+39GdiKLRH8IE96et4Lvtrso3+QpEb65w9w2U+uw9X/cfPN9u1eKvWhBrFt2GmrbzqKz4dw3o8/rtkxdSQYcw1AEXDMsbAEB6tAZpctqTHMpLwJ8N7ZsKttn0v0+T7b70WL9Y7he8J+GE8j/9UXqjBvU68+BL8juKfgMWm3omRwZkdNhN082DXcXHQSq3pHShNzdtU5dHkBOHmKnAmSSofKuJnv9X6WdFJipnWsWNXvlmw3OK3DyLoRSlseGMQsboxNNrYK2wdaIg5xCDut8mfTB4RPXQi2T7Deb0udzV0vdgaVlPzAvMDT1wWfFm3rdPQYSdY0hR8PyP5z9ApLi/Tkfe2uPvV9EapGJ6hwm2wrK74Xfdjcl2Wgi9LhudVqeFOqCs7Ted91KlNDnh6/yM8tEFH/JhyC5nybYeAUP36w/PTeQxKvH/KB8w5DN4HGWUjKNEtJdU+/yi4Af9YuzmRvJscybSa4mdftsvOfzhGjnKL3pNDYbRbGh96xJgjC4Gmb9mO4wqy75CR/cJtGfbjTqU3TxcZdA7ytRHE4SGFJZh0yHFKxaJiEjsJ8jP4tldRHaewNs/GtcPNvVhjVyGGGDDs/t+p5gAlZzf3JBLFPpVi4tfHUx/AVPYoLZRKCX5yZ8LWdpX7qmyFz1P5SAnQkWLObYGwa5u3g3c5TR5s1SNZQ+Ca7TUtL5LXlX/gRdOK5zeIrX4PYfqC/eUApFJg0xqjkJxj5Aqg==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(451199024)(64100799003)(186009)(82310400011)(1800799012)(36840700001)(40470700004)(46966006)(40460700003)(26005)(107886003)(336012)(6666004)(7696005)(426003)(2616005)(36860700001)(478600001)(4326008)(8936002)(41300700001)(47076005)(8676002)(2906002)(5660300002)(1076003)(316002)(6636002)(70206006)(110136005)(54906003)(70586007)(86362001)(36756003)(82740400003)(356005)(7636003)(40480700001)(66899024)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 06:12:19.6460
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08b28bd9-61a8-4250-ce16-08dbebeb2673
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8095
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9b6de136b5f0158c60844f85286a593cb70fb364
-commit: 1d8915cf889932e085880f4bdbf7ae0f3d8605e5 staging: vc04: Convert vchiq_log_error() to use dynamic debug
-config: mips-randconfig-r081-20231121 (https://download.01.org/0day-ci/archive/20231123/202311230705.w4DPJjm0-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231123/202311230705.w4DPJjm0-lkp@intel.com/reproduce)
+When the bootloader/firmware doesn't setup the framebuffers, their
+address and size are zero in "iommu-addresses" property. If we intend to
+use display driver in kernel without framebuffer then it's causing
+the display IOMMU mappings to fail as IOVA is reserved with size and
+address as zero.
+An ideal solution would be firmware removing the "iommu-addresses"
+property and corresponding "memory-region" if display is not present.
+But the kernel should be able to handle this by checking for size and
+address of IOVA and skipping the IOVA reservation if both are 0.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311230705.w4DPJjm0-lkp@intel.com/
+Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
+Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
+---
+ drivers/iommu/of_iommu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-smatch warnings:
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c:507 vchiq_ioc_await_completion() warn: inconsistent indenting
-
-vim +507 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c
-
-f05916281fd75db Ojaswin Mujoo   2021-07-21  496  		header = completion->header;
-f05916281fd75db Ojaswin Mujoo   2021-07-21  497  		if (header) {
-f05916281fd75db Ojaswin Mujoo   2021-07-21  498  			void __user *msgbuf;
-f05916281fd75db Ojaswin Mujoo   2021-07-21  499  			int msglen;
-f05916281fd75db Ojaswin Mujoo   2021-07-21  500  
-f05916281fd75db Ojaswin Mujoo   2021-07-21  501  			msglen = header->size + sizeof(struct vchiq_header);
-f05916281fd75db Ojaswin Mujoo   2021-07-21  502  			/* This must be a VCHIQ-style service */
-f05916281fd75db Ojaswin Mujoo   2021-07-21  503  			if (args->msgbufsize < msglen) {
-1d8915cf889932e Umang Jain      2023-10-24  504  				vchiq_log_error(service->state->dev, VCHIQ_ARM,
-f05916281fd75db Ojaswin Mujoo   2021-07-21  505  						"header %pK: msgbufsize %x < msglen %x",
-f05916281fd75db Ojaswin Mujoo   2021-07-21  506  						header, args->msgbufsize, msglen);
-f05916281fd75db Ojaswin Mujoo   2021-07-21 @507  						WARN(1, "invalid message size\n");
-
-WARN() is indented too far.
-
-f05916281fd75db Ojaswin Mujoo   2021-07-21  508  				if (ret == 0)
-f05916281fd75db Ojaswin Mujoo   2021-07-21  509  					ret = -EMSGSIZE;
-f05916281fd75db Ojaswin Mujoo   2021-07-21  510  				break;
-f05916281fd75db Ojaswin Mujoo   2021-07-21  511  			}
-f05916281fd75db Ojaswin Mujoo   2021-07-21  512  			if (msgbufcount <= 0)
-f05916281fd75db Ojaswin Mujoo   2021-07-21  513  				/* Stall here for lack of a buffer for the message. */
-
+diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+index 157b286e36bf..150ef65d357a 100644
+--- a/drivers/iommu/of_iommu.c
++++ b/drivers/iommu/of_iommu.c
+@@ -255,6 +255,10 @@ void of_iommu_get_resv_regions(struct device *dev, struct list_head *list)
+ 				size_t length;
+ 
+ 				maps = of_translate_dma_region(np, maps, &iova, &length);
++				if (iova == 0 && length == 0) {
++					dev_dbg(dev, "Skipping IOVA reservation as address and size are zero\n");
++					continue;
++				}
+ 				type = iommu_resv_region_get_type(dev, &phys, iova, length);
+ 
+ 				region = iommu_alloc_resv_region(iova, length, prot, type,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
 
