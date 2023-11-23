@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE9E7F616A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186D97F616B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345780AbjKWO05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        id S1345794AbjKWO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345751AbjKWO0y (ORCPT
+        with ESMTP id S1345782AbjKWO06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:26:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51ABE1BE;
-        Thu, 23 Nov 2023 06:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700749621; x=1732285621;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=MtqW72oag4/4GZbQ7Er6KLeHtjui7ZsipvyNM7GDrQI=;
-  b=JVf4/deQ13/9IiTimdEaRA1K5qu4ukORALzeNcf2t89xYSuyk3znDDep
-   7gCjkkDrVuCCEMILPVYpkmDMs2+rX421p1VDMbuCwrGvQgn/07BCndY9k
-   mxMmiLqFaCL4tKWv4I0uJzwnr1RMq1JLT3Kwu++4hpqzL9kW2efISsNtx
-   HkMVrcpawWlhdbjZnDUZwi+JCCD/FiaGaXZdfROGokWq55cu/e10MZl8A
-   frBIP1cPs8+zV/VtgfurCKFjifSb1CnoXUw6f5rMIG4uaZauJ7iUIxOAW
-   dRu9UQ6Gy9lT1lwN4gy+KQGZDFXFoFjM4jL0tBVGyNysQAUPJ754DKa+t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="10950158"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="10950158"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:27:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="15674834"
-Received: from mstrobel-mobl.ger.corp.intel.com ([10.252.40.70])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 06:26:59 -0800
-Date:   Thu, 23 Nov 2023 16:26:56 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V5 14/20] platform/x86/intel/pmc/mtl: Use return value
- from pmc_core_ssram_init()
-In-Reply-To: <20231123040355.82139-15-david.e.box@linux.intel.com>
-Message-ID: <2532647-c5ca-9276-6013-9e389d396cfe@linux.intel.com>
-References: <20231123040355.82139-1-david.e.box@linux.intel.com> <20231123040355.82139-15-david.e.box@linux.intel.com>
+        Thu, 23 Nov 2023 09:26:58 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39A3D4E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:27:04 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc281f1214so9479745ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:27:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700749624; x=1701354424;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GN5qYReHA7+3HZIUiyBId29+dQhRN6/2Els8qd4jr6U=;
+        b=olljuBOXYCzDh/lTwixu1JUMtcZTmFmfy400X0tRlwv22/GGcgrLhL5C0M0p3n5dRY
+         EJF2FXIPR9OAI+S1XQYsrAvloiVGFyO106NHpCNdVCobCKLKQswJt48ZxeEEy9GNmk2D
+         1L9EgCDxMY4wtGbB0/PnUK19GnJStj72JKaNfFXW5z7vWtJtwQSNv/whJqDET0j5V2Ju
+         sfCDK0299GqMaHkQ0gBUu0BeEUF6PYDE30aZpMqQjgllb/aa7WcYyUgQyz2lwzvkK1b8
+         ZsS+HRbjN3WJ8umtciOpSOPkrm8LQWGWCK1LSxPTvHiE+Uvt9FClhhQYsXHCJyQN3r+r
+         SdoQ==
+X-Gm-Message-State: AOJu0YzOcNNVJaibu4cz/3tuLVATQukmPXHP4Bpwo0NcegxRSVGbdNPN
+        auriT2JSizH7YbS+sGxyti7doAH7FGwQ10Xhn4v+Ckk+tuJd
+X-Google-Smtp-Source: AGHT+IHCUS1HXK6p9Kl61dbC+Ux77qGA9nMw4rs8ziEgp9oSqnY0lTmBb2b5SysR0PAKSwiFXOb1lTdsMV/F4PhjgLMl38KWjAiv
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-462658715-1700749620=:1676"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Received: by 2002:a17:902:d2cc:b0:1cc:41b4:5154 with SMTP id
+ n12-20020a170902d2cc00b001cc41b45154mr1596234plc.13.1700749624137; Thu, 23
+ Nov 2023 06:27:04 -0800 (PST)
+Date:   Thu, 23 Nov 2023 06:27:03 -0800
+In-Reply-To: <tencent_93DC466109A02ECE6EC20CAE67D5C6CCD206@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000032dcaa060ad2a1ec@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
+From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,24 +56,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hello,
 
---8323329-462658715-1700749620=:1676
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Wed, 22 Nov 2023, David E. Box wrote:
+Reported-and-tested-by: syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com
 
-> Instead of checking for a NULL regbase, use the return value from
-> pmc_core_ssram_init() to check if PMC discovery was successful. If not, use
-> the legacy enumeration method (which only works for the primary PMC).
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Tested on:
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=128127f0e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=60bfed6b415fbd1fbb87
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=106f8c4f680000
 
--- 
- i.
-
---8323329-462658715-1700749620=:1676--
+Note: testing is done by a robot and is best-effort only.
