@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 059D97F6153
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB48B7F6156
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 15:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345761AbjKWOYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 09:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
+        id S1345756AbjKWOYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 09:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345750AbjKWOYC (ORCPT
+        with ESMTP id S1345739AbjKWOYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 09:24:02 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C75D44
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:24:07 -0800 (PST)
-Received: from beast.luon.net (cola.collaboradmins.com [IPv6:2a01:4f8:1c1c:5717::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sjoerd)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0FB366073C3;
-        Thu, 23 Nov 2023 14:24:05 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700749445;
-        bh=hBBVYOni7cSkfCkjnkHwiGOw1ojnLHF2HyXwoM95mOc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BlXKF97HYmm+2kinqxiHZS0U2qBNNec2ICOCN/0Vrxb0xT/QwMbm3iUjLn5UeVLhV
-         pXjjyr4uWLhOnNqm+V/aJGNuFdQAdOWtJHPPjzd0nhO3vljQuLb8McIBcVL95dI113
-         s+f+DDJoE3v1YaDsMH9Dmq10O5jT5SpboCffIadjFAXaiobFhXNRZEKFzyvVhfV5/I
-         20O8JS7f18nwgsDGlebzLsAiz1HGnFXEBcD3pzxd62R1HIx8kMK2HI0H1kT3d3mVwI
-         wcpLP+iXtaFs0FzVXjjTHHqYz7OBltEyduB3CCfv14ByFABTOy8XmdmWCV2UZPyObb
-         kfBNEq4Om8HNg==
-Received: by beast.luon.net (Postfix, from userid 1000)
-        id 42AEB95B3A95; Thu, 23 Nov 2023 15:24:03 +0100 (CET)
-From:   Sjoerd Simons <sjoerd@collabora.com>
-To:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] bus: moxtet: Add spi device table
-Date:   Thu, 23 Nov 2023 15:23:38 +0100
-Message-ID: <20231123142403.2262032-2-sjoerd@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231123142403.2262032-1-sjoerd@collabora.com>
-References: <20231123142403.2262032-1-sjoerd@collabora.com>
+        Thu, 23 Nov 2023 09:24:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B51BD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 06:24:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46714C433C8;
+        Thu, 23 Nov 2023 14:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700749481;
+        bh=J/LtgofwEQkoiVQZqoNXaJ9BMFsu3JjYY9qmjaMQE74=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=myCexJJ1T1cKOvaXEHq4wweMQTiZAHJaQIpqITF2nz0OF3uoL1iwYojYKJkw4PYVR
+         QfcDimY0ygH2HZrSIyCxQrHtsuFSlRQPO8OTFSPPOPD7jiDp1jBKsun38Rr4JNnKp/
+         BmWkp+sMWRtw61zy6k1ytLqHhl3Q4c0zvaTAIWfuyGnDaFrnmulhvIfl/FxaSg01uJ
+         vrKGenvAmwgayiPxnrogPgWdPV/BSA74uwa6+96sgKUQMzWHo9r/72hHKGaYMFypuP
+         Tziu/KwbkQbvBfy4JH+YRTGybdW4tL5tlgZkmLy3GB1lSUmdmnybhceCeyVupWJV6p
+         pdxhlPoo5kacQ==
+Date:   Thu, 23 Nov 2023 14:24:35 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Grant Grundler <grundler@chromium.org>,
+        Edward Hill <ecgh@chromium.org>, linux-usb@vger.kernel.org,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 2/2] r8152: Add RTL8152_INACCESSIBLE checks to more loops
+Message-ID: <20231123142435.GG6339@kernel.org>
+References: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
+ <20231117130836.2.I79c8a6c8cafd89979af5407d77a6eda589833dca@changeid>
+ <4fa33b0938031d7339dbc89a415864b6d041d0c3.camel@redhat.com>
+ <CAD=FV=VALvcLr+HbdvEen109qT3Z5EL0u4tiefTs3AH8EHXFnA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAD=FV=VALvcLr+HbdvEen109qT3Z5EL0u4tiefTs3AH8EHXFnA@mail.gmail.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The moxtet module was failing to auto-load on my system. Add a SPI id
-table to allow it to do so.
+On Tue, Nov 21, 2023 at 09:55:46AM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Nov 21, 2023 at 2:28 AM Paolo Abeni <pabeni@redhat.com> wrote:
+> >
+> > On Fri, 2023-11-17 at 13:08 -0800, Douglas Anderson wrote:
+> > > Previous commits added checks for RTL8152_INACCESSIBLE in the loops in
+> > > the driver. There are still a few more that keep tripping the driver
+> > > up in error cases and make things take longer than they should. Add
+> > > those in.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> >
+> > I think this deserves a 'Fixes' tag. Please add it.
+> 
+> Sure, I can add it. It didn't feel worth it to me since there's no
+> real functional issue--just that it takes a little longer for these
+> loops to exit out, but it shouldn't hurt. I guess that means breaking
+> this commit into several depending on when the offending loop was
+> added.
+> 
+> 
+> > Additionally please insert the target tree in the subj prefix when re-
+> > postin (in this case 'net')
+> 
+> Funny, I just followed the tags for other commits to this file and the
+> "net:" prefix isn't common. I guess this should be "net: usb: r8152".
+> I can add it when I post v2.
 
-Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
+Hi Doug,
 
----
+unfortunately prefix can have more than one meaning here.
+The target tree, often either net or net-next, should go
+in the [] part of the subject.
 
- drivers/bus/moxtet.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+In this case I think what you want is:
 
-diff --git a/drivers/bus/moxtet.c b/drivers/bus/moxtet.c
-index 48c18f95660a..e384fbc6c1d9 100644
---- a/drivers/bus/moxtet.c
-+++ b/drivers/bus/moxtet.c
-@@ -830,6 +830,12 @@ static void moxtet_remove(struct spi_device *spi)
- 	mutex_destroy(&moxtet->lock);
- }
- 
-+static const struct spi_device_id moxtet_spi_ids[] = {
-+	{ "moxtet" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, moxtet_spi_ids);
-+
- static const struct of_device_id moxtet_dt_ids[] = {
- 	{ .compatible = "cznic,moxtet" },
- 	{},
-@@ -841,6 +847,7 @@ static struct spi_driver moxtet_spi_driver = {
- 		.name		= "moxtet",
- 		.of_match_table = moxtet_dt_ids,
- 	},
-+	.id_table	= moxtet_spi_ids,
- 	.probe		= moxtet_probe,
- 	.remove		= moxtet_remove,
- };
--- 
-2.42.0
-
+	[PATCH net n/m v2] Add RTL8152_INACCESSIBLE checks to more loops
