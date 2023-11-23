@@ -2,50 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68A47F5C60
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C9C7F5C61
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344635AbjKWKdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:33:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        id S1344669AbjKWKeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbjKWKdP (ORCPT
+        with ESMTP id S229477AbjKWKd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:33:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D801B6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:33:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00F56C433C8;
-        Thu, 23 Nov 2023 10:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700735601;
-        bh=TNV0MOl+Kv5Rz74vl7zwedVQV2taOHqLyWjOkSFHbWM=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BjVlla1UM55SAtrua1lvBQhE9mHUmsjNDz8b//iAYFTi/EbHIQDsjwgjWUi24xkBB
-         7eJT0JlWxwfG2KDo/0srVFcWADZm1Spc++jCEuh6xrSbVsQf8+/a7if9SBOks4zvrP
-         PawUHN2As03Vg+cAC3tkOo5jazp/5gO5MIMEOJSPh7sigL9n100xSjozgAeEwGBPse
-         OOWv8/H7KVjropdbsDEQznxNj9MBlnQHwI+3KEB+k0TwrrIupDSarcnYP4uUce5Ckv
-         upyhJB3Aj4m6O/rYxHCimZgOhb+a/0Z4ve+KDWH9lN+pgK91iVMXXgrxBl5ec91J1u
-         FltIwtlgA0bMA==
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
-References: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
-Subject: Re: (subset) [PATCH v2 1/4] dt-bindings: mfd: qcom,tcsr: Add
- compatible for sm8250/sm8350
-Message-Id: <170073559969.1231386.13642170765193211646.b4-ty@kernel.org>
-Date:   Thu, 23 Nov 2023 10:33:19 +0000
+        Thu, 23 Nov 2023 05:33:58 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23C91B6;
+        Thu, 23 Nov 2023 02:34:04 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so1013218a12.1;
+        Thu, 23 Nov 2023 02:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700735643; x=1701340443; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iKQtp18JQp0c7NBbEbV2rdtJ3WRW+N/V6u+CJnl4oQQ=;
+        b=mhf24aQtwm9yCORnHXcU9aHiAuz7m8dPidrjXq/5o9spnKZXN9gtUXEQhgf8kYEV4e
+         jBjUcjA1zyf9MHyokUFLN6sIkYSpmZ5MPT25OUzp4pPa6Pw4IgDwdRmYGrkyW4DAo1r9
+         yxRdSpKcUREuKlaMYnERFSTCKxApBAkMazo4P2LKAF6aVnfglwla18IRF9ACRLb/vNVb
+         Am+JnObtAu3xgMNUoxZrgi53ixuMu96OT11vVOSUdyQmglaP3VLlz6fi214mQK3WduIn
+         LlpmafGqym/BSa1rMzHif2NVdnDgJr938Oblh5fhYuWBsLx4cTTQ5Fdpo179wLt8rU3w
+         /rJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700735643; x=1701340443;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iKQtp18JQp0c7NBbEbV2rdtJ3WRW+N/V6u+CJnl4oQQ=;
+        b=LNAxinuu3+7YpLOoSqdGJT0TDJXVOFNibQN9U8JEHsGm1sl79vm+ne5LIe77TZf46D
+         W2VxbnyXcngNFL3yw3pVCN4QeV98LgSNcPkbTMiYmDJOtBbZM3EmANw9GQYROqUwRLq8
+         8J6Aq/xA7dQsMqviApnHjtGiHzic+frc1yAnhBcAj6UPz6sQ8fXen3udzwS9/GMPw8mB
+         vl2HjXtsSPJifXJ7pXNmCGhaD2LeYEAQCHbQUtDw8D2BK/s3Onsa07K72yRuTUPGcGea
+         wCdoBjZFnFephi42l8yjZ3COybpVyQQfA2wliUApW1GYr9MTl4V5GpVKYHkb9ryxhnbK
+         C8FQ==
+X-Gm-Message-State: AOJu0YymBK28BD+vzxFikC1vF70JyHBNG0KzKgRD9nFKubol72W+OfND
+        e4OVHn6NMQ6VOzj5cVId0BY=
+X-Google-Smtp-Source: AGHT+IHsuDtDlKW8ZHcAOngvbmoPlDZUP/co7CvQCsWrOLYZqFMmlR3FfRJVAUEecENHdbKTPiLqwA==
+X-Received: by 2002:a05:6402:705:b0:548:656c:5371 with SMTP id w5-20020a056402070500b00548656c5371mr2365856edx.16.1700735643164;
+        Thu, 23 Nov 2023 02:34:03 -0800 (PST)
+Received: from gmail.com (1F2EF67D.nat.pool.telekom.hu. [31.46.246.125])
+        by smtp.gmail.com with ESMTPSA id d9-20020a50fe89000000b00544f8271b5fsm490373edt.8.2023.11.23.02.34.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 02:34:02 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 23 Nov 2023 11:34:00 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, qyousef@layalina.io,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
+Subject: Re: [PATCH v4 2/2] sched/schedutil: Rework iowait boost
+Message-ID: <ZV8qmKccdVeVhVt9@gmail.com>
+References: <20231122133904.446032-1-vincent.guittot@linaro.org>
+ <20231122133904.446032-3-vincent.guittot@linaro.org>
+ <CAJZ5v0iBO9LUs7xJKF0w1sOTM2ted5KxK4idwyCjBReyEYw+mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAJZ5v0iBO9LUs7xJKF0w1sOTM2ted5KxK4idwyCjBReyEYw+mw@mail.gmail.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,16 +82,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 22:36:38 +0530, Mukesh Ojha wrote:
-> Document the compatible for both sm8250 and sm8350 SoCs.
+
+* Rafael J. Wysocki <rafael@kernel.org> wrote:
+
+> On Wed, Nov 22, 2023 at 2:39 PM Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+> >
+> > Use the max value that has already been computed inside sugov_get_util()
+> > to cap the iowait boost and remove dependency with uclamp_rq_util_with()
+> > which is not used anymore.
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > 
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 > 
+> Or if you want me to pick up this series, please let me know.
 
-Applied, thanks!
+I picked this series up into the scheduler tree, as there's quite a few 
+changes to the main interface with sched/core.c and sched/sched.h here.
 
-[1/4] dt-bindings: mfd: qcom,tcsr: Add compatible for sm8250/sm8350
-      commit: a88f80580a1a076e69c4fecdf6d6441fac24e8c1
+Thanks,
 
---
-Lee Jones [李琼斯]
-
+	Ingo
