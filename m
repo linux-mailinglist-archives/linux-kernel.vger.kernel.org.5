@@ -2,103 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7EF7F656E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0C47F6576
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345608AbjKWRar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S1345564AbjKWRb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:31:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjKWRae (ORCPT
+        with ESMTP id S1345172AbjKWRbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:30:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52E71710
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:30:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41090C433BB
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700760635;
-        bh=GcOst3/22+6cuv9lswU+ry4+GdAAZVPRN7gJdD9N6n4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qz7mod4/HwaHJK0JAB3ytD3MH8bBSYf8iVVbxyfCL1i/Zs6EaxhyzZ0+HRfgGgLRE
-         7KYF+Vw44ia7HO0mtZe6yNWu2wGG5dX7LTzWtPvh5MEXCxFa2Opa4yGNWXBwiqumzT
-         OQoZP7jTRMTNAN9wgg0KoDA+vKwqyQPTwQy/IXCqlURybqriy7jxNCQRmvtEEdhBEp
-         9Xj0bqmhY869YhySGf3rjhIWMZSOwhzaFPKHnbgQXjg1zVoB8XolM9ff6mKYt0gLHq
-         xg18bmw/eeDCgNR1WtWJ8g7EWNw/CAxaofPrCUhSgPJqL78JV0q0plchZ5E05HZRz6
-         e2oH4RK5uPd8w==
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2809b4d648bso914961a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:30:35 -0800 (PST)
-X-Gm-Message-State: AOJu0YxMSdDYBW3XW0AHr6rh+V41/Qc2VDbjs39hnkJjcdb1YhrqdCRn
-        LU2KSCFvJ/j7lkWs7nBD8A5GGISjp6KswA95wR14pw==
-X-Google-Smtp-Source: AGHT+IHytp+/fh45uHnBzItufzEx7eCFYQ74dyRHbptCqeFGDEMvkjRENl6X2MFJeG5mhjUejhBp+JsLaOU1M3fpJ2s=
-X-Received: by 2002:a17:90b:1001:b0:285:6f1a:4a71 with SMTP id
- gm1-20020a17090b100100b002856f1a4a71mr149425pjb.32.1700760634650; Thu, 23 Nov
- 2023 09:30:34 -0800 (PST)
+        Thu, 23 Nov 2023 12:31:53 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B78D44;
+        Thu, 23 Nov 2023 09:31:59 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 051533200A0C;
+        Thu, 23 Nov 2023 12:31:54 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 23 Nov 2023 12:31:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1700760714; x=1700847114; bh=r7YWHIfKs1lRtQljNoq9n0N8njCRxKVxB0j
+        /oEqFGJ8=; b=gcuciQNHPyLhNrt9hMusqeRhRHncBl86lxovPoBIi0uz5ETFy35
+        sy26tYy2lcezp4at8sXuI+gxGYBpZmL0463jgrb4tmk1Pc+ZU1nInpXvNbuOjFGW
+        ZvHwdiu9HmlPH+FxyQOU+RKAWmgnqxwRZYRsADYnGR1AJvGcgoCw51rgIKtVXEei
+        tV7LX/kHuvfNU0Jr/pTcJWPYPS9/UJdPFgL3F3SOeYfTUgoDFncfyU/oCu7or3VJ
+        H5Sq+h4N5U/Vlb6rTUL34x5kXeLlMabxOZJ0qrUfLIWkxFN4gspnyNUMvW57Tcoy
+        75UKOblrACO/yOiHnAQJm+i4DJr6OwU1Log==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1700760714; x=1700847114; bh=r7YWHIfKs1lRtQljNoq9n0N8njCRxKVxB0j
+        /oEqFGJ8=; b=kv69WDjo+qyKK7pmC0j7JuBlJFHfQw3agKWMBEE9Sfc4gMBXits
+        bUB7y2f+s3m5leDUyYdRYSZ+UAYkCUB6YZZoUj7W8s7KEgw8J5rq1mY43enhdCVc
+        6KJQLsBFLtUnUVR7KQZYmzXaNWe36bsCFX3l5vcYYni5n97sGESyyDP7Z8SXQWo/
+        BvAKYZlkJN/GSBbzkJTU7IIemoAjwNZDuNDP4c5jxhQo7pqNDaEpb1XEETLTsTFb
+        sHFhlkD7FKtOTCzILVXKwpVybK8D06hu+2rzNwUvI4dVM1eLdiOtaDKG4NE1aQEr
+        Il7an2b45E1XkS+dKAGNNXF0UQkLUjMu00w==
+X-ME-Sender: <xms:ioxfZTUuN9wJnwXh8PAnpluylHi_g4qSH9Fdpolif4Y4jZeYg6lnYA>
+    <xme:ioxfZblm1C3UZdBSumou4iztnFohGLw0cx3KiaE_-9hb3LmvRMQPxtNIWDKDxvw0f
+    pbzzZ0bRxVgc5wFg6I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehfedguddttdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
+    homheqnecuggftrfgrthhtvghrnhepkeelveffhedtiefgkeefhffftdduffdvueevtdff
+    teehueeihffgteelkeelkeejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdr
+    higrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:ioxfZfZKpm9WG62x6XNl1UWP2qr5lcr1QtT92BuNuoO-Qqb-i5ZlPg>
+    <xmx:ioxfZeVa0qQisTL-4f-tC7bBbij3kZAoyudiuXLVOe0wPGP2JoBP_A>
+    <xmx:ioxfZdk1msiY1Zi3OOVhgAsMEEmfjTpZg2GwF8KXW8rr780ltNRAmw>
+    <xmx:ioxfZWfwTXpAIux1XSpGVByRIFugkV9VmG8RJSs0osSGcR8tbk_C0w>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 04C4E36A0075; Thu, 23 Nov 2023 12:31:54 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-References: <20231121090624.1814733-1-liushixin2@huawei.com> <ZVyp5eETLTT0PCYj@tiehlicka>
-In-Reply-To: <ZVyp5eETLTT0PCYj@tiehlicka>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Thu, 23 Nov 2023 09:30:23 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuO=Y6frTxMbR92XhzuC8Z8ALDWFLq2Mj3t0j+C9YXOaJw@mail.gmail.com>
-Message-ID: <CAF8kJuO=Y6frTxMbR92XhzuC8Z8ALDWFLq2Mj3t0j+C9YXOaJw@mail.gmail.com>
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Liu Shixin <liushixin2@huawei.com>, Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <32db8a76-7842-4d04-94f1-67e3984cb349@app.fastmail.com>
+In-Reply-To: <20231123152639.561231-1-gregory.clement@bootlin.com>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
+Date:   Thu, 23 Nov 2023 17:31:33 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 00/21] Add support for the Mobileye EyeQ5 SoC
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 5:00=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
-> > However, in swapcache_only mode, the scan count still increased when sc=
-an
-> > non-swapcache pages because there are large number of non-swapcache pag=
-es
-> > and rare swapcache pages in swapcache_only mode, and if the non-swapcac=
-he
-> > is skipped and do not count, the scan of pages in isolate_lru_folios() =
-can
-> > eventually lead to hung task, just as Sachin reported [2].
->
-> I find this paragraph really confusing! I guess what you meant to say is
-> that a real swapcache_only is problematic because it can end up not
-> making any progress, correct?
->
-> AFAIU you have addressed that problem by making swapcache_only anon LRU
-> specific, right? That would be certainly more robust as you can still
-> reclaim from file LRUs. I cannot say I like that because swapcache_only
-> is a bit confusing and I do not think we want to grow more special
 
-That is my feeling as well. I don't like to have too many special
-purposes modes either. It makes the whole process much harder to
-reason. The comment seems to suggest it is not effective in some
-situations. I am wondering if we can address that situation more
-directly without the special mode. At the same time I am not very
-familiar with the reclaim code path yet. I need to learn more about
-this problem space to articulate my thoughts better . I can dig in
-more, I might ask a lot of silly questions.
 
-Chris
-
-> purpose reclaim types. Would it be possible/reasonable to instead put
-> swapcache pages on the file LRU instead?
-> --
-> Michal Hocko
-> SUSE Labs
+=E5=9C=A82023=E5=B9=B411=E6=9C=8823=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
+=E4=B8=8B=E5=8D=883:26=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
+> Hello,
 >
+> The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+> and features multiple controllers such as the classic UART, I2C, SPI,
+> as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+> Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+> Security Module, Functional Safety Hardware, and MJPEG encoder.
+>
+> One peculiarity of this SoC is that the physical address of the DDDR
+> exceeds 32 bits. Given that the architecture is 64 bits, this is not
+> an issue, but it requires some changes in how the mips64 is currently
+> managed during boot.
+>
+> This second version comes a few weeks after the first one, because
+> there several iteration to support having kernel code outside kseg.
+>
+> To build and test the
+> kernel, we need to run the following commands:
+>
+> make 64r6el_defconfig BOARDS=3Deyeq5
+> make vmlinuz.itb
+>
+> In order to get ride of the aliasing patch I got, I followed Jiaxun
+> Yang suggestion by splitting the memory in 2 part: low part under
+> 512MB and high part beyond the 4GB. It allows to boot and run Linux on
+> the platform however as a side effect the number of pages used for
+> memmap passed from 512 to 8672 which is a huge consumption of
+> pages. Do you know if there is a way to reduce it ?
+
+The best workaround is to enable SPARSEMEM, that's why I sent[1] :-)
+
+I'm going to reversion my XKPHYS work to fix some other issues I found.
+
+[1]: https://lore.kernel.org/linux-mips/20231028-mm-v1-0-45377cd158cf@fl=
+ygoat.com/
+>
+> I also noticed that if the kernel can't be in kseg0 at all by using
+> low memory at 0x40000000, then I got the following message during
+> boot:
+>
+--=20
+- Jiaxun
