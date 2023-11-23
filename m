@@ -2,138 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D97F5C05
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBD57F5C08
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343888AbjKWKOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
+        id S234686AbjKWKOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKWKOA (ORCPT
+        with ESMTP id S229464AbjKWKOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:14:00 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4207ED48;
-        Thu, 23 Nov 2023 02:14:06 -0800 (PST)
-Received: from [100.92.221.145] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: martyn)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0C58C6607390;
-        Thu, 23 Nov 2023 10:14:03 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700734445;
-        bh=1AzfTh3xW+R7jMoKi0iXP3NjuJBvCg9wANdNbnewW9A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cisBLx8H2xJ/JQT35+N+k8CsxmBeBkHf3H7mYH9wRTBTyCxPb/Ev+fmMqupAigRZ8
-         Zi1A0RpzrwtsFo3INoctqZDCsQ5ZnTklwIgAF038NxFSIhEy2dsgy/q0XntUkVhPbN
-         Ad4iMHzZkJSG4xnX2q9dyF2iPPPmZqXu2jcWvAc0XPqlPDUd3RPChgNO7+MKEGAp+d
-         j5U/pFXjbyethUNEVJSvfKr+eNDtIn/T2axJOIvIziS2oNSLo7PGHg4qc0sV3ajYz4
-         bCPh1Q4RdG4ZAm5SHm0n/Tis1gyPslTleBBN9PebmpBFXf8KKhIhdv2GJVNixfyJc3
-         wKG0m++8Lb2FA==
-Message-ID: <c1210724-66e1-479d-958b-3e777b1266df@collabora.com>
-Date:   Thu, 23 Nov 2023 10:14:00 +0000
+        Thu, 23 Nov 2023 05:14:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABC39F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:14:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77CB8C433C7;
+        Thu, 23 Nov 2023 10:14:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700734496;
+        bh=olc2VOouxGYvM14Tj0AO4e9V39Dc2KatskZsfmaluQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ncz0K9C0NVYZKPiSoS2Cb1mcs27qWL9MTuKhZ5hVaCnrtqPcVJuyqhtail7oRAK+J
+         69ys7CjhlQh3ADDDZMlFn/wt0TSFNbYY44Ark43nOJhF3rWaVS6gm1ALQNO3ACPnUv
+         wG5qeGRiIOzh2aTGIy84SQCfo6W+j1wEEYxzf7vo=
+Date:   Thu, 23 Nov 2023 10:14:52 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Dae R. Jeong" <threeearcat@gmail.com>
+Cc:     Yewon Choi <woni9911@gmail.com>, Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vmci_host: use smp_load_acquire/smp_store_release when
+ accessing vmci_host_dev->ct_type
+Message-ID: <2023112352-congested-puzzling-f76d@gregkh>
+References: <20231122122005.GA4661@libra05>
+ <2023112257-polymer-banknote-4869@gregkh>
+ <20231123074920.GA10480@libra05>
+ <2023112331-wise-regain-72dc@gregkh>
+ <ZV8kPHlGoPYKORQn@dragonet>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] MAINTAINERS: Mark VME subsystem as orphan
-Content-Language: en-US
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Staging Drivers <linux-staging@lists.linux.dev>,
-        Linux Kernel Janitors <kernel-janitors@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Soumya Negi <soumya.negi97@gmail.com>,
-        Alexon Oliveira <alexondunkan@gmail.com>,
-        Matt Jan <zoo868e@gmail.com>,
-        Jonathan Bergh <bergh.jonathan@gmail.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Bruno Moreira-Guedes <codeagain@codeagain.dev>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20231123083406.12129-2-bagasdotme@gmail.com>
-From:   Martyn Welch <martyn.welch@collabora.com>
-In-Reply-To: <20231123083406.12129-2-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URI_DOTEDU
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV8kPHlGoPYKORQn@dragonet>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 23, 2023 at 07:06:52PM +0900, Dae R. Jeong wrote:
+> On Thu, Nov 23, 2023 at 08:44:46AM +0000, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 23, 2023 at 04:49:22PM +0900, Yewon Choi wrote:
+> > > On Wed, Nov 22, 2023 at 02:34:55PM +0000, Greg Kroah-Hartman wrote:
+> > > > On Wed, Nov 22, 2023 at 09:20:08PM +0900, Yewon Choi wrote:
+> > > > > In vmci_host.c, missing memory barrier between vmci_host_dev->ct_type
+> > > > > and vmci_host_dev->context may cause uninitialized data access.
+> > > > > 
+> > > > > One of possible execution flows is as follows:
+> > > > > 
+> > > > > CPU 1 (vmci_host_do_init_context)
+> > > > > =====
+> > > > > vmci_host_dev->context = vmci_ctx_create(...) // 1
+> > > > > vmci_host_dev->ct_type = VMCIOBJ_CONTEXT; // 2
+> > > > > 
+> > > > > CPU 2 (vmci_host_poll)
+> > > > > =====
+> > > > > if (vmci_host_dev->ct_type == VMCIOBJ_CONTEXT) { // 3
+> > > > > 	context = vmci_host_dev->context; // 4
+> > > > > 	poll_wait(..., &context->host_context.wait_queue, ...);
+> > > > > 
+> > > > > While ct_type serves as a flag indicating that context is initialized,
+> > > > > there is no memory barrier which prevents reordering between
+> > > > > 1,2 and 3, 4. So it is possible that 4 reads uninitialized
+> > > > > vmci_host_dev->context.
+> > > > > In this case, the null dereference occurs in poll_wait().
+> > > > > 
+> > > > > In order to prevent this kind of reordering, we change plain accesses
+> > > > > to ct_type into smp_load_acquire() and smp_store_release().
+> > > > > 
+> > > > > Signed-off-by: Yewon Choi <woni9911@gmail.com>
+> > > > > ---
+> > > > >  drivers/misc/vmw_vmci/vmci_host.c | 40 ++++++++++++++++++-------------
+> > > > >  1 file changed, 23 insertions(+), 17 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/misc/vmw_vmci/vmci_host.c b/drivers/misc/vmw_vmci/vmci_host.c
+> > > > > index abe79f6fd2a7..e83b6e0fe55b 100644
+> > > > > --- a/drivers/misc/vmw_vmci/vmci_host.c
+> > > > > +++ b/drivers/misc/vmw_vmci/vmci_host.c
+> > > > > @@ -139,7 +139,7 @@ static int vmci_host_close(struct inode *inode, struct file *filp)
+> > > > >  {
+> > > > >  	struct vmci_host_dev *vmci_host_dev = filp->private_data;
+> > > > >  
+> > > > > -	if (vmci_host_dev->ct_type == VMCIOBJ_CONTEXT) {
+> > > > > +	if (smp_load_acquire(&vmci_host_dev->ct_type) == VMCIOBJ_CONTEXT) {
+> > > > 
+> > > > This is getting tricky, why not use a normal lock to ensure that all is
+> > > > safe?  close isn't on a "fast path", so this shouldn't be a speed issue,
+> > > > right?
+> > > > 
+> > > 
+> > > I think using locks can be considered orthogonal to correcting memory ordering. 
+> > 
+> > But they ensure proper memory ordering.
+> 
+> Yes, using a lock obviously ensures memory ordering.
+> 
+> > > If the lock is needed, we will need to add locks in all of them. I cannot be
+> > > sure which is better. Besides that, it seems to be a separate issue.
+> > 
+> > Nope, I think it's the same issue :)
+> > 
+> > > On the other hand, the current implementation doesn't guarantee memory ordering 
+> > > which leads to wrong behavior.
+> > > This patch fixes this issue by adding primitives. 
+> > 
+> > But it's still wrong, again, what keeps the value from changing right
+> > after checking it?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> It seems that VMCI assumes that vmci_host_dev->context is not NULL if
+> vmci_host_dev->ct_type == VMCIOBJ_CONTEXT (because all readers of
+> vmci_host_dev->context check whether vmci_host_dev->ct_type is
+> VMCIOBJ_CONTEXT or not, and access vmci_host_dev->context without
+> checking whether is it NULL or not). So I think this patch clarifies
+> this assumption.
+> 
+> As you said, we need to ensure that vmci_host_dev->context is not
+> changed after checking vmci_host_dev->ct_type. But
+> (1) the only place that changes vmci_host_dev->context is
+> vmci_host_close() and
 
-On 23/11/2023 08:34, Bagas Sanjaya wrote:
-> Martyn Welch lost his access to VME hardware [1]; and Manohar Vanga has been
-> MIA since early January 2014 (his last message was [2]). Martyn admitted
-> that the subsystem is basically orphan, so mark it as such. As a bonus,
-> add CREDITS entries for the former subsystem maintainers.
+Then why is it even checked in close()?
 
-Acked-by: Martyn Welch <martyn@welchs.me.uk>
+> (2) (I think) vmci_host_close() do not concurrently run with readers
+> of vmci_host_dev->context. IIUC, all readers of vmci_host_dev->context
+> are system calls (eg, ioctl handlers or the poll handler). So I think
+> the ref count of the file saves us here. (Otherwise, Syzkaller will
+> tell us the truth maybe?)
 
-> Link: https://lore.kernel.org/r/fe8ac0db-d6cc-41bc-b926-484b418e1720@collabora.com/ [1]
-> Link: https://lore.kernel.org/r/CAEktxaFL=3cmU4vZS2akiAR2vG-3d+9HwTZvBvf5JXuThHoOKg@mail.gmail.com/ [2]
-> Cc: Martyn Welch <martyn.welch@collabora.com>
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
-> Changes since v1 [3]:
->
->   * Orphanize the subsystem (Martyn)
->   * Sort Manohar's CREDITS entry
->
-> [3]: https://lore.kernel.org/linux-staging/20231122094156.30642-1-bagasdotme@gmail.com/
->
->   CREDITS     | 8 ++++++++
->   MAINTAINERS | 5 +----
->   2 files changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/CREDITS b/CREDITS
-> index f33a33fd237170..ba6eb6274f8bed 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -3916,6 +3916,10 @@ S: 21513 Conradia Ct
->   S: Cupertino, CA 95014
->   S: USA
->   
-> +N: Manohar Vanga
-> +E: manohar.vanga@gmail.com
-> +D: VME subsystem maintainer
-> +
->   N: Thibaut Varène
->   E: hacks+kernel@slashdirt.org
->   W: http://hacks.slashdirt.org/
-> @@ -4016,6 +4020,10 @@ D: Fixes for the NE/2-driver
->   D: Miscellaneous MCA-support
->   D: Cleanup of the Config-files
->   
-> +N: Martyn Welch
-> +E: martyn@welchs.me.uk
-> +D: VME subsystem maintainer
-> +
->   N: Matt Welsh
->   E: mdw@metalab.unc.edu
->   W: http://www.cs.berkeley.edu/~mdw
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ea790149af7951..ff083d12001489 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23234,11 +23234,8 @@ F:	include/linux/vmalloc.h
->   F:	mm/vmalloc.c
->   
->   VME SUBSYSTEM
-> -M:	Martyn Welch <martyn@welchs.me.uk>
-> -M:	Manohar Vanga <manohar.vanga@gmail.com>
-> -M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->   L:	linux-kernel@vger.kernel.org
-> -S:	Odd fixes
-> +S:	Orphan
->   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
->   F:	Documentation/driver-api/vme.rst
->   F:	drivers/staging/vme_user/
->
-> base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+Ok, then why is this needed to be checked then at all?
+
+> At least, this patch introduces no change of the logic but the
+> guarantees of the memory ordering, so I think this patch is safe?
+
+I think the logic is incorrect, don't try to paper over it thinking that
+the issue to be solved is "memory ordering" please.  Solve the root
+issue here.
+
+thanks,
+
+greg k-h
