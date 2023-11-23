@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E22A7F6748
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C827F675B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjKWTeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:34:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S229788AbjKWTeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 14:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbjKWTeS (ORCPT
+        with ESMTP id S229842AbjKWTeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Nov 2023 14:34:18 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B05310CF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F316E10D9;
         Thu, 23 Nov 2023 11:34:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700768057; x=1732304057;
+  t=1700768058; x=1732304058;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=k/CuwaYQabHIX2TTMtkxSjWVlEzJjCHclcddt/a9src=;
-  b=F7vLi38lz+kNGOj9T3/xCCRKLMlJDrZeIDSt5mfK7drC+9gA2DzdWctD
-   +1gAqf4GGBm9oF+gBV/sVHXk8kb9tMaETzTGt3JUzryBCg++kmPrb+L2M
-   gzzhG8FMj5jnN0T98YLQAJ4yZidLj2o9cUMoglSLGWZavhthCQA8FnwK/
-   FgB5sjsoeSeYgOt+JLehTDBnVBh2LQoUGRvIy5O/E4NbJtm4g7dOpbGVS
-   tZCbGJ5JEsbqlc+wkarnNWBJLUdrk7VxkM4HNd8t1vBdUspPuKBCih1cF
-   vI6LJ7fig6An5Bd+v+05T6JQO3c2ato1ouqa7Sn2Zoqz9iJOB8U1bbCzn
+  bh=3nCf9Nawx9DZLMwtP7gm5hKJWHmWiIVjJbmiWUav9q4=;
+  b=ja7daz8WRMe22UB95QTJFFc4StHMXjuhuEjg6iMrBU7IkP9ePDHWb0TU
+   ZxpgvGTowLG/MxgIMthEZd3b0+C4V3bNN+6jXU7o+j0IJ9i2i+h4QQdhW
+   f7InqcxnKoNt+dS0LufICUbpv7Q94x3q7rFSOjS5uftWjiFLUZUpEedkJ
+   JdYQNVVPq7g1sjFzlFvoUQaVkOwEqN/YADUzGsZAmB9nqzXCynYfCM0Mr
+   lPl8hHZjIE17pqC8pVPv/AFrxnGhPfirAEQsP7UavAWJyVsLcZbm4EHID
+   R7Zzvnyap4leqdwPHEIDVVMYWp7uOlXmpyzpggVyAepS73vezn8Qzo5Ht
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371671405"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371671437"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="371671405"
+   d="scan'208";a="371671437"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:16 -0800
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 11:34:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771062249"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771062254"
 X-IronPort-AV: E=Sophos;i="6.04,222,1695711600"; 
-   d="scan'208";a="771062249"
+   d="scan'208";a="771062254"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2023 11:34:08 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2023 11:34:09 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1A472623; Thu, 23 Nov 2023 21:33:59 +0200 (EET)
+        id 2590463E; Thu, 23 Nov 2023 21:33:59 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v2 10/21] pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
-Date:   Thu, 23 Nov 2023 21:31:38 +0200
-Message-ID: <20231123193355.3400852-11-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 11/21] pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
+Date:   Thu, 23 Nov 2023 21:31:39 +0200
+Message-ID: <20231123193355.3400852-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
 References: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
@@ -97,31 +97,46 @@ Make use of PINCTRL_GROUP_DESC() instead of open coding it.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-ingenic.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/pinctrl/mediatek/pinctrl-moore.h | 7 +------
+ drivers/pinctrl/mediatek/pinctrl-paris.h | 7 +------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index ee718f6e2556..393873de910a 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -83,15 +83,10 @@
- #define JZ4730_PINS_PER_PAIRED_REG	16
+diff --git a/drivers/pinctrl/mediatek/pinctrl-moore.h b/drivers/pinctrl/mediatek/pinctrl-moore.h
+index e1b4b82b9d3d..22ef1ffbcdcb 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-moore.h
++++ b/drivers/pinctrl/mediatek/pinctrl-moore.h
+@@ -38,12 +38,7 @@
+ 	}
  
- #define INGENIC_PIN_GROUP_FUNCS(name, id, funcs)		\
+ #define PINCTRL_PIN_GROUP(name, id)			\
 -	{						\
 -		name,					\
 -		id##_pins,				\
 -		ARRAY_SIZE(id##_pins),			\
--		funcs,					\
+-		id##_funcs,				\
 -	}
-+	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), funcs)
++	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), id##_funcs)
  
- #define INGENIC_PIN_GROUP(name, id, func)		\
--	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
-+	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), (void *)(func))
+ int mtk_moore_pinctrl_probe(struct platform_device *pdev,
+ 			    const struct mtk_pin_soc *soc);
+diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.h b/drivers/pinctrl/mediatek/pinctrl-paris.h
+index 8762ac599329..f208a904c4a8 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-paris.h
++++ b/drivers/pinctrl/mediatek/pinctrl-paris.h
+@@ -50,12 +50,7 @@
+ 	}
  
- enum jz_version {
- 	ID_JZ4730,
+ #define PINCTRL_PIN_GROUP(name, id)			\
+-	{						\
+-		name,					\
+-		id##_pins,				\
+-		ARRAY_SIZE(id##_pins),			\
+-		id##_funcs,				\
+-	}
++	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), id##_funcs)
+ 
+ int mtk_paris_pinctrl_probe(struct platform_device *pdev);
+ 
 -- 
 2.43.0.rc1.1.gbec44491f096
 
