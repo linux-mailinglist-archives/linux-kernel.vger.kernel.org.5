@@ -2,406 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945537F67CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF587F67D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 20:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjKWTs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 14:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S229647AbjKWTuJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Nov 2023 14:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKWTs5 (ORCPT
+        with ESMTP id S229453AbjKWTuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 14:48:57 -0500
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2051.outbound.protection.outlook.com [40.107.8.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4E59A;
-        Thu, 23 Nov 2023 11:49:02 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=To9oc6eyLTPyVUgrGTITeVixXiZ50rhUBrKQNv8qO3qWSuKac+aBZYPA4KYJ9JAwesW/CujDWNeG3g8G361nsZt4eiL2Q5HQYayYLAPgzYiKDj5zk6E6cy+WwmHwWUBFHjwKj0MlqrvZU646wqtU1Mixq3VccSIOLgWfUrcTfd5dy6B665LPHLQ2JtHdy2TpjOKVE2CsDaoeOQU8pK8uQ9X0f5LkgqL1OFwAJG27hM09tMJjU2eq8iuNUXuuf79NMTQM+q/qQGNudGHlcEpcPlaoT7rx3Kf+VOAO0xP1w+MQ/Vp7s+KGxveN0FdPUp3kl7iVirlWivfq+qK7Bm1hNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AKOZtYlUR/+s2aDY0HiUC9doRnnwbV5H5YV8XrFSeog=;
- b=EElOQPqs4McyJyzRP9+UaX3OeQJMYm3F4Vd5j3KVEbMHKKOK4F2eEkO+qshLGUwzXeEoBAkJRMV3YjWQcRkmqs7Mk52gvysd9QFfA1pK/ba51Ln7w3dHzBmA+9HgUn+l65By5NUJffmH5BVxllbWGp12q1739cdWbwoVE3P8KDb5YUdX/xaG8fbau632yVkjZ90Ov0Ucoc4tq+2aO7N2LklXSI/G65CsXNFgbtJX/inoQjwcob4CDuygVRxaQdxae2R7HqP+QEq3+e9OpdScN+81ZUGkoSNksADT6x925WbgnrAtoKhahef/Olr2sABhyXSzwEG81k/FhV7hLg9zUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AKOZtYlUR/+s2aDY0HiUC9doRnnwbV5H5YV8XrFSeog=;
- b=BqOxpk069AvkEWdW/TXelbMFMLATnJ+wEgP0SJfOY1+1AUZKfJpwRSgkRcT4XNuAwYloqRoG8kr/zW18AfdTlEZGrvJQNUU8dcbJB9EvrtCpq6hrpTe5XUsWwK8TlYOC8NNcAC5OakM3RUcp2YfXEBR6L8JUmOICbb9tcNVJtB8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PAXPR08MB6752.eurprd08.prod.outlook.com (2603:10a6:102:131::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
- 2023 19:48:59 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
- 19:48:59 +0000
-Message-ID: <487555fa-72ad-4d1a-ac68-51826f56f1cd@wolfvision.net>
-Date:   Thu, 23 Nov 2023 20:48:56 +0100
-User-Agent: Mozilla Thunderbird
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-Subject: Re: [PATCH v5 2/4] dt-bindings: touchscreen: add overlay-touchscreen
- and overlay-buttons properties
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Bastian Hecht <hechtb@gmail.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230510-feature-ts_virtobj_patch-v5-0-ff6b5c4db693@wolfvision.net>
- <20230510-feature-ts_virtobj_patch-v5-2-ff6b5c4db693@wolfvision.net>
- <ZTp72LUXxr+Z9gn8@nixie71>
-Content-Language: en-US
-In-Reply-To: <ZTp72LUXxr+Z9gn8@nixie71>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0037.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:c7::10) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+        Thu, 23 Nov 2023 14:50:08 -0500
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA55091;
+        Thu, 23 Nov 2023 11:50:14 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1efba24b038so279087fac.1;
+        Thu, 23 Nov 2023 11:50:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700769014; x=1701373814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SPnVIP7WE+e1m6kbF0iZl32seDul9DiRZGTrCiOrxg0=;
+        b=FNIWBW2c7Kj6ZofayiRNXObglnaSc+VU/SNbg0ft6JE7UTzJc5Mebgwio3mbx1OjpK
+         6zs8uu89SJPbQRvoflVlE8chKohmuZgGOgSR9+5PXUXDWawDo8Tf8MgMZyPCKM9JJ1f4
+         GvlDXoxOEI0JMhAYQrhvBq+hWEZC9vXXmmvZFIp/+ht1a2qNnPJXYhmhaEkpS8TC4zpD
+         Y4OdVYauiQ7/HaUyK9oQFpWhtuOwEv2I0IbJ3F7MpArbSnF5PO8wVKnsHWq8HbVtsvom
+         leRFITfw7BAGE3PhPFRFVsXS6J336C04r3Fhf24HrS+cktjJnSFn4KCjt/s8hvqYi29M
+         awug==
+X-Gm-Message-State: AOJu0YzMXzcUP4hmO2AxCShoIGz0fHgEORzW1hXUyAlY1rAzyYuOLYMy
+        WVBIOiBWF0GWAUg3fptvOEqaNRQuRgBOOa8pg931+S1/
+X-Google-Smtp-Source: AGHT+IFUFtQSgD+W8Yy8QPiwQE4p1RlFzJFt/GSUiRGPuyvIdEEMv1z9wpYE6RAlbcCC6n75J8HSPBnaL6jFaFWFHNM=
+X-Received: by 2002:a05:6871:530f:b0:1d0:e372:6cf8 with SMTP id
+ hx15-20020a056871530f00b001d0e3726cf8mr463783oac.2.1700769014104; Thu, 23 Nov
+ 2023 11:50:14 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAXPR08MB6752:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d767b74-7349-4981-05bf-08dbec5d3c21
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VpJAJRWkKjOoqvnOltfUY0AvPGeQpMgVZiGnoql3KBWZOlFBWJb/946UMuieiVE6MiqVSU+I5yuSBU1GpE2QxrRBihns83Xqs0M78IL67ZZmhXs1+uF/EtWU5T6vT+JjU8s+DPSqSaj0G6mGNV37tlq4xUm1wa8g1rDk8Crg4ZsEbBa5p/ef1223Letnkv3zFfORlpdEgCNYzUmCpxsddrrGokzBQqWlwGBiBTMRfy71xpeiogdtqjIZNsd2MVqTFPvNDZvtdyz7TWvzlo26nJdzKbLnKKQtatEOX+WLHA3wKdRiaf7K1MxuL65DE9/b58joFwIuveMOVoDNjbGU1rCNlHOp7FTDSffLgmh53/bccLsN94R9Qi5UOmTC5NIikbxV0HgaNyUNSM98m4ijOJwdqqoURLaZCLxnCo9KQEHzscTWHGruf1UBqhTpQgmbCFqCNVd/oWwBZF2hNFbSpQBrC5fXDdE/Di+qLOxM6vyUkJYHtwXpaoDVhd35QGr9mjEur20bSKYnuGKh8Fq+Sdc6mobcoik94ojH3M18LDm/bNC+H7H6lFaP68bVCn0s37AnxF2TyNU2AYJPACSZI0u1K6dEvsZZuvHE1i7tyZM3NG0ZIVh3+mGJpqEWSLSyc6yGrZA5nA+QS3YUpbxu4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39850400004)(376002)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(7416002)(86362001)(44832011)(5660300002)(31696002)(31686004)(38100700002)(83380400001)(6666004)(6506007)(54906003)(316002)(53546011)(6512007)(2616005)(4326008)(6916009)(66476007)(66556008)(66946007)(8676002)(8936002)(41300700001)(6486002)(478600001)(2906002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDdlL2FYSVg5YWhqSnpnamk1UnUydkwyakFRbGxzdklJYlliMlZoRU0rZmVH?=
- =?utf-8?B?dm50S0hUK1djOHJQZk9VbTh2WnRodUw5cjZBQnQ1cjhmYk15ZFN1WTR2WXZp?=
- =?utf-8?B?U0Y2amU3YkVURGtnRk5pcEl5bnRmR0ZEL0tPU0NqRUFrZHV1L3c5MUdrK09x?=
- =?utf-8?B?eldkT2VHdkFjZklGQ3M1Y0hqQStHRkVkRC9IQlZKaCswaDBvMUR2dVBXMU9G?=
- =?utf-8?B?RDJPUURwRTdtVW9zSHVncVlxNnhzYldmQVFubGZuMytkUFdkMGNJVy9kdlcy?=
- =?utf-8?B?elFINEcxdllvM3A5ckNzMjcvWTRFZ1QxcWovQVRpZFdaai9maWpKNVZXMUdK?=
- =?utf-8?B?VUxYY2Z1NGZHN2VUKzAzdEhGMnFEU1lVci9YY0Z6bUhiNGhySzIwcCtBU2Jx?=
- =?utf-8?B?a0dSL3dtbGptejQ0cEYyMzEvb0FWZDErR0lwTU13SjJySW03ZEptZUpkbHN6?=
- =?utf-8?B?VHR0MEt3M3pEeWplRXpwZzNaNTlEV0NabENZWW5lU3cwanY4VEVoRnl6R1dl?=
- =?utf-8?B?OUh2ejlGSlVwU0Z1MlhFdU8yV0RJRnh3TFpXaVF2Z0dlc2FiMHFnUC9QbXd6?=
- =?utf-8?B?eXBmSnBjbDR1M3phSGNXUkQrRTdLVEN2OGcvNHgwcGJuTk1EMkZyS2dVb3Mx?=
- =?utf-8?B?RVducnlFcFNlemcrWlkrTWZaSU5FRWtWYmNoa1dwSzFBKzdDZG5vN1R4SjJE?=
- =?utf-8?B?RVAxakQ3NTI1QUc5bzJ2TWtGaVFWcFZUcW03aXdDaUhYaGhOaGhZTFdaSStx?=
- =?utf-8?B?OTZWeFdiU2dhMVZnQVBSZHdETlcvZ096WnBMcjFxcCsvUTJXVkhJeGFWSGJK?=
- =?utf-8?B?YjVmb0RMeHRaRWl6TXZ4cU8zY1AzNlV6NEF3K3NMY0NGYThBaHJRRHhNK3Nk?=
- =?utf-8?B?UnkrWnVLNkg2RFo5dXIzbk1aUG5hZ29yNkg0OWxYOXdQMVBlSGx5dnpnQzZ3?=
- =?utf-8?B?RVlZYUlTYi9sREt2S2w5eGVmSytUWE9iSWE1UWVtUVhiZmNzSlZJL3hjZ2NS?=
- =?utf-8?B?c2RQMk9SZnBHS0lSOWlqUGVpM0tINHNtT1ljN3kzL1B3U2c0N2pQWk5hRnY0?=
- =?utf-8?B?ZnY3REtkN09MeVcxem9kT1Qwdy9peWtHMnJoOWV6R2Q0cmlNdkpLUHB0NDhp?=
- =?utf-8?B?cHZpY3JFdVA5Qmc1ajhoSllsa01VQVNuZXdzSWUwNGhSNnJTTnJsN1F4QXgx?=
- =?utf-8?B?cVpPaDg4b0N1MW4zOG1vNVFaNGJEaEdEZWRDdGxjT05LVW0xYlZTVzh3cFFF?=
- =?utf-8?B?UVFzNGlCSWhTdHJIUnBsZWpzNFY0NlNUS05CV1pYU0QxZUtWUk5MQkNwdk5u?=
- =?utf-8?B?bVJMbmJqRUxNclQrdE9RMWkvOE92RHRzRzVpRnNJT1dUMjhaNFY1amluQnA3?=
- =?utf-8?B?UlYxa2V5TDdEc0VGNXg0M2t5a2VhM0dUcXhxdzh5SktpcEJhNkNQRkVPT0VV?=
- =?utf-8?B?U1pyTVVKYXpkUWNxZXBOMHo1VjRvb21yQ1dyMnd1VkszRWxqMHBraXY5azFH?=
- =?utf-8?B?WTQrSG1wNGJWd29jNDI3bFdCTFIxSFMvWERJZk5McVdBSllKV25tbkwrNk96?=
- =?utf-8?B?aEx0VklQenlqTmNENjAvMUdrTDVzRjNCZzQ0VHRvay9XTU1tSktndGpQdXBs?=
- =?utf-8?B?UmFGY2UreUl4RkZIYW9HcnNIUTVhM01QZlhiYTU5NCsvTXo5ckdBOUJ6QmJF?=
- =?utf-8?B?aDF0VUpwald5YnVVUXJ0N1JjcHJTU24xRURBdUlSdUlsTVA5RzNFaGpKUDJV?=
- =?utf-8?B?WVhaQ1hFNFRPN2pCYW8wUC9udldlZmVTUmlBVkxHQWdIS3pRUW5CbnpUS1p4?=
- =?utf-8?B?QnIvVkRYRU0vVW5maVArdWdnQmNqRERlbk1rcU0xN0Z3WkNTNU5BeUk3Mm5S?=
- =?utf-8?B?RGlpdnBFWGpEakgra3BFMW93alNRSUV2a1ZiUnBPQWJWUzhrcEo1SGMwMmdH?=
- =?utf-8?B?Wi9VKy8xcWZHVDNNRlJZZFJ4ZE1DSEQxQTZYSVRoQzEwR3lXUXFiSzVZbmFv?=
- =?utf-8?B?eERuSWVmTFJlcTRXb1RaN25sUlIxTm82SFpJV2t5N1NmcjF6bTVMOThTTnNP?=
- =?utf-8?B?SjNYcFZyejY1MHE4bitpWjJNWGdsNFlZWStyYXdITGxLNFIvbVRWNHUzaHgr?=
- =?utf-8?B?Z0xrZzh5M2taWnJXVi94anN3djhoRFkyL01DMkZoTVcvTjNPMnVXMDVKVGtY?=
- =?utf-8?B?TW1zcDJVRmR3UkFRcTJNTEVNVmE2L1hYVGpSWEJWc3IxVUMrVVJ5dmFtdWNS?=
- =?utf-8?Q?BcQqnPtB2aP5U7YcKRgtsPIDUrvTRku7Z2F1pDoAe4=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d767b74-7349-4981-05bf-08dbec5d3c21
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 19:48:58.9462
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jrpbrlqBP/XM5DhTojugK3Oi2SRJW1WP87soxY7C/vJ/oeG7UYBzKMSgucJwySrWUHET0/zmLsfsZv89vkLyCCsyZ3mcDrUNTOp0HZ+BHnA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB6752
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231025192225.468228-1-lukasz.luba@arm.com> <CAJZ5v0gniBtFduwjhDku+OZzjvkCaFK7ew0uJTfW254XKTOyyw@mail.gmail.com>
+ <ce8f1a13-b56f-4419-a954-8d987af44112@arm.com> <5fd9ce52-9216-47ae-9ed3-fabb0f3b02fd@arm.com>
+In-Reply-To: <5fd9ce52-9216-47ae-9ed3-fabb0f3b02fd@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 23 Nov 2023 20:50:01 +0100
+Message-ID: <CAJZ5v0jL38PgFYVXFj2Py5NvUU0xFGU45w=TdcBXqr7v+xToag@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Minor cleanup for thermal gov power allocator
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, rui.zhang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
+Hi Lukasz,
 
-On 26.10.23 16:46, Jeff LaBundy wrote:
-> Hi Javier,
-> 
-> Thank you for continuing to drive this high-quality work.
-> 
-> On Tue, Oct 17, 2023 at 01:00:08PM +0200, Javier Carrasco wrote:
->> The overlay-touchscreen object defines an area within the touchscreen
->> where touch events are reported and their coordinates get converted to
->> the overlay origin. This object avoids getting events from areas that
->> are physically hidden by overlay frames.
->>
->> For touchscreens where overlay buttons on the touchscreen surface are
->> provided, the overlay-buttons object contains a node for every button
->> and the key event that should be reported when pressed.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
->> ---
->>  .../bindings/input/touchscreen/touchscreen.yaml    | 143 +++++++++++++++++++++
->>  1 file changed, 143 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->> index 431c13335c40..5c58eb79ee9a 100644
->> --- a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
->> @@ -87,6 +87,129 @@ properties:
->>    touchscreen-y-plate-ohms:
->>      description: Resistance of the Y-plate in Ohms
->>  
->> +  overlay-touchscreen:
->> +    description: Clipped touchscreen area
->> +
->> +      This object can be used to describe a frame that restricts the area
->> +      within touch events are reported, ignoring the events that occur outside
->> +      this area. This is of special interest if the touchscreen is shipped
->> +      with a physical overlay on top of it with a frame that hides some part
->> +      of the original touchscreen area.
->> +
->> +      The x-origin and y-origin properties of this object define the offset of
->> +      a new origin from where the touchscreen events are referenced.
->> +      This offset is applied to the events accordingly. The x-size and y-size
->> +      properties define the size of the overlay-touchscreen (effective area).
->> +
->> +      The following example shows the new touchscreen area and the new origin
->> +      (0',0') for the touch events generated by the device.
->> +
->> +                   Touchscreen (full area)
->> +         ┌────────────────────────────────────────┐
->> +         │    ┌───────────────────────────────┐   │
->> +         │    │                               │   │
->> +         │    ├ y-size                        │   │
->> +         │    │                               │   │
->> +         │    │      overlay-touchscreen      │   │
->> +         │    │                               │   │
->> +         │    │                               │   │
->> +         │    │            x-size             │   │
->> +         │   ┌└──────────────┴────────────────┘   │
->> +         │(0',0')                                 │
->> +        ┌└────────────────────────────────────────┘
->> +      (0,0)
->> +
->> +     where (0',0') = (0+x-origin,0+y-origin)
->> +
->> +    type: object
->> +    $ref: '#/$defs/overlay-node'
->> +    unevaluatedProperties: false
->> +
->> +    required:
->> +      - x-origin
->> +      - y-origin
->> +      - x-size
->> +      - y-size
->> +
->> +  overlay-buttons:
->> +    description: list of nodes defining the buttons on the touchscreen
->> +
->> +      This object can be used to describe buttons on the touchscreen area,
->> +      reporting the touch events on their surface as key events instead of
->> +      the original touch events.
->> +
->> +      This is of special interest if the touchscreen is shipped with a
->> +      physical overlay on top of it where a number of buttons with some
->> +      predefined functionality are printed. In that case a specific behavior
->> +      is expected from those buttons instead of raw touch events.
->> +
->> +      The overlay-buttons properties define a per-button area as well as an
->> +      origin relative to the real touchscreen origin. Touch events within the
->> +      button area are reported as the key event defined in the linux,code
->> +      property. Given that the key events do not provide coordinates, the
->> +      button origin is only used to place the button area on the touchscreen
->> +      surface. Any event outside the overlay-buttons object is reported as a
->> +      touch event with no coordinate transformation.
->> +
->> +      The following example shows a touchscreen with a single button on it
->> +
->> +              Touchscreen (full area)
->> +        ┌───────────────────────────────────┐
->> +        │                                   │
->> +        │                                   │
->> +        │   ┌─────────┐                     │
->> +        │   │button 0 │                     │
->> +        │   │KEY_POWER│                     │
->> +        │   └─────────┘                     │
->> +        │                                   │
->> +        │                                   │
->> +       ┌└───────────────────────────────────┘
->> +     (0,0)
->> +
->> +      The overlay-buttons object can  be combined with the overlay-touchscreen
->> +      object as shown in the following example. In that case only the events
->> +      within the overlay-touchscreen object are reported as touch events.
->> +
->> +                  Touchscreen (full area)
->> +        ┌─────────┬──────────────────────────────┐
->> +        │         │                              │
->> +        │         │    ┌───────────────────────┐ │
->> +        │ button 0│    │                       │ │
->> +        │KEY_POWER│    │                       │ │
->> +        │         │    │                       │ │
->> +        ├─────────┤    │  overlay-touchscreen  │ │
->> +        │         │    │                       │ │
->> +        │         │    │                       │ │
->> +        │ button 1│    │                       │ │
->> +        │ KEY_INFO│   ┌└───────────────────────┘ │
->> +        │         │(0',0')                       │
->> +       ┌└─────────┴──────────────────────────────┘
->> +     (0,0)
->> +
->> +    type: object
-> 
-> I am still confused why the buttons need to live under an 'overlay-buttons'
-> parent node, which seems like an imaginary boundary. In my view, the touch
-> surface comprises the following types of rectangular areas:
-> 
-> 1. A touchscreen, wherein granular coordinates and pressure are reported.
-> 2. A momentary button, wherein pressure is quantized into a binary value
->    (press or release), and coordinates are ignored.
-> 
-> Any contact that falls outside of (1) and (2) is presumed to be part of a
-> border or matting, and is hence ignored.
-> 
-> Areas (1) and (2) exist in the same "plane", so why can they not reside
-> under the same parent node? The following seems much more representative
-> of the actual hardware we intend to describe in the device tree:
-> 
-> 	touchscreen {
-> 		compatible = "...";
-> 		reg = <...>;
-> 
-> 		/* raw coordinates reported here */
-> 		touch-area-1 {
-> 			x-origin = <...>;
-> 			y-origin = <...>;
-> 			x-size = <...>;
-> 			y-size = <...>;
-> 		};
-> 
-> 		/* a button */
-> 		touch-area-2a {
-> 			x-origin = <...>;
-> 			y-origin = <...>;
-> 			x-size = <...>;
-> 			y-size = <...>;
-> 			linux,code = <KEY_POWER>;
-> 		};
-> 
-> 		/* another button */
-> 		touch-area-2b {
-> 			x-origin = <...>;
-> 			y-origin = <...>;
-> 			x-size = <...>;
-> 			y-size = <...>;
-> 			linux,code = <KEY_INFO>;
-> 		};
-> 	};
-> 
-Now that I am working on the approach you suggested, I see that some
-things can get slightly more complicated. I still think that it is worth
-a try, but I would like to discuss a couple of points.
+On Thu, Nov 23, 2023 at 4:19 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> Gentle ping
+>
+> On 10/26/23 13:22, Lukasz Luba wrote:
+> >
+> >
+> > On 10/26/23 09:54, Rafael J. Wysocki wrote:
+> >> On Wed, Oct 25, 2023 at 9:21 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>>
+> >>> Hi all,
+> >>>
+> >>> The patch set does some small clean up for Intelligent Power Allocator.
+> >>> Those changes are not expected to alter the general functionality.
+> >>> They just
+> >>> improve the code reading. Only patch 3/7 might improve the use case for
+> >>> binding the governor to thermal zone (very unlikely in real products,
+> >>> but
+> >>> it's needed for correctness).
+> >>>
+> >>> The changes are based on top of current PM thermal branch, so with the
+> >>> new trip points.
+> >>>
+> >>> Regards,
+> >>> Lukasz
+> >>>
+> >>> Lukasz Luba (7):
+> >>>    thermal: gov_power_allocator: Rename trip_max_desired_temperature
+> >>>    thermal: gov_power_allocator: Setup trip points earlier
+> >>>    thermal: gov_power_allocator: Check the cooling devices only for
+> >>>      trip_max
+> >>>    thermal: gov_power_allocator: Rearrange the order of variables
+> >>>    thermal: gov_power_allocator: Use shorter variable when possible
+> >>>    thermal: gov_power_allocator: Remove unneeded local variables
+> >>>    thermal: gov_power_allocator: Clean needed variables at the beginning
+> >>>
+> >>>   drivers/thermal/gov_power_allocator.c | 123 ++++++++++++++------------
+> >>>   1 file changed, 64 insertions(+), 59 deletions(-)
+> >>>
+> >>> --
+> >>
+> >> The series looks good to me overall, but I'd prefer to make these
+> >> changes in the 6.8 cycle, because the 6.7 merge window is around the
+> >> corner and there is quite a bit of thermal material in this cycle
+> >> already.
+> >
+> > Thanks for having a look! Yes, I agree, we can wait after the
+> > merge window. It just have to be cleaned one day a bit and I postponed
+> > this a few times, so no rush ;)
+>
+> I've seen you've created the new pm/thermal. Could you consider to take
+> those in, please?
 
-The node parsing is not that simple anymore because the touch-area nodes
-are only surrounded by the touchscreen node. Theoretically they could be
-even be defined with other properties in between. The current approach
-only needs to find the overlay-buttons parent and iterate over all the
-inner nodes(simply by calling device_get_named_child_node() and
-fwnode_for_each_child_node() the parsing is achieved in two lines +
-error checking). So maybe even if we opt for the single-object approach,
-an overlay node to group all the touch-areas could simplify the parsing.
-Or did you have a different approach in mind? Your example would turn
-into this one:
+Sure, I'll get to them presumably tomorrow and if not then early next week.
 
-	touchscreen {
-		compatible = "...";
-		reg = <...>;
+> I would send some RFC on top showing the issue with reading back the CPU
+> max frequency from the PM_QoS chain.
 
-		touch-overlay {
-			/* raw coordinates reported here */
-			touch-area-1 {
-				x-origin = <...>;
-				y-origin = <...>;
-				x-size = <...>;
-				y-size = <...>;
-			};
-
-			/* a button */
-			touch-area-2a {
-				x-origin = <...>;
-				y-origin = <...>;
-				x-size = <...>;
-				y-size = <...>;
-				linux,code = <KEY_POWER>;
-			};
-
-			/* another button */
-			touch-area-2b {
-				x-origin = <...>;
-				y-origin = <...>;
-				x-size = <...>;
-				y-size = <...>;
-				linux,code = <KEY_INFO>;
-			};
-		};
-	};
-In my opinion it looks cleaner as well because you are defining a
-physical object: the overlay.
-
-> With this method, the driver merely stores a list head. The parsing code
-> then walks the client device node; for each touch* child encountered, it
-> allocates memory for a structure of five members, and adds it to the list.
-> 
-The button objects do not only store the keycode, but also the slot and
-if they are pressed or not. I could allocate memory for these members as
-well, but maybe an additional struct with the button-specific members
-set to NULL for the touch areas with keycode = KEY_RESERVED would make
-sense. I don't know if that's adding too much overhead for two members
-though.
-
-> The event handling code then simply iterates through the list and checks
-> if the coordinates reported by the hardware fall within each rectangle. If
-> so, and the keycode in the list element is equal to KEY_RESERVED (zero),
-> we assume the rectangle is of type (1); the coordinates are passed to
-> touchscreen_report_pos() and the pressure is reported as well.
-
-There is another case to consider that might make the iteration less
-optimal, but I don't think it will be critical.
-
-A button could be defined inside an overlay-touchscreen (no keycode)
-area. Given that the other way round (a touchscreen inside a button)
-does not make much sense, the buttons have a higher priority.
-
-Let's take your example: imagine that your third area
-is a button inside the first one. We have to iterate through the whole
-list until we are sure we checked if there are buttons in the given
-position, but keeping in mind that the first object already has the
-right coordinates to handle the touch event. Your approach even allows
-for multiple no-key areas and we do not know if there are buttons when
-we iterate (there could be none).
-Therefore some iterations could be unnecessary, but this is probably an
-edge case that would cost at most a couple of extra iterations compared
-to a two-list approach.
-
-I will keep on working on the next version with a single list while we
-clarify these points, so maybe we can save an iteration.
-> Kind regards,
-> Jeff LaBundy
-
-Best regards,
-Javier Carrasco
+Sounds good.
