@@ -2,110 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295427F587E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E737F587F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 07:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjKWGnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 01:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
+        id S232890AbjKWGnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 01:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKWGnK (ORCPT
+        with ESMTP id S232685AbjKWGnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 01:43:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A81BAD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:43:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700721797; x=1732257797;
-  h=date:from:to:cc:subject:message-id;
-  bh=sUqkWfaN7UML91ltz8z1dq3cYwJKIkfhTZbmXO1yCPM=;
-  b=No7kkYar24LvIaZNiDI4wGAPzLlOBA6CtRbeYy8RkKqg+btZyVpOo7jp
-   gbEX5efxVAMwXTdkmvZPUOftsvWr89OCWFxTbo9dehbw4/7Si6sUR+r51
-   5BYC1WMhAV/tDQ2/2HYRz2CJtOAm9+1PWItKsZjDdcIacAM9F4I68TZYa
-   DlFrjeP4u0HOj2Bf8gsC7BDcHrgjFtrAvjOomH80IdQK5KTplh7KMyPb7
-   JDdaE7jjjvFWY4lkM+MxSpV/60+B+K4oRoCkfdBhE/7pB+oZ5R4Uj0epT
-   bFXp+aetIhSk7bkfWS5wmu7ZFwm4rnjMWCU8YlB7vRXxaer781M1ypnIG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382608183"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="scan'208";a="382608183"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 22:43:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="911077202"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="scan'208";a="911077202"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Nov 2023 22:43:15 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r63Qe-0001Ih-2V;
-        Thu, 23 Nov 2023 06:43:12 +0000
-Date:   Thu, 23 Nov 2023 14:43:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 6175b407756b22e7fdc771181b7d832ebdedef5c
-Message-ID: <202311231407.bb6G3Dgd-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 23 Nov 2023 01:43:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D07F112
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:43:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700721802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Y6v5Xhwln7tu/9zxftOsUtL05MptTTj1UHVhZFfC54=;
+        b=BC3KbxyY1cqWZHExLgz5VzrUmHGWFze0yQzZNNjt96zxXpMgdGteh1fzFufC++tZZI2v7d
+        MZI2Zr8baoMJcwtrvTWetFhx8RZ37zeV84zS+IbUn1mlzHwNM9DS4iSkd1SGutJmJDl0hM
+        vYy1yOpDvSJyvYFeUQ5aYBA5HINYyOY=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-401-BqVzwA5QM0yqoEDGqaRxug-1; Thu, 23 Nov 2023 01:43:21 -0500
+X-MC-Unique: BqVzwA5QM0yqoEDGqaRxug-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2800fffc08eso168480a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 22:43:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700721799; x=1701326599;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Y6v5Xhwln7tu/9zxftOsUtL05MptTTj1UHVhZFfC54=;
+        b=drdvimiQZa29aLpK6CdxcXlQLYZHPeB4227bn0RX3w9fQmW+O0WNvJXqNBQ7h/W6tF
+         /R5wI9biMZYC7HSJ8TEr6Z22wYEu0P870iAlIXE+RsfXocxP+9NwzPjlQMs0NVzEJHuc
+         HWL/0VzFnEigc9yO9fgG7rUY7peN6T0nYansgV77TUqZIMriBwzD90KsCJQhWQj8vFw9
+         j+bqAusO4GS0h+OIPLYo2qIB5A4sG0PxRADliNhDRA2+ZvlJtkBdlTDIg7WhVbFScS9q
+         dp+m3jFBKtKFf1KPkjop5JYX4wnqBNhqAvwWdfuFMYcrMfGLf6895Ov6dA3WLJRouXPt
+         +tWA==
+X-Gm-Message-State: AOJu0Ywjau2uidYRooXT7F6JMyvCUnfed1uDkrHNNjdKZBQ7QepRXyZ2
+        Hm01P3WOp+XUuqIWiiw7uVERnck2GTF88dffE3zhUs4Ue9r9YMABjrI7BznO74/IQLwQ16jVV7o
+        U47acJUDjXUSWIFVDmE2rArxTcbHh5+w61+RBrA==
+X-Received: by 2002:a17:902:d486:b0:1cc:3c2c:fa1a with SMTP id c6-20020a170902d48600b001cc3c2cfa1amr5191037plg.4.1700721799477;
+        Wed, 22 Nov 2023 22:43:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGqJ7t5K0G/lG65L6yMQON3n741jzN2NtB/hlBiB4j/kh7OASHj0JQgIsOvheK+O1VEnunV1Q==
+X-Received: by 2002:a17:902:d486:b0:1cc:3c2c:fa1a with SMTP id c6-20020a170902d48600b001cc3c2cfa1amr5191028plg.4.1700721799075;
+        Wed, 22 Nov 2023 22:43:19 -0800 (PST)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id a4-20020a1709027d8400b001c9d968563csm538754plm.79.2023.11.22.22.43.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 22:43:18 -0800 (PST)
+Message-ID: <d5cc3cf1-7b39-9ca3-adf2-224007c751fe@redhat.com>
+Date:   Thu, 23 Nov 2023 14:43:15 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] KVM: selftests: aarch64: Remove unused functions from
+ vpmu test
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20231122221526.2750966-1-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20231122221526.2750966-1-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
-branch HEAD: 6175b407756b22e7fdc771181b7d832ebdedef5c  x86/mce/inject: Clear test status value
+Hi Raghavendra,
 
-elapsed time: 736m
+Those functions might be useful for other pmu tests. Recently I just 
+wrote a pmu_event_filter_test[1] and use the enable_counter().
 
-configs tested: 32
-configs skipped: 137
+There may have more pmu tests which can use the helper functions, so I 
+think we can keep it now. And in my series[1], I have moved them into 
+the lib/ as the helper function.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1]https://lore.kernel.org/all/20231123063750.2176250-1-shahuang@redhat.com/
 
-tested configs:
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386                                defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231123   gcc  
-x86_64       buildonly-randconfig-002-20231123   gcc  
-x86_64       buildonly-randconfig-003-20231123   gcc  
-x86_64       buildonly-randconfig-004-20231123   gcc  
-x86_64       buildonly-randconfig-005-20231123   gcc  
-x86_64       buildonly-randconfig-006-20231123   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231123   clang
-x86_64                randconfig-002-20231123   clang
-x86_64                randconfig-003-20231123   clang
-x86_64                randconfig-004-20231123   clang
-x86_64                randconfig-005-20231123   clang
-x86_64                randconfig-006-20231123   clang
-x86_64                randconfig-011-20231123   gcc  
-x86_64                randconfig-012-20231123   gcc  
-x86_64                randconfig-013-20231123   gcc  
-x86_64                randconfig-014-20231123   gcc  
-x86_64                randconfig-015-20231123   gcc  
-x86_64                randconfig-016-20231123   gcc  
-x86_64                randconfig-071-20231123   gcc  
-x86_64                randconfig-072-20231123   gcc  
-x86_64                randconfig-073-20231123   gcc  
-x86_64                randconfig-074-20231123   gcc  
-x86_64                randconfig-075-20231123   gcc  
-x86_64                randconfig-076-20231123   gcc  
-x86_64                          rhel-8.3-rust   clang
+Thanks,
+Shaoqin
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 11/23/23 06:15, Raghavendra Rao Ananta wrote:
+> vpmu_counter_access's disable_counter() carries a bug that disables
+> all the counters that are enabled, instead of just the requested one.
+> Fortunately, it's not an issue as there are no callers of it. Hence,
+> instead of fixing it, remove the definition entirely.
+> 
+> Remove enable_counter() as it's unused as well.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>   .../selftests/kvm/aarch64/vpmu_counter_access.c  | 16 ----------------
+>   1 file changed, 16 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> index 5ea78986e665f..e2f0b720cbfcf 100644
+> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> @@ -94,22 +94,6 @@ static inline void write_sel_evtyper(int sel, unsigned long val)
+>   	isb();
+>   }
+>   
+> -static inline void enable_counter(int idx)
+> -{
+> -	uint64_t v = read_sysreg(pmcntenset_el0);
+> -
+> -	write_sysreg(BIT(idx) | v, pmcntenset_el0);
+> -	isb();
+> -}
+> -
+> -static inline void disable_counter(int idx)
+> -{
+> -	uint64_t v = read_sysreg(pmcntenset_el0);
+> -
+> -	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
+> -	isb();
+> -}
+> -
+>   static void pmu_disable_reset(void)
+>   {
+>   	uint64_t pmcr = read_sysreg(pmcr_el0);
+
