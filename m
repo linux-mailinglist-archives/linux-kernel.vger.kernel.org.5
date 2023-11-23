@@ -2,307 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E267F6518
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2771F7F6528
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345384AbjKWRSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S1345536AbjKWRTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:19:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjKWRSU (ORCPT
+        with ESMTP id S1345417AbjKWRS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:18:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E255493
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:18:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42A23C433CC;
-        Thu, 23 Nov 2023 17:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700759906;
-        bh=VjB3FlEP5mzJb2iOsvQ+sI6wD44eHxHZMbdOFnxC2YI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kwUAbNgThF/7sGUCPWbFqIqoJMyEyEjA6Eb9UwPozhLiJ1bK5ER3+sfPl12gIHMn0
-         uoTu82pZN3VZR65XPImX0WVLqlMusGFxQctu6U8RkNTtsTmxASwxPxJCLY7Jfeyy/f
-         Vvn7L5QX0C0FiXjH53F+G0zhBJ92f4zk6Oa2Z4ka0L0Gle4ab0EhD7MppdRYjMnlm2
-         jN2vJbHYqDDwyRk67N9//+ZnIVhTKeUHe5eKtg/76Uw+ajU9IpjRC0FnvdzxARWsOq
-         nmwhT/HP39PpbBuw+YiDkn8+4SM/PPeqSuhrkrWUI82zJbOeUfoQMJWO9UxhCDzMcQ
-         4h9HzOoMiY9lQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com,
-        bpf@vger.kernel.org
-Subject: [GIT PULL] Networking for v6.7-rc3
-Date:   Thu, 23 Nov 2023 09:18:25 -0800
-Message-ID: <20231123171825.957077-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Thu, 23 Nov 2023 12:18:57 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D419ED65
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:19:02 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-daf4f0e3a0fso1057226276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:19:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700759942; x=1701364742; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bRIUp/X6KH94V1dmHPajzonMFWyN0k2R15HuLH0rxE0=;
+        b=vdH9/viMXZopA/i6o/AofO0nYc9zKPydxWYyd2rwmq8ZUjciWsFEoI0d7WgJGNh46I
+         wLAiPyk0FSSoaorM7/J9G6ht4IGxBcj1y8mTYDbHgD6teYPf0OgWNBiCDLjg99ejs7u0
+         IJU8+r22tPLpnFHpHRxbshaf5P0rKkNJAAR9jE+04zmL2WriT+YCbIOdf5WQoGMBTTq9
+         ndsUQ1iNfvXHl8kB4ldnXFt3OLSRK7kDVECh4KhrdRft2qeP1xSLHmuaicjqauQCuNwW
+         dIJ2QBwkGe+FVUcFyYW30m6F8FQxHdFGQzgikWDWHRqobJFIr9FGhBAZcyubXFszw4IG
+         OAog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700759942; x=1701364742;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bRIUp/X6KH94V1dmHPajzonMFWyN0k2R15HuLH0rxE0=;
+        b=EV7I1mB0rt3Dl6Cln0dNvl+aSrUbAt5qTwVEN4TNvvnSksrJ7uUWfiI59dsNNsbIdy
+         1kE+2hTTtqZ/Ako8djlWFaRw1h26L+gGKqrMJ1EDlYeYuf157m2D14+xtY8vZ5Ce9p4v
+         GBEPGZLXYrCasvNtDkgNbMRogqjsSIuJaQDoRGRj7LXVs+7Au1xlfnof3Ar3tYGfOvFk
+         QuBHckijuJb5Ezxklxwoh9hBwSi7er/l+z5oBLMxJP1J+9TcdHIWBrUESS1gBD8MPgq7
+         Sb3HH4TdfisWuLOOSF+tw4niI6p/NEGYe5fyN1cPmQkz78PRP1syT87gBSsLn9AewcN5
+         RNRg==
+X-Gm-Message-State: AOJu0Yx+J5OgA1PDVQpq0qH7PVXiSEJzaqq+6p9+flmri4IWBjxtG8f7
+        HhZWIG+hRUjp6hstCGYjG0PTsB1USZRUw3ZXaY6rIDeNsJr3fjK8
+X-Google-Smtp-Source: AGHT+IFXzKMZeuvW1BPKO8joBFVKPsKfpM2I/+f/wsTRT3THsVsSAwM69EGwF7PtesQFhk7BaXI4Y8hMBA/Tv2oP78c=
+X-Received: by 2002:a25:3746:0:b0:da3:76d7:ddbf with SMTP id
+ e67-20020a253746000000b00da376d7ddbfmr6099448yba.33.1700759941864; Thu, 23
+ Nov 2023 09:19:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231115083406.7368-1-wenchao.chen@unisoc.com>
+In-Reply-To: <20231115083406.7368-1-wenchao.chen@unisoc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Nov 2023 18:18:26 +0100
+Message-ID: <CAPDyKFqJmPEps7tSxuOnerFLohzaTFXjmDo+Mb8nGVODhNE0+A@mail.gmail.com>
+Subject: Re: [PATCH V2] mmc: sprd: Fix vqmmc not shutting down after the card
+ was pulled
+To:     Wenchao Chen <wenchao.chen@unisoc.com>
+Cc:     zhang.lyra@gmail.com, orsonzhai@gmail.com,
+        baolin.wang@linux.alibaba.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wenchao.chen666@gmail.com,
+        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+On Wed, 15 Nov 2023 at 09:34, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
+>
+> With cat regulator_summary, we found that vqmmc was not shutting
+> down after the card was pulled.
+>
+> cat /sys/kernel/debug/regulator/regulator_summary
+> 1.before fix
+> 1)Insert SD card
+>  vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+>     71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
+>
+> 2)Pull out the SD card
+>  vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+>     71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
+>
+> 2.after fix
+> 1)Insert SD cardt
+>  vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+>     71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
+>
+> 2)Pull out the SD card
+>  vddsdio                0    1  0 unknown  3500mV 0mA  1200mV  3750mV
+>     71100000.mmc-vqmmc  0                         0mA  3500mV  3600mV
+>
+> Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
 
-The following changes since commit 7475e51b87969e01a6812eac713a1c8310372e8a:
+Applied for fixes and by adding a stable tag, thanks!
 
-  Merge tag 'net-6.7-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-11-16 07:51:26 -0500)
+Kind regards
+Uffe
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
-
-for you to fetch changes up to 39f04b1406b23fcc129a67e70d6205d5a7322f38:
-
-  tools: ynl: fix duplicate op name in devlink (2023-11-23 08:52:23 -0800)
-
-----------------------------------------------------------------
-Including fixes from bpf.
-
-Current release - regressions:
-
- - Revert "net: r8169: Disable multicast filter for RTL8168H
-   and RTL8107E"
-
- - kselftest: rtnetlink: fix ip route command typo
-
-Current release - new code bugs:
-
- - s390/ism: make sure ism driver implies smc protocol in kconfig
-
- - two build fixes for tools/net
-
-Previous releases - regressions:
-
- - rxrpc: couple of ACK/PING/RTT handling fixes
-
-Previous releases - always broken:
-
- - bpf: verify bpf_loop() callbacks as if they are called unknown
-   number of times
-
- - improve stability of auto-bonding with Hyper-V
-
- - account BPF-neigh-redirected traffic in interface statistics
-
-Misc:
-
- - net: fill in some more MODULE_DESCRIPTION()s
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Alex Elder (1):
-      net: ipa: fix one GSI register field width
-
-Alexei Starovoitov (1):
-      Merge branch 'verify-callbacks-as-if-they-are-called-unknown-number-of-times'
-
-Arseniy Krasnov (1):
-      vsock/test: fix SEQPACKET message bounds test
-
-D. Wythe (1):
-      net/smc: avoid data corruption caused by decline
-
-Daniel Borkmann (6):
-      net, vrf: Move dstats structure to core
-      net: Move {l,t,d}stats allocation to core and convert veth & vrf
-      netkit: Add tstats per-CPU traffic counters
-      bpf, netkit: Add indirect call wrapper for fetching peer dev
-      selftests/bpf: De-veth-ize the tc_redirect test case
-      selftests/bpf: Add netkit to tc_redirect selftest
-
-David Howells (3):
-      rxrpc: Fix some minor issues with bundle tracing
-      rxrpc: Fix RTT determination to use any ACK as a source
-      rxrpc: Defer the response to a PING ACK until we've parsed it
-
-David S. Miller (1):
-      Merge branch 'rxrpc-ack-fixes'
-
-Eduard Zingerman (11):
-      selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
-      selftests/bpf: track string payload offset as scalar in strobemeta
-      selftests/bpf: fix bpf_loop_bench for new callback verification scheme
-      bpf: extract __check_reg_arg() utility function
-      bpf: extract setup_func_entry() utility function
-      bpf: verify callbacks as if they are called unknown number of times
-      selftests/bpf: tests for iterating callbacks
-      bpf: widening for callback iterators
-      selftests/bpf: test widening for iterating callbacks
-      bpf: keep track of max number of bpf_loop callback iterations
-      selftests/bpf: check if max number of bpf_loop iterations is tracked
-
-Eric Dumazet (1):
-      wireguard: use DEV_STATS_INC()
-
-Gerd Bayer (1):
-      s390/ism: ism driver implies smc protocol
-
-Haiyang Zhang (2):
-      hv_netvsc: fix race of netvsc and VF register_netdevice
-      hv_netvsc: Fix race of register_netdevice_notifier and VF register
-
-Hao Ge (1):
-      dpll: Fix potential msg memleak when genlmsg_put_reply failed
-
-Heiner Kallweit (1):
-      Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
-
-Ivan Vecera (1):
-      i40e: Fix adding unsupported cloud filters
-
-Jacob Keller (3):
-      ice: remove ptp_tx ring parameter flag
-      ice: unify logic for programming PFINT_TSYN_MSK
-      ice: restore timestamp configuration after device reset
-
-Jakub Kicinski (5):
-      net: fill in MODULE_DESCRIPTION()s for SOCK_DIAG modules
-      docs: netdev: try to guide people on dealing with silence
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      tools: ynl: fix header path for nfsd
-      tools: ynl: fix duplicate op name in devlink
-
-Jann Horn (1):
-      tls: fix NULL deref on tls_sw_splice_eof() with empty record
-
-Jean Delvare (1):
-      stmmac: dwmac-loongson: Add architecture dependency
-
-Jiawen Wu (1):
-      net: wangxun: fix kernel panic due to null pointer
-
-Jose Ignacio Tornos Martinez (1):
-      net: usb: ax88179_178a: fix failed operations during ax88179_reset
-
-Kees Cook (1):
-      MAINTAINERS: Add netdev subsystem profile link
-
-Kunwu Chan (1):
-      ipv4: Correct/silence an endian warning in __ip_do_redirect
-
-Lech Perczak (1):
-      net: usb: qmi_wwan: claim interface 4 for ZTE MF290
-
-Long Li (1):
-      hv_netvsc: Mark VF as slave before exposing it to user-mode
-
-Lorenzo Bianconi (1):
-      net: veth: fix ethtool stats reporting
-
-Martin KaFai Lau (1):
-      Merge branch 'bpf_redirect_peer fixes'
-
-Nguyen Dinh Phi (1):
-      nfc: virtual_ncidev: Add variable to check if ndev is running
-
-Oliver Neukum (1):
-      usb: aqc111: check packet for fixup for true limit
-
-Paolo Abeni (4):
-      kselftest: rtnetlink: fix ip route command typo
-      Merge branch 'hv_netvsc-fix-race-of-netvsc-vf-register-and-slave-bit'
-      Merge branch 'amd-xgbe-fixes-to-handle-corner-cases'
-      Merge branch 'ice-restore-timestamp-config-after-reset'
-
-Peilin Ye (2):
-      veth: Use tstats per-CPU traffic counters
-      bpf: Fix dev's rx stats for bpf_redirect_peer traffic
-
-Raju Rangoju (3):
-      amd-xgbe: handle corner-case during sfp hotplug
-      amd-xgbe: handle the corner-case during tx completion
-      amd-xgbe: propagate the correct speed and duplex status
-
-Samuel Holland (1):
-      net: axienet: Fix check for partial TX checksum
-
-Simon Horman (1):
-      MAINTAINERS: Add indirect_call_wrapper.h to NETWORKING [GENERAL]
-
-Suman Ghosh (2):
-      octeontx2-pf: Fix memory leak during interface down
-      octeontx2-pf: Fix ntuple rule creation to direct packet to VF with higher Rx queue than its PF
-
- Documentation/process/maintainer-netdev.rst        |  20 +-
- MAINTAINERS                                        |   3 +
- drivers/dpll/dpll_netlink.c                        |  17 +-
- drivers/net/ethernet/amd/xgbe/xgbe-drv.c           |  14 +
- drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c       |  11 +-
- drivers/net/ethernet/amd/xgbe/xgbe-mdio.c          |  14 +-
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  16 +-
- drivers/net/ethernet/intel/ice/ice_main.c          |  12 +-
- drivers/net/ethernet/intel/ice/ice_ptp.c           | 146 +++----
- drivers/net/ethernet/intel/ice/ice_ptp.h           |   5 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c          |   3 -
- drivers/net/ethernet/intel/ice/ice_txrx.h          |   1 -
- .../ethernet/marvell/octeontx2/nic/otx2_flows.c    |  20 +-
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   2 +
- drivers/net/ethernet/realtek/r8169_main.c          |   4 +-
- drivers/net/ethernet/stmicro/stmmac/Kconfig        |   2 +-
- drivers/net/ethernet/wangxun/libwx/wx_hw.c         |   8 +-
- drivers/net/ethernet/wangxun/ngbe/ngbe_main.c      |   4 +-
- drivers/net/ethernet/wangxun/txgbe/txgbe_main.c    |   4 +-
- drivers/net/ethernet/xilinx/xilinx_axienet_main.c  |   2 +-
- drivers/net/hyperv/netvsc_drv.c                    |  68 ++--
- drivers/net/ipa/reg/gsi_reg-v5.0.c                 |   2 +-
- drivers/net/netkit.c                               |  22 +-
- drivers/net/usb/aqc111.c                           |   8 +-
- drivers/net/usb/ax88179_178a.c                     |   4 +-
- drivers/net/usb/qmi_wwan.c                         |   1 +
- drivers/net/veth.c                                 |  46 +--
- drivers/net/vrf.c                                  |  38 +-
- drivers/net/wireguard/device.c                     |   4 +-
- drivers/net/wireguard/receive.c                    |  12 +-
- drivers/net/wireguard/send.c                       |   3 +-
- drivers/nfc/virtual_ncidev.c                       |   7 +-
- drivers/s390/net/Kconfig                           |   3 +-
- drivers/s390/net/ism_drv.c                         |  93 +++--
- include/linux/bpf_verifier.h                       |  16 +
- include/linux/netdevice.h                          |  30 +-
- include/net/netkit.h                               |   6 +
- include/trace/events/rxrpc.h                       |   2 +-
- kernel/bpf/verifier.c                              | 438 +++++++++++++--------
- net/core/dev.c                                     |  57 ++-
- net/core/filter.c                                  |  19 +-
- net/ipv4/inet_diag.c                               |   1 +
- net/ipv4/raw_diag.c                                |   1 +
- net/ipv4/route.c                                   |   2 +-
- net/ipv4/tcp_diag.c                                |   1 +
- net/ipv4/udp_diag.c                                |   1 +
- net/mptcp/mptcp_diag.c                             |   1 +
- net/packet/diag.c                                  |   1 +
- net/rxrpc/conn_client.c                            |   7 +-
- net/rxrpc/input.c                                  |  61 ++-
- net/sctp/diag.c                                    |   1 +
- net/smc/af_smc.c                                   |   8 +-
- net/smc/smc_diag.c                                 |   1 +
- net/tipc/diag.c                                    |   1 +
- net/tls/tls_sw.c                                   |   3 +
- net/unix/diag.c                                    |   1 +
- net/vmw_vsock/diag.c                               |   1 +
- net/xdp/xsk_diag.c                                 |   1 +
- tools/net/ynl/Makefile.deps                        |   2 +-
- tools/net/ynl/generated/devlink-user.c             |   2 +-
- tools/net/ynl/ynl-gen-c.py                         |   6 +
- .../testing/selftests/bpf/prog_tests/tc_redirect.c | 315 +++++++++------
- tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
- tools/testing/selftests/bpf/progs/bpf_loop_bench.c |  13 +-
- tools/testing/selftests/bpf/progs/cb_refs.c        |   1 +
- .../testing/selftests/bpf/progs/exceptions_fail.c  |   2 +
- tools/testing/selftests/bpf/progs/strobemeta.h     |  78 ++--
- .../bpf/progs/verifier_iterating_callbacks.c       | 242 ++++++++++++
- .../bpf/progs/verifier_subprog_precision.c         |  86 +++-
- .../selftests/bpf/progs/xdp_synproxy_kern.c        |  84 ++--
- tools/testing/selftests/net/rtnetlink.sh           |   2 +-
- tools/testing/vsock/vsock_test.c                   |  19 +-
- 72 files changed, 1448 insertions(+), 686 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+>
+> Change in v2:
+> - Remove useless sdhci_sprd_signal_voltage_switch and power_mode.
+> - Use mmc_regulator_get_supply in probe to prevent sdhci_setup_host
+>   from powering up vqmmc.
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 6b84ba27e6ab..6b8a57e2d20f 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -416,12 +416,33 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
+>         mmc_request_done(host->mmc, mrq);
+>  }
+>
+> +static void sdhci_sprd_set_power(struct sdhci_host *host, unsigned char mode,
+> +                                unsigned short vdd)
+> +{
+> +       struct mmc_host *mmc = host->mmc;
+> +
+> +       switch (mode) {
+> +       case MMC_POWER_OFF:
+> +               mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, 0);
+> +
+> +               mmc_regulator_disable_vqmmc(mmc);
+> +               break;
+> +       case MMC_POWER_ON:
+> +               mmc_regulator_enable_vqmmc(mmc);
+> +               break;
+> +       case MMC_POWER_UP:
+> +               mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, vdd);
+> +               break;
+> +       }
+> +}
+> +
+>  static struct sdhci_ops sdhci_sprd_ops = {
+>         .read_l = sdhci_sprd_readl,
+>         .write_l = sdhci_sprd_writel,
+>         .write_w = sdhci_sprd_writew,
+>         .write_b = sdhci_sprd_writeb,
+>         .set_clock = sdhci_sprd_set_clock,
+> +       .set_power = sdhci_sprd_set_power,
+>         .get_max_clock = sdhci_sprd_get_max_clock,
+>         .get_min_clock = sdhci_sprd_get_min_clock,
+>         .set_bus_width = sdhci_set_bus_width,
+> @@ -823,6 +844,10 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>         host->caps1 &= ~(SDHCI_SUPPORT_SDR50 | SDHCI_SUPPORT_SDR104 |
+>                          SDHCI_SUPPORT_DDR50);
+>
+> +       ret = mmc_regulator_get_supply(host->mmc);
+> +       if (ret)
+> +               goto pm_runtime_disable;
+> +
+>         ret = sdhci_setup_host(host);
+>         if (ret)
+>                 goto pm_runtime_disable;
+> --
+> 2.17.1
+>
