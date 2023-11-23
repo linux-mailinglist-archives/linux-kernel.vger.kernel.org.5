@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37F27F5CA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351867F5CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 11:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344448AbjKWKk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 05:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
+        id S1344718AbjKWKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 05:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbjKWKkZ (ORCPT
+        with ESMTP id S229609AbjKWKkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 05:40:25 -0500
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94802D4A
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:40:30 -0800 (PST)
-Received: from mxde.zte.com.cn (unknown [10.35.20.121])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 23 Nov 2023 05:40:51 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C662419D
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 02:40:57 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4SbZQ345BBzCh3M
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:40:27 +0800 (CST)
-Received: from mxhk.zte.com.cn (unknown [192.168.250.138])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mxde.zte.com.cn (FangMail) with ESMTPS id 4SbZQ03GbFzBRjZH
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:40:24 +0800 (CST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4SbZPx1LXdz4xPYm;
-        Thu, 23 Nov 2023 18:40:21 +0800 (CST)
-Received: from szxlzmapp01.zte.com.cn ([10.5.231.85])
-        by mse-fl1.zte.com.cn with SMTP id 3ANAeEas066399;
-        Thu, 23 Nov 2023 18:40:14 +0800 (+08)
-        (envelope-from yang.yang29@zte.com.cn)
-Received: from mapi (szxlzmapp01[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Thu, 23 Nov 2023 18:40:18 +0800 (CST)
-Date:   Thu, 23 Nov 2023 18:40:18 +0800 (CST)
-X-Zmail-TransId: 2b03655f2c124cb-d546e
-X-Mailer: Zmail v1.0
-Message-ID: <202311231840181856667@zte.com.cn>
-Mime-Version: 1.0
-From:   <yang.yang29@zte.com.cn>
-To:     <akpm@linux-foundation.org>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <hughd@google.com>, <hannes@cmpxchg.org>, <wang.yong12@zte.com.cn>,
-        <yang.yang29@zte.com.cn>, <jiang.xuexin@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdbW0sIG9vbTpkdW1wX3Rhc2tzIGFkZCByc3MgZGV0YWlsZWQgaW5mb3JtYXRpb24gcHJpbnRpbmc=?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl1.zte.com.cn 3ANAeEas066399
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 655F2C1A.001/4SbZQ345BBzCh3M
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D29CA6607393;
+        Thu, 23 Nov 2023 10:40:55 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700736056;
+        bh=BDmKas5cPwR4Yq39roh28T7ujEshS9pIFSvpdiu1j5A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=j8/i6cTGs40hZw1mUC6nyZCcUjNs3TZ8Z1yVp26kZkXkl2lvysTR+sLdXnJo2UBsE
+         OFFnOuzSV3fSZR5SxMw1kvQ2k+cHOFhf4uml5dC6O8dCmgfhF4SuVk+BwheotRJeLu
+         vgzeB9V9TjrkRzklzLEILcsP7Ci/yRf9PZjtBGhAZPUiZsiccc8F65BrQVdhr1iRez
+         52NwPNBAqzmye4yvprokvYgmMHog4g8sk00N7UYXnGCHdPj/V6HpOdDN2zMpmUttTt
+         kpRDRzPjy/91qrnre3n8yG3ddckf7TJX/VWT29QhnL2zEZMbZwUUOVndafkb6Mx7HZ
+         oC9XZ5IYMqVeA==
+Message-ID: <f6abdc0e-400b-42dd-b685-73227fc0ee12@collabora.com>
+Date:   Thu, 23 Nov 2023 11:40:53 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        steven.price@arm.com
+Cc:     boris.brezillon@collabora.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+ <a881a1ca-8e10-4e07-ada5-7fef30c26470@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <a881a1ca-8e10-4e07-ada5-7fef30c26470@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yong Wang <wang.yong12@zte.com.cn>
+Il 23/11/23 11:39, Krzysztof Kozlowski ha scritto:
+> On 23/11/2023 10:53, AngeloGioacchino Del Regno wrote:
+>> Some SoCs may be equipped with a GPU containing two core groups
+>> and this is exactly the case of Samsung's Exynos 5422 featuring
+>> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+>> is partial, as this driver currently supports using only one
+>> core group and that's reflected on all parts of it, including
+>> the power on (and power off, previously to this patch) function.
+>>
+>> The issue with this is that even though executing the soft reset
+>> operation should power off all cores unconditionally, on at least
+>> one platform we're seeing a crash that seems to be happening due
+>> to an interrupt firing which may be because we are calling power
+>> transition only on the first core group, leaving the second one
+>> unchanged, or because ISR execution was pending before entering
+>> the panfrost_gpu_power_off() function and executed after powering
+>> off the GPU cores, or all of the above.
+> 
+> Does not apply - I tried next 20231117/21/22/23.
+> 
 
-When the system is under oom, it prints out the RSS information of
-each process. However, we don't know the size of rss_anon, rss_file,
-and rss_shmem.
+Sorry about that, I'll send a v2 soon.
 
-To distinguish the memory occupied by anonymous or file mappings
-or shmem, could help us identify the root cause of the oom.
+Thanks,
+Angelo
 
-So this patch adds RSS details, which refers to the /proc/<pid>/status[1].
-It can help us know more about process memory usage.
+> Best regards,
+> Krzysztof
+> 
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
 
-Example of oom including the new rss_* fields:
-[ 1630.902466] Tasks state (memory values in pages):
-[ 1630.902870] [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
-[ 1630.903619] [    149]     0   149      486      288        0      288         0    36864        0             0 ash
-[ 1630.904210] [    156]     0   156   153531   153345   153345        0         0  1269760        0             0 mm_test
 
-[1] commit 8cee852ec53f ("mm, procfs: breakdown RSS for anon, shmem and file in /proc/pid/status").
-
-Signed-off-by: Yong Wang <wang.yong12@zte.com.cn>
-Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
----
- mm/oom_kill.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 9e6071fde34a..91ccd82097c2 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -399,10 +399,11 @@ static int dump_task(struct task_struct *p, void *arg)
- 		return 0;
- 	}
-
--	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
-+	pr_info("[%7d] %5d %5d %8lu %8lu %8lu %8lu %9lu %8ld %8lu         %5hd %s\n",
- 		task->pid, from_kuid(&init_user_ns, task_uid(task)),
- 		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
--		mm_pgtables_bytes(task->mm),
-+		get_mm_counter(task->mm, MM_ANONPAGES), get_mm_counter(task->mm, MM_FILEPAGES),
-+		get_mm_counter(task->mm, MM_SHMEMPAGES), mm_pgtables_bytes(task->mm),
- 		get_mm_counter(task->mm, MM_SWAPENTS),
- 		task->signal->oom_score_adj, task->comm);
- 	task_unlock(task);
-@@ -423,7 +424,7 @@ static int dump_task(struct task_struct *p, void *arg)
- static void dump_tasks(struct oom_control *oc)
- {
- 	pr_info("Tasks state (memory values in pages):\n");
--	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
-+	pr_info("[  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name\n");
-
- 	if (is_memcg_oom(oc))
- 		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
--- 
-2.15.2
