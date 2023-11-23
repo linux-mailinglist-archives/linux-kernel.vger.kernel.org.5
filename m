@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96827F64F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE7C7F64FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 18:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbjKWRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 12:13:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S1345308AbjKWROY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 12:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKWRNj (ORCPT
+        with ESMTP id S229462AbjKWROX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 12:13:39 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCDED4E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:13:45 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da3b4b7c6bdso1048123276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:13:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700759625; x=1701364425; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bKNwCpnkd4HHouKuRGDnXl3uAXRtD1+lzSL7fC1Un1Y=;
-        b=yguYbwhSLCbKULZovv6wZH7UFFI8Af+Mo+t4Kdu/QUurD9MTjPfA9O5gp4BZeKVmTk
-         ddwqeavTnbUnmewreFzK8iEUc99jLHUh5FBO/4jbADAH3ul8iGACY6vcfz9+5aU6tPsp
-         ULDF67zAQGLh9wElRlhEuufLONoFWBN7KwRiC8EX/v3whp1ZmYn4g7AKBY/na1ay59bR
-         3/HQB0mnWVNVfCLzEIhKsQJetkMt4dA7H1PqDLdMzs/e1Pxbe97pVV9rwEPrYeJBcKS0
-         UwAN3gvNzEVWgbw7Rwk4nvDGEZgYb9+4IiVFuN2YwIchQ2Feo4efSGLOfx96ixnN8SI8
-         fmzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700759625; x=1701364425;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bKNwCpnkd4HHouKuRGDnXl3uAXRtD1+lzSL7fC1Un1Y=;
-        b=hb4vUgLKAGEBF2LKYhvTh7pVeeMjSzsfEYd2Xr+HE9KZuTE9mSiZGvC+zOSepEmQp5
-         lzNcm66RM2rukmJ4jTLa3YsAxcYk6L2NEsdCLLKQDyfxyVfuvXNIuaqmQ8qR5bX80dZU
-         vpI4DEb19sMsmNH2oWR2nBMKNjr735gX2asj5xFMl2huv0WCUyz4napJcbSqAFKOxxsA
-         FK8GJ+vKryAlrqlu3qyXPVF5NgVkzR344tu8R67wKR8ca6bWz/xZgMJ60AscPr2ZLn6g
-         rg24HvECfiaIaGT9W03ipgnCKb02hBdFRoQU3ew3czgGwdSr3CYL2ADfdOi//XLTIzd6
-         WD4A==
-X-Gm-Message-State: AOJu0YyPHmma1Fl4d3QE/Ft4oLLUJqfgBw7EGGBWhhPblHjA5Hq9Au8k
-        T+qBLN6rH7VFIjjF7FNRj62VnDcwFsB8HIb/gNPEwg==
-X-Google-Smtp-Source: AGHT+IGFr6g8jlQ3HN+XUNNaKBgc8oVfUM5jYKRK0VWTl7TjhJHxHFo9KjRuS+1jJjO2xdJg2ndmcfoZW2K0mOMBkR4=
-X-Received: by 2002:a25:6b06:0:b0:daf:76da:fe2b with SMTP id
- g6-20020a256b06000000b00daf76dafe2bmr6007585ybc.10.1700759624759; Thu, 23 Nov
- 2023 09:13:44 -0800 (PST)
+        Thu, 23 Nov 2023 12:14:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A08AD46
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 09:14:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B13C433CC;
+        Thu, 23 Nov 2023 17:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700759669;
+        bh=trQue5vt4vNug0lKdIifZG1U/sc0mMPLn521Cnxbi8A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=NOdAwhwfhaybbj5HEJr6Qhi+fejV93baYjH8jDhcjY3Nh2+cG5MNdp+wOq8pG0A5k
+         ZwOATpEZ3Wy4bBea/ZwdMcxFWdtfm3LRS923s+zCT8yQtAJyYDBc+hBuUhwv3H2P8e
+         H9UBVlNTtcfEWppuxCz1hHHrZbY350a2m94KnF/QzWsNnQdvtcoueMnqd5a3nOebPc
+         91RDbDBj47fJdqzt1CXk3pha1EJmoujk/gcj8buNYkCmtGGiAPe+8u2NnqwHoyn+0A
+         fsb0dLmm42ew0AnhAvgXCvL3Ir82fNE/RItduAYxSOLm3jwSTy2XC4/H2ZvnyRXlAT
+         8RkgBnCtoX2mg==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        chrome-platform@lists.linux.dev,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com
+In-Reply-To: <20231123165627.492259-1-u.kleine-koenig@pengutronix.de>
+References: <20231123165627.492259-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 00/18] mfd: Convert to platform remove callback
+ returning void
+Message-Id: <170075966425.1458093.5482638425880756985.b4-ty@kernel.org>
+Date:   Thu, 23 Nov 2023 17:14:24 +0000
 MIME-Version: 1.0
-References: <20231117095531.1693753-1-treapking@chromium.org>
-In-Reply-To: <20231117095531.1693753-1-treapking@chromium.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Nov 2023 18:13:09 +0100
-Message-ID: <CAPDyKFqjcP2pAH8uo61Yc7wU76NM1aCMN6P1TaAoafCFfZSeWw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mtk-sd: Increase the verbosity of msdc_track_cmd_data
-To:     Pin-yen Lin <treapking@chromium.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        ot_shunxi.zhang@mediatek.corp-partner.google.com,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 at 10:55, Pin-yen Lin <treapking@chromium.org> wrote:
->
-> This log message is necessary for debugging, so enable it by default to
-> debug issues that are hard to reproduce locally.
->
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
->
-> ---
->
->  drivers/mmc/host/mtk-sd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 97f7c3d4be6e..4469003f571e 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -1150,7 +1150,7 @@ static void msdc_recheck_sdio_irq(struct msdc_host *host)
->  static void msdc_track_cmd_data(struct msdc_host *host, struct mmc_command *cmd)
->  {
->         if (host->error)
-> -               dev_dbg(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
-> +               dev_err(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
->                         __func__, cmd->opcode, cmd->arg, host->error);
+On Thu, 23 Nov 2023 17:56:28 +0100, Uwe Kleine-König wrote:
+> this series converts all platform drivers below drivers/mfd to use
+> .remove_new(). Compared to the traditional .remove() callback
+> .remove_new() returns no value. This is a good thing because the driver
+> core doesn't (and cannot) cope for errors during remove. The only effect
+> of a non-zero return value in .remove() is that the driver core emits a
+> warning. The device is removed anyhow and an early return from .remove()
+> usually yields resource leaks and/or use-after-free bugs.
+> 
+> [...]
 
-How critical is this? Should we perhaps use a dev_warn instead?
+Applied, thanks!
 
->  }
->
+[01/18] mfd: ab8500-sysctrl: Convert to platform remove callback returning void
+        commit: 05ce16c1303acaf2094f55ea248fd0d14119ed8f
+[02/18] mfd: cros_ec_dev: Convert to platform remove callback returning void
+        commit: c86e0818174f506e77dcb7ca0251f18269d79219
+[03/18] mfd: exynos-lpass: Convert to platform remove callback returning void
+        commit: e3468e03a63e8c24a8b2f9f84ed8443268dcccf4
+[04/18] mfd: fsl-imx25-tsadc: Convert to platform remove callback returning void
+        commit: 05d78da532ededbc11889ca5a22b302aaa8b9e1e
+[05/18] mfd: hi655x-pmic: Convert to platform remove callback returning void
+        commit: 30441c456171723d4d40ea86fdc7675a630cb5f8
+[06/18] mfd: intel-lpss-acpi: Convert to platform remove callback returning void
+        commit: 8b7ffe18eb0bf86b21d558c739279a9cb349b78d
+[07/18] mfd: kempld-core: Convert to platform remove callback returning void
+        commit: 5c9d52223920a70becbbdf67cce192917f997319
+[08/18] mfd: mcp-sa11x0: Convert to platform remove callback returning void
+        commit: 0082e145163801002a257c2cbaf2982192ab761e
+[09/18] mfd: mxs-lradc: Convert to platform remove callback returning void
+        commit: f9714ad21b8c01e6964e0638858d37f941dc19ba
+[10/18] mfd: omap-usb-host: Convert to platform remove callback returning void
+        commit: 7e5e828e1fef60673c20b47573054eaa036d1980
+[11/18] mfd: omap-usb-tll: Convert to platform remove callback returning void
+        commit: 6ee0e1844c917fb4e5f314aec2b780f1641375f0
+[12/18] mfd: pcf50633-adc: Convert to platform remove callback returning void
+        commit: 3e6eccaca6923e8d1ac4a0913b3367b5ab94f95c
+[13/18] mfd: qcom-pm8xxx: Convert to platform remove callback returning void
+        commit: 31b895f2528bda4db526dee1942f915f8f34091b
+[14/18] mfd: sm501: Convert to platform remove callback returning void
+        commit: 69fbad222c5caad34f777da33271ccdad3d9504c
+[15/18] mfd: stm32-timers: Convert to platform remove callback returning void
+        commit: 59569bc36fcec1cd62bd2f639784126c87c6fd1e
+[16/18] mfd: ti_am335x_tscadc: Convert to platform remove callback returning void
+        commit: 1dbe13baca338502bf741bbe3b199c07c7d1c5bc
+[17/18] mfd: tps65911-comparator: Convert to platform remove callback returning void
+        commit: 4aa72c8515734c2edf4c6c264aee4925efd97366
+[18/18] mfd: twl4030-audio: Convert to platform remove callback returning void
+        commit: db1e0b072da189db99f905b758676a81bb796a1a
 
-Kind regards
-Uffe
+--
+Lee Jones [李琼斯]
+
