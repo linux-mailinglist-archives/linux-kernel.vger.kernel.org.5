@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3794B7F55A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17A57F55A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 01:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbjKWAwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 19:52:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S232094AbjKWAxc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 19:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbjKWAwH (ORCPT
+        with ESMTP id S229513AbjKWAxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 19:52:07 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59B6A3;
-        Wed, 22 Nov 2023 16:51:36 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso192721f8f.2;
-        Wed, 22 Nov 2023 16:51:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700700695; x=1701305495; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FFSRqxyM60XZYlWMe+LxLHgfBXsOYKs0Arhl5TpCQS8=;
-        b=bmJY+GWq3HWahs4EB4IcBFCKr1jWEWsUmI39qTWI7a6JgFRrQDLrkOwr2SHVDtfNx9
-         H20fSBXyqclmaofznlPdgljsYj+r53IuuZbIyaFTIMNRnr1pIfFNV9qDCQh6o3YQHlQf
-         CKsBXEn2Vr2rk7RzshD9NtJ/Sp0MIWUQ2JFzq48X1KJh3/Kw+typNZ6kBZrriqSNNOAP
-         M2hSva8TsLOysae6m79iY8yqe1eg7PaZ7gPVVrCibPTFcaR5dQYFcnWZOsL+SwsOSvAK
-         5BjMFCVg4QYw+b9f2jcnIxpXnbg3udrx1EbH4JLcc1epdh+8UhFdpkqBy28G4YfUg//6
-         c4uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700700695; x=1701305495;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FFSRqxyM60XZYlWMe+LxLHgfBXsOYKs0Arhl5TpCQS8=;
-        b=KmRJZVNDneDJEQ6QEo9KU3Ne/Yg01ezaGRtGzl3IYxDrWSHzH1pekaQXAfTnEl/sYS
-         UbTTF8l/OWzrKT22Wu7ro7TvvRTusryCJQHw/ZtdUOFWykSTx+RLaCSQ2QUwKTr2mcej
-         DC+jxH7bHA7nqVcrDfSU/pRA12NiX3nczLYE+NFD6v1eht7B+lcmPUzfu+q6H+6GMCJz
-         NwwPm7Lx7oKfz2bIPI43ftQVxu5TTwG112MjCs4+qMvvk3PaRKi5Bl7zRY0kTIOSXJUt
-         WW6EEcKHwyqHLsqyE+Agw51rNohb8G+HV88+9ieNjSSxXvVo249Dc+X7SxBNSsavMt0S
-         w/bQ==
-X-Gm-Message-State: AOJu0YwpfV/imgQ6saqnmbghI0/A8qa5aHE2aJJR0Xye5C/XLycT2GVw
-        2q/c02Gdq3Kn29s3bILmkOO3j1JgEJTxk45Ge1E=
-X-Google-Smtp-Source: AGHT+IFsZynBqDZU07UjtjyWcGDEoU4r8+d4uBQx87ACMaj5T1mQc/a3y5MZDETnfbK00TiUJQ8Ke8+6cd2ruagK5V8=
-X-Received: by 2002:a05:6000:144f:b0:332:caa9:72b2 with SMTP id
- v15-20020a056000144f00b00332caa972b2mr3445384wrx.3.1700700695019; Wed, 22 Nov
- 2023 16:51:35 -0800 (PST)
+        Wed, 22 Nov 2023 19:53:30 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AD6A3;
+        Wed, 22 Nov 2023 16:53:27 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AN0qIPb92600072, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AN0qIPb92600072
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Nov 2023 08:52:18 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 23 Nov 2023 08:52:18 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 23 Nov 2023 08:52:18 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Thu, 23 Nov 2023 08:52:18 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Su Hui <suhui@nfschina.com>, "kvalo@kernel.org" <kvalo@kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "trix@redhat.com" <trix@redhat.com>
+CC:     "lizetao1@huawei.com" <lizetao1@huawei.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH wireless-next 1/2] rtlwifi: rtl8821ae: phy: remove some useless code
+Thread-Topic: [PATCH wireless-next 1/2] rtlwifi: rtl8821ae: phy: remove some
+ useless code
+Thread-Index: AQHaHSM/3p/4Qw0kHkiQftd5AzdylbCHE+lQ
+Date:   Thu, 23 Nov 2023 00:52:17 +0000
+Message-ID: <ea7fc9364f0c4ec8ac9953c6de77bf79@realtek.com>
+References: <20231122090210.951185-1-suhui@nfschina.com>
+In-Reply-To: <20231122090210.951185-1-suhui@nfschina.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+x-originating-ip: [172.21.69.94]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20231120144642.591358648@infradead.org> <20231120154948.708762225@infradead.org>
- <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com>
- <20231122111517.GR8262@noisy.programming.kicks-ass.net> <20231122124134.GP4779@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231122124134.GP4779@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Nov 2023 16:51:23 -0800
-Message-ID: <CAADnVQKhpjt0pojdYGXpeyMvJnCUVvyrRKCmHg3cKYjAs-HDmA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -102,74 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 4:41=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
->
-> +/*
-> + * Emit the various CFI preambles, see the large comment about FineIBT
-> + * in arch/x86/kernel/alternative.c
 
-.. and in cfi.h ..
-which will have a copy-paste from your other email?
 
->                 prog->bpf_func =3D (void *)image + ctx.prog_offset;
->                 prog->jited =3D 1;
->                 prog->jited_len =3D proglen - ctx.prog_offset; // XXX?
+> -----Original Message-----
+> From: Su Hui <suhui@nfschina.com>
+> Sent: Wednesday, November 22, 2023 5:02 PM
+> To: Ping-Ke Shih <pkshih@realtek.com>; kvalo@kernel.org; nathan@kernel.org; ndesaulniers@google.com;
+> trix@redhat.com
+> Cc: Su Hui <suhui@nfschina.com>; lizetao1@huawei.com; linux-wireless@vger.kernel.org;
+> linux-kernel@vger.kernel.org; llvm@lists.linux.dev; kernel-janitors@vger.kernel.org
+> Subject: [PATCH wireless-next 1/2] rtlwifi: rtl8821ae: phy: remove some useless code
 
-Just drop XXX.
+subject prefix should be "wifi: rtlwifi: ..."
 
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1431,6 +1431,9 @@ struct bpf_prog_aux {
->         struct bpf_kfunc_desc_tab *kfunc_tab;
->         struct bpf_kfunc_btf_tab *kfunc_btf_tab;
->         u32 size_poke_tab;
-> +#ifdef CONFIG_FINEIBT
-> +       struct bpf_ksym ksym_prefix;
-> +#endif
->         struct bpf_ksym ksym;
->         const struct bpf_prog_ops *ops;
->         struct bpf_map **used_maps;
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -683,6 +683,23 @@ void bpf_prog_kallsyms_add(struct bpf_pr
->         fp->aux->ksym.prog =3D true;
->
->         bpf_ksym_add(&fp->aux->ksym);
-> +
-> +#ifdef CONFIG_FINEIBT
-> +       /*
-> +        * When FineIBT, code in the __cfi_foo() symbols can get executed
-> +        * and hence unwinder needs help.
-> +        */
+> 
+> Clang static checker warning:
+> Value stored to 'v1' is never read [deadcode.DeadStores]
+> Value stored to 'channel' is never read [deadcode.DeadStores]
+> 
+> Remove them to save some place.
+> 
+> Signed-off-by: Su Hui <suhui@nfschina.com>
 
-I like the idea!
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
 
-> +       if (cfi_mode !=3D CFI_FINEIBT)
-> +               return;
 
-The cfi_mode var needs to be global along with enum ?
-Or some new helper function from arch/x86 ?
-
-> +
-> +       snprintf(fp->aux->ksym_prefix.name, KSYM_NAME_LEN,
-> +                "__cfi_%s", fp->aux->ksym.name);
-> +
-> +       prog->aux->ksym_prefix.start =3D (unsigned long) prog->bpf_func -=
- 16;
-> +       prog->aux->ksym_prefix.end   =3D (unsigned long) prog->bpf_func;
-> +
-> +       bpf_ksym_add(&fp->aux->ksym_prefix);
-> +#endif
->  }
->
->  void bpf_prog_kallsyms_del(struct bpf_prog *fp)
-
-and handle deletion of ksym_prefix here.
-
-I think it's shaping up nicely.
-Pls resend both patches as a set and cc bpf @ vger.
-BPF CI will pick it up and test on arm64, x86-64, s390 with gcc and clang.
-We don't do CONFIG_*IBT testing automatically, but
-I can manually try that after the holidays.
