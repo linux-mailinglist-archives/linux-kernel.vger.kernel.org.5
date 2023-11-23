@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065D57F6279
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE45A7F6284
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 16:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346021AbjKWPQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 10:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S1346033AbjKWPQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 10:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346014AbjKWPQA (ORCPT
+        with ESMTP id S1346012AbjKWPQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 10:16:00 -0500
+        Thu, 23 Nov 2023 10:16:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF23D47
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:16:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F0C6C433C9;
-        Thu, 23 Nov 2023 15:15:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6137CD53
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 07:16:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB728C433C8;
+        Thu, 23 Nov 2023 15:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700752567;
-        bh=lzVZxJXSuVlg5TJP4dPDommHt63YQoouP8CMSO2x+6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aHqy9roYY5/JVAeimPivoDsCudYKtwdFnGpoLH3m76OeL8P0BDyL5Sc/3miQr2PmL
-         hRZDRRGAm1Uye0c+yqVpFAK/beZ5hDj70CfWngjrStrTzTvXtSc8NSYhr3ldpsQfaY
-         r0YfI3xAzbQ5IZOXus3baO9WeGtvVe+D4X7QQ1qjU3B6uwub042jUFn6y80DWhT82k
-         MTX1bTMLehElqjnjKV5oO01PHxy/Uz+zYAXPf8w7C1cEIoT3gWUSjO5jdkHK4u5/SP
-         VhJvtTHQuu7E5vz/fTds/fpgnXUPXA1bUvRWNF23KUPZaqQcD2SqRGBwVcGpofXsbE
-         B/Co9nS6vBIOA==
-Date:   Thu, 23 Nov 2023 15:15:56 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Jani Nikula <jani.nikula@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] pwm: rename pwm_apply_state() to
- pwm_apply_cansleep()
-Message-ID: <20231123151556.GC1354538@google.com>
-References: <cover.1700323916.git.sean@mess.org>
- <2b973840d800ffb71c2683c37bc996e0cf90a140.1700323916.git.sean@mess.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2b973840d800ffb71c2683c37bc996e0cf90a140.1700323916.git.sean@mess.org>
+        s=k20201202; t=1700752573;
+        bh=Do+ICJ+VG4Z1faB6kjDoh1PhnVA0WHPJgBUdNTKdRLg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GJeVqaGmHy8DruIar6MmJ9fvCg/jDoweQLIc/0cCM8m7iviXPJTGbuWk+h9B4PBMP
+         38Lef3kwsQYdBZk/e9KdPB+A7seys6GUKlNQhSjsLi26xrWv2ySGmFuhDnvhQZZJ6p
+         Cl404LY/KYDlxHCEpW6TLbpe18Z3kBnNcU0NtaCHHX7jsUiOteUkoHC5rlGXxWrAHB
+         XIjDcY4edwruSi/ApApHUEgKSn64FBNnKpLtmVgBvCKGHIxF8n3fasXxgw/JN286Zf
+         znFfB2iMimGtaLlnNGS51YHSqYKzmSLFufLuBMBPml0bAKpIOhbWgkiYqGxosVhYAi
+         otYu9fbFCTcEA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r6BR4-00FoTj-9U;
+        Thu, 23 Nov 2023 15:16:10 +0000
+Date:   Thu, 23 Nov 2023 15:16:09 +0000
+Message-ID: <86cyw0zeiu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1] perf parse-events: Make legacy events lower priority than sysfs/json
+In-Reply-To: <20231123042922.834425-1-irogers@google.com>
+References: <20231123042922.834425-1-irogers@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: irogers@google.com, mark.rutland@arm.com, marcan@marcan.st, acme@kernel.org, namhyung@kernel.org, peterz@infradead.org, mingo@redhat.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, james.clark@arm.com, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -85,53 +71,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Nov 2023, Sean Young wrote:
+On Thu, 23 Nov 2023 04:29:22 +0000,
+Ian Rogers <irogers@google.com> wrote:
+> 
+> The perf tool has previously made legacy events the priority so with
+> or without a PMU the legacy event would be opened:
+> 
+> ```
+> $ perf stat -e cpu-cycles,cpu/cpu-cycles/ true
+> Using CPUID GenuineIntel-6-8D-1
+> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+> Attempting to add event pmu 'cpu' with 'cpu-cycles,' that may result in non-fatal errors
+> After aliases, add event pmu 'cpu' with 'cpu-cycles,' that may result in non-fatal errors
+> Control descriptor is not initialized
+> ------------------------------------------------------------
+> perf_event_attr:
+>   type                             0 (PERF_TYPE_HARDWARE)
+>   size                             136
+>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>   sample_type                      IDENTIFIER
+>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>   disabled                         1
+>   inherit                          1
+>   enable_on_exec                   1
+>   exclude_guest                    1
+> ------------------------------------------------------------
+> sys_perf_event_open: pid 833967  cpu -1  group_fd -1  flags 0x8 = 3
+> ------------------------------------------------------------
+> perf_event_attr:
+>   type                             0 (PERF_TYPE_HARDWARE)
+>   size                             136
+>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>   sample_type                      IDENTIFIER
+>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>   disabled                         1
+>   inherit                          1
+>   enable_on_exec                   1
+>   exclude_guest                    1
+> ------------------------------------------------------------
+> ...
+> ```
+> 
+> Fixes to make hybrid/BIG.little PMUs behave correctly, ie as core PMUs
+> capable of opening legacy events on each, removing hard coded
+> "cpu_core" and "cpu_atom" Intel PMU names, etc. caused a behavioral
+> difference on Apple/ARM due to latent issues in the PMU driver
+> reported in:
+> https://lore.kernel.org/lkml/08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st/
+>
 
-> In order to introduce a pwm api which can be used from atomic context,
-> we will need two functions for applying pwm changes:
+What issue? So far, I don't see anything that remotely looks like a
+kernel issue.
+
+> As part of that report Mark Rutland <mark.rutland@arm.com> requested
+> that legacy events not be higher in priority when a PMU is specified
+> reversing what has until this change been perf's default
+> behavior. With this change the above becomes:
 > 
-> 	int pwm_apply_cansleep(struct pwm *, struct pwm_state *);
-> 	int pwm_apply_atomic(struct pwm *, struct pwm_state *);
+> ```
+> $ perf stat -e cpu-cycles,cpu/cpu-cycles/ true
+> Using CPUID GenuineIntel-6-8D-1
+> Attempt to add: cpu/cpu-cycles=0/
+> ..after resolving event: cpu/event=0x3c/
+> Control descriptor is not initialized
+> ------------------------------------------------------------
+> perf_event_attr:
+>   type                             0 (PERF_TYPE_HARDWARE)
+>   size                             136
+>   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+>   sample_type                      IDENTIFIER
+>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>   disabled                         1
+>   inherit                          1
+>   enable_on_exec                   1
+>   exclude_guest                    1
+> ------------------------------------------------------------
+> sys_perf_event_open: pid 827628  cpu -1  group_fd -1  flags 0x8 = 3
+> ------------------------------------------------------------
+> perf_event_attr:
+>   type                             4 (PERF_TYPE_RAW)
+>   size                             136
+>   config                           0x3c
+>   sample_type                      IDENTIFIER
+>   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+>   disabled                         1
+>   inherit                          1
+>   enable_on_exec                   1
+>   exclude_guest                    1
+> ------------------------------------------------------------
+> ...
+> ```
 > 
-> This commit just deals with renaming pwm_apply_state(), a following
-> commit will introduce the pwm_apply_atomic() function.
+> So the second event has become a raw event as
+> /sys/devices/cpu/events/cpu-cycles exists.
 > 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-> Acked-by: Jani Nikula <jani.nikula@intel.com>
-> Signed-off-by: Sean Young <sean@mess.org>
+> A fix was necessary to config_term_pmu in parse-events.c as
+> check_alias expansion needs to happen after config_term_pmu, and
+> config_term_pmu may need calling a second time because of this.
+> 
+> config_term_pmu is updated to not use the legacy event when the PMU
+> has such a named event (either from json or sysfs).
+> 
+> The bulk of this change is updating all of the parse-events test
+> expectations so that if a sysfs/json event exists for a PMU the test
+> doesn't fail - a further sign, if it were needed, that the legacy
+> event priority was a known and tested behavior of the perf tool.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Reported-by:, Link: and Fixes: tags would be appreciated.
+
 > ---
->  Documentation/driver-api/pwm.rst              |  8 +++---
->  .../gpu/drm/i915/display/intel_backlight.c    |  6 ++--
->  drivers/gpu/drm/solomon/ssd130x.c             |  2 +-
->  drivers/hwmon/pwm-fan.c                       |  8 +++---
->  drivers/input/misc/da7280.c                   |  4 +--
->  drivers/input/misc/pwm-beeper.c               |  4 +--
->  drivers/input/misc/pwm-vibra.c                |  8 +++---
+> This is a large behavioral change:
+> 1) the scope of the change means it should bake on linux-next and I
+> don't believe should be a 6.7-rc fix.
 
->  drivers/leds/leds-pwm.c                       |  2 +-
->  drivers/leds/rgb/leds-pwm-multicolor.c        |  4 +--
+I entirely disagree. Distros are shipping a broken perf tool.
 
-Acked-by: Lee Jones <lee@kernel.org>
+> 2) a fixes tag and stable backport I don't think are appropriate. The
+> real reported issue is with the PMU driver. A backport would bring the
+> risk that later fixes, due to the large behavior change, wouldn't be
+> backported and past releases get regressed in scenarios like
+> hybrid. Backports for the perf tool are also less necessary than say a
+> buggy PMU driver, as distributions should be updating to the latest
+> perf tool regardless of what Linux kernel is being run (the perf tool
+> is backward compatible).
 
->  drivers/media/rc/pwm-ir-tx.c                  |  4 +--
->  drivers/platform/x86/lenovo-yogabook.c        |  2 +-
->  drivers/pwm/core.c                            | 18 ++++++------
->  drivers/pwm/pwm-twl-led.c                     |  2 +-
->  drivers/pwm/pwm-vt8500.c                      |  2 +-
->  drivers/pwm/sysfs.c                           | 10 +++----
->  drivers/regulator/pwm-regulator.c             |  4 +--
+Again, perf gets shipped in distros, and not necessary as the latest
+version. Rather, they tend to ship the version matching the kernel. No
+backport, buggy perf.
 
->  drivers/video/backlight/lm3630a_bl.c          |  2 +-
->  drivers/video/backlight/lp855x_bl.c           |  2 +-
->  drivers/video/backlight/pwm_bl.c              | 12 ++++----
+And again, I don't see a bug in the PMU driver.
 
-Acked-by: Lee Jones <lee@kernel.org>
+Now, in the interest of moving forward: this patch seems to address
+the basic problems I was seeing on both M1/M2 (running any kernel
+version) and Juno (running an older kernel), so:
 
->  drivers/video/fbdev/ssd1307fb.c               |  2 +-
->  include/linux/pwm.h                           | 28 +++++++++----------
->  21 files changed, 67 insertions(+), 67 deletions(-)
+Tested-by: Marc Zyngier <maz@kernel.org>
 
-[...]
+Thanks,
+
+	M.
 
 -- 
-Lee Jones [李琼斯]
+Without deviation from the norm, progress is not possible.
