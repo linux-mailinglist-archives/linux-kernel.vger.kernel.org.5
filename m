@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7329D7F609D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508C27F609F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 14:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345582AbjKWNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 08:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
+        id S1345627AbjKWNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 08:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345603AbjKWNmx (ORCPT
+        with ESMTP id S1345662AbjKWNn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 08:42:53 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440F01B2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:42:55 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-5079f6efd64so1088868e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 05:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700746973; x=1701351773; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WIX6Y6OmD18tbJ/H2yRFYnNOAfgH4KdfJCuauNIg3HA=;
-        b=D2uOT1hLKrvZJBqbjWGSL7egFYpFSU8XxQdqC9em6RL8EKY2eW+LSOKvPIklt/Ef7j
-         kr3e2YPMxl7H5uYUVqR4rfTZjkGpHw1ozxrMNyChrx9dnxoCb+FwNoB+8W5pAhcozlYB
-         CsFr2jHHg/yOADB2Plk8xCQ/heJFUTOyMGgZ2qIOPwSlj0AHfJYXLQ2mR5IbPHqRFDuo
-         n0hX8eKAtkBUili8y3We0E3FteID7jm3ck3fdCDBqcfID2Awdz+0ak1Z6TQVwck+XBBq
-         JWvSd3OYCFSKixj/O27P5DMQXAP/P4jH5G1YTbv5iZaP+R0ON0xrjydieUV2gBo1ihgC
-         Q3tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700746973; x=1701351773;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WIX6Y6OmD18tbJ/H2yRFYnNOAfgH4KdfJCuauNIg3HA=;
-        b=rpl4JKAH6swZMYR4V6crN9n9xlaQBoSafSTz20yX5wY1X/xww9Hd1i/qgZBJyDTiZL
-         OwuNg/QB8+doSHEbCrERVRqVtOgZGGoLrpSR82GM0n4BXTwqMZhwTvJiMaXY6VnLmcYa
-         4kWbRRaa8CvrHy4fVGpZEKtZWWHYrtYZOhZhw5UKQBuQIO9blJbdfTmsOOKahC+st/3B
-         KMHHiUDe12Z2vGn4t66mVfLIfpfDfRujoOakAPxkasTQNCpNUtAbWVyTM3lVdxUotv5a
-         XNVEHdsPQYXxytmdD0ISWCruqDoVmR1xi+cg4dUgQrN06i4r4RmTG5cDR2OivsDTFcry
-         D37w==
-X-Gm-Message-State: AOJu0YyiRNehIONpLq4eUBXOY6+M9NkI+cqLhVGheGsWKigoebcUpRQq
-        MZ2s39OHl/NdBIgMmmzo0ArLng==
-X-Google-Smtp-Source: AGHT+IG0uOhnZ0oXGp4jok8uSMhhwwR3X72qhblR6OJOvkgTiQCc/tbk0F5CdiH2tbybJtIGVJbw+A==
-X-Received: by 2002:a05:6512:32a7:b0:509:f68:ed8 with SMTP id q7-20020a05651232a700b005090f680ed8mr3763564lfe.61.1700746973454;
-        Thu, 23 Nov 2023 05:42:53 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id w21-20020a05600c475500b0040b2976eb02sm2067241wmo.10.2023.11.23.05.42.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 05:42:52 -0800 (PST)
-Message-ID: <ee3f943d-3f29-415f-bcb0-94e6c8972597@linaro.org>
-Date:   Thu, 23 Nov 2023 13:42:51 +0000
+        Thu, 23 Nov 2023 08:43:28 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DB7199B;
+        Thu, 23 Nov 2023 05:43:12 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANCqhr1021827;
+        Thu, 23 Nov 2023 13:43:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KRR7/FLcHHfVYwLFqhd7C1q8EsSoikY6fbR7WzttxZ0=;
+ b=CWH0WcI541sXHITD98nZFLJRSHvY/2sZviXkWIExTTJkEDFE6RyYbe2Fn28iSJkwDHOx
+ bp+4nuH6IfU2T+PmhoHoZyCTaLcu5UVqTScD17TmhAai1hod4sMQze9TRP9Y1Ig/3xcl
+ vG8MWUOCxQV3vLgRqDAplyQtocFuHZnVHyqS5V4uGb+dQF/As8Yqx9AsUpbWRGy2ueEV
+ BhIHh0gi/UOdZ4QDwomCxJkc49TLQ1IH3Nq87gzfk/LVudCq4mTIpYF0tuAQaPI9e/0f
+ OPlRLB2ADxfbnpDimwPXJd/LAt/Tqxse+z/lxeKZ+B4clUbYX4ZGivGV6QcY0ep8gEnJ jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj74k15td-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 13:43:05 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ANDh5Id032355;
+        Thu, 23 Nov 2023 13:43:05 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uj74k15t2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 13:43:05 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANBIg1p003481;
+        Thu, 23 Nov 2023 13:43:04 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uf7ktfp4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Nov 2023 13:43:04 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ANDh2jE8913568
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Nov 2023 13:43:02 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C4F120040;
+        Thu, 23 Nov 2023 13:43:02 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCBDE20043;
+        Thu, 23 Nov 2023 13:43:01 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.80.84])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 23 Nov 2023 13:43:01 +0000 (GMT)
+Date:   Thu, 23 Nov 2023 14:43:00 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        akpm@linux-foundation.org, ignat@cloudflare.com,
+        eric_devolder@yahoo.com
+Subject: Re: [PATCH 3/3] s390/Kconfig: drop select of KEXEC
+Message-ID: <ZV9W5AmmYhCFmN9e@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20231123073652.507034-1-bhe@redhat.com>
+ <20231123073652.507034-4-bhe@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/7] media: qcom: camss: Add support for named
- power-domains
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231118-b4-camss-named-power-domains-v5-0-55eb0f35a30a@linaro.org>
- <20231118-b4-camss-named-power-domains-v5-5-55eb0f35a30a@linaro.org>
- <6e66875a-5cb1-42bc-86e0-b69cf73981c0@linaro.org>
- <339c3efd-8d2b-4b71-8dc1-cdc30ab7bb8a@linaro.org>
- <2628b928-248b-41c7-81e2-4e4252d2b0f7@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <2628b928-248b-41c7-81e2-4e4252d2b0f7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123073652.507034-4-bhe@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: p97UOpER7j1y6xI193PSMYOEsM0_ReRh
+X-Proofpoint-ORIG-GUID: Q8_fDX5_sC5i010zY_FRtWNuycP5JyR9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_12,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ adultscore=0 mlxscore=0 spamscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1011 mlxlogscore=357
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311230098
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 11:49, Konrad Dybcio wrote:
-> 
-> 
-> On 11/22/23 21:55, Bryan O'Donoghue wrote:
->> On 22/11/2023 19:55, Konrad Dybcio wrote:
->>>
->>>
->>> On 11/18/23 13:11, Bryan O'Donoghue wrote:
->>>> Right now we use fixed indexes to assign power-domains, with a
->>>> requirement for the TOP GDSC to come last in the list.
->>>>
->>>> Adding support for named power-domains means the declaration in the 
->>>> dtsi
->>>> can come in any order.
->>>>
->>>> After this change we continue to support the old indexing - if a SoC
->>>> resource declaration or the in-use dtb doesn't declare power-domain 
->>>> names
->>>> we fall back to the default legacy indexing.
->>>>
->>>>  From this point on though new SoC additions should contain named
->>>> power-domains, eventually we will drop support for legacy indexing.
->>>>
->>>> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
->>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->>>> ---
->>> So, this commit should be a NOP within this series?
->>>
->>> res->pd_name isn't defined anywhere afaics
->>>
->>> Konrad
->>
->> This series is mergeable though the linux-media tree standalone, yes.
->>
->> Once merged, the dtsi change given in the cover letter will be submitted.
-> What I meant to say is that something similar to [1] is missing to
-> make use of the infra introduced with this patch.
-> 
-> Konrad
-> 
-> [1] 
-> https://git.codelinaro.org/bryan.odonoghue/kernel/-/commit/f43942091c01c1f263a6e7adbcd0ed8ce723a303
+On Thu, Nov 23, 2023 at 03:36:52PM +0800, Baoquan He wrote:
 
-Yeah, to be honest I debated with myself whether or not to include that 
-patch since once defined the code here will execute looking for named pd.
+Hi Baoquan,
 
-I'm not opposed to sending a v6 to include this additional change 
-though, I've thoroughly tested on rb5.
+> No proof is found to require that S390 architecture has to select
+> KEXEC. At least from my testing at below, dropping select of KEXEC won't
+> impact anything.
 
----
-bod
+It does impact the outcome of defconfigs.
+Namely, CONFIG_KEXEC is not set with this patch.
+
+> ===testing 1===
+> CONFIG_CRASH_CORE=y
+> CONFIG_KEXEC_CORE=y
+> CONFIG_CRASH_DUMP=y
+> ===
+> 
+> ===testing 2===
+> CONFIG_CRASH_CORE=y
+> CONFIG_KEXEC_CORE=y
+> CONFIG_KEXEC_FILE=y
+> CONFIG_CRASH_DUMP=y
+> ===
+
+Unfortunately, I do not quite realize what these testings were
+and what is the difference between the two.
+
+> So drop the select of KEXEC now.
+
+I suggest dropping this patch. Once the previous two are upstream
+we would remove 'select KEXEC' from Kconfig together with defconfig
+updates.
+
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/s390/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index 3bec98d20283..1aec2e692dca 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -217,7 +217,6 @@ config S390
+>  	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
+>  	select IOMMU_HELPER		if PCI
+>  	select IOMMU_SUPPORT		if PCI
+> -	select KEXEC
+>  	select MMU_GATHER_MERGE_VMAS
+>  	select MMU_GATHER_NO_GATHER
+>  	select MMU_GATHER_RCU_TABLE_FREE
+> -- 
+
+Thanks!
