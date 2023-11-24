@@ -2,166 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 292E47F781C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67B27F781A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345881AbjKXPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S1345854AbjKXPtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjKXPtJ (ORCPT
+        with ESMTP id S230491AbjKXPtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:49:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789C619A5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:49:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700840951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JmYkwjrZaJaOu3DPvilrXKnxuy6wNFKJN/6bdGUy1gs=;
-        b=JW/wwArsKiROtyeFykAG8UH8YAy8Z0WZ4q2962bFstKXgqrZN+agtzi9mHt6vsDVxONUb4
-        vEB0873pv1lUcW8EDTn3f2B7JnpPHVNhOqDXnvXM2mK/hRMQQzt6FewlwIR2Ib7KkdI0uU
-        3rHzIABBgk4vNH6NvxlxD9P8rlFTq4g=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-599-6aS7nwhqP2mpk9nLam6log-1; Fri, 24 Nov 2023 10:49:08 -0500
-X-MC-Unique: 6aS7nwhqP2mpk9nLam6log-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a043b44aec3so43240366b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:49:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700840947; x=1701445747;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        Fri, 24 Nov 2023 10:49:08 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD801B5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:49:11 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so2793519a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700840950; x=1701445750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JmYkwjrZaJaOu3DPvilrXKnxuy6wNFKJN/6bdGUy1gs=;
-        b=Q15wKBa58Y+gNF24ahzUmZ6lGV6xnHA0T6cPLEqKAA4wn5l50gNszlQcsfh32K4qUb
-         /GqlZnCfMm+lq9cdIh/0BRtZyjtXTmM+VhM6I6++aOee3Bk1i1u+Mwq6/JViEDwsA/jh
-         L873Uzk0Ax1Do7ZzXf2Y3VnxFKd0t4/RdaTvHRf+xoxAXWkU05LGYjNGBtbMJkTKBEeW
-         Clal9qYXBXo+8CbJSP1pFgFgFm3NhHL4KAWJe+v2KQ9bbSEGQmva0k5vC/o6Evd2L8e7
-         N5nQD8u7fmG2Qe1Y3JmnS1aHrcbQPmGdjgmfV5wl6F4nxlX+RZLbz5GhgOTZ1UGu90re
-         87WQ==
-X-Gm-Message-State: AOJu0YwT7gCJ4AphL56NIGhKdj5c1HuhViwb5QFFhEy5jI/E9eYTD63g
-        IY/FbY2Xn9MmxHaJ4lRIPuu8Si/JWURusbitD39fjAgHWiwtSAWPYnmNBU7VvE7uwO+RZzvV1A5
-        K+3qYodxvGk30dO8ML/4yZcHd
-X-Received: by 2002:a17:906:a40b:b0:9c4:4b20:44a5 with SMTP id l11-20020a170906a40b00b009c44b2044a5mr2467426ejz.4.1700840947229;
-        Fri, 24 Nov 2023 07:49:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEzU7sedoUm9/hMpec1nsRFKG9QYHWspiwTp8W0AN+aMWC6P4eqkr9yAjzgR5V4Txo37RHZPQ==
-X-Received: by 2002:a17:906:a40b:b0:9c4:4b20:44a5 with SMTP id l11-20020a170906a40b00b009c44b2044a5mr2467414ejz.4.1700840946782;
-        Fri, 24 Nov 2023 07:49:06 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-241-213.dyn.eolo.it. [146.241.241.213])
-        by smtp.gmail.com with ESMTPSA id e25-20020a170906045900b009e655c77a53sm2196512eja.132.2023.11.24.07.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 07:49:06 -0800 (PST)
-Message-ID: <1a4a0b4c013b254d92f8c1d7c4e88e145a5be4a3.camel@redhat.com>
-Subject: Re: [PATCH 3/4 net] qca_spi: Fix ethtool -G iface tx behavior
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Stefan Wahren <wahrenst@gmx.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Nov 2023 16:49:04 +0100
-In-Reply-To: <0d1cf97c-abbe-4a7a-a634-312caa882fad@gmx.net>
-References: <20231121163004.21232-1-wahrenst@gmx.net>
-         <20231121163004.21232-4-wahrenst@gmx.net>
-         <ea0087881f20dc154ca08a5b748b853246e2b86f.camel@redhat.com>
-         <0d1cf97c-abbe-4a7a-a634-312caa882fad@gmx.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        bh=0K2EXE8gQExfH+IDrBMFiSFCOrHiT67rlvW6OkLmIQc=;
+        b=Lgvtqm2vdgbIyRYi0mXRPmujODsHOI9R0lt5uWHM6uqaH29oavWLw4gR6gFvif/kKk
+         SEPwKtQnhasHtEuxUDbptLOk51p9CUY9JJNV5m+criervnkUV/l8Bg+uqriNSbukuL6g
+         f0k15OIUzJpyHf4ItUHLlgaUOuvDlDFom6eKx1XdjF/3Wt7K89g74KA0VmlVbHgKQ6Lw
+         YYr9Okc+9VLLQJ/tJNK9MAqOSQwDZRz5w7+NFONf6+hRAogY5TuWHqCaB1u/ucHF9LYs
+         o1Fh/0Z4+DfUcw7jcY+3O27fpZSjU3vBK4Qa+hshSzgWPskhcwFoVtUrDg9KIxd5iIcw
+         xfrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700840950; x=1701445750;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0K2EXE8gQExfH+IDrBMFiSFCOrHiT67rlvW6OkLmIQc=;
+        b=jf9ddnpz/pLFi2Zq5gCxzKRiSsyPnRfVINJ41jMj2mAC3GCUcgV98RUUSL5qAUM6gb
+         x4aPRINDQiHcHzWOROnxg9KYcJpHBcVgLO2sLGjZdgLjTCTl409BSLbNnmXxwG+msUVZ
+         yRmjNQKf6YPPu3EKa03FKIprrX9cgh904KFhC1wF8EKMqLFZpFqLbQnnjzuHDbKAgFyX
+         E202+QrI7nCNscAMURIfVHYT6RAbv0fDMh1rj04iMC34DcfzX5S5DDxN0v5nFTwk1Wcf
+         0rs8vhEp4JC/DfIMf1Pj192DLQ+RnT3pNAWLn4mkLZxsbNRxzC0kMkgyRb+gIS9EM56u
+         dQHg==
+X-Gm-Message-State: AOJu0YxGwWXzZUzdPwrurhMvoqQH7P9MUrF3XkezpeCvrnmTCM8SzvgI
+        flYCxNzbaVWxfomMCAnfJeWPMA==
+X-Google-Smtp-Source: AGHT+IE6JEZIq2K7IIOxSgnJ5L7np3XYKNvUoPeNTphLa0M1kNcmMvyILOwbtufQRuoKg4a056MbiA==
+X-Received: by 2002:a50:9e0f:0:b0:547:b96:1172 with SMTP id z15-20020a509e0f000000b005470b961172mr2620072ede.28.1700840950070;
+        Fri, 24 Nov 2023 07:49:10 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id m6-20020a056402430600b0054af73f3c72sm762887edc.11.2023.11.24.07.49.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 07:49:09 -0800 (PST)
+Message-ID: <c2f9d247-752f-429d-8c20-e105b1117be2@linaro.org>
+Date:   Fri, 24 Nov 2023 16:49:07 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/3]fpga: Add encrypted Bitstream loading support
+Content-Language: en-US
+To:     Nava kishore Manne <nava.kishore.manne@amd.com>, mdf@kernel.org,
+        hao.wu@intel.com, yilun.xu@intel.com, trix@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, michal.simek@amd.com,
+        mathieu.poirier@linaro.org, ben.levinsky@amd.com,
+        sai.krishna.potthuri@amd.com, tanmay.shah@amd.com,
+        dhaval.r.shah@amd.com, arnd@arndb.de, shubhrajyoti.datta@amd.com,
+        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-24 at 15:17 +0100, Stefan Wahren wrote:
-> Am 23.11.23 um 12:51 schrieb Paolo Abeni:
-> > On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
-> > > After calling ethtool -g it was not possible to adjust the TX ring si=
-ze
-> > > again.
-> > Could you please report the exact command sequence that will fail?
-> ethtool -g eth1
-> ethtool -G eth1 tx 8
-> >=20
-> >=20
-> > > The reason for this is that the readonly setting rx_pending get
-> > > initialized and after that the range check in qcaspi_set_ringparam()
-> > > fails regardless of the provided parameter. Since there is no adjusta=
-ble
-> > > RX ring at all, drop it from qcaspi_get_ringparam().
-> > > Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for=
- QCA7000")
-> > > Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-> > > ---
-> > >   drivers/net/ethernet/qualcomm/qca_debug.c | 2 --
-> > >   1 file changed, 2 deletions(-)
-> > >=20
-> > > diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/=
-ethernet/qualcomm/qca_debug.c
-> > > index 6f2fa2a42770..613eb688cba2 100644
-> > > --- a/drivers/net/ethernet/qualcomm/qca_debug.c
-> > > +++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-> > > @@ -252,9 +252,7 @@ qcaspi_get_ringparam(struct net_device *dev, stru=
-ct ethtool_ringparam *ring,
-> > >   {
-> > >   	struct qcaspi *qca =3D netdev_priv(dev);
-> > >=20
-> > > -	ring->rx_max_pending =3D 4;
-> > >   	ring->tx_max_pending =3D TX_RING_MAX_LEN;
-> > > -	ring->rx_pending =3D 4;
-> > >   	ring->tx_pending =3D qca->txr.count;
-> > >   }
-> > I think it's preferable update qcaspi_set_ringparam() to complete
-> > successfully when the provided arguments don't change the rx_pending
-> > default (4)
->=20
-> Sorry, i didn't get. The whole point is that there is no RX ring at all,
-> just a TX ring.=C2=A0
-> During the time of writing this driver, i was under the
-> assumption that the driver needs to provide a rx_pending in
-> qcaspi_get_ringparam even this is no RX ring. The number 4 represent the
-> maximum of 4 packets which can be received at once. But it's not a ring.
+On 22/11/2023 06:44, Nava kishore Manne wrote:
+> For user-key encrypted bitstream loading use case, users can encrypt
+> FPGA configuration Images with their own key.While decrypting the
+> configuration Image the user needs to provide the same key.To support
+> this use case with the existing FPGA manager framework is not possible
+> because it doesn’t have a mechanism to get the required inputs from
+> the user. So this patch series adds the required changes to the FPGA
+> manager framework to support user-key encrypted bitstream image loading
 
-Even if the H/W in charge of receiving and storing the incoming packet
-is not exactly a ring but some fixed-size structure, I think it would
-be better to avoid changing the exposed defaults given they are not
-actually changed by this patch and they represent the current status
-IMHO quite accurately.
+Wasn't the entire point of encrypted FPGA bistreams that the key is
+fused into the FPGA and the FPGA does the decrypting? Otherwise it's
+like security through obscurity - the only trouble for attacker is to
+decode DTB to find the filename of key, so actually not even really
+obscure. Then the attacker retrieves the key and bitstream from
+filesystem (by taking out the Zynq-based SoM out or booting from own
+system or just accessing storage pins directly) and voila: encrypted key
+is available.
 
-The change I suggested is something alike the following (note that you
-could possibly define a macro with a helpful name instead of the raw
-number '4')
-
-Cheers,
-
-Paolo
----
-diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/ethern=
-et/qualcomm/qca_debug.c
-index 6f2fa2a42770..05c5450bff79 100644
---- a/drivers/net/ethernet/qualcomm/qca_debug.c
-+++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-@@ -266,7 +266,7 @@ qcaspi_set_ringparam(struct net_device *dev, struct eth=
-tool_ringparam *ring,
-        const struct net_device_ops *ops =3D dev->netdev_ops;
-        struct qcaspi *qca =3D netdev_priv(dev);
-=20
--       if ((ring->rx_pending) ||
-+       if ((ring->rx_pending !=3D 4) ||
-            (ring->rx_mini_pending) ||
-            (ring->rx_jumbo_pending))
-                return -EINVAL;
+Best regards,
+Krzysztof
 
