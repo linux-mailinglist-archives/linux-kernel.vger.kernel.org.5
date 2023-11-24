@@ -2,132 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC027F7377
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 13:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0932E7F737A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 13:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjKXML2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 07:11:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46178 "EHLO
+        id S1345023AbjKXMLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 07:11:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKXML0 (ORCPT
+        with ESMTP id S230418AbjKXMLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 07:11:26 -0500
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACB318B
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 04:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1700827886; x=1703419886;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ueaYiJio+rr5h9VoUpW5qtG1LvpMOX1vur0Jso/gkfY=;
-        b=YdJHiUpvrpQRqBSnlgDhuaWdI+HaD0yE2FmihhWDZO86Dz34jKv4n2ZXU/mTbByC
-        plqzo1dnOz7oiCdgO8eUtLi0B+AWtFC9RWdQex+NwOIyCtrSY2SuGc+TyehQ5XZF
-        AnPAPxUDj0UmkE35MNaJSf2RXa1SPTp3g8QTjr60Www=;
-X-AuditID: ac14000a-fbefe7000000290d-17-656092eda846
-Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id C1.7D.10509.DE290656; Fri, 24 Nov 2023 13:11:25 +0100 (CET)
-Received: from [172.25.39.28] (172.25.0.11) by Florix.phytec.de (172.25.0.13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Fri, 24 Nov
- 2023 13:11:24 +0100
-Message-ID: <a58ae80e-e281-425a-9b72-bad8fd305e6a@phytec.de>
-Date:   Fri, 24 Nov 2023 13:11:24 +0100
+        Fri, 24 Nov 2023 07:11:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB5D10EB
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 04:11:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98825C433C8;
+        Fri, 24 Nov 2023 12:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700827900;
+        bh=hUSNeT8w2Ovv/qRsF9dJwQ3T21rZ7awLhr/c8/siSeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FjFsjhJcdh1kjeVJRqLvqBmHLs4+QeKFabtHHpvqWZ/Boaf/jqKpCKggvUdVkb9tV
+         /D8tU/7yDwqTsja4jZ97ifEMOtJkfWivJYMBG2+OJSoH5QwvtIkdVX90YO2Sf6cXgp
+         fh2HSVF5TWjSpwo4m1NRsSyrRUTWBYGL7ckc5Yz5P0Ki7Ti32oLYQ4wf/QS9Z0SHEf
+         15DHso6QUEGOZWQAijtG+krZPUHaPQqUOZv62NK0OqCgpCzvR8xN+rKzc1QDEoAuH7
+         qTCfwM4IgXEdLA/ZtD7XBr8P+pIljJZhK8p0+2iMB0U8JCGm4YojupWhaj8FknLrKX
+         OXjM3MGXJ9IKw==
+Date:   Fri, 24 Nov 2023 17:41:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     shravan chippa <shravan.chippa@microchip.com>
+Cc:     green.wan@sifive.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, conor+dt@kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Subject: Re: [PATCH v4 3/4] dmaengine: sf-pdma: add mpfs-pdma compatible name
+Message-ID: <ZWCS+ECGTgwVPR1u@matsya>
+References: <20231031052753.3430169-1-shravan.chippa@microchip.com>
+ <20231031052753.3430169-4-shravan.chippa@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] iio: adc: ti_am335x_adc: Fix return value check of
- tiadc_request_dma()
-Content-Language: en-US
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     <lars@metafoo.de>, <robh@kernel.org>, <heiko@sntech.de>,
-        <peter.ujfalusi@ti.com>, <mugunthanvnm@ti.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nm@ti.com>, <upstream@lists.phytec.de>,
-        Bhavya Kapoor <b-kapoor@ti.com>
-References: <20230925134427.214556-1-w.egorov@phytec.de>
- <20231005150917.2d0c833e@jic23-huawei>
-From:   Wadim Egorov <w.egorov@phytec.de>
-In-Reply-To: <20231005150917.2d0c833e@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.25.0.11]
-X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Florix.phytec.de
- (172.25.0.13)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsWyRpKBV/ftpIRUgwmvrCxWbn/OaPH/0WtW
-        iwdNq5gslkyez2ox78g7FovLu+awWVx9UG7x5sdZJotZH3+wWvzfs4PdovudugO3x6ZVnWwe
-        /d0trB5L3hxi9dh+bR6zx/Eb25k8Pm+SC2CL4rJJSc3JLEst0rdL4Mr4/OYAY8F83oodZ1qZ
-        GxhPcHUxcnJICJhI3G9/z9jFyMUhJLCYSeJ172sWCOcuo8SjT02sIFW8AjYSWz69YQSxWQRU
-        JX4sO8ACEReUODnzCZgtKiAvcf/WDHYQW1ggQWLWzjVsIDazgLjErSfzmUBsEQF1iWkzrjCB
-        LGAW+MEosXjfC7CEkECixIfDc8BsNqCiOxu+gS3mFDCWmPtpDzvEIAuJxW8OQtnyEtvfzmGG
-        6JWXeHFpOQvEO/IS0869ZoawQyXmr/nOPoFReBaSW2chuWkWkrGzkIxdwMiyilEoNzM5O7Uo
-        M1uvIKOyJDVZLyV1EyMo4kQYuHYw9s3xOMTIxMF4iFGCg1lJhDf3T3yqEG9KYmVValF+fFFp
-        TmrxIUZpDhYlcd7VHcGpQgLpiSWp2ampBalFMFkmDk6pBsYtZr6rnbJ94lZ//fV+7y27qcmn
-        1qxdHLzAlWVb9oer2oZpCjo52qEebSFnk577BH2QD9kR26wat+NxR5+b8K6EB3kfxO7veBMr
-        9cu2Y972C0uteOf4ydxeMGPy+tBwrkm9mgdtths873u6vrnmvMTuST68Ntvjl2yoL92+Wsa7
-        vOl5Ybzcv7NKLMUZiYZazEXFiQAcMclBpgIAAA==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031052753.3430169-4-shravan.chippa@microchip.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 31-10-23, 10:57, shravan chippa wrote:
+> From: Shravan Chippa <shravan.chippa@microchip.com>
+> 
+> Sifive platform dma does not allow out-of-order transfers,
+> Add a PolarFire SoC specific compatible and code to support
+> for out-of-order dma transfers
 
-Am 05.10.23 um 16:09 schrieb Jonathan Cameron:
-> On Mon, 25 Sep 2023 15:44:27 +0200
-> Wadim Egorov <w.egorov@phytec.de> wrote:
->
->> Fix wrong handling of a DMA request where the probing only failed
->> if -EPROPE_DEFER was returned. Instead, let us fail if a non -ENODEV
->> value is returned. This makes DMAs explicitly optional. Even if the
->> DMA request is unsuccessfully, the ADC can still work properly.
->> We do also handle the defer probe case by making use of dev_err_probe().
->>
->> Fixes: f438b9da75eb ("drivers: iio: ti_am335x_adc: add dma support")
->> Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
-> +CC Bhavya,
->
-> Could you take a look at this given you had comments on v1.
+By default dma xtions are not supposed to be out of order, so why does
+it make sense specifying that here?
 
-Bhavya, any comments on this?
-If not, is there anything else that is blocking this patch?
+> 
+> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> ---
+>  drivers/dma/sf-pdma/sf-pdma.c | 27 ++++++++++++++++++++++++---
+>  drivers/dma/sf-pdma/sf-pdma.h |  8 +++++++-
+>  2 files changed, 31 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
+> index 4c456bdef882..82ab12c40743 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.c
+> +++ b/drivers/dma/sf-pdma/sf-pdma.c
+> @@ -25,6 +25,8 @@
+>  
+>  #include "sf-pdma.h"
+>  
+> +#define PDMA_QUIRK_NO_STRICT_ORDERING   BIT(0)
+> +
+>  #ifndef readq
+>  static inline unsigned long long readq(void __iomem *addr)
+>  {
+> @@ -66,7 +68,7 @@ static struct sf_pdma_desc *sf_pdma_alloc_desc(struct sf_pdma_chan *chan)
+>  static void sf_pdma_fill_desc(struct sf_pdma_desc *desc,
+>  			      u64 dst, u64 src, u64 size)
+>  {
+> -	desc->xfer_type = PDMA_FULL_SPEED;
+> +	desc->xfer_type =  desc->chan->pdma->transfer_type;
+>  	desc->xfer_size = size;
+>  	desc->dst_addr = dst;
+>  	desc->src_addr = src;
+> @@ -520,6 +522,7 @@ static struct dma_chan *sf_pdma_of_xlate(struct of_phandle_args *dma_spec,
+>  
+>  static int sf_pdma_probe(struct platform_device *pdev)
+>  {
+> +	const struct sf_pdma_driver_platdata *ddata;
+>  	struct sf_pdma *pdma;
+>  	int ret, n_chans;
+>  	const enum dma_slave_buswidth widths =
+> @@ -545,6 +548,14 @@ static int sf_pdma_probe(struct platform_device *pdev)
+>  
+>  	pdma->n_chans = n_chans;
+>  
+> +	pdma->transfer_type = PDMA_FULL_SPEED | PDMA_STRICT_ORDERING;
+> +
+> +	ddata  = device_get_match_data(&pdev->dev);
+> +	if (ddata) {
+> +		if (ddata->quirks & PDMA_QUIRK_NO_STRICT_ORDERING)
+> +			pdma->transfer_type &= ~PDMA_STRICT_ORDERING;
+> +	}
+> +
+>  	pdma->membase = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(pdma->membase))
+>  		return PTR_ERR(pdma->membase);
+> @@ -632,9 +643,19 @@ static int sf_pdma_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static const struct sf_pdma_driver_platdata mpfs_pdma = {
+> +	.quirks = PDMA_QUIRK_NO_STRICT_ORDERING,
+> +};
+> +
+>  static const struct of_device_id sf_pdma_dt_ids[] = {
+> -	{ .compatible = "sifive,fu540-c000-pdma" },
+> -	{ .compatible = "sifive,pdma0" },
+> +	{
+> +		.compatible = "sifive,fu540-c000-pdma",
+> +	}, {
+> +		.compatible = "sifive,pdma0",
+> +	}, {
+> +		.compatible = "microchip,mpfs-pdma",
+> +		.data	    = &mpfs_pdma,
+> +	},
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, sf_pdma_dt_ids);
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.h b/drivers/dma/sf-pdma/sf-pdma.h
+> index 5c398a83b491..267e79a5e0a5 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.h
+> +++ b/drivers/dma/sf-pdma/sf-pdma.h
+> @@ -48,7 +48,8 @@
+>  #define PDMA_ERR_STATUS_MASK				GENMASK(31, 31)
+>  
+>  /* Transfer Type */
+> -#define PDMA_FULL_SPEED					0xFF000008
+> +#define PDMA_FULL_SPEED					0xFF000000
+> +#define PDMA_STRICT_ORDERING				BIT(3)
+>  
+>  /* Error Recovery */
+>  #define MAX_RETRY					1
+> @@ -112,8 +113,13 @@ struct sf_pdma {
+>  	struct dma_device       dma_dev;
+>  	void __iomem            *membase;
+>  	void __iomem            *mappedbase;
+> +	u32			transfer_type;
+>  	u32			n_chans;
+>  	struct sf_pdma_chan	chans[];
+>  };
+>  
+> +struct sf_pdma_driver_platdata {
+> +	u32 quirks;
+> +};
+> +
+>  #endif /* _SF_PDMA_H */
+> -- 
+> 2.34.1
 
-Regards,
-Wadim
-
->
-> Thanks,
->
-> Jonathan
->
->> ---
->> v2:
->>    - Update description
->>    - Drop line break after Fixes tag
->>    - Move decision about optional DMA into probe/caller
->> ---
->>   drivers/iio/adc/ti_am335x_adc.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
->> index 8db7a01cb5fb..5f8795986995 100644
->> --- a/drivers/iio/adc/ti_am335x_adc.c
->> +++ b/drivers/iio/adc/ti_am335x_adc.c
->> @@ -670,8 +670,10 @@ static int tiadc_probe(struct platform_device *pdev)
->>   	platform_set_drvdata(pdev, indio_dev);
->>   
->>   	err = tiadc_request_dma(pdev, adc_dev);
->> -	if (err && err == -EPROBE_DEFER)
->> +	if (err && err != -ENODEV) {
->> +		dev_err_probe(&pdev->dev, err, "DMA request failed\n");
->>   		goto err_dma;
->> +	}
->>   
->>   	return 0;
->>   
+-- 
+~Vinod
