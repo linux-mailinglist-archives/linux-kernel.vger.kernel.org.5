@@ -2,369 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CBE7F6A2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3587F6A30
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjKXBfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        id S229885AbjKXBhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjKXBfP (ORCPT
+        with ESMTP id S229477AbjKXBhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:35:15 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53405120
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:35:18 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-462abe45730so468623137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700789717; x=1701394517; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wG1ZuaRbCPBv0+UAInoHXoinm1O34IZTOsjDEN9VpmI=;
-        b=QMSR8lQJx9JiF0xfBZa7967dAX79xgMp4S2U7UXvAIAqswkXRtGuCyFoj8XJNo9Ftd
-         EKcZ9DFkcs6pgWge8qjAIsmh6cdzBus3qM60Bqkb07+jSY/hSbwA1eAXQjBPg17iUAXe
-         Uzvg7XukKhLa/qcwG0bJjY3lk9GzgfjhGKK1hj/DuhoXe/4IPDQULqDWwRP0v7LEQtVv
-         DfeFwmT9d8YHDTEZwQVU8tlXvFvNWxn3FFESAC0p0zf2YtSqXwsi36q4Dkc4AJxnwIS2
-         AugDTS8mNNr/qc6bkVgDZ6gnouP+1LOrLbiJg2kncGP6eCF9UDd+T/cZZ93IrgHjMkAs
-         ysxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700789717; x=1701394517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wG1ZuaRbCPBv0+UAInoHXoinm1O34IZTOsjDEN9VpmI=;
-        b=Kb5vTKCvrMi/satvFXh2dF0GEVNhDPXuz0RqmbdLTXVt+SUmERtYc8Z1VTiMzG7mV4
-         LGEk44loByyzJSZom0UzOybu3TEwl2YqUcZ2eDka+pgDXbH3AK4mV6TwfxS9htgptVJf
-         qV6Z5HjSTw/G9lmiWROMznq/ouMQBWWVGCA6deBhvpxn8wRq+ELBk1Z1U/q2UUkTW0NM
-         tQkVAwcOzHx29jnFduNkW7AWCsGY5FZo16a7JyUfwb0uu19ftOAjBLKNpL/6NEA8QRuV
-         y4+Zme8tAzLtb8naKUfw7zIS2JGAPt3h+zNRdhxjdTn95tEIr7c4JVdhyGYyaU8FZuvS
-         Rkgw==
-X-Gm-Message-State: AOJu0YxjvHxTSaKTTilf/1fjgvKOnUkGcwf42YT9Aqx11r8bXOhY37M9
-        nKGoCYI6L0UwAz8EQEcOErjGnYWuixARLbfBRnk=
-X-Google-Smtp-Source: AGHT+IFrFnFyALVSXBM657DQOsFzWG1PiI+L20o9Ck02MKBjcqSeZVZiCVh2b4opqse0rECIInlYosUnm8ldmV4dA2U=
-X-Received: by 2002:a67:eb0b:0:b0:45e:8fd7:1ae0 with SMTP id
- a11-20020a67eb0b000000b0045e8fd71ae0mr1093082vso.8.1700789717296; Thu, 23 Nov
- 2023 17:35:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com> <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com> <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com> <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
-In-Reply-To: <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 24 Nov 2023 14:35:06 +1300
-Message-ID: <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
+        Thu, 23 Nov 2023 20:37:06 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2059.outbound.protection.outlook.com [40.107.100.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC89FD5E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:37:12 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h1K+vP2n0BWSe/uy4fgdwu3GJpBpWLmO0fl7A41aUZy0hO2HsuOSc8cLcXMEhWsVa296HUWDXlLRdxZrtNen922Gcd5hOAUIG8RgLrwB8IZkjiZSLQNfUlM1TtNsmHn4KnOoa/pH3f5dXeModFTdRSvYiAMj7d0U4aB9fvlE6VjvmOsh/EJkTwCispZMGPALbmk+ClcqPTYrGYW39tSirAQGzHUNUcGAGm0Huwqia9eoUF5fq7wFfmy/Im+8Unl7XUubHoofAe15qnEpaReFolt4QTUJ+nYtqcnYUHVy3Ik33v+K2hUBsFj/mqr5Ledi/IapIIP5v4f8I9xcGkUyxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fvmbO4I2dympCT/mU1uktCBEszR0uPFg7gGkKrM5n50=;
+ b=VUW2vwHrpjndRvM3FMhLXGOrAUgkhO0rQztxTfKu683DM4X/csMyuKHbEj1gP9GJxzf6kakXct8AJtBW6HFLzGmxALuGdqvsecgzj7/iPDslVnnIHcM6ix8CtJgcD9U2F25lRWiBKBFdfLjOQLhKZ7yfFK6b8+GuBrxYoN8qpYIB3W/nXi2tuoWvkxW+FG+wsW9eKnxP/LkxrmoEup+qTSJE0Y91P+ryHOoOyR7Hwkp8r6sC9KRdXl8Ox3vy9HOAIK2ESFks5xlQt3ZlFE+njNnb2LmiS+7b3NKGlNVIza+rpNFeYralYioxHgT1zmUq5w4UgvKRTbsFzSWe1ZcygQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fvmbO4I2dympCT/mU1uktCBEszR0uPFg7gGkKrM5n50=;
+ b=Da/Hlea0Aarg6gNMZpMBjDdA/cxRbmPLq5GHNqao6qlGReIjLN4pJhIQm1EvEFn9X7y68Xq1+dzwxwLlip1rEusv3Grf7qVTlngBMiQkqtoA/URm3AtizODFPRFicjSxE82WMI81zw8ktfsc7VzX0Dew0y3Kik4+FHhKJJBUqkeWgEeEZO8xLjZCbulyzbRd/dkmQosa9s3IsVZmvUvV+il4dtkqYnrYl8tud7Uqrb7rJsH26IgfJsE0ELk9ezVEdOS2xs7lpxTuxRhCLxKEiVVWJBbIHG+FDAp6l6tzGNJFK6LU8RJYxIQHhY70cPVIDQtj+NaFLzYAxlulYc8epw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by CY8PR12MB8362.namprd12.prod.outlook.com (2603:10b6:930:7e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Fri, 24 Nov
+ 2023 01:37:09 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6%7]) with mapi id 15.20.7025.020; Fri, 24 Nov 2023
+ 01:37:09 +0000
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-15-ryan.roberts@arm.com>
+ <87fs0xxd5g.fsf@nvdebian.thelocal>
+ <3b4f6bff-6322-4394-9efb-9c3b9ef52010@arm.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Alistair Popple <apopple@nvidia.com>
 To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>, steven.price@arm.com,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
+ optimize process teardown
+Date:   Fri, 24 Nov 2023 12:35:30 +1100
+In-reply-to: <3b4f6bff-6322-4394-9efb-9c3b9ef52010@arm.com>
+Message-ID: <87y1eovsn5.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SY5PR01CA0076.ausprd01.prod.outlook.com
+ (2603:10c6:10:1f5::6) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|CY8PR12MB8362:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7070b62-863e-48fe-289b-08dbec8dde9d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lz+GN2mTRRc5SiWTEj5SqhUAj+3lotlMjVmNU7SX3Nct2HIiJE4qgySTkGJ0tV97vDYYOFrO1txofuFSQgWgQoMIucvL0np3YVtQHSPCrUZsk7kgNcaI9Et7RfpCewbpw8/KnoHlYTd/s0i/PVz19OrHOW8BKYuHI10v/96aZ+8fwOXjwZBEb8iqrX0xq/lhDuRNrpQz5eDa42itB67t6dnN/upzjNs3Lt/GqA68sFeRATQwsIEF+an47ihz0tQj1r6raNCHT+TVNr7Y4yadZXF1JJzFYrZo+lVcc3pTSPNtnpJZ/2misaUEuF3UHDQ/ONrQ8mxVLV84clbVHrbN5MXlcz6ruX2Bndu1xr4QSPuWHyJZcPG5CECSoU55z88MTICtM76D2IlpO/WrZ70Yqz0f7VAU1R+g3AVrsydBFpSyf0WRKhyH9OD9m+XH6/9OZPJzEBGPCvGS/ITKtypZ8nW1RMqCFB2jj2Fkts5j5/FT/JQxPHDKbICFmSEjFiGiYRhQyHINzmFbtrHRWdvmjm3lkCxmgbiWe9l6c48QqszBTSIEJM2vgOUA7ffSz0bS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(39860400002)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(7416002)(6666004)(4326008)(8676002)(8936002)(2906002)(86362001)(5660300002)(41300700001)(38100700002)(66899024)(6916009)(26005)(83380400001)(6512007)(9686003)(478600001)(6506007)(53546011)(6486002)(66476007)(66556008)(316002)(54906003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M5tdhscV4DzKk6mfgj3aVbSuAvFtYBiRicsN65RHRO9RrUwqQ2p1tqeUcVIV?=
+ =?us-ascii?Q?c8PuXL3BIEXm2yYlNQHEflAnqJjPzRW9hUq0DjxgJ+mpvvHOb9Vg3OBwz1/t?=
+ =?us-ascii?Q?oc+uj+miRtPN32Ag16x2qnfdPtegVnlfKYobfrKgAcUojSRuCQc5aPz2sxxr?=
+ =?us-ascii?Q?kq+CayRoB9Hnwmbws6EDTsXYulztHmgSJ2X0P5i8FKZBOLD6xu3TM1c9iBn5?=
+ =?us-ascii?Q?ccDlT8ag+Gpk8BzRAY7VFaW1jHJpGNnZcf+6wdcgBQsvNH1FaEGgYVkEy395?=
+ =?us-ascii?Q?k7uw/YwC0y6HDwjy7sCj2E7nA0TN4IkWyTBID8QKu1GMU2KN+JDNnb1wVLBg?=
+ =?us-ascii?Q?hzBXzQitjvKIvQFj0yjft/JiRhT4UxfVU2ddSJgLxR56isG/Rsmq2tdZuuya?=
+ =?us-ascii?Q?Lnz75nBWkjW+UsWBSCLaIFNivXWjfVgkq5hnoH2vZfAVG/LsCqm/SScdUaNH?=
+ =?us-ascii?Q?WFe35vQt89FuGunCKtjSZBRRb3Jx0N6xLlnOKmyuKdUEPqoUxG/D7Qu9B7Tk?=
+ =?us-ascii?Q?hMmhRYDw3Yr+NzD0IdXcOt3solWouX8wvPlS58wa1Wo+qO1W18+53QdD8SIA?=
+ =?us-ascii?Q?3e7xF3OPva+1sQj4yFPHZr+/RAR1xCCZ2PEq5Q0Yq2jzjRk+LgFxbv4It4lm?=
+ =?us-ascii?Q?C8vWNXQx/ljgCTjPzFfPeYfNojFT/J4pq8UyTQr4bfP3TqA6c2BXnEqp5qh3?=
+ =?us-ascii?Q?DWgAaRVqah1BNHuZzowdtVOURoGAlb/5ecxcs7nXliKpNz3CBXcIK3HjEGC6?=
+ =?us-ascii?Q?BNDA0GKnqtK0YtFz/cgizXznbp2rfMmsVtFVdS61cm6suJENzklpbQgKP2Te?=
+ =?us-ascii?Q?fVvIXdhKmJivpynVXSTLb9vzBSDlfDw3pUam6Nwx3B6Suvhs6sVa2PZpxRcL?=
+ =?us-ascii?Q?BrXMjdgT9XngtuKFe2Q9UkZKYrHyznd+jUsTIQjeC0aCOOzTLlT2bRB8U6R9?=
+ =?us-ascii?Q?pFcToCWjCnTdltbxy8VFOX3aecG7hH+2zuQ+8zbztC1Tge+cB9M+8CI8GUjd?=
+ =?us-ascii?Q?s+/slaPKb6Jhpgo1Q5eJXep0NxprK5nheHs40sr6TR4e6/5gSqX8XsO2MCKa?=
+ =?us-ascii?Q?oL8a6CVr41xCxdfL+sQYkY4dBU06IEXO6HWIoWkg6K0zcDFPSkFHX18S0msV?=
+ =?us-ascii?Q?Irdtg1i0s2zEfoCipAUE27Co0XZrmBJnGxedqosv8B5SIgYDlzN91sM+pA36?=
+ =?us-ascii?Q?eh6fWJ3o2wta2iBvEfW4V8rVQXIHer7X6r21I3fx0DASboYFBuJaXEKkU2I5?=
+ =?us-ascii?Q?1hd+6PI0MEvNtrPaXrqvlknOrKKW/BDGm6lxBx2vQjOvbVg/M2RQgt+LMZA7?=
+ =?us-ascii?Q?pUbY/qpqK7zCkGrvMzAd62W5GOZKAGjpL/Ndz3p5ctV0pGxSNZUD/azmw2bb?=
+ =?us-ascii?Q?OLrW3zFfJG5zLpJO68fmIIIXFtltuPyoRkGJotgGHP+9Y9ebdyLchx+Q8Iro?=
+ =?us-ascii?Q?oV/qeDfjFeTZGk3BwQK79viHj94uhghOBrxMfilpy1qxa3cR+ObMCInviEYW?=
+ =?us-ascii?Q?tgo6hhLDT1cyf525GWyRqIvoVmrB5GV6lHVWuHv8F3biKY2e+CgaXEAlDAdk?=
+ =?us-ascii?Q?5D05LIc6Hg6L38bYxwZaim+OPsjORg6DpXaDqPy4?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7070b62-863e-48fe-289b-08dbec8dde9d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:37:08.2080
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a/0sgeOzI+GGR6tVnH1IuH9SblclhlnIsMFmcopRAE9qoxjoN2T6p/XLbUvO+DTCSID2mK9npQdkYJ4l2GFPZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8362
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 11:57=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
+
+Ryan Roberts <ryan.roberts@arm.com> writes:
+
+> On 23/11/2023 05:13, Alistair Popple wrote:
+>> 
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>> 
+>>> ptep_get_and_clear_full() adds a 'full' parameter which is not present
+>>> for the fallback ptep_get_and_clear() function. 'full' is set to 1 when
+>>> a full address space teardown is in progress. We use this information to
+>>> optimize arm64_sys_exit_group() by avoiding unfolding (and therefore
+>>> tlbi) contiguous ranges. Instead we just clear the PTE but allow all the
+>>> contiguous neighbours to keep their contig bit set, because we know we
+>>> are about to clear the rest too.
+>>>
+>>> Before this optimization, the cost of arm64_sys_exit_group() exploded to
+>>> 32x what it was before PTE_CONT support was wired up, when compiling the
+>>> kernel. With this optimization in place, we are back down to the
+>>> original cost.
+>>>
+>>> This approach is not perfect though, as for the duration between
+>>> returning from the first call to ptep_get_and_clear_full() and making
+>>> the final call, the contpte block in an intermediate state, where some
+>>> ptes are cleared and others are still set with the PTE_CONT bit. If any
+>>> other APIs are called for the ptes in the contpte block during that
+>>> time, we have to be very careful. The core code currently interleaves
+>>> calls to ptep_get_and_clear_full() with ptep_get() and so ptep_get()
+>>> must be careful to ignore the cleared entries when accumulating the
+>>> access and dirty bits - the same goes for ptep_get_lockless(). The only
+>>> other calls we might resonably expect are to set markers in the
+>>> previously cleared ptes. (We shouldn't see valid entries being set until
+>>> after the tlbi, at which point we are no longer in the intermediate
+>>> state). Since markers are not valid, this is safe; set_ptes() will see
+>>> the old, invalid entry and will not attempt to unfold. And the new pte
+>>> is also invalid so it won't attempt to fold. We shouldn't see this for
+>>> the 'full' case anyway.
+>>>
+>>> The last remaining issue is returning the access/dirty bits. That info
+>>> could be present in any of the ptes in the contpte block. ptep_get()
+>>> will gather those bits from across the contpte block. We don't bother
+>>> doing that here, because we know that the information is used by the
+>>> core-mm to mark the underlying folio as accessed/dirty. And since the
+>>> same folio must be underpinning the whole block (that was a requirement
+>>> for folding in the first place), that information will make it to the
+>>> folio eventually once all the ptes have been cleared. This approach
+>>> means we don't have to play games with accumulating and storing the
+>>> bits. It does mean that any interleaved calls to ptep_get() may lack
+>>> correct access/dirty information if we have already cleared the pte that
+>>> happened to store it. The core code does not rely on this though.
+>> 
+>> Does not *currently* rely on this. I can't help but think it is
+>> potentially something that could change in the future though which would
+>> lead to some subtle bugs.
 >
-> On 20/11/2023 09:11, David Hildenbrand wrote:
-> > On 17.11.23 19:41, Barry Song wrote:
-> >> On Fri, Nov 17, 2023 at 7:28=E2=80=AFPM David Hildenbrand <david@redha=
-t.com> wrote:
-> >>>
-> >>> On 17.11.23 01:15, Barry Song wrote:
-> >>>> On Fri, Nov 17, 2023 at 7:47=E2=80=AFAM Barry Song <21cnbao@gmail.co=
-m> wrote:
-> >>>>>
-> >>>>> On Thu, Nov 16, 2023 at 5:36=E2=80=AFPM David Hildenbrand <david@re=
-dhat.com> wrote:
-> >>>>>>
-> >>>>>> On 15.11.23 21:49, Barry Song wrote:
-> >>>>>>> On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <david=
-@redhat.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On 14.11.23 02:43, Barry Song wrote:
-> >>>>>>>>> This patch makes MTE tags saving and restoring support large fo=
-lios,
-> >>>>>>>>> then we don't need to split them into base pages for swapping o=
-ut
-> >>>>>>>>> on ARM64 SoCs with MTE.
-> >>>>>>>>>
-> >>>>>>>>> arch_prepare_to_swap() should take folio rather than page as pa=
-rameter
-> >>>>>>>>> because we support THP swap-out as a whole.
-> >>>>>>>>>
-> >>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather=
- than
-> >>>>>>>>> folio as swap-in always works at the granularity of base pages =
-right
-> >>>>>>>>> now.
-> >>>>>>>>
-> >>>>>>>> ... but then we always have order-0 folios and can pass a folio,=
- or what
-> >>>>>>>> am I missing?
-> >>>>>>>
-> >>>>>>> Hi David,
-> >>>>>>> you missed the discussion here:
-> >>>>>>>
-> >>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06=
-ijv4Ac68MkhjMDw@mail.gmail.com/
-> >>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbh=
-GguOkNzmh1Veocg@mail.gmail.com/
-> >>>>>>
-> >>>>>> Okay, so you want to handle the refault-from-swapcache case where =
-you get a
-> >>>>>> large folio.
-> >>>>>>
-> >>>>>> I was mislead by your "folio as swap-in always works at the granul=
-arity of
-> >>>>>> base pages right now" comment.
-> >>>>>>
-> >>>>>> What you actually wanted to say is "While we always swap in small =
-folios, we
-> >>>>>> might refault large folios from the swapcache, and we only want to=
- restore
-> >>>>>> the tags for the page of the large folio we are faulting on."
-> >>>>>>
-> >>>>>> But, I do if we can't simply restore the tags for the whole thing =
-at once
-> >>>>>> at make the interface page-free?
-> >>>>>>
-> >>>>>> Let me elaborate:
-> >>>>>>
-> >>>>>> IIRC, if we have a large folio in the swapcache, the swap entries/=
-offset are
-> >>>>>> contiguous. If you know you are faulting on page[1] of the folio w=
-ith a
-> >>>>>> given swap offset, you can calculate the swap offset for page[0] s=
-imply by
-> >>>>>> subtracting from the offset.
-> >>>>>>
-> >>>>>> See page_swap_entry() on how we perform this calculation.
-> >>>>>>
-> >>>>>>
-> >>>>>> So you can simply pass the large folio and the swap entry correspo=
-nding
-> >>>>>> to the first page of the large folio, and restore all tags at once=
-.
-> >>>>>>
-> >>>>>> So the interface would be
-> >>>>>>
-> >>>>>> arch_prepare_to_swap(struct folio *folio);
-> >>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_entry=
-);
-> >>>>>>
-> >>>>>> I'm sorry if that was also already discussed.
-> >>>>>
-> >>>>> This has been discussed. Steven, Ryan and I all don't think this is=
- a good
-> >>>>> option. in case we have a large folio with 16 basepages, as do_swap=
-_page
-> >>>>> can only map one base page for each page fault, that means we have
-> >>>>> to restore 16(tags we restore in each page fault) * 16(the times of=
- page
-> >>>>> faults)
-> >>>>> for this large folio.
-> >>>>>
-> >>>>> and still the worst thing is the page fault in the Nth PTE of large=
- folio
-> >>>>> might free swap entry as that swap has been in.
-> >>>>> do_swap_page()
-> >>>>> {
-> >>>>>      /*
-> >>>>>       * Remove the swap entry and conditionally try to free up the =
-swapcache.
-> >>>>>       * We're already holding a reference on the page but haven't m=
-apped it
-> >>>>>       * yet.
-> >>>>>       */
-> >>>>>       swap_free(entry);
-> >>>>> }
-> >>>>>
-> >>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you=
- might
-> >>>>> access
-> >>>>> a freed tag.
-> >>>>
-> >>>> And David, one more information is that to keep the parameter of
-> >>>> arch_swap_restore() unchanged as folio,
-> >>>> i actually tried an ugly approach in rfc v2:
-> >>>>
-> >>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
-> >>>> +{
-> >>>> + if (system_supports_mte()) {
-> >>>> +      /*
-> >>>> +       * We don't support large folios swap in as whole yet, but
-> >>>> +       * we can hit a large folio which is still in swapcache
-> >>>> +       * after those related processes' PTEs have been unmapped
-> >>>> +       * but before the swapcache folio  is dropped, in this case,
-> >>>> +       * we need to find the exact page which "entry" is mapping
-> >>>> +       * to. If we are not hitting swapcache, this folio won't be
-> >>>> +       * large
-> >>>> +     */
-> >>>> + struct page *page =3D folio_file_page(folio, swp_offset(entry));
-> >>>> + mte_restore_tags(entry, page);
-> >>>> + }
-> >>>> +}
-> >>>>
-> >>>> And obviously everybody in the discussion hated it :-)
-> >>>>
-> >>>
-> >>> I can relate :D
-> >>>
-> >>>> i feel the only way to keep API unchanged using folio is that we
-> >>>> support restoring PTEs
-> >>>> all together for the whole large folio and we support the swap-in of
-> >>>> large folios. This is
-> >>>> in my list to do, I will send a patchset based on Ryan's large anon
-> >>>> folios series after a
-> >>>> while. till that is really done, it seems using page rather than fol=
-io
-> >>>> is a better choice.
-> >>>
-> >>> I think just restoring all tags and remembering for a large folio tha=
-t
-> >>> they have been restored might be the low hanging fruit. But as always=
-,
-> >>> devil is in the detail :)
-> >>
-> >> Hi David,
-> >> thanks for all your suggestions though my feeling is this is too compl=
-ex and
-> >> is not worth it for at least  three reasons.
-> >
-> > Fair enough.
-> >
-> >>
-> >> 1. In multi-thread and particularly multi-processes, we need some lock=
-s to
-> >> protect and help know if one process is the first one to restore tags =
-and if
-> >> someone else is restoring tags when one process wants to restore. ther=
-e
-> >> is not this kind of fine-grained lock at all.
-> >
-> > We surely always hold the folio lock on swapin/swapout, no? So when the=
-se
-> > functions are called.
-> >
-> > So that might just work already -- unless I am missing something import=
-ant.
+> Yes, there is a risk, although IMHO, its very small.
 >
-> We already have a page flag that we use to mark the page as having had it=
-s mte
-> state associated; PG_mte_tagged. This is currently per-page (and IIUC, Ma=
-tthew
-> has been working to remove as many per-page flags as possible). Couldn't =
-we just
-> make arch_swap_restore() take a folio, restore the tags for *all* the pag=
-es and
-> repurpose that flag to be per-folio (so head page only)? It looks like th=
-e the
-> mte code already manages all the serialization requirements too. Then
-> arch_swap_restore() can just exit early if it sees the flag is already se=
-t on
-> the folio.
+>> 
+>> Would there be any may of avoiding this? Half baked thought but could
+>> you for example copy the access/dirty information to the last (or
+>> perhaps first, most likely invalid) PTE?
 >
-> One (probably nonsense) concern that just sprung to mind about having MTE=
- work
-> with large folios in general; is it possible that user space could cause =
-a large
-> anon folio to be allocated (THP), then later mark *part* of it to be tagg=
-ed with
-> MTE? In this case you would need to apply tags to part of the folio only.
-> Although I have a vague recollection that any MTE areas have to be marked=
- at
-> mmap time and therefore this type of thing is impossible?
+> I spent a long time thinking about this and came up with a number of
+> possibilities, none of them ideal. In the end, I went for the simplest one
+> (which works but suffers from the problem that it depends on the way it is
+> called not changing).
 
-right, we might need to consider only a part of folio needs to be
-mapped and restored MTE tags.
-do_swap_page() can have a chance to hit a large folio but it only
-needs to fault-in a page.
+Ok, that answers my underlying question of "has someone thought about
+this and are there any easy solutions". I suspected that was the case
+given the excellent write up though!
 
-A case can be quite simple as below,
-
-1. anon folio shared by process A and B
-2. add_to_swap() as a large folio;
-3. try to unmap A and B;
-4. after A is unmapped(ptes become swap entries), we do a
-MADV_DONTNEED on a part of the folio. this can
-happen very easily as userspace is still working in 4KB level;
-userspace heap management can free an
-basepage area by MADV_DONTNEED;
-madvise(address, MADV_DONTNEED, 4KB);
-5. A refault on address + 8KB, we will hit large folio in
-do_swap_page() but we will only need to map
-one basepage, we will never need this DONTNEEDed in process A.
-
-another more complicated case can be mprotect and munmap a part of
-large folios. since userspace
-has no idea of large folios in their mind, they can do all strange
-things. are we sure in all cases,
-large folios have been splitted into small folios?
-
+> 1) copy the access/dirty flags into all the remaining uncleared ptes within the
+> contpte block. This is how I did it in v1; although it was racy. I think this
+> could be implemented correctly but its extremely complex.
 >
+> 2) batch calls from the core-mm (like I did for pte_set_wrprotects()) so that we
+> can clear 1 or more full contpte blocks in a single call - the ptes are never in
+> an intermediate state. This is difficult because ptep_get_and_clear_full()
+> returns the pte that was cleared so its difficult to scale that up to multiple ptes.
+>
+> 3) add ptep_get_no_access_dirty() and redefine the interface to only allow that
+> to be called while ptep_get_and_clear_full() calls are on-going. Then assert in
+> the other functions that ptep_get_and_clear_full() is not on-going when they are
+> called. So we would get a clear sign that usage patterns have changed. But there
+> is no easy place to store that state (other than scanning a contpte block
+> looking for pte_none() amongst pte_valid_cont() entries) and it all felt ugly.
+>
+> 4) The simple approach I ended up taking; I thought it would be best to keep it
+> simple and see if anyone was concerned before doing something more drastic.
+>
+> What do you think? If we really need to solve this, then option 1 is my
+> preferred route, but it would take some time to figure out and reason about a
+> race-free scheme.
+
+Well I like simple, and I agree the risk is small. But I can't help feel
+the current situation is too subtle, mainly because it is architecture
+specific and the assumptions are not communicated in core-mm code
+anywhere. But also none of the aternatives seem much better.
+
+However there are only three callers of ptep_get_and_clear_full(), and
+all of these hold the PTL. So if I'm not mistaken that should exclude
+just about all users of ptep_get*() which will take the ptl before hand.
+
+So really that only leaves ptep_get_lockless() that could/should
+interleave right? From a quick glance of those users none look at the
+young/dirty information anyway, so I wonder if we can just assert in the
+core-mm that ptep_get_lockless() does not return young/dirty information
+and clear it in the helpers? That would make things explicit and
+consistent which would address my concern (although I haven't looked too
+closely at the details there).
+
 > Thanks,
 > Ryan
->
->
->
-> >
-> >>
-> >> 2. folios are not always large, in many cases, they have just one base=
- page
-> >> and there is no tail to remember. and it seems pretty ugly if we turn =
-out have
-> >> to use different ways to remember restoring state for small folios and
-> >> large folios.
-> >
-> > if (folio_test_large(folio)) {
-> >
-> > } else {
-> >
-> > }
-> >
-> > Easy ;)
-> >
-> > Seriously, it's not that complicated and/or ugly.
-> >
-> >>
-> >> 3. there is nothing wrong to use page to restore tags since right now =
-swap-in
-> >> is page. restoring tags and swapping-in become harmonious with each ot=
-her
-> >> after this patch. I would argue what is really wrong is the current ma=
-inline.
-> >>
-> >> If eventually we are able to do_swap_page() for the whole large folio,=
- we
-> >> move to folios for MTE tags as well. These two behaviours make a new
-> >> harmonious picture again.
-> >>
-> >
-> > Just making both functions consume folios is much cleaner and also more=
- future
-> > proof.
-> >
-> > Consuming now a page where we used to consume a folio is a step backwar=
-ds.
-> >
->
 
-Thanks
-Barry
