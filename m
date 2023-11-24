@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFCC7F86A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44677F86B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjKXXZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 18:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
+        id S231547AbjKXX1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 18:27:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXXZo (ORCPT
+        with ESMTP id S229584AbjKXX1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 18:25:44 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7A110DE
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:25:50 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50aaaf6e58fso3597557e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700868348; x=1701473148; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JG09yndkEu639f4KTRkyZKsAldPT0yw1/lGIrHycfbc=;
-        b=w7IgrSt823VjG7s3oVAFRbVPz3Tl4EH0Ph8ZLgnYklpviAMiB9sdhYuAt7Prn/q7LH
-         zIOZEtzvqEky3+pDjCXWTJjulkQK18c/YTKDkoS1XWuMndBAZoEkilH01E5gTfLCd9fE
-         zQKZ2WtKpqmKMDu8s+p95NWZulG+evca+BSSwHcIBm4spACmu7VS2ubo6u296Akkd+br
-         ZJZ13MQjbIDz0wSaQDqXV8wo7hqycljr+QokySB4RfQJLYRj5ClxLZ7aHLZhP7wtp8HF
-         +ccxWo0tdmOUIBJeA4WqbSk34fM1t7DnI6z5iBQ6nNUCHCuCv8RoUt8dqL/qBtB5YDrW
-         GK/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700868348; x=1701473148;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JG09yndkEu639f4KTRkyZKsAldPT0yw1/lGIrHycfbc=;
-        b=dg4V3ipX03RbzVQLCTlvazjpltjyJD9+GR101Lldw3z+AbMCIYJDacJs9UGnpFsOUk
-         7yW+/LFki5R0Lzs/a2kCw3TgPet4krz7vM/aVCH6r3wiFEuX1LvQ3C8AIpSmQcYyiLAZ
-         20S57K94IJ2uc19d4JJSoZ7kAkRzR8SXID/7jZC8bV1l7gWbi53z5fEwEREuBIYaOJzV
-         h3WH0poxK0I8lD7XcSh/cfWdLmuiuDPKmrS9OSj0cH1iC1di3Gu5qYY4g6LHLG+TjnYv
-         01AQpftY2s/49uS0Gubh8d6tQAUINxW38R8A6+L4x/jvBjFKQz/8J4YPaPhYerSt6MvI
-         nZrQ==
-X-Gm-Message-State: AOJu0Yzu/0pE7w1VEfGMrd2KS10+7bVmKcO6UOJWHQUCFxjXhKlGvPr6
-        jfpJcz//WxAHpZwWCSvcK5b2fhZW3bttHtORmhc=
-X-Google-Smtp-Source: AGHT+IHL4UO5xgya8QptvShrVia42MIQfcwsotShbKqPYeoh6HTSXN4MOL6Tq2601Y12IebD1WZlig==
-X-Received: by 2002:a05:6512:1314:b0:507:ae8b:a573 with SMTP id x20-20020a056512131400b00507ae8ba573mr4116472lfu.51.1700868348344;
-        Fri, 24 Nov 2023 15:25:48 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056512361300b0050949e41d36sm635489lfs.253.2023.11.24.15.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 15:25:47 -0800 (PST)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 25 Nov 2023 00:25:47 +0100
-Subject: [PATCH] gpiolib: Drop cargo-culted comment
+        Fri, 24 Nov 2023 18:27:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F365D10DE
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:27:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700868429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RrwbTeSbC5XCVA4N2cHN28MMNgejQdbSfaWFJUoo78=;
+        b=LKj/QL9jF4YVVz/BSaOKk+qIMfZ1H0iIjryiBbsu8typISLR37790DGDOYv0QEvHPii54q
+        oKh4Nk8zROL7bn4lFlbEEa/ZMsbv1KYiGrCEA+3+hIyFOACfnCFJvlWXAEaOBQ42UgMrUL
+        ljbnc1iCO+XMmh4oTrVlPj+FVPLkJKU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-228-RHCueqjrPQOc_2qATkB3tQ-1; Fri, 24 Nov 2023 18:27:07 -0500
+X-MC-Unique: RHCueqjrPQOc_2qATkB3tQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 047CA101A529;
+        Fri, 24 Nov 2023 23:27:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A6EA1C060B0;
+        Fri, 24 Nov 2023 23:27:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <1297339.1700862676@warthog.procyon.org.uk>
+References: <1297339.1700862676@warthog.procyon.org.uk>
+Cc:     dhowells@redhat.com, Steve French <sfrench@samba.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cifs: Set the file size after doing copychunk_range
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231125-dropcomment-v1-1-15800415aae0@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAPowYWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDQyNT3ZSi/ILk/Nzc1LwSXQvLVNMk8yST5GTjNCWgjoKi1LTMCrBp0bG
- 1tQDNwiCXXQAAAA==
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1335876.1700868425.1@warthog.procyon.org.uk>
+Date:   Fri, 24 Nov 2023 23:27:05 +0000
+Message-ID: <1335877.1700868425@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This comment about the gpio_lock is just completely confusing and
-misleading. This refers to a gpio_desc that would in 2008 be used
-to hold the list of gpio_chips, but nowadays gpio_desc refers to
-descriptors of individual GPIO lines and this comment is completely
-unparseable. Delete it.
+David Howells <dhowells@redhat.com> wrote:
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/gpio/gpiolib.c | 4 ----
- 1 file changed, 4 deletions(-)
+> +	truncate_inode_pages_range(&target_inode->i_data, destoff, len);
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 95d2a7b2ea3e..1c47af866bf6 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -86,10 +86,6 @@ static struct bus_type gpio_bus_type = {
-  */
- #define FASTPATH_NGPIO CONFIG_GPIOLIB_FASTPATH_LIMIT
- 
--/* gpio_lock prevents conflicts during gpio_desc[] table updates.
-- * While any GPIO is requested, its gpio_chip is not removable;
-- * each GPIO's "requested" flag serves as a lock and refcount.
-- */
- DEFINE_SPINLOCK(gpio_lock);
- 
- static DEFINE_MUTEX(gpio_lookup_lock);
+That should actually be:
 
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20231125-dropcomment-89e5b7b4cc3f
+	truncate_inode_pages_range(&target_inode->i_data, destoff, destoff + len);
 
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
+David
 
