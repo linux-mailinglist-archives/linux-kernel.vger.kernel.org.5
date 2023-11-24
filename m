@@ -2,152 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E0B7F78CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF9B7F78D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345505AbjKXQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:19:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
+        id S231244AbjKXQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:21:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjKXQTo (ORCPT
+        with ESMTP id S229742AbjKXQVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:19:44 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A52F9199A;
-        Fri, 24 Nov 2023 08:19:48 -0800 (PST)
-Received: from [192.168.1.150] (181-28-144-85.ftth.glasoperator.nl [85.144.28.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5CB3E20B74C0;
-        Fri, 24 Nov 2023 08:19:44 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5CB3E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1700842788;
-        bh=y/iXAqpUVSBXxsl40YVBg93EGfjbUQXj+lkf6hLjxzo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YDm2n3hFWmreZjT+MHHX4GF4KrTMaSuD63YV4ICVgreMTN9ba8PUvNpV3S2rDSXA0
-         JoIKsZDDSehcpPXBQIZBsfJ/oI9u80WOZGfbAZGWMc4ztpkUJ8Jul8DA0GdAnI5HdC
-         jihBQv5GMovZBhdKiuVFZ5pIQCBufXhtu7RMV6UY=
-Message-ID: <6f27610f-afc4-4356-b297-13253bb0a232@linux.microsoft.com>
-Date:   Fri, 24 Nov 2023 17:19:43 +0100
+        Fri, 24 Nov 2023 11:21:54 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE85199A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:22:00 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so26316a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:22:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700842919; x=1701447719; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M64ztmWBiARV+bGOkqq9YDeivw9HkSbLr9/sDMlRs+I=;
+        b=svb9Q/R28rG88XeCEoV0lfKZ3I9iQrd32uZDHauHkJ6Rnqp/YReWNaHgVR/cwvUihP
+         N9K/X3UkJ7vSlT9XsxfACtrpW13I3DJlI7lAr7cMw34g+FNBgICwcW4UKHB8yTeh1nnr
+         U/VWYrutjOw6pxBrJmK+ivtX3mOhnvVAmHZFsrDIVWYc3TU/6HOZyHtggv3NkLF0ZDvg
+         RO1Ah9C9zqx10iHVmxOtVCh7O+ctEPKJQlikVwK5rsdkmHtwvYzAVuZD2fYFgvIUH4eM
+         4ucogFYKy3brOzSs4oUn50F4hs8YXU58rpOymE9nMELGGkLOVxwicNWoL2KGACPFN0YQ
+         hmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700842919; x=1701447719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M64ztmWBiARV+bGOkqq9YDeivw9HkSbLr9/sDMlRs+I=;
+        b=MzlzSuF2tLFRmi3MjfWhXqe654u8pVNq04F5P+1s9H+x3SpZNTNw8LC1dWflIhbjPz
+         WbAs+oZB96X5YlAS6NIAZ5DMkPixVEpyMu7Gk4hVB6TTUUaexk2FgC0D320t+pFWseGu
+         zOkvaVTFtiDEiHfGx1PdmciEa0NHMTQOSoQJJsPM+o7nx6hXWxUBrCWXjjSKKXepQBhD
+         9zOgy6Xqc8rexsEk4VJabw1rSNdGr9op88ZDGvM/pN6QnzbSX97zBkzsVX99sGaFWPNq
+         u0cunbQOahKYgBmUeP5Fe46vJiRfYWfAvkkIBtR56sa6hMLnPHtkLYD30Gz43RxX7/nD
+         Vfag==
+X-Gm-Message-State: AOJu0YzhT+KYDclUxjvGUjdwGVC7Z7fNKZlAnzvWDTbY7Y1lKYw0TAsi
+        Y9tC8Nmja8SQyWCzzaBCLUwgWsCaqZmddjgT/kl2Sg==
+X-Google-Smtp-Source: AGHT+IHOeiCqx5ybJGDdPWiIWyOFgVXz//YKTM16O94xCOOn5kmMHZ2WfxY1jX/GPpN0CrU7+gR0RYsxj5OhmA7J/Hg=
+X-Received: by 2002:a05:6402:b83:b0:544:e249:be8f with SMTP id
+ cf3-20020a0564020b8300b00544e249be8fmr359458edb.1.1700842918703; Fri, 24 Nov
+ 2023 08:21:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        sashal@kernel.org, stable@vger.kernel.org
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
- <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
- <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
- <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
- <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
-Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000cf908705eaa8c5a7@google.com>
+In-Reply-To: <000000000000cf908705eaa8c5a7@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 24 Nov 2023 17:21:20 +0100
+Message-ID: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in __kernel_write_iter
+To:     syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 14:33, Kirill A. Shutemov wrote:
-> On Fri, Nov 24, 2023 at 12:04:56PM +0100, Jeremi Piotrowski wrote:
->> On 24/11/2023 11:43, Kirill A. Shutemov wrote:
->>> On Fri, Nov 24, 2023 at 11:31:44AM +0100, Jeremi Piotrowski wrote:
->>>> On 23/11/2023 14:58, Kirill A. Shutemov wrote:
->>>>> On Wed, Nov 22, 2023 at 06:01:04PM +0100, Jeremi Piotrowski wrote:
->>>>>> Check for additional CPUID bits to identify TDX guests running with Trust
->>>>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
->>>>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
->>>>>>
->>>>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is visible
->>>>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
->>>>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
->>>>>> aware mechanisms for what's left. So currently such guests do not have
->>>>>> X86_FEATURE_TDX_GUEST set.
->>>>>>
->>>>>> We want the kernel to have X86_FEATURE_TDX_GUEST set for all TDX guests so we
->>>>>> need to check these additional CPUID bits, but we skip further initialization
->>>>>> in the function as we aren't guaranteed access to TDX module calls.
->>>>>
->>>>> I don't follow. The idea of partitioning is that L2 OS can be
->>>>> unenlightened and have no idea if it runs indide of TD. But this patch
->>>>> tries to enumerate TDX anyway.
->>>>>
->>>>> Why?
->>>>>
->>>>
->>>> That's not the only idea of partitioning. Partitioning provides different privilege
->>>> levels within the TD, and unenlightened L2 OS can be made to work but are inefficient.
->>>> In our case Linux always runs enlightened (both with and without TD partitioning), and
->>>> uses TDX functionality where applicable (TDX vmcalls, PTE encryption bit).
->>>
->>> What value L1 adds in this case? If L2 has to be enlightened just run the
->>> enlightened OS directly as L1 and ditch half-measures. I think you can
->>> gain some performance this way.
->>>
->>
->> It's primarily about the privilege separation, performance is a reason
->> one doesn't want to run unenlightened. The L1 makes the following possible:
->> - TPM emulation within the trust domain but isolated from the OS
->> - infrastructure interfaces for things like VM live migration
->> - support for Virtual Trust Levels[1], Virtual Secure Mode[2]
->>
->> These provide a lot of value to users, it's not at all about half-measures.
-> 
-> Hm. Okay.
-> 
-> Can we take a step back? What is bigger picture here? What enlightenment
-> do you expect from the guest when everything is in-place?
-> 
+On Mon, Oct 10, 2022 at 9:04=E2=80=AFAM syzbot
+<syzbot+12e098239d20385264d3@syzkaller.appspotmail.com> wrote:
+> HEAD commit:    a6afa4199d3d Merge tag 'mailbox-v6.1' of git://git.linaro=
+...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D110f6f0a88000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd19f5d16783f9=
+01
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D12e098239d20385=
+264d3
+> compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da=
+-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/12e24d042ff9/dis=
+k-a6afa419.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/4862ae4e2edf/vmlinu=
+x-a6afa419.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 20347 at fs/read_write.c:504 __kernel_write_iter+0x6=
+39/0x740
+[...]
+>  __kernel_write fs/read_write.c:537 [inline]
+>  kernel_write+0x1c5/0x340 fs/read_write.c:558
+>  write_buf fs/btrfs/send.c:590 [inline]
+>  send_header fs/btrfs/send.c:708 [inline]
+>  send_subvol+0x1a7/0x4b60 fs/btrfs/send.c:7648
+>  btrfs_ioctl_send+0x1e34/0x2340 fs/btrfs/send.c:8014
+>  _btrfs_ioctl_send+0x2e8/0x420 fs/btrfs/ioctl.c:5233
+>  btrfs_ioctl+0x5eb/0xc10
+>  vfs_ioctl fs/ioctl.c:51 [inline]
 
-All the functional enlightenment are already in place in the kernel and
-everything works (correct me if I'm wrong Dexuan/Michael). The enlightenments
-are that TDX VMCALLs are needed for MSR manipulation and vmbus operations,
-encrypted bit needs to be manipulated in the page tables and page
-visibility propagated to VMM.
+The issue here is that BTRFS_IOC_SEND looks up an fd with fget() and
+then writes into it with kernel_write(). Luckily the ioctl requires
+CAP_SYS_ADMIN, and also Linux >=3D5.8 bails out on __kernel_write() on a
+read-only file, so this has no security impact.
 
-Whats missing is the tdx_guest flag is not exposed to userspace in /proc/cpuinfo,
-and as a result dmesg does not currently display:
-"Memory Encryption Features active: Intel TDX".
+I'm about to send a fix, let's have syzkaller check it beforehand:
 
-That's what I set out to correct.
-
-> So far I see that you try to get kernel think that it runs as TDX guest,
-> but not really. This is not very convincing model.
-> 
-
-No that's not accurate at all. The kernel is running as a TDX guest so I
-want the kernel to know that. TDX is not a monolithic thing, it has different
-features that can be in-use and it has differences in behavior when running
-with TD partitioning (example: no #VE/TDX module calls). So those differences
-need to be clearly modeled in code.
-
-> Why does L2 need to know if it runs under TDX or SEV? Can't it just think
-> it runs as Hyper-V guest and all difference between TDX and SEV abstracted
-> by L1?
-> 
-
-If you look into the git history you'll find this was attempted with
-CC_VENDOR_HYPERV. That proved to be a dead end as some things just can't be
-abstracted (GHCI vs GHCB; the encrypted bit works differently). What resulted
-was a ton of conditionals and duplication. After long discussions with Borislav
-we converged on clearly identifying with the underlying technology (SEV/TDX)
-and being explicit about support for optional parts in each scheme (like vTOM).
+#syz test https://github.com/thejh/linux.git 573fd2562e0f
