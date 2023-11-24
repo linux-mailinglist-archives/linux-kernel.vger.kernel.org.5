@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A597F83B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F667F821D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345969AbjKXTUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S1345895AbjKXTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjKXTUC (ORCPT
+        with ESMTP id S231425AbjKXTE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 14:20:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A55210D
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:20:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE515C433C8;
-        Fri, 24 Nov 2023 19:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700853608;
-        bh=Yw1hEo62+TYnV/OVU0azFUtAGB8JTnrZzuqqMxStj9Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n31ZpreMJ8yf4SRkxelQrlaTbUYuPL8JPharxyjLHXRCdI/XcsOQIqeZtJdqFh5wU
-         ugcWWJV4EH8EDzGA/v14vdEbYkEgZuNWe+LzfyxeL50IIXAFoGG3KozjDn9HpUd3w0
-         CYLgZTJeprezZnitBMweoRXybl9x1bZ1Vu8DEmo0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev,
-        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
-        Darren Hart <darren@os.amperecomputing.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 5.15 256/297] sbsa_gwdt: Calculate timeout with 64-bit math
-Date:   Fri, 24 Nov 2023 17:54:58 +0000
-Message-ID: <20231124172009.129056335@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231124172000.087816911@linuxfoundation.org>
-References: <20231124172000.087816911@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+        Fri, 24 Nov 2023 14:04:26 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF932699;
+        Fri, 24 Nov 2023 11:04:32 -0800 (PST)
+Received: from [192.168.1.103] (31.173.82.189) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 24 Nov
+ 2023 22:04:25 +0300
+Subject: Re: [PATCH 01/13] net: ravb: Check return value of
+ reset_control_deassert()
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
+        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-2-claudiu.beznea.uj@bp.renesas.com>
+ <2ac71d8d-84d8-2092-70b4-9ed21e78541f@omp.ru>
+ <12e63ae7-bc25-4790-883a-ee0eaa28317d@tuxon.dev>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <06c3815d-3ec7-7e2e-8ef7-6fd9caa4cf04@omp.ru>
+Date:   Fri, 24 Nov 2023 22:04:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <12e63ae7-bc25-4790-883a-ee0eaa28317d@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [31.173.82.189]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/24/2023 18:48:20
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181589 [Nov 24 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.82.189 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.82.189
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/24/2023 18:53:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/24/2023 4:10:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+On 11/21/23 8:59 AM, claudiu beznea wrote:
 
-------------------
+[...]
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> reset_control_deassert() could return an error. Some devices cannot work
+>>> if reset signal de-assert operation fails. To avoid this check the return
+>>> code of reset_control_deassert() in ravb_probe() and take proper action.
+>>>
+>>> Fixes: 0d13a1a464a0 ("ravb: Add reset support")
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> ---
+>>>  drivers/net/ethernet/renesas/ravb_main.c | 7 ++++++-
+>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index c70cff80cc99..342978bdbd7e 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>> @@ -2645,7 +2645,12 @@ static int ravb_probe(struct platform_device *pdev)
+>>>  	ndev->features = info->net_features;
+>>>  	ndev->hw_features = info->net_hw_features;
+>>>  
+>>> -	reset_control_deassert(rstc);
+>>> +	error = reset_control_deassert(rstc);
+>>> +	if (error) {
+>>> +		free_netdev(ndev);
+>>> +		return error;
+>>
+>>   No, please use *goto* here. And please fix up the order of statements under
+>> the out_release label before doing that.
+> 
+> This will lead to a bit more complicated patch, AFAICT. I tried to keep it
 
-From: Darren Hart <darren@os.amperecomputing.com>
+   It's OK! :-)
 
-commit 5d6aa89bba5bd6af2580f872b57f438dab883738 upstream.
+> simple for a fix. Same thing for patch 2.
 
-Commit abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
-introduced new timer math for watchdog revision 1 with the 48 bit offset
-register.
+   Patch 2 is not as simple as it could have been...
 
-The gwdt->clk and timeout are u32, but the argument being calculated is
-u64. Without a cast, the compiler performs u32 operations, truncating
-intermediate steps, resulting in incorrect values.
+[...]
 
-A watchdog revision 1 implementation with a gwdt->clk of 1GHz and a
-timeout of 600s writes 3647256576 to the one shot watchdog instead of
-300000000000, resulting in the watchdog firing in 3.6s instead of 600s.
-
-Force u64 math by casting the first argument (gwdt->clk) as a u64. Make
-the order of operations explicit with parenthesis.
-
-Fixes: abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
-Reported-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Signed-off-by: Darren Hart <darren@os.amperecomputing.com>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-watchdog@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: <stable@vger.kernel.org> # 5.14.x
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/7d1713c5ffab19b0f3de796d82df19e8b1f340de.1695286124.git.darren@os.amperecomputing.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/watchdog/sbsa_gwdt.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/drivers/watchdog/sbsa_gwdt.c
-+++ b/drivers/watchdog/sbsa_gwdt.c
-@@ -153,14 +153,14 @@ static int sbsa_gwdt_set_timeout(struct
- 	timeout = clamp_t(unsigned int, timeout, 1, wdd->max_hw_heartbeat_ms / 1000);
- 
- 	if (action)
--		sbsa_gwdt_reg_write(gwdt->clk * timeout, gwdt);
-+		sbsa_gwdt_reg_write((u64)gwdt->clk * timeout, gwdt);
- 	else
- 		/*
- 		 * In the single stage mode, The first signal (WS0) is ignored,
- 		 * the timeout is (WOR * 2), so the WOR should be configured
- 		 * to half value of timeout.
- 		 */
--		sbsa_gwdt_reg_write(gwdt->clk / 2 * timeout, gwdt);
-+		sbsa_gwdt_reg_write(((u64)gwdt->clk / 2) * timeout, gwdt);
- 
- 	return 0;
- }
-
-
+MBR, Sergey
