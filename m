@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E607F6F41
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7E67F6F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbjKXJPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
+        id S232837AbjKXJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:17:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjKXJPa (ORCPT
+        with ESMTP id S229705AbjKXJR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:15:30 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D99B0;
-        Fri, 24 Nov 2023 01:15:35 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so787649a12.1;
-        Fri, 24 Nov 2023 01:15:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700817334; x=1701422134; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6kRk7Goc6hUK5lXDDcfcFjF2TFYoCUPomnxmo7qAhJM=;
-        b=L4VnncXo30pHON6jwFm+tjSmIk4bizGaBpfXZoUhczUwWwNWgAvDFGWw7lbpr7ceaX
-         hORJh4Y/vqB4VqtKmRfRfdBqlPKumXVMEWVliD11wb/KfHvNmp8aPR7712+CweiGSK/x
-         QEqGAQo7PcRnZmxuvBErGv/EqFdKtJBFFTWnCYHp5GEDTVvcF9LDkE0iLuoo/a3x2vjL
-         AH7BM7CaOf9a7Dcy1AQFTFvMQ1fKWu8jtZecOkN1FXKrhhTbe80eIPFxj+K5YKId51QI
-         Bs8xi/4n5DR6Qbz8G6V4ZIY6cELPQ73Sep0lUGSTm4gslDJ3BheLROcxofpjtZjRsvdU
-         3SRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700817334; x=1701422134;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6kRk7Goc6hUK5lXDDcfcFjF2TFYoCUPomnxmo7qAhJM=;
-        b=TG99OkOxAsOJYN3RMhc2RqyCGw5kIiuok6O5k9V6P/RvJCJpUXAAF//49xe8aYylHB
-         16PvbmQb3AHvvj7bBCXc+ZecWfmiMtWsVrOmOupaNiGfpyWpQSQQRsQktqcC3+n8drZD
-         RPEcg9ZEBufmhQkf9PxSzAL02IId48V6nlnryDVInoyoQ+qJM5yKrC/9yEZWDhFBKsh9
-         dmGqDfdQ+YKJ89TdsmPq31WPNNWlUC+d5Joq2ZLLShOOG/Y7SwF5q5cDYDzKcppCgnpL
-         2jqjaJlUgR1RAhUkOXPoAi9l61f0cVFuxC8vUf5iTMxucZwNwdhLBo0ftx3WaZMyLzMG
-         c3ng==
-X-Gm-Message-State: AOJu0YwgPDIPJXZbyEnk3lWpU8UYCjroj+tqsabI+cmrKiZVpVOEug7w
-        h7ELP3630doqCNYpPf45n7I=
-X-Google-Smtp-Source: AGHT+IFu01dY/t4VI0lj9frcLMLKZW4WdocaWxXVM5QL3w94LfiESYd3xuuDtEj08JNe0qoO/CnBZg==
-X-Received: by 2002:a05:6402:206d:b0:54a:271d:9648 with SMTP id bd13-20020a056402206d00b0054a271d9648mr4267375edb.13.1700817333722;
-        Fri, 24 Nov 2023 01:15:33 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id cf11-20020a0564020b8b00b0054afcab0af2sm331052edb.59.2023.11.24.01.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:15:33 -0800 (PST)
-Message-ID: <178c36656ecbb26c169b5a878ccc18bf89c6b36d.camel@gmail.com>
-Subject: Re: [PATCH 00/12] iio: add new backend framework
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Olivier MOYSAN <olivier.moysan@foss.st.com>, nuno.sa@analog.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Date:   Fri, 24 Nov 2023 10:15:32 +0100
-In-Reply-To: <031e616b-b080-4cfc-9c99-00df46b4075b@foss.st.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-         <031e616b-b080-4cfc-9c99-00df46b4075b@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 24 Nov 2023 04:17:28 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC38E12B
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:17:33 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADB076607341;
+        Fri, 24 Nov 2023 09:17:31 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700817452;
+        bh=jfNGllP778vYujaJKDb/B9ipiM15hlfBX7FsAcZ8aJU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=XHhMQg1jVFz37OKm/l5D/BhYa0YgRFKjGtcfhOU51GrE3si7b27fXKNAdJm51njjO
+         G/OQFBnMiGDfvYDHHtqdVRA4/xHB0DqM75ZWypZHj+oKeFYUMv9g10mvHnlY7DAOQU
+         8Fe8zrP8ALDNYp9AgX7YYkzVlXOJYm685RAbsVpDHv/Cqm43yHaUdzOHdkGGsI9Ap/
+         YE2KxmPlSkkIwCcc7/6PmhYTbIR6seuwkMRslZosZUJMEd/pXQ9ojltw9Tn6zZfuBV
+         fO4X6cwGDJiDTlGv33SG8d4VmoYbQzXK3wieJzyIfqlk6dDa8fVHYr0AfjIRyjCh+1
+         ac0PFAXPYLhXw==
+Message-ID: <5e60f1d1-8e3a-42ca-af56-126faa67ea86@collabora.com>
+Date:   Fri, 24 Nov 2023 10:17:29 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     steven.price@arm.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski@linaro.org, kernel@collabora.com
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+ <20231123113530.46191ded@collabora.com>
+ <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+ <20231123135933.34d643f7@collabora.com>
+ <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
+ <20231123145103.23b6eac9@collabora.com>
+ <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
+ <20231123164019.629c91f9@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20231123164019.629c91f9@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,223 +68,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-11-23 at 18:36 +0100, Olivier MOYSAN wrote:
-> Hi Nuno,
->=20
-> On 11/21/23 11:20, Nuno Sa via B4 Relay wrote:
-> > Hi all,
-> >=20
-> > This is a Framework to handle complex IIO aggregate devices.
-> >=20
-> > The typical architecture is to have one device as the frontend device w=
-hich
-> > can be "linked" against one or multiple backend devices. All the IIO an=
-d
-> > userspace interface is expected to be registers/managed by the frontend
-> > device which will callback into the backends when needed (to get/set
-> > some configuration that it does not directly control).
-> >=20
-> > The basic framework interface is pretty simple:
-> > =C2=A0 - Backends should register themselves with @devm_iio_backend_reg=
-ister()
-> > =C2=A0 - Frontend devices should get backends with @devm_iio_backend_ge=
-t()
-> >=20
-> > (typical provider - consumer stuff)
-> >=20
-> > This is the result of the discussions in [1] and [2]. In short, both AD=
-I
-> > and STM wanted some way to control/get configurations from a kind of
-> > IIO aggregate device. So discussions were made to have something that
-> > serves and can be used by everyone.
-> >=20
-> > The main differences with the converter framework RFC [1]:
-> >=20
-> > 1) Dropped the component framework. One can get more overview about
-> > the concerns on the references but the main reasons were:
-> > =C2=A0 * Relying on providing .remove() callbacks to be allowed to use =
-device
-> > =C2=A0=C2=A0=C2=A0 managed functions. I was not even totally sure about=
- the correctness
-> > =C2=A0=C2=A0=C2=A0 of it and in times where everyone tries to avoid tha=
-t driver
-> > =C2=A0=C2=A0=C2=A0 callback, it could lead to some maintenance burden.
-> > =C2=A0 * Scalability issues. As mentioned in [2], to support backends d=
-efined
-> > =C2=A0=C2=A0=C2=A0 in FW child nodes was not so straightforward with th=
-e component
-> > =C2=A0=C2=A0=C2=A0 framework.
-> > =C2=A0 * Device links can already do some of the things that made me
-> > =C2=A0=C2=A0=C2=A0 try the component framework (eg: removing consumers =
-on suppliers
-> > =C2=A0=C2=A0=C2=A0 unbind).
-> >=20
-> > 2) Only support the minimal set of functionality to have the devices in
-> > =C2=A0=C2=A0=C2=A0 the same state as before using the backend framework=
-. New features
-> > =C2=A0=C2=A0=C2=A0 will be added afterwards.
-> >=20
-> > 3) Moved the API docs into the .c files.
-> >=20
-> > 4) Moved the framework to the IIO top dir and renamed it to
-> > =C2=A0=C2=A0=C2=A0 industrialio-backend.c.
-> >=20
-> > Also, as compared with the RFC in [2], I don't think there are that man=
-y
-> > similarities other than the filename. However, it should now be pretty
-> > straight for Olivier to build on top of it. Also to mention that I did
-> > grabbed patch 1 ("of: property: add device link support for
-> > io-backends") from that series and just did some minor changes:
-> >=20
->=20
-> I did not already look at the framework patches in detail, but at first=
-=20
-> glance it looks fine.
->=20
-> I confirm that it has been quite straightforward to build on top of this=
-=20
-> framework, as it remains close to my first approach. I had only some=20
-> small changes to do, to match the API, and to get it alive. This is great=
-.
->=20
-> I see just one concern regarding ADC generic channel bindings support.
-> Here we have no devices associated to the channel sub-nodes. So, I=20
-> cannot figure out we could use the devm_iio_backend_get() API, when=20
-> looking for backend handle in channels sub-nodes. I have to think about i=
-t.
->=20
+Il 23/11/23 16:40, Boris Brezillon ha scritto:
+> On Thu, 23 Nov 2023 16:14:12 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>> Il 23/11/23 14:51, Boris Brezillon ha scritto:
+>>> On Thu, 23 Nov 2023 14:24:57 +0100
+>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> wrote:
+>>>    
+>>>>>>
+>>>>>> So, while I agree that it'd be slightly more readable as a diff if those
+>>>>>> were two different commits I do have reasons against splitting.....
+>>>>>
+>>>>> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
+>>>>> in when we power-off the cores, I think we'd be better off dropping
+>>>>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
+>>>>> at [re]initialization time, and then have a separate series that fixes
+>>>>> the problem more generically.
+>>>>>       
+>>>>
+>>>> But that didn't work:
+>>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+>>>
+>>> I meant, your 'ignore-core_mask' fix + the
+>>> 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
+>>>
+>>> So,
+>>>
+>>> https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
+>>> +
+>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+>>>    
+>>>>
+>>>>
+>>>> ...while this "full" solution worked:
+>>>> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
+>>>>
+>>>> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
+>>>>
+>>>>
+>>>> ...so this *is* a "quick fix" already... :-)
+>>>
+>>> It's a half-baked solution for the missing irq-synchronization-on-suspend
+>>> issue IMHO. I understand why you want it all in one patch that can serve
+>>> as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
+>>> panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
+>>> even simpler diff (see below), and then fully address the
+>>> irq-synhronization-on-suspend issue in a follow-up patchset.
+>>>    
+>>> --->8---
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>> index 09f5e1563ebd..6e2d7650cc2b 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>> @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>>>           }
+>>>    
+>>>           gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+>>> -       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+> 
+> We probably want a comment here:
+> 
+> 	/* Only enable the interrupts we care about. */
+> 
+>>> +       gpu_write(pfdev, GPU_INT_MASK,
+>>> +                 GPU_IRQ_MASK_ERROR |
+>>> +                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
+>>> +                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
+>>>      
+>>
+>> ...but if we do that, the next patch(es) will contain a partial revert of this
+>> commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL)...
+> 
+> Why should we revert it? We're not processing the PWRTRANS interrupts
+> in the interrupt handler, those should never have been enabled in the
+> first place. The only reason we'd want to revert that change is if we
+> decide to do have interrupt-based waits in the poweron/off
+> implementation, which, as far as I'm aware, is not something we intend
+> to do any time soon.
+> 
 
-Yeah, I'm keeping the series small (as Jonathan asked in the RFC) and just =
-with basic
-stuff needed to get the ad9647 driver in the exact same state as before the
-framework. So yes, it's the same deal as with the component approach. You'l=
-l need to
-add support for it. But, in this case, I believe it should be as straight a=
-s:
+You're right, yes. Okay, I'll push the new code soon.
 
--/**
-- * devm_iio_backend_get - Get a backend device
-- * @dev:       Device where to look for the backend.
-- * @name:      Backend name.
-- *
-- * Get's the backend associated with @dev.
-- *
-- * RETURNS:
-- * A backend pointer, negative error pointer otherwise.
-- */
--struct iio_backend *devm_iio_backend_get(struct device *dev, const char *n=
-ame)
-+struct iio_backend *devm_fwnode_iio_backend_get(struct device *dev,
-+                                               const struct fwnode_handle =
-*fwnode,
-+                                               const char *name)
- {
--       struct fwnode_handle *fwnode;
-+       struct fwnode_handle *back_fwnode;
-        struct iio_backend *back;
-        int index =3D 0, ret;
+Cheers!
 
-@@ -195,20 +187,20 @@ struct iio_backend *devm_iio_backend_get(struct devic=
-e *dev,
-const char *name)
-                        return ERR_PTR(index);
-        }
-
--       fwnode =3D fwnode_find_reference(dev_fwnode(dev), "io-backends", in=
-dex);
--       if (IS_ERR(fwnode)) {
-+       back_fwnode =3D fwnode_find_reference(fwnode, "io-backends", index)=
-;
-+       if (IS_ERR(back_fwnode)) {
-                dev_err(dev, "Cannot get Firmware reference\n");
--               return ERR_CAST(fwnode);
-+               return ERR_CAST(back_fwnode);
-        }
-
-        guard(mutex)(&iio_back_lock);
-        list_for_each_entry(back, &iio_back_list, entry) {
-                struct device_link *link;
-
--               if (!device_match_fwnode(back->dev, fwnode))
-+               if (!device_match_fwnode(back->dev, back_fwnode))
-                        continue;
-
--               fwnode_handle_put(fwnode);
-+               fwnode_handle_put(back_fwnode);
-                kref_get(&back->ref);
-                if (!try_module_get(back->owner)) {
-                        dev_err(dev, "Cannot get module reference\n");
-@@ -229,9 +221,25 @@ struct iio_backend *devm_iio_backend_get(struct device=
- *dev,
-const char *name)
-                return back;
-        }
-
--       fwnode_handle_put(fwnode);
-+       fwnode_handle_put(back_fwnode);
-        return ERR_PTR(-EPROBE_DEFER);
- }
-+EXPORT_SYMBOL_GPL(devm_fwnode_iio_backend_get);
-+
-+/**
-+ * devm_iio_backend_get - Get a backend device
-+ * @dev:       Device where to look for the backend.
-+ * @name:      Backend name.
-+ *
-+ * Get's the backend associated with @dev.
-+ *
-+ * RETURNS:
-+ * A backend pointer, negative error pointer otherwise.
-+ */
-+struct iio_backend *devm_iio_backend_get(struct device *dev, const char *n=
-ame)
-+{
-+       return devm_fwnode_iio_backend_get(dev, dev_fwnode(dev), name);
-+}
- EXPORT_SYMBOL_GPL(devm_iio_backend_get);
-
- /**
-
-Completely untested (not even compiled :)). Anyways, the goal is to just ha=
-ve the
-minimum accepted and you can then send the needed patches for subnode looku=
-ps.
+>>
+>> I'm not sure that it's worth changing this like that, then changing it back right
+>> after :-\
+>>
+>> Anyway, if anyone else agrees with doing it and then partially revert, I have no
+>> issues going with this one instead; what I care about ultimately is resolving the
+>> regression ASAP :-)
+>>
+>> Cheers,
+>> Angelo
+>>
+>>>           /*
+>>>            * All in-flight jobs should have released their cycle
+>>> @@ -425,11 +428,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+>>>    
+>>>    void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>>>    {
+>>> -       u64 core_mask = panfrost_get_core_mask(pfdev);
+>>>           int ret;
+>>>           u32 val;
+>>>    
+>>> -       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
+>>> +       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+>>>           ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+>>>                                            val, !val, 1, 1000);
+>>>           if (ret)
+>>> @@ -441,7 +443,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>>>           if (ret)
+>>>                   dev_err(pfdev->dev, "tiler power transition timeout");
+>>>    
+>>> -       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
+>>> +       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+>>>           ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+>>>                                    val, !val, 0, 1000);
+>>>           if (ret)
+>>>
+>>>    
+>>
+> 
 
 
-> > 1) Renamed the property from "io-backend" to "io-backends".
-> > 2) No '#io-backend-cells' as it's not supported/needed by the framework
-> > (at least for now) .
-> >=20
-> > Regarding the driver core patch
-> > ("driver: core: allow modifying device_links flags"), it is more like a
-> > RFC one. I'm not really sure if the current behavior isn't just
-> > expected/wanted. Since I could not really understand if it is or not
-> > (or why the different handling DL_FLAG_AUTOREMOVE_CONSUMER vs
-> > DL_FLAG_AUTOREMOVE_SUPPLIER), I'm sending out the patch.
-> >=20
-> > Jonathan,
-> >=20
-> > I also have some fixes and cleanups for the ad9467 driver. I added
-> > Fixes tags but I'm not sure if it's really worth it to backport them (g=
-iven
-> > what we already discussed about these drivers). I'll leave that to you
-> > :).
-> >=20
-> > I'm also not sure if I'm missing some tags (even though the series
-> > is frankly different from [2]).
-> >=20
-> > Olivier,
-> >=20
-> > If you want to be included as a Reviewer let me know and I'll happily d=
-o
-> > so in the next version.
-> >=20
->=20
-> Yes, please add me as reviewer.
-> Thanks.
-> Olivier
 
-Will do.
-
-- Nuno S=C3=A1
->=20
