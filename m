@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9927F7196
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EC17F7199
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345526AbjKXKfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
+        id S1345377AbjKXKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXKfQ (ORCPT
+        with ESMTP id S229668AbjKXKgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:35:16 -0500
+        Fri, 24 Nov 2023 05:36:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05616D69
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:35:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F50EC433C8;
-        Fri, 24 Nov 2023 10:35:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C4F110
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:36:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4786EC433C7;
+        Fri, 24 Nov 2023 10:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700822122;
-        bh=H+nXekQkf9XBvY1ESMqyZIEqP3DaxDh+lS5/L2SdOxA=;
+        s=k20201202; t=1700822187;
+        bh=dwvET0tU2J4anZFCWNw+ZZdWZ1IJPa1GnEWhl08aDOY=;
         h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-        b=JeAVkrlT0JUtUSZHnsWzFlVtrXd1jk4LmmlEePsz4eSdJSF8ECxx6slpyiS7xTSOQ
-         XLVdMkamyEMILzaPLP9l2OoAPhYAMBum4iSEl40sOaT9Cd8mkbPHhsHnX6MXaeVNm1
-         pGrxLhUDuTpeFOMGoufKLUDNkMX8iFP4DS/O7HLe9OiDF5QQI//y3KLwfqtDIMdhSp
-         vLQAVDwnZm6KkPgHXLIAZ5oxN+WJhAz2gE9Yzro1Mv9UuqXZF2dbrXfpmtl87MvGuM
-         rSQr8NecK7JaxZ7HIzrdEFjEeCRY6mdY1Ww8G6aQ2tz5JQj6yGrUgDRuxbptA82BH3
-         dpyeIFuqI2h2Q==
-Message-ID: <a8383fc4d59952d74816b16a1a1c322a.mripard@kernel.org>
-Date:   Fri, 24 Nov 2023 10:35:20 +0000
+        b=MM9kpBK+yisLDCYJftMOvpfpu6pOA725LB5EXxmwkvXFqByoAqaB5X89kowP4w0yj
+         zb681yXDg8hPDrvyYZXlz+nWipEQ6BGPdt591lhsL/JTR6pU7IR/QBTw4RlUo3UEPm
+         vC/kRYKYyX83Sxk689k6xefJdd68JBlWNtrjZSm0ry5RNYhbAkWK9NQxctEyrvjMr4
+         xbnGOxoOeDpcJBhVIHprlpn+i0ZjjweSibtSihYi81RQOfNUP9N4xSSsnH+q/ioJtn
+         8T5MLJWcclvP5CfJY/zAbPj04zqAUA2KCtIClU2XCyjdsjl0WzOhFsK6Bs5ZQJXnsu
+         xRJE8DkkXQncQ==
+Message-ID: <f27d3ba73b506111583b2a4f2471dfc9.mripard@kernel.org>
+Date:   Fri, 24 Nov 2023 10:36:24 +0000
 From:   "Maxime Ripard" <mripard@kernel.org>
 To:     "Dmitry Osipenko" <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH v18 02/26] drm/gem: Add _locked postfix to functions
- that have unlocked counterpart
-In-Reply-To: <20231029230205.93277-3-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-3-dmitry.osipenko@collabora.com>
+Subject: Re: [PATCH v18 03/26] drm/shmem-helper: Make all exported symbols
+ GPL
+In-Reply-To: <20231029230205.93277-4-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-4-dmitry.osipenko@collabora.com>
 Cc:     dri-devel@lists.freedesktop.org, kernel@collabora.com,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
@@ -62,12 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 02:01:41 +0300, Dmitry Osipenko wrote:
-> Add _locked postfix to drm_gem functions that have unlocked counterpart
-> functions to make GEM functions naming more consistent and intuitive in
-> regards to the locking requirements.
+On Mon, 30 Oct 2023 02:01:42 +0300, Dmitry Osipenko wrote:
+> Make all drm-shmem exported symbols GPL to make them consistent with
+> the rest of drm-shmem symbols.
 > 
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 > 
 > [ ... ]
 
