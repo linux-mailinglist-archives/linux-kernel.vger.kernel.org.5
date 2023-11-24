@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CEF7F7A49
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19407F7A44
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbjKXRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        id S231324AbjKXRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjKXRYV (ORCPT
+        with ESMTP id S231200AbjKXRSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:24:21 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1541725;
-        Fri, 24 Nov 2023 09:24:27 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5289121EB4;
-        Fri, 24 Nov 2023 17:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700846663;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 24 Nov 2023 12:18:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E326C19A7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:18:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700846326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HxPPN20iBqWe0yb/pnf+KxCWGpSg8jYorXXnEZgUTj8=;
-        b=JKq3gy1y0+zqGnocWkqKqCkVdKB7hBsxtY+cqoV5K1aO2lInhionEPN+zXTr25ojWBDBgI
-        uVr5YrrfU9XYHNl9qeZvMyOeoTb8x1AEVhrzkJrFFlPx++Vx7uiGxElcuElrIr/Q+mNXhU
-        XJT5xcG2Ab/FXETFTy75ure7ZOFWVdI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700846663;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HxPPN20iBqWe0yb/pnf+KxCWGpSg8jYorXXnEZgUTj8=;
-        b=yPummDNZtI/L5rAxH3A6Cu5n6osmRTYKvDpoI00CFzb2d4j1eIBLKFCZGdDcY0P2EJCqPn
-        5/A5+Uts7OfrkZAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E88F9132E2;
-        Fri, 24 Nov 2023 17:24:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id BnfYNkbcYGWfUgAAn2gu4w
-        (envelope-from <dsterba@suse.cz>); Fri, 24 Nov 2023 17:24:22 +0000
-Date:   Fri, 24 Nov 2023 18:17:08 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Jann Horn <jannh@google.com>
-Cc:     syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in __kernel_write_iter
-Message-ID: <20231124171707.GF18929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <000000000000cf908705eaa8c5a7@google.com>
- <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
+        bh=SHbzOtA4hzteJQDcB8FFU+7O7arSeNmceXHgvsMd7BI=;
+        b=Ke/XXKsVPFtRk4uQ0/S1CQW+hTNLUS59AUhtXXo7PDkfo55ygQiQ1gea8p7/82wmapeNMS
+        yrsM0k6qrFFCUI1pokY+oQW5U+2E4ztN4diFpqjtg2hbjmrmxGiw2zxCzGWTGzzsLcfXxR
+        xqR2sMDDA2ljGoyYKeX8OivEDnLDLyY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-442-33Dps7vVN92s7NQHVM8l1A-1; Fri, 24 Nov 2023 12:18:45 -0500
+X-MC-Unique: 33Dps7vVN92s7NQHVM8l1A-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a02cc56af16so145787466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:18:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700846324; x=1701451124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SHbzOtA4hzteJQDcB8FFU+7O7arSeNmceXHgvsMd7BI=;
+        b=mDnRLOQSgqu8r/fo9iMoffupUKJy36/qP2BLn2ktZaUYakFcMOBMfnai+IS46SZ7OJ
+         KDZWLVjgaf1uoOYx0pGBWxfUjUKEE2pqGQa3YN9fKJTXMbEuUA4ppGnnxzx3R1aPa7lN
+         86ZDR+BSO5F6zbmz63UV056NcfDbblFOWrA6X2m+wih7MNtFVmHSFsX68TGrWu5jbxKG
+         l1jpVFVs+DQTiiXQTJeAxhsdISsHAjOvIj+pOOMYvo3vZi9ueMTAj1tOWzkWi3stz1XP
+         SlLgaa4bRZehsGEGSUHBVWAQa5dMIvjvUchDHT0m85qw5cc9ruw9MOPE8l+cxfYVpVMF
+         Bp+A==
+X-Gm-Message-State: AOJu0Yxk8FZLYXSQ7tuxJ/dQUnU6KRsRYWHHFFfpN1FyKfxrxsA8KLy1
+        oaDgndHVwAWCnY1w7zVr056Fir90j8mtjIQVhUJGFMqOiksb1c1dXgCjtbQQiKRmrsutltdpWGc
+        S0uf7VKb4gypKUMUSxFEOSM/2V5wSU0WX/ZB3WAo3
+X-Received: by 2002:a17:907:b00a:b0:9fe:5afc:bd3e with SMTP id fu10-20020a170907b00a00b009fe5afcbd3emr2306083ejc.22.1700846324376;
+        Fri, 24 Nov 2023 09:18:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG0BQ9ZSpmBE+CVwJFWzPye++8Z1ZHU4yOXjYYGEwtuxkE958vjctmeNuZA99dXe4VUxWBl2CoTRLdtdTAS6Lc=
+X-Received: by 2002:a17:907:b00a:b0:9fe:5afc:bd3e with SMTP id
+ fu10-20020a170907b00a00b009fe5afcbd3emr2306074ejc.22.1700846324107; Fri, 24
+ Nov 2023 09:18:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 5.09
-X-Spamd-Result: default: False [5.09 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d19f5d16783f901];
-         TAGGED_RCPT(0.00)[12e098239d20385264d3];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         REPLY(-4.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_SPAM_SHORT(2.89)[0.965];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
+ <CAO-hwJ+zm=R7NwrALaLVmfPDtMNXpj0eoQgLkiS1wa6wd+hu+A@mail.gmail.com>
+ <CAO-hwJKJW5jGDdaaS8eB7kcLQUvWO_1XkOzJG4HAcaRzw1cGnQ@mail.gmail.com>
+ <7wmtNlKuYResf5cFQ7M2QTalzIUtw0I6ohvPcz69Jo1c8flezyIlnJu1IwAgXhJ-u0NlRL3IV7HnL0Kza6fVBqd7X7jhc-Z6QCi3oqHEvpY=@protonmail.com>
+ <CAO-hwJJ+nx72_TPfxcWRPBDZdDaPrO5yMNH4Y_mj6ej651Mesw@mail.gmail.com>
+ <nFHw6XePiH5p60JsbQSbssRkiuABiTiR_n5fIYFZjPgkV3ObjjZuwTC84BJ_1vXYVufPbG3UvZ1L7ODSrrGlq9CrI7BTKhsV5QeAQoakV18=@protonmail.com>
+ <CAO-hwJ+jwmTE-v7FsPi3f70mB8SqUha7Ek9DtptZ0auiFpGM7w@mail.gmail.com>
+ <CAO-hwJJoCp0_kxf_HHN9n9EWy9YDSY4rP8ysYNrNg2xTUYtKEQ@mail.gmail.com> <evHI05gyKuWwynY1WdyVvXqKPUaPE8W34cc3tFfp9FWh94TWfA9FWfHun7AAscF9lqfbiYsLKGC7kTSZ9xWNZg88-PTpbGTLcFMc9D3P2HE=@protonmail.com>
+In-Reply-To: <evHI05gyKuWwynY1WdyVvXqKPUaPE8W34cc3tFfp9FWh94TWfA9FWfHun7AAscF9lqfbiYsLKGC7kTSZ9xWNZg88-PTpbGTLcFMc9D3P2HE=@protonmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 24 Nov 2023 18:18:31 +0100
+Message-ID: <CAO-hwJLinACPsk=mEHrEz_YJroknmm=9PcX8byHiqEDxqOConQ@mail.gmail.com>
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
+To:     David Revoy <davidrevoy@protonmail.com>
+Cc:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
+        Eric GOUYER <folays@gmail.com>,
+        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
+        jkosina@suse.cz, jason.gerecke@wacom.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,48 +87,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 05:21:20PM +0100, Jann Horn wrote:
-> On Mon, Oct 10, 2022 at 9:04 AM syzbot
-> <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com> wrote:
-> > HEAD commit:    a6afa4199d3d Merge tag 'mailbox-v6.1' of git://git.linaro...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=110f6f0a880000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d19f5d16783f901
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
-> > compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/12e24d042ff9/disk-a6afa419.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/4862ae4e2edf/vmlinux-a6afa419.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 20347 at fs/read_write.c:504 __kernel_write_iter+0x639/0x740
-> [...]
-> >  __kernel_write fs/read_write.c:537 [inline]
-> >  kernel_write+0x1c5/0x340 fs/read_write.c:558
-> >  write_buf fs/btrfs/send.c:590 [inline]
-> >  send_header fs/btrfs/send.c:708 [inline]
-> >  send_subvol+0x1a7/0x4b60 fs/btrfs/send.c:7648
-> >  btrfs_ioctl_send+0x1e34/0x2340 fs/btrfs/send.c:8014
-> >  _btrfs_ioctl_send+0x2e8/0x420 fs/btrfs/ioctl.c:5233
-> >  btrfs_ioctl+0x5eb/0xc10
-> >  vfs_ioctl fs/ioctl.c:51 [inline]
-> 
-> The issue here is that BTRFS_IOC_SEND looks up an fd with fget() and
-> then writes into it with kernel_write(). Luckily the ioctl requires
-> CAP_SYS_ADMIN, and also Linux >=5.8 bails out on __kernel_write() on a
-> read-only file, so this has no security impact.
+Hi David,
 
-I'm not sure if we could make the send ioctl safe for a non-root user,
-the code there has been doing tricks that have security implications.
+On Thu, Nov 23, 2023 at 11:12=E2=80=AFPM David Revoy <davidrevoy@protonmail=
+.com> wrote:
+>
+> Hi Benjamin,
+>
+> Sorry for late reply.
+>
+> > So it would be nice if you could try the artifacts of job 51600738[4].
+> > Again, download them (udev-hid-bpf_0.1.0-4-g5ab02ec.tar.xz), unpack,
+> > sudo ./install --verbose, then unplug/replug the artist Pro 24.
+>
+> Ok, the main change I experienced after installing is xsetwacom
+> listing the ID name of the device with twice the name Stylus on
+> "UGTABLET 24 inch PenDisplay Stylus stylus". Before it was only
+> "UGTABLET 24 inch PenDisplay stylus".
+>
+> $ xsetwacom --list
+> UGTABLET 24 inch PenDisplay Stylus stylus       id: 10  type: STYLUS
+>
+> Not a big deal, but I thought it was worth to mention it.
 
-> I'm about to send a fix, let's have syzkaller check it beforehand:
-> 
-> #syz test https://github.com/thejh/linux.git 573fd2562e0f
+Oh, this might be because I added a debug device. Given that there are
+2 devices on the HID node, then one is tagged as Stylus by the kernel.
+Nothing to worry about.
 
-The fix looks correct to me, thanks.
+>
+> > Then, I'll need the following sequence (ideally repeated twice or
+> > three times, given that your last record show a slight difference in
+> > the first and second attempt):
+> >
+> > - outside of the proximity of the sensor, press the upper button
+> > - approach the stylus to the surface keeping the upper button pressed
+> > - touch the surface with the tip while holding the upper button pressed
+> > - release the upper button while keeping the tip pressed (like previous=
+ly)
+> > - press once again the upper button while keeping the tip touching the
+> > surface (like previously)
+> > - lift of the pen, keeping the upper button pressed, and still in
+> > range of the sensor
+> > - remove the pen from the proximity of the sensor entirely (move away
+> > 20 cm or so), while still keeping the upper button pressed
+> >
+> > It's actually longer to describe than to execute :)
+> >
+>
+> Thank you for the detailed steps. True, it makes sens once
+> practising it. I made the gesture three time on:
+>
+> https://www.peppercarrot.com/extras/mailing-list/hid-records/XPPEN-Artist=
+-24-Pro/2023-11-23_XPPEN-Artist-24-Pro_pen_tip-contact-and-press-release-up=
+per-stylus-button-while-pressed-x3.txt
+
+Thanks a lot. And of course this device doesn't react in the way I expected=
+ :)
+
+Transitions from/to the tip touching the surface while the second
+button is pressed are normal, there are no extra events...
+
+But this also showed that the previous filter was better when pressing
+the upper button while touching the tip on the surface, because now we
+get another spurious event that was filtered before (and because it
+was filtered, I thought it was not there).
+
+Anyway, I couldn't rewrite the filter today, but I'll work on it next
+week for sure.
+
+>
+> > But I would also totally understand that you had enough debugging and
+> > you would rather focus on using the tablets, instead of debugging
+> > them. In which case, someone else from the community might help me.
+>
+> No problem for continue testing, I'm around! Thank you again
+> for improving the behavior of the tablets.
+>
+
+great!
+
+Cheers,
+Benjamin
+
+
+> Cheers,
+> David
+>
+
