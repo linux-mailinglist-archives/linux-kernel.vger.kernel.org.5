@@ -2,54 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B067F754C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FDB7F7528
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235293AbjKXNeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
+        id S1345088AbjKXNc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbjKXNeA (ORCPT
+        with ESMTP id S233044AbjKXNcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:34:00 -0500
-X-Greylist: delayed 272 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 05:33:53 PST
-Received: from vsrv.gekmihesg.de (vsrv.gekmihesg.de [IPv6:2a01:4f8:c17:74cc::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBEC210C;
-        Fri, 24 Nov 2023 05:33:53 -0800 (PST)
-Message-ID: <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gekmihesg.de;
-        s=201901; t=1700832555; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tvi71HIUFqmS5YOZB3JKUh9IA5LYRhf5uCgrQHgyQ/Y=;
-        b=rwMGoP8ISZ1/COYdMrSf3LsQSoobBlsOJj9+QwKfDDJ8I1HuZ0bxPcx9u+9C97xVMxLw8F
-        1lRzO/aKjx7FOyjsszIt/2Pjglw50U79CIoMnaCOk2yBa+Jmno7pefuRk9ERRYxsiAIri0
-        kqw6h5wF5kYU6vMfUx0FFJzT1CGk8NA=
-Subject: Re: bcache: kernel NULL pointer dereference since 6.1.39
-From:   Markus Weippert <markus@gekmihesg.de>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        Zheng Wang <zyytlz.wz@163.com>, Coly Li <colyli@suse.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Stefan =?ISO-8859-1?Q?F=F6rster?= <cite@incertum.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        linux-bcache@vger.kernel.org
-Date:   Fri, 24 Nov 2023 14:29:14 +0100
-In-Reply-To: <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
-References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
-         <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 24 Nov 2023 08:32:17 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6032B1721;
+        Fri, 24 Nov 2023 05:31:23 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a00f67f120aso263956766b.2;
+        Fri, 24 Nov 2023 05:31:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700832682; x=1701437482; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xqoNh8/DGOCDjWGBAsyHy8zDaolvBGz6WR/aPalN8vA=;
+        b=jc7pzhndHV74TrW5Y6euP8yk3htKIp8W3o1J4svRrdUUZjIdDRWgvExoS9S0QJD/zU
+         rBFEIT2MxFeZ/RzClYiIL0/02BNJdUr2xcGIsYQ77LaRf35g73whiGnOOChNAdVWSOrI
+         3hoq8vKd69rpowWA013qKYH7Bo61cWyy4QgiMXLsdISIwruZm2QyMOky9gdvpigFT2kh
+         1fDO4jvhAIcvXHr6BSmtl7uTFXktnDXDFMVWUS4DaHBnHSBtYtswpMLFp79/pPk1yWRG
+         hmZEhc/S29RsphTAt0pf2F0NPDGxYOfd/0JNu3TNk7MPkdFYp/43uE6PvHkLxFHbM6ee
+         ZfYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700832682; x=1701437482;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xqoNh8/DGOCDjWGBAsyHy8zDaolvBGz6WR/aPalN8vA=;
+        b=C0nGbEllQd0ZR9UGYNYIabEcZU4JD8C4NYjDZNpA7s+0dg2NqPP62OPWLMLz/5M+78
+         tmpXg8oVR1r1kZlVcj8bEdUHzE3TPASfVNWVYIHvrhKOQoQYzN0wuRoyMRLPPE/+6Ovy
+         ZADRjidfCaGRO9R8L+NVGSt9DfoHfPWXnLMvxpTMKbojBG56AvwWtji0wwC1jWKR/131
+         /BKk4Zi6MGdDyIz9IRP9E/sQDEELpVn1H/Ist3FnTBsPOM0reHjQ0Xr+OaRIPGOobYge
+         XINBminf+wxL25fA4hoDhLRwrTKsXxPIaP0D1X5uq7tFW57KBgHdj36ParxPaVNgGetL
+         ah2g==
+X-Gm-Message-State: AOJu0Yxm62nmPBvJXSHKOOIkD7oKbpAsw8xRU5Yr17p55DoW6b0eC3DF
+        kyWzyWAWzcpI3hUuINPbNBs=
+X-Google-Smtp-Source: AGHT+IF2CMWqW6QgTEUE8dPizHd4yGlrN9Vk/VgdOvaxxbdjXw50mDYgNNx7FjDnvVExXduvtyJWvw==
+X-Received: by 2002:a17:906:5da:b0:a03:a857:c6e0 with SMTP id t26-20020a17090605da00b00a03a857c6e0mr1663923ejt.77.1700832681495;
+        Fri, 24 Nov 2023 05:31:21 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id c24-20020a170906529800b009fe2f96ee9bsm2064075ejm.8.2023.11.24.05.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 05:31:21 -0800 (PST)
+Date:   Fri, 24 Nov 2023 14:31:18 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Jani Nikula <jani.nikula@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] pwm: rename pwm_apply_state() to
+ pwm_apply_cansleep()
+Message-ID: <ZWClpnMRg_vjuI_R@orome.fritz.box>
+References: <cover.1700323916.git.sean@mess.org>
+ <2b973840d800ffb71c2683c37bc996e0cf90a140.1700323916.git.sean@mess.org>
 MIME-Version: 1.0
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=markus smtp.mailfrom=markus@gekmihesg.de
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mURPCj0PduVIws0V"
+Content-Disposition: inline
+In-Reply-To: <2b973840d800ffb71c2683c37bc996e0cf90a140.1700323916.git.sean@mess.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,405 +108,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 23.11.23 14:53, Stefan F=C3=B6rster wrote:
-> >=20
-> > starting with kernel 6.1.39, we see the following error message
-> > with
-> > heavy I/O loads. We needed to revert
+
+--mURPCj0PduVIws0V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Nov 18, 2023 at 04:16:17PM +0000, Sean Young wrote:
+> In order to introduce a pwm api which can be used from atomic context,
+> we will need two functions for applying pwm changes:
 >=20
-> Thx for the report. I assume that problem still occurs with the
-> latest
-> 6.1.y kernel?
+> 	int pwm_apply_cansleep(struct pwm *, struct pwm_state *);
+> 	int pwm_apply_atomic(struct pwm *, struct pwm_state *);
 >=20
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
-/?h=3Dv6.1.39&id=3D68118c339c6e1e16ae017bef160dbe28a27ae9c8
->=20
-> FWIW, that is mainline commit 028ddcac477b69 ("bcache: Remove
-> unnecessary NULL point check in node allocations") [v6.5-rc1].
->=20
-> Did a quick check and noticed a fix for that change was recently
-> mainlined as f72f4312d43883 ("bcache: replace a mistaken IS_ERR() by
-> IS_ERR_OR_NULL() in btree_gc_coalesce()") [v6.7-rc2-post]:
-> https://lore.kernel.org/all/20231118163852.9692-1-colyli@suse.de/
->=20
-> It is expected to soon be interegrated into a 6.1.y kernel.
->=20
-> But maybe it's something else. I CCed the involved people, they might
-> know.
+> This commit just deals with renaming pwm_apply_state(), a following
+> commit will introduce the pwm_apply_atomic() function.
 
-We applied f72f4312d43883 to the current Debian kernel (based on
-6.1.55) but it didn't help, same stack trace.
-Looking at the description, __bch_btree_node_alloc() should never be
-able to return NULL anyway after
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dv6.1.39&id=3D7ecea5ce3dc17339c280c75b58ac93d8c8620d9f
-But I didn't verify all callers, so this might still be correct, if
-it's not always initialized with the return value of
-__bch_btree_node_alloc().
+Sorry, I still don't agree with that _cansleep suffix. I think it's the
+wrong terminology. Just because something can sleep doesn't mean that it
+ever will. "Might sleep" is much more accurate because it says exactly
+what might happen and indicates what we're guarding against.
 
-Anyway, I think we fixed it by applying this:
+Thierry
 
-diff -Naurp a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
---- a/drivers/md/bcache/btree.c	2023-09-23 11:11:13.000000000 +0200
-+++ b/drivers/md/bcache/btree.c	2023-11-24 13:13:09.840013759 +0100
-@@ -1489,7 +1489,7 @@ out_nocoalesce:
- 	bch_keylist_free(&keylist);
-=20
- 	for (i =3D 0; i < nodes; i++)
--		if (!IS_ERR(new_nodes[i])) {
-+		if (!IS_ERR_OR_NULL(new_nodes[i])) {
- 			btree_node_free(new_nodes[i]);
- 			rw_unlock(true, new_nodes[i]);
- 		}
+--mURPCj0PduVIws0V
+Content-Type: application/pgp-signature; name="signature.asc"
 
---
+-----BEGIN PGP SIGNATURE-----
 
-That seems to run stable now. I suppose the culprit is here:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drive=
-rs/md/bcache/btree.c?h=3Dv6.1.55#n1448
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVgpaQACgkQ3SOs138+
+s6HS8A/7BjtLlUH5CMfFlBTprZQsDfOXKtQTFT7vSIrS5EOAuemIkCNWaesc5juC
+gFpHk93q2Y8+pTg499tii+Ztr7m6Z00sAA8fpGEFwUn03iU9qrrC6/7gwVu8Dsjv
+m326JeQsUo8SL3s5JqH7vKQDUU0agG/rMAFwo5nIzD5xRGmtg1VB+Vg57/T0K4a4
+W99vEqpxwYAZLNQeId2ZTCZHREypDELrwcq0l0JYOOXdsvYa4r34dPep1KDfTvxK
+p6fGafsCc1qJ8S9ygxlTGPv/5+56JXyOEB75XXxBK2QaqEz9iHPxgfJsHz7K3DFx
+cpZtcEd899PpMbAiW5fag0BJcnUNffFf4CoZU34H8MPsp4DzKs7UvJlbQ79KNz6N
+VIjXUsk876G5NuLjwomvkmaxx1cQPbom4YknTav6Zm5dloV36kppnYuZ9+PV8NlW
+uudn06BsR8Yp7d2hpCHK6Vou1zbJtQHxQosq3e4e11mnMXxpnftSCuWZCeUedAhG
+zufpjdOkX1q24J9odZWGWz8rhGWgJUwtIpF8SOkPromrYAxZK+yJAb7AvepYNQNh
+i3X0j8HUnYCWUx7ty20NjF5rVY/GJh5DXncoB5cQqVlLCr8YUvFsOQ9YaUuFa/J5
+M/YrTcS9Bi0p3ps9qE3ec5+WY2E85s4+KeG0Z0/GD1ifS+r4fls=
+=1cUS
+-----END PGP SIGNATURE-----
 
-	new_nodes[0] =3D NULL;
-
-	for (i =3D 0; i < nodes; i++) {
-		if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b-
->key)))
-			goto out_nocoalesce;
-
-
-So if __bch_keylist_realloc() succeeds, then btree_node_free() will be
-called with new_nodes[0] which is NULL.
-
-This is still the same in mainline:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
-vers/md/bcache/btree.c?id=3D31f5b956a197d4ec25c8a07cb3a2ab69d0c0b82f#n1481
-
-
-
->=20
-> Ciao, Thorsten
->=20
-> > to make sure the systems don't suddenly get stuck.
-> >=20
-> > 1. Kernel 6.6.2-arch1-1 on Dell Latitude:
-> >=20
-> > [16816.214942] BUG: kernel NULL pointer dereference, address:
-> > 0000000000000080
-> > [16816.214948] #PF: supervisor read access in kernel mode
-> > [16816.214951] #PF: error_code(0x0000) - not-present page
-> > [16816.214953] PGD 0 P4D 0 [16816.214956] Oops: 0000 [#1] PREEMPT
-> > SMP NOPTI
-> > [16816.214960] CPU: 7 PID: 83416 Comm: bcache_gc Tainted:
-> > P=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > OE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.6.2-arch1-1 #1 11215f9ba7ddfb5164467=
-4a5b2ced71612c62fe9
-> > [16816.214964] Hardware name: Dell Inc. Latitude 5431/06F77M, BIOS
-> > 1.17.0 09/21/2023
-> > [16816.214965] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
-> > [16816.214999] Code: 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-> > 90 90
-> > 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
-> > 44 00
-> > 00 <48> 8b 83 80 00 00 00 48 8d ab 90 00 00 00 48 39 98 60 c3 00 00
-> > 75
-> > [16816.215001] RSP: 0018:ffffc90021777af8 EFLAGS: 00010207
-> > [16816.215004] RAX: 0000000000000001 RBX: 0000000000000000 RCX:
-> > ffff888515ce0670
-> > [16816.215006] RDX: 0000000000000000 RSI: ffff888515ce0680 RDI:
-> > 0000000000000000
-> > [16816.215007] RBP: ffffc90021777bf0 R08: ffff88819476d9e0 R09:
-> > 00000000013ffde8
-> > [16816.215009] R10: 0000000000000000 R11: ffffc9000061b000 R12:
-> > ffffc90021777e40
-> > [16816.215010] R13: ffffc90021777bf0 R14: ffffc90021777bd8 R15:
-> > ffff88819476c000
-> > [16816.215011] FS:=C2=A0 0000000000000000(0000)
-> > GS:ffff88886fdc0000(0000)
-> > knlGS:0000000000000000
-> > [16816.215013] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [16816.215015] CR2: 0000000000000080 CR3: 0000000294a20000 CR4:
-> > 0000000000f50ee0
-> > [16816.215017] PKRU: 55555554
-> > [16816.215018] Call Trace:
-> > [16816.215021]=C2=A0 <TASK>
-> > [16816.215024]=C2=A0 ? __die+0x23/0x70
-> > [16816.215030]=C2=A0 ? page_fault_oops+0x171/0x4e0
-> > [16816.215035]=C2=A0 ? __pfx_bch_ptr_bad+0x10/0x10 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215059]=C2=A0 ? exc_page_fault+0x7f/0x180
-> > [16816.215065]=C2=A0 ? asm_exc_page_fault+0x26/0x30
-> > [16816.215070]=C2=A0 ? btree_node_free+0xf/0x160 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215095]=C2=A0 ? btree_node_free+0xa3/0x160 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215118]=C2=A0 btree_gc_coalesce+0x2a7/0x890 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215144]=C2=A0 ? bch_extent_bad+0x81/0x190 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215172]=C2=A0 btree_gc_recurse+0x130/0x390 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215197]=C2=A0 ? btree_gc_mark_node+0x72/0x240 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215221]=C2=A0 bch_btree_gc+0x4b6/0x620 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215246]=C2=A0 ? __pfx_autoremove_wake_function+0x10/0x10
-> > [16816.215250]=C2=A0 ? __pfx_bch_gc_thread+0x10/0x10 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215272]=C2=A0 bch_gc_thread+0x139/0x190 [bcache
-> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
-> > [16816.215295]=C2=A0 ? __pfx_autoremove_wake_function+0x10/0x10
-> > [16816.215298]=C2=A0 kthread+0xe5/0x120
-> > [16816.215302]=C2=A0 ? __pfx_kthread+0x10/0x10
-> > [16816.215306]=C2=A0 ret_from_fork+0x31/0x50
-> > [16816.215309]=C2=A0 ? __pfx_kthread+0x10/0x10
-> > [16816.215312]=C2=A0 ret_from_fork_asm+0x1b/0x30
-> > [16816.215318]=C2=A0 </TASK>
-> > [16816.215319] Modules linked in: bcache tun ccm rfcomm
-> > snd_seq_dummy
-> > snd_hrtimer snd_seq nvidia(POE) typec_displayport cmac algif_hash
-> > algif_skcipher af_alg bnep hid_sensor_custom hid_sensor_hub
-> > intel_ishtp_hid snd_hda_codec_hdmi snd_sof_pci_intel_tgl
-> > snd_sof_intel_hda_common soundwire_intel snd_sof_intel_hda_mlink
-> > soundwire_cadence snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp
-> > snd_sof snd_sof_utils intel_uncore_frequency
-> > intel_uncore_frequency_common snd_ctl_led snd_soc_hdac_hda
-> > r8153_ecm
-> > snd_hda_ext_core iwlmvm cdc_ether snd_soc_acpi_intel_match usbnet
-> > snd_soc_acpi soundwire_generic_allocation soundwire_bus
-> > snd_soc_core
-> > x86_pkg_temp_thermal snd_compress snd_hda_codec_realtek
-> > intel_powerclamp
-> > ac97_bus snd_hda_codec_generic dell_rbtn coretemp btusb
-> > snd_pcm_dmaengine snd_usb_audio mac80211 btrtl snd_hda_intel
-> > kvm_intel
-> > btintel snd_intel_dspcfg snd_intel_sdw_acpi snd_usbmidi_lib btbcm
-> > dell_laptop snd_ump btmtk libarc4 snd_hda_codec uvcvideo kvm
-> > snd_rawmidi
-> > bluetooth snd_hda_core videobuf2_vmalloc hid_multitouch iwlwifi
-> > [16816.215367]=C2=A0 dell_wmi snd_hwdep iTCO_wdt snd_seq_device uvc
-> > nls_iso8859_1 videobuf2_memops dell_smbios intel_pmc_bxt mei_hdcp
-> > mei_pxp spi_nor snd_pcm processor_thermal_device_pci r8152
-> > videobuf2_v4l2 dell_wmi_sysman irqbypass intel_rapl_msr dcdbas vfat
-> > iTCO_vendor_support fat rapl intel_cstate intel_uncore psmouse
-> > pcspkr
-> > dell_wmi_ddv firmware_attributes_class ledtrig_audio
-> > videobuf2_common
-> > ucsi_acpi dell_wmi_descriptor processor_thermal_device mousedev
-> > ecdh_generic snd_timer mii joydev mtd wmi_bmof e1000e cfg80211
-> > processor_thermal_rfim mei_me intel_lpss_pci i2c_i801 snd
-> > processor_thermal_mbox typec_ucsi intel_ish_ipc intel_lpss mei
-> > soundcore
-> > i2c_smbus processor_thermal_rapl rfkill thunderbolt typec idma64
-> > intel_ishtp roles intel_rapl_common igen6_edac i2c_hid_acpi
-> > int3403_thermal i2c_hid int340x_thermal_zone intel_hid
-> > int3400_thermal
-> > acpi_thermal_rel sparse_keymap acpi_tad acpi_pad mac_hid
-> > vboxnetflt(OE)
-> > vboxnetadp(OE) vboxdrv(OE) v4l2loopback(OE) videodev mc i2c_dev
-> > crypto_user fuse loop ip_tables x_tables ext4
-> > [16816.215420]=C2=A0 crc32c_generic crc16 mbcache jbd2 dm_crypt cbc
-> > encrypted_keys trusted asn1_encoder tee usbhid i915 dm_mod
-> > crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
-> > i2c_algo_bit
-> > polyval_generic serio_raw rtsx_pci_sdmmc drm_buddy gf128mul atkbd
-> > ghash_clmulni_intel ttm mmc_core sha512_ssse3 libps2 vivaldi_fmap
-> > intel_gtt aesni_intel nvme crypto_simd drm_display_helper video
-> > nvme_core cryptd spi_intel_pci rtsx_pci spi_intel i8042 xhci_pci
-> > cec
-> > nvme_common xhci_pci_renesas serio wmi
-> > [16816.215451] CR2: 0000000000000080
-> > [16816.215453] ---[ end trace 0000000000000000 ]---
-> > [16816.215455] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
-> > [16816.215478] Code: 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-> > 90 90
-> > 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
-> > 44 00
-> > 00 <48> 8b 83 80 00 00 00 48 8d ab 90 00 00 00 48 39 98 60 c3 00 00
-> > 75
-> > [16816.215480] RSP: 0018:ffffc90021777af8 EFLAGS: 00010207
-> > [16816.215481] RAX: 0000000000000001 RBX: 0000000000000000 RCX:
-> > ffff888515ce0670
-> > [16816.215483] RDX: 0000000000000000 RSI: ffff888515ce0680 RDI:
-> > 0000000000000000
-> > [16816.215484] RBP: ffffc90021777bf0 R08: ffff88819476d9e0 R09:
-> > 00000000013ffde8
-> > [16816.215486] R10: 0000000000000000 R11: ffffc9000061b000 R12:
-> > ffffc90021777e40
-> > [16816.215487] R13: ffffc90021777bf0 R14: ffffc90021777bd8 R15:
-> > ffff88819476c000
-> > [16816.215488] FS:=C2=A0 0000000000000000(0000)
-> > GS:ffff88886fdc0000(0000)
-> > knlGS:0000000000000000
-> > [16816.215490] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [16816.215492] CR2: 0000000000000080 CR3: 0000000294a20000 CR4:
-> > 0000000000f50ee0
-> > [16816.215493] PKRU: 55555554
-> > [16816.215494] note: bcache_gc[83416] exited with irqs disabled
-> >=20
-> > 2. Kernel 6.1.55 (Debian 6.1.0-13) on HPE Gen11:
-> >=20
-> > [60654.670443] BUG: kernel NULL pointer dereference, address:
-> > 0000000000000080
-> > [60654.677474] #PF: supervisor read access in kernel mode
-> > [60654.682651] #PF: error_code(0x0000) - not-present page
-> > [60654.687825] PGD 0 [60654.689852] Oops: 0000 [#1] PREEMPT SMP
-> > NOPTI
-> > [60654.694240] CPU: 16 PID: 146330 Comm: bcache_gc Tainted:
-> > G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > W=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.1.0-13-amd64 =
-#1=C2=A0 Debian 6.1.55-1
-> > [60654.704399] Hardware name: HPE ProLiant DL380 Gen11/ProLiant
-> > DL380
-> > Gen11, BIOS 1.48 10/19/2023
-> > [60654.713071] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
-> > [60654.718437] Code: ff 48 89 d8 5b 5d 41 5c 41 5d c3 cc cc cc cc
-> > 66 66
-> > 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
-> > 44 00
-> > 00 <48> 8b 83 80 00 00 00 48 39 98 70 c3 00 00 0f 84 34 01 00 00 48
-> > 8d
-> > [60654.737342] RSP: 0018:ff77daed34cc3b18 EFLAGS: 00010207
-> > [60654.742604] RAX: 0000000080000000 RBX: 0000000000000000 RCX:
-> > 0000000000000000
-> > [60654.749790] RDX: 0000000000000001 RSI: ff2971b8de800690 RDI:
-> > 0000000000000000
-> > [60654.756975] RBP: ff77daed34cc3c10 R08: ff2971d852dc65e0 R09:
-> > ff2971b8de800000
-> > [60654.764536] R10: 0000000000000000 R11: ff77daed34a4d000 R12:
-> > ff77daed34cc3e60
-> > [60654.771987] R13: ff77daed34cc3c10 R14: ff77daed34cc3c00 R15:
-> > ff2971d851096400
-> > [60654.779410] FS:=C2=A0 0000000000000000(0000)
-> > GS:ff2971f7bf400000(0000)
-> > knlGS:0000000000000000
-> > [60654.787784] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [60654.793794] CR2: 0000000000000080 CR3: 0000000150610002 CR4:
-> > 0000000000771ee0
-> > [60654.801203] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> > 0000000000000000
-> > [60654.808609] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7:
-> > 0000000000000400
-> > [60654.816009] PKRU: 55555554
-> > [60654.818949] Call Trace:
-> > [60654.821623]=C2=A0 <TASK>
-> > [60654.823950]=C2=A0 ? __die_body.cold+0x1a/0x1f
-> > [60654.828110]=C2=A0 ? page_fault_oops+0xd2/0x2b0
-> > [60654.832352]=C2=A0 ? exc_page_fault+0x70/0x170
-> > [60654.836505]=C2=A0 ? asm_exc_page_fault+0x22/0x30
-> > [60654.840922]=C2=A0 ? btree_node_free+0xf/0x160 [bcache]
-> > [60654.845863]=C2=A0 ? up_write+0x32/0x60
-> > [60654.849396]=C2=A0 btree_gc_coalesce+0x2aa/0x890 [bcache]
-> > [60654.854512]=C2=A0 ? bch_extent_bad+0x70/0x170 [bcache]
-> > [60654.859452]=C2=A0 btree_gc_recurse+0x130/0x390 [bcache]
-> > [60654.864475]=C2=A0 ? btree_gc_mark_node+0x72/0x230 [bcache]
-> > [60654.869758]=C2=A0 bch_btree_gc+0x5da/0x600 [bcache]
-> > [60654.874428]=C2=A0 ? cpuusage_read+0x10/0x10
-> > [60654.878390]=C2=A0 ? bch_btree_gc+0x600/0x600 [bcache]
-> > [60654.883232]=C2=A0 bch_gc_thread+0x135/0x180 [bcache]
-> > [60654.887986]=C2=A0 ? cpuusage_read+0x10/0x10
-> > [60654.891944]=C2=A0 kthread+0xe6/0x110
-> > [60654.895290]=C2=A0 ? kthread_complete_and_exit+0x20/0x20
-> > [60654.900296]=C2=A0 ret_from_fork+0x1f/0x30
-> > [60654.904079]=C2=A0 </TASK>
-> > [60654.906455] Modules linked in: bonding tls cfg80211 rfkill
-> > intel_rapl_msr intel_rapl_common intel_uncore_frequency
-> > intel_uncore_frequency_common i10nm_edac nfit binfmt_misc libnvdimm
-> > x86_pkg_temp_thermal intel_powerclamp ipt_REJECT nf_reject_ipv4
-> > coretemp
-> > xt_comment nft_compat nf_tables nfnetlink nls_ascii nls_cp437
-> > kvm_intel
-> > vfat ipmi_ssif fat kvm irqbypass ghash_clmulni_intel sha512_ssse3
-> > sha512_generic aesni_intel crypto_simd cryptd mgag200
-> > drm_shmem_helper
-> > pmt_telemetry pmt_crashlog rapl intel_cstate acpi_ipmi evdev
-> > intel_sdsi
-> > pmt_class idxd hpwdt mei_me isst_if_mbox_pci isst_if_mmio
-> > drm_kms_helper
-> > intel_uncore pcspkr isst_if_common mei watchdog hpilo i2c_algo_bit
-> > ipmi_si idxd_bus acpi_tad intel_vsec sg acpi_power_meter button
-> > ipmi_devintf ipmi_msghandler loop fuse efi_pstore drm configfs
-> > efivarfs
-> > ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 btrfs
-> > blake2b_generic
-> > xor raid6_pq zstd_compress libcrc32c crc32c_generic ses enclosure
-> > bcache
-> > sd_mod scsi_transport_sas dm_mod nvme
-> > [60654.906508]=C2=A0 nvme_core xhci_pci t10_pi megaraid_sas ehci_pci
-> > xhci_hcd
-> > ehci_hcd crc64_rocksoft crc64 tg3 crc_t10dif scsi_mod usbcore
-> > crct10dif_generic crc32_pclmul crc32c_intel crct10dif_pclmul libphy
-> > scsi_common usb_common crct10dif_common wmi
-> > [60655.017712] CR2: 0000000000000080
-> > [60655.021262] ---[ end trace 0000000000000000 ]---
-> > [60655.173744] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
-> > [60655.179337] Code: ff 48 89 d8 5b 5d 41 5c 41 5d c3 cc cc cc cc
-> > 66 66
-> > 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
-> > 44 00
-> > 00 <48> 8b 83 80 00 00 00 48 39 98 70 c3 00 00 0f 84 34 01 00 00 48
-> > 8d
-> > [60655.198649] RSP: 0018:ff77daed34cc3b18 EFLAGS: 00010207
-> > [60655.204121] RAX: 0000000080000000 RBX: 0000000000000000 RCX:
-> > 0000000000000000
-> > [60655.211515] RDX: 0000000000000001 RSI: ff2971b8de800690 RDI:
-> > 0000000000000000
-> > [60655.218908] RBP: ff77daed34cc3c10 R08: ff2971d852dc65e0 R09:
-> > ff2971b8de800000
-> > [60655.226302] R10: 0000000000000000 R11: ff77daed34a4d000 R12:
-> > ff77daed34cc3e60
-> > [60655.233696] R13: ff77daed34cc3c10 R14: ff77daed34cc3c00 R15:
-> > ff2971d851096400
-> > [60655.241086] FS:=C2=A0 0000000000000000(0000)
-> > GS:ff2971f7bf400000(0000)
-> > knlGS:0000000000000000
-> > [60655.249438] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [60655.255432] CR2: 0000000000000080 CR3: 0000000150610002 CR4:
-> > 0000000000771ee0
-> > [60655.262825] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> > 0000000000000000
-> > [60655.270218] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7:
-> > 0000000000000400
-> > [60655.277607] PKRU: 55555554
-> > [60655.280543] note: bcache_gc[146330] exited with irqs disabled
-> >=20
-> > Reproducer for us:
-> >=20
-> > dd if=3D/dev/zero of=3Dloop0 bs=3D1M count=3D1024
-> > dd if=3D/dev/zero of=3Dloop1 bs=3D1M count=3D10240
-> > losetup loop0 loop0
-> > losetup loop1 loop1
-> > make-bcache -C /dev/loop0 -B /dev/loop1 --writeback
-> > mkfs.ext4 /dev/bcache0
-> > mount /dev/bcache0 /mnt
-> >=20
-> > Then run fio with:
-> >=20
-> > [global]
-> > bs=3D4k
-> > ioengine=3Dlibaio
-> > iodepth=3D4
-> > size=3D8g
-> > direct=3D1
-> > runtime=3D60
-> > directory=3D/mnt
-> > filename=3Dssd.test.file
-> >=20
-> > [seq-write]
-> > rw=3Dwrite
-> > stonewall
-> >=20
-> > [rand-write]
-> > rw=3Drandwrite
-> > stonewall
-> >=20
-> > [seq-read]
-> > rw=3Dread
-> > stonewall
-> >=20
-> > [rand-read]
-> > rw=3Drandread
-> > stonewall
-> >=20
-> >=20
-> > Cheers,
-> > Stefan
-
+--mURPCj0PduVIws0V--
