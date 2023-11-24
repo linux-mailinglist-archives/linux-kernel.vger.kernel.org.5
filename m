@@ -2,236 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D29E7F72E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808787F72E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344244AbjKXLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 06:38:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S1345009AbjKXLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 06:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKXLim (ORCPT
+        with ESMTP id S229580AbjKXLkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 06:38:42 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC24ED68
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:38:48 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cf88973da5so4060465ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:38:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700825928; x=1701430728; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xIniP635t4BDCH0OpyDCPI9DgPxQOg+yG0PZN+Nm/+4=;
-        b=v+aLr4O87vF/e1qtuXgj1XzmnPRHDPBbWNDAnoG8gPXcL4ErOOs2J72sW6c2yd8OVM
-         G4T5Tt1PtSObzjbtneR7xyDPQp5BwOphgLfxG69vZRV3/oG0W/MzrG/pyTmKtDTVqD7g
-         U5pYQYxQmN1k5gU9RDUuEjT6W2Debjz6TzdYTTbDgmXO8R3MrOjnQS58AbNlffK5kobS
-         t5gooOKEsjWbl12N9g/jWSqEtY5XyBOZjf72QycP7l2A6LyPRiyOl5AcX3IfSJRxNuNu
-         0v4WhvnX123rGlfS3E0ceAD8rhyAMwcnQ7uGSGrFDVC/5XpJiPILLSYqHDLlczEFt3ao
-         Msxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700825928; x=1701430728;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xIniP635t4BDCH0OpyDCPI9DgPxQOg+yG0PZN+Nm/+4=;
-        b=g76uVz6hLIAuCnMSylCWdy1wUnm2TYcmBMUYGQ2Mh8SaF7w/XbaA54I+KmoLmCNa9C
-         WNfnrIuGQ1RzkZ2jecQZhhre7VrnwhvfuS8dDOjoE51mAlBe6oEnFOM9l3XARRHYW7So
-         T+JTqsf/vajMIQFmpgdMQPzp1ug0LKK2CZ/qQuk+E6yCIc59lZl/75RDZZfoLA9yz60+
-         n90LNSitv2+zsbkDbeG3KJtnKJc+SBVa2S7r+QlExpGlI7xcqep1ZvXMTnZyNCpYhiVa
-         5Nx8CnqyOqhOQ8bkt8FaSlREGZxQDlbOZ/4zIi0+S+Kx7BbPHVFlSbe3oAN8yk8Wcd7f
-         BdZw==
-X-Gm-Message-State: AOJu0YwguOWRLHHc04iFY1eWP6PYy5rDsQQoIpmJIUrUOWviG9U6OgPE
-        Xq+QaGpdlXWFGyH/tWolXkGD6GEiHG3qE97ujnI=
-X-Google-Smtp-Source: AGHT+IEHNA0kiGFMUTN9Hp8RK/+1pHNrUp5eg6LVcVSOLJTc8o1JeyeC0Hcy8YNXM6BkArrvicSJ4A==
-X-Received: by 2002:a17:902:ced0:b0:1cf:658f:d2d with SMTP id d16-20020a170902ced000b001cf658f0d2dmr2531156plg.5.1700825928102;
-        Fri, 24 Nov 2023 03:38:48 -0800 (PST)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:3471:930b:671b:cf77])
-        by smtp.gmail.com with ESMTPSA id u4-20020a17090282c400b001bb1f0605b2sm2964966plz.214.2023.11.24.03.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 03:38:47 -0800 (PST)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] riscv: fix incorrect use of __user pointer
-Date:   Fri, 24 Nov 2023 12:38:03 +0100
-Message-ID: <20231124113803.165431-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.42.0
+        Fri, 24 Nov 2023 06:40:09 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D41A2;
+        Fri, 24 Nov 2023 03:40:15 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AOB7X0R022990;
+        Fri, 24 Nov 2023 11:39:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=tDHSeIF8klwS9UwzqRebuF+OKf98KYwg7r/Vh86pzKk=;
+ b=ET9l9D+iljpGXhn9t0Umx3d8FRi1HmXdgtnd+/5qwTmCHh6UgBujmAvi1r+Yu954kl0/
+ jGqGldIXSPNxFxXoEwOiNj4Cf7Bp9jSLEGD571XrvGIXdP1u/tPe43tC34/jUUZ7OrF1
+ qJNi9wckmKNHUClJsFgxKnlfkcgVPk64qLaGjVwiNia6Tn2hogIsqLsGWbvXrUp+/qQy
+ H/kVEZZkEsr7uaBU1zg1tpga9vHLgS9xBe9qIIkvmA0NcqsucvyV1ENu+W8nKHN5xkxA
+ mKKT6Qw201rFzGvAH1gDrtfjACzao5X8k+dY66Y7xwSyAYRz7wXMvgi/swwHzfjEpqLS NA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj4hwjqyh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 11:39:50 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AOBdnr3020020
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 11:39:49 GMT
+Received: from [10.216.4.251] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
+ 2023 03:39:38 -0800
+Message-ID: <735075ee-1145-471e-9dac-9968b02ad35a@quicinc.com>
+Date:   Fri, 24 Nov 2023 17:09:34 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 1/3] dt-bindings: net: qcom,ethqos: add
+ binding doc for fault IRQ for sa8775p
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+CC:     <kernel@quicinc.com>
+References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+ <ff458955a24c0cb4ba41158b8b53fbef00c8237d.1700737841.git.quic_jsuraj@quicinc.com>
+ <7c9135e0-da6e-4e1a-b673-af6c73d8ee45@linaro.org>
+From:   Suraj Jaiswal <quic_jsuraj@quicinc.com>
+In-Reply-To: <7c9135e0-da6e-4e1a-b673-af6c73d8ee45@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: FZYAK8yh1-fNezYLdyWhoJUEJupZisCK
+X-Proofpoint-ORIG-GUID: FZYAK8yh1-fNezYLdyWhoJUEJupZisCK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=814
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311240090
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These warnings were reported by sparse and were due to lack of __user
-annotation as well as dereferencing such pointer:
+hi Krzysztof,
+Sure . Will take care of dtbs_check warnings in the next patch .
 
-arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:322:24: warning: incorrect type in initializer (different address spaces)
-arch/riscv/kernel/traps_misaligned.c:322:24:    expected unsigned char const [noderef] __user *__gu_ptr
-arch/riscv/kernel/traps_misaligned.c:322:24:    got unsigned char const [usertype] *addr
-arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
-arch/riscv/kernel/traps_misaligned.c:332:24: warning: incorrect type in initializer (different address spaces)
-arch/riscv/kernel/traps_misaligned.c:332:24:    expected unsigned char [noderef] __user *__gu_ptr
-arch/riscv/kernel/traps_misaligned.c:332:24:    got unsigned char [usertype] *addr
+Thanks
+Suraj
 
-As suggested by Christoph Hellwig, casting pointers from an address
-space to another is not a good idea and we should rather cast the
-untyped unsigned long to their final address space. Fix the ones in
-load_u8()/store_u8()/__read_insn() by passing a unsigned long and then
-casting it to the appropriate type (__user of not) depending if used in
-kernel/ user mode. Also remove unneeded else construct in store_u8()/
-load_u8().
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311160606.obGOOwB3-lkp@intel.com/
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
----
- arch/riscv/kernel/traps_misaligned.c | 55 +++++++++++++---------------
- 1 file changed, 25 insertions(+), 30 deletions(-)
-
-diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
-index 5eba37147caa..a92b88af855a 100644
---- a/arch/riscv/kernel/traps_misaligned.c
-+++ b/arch/riscv/kernel/traps_misaligned.c
-@@ -265,19 +265,19 @@ static unsigned long get_f32_rs(unsigned long insn, u8 fp_reg_offset,
- #define GET_F32_RS2S(insn, regs) (get_f32_rs(RVC_RS2S(insn), 0, regs))
- 
- #ifdef CONFIG_RISCV_M_MODE
--static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
-+static inline int load_u8(struct pt_regs *regs, const unsigned long addr, u8 *r_val)
- {
- 	u8 val;
- 
--	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*addr));
-+	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*(const u8 *)addr));
- 	*r_val = val;
- 
- 	return 0;
- }
- 
--static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
-+static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
- {
--	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
-+	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*(u8 *)addr));
- 
- 	return 0;
- }
-@@ -316,34 +316,32 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
- 	return 0;
- }
- #else
--static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
-+static inline int load_u8(struct pt_regs *regs, const unsigned long addr, u8 *r_val)
- {
--	if (user_mode(regs)) {
--		return __get_user(*r_val, addr);
--	} else {
--		*r_val = *addr;
--		return 0;
--	}
-+	if (user_mode(regs))
-+		return __get_user(*r_val, (u8 __user *)addr);
-+
-+	*r_val = *(const u8 *)addr;
-+	return 0;
- }
- 
--static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
-+static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
- {
--	if (user_mode(regs)) {
--		return __put_user(val, addr);
--	} else {
--		*addr = val;
--		return 0;
--	}
-+	if (user_mode(regs))
-+		return __put_user(val, (u8 __user *)addr);
-+
-+	*(u8 *)addr = val;
-+	return 0;
- }
- 
--#define __read_insn(regs, insn, insn_addr)		\
-+#define __read_insn(regs, insn, insn_addr, type)	\
- ({							\
- 	int __ret;					\
- 							\
- 	if (user_mode(regs)) {				\
--		__ret = __get_user(insn, insn_addr);	\
-+		__ret = __get_user(insn, (type __user *) insn_addr); \
- 	} else {					\
--		insn = *insn_addr;			\
-+		insn = *(type *)insn_addr;		\
- 		__ret = 0;				\
- 	}						\
- 							\
-@@ -356,9 +354,8 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
- 
- 	if (epc & 0x2) {
- 		ulong tmp = 0;
--		u16 __user *insn_addr = (u16 __user *)epc;
- 
--		if (__read_insn(regs, insn, insn_addr))
-+		if (__read_insn(regs, insn, epc, u16))
- 			return -EFAULT;
- 		/* __get_user() uses regular "lw" which sign extend the loaded
- 		 * value make sure to clear higher order bits in case we "or" it
-@@ -369,16 +366,14 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
- 			*r_insn = insn;
- 			return 0;
- 		}
--		insn_addr++;
--		if (__read_insn(regs, tmp, insn_addr))
-+		epc += sizeof(u16);
-+		if (__read_insn(regs, tmp, epc, u16))
- 			return -EFAULT;
- 		*r_insn = (tmp << 16) | insn;
- 
- 		return 0;
- 	} else {
--		u32 __user *insn_addr = (u32 __user *)epc;
--
--		if (__read_insn(regs, insn, insn_addr))
-+		if (__read_insn(regs, insn, epc, u32))
- 			return -EFAULT;
- 		if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32) {
- 			*r_insn = insn;
-@@ -491,7 +486,7 @@ int handle_misaligned_load(struct pt_regs *regs)
- 
- 	val.data_u64 = 0;
- 	for (i = 0; i < len; i++) {
--		if (load_u8(regs, (void *)(addr + i), &val.data_bytes[i]))
-+		if (load_u8(regs, addr + i, &val.data_bytes[i]))
- 			return -1;
- 	}
- 
-@@ -589,7 +584,7 @@ int handle_misaligned_store(struct pt_regs *regs)
- 		return -EOPNOTSUPP;
- 
- 	for (i = 0; i < len; i++) {
--		if (store_u8(regs, (void *)(addr + i), val.data_bytes[i]))
-+		if (store_u8(regs, addr + i, val.data_bytes[i]))
- 			return -1;
- 	}
- 
--- 
-2.42.0
-
+On 11/24/2023 1:48 PM, Krzysztof Kozlowski wrote:
+> On 23/11/2023 12:38, Suraj Jaiswal wrote:
+>> Add binding doc for fault IRQ. The fault IRQ will be
+>> trigger for ECC,DPP,FSM error.
+>>
+>> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+>> ---
+>>  Documentation/devicetree/bindings/net/qcom,ethqos.yaml | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+>> index 7bdb412a0185..e013cb51fb07 100644
+>> --- a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+>> +++ b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+>> @@ -37,12 +37,14 @@ properties:
+>>      items:
+>>        - description: Combined signal for various interrupt events
+>>        - description: The interrupt that occurs when Rx exits the LPI state
+>> +      - description: The interrupt that occurs when HW fault occurs
+> 
+> Adding required items is breaking the ABI and introducing new dtbs_check
+> warnings. I don't see rationale for this in the commit msg.
+> 
+> I don't see any fixes for the warnings, either. I am quite picky on this
+> part, so to avoid wasting my time - are you 100% sure you do not
+> introduce any new warning?
+> 
+> Best regards,
+> Krzysztof
+> 
