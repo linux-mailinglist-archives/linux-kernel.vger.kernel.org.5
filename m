@@ -2,179 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A94F7F75E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC357F75F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbjKXOBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S230367AbjKXOFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:05:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKXOBb (ORCPT
+        with ESMTP id S230484AbjKXOFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:01:31 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5893D41;
-        Fri, 24 Nov 2023 06:01:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700834482; x=1701439282; i=wahrenst@gmx.net;
-        bh=2RHDVyt5/moemHHoQmT1rzjjAAaif5thTqOsAXsDqsA=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=GOD36E9DdPyzK/aCP7jRXPcr9XV9PnZFDmtOQbNKcDrM4EYPi6eE5kHup010WlES
-         mzQUgSJE1hiC4kgj0UPkFd854GUS7ipvVS/mG/hebzWT5HNv0Yvc0TE2I1APxJjgm
-         hdzNJdm7upVsbnlh+Upws4rj227l1EcPV0jnUZEMtbN+WbHO4amePtFgSXap6vjDm
-         2gqxswthCfvk40Xu+eILMw5+/TK1mpx3ibvSiorVZlYdD8HfuIQRtH5qHrhxp9IVM
-         ph8IfnM29hSgTZSWHvR5SqUdN1t2FVG5zbRapFIYzmM/hJ8gg20SW7XwrxmQvll0y
-         0EPnHZGqACi2mZ2Mnw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6DWi-1rD8Ru2QNk-006jdo; Fri, 24
- Nov 2023 15:01:22 +0100
-Message-ID: <bf3dd03e-a1f2-4586-8f00-7003848016aa@gmx.net>
-Date:   Fri, 24 Nov 2023 15:01:21 +0100
+        Fri, 24 Nov 2023 09:05:42 -0500
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2066.outbound.protection.outlook.com [40.107.104.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B100C198D;
+        Fri, 24 Nov 2023 06:05:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ch5wpzDevh/3XldD/rYUAmvgRPRsheRQYvWYX0kUKL9k9CmGyLvg3KTu9sOrHtASDZ/+Bylb+cLpGh5WU9RK2c+kgr0NnjKAr9sQ//LSJxs4cST67xnb0oqSlcQLdNRD6ydJELAAKFJrsV0NWmueQAHlNG0fDniqzHKmZ/n22gt1PqBhLjKa08BHUmOmfuJL0jyCDTIL7xjXB+0urBYiMqen/X1KJXl89s+x8Wh1l+PYB7b8BRC7wpZeKyQhTBKL33NbxBSe0BcGl4BnAxALVDkrQN/flzjYXTok9dUsID1S8zqp55de7qv8fKFktCMuG7PA+jhIXFqXZZMhCc2T6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N+nQAjGg01tLbVFfALJExQwr1vo6BbA70/slS9161vM=;
+ b=aTzFhTzB413Vg4Z1WwdsfCAqgm8tBQv8g2yTMYYNzJSdVAW3sd6ZQHRyMKRa/jvbwkMDSNb3cObt2qZc/CWssr8Oad0qICSKNFSQEK2uKlc4KmxTOaPWB8UPYUshKOu0ZkjDnrPBh9u3rrGFu4eV0vW12A7fuoTstJGmQSHmCcx2WMnZgVhQFBZOc2f53qjTZLUfD0DBmlDmtWWZ4PgeRKNf8aGankXGVLbmjkXUy8wcea8nmLzjMlt6Ri3bY9Ql6tAf8BCLxu/qNsELVFHhoYl4sKMBuXfEOvvKH56EZaqIeWYdtrnBl7NUIUFP+CQKY0GDgNiBugQt/Zz+OIHJMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N+nQAjGg01tLbVFfALJExQwr1vo6BbA70/slS9161vM=;
+ b=OSeRq3tg+KaFuKNkQop9tXoB5IjYOQrnDuOLxdOBFkBSFW40nXPsL5yKEDzOL6PmOA7ruSwLvb+ALRusMIFbe6ih4efA3LvuIL935efBT7KnsRD0q90Qzex+BlfQzLc141xyLepnwrgIfJXIdb7qIADn3RyFOWoARiwHIYO6+3l0SMtm6sO6K5cgZdg/+6As4IsLjr6m4zD0Q2eJIa6RG0wi3fRiH43YmoS7rWif1yyjaiPziyfxmYkfeyhSTUOoDaVLfHBnwiakpewsG8MnFhubs41FHazNREZ2RmiqMqZ9asVPmZ5oxyDTwBsEC/HDndIe6WY0JA3esABq8OBRfw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
+ by DU2PR04MB9131.eurprd04.prod.outlook.com (2603:10a6:10:2f6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.14; Fri, 24 Nov
+ 2023 14:05:44 +0000
+Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
+ ([fe80::9d39:5718:5401:764d]) by AS8PR04MB8199.eurprd04.prod.outlook.com
+ ([fe80::9d39:5718:5401:764d%5]) with mapi id 15.20.7046.012; Fri, 24 Nov 2023
+ 14:05:44 +0000
+Date:   Fri, 24 Nov 2023 09:05:37 -0500
+From:   Wei Gao <wegao@suse.com>
+To:     Damien Le Moal <dlemoal@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, hch@lst.de, niklas.cassel@wdc.com,
+        martin.petersen@oracle.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] block: ioprio: Fix ioprio_check_cap() validation logic
+Message-ID: <ZWCtsVw9cHhmkPf9@wegao>
+References: <20231124030525.31426-1-wegao@suse.com>
+ <160ecdfc-cb58-47fe-b9ce-fd126acc10fe@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160ecdfc-cb58-47fe-b9ce-fd126acc10fe@kernel.org>
+X-ClientProxiedBy: FR0P281CA0097.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a9::10) To AS8PR04MB8199.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f6::21)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4 net] qca_spi: Fix SPI IRQ handling
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121163004.21232-1-wahrenst@gmx.net>
- <20231121163004.21232-3-wahrenst@gmx.net>
- <a24433f86e39cbb45a9606621e01446e7ad6fa53.camel@redhat.com>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <a24433f86e39cbb45a9606621e01446e7ad6fa53.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:73pD02ceFv9jYjDGVqjxtrTbdmqUspOJI6R9fWjllimsvxhzTBt
- CQHPuXhJU48lRVcNDMOTloA+++/GnwJmo5uslAKFbzY/we8TPY3Hcb/k0gtd3Sf5Or9rvoa
- LcACcYrBsEDOEk1d6jbzUmtzftwGQi109uLPl87sMfAPjPVft/mhvTSKtzza3h/7OTnOomH
- y2vTvvzOiQe2XfRixhqfg==
-UI-OutboundReport: notjunk:1;M01:P0:NJbxcN48qoA=;xJWy61p3j0lBiTHP+UxcxAkrjuT
- nvxMI8PJwQG2h2GUXmg6qWjgxYTfT23ZjBWqXd7mkka6On5sgsLUBfguCsTPH/M6p2qOcFOuv
- p/doWmewYhn33f3//+cnk5JZj/mb+Io1ot56d5u0e7m8e9m+azUxTHUUn0ixEpIzdm+qKEsga
- 4TE3Z63Xg+/LXSag2ATimkQguj8LXLINREfzZhMuxK0cQo+1gaidOA4MOJbUj+EdlyUGl/vB9
- 0kRTf/YvqnywkBHzo8kby23H07DK7hILxSuVOQaLSXyNlJgruy/PvdWMUIRUzKQiMNZYx4fbB
- qAL/SWWZSdl0lKFKYHqZpRE7M4QYhIwsgXNz227fdQtz7JQrmMsoTfV3kiQzwa75F5b5ZY5UJ
- uKROEvPNXQ1vTAQEToS6sGMDPU4NG8AuXfaM5m43Vx4JdK6hkTym7H9sReTWOVmW1MN4I2oEt
- eCzMrkZWp4LyyNnjNt+3u8eeTxBQgSOQdAAEgREs9TM/WM0ej+sJM7QBE74/wqt9rbDZKnUhb
- pGzOPoWRiFq9s3cG3nTw/98AbVotFS7plT/6pDsqPT8S9kUAqP3c4vX7GIxfrLynkYJS+CuAa
- EPb/reV5ZWMtujQFI8uZTgBHlPt3AQ6IBE4bBEuqnB49cITMjNGEWWiWNJsyhVYbPUoIP1nQ7
- IAcEqrZ6v1NvhPUhmhtUAb+GRz+Mo+rKSxJrzZTUxM7c7m3CQEYR2pfd7a4lNlB/6ikgyXGXC
- sFK7LupaPsWbGBWzIf4ZLK/OWEY5xjHAN0Qin+k0ySkMMaS4kPs/tQLhCeLIYD55BL4YH3VPh
- C0u/FhLEPzTZad/+p6gY7Sswlugf+guMry5p6VC830ijupT1X62RglWGNjbLo8TGcZXepCVgK
- 10OGGT+OlZVvKMEF0fG2gKqJUm3Mlqb02snctwb5Jtk7qVwK0mbtMCq+WpKRYAw6Q7xC4IrqU
- ydyQew==
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|DU2PR04MB9131:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63cfce9d-aeb1-46b8-9597-08dbecf672ff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qi5dmV7DqFlectZRX21C1MiGYnTaAjAPFzw+W9p7U1HJTu/UaC0WumZkJruXxddBwVRx4eV/DlKo9nxf+fKkKT3/rcYilbDDJFYAD7AYRX5Z+mT2WMBPZtiJKJzapJEIkEjr2QFrUMbFKIdPvhKwClMFwTHFCuPBm735012m86j8lQgArQzuel4Mf046k+oj382ME8TZ7EV7NcxaDeuAuWpK3Mg+DfSpMqOFyvlMOQvc0bFKRd3breSuNTVKU47tvgn7YMkNcDkPuvU4pCuzg3uxTQxqcRtKKXl8dSe48LQ+7Hvk9Ba2dIQQ10OzLL4Z6pi6WA4TMo8BsK31WjIi77SwHLjSUeJW9Nna7tdz0V4yWquNn8b8caImg2A+xKN03ChrMWVK8u4rdrxhF8jllTddhnDXBOhrJnrX7EYcVlW3lJw6fTcm0IWHDNr7R71JpcrMrm90XSfDWfXxR4456HtpyeGYwE/2yiJD/Jjhcv0EAA+0Q+egx1Cj9hGUfUCASgo/+Q5VA9RZmCdOxnz3bhtAVZt9pSn0fptn/kHtaHWwohoor6CowUo1/61oZTax
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8199.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(136003)(346002)(366004)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(26005)(66946007)(6916009)(66476007)(66556008)(38100700002)(86362001)(6486002)(83380400001)(9686003)(6512007)(6666004)(53546011)(6506007)(478600001)(33716001)(2906002)(8676002)(316002)(8936002)(4326008)(5660300002)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TyjHbfQ93uvpinIX2OZOO4nF49XiRSCy/R3O1ZI7ChWiPu7HeNQG9cZIed1k?=
+ =?us-ascii?Q?nXJI50I0l1OmsdmpSTFpn+ovs6la9gkCSqRAaHuO/a7SvpwUtwZNYqPHzYsP?=
+ =?us-ascii?Q?m5L0NXp5nqlHzF603z+FGelciSS70wUjy//LX08SF7H5RSL5/xSbQU08kVAA?=
+ =?us-ascii?Q?YjdrzZyQfeVeFvebbUOUmNly8Hk0cNsOt/ptyCDewiQ+c3FeKqOrUyyqUJaZ?=
+ =?us-ascii?Q?PgnjL4R+ENgfeyoL11rYTSe4EF1JiDBtKJnv/Xry9JuBeFlfO//O5c2Chc2b?=
+ =?us-ascii?Q?JdZn+WQRbq3KVBmUEYPLZeU4sYLGlgmjplnYqfXsH57he6f7yW9eLHhxsvs5?=
+ =?us-ascii?Q?5Axw4C9FZFdMGECHlpVTx4T41N4iKvYwinxOZQ2lssHxtB41OZN83oFvPgTW?=
+ =?us-ascii?Q?ozq6rjseRhi6UIGuao11hyOFOHq2wyHCG5mBWo1tVx74o049yPaiXui8CUMv?=
+ =?us-ascii?Q?eK/A9kj8eS1tDmb0p0KVt5j/fIhpIHsgUj4iIx/Yfwvif+uS08s2Hv/eJiI+?=
+ =?us-ascii?Q?KbXOot3j5j3555+XxvKVneMjyZFRw4auruRfFBbX1hcOoRVcUL1CCtRSDQ7X?=
+ =?us-ascii?Q?5vm1aDXsSmnwJCkwhEXhG5/WvBwaoaBnUcgUuCLVyfwuEpurIa0S3Xy1aUGg?=
+ =?us-ascii?Q?LoHfZnZuER+VhoONSp0zosKxOiBDbw902x397hQo9m6s5lU7u2ZJ851dVCzS?=
+ =?us-ascii?Q?g5EXDT6Iq8egMCiTLLF4kvMLfd1hXVJ4cNYI+jqwSUoyONwu46Dy25VreP5y?=
+ =?us-ascii?Q?Y40RMN80WjIt7jbuVGxPct36JAZsCb8B++H3Edw1ru+daL1JCqUfZ6+39ZNP?=
+ =?us-ascii?Q?H3KTku2ebBiIwUjplD3Fqhwon+1F0RsiGEZu/QA0YbujgfJISjSYzIjBkUZm?=
+ =?us-ascii?Q?Dgu2qs1KAdaHIsSOaBXbfwwvrZmQBTIXp5EArTTLVOvuDpVXFN/j4Y7doAMK?=
+ =?us-ascii?Q?VEJnOXcULofkuyU/d/fZpBYWa2v8WQmQLg61tNqwTj6xRRYuGeBxgMUr9wEi?=
+ =?us-ascii?Q?y8QMtDOkTzlUL8/3xRWEZha8E4p1zgltjV/dVSr5kYrkxInEtLCZFsh1iyqK?=
+ =?us-ascii?Q?iBFshx8P/oqgBdMP190M6f/BWbv2k+bAwSdv2R++0hxpoGm4Hq4h6oFH32at?=
+ =?us-ascii?Q?yyAai9/ATdP2SSYDI/J11fRnw2f8+j92Vfr3NPKFoILRqrNfx0kOPCo6Ih2d?=
+ =?us-ascii?Q?PTBRpP96OrKipezZK1N2tYH7Heq28JI/H76VPTrG89sihyLrHOKggcXjLA3V?=
+ =?us-ascii?Q?pd11tm5Mp6CRZG0woJk8XzmSIT7yAWbY6bbTCSKerDI2efiGzesUMJRg6ETJ?=
+ =?us-ascii?Q?t4+wSS6wrty8ZnAizRH6BQcACX2ceCeoIKNomY98ZOMQILbD8eh4BgdkVwet?=
+ =?us-ascii?Q?7gqkKllbT8quE5k430QHYTmEZyR3WdtXXfp8O1QN2kLoPFrCWTZnigB2s2L7?=
+ =?us-ascii?Q?gwpzGQbd7DQ/8UPzF50fHZ1zFg0AiWNhnTWGXlBW/HtHkriKaURqrBXRN5Ol?=
+ =?us-ascii?Q?gyEWWoMlg6x/C7lvbd3T4NzfZuFka5e0k3dYsCl9v91AGwTN5Dv2nBryEftx?=
+ =?us-ascii?Q?D8vvywn+12JpdFRJUPM=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63cfce9d-aeb1-46b8-9597-08dbecf672ff
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 14:05:44.3770
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ptTzZK/AjxDpVWl8WasgOYgtvhV5uW+e6VpJftVJnXd1bM534e3LXhTr9eq/Lu6E
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9131
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+On Fri, Nov 24, 2023 at 02:53:52PM +0900, Damien Le Moal wrote:
+> On 11/24/23 12:05, Wei Gao wrote:
+> > The current logic "if (level >= IOPRIO_NR_LEVELS)" can not be reached since
+> > level value get from IOPRIO_PRIO_LEVEL ONLY extract lower 3-bits of ioprio.
+> > (IOPRIO_NR_LEVELS=8)
+> > 
+> > So this trigger LTP test case ioprio_set03 failed, the test case expect
+> > error when set IOPRIO_CLASS_BE prio 8, in current implementation level
+> > value will be 0 and obviously can not return error.
+> > 
+> > Fixes: eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
+> 
+> No. Please see below.
+> 
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > ---
+> >  block/ioprio.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/block/ioprio.c b/block/ioprio.c
+> > index b5a942519a79..f83029208f2a 100644
+> > --- a/block/ioprio.c
+> > +++ b/block/ioprio.c
+> > @@ -33,7 +33,7 @@
+> >  int ioprio_check_cap(int ioprio)
+> >  {
+> >  	int class = IOPRIO_PRIO_CLASS(ioprio);
+> > -	int level = IOPRIO_PRIO_LEVEL(ioprio);
+> > +	int data = IOPRIO_PRIO_DATA(ioprio);
+> >  
+> >  	switch (class) {
+> >  		case IOPRIO_CLASS_RT:
+> > @@ -49,13 +49,13 @@ int ioprio_check_cap(int ioprio)
+> >  			fallthrough;
+> >  			/* rt has prio field too */
+> >  		case IOPRIO_CLASS_BE:
+> > -			if (level >= IOPRIO_NR_LEVELS)
+> > +			if (data >= IOPRIO_NR_LEVELS || data < 0)
+> 
+> This is incorrect: data is the combination of level AND hints, so that value can
+> be larger than or equal to 8 with the level still being valid. Hard NACK on this.
+> 
+> The issue with LTP test case has been fixed in LTP and by changing the ioprio.h
+> header file. See commit 01584c1e2337 ("scsi: block: Improve ioprio value
+> validity checks") which introduces IOPRIO_BAD_VALUE() macro for that.
+> 
+> And for ltp, the commits are:
+> 6b7f448fe392 ("ioprio: Use IOPRIO_PRIO_NUM to check prio range")
+> 7c84fa710f75 ("ioprio: use ioprio.h kernel header if it exists")
+> 
+> So please update your setup, including your install of kernel user API header files.
+> 
 
-Am 23.11.23 um 12:37 schrieb Paolo Abeni:
-> On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
->> The functions qcaspi_netdev_open/close are responsible of request &
->> free of the SPI interrupt, which wasn't the best choice. Currently
->> it's possible to trigger a double free of the interrupt by calling
->> qcaspi_netdev_close() after qcaspi_netdev_open() has failed.
->> So let us split IRQ allocation & enabling, so we can take advantage
->> of a device managed IRQ and also fix the issue.
->>
->> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for Q=
-CA7000")
->> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-> The change makes sense, but the changelog is confusing.
->
-> qcaspi_netdev_close() and qcaspi_netdev_open() are invoked only via
-> ndo_open and ndo_close(), right? So qcaspi_netdev_close() will never be
-> invoked qcaspi_netdev_open(), failure - that is when IFF_UP is not set.
-sorry, i missed to mention an important part. This issue is partly
-connected to patch 3.
-Please look at qcaspi_set_ringparam() which also call ndo_close() and
-ndo_open(). If you only apply patch 3 you could trigger this issue by
-running the following script, interrupt via Strg+C and start again:
+Thanks a lot for your quick feedback and detail explaination, if i am guess correctly, 
+my test kernel include eca2040972b4 ("scsi: block: ioprio: Clean up interface definition") but 
+not include 01584c1e2337 ("scsi: block: Improve ioprio value validity checks") by coincidence.
 
-#!/bin/bash
-
-while [ true ]; do
- =C2=A0 ethtool -G eth1 tx 8
- =C2=A0 ethtool -g eth1
- =C2=A0 ethtool -G eth1 tx 10
-done
-
-
-[=C2=A0=C2=A0 75.713471] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 75.721814] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 76.795239] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 76.815801] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 77.915872] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 77.933982] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 79.036024] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 79.055595] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 80.076223] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 80.097305] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 81.196471] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 81.217351] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 82.316592] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 82.336963] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 83.436864] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 83.461252] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 84.556950] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 84.575897] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 85.677105] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 85.695061] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 86.717215] qcaspi spi1.0 eth1: SPI thread exit
-[=C2=A0=C2=A0 86.739535] qcaspi spi1.0 eth1: SPI thread created
-[=C2=A0=C2=A0 87.837355] qcaspi spi1.0 eth1: SPI thread exit
-<-- Strg + C
-[=C2=A0=C2=A0 87.841072] qcaspi spi1.0 eth1: qcaspi: unable to start kerne=
-l thread.
-root@tarragon:/srv# ./test_ring_fast.sh
-=2D-----------[ cut here ]------------
-WARNING: CPU: 0 PID: 724 at kernel/irq/manage.c:1887 free_irq+0x23c/0x288
-Trying to free already-free IRQ 73
-CPU: 0 PID: 724 Comm: ethtool Not tainted
-6.1.49-chargebyte-00029-g8c38d497af8a-dirty #108
-Hardware name: Freescale i.MX6 Ultralite (Device Tree)
- =C2=A0unwind_backtrace from show_stack+0x10/0x14
- =C2=A0show_stack from dump_stack_lvl+0x24/0x2c
- =C2=A0dump_stack_lvl from __warn+0x74/0xbc
- =C2=A0__warn from warn_slowpath_fmt+0xc8/0x120
- =C2=A0warn_slowpath_fmt from free_irq+0x23c/0x288
- =C2=A0free_irq from qcaspi_netdev_close+0x38/0x5c
- =C2=A0qcaspi_netdev_close from qcaspi_set_ringparam+0x48/0x90
- =C2=A0qcaspi_set_ringparam from ethnl_set_rings+0x2dc/0x320
- =C2=A0ethnl_set_rings from genl_rcv_msg+0x2c4/0x344
- =C2=A0genl_rcv_msg from netlink_rcv_skb+0x98/0xfc
- =C2=A0netlink_rcv_skb from genl_rcv+0x20/0x34
- =C2=A0genl_rcv from netlink_unicast+0x114/0x1a4
- =C2=A0netlink_unicast from netlink_sendmsg+0x314/0x340
- =C2=A0netlink_sendmsg from sock_sendmsg_nosec+0x14/0x24
- =C2=A0sock_sendmsg_nosec from __sys_sendto+0xc4/0xf8
- =C2=A0__sys_sendto from ret_fast_syscall+0x0/0x54
-Exception stack(0xe115dfa8 to 0xe115dff0)
-dfa0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 b6ed24dc 0000000c 00000003 005c423=
-8 0000002c
-00000000
-dfc0: b6ed24dc 0000000c b6f6a5a0 00000122 00472e04 005c41f0 00436b60
-005c4190
-dfe0: 00000122 bec50b68 b6e5f841 b6dd1ae6
-=2D--[ end trace 0000000000000000 ]---
->
-> Cheers,
->
-> Paolo
->
-
+> >  				return -EINVAL;
+> >  			break;
+> >  		case IOPRIO_CLASS_IDLE:
+> >  			break;
+> >  		case IOPRIO_CLASS_NONE:
+> > -			if (level)
+> > +			if (data)
+> >  				return -EINVAL;
+> >  			break;
+> >  		case IOPRIO_CLASS_INVALID:
+> 
+> -- 
+> Damien Le Moal
+> Western Digital Research
+> 
