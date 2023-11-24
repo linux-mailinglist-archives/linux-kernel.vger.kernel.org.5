@@ -2,180 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6D7F71FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972AF7F7200
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345630AbjKXKsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:48:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        id S1345658AbjKXKsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345362AbjKXKse (ORCPT
+        with ESMTP id S1345362AbjKXKsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:48:34 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EDB92;
-        Fri, 24 Nov 2023 02:48:40 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b843b61d8aso1044590b6e.0;
-        Fri, 24 Nov 2023 02:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700822919; x=1701427719; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JSUEAKedcFlvjkIzN6LzNXLF8ZLIJ83SRbS1kwzATO0=;
-        b=MbD/CW6nfK6nqn0J496x4uzqaxSn9ZC5LItkOPJOrECSsjMW06vzsdW3y2inl4Iq9K
-         crdAa4/CBU4kpQDIlnG7JZqi25wzny9Bb2wkCHAA1n2X80yoX1kHJrsiZ2Icl++m+AQc
-         9tU1y3bZpctBrkHG8M/Cvu3K/JZqrgp7y3ng4lGt78rbgVC7iqkgJIZid6HUdlqG2mMf
-         VFY/ES07LpxKxLLdFs3m6MCJHJR+cymQlPXO/LaPNXSZFTin1P5QzHtEaz30b0npkEbg
-         kFKtBSMu9nbo9se4364p9nyp90c3XwKzx70Hvj2DSvYJdBmO+Y6tblu7Vwp2XhHiqIC+
-         W70g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700822919; x=1701427719;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JSUEAKedcFlvjkIzN6LzNXLF8ZLIJ83SRbS1kwzATO0=;
-        b=wb3ByAJi9iVURYnT6keF4HLMcaChGw5I0aTsWuzws8rCAcBSYO6nG7FkKoUg+FoAOY
-         K28lHt2rBQ4G+ta9KW6ypogxBle5H69rzVGAove5krslu6YLD9UtoMwJQyxa7/rj1hKp
-         7UNTDnyY5E3zcorK5SQH5tL73+hdySKzpVhQaJ8kdCeEO7GSR6dlsz4/JS7MO2Q0cXVr
-         rN9cj8BXcHaSr7hOh08MKqALTr+HZp7YvbAh3UCZ8D+gJuibmsSy9jJmPLC9L//a+3kG
-         8guavZkdFjyvQXHIejoSWO/mAICqL+fgOnlAOzV3BtYzP7VmGm1CMn1HxtVJpqBY00Jt
-         Q1Sg==
-X-Gm-Message-State: AOJu0Yztqg3d+SMF1XRR+LR8+s2cloAABwAYKcyL196SHXI6y/0KDtQm
-        aKofMZfe2BSoSI8z25eVYbnnYe+kZI1WQT+TUz8=
-X-Google-Smtp-Source: AGHT+IH2TyCtkFLMnAO/yClVYDhq70yZy6EcVUl/P6ZwWvgPzvLcjJQMd6c3yTIRYwm7OY8ExvVm49pGjrDQTZCwM54=
-X-Received: by 2002:a05:6870:9f8b:b0:1e9:c7cc:df9a with SMTP id
- xm11-20020a0568709f8b00b001e9c7ccdf9amr3508073oab.11.1700822919197; Fri, 24
- Nov 2023 02:48:39 -0800 (PST)
+        Fri, 24 Nov 2023 05:48:37 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249E184
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:48:43 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2EF1E66073AA;
+        Fri, 24 Nov 2023 10:48:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700822921;
+        bh=Sx+Ot9i01DSUKlEZSaKJTKmVD/+s6DQmXFCXOQUy3/o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FH8qo6SPVrvMJRd87g4WFYY0+tgR5HvRkbc8keVtWXKcAzaMyNKaVt2wiNd3WSfmf
+         4chWrGxHrKwmEbb6fpngbBphjvBJpo/sRmOKBFSuLbxtaJ3q8CBWsu9Qw1ZY6nJf0x
+         BtXrVdJFSLZY/vJzybjEXhzCeNxN2IYJY4HW8jV7KJKrR8zNAfwXIy0TE1GaiggY+A
+         MhQJZQvTe9zqf6ZZy/4Ne/BGul5w6/eQXoNvjtASJdbtBmx+OA6S+CntorNZl9tiT7
+         zVlGgJ7mRh+Ilud5sa5qjD7SR5QZURVOOFz/u5Uz1JYbgO/m7aCT+FNqOfqfLrblcN
+         +GtMM/8ulHr4g==
+Message-ID: <5a140dd0-c6e3-47ff-9d25-f11eb7414036@collabora.com>
+Date:   Fri, 24 Nov 2023 11:48:38 +0100
 MIME-Version: 1.0
-References: <20231122182351.63214-1-linux.amoon@gmail.com> <20231122182351.63214-2-linux.amoon@gmail.com>
- <20231123-skeletal-smirk-390543e2d6ab@spud>
-In-Reply-To: <20231123-skeletal-smirk-390543e2d6ab@spud>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Fri, 24 Nov 2023 16:18:23 +0530
-Message-ID: <CANAwSgQCOw_CY_Yy7zYHdme92O=O35Ev=MqHcznYnR=ycaxdPg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     steven.price@arm.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski@linaro.org, kernel@collabora.com
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+ <20231123113530.46191ded@collabora.com>
+ <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+ <20231123135933.34d643f7@collabora.com>
+ <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
+ <20231123145103.23b6eac9@collabora.com>
+ <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
+ <20231123164019.629c91f9@collabora.com>
+ <5e60f1d1-8e3a-42ca-af56-126faa67ea86@collabora.com>
+ <c4a8eb63-2d67-42c3-a6b4-c6ad3bd9ab8e@collabora.com>
+ <20231124112147.19b6b6b7@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231124112147.19b6b6b7@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor
+Il 24/11/23 11:21, Boris Brezillon ha scritto:
+> On Fri, 24 Nov 2023 11:12:57 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>> Il 24/11/23 10:17, AngeloGioacchino Del Regno ha scritto:
+>>> Il 23/11/23 16:40, Boris Brezillon ha scritto:
+>>>> On Thu, 23 Nov 2023 16:14:12 +0100
+>>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>> wrote:
+>>>>   
+>>>>> Il 23/11/23 14:51, Boris Brezillon ha scritto:
+>>>>>> On Thu, 23 Nov 2023 14:24:57 +0100
+>>>>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>>>> wrote:
+>>>>>>>>>
+>>>>>>>>> So, while I agree that it'd be slightly more readable as a diff if those
+>>>>>>>>> were two different commits I do have reasons against splitting.....
+>>>>>>>>
+>>>>>>>> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
+>>>>>>>> in when we power-off the cores, I think we'd be better off dropping
+>>>>>>>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
+>>>>>>>> at [re]initialization time, and then have a separate series that fixes
+>>>>>>>> the problem more generically.
+>>>>>>>
+>>>>>>> But that didn't work:
+>>>>>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+>>>>>>
+>>>>>> I meant, your 'ignore-core_mask' fix + the
+>>>>>> 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
+>>>>>>
+>>>>>> So,
+>>>>>>
+>>>>>> https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
+>>>>>> +
+>>>>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
+>>>>>>>
+>>>>>>>
+>>>>>>> ...while this "full" solution worked:
+>>>>>>> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
+>>>>>>>
+>>>>>>> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
+>>>>>>>
+>>>>>>>
+>>>>>>> ...so this *is* a "quick fix" already... :-)
+>>>>>>
+>>>>>> It's a half-baked solution for the missing irq-synchronization-on-suspend
+>>>>>> issue IMHO. I understand why you want it all in one patch that can serve
+>>>>>> as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
+>>>>>> panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
+>>>>>> even simpler diff (see below), and then fully address the
+>>>>>> irq-synhronization-on-suspend issue in a follow-up patchset.
+>>>>>> --->8---
+>>>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>> index 09f5e1563ebd..6e2d7650cc2b 100644
+>>>>>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>> @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>>>>>>            }
+>>>>>>            gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+>>>>>> -       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+>>>>
+>>>> We probably want a comment here:
+>>>>
+>>>>      /* Only enable the interrupts we care about. */
+>>>>   
+>>>>>> +       gpu_write(pfdev, GPU_INT_MASK,
+>>>>>> +                 GPU_IRQ_MASK_ERROR |
+>>>>>> +                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
+>>>>>> +                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
+>>>>>
+>>>>> ...but if we do that, the next patch(es) will contain a partial revert of this
+>>>>> commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL)...
+>>>>
+>>>> Why should we revert it? We're not processing the PWRTRANS interrupts
+>>>> in the interrupt handler, those should never have been enabled in the
+>>>> first place. The only reason we'd want to revert that change is if we
+>>>> decide to do have interrupt-based waits in the poweron/off
+>>>> implementation, which, as far as I'm aware, is not something we intend
+>>>> to do any time soon.
+>>>>   
+>>>
+>>> You're right, yes. Okay, I'll push the new code soon.
+>>>
+>>> Cheers!
+>>>    
+>>
+>> Update: I was running some (rather fast) tests here because I ... felt like playing
+>> with it, basically :-)
+>>
+>> So, I had an issue with MediaTek platforms being unable to cut power to the GPU or
+>> disable clocks aggressively... and after trying "this and that" I couldn't get it
+>> working (in runtime suspend).
+>>
+>> Long story short - after implementing `panfrost_{job,mmu,gpu}_suspend_irq()` (only
+>> gpu irq, as you said, is a half solution), I can not only turn off clocks, but even
+>> turn off GPU power supplies entirely, bringing the power consumption of the GPU
+>> itself during *runtime* suspend to ... zero.
+> 
+> Very nice!
+> 
+>>
+>> The result of this test makes me truly happy, even though complete powercut during
+>> runtime suspend may not be feasible for other reasons (takes ~200000ns on AVG,
+>> MIN ~160000ns, but the MAX is ~475000ns - and beware that I haven't run that for
+>> long, I'd suspect to get up to 1-1.5ms as max time, so that's a big no).
+> 
+> Do you know what's taking so long? I'm disabling clks + the main power
+> domain in panthor (I leave the regulators enabled), but I didn't get to
+> measure the time it takes to enter/exit suspend. I might have to do
+> what you did in panfrost and have different paths for system and RPM
+> suspend.
+> 
 
-On Thu, 23 Nov 2023 at 23:26, Conor Dooley <conor@kernel.org> wrote:
->
-> On Wed, Nov 22, 2023 at 11:53:46PM +0530, Anand Moon wrote:
-> > Add the binding example for the USB3.1 Genesys Logic GL3523
-> > integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-> > hub.
-> >
-> > Onboard USB hub supports USB 3.x and USB 2.0 peer controllers.
-> > which has a common reset pin and power supply.
-> > peer-hub phandle each peer controller with proper gpio reset
-> > and help each peer power on during initialization
-> > and power off during suspend.
-> >
-> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> > ---
-> > v4: Fix the description of peer-hub and update the commit message.
-> > Schematics of the Odroid N2+
-> > https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121.pdf
-> > V3: fix the dt_binding_check error, added new example for Genesys GL3523
-> > v2: added Genesys GL3523 binding
-> > v1: none
-> > ---
-> >  .../bindings/usb/genesys,gl850g.yaml          | 67 +++++++++++++++++--
-> >  1 file changed, 63 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > index ee08b9c3721f..bc3b3f4c8473 100644
-> > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
-> >  maintainers:
-> >    - Icenowy Zheng <uwu@icenowy.me>
-> >
-> > -allOf:
-> > -  - $ref: usb-device.yaml#
-> > -
-> >  properties:
-> >    compatible:
-> >      enum:
-> > @@ -27,12 +24,48 @@ properties:
-> >
-> >    vdd-supply:
-> >      description:
-> > -      the regulator that provides 3.3V core power to the hub.
-> > +      phandle to the regulator that provides power to the hub.
-> > +
-> > +  peer-hub:
->
-> Should the property not be "peer-controller"? Your description refers to
-> them as such.
+That's SoC dependant... there's only one way to get runtime suspend right in terms
+of timing, and that is to select what to do there on a per-SoC basis: this is why
+some of them will take lots of time to turn off (or on!) clocks, because clock
+controllers are not all equal: this is not only in relation to different vendors
+(as in, rockchip vs nxp vs mediatek vs qcom vs...) but also for different parts
+from the same vendor (as in, MSM8953 uses different clock controllers compared to
+SM8350 and MT6795 different compared to MT6985 and MT8195).
 
-No, as per my understanding, peer-hub represents a complete USB hub.
-See the lock diagram in the below link.
+Some of them will require a long time to turn on a PLL mainly because "locking the
+PLL" (read: waiting until the PLL outputs a certain clock rate in a stable manner)
+may take time, or some could lose time by waiting for ungating... though, usually
+clock controllers take no time to *turn off* a clock, but needs a bit more time to
+turn them *on* (which matters in runtime resume, but not much in system pm resume).
 
->
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      onboard USB hub supports USB 3.x and USB 2.0 peer controllers.
->
->
-> > +      which has a common reset pin and power supply.
-> > +      peer-hub phandle each peer controller with proper gpio reset
-> > +      and help each peer power on during initialization
-> > +      and power off during suspend.
->
-> I generally hate to talk about non-native speakers grammar etc, but what
-> you have here is in need of a lot of improvement. The below is my
-> attempt to understand what you are trying to say:
->
-> "For onboard hubs that support USB 3.x and USB 2.0 controllers with
-> shared resets and power supplies, this property is used to identify
-> the controllers with which these are shared."
->
+The situation is exactly the same in regard to power supplies: some may need a bit
+of time to turn on/off a power *domain* (not MTK's case), some lose time turning
+on/off a regulator instead.
 
-Sorry for the poor grammar, I will update this in the next v5.
+Related to the case of my MediaTek platforms (MT8192, MT8195, MT8186), the power
+domains go on/off in nanoseconds, same for clocks (as the clock tree uses a generic
+PLL for init, then switches to a GPU-dedicate with "you being picky" :-)d PLL which 
+anyway doesn't require a
+lot of time to reach lock state), but turning off the *Vgpu* (gpu core supply)
+regulator takes "all that much".
 
-> Also - this is one particular system, what prevents there being a hub
-> that has more than 2 controllers? Also, as you insist that this is
-> generic, and not just for genesys, should this not be defined in a
-> common location?
+So the only solution to do that on a per-SoC basis would be to have the code to
+turn on/off clocks and regulators in a barrier, and have it in both runtime PM
+*and* system PM, and to select - for each SoC - what to do such that the driver is
+able to do *either of*:
 
-Here is the block diagram of the Genesys GL3523 hub.
-[0] https://www.genesyslogic.com.tw/en/product_view.php?show=67 [Block Diagram]
+  - Runtime PM only PWRTRANS (beware: power domains off implicit, in all cases!)
+  - Runtime PM PWRTRANS + clocks off
+  - Runtime PM PWRTRANS + clocks off + regulators off
 
-It has two USB 2.0 and USB 3.1 controllers, so using peer-hub node
-the onboard hub module will bring up this hub.
+  - System PM RPM() only
+  - System PM RPM() + clocks off (only if not done already in RPM)
+  - System PM RPM() + clocks off + regulators off (only if not done already in RPM)
 
-There are many examples that use similar properties hence it is generic.
+...at least, that's to reach an "almost perfect" power save tuning on *all*, but
+the shortest path is obviously to leave the "clocks off + regulators off" code in
+System PM only, as that's something that 99.9% of the SoCs would support.
 
-# Documentation/devicetree/bindings/usb/cypress,hx3.yaml
-# Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-# Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-# Documentation/devicetree/bindings/usb/ti,usb8041.yaml
-# Documentation/devicetree/bindings/usb/vialab,vl817.yaml
+I'd be happy to find a (clean) solution to add what I described to Panfrost (and
+would be reusable in Panthor, I believe) but I don't know if I'd be able to put
+something on the table for this merge window anyway.
 
->
-> Cheers,
-> Conor.
->
+>>
+>> This means that I will take a day or two and I'll push both the "simple" fix for
+>> the Really-power-off and also some more commits to add the full irq sync.
+> 
+> Thanks for working on that, and sorry if I've been picky in my previous
+> reviews. Looking forward to review these new patches.
+> 
 
-Thanks
--Anand
+Many times, being picky means reaching a better solution, and this is one of those
+cases: there's no need to be sorry (not to me at least).
+
+I appreciate when others are giving out valuable *and constructive* feedback, which
+again, this was the case - so thank you for "being picky"! :-)
+
+Cheers,
+Angelo
+
