@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 088677F6B86
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FC47F6B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjKXE55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 23:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
+        id S231162AbjKXE6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 23:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXE54 (ORCPT
+        with ESMTP id S230192AbjKXE55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 23:57:56 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEDCD67;
-        Thu, 23 Nov 2023 20:58:02 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AO4vs48103199;
-        Thu, 23 Nov 2023 22:57:54 -0600
+        Thu, 23 Nov 2023 23:57:57 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B2CD6E;
+        Thu, 23 Nov 2023 20:58:04 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AO4vvpS043202;
+        Thu, 23 Nov 2023 22:57:57 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700801874;
-        bh=DudPOU9UQ3hB64Er+3q7A3laXlUnc064WgE+sKHDjLk=;
-        h=From:To:CC:Subject:Date;
-        b=GJsFN6QQAukkj9vjtcsko9NqOgLD1Ta1gryqq51BNhVtda28slmL8g0izQI/n06r4
-         Y6+JSgy4CQRmw9s7lNbPQb7rMaq7stRCb7CKuVSvVMeZzuWCQ4OtypTpX3m3kc4zv8
-         cOwp2gRKNPEA1wTfuBVTEyq4A0ZqfXyCOCUrL/vQ=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AO4vsc4080853
+        s=ti-com-17Q1; t=1700801877;
+        bh=HjBkXljfWp+92EwJDlN9yJARdABEr4KgfTuFDro3yCM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=UECTTwLZQJBtqdkxcku7VjuIAnrjR/CnNySAFURiGUvs/9Z7Thl7pyZFtivXWUb98
+         H4lKhgYy8mv/sD8lMPuAHlqF3NINsbh/7zegDWgoV4su+iaTvkevcB48KIDZrnyll9
+         TYCQcIq7hoEnOJQCWay0SMGunw82EPfJglMlRHBQ=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AO4vv5f076370
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Nov 2023 22:57:54 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 23
- Nov 2023 22:57:54 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+        Thu, 23 Nov 2023 22:57:57 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
  (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 23
+ Nov 2023 22:57:57 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 23 Nov 2023 22:57:54 -0600
+ Frontend Transport; Thu, 23 Nov 2023 22:57:57 -0600
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AO4vo8f004756;
-        Thu, 23 Nov 2023 22:57:51 -0600
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AO4vo8g004756;
+        Thu, 23 Nov 2023 22:57:54 -0600
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -50,10 +50,12 @@ CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 0/4]  dt-bindings: dma: ti: k3*: Update optional reg regions
-Date:   Fri, 24 Nov 2023 10:27:18 +0530
-Message-ID: <20231124045722.191817-1-vigneshr@ti.com>
+Subject: [PATCH v3 1/4] dt-bindings: dma: ti: k3-*: Add descriptions for register regions
+Date:   Fri, 24 Nov 2023 10:27:19 +0530
+Message-ID: <20231124045722.191817-2-vigneshr@ti.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231124045722.191817-1-vigneshr@ti.com>
+References: <20231124045722.191817-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -68,42 +70,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMAs on TI K3 SoCs have channel configuration registers region which are
-usually hidden from Linux and configured via Device Manager Firmware
-APIs. But certain early SWs like bootloader which run before Device
-Manager is fully up would need to directly configure these registers and
-thus require to be in DT description.
+In preparation for introducing more register regions, add description
+for existing register regions so that its easier to map reg-names to
+that of SoC Documentations/TRMs.
 
-This add bindings for such configuration regions.  Backward
-compatibility is maintained to existing DT by only mandating existing
-regions to be present and this new region as optional.
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ .../devicetree/bindings/dma/ti/k3-bcdma.yaml   | 18 +++++++++++++++---
+ .../devicetree/bindings/dma/ti/k3-pktdma.yaml  |  6 +++++-
+ .../devicetree/bindings/dma/ti/k3-udma.yaml    |  5 ++++-
+ 3 files changed, 24 insertions(+), 5 deletions(-)
 
-This update is mainly to aid SPL/U-Boot to reuse kernel DT as is. And is
-applicable to entire K3 SoCs.
-
-v3:
-Add back toplevel reg and reg-names constraints in k3-bcdma.yaml
-v2: https://lore.kernel.org/all/20231122154238.815781-1-vigneshr@ti.com
-
-v2:
-Fix issues pointed out by Conor and Peter
-* Add new patch 1/4 to describe existing register regions
-* Rename cfg region as ring
-* Add bchan register space for bcdma
-* Include descriptions for new registers
-v1: https://lore.kernel.org/all/20230810174356.3322583-1-vigneshr@ti.com/
-
-Vignesh Raghavendra (4):
-  dt-bindings: dma: ti: k3-*: Add descriptions for register regions
-  dt-bindings: dma: ti: k3-bcdma: Describe cfg register regions
-  dt-bindings: dma: ti: k3-pktdma: Describe cfg register regions
-  dt-bindings: dma: ti: k3-udma: Describe cfg register regions
-
- .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 39 ++++++++++++++++---
- .../devicetree/bindings/dma/ti/k3-pktdma.yaml | 26 +++++++++++--
- .../devicetree/bindings/dma/ti/k3-udma.yaml   | 20 ++++++++--
- 3 files changed, 73 insertions(+), 12 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+index 4ca300a42a99..11727af9df73 100644
+--- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
++++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+@@ -141,7 +141,10 @@ allOf:
+         ti,sci-rm-range-tchan: false
+ 
+         reg:
+-          maxItems: 3
++          items:
++            - description: BCDMA Control /Status Registers region
++            - description: RX Channel Realtime Registers region
++            - description: Ring Realtime Registers region
+ 
+         reg-names:
+           items:
+@@ -160,7 +163,12 @@ allOf:
+     then:
+       properties:
+         reg:
+-          minItems: 5
++          items:
++            - description: BCDMA Control /Status Registers region
++            - description: Block Copy Channel Realtime Registers region
++            - description: RX Channel Realtime Registers region
++            - description: TX Channel Realtime Registers region
++            - description: Ring Realtime Registers region
+ 
+         reg-names:
+           items:
+@@ -184,7 +192,11 @@ allOf:
+         ti,sci-rm-range-bchan: false
+ 
+         reg:
+-          maxItems: 4
++          items:
++            - description: BCDMA Control /Status Registers region
++            - description: RX Channel Realtime Registers region
++            - description: TX Channel Realtime Registers region
++            - description: Ring Realtime Registers region
+ 
+         reg-names:
+           items:
+diff --git a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+index a69f62f854d8..3580b08f65c6 100644
+--- a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
++++ b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+@@ -45,7 +45,11 @@ properties:
+       The second cell is the ASEL value for the channel
+ 
+   reg:
+-    maxItems: 4
++    items:
++      - description: Packet DMA Control /Status Registers region
++      - description: RX Channel Realtime Registers region
++      - description: TX Channel Realtime Registers region
++      - description: Ring Realtime Registers region
+ 
+   reg-names:
+     items:
+diff --git a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
+index 22f6c5e2f7f4..ded588bd079a 100644
+--- a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
++++ b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
+@@ -69,7 +69,10 @@ properties:
+       - ti,j721e-navss-mcu-udmap
+ 
+   reg:
+-    maxItems: 3
++    items:
++      - description: UDMA-P Control /Status Registers region
++      - description: RX Channel Realtime Registers region
++      - description: TX Channel Realtime Registers region
+ 
+   reg-names:
+     items:
 -- 
 2.43.0
 
