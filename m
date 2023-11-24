@@ -2,529 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558A07F6EAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821DE7F6EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345137AbjKXImb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:42:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        id S1345098AbjKXIlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345081AbjKXIlg (ORCPT
+        with ESMTP id S232353AbjKXIl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:41:36 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A7910C8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:41 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3316c6e299eso1065966f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700815300; x=1701420100; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rRD0/XbQYtAW0UShy7dQxS5NCjY0yRMA96IAc7AjvhE=;
-        b=IB1BNhEj8I3L0QUOz0uYBUngCChnFUyl+7poCRURnyUqubhWSeakYGE4xtAqX8zQue
-         WqWb4qIwozCFznkSLaQfraXGC9cf21/Xt+1+oU3h94sKW1TMly9sHf+tqPN0MpTTH+1B
-         WODa+GXbhFSFREsHBiY5ZQQvo1cerbVV7GXJ2ngKZqOqT+FrxDc3NRGq2uhF9ecbwFUP
-         Iujqm7KEzgtkFVwUtgQMaW8cFRQs3h+/BbMvzrNw+4BFB0HI52+Q2zmH2VPO/PZTE/TQ
-         nSNaZmEQccIT/lRo+8i3fupmXQuFJI6hz3iMT7dSq//OC5vdS1CLT7MFmPR5qo3bfnIk
-         +8Yg==
+        Fri, 24 Nov 2023 03:41:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DAD91
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700815290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uae6umIvihz9hD9eDNpHrM2v+MklsEpu9QPr6jgBbKo=;
+        b=L/op+qLvyZCvgZHWF4ty+H5+xedOpyuiRd7LUqUacJXzOjymyiBPBfkmu7Sv/vpJXTamE5
+        Doc8zx38mnUHqk+L4BZnBFSH70uVTUt/+PJcpRXKX3mSKXBGYCV1orcLf4PzP3VfD8S6/s
+        Jq1tQOqfCLfwF7vp5OGNYPG4ccxvEJk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-rJQ0dHUbP3yq8gLe1UD0gw-1; Fri, 24 Nov 2023 03:41:29 -0500
+X-MC-Unique: rJQ0dHUbP3yq8gLe1UD0gw-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-543298e3cc8so1167149a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700815300; x=1701420100;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rRD0/XbQYtAW0UShy7dQxS5NCjY0yRMA96IAc7AjvhE=;
-        b=TNK/+H1X8XgEB8NE1ogAYm1jpIq60fcMVwyRZ8bwzOaKu1lMwuTwdRC6KJlhYIevzH
-         X4X+vOKUmWHFTHtE0IpDMRxpJ0rjuYXLREGdBsPNDL8FeHJp8WM87caGj+fGR4CKZpA7
-         qD2de+XnnotGxY/iXyQe9Cn15FfCIdBoToLpLTIoMQ4eMw1yBqjLmkxIt052ve+BUCVS
-         x/6IKIpEpMsHmdYucIn7HSQgcTwY9mBFs/uc9oZvtF8GyLNpdOxDDyoXooDF2SZqSGpR
-         ulsqFQpDkpM3tIHxaoHVgxlPRMjaWainnMplIXSHTdGDih9OdH1sY1huWQDY7Dvn3AEz
-         d7dQ==
-X-Gm-Message-State: AOJu0YxwkgrIZI7goq7JYW4dak8HhAQLSQVaqwFI8R92hCqFr3qXd7u+
-        Ogj42YekNxq7VGdEWISi4EWcTw==
-X-Google-Smtp-Source: AGHT+IFqPH8sr0G7elxK7DLD7w1hvPm0dHfI4zvaliH+BOk4rQHVulmyKcq/aDwROzLdQ9Zm/hznBw==
-X-Received: by 2002:a5d:6152:0:b0:332:e7d1:ea74 with SMTP id y18-20020a5d6152000000b00332e7d1ea74mr1264866wrt.66.1700815300268;
-        Fri, 24 Nov 2023 00:41:40 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2534562wru.67.2023.11.24.00.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 00:41:39 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Fri, 24 Nov 2023 09:41:23 +0100
-Subject: [PATCH v9 12/12] arm64: dts: amlogic: meson-g12b-bananapi-cm4: add
- support for MNT Reform2 with CM4 adaper
+        d=1e100.net; s=20230601; t=1700815288; x=1701420088;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uae6umIvihz9hD9eDNpHrM2v+MklsEpu9QPr6jgBbKo=;
+        b=wzgh9LRZG24OcRBneev27ZZ8bCatKiFxMSfXszoVErCzrW3mmzbFwwhwN3C/mpyiFX
+         vs1MEY6C3whd/WaEotQHfqDG5onNGYJRz/U/GCJQyhVhx3V6XfHYzSB76Lg74tECxpCR
+         9qHcvYSZ0Ex+mJwGpnv1w0Hxk968lMR+fh3UAHyT7obIPZKnCoecUR3uFNOeIWmycXoj
+         4W4pnoMPr5/enJIrl/P6qAZEU+IV3bQCaRFTyYPnAi/FbADWpmfOM8qxVDTf/GgiNcYY
+         fNZDrLNlIQWnByydIBB/2kj0nfkoR3Lt1xRvWvWxNz83g8fAJ/o96vlrlRfZc27qvR9D
+         26nw==
+X-Gm-Message-State: AOJu0YzaPUMF2RSuJsfAoAOmZ/L+phMwBKMmnaK77t2UKxumnXeavHRH
+        +jjPnj14NtpvwllEFTLOEwGzNn/oaqw1lTgsFRlBw5R1CqHQK6RjPWw0RPVKpr+jODG3YagJxmD
+        VdiBdQadjEtdTWJsI5b37TMla
+X-Received: by 2002:a50:ab58:0:b0:540:118:e8f with SMTP id t24-20020a50ab58000000b0054001180e8fmr1539443edc.24.1700815288289;
+        Fri, 24 Nov 2023 00:41:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IELiUzhZFnbJ82OfiqMC5ixm/aul3tuw7FDsrJkBoJ1/2MyN0oeJBzjV6LRyahA3oVvVYOtRg==
+X-Received: by 2002:a50:ab58:0:b0:540:118:e8f with SMTP id t24-20020a50ab58000000b0054001180e8fmr1539430edc.24.1700815287950;
+        Fri, 24 Nov 2023 00:41:27 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id e18-20020a056402089200b00548a408f662sm1548936edy.49.2023.11.24.00.41.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 00:41:27 -0800 (PST)
+Message-ID: <1d0f5076-1c8b-49c6-a5d8-5796d829a368@redhat.com>
+Date:   Fri, 24 Nov 2023 09:41:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: asus-wmi: disable USB0 hub on ROG Ally
+ before suspend
+Content-Language: en-US, nl
+To:     "Luke D. Jones" <luke@ljones.dev>
+Cc:     ilpo.jarvinen@linux.intel.com, corentin.chary@gmail.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231124082749.23353-1-luke@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231124082749.23353-1-luke@ljones.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-12-95256ed139e6@linaro.org>
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
-In-Reply-To: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        Rob Herring <robh@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        "Lukas F. Hartmann" <lukas@mntre.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9577;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=FjGQYDPRgRTrkhoNiGFDMiwmzXCPyK3G03dyvM4EzuE=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlYGGyrUud/yo4X9yHxr9g7dtINJXX1EPOpbtQnKKY
- FU1Hp7WJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWBhsgAKCRB33NvayMhJ0VW8D/
- 4oQqGbCwH4E+I2FrTVO5d5bQEjVN+ury0PHIUCNHqeg1F1xUrg2/lAU7yd+NvBNm+0yjjG/3C784ca
- lNDLY3Pi3WW3gb4IdBxPjkbOdMgDR65Ny9xlBQJkAloNFFlnrjoj7+xth3RHlhmcGWNHTlYp0hqsea
- DqlxuS7rlq630VwULVgk8j/HKY4CZsQzo52BZQLSu8l1Cydn7aEahiCNH8kH9VlXfQT6BPaPZI6FIi
- XLJsZACslFR42nPQzoXLtMnVILvhFHoNgRU+7k/eES5Uggoaoe1Aego4jtflkJlOowJoBgkCfnXSPp
- MhVDElct9x7z5PHeiFAYK9DbN8trou1Og4lC8LzWHEKmouZI0k/PfMqnAK934F/fZcuay+t436tP5i
- jNDNa2p6m6WvwBbsb376ZiiYFOZkBeTRi0kDHm0a1rXhJA2d8+pS1dIkB2SPcEfwwgmiQYWFZ7ctYI
- uGn6cUM0KMKm2m0EUOOopVObKVqtxzA5NpIofmtYue3NZB/bAXjpCmZ0vBE7HY2f826wjEZxIsdXtZ
- us++X5BgaDRGod/5LWmKQS260W5p+e42f+IWcWW77z7DaoLis1QH66ykFocjRJOXkTVQ4oV4YmYoTf
- d94ZoEXdsoOvReHLjk0km1gU38eKZwBK11thI0Lm+U5AdMWY9YFJEuj+u+UA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a basic devicetree for the MNT Reform2 DIY laptop when using a
-CM4 adapter and a BPI-CM4 module.
+Hi Luke,
 
-Co-developed-by: Lukas F. Hartmann <lukas@mntre.com>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/amlogic/Makefile               |   1 +
- .../meson-g12b-bananapi-cm4-mnt-reform2.dts        | 384 +++++++++++++++++++++
- 2 files changed, 385 insertions(+)
+Thank you for the patch.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index cc8b34bd583d..58b5b332bdb7 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -15,6 +15,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-bananapi-m2s.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-cm4io.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-mnt-reform2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gsking-x.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts
-new file mode 100644
-index 000000000000..003efed529ba
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts
-@@ -0,0 +1,384 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
-+ * Copyright 2023 MNT Research GmbH
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-g12b-bananapi-cm4.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	model = "MNT Reform 2 with BPI-CM4 Module";
-+	compatible = "mntre,reform2-cm4", "bananapi,bpi-cm4", "amlogic,a311d", "amlogic,g12b";
-+	chassis-type = "laptop";
-+
-+	aliases {
-+		ethernet0 = &ethmac;
-+		i2c0 = &i2c1;
-+		i2c1 = &i2c3;
-+	};
-+
-+	hdmi_connector: hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "MNT-REFORM2-BPI-CM4";
-+		audio-widgets = "Headphone", "Headphone Jack",
-+				"Speaker", "External Speaker",
-+				"Microphone", "Mic Jack";
-+		audio-aux-devs = <&tdmout_a>, <&tdmout_b>, <&tdmin_b>;
-+		audio-routing =	"TDMOUT_A IN 0", "FRDDR_A OUT 0",
-+				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
-+				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-+				"TDM_A Playback", "TDMOUT_A OUT",
-+				"TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT",
-+				"TDMIN_B IN 1", "TDM_B Capture",
-+				"TDMIN_B IN 4", "TDM_B Loopback",
-+				"TODDR_A IN 1", "TDMIN_B OUT",
-+				"TODDR_B IN 1", "TDMIN_B OUT",
-+				"TODDR_C IN 1", "TDMIN_B OUT",
-+				"Headphone Jack", "HP_L",
-+				"Headphone Jack", "HP_R",
-+				"External Speaker", "SPK_LP",
-+				"External Speaker", "SPK_LN",
-+				"External Speaker", "SPK_RP",
-+				"External Speaker", "SPK_RN",
-+				"LINPUT1", "Mic Jack",
-+				"Mic Jack", "MICB";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+					<&clkc CLKID_MPLL0>,
-+					<&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		dai-link-3 {
-+			sound-dai = <&toddr_a>;
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&toddr_b>;
-+		};
-+
-+		dai-link-5 {
-+			sound-dai = <&toddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-6 {
-+			sound-dai = <&tdmif_a>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
-+			};
-+		};
-+
-+		/* Analog Audio */
-+		dai-link-7 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&wm8960>;
-+			};
-+		};
-+
-+		/* hdmi glue */
-+		dai-link-8 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+
-+	reg_main_1v8: regulator-main-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&reg_main_3v3>;
-+	};
-+
-+	reg_main_1v2: regulator-main-1v2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1V2";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		vin-supply = <&reg_main_5v>;
-+	};
-+
-+	reg_main_3v3: regulator-main-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	reg_main_5v: regulator-main-5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_main_usb: regulator-main-usb {
-+		compatible = "regulator-fixed";
-+		regulator-name = "USB_PWR";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_main_5v>;
-+	};
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm_AO_ab 0 10000 0>;
-+		power-supply = <&reg_main_usb>;
-+		enable-gpios = <&gpio 58 GPIO_ACTIVE_HIGH>;
-+		brightness-levels = <0 32 64 128 160 200 255>;
-+		default-brightness-level = <6>;
-+	};
-+
-+	panel {
-+		compatible = "innolux,n125hce-gn1";
-+		power-supply = <&reg_main_3v3>;
-+		backlight = <&backlight>;
-+		no-hpd;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&edp_bridge_out>;
-+			};
-+		};
-+	};
-+
-+	clock_12288: clock_12288 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <12288000>;
-+	};
-+};
-+
-+&mipi_analog_dphy {
-+	status = "okay";
-+};
-+
-+&mipi_dphy {
-+	status = "okay";
-+};
-+
-+&mipi_dsi {
-+	status = "okay";
-+
-+	assigned-clocks = <&clkc CLKID_GP0_PLL>,
-+			  <&clkc CLKID_MIPI_DSI_PXCLK_SEL>,
-+			  <&clkc CLKID_MIPI_DSI_PXCLK>,
-+			  <&clkc CLKID_CTS_ENCL_SEL>,
-+			  <&clkc CLKID_VCLK2_SEL>;
-+	assigned-clock-parents = <0>,
-+				 <&clkc CLKID_GP0_PLL>,
-+				 <0>,
-+				 <&clkc CLKID_VCLK2_DIV1>,
-+				 <&clkc CLKID_GP0_PLL>;
-+	assigned-clock-rates = <936000000>,
-+			       <0>,
-+			       <936000000>,
-+			       <0>,
-+			       <0>;
-+};
-+
-+&mipi_dsi_panel_port {
-+	mipi_dsi_out: endpoint {
-+		remote-endpoint = <&edp_bridge_in>;
-+	};
-+};
-+
-+&cecb_AO {
-+	status = "okay";
-+};
-+
-+&ethmac {
-+	status = "okay";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&pwm_AO_ab {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_ao_a_pins>;
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+
-+	edp_bridge: bridge@2c {
-+		compatible = "ti,sn65dsi86";
-+		reg = <0x2c>;
-+		enable-gpios = <&gpio GPIOX_10 GPIO_ACTIVE_HIGH>; // PIN_24 / GPIO8
-+		vccio-supply = <&reg_main_1v8>;
-+		vpll-supply = <&reg_main_1v8>;
-+		vcca-supply = <&reg_main_1v2>;
-+		vcc-supply = <&reg_main_1v2>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				edp_bridge_in: endpoint {
-+					remote-endpoint = <&mipi_dsi_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+
-+				edp_bridge_out: endpoint {
-+					remote-endpoint = <&panel_in>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	wm8960: codec@1a {
-+		compatible = "wlf,wm8960";
-+		reg = <0x1a>;
-+		clocks = <&clock_12288>;
-+		clock-names = "mclk";
-+		#sound-dai-cells = <0>;
-+		wlf,shared-lrclk;
-+	};
-+
-+	rtc@68 {
-+		compatible = "nxp,pcf8523";
-+		reg = <0x68>;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+};
-+
-+&sd_emmc_b {
-+	status = "okay";
-+};
-+
-+&tdmif_a {
-+	status = "okay";
-+};
-+
-+&tdmout_a {
-+	status = "okay";
-+};
-+
-+&tdmif_b {
-+	pinctrl-0 = <&tdm_b_dout0_pins>, <&tdm_b_fs_pins>, <&tdm_b_sclk_pins>, <&tdm_b_din1_pins>;
-+	pinctrl-names = "default";
-+
-+	assigned-clocks = <&clkc_audio AUD_CLKID_TDM_SCLK_PAD1>,
-+			  <&clkc_audio AUD_CLKID_TDM_LRCLK_PAD1>;
-+	assigned-clock-parents = <&clkc_audio AUD_CLKID_MST_B_SCLK>,
-+				 <&clkc_audio AUD_CLKID_MST_B_LRCLK>;
-+	assigned-clock-rates = <0>, <0>;
-+};
-+
-+&tdmin_b {
-+	status = "okay";
-+};
-+
-+&toddr_a {
-+	status = "okay";
-+};
-+
-+&toddr_b {
-+	status = "okay";
-+};
-+
-+&toddr_c {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
-+
-+&usb {
-+	dr_mode = "host";
-+
-+	status = "okay";
-+};
+On 11/24/23 09:27, Luke D. Jones wrote:
+> ASUS have worked around an issue in XINPUT in Windows by tweaking the MCU
+> firmware to disable the USB0 hub on screen disable when suspending.
 
--- 
-2.34.1
+Can you please do s/XINPUT/XInput game controller emulation/ I had to duckduckgo
+XINPUT to figure out what this was about :)
+
+> The issue we have with this however is one of timing - the call the tells
+> the MCU to this isn't able to complete before suspend is done so we call
+> this in a prepare() and add a small msleep() to ensure it is done.
+> 
+> Without this the MCU is unable to initialise itself correctly on resume.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  drivers/platform/x86/asus-wmi.c | 43 +++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index 6a79f16233ab..c28829d45fb5 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/backlight.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/delay.h>
+>  #include <linux/dmi.h>
+>  #include <linux/fb.h>
+>  #include <linux/hwmon.h>
+> @@ -132,6 +133,9 @@ module_param(fnlock_default, bool, 0444);
+>  #define ASUS_SCREENPAD_BRIGHT_MAX 255
+>  #define ASUS_SCREENPAD_BRIGHT_DEFAULT 60
+>  
+> +/* Controls the power state of the USB0 hub on ROG Ally which input is on */
+> +#define ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
+> +
+>  static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
+>  
+>  static int throttle_thermal_policy_write(struct asus_wmi *);
+> @@ -300,6 +304,9 @@ struct asus_wmi {
+>  
+>  	bool fnlock_locked;
+>  
+> +	/* The ROG Ally device requires the USB hub to be disabled before suspend */
+> +	bool pre_suspend_ec0_csee_disable;
+> +
+>  	struct asus_wmi_debug debug;
+>  
+>  	struct asus_wmi_driver *driver;
+> @@ -4488,6 +4495,8 @@ static int asus_wmi_add(struct platform_device *pdev)
+>  	asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
+>  	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
+>  	asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
+> +	asus->pre_suspend_ec0_csee_disable = acpi_has_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE)
+> +						&& dmi_match(DMI_BOARD_NAME, "RC71L");
+>  
+>  	err = fan_boost_mode_check_present(asus);
+>  	if (err)
+> @@ -4654,6 +4663,38 @@ static int asus_hotk_resume(struct device *device)
+>  		asus_wmi_fnlock_update(asus);
+>  
+>  	asus_wmi_tablet_mode_get_state(asus);
+> +
+> +	return 0;
+> +}
+> +
+> +static int asus_hotk_resume_early(struct device *device)
+> +{
+> +	struct asus_wmi *asus = dev_get_drvdata(device);
+> +	acpi_status status;
+> +
+> +	if (asus->pre_suspend_ec0_csee_disable) {
+> +		status = acpi_execute_simple_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE, 0xB8);
+> +		if (ACPI_FAILURE(status)) {
+> +			pr_warn("failed to set USB hub power on\n");
+> +			return 1;
+
+On an error this should return -ESOMETHING not 1,
+or IMHO better, just only warn and continue with the return 0
+below. When you change this to only warn please also
+drop the {}
+
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int asus_hotk_prepare(struct device *device)
+> +{
+> +	struct asus_wmi *asus = dev_get_drvdata(device);
+> +	acpi_status status;
+> +
+> +	if (asus->pre_suspend_ec0_csee_disable) {
+> +		status = acpi_execute_simple_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE, 0xB7);
+> +		msleep(500); /* sleep required to ensure n-key is disabled before sleep continues */
+> +		if (ACPI_FAILURE(status)) {
+> +			pr_warn("failed to set USB hub power off\n");
+> +			// return 1;
+> +		}
+
+Please drop the commented "return 1;" and the { } .
+
+With these changes you can add my:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+to v2 of the patch.
+
+Regards,
+
+Hans
+
+
+
+
+
+> +	}
+>  	return 0;
+>  }
+>  
+> @@ -4701,6 +4742,8 @@ static const struct dev_pm_ops asus_pm_ops = {
+>  	.thaw = asus_hotk_thaw,
+>  	.restore = asus_hotk_restore,
+>  	.resume = asus_hotk_resume,
+> +	.resume_early = asus_hotk_resume_early,
+> +	.prepare = asus_hotk_prepare,
+>  };
+>  
+>  /* Registration ***************************************************************/
 
