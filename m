@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B697F77DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63817F77E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345834AbjKXPdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        id S1345839AbjKXPdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjKXPdD (ORCPT
+        with ESMTP id S1345628AbjKXPdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:33:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426E310FB
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700839989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eRK+vExLgDNmQIkKz5bLbrtvkKYmpG6qoQ5cgKImwFM=;
-        b=ITfUEpdu6EInmkv+2dSc92eVJo4d6mf1qfs4jOw9wN952/SH2D/Z/H5i1qkkhPK9hNFaZO
-        W1YSWnUOgrRj7t4h+cBUSYdZYaoPUV4/XhTI9q3pHVgtFykTLGQeEOD/XwOTXkSoGVM464
-        XGoMqUv8BOIbQQn1tZB3cV9AQu8bILE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-33-XbYeKowlPiyGnhL2LBJ1fQ-1; Fri, 24 Nov 2023 10:33:08 -0500
-X-MC-Unique: XbYeKowlPiyGnhL2LBJ1fQ-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-54848173cf8so216601a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:33:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700839987; x=1701444787;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eRK+vExLgDNmQIkKz5bLbrtvkKYmpG6qoQ5cgKImwFM=;
-        b=MgD1o4TJ8wUmsC47KYxC4BRxcdQxIhfuGJsS9C5atu+7ASX/zy7J5vCvPtPSY7DbRc
-         v6ciP4pC8jhEayQjxT4PqQHJWZ4H+0iQ+1Td2j/FHp+3cfH/5YXdyzP3rqSuRKy8HtDf
-         fDCJyo/rvcSQ4ERqOp1sexn8pm8teko8P5crTyTNzTWR9/gRCV6XCOta7+ar218Ky1TF
-         JJ6koo/AiqaFMLemz25YbBdm25J2lb3M0/ohlSq+EMsXLBeOz2+NukqJtruVdeU8QpDP
-         ooT++67Y2CyCo/tOHPkb8VKhcQelg6kk1/2QhC5QIPQ7b6f/Dajas7Yk/KSKMWvabiCa
-         gysA==
-X-Gm-Message-State: AOJu0YwwQ32iVmmchTH6kKTs9qI8MeYmF00LjpHfrk+HLNTBLxa1Z23a
-        W5B48eRRPJPtKQGHKJQy3z/1FhQqjLcru6FqdVzmgrDD6wERLx/Pg5U/0m3DInCtqaHyVRDE6a1
-        tVu1t5+zNBmSvuFn7kAw5RBVx
-X-Received: by 2002:a50:ec96:0:b0:543:6222:e37c with SMTP id e22-20020a50ec96000000b005436222e37cmr2170175edr.0.1700839986937;
-        Fri, 24 Nov 2023 07:33:06 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEMQm2y5BRnwFeyXXHsc020p1XoBKA0tSPDi4Pl/fWInC6PUZFDeh/YRiMPUG/d1pjbHHz+rg==
-X-Received: by 2002:a50:ec96:0:b0:543:6222:e37c with SMTP id e22-20020a50ec96000000b005436222e37cmr2170168edr.0.1700839986567;
-        Fri, 24 Nov 2023 07:33:06 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-241-213.dyn.eolo.it. [146.241.241.213])
-        by smtp.gmail.com with ESMTPSA id n3-20020aa7c783000000b0054901c25d50sm1876098eds.14.2023.11.24.07.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 07:33:06 -0800 (PST)
-Message-ID: <9e2bba3c98cd24ebf1b6d9fde2e0b9229ad6b99f.camel@redhat.com>
-Subject: Re: [PATCH 2/4 net] qca_spi: Fix SPI IRQ handling
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Stefan Wahren <wahrenst@gmx.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Nov 2023 16:33:04 +0100
-In-Reply-To: <bf3dd03e-a1f2-4586-8f00-7003848016aa@gmx.net>
-References: <20231121163004.21232-1-wahrenst@gmx.net>
-         <20231121163004.21232-3-wahrenst@gmx.net>
-         <a24433f86e39cbb45a9606621e01446e7ad6fa53.camel@redhat.com>
-         <bf3dd03e-a1f2-4586-8f00-7003848016aa@gmx.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Fri, 24 Nov 2023 10:33:35 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7E31D60
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:33:41 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F36061063;
+        Fri, 24 Nov 2023 07:34:27 -0800 (PST)
+Received: from cam-smtp0.cambridge.arm.com (e126645.nice.arm.com [10.34.100.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC7773F73F;
+        Fri, 24 Nov 2023 07:33:39 -0800 (PST)
+From:   Pierre Gondois <pierre.gondois@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Pierre Gondois <pierre.gondois@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: [PATCH v2] sched/fair: Use all little CPUs for CPU-bound workload
+Date:   Fri, 24 Nov 2023 16:33:23 +0100
+Message-Id: <20231124153323.3202444-1-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-24 at 15:01 +0100, Stefan Wahren wrote:
-> Hi Paolo,
->=20
-> Am 23.11.23 um 12:37 schrieb Paolo Abeni:
-> > On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
-> > > The functions qcaspi_netdev_open/close are responsible of request &
-> > > free of the SPI interrupt, which wasn't the best choice. Currently
-> > > it's possible to trigger a double free of the interrupt by calling
-> > > qcaspi_netdev_close() after qcaspi_netdev_open() has failed.
-> > > So let us split IRQ allocation & enabling, so we can take advantage
-> > > of a device managed IRQ and also fix the issue.
-> > >=20
-> > > Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for=
- QCA7000")
-> > > Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-> > The change makes sense, but the changelog is confusing.
-> >=20
-> > qcaspi_netdev_close() and qcaspi_netdev_open() are invoked only via
-> > ndo_open and ndo_close(), right? So qcaspi_netdev_close() will never be
-> > invoked qcaspi_netdev_open(), failure - that is when IFF_UP is not set.
-> sorry, i missed to mention an important part. This issue is partly
-> connected to patch 3.
-> Please look at qcaspi_set_ringparam() which also call ndo_close() and
-> ndo_open().=C2=A0
+Running n CPU-bound tasks on an n CPUs platform:
+- with asymmetric CPU capacity
+- not having SD_SHARE_PKG_RESOURCES flag set at the DIE
+  sched domain level (i.e. not DynamIQ systems)
+might result in a task placement where two tasks run on a big CPU
+and none on a little CPU. This placement could be more optimal by
+using all CPUs.
 
-Ah, I see it now. IMHO root cause of the problem is there. The ethtool
-op should not flip the device state.=C2=A0
+Testing platform:
+Juno-r2:
+- 2 big CPUs (1-2), maximum capacity of 1024
+- 4 little CPUs (0,3-5), maximum capacity of 383
 
-A more narrow fix would be to park/unpark the thread inside
-set_ringparam() - instead of the whole patch 1 && 2 I suspect.
+Testing workload ([1]):
+Spawn 6 CPU-bound tasks. During the first 100ms (step 1), each tasks
+is affine to a CPU, except for:
+- one little CPU which is left idle.
+- one big CPU which has 2 tasks affine.
+After the 100ms (step 2), remove the cpumask affinity.
 
-IMHO the changes in this still make sense - a refactor for net-next.
+Before patch:
+During step 2, the load balancer running from the idle CPU tags sched
+domains as:
+- little CPUs: 'group_has_spare'. Indeed, 3 CPU-bound tasks run on a
+  4 CPUs sched-domain, and the idle CPU provides enough spare
+  capacity.
+- big CPUs: 'group_overloaded'. Indeed, 3 tasks run on a 2 CPUs
+  sched-domain, so the following path is used:
+  group_is_overloaded()
+  \-if (sgs->sum_nr_running <= sgs->group_weight) return true;
 
-Cheers,
+  The following path which would change the migration type to
+  'migrate_task' is not taken:
+  calculate_imbalance()
+  \-if (env->idle != CPU_NOT_IDLE && env->imbalance == 0)
+  as the local group has some spare capacity, so the imbalance
+  is not 0.
 
-Paolo
+The migration type requested is 'migrate_util' and the busiest
+runqueue is the big CPU's runqueue having 2 tasks (each having a
+utilization of 512). The idle little CPU cannot pull one of these
+task as its capacity is too small for the task. The following path
+is used:
+detach_tasks()
+\-case migrate_util:
+  \-if (util > env->imbalance) goto next;
+
+After patch:
+As the number of failed balancing attempts grows (with
+'nr_balance_failed'), progressively make it easier to migrate
+a big task to the idling little CPU. A similar mechanism is
+used for the 'migrate_load' migration type.
+
+Improvement:
+Running the testing workload [1] with the step 2 representing
+a ~10s load for a big CPU:
+Before patch: ~19.3s
+After patch: ~18s (-6.7%)
+
+Similar issue reported at:
+https://lore.kernel.org/lkml/20230716014125.139577-1-qyousef@layalina.io/
+
+v1:
+https://lore.kernel.org/all/20231110125902.2152380-1-pierre.gondois@arm.com/
+
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index df348aa55d3c..53c18fd23ae7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8907,7 +8907,7 @@ static int detach_tasks(struct lb_env *env)
+ 		case migrate_util:
+ 			util = task_util_est(p);
+ 
+-			if (util > env->imbalance)
++			if (shr_bound(util, env->sd->nr_balance_failed) > env->imbalance)
+ 				goto next;
+ 
+ 			env->imbalance -= util;
+-- 
+2.25.1
 
