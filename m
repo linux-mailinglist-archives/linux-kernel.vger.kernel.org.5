@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACD77F7916
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB1D7F7919
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345491AbjKXQf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
+        id S1345746AbjKXQfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjKXQfP (ORCPT
+        with ESMTP id S231258AbjKXQfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:35:15 -0500
+        Fri, 24 Nov 2023 11:35:16 -0500
 Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CB719AA;
-        Fri, 24 Nov 2023 08:35:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4255C19A9;
+        Fri, 24 Nov 2023 08:35:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=/IUf3uo2oD/a+xS0yZzjtqpayIwTZ7+Ecxpk1N2XlRA=;
-        t=1700843721; x=1702053321; b=Hui6ohvg9kGiiEXql0YQ1U+qOGmEdE5cVpHBLFOapXGTRZ5
-        NX5qnKNgs/mo9r5DRavTUsNoOiN+xk3JsFN559kos522SgWpZmdQNxMT7jyl/A1CeZ83P/YU4aBAy
-        1NTVJBKIK3GTdF+cWbxeWQKD4ShD9mmB09vp2JuoHxafiIYNrVE840gTDMMwZBZbCLvl1Yp7yRBNI
-        AJX6BI5zPsEK/+OYEkCWTfLz7XdTmv0dudXEuNeO7XRWKBjzacLiDeXn/AZSLAKJcekA8Ta6IPGKn
-        jh18REJafmqu+Fo4NkLrzHNWrtE3vfsGHUzGzDDOYu5Vl2UheNjeWJiW4UMDUpxw==;
+        Resent-Cc:Resent-Message-ID; bh=MUXidifnbmrT+lPICjftrAHoNPFMVQW1b1Sa6v/Ia/k=;
+        t=1700843722; x=1702053322; b=rVyZeHaCbEZbZ/qU3M0JI/yJBcit7AjwfmuBpVQ/QywYqBU
+        7pdJrYkha5hv1CKNwS35NhFbYRdXInHXjyT5jF/hbcpyrm8LsWSXWArZc87cMW/BuKUcDRZX0GJoz
+        jU1BymzxgmpUjJDLjKSfSoRCE4xlG7hVRrhXWDbUGiR5N+rf/YLvnSvEhyD02Tb0eW1w5OS5d3qf3
+        VBEo5vicYBFgAPZGkS9BRWP5AGToNPotZZPLnNV5rJPOCfpGwa+ECmJUgppDTqLXXuZ6VGUw9G8q6
+        ycvXPpCN8jPrYTtM52HXY+9stPrpWBiVxFojmTuRQZha78XJzzGRNu3Fl4k2d6Yw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
         (Exim 4.97)
         (envelope-from <johannes@sipsolutions.net>)
-        id 1r6Z9C-00000002fA8-32NO;
-        Fri, 24 Nov 2023 17:35:18 +0100
+        id 1r6Z9D-00000002fA8-3DhM;
+        Fri, 24 Nov 2023 17:35:20 +0100
 From:   Johannes Berg <johannes@sipsolutions.net>
 To:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH v2 5/6] wifi: mac80211: use wiphy locked debugfs helpers for agg_status
-Date:   Fri, 24 Nov 2023 17:25:28 +0100
-Message-ID: <20231124172522.a5e8901f9976.Id4251db174cdd42519a5ef19cbb08d7ed8f65397@changeid>
+Subject: [PATCH v2 6/6] wifi: mac80211: use wiphy locked debugfs for sdata/link
+Date:   Fri, 24 Nov 2023 17:25:29 +0100
+Message-ID: <20231124172522.98baff0ebc5e.I99a21601e124f5ac4e161ad32b19949e7896e390@changeid>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231124162522.16344-7-johannes@sipsolutions.net>
 References: <20231124162522.16344-7-johannes@sipsolutions.net>
@@ -55,165 +55,245 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-The read is currently with RCU and the write can deadlock,
-convert both for the sake of illustration.
-
-Make mac80211 depend on cfg80211 debugfs to get the helpers,
-but mac80211 debugfs without it does nothing anyway.
+The debugfs files for netdevs (sdata) and links are removed
+with the wiphy mutex held, which may deadlock. Use the new
+wiphy locked debugfs to avoid that.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2:
- - make mac80211 debugfs depend on cfg80211 debugfs, it's
-   anyway useless without it
----
- net/mac80211/Kconfig       |  2 +-
- net/mac80211/debugfs_sta.c | 74 +++++++++++++++++++++-----------------
- 2 files changed, 43 insertions(+), 33 deletions(-)
+ net/mac80211/debugfs_netdev.c | 150 ++++++++++++++++++++++++----------
+ 1 file changed, 105 insertions(+), 45 deletions(-)
 
-diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
-index 037ab74f5ade..cb0291decf2e 100644
---- a/net/mac80211/Kconfig
-+++ b/net/mac80211/Kconfig
-@@ -88,7 +88,7 @@ config MAC80211_LEDS
+diff --git a/net/mac80211/debugfs_netdev.c b/net/mac80211/debugfs_netdev.c
+index ec91e131b29e..80aeb25f1b68 100644
+--- a/net/mac80211/debugfs_netdev.c
++++ b/net/mac80211/debugfs_netdev.c
+@@ -22,88 +22,148 @@
+ #include "debugfs_netdev.h"
+ #include "driver-ops.h"
  
- config MAC80211_DEBUGFS
- 	bool "Export mac80211 internals in DebugFS"
--	depends on MAC80211 && DEBUG_FS
-+	depends on MAC80211 && CFG80211_DEBUGFS
- 	help
- 	  Select this to see extensive information about
- 	  the internal state of mac80211 in debugfs.
-diff --git a/net/mac80211/debugfs_sta.c b/net/mac80211/debugfs_sta.c
-index 06e3613bf46b..5bf507ebb096 100644
---- a/net/mac80211/debugfs_sta.c
-+++ b/net/mac80211/debugfs_sta.c
-@@ -312,23 +312,14 @@ static ssize_t sta_aql_write(struct file *file, const char __user *userbuf,
- STA_OPS_RW(aql);
- 
- 
--static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
--					size_t count, loff_t *ppos)
-+static ssize_t sta_agg_status_do_read(struct wiphy *wiphy, struct file *file,
-+				      char *buf, size_t bufsz, void *data)
- {
--	char *buf, *p;
--	ssize_t bufsz = 71 + IEEE80211_NUM_TIDS * 40;
-+	struct sta_info *sta = data;
-+	char *p = buf;
- 	int i;
--	struct sta_info *sta = file->private_data;
- 	struct tid_ampdu_rx *tid_rx;
- 	struct tid_ampdu_tx *tid_tx;
--	ssize_t ret;
--
--	buf = kzalloc(bufsz, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--	p = buf;
--
--	rcu_read_lock();
- 
- 	p += scnprintf(p, bufsz + buf - p, "next dialog_token: %#02x\n",
- 			sta->ampdu_mlme.dialog_token_allocator + 1);
-@@ -338,8 +329,8 @@ static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
- 	for (i = 0; i < IEEE80211_NUM_TIDS; i++) {
- 		bool tid_rx_valid;
- 
--		tid_rx = rcu_dereference(sta->ampdu_mlme.tid_rx[i]);
--		tid_tx = rcu_dereference(sta->ampdu_mlme.tid_tx[i]);
-+		tid_rx = wiphy_dereference(wiphy, sta->ampdu_mlme.tid_rx[i]);
-+		tid_tx = wiphy_dereference(wiphy, sta->ampdu_mlme.tid_tx[i]);
- 		tid_rx_valid = test_bit(i, sta->ampdu_mlme.agg_session_valid);
- 
- 		p += scnprintf(p, bufsz + buf - p, "%02d", i);
-@@ -358,31 +349,39 @@ static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
- 				tid_tx ? skb_queue_len(&tid_tx->pending) : 0);
- 		p += scnprintf(p, bufsz + buf - p, "\n");
- 	}
--	rcu_read_unlock();
- 
--	ret = simple_read_from_buffer(userbuf, count, ppos, buf, p - buf);
-+	return p - buf;
++struct ieee80211_if_read_sdata_data {
++	ssize_t (*format)(const struct ieee80211_sub_if_data *, char *, int);
++	struct ieee80211_sub_if_data *sdata;
++};
++
++static ssize_t ieee80211_if_read_sdata_handler(struct wiphy *wiphy,
++					       struct file *file,
++					       char *buf,
++					       size_t bufsize,
++					       void *data)
++{
++	struct ieee80211_if_read_sdata_data *d = data;
++
++	return d->format(d->sdata, buf, bufsize);
 +}
 +
-+static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
-+				   size_t count, loff_t *ppos)
+ static ssize_t ieee80211_if_read_sdata(
+-	struct ieee80211_sub_if_data *sdata,
++	struct file *file,
+ 	char __user *userbuf,
+ 	size_t count, loff_t *ppos,
+ 	ssize_t (*format)(const struct ieee80211_sub_if_data *sdata, char *, int))
+ {
++	struct ieee80211_sub_if_data *sdata = file->private_data;
++	struct ieee80211_if_read_sdata_data data = {
++		.format = format,
++		.sdata = sdata,
++	};
+ 	char buf[200];
+-	ssize_t ret = -EINVAL;
+ 
+-	wiphy_lock(sdata->local->hw.wiphy);
+-	ret = (*format)(sdata, buf, sizeof(buf));
+-	wiphy_unlock(sdata->local->hw.wiphy);
++	return wiphy_locked_debugfs_read(sdata->local->hw.wiphy,
++					 file, buf, sizeof(buf),
++					 userbuf, count, ppos,
++					 ieee80211_if_read_sdata_handler,
++					 &data);
++}
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(userbuf, count, ppos, buf, ret);
++struct ieee80211_if_write_sdata_data {
++	ssize_t (*write)(struct ieee80211_sub_if_data *, const char *, int);
++	struct ieee80211_sub_if_data *sdata;
++};
+ 
+-	return ret;
++static ssize_t ieee80211_if_write_sdata_handler(struct wiphy *wiphy,
++						struct file *file,
++						char *buf,
++						size_t count,
++						void *data)
 +{
-+	struct sta_info *sta = file->private_data;
-+	struct wiphy *wiphy = sta->local->hw.wiphy;
-+	size_t bufsz = 71 + IEEE80211_NUM_TIDS * 40;
-+	char *buf = kmalloc(bufsz, GFP_KERNEL);
-+	ssize_t ret;
++	struct ieee80211_if_write_sdata_data *d = data;
 +
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = wiphy_locked_debugfs_read(wiphy, file, buf, bufsz,
-+					userbuf, count, ppos,
-+					sta_agg_status_do_read, sta);
- 	kfree(buf);
-+
- 	return ret;
++	return d->write(d->sdata, buf, count);
  }
  
--static ssize_t sta_agg_status_write(struct file *file, const char __user *userbuf,
--				    size_t count, loff_t *ppos)
-+static ssize_t sta_agg_status_do_write(struct wiphy *wiphy, struct file *file,
-+				       char *buf, size_t count, void *data)
+ static ssize_t ieee80211_if_write_sdata(
+-	struct ieee80211_sub_if_data *sdata,
++	struct file *file,
+ 	const char __user *userbuf,
+ 	size_t count, loff_t *ppos,
+ 	ssize_t (*write)(struct ieee80211_sub_if_data *sdata, const char *, int))
  {
--	char _buf[25] = {}, *buf = _buf;
--	struct sta_info *sta = file->private_data;
-+	struct sta_info *sta = data;
- 	bool start, tx;
- 	unsigned long tid;
--	char *pos;
-+	char *pos = buf;
- 	int ret, timeout = 5000;
++	struct ieee80211_sub_if_data *sdata = file->private_data;
++	struct ieee80211_if_write_sdata_data data = {
++		.write = write,
++		.sdata = sdata,
++	};
+ 	char buf[64];
+-	ssize_t ret;
  
--	if (count > sizeof(_buf))
--		return -EINVAL;
+-	if (count >= sizeof(buf))
+-		return -E2BIG;
++	return wiphy_locked_debugfs_write(sdata->local->hw.wiphy,
++					  file, buf, sizeof(buf),
++					  userbuf, count,
++					  ieee80211_if_write_sdata_handler,
++					  &data);
++}
+ 
+-	if (copy_from_user(buf, userbuf, count))
+-		return -EFAULT;
+-	buf[count] = '\0';
++struct ieee80211_if_read_link_data {
++	ssize_t (*format)(const struct ieee80211_link_data *, char *, int);
++	struct ieee80211_link_data *link;
++};
+ 
+-	wiphy_lock(sdata->local->hw.wiphy);
+-	ret = (*write)(sdata, buf, count);
+-	wiphy_unlock(sdata->local->hw.wiphy);
++static ssize_t ieee80211_if_read_link_handler(struct wiphy *wiphy,
++					      struct file *file,
++					      char *buf,
++					      size_t bufsize,
++					      void *data)
++{
++	struct ieee80211_if_read_link_data *d = data;
+ 
+-	return ret;
++	return d->format(d->link, buf, bufsize);
+ }
+ 
+ static ssize_t ieee80211_if_read_link(
+-	struct ieee80211_link_data *link,
++	struct file *file,
+ 	char __user *userbuf,
+ 	size_t count, loff_t *ppos,
+ 	ssize_t (*format)(const struct ieee80211_link_data *link, char *, int))
+ {
++	struct ieee80211_link_data *link = file->private_data;
++	struct ieee80211_if_read_link_data data = {
++		.format = format,
++		.link = link,
++	};
+ 	char buf[200];
+-	ssize_t ret = -EINVAL;
+ 
+-	wiphy_lock(link->sdata->local->hw.wiphy);
+-	ret = (*format)(link, buf, sizeof(buf));
+-	wiphy_unlock(link->sdata->local->hw.wiphy);
++	return wiphy_locked_debugfs_read(link->sdata->local->hw.wiphy,
++					 file, buf, sizeof(buf),
++					 userbuf, count, ppos,
++					 ieee80211_if_read_link_handler,
++					 &data);
++}
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(userbuf, count, ppos, buf, ret);
++struct ieee80211_if_write_link_data {
++	ssize_t (*write)(struct ieee80211_link_data *, const char *, int);
++	struct ieee80211_link_data *link;
++};
+ 
+-	return ret;
++static ssize_t ieee80211_if_write_link_handler(struct wiphy *wiphy,
++					       struct file *file,
++					       char *buf,
++					       size_t count,
++					       void *data)
++{
++	struct ieee80211_if_write_sdata_data *d = data;
++
++	return d->write(d->sdata, buf, count);
+ }
+ 
+ static ssize_t ieee80211_if_write_link(
+-	struct ieee80211_link_data *link,
++	struct file *file,
+ 	const char __user *userbuf,
+ 	size_t count, loff_t *ppos,
+ 	ssize_t (*write)(struct ieee80211_link_data *link, const char *, int))
+ {
++	struct ieee80211_link_data *link = file->private_data;
++	struct ieee80211_if_write_link_data data = {
++		.write = write,
++		.link = link,
++	};
+ 	char buf[64];
+-	ssize_t ret;
+ 
+-	if (count >= sizeof(buf))
+-		return -E2BIG;
 -
 -	if (copy_from_user(buf, userbuf, count))
 -		return -EFAULT;
+-	buf[count] = '\0';
 -
--	buf[sizeof(_buf) - 1] = '\0';
--	pos = buf;
- 	buf = strsep(&pos, " ");
- 	if (!buf)
- 		return -EINVAL;
-@@ -420,7 +419,6 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
- 	if (ret || tid >= IEEE80211_NUM_TIDS)
- 		return -EINVAL;
- 
--	wiphy_lock(sta->local->hw.wiphy);
- 	if (tx) {
- 		if (start)
- 			ret = ieee80211_start_tx_ba_session(&sta->sta, tid,
-@@ -432,10 +430,22 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
- 					       3, true);
- 		ret = 0;
- 	}
--	wiphy_unlock(sta->local->hw.wiphy);
- 
- 	return ret ?: count;
- }
-+
-+static ssize_t sta_agg_status_write(struct file *file,
-+				    const char __user *userbuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct sta_info *sta = file->private_data;
-+	struct wiphy *wiphy = sta->local->hw.wiphy;
-+	char _buf[26];
-+
-+	return wiphy_locked_debugfs_write(wiphy, file, _buf, sizeof(_buf),
+-	wiphy_lock(link->sdata->local->hw.wiphy);
+-	ret = (*write)(link, buf, count);
+-	wiphy_unlock(link->sdata->local->hw.wiphy);
+-
+-	return ret;
++	return wiphy_locked_debugfs_write(link->sdata->local->hw.wiphy,
++					  file, buf, sizeof(buf),
 +					  userbuf, count,
-+					  sta_agg_status_do_write, sta);
-+}
- STA_OPS_RW(agg_status);
++					  ieee80211_if_write_link_handler,
++					  &data);
+ }
  
- /* link sta attributes */
+ #define IEEE80211_IF_FMT(name, type, field, format_string)		\
+@@ -173,7 +233,7 @@ static ssize_t ieee80211_if_read_##name(struct file *file,		\
+ 					char __user *userbuf,		\
+ 					size_t count, loff_t *ppos)	\
+ {									\
+-	return ieee80211_if_read_sdata(file->private_data,		\
++	return ieee80211_if_read_sdata(file,				\
+ 				       userbuf, count, ppos,		\
+ 				       ieee80211_if_fmt_##name);	\
+ }
+@@ -183,7 +243,7 @@ static ssize_t ieee80211_if_write_##name(struct file *file,		\
+ 					 const char __user *userbuf,	\
+ 					 size_t count, loff_t *ppos)	\
+ {									\
+-	return ieee80211_if_write_sdata(file->private_data, userbuf,	\
++	return ieee80211_if_write_sdata(file, userbuf,			\
+ 					count, ppos,			\
+ 					ieee80211_if_parse_##name);	\
+ }
+@@ -211,7 +271,7 @@ static ssize_t ieee80211_if_read_##name(struct file *file,		\
+ 					char __user *userbuf,		\
+ 					size_t count, loff_t *ppos)	\
+ {									\
+-	return ieee80211_if_read_link(file->private_data,		\
++	return ieee80211_if_read_link(file,				\
+ 				      userbuf, count, ppos,		\
+ 				      ieee80211_if_fmt_##name);	\
+ }
+@@ -221,7 +281,7 @@ static ssize_t ieee80211_if_write_##name(struct file *file,		\
+ 					 const char __user *userbuf,	\
+ 					 size_t count, loff_t *ppos)	\
+ {									\
+-	return ieee80211_if_write_link(file->private_data, userbuf,	\
++	return ieee80211_if_write_link(file, userbuf,			\
+ 				       count, ppos,			\
+ 				       ieee80211_if_parse_##name);	\
+ }
 -- 
 2.42.0
 
