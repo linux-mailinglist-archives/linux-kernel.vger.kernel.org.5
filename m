@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 199427F8575
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38387F857A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjKXV2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:28:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
+        id S231493AbjKXVaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:30:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjKXV2l (ORCPT
+        with ESMTP id S229611AbjKXVaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:28:41 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14E519B3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:28:42 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c993da0b9eso3131581fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700861321; x=1701466121; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UE+udvWHynzozj92dDUIlgeAGu8LTQ+iWilnuivlMqc=;
-        b=gBho6sCNs9cgETHAPp8Io4gkWNqWBYUNcmKlU6uO3eK/KmC973ImyHddQrTxdLpvfX
-         smpGYEEFqX54bAv5Bny+KHjGqLJKlUnL24u0TlD4ck6AGVGT016FTzIzlEZAUmFmh7OT
-         VOQwsYBrPcvkyACgG6YSzch0pXIjIFoNp7snI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700861321; x=1701466121;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UE+udvWHynzozj92dDUIlgeAGu8LTQ+iWilnuivlMqc=;
-        b=DjAMEZuc9Yl8bCkbLChOcIrPZ4P3o6ieM184tyU0+hUmD63tPFsIwJxB2ZqNLtf7Qj
-         fwjdzOozybfEwfHXbdfY31d1mYtX+08iy7+npULYKESHFk88DmSjG1c3MOqFR5YRAbf8
-         3VmoVo9AmT5Z2m6kZxDvuPDfFpVMMtjp8fTppMnD4PrBWNgxuCNbSLCc6lxFr9mhlYk5
-         Ap3fZgQri87pVmCJH11HBy7oof5oUrwl9G2CtnggyHhrDL9pLpfwxDFRWCLFnT3b1PgT
-         MtmrCMCNAp8LLW6sUK9ZA5MhbsUUPmnKQnedtPy3RMaVHL0JrxXyU1pYRdwhNB/F2ooN
-         95aQ==
-X-Gm-Message-State: AOJu0Yw/0L6kTYaRlwH+e9yRlyA9Oamlzz/HiqWf5viTuLFmfhMMehYK
-        oiHZa77lyunp/A3vu1V16tOFkpYprgrOqPMb3V7i/DAt
-X-Google-Smtp-Source: AGHT+IH4NrDiRQh1TLDQx0ileBYT/bNkDXcoWxbapXemB5KZXmAnVXPhSVSdRlQMfWOW1+DYrLsuMQ==
-X-Received: by 2002:a2e:9cc5:0:b0:2c5:b3c4:7b17 with SMTP id g5-20020a2e9cc5000000b002c5b3c47b17mr3402294ljj.38.1700861320876;
-        Fri, 24 Nov 2023 13:28:40 -0800 (PST)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id 16-20020a2e1450000000b002c8872c9d53sm651617lju.8.2023.11.24.13.28.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 13:28:40 -0800 (PST)
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50aabfa1b75so3207614e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:28:40 -0800 (PST)
-X-Received: by 2002:a05:6512:3b0a:b0:509:4b78:69b5 with SMTP id
- f10-20020a0565123b0a00b005094b7869b5mr3916662lfv.36.1700861320031; Fri, 24
- Nov 2023 13:28:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20231124060200.GR38156@ZenIV>
-In-Reply-To: <20231124060200.GR38156@ZenIV>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Nov 2023 13:28:23 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjsmOgYVFEQqikxtpH6w6kJ3YePTHhGVDhZSMLYvXpP8A@mail.gmail.com>
-Message-ID: <CAHk-=wjsmOgYVFEQqikxtpH6w6kJ3YePTHhGVDhZSMLYvXpP8A@mail.gmail.com>
-Subject: Re: [RFC][PATCHSET v3] simplifying fast_dput(), dentry_kill() et.al.
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Fri, 24 Nov 2023 16:30:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5A6199A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:30:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 192D1C433C9;
+        Fri, 24 Nov 2023 21:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700861411;
+        bh=nOfWBEduNJ9yZfwz3IP6wbwCTwXWK6SJImz14bYFZlc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=VBex8qQBQKINbFA2HrEIIiRSuInHZoUwatM+tfW3RC9GWF5Y1c8Vi38QqvuBVfETN
+         Wjk5Auf+V5fjngeF+ZyfpnoKCOxPyG/upoXm4wVef0i02pp2fuiG5hOc3N2uZRD9AM
+         M+EEyD+BAP0bM7nDd6TIG5suPQHjxUtbpE9n61gWFxBuxyUBUsG7KI/1Z/Y1TCiom7
+         JVtc48Y+3Kswy3LctAeY8IJgMFOneclPghGg434aK5NY+Awoo+0G5d7Zye/QnnDHgh
+         7y0tHxt7JmsTrrqlnyznXG4UEslfmxO5qI4Ods/t+D33PIOjWtqcebyhStpeTiVQcv
+         ZmlHDPAYQXuPA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EDB80EAA95E;
+        Fri, 24 Nov 2023 21:30:10 +0000 (UTC)
+Subject: Re: [GIT PULL] Power management fix for v6.7-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0gO3nY5nSnsFUha5a9WiOAj6kZLek0sVSB49NiweFw4_w@mail.gmail.com>
+References: <CAJZ5v0gO3nY5nSnsFUha5a9WiOAj6kZLek0sVSB49NiweFw4_w@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0gO3nY5nSnsFUha5a9WiOAj6kZLek0sVSB49NiweFw4_w@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.7-rc3
+X-PR-Tracked-Commit-Id: b85e2dab33ce467e8dcf1cb6c0c587132ff17f56
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b345fd55a2b79d6aa92042b19be802425fc353cb
+Message-Id: <170086141095.4355.1044345234368406493.pr-tracker-bot@kernel.org>
+Date:   Fri, 24 Nov 2023 21:30:10 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 22:02, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         The series below is the fallout of trying to document the dentry
-> refcounting and life cycle - basically, getting rid of the bits that
-> had been too subtle and ugly to write them up.
+The pull request you sent on Fri, 24 Nov 2023 19:23:03 +0100:
 
-Apart from my RCU note, this looks like "Al knows what he's doing" to me.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.7-rc3
 
-Although I'm inclined to agree with Amir on the "no need to call out
-kabi" on patch#3. It's also not like we've ever cared: as long as you
-convert all users, kabi is simply not relevant.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b345fd55a2b79d6aa92042b19be802425fc353cb
 
-            Linus
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
