@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2247F6D04
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDB87F6D09
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344684AbjKXHnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+        id S1344753AbjKXHnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:43:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344244AbjKXHnJ (ORCPT
+        with ESMTP id S1344718AbjKXHnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:43:09 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3592DD67
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:43:15 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a02c48a0420so220146666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700811793; x=1701416593; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T8USyps01Bs0RMOktp2jS8yeOD+5EniV5d5DZJZTRAE=;
-        b=hQO7ltMg7t38iTi6raWGtXc6FmTaJLHeJb/H7hJLJNaHXmK38fFIuMFm2+erBeT+pa
-         TaL4ttZZDqu7bdPvMabzd6+O6DyOQal15q2Ymr6EKoJW2FBKfglIYJoZY2AAXHIuDveT
-         lR2pWzv2r5Dm9Qhr0GAh+SALUeMGKUPsWankVa2XEX0Gq7sYxkrwpld4RHoFCyIOpIgr
-         yDVR1CwBPd9kc9juoam13lo3J+CI5H5D2n/xZKqkEqeLUNx0wC0nNLWH4EBgKniHs4Q/
-         NdvysTLVEIzc0AAab1DfJQRvxQRLz8QpoFuxOY8mRWfi6QlxSEUT1z8paLRi/XnK2QCt
-         5nbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700811793; x=1701416593;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T8USyps01Bs0RMOktp2jS8yeOD+5EniV5d5DZJZTRAE=;
-        b=eJbhU+MhRUAO6OrC7iUHvtaETfrQgoIfcNaBDyvsr0SCleEtCacpn/JcJNWM9+dtuT
-         8Bf79bq8Z1k2J/vwVQSN+T5vJLyXuvtolWtwW/dCHfZdNKNT1ohHo4BLIjSXVqRkPlXN
-         loWBaQBLT1jfgbdb/ZVY95P9WAVwa9Zy2XDDDohKLb9BsN4IAJ2RJrPsUWyLcsm+ma53
-         /Y/mosX5AD4AtXKmcAxewsEM2tIxZP7OuvVhcZwDG8gZ28KOjG++ZEE1HgbozjrgVDJv
-         roLJOj+GUVeWYdj/iCj2pP/jYPsAAPf1F3uIrxTd8GUDy3rGQhvSe4FaEoYMM7Ia2OBN
-         2D9Q==
-X-Gm-Message-State: AOJu0YwxRXJWDRDgnfUBjwLAe1f9LKXLRLJ5mvcpN8w/3eD8Jk4RU2LG
-        +eTpUzdWvmLaIHVtiIJrH4Ntwg==
-X-Google-Smtp-Source: AGHT+IGEVS0y2/Nwpy7G5jBsUFDMqGo4VL8WuWu9tGcBMl3m91yZOqXpotRuP3hZx7jgQFTjLL/w9g==
-X-Received: by 2002:a17:906:693:b0:9fc:9b28:7ff7 with SMTP id u19-20020a170906069300b009fc9b287ff7mr1424964ejb.60.1700811793654;
-        Thu, 23 Nov 2023 23:43:13 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id q13-20020a1709060e4d00b009fe16be6a65sm1739448eji.63.2023.11.23.23.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 23:43:13 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Peter Griffin <peter.griffin@linaro.org>,
-        semen.protsenko@linaro.org, Jaewon Kim <jaewon02.kim@samsung.com>
-In-Reply-To: <20231122200407.423264-3-krzysztof.kozlowski@linaro.org>
-References: <20231122200407.423264-1-krzysztof.kozlowski@linaro.org>
- <20231122200407.423264-3-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 3/3] arm64: dts: exynosautov9: use Exynos7
- fallbacks for pin wake-up controllers
-Message-Id: <170081179217.5541.15219253404799513117.b4-ty@linaro.org>
-Date:   Fri, 24 Nov 2023 08:43:12 +0100
+        Fri, 24 Nov 2023 02:43:12 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9650DEA
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:43:18 -0800 (PST)
+Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sc6Kf6NbtzMnNw;
+        Fri, 24 Nov 2023 15:38:30 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 15:43:15 +0800
+Message-ID: <87731f92-d3bf-9c21-2adc-ffd023ac6b0e@huawei.com>
+Date:   Fri, 24 Nov 2023 15:43:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <akpm@linux-foundation.org>, <fengwei.yin@intel.com>,
+        <ying.huang@intel.com>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+ <ZWA9EVlsuHIBi0xb@casper.infradead.org>
+From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <ZWA9EVlsuHIBi0xb@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.160]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000020.china.huawei.com (7.193.23.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/11/24 14:05, Matthew Wilcox wrote:
 
-On Wed, 22 Nov 2023 21:04:07 +0100, Krzysztof Kozlowski wrote:
-> ExynosAutov9 pin controller capable of wake-ups is still compatible with
-> Exynos7, however it does not mux interrupts. Add Exynos7 compatible
-> fallback to annotate that compatibility and match the bindings.
-> 
-> 
+> On Wed, Nov 22, 2023 at 10:00:52PM +0800, Peng Zhang wrote:
+>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>
+>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>> in application, which leading to an unexpected performance issue[1].
+>>
+>> This caused by temporarily cleared pte during a read/modify/write update
+>> of the pte, eg, do_numa_page()/change_pte_range().
+> What I haven't quite understood yet is why we need to set the pte to
+> zero on x86 in the specific case of do_numa_page().  I understand that
+> ppc needs to.
 
-Applied, thanks!
+I'm also curious. Could ptep_modify_prot_start() of other architectures
+(except ppc) not clear pte? We are mainly concerned with arm64 and x86.
 
-[3/3] arm64: dts: exynosautov9: use Exynos7 fallbacks for pin wake-up controllers
-      https://git.kernel.org/krzk/linux/c/7c1156d8a719d5fca39e0e40e4465e4cbd765e89
-
-Best regards,
+> Could someone explain why the _default_ definition of
+> ptep_modify_prot_start() is not:
+>
+> +++ b/include/linux/pgtable.h
+> @@ -1074,7 +1074,7 @@ static inline pte_t ptep_modify_prot_start(struct vm_area_struct *vma,
+>                                             unsigned long addr,
+>                                             pte_t *ptep)
+>   {
+> -       return __ptep_modify_prot_start(vma, addr, ptep);
+> +       return *ptep;
+>   }
+>
+>   /*
+>
+>
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Best Regards,
+Peng
 
