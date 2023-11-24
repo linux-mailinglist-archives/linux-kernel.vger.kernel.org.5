@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8EF7F6CD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7E07F6CD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbjKXHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:22:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S1344492AbjKXHWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:22:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKXHWE (ORCPT
+        with ESMTP id S230245AbjKXHWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:22:04 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496D6D72
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:22:10 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54acdd65c88so794282a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:22:10 -0800 (PST)
+        Fri, 24 Nov 2023 02:22:06 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10906D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:22:12 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-548d60a4d60so2107429a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:22:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull.eu; s=google; t=1700810529; x=1701415329; darn=vger.kernel.org;
+        d=vrull.eu; s=google; t=1700810530; x=1701415330; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VVy1jdSL9+WHb2B8ZDIGvqsG60+7Fk4VQGEPcFy9390=;
-        b=Yew/O0nZQu1+ENYZupynxv33c1867rS6fNsRVVDzeVZPSKafHxCnE0vdmJulRQe170
-         n6XMoSDzqDBCn49k2M3GQYAOQpQTa7SxID8U5LF6R1pcmnX5bwkNmP6NkG/GZ3KYtU9V
-         JlRZ/0pzAdeeDhGzOYNJMYTwaxVcufsfT3Hrh8MvBFbe2vmoKgxzwT86qlL23YVcvDdh
-         jthS0Sm9FZd+I/fjD0O1QMdmPT5Mx3fMJRlxXmWjuLFUfwQf024PUDYxYHcNyL8IL319
-         CU+Gd+oo9IwszBozidFOloxNwIpP2jBUtwN16gwoBOdknnNFqRupZj50Ua5LYOP+nEAn
-         IZ8A==
+        bh=FdW6KLqAappiJz7t43GP8yDkVw3RQUH/PCIQaxhT8io=;
+        b=JaPG6M2A4IEO0kpsTn/OdpW3CBtu0kKymdbEzEUJ17k7UPsFaeNZ5vas5OzpzFEUaG
+         Z9ZWJRGTX2sMXdJBTk7F97cyCdXgiB4g0ZNijBATG6qcxICsJko2DK0ge/n9ikm/DgPB
+         pGKgufgdJjgtkqlGVsTVEHfKoR1Cxsqnrr7Q5mzyTc3LGVbTpFuoW7z/EjjXP2n6iSP0
+         sdGGmPiXSxVkgOTsnVJ80krylqCfLad/1UQgBlb7l1jlyM2NHF/HJTriQepxlJbAEpvH
+         DOWWOP6XSqHBYbSLeUyFr7N53w4/VojNknqswRVKiejbEj1OxlbYojhuHwn8+/p8Ynvs
+         li8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700810529; x=1701415329;
+        d=1e100.net; s=20230601; t=1700810530; x=1701415330;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VVy1jdSL9+WHb2B8ZDIGvqsG60+7Fk4VQGEPcFy9390=;
-        b=FoEy58jH+21aQeHBSvrg9KSSY0Txy/xgpEjS7hhTLeXxnRuMyvFJtzDHjSPerJ4VLV
-         qT1cHiS2bAfQJuqsMVOeOKin/Yl9Yj8tzNFlj8JDtf2oOAb4TupBgI2HoSLPiN9TSXSU
-         quuQK7hqbG5i1W/H7Totlhgp+cvjTklH4ri86vj6Atj4tKtzOY2D1/S5YWgUFWBKxRu7
-         q2G3NOTbbs2fNnZg+mhz2tpY7Jc4KzB8J+TRSL8ds+wNbTqc937COH3tM/6UyT2LkvcK
-         OjyEBUTtm8YRkOzraKkm4VIAGW9mTr6pgVvVJp+UcJU25qOFuW76GhDSAFiMpZ46oJZs
-         qdig==
-X-Gm-Message-State: AOJu0YwLHpag8u6zJpijC+PO2/reTivVntSUtJybUH+Cvwx+/4U1+IsP
-        DAMOQ4oUO8owoslJGYrjzLOH3albB90TFGrGy3gnTGSy
-X-Google-Smtp-Source: AGHT+IEBJIwqDHkFD4oZPvK9TF0KkUAPOFtohVZ/l5fTiA2CidjiZcnxjtG0jzodZ6Xfjt7CfSnlmA==
-X-Received: by 2002:a17:906:20d7:b0:9be:40ba:5f1 with SMTP id c23-20020a17090620d700b009be40ba05f1mr1349531ejc.60.1700810528651;
-        Thu, 23 Nov 2023 23:22:08 -0800 (PST)
+        bh=FdW6KLqAappiJz7t43GP8yDkVw3RQUH/PCIQaxhT8io=;
+        b=KnoNbyZIUiN+Djh0fMoQWN2gZkdghmyK3U9UnwcFqxaS6NuUI+AeTagRe22kP71mHs
+         nRmpmOwyK12fn4W2vudaGs+WrbRdah3ptk4la8EE2BSPX7DkNZJ1JflgZ9sNhkr8N1HD
+         puGTIdrykWHvy0wCl8l+C76biPXLgzjacc3pixR4fmqt2Zrx2M9qRqso4fyLrIjrZL3v
+         h1Yiz9rmvTWF8LG9vyWR3ju8TWzuuATb4KcLsMxsAWb/uIY88HpX4/fsn0E5uP8RANiW
+         f6g7Bzl9kxuHLaOLfbyMg2C7+0XFQTrDNbOn9h5+2yc18UdTkxj/GHGAwz1U3GHy0vL4
+         Rw2g==
+X-Gm-Message-State: AOJu0Yx27ty7aqQIqmT8749Lrmh0p9S1uZdUc03XnXvmP5As6tKs5P1E
+        IhtwuE0inJyXFhShiJM1N42xEQ==
+X-Google-Smtp-Source: AGHT+IH6YJTwKcWKKY/43rAcT0UuuNs5BImrDdkrAupQGRjsaG9PttQVyjsPB2Eshk3SwrOXEogoeQ==
+X-Received: by 2002:a17:906:220c:b0:a09:e716:5ea8 with SMTP id s12-20020a170906220c00b00a09e7165ea8mr121667ejs.18.1700810530557;
+        Thu, 23 Nov 2023 23:22:10 -0800 (PST)
 Received: from beast.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
-        by smtp.gmail.com with ESMTPSA id q18-20020a1709060e5200b00992f2befcbcsm1709930eji.180.2023.11.23.23.22.06
+        by smtp.gmail.com with ESMTPSA id q18-20020a1709060e5200b00992f2befcbcsm1709930eji.180.2023.11.23.23.22.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 23:22:07 -0800 (PST)
+        Thu, 23 Nov 2023 23:22:10 -0800 (PST)
 From:   Christoph Muellner <christoph.muellner@vrull.eu>
 To:     linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
@@ -72,9 +72,9 @@ To:     linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
         Daniel Lustig <dlustig@nvidia.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-Subject: [RFC PATCH 2/5] RISC-V: Expose Ssdtso via hwprobe API
-Date:   Fri, 24 Nov 2023 08:21:39 +0100
-Message-ID: <20231124072142.2786653-3-christoph.muellner@vrull.eu>
+Subject: [RFC PATCH 3/5] uapi: prctl: Add new prctl call to set/get the memory consistency model
+Date:   Fri, 24 Nov 2023 08:21:40 +0100
+Message-ID: <20231124072142.2786653-4-christoph.muellner@vrull.eu>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
 References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
@@ -93,54 +93,128 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christoph Müllner <christoph.muellner@vrull.eu>
 
-This patch adds Ssdtso to the list of extensions which
-are announced to user-space using te hwprobe API.
+Some ISAs have a weak default memory consistency model and allow to switch
+to a more strict model at runtime. This patch adds calls to the prctl
+interface which allow to get and set the current memory consistency
+model.
+
+The implementation follows the way other prctl calls are implemented by
+disabling them unless arch-specific code provides the relevant macros.
 
 Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
 ---
- Documentation/arch/riscv/hwprobe.rst  | 3 +++
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_riscv.c         | 1 +
- 3 files changed, 5 insertions(+)
+ .../mm/dynamic-memory-consistency-model.rst   | 58 +++++++++++++++++++
+ include/uapi/linux/prctl.h                    |  3 +
+ kernel/sys.c                                  | 12 ++++
+ 3 files changed, 73 insertions(+)
+ create mode 100644 Documentation/mm/dynamic-memory-consistency-model.rst
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index 7b2384de471f..8de3349e0ca2 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -80,6 +80,9 @@ The following keys are defined:
-   * :c:macro:`RISCV_HWPROBE_EXT_ZICBOZ`: The Zicboz extension is supported, as
-        ratified in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv-CMOs.
- 
-+  * :c:macro:`RISCV_HWPROBE_EXT_ZICBOZ`: The Ssdtso extension is supported, as
-+       in version v1.0-draft2 of the corresponding extension.
+diff --git a/Documentation/mm/dynamic-memory-consistency-model.rst b/Documentation/mm/dynamic-memory-consistency-model.rst
+new file mode 100644
+index 000000000000..21675b41ec84
+--- /dev/null
++++ b/Documentation/mm/dynamic-memory-consistency-model.rst
+@@ -0,0 +1,58 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
-   information about the selected set of processors.
++================================
++Dynamic memory consistency model
++================================
++
++This document gives an overview of the userspace interface to change memory
++consistency model at run-time.
++
++
++What is a memory consistency model?
++===================================
++
++The memory consistency model is a set of guarantees a CPU architecture
++provides about (re-)ordering memory accesses. Each architecture defines
++its own model and set of rules within that, which are carefully specified.
++The provided guarantees have consequences for the microarchitectures (e.g.,
++some memory consistency models allow reordering stores after loads) and
++the software executed within this model (memory consistency models that
++allow reordering memory accesses provide memory barrier instructions
++to enforce additional guarantees when needed explicitly).
++
++Details about the architecture-independent memory consistency model abstraction
++in the Linux kernel and the use of the different types of memory barriers
++can be found here:
++
++	Documentation/memory-barriers.txt
++
++Two models can be in a weaker/stronger relation. I.e., a consistency
++model A is weaker/stronger than another model B if A provides a subset/superset
++of the constraints that B provides.
++
++Some architectures define more than one memory consistency model.
++On such architectures, switching the memory consistency model at run-time
++to a stronger one is possible because software written for the weaker model is
++compatible with the constraints of the stronger model.
++
++If two models are not in a weaker/stronger relation, switching between
++them will violate the consistency assumptions that the software was
++written under (i.e., causing subtle bugs that are very hard to debug).
++
++User API via prctl
++==================
++
++Two prctl calls are defined to get/set the active memory consistency model:
++
++* prctl(PR_GET_MEMORY_CONSISTENCY_MODEL)
++
++    Returns the active memory consistency model for the calling process/thread.
++    If the architecture does not support dynamic memory consistency models,
++    then -1 is returned, and errno is set to EINVAL.
++
++* prctl(PR_SET_MEMORY_CONSISTENCY_MODEL, unsigned long new_model)
++
++    Switches the memory consistency model for the calling process/thread
++    to the given model. If the architecture does not support dynamic
++    memory consistency models or does not support the provided model, then
++    -1 is returned, and errno is set to EINVAL.
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 370ed14b1ae0..579662731eaa 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -306,4 +306,7 @@ struct prctl_mm_map {
+ # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
+ # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
  
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index b659ffcfcdb4..ed450c64e6b2 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -30,6 +30,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_EXT_ZBB		(1 << 4)
- #define		RISCV_HWPROBE_EXT_ZBS		(1 << 5)
- #define		RISCV_HWPROBE_EXT_ZICBOZ	(1 << 6)
-+#define		RISCV_HWPROBE_EXT_SSDTSO	(1 << 7)
- #define RISCV_HWPROBE_KEY_CPUPERF_0	5
- #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
-diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index c712037dbe10..c654f43b9699 100644
---- a/arch/riscv/kernel/sys_riscv.c
-+++ b/arch/riscv/kernel/sys_riscv.c
-@@ -162,6 +162,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 		EXT_KEY(ZBB);
- 		EXT_KEY(ZBS);
- 		EXT_KEY(ZICBOZ);
-+		EXT_KEY(SSDTSO);
- #undef EXT_KEY
- 	}
++#define PR_SET_MEMORY_CONSISTENCY_MODEL		71
++#define PR_GET_MEMORY_CONSISTENCY_MODEL		72
++
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..a8a217a10767 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -146,6 +146,12 @@
+ #ifndef RISCV_V_GET_CONTROL
+ # define RISCV_V_GET_CONTROL()		(-EINVAL)
+ #endif
++#ifndef SET_MEMORY_CONSISTENCY_MODEL
++# define SET_MEMORY_CONSISTENCY_MODEL	(-EINVAL)
++#endif
++#ifndef GET_MEMORY_CONSISTENCY_MODEL
++# define GET_MEMORY_CONSISTENCY_MODEL	(-EINVAL)
++#endif
  
+ /*
+  * this is where the system-wide overflow UID and GID are defined, for
+@@ -2743,6 +2749,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_RISCV_V_GET_CONTROL:
+ 		error = RISCV_V_GET_CONTROL();
+ 		break;
++	case PR_SET_MEMORY_CONSISTENCY_MODEL:
++		error = SET_MEMORY_CONSISTENCY_MODEL(arg2);
++		break;
++	case PR_GET_MEMORY_CONSISTENCY_MODEL:
++		error = GET_MEMORY_CONSISTENCY_MODEL();
++		break;
+ 	default:
+ 		error = -EINVAL;
+ 		break;
 -- 
 2.41.0
 
