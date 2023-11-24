@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7537F7662
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9233D7F766B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345190AbjKXOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S1345375AbjKXOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjKXOg2 (ORCPT
+        with ESMTP id S231206AbjKXOhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:36:28 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C5319A2;
-        Fri, 24 Nov 2023 06:36:35 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d64c1155a8so1227472a34.2;
-        Fri, 24 Nov 2023 06:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700836594; x=1701441394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Vv0rtHfWtcFebZ1VVJSJKFyqw883ui6a5aqGjhf3uo=;
-        b=XBTDbk3W92xAaznV+7HMHY/tsTgnKkLRg2qYMLhA1K0WDKuA/XR0OUqv2lrEHXSjG/
-         fMASWrnk9E4QSK5jyKt2QprPkcPAVGm4cr4dfwMIxAjMuESWIOD/rSCkqQ64CaIFb0UC
-         UhuYRFXkFc3d7SW5iMYscLc1s84Pd0rCFaRYNd1ZxEgIjLS6Nt2JAGDALJFegddQieym
-         U/vwv+/AtQNk9fyHDedQyzOp4FLslL0ixuLve8uq/Ep7a4yuBMBilmvNjVzPhz5n67n0
-         HifvRnRudLNoHX6WaU2eImlZB7IeHpXJtF/kb8+2a8w6i4r4JQse/qUNvW02zIyjzYp1
-         sBlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700836594; x=1701441394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Vv0rtHfWtcFebZ1VVJSJKFyqw883ui6a5aqGjhf3uo=;
-        b=woAUJRNg1Yx5F3+XnZ2/RssGbvh9qpSp4UE7danC5yDLlXbv061ikBfYPMFQkGjYJY
-         U1ZynUWDhT2LzZKc0oe8oCdVmNrNbKBMzOSZx44A37zkaouUppwNxIU76xamaYbvZRjY
-         tQc3IOuH729NcBjf3+0f4KZaLOjYYYL2u++9XJOtO9p9hxlqGx+3WT2/J8l76bv9w0/d
-         9Rtsdov0aRyPoMUQNUY/iNAetU9BKnTyi8BqAZ07NGrJnKYUFazmZddNifzpk//O8cmF
-         ePjzCULDN+mbkl4APoPcQmD3l4/Kh3nRnh7JiEeOc20k92vxDAZO10wWTDHf8a39IHdR
-         aJHQ==
-X-Gm-Message-State: AOJu0Yw9GianI7VQ5YrLsMNclch5/feQ+Mm24vsZcQpLvKI7xsQjdvGk
-        EtSfpXwQt+fPpg6F0glGf5uoXnLu71MMdwSsiE8=
-X-Google-Smtp-Source: AGHT+IEY03pzmZ8WjFdDj6NERUvmAXkjntpYl8YDZb3VHn5YPJae3IFqKOIhxotTeHKd8zH0W1g0Q4xvV4raK6KJ0aQ=
-X-Received: by 2002:a9d:6b90:0:b0:6c6:5053:66dc with SMTP id
- b16-20020a9d6b90000000b006c6505366dcmr3824415otq.21.1700836594307; Fri, 24
- Nov 2023 06:36:34 -0800 (PST)
+        Fri, 24 Nov 2023 09:37:15 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280D519A4;
+        Fri, 24 Nov 2023 06:37:22 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7046940E0258;
+        Fri, 24 Nov 2023 14:37:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PRqga3sbJpbf; Fri, 24 Nov 2023 14:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700836637; bh=ohccp6emLwawWzvtIzIh09L/4m/V7F4sqEbEIpoSnq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C4ZWuUa1L7kfp2HdFjJoJ/VJsOFVSUnC0gO9qFwTG3YmBCUPdTYsVqDGWCWhKhwWt
+         bPMfC5FW5UvB9dmwy2CIqzCbKbi5cBjMdkDEa0CeXp+5M+QzDtnelk9TLL/EgQ5NHj
+         McXjzfHSJsgjpj9MqRmHPWcJCCMrAogxjUm0/Jsc72ebMXkCNQAv2djjGq5eNffoAf
+         OMq7FM/q2dgI4mAq6K/W2UfryaZEHOZo9PgaPQCJavHEyqMeOtbKdsxzha219KEvZA
+         X4wIE/IZYEGPevYKN2YBtPnPL5DpnWEEeMQiu/VmvTlcQD+X7yrx99Yo3AdwDF84Ox
+         hyEAoTZMYPGcbo29lPJ7jZX5gfw9buYqXMNsN85LAYacotEiG6IZhHOjIZnf6V/qGJ
+         D4elq+EAdSdHpU94MOeTRjyBVHsxMDXkGH0vd/cN/mdU/okeck6NZxDB9cxZmMQxdS
+         DdAcDBO8v99bXDYNhp74RKKFrlGzQVHoUWww+ITXNOeS5ImW+fkWgECNI4J6p5HHzc
+         tWYWb2LREZVw1alEGmVBJNZW9xdLYefPQ2qHOTWEU8lOdrrttsoCdCD/HPkTNRKylD
+         PudnxC5CBKqZvR0VTaguz2OUBxIbOEGUGX5BFTAzbznuxMmWe5UgIF62+gJycHagac
+         eB1F7hjjZjigIKjjHsZGVU5M=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD93F40E014B;
+        Fri, 24 Nov 2023 14:36:36 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 15:36:30 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 13/50] crypto: ccp: Define the SEV-SNP commands
+Message-ID: <20231124143630.GKZWC07hjqxkf60ni4@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-14-michael.roth@amd.com>
 MIME-Version: 1.0
-References: <20231124142617.713096-1-masahiroy@kernel.org>
-In-Reply-To: <20231124142617.713096-1-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 24 Nov 2023 15:36:22 +0100
-Message-ID: <CANiq72mHXkT972Othqd0t_EzQHe+mKvpRSzRXvhQqxXRqdXDCQ@mail.gmail.com>
-Subject: Re: [PATCH] rust: replace <linux/module.h> with <linux/export.h> in rust/exports.c
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-14-michael.roth@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,15 +80,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 3:26=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
+On Mon, Oct 16, 2023 at 08:27:42AM -0500, Michael Roth wrote:
+> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> index 7fd17e82bab4..a7f92e74564d 100644
+> --- a/include/linux/psp-sev.h
+> +++ b/include/linux/psp-sev.h
+> @@ -78,6 +78,36 @@ enum sev_cmd {
+>  	SEV_CMD_DBG_DECRYPT		= 0x060,
+>  	SEV_CMD_DBG_ENCRYPT		= 0x061,
 >
-> <linux/export.h> is the right header to include for using
-> EXPORT_SYMBOL_GPL. <linux/module.h> includes much more bloat.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> +	/* SNP specific commands */
+> +	SEV_CMD_SNP_INIT			= 0x81,
 
-Good catch, thanks!
+The other commands start with "0x0" - pls do that too here or unify with
+a pre-patch.
 
-Cheers,
-Miguel
+> +	SEV_CMD_SNP_SHUTDOWN			= 0x82,
+> +	SEV_CMD_SNP_PLATFORM_STATUS		= 0x83,
+> +	SEV_CMD_SNP_DF_FLUSH			= 0x84,
+> +	SEV_CMD_SNP_INIT_EX			= 0x85,
+> +	SEV_CMD_SNP_SHUTDOWN_EX			= 0x86,
+> +	SEV_CMD_SNP_DECOMMISSION		= 0x90,
+> +	SEV_CMD_SNP_ACTIVATE			= 0x91,
+> +	SEV_CMD_SNP_GUEST_STATUS		= 0x92,
+> +	SEV_CMD_SNP_GCTX_CREATE			= 0x93,
+> +	SEV_CMD_SNP_GUEST_REQUEST		= 0x94,
+> +	SEV_CMD_SNP_ACTIVATE_EX			= 0x95,
+> +	SEV_CMD_SNP_LAUNCH_START		= 0xA0,
+> +	SEV_CMD_SNP_LAUNCH_UPDATE		= 0xA1,
+> +	SEV_CMD_SNP_LAUNCH_FINISH		= 0xA2,
+> +	SEV_CMD_SNP_DBG_DECRYPT			= 0xB0,
+> +	SEV_CMD_SNP_DBG_ENCRYPT			= 0xB1,
+> +	SEV_CMD_SNP_PAGE_SWAP_OUT		= 0xC0,
+> +	SEV_CMD_SNP_PAGE_SWAP_IN		= 0xC1,
+> +	SEV_CMD_SNP_PAGE_MOVE			= 0xC2,
+> +	SEV_CMD_SNP_PAGE_MD_INIT		= 0xC3,
+> +	SEV_CMD_SNP_PAGE_SET_STATE		= 0xC6,
+> +	SEV_CMD_SNP_PAGE_RECLAIM		= 0xC7,
+> +	SEV_CMD_SNP_PAGE_UNSMASH		= 0xC8,
+> +	SEV_CMD_SNP_CONFIG			= 0xC9,
+> +	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX	= 0xCA,
+
+You don't have to vertically align those to a different column due to
+this command's name not fitting - just do:
+
+        SEV_CMD_SNP_CONFIG              = 0x0C9,
+        SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX = 0x0CA,
+        SEV_CMD_SNP_COMMIT              = 0x0CB,
+
+
+
+
+> +	SEV_CMD_SNP_COMMIT			= 0xCB,
+> +	SEV_CMD_SNP_VLEK_LOAD			= 0xCD,
+> +
+>  	SEV_CMD_MAX,
+>  };
+
+...
+
+> +/**
+> + * struct sev_data_snp_launch_start - SNP_LAUNCH_START command params
+> + *
+> + * @gctx_addr: system physical address of guest context page
+> + * @policy: guest policy
+> + * @ma_gctx_addr: system physical address of migration agent
+> + * @imi_en: launch flow is launching an IMI for the purpose of
+
+What is an "IMI"?
+
+Define it once for the readers pls.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
