@@ -2,205 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CD67F6F3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E607F6F41
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbjKXJNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
+        id S234686AbjKXJPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:15:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjKXJNE (ORCPT
+        with ESMTP id S230317AbjKXJPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:13:04 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A894D5A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:13:10 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9fa2714e828so226661366b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:13:10 -0800 (PST)
+        Fri, 24 Nov 2023 04:15:30 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D99B0;
+        Fri, 24 Nov 2023 01:15:35 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so787649a12.1;
+        Fri, 24 Nov 2023 01:15:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700817189; x=1701421989; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2jYp9bXT9jDvYNvvs/Oe7OEauC69oXByuyHCREX6JEc=;
-        b=fxPrdwoB4dQ8Lj+SlhyZfurQFbP8v6w70lYwwDivq82t0UWpL0eW/4y/J0DWdNFmDR
-         uWNxQhdtXPlSe/bL09/FNLdE2eN61XrrL4MnT4kO2KmbC/uH9E+psiPkAD+YWsbFD/Qy
-         7ghN3e5HlLqhnRABsEbNaL5mbmeII8vKLIorWjCn/xopoU0jRzRAWj9d9yWfrwrCg9bd
-         FMN6+SfvxnLJ1MxwTV+WKzMjedBAXZauKwntAEmnOMXavxV6xoPv4uFfQdPCLsv6KcWi
-         GOJnmEYBFgEQtrIyqUOgBuElD4DSdxZjouAfoq96uOI7WlnCdod/hO+aX4xJfSKJi5+6
-         mrrA==
+        d=gmail.com; s=20230601; t=1700817334; x=1701422134; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6kRk7Goc6hUK5lXDDcfcFjF2TFYoCUPomnxmo7qAhJM=;
+        b=L4VnncXo30pHON6jwFm+tjSmIk4bizGaBpfXZoUhczUwWwNWgAvDFGWw7lbpr7ceaX
+         hORJh4Y/vqB4VqtKmRfRfdBqlPKumXVMEWVliD11wb/KfHvNmp8aPR7712+CweiGSK/x
+         QEqGAQo7PcRnZmxuvBErGv/EqFdKtJBFFTWnCYHp5GEDTVvcF9LDkE0iLuoo/a3x2vjL
+         AH7BM7CaOf9a7Dcy1AQFTFvMQ1fKWu8jtZecOkN1FXKrhhTbe80eIPFxj+K5YKId51QI
+         Bs8xi/4n5DR6Qbz8G6V4ZIY6cELPQ73Sep0lUGSTm4gslDJ3BheLROcxofpjtZjRsvdU
+         3SRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700817189; x=1701421989;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jYp9bXT9jDvYNvvs/Oe7OEauC69oXByuyHCREX6JEc=;
-        b=F5i0f8LK3nmVarvmFGwASom1nsvMo2I1/IqMOXDsx+MVRgTKRDcWWhytOEqnNlS7IB
-         0rzPR+cskfhWZ4RTMrkduZQyN1bCJ85srttIqfq5byaauy3as+ajmqsH6bkCddJ876Tv
-         gtSTw9q9X7mHUuGFC2Jp+UeSnG8W9Tu0IWqx5l1lV26ligo0Kr9ZBzu5pvRrKQlQeLKS
-         z1AspMBWkr2uCiSuuOjljuayvh0Ktj4UNsSToV3BGF4cqd7LGLkkL3rlg0E81E7QBbTB
-         ncs1nym2iiWp2qA1prp10FTD3Q1Aw7PcoPSxkVSvZCb95qGZiAfz5+RIQilf30EWk3mk
-         Nq7w==
-X-Gm-Message-State: AOJu0YxvPhnPNc5qRzV9LRKQtaRqFNu/3JbxNuCdIQbWquAaIQy4aPcB
-        GPxzwb8ky2qEzFfFpxBHieJkGg==
-X-Google-Smtp-Source: AGHT+IF/DUJRunD6cOJ0P7qB5Vmg62L2vUxnhUXmHn7H6nGKmsAouTxsq+7EQY/kFMKl2n2/QvACIg==
-X-Received: by 2002:a17:906:3751:b0:9dc:2215:1593 with SMTP id e17-20020a170906375100b009dc22151593mr1421164ejc.25.1700817188666;
-        Fri, 24 Nov 2023 01:13:08 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id n17-20020a170906379100b009e5eaf7a9b6sm1805588ejc.139.2023.11.24.01.13.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 01:13:08 -0800 (PST)
-Message-ID: <b3a382e3-2f24-4481-adec-030cc79997b3@linaro.org>
-Date:   Fri, 24 Nov 2023 10:13:05 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-Content-Language: en-US
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        d=1e100.net; s=20230601; t=1700817334; x=1701422134;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6kRk7Goc6hUK5lXDDcfcFjF2TFYoCUPomnxmo7qAhJM=;
+        b=TG99OkOxAsOJYN3RMhc2RqyCGw5kIiuok6O5k9V6P/RvJCJpUXAAF//49xe8aYylHB
+         16PvbmQb3AHvvj7bBCXc+ZecWfmiMtWsVrOmOupaNiGfpyWpQSQQRsQktqcC3+n8drZD
+         RPEcg9ZEBufmhQkf9PxSzAL02IId48V6nlnryDVInoyoQ+qJM5yKrC/9yEZWDhFBKsh9
+         dmGqDfdQ+YKJ89TdsmPq31WPNNWlUC+d5Joq2ZLLShOOG/Y7SwF5q5cDYDzKcppCgnpL
+         2jqjaJlUgR1RAhUkOXPoAi9l61f0cVFuxC8vUf5iTMxucZwNwdhLBo0ftx3WaZMyLzMG
+         c3ng==
+X-Gm-Message-State: AOJu0YwgPDIPJXZbyEnk3lWpU8UYCjroj+tqsabI+cmrKiZVpVOEug7w
+        h7ELP3630doqCNYpPf45n7I=
+X-Google-Smtp-Source: AGHT+IFu01dY/t4VI0lj9frcLMLKZW4WdocaWxXVM5QL3w94LfiESYd3xuuDtEj08JNe0qoO/CnBZg==
+X-Received: by 2002:a05:6402:206d:b0:54a:271d:9648 with SMTP id bd13-20020a056402206d00b0054a271d9648mr4267375edb.13.1700817333722;
+        Fri, 24 Nov 2023 01:15:33 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id cf11-20020a0564020b8b00b0054afcab0af2sm331052edb.59.2023.11.24.01.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 01:15:33 -0800 (PST)
+Message-ID: <178c36656ecbb26c169b5a878ccc18bf89c6b36d.camel@gmail.com>
+Subject: Re: [PATCH 00/12] iio: add new backend framework
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Olivier MOYSAN <olivier.moysan@foss.st.com>, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-References: <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
- <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
- <6d4d959c-b155-471b-b13d-f6fda557cfe0@quicinc.com>
- <ZVYTFi3Jnnljl48L@hovoldconsulting.com>
- <e0789695-43ee-4285-95e9-4cdee24d6ffe@quicinc.com>
- <ZV9XTU-q038BaWn3@hovoldconsulting.com>
- <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Fri, 24 Nov 2023 10:15:32 +0100
+In-Reply-To: <031e616b-b080-4cfc-9c99-00df46b4075b@foss.st.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <031e616b-b080-4cfc-9c99-00df46b4075b@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 10:00, Krishna Kurapati PSSNV wrote:
->>
->>> I didn't add missing interrupts on sc8280xp because I see that current
->>> interrupts present are working fine (I see ADB working and wakeup
->>> working as well), but the interrupt vector numbers are off by "1"
->>> between hs specifics and DT (both upstream and downstream). Will sort it
->>> out and clean that target up later.
->>
->> Which interrupt numbers are off by one here?
->>   
-> 
-> My bad, this might be the confusion. The HW specifics say:
-> 
-> Controller-2, power_event irq:
-> 
-> SYS_apcsQgicSPI[812]		Vector-number: 843
-> 
-> 
-> Usually vector number = 32 + GIC number AFAIK.
-> By that logic, If vector number is 843, GIC_SPI number is 811 which is 
-> same as DT. Probably the GIC_SPI number is printed wrong. The DT matches 
-> (vector number - 32).
-> 
-> Sorry for mentioning that it is wrong. The DT entries are right and it 
-> is working on upstream.
-> 
-> The missing hs_phy_irq's have been put on the mail thread on this list 
-> before.
-> 
-> Regards,
-> Krishna,
-> 
->>> [1]: https://patchwork.kernel.org/project/linux-arm-msm/list/?series=803412
->>
->> I took a quick look at the series, and it looks like this will
->> eventually clean things up a lot. We should probably define a generic
->> order for the interrupts with the sometimes optional SS interrupts last.
->>
->> Side note: It looks like the threading in that series is broken.
->> Consider using git-send-email for sending series as it takes care of
->> things like that.
->>
-> 
-> Usually I do git send-email for the whole out folder where the patches 
-> are present, but linux-usb list is common to all the patches in that 
-> case, even the DT ones. So to avoid that and to send patches to only 
-> relavant mailing lists, I did git send email individually on each patch 
-> which might have caused this issue.
+On Thu, 2023-11-23 at 18:36 +0100, Olivier MOYSAN wrote:
+> Hi Nuno,
+>=20
+> On 11/21/23 11:20, Nuno Sa via B4 Relay wrote:
+> > Hi all,
+> >=20
+> > This is a Framework to handle complex IIO aggregate devices.
+> >=20
+> > The typical architecture is to have one device as the frontend device w=
+hich
+> > can be "linked" against one or multiple backend devices. All the IIO an=
+d
+> > userspace interface is expected to be registers/managed by the frontend
+> > device which will callback into the backends when needed (to get/set
+> > some configuration that it does not directly control).
+> >=20
+> > The basic framework interface is pretty simple:
+> > =C2=A0 - Backends should register themselves with @devm_iio_backend_reg=
+ister()
+> > =C2=A0 - Frontend devices should get backends with @devm_iio_backend_ge=
+t()
+> >=20
+> > (typical provider - consumer stuff)
+> >=20
+> > This is the result of the discussions in [1] and [2]. In short, both AD=
+I
+> > and STM wanted some way to control/get configurations from a kind of
+> > IIO aggregate device. So discussions were made to have something that
+> > serves and can be used by everyone.
+> >=20
+> > The main differences with the converter framework RFC [1]:
+> >=20
+> > 1) Dropped the component framework. One can get more overview about
+> > the concerns on the references but the main reasons were:
+> > =C2=A0 * Relying on providing .remove() callbacks to be allowed to use =
+device
+> > =C2=A0=C2=A0=C2=A0 managed functions. I was not even totally sure about=
+ the correctness
+> > =C2=A0=C2=A0=C2=A0 of it and in times where everyone tries to avoid tha=
+t driver
+> > =C2=A0=C2=A0=C2=A0 callback, it could lead to some maintenance burden.
+> > =C2=A0 * Scalability issues. As mentioned in [2], to support backends d=
+efined
+> > =C2=A0=C2=A0=C2=A0 in FW child nodes was not so straightforward with th=
+e component
+> > =C2=A0=C2=A0=C2=A0 framework.
+> > =C2=A0 * Device links can already do some of the things that made me
+> > =C2=A0=C2=A0=C2=A0 try the component framework (eg: removing consumers =
+on suppliers
+> > =C2=A0=C2=A0=C2=A0 unbind).
+> >=20
+> > 2) Only support the minimal set of functionality to have the devices in
+> > =C2=A0=C2=A0=C2=A0 the same state as before using the backend framework=
+. New features
+> > =C2=A0=C2=A0=C2=A0 will be added afterwards.
+> >=20
+> > 3) Moved the API docs into the .c files.
+> >=20
+> > 4) Moved the framework to the IIO top dir and renamed it to
+> > =C2=A0=C2=A0=C2=A0 industrialio-backend.c.
+> >=20
+> > Also, as compared with the RFC in [2], I don't think there are that man=
+y
+> > similarities other than the filename. However, it should now be pretty
+> > straight for Olivier to build on top of it. Also to mention that I did
+> > grabbed patch 1 ("of: property: add device link support for
+> > io-backends") from that series and just did some minor changes:
+> >=20
+>=20
+> I did not already look at the framework patches in detail, but at first=
+=20
+> glance it looks fine.
+>=20
+> I confirm that it has been quite straightforward to build on top of this=
+=20
+> framework, as it remains close to my first approach. I had only some=20
+> small changes to do, to match the API, and to get it alive. This is great=
+.
+>=20
+> I see just one concern regarding ADC generic channel bindings support.
+> Here we have no devices associated to the channel sub-nodes. So, I=20
+> cannot figure out we could use the devm_iio_backend_get() API, when=20
+> looking for backend handle in channels sub-nodes. I have to think about i=
+t.
+>=20
 
-I don't understand why. This is some weird workflow. If you do not use
-b4, then it is simple:
-git format-patch -10 -v13
-get_maintainers v13*
-git send-email v13*
-And that's it. Last two steps can be even one command, like I am doing
-(shared the macro multiple times).
+Yeah, I'm keeping the series small (as Jonathan asked in the RFC) and just =
+with basic
+stuff needed to get the ad9647 driver in the exact same state as before the
+framework. So yes, it's the same deal as with the component approach. You'l=
+l need to
+add support for it. But, in this case, I believe it should be as straight a=
+s:
 
-Best regards,
-Krzysztof
+-/**
+- * devm_iio_backend_get - Get a backend device
+- * @dev:       Device where to look for the backend.
+- * @name:      Backend name.
+- *
+- * Get's the backend associated with @dev.
+- *
+- * RETURNS:
+- * A backend pointer, negative error pointer otherwise.
+- */
+-struct iio_backend *devm_iio_backend_get(struct device *dev, const char *n=
+ame)
++struct iio_backend *devm_fwnode_iio_backend_get(struct device *dev,
++                                               const struct fwnode_handle =
+*fwnode,
++                                               const char *name)
+ {
+-       struct fwnode_handle *fwnode;
++       struct fwnode_handle *back_fwnode;
+        struct iio_backend *back;
+        int index =3D 0, ret;
 
+@@ -195,20 +187,20 @@ struct iio_backend *devm_iio_backend_get(struct devic=
+e *dev,
+const char *name)
+                        return ERR_PTR(index);
+        }
+
+-       fwnode =3D fwnode_find_reference(dev_fwnode(dev), "io-backends", in=
+dex);
+-       if (IS_ERR(fwnode)) {
++       back_fwnode =3D fwnode_find_reference(fwnode, "io-backends", index)=
+;
++       if (IS_ERR(back_fwnode)) {
+                dev_err(dev, "Cannot get Firmware reference\n");
+-               return ERR_CAST(fwnode);
++               return ERR_CAST(back_fwnode);
+        }
+
+        guard(mutex)(&iio_back_lock);
+        list_for_each_entry(back, &iio_back_list, entry) {
+                struct device_link *link;
+
+-               if (!device_match_fwnode(back->dev, fwnode))
++               if (!device_match_fwnode(back->dev, back_fwnode))
+                        continue;
+
+-               fwnode_handle_put(fwnode);
++               fwnode_handle_put(back_fwnode);
+                kref_get(&back->ref);
+                if (!try_module_get(back->owner)) {
+                        dev_err(dev, "Cannot get module reference\n");
+@@ -229,9 +221,25 @@ struct iio_backend *devm_iio_backend_get(struct device=
+ *dev,
+const char *name)
+                return back;
+        }
+
+-       fwnode_handle_put(fwnode);
++       fwnode_handle_put(back_fwnode);
+        return ERR_PTR(-EPROBE_DEFER);
+ }
++EXPORT_SYMBOL_GPL(devm_fwnode_iio_backend_get);
++
++/**
++ * devm_iio_backend_get - Get a backend device
++ * @dev:       Device where to look for the backend.
++ * @name:      Backend name.
++ *
++ * Get's the backend associated with @dev.
++ *
++ * RETURNS:
++ * A backend pointer, negative error pointer otherwise.
++ */
++struct iio_backend *devm_iio_backend_get(struct device *dev, const char *n=
+ame)
++{
++       return devm_fwnode_iio_backend_get(dev, dev_fwnode(dev), name);
++}
+ EXPORT_SYMBOL_GPL(devm_iio_backend_get);
+
+ /**
+
+Completely untested (not even compiled :)). Anyways, the goal is to just ha=
+ve the
+minimum accepted and you can then send the needed patches for subnode looku=
+ps.
+
+
+> > 1) Renamed the property from "io-backend" to "io-backends".
+> > 2) No '#io-backend-cells' as it's not supported/needed by the framework
+> > (at least for now) .
+> >=20
+> > Regarding the driver core patch
+> > ("driver: core: allow modifying device_links flags"), it is more like a
+> > RFC one. I'm not really sure if the current behavior isn't just
+> > expected/wanted. Since I could not really understand if it is or not
+> > (or why the different handling DL_FLAG_AUTOREMOVE_CONSUMER vs
+> > DL_FLAG_AUTOREMOVE_SUPPLIER), I'm sending out the patch.
+> >=20
+> > Jonathan,
+> >=20
+> > I also have some fixes and cleanups for the ad9467 driver. I added
+> > Fixes tags but I'm not sure if it's really worth it to backport them (g=
+iven
+> > what we already discussed about these drivers). I'll leave that to you
+> > :).
+> >=20
+> > I'm also not sure if I'm missing some tags (even though the series
+> > is frankly different from [2]).
+> >=20
+> > Olivier,
+> >=20
+> > If you want to be included as a Reviewer let me know and I'll happily d=
+o
+> > so in the next version.
+> >=20
+>=20
+> Yes, please add me as reviewer.
+> Thanks.
+> Olivier
+
+Will do.
+
+- Nuno S=C3=A1
+>=20
