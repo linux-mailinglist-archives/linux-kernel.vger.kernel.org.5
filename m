@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5897F76F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AF57F7700
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjKXOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:54:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S1345478AbjKXOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbjKXOyF (ORCPT
+        with ESMTP id S231277AbjKXOzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:54:05 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A5E1FE6;
-        Fri, 24 Nov 2023 06:54:06 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5c210e34088so1383694a12.2;
-        Fri, 24 Nov 2023 06:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700837646; x=1701442446; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cQniq8g4txVtcq94cNq02mIrdFtNUmCEDb9X0KzX3NI=;
-        b=cOmqH9knsNqWHE4yy2Zm9wzazK5A+/nZl4HBDIqNb9h7wm4FKI2SXg5+Xg8j9MoPs0
-         hzQqF4Gp2JGmTNN56iTa8LBHXg/QtIGMr1Rsc2zy8FcWo8JEtH1MXMJ4DxT9MY6fTSH2
-         E+f9XKlE6kkexT5ujcu+X+9zEpymlBjtxKgiGdAddEP2XEgSNiZzSTc08wT3rNUiRwIz
-         R4uUr1pnDCx0hRlgky8ev1BdE/HJ/3dj5D9GACIxwUXmPTV9o9BQKvr6JtKSo5rPQpp9
-         GA6F8N94pkD1KJfZyydlvzN1H5169tHmGNTL+6yuwnMJdyMLwx8f4TYyXompClZvYcao
-         MIuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700837646; x=1701442446;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cQniq8g4txVtcq94cNq02mIrdFtNUmCEDb9X0KzX3NI=;
-        b=rR2iskMsnrm1FOZ2iQ6s6ko0vpe+y93dLd5ApIBTh0eXsoIGYxNbvWYQvx9BfiaNAJ
-         DMouDid9sLBBQgnmZ9O5TE1rHZUH3ATMQxs+++P33Hu0d60G7ivlESdT0qLX6qzwy4IL
-         xmqzr5HCK//v9y5FgGozLNEua4uiKSHaWXQRgK679IS3sOoy6yJ+TbPfC9p8+lhq9H9d
-         lwUvVZnkS++oGK69ztX0YV4NXfZmvz1OlYm7OXRD4pHY5n3B4HFR/mWjMeAl4R90bWL1
-         CR8XlIDIwz+rzoKjE02VxwQ+y4YpO0k+xAnQDzLgFcTjZ34g3KEXB49hY1EzHXRJNf5O
-         R65A==
-X-Gm-Message-State: AOJu0YxfdQX3kEQnm9iEO1/4VZOF2I1Uf0G5mWdpcoE5+zgWzVMzNfeb
-        ejmlbQ3TVUW27O044bBiH9FEtqBkY2g=
-X-Google-Smtp-Source: AGHT+IEL5aoWPX8uUFD9Qs0LEckYZzhRHb4VXjbKQQX9Ny4aAZ9Go0HDlyCttaFier/su7hu39R7Zw==
-X-Received: by 2002:a17:90b:1c0c:b0:280:c0:9d3f with SMTP id oc12-20020a17090b1c0c00b0028000c09d3fmr3504391pjb.34.1700837645983;
-        Fri, 24 Nov 2023 06:54:05 -0800 (PST)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id 102-20020a17090a09ef00b002800e0b4852sm3703646pjo.22.2023.11.24.06.54.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 06:54:05 -0800 (PST)
-Message-ID: <0b224ebc-fcb0-4825-9222-5f0efc61c62a@gmail.com>
-Date:   Fri, 24 Nov 2023 11:54:01 -0300
+        Fri, 24 Nov 2023 09:55:15 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBFE19A8;
+        Fri, 24 Nov 2023 06:55:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1700837675; x=1701442475; i=wahrenst@gmx.net;
+        bh=MGJoLdIJ4b3gS02fNyae9jTdxCk07HvijAvt2pTRhQ4=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=QG3pg+mDJJ0hhMk/UZ/jr73ct86jleYBys0UoOtGR7/xQlFmGat8nFEHKxf0x4gU
+         g9U/3K7fWZbo32IEOcqeaAoJ6byPn1kGfNiMc1jXg291cHUNblWt/oapim4PwYfug
+         M8AA0ZFOAMsCfTD+nKiTDRt9snwwPPMD/O2imJhHAR8ttlrVoR8oShC9RgQurwBHb
+         VgEEemMrQ9GhdfkvHaqANL48IMiE0xxq2gIeAvyuFuLfG1H4zHW+quMcxYqdi0u93
+         Qyk+Scc5VHff0RnWglhL4kMJYem2MkBOaD4Pno0RN7hTZhjnNEx6tP2/cTNYNEft/
+         5wfCJhIcfiKIQLqOOg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1ML9uU-1qpYxF1cyg-00IBn6; Fri, 24
+ Nov 2023 15:54:35 +0100
+Message-ID: <dab03c60-caa9-47e3-9dac-fa499227b67b@gmx.net>
+Date:   Fri, 24 Nov 2023 15:54:32 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rust: replace <linux/module.h> with <linux/export.h> in
- rust/exports.c
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        rust-for-linux@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Alex Gaynor <alex.gaynor@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>
-References: <20231124142617.713096-1-masahiroy@kernel.org>
+Subject: Re: [PATCH v1 0/2] Add waveshare 7inch touchscreen panel support
 Content-Language: en-US
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20231124142617.713096-1-masahiroy@kernel.org>
+To:     Shengyang Chen <shengyang.chen@starfivetech.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     neil.armstrong@linaro.org, quic_jesszhan@quicinc.com,
+        sam@ravnborg.org, airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        florian.fainelli@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, emma@anholt.net,
+        thierry.reding@gmail.com, changhuang.liang@starfivetech.com,
+        keith.zhao@starfivetech.com, jack.zhu@starfivetech.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231124104451.44271-1-shengyang.chen@starfivetech.com>
+From:   Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20231124104451.44271-1-shengyang.chen@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XPJgdC3RB9K5a7xfMbmwhaguntSiG+JsdR8ThSlBVnEdHH7OlZ6
+ GzgaDPFE6LuPGjCIfCnR7UC1WzYCxsice4aPbTwtl4G03axlVTqyJzMMi8gxsFKB93KKgOp
+ RX3V7WhFXT1fnfBg/V8IOqPDWlcXnEbOQFOa2tNHhyyr6Za9Phr9eMsq8k7eBK1btzjz+Xb
+ XG0HXHVFeOUMidjfTSswA==
+UI-OutboundReport: notjunk:1;M01:P0:LI0QlHMq6gM=;oyJjU91oOyd7xgd5qFErx8TshFT
+ ztHgVOIYU1vKyGT3iwOQeRs7HJ3sKMkQ73MI20LG5PbQnm6G3YxiT6kbcebUyaFmxNDdPJ0+W
+ VgaAgYGh4c1xzC61nk9wnyQQz6sJCuR4ngabq93YBibu/BxZMjbeB14VJ4Lt5aLRrUxuRA8ss
+ mEnF/on9k5HKX6ujWOg7tjBHt1pDnwxKEBg6NCkE117lrpTruB+3zEf2XXM2oyg3VKwdCdqgh
+ GENA3RCUAGgeV83dE+Skb2DczjdfpAjrZpAw9puoiJk5i0wQ6zV21TtViOq9s+9m9YPRaCtnx
+ kixBm65R3gH5+/8Fe5J5OjLcBiwVdWnJ9Z9KtIzLw7J9Ub2HCqiSshq4fM3g9fe0VdqdOgwYJ
+ lrbbeT2GfHwu/CvzBX30S8xxRYkCTTY/6EoCEVNfNe49XUVIzcSHjayjiMctFyx8TRP8YCJGX
+ Pq8pv/Yg2AXhHOhsDQc8QnU4Y48z+nRskdJljEQy+SMu5Kl4Di2ROFOo7mNW67XZ7l7XK4SxI
+ 1Pm0YIrfFJtW8LbfCooqU3YTEJpCwhAGO5MWgWHCNkX5Hpw6ZDjYoFCrvon52PzbUdYBuMDdk
+ rJYmrmsXMFEagU3rrLRf8lcTLuvAB5x/eh7BNjH/hoXH8t/x9HAn8H10QAGwlHystVdMc13xf
+ q/QzpNszQk26xt3Mm5lEKmq8DVlLpU9250UVSgJT3f/fYKaGqhgx82pFAw5n1SR9puPgqJ99K
+ UZ7n8ixP0SOEgEXkNfLJ1LEHSfFuZUfcBoF5srTvrhlhqnSjYGlDvUeM3mIio8RAXbrAiwrTW
+ hdmGl5zSjwyBuiC1AP+HSmiB6nJqkNoxni9dWrDQtR5eezTmpcBss63BQJBR5kDOo4oyUEDbH
+ 0zWMgk9AlQOXpa4ZVM6TC/xtchjD3/HyenYj9H2YedeBxmXEaxPI+68T0MES7ufIY3gCsKj9Q
+ v9UL6A==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,TRACKER_ID,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/23 11:26, Masahiro Yamada wrote:
-> <linux/export.h> is the right header to include for using
-> EXPORT_SYMBOL_GPL. <linux/module.h> includes much more bloat.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> [...]
->   
-> -#include <linux/module.h>
-> +#include <linux/export.h>
->   
-> [...]
+Hi Shengyang,
 
-I'll use this in my crates patch. Regardless, LGTM.
+[fix address of Emma]
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Am 24.11.23 um 11:44 schrieb Shengyang Chen:
+> This patchset adds waveshare 7inch touchscreen panel support
+> for the StarFive JH7110 SoC.
+>
+> Patch 1 add new compatible for the raspberrypi panel driver and its dt-b=
+inding.
+> Patch 2 add new display mode and new probing process for raspberrypi pan=
+el driver.
+>
+> Waveshare 7inch touchscreen panel is a kind of raspberrypi panel
+> which can be drived by raspberrypi panel driver.
+>
+> The series has been tested on the VisionFive 2 board.
+surprisingly i was recently working on the official Raspberry Pi
+touchscreen and was able to get it running the new way.
+
+What do i mean with the new way. There is almost nothing special to the
+Raspberry Pi touchscreen, so we should try to use/extend existing
+components like:
+
+CONFIG_DRM_PANEL_SIMPLE
+CONFIG_TOUCHSCREEN_EDT_FT5X06
+CONFIG_DRM_TOSHIBA_TC358762
+
+The only special part is the Attiny on the connector PCB which requires:
+
+CONFIG_REGULATOR_RASPBERRYPI_TOUCHSCREEN_ATTINY
+
+So the whole point is to avoid writing monolitic drivers for simple
+panel like that.
+
+There is a WIP branch based on top of Linux 6.7-rcX, which should
+demonstrate this approach [1]. Unfortunately it is not ready for
+upstreaming, but it has been tested on a Raspberry Pi 3 B Plus. Maybe
+this is helpful for your case.
+
+Actually i consider panel-raspberrypi-touchscreen.c as a dead end, which
+shouldn't be extended.
+
+Btw there are already DT overlays in mainline which seems to use the
+Raspberry Pi 7inch panel (without touch function yet) [2].
+
+[1] - https://github.com/lategoodbye/rpi-zero/commits/v6.7-7inch-ts
+[2] -
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/ar=
+ch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x-rpidsi.dtso?h=3Dv6.6.2=
+&id=3D6b4da1354fd81adace0cda448c77d8f2a47d8474
+
+>
+> Shengyang Chen (2):
+>    dt-bindings: display: panel: raspberrypi: Add compatible property for
+>      waveshare 7inch touchscreen panel
+>    gpu: drm: panel: raspberrypi: add new display mode and new probing
+>      process
+>
+>   .../panel/raspberrypi,7inch-touchscreen.yaml  |  4 +-
+>   .../drm/panel/panel-raspberrypi-touchscreen.c | 99 ++++++++++++++++---
+>   2 files changed, 91 insertions(+), 12 deletions(-)
+>
+
