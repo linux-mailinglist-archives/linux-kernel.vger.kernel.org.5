@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2777F7507
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A44E7F7510
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345465AbjKXN2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:28:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
+        id S1345158AbjKXN3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjKXN2S (ORCPT
+        with ESMTP id S235220AbjKXN2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:28:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA4F2105
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:32 -0800 (PST)
+        Fri, 24 Nov 2023 08:28:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252A619BB
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700832451;
+        s=mimecast20190719; t=1700832456;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8wkdTzr4ovr6JqvWUuBFMPrmTwPV2fAdlmREPfnLqjk=;
-        b=P3OryhCwrrW3/y4KdyQKeVXl4ZsGXGCqICZDVyfWOr3qPxyr9OAPSTyhSzJPwo15ndIdhf
-        M9IMRawBLym9dumKCK8uEAQfKEZt9+p2UK+VeGksUrqDmGNIoljzhaRSXa/a2ERoC8pkii
-        QVZwgR8zn6qn35NAhZmGrVTX0kFoxO4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-Mzyg-U9HMR2q8VnSaYE9mw-1; Fri, 24 Nov 2023 08:27:23 -0500
-X-MC-Unique: Mzyg-U9HMR2q8VnSaYE9mw-1
+        bh=qX2dA3aqMotkmkgBnT9s/2Q/bW+jQxPjHk8bIRl2TXE=;
+        b=dQWeGBfKXMPea9Kj/9qHdaRFhs6cbWq9G+QHWZkqxUminddsyiLqg5ILBCnQ+Wo/rkcETm
+        zXzv++mcKEnuIMWkojOJbWVHLodNAEnCEXh1dke6pZ4PN0lLN3o9uK0a0GvPYKHe2/G6SM
+        4Lpjtx7snDBxf0B4qa2on9d+IaitCvM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-198-yyv_70-8PeWkL3Q6JW939Q-1; Fri,
+ 24 Nov 2023 08:27:26 -0500
+X-MC-Unique: yyv_70-8PeWkL3Q6JW939Q-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7F79C85A58C;
-        Fri, 24 Nov 2023 13:27:22 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD8A52806053;
+        Fri, 24 Nov 2023 13:27:25 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.194.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E251F2166B2B;
-        Fri, 24 Nov 2023 13:27:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE44C2166B2B;
+        Fri, 24 Nov 2023 13:27:22 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -54,9 +54,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Waiman Long <longman@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH WIP v1 14/20] mm/huge_memory: avoid folio_refcount() < folio_mapcount() in __split_huge_pmd_locked()
-Date:   Fri, 24 Nov 2023 14:26:19 +0100
-Message-ID: <20231124132626.235350-15-david@redhat.com>
+Subject: [PATCH WIP v1 15/20] mm/rmap_id: verify precalculated subids with CONFIG_DEBUG_VM
+Date:   Fri, 24 Nov 2023 14:26:20 +0100
+Message-ID: <20231124132626.235350-16-david@redhat.com>
 In-Reply-To: <20231124132626.235350-1-david@redhat.com>
 References: <20231124132626.235350-1-david@redhat.com>
 MIME-Version: 1.0
@@ -64,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,55 +72,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there is a short period in time where the refcount is smaller
-than the mapcount. Let's just make sure we obey the rules of refcount
-vs. mapcount: increment the refcount before incrementing the mapcount
-and decrement the refcount after decrementing the mapcount.
-
-While this could make code like can_split_folio() fail to detect other
-folio references, such code is (currently) racy already and this change
-shouldn't actually be considered a real fix but rather an improvement/
-cleanup.
-
-The refcount vs. mapcount changes are now well balanced in the code, with
-the cost of one additional refcount change, which really shouldn't matter
-here that much -- we're usually touching >= 512 subpage mapcounts and
-much more after all.
-
-Found while playing with some sanity checks to detect such cases, which
-we might add at some later point.
+Let's verify the precalculated subids for 4/5/6 values.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/huge_memory.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/rmap_id.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index f47971d1afbf..9639b4edc8a5 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2230,7 +2230,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 		if (!freeze) {
- 			rmap_t rmap_flags = RMAP_NONE;
- 
--			folio_ref_add(folio, HPAGE_PMD_NR - 1);
-+			folio_ref_add(folio, HPAGE_PMD_NR);
- 			if (anon_exclusive)
- 				rmap_flags = RMAP_EXCLUSIVE;
- 			folio_add_anon_rmap_range(folio, page, HPAGE_PMD_NR,
-@@ -2294,10 +2294,10 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 	}
- 	pte_unmap(pte - 1);
- 
--	if (!pmd_migration)
-+	if (!pmd_migration) {
- 		page_remove_rmap(page, vma, true);
--	if (freeze)
- 		put_page(page);
-+	}
- 
- 	smp_wmb(); /* make pte visible before pmd */
- 	pmd_populate(mm, pmd, pgtable);
+diff --git a/mm/rmap_id.c b/mm/rmap_id.c
+index 6c3187547741..421d8d2b646c 100644
+--- a/mm/rmap_id.c
++++ b/mm/rmap_id.c
+@@ -481,3 +481,29 @@ void free_rmap_id(int id)
+ 	ida_free(&rmap_ida, id);
+ 	spin_unlock(&rmap_id_lock);
+ }
++
++#ifdef CONFIG_DEBUG_VM
++static int __init rmap_id_init(void)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rmap_subids_4); i++)
++		WARN_ON_ONCE(calc_rmap_subid(1u << RMAP_SUBID_4_MAX_ORDER, i) !=
++			     rmap_subids_4[i]);
++
++#if MAX_ORDER >= RMAP_SUBID_5_MIN_ORDER
++	for (i = 0; i < ARRAY_SIZE(rmap_subids_5); i++)
++		WARN_ON_ONCE(calc_rmap_subid(1u << RMAP_SUBID_5_MAX_ORDER, i) !=
++			     rmap_subids_5[i]);
++#endif
++
++#if MAX_ORDER >= RMAP_SUBID_6_MIN_ORDER
++	for (i = 0; i < ARRAY_SIZE(rmap_subids_6); i++)
++		WARN_ON_ONCE(calc_rmap_subid(1u << RMAP_SUBID_6_MAX_ORDER, i) !=
++			     rmap_subids_6[i]);
++#endif
++
++	return 0;
++}
++module_init(rmap_id_init)
++#endif /* CONFIG_DEBUG_VM */
 -- 
 2.41.0
 
