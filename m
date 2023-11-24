@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC9E7F6B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 06:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605207F6B96
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 06:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjKXFFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 00:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
+        id S230282AbjKXFJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 00:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXFFo (ORCPT
+        with ESMTP id S231127AbjKXFJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 00:05:44 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37552D6F;
-        Thu, 23 Nov 2023 21:05:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=OGd+AG6nBWS2xFVnRaE8Ij0SVFyEY+i0EZHwc9tVSsQ=; b=SoZ0keqsb6yBkNjbMb/OUosU7H
-        ZruO9W5Jb5sEHt7OYpa1WV+BYjB/dFmn67S5WAyx3gX+TSlm2lATN5KZyKhRxhwLBafYe6qasunhH
-        X/DLuYUcJKOaet3AR5Xv3lXLG+Y/0u6Dclr0mzT72MSJPm0jXY7jeQECSyqPZOZu+C64=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:48020 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r6ONj-0005Om-ET; Fri, 24 Nov 2023 00:05:36 -0500
-Date:   Fri, 24 Nov 2023 00:05:34 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        lech.perczak@camlingroup.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Message-Id: <20231124000534.aa8f0c866753c3a9e6844354@hugovil.com>
-In-Reply-To: <ZV_GHRhqCdeCHV_a@smile.fi.intel.com>
-References: <20231030211447.974779-1-hugo@hugovil.com>
-        <ZV_GHRhqCdeCHV_a@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Fri, 24 Nov 2023 00:09:01 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEAFD71;
+        Thu, 23 Nov 2023 21:09:08 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO4Ha0q013621;
+        Fri, 24 Nov 2023 05:08:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=izkBQImg/TjzbwWFvoo0zSUxS/DMKyakfBpX5vZNJZY=;
+ b=PL2QT++9iBWr/zas7GtBMaI6RaJsAH7ixLByYMkdZPcjhcQL/Df6sdg5pUQJgI6Pi1Cz
+ u8xlh6OXwyOkNLHfef/oWKjFoGbywdFlccoT0MBS2RDYwaAr1REyJvP6+y5Dnzaj8hhi
+ Gl6INKa6CZuZO+BlCfmONwhuKXTBXB1RCcCIXl8D5x+WVoI2A0Qqgo59jGOME/v1XDPk
+ 3XMyPQtHy6GChurvqX4GCfTzbfOeuCKn2P9PPpVtSfmtGDtY8oWU5mu4uCMZV9sLf7AD
+ cR/3OTP0cVl3GiTlwtP90kJteNRBdsrWLYuqdYircZom9NlfnCaSdubip3J6LHm3yXmz Fw== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhwmearxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 05:08:34 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AO58U1W008057;
+        Fri, 24 Nov 2023 05:08:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3uepbkmrdf-1;
+        Fri, 24 Nov 2023 05:08:30 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AO58T5O008052;
+        Fri, 24 Nov 2023 05:08:30 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3AO58Tke008050;
+        Fri, 24 Nov 2023 05:08:29 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
+        id E29925299C4; Fri, 24 Nov 2023 10:38:28 +0530 (+0530)
+From:   Sneh Shah <quic_snehshah@quicinc.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
+        Andrew Halaney <ahalaney@redhat.com>
+Subject: [PATCH net] net: stmmac: update Rx clk divider for 10M SGMII
+Date:   Fri, 24 Nov 2023 10:38:18 +0530
+Message-Id: <20231124050818.1221-1-quic_snehshah@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YJ2KeQV5hKZDAsVYZTG0luH-FmCxpuMW
+X-Proofpoint-ORIG-GUID: YJ2KeQV5hKZDAsVYZTG0luH-FmCxpuMW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 mlxlogscore=701 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 adultscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311240038
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH] serial: sc16is7xx: improve regmap debugfs by using one
- regmap per port
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 23:37:33 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+SGMII 10MBPS mode needs RX clock divider to avoid drops in Rx.
+Update configure SGMII function with rx clk divider programming.
 
-> On Mon, Oct 30, 2023 at 05:14:47PM -0400, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > With this current driver regmap implementation, it is hard to make sense
-> > of the register addresses displayed using the regmap debugfs interface,
-> > because they do not correspond to the actual register addresses documented
-> > in the datasheet. For example, register 1 is displayed as registers 04 thru
-> > 07:
-> > 
-> > $ cat /sys/kernel/debug/regmap/spi0.0/registers
-> >   04: 10 -> Port 0, register offset 1
-> >   05: 10 -> Port 1, register offset 1
-> >   06: 00 -> Port 2, register offset 1 -> invalid
-> >   07: 00 -> port 3, register offset 1 -> invalid
-> >   ...
-> > 
-> > The reason is that bits 0 and 1 of the register address correspond to the
-> > channel (port) bits, so the register address itself starts at bit 2, and we
-> > must 'mentally' shift each register address by 2 bits to get its real
-> > address/offset.
-> > 
-> > Also, only channels 0 and 1 are supported by the chip, so channel mask
-> > combinations of 10b and 11b are invalid, and the display of these
-> > registers is useless.
-> > 
-> > This patch adds a separate regmap configuration for each port, similar to
-> > what is done in the max310x driver, so that register addresses displayed
-> > match the register addresses in the chip datasheet. Also, each port now has
-> > its own debugfs entry.
-> > 
-> > Example with new regmap implementation:
-> > 
-> > $ cat /sys/kernel/debug/regmap/spi0.0-port0/registers
-> > 1: 10
-> > 2: 01
-> > 3: 00
-> > ...
-> > 
-> > $ cat /sys/kernel/debug/regmap/spi0.0-port1/registers
-> > 1: 10
-> > 2: 01
-> > 3: 00
-> > 
-> > As an added bonus, this also simplifies some operations (read/write/modify)
-> > because it is no longer necessary to manually shift register addresses.
-> 
-> This change might be problematic, i.e. ...
-> 
-> ...
-> 
-> >  		regmap_update_bits(
-> >  			s->regmap,
-> > -			SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
-> > +			SC16IS7XX_IOCONTROL_REG,
-> >  			SC16IS7XX_IOCONTROL_MODEM_A_BIT |
-> >  			SC16IS7XX_IOCONTROL_MODEM_B_BIT, s->mctrl_mask);
-> 
-> ...if this happens inside another regmap operation it might collide with this
-> as there is no more shared locking (and if driver is going to be converted to
-> use an external lock, the one in regmap might be disabled). But I haven't
-> checked anyhow deeply this, so just a heads up for the potential issue.
+Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Hi Andy,
-are you refering to the above piece of code as the only location where
-this could be problematic?
-
-If yes, then it is located inside sc16is7xx_setup_mctrl_ports(), which
-is called only during sc16is7xx_probe(), and I assume it should be ok.
-
-> 
-> ...
-> 
-> > -	ret = regmap_read(regmap,
-> > -			  SC16IS7XX_LSR_REG << SC16IS7XX_REG_SHIFT, &val);
-> > +	ret = regmap_read(regmaps[0], SC16IS7XX_LSR_REG, &val);
-> 
-> Here is a probe, most likely no issues.
-
-Ok.
-
-> 
-> >  	if (ret < 0)
-> >  		return -EPROBE_DEFER;
-> 
-> ...
-> 
-> > +static const char *sc16is7xx_regmap_name(unsigned int port_id)
-> > +{
-> > +	static char buf[6];
-> > +
-> > +	snprintf(buf, sizeof(buf), "port%d", port_id);
-> 
-> Should be %u.
-
-Yes. I just noticed that Greg has applied the patch to its tty-testing
-branch, I assume I should just send a new patch to fix it?
-
-Thank you for the review,
-Hugo.
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index d3bf42d0fceb..f8c42e91a624 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -34,6 +34,7 @@
+ #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
+ #define RGMII_CONFIG_PROG_SWAP			BIT(1)
+ #define RGMII_CONFIG_DDR_MODE			BIT(0)
++#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
  
-> > +	return buf;
-> > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
-> 
+ /* SDCC_HC_REG_DLL_CONFIG fields */
+ #define SDCC_DLL_CONFIG_DLL_RST			BIT(30)
+@@ -617,6 +618,8 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+ 	case SPEED_10:
+ 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+ 		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
++		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR, BIT(10) |
++			      GENMASK(15, 14), RGMII_IO_MACRO_CONFIG);
+ 		break;
+ 	}
+ 
+-- 
+2.17.1
+
