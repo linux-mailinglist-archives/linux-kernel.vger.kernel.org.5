@@ -2,415 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239357F7C69
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C537F7C99
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbjKXSOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 13:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        id S231460AbjKXSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 13:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbjKXSOq (ORCPT
+        with ESMTP id S229907AbjKXSQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 13:14:46 -0500
+        Fri, 24 Nov 2023 13:16:35 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D47219B9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7F319A3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:16:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700849690;
+        s=mimecast20190719; t=1700849801;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Zm7npic6hpdnvYBc9CxZ2JM6kBkxKJfDj7QUHeYYNcE=;
-        b=QQBbodFDJZmL+jEa6RWdJHlcrMj96sKcP3aNfpqup+uuIkRgic7vMUcsgj/0CV4YE09KkI
-        IgXUlSoV6J45Vi/8SIzGKHAJ9aEEDIn/fRXJQSRjXc9Hv7mu41KpaNq8JhVhztlHqK4lsA
-        0qxMgReHe1YaorNaiVPd/eby4aSHpCw=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=eg/pahNY1sda15m0S5y8qWCWFh+lk9Yndlzoe9hnA8c=;
+        b=F0o8X5Ys5/H19in7q+tRNwpkSKXjckUC9BiG7nwJkoz67LsTkabzDwGGtQHVPrAewMDSNA
+        oBlnxZwhZZQePnRHHt3I6simtprG311ypSt86b1P5eu7Y7VHQ7DlgnAZKQVAYk11YhVBhu
+        uBjZTeFSuJzpK8/qhSaAPg7CfjK1z54=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-8d_dYb6kML6Pzj3E3A1GIQ-1; Fri, 24 Nov 2023 13:14:49 -0500
-X-MC-Unique: 8d_dYb6kML6Pzj3E3A1GIQ-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b847ecbb7cso1972025b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:49 -0800 (PST)
+ us-mta-179-BoflYNN0MC67cM5AiX6VAA-1; Fri, 24 Nov 2023 13:16:39 -0500
+X-MC-Unique: BoflYNN0MC67cM5AiX6VAA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67a0921b293so4590186d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:16:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700849688; x=1701454488;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zm7npic6hpdnvYBc9CxZ2JM6kBkxKJfDj7QUHeYYNcE=;
-        b=M2BYUtmhCEE9UobQ3Z8pGUM0Jq1kIjFk99nuDXX7GQVba7AXnNiX6zFZsfIdH40DQ/
-         SS/dWe/Ef72M7a5WCjS+kEX9M0E291xQ37h0hXpEkPngfPxLF3GN8UY5APTuTvx1zDx5
-         LoO3Q5zxOmkbuZsuELI0TxNSFnfAeBgglqXJLmUtrsmSrc3xYbWq9u7b+jnXHXTyxnlX
-         DFBk2YA8FWG4R8yf72ExzboAbRn0y8Oc+vM3dRhfulHvbZPcDhwGCKUGzydiiPXYly1q
-         /d6Wa+oalem+EEISg7lzIxokhxon4KBBXiZblaRSBoK4bRgLD1ZwKp8W2U9cLLhQtAPZ
-         MtXA==
-X-Gm-Message-State: AOJu0Yzn0ehsLRoOp168wi+cCw0PhKFp7J/wa6abR71PsCcL7YRot060
-        oO7v6w2hNb0CdhOAUoxsI4LohFdSHC6R+qsBicoJnOnP42uDk8iR3XIqNznQyww15hVPgGFyiAm
-        NXzZvZKdq0hUksjBb/zqUSEox
-X-Received: by 2002:a05:6808:1798:b0:3b8:44dc:7ce0 with SMTP id bg24-20020a056808179800b003b844dc7ce0mr4687192oib.2.1700849688351;
-        Fri, 24 Nov 2023 10:14:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEtGmM2eM47HzlOguDVKmn1lCm5hyLxe/kX5JAo4GtREYdwQJDRCUdA9WBI3RJNGHQMpo+kSQ==
-X-Received: by 2002:a05:6808:1798:b0:3b8:44dc:7ce0 with SMTP id bg24-20020a056808179800b003b844dc7ce0mr4687174oib.2.1700849688025;
-        Fri, 24 Nov 2023 10:14:48 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id cz9-20020a056214088900b0067a225ab63esm141629qvb.84.2023.11.24.10.14.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 10:14:46 -0800 (PST)
-Message-ID: <63c97950-2c12-4ee1-b8d1-0794e7603b25@redhat.com>
-Date:   Fri, 24 Nov 2023 19:14:43 +0100
+        d=1e100.net; s=20230601; t=1700849799; x=1701454599;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eg/pahNY1sda15m0S5y8qWCWFh+lk9Yndlzoe9hnA8c=;
+        b=cXWA5hElocQg2RD96gibxJ2ITPujt/8L5MAcWsYAubvi8E/oV0qDXCj2qeFAuYmUrv
+         nqURYXq4TRjgKyLQ3I0xpIdDutDpYWWtL/hJ5SVHtEk/hmkPyh1aH7Ch40Uv9JF3+TgD
+         jNvsJc4gX/dW4QXugaAvp6x8vz/k8lrh8GI6RalpXjrJ2i3WAhvWIGueCnT76/lr51tZ
+         J+KzvRWSPULf2uhKXVc0fD3AmMebdVn8NOs3zDdPfUq69ztWpMi8zv6/tskY5+F00qhY
+         Cz4/8oL2lhNfRQvz9073tQgsXDA29jpWtYDH5LYHO04xk/yeo2q0cjsuoY4rCfpXIjs/
+         qbDw==
+X-Gm-Message-State: AOJu0YwGZoI1A0aD3+gHFYt5qcur2GAaNiC6rsxjI8EkuJAezOUGQDu/
+        Z4GpbfUcfg0mVqdTQSYQviovvCoHLEgQBdQovEH1NPD20pO0E6u+yAPx0tAJU6FR8tAmL4mHmBJ
+        gt1cFZ1UnH+ZuL4HsJrXzOwqa
+X-Received: by 2002:a05:6214:2f02:b0:67a:1458:aacd with SMTP id od2-20020a0562142f0200b0067a1458aacdmr3565238qvb.1.1700849799395;
+        Fri, 24 Nov 2023 10:16:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEJ43dGQneaoWsZVvBliGQZdzl2B0g+563xfr5Uv9AkDlwk6RFuauEFWEn1YHQGStxmMuIbQg==
+X-Received: by 2002:a05:6214:2f02:b0:67a:1458:aacd with SMTP id od2-20020a0562142f0200b0067a1458aacdmr3565222qvb.1.1700849799109;
+        Fri, 24 Nov 2023 10:16:39 -0800 (PST)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id cp4-20020ad44ae4000000b0067a154df4cesm747802qvb.70.2023.11.24.10.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 10:16:38 -0800 (PST)
+Date:   Fri, 24 Nov 2023 13:16:35 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
+ hugepd processing
+Message-ID: <ZWDog_cz66g38d0I@x1n>
+References: <20231116012908.392077-1-peterx@redhat.com>
+ <20231116012908.392077-7-peterx@redhat.com>
+ <ZVsYMMJpmFV2T/Zc@infradead.org>
+ <ZVzT5_3Zn-Y-6xth@x1n>
+ <ZV21GCbG48nTLDzn@infradead.org>
+ <ZV4co7wcI-_wK91F@x1n>
+ <57be0ed0-f1d7-4583-9a5f-3ed7deb0ea97@csgroup.eu>
+ <ZV-p7haI5SmIYACs@x1n>
+ <1a1cbd2c-ef59-4b73-bffc-a375bf81243c@csgroup.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] KVM: selftests: aarch64: Make the
- [create|destroy]_vpmu_vm() can be reused
-Content-Language: en-US
-To:     Shaoqin Huang <shahuang@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231123063750.2176250-1-shahuang@redhat.com>
- <20231123063750.2176250-2-shahuang@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-In-Reply-To: <20231123063750.2176250-2-shahuang@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1a1cbd2c-ef59-4b73-bffc-a375bf81243c@csgroup.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shaoqin,
+Hi, Christophe, Michael, Aneesh,
 
-On 11/23/23 07:37, Shaoqin Huang wrote:
-> Move the [create|destroy]_vpmu_vm() into the lib/, which makes those
-some wording suggestions below:
+[I'll reply altogether here]
 
-Move the implementation of .. into lib/aarch64/pmu.c and export their
-declaration in a header so that they can be reused by other tests. Also
-the title may be renamed: Make [create|destroy]_vpmu_vm() public
-> function can be used by other tests. Install the handler is specific to
-the sync exception handler install is test specific so we move it out of
-the helper function.
-> the vpmu_counter_access test, so create a wrapper function for it, and
-> only move the common part.
+On Fri, Nov 24, 2023 at 07:03:11AM +0000, Christophe Leroy wrote:
+> I added that code with commit e17eae2b8399 ("mm: pagewalk: fix walk for 
+> hugepage tables") because I was getting crazy displays when dumping 
+> /sys/kernel/debug/pagetables
 > 
-> No functional change.
-intended ;-)
+> Huge pages can be used for many thing.
 > 
-> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../kvm/aarch64/vpmu_counter_access.c         | 100 +++++-------------
->  .../selftests/kvm/include/aarch64/vpmu.h      |  16 +++
->  .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  64 +++++++++++
->  4 files changed, 105 insertions(+), 76 deletions(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vpmu.h
->  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> On powerpc 8xx, there are 4 possible page size: 4k, 16k, 512k and 8M.
+> Each PGD entry addresses 4M areas, so hugepd is used for anything using 
+> 8M pages. Could have used regular page tables instead, but it is not 
+> worth allocating a 4k table when the HW will only read first entry.
 > 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index a5963ab9215b..b60852c222ac 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -57,6 +57,7 @@ LIBKVM_aarch64 += lib/aarch64/processor.c
->  LIBKVM_aarch64 += lib/aarch64/spinlock.c
->  LIBKVM_aarch64 += lib/aarch64/ucall.c
->  LIBKVM_aarch64 += lib/aarch64/vgic.c
-> +LIBKVM_aarch64 += lib/aarch64/vpmu.c
->  
->  LIBKVM_s390x += lib/s390x/diag318_test_handler.c
->  LIBKVM_s390x += lib/s390x/processor.c
-> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> index 5ea78986e665..17305408a334 100644
-> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> @@ -16,6 +16,7 @@
->  #include <processor.h>
->  #include <test_util.h>
->  #include <vgic.h>
-> +#include <vpmu.h>
->  #include <perf/arm_pmuv3.h>
->  #include <linux/bitfield.h>
->  
-> @@ -25,13 +26,7 @@
->  /* The cycle counter bit position that's common among the PMU registers */
->  #define ARMV8_PMU_CYCLE_IDX		31
->  
-> -struct vpmu_vm {
-> -	struct kvm_vm *vm;
-> -	struct kvm_vcpu *vcpu;
-> -	int gic_fd;
-> -};
-> -
-> -static struct vpmu_vm vpmu_vm;
-> +static struct vpmu_vm *vpmu_vm;
->  
->  struct pmreg_sets {
->  	uint64_t set_reg_id;
-> @@ -421,64 +416,6 @@ static void guest_code(uint64_t expected_pmcr_n)
->  	GUEST_DONE();
->  }
->  
-> -#define GICD_BASE_GPA	0x8000000ULL
-> -#define GICR_BASE_GPA	0x80A0000ULL
-> -
-> -/* Create a VM that has one vCPU with PMUv3 configured. */
-> -static void create_vpmu_vm(void *guest_code)
-> -{
-> -	struct kvm_vcpu_init init;
-> -	uint8_t pmuver, ec;
-> -	uint64_t dfr0, irq = 23;
-> -	struct kvm_device_attr irq_attr = {
-> -		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
-> -		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
-> -		.addr = (uint64_t)&irq,
-> -	};
-> -	struct kvm_device_attr init_attr = {
-> -		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
-> -		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
-> -	};
-> -
-> -	/* The test creates the vpmu_vm multiple times. Ensure a clean state */
-> -	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
-> -
-> -	vpmu_vm.vm = vm_create(1);
-> -	vm_init_descriptor_tables(vpmu_vm.vm);
-> -	for (ec = 0; ec < ESR_EC_NUM; ec++) {
-> -		vm_install_sync_handler(vpmu_vm.vm, VECTOR_SYNC_CURRENT, ec,
-> -					guest_sync_handler);
-> -	}
-> -
-> -	/* Create vCPU with PMUv3 */
-> -	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
-> -	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
-> -	vpmu_vm.vcpu = aarch64_vcpu_add(vpmu_vm.vm, 0, &init, guest_code);
-> -	vcpu_init_descriptor_tables(vpmu_vm.vcpu);
-> -	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
-> -					GICD_BASE_GPA, GICR_BASE_GPA);
-> -	__TEST_REQUIRE(vpmu_vm.gic_fd >= 0,
-> -		       "Failed to create vgic-v3, skipping");
-> -
-> -	/* Make sure that PMUv3 support is indicated in the ID register */
-> -	vcpu_get_reg(vpmu_vm.vcpu,
-> -		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
-> -	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_EL1_PMUVer), dfr0);
-> -	TEST_ASSERT(pmuver != ID_AA64DFR0_EL1_PMUVer_IMP_DEF &&
-> -		    pmuver >= ID_AA64DFR0_EL1_PMUVer_IMP,
-> -		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
-> -
-> -	/* Initialize vPMU */
-> -	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
-> -	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
-> -}
-> -
-> -static void destroy_vpmu_vm(void)
-> -{
-> -	close(vpmu_vm.gic_fd);
-> -	kvm_vm_free(vpmu_vm.vm);
-> -}
-> -
->  static void run_vcpu(struct kvm_vcpu *vcpu, uint64_t pmcr_n)
->  {
->  	struct ucall uc;
-> @@ -497,13 +434,24 @@ static void run_vcpu(struct kvm_vcpu *vcpu, uint64_t pmcr_n)
->  	}
->  }
->  
-> +static void create_vpmu_vm_with_handler(void *guest_code)
-> +{
-> +	uint8_t ec;
-> +	vpmu_vm = create_vpmu_vm(guest_code);
-> +
-> +	for (ec = 0; ec < ESR_EC_NUM; ec++) {
-> +		vm_install_sync_handler(vpmu_vm->vm, VECTOR_SYNC_CURRENT, ec,
-> +					guest_sync_handler);
-> +	}
-> +}
-> +
->  static void test_create_vpmu_vm_with_pmcr_n(uint64_t pmcr_n, bool expect_fail)
->  {
->  	struct kvm_vcpu *vcpu;
->  	uint64_t pmcr, pmcr_orig;
->  
-> -	create_vpmu_vm(guest_code);
-> -	vcpu = vpmu_vm.vcpu;
-> +	create_vpmu_vm_with_handler(guest_code);
-> +	vcpu = vpmu_vm->vcpu;
->  
->  	vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr_orig);
->  	pmcr = pmcr_orig;
-> @@ -539,7 +487,7 @@ static void run_access_test(uint64_t pmcr_n)
->  	pr_debug("Test with pmcr_n %lu\n", pmcr_n);
->  
->  	test_create_vpmu_vm_with_pmcr_n(pmcr_n, false);
-> -	vcpu = vpmu_vm.vcpu;
-> +	vcpu = vpmu_vm->vcpu;
->  
->  	/* Save the initial sp to restore them later to run the guest again */
->  	vcpu_get_reg(vcpu, ARM64_CORE_REG(sp_el1), &sp);
-> @@ -550,7 +498,7 @@ static void run_access_test(uint64_t pmcr_n)
->  	 * Reset and re-initialize the vCPU, and run the guest code again to
->  	 * check if PMCR_EL0.N is preserved.
->  	 */
-> -	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
-> +	vm_ioctl(vpmu_vm->vm, KVM_ARM_PREFERRED_TARGET, &init);
->  	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
->  	aarch64_vcpu_setup(vcpu, &init);
->  	vcpu_init_descriptor_tables(vcpu);
-> @@ -559,7 +507,7 @@ static void run_access_test(uint64_t pmcr_n)
->  
->  	run_vcpu(vcpu, pmcr_n);
->  
-> -	destroy_vpmu_vm();
-> +	destroy_vpmu_vm(vpmu_vm);
->  }
->  
->  static struct pmreg_sets validity_check_reg_sets[] = {
-> @@ -580,7 +528,7 @@ static void run_pmregs_validity_test(uint64_t pmcr_n)
->  	uint64_t valid_counters_mask, max_counters_mask;
->  
->  	test_create_vpmu_vm_with_pmcr_n(pmcr_n, false);
-> -	vcpu = vpmu_vm.vcpu;
-> +	vcpu = vpmu_vm->vcpu;
->  
->  	valid_counters_mask = get_counters_mask(pmcr_n);
->  	max_counters_mask = get_counters_mask(ARMV8_PMU_MAX_COUNTERS);
-> @@ -621,7 +569,7 @@ static void run_pmregs_validity_test(uint64_t pmcr_n)
->  			    KVM_ARM64_SYS_REG(clr_reg_id), reg_val);
->  	}
->  
-> -	destroy_vpmu_vm();
-> +	destroy_vpmu_vm(vpmu_vm);
->  }
->  
->  /*
-> @@ -634,7 +582,7 @@ static void run_error_test(uint64_t pmcr_n)
->  	pr_debug("Error test with pmcr_n %lu (larger than the host)\n", pmcr_n);
->  
->  	test_create_vpmu_vm_with_pmcr_n(pmcr_n, true);
-> -	destroy_vpmu_vm();
-> +	destroy_vpmu_vm(vpmu_vm);
->  }
->  
->  /*
-> @@ -645,9 +593,9 @@ static uint64_t get_pmcr_n_limit(void)
->  {
->  	uint64_t pmcr;
->  
-> -	create_vpmu_vm(guest_code);
-> -	vcpu_get_reg(vpmu_vm.vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
-> -	destroy_vpmu_vm();
-> +	create_vpmu_vm_with_handler(guest_code);
-> +	vcpu_get_reg(vpmu_vm->vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
-> +	destroy_vpmu_vm(vpmu_vm);
->  	return get_pmcr_n(pmcr);
->  }
->  
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
-> new file mode 100644
-> index 000000000000..0a56183644ee
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#include <kvm_util.h>
-> +
-> +#define GICD_BASE_GPA	0x8000000ULL
-> +#define GICR_BASE_GPA	0x80A0000ULL
-> +
-> +struct vpmu_vm {
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +	int gic_fd;
-> +};
-> +
-> +struct vpmu_vm *create_vpmu_vm(void *guest_code);
-> +
-> +void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
-> new file mode 100644
-> index 000000000000..b3de8fdc555e
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <kvm_util.h>
-> +#include <processor.h>
-> +#include <test_util.h>
-> +#include <vgic.h>
-> +#include <vpmu.h>
-> +#include <perf/arm_pmuv3.h>
-> +
-> +/* Create a VM that has one vCPU with PMUv3 configured. */
-> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
-> +{
-> +	struct kvm_vcpu_init init;
-> +	uint8_t pmuver;
-> +	uint64_t dfr0, irq = 23;
-> +	struct kvm_device_attr irq_attr = {
-> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
-> +		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
-> +		.addr = (uint64_t)&irq,
-> +	};
-> +	struct kvm_device_attr init_attr = {
-> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
-> +		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
-> +	};
-> +	struct vpmu_vm *vpmu_vm;
-> +
-> +	vpmu_vm = calloc(1, sizeof(*vpmu_vm));
-> +	TEST_ASSERT(vpmu_vm != NULL, "Insufficient Memory");
-> +	memset(vpmu_vm, 0, sizeof(vpmu_vm));
-> +
-> +	vpmu_vm->vm = vm_create(1);
-> +	vm_init_descriptor_tables(vpmu_vm->vm);
-> +
-> +	/* Create vCPU with PMUv3 */
-> +	vm_ioctl(vpmu_vm->vm, KVM_ARM_PREFERRED_TARGET, &init);
-> +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
-> +	vpmu_vm->vcpu = aarch64_vcpu_add(vpmu_vm->vm, 0, &init, guest_code);
-> +	vcpu_init_descriptor_tables(vpmu_vm->vcpu);
-> +	vpmu_vm->gic_fd = vgic_v3_setup(vpmu_vm->vm, 1, 64,
-> +					GICD_BASE_GPA, GICR_BASE_GPA);
-> +	__TEST_REQUIRE(vpmu_vm->gic_fd >= 0,
-> +		       "Failed to create vgic-v3, skipping");
-> +
-> +	/* Make sure that PMUv3 support is indicated in the ID register */
-> +	vcpu_get_reg(vpmu_vm->vcpu,
-> +		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
-> +	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_EL1_PMUVer), dfr0);
-> +	TEST_ASSERT(pmuver != ID_AA64DFR0_EL1_PMUVer_IMP_DEF &&
-> +		    pmuver >= ID_AA64DFR0_EL1_PMUVer_IMP,
-> +		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
-> +
-> +	/* Initialize vPMU */
-> +	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
-> +	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
-> +
-> +	return vpmu_vm;
-> +}
-> +
-> +void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm)
-> +{
-> +	close(vpmu_vm->gic_fd);
-> +	kvm_vm_free(vpmu_vm->vm);
-> +	free(vpmu_vm);
-> +}
-Besides looks good to me
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> At the time being, linear memory mapping is performed with 8M pages, so 
+> ptdump_walk_pgd() will walk into huge page directories.
+> 
+> Also, huge pages can be used in vmalloc() and in vmap(). At the time 
+> being we support 512k pages there on the 8xx. 8M pages will be supported 
+> once vmalloc() and vmap() support hugepd, as explained in commit 
+> a6a8f7c4aa7e ("powerpc/8xx: add support for huge pages on VMAP and VMALLOC")
+> 
+> So yes as a conclusion hugepd is used outside hugetlbfs, hope it 
+> clarifies things.
 
-Eric
+Yes it does, thanks a lot for all of your replies.
 
+So I think this is what I missed: on Freescale ppc 8xx there's a special
+hugepd_populate_kernel() defined to install kernel pgtables for hugepd.
+Obviously I didn't check further than hugepd_populate() when I first
+looked, and stopped at the first instance of hugepd_populate() definition
+on the 64 bits ppc.
+
+For this specific patch: I suppose the change is still all fine to reuse
+the fast-gup function, because it is still true when there's a VMA present
+(GUP applies only to user mappings, nothing like KASAN should ever pop up).
+So AFAIU it's still true that hugepd is only used in hugetlb pages in this
+case even for Freescale 8xx, and nothing should yet explode.  So maybe I
+can still keep the code changes.
+
+However the comment at least definitely needs fixing (that I'm going to add
+some, which hch requested and I agree), that is not yet in the patch I
+posted here but I'll refine them locally.
+
+For the whole work: the purpose of it is to start merging hugetlb pgtable
+processing with generic mm.  That is my take of previous lsfmm discussions
+in the community on how we should move forward with hugetlb in the future,
+to avoid code duplications against generic mm.  Hugetlb is kind of blocked
+on adding new (especially, large) features in general because of such
+complexity.  This is all about that, but a small step towards it.
+
+I see that it seems a trend to make hugepd more general.  Christophe's fix
+on dump pgtable is exactly what I would also look for if keep going.  I
+hope that's the right way to go.
+
+I'll also need to think more on how this will affect my plan, currently it
+seems all fine: I won't ever try to change any kernel mapping specific
+code. I suppose any hugetlbfs based test should still cover all codes I
+will touch on hugepd.  Then it should just work for kernel mappings on
+Freescales; it'll be great if e.g. Christophe can help me double check that
+if the series can stablize in a few versions.  If any of you have any hint
+on testing it'll be more than welcomed, either specific test case or hints;
+currently I'm still at a phase looking for a valid ppc systems - QEMU tcg
+ppc64 emulation on x86 is slow enough to let me give up already.
+
+Considering hugepd's specialty in ppc and the possibility that I'll break
+it, there's yet another option which is I only apply the new logic into
+archs with !ARCH_HAS_HUGEPD.  It'll make my life easier, but that also
+means even if my attempt would work out anything new will by default rule
+ppc out.  And we'll have a bunch of "#ifdef ARCH_HAS_HUGEPD" in generic
+code, which is not preferred either.  For gup, it might be relatively easy
+when comparing to the rest. I'm still hesitating for the long term plan.
+
+Please let me know if you have any thoughts on any of above.
+
+Thanks!
+
+-- 
+Peter Xu
 
