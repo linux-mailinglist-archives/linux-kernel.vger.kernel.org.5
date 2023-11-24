@@ -2,175 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 280917F6A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABFC7F6A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjKXB6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S230284AbjKXB6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjKXB6A (ORCPT
+        with ESMTP id S229711AbjKXB6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Nov 2023 20:58:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3F210C7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700791085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SiHqBG5n3pSa5R94END0/8W0OBeOhpXL3D/OFSohC2M=;
-        b=E9OYXMAEFyZJ/+i8TLowSgyrCceeWgI0lZhxhmad4tzLhqtS/r+dsX4slaD0i6kwZzL5nk
-        5Tx1vbMUoJvRSnTJKh979BoBcbM8wXLRp79OngJilrW7rRLakWBWPNLknrCeTjVNi09YfH
-        X54Bxzdc+8ajmMbXPmA5EhX4qLFtbug=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-9-_W8SERA3N_Gf5HeqVWenIA-1; Thu,
- 23 Nov 2023 20:58:02 -0500
-X-MC-Unique: _W8SERA3N_Gf5HeqVWenIA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A870E28EC110;
-        Fri, 24 Nov 2023 01:58:01 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03C1B2166B2A;
-        Fri, 24 Nov 2023 01:58:00 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 09:57:57 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Yujie Liu <yujie.liu@intel.com>
-Cc:     lkp <lkp@intel.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
-Message-ID: <ZWADJcg5smQHZzMT@MiWiFi-R3L-srv>
-References: <20231114153253.241262-3-bhe@redhat.com>
- <202311160431.BXPc7NO9-lkp@intel.com>
- <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
- <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
- <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
- <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
- <ZV/55OkN7bV02LY8@yujie-X299>
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30F0D73
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:58:05 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54af0eca12dso237535a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1700791084; x=1701395884; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TOC6kpNCxEHj4hSbgSX+oEF0PmKIHwNNPHtfvbmHLCM=;
+        b=zNMs+r2r3go/HB9wyrr/a3ZEm6TzRNIg0fOry33kZUpw7L2rhQuXIGLvOaKP2D0QGd
+         gGkdbryz5kGWABlK5teX9BqU+FHFrmrLt5k9HWCVANDae+ymgHomaR7VCpUteighQF2S
+         h9/bgEc7Ix9rQ70pFkQap2CyEb6/J/CIZdF20gcwHgytsesxBbv8vxGM2JwL9Hq7qdMd
+         OMtJJ9Qs8FL1x2FI7cJ1glphzG9nMlu9KPovsfx+6n4wKqrnCcUM/E40EANBVhwy9pDO
+         VIyCvqtZoD3OEDe5NkHfWGswmG2LOnXbMhJGd+G2Q5fGyirlPCjpEuQEKNY4OGkK/Bq3
+         X3tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700791084; x=1701395884;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TOC6kpNCxEHj4hSbgSX+oEF0PmKIHwNNPHtfvbmHLCM=;
+        b=bRvnYS38LKgyV0yMp8YuqxEbhIlV5Rc3icG3DJRPHdcPImJwn44Xf4Qm5PbGdqG+dp
+         yq5lhhnYObfWhyzeLMW/BfXfEI2Kz7YoiZBBw9CGxZiGalfIsaQW5F9exp5fk+v+g6Eq
+         3xJjbVRk2gU8i+cQkq0p0JO4BiPXrRdSgzVKmFxKM50XwtOK97Ni+t81Jd1joSj8cPgq
+         Gen2z+RiCEWMfnTrdJ82//FlyR3BgDL+XgQpbpo1yy1uDsuwBr7N0UI/O35DpnhJYQhC
+         MRxrrGbFX11X3p+tb0fXyltyEYF2MgXhNlP5bbBCUpXp4qnfk4EFzulqRKhkIem85Hau
+         B68g==
+X-Gm-Message-State: AOJu0Yw6sFMkwWL6j8SPxvtPgeAVRwLARR4NJmFBwk08W/f28GnVNPE3
+        VEcK5qlewZUQdAoAkxzBhG96tbbvlX9RoG1b81I=
+X-Google-Smtp-Source: AGHT+IGgua0Zo8eVhZHf65bHplCf8miKyTXtFX2D4MKSzCsryR9maOkL19p6pIxBWII4yx8+ghZKwA==
+X-Received: by 2002:a17:906:116:b0:9c5:cfa3:d030 with SMTP id 22-20020a170906011600b009c5cfa3d030mr760258eje.54.1700791084287;
+        Thu, 23 Nov 2023 17:58:04 -0800 (PST)
+Received: from ntb.petris.klfree.czf ([193.86.118.65])
+        by smtp.gmail.com with ESMTPSA id kt20-20020a170906aad400b009c3f8f46c22sm1426212ejb.77.2023.11.23.17.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 17:58:03 -0800 (PST)
+Date:   Fri, 24 Nov 2023 02:58:01 +0100
+From:   Petr Malat <oss@malat.biz>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] bootconfig: Apply early options from embedded config
+Message-ID: <ZWADKWURCDZXyJTQ@ntb.petris.klfree.czf>
+References: <20231121231342.193646-1-oss@malat.biz>
+ <20231121231342.193646-3-oss@malat.biz>
+ <20231123194106.08f5832f558fe806b1fd8098@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZV/55OkN7bV02LY8@yujie-X299>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231123194106.08f5832f558fe806b1fd8098@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/23 at 09:18am, Yujie Liu wrote:
-> On Thu, Nov 23, 2023 at 09:49:20PM +0800, bhe@redhat.com wrote:
-> > On 11/17/23 at 10:01pm, Baoquan He wrote:
-> > > On 11/17/23 at 09:37am, Liu, Yujie wrote:
-> > > > Hi Baoquan,
-> > > > 
-> > > > On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On 11/16/23 at 05:04am, kernel test robot wrote:
-> > > > > > Hi Baoquan,
-> > > > > > 
-> > > > > > kernel test robot noticed the following build errors:
-> > > > > > 
-> > > > > > [auto build test ERROR on arm64/for-next/core]
-> > > > > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
-> > > > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > > > > And when submitting patch, we suggest to use '--base' as documented in
-> > > > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > > > > > 
-> > > > > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
-> > > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> > > > > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
-> > > > > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
-> > > > > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
-> > > > > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> > > > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
-> > > > > > 
-> > > > > 
-> > > > > Thanks for reporting.
-> > > > > 
-> > > > > I met below failure when following the steps of provided reproducer.
-> > > > > Could anyone help check what's wrong with that?
-> > > > 
-> > > > Sorry this seems to be a bug in the reproducer. Could you please change
-> > > > the compiler parameter to "COMPILER=clang-16" and rerun the command? We
-> > > > will fix the issue ASAP.
-> > 
-> > Any update for the reproducer? I would like to post v2 with the fix. I
-> > doubt it's the same issue as another report on this patch, while not
-> > quite sure.
+On Thu, Nov 23, 2023 at 07:41:06PM +0900, Masami Hiramatsu wrote:
+> On Wed, 22 Nov 2023 00:13:42 +0100
+> Petr Malat <oss@malat.biz> wrote:
+> > +	static int prev_rtn __initdata;
 > 
-> Setting "COMPILER=clang-16" is exactly the correct fix and should
-> reproduce the issue in this report. We've fixed the steps of reproducer
-> but this will only take effect in future reports.
+> I would rather like 'done_retval' instead of 'prev_rtn'.
+ 
+OK, I will rename it.
 
-Thanks, Yujie. I thought you were asking me to use "COMPILER=clang-16"
-to get information to debug. I have done the testing according to
-Nathan's suggestion and can confirm it's the same issue as the one on
-arm64. Will post v2.
-
+> > -	/* Cut out the bootconfig data even if we have no bootconfig option */
+> > -	initrd_data = get_boot_config_from_initrd(&initrd_size);
+> > -	/* If there is no bootconfig in initrd, try embedded one. */
+> > -	if (!initrd_data || IS_ENABLED(CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD))
+> > -		embeded_data = xbc_get_embedded_bootconfig(&embeded_size);
+> > +	if (prev_rtn)
+> > +		return prev_rtn;
+> >  
+> > +	embeded_data = xbc_get_embedded_bootconfig(&embeded_size);
+> >  	strscpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+> >  	err = parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+> >  			 bootconfig_params);
 > 
-> > > 
-> > > Here you are. Thanks for your quick response.
-> > > ------------------------------
-> > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-> > > Compiler will be installed in /root/0day
-> > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
-> > > /root/linux                                                                             
-> > > tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
-> > > PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-> > > make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
-> > > make[1]: Entering directory '/root/linux/build_dir'
-> > >   GEN     Makefile
-> > >   HOSTCC  scripts/basic/fixdep
-> > >   HOSTCC  scripts/kconfig/conf.o
-> > >   HOSTCC  scripts/kconfig/confdata.o
-> > >   HOSTCC  scripts/kconfig/expr.o
-> > >   HOSTCC  scripts/kconfig/lexer.lex.o
-> > >   HOSTCC  scripts/kconfig/menu.o
-> > >   HOSTCC  scripts/kconfig/parser.tab.o
-> > >   HOSTCC  scripts/kconfig/preprocess.o
-> > >   HOSTCC  scripts/kconfig/symbol.o
-> > >   HOSTCC  scripts/kconfig/util.o
-> > >   HOSTLD  scripts/kconfig/conf
-> > > #
-> > > # configuration written to .config
-> > > #
-> > > make[1]: Leaving directory '/root/linux/build_dir'
-> > > 
-> > > > 
-> > > > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-> > > > > Compiler will be installed in /root/0day
-> > > > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
-> > > > > get1: /pub/tools/llvm/files/: files/: Is a directory
-> > > > > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
-> > > > > clang crosstool install failed
-> > > > > Install clang compiler failed
-> > > > > setup_crosstool failed
-> > > > 
-> > > > 
-> > > 
-> > 
+> This copy & check should be skipped if IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE) because
+> this only checks "bootconfig" is in the cmdline.
+> Can you introduce following flag and initialize it here?
 > 
+> #ifdef CONFIG_BOOT_CONFIG_FORCE
+> #define bootconfig_enabled	(true)
+> #else
+> static bool bootconfig_enabled __initdata;
+> #endif
 
+Even when CONFIG_BOOT_CONFIG_FORCE is set, we must call parse_args to find
+the location of -- to know where init options should be added. It's done the
+same way in the current code.
+
+ 
+> > -
+> > -	if (IS_ERR(err) || !(bootconfig_found || IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)))
+> > -		return;
+> > -
+> > +	if (IS_ERR(err) || !(bootconfig_found || IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE))) {
+> > +		prev_rtn = embeded_data ? -ENOMSG : -ENODATA;
+> > +		return prev_rtn;
+> 
+> Than we don't need to set a strange error value...
+
+It's used for error logging as the current code emits a different
+messages in these situations, but I will try to refactor it.
+
+
+> > +	}
+> >  	/* parse_args() stops at the next param of '--' and returns an address */
+> >  	if (err)
+> >  		initargs_offs = err - tmp_cmdline;
+> >  
+> > -	if (!initrd_data && !embeded_data) {
+> > -		/* If user intended to use bootconfig, show an error level message */
+> > -		if (bootconfig_found)
+> > -			pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+> > -		else
+> > -			pr_info("No bootconfig data provided, so skipping bootconfig");
+> > -		return;
+> > +	if (!embeded_data) {
+> > +		prev_rtn = -ENOPROTOOPT;
+> 
+> Also, we can recheck xbc_get_embedded_bootconfig(&embeded_size) later instead of
+> using this error code.
+
+ok, I will try to refactor the error logging. Calling
+xbc_get_embedded_bootconfig is cheap.
+
+> > +		return prev_rtn;
+> >  	}
+> >  
+> >  	ret = xbc_init(embeded_data, embeded_size, &msg, &pos);
+> > -	if (ret < 0)
+> > -		goto err0;
+> > +	if (ret < 0) {
+> > +		boot_config_pr_err(msg, pos, "embedded");
+> > +		prev_rtn = ret;
+> > +		return prev_rtn;
+> > +	}
+> > +	prev_rtn = 1;
+> 
+> This function should be splitted into init_embedded_boot_config() and
+> apply_boot_config_early(). The latter one should not be called twice.
+>
+> > .....
+> > +
+> > +static void __init setup_boot_config(void)
+> > +{
+> > +	const char *msg, *initrd_data;
+> > +	int pos, ret;
+> > +	size_t initrd_size, s;
+> > +
+> > +	/* Cut out the bootconfig data even if we have no bootconfig option */
+> > +	initrd_data = get_boot_config_from_initrd(&initrd_size);
+> > +
+> > +	ret = setup_boot_config_early();
+> 
+> Because you should not apply early_params here, you need to call only
+> init_embedded_boot_config() here.
+
+setup_boot_config_early() must be called from 2 places, because there is
+no guarantee the architecture specific code calls parse_early_param() - it's
+not mandatory. If it's not called by architecture, it's called quite late
+by start_kernel(), later than setup_boot_config().
+I want to avoid different behavior on different architectures, so I always
+process early options in the embedded config only, although on some
+architectures even these from initrd could be used, but it could cause
+issues in the future if the architecture would need to switch.
+
+
+> > +	if (ret == -ENOMSG || (ret == -ENODATA && initrd_data)) {
+> 
+> Also, this can be
+> 	if (!bootconfig_enabled) {
+> 		if (initrd_data || xbc_get_embedded_bootconfig(&s))
+> 
+> > +		pr_info("Bootconfig data present, but handling is disabled\n");
+> > +		return;
+> 
+> 
+> > +	} else if (ret == -ENODATA) {
+> > +		/* Bootconfig disabled and bootconfig data are not present */
+> > +		return;
+> 
+> this can be removed.
+> 
+> > +	} else if (ret == -ENOPROTOOPT) {
+> 
+> This should be
+> 
+> 	} else {
+> 
+> > +		/* Embedded bootconfig not found */
+> > +		if (!initrd_data) {
+> > +			pr_err("'bootconfig' found on command line, but no bootconfig data found\n");
+> > +			return;
+> > +		}
+> > +		ret = xbc_init(NULL, 0, &msg, &pos);
+> > +		if (ret)
+> > +			goto err0;
+> 
+> > +	} else if (ret < 0) {
+> > +		/* Other error, should be logged already */
+> > +		return;
+> 
+> So this is checked at first.
+> 
+> > +	} else if (initrd_data && !IS_ENABLED(CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD)) {
+> 
+> And as I pointed, we can remove CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD so this case
+> should be removed.
+
+I have added BOOT_CONFIG_EMBED_APPEND_INITRD, because it's not backward
+compatible change and I didn't want to risk breaking current use cases.
+My change tries to get early options working without affecting how
+other options are handled, but I think appending the config is more
+reasonable behavior and if you do not see it as a problem to not be
+backward compatible here, I will delete the "replace" behavior.
+
+I will try to refactor the error handling.
+  Petr
