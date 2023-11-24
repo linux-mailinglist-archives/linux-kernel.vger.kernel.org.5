@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4CF7F77D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F087F77D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345824AbjKXP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
+        id S1345784AbjKXPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjKXP3y (ORCPT
+        with ESMTP id S231304AbjKXPab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:29:54 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DDD10FB
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:30:00 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r6Y7u-0004OG-JX; Fri, 24 Nov 2023 16:29:54 +0100
-Message-ID: <33b55166-00a3-4947-ad4f-387ddfa2c7a4@leemhuis.info>
-Date:   Fri, 24 Nov 2023 16:29:53 +0100
+        Fri, 24 Nov 2023 10:30:31 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3BF10FB;
+        Fri, 24 Nov 2023 07:30:38 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6ce2ea3a944so1269113a34.1;
+        Fri, 24 Nov 2023 07:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700839838; x=1701444638; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p615f7LAIDV1MfWlNjaOHn4LpR2INIwWiYXMET+eRR0=;
+        b=hXKfKyEizlFZH90FF9IkLunFP/+IZ3ExtXyh7N7B+FMT4/Z1u33RKupAa1z2Aszuf+
+         aLhHkHzospwwZdrEJf/oCovPTmTBloKJE2pAroPi9jwzk2auJHMypFOSyis1Xy+6tgYi
+         qmOXkZ32rjwNDCOqJ3Ex8FiH2tFMF5URhM+snyljDiXP1lXLhVue822wHOH8U/3qPH18
+         86qAGsA8hAt140Tumj2u+hzo7zSOCETY43D7esN+N+Bce+p2ZxFCbWPctWRRjiO+n4oK
+         LWcvby2SCUeULytxMxRneIW3PtpttPVXcnvSyaFA7harB1vJC2vfGz+ZpsKVVbbeCHrm
+         H2Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700839838; x=1701444638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p615f7LAIDV1MfWlNjaOHn4LpR2INIwWiYXMET+eRR0=;
+        b=pioZi2etcFPCZbVfrsDgPNl6XAPXFslt1BDFswoTsk+G728WfAJ+wwzKCR0uNDvzA/
+         /4YQOB8Cjan06rMGmAlzFkVC7ZdfBl1RDNgzy9nO/R4nO/uVLSpUt4St2wK4GfFSOPBZ
+         8JInZ+yoBgBOtbTXveBQ0VuRg6BAGJAiO1Yga2mQ1HPH0aT+i6olJwaVpb6vcnLwZIf7
+         lZo3eCJCJ8XOW4/TWgtckH3hy+TVbANypmL3hcUen6DyrzxflrFBDfAYULjD7VB9FbXZ
+         +Ig9uTGIxTymt4mdWL04HNNXwe+UMEEpOZp9JvNhVzMQeQXMxT/nEmJypAHx6KfbwF9c
+         b6zw==
+X-Gm-Message-State: AOJu0YzCIYINCrWNnf43oufaoGqTGTo3CEBYIWT1iUM4GJGuOVZ9GgoD
+        Vdg8AIrDtttG6jzEzUQIO7m5PY/M5NCDkpJXbvY=
+X-Google-Smtp-Source: AGHT+IFpl1LhfXbivJZHjzdRTqOJQ24OGD0LYHzdPZE88GRJFvGGbVZxiUVjs6DZh16KaOvIRQpWMJvuXmwQO/NLcOI=
+X-Received: by 2002:a05:6830:45:b0:6c4:cdce:5de8 with SMTP id
+ d5-20020a056830004500b006c4cdce5de8mr3506711otp.26.1700839837786; Fri, 24 Nov
+ 2023 07:30:37 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
-Content-Language: en-US, de-DE
-To:     Matthew Wilcox <willy@infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chun Ng <chunn@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Ankita Garg <ankitag@nvidia.com>
-References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
- <ZV7eHE2Fxb75oRpG@archie.me> <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
- <ZV_rJtxdn1dU9ip0@archie.me> <ZV/2nPBs5r1nIaW4@casper.infradead.org>
- <2023112402-posing-dress-4bf2@gregkh> <ZWC8BOtPW2bWBFqh@casper.infradead.org>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZWC8BOtPW2bWBFqh@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700839800;9b257022;
-X-HE-SMSGID: 1r6Y7u-0004OG-JX
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <20231025130737.2015468-1-gnstark@salutedevices.com> <8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com>
+In-Reply-To: <8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 24 Nov 2023 17:30:01 +0200
+Message-ID: <CAHp75VcF3Y1MwJPY7jk274b3UWe7KWGFTYCppjC5fu7Ppf5XDQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] devm_led_classdev_register() usage problem
+To:     George Stark <gnstark@salutedevices.com>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@sberdevices.ru, pavel@ucw.cz,
+        lee@kernel.org, vadimp@nvidia.com, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, mpe@ellerman.id.au
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,17 +71,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.23 16:06, Matthew Wilcox wrote:
->  Mostly I ignore him now, but when he's instructing a bot
-> to harass me, that crosses a line.
+On Sat, Nov 4, 2023 at 9:17=E2=80=AFAM George Stark <gnstark@salutedevices.=
+com> wrote:
+>
+> Hello Andy
+>
+> Could you please take a look at this patch series?
+>
+> I've just found your post on habr about devres API misusing and I think
+> this is just another case.
 
-I'm curious: How is regzbot able to harass you? It as of now and likely
-for at least another year is not able to send mails on its own -- by
-design, as I wanted to ensure it doesn't harass anyone.
+Just had a look, sorry for the delay.
+By quickly reading it seems to be a wrong approach (or wrong end to
+start solving the issue from).
 
-Sure, I might manually send a mail if something looks stalled in
-regzbot. But before I do that I always do a sanity check to avoid
-annoying people. Do I sometimes make mistakes or miss something in that
-process? Sure. But that happens to all of us.
-
-Ciao, Thorsten
+--=20
+With Best Regards,
+Andy Shevchenko
