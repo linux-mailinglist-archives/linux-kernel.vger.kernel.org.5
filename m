@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC7F7064
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6186C7F7078
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345308AbjKXJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        id S1345199AbjKXJu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:50:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjKXJtF (ORCPT
+        with ESMTP id S1345375AbjKXJuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:49:05 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1994610F7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:49:11 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5484ef5e3d2so2265404a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:49:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700819349; x=1701424149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UUdTnaaBHnW2fjhe6sI21VXYoayTY5LZbV+9rSQdYMc=;
-        b=pGlP4PeBy4NTZf9BrqvXX3Q5jgWh+tHYEXYGZ+DqepOd58n91sajaZeJTUDbO4TVjp
-         4M8AM32wI3SZ4MZTnbVCATUFZZmXlb5ybdJ4XDRhVsOyQWFs8p5SJf/UDBFRhMKW620I
-         oO0ALAKfBamcC+LKHyHLjE2Hg1bd5QFVgdNXBkB8cP2FiXT7lluMaYxjZbhbXPLnUnLD
-         e1nDcHKmqfWEkk8vT1g+FtJJhNumnjy+lKrmbDZ48qLayBj60y7u3l/0VXYCDaMxWspj
-         oQGG61+f518Q7jX6z8bsbHPVcdWIgCnHKzkGyN5EYcee/zQPCJjX2B1u///cfBHs+dZC
-         zyMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700819349; x=1701424149;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UUdTnaaBHnW2fjhe6sI21VXYoayTY5LZbV+9rSQdYMc=;
-        b=MR0LarRuQd0kgQ4vCTPjGH+YiPmoG/7ESLKpeTDWIJC5JzIXDiLs8+Xc8WZ02xZo0U
-         HtnK/dtNVtl6Xx7UOYJk55eB7nk7meLwcbUJwjwr/tidqJILO9eXF5v11g/sDuvZ8gAm
-         PLYdNLDX3/0QYa1tMU7G9yLhjPkqoTPE+jtJaZqOjWR6n6ZTyWKS4nXD4T5Cqg+HBIR2
-         oaqrGvLvDe/HqPvRLd/z0IVi1tx2k22xxY+LeFw2ZEHryBprXR9Aq5LpF/c19Oxvty+9
-         qxHEdAjKBJk92uJdTuZR9+DaWBhvT59UjH70tc5ijNSTFrWC86BMo2sIXue8+VSZjT5i
-         tDIA==
-X-Gm-Message-State: AOJu0YyvU9rQDvnYf13QMFrfFnOjZSnyE/95JAGlE1pq0kmdF2wVfONZ
-        9EaTM9d6zEhvHSP5UbWXrTmcdQ==
-X-Google-Smtp-Source: AGHT+IFvkCKst+6yxzZMwo06iOJIDvsxsngV5hArSa+rFOZbFNoN9V7sg2i35tPibbR6FhG4eZ7r/A==
-X-Received: by 2002:a17:906:9c12:b0:9df:e39d:e0ed with SMTP id ff18-20020a1709069c1200b009dfe39de0edmr1453162ejc.24.1700819349499;
-        Fri, 24 Nov 2023 01:49:09 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id h24-20020a170906591800b009fdc684a79esm1857025ejq.124.2023.11.24.01.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:49:08 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ARM: dts: st: minor whitespace cleanup around '='
-Date:   Fri, 24 Nov 2023 10:49:05 +0100
-Message-Id: <20231124094905.58425-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 24 Nov 2023 04:50:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C484F171D;
+        Fri, 24 Nov 2023 01:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700819417; x=1732355417;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WzTWD8+CcHAV0Ch8HWHYlJ+az5wbVKJRj68BrurTJKw=;
+  b=JCHbIQypZ/2KENcCKxczb/SLynZmnmc2zqrCBAPOlttQcN4Y6hGsK62d
+   W2gMTuZV2quAFPIE6pbQsTXl2kJKKyIQnwjNSN2N3ku1xBz+kFzbTDSXH
+   KtilnUo+Sc2a0mqcG1and9cD+iP8RpmhWr9fRn/eh+WNpG1kGsOwa3ekY
+   FJj2a387ns0la3ZGpusM5bOu3RFy7xWLt2/LYRg3l7M/pT9NuUdalp7+w
+   BvzB9xSYFfU9qh6R7ihZNRU9QlQKqa94UDeiPpcFDwnVYBYD/cIwE3DN/
+   yVGT3zzOEHjOyuPH7G74xQr3DKYbIyELoOhSNaRljREe2c4Bbc4QoExTa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="392165234"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="392165234"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:50:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="8921133"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 24 Nov 2023 01:50:15 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r6Sp9-0002Lc-2z;
+        Fri, 24 Nov 2023 09:50:11 +0000
+Date:   Fri, 24 Nov 2023 17:49:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: Re: [PATCH net-next v12 12/13] realtek: Update the Makefile and
+ Kconfig in the realtek folder
+Message-ID: <202311241318.bdYlmH2b-lkp@intel.com>
+References: <20231123124313.1398570-13-justinlai0215@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123124313.1398570-13-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,332 +68,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTS code coding style expects exactly one space before and after '='
-sign.
+Hi Justin,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm/boot/dts/st/ste-dbx5x0.dtsi           | 18 +++++++++---------
- arch/arm/boot/dts/st/ste-hrefprev60.dtsi       |  2 +-
- arch/arm/boot/dts/st/ste-hrefv60plus.dtsi      |  2 +-
- arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi  |  8 ++++----
- arch/arm/boot/dts/st/ste-snowball.dts          |  2 +-
- .../dts/st/ste-ux500-samsung-codina-tmo.dts    |  2 +-
- .../boot/dts/st/ste-ux500-samsung-codina.dts   |  2 +-
- .../boot/dts/st/ste-ux500-samsung-gavini.dts   |  2 +-
- .../boot/dts/st/ste-ux500-samsung-janice.dts   |  2 +-
- .../arm/boot/dts/st/ste-ux500-samsung-kyle.dts |  2 +-
- arch/arm/boot/dts/st/stih407-pinctrl.dtsi      |  8 ++++----
- arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts  |  2 +-
- arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts  |  2 +-
- arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts  |  2 +-
- arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts  |  2 +-
- 15 files changed, 29 insertions(+), 29 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/arm/boot/dts/st/ste-dbx5x0.dtsi b/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
-index d5d88771ef97..0f87abeddc33 100644
---- a/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
-+++ b/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
-@@ -425,7 +425,7 @@ rtc@80154000 {
- 		gpio0: gpio@8012e000 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8012e000 0x80>;
-+			reg = <0x8012e000 0x80>;
- 			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -440,7 +440,7 @@ gpio0: gpio@8012e000 {
- 		gpio1: gpio@8012e080 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8012e080 0x80>;
-+			reg = <0x8012e080 0x80>;
- 			interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -455,7 +455,7 @@ gpio1: gpio@8012e080 {
- 		gpio2: gpio@8000e000 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8000e000 0x80>;
-+			reg = <0x8000e000 0x80>;
- 			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -470,7 +470,7 @@ gpio2: gpio@8000e000 {
- 		gpio3: gpio@8000e080 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8000e080 0x80>;
-+			reg = <0x8000e080 0x80>;
- 			interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -485,7 +485,7 @@ gpio3: gpio@8000e080 {
- 		gpio4: gpio@8000e100 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8000e100 0x80>;
-+			reg = <0x8000e100 0x80>;
- 			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -500,7 +500,7 @@ gpio4: gpio@8000e100 {
- 		gpio5: gpio@8000e180 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8000e180 0x80>;
-+			reg = <0x8000e180 0x80>;
- 			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -515,7 +515,7 @@ gpio5: gpio@8000e180 {
- 		gpio6: gpio@8011e000 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8011e000 0x80>;
-+			reg = <0x8011e000 0x80>;
- 			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -530,7 +530,7 @@ gpio6: gpio@8011e000 {
- 		gpio7: gpio@8011e080 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0x8011e080 0x80>;
-+			reg = <0x8011e080 0x80>;
- 			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -545,7 +545,7 @@ gpio7: gpio@8011e080 {
- 		gpio8: gpio@a03fe000 {
- 			compatible = "stericsson,db8500-gpio",
- 				"st,nomadik-gpio";
--			reg =  <0xa03fe000 0x80>;
-+			reg = <0xa03fe000 0x80>;
- 			interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-diff --git a/arch/arm/boot/dts/st/ste-hrefprev60.dtsi b/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
-index 9859ee91a15e..c87fd27b4434 100644
---- a/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
-+++ b/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
-@@ -62,7 +62,7 @@ spi@80002000 {
- 
- 		// External Micro SD slot
- 		mmc@80126000 {
--			cd-gpios  = <&tc3589x_gpio 3 GPIO_ACTIVE_HIGH>;
-+			cd-gpios = <&tc3589x_gpio 3 GPIO_ACTIVE_HIGH>;
- 		};
- 
- 		pinctrl {
-diff --git a/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi b/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
-index e66fa59c2de6..f87f4150ea68 100644
---- a/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
-+++ b/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
-@@ -191,7 +191,7 @@ gpio@8011e080 {
- 
- 		// External Micro SD slot
- 		mmc@80126000 {
--			cd-gpios  = <&gpio2 31 GPIO_ACTIVE_HIGH>; // 95
-+			cd-gpios = <&gpio2 31 GPIO_ACTIVE_HIGH>; // 95
- 		};
- 
- 		pinctrl {
-diff --git a/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi b/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
-index 6816eef39d45..4d37c5fb553c 100644
---- a/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
-+++ b/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
-@@ -52,7 +52,7 @@ mtu1: mtu@101e3000 {
- 
- 	gpio0: gpio@101e4000 {
- 		compatible = "st,nomadik-gpio";
--		reg =  <0x101e4000 0x80>;
-+		reg = <0x101e4000 0x80>;
- 		interrupt-parent = <&vica>;
- 		interrupts = <6>;
- 		interrupt-controller;
-@@ -66,7 +66,7 @@ gpio0: gpio@101e4000 {
- 
- 	gpio1: gpio@101e5000 {
- 		compatible = "st,nomadik-gpio";
--		reg =  <0x101e5000 0x80>;
-+		reg = <0x101e5000 0x80>;
- 		interrupt-parent = <&vica>;
- 		interrupts = <7>;
- 		interrupt-controller;
-@@ -80,7 +80,7 @@ gpio1: gpio@101e5000 {
- 
- 	gpio2: gpio@101e6000 {
- 		compatible = "st,nomadik-gpio";
--		reg =  <0x101e6000 0x80>;
-+		reg = <0x101e6000 0x80>;
- 		interrupt-parent = <&vica>;
- 		interrupts = <8>;
- 		interrupt-controller;
-@@ -94,7 +94,7 @@ gpio2: gpio@101e6000 {
- 
- 	gpio3: gpio@101e7000 {
- 		compatible = "st,nomadik-gpio";
--		reg =  <0x101e7000 0x80>;
-+		reg = <0x101e7000 0x80>;
- 		ngpio = <28>;
- 		interrupt-parent = <&vica>;
- 		interrupts = <9>;
-diff --git a/arch/arm/boot/dts/st/ste-snowball.dts b/arch/arm/boot/dts/st/ste-snowball.dts
-index 27c2ec51e732..1322abfc7acf 100644
---- a/arch/arm/boot/dts/st/ste-snowball.dts
-+++ b/arch/arm/boot/dts/st/ste-snowball.dts
-@@ -266,7 +266,7 @@ mmc@80126000 {
- 			pinctrl-1 = <&mc0_a_1_sleep>;
- 
- 			/* GPIO218 MMC_CD */
--			cd-gpios  = <&gpio6 26 GPIO_ACTIVE_LOW>;
-+			cd-gpios = <&gpio6 26 GPIO_ACTIVE_LOW>;
- 
- 			status = "okay";
- 		};
-diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
-index 463942ae755e..c623cc35c5ea 100644
---- a/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
-+++ b/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
-@@ -310,7 +310,7 @@ mmc@80126000 {
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&mc0_a_2_default>;
- 			pinctrl-1 = <&mc0_a_2_sleep>;
--			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
-+			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
- 			status = "okay";
- 		};
- 
-diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
-index c1ae0e23fe45..2355ca6e9ad6 100644
---- a/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
-+++ b/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
-@@ -402,7 +402,7 @@ mmc@80126000 {
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&mc0_a_2_default>;
- 			pinctrl-1 = <&mc0_a_2_sleep>;
--			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
-+			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
- 			status = "okay";
- 		};
- 
-diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
-index b21e40da3dfd..ad9a20ccaaeb 100644
---- a/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
-+++ b/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
-@@ -362,7 +362,7 @@ mmc@80126000 {
- 			pinctrl-0 = <&mc0_a_2_default>;
- 			pinctrl-1 = <&mc0_a_2_sleep>;
- 			/* "flash detect" actually card detect */
--			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>;
-+			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>;
- 			status = "okay";
- 		};
- 
-diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
-index 6e586e875565..229f7c32103c 100644
---- a/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
-+++ b/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
-@@ -412,7 +412,7 @@ mmc@80126000 {
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&mc0_a_2_default>;
- 			pinctrl-1 = <&mc0_a_2_sleep>;
--			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
-+			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
- 			status = "okay";
- 		};
- 
-diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
-index ba4421080b2a..cdb147dcc1db 100644
---- a/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
-+++ b/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
-@@ -238,7 +238,7 @@ mmc@80126000 {
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&mc0_a_1_default>;
- 			pinctrl-1 = <&mc0_a_1_sleep>;
--			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
-+			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
- 			status = "okay";
- 		};
- 
-diff --git a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
-index 7815669fe813..dcb821f567fa 100644
---- a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
-@@ -462,14 +462,14 @@ pio19: pio@9209000 {
- 			serial0 {
- 				pinctrl_serial0: serial0-0 {
- 					st,pins {
--						tx =  <&pio17 0 ALT1 OUT>;
--						rx =  <&pio17 1 ALT1 IN>;
-+						tx = <&pio17 0 ALT1 OUT>;
-+						rx = <&pio17 1 ALT1 IN>;
- 					};
- 				};
- 				pinctrl_serial0_hw_flowctrl: serial0-0_hw_flowctrl {
- 					st,pins {
--						tx =  <&pio17 0 ALT1 OUT>;
--						rx =  <&pio17 1 ALT1 IN>;
-+						tx = <&pio17 0 ALT1 OUT>;
-+						rx = <&pio17 1 ALT1 IN>;
- 						cts = <&pio17 2 ALT1 IN>;
- 						rts = <&pio17 3 ALT1 OUT>;
- 					};
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-index afcd6285890c..69d693ae26dd 100644
---- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-@@ -59,7 +59,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-index 39358d902000..89bfb4143ba7 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-@@ -65,7 +65,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-index 07ea765a4553..ca7a3a0f16af 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-@@ -64,7 +64,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-index 813086ec2489..f6510b93f912 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-@@ -70,7 +70,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
+[auto build test WARNING on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/rtase-Add-pci-table-supported-in-this-module/20231123-204759
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231123124313.1398570-13-justinlai0215%40realtek.com
+patch subject: [PATCH net-next v12 12/13] realtek: Update the Makefile and Kconfig in the realtek folder
+config: csky-randconfig-r081-20231124 (https://download.01.org/0day-ci/archive/20231124/202311241318.bdYlmH2b-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241318.bdYlmH2b-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311241318.bdYlmH2b-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:2318:12: warning: 'rtase_resume' defined but not used [-Wunused-function]
+    2318 | static int rtase_resume(struct device *device)
+         |            ^~~~~~~~~~~~
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:2305:12: warning: 'rtase_suspend' defined but not used [-Wunused-function]
+    2305 | static int rtase_suspend(struct device *device)
+         |            ^~~~~~~~~~~~~
+
+
+vim +/rtase_resume +2318 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
+8f9d7c2677f7dc Justin Lai 2023-11-23  2304  
+da2f11aefe82ee Justin Lai 2023-11-23 @2305  static int rtase_suspend(struct device *device)
+da2f11aefe82ee Justin Lai 2023-11-23  2306  {
+da2f11aefe82ee Justin Lai 2023-11-23  2307  	struct net_device *dev = dev_get_drvdata(device);
+da2f11aefe82ee Justin Lai 2023-11-23  2308  
+da2f11aefe82ee Justin Lai 2023-11-23  2309  	if (netif_running(dev)) {
+da2f11aefe82ee Justin Lai 2023-11-23  2310  		netif_stop_queue(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2311  		netif_device_detach(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2312  		rtase_hw_reset(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2313  	}
+da2f11aefe82ee Justin Lai 2023-11-23  2314  
+da2f11aefe82ee Justin Lai 2023-11-23  2315  	return 0;
+da2f11aefe82ee Justin Lai 2023-11-23  2316  }
+da2f11aefe82ee Justin Lai 2023-11-23  2317  
+da2f11aefe82ee Justin Lai 2023-11-23 @2318  static int rtase_resume(struct device *device)
+da2f11aefe82ee Justin Lai 2023-11-23  2319  {
+da2f11aefe82ee Justin Lai 2023-11-23  2320  	struct net_device *dev = dev_get_drvdata(device);
+da2f11aefe82ee Justin Lai 2023-11-23  2321  	struct rtase_private *tp = netdev_priv(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2322  	int ret;
+da2f11aefe82ee Justin Lai 2023-11-23  2323  
+da2f11aefe82ee Justin Lai 2023-11-23  2324  	/* restore last modified mac address */
+da2f11aefe82ee Justin Lai 2023-11-23  2325  	rtase_rar_set(tp, dev->dev_addr);
+da2f11aefe82ee Justin Lai 2023-11-23  2326  
+da2f11aefe82ee Justin Lai 2023-11-23  2327  	if (!netif_running(dev))
+da2f11aefe82ee Justin Lai 2023-11-23  2328  		goto out;
+da2f11aefe82ee Justin Lai 2023-11-23  2329  
+da2f11aefe82ee Justin Lai 2023-11-23  2330  	rtase_wait_for_quiescence(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2331  
+da2f11aefe82ee Justin Lai 2023-11-23  2332  	rtase_tx_clear(tp);
+da2f11aefe82ee Justin Lai 2023-11-23  2333  	rtase_rx_clear(tp);
+da2f11aefe82ee Justin Lai 2023-11-23  2334  
+da2f11aefe82ee Justin Lai 2023-11-23  2335  	ret = rtase_init_ring(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2336  	if (ret) {
+da2f11aefe82ee Justin Lai 2023-11-23  2337  		netdev_err(dev, "unable to init ring\n");
+da2f11aefe82ee Justin Lai 2023-11-23  2338  		rtase_free_desc(tp);
+da2f11aefe82ee Justin Lai 2023-11-23  2339  		return -ENOMEM;
+da2f11aefe82ee Justin Lai 2023-11-23  2340  	}
+da2f11aefe82ee Justin Lai 2023-11-23  2341  
+da2f11aefe82ee Justin Lai 2023-11-23  2342  	rtase_hw_config(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2343  	/* always link, so start to transmit & receive */
+da2f11aefe82ee Justin Lai 2023-11-23  2344  	rtase_hw_start(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2345  
+da2f11aefe82ee Justin Lai 2023-11-23  2346  	netif_wake_queue(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2347  	netif_device_attach(dev);
+da2f11aefe82ee Justin Lai 2023-11-23  2348  out:
+da2f11aefe82ee Justin Lai 2023-11-23  2349  
+da2f11aefe82ee Justin Lai 2023-11-23  2350  	return 0;
+da2f11aefe82ee Justin Lai 2023-11-23  2351  }
+da2f11aefe82ee Justin Lai 2023-11-23  2352  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
