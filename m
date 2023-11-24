@@ -2,181 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11587F788A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715507F788F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjKXQFK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 11:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+        id S230491AbjKXQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:07:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjKXQFH (ORCPT
+        with ESMTP id S229659AbjKXQHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:05:07 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A11B5;
-        Fri, 24 Nov 2023 08:05:11 -0800 (PST)
-Received: from lhrpeml500003.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ScKZ640DQz684Xd;
-        Sat, 25 Nov 2023 00:05:02 +0800 (CST)
-Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
- lhrpeml500003.china.huawei.com (7.191.162.67) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 24 Nov 2023 16:05:08 +0000
-Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
- lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.035;
- Fri, 24 Nov 2023 16:05:08 +0000
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     kernel test robot <lkp@intel.com>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave@stgolabs.net" <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "alison.schofield@intel.com" <alison.schofield@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>
-CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>,
-        "leo.duran@amd.com" <leo.duran@amd.com>,
-        "Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "jiaqiyan@google.com" <jiaqiyan@google.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "Jon.Grimm@amd.com" <Jon.Grimm@amd.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "jthoughton@google.com" <jthoughton@google.com>,
-        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "duenwen@google.com" <duenwen@google.com>,
-        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>
-Subject: RE: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox
- command
-Thread-Topic: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox
- command
-Thread-Index: AQHaHjSmCJSxSfmspkqILDwEeyXpzrCJdYKAgAAt7ZA=
-Date:   Fri, 24 Nov 2023 16:05:08 +0000
-Message-ID: <6629bb080d9d4edea68866860d73fad7@huawei.com>
-References: <20231123174355.1176-2-shiju.jose@huawei.com>
- <202311241526.R8n6AibH-lkp@intel.com>
-In-Reply-To: <202311241526.R8n6AibH-lkp@intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.48.147.215]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 24 Nov 2023 11:07:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E3BD53
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:07:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700842061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=8WiGZAsybGzCzu36x4lL8eXrNHVFYUcQQ91mXJAV7RI=;
+        b=Z1OKq279ToEcMOOJ5W51sFHYSXXhUqSTjhebNxlaFR6ba2de2/cijkAWzf2o/mIvvOmTHM
+        54C83PFDNmU6JDh45YEsQDHYgc+C8JIyF8uPsGZOLVY5DAouCFV2TfhUGT7+JIpLIEBUsu
+        C5NSuqGp27K07RYqCcNWs6vI7/8iMcU=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167-9hIunuhlOz2Vn9-_nVOAww-1; Fri, 24 Nov 2023 11:07:39 -0500
+X-MC-Unique: 9hIunuhlOz2Vn9-_nVOAww-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66da680f422so24286586d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:07:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700842059; x=1701446859;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8WiGZAsybGzCzu36x4lL8eXrNHVFYUcQQ91mXJAV7RI=;
+        b=O7vUy+xkJPrx//4MsQtrMpYl/muXrjD8wJm1d+yAsjjyNK+dhndNCFKyNCREsybhmv
+         iafMFU9EqM3EoL9a3W7rMMbj4yRtthcHy9KhLe/8ERfOM/oIM8mLfeqEuMuPonvV375c
+         VRYF8TIpkiuItEEa70ti9LEwwrMKF9S0JcdTLBtyAQgKPf7m2Ta2NhtD5QlBvcp5sKX0
+         cR5pTZ8L52rShhuIU6lzwdWyAcFP6cwSH3DkSh4TNd20y5KDWfFMgzc2HMycdBQlgyuF
+         JSm9scr3CT1XQnjFRAbEnQiTExmg7Sm2zY/TKE2aagwFZrlnNU0AB/bxxQAxqQXHy6R7
+         COnw==
+X-Gm-Message-State: AOJu0YxFwTjaO5KPWif3cr5IPAHfwXi2d/D11XbnjzrTJJx0lnDgvwz8
+        z7jkTr9pbfBRFyT0cEtyEVBDsPBlZUXTc6O+/yLPAEGN/jEZ4j527PoCCXbBoATSwflE7nYNQ/B
+        cxxf2Qi9lPpIF6S9Zz8KRQ7V/
+X-Received: by 2002:a05:6214:419b:b0:66d:1100:7b81 with SMTP id ld27-20020a056214419b00b0066d11007b81mr4630209qvb.18.1700842059463;
+        Fri, 24 Nov 2023 08:07:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGoEGtM0E8HfCBi2iR3GLxfUKzyZLwKwRYwCmX/US+5L/fv1k0GQdeDYkir4tHFRBVRom7dFg==
+X-Received: by 2002:a05:6214:419b:b0:66d:1100:7b81 with SMTP id ld27-20020a056214419b00b0066d11007b81mr4630191qvb.18.1700842059230;
+        Fri, 24 Nov 2023 08:07:39 -0800 (PST)
+Received: from [10.32.181.74] (nat-pool-mxp-t.redhat.com. [149.6.153.186])
+        by smtp.googlemail.com with ESMTPSA id p15-20020ad451cf000000b0067a1cf7737bsm333015qvq.130.2023.11.24.08.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 08:07:38 -0800 (PST)
+Message-ID: <0c626505-a358-4d13-99e3-144356d136b3@redhat.com>
+Date:   Fri, 24 Nov 2023 17:07:36 +0100
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] KVM: x86: refactor req_immediate_exit logic
+Content-Language: en-US
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+References: <20230928103640.78453-1-mlevitsk@redhat.com>
+ <20230928103640.78453-2-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20230928103640.78453-2-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/28/23 12:36, Maxim Levitsky wrote:
+> @@ -4176,6 +4176,9 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   	clgi();
+>   	kvm_load_guest_xsave_state(vcpu);
+>   
+> +	if (vcpu->arch.req_immediate_exit)
+> +		smp_send_reschedule(vcpu->cpu);
+> +
 
-These warnings are fixed. Will add in the next version.
+This code is in a non-standard situation where IF=1 but interrupts are
+effectively disabled.  Better something like:
 
-Thanks,
-Shiju
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index beea99c8e8e0..3b945de2d880 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4148,8 +4148,11 @@ static __no_kcsan fastpath_t svm_vcpu_run(
+  		 * is enough to force an immediate vmexit.
+  		 */
+  		disable_nmi_singlestep(svm);
++		vcpu->arch.req_immediate_exit = true;
++	}
++
++	if (vcpu->arch.req_immediate_exit)
+  		smp_send_reschedule(vcpu->cpu);
+-	}
 
->-----Original Message-----
->From: kernel test robot <lkp@intel.com>
->Sent: 24 November 2023 13:20
->To: Shiju Jose <shiju.jose@huawei.com>; linux-cxl@vger.kernel.org; linux-
->mm@kvack.org; dave@stgolabs.net; Jonathan Cameron
-><jonathan.cameron@huawei.com>; dave.jiang@intel.com;
->alison.schofield@intel.com; vishal.l.verma@intel.com; ira.weiny@intel.com;
->dan.j.williams@intel.com
->Cc: oe-kbuild-all@lists.linux.dev; linux-acpi@vger.kernel.org; linux-
->kernel@vger.kernel.org; david@redhat.com; Vilas.Sridharan@amd.com;
->leo.duran@amd.com; Yazen.Ghannam@amd.com; rientjes@google.com;
->jiaqiyan@google.com; tony.luck@intel.com; Jon.Grimm@amd.com;
->dave.hansen@linux.intel.com; rafael@kernel.org; lenb@kernel.org;
->naoya.horiguchi@nec.com; james.morse@arm.com; jthoughton@google.com;
->somasundaram.a@hpe.com; erdemaktas@google.com; pgonda@google.com;
->duenwen@google.com; mike.malvestuto@intel.com
->Subject: Re: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES
->mailbox command
->
->Hi,
->
->kernel test robot noticed the following build warnings:
->
->[auto build test WARNING on krzk-mem-ctrl/for-next] [also build test WARNING
->on linus/master v6.7-rc2 next-20231124] [If your patch is applied to the wrong
->git tree, kindly drop us a note.
->And when submitting patch, we suggest to use '--base' as documented in
->https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
->url:    https://github.com/intel-lab-lkp/linux/commits/shiju-jose-huawei-com/cxl-
->mbox-Add-GET_SUPPORTED_FEATURES-mailbox-command/20231124-014622
->base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
->for-next
->patch link:    https://lore.kernel.org/r/20231123174355.1176-2-
->shiju.jose%40huawei.com
->patch subject: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES
->mailbox command
->config: i386-randconfig-061-20231124 (https://download.01.org/0day-
->ci/archive/20231124/202311241526.R8n6AibH-lkp@intel.com/config)
->compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git
->ae42196bc493ffe877a7e3dff8be32035dea4d07)
->reproduce (this is a W=1 build): (https://download.01.org/0day-
->ci/archive/20231124/202311241526.R8n6AibH-lkp@intel.com/reproduce)
->
->If you fix the issue in a separate patch/commit (i.e. not just a new version of the
->same patch/commit), kindly add following tags
->| Reported-by: kernel test robot <lkp@intel.com>
->| Closes:
->| https://lore.kernel.org/oe-kbuild-all/202311241526.R8n6AibH-lkp@intel.
->| com/
->
->sparse warnings: (new ones prefixed by >>)
->>> drivers/cxl/core/mbox.c:1317:30: sparse: sparse: cast from restricted
->>> __le32
->
->vim +1317 drivers/cxl/core/mbox.c
->
->  1305
->  1306	int cxl_get_supported_features(struct cxl_memdev_state *mds,
->  1307							struct
->cxl_mbox_get_supp_feats_in *pi,
->  1308							void *feats_out)
->  1309	{
->  1310		struct cxl_mbox_cmd mbox_cmd;
->  1311		int rc;
->  1312
->  1313		mbox_cmd = (struct cxl_mbox_cmd) {
->  1314			.opcode = CXL_MBOX_OP_GET_SUPPORTED_FEATURES,
->  1315			.size_in = sizeof(*pi),
->  1316			.payload_in = pi,
->> 1317			.size_out = (size_t)pi->count,
->  1318			.payload_out = feats_out,
->  1319			.min_out = sizeof(struct cxl_mbox_get_supp_feats_out),
->  1320		};
->  1321		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
->  1322		if (rc < 0)
->  1323			return rc;
->  1324
->  1325		return 0;
->  1326	}
->  1327	EXPORT_SYMBOL_NS_GPL(cxl_get_supported_features, CXL);
->  1328
->
->--
->0-DAY CI Kernel Test Service
->https://github.com/intel/lkp-tests/wiki
+  	pre_svm_run(vcpu);
+
+
+Paolo
+
