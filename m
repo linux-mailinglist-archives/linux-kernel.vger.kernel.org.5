@@ -2,43 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02BD7F79A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1D97F79A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345427AbjKXQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        id S231285AbjKXQoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjKXQol (ORCPT
+        with ESMTP id S229715AbjKXQog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:44:41 -0500
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D3173D;
-        Fri, 24 Nov 2023 08:44:45 -0800 (PST)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 7E15A5201D5;
-        Fri, 24 Nov 2023 17:44:44 +0100 (CET)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Fri, 24 Nov
- 2023 17:44:44 +0100
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     <gregkh@linuxfoundation.org>, <quic_ugoswami@quicinc.com>,
-        <brauner@kernel.org>
-CC:     <jlayton@kernel.org>, <john@keeping.me.uk>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>
-Subject: [PATCH] usb: gadget: f_fs: Add the missing get_alt callback
-Date:   Fri, 24 Nov 2023 17:44:35 +0100
-Message-ID: <20231124164435.74727-1-hgajjar@de.adit-jv.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Fri, 24 Nov 2023 11:44:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CD010FB
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:44:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00D05C433C8;
+        Fri, 24 Nov 2023 16:44:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1700844282;
+        bh=Jv88ICKZ110o1np2p9LtMmd50STofDmEsKMRuaqgi7I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qWC7AvJVPIlEnviCx7I6e7oQ953NxvnapmOeKmMXPK+XNf7weDESmBFKIX9Fm6kz9
+         zQtGkUM7zWgxA2VZl4OoLv7T4usgzbJKsX+t+H85rmkSQi61+FBx+orVD4b9CR6d1i
+         AL7IgDp6N89DKQ10Q+OvjgoKPhNwwSCrvTjKpHIU=
+Date:   Fri, 24 Nov 2023 08:44:41 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Ignat Korchagin <ignat@cloudflare.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        eric_devolder@yahoo.com, kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH 2/3] drivers/base/cpu: crash data showing should depends
+ on KEXEC_CORE
+Message-Id: <20231124084441.b913fc404fec53d5d0946c55@linux-foundation.org>
+In-Reply-To: <ZV80X+lf2iOOTboW@MiWiFi-R3L-srv>
+References: <20231123073652.507034-1-bhe@redhat.com>
+        <20231123073652.507034-3-bhe@redhat.com>
+        <CALrw=nFzy2zq-khLUCXsuf8J5_mka0YPyTosO190OUst2QSjVQ@mail.gmail.com>
+        <ZV80X+lf2iOOTboW@MiWiFi-R3L-srv>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,76 +53,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some USB OTG hubs have multiple alternate configurations to offer,
-such as one for Carplay and another for Carlife.
+On Thu, 23 Nov 2023 19:15:43 +0800 Baoquan He <bhe@redhat.com> wrote:
 
-This patch implements and sets the get_alt callback to retrieve the
-currently used alternate setting. The new function allows dynamic
-retrieval of the current alternate setting for a specific interface. The
-current alternate setting values are stored in the 'cur_alt' array
-within the 'ffs_function' structure.
+> > > CONFIG_KEXEC is used to enable kexec_load interface, the
+> > > crash_notes/crash_notes_size/crash_hotplug showing depends on
+> > > CONFIG_KEXEC is incorrect. It should depend on KEXEC_CORE instead.
+> > >
+> > > Fix it now.
+> > 
+> > Can we add Fixes/CC stable, so it gets eventually backported into 6.6?
+> 
+> Makes sense. Will add it in v2 since I need respin to add the missing
+> stuff in patch 1. Thanks.
 
-Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
----
- drivers/usb/gadget/function/f_fs.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Please avoid mixing cc:stable patches and this-merge-window fixes in
+the same series as next-merge-window material.  Because I'll just have
+to separate them out anyway, causing what-I-merged to unnecessarily
+differ from what-you-sent.
 
-diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-index efe3e3b85769..37c47c11f57a 100644
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -75,6 +75,7 @@ struct ffs_function {
- 	short				*interfaces_nums;
- 
- 	struct usb_function		function;
-+	int				cur_alt[MAX_CONFIG_INTERFACES];
- };
- 
- 
-@@ -98,6 +99,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
- static int ffs_func_bind(struct usb_configuration *,
- 			 struct usb_function *);
- static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
-+static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
- static void ffs_func_disable(struct usb_function *);
- static int ffs_func_setup(struct usb_function *,
- 			  const struct usb_ctrlrequest *);
-@@ -3232,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
- 	ffs_data_reset(ffs);
- }
- 
-+static int ffs_func_get_alt(struct usb_function *f,
-+			    unsigned int interface)
-+{
-+	struct ffs_function *func = ffs_func_from_usb(f);
-+	int intf = ffs_func_revmap_intf(func, interface);
-+
-+	return (intf < 0) ? intf : func->cur_alt[interface];
-+}
-+
- static int ffs_func_set_alt(struct usb_function *f,
- 			    unsigned interface, unsigned alt)
- {
-@@ -3266,8 +3277,10 @@ static int ffs_func_set_alt(struct usb_function *f,
- 
- 	ffs->func = func;
- 	ret = ffs_func_eps_enable(func);
--	if (ret >= 0)
-+	if (ret >= 0) {
- 		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
-+		func->cur_alt[interface] = alt;
-+	}
- 	return ret;
- }
- 
-@@ -3574,6 +3587,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
- 	func->function.bind    = ffs_func_bind;
- 	func->function.unbind  = ffs_func_unbind;
- 	func->function.set_alt = ffs_func_set_alt;
-+	func->function.get_alt = ffs_func_get_alt;
- 	func->function.disable = ffs_func_disable;
- 	func->function.setup   = ffs_func_setup;
- 	func->function.req_match = ffs_func_req_match;
--- 
-2.17.1
 
