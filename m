@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3BA7F6E0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0220D7F6E0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344777AbjKXIZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
+        id S1344815AbjKXI0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKXIZr (ORCPT
+        with ESMTP id S231590AbjKXI0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:25:47 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DD4D5E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:53 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a02d91ab195so225437666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700814352; x=1701419152; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=06j1CkRWYwkZptG6xkvoWjM8LxtoGJ+O7LpPle04QGo=;
-        b=xewe7av6o7QUWQ5NQL7X0GYo6Tf9j8ovTDu/0XQE5yQGZIzuV9jN6jVkFtLz6r4UtZ
-         d4rr258vK6bkFCAxRiezRJwXqpJ0ZT6a9NCxnBdTl5/PmkjuXATTrDQLVXmror9mvo3h
-         YfT0dhx7ibohhFMZxza0OuROrTPXwDS86BjLQegizF0ikQFN2HpsKAmqJsCWLoPZCsrG
-         0vgdjqEZ1BcCW/s3Q48k5WD4cocfakvTiJFF2MRsWB0Iy2bpZhp/meq8eeGAQm95oqOC
-         sl5Iy8kETaH3S5xyTKzy/pA2z2ynfdOQTUeAHUd4jUVz8juscdvEKDqpeOihI4RrX0yD
-         fnVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700814352; x=1701419152;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=06j1CkRWYwkZptG6xkvoWjM8LxtoGJ+O7LpPle04QGo=;
-        b=ZsRjvzWMTGQSKFUmPDYZgTKysMhyG4bKiwCVYAkUZhxNGY06kGnDB7O7vTirb6YkkS
-         sUlfo5op8PIfm+v4YzIPHWec6NAgLULI49P0qfi7oiMz6/4IGBC/n5Lhj+Dwx3rMivSI
-         u0uLmUMaZ7LJHzkOlXXQfw+3UXy5gJgoyRI7Nae/rwnzBLpwq/fiqI0mSIQYVsNlqikZ
-         ZTpuEfI0pWooc3fNgl2GdM7064KTWr0z4rZRwbrfZzm4pnY1ebqmxDbXIUYu8a/oF+bM
-         XDhxQxKJVsI1neFUeRai0fC47mTNmpgm4IxwKsRWAyy3t2AWpRWMJZL1cQtV6abjEBeO
-         +LKg==
-X-Gm-Message-State: AOJu0YzGVfmnCeFsLCKp+Mb457DsWBfo8nwt3H1bhy8Bb2JjJg4fGIy4
-        dwY1nPBYNl/EQlfUa+ZIbo+yzQ==
-X-Google-Smtp-Source: AGHT+IE+1xFmOaGnWITGqhSW0oqgIUs1SmVbItPcvnsdp8dg5vCLhy+qv9eBsDdn3MaA1Qd2NzywHQ==
-X-Received: by 2002:a17:906:2c05:b0:a04:7e4d:6c19 with SMTP id e5-20020a1709062c0500b00a047e4d6c19mr1259271ejh.68.1700814352143;
-        Fri, 24 Nov 2023 00:25:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.25.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:25:51 -0800 (PST)
-Message-ID: <3d9677fb-c2a4-40ea-8820-7be18041f869@linaro.org>
-Date:   Fri, 24 Nov 2023 09:25:50 +0100
+        Fri, 24 Nov 2023 03:26:17 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F872D4E;
+        Fri, 24 Nov 2023 00:26:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uhBeOG3BwxHguj8NUhTFptKTzBfCf52z03Q5KQI6/Yk=; b=QSjuy2JaUJAi9EVLEXkdfE5exB
+        qFOicfr8A1FnSrLlNaZbymorl5K9KNPaNcVl4vhZ83q43ie8/lm0udu9eeTqp1TKczxzpllNsEMWh
+        Xp3ZYqsIUpBAeM+jF4tIBG6E1WeSNqrg0jxj7yvxM7H9AAdzdFTsdKnE09er1q+z9kXU7QfkBtj5f
+        i7pIXeSM7GySx14bsx34LD/JowUZljXeePfEjMYHw07YQYTUqQuWTo8tbxgNknLe1Z6dkFxiLcefx
+        LO/jO6p08zjasUAApsTwP+8BV6IxF1B9BAdEwg9+HYp127ZMpyn/naiUWsAnY8PgtFVVd+vCKaCMr
+        ImZrE16A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r6RW1-002SmS-27;
+        Fri, 24 Nov 2023 08:26:21 +0000
+Date:   Fri, 24 Nov 2023 08:26:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/20] [software coproarchaeology] dentry.h: kill a
+ mysterious comment
+Message-ID: <20231124082621.GW38156@ZenIV>
+References: <20231124060553.GA575483@ZenIV>
+ <20231124060644.576611-1-viro@zeniv.linux.org.uk>
+ <20231124060644.576611-9-viro@zeniv.linux.org.uk>
+ <CAOQ4uxgRiQCG_Q5TP+05_N4V=iFTemzGTd62ePgAgotK52EAAQ@mail.gmail.com>
+ <20231124081141.GV38156@ZenIV>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 17/21] dt-bindings: mfd: syscon: Document EyeQ5 OLB
-Content-Language: en-US
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20231123152639.561231-1-gregory.clement@bootlin.com>
- <20231123152639.561231-18-gregory.clement@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231123152639.561231-18-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124081141.GV38156@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 16:26, Gregory CLEMENT wrote:
-> Document Mobileye EyeQ5 compatibles for OLB registers that are
-> miscellaneous SoC related registers.
+On Fri, Nov 24, 2023 at 08:11:41AM +0000, Al Viro wrote:
+> On Fri, Nov 24, 2023 at 09:37:16AM +0200, Amir Goldstein wrote:
 > 
-> It is used to expose SoC specific configuration such as for example
-> reset, clock or pinctrl.
+> > Since you like pre-git archeology...
+> > 
+> > Mind digging up what this comment in fs.h is about:
+> > 
+> > /* needed for stackable file system support */
+> > extern loff_t default_llseek(struct file *file, loff_t offset, int whence);
 > 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> Umm...  I think it was about ecryptfs and its ilk, but it was a long
+> time ago...
+> 
+> <looks>
+> 
+> 2.3.99pre6, along with exporting it:
+> -/* for stackable file systems (lofs, wrapfs, etc.) */
+> -EXPORT_SYMBOL(add_to_page_cache);
+> +/* for stackable file systems (lofs, wrapfs, cryptfs, etc.) */
+> +EXPORT_SYMBOL(default_llseek);
+> +EXPORT_SYMBOL(dentry_open);
+> 
+> Back then ->llseek == NULL used to mean default_llseek; that had
+> been changed much later.  And that was before vfs_llseek() as well,
+> so any layered filesystem had to open-code it - which required
+> default_llseek().
+> 
+> The comment is certainly stale, though - stackable filesystems do *not*
+> need it (vfs_llseek() is there), but every file_operation that used
+> to have NULL ->llseek does.
+> 
+> > Or we can just remove it without digging up what the comment used
+> > to refer to ;)
+> 
+> Too late - it will have to be removed with that ;-)
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+BTW, there's this, covering more than just BK times:
 
-Best regards,
-Krzysztof
-
+git://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/
