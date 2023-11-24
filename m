@@ -2,159 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4F37F7398
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 13:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8107C7F73A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 13:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345123AbjKXMQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 07:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        id S1345162AbjKXMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 07:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbjKXMQP (ORCPT
+        with ESMTP id S230406AbjKXMUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 07:16:15 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2894510D7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 04:16:21 -0800 (PST)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4ScDTh4hNPzvR8w;
-        Fri, 24 Nov 2023 20:15:52 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 24 Nov 2023 20:16:18 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <tglx@linutronix.de>, <peterz@infradead.org>,
-        <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH] cpu/hotplug: Remove the obsolete CPU hotplug states
-Date:   Fri, 24 Nov 2023 20:16:15 +0800
-Message-ID: <20231124121615.1604-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        Fri, 24 Nov 2023 07:20:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C354D69
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 04:20:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 09DFBC433C9;
+        Fri, 24 Nov 2023 12:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700828430;
+        bh=sqn3Touu0jsrcT7nYxkOWCi4EFEBcq1dlGMiTuHM0MI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KjIMYwj6Nus/H4k8UViJDpEIZjcsB2t/MDuYKhdnAVeO9iDWACMJlI+uWN/0QhQVS
+         SucHQGuKLO/i6j5refduAZzzP44GQW4ZaSLRn4XSZlEu31fC8poH3+pwjypvZAHHGf
+         NaL/EapBv9pm3n/x3qN2Bn61fFtFXkFRVFvcl29ejquVuEx/FU0mrqq73aNmgMgTVE
+         Hznlz6KpDGzjYkcu6MRCZ7U2dxBAA9qNkbHEXfzTxetamW8QT4xfz6vT4qyKP+DQ5q
+         N55pNoIUS8HKF1vMvvNul4H30dqtRte6p/x4Xsw9+bk/ljzNVMBQdqTcw3Lca57rzl
+         dKxXf15WTynwQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6B6DC395FD;
+        Fri, 24 Nov 2023 12:20:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH] octeontx2-pf: TC flower offload support for ICMP
+ type and code
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170082842994.28500.8914162610982777738.git-patchwork-notify@kernel.org>
+Date:   Fri, 24 Nov 2023 12:20:29 +0000
+References: <20231122114142.11243-1-gakula@marvell.com>
+In-Reply-To: <20231122114142.11243-1-gakula@marvell.com>
+To:     Geethasowjanya Akula <gakula@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, sgoutham@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a bunch of obsolete constants in the cpuhp_state enum that are no
-longer used anywhere in the kernel. The oldest one has been unused for over
-six years.
+Hello:
 
-Drop all of them to reduce the size of the cpuhp_hp_states array.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-  obsolete hotpulg states		introduced in	unused since
-  ===================================	=============	============
-  CPUHP_X86_APB_DEAD			148b9e2abea6	1b79fc4f2bfd
-  CPUHP_MM_DEMOTION_DEAD		a6a0251c6fce	734c15700cdf
-  CPUHP_LUSTRE_CFS_DEAD			7b737965b331	be65f9ed267f
-  CPUHP_NET_FLOW_PREPARE		a4fc1bfc4206	09c7570480f7
-  CPUHP_AP_IRQ_RISCV_STARTING		6b7ce8927b5a	832f15f42646
-  CPUHP_AP_MICROCODE_LOADER		78f4e932f776	5af05b8d51a8
-  CPUHP_AP_PERF_X86_CQM_STARTING	f07048270423	c39a0e2c8850
-  CPUHP_AP_MIPS_OP_LOONGSON3_STARTING	65264e3bc3d4	e258958945c6
-  CPUHP_AP_MARCO_TIMER_STARTING		eb0a9d8c672d	446262b27285
-  CPUHP_AP_PERF_X86_CQM_ONLINE		f07048270423	c39a0e2c8850
-  CPUHP_AP_PERF_X86_IDXD_ONLINE		81dd4d4d6178	never used
-  CPUHP_AP_MM_DEMOTION_ONLINE		a6a0251c6fce	734c15700cdf
+On Wed, 22 Nov 2023 17:11:42 +0530 you wrote:
+> Adds tc offload support for matching on ICMP type and code.
+> 
+> Example usage:
+> To enable adding tc ingress rules
+>         tc qdisc add dev eth0 ingress
+> 
+> TC rule drop the ICMP echo reply:
+>         tc filter add dev eth0 protocol ip parent ffff: \
+>         flower ip_proto icmp type 8 code 0 skip_sw action drop
+> 
+> [...]
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- include/linux/cpuhotplug.h | 14 --------------
- 1 file changed, 14 deletions(-)
+Here is the summary with links:
+  - [net-next] octeontx2-pf: TC flower offload support for ICMP type and code
+    https://git.kernel.org/netdev/net-next/c/a8d4879d5f1f
 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index efc0c0b07efb..af6c21aab985 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -66,15 +66,12 @@ enum cpuhp_state {
- 	CPUHP_PERF_POWER,
- 	CPUHP_PERF_SUPERH,
- 	CPUHP_X86_HPET_DEAD,
--	CPUHP_X86_APB_DEAD,
- 	CPUHP_X86_MCE_DEAD,
- 	CPUHP_VIRT_NET_DEAD,
- 	CPUHP_IBMVNIC_DEAD,
- 	CPUHP_SLUB_DEAD,
- 	CPUHP_DEBUG_OBJ_DEAD,
- 	CPUHP_MM_WRITEBACK_DEAD,
--	/* Must be after CPUHP_MM_VMSTAT_DEAD */
--	CPUHP_MM_DEMOTION_DEAD,
- 	CPUHP_MM_VMSTAT_DEAD,
- 	CPUHP_SOFTIRQ_DEAD,
- 	CPUHP_NET_MVNETA_DEAD,
-@@ -96,7 +93,6 @@ enum cpuhp_state {
- 	CPUHP_NET_DEV_DEAD,
- 	CPUHP_PCI_XGENE_DEAD,
- 	CPUHP_IOMMU_IOVA_DEAD,
--	CPUHP_LUSTRE_CFS_DEAD,
- 	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
- 	CPUHP_PADATA_DEAD,
- 	CPUHP_AP_DTPM_CPU_DEAD,
-@@ -118,7 +114,6 @@ enum cpuhp_state {
- 	CPUHP_XEN_EVTCHN_PREPARE,
- 	CPUHP_ARM_SHMOBILE_SCU_PREPARE,
- 	CPUHP_SH_SH3X_PREPARE,
--	CPUHP_NET_FLOW_PREPARE,
- 	CPUHP_TOPOLOGY_PREPARE,
- 	CPUHP_NET_IUCV_PREPARE,
- 	CPUHP_ARM_BL_PREPARE,
-@@ -151,18 +146,14 @@ enum cpuhp_state {
- 	CPUHP_AP_IRQ_ARMADA_XP_STARTING,
- 	CPUHP_AP_IRQ_BCM2836_STARTING,
- 	CPUHP_AP_IRQ_MIPS_GIC_STARTING,
--	CPUHP_AP_IRQ_RISCV_STARTING,
- 	CPUHP_AP_IRQ_LOONGARCH_STARTING,
- 	CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
- 	CPUHP_AP_ARM_MVEBU_COHERENCY,
--	CPUHP_AP_MICROCODE_LOADER,
- 	CPUHP_AP_PERF_X86_AMD_UNCORE_STARTING,
- 	CPUHP_AP_PERF_X86_STARTING,
- 	CPUHP_AP_PERF_X86_AMD_IBS_STARTING,
--	CPUHP_AP_PERF_X86_CQM_STARTING,
- 	CPUHP_AP_PERF_X86_CSTATE_STARTING,
- 	CPUHP_AP_PERF_XTENSA_STARTING,
--	CPUHP_AP_MIPS_OP_LOONGSON3_STARTING,
- 	CPUHP_AP_ARM_VFP_STARTING,
- 	CPUHP_AP_ARM64_DEBUG_MONITORS_STARTING,
- 	CPUHP_AP_PERF_ARM_HW_BREAKPOINT_STARTING,
-@@ -179,7 +170,6 @@ enum cpuhp_state {
- 	CPUHP_AP_QCOM_TIMER_STARTING,
- 	CPUHP_AP_TEGRA_TIMER_STARTING,
- 	CPUHP_AP_ARMADA_TIMER_STARTING,
--	CPUHP_AP_MARCO_TIMER_STARTING,
- 	CPUHP_AP_MIPS_GIC_TIMER_STARTING,
- 	CPUHP_AP_ARC_TIMER_STARTING,
- 	CPUHP_AP_RISCV_TIMER_STARTING,
-@@ -217,9 +207,7 @@ enum cpuhp_state {
- 	CPUHP_AP_PERF_X86_AMD_UNCORE_ONLINE,
- 	CPUHP_AP_PERF_X86_AMD_POWER_ONLINE,
- 	CPUHP_AP_PERF_X86_RAPL_ONLINE,
--	CPUHP_AP_PERF_X86_CQM_ONLINE,
- 	CPUHP_AP_PERF_X86_CSTATE_ONLINE,
--	CPUHP_AP_PERF_X86_IDXD_ONLINE,
- 	CPUHP_AP_PERF_S390_CF_ONLINE,
- 	CPUHP_AP_PERF_S390_SF_ONLINE,
- 	CPUHP_AP_PERF_ARM_CCI_ONLINE,
-@@ -252,8 +240,6 @@ enum cpuhp_state {
- 	CPUHP_AP_BASE_CACHEINFO_ONLINE,
- 	CPUHP_AP_ONLINE_DYN,
- 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
--	/* Must be after CPUHP_AP_ONLINE_DYN for node_states[N_CPU] update */
--	CPUHP_AP_MM_DEMOTION_ONLINE,
- 	CPUHP_AP_X86_HPET_ONLINE,
- 	CPUHP_AP_X86_KVM_CLK_ONLINE,
- 	CPUHP_AP_ACTIVE,
+You are awesome, thank you!
 -- 
-2.33.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
