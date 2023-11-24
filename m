@@ -2,245 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BF77F85BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 23:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB6D7F85C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 23:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjKXWCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 17:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S230074AbjKXWEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 17:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXWCM (ORCPT
+        with ESMTP id S229557AbjKXWEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 17:02:12 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83F6C6;
-        Fri, 24 Nov 2023 14:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700863323; x=1701468123; i=wahrenst@gmx.net;
-        bh=RJpH4xQXxjQDL3eLxsO2HiDV2EJzu1pu3W5oYW1MvnU=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=bbbJFFc+AF1SMr0oe90UIh4VTdhz6+E1AettNSAW41oKt79PeUYmFkjKrdXD0onl
-         taptHmE3kOVRX80H37FxS7asl4O02r8nZCwuUqS2IgeK85EpvJf/LNdJTCM3G/oMS
-         t0WJ8aWJ0WtODycstd5vGfuRYya8/T6EQAzXC0/p//P8YmSkyB39Nsl1tw+x5f/Dq
-         YnqmL6+ep659DtkdOxFeWtQdBS5/qPNpAqxk6P2nnMaEdnb0vipKCG9F72ynXdExY
-         G/dOkcHT6UYieZVyZJNvgN+Fng8I2Eu/Qp1TPuIYXdd7rzji79v5yn/IUIukV4DWR
-         MqyxMP7c+bQ97koaYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrQJ5-1rcyOj3M63-00oYgP; Fri, 24
- Nov 2023 23:02:02 +0100
-Message-ID: <fb134c01-59ac-4781-99cc-03104845fe9c@gmx.net>
-Date:   Fri, 24 Nov 2023 23:02:01 +0100
+        Fri, 24 Nov 2023 17:04:07 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E77127;
+        Fri, 24 Nov 2023 14:04:13 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5C23F5C017F;
+        Fri, 24 Nov 2023 17:04:10 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Fri, 24 Nov 2023 17:04:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1700863450; x=1700949850; bh=3UtEYHzWi0cxnEeCsISUpA7msvYeRg40USl
+        PBvQDAxw=; b=A+OmL5iuR0zReaEYJ15GjQZg4vyIFXItuIFwm5dyiW5T4gkg5vB
+        O3y1vEmDpFw4XObQBw8S+hZRpzogyJyTFmhG2+30qmPo4cAzhli//p7Xo0xlYdm1
+        HAyMt5+hPPBYMAmiaiJ28TApebpiNxFRXs4GB7HBWyVtBQUMvcn/4s/jVsg/IWws
+        XssMoqNkkSUyZUh627dVqhMVg53/fr4mKmvapK+ChgQrurZJBfS4Yc7m/1MQYKc6
+        sidfB5JX2x1DmjiQdvNNzsevqfIMP6hcV70YbnA+hZB2vgAekGpuscafQCq3EtT3
+        dsfKyA/+zzMUAho0X0+YX3mWlJOpbjr74Pw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1700863450; x=1700949850; bh=3UtEYHzWi0cxnEeCsISUpA7msvYeRg40USl
+        PBvQDAxw=; b=twOj/8Jcx0NWHjeF1j6wOPWK7iooNT5JJaNkH43/2QPNogNn/tb
+        7JlN9Jgl7OH0//175OqqtGkvZXNETNHDVrjnRTE2dYC2aRe8NS3cBxfRS3TkrgxS
+        q9RHfaYXLVDlKtbRO1wccGQQV2UIDnVyL9C45hhb0IlJbfkJO8g+JknA9uHVVwVY
+        PnwjCl/fo6dt0YHUl1yy0R1NvLc243cufFp0E0HkrrOwy4AAt69IbDeA1D9IcSv0
+        CjrzG+GgyJXkCwAwh2nx0r7aclfam9EFjZ41h4zMGoX7okhqfPOQ8VnxZ9/rU30z
+        sSKm3gGHvGJK1CTFz/SuqgqFbC1X6DA4MiA==
+X-ME-Sender: <xms:2R1hZeEP-Qfu_lD44kF0vynJRv_jOkRp0wK31dkeBQcDh6VMArK7aQ>
+    <xme:2R1hZfUEsjLpj2O6_O2FfsC02yiQuWRn8zKsLKb16P3l1xqfj1ZCOAIHkvRvrHXxN
+    W-oMKMGiEjfnWlMH4o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehhedgudehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
+    homheqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefh
+    jeeugeevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:2R1hZYKSfIWn3srG8g6clC1T-aBuI_9Dy4LS8Fjp_HUYvl4PupGy1g>
+    <xmx:2R1hZYGZZtLwimW36tNIPwr80vH8poDSidykKLzWJ5r7mHHsMl19Xg>
+    <xmx:2R1hZUUGyWDk5U_RlDqNGfgQFao_DevH2gcEuZkc4RMYG8Qx9imfVg>
+    <xmx:2h1hZZW_hIY8W3fNySOV5R3_nIwDz8z16cSKf7eYADPCHKObnO6CuA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0886F36A0075; Fri, 24 Nov 2023 17:04:08 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4 net] qca_spi: Fix SPI IRQ handling
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121163004.21232-1-wahrenst@gmx.net>
- <20231121163004.21232-3-wahrenst@gmx.net>
- <a24433f86e39cbb45a9606621e01446e7ad6fa53.camel@redhat.com>
- <bf3dd03e-a1f2-4586-8f00-7003848016aa@gmx.net>
- <9e2bba3c98cd24ebf1b6d9fde2e0b9229ad6b99f.camel@redhat.com>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <9e2bba3c98cd24ebf1b6d9fde2e0b9229ad6b99f.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-Id: <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
+In-Reply-To: <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
+References: <20231122182419.30633-1-fancer.lancer@gmail.com>
+ <20231122182419.30633-2-fancer.lancer@gmail.com>
+ <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
+ <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
+ <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
+ <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
+ <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
+ <ZV94rifAIF2p9Nej@alpha.franken.de>
+ <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
+ <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
+Date:   Fri, 24 Nov 2023 22:03:49 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Serge Semin" <fancer.lancer@gmail.com>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc:     "Arnd Bergmann" <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Yinglu Yang" <yangyinglu@loongson.cn>,
+        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
+        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
+        "Aleksandar Rikalo" <arikalo@gmail.com>,
+        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
+        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xxrzt6WI4hPd4V+8RaLfaDk+Zbtb3DKAQXpOEk/cQJggrJUlsKl
- YDJfn78SZhYrz4mc1krMI7ELSgHRAHmvminMGyfEzxapFFskeoJOrMal9KA8iiUnxXUCcq8
- NXQ2bFUtYCD/Ks/rhRVJDmY/bWbqqlBO00RgC+NnsXaRQeKUYJCeYjUohdC2aB527nVzY8O
- OIETr72wVau2ivYCaG0sw==
-UI-OutboundReport: notjunk:1;M01:P0:te/CiKATKSg=;3Dm+CDClnjryo0icj2kTWLhCBja
- Z+2lBujMmjmbzZIdrB2UhlRZpCVvLdqYe1zaC7alqR9BXhr+n9RyY0BCr7Mgnb2WN1nS932Dw
- 6U/cYE+KOxWhFU73WHTZQ7200b1/L4SbyF2nRRazwcoibS/4L/zbICAlNTlVRdTe90VBmh8oP
- eEzWKm8L/LifclLzKZYqFmYymN4Rv535/ruGaRc29rYwoKlFTK4OSZeyn/F04S9PYBxbaeD7E
- bVapEspDeUK70tJHmB7r2X0XvbfgNKqtHOBIA9OzyrMrBmb/x4ZGDyxfqv/Sr1nCjozGFX/xN
- fEatiQ5TjyWpy8M09RJKKWTwjfqmP0oq857cr74/svdjueRilhVMB6bJx9ifZ4StmLIP48OJv
- b2U6vG/+1yrmI8Ru8z6waPT/gajDpg+Sfb8pJR1Zltt102iISB6SfL0yhdqBOtljous9OkdeJ
- F/ij8DoH8vOcx2WP4EXEBxubaCblze7LD2q4nnIhmMvmpIbYwiYOoCmdNxocL2M2hRlilScT4
- 8W8xNstRmrfo+EL2QtzABufHO7PEnrh5ojpyrIFMfXAkANFILEw+2rD00xvnez7VGowwFCsGk
- /TlncxlmGQmVNgndhqyG1l4aj31z1nZD+gn5s6F7lj/P66p9lPxMh4oI3Z+Nm+BFMQoahHwgs
- jzBqrio0B2R7us9obu/fu+cD/WlkBLhhOJ1CCkshrF8ZCBzXmIIJtJ9HAXziofm+tytQFfRMJ
- rTSQNk+qO3HoVtq1uz4Lq63s+f4/RX5WbhlRkMl+bzN00LIgpzizTIYFYsSZstU1EMMfTzu8L
- +67YSPkfvQ+hlVKTCfd2r+WcDwqU2rvMafYdYg+U/W+TC9KLZu2u+rew0ZSvjGUPwc8uBDaQy
- Jz3H6CJ04N041uq3TU/4eBYtoHlck/5ihJhvOx2E2Z0rT5YGeA9etiUbCMjuroG26SIY83naA
- EOj/7J5GY/2/ph1Xo9lNC2+Nz+4=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
 
-Am 24.11.23 um 16:33 schrieb Paolo Abeni:
-> On Fri, 2023-11-24 at 15:01 +0100, Stefan Wahren wrote:
->> Hi Paolo,
->>
->> Am 23.11.23 um 12:37 schrieb Paolo Abeni:
->>> On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
->>>> The functions qcaspi_netdev_open/close are responsible of request &
->>>> free of the SPI interrupt, which wasn't the best choice. Currently
->>>> it's possible to trigger a double free of the interrupt by calling
->>>> qcaspi_netdev_close() after qcaspi_netdev_open() has failed.
->>>> So let us split IRQ allocation & enabling, so we can take advantage
->>>> of a device managed IRQ and also fix the issue.
->>>>
->>>> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for=
- QCA7000")
->>>> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
->>> The change makes sense, but the changelog is confusing.
->>>
->>> qcaspi_netdev_close() and qcaspi_netdev_open() are invoked only via
->>> ndo_open and ndo_close(), right? So qcaspi_netdev_close() will never b=
-e
->>> invoked qcaspi_netdev_open(), failure - that is when IFF_UP is not set=
-.
->> sorry, i missed to mention an important part. This issue is partly
->> connected to patch 3.
->> Please look at qcaspi_set_ringparam() which also call ndo_close() and
->> ndo_open().
-> Ah, I see it now. IMHO root cause of the problem is there. The ethtool
-> op should not flip the device state.
+
+=E5=9C=A82023=E5=B9=B411=E6=9C=8824=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
+=E4=B8=8B=E5=8D=886:52=EF=BC=8CSerge Semin=E5=86=99=E9=81=93=EF=BC=9A
+> On Thu, Nov 23, 2023 at 05:33:31PM +0000, Jiaxun Yang wrote:
+>>=20
+[...]
+>> Actually dmi_setup() is called before cpu_cache_init().
 >
-> A more narrow fix would be to park/unpark the thread inside
-> set_ringparam() - instead of the whole patch 1 && 2 I suspect.
+> To preliminary sum the discussion, indeed there can be issues on the
+> platforms which have DMI initialized on the cached region. Here are
+> several solutions and additional difficulties I think may be caused by
+> implementing them:
 
-before i send a complete new version of this series, could you please
-have a look at this replacement for patch 1 & 2:
+Thanks for such detailed conclusion!
+I'd prefer go solution 1, with comments below.
+>
+> 1. Use unmapped cached region utilization in the MIPS32 ioremap_prot()
+> method.
+> This solution a bit clumsy than it looks on the first glance.
+> ioremap_prot() can be used for various types of the cachability
+> mapping. Currently it's a default-cacheable CA preserved in the
+> _page_cachable_default variable and Write-combined CA saved in
+> boot_cpu_data.writecombine. Based on that we would have needed to use
+> the unmapped cached region utilized for the IO-remaps called with the
+> "_page_cachable_default" mapping flags passed only. The rest of the IO
+> range mappings, including the write-combined ones, would have been
+> handled by VM means. This would have made the ioremap_prot() a bit
+> less maintainable, but still won't be that hard to implement (unless I
+> miss something):
+> --- a/arch/mips/mm/ioremap.c
+> +++ b/arch/mips/mm/ioremap.c
+>         /*
+> -        * Map uncached objects in the low 512mb of address space usin=
+g KSEG1,
+> -        * otherwise map using page tables.
+> +        * Map uncached/default-cached objects in the low 512mb of add=
+ress
+> +        * space using KSEG1/KSEG0, otherwise map using page tables.
+>          */
+> -       if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
+> -           flags =3D=3D _CACHE_UNCACHED)
+> -               return (void __iomem *) CKSEG1ADDR(phys_addr);
+> +       if (IS_LOW512(phys_addr) && IS_LOW512(last_addr)) {
+> +               if (flags =3D=3D _CACHE_UNCACHED)
+> +                       return (void __iomem *) CKSEG1ADDR(phys_addr);
+> +               else if (flags =3D=3D _page_cachable_default)
+> +                       return (void __iomem *) CKSEG0ADDR(phys_addr);
+> +       }
+>
+> Currently I can't figure out what obvious problems it may cause. But
+> It seems suspicious that the cacheable IO-mapping hasn't been
+> implemented by the unmapped cacheable region in the first place. In
+> anyway this solution looks more dangerous than solution 2. because it
+> affects all the MIPS32 platforms at once.
 
-qca_debug: Prevent crash on TX ring changes
-
-The qca_spi driver stop and restart the SPI kernel thread
-(via ndo_stop & ndo_open) in case of TX ring changes. This is
-a big issue because it allows userspace to prevent restart of
-the SPI kernel thread (via signals). A subsequent change of
-TX ring wrongly assume a valid spi_thread pointer which result
-in a crash.
-
-So prevent this by stopping the network queue and temporary park
-the SPI thread. Because this could happen during transmission
-we also need to call qcaspi_flush_tx_ring().
-
-Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for
-QCA7000")
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-=2D--
- =C2=A0drivers/net/ethernet/qualcomm/qca_debug.c | 17 ++++++++++++-----
- =C2=A0drivers/net/ethernet/qualcomm/qca_spi.c=C2=A0=C2=A0 |=C2=A0 7 +++++=
-+-
- =C2=A0drivers/net/ethernet/qualcomm/qca_spi.h=C2=A0=C2=A0 |=C2=A0 2 ++
- =C2=A03 files changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c
-b/drivers/net/ethernet/qualcomm/qca_debug.c
-index f62c39544e08..478ab3ce949d 100644
-=2D-- a/drivers/net/ethernet/qualcomm/qca_debug.c
-+++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-@@ -263,22 +263,29 @@ qcaspi_set_ringparam(struct net_device *dev,
-struct ethtool_ringparam *ring,
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 stru=
-ct kernel_ethtool_ringparam *kernel_ring,
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 stru=
-ct netlink_ext_ack *extack)
- =C2=A0{
--=C2=A0=C2=A0=C2=A0 const struct net_device_ops *ops =3D dev->netdev_ops;
- =C2=A0=C2=A0=C2=A0=C2=A0 struct qcaspi *qca =3D netdev_priv(dev);
-+=C2=A0=C2=A0=C2=A0 bool queue_active =3D !netif_queue_stopped(dev);
-
- =C2=A0=C2=A0=C2=A0=C2=A0 if ((ring->rx_pending) ||
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 (ring->rx_mini_pending) ||
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 (ring->rx_jumbo_pending))
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 return -EINVAL;
-
--=C2=A0=C2=A0=C2=A0 if (netif_running(dev))
--=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ops->ndo_stop(dev);
-+=C2=A0=C2=A0=C2=A0 if (queue_active)
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 netif_stop_queue(dev);
-
-+=C2=A0=C2=A0=C2=A0 if (qca->spi_thread)
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 kthread_park(qca->spi_thread);
-+
-+=C2=A0=C2=A0=C2=A0 qcaspi_flush_tx_ring(qca);
- =C2=A0=C2=A0=C2=A0=C2=A0 qca->txr.count =3D max_t(u32, ring->tx_pending, =
-TX_RING_MIN_LEN);
- =C2=A0=C2=A0=C2=A0=C2=A0 qca->txr.count =3D min_t(u16, qca->txr.count, TX=
-_RING_MAX_LEN);
-
--=C2=A0=C2=A0=C2=A0 if (netif_running(dev))
--=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ops->ndo_open(dev);
-+=C2=A0=C2=A0=C2=A0 if (qca->spi_thread)
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 kthread_unpark(qca->spi_thread);
-+
-+=C2=A0=C2=A0=C2=A0 if (queue_active)
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 netif_wake_queue(dev);
-
- =C2=A0=C2=A0=C2=A0=C2=A0 return 0;
- =C2=A0}
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c
-b/drivers/net/ethernet/qualcomm/qca_spi.c
-index d0578530dfbc..2ebe9834a1d3 100644
-=2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -468,7 +468,7 @@ qcaspi_tx_ring_has_space(struct tx_ring *txr)
- =C2=A0 *=C2=A0=C2=A0 call from the qcaspi_spi_thread.
- =C2=A0 */
-
--static void
-+void
- =C2=A0qcaspi_flush_tx_ring(struct qcaspi *qca)
- =C2=A0{
- =C2=A0=C2=A0=C2=A0=C2=A0 int i;
-@@ -581,6 +581,11 @@ qcaspi_spi_thread(void *data)
- =C2=A0=C2=A0=C2=A0=C2=A0 netdev_info(qca->net_dev, "SPI thread created\n"=
-);
- =C2=A0=C2=A0=C2=A0=C2=A0 while (!kthread_should_stop()) {
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 set_current_state(TASK_INTERR=
-UPTIBLE);
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (kthread_should_park()) {
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 kthread_parkme()=
-;
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 continue;
-+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 }
-+
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if ((qca->intr_req =3D=3D qca=
-->intr_svc) &&
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 !qca->txr.=
-skb[qca->txr.head])
- =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 schedule()=
-;
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.h
-b/drivers/net/ethernet/qualcomm/qca_spi.h
-index 3067356106f0..95d7306e58e9 100644
-=2D-- a/drivers/net/ethernet/qualcomm/qca_spi.h
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.h
-@@ -107,4 +107,6 @@ struct qcaspi {
- =C2=A0=C2=A0=C2=A0=C2=A0 u16 burst_len;
- =C2=A0};
-
-+void qcaspi_flush_tx_ring(struct qcaspi *qca);
-+
- =C2=A0#endif /* _QCA_SPI_H */
-=2D-
-2.34.1
-
+I just made a quick grep in tree, and it seems like we don't have much
+user of ioremap_cache (as well as ioremap_uc/wc) here so I think it is
+a safe assumption.
 
 >
-> IMHO the changes in this still make sense - a refactor for net-next.
->
-> Cheers,
->
-> Paolo
->
+> 2. Convert dmi_remap_early() to ioremap_uc() (actually just ioremap()
+> as noted by Arnd).
+> As Jiaxun correctly noted this may cause problems on the platforms
+> which don't flush caches before jumping out to the kernel. Thomas said
+> that kernel flushes the caches early on boot, but Jiaxun noted that
+> it's still done after early DMI setup. So the issue with solution 2 is
+> that the setup_arch() method calls dmi_setup() before it flushes the
+> caches by means of the cpu_cache_init() method. I guess it can be
+> fixed just by moving the dmi_setup() method invocation to be after the
+> cpu_cache_init() is called. This solution looks much less invasive
+> than solution 1.
 
+I recall Tiezhu made dmi_setup() here for reasons. The first reason is t=
+hat
+DMI is placed at memory space that is not reserved, so it may get clobbe=
+red
+after mm is up. The second is we may have some early quirks depends on D=
+MI
+information.
+
+Thanks.
+>
+> So what do you think? What solution do you prefer? Perhaps
+> alternative?
+>
+> -Serge(y)
+>
+>>=20
+>> Thanks
+>> >
+>> > Thomas.
+>> >
+>> > --=20
+>> > Crap can work. Given enough thrust pigs will fly, but it's not nece=
+ssarily a
+>> > good idea.                                                [ RFC1925=
+, 2.3 ]
+>>=20
+>> --=20
+>> - Jiaxun
+
+--=20
+- Jiaxun
