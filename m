@@ -2,249 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7809E7F6A15
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8867F6A13
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjKXBXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
+        id S230096AbjKXBUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKXBXL (ORCPT
+        with ESMTP id S229477AbjKXBUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:23:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3212D56;
-        Thu, 23 Nov 2023 17:23:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700788997; x=1732324997;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=giDLjx1pK5ou4jiCkT18aG2UVNLnT9eo67V5tjtuX/A=;
-  b=ECCI+S+onnmDjDAFpiHtdehQp5Lz//C4SCkIlS108xrADJrJItsk3iw+
-   Jvy6qnCAW9xIk3JTylbzfIm8BI58xVmGaU+N7+7QT9qCNBpZC7RrJrrph
-   +d3CqH5qK/uEqcahwiUisyxrMhtg9ZsJqG75c9o98klSdJKG1OxwAtzzk
-   H+0/ZvK+7szuH1IR2RAK3IGCJmBl+y8zwakyQzqgtLQy3jk2YV6/l7EZM
-   sVW7TPANb4LPgrWn9timrJA8bf9rtrRVU5HE/iVK95czFnZSLEuuK4M7+
-   bzAHwakODHXR042/rlOsWBbvvb7KSOA86gNRAsBaxdGsQIKGm2yyTMdVR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="423481097"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="423481097"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 17:23:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771104816"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="771104816"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Nov 2023 17:23:17 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 23 Nov 2023 17:23:16 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 23 Nov 2023 17:23:16 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 23 Nov 2023 17:23:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=csMlEy/sNVgLgV6eVV8mVTCRrNpSoVt4imjbnrH4tBsciMS8RSvFC1c6+ZEZFCe+xWr6Ncevkg5bZ6+d0jzxXGzal8/5ct93Z9M4ukzt5WzpALwND2R+4ohwhNTi8rNYBXhEv9H+YObA4vrj5uRf7iVXXR4Rdt8JnpZ0DK0tJ44T5vuRLD5n7GKOq9C8XADlP/ZznqRdGTaY+w4VHSZcaru/QxmRB587XkntKan8ItVDiCkl1Y6H9TmeY7wtEr0B0nB2cgqci8DfYlf6afk06I+DoEk70oFdO34n5E+EOI8EwVGpkvk8mPDL83A0AmkYhzMxq643JofDboo6PdKpuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CD+m0I5nQ0jMzvqRH3BmQXwMn8MaqMiFtwS64hlFCrM=;
- b=iIYy/Ez6ZiGfPQ+vJMc4x/4q2mhhsEMi38rLcJhhs9wKaIznzsAtUgx2bB2yEKpPL/sZxGwGs1g1x1IYoK0NTPWKTLBL6s4VcN03Pcf4xt8qT7nKr9+lgkxVqL4ZGLWOaK5rXoVYbFFCx3Op95tC3/97zshi0YEQ0m/hFcq9ICSn8z6hE6Nxm17Gzyy7n9SPsZ3pGCXBkWBI9EAulEZ3fkSAmFWVnQVqoSGL5+/3Q167FwbD7xr3Ud7Ie0LBX5c0zRkA43fuILvEVIZhYLephexEPyX1xFSCPccDoPCpI7vSCSiCw/VfrC4oADOm/pTKmHkCervmD/cAxr0eIZbvtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB6397.namprd11.prod.outlook.com (2603:10b6:8:ca::12) by
- PH0PR11MB5610.namprd11.prod.outlook.com (2603:10b6:510:e9::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.20; Fri, 24 Nov 2023 01:23:07 +0000
-Received: from DS0PR11MB6397.namprd11.prod.outlook.com
- ([fe80::e486:f8af:ca6c:7219]) by DS0PR11MB6397.namprd11.prod.outlook.com
- ([fe80::e486:f8af:ca6c:7219%7]) with mapi id 15.20.7025.019; Fri, 24 Nov 2023
- 01:23:07 +0000
-Date:   Fri, 24 Nov 2023 09:18:28 +0800
-From:   Yujie Liu <yujie.liu@intel.com>
-To:     "bhe@redhat.com" <bhe@redhat.com>
-CC:     lkp <lkp@intel.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
-Message-ID: <ZV/55OkN7bV02LY8@yujie-X299>
-References: <20231114153253.241262-3-bhe@redhat.com>
- <202311160431.BXPc7NO9-lkp@intel.com>
- <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
- <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
- <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
- <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
-X-ClientProxiedBy: SG3P274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::21)
- To DS0PR11MB6397.namprd11.prod.outlook.com (2603:10b6:8:ca::12)
+        Thu, 23 Nov 2023 20:20:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B6F1B6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:20:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 346CBC433C8;
+        Fri, 24 Nov 2023 01:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700788825;
+        bh=eLNAnyUduoQQcE8ecVOU/349sikSBU3Okw3Eu+Fv3po=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AsE+sSpX1YgGEgwiGSNjOv38w0cso/T8/MPv2DZxKH8JvSts4fh9ePUgxlm/yoSVy
+         p4dLG/c79ffECd2Xho9iQBP6iBu83ozVEgduIhVfutF+VJldRC48NucLuiqS+U7V+T
+         6YtD9oNemPFU2Cr7Ljh1lMiZDMuMp6G0YU4QhurKWM/HJaE74PeiXTtZbgGkSq9cz0
+         /37jm6tuA772z+ZA7R7aKETPv8WIDLQYKrsvLfV4Ux6erZSWAIBJU/r8aLN2PElDvL
+         BmU9egNdpHrZaG6e2DOcPQdH0pQ1QA52UOciORqdrsILmSF8Gz97uXRaf13LUNclk+
+         Z0QkE5XHFu1LQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B190C3959E;
+        Fri, 24 Nov 2023 01:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB6397:EE_|PH0PR11MB5610:EE_
-X-MS-Office365-Filtering-Correlation-Id: be219e76-a4bb-4b89-244b-08dbec8be9b8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TiCikscQSMD1iTaarxAD/5cTl8Cwdd2f4LdV5zKNfBWFEuOCplGKM22wKuWxTElYPGGEU/CqhYLTR+voPwa2yx6hoyg5tdCDZoLKmwP57KTHdVGsrYe7onQ0mDHXX9FqgxF/M+xk8Q1ptrvvMWuqk6oJQyvTpzOaqxp1vWF7s9ALEch+nJPi3wdYFXksDiIB9zZdf8R/Z93Zk7nje7r6tOc/W50x/DR6QHgq0aiKJ9V6NYF3NTkYETJa6CCwPOebAapYiQCKRU1HkSQRG/fTxs8NngrCrTnXZkp8SM67ZLk6rjeVCOEELnO/Vjcgf2kKi3+YwCda8/9c9pgt5B/OU1UfqXXAXGpfwtCqp/bWqMHE7+bRgU1GJqbRHD6GzbSYBqGx80P5kuTYumZPFBGAj1IXkvBE77nLwdEuRERkVtmc8HM4nIwlrwT95/AeR1Fqt5IwVuFfZ8mfhlb1oaEc3nv95qNsJmBPhE3K5JU54etXb/ycVtkaYhpZqmwioUc5vaelcJZ68q/xX7fQfz25ahmriBOcWVxbCQ0yHyqcMQrKe9m4K4MCVZCoILdZR3+r5gZZ2eHPN68rgbSITESt3A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6397.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(136003)(376002)(396003)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(7416002)(15650500001)(2906002)(4001150100001)(44832011)(41300700001)(8676002)(8936002)(4326008)(5660300002)(316002)(66476007)(66556008)(54906003)(6916009)(86362001)(966005)(6486002)(6666004)(478600001)(83380400001)(6506007)(9686003)(6512007)(66946007)(26005)(33716001)(82960400001)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?Kgji6FxfbMwf6om+C9KcMa/brpUq8Waq6ZM9hSisGicV2kWuzntJdDcIwW?=
- =?iso-8859-1?Q?IWLkyOoPT3JVnYEbYakiqq6gnWoZ/wIQwgUpfHVOyNjFb4XNdTe8LMO3KC?=
- =?iso-8859-1?Q?bswku3yJ3xZdWrdvDBKU/D8r5EXrwP48R8qRCeczI6APApAx2a9UaRLV9J?=
- =?iso-8859-1?Q?3/4WcLcKMbLvS/NIuto4ZELQpwoBwVcCKwUJYOLFkPl7q1o+DeLMAkIbEh?=
- =?iso-8859-1?Q?u3WMQqdh8YWybANHeSi2JHyVkwPGm2j+l1wq+iO1ySO1MWVVaFSSCg0t0C?=
- =?iso-8859-1?Q?nL1vrfhQh5zhCMx962T/XF6hy10cr+1ETrWJrQYnw1mEFJ902V/FlW1NXU?=
- =?iso-8859-1?Q?Yy3cT2BSdHjjix8DkQmggY7soC/rCqNrZVuknbYOle0AJ0CjuW9wIfOpzt?=
- =?iso-8859-1?Q?yWGhLDmifULXShzcx8dmqnlQAU+EcLUPyUPLHz7klfRquSoIDq8t2ZI3rc?=
- =?iso-8859-1?Q?ATT6KzxKj9lMENaXrYcYiTcnk2PS0YAsAxaOOUWUTspJEHpuFEHIisxdkV?=
- =?iso-8859-1?Q?Xl/ANvfrkmSxQEfmh9zTnHalbvmyXDJXqXo+kKmebKWk8ePyFskI8U++9R?=
- =?iso-8859-1?Q?OLzMDS8juAcUggupo2Xyl2sXe/IsktgBXSnsZHyZQn1L0ePcelAHNSv14t?=
- =?iso-8859-1?Q?9fx9YqLuRwX0Ar/qyChV8xwzd645LOJWBt2smfKODUCPydIr4OxWUs8CG0?=
- =?iso-8859-1?Q?+2w97oTWiBdsDzBNfNNEgD2Z/ZS8b98/NTXxhDjcxkuei6qRoHfwsqvaVC?=
- =?iso-8859-1?Q?rxVsbWuqhKunbBmFn6FIkmqQwfr7DY5xdfT/hVnQHyZN6er8I2WYoNDRYM?=
- =?iso-8859-1?Q?GlontphZlsZLI3qa+IXuec5mU/iehmKe54JZhkNq+8Q0KNsADciIPunK3U?=
- =?iso-8859-1?Q?wvI3p4u5poUl3Rmji5GfHM9w4IGavkUNcfYdbSzRROpQKNOjk9UsSVdXQf?=
- =?iso-8859-1?Q?vwUI4isLAg1mEeAElAAFEoplJ6+ZAp5TaXJc1Ijkyd8z9M6XsGQklfHxpQ?=
- =?iso-8859-1?Q?inpl3S873NsFUzzHak7iqDEqbQgrnhATOJdSgTb+pXRVeAKa/V5nYMvfGO?=
- =?iso-8859-1?Q?IDNb3hZtoEdpPN52FEIKySd5jkRg4fqIQVhub0POL+QLyAgXNXWzHhzYrP?=
- =?iso-8859-1?Q?UeONDTVjNGCqsRGRas4hNrPruPeWz6xqHYG3AyHbvk1ntZ3HBg9goGX/Du?=
- =?iso-8859-1?Q?iWV46gbv1sx0pz/nZJCmV1HObu+MFlE+32sKXo8txkGDX0TrBHQPS49tYE?=
- =?iso-8859-1?Q?pwh2CTYJi25DDx5aJk5wy+BTlDZnj6i/ZL7EWi6b1QLimwiSAT2+R5Ni6F?=
- =?iso-8859-1?Q?uzTajsJF6kgUu9/Uf70w9ZV1CqLtVJDeeNh+Errg3HKsp6SY8RHZcEYDu7?=
- =?iso-8859-1?Q?76ORtYuys9VT7w8h+K+LBAehTM7Lo3A8sS5lXDUzj9mAM7LjLMaH6+3YKw?=
- =?iso-8859-1?Q?jUVo+SddD+jHWcUwm2NoSoVBGTWhmPrNWb5BF3SznjEzF0XkKu6O/1Zils?=
- =?iso-8859-1?Q?SZl00tJwwpc+/mpBCd5dJUIULSL62XPwrMRZhLtb6s316Ge+APObBHb7mR?=
- =?iso-8859-1?Q?cEPeKWQehbIrpJDLPuCHIb87uGCx1re47rLZo9dAy900xIT6HpIkR8pqQp?=
- =?iso-8859-1?Q?kwEqVeTX4sAZ1LuKJjTx3co+RUL3nny9jp?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: be219e76-a4bb-4b89-244b-08dbec8be9b8
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6397.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:23:07.2136
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sV/YbkV8w1kluPULThxwkFnQVDpSyR5rxxcGE5D07ZKr5naTp2wFcBlGAGn4kRXs4fbJmNMx2SQW7Yyh0aeL6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5610
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3] Documentation: Document each netlink family
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170078882510.20317.6470955515511938856.git-patchwork-notify@kernel.org>
+Date:   Fri, 24 Nov 2023 01:20:25 +0000
+References: <20231121114831.3033560-1-leitao@debian.org>
+In-Reply-To: <20231121114831.3033560-1-leitao@debian.org>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     corbet@lwn.net, kuba@kernel.org, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 09:49:20PM +0800, bhe@redhat.com wrote:
-> On 11/17/23 at 10:01pm, Baoquan He wrote:
-> > On 11/17/23 at 09:37am, Liu, Yujie wrote:
-> > > Hi Baoquan,
-> > > 
-> > > On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
-> > > > Hi,
-> > > > 
-> > > > On 11/16/23 at 05:04am, kernel test robot wrote:
-> > > > > Hi Baoquan,
-> > > > > 
-> > > > > kernel test robot noticed the following build errors:
-> > > > > 
-> > > > > [auto build test ERROR on arm64/for-next/core]
-> > > > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
-> > > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > > > And when submitting patch, we suggest to use '--base' as documented in
-> > > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > > > > 
-> > > > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
-> > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> > > > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
-> > > > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
-> > > > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
-> > > > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> > > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
-> > > > > 
-> > > > 
-> > > > Thanks for reporting.
-> > > > 
-> > > > I met below failure when following the steps of provided reproducer.
-> > > > Could anyone help check what's wrong with that?
-> > > 
-> > > Sorry this seems to be a bug in the reproducer. Could you please change
-> > > the compiler parameter to "COMPILER=clang-16" and rerun the command? We
-> > > will fix the issue ASAP.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Tue, 21 Nov 2023 03:48:31 -0800 you wrote:
+> This is a simple script that parses the Netlink YAML spec files
+> (Documentation/netlink/specs/), and generates RST files to be rendered
+> in the Network -> Netlink Specification documentation page.
 > 
-> Any update for the reproducer? I would like to post v2 with the fix. I
-> doubt it's the same issue as another report on this patch, while not
-> quite sure.
-
-Setting "COMPILER=clang-16" is exactly the correct fix and should
-reproduce the issue in this report. We've fixed the steps of reproducer
-but this will only take effect in future reports.
-
-Thanks,
-Yujie
-
-> > 
-> > Here you are. Thanks for your quick response.
-> > ------------------------------
-> > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-> > Compiler will be installed in /root/0day
-> > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
-> > /root/linux                                                                             
-> > tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
-> > PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-> > make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
-> > make[1]: Entering directory '/root/linux/build_dir'
-> >   GEN     Makefile
-> >   HOSTCC  scripts/basic/fixdep
-> >   HOSTCC  scripts/kconfig/conf.o
-> >   HOSTCC  scripts/kconfig/confdata.o
-> >   HOSTCC  scripts/kconfig/expr.o
-> >   HOSTCC  scripts/kconfig/lexer.lex.o
-> >   HOSTCC  scripts/kconfig/menu.o
-> >   HOSTCC  scripts/kconfig/parser.tab.o
-> >   HOSTCC  scripts/kconfig/preprocess.o
-> >   HOSTCC  scripts/kconfig/symbol.o
-> >   HOSTCC  scripts/kconfig/util.o
-> >   HOSTLD  scripts/kconfig/conf
-> > #
-> > # configuration written to .config
-> > #
-> > make[1]: Leaving directory '/root/linux/build_dir'
-> > 
-> > > 
-> > > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-> > > > Compiler will be installed in /root/0day
-> > > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
-> > > > get1: /pub/tools/llvm/files/: files/: Is a directory
-> > > > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
-> > > > clang crosstool install failed
-> > > > Install clang compiler failed
-> > > > setup_crosstool failed
-> > > 
-> > > 
-> > 
+> Create a python script that is invoked during 'make htmldocs', reads the
+> YAML specs input file and generate the correspondent RST file.
 > 
+> [...]
+
+Here is the summary with links:
+  - [v3] Documentation: Document each netlink family
+    https://git.kernel.org/netdev/net-next/c/f061c9f7d058
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
