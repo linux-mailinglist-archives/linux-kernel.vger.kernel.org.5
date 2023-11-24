@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1817F6E6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772047F6E72
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344976AbjKXIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        id S1345002AbjKXIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKXIkD (ORCPT
+        with ESMTP id S229518AbjKXIkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:40:03 -0500
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7B091;
-        Fri, 24 Nov 2023 00:40:07 -0800 (PST)
-X-QQ-mid: bizesmtp75t1700815181tn312kbv
-Received: from [127.0.0.1] ( [125.94.202.196])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 24 Nov 2023 16:39:39 +0800 (CST)
-X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: 7YFKcddXagjsJLt4wZABMUUDAYXCRnXo8g21GUIbQbqARChcnMawpeCfxN5Fh
-        FAL082/zTRzsvaYPmnb+ltvg7D100sX+qcklM2YJd+L8vMbcjpY9OqL2eOqhW1p8Cvdc6+S
-        n3X0wLAhgXvnScdmZmMjoMswETTFn/mVftkuT6WEGmZxAeP176I2oNHLa56qSaBNY2zkPnV
-        LG/ekKJr+W8uKDUe2TsrZtHezH3aWd6GKL0a1CrjhNx7iIrqc9e/TJPwUWvJ+S/sGB+QBnN
-        +VOvetNSVcAibP8cry0np7W6aAPaNzNIzGK3LUZ0PIax9d30jQgBbSUxYORpDCQMzSpElHf
-        oBn4V0aQ3rzyd4jviheIVNYpbQbGapXJhrdHfQNsxs4A+bcu9hddYlMiC3/u3vCkz4UNtbs
-        2bdxPaOa/uyDJUbaeEZ7rw==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 14761653264302342047
-Message-ID: <F19DC40ACB796694+78dfb71e-a2db-473d-a9fc-fa35c5e61a27@shingroup.cn>
-Date:   Fri, 24 Nov 2023 16:39:39 +0800
+        Fri, 24 Nov 2023 03:40:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DC8D53
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700815242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TtiruDUnh8gIdyydjQh1DSHosPodlSxaPwJiylzKhys=;
+        b=F4thSS2tcNtsIBSxb9UmTsg3yRymx+/UJCKri+bf7PDNdTsrFVTGYat4Kn77z5JOxiam0s
+        a27ws93ho2CgCRVvB3YuQI2hOneCVtzak+GqCtBWaS4vhscs8D+/U4ryTCuol2+UGVg75B
+        X9AQVfI9XFDorHL7e3GwNOXY0uunD2M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-103-QXyK2TnoOxKNhbHg3BDyOw-1; Fri, 24 Nov 2023 03:40:39 -0500
+X-MC-Unique: QXyK2TnoOxKNhbHg3BDyOw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98B7D828CEA;
+        Fri, 24 Nov 2023 08:40:38 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D59C0112130A;
+        Fri, 24 Nov 2023 08:40:36 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 16:40:33 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+        nathan@kernel.org, yujie.liu@intel.com
+Subject: Re: [PATCH v2 2/7] kexec_file: print out debugging message if
+ required
+Message-ID: <ZWBhgfhFONEYcJZf@MiWiFi-R3L-srv>
+References: <20231124033642.520686-1-bhe@redhat.com>
+ <20231124033642.520686-3-bhe@redhat.com>
+ <971ed2ceaeeba882d2b4c39015ee5ae5db3f5e82.camel@perches.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] powerpc: Add PVN support for HeXin C2000 processor
-To:     Michael Ellerman <mpe@ellerman.id.au>, gregkh@linuxfoundation.org
-References: <20231123093611.98313-1-ke.zhao@shingroup.cn>
- <2023112317-ebook-dreamless-0cfe@gregkh> <871qcgspf8.fsf@mail.lhotse>
-Content-Language: en-US
-Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, shenghui.qu@shingroup.cn,
-        luming.yu@shingroup.cn, dawei.li@shingroup.cn
-From:   =?UTF-8?B?WmhhbyBLZSDotbUg5Y+v?= <ke.zhao@shingroup.cn>
-In-Reply-To: <871qcgspf8.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrsz:qybglogicsvrsz3a-0
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <971ed2ceaeeba882d2b4c39015ee5ae5db3f5e82.camel@perches.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,51 +68,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael and Greg,
+On 11/23/23 at 11:16pm, Joe Perches wrote:
+> On Fri, 2023-11-24 at 11:36 +0800, Baoquan He wrote:
+> > Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
+> > loading related codes.
+> 
+> trivia for pr_debug -> kexec_dprintk conversions for
+> the entire patch set:
 
-On 2023/11/23 19:02, Michael Ellerman wrote:
-> Greg KH <gregkh@linuxfoundation.org> writes:
->> On Thu, Nov 23, 2023 at 05:36:11PM +0800, Zhao Ke wrote:
->>> HeXin Tech Co. has applied for a new PVN from the OpenPower Community
->>> for its new processor C2000. The OpenPower has assigned a new PVN
->>> and this newly assigned PVN is 0x0066, add pvr register related
->>> support for this PVN.
->>>
->>> Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
->>> Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
->>> ---
->>> 	v0 -> v1:
->>> 	- Fix .cpu_name with the correct description
->>> ---
->>> ---
->>>   arch/powerpc/include/asm/reg.h            |  1 +
->>>   arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
->>>   arch/powerpc/kvm/book3s_pr.c              |  1 +
->>>   arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
->>>   arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
->>>   drivers/misc/cxl/cxl.h                    |  3 ++-
->>>   6 files changed, 23 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
->>> index 4ae4ab9090a2..7fd09f25452d 100644
->>> --- a/arch/powerpc/include/asm/reg.h
->>> +++ b/arch/powerpc/include/asm/reg.h
->>> @@ -1361,6 +1361,7 @@
->>>   #define PVR_POWER8E	0x004B
->>>   #define PVR_POWER8NVL	0x004C
->>>   #define PVR_POWER8	0x004D
->>> +#define PVR_HX_C2000	0x0066
->>>   #define PVR_POWER9	0x004E
->>>   #define PVR_POWER10	0x0080
->>>   #define PVR_BE		0x0070
->> Why is this not in sorted order?
-> It's semantically sorted :D
-> ie. HX_C2000 is most similar to POWER8, but is newer than it.
-Yes. This is what I mean. If you prefer to sort in another order, please 
-tell me and I will update this.
->
-> PVR_BE is out of place, I'll fix that.
->
-> cheers
->
+OK, will check all patchset and adjust the indendation, thanks.
+
+> 
+> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> []
+> > @@ -551,9 +551,12 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+> >  		phdr->p_filesz = phdr->p_memsz = mend - mstart + 1;
+> >  		phdr->p_align = 0;
+> >  		ehdr->e_phnum++;
+> > -		pr_debug("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+> > +#ifdef CONFIG_KEXEC_FILE
+> > +		kexec_dprintk("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, "
+> > +			"sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+> >  			phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
+> >  			ehdr->e_phnum, phdr->p_offset);
+> 
+> It's good form to rewrap continuation lines to the open parenthesis
+> 
+> > diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> []
+> > @@ -389,11 +391,12 @@ SYSCALL_DEFINE5(kexec_file_load, int, kernel_fd, int, initrd_fd,
+> >  	if (ret)
+> >  		goto out;
+> >  
+> > +	kexec_dprintk("nr_segments = %lu\n", image->nr_segments);
+> >  	for (i = 0; i < image->nr_segments; i++) {
+> >  		struct kexec_segment *ksegment;
+> >  
+> >  		ksegment = &image->segment[i];
+> > -		pr_debug("Loading segment %d: buf=0x%p bufsz=0x%zx mem=0x%lx memsz=0x%zx\n",
+> > +		kexec_dprintk("segment[%d]: buf=0x%p bufsz=0x%zx mem=0x%lx memsz=0x%zx\n",
+> >  			 i, ksegment->buf, ksegment->bufsz, ksegment->mem,
+> >  			 ksegment->memsz);
+> 
+> here too etc...
+> 
 
