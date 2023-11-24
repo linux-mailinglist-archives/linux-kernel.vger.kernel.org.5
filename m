@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5395B7F70EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCE87F70CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345518AbjKXKJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        id S1345436AbjKXKGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345509AbjKXKJW (ORCPT
+        with ESMTP id S1345402AbjKXKGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:09:22 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D2A10E6;
-        Fri, 24 Nov 2023 02:09:28 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO8f786006188;
-        Fri, 24 Nov 2023 10:09:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=QG7QbvcoFmQQG8HsO2lzOqmrQhyiCb3Jh1bIClVtbFg=;
- b=CawoYmjboo9pOtfk/FhfKLm7WQa3cGIvKY+E+Z9xzrTeCxIxS6sLGYnBY77HuRpCDjun
- K/9AfTjjM6BiO15FrOcMp/yfpsZZX2XzpfCvG6ZG6tIpehIZ7WfAo8QXiZ//lDukCPeU
- Bs1k3AzyzPSFb8Kr5DGzvojScIh0v8yU9VPDFISszB+n/Urm+9HJ5P8LJKyEU2JOwJMr
- hM5BFJFpUymkfO2e0S8f4xbo2jdx3k4lGe72Wj+CWZ6UQP4KuibyIcx3/ZgyT5lSLqwK
- k2yH0E1asBrSUAVpWmmLNjEEukfNSDsWlReSSj8IrNWEMj3n5zKfDz5gJIJTeEGHAsW6 lA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj6emt4se-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 10:09:15 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AOA9C44012381
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 10:09:12 GMT
-Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 24 Nov 2023 02:09:06 -0800
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
-        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <iommu@lists.linux.dev>, <quic_tsoni@quicinc.com>,
-        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH V3 5/5] dt-bindings: interrupt-controller: qcom,pdc: document pdc on X1E80100
-Date:   Fri, 24 Nov 2023 15:36:08 +0530
-Message-ID: <20231124100608.29964-6-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231124100608.29964-1-quic_sibis@quicinc.com>
-References: <20231124100608.29964-1-quic_sibis@quicinc.com>
+        Fri, 24 Nov 2023 05:06:10 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 05156D73;
+        Fri, 24 Nov 2023 02:06:15 -0800 (PST)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 35883613FF940;
+        Fri, 24 Nov 2023 18:06:12 +0800 (CST)
+Message-ID: <cb551005-eff0-1391-92a0-d956b3d2b930@nfschina.com>
+Date:   Fri, 24 Nov 2023 18:06:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vZAhyOENSMSkhwiag__iiIxs5Z-9ArVB
-X-Proofpoint-GUID: vZAhyOENSMSkhwiag__iiIxs5Z-9ArVB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=875 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311240080
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v2 2/2] wifi: rtlwifi: rtl8821ae: phy: fix an undefined
+ bitwise shift behavior
+Content-Language: en-US
+To:     Ping-Ke Shih <pkshih@realtek.com>,
+        "dan.carpenter@linaro.org" <dan.carpenter@linaro.org>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "trix@redhat.com" <trix@redhat.com>
+Cc:     "lizetao1@huawei.com" <lizetao1@huawei.com>,
+        "linville@tuxdriver.com" <linville@tuxdriver.com>,
+        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+In-Reply-To: <167fbc7a77db447d90f696666f6f0a9b@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The X1E80100 SoC includes a PDC, document it.
+On 2023/11/24 16:51, Ping-Ke Shih wrote:
+> Subject: [PATCH v2 2/2] wifi: rtlwifi: rtl8821ae: phy: fix an undefined bitwise shift behavior
+>
+> [...]
+>> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+>> b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+>> index 6df270e29e66..52ab1b0761c0 100644
+>> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+>> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+>> @@ -31,7 +31,12 @@ static u32 _rtl8821ae_phy_calculate_bit_shift(u32 bitmask)
+>>   {
+>>          u32 i = ffs(bitmask);
+>>
+>> -       return i ? i - 1 : 32;
+>> +       if (!i) {
+>> +               WARN_ON_ONCE(1);
+>> +               return 0;
+>> +       }
+>> +
+>> +       return i - 1;
+>>   }
+> Personally, I prefer to use __ffs(), because in normal case no need additional '-1',
+> and abnormal cases should not happen.
 
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
+Hi,  Ping-Ke
 
-v3
-* Rebased to the latest lnext. [Krzysztof]
+Replace _rtl8821ae_phy_calculate_bit_shift() by __ffs(bitmask) is better,
+but I'm not sure what callers should do when callers check bitmask is 0 before calling.
+Maybe this check is useless?
 
- .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+I can send a v3 patch if using  __ffs(bitmask) and no check for bitmask is fine.
+Or could you send this patch if you have a better idea?
+Thanks for your suggestion!
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-index 8473afffce63..2f7320a5537e 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-@@ -42,6 +42,7 @@ properties:
-           - qcom,sm8350-pdc
-           - qcom,sm8450-pdc
-           - qcom,sm8550-pdc
-+          - qcom,x1e80100-pdc
-       - const: qcom,pdc
- 
-   reg:
--- 
-2.17.1
+Su Hui
 
