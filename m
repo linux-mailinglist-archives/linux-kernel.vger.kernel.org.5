@@ -2,185 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E45B7F7997
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57B57F7994
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345536AbjKXQml convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 11:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        id S231266AbjKXQme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:42:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjKXQmj (ORCPT
+        with ESMTP id S229715AbjKXQmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:42:39 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04653199A;
-        Fri, 24 Nov 2023 08:42:44 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        Fri, 24 Nov 2023 11:42:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C264173D
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:42:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700844158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RrwRzTuMrZE9vgEWEXLUt24jPM0zsHvVGPBzoGtCfrw=;
+        b=P0xG7rv/q2G4txzMVyYouYLHvXW4Mg9alK/Huy14UPzDa8taUa+JeIrrs7lET/AHZvBvpb
+        Q0K9iDaRwBPwoCglpkZqLXmnVg165o/QOF2HXlazL2Ad/xFZI8fMnPqg+s73EiqgServT0
+        ud2K8mh+sxhybFyRKENgmRlPRIZ4xEg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-99-u27mpJ7LPQal20htICYGbg-1; Fri, 24 Nov 2023 11:42:36 -0500
+X-MC-Unique: u27mpJ7LPQal20htICYGbg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 72B201FDF6;
-        Fri, 24 Nov 2023 16:42:42 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EDA38132E2;
-        Fri, 24 Nov 2023 16:42:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id rLxzJ37SYGU5SQAAn2gu4w
-        (envelope-from <colyli@suse.de>); Fri, 24 Nov 2023 16:42:38 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH] bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
-From:   Coly Li <colyli@suse.de>
-In-Reply-To: <11a7d768-c6e7-4a6e-875d-87858bf023a5@kernel.dk>
-Date:   Sat, 25 Nov 2023 00:42:21 +0800
-Cc:     Markus Weippert <markus@gekmihesg.de>,
-        Bcache Linux <linux-bcache@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Zheng Wang <zyytlz.wz@163.com>, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Stefan_F=C3=B6rster?= <cite@incertum.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <640974BB-8D2A-4B64-B8F6-C59E931DDFE4@suse.de>
-References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
- <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
- <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
- <989C39B9-A05D-4E4F-A842-A4943A29FFD6@suse.de>
- <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
- <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
- <c47d3540ece151a2fb30e1c7b5881cb8922db915.camel@gekmihesg.de>
- <B68E455A-D6EB-4BB9-BD60-F2F8C3C8C21A@suse.de>
- <54706535-208b-43b5-814f-570ffa7b29bb@kernel.dk>
- <910112B4-168D-4ECC-B374-7E6668B778F9@suse.de>
- <11a7d768-c6e7-4a6e-875d-87858bf023a5@kernel.dk>
-To:     Jens Axboe <axboe@kernel.dk>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-Spamd-Bar: +++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of colyli@suse.de) smtp.mailfrom=colyli@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [13.70 / 50.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         MV_CASE(0.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         FREEMAIL_ENVRCPT(0.00)[163.com];
-         R_SPF_SOFTFAIL(4.60)[~all:c];
-         BAYES_HAM(-0.09)[64.76%];
-         RCVD_COUNT_THREE(0.00)[3];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         MX_GOOD(-0.01)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,gekmihesg.de:email,kernel.dk:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[gekmihesg.de,vger.kernel.org,leemhuis.info,163.com,incertum.net,linuxfoundation.org,lists.linux.dev];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Score: 13.70
-X-Rspamd-Queue-Id: 72B201FDF6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D92B80D721;
+        Fri, 24 Nov 2023 16:42:36 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.226.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BB6B5028;
+        Fri, 24 Nov 2023 16:42:33 +0000 (UTC)
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Simon Horman <horms@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Harshitha Ramamurthy <harshitha.ramamurthy@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH iwl-net] i40e: Fix kernel crash during macvlan offloading setup
+Date:   Fri, 24 Nov 2023 17:42:33 +0100
+Message-ID: <20231124164233.86691-1-ivecera@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Function i40e_fwd_add() computes num of created channels and
+num of queues per channel according value of pf->num_lan_msix.
 
+This is wrong because the channels are used for subordinated net
+devices that reuse existing queues from parent net device and
+number of existing queue pairs (pf->num_queue_pairs) should be
+used instead.
 
-> 2023年11月25日 00:35，Jens Axboe <axboe@kernel.dk> 写道：
-> 
-> On 11/24/23 9:34 AM, Coly Li wrote:
->> 
->> 
->>> 2023?11?25? 00:31?Jens Axboe <axboe@kernel.dk> ???
->>> 
->>> On 11/24/23 9:29 AM, Coly Li wrote:
->>>> 
->>>> 
->>>>> 2023?11?24? 23:14?Markus Weippert <markus@gekmihesg.de> ???
->>>>> 
->>>>> Commit 028ddcac477b ("bcache: Remove unnecessary NULL point check in
->>>>> node allocations") replaced IS_ERR_OR_NULL by IS_ERR. This leads to a
->>>>> NULL pointer dereference.
->>>>> 
->>>>> BUG: kernel NULL pointer dereference, address: 0000000000000080
->>>>> Call Trace:
->>>>> ? __die_body.cold+0x1a/0x1f
->>>>> ? page_fault_oops+0xd2/0x2b0
->>>>> ? exc_page_fault+0x70/0x170
->>>>> ? asm_exc_page_fault+0x22/0x30
->>>>> ? btree_node_free+0xf/0x160 [bcache]
->>>>> ? up_write+0x32/0x60
->>>>> btree_gc_coalesce+0x2aa/0x890 [bcache]
->>>>> ? bch_extent_bad+0x70/0x170 [bcache]
->>>>> btree_gc_recurse+0x130/0x390 [bcache]
->>>>> ? btree_gc_mark_node+0x72/0x230 [bcache]
->>>>> bch_btree_gc+0x5da/0x600 [bcache]
->>>>> ? cpuusage_read+0x10/0x10
->>>>> ? bch_btree_gc+0x600/0x600 [bcache]
->>>>> bch_gc_thread+0x135/0x180 [bcache]
->>>>> 
->>>>> The relevant code starts with:
->>>>> 
->>>>>  new_nodes[0] = NULL;
->>>>> 
->>>>>  for (i = 0; i < nodes; i++) {
->>>>>      if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b->key)))
->>>>>          goto out_nocoalesce;
->>>>>  // ...
->>>>> out_nocoalesce:
->>>>>  // ...
->>>>>  for (i = 0; i < nodes; i++)
->>>>>      if (!IS_ERR(new_nodes[i])) {  // IS_ERR_OR_NULL before
->>>>> 028ddcac477b
->>>>>          btree_node_free(new_nodes[i]);  // new_nodes[0] is NULL
->>>>>          rw_unlock(true, new_nodes[i]);
->>>>>      }
->>>>> 
->>>>> This patch replaces IS_ERR() by IS_ERR_OR_NULL() to fix this.
->>>>> 
->>>>> Fixes: 028ddcac477b ("bcache: Remove unnecessary NULL point check in
->>>>> node allocations")
->>>>> Link:
->>>>> https://lore.kernel.org/all/3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de/
->>>>> Cc: stable@vger.kernel.org
->>>>> Cc: Zheng Wang <zyytlz.wz@163.com>
->>>>> Cc: Coly Li <colyli@suse.de>
->>>>> Signed-off-by: Markus Weippert <markus@gekmihesg.de>
->>>> 
->>>> Added into my for-next.  Thanks for patching up.
->>> 
->>> We should probably get this into the current release, rather than punt
->>> it to 6.8.
->> 
->> Yes, copied. So far I don?t have other bcache patches for 6.7, I feel
->> I might be redundant if I send you another for -rc4 series with this
->> single patch.
->> 
->> Could you please directly take it into -rc4?
-> 
-> Sure, I'll just grab it as-is.
+E.g.:
+Let's have (pf->num_lan_msix == 32)... Then we reduce number of
+combined queues by ethtool to 8 (so pf->num_queue_pairs == 8).
+i40e_fwd_add() called by macvlan then computes number of macvlans
+channels to be 16 and queues per channel 1 and calls
+i40e_setup_macvlans(). This computes new number of queue pairs
+for PF as:
 
-Thanks for doing this.
+num_qps = vsi->num_queue_pairs - (macvlan_cnt * qcnt);
 
-Coly Li
+This is evaluated in this case as:
+num_qps = (8 - 16 * 1) = (u16)-8 = 0xFFF8
+
+...and this number is stored vsi->next_base_queue that is used
+during channel creation. This leads to kernel crash.
+
+Fix this bug by computing the number of offloaded macvlan devices
+and no. their queues according the current number of queues instead
+of maximal one.
+
+Reproducer:
+1) Enable l2-fwd-offload
+2) Reduce number of queues
+3) Create macvlan device
+4) Make it up
+
+Result:
+[root@cnb-03 ~]# ethtool -K enp2s0f0np0 l2-fwd-offload on
+[root@cnb-03 ~]# ethtool -l enp2s0f0np0 | grep Combined
+Combined:       32
+Combined:       32
+[root@cnb-03 ~]# ethtool -L enp2s0f0np0 combined 8
+[root@cnb-03 ~]# ip link add link enp2s0f0np0 mac0 type macvlan mode bridge
+[root@cnb-03 ~]# ip link set mac0 up
+...
+[ 1225.686698] i40e 0000:02:00.0: User requested queue count/HW max RSS count:  8/32
+[ 1242.399103] BUG: kernel NULL pointer dereference, address: 0000000000000118
+[ 1242.406064] #PF: supervisor write access in kernel mode
+[ 1242.411288] #PF: error_code(0x0002) - not-present page
+[ 1242.416417] PGD 0 P4D 0
+[ 1242.418950] Oops: 0002 [#1] PREEMPT SMP NOPTI
+[ 1242.423308] CPU: 26 PID: 2253 Comm: ip Kdump: loaded Not tainted 6.7.0-rc1+ #20
+[ 1242.430607] Hardware name: Abacus electric, s.r.o. - servis@abacus.cz Super Server/H12SSW-iN, BIOS 2.4 04/13/2022
+[ 1242.440850] RIP: 0010:i40e_channel_config_tx_ring.constprop.0+0xd9/0x180 [i40e]
+[ 1242.448165] Code: 48 89 b3 80 00 00 00 48 89 bb 88 00 00 00 74 3c 31 c9 0f b7 53 16 49 8b b4 24 f0 0c 00 00 01 ca 83 c1 01 0f b7 d2 48 8b 34 d6 <48> 89 9e 18 01 00 00 49 8b b4 24 e8 0c 00 00 48 8b 14 d6 48 89 9a
+[ 1242.466902] RSP: 0018:ffffa4d52cd2f610 EFLAGS: 00010202
+[ 1242.472121] RAX: 0000000000000000 RBX: ffff9390a4ba2e40 RCX: 0000000000000001
+[ 1242.479244] RDX: 000000000000fff8 RSI: 0000000000000000 RDI: ffffffffffffffff
+[ 1242.486370] RBP: ffffa4d52cd2f650 R08: 0000000000000020 R09: 0000000000000000
+[ 1242.493494] R10: 0000000000000000 R11: 0000000100000001 R12: ffff9390b861a000
+[ 1242.500626] R13: 00000000000000a0 R14: 0000000000000010 R15: ffff9390b861a000
+[ 1242.507751] FS:  00007efda536b740(0000) GS:ffff939f4ec80000(0000) knlGS:0000000000000000
+[ 1242.515826] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1242.521564] CR2: 0000000000000118 CR3: 000000010bd48002 CR4: 0000000000770ef0
+[ 1242.528699] PKRU: 55555554
+[ 1242.531400] Call Trace:
+[ 1242.533846]  <TASK>
+[ 1242.535943]  ? __die+0x20/0x70
+[ 1242.539004]  ? page_fault_oops+0x76/0x170
+[ 1242.543018]  ? exc_page_fault+0x65/0x150
+[ 1242.546942]  ? asm_exc_page_fault+0x22/0x30
+[ 1242.551131]  ? i40e_channel_config_tx_ring.constprop.0+0xd9/0x180 [i40e]
+[ 1242.557847]  i40e_setup_channel.part.0+0x5f/0x130 [i40e]
+[ 1242.563167]  i40e_setup_macvlans.constprop.0+0x256/0x420 [i40e]
+[ 1242.569099]  i40e_fwd_add+0xbf/0x270 [i40e]
+[ 1242.573300]  macvlan_open+0x16f/0x200 [macvlan]
+[ 1242.577831]  __dev_open+0xe7/0x1b0
+[ 1242.581236]  __dev_change_flags+0x1db/0x250
+...
+
+Fixes: 1d8d80b4e4ff ("i40e: Add macvlan support on i40e")
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index c36535145a41..7bb1f64833eb 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -7981,8 +7981,8 @@ static void *i40e_fwd_add(struct net_device *netdev, struct net_device *vdev)
+ 		netdev_info(netdev, "Macvlans are not supported when HW TC offload is on\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+-	if (pf->num_lan_msix < I40E_MIN_MACVLAN_VECTORS) {
+-		netdev_info(netdev, "Not enough vectors available to support macvlans\n");
++	if (vsi->num_queue_pairs < I40E_MIN_MACVLAN_VECTORS) {
++		netdev_info(netdev, "Not enough queues to support macvlans\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+@@ -8000,7 +8000,7 @@ static void *i40e_fwd_add(struct net_device *netdev, struct net_device *vdev)
+ 		 * reserve 3/4th of max vectors, then half, then quarter and
+ 		 * calculate Qs per macvlan as you go
+ 		 */
+-		vectors = pf->num_lan_msix;
++		vectors = vsi->num_queue_pairs;
+ 		if (vectors <= I40E_MAX_MACVLANS && vectors > 64) {
+ 			/* allocate 4 Qs per macvlan and 32 Qs to the PF*/
+ 			q_per_macvlan = 4;
+-- 
+2.41.0
 
