@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAF07F7163
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71AE7F7181
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjKXK2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        id S1345384AbjKXKbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbjKXK2G (ORCPT
+        with ESMTP id S230334AbjKXKbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:28:06 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53693110
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:28:12 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50aae766214so501841e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700821690; x=1701426490; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Nbo0FUidKX+K23TC4mX9mkPOe1qgse1OtvaVCBp4abk=;
-        b=bbFklktoX3PIbHn5sH/rkAjogtknbAF3+Q8wcYBQCQuziIdmLJXEfBUl0fIjASKWkA
-         iSeL04sAymq/CKbNVx7G/FhdViH5gQP/JNUumAzofd8NpADMucD3B1JT4xz1M+EYX610
-         TXDWyyt60i4NuNau9XHp/amXAN5dWDIqewHgHaUWdqPY9Qh5pPGK1PuTGJfDkniwztog
-         Obu8vRxtUzXR0IDrqn6Eh3V3zjpdKSfjnI4I+re3dnWSHMhnF3Z7PdF8MAGh2ggKwqQ2
-         vdrsnBogxip6NyDtv1YDiTGSO5u7r8PxJHz4XbqhYjf0B0lylOATRU2Gl8GIsOPzYFId
-         6V8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700821690; x=1701426490;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nbo0FUidKX+K23TC4mX9mkPOe1qgse1OtvaVCBp4abk=;
-        b=Xl50tI8RX87/9vYIFgzjfuJ8SXXSF3zbupfZMFRkzIFIRDrYCjAxkyIny0EXcVzJFV
-         6zqJ2tHaDHjd8fbDra59xCN7mO+j29bhW32tf2/bY15PL18s/G9sZykpQgZMVHO5xAZb
-         fH0do/ETisRUesA1nn0K6NXEpXm9FJgBXtZ9d35DgT3wHdvQE0z76IfVrebzVDjsZOCU
-         ceUWlHKCIF7yuFHEZEFDDHO3H9YGlEmeEPq+iMKgRIH2neIsa04A6H6OLJ0Huu18IkCD
-         MtPogNmU8vsdhmCbls2YzVpBZLqL3CHdPg2wEPmNTtJliapCoS6VUnjiesJNYmMM6/VI
-         qxjg==
-X-Gm-Message-State: AOJu0YykJxYsIVkEcustN72RT4wX/XwxEEPtE9s+9v2C/fCP9WqQrCuU
-        TeShR5MyMKT/cIaWiJ7aFxVtfg==
-X-Google-Smtp-Source: AGHT+IE3d4+XZv6KBciYkFY6vMzT3RRiHUMV/wCvD7eh8ji9/04Z6RQNti57N2iLRAT5l+jpr23OEw==
-X-Received: by 2002:a05:6512:3d25:b0:50a:bacb:5b74 with SMTP id d37-20020a0565123d2500b0050abacb5b74mr1743294lfv.4.1700821690465;
-        Fri, 24 Nov 2023 02:28:10 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3471:930b:671b:cf77? ([2a01:e0a:999:a3a0:3471:930b:671b:cf77])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2758299wru.67.2023.11.24.02.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 02:28:09 -0800 (PST)
-Message-ID: <7232f08e-dfe3-43d6-a4f7-abf8360bbfc1@rivosinc.com>
-Date:   Fri, 24 Nov 2023 11:28:08 +0100
+        Fri, 24 Nov 2023 05:31:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5CD33110;
+        Fri, 24 Nov 2023 02:31:45 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BED913D5;
+        Fri, 24 Nov 2023 02:32:31 -0800 (PST)
+Received: from e127643.arm.com (unknown [10.57.5.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 47B063F7A6;
+        Fri, 24 Nov 2023 02:31:43 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com,
+        namhyung@gmail.com
+Cc:     James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/3] arm64: perf: Add support for event counting threshold
+Date:   Fri, 24 Nov 2023 10:28:54 +0000
+Message-Id: <20231124102857.1106453-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: fix __user annotation in traps_misaligned.c
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-References: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
- <ZWA9HwUNHDFIw0wP@infradead.org>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <ZWA9HwUNHDFIw0wP@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes since v5:
+  * Restructure the docs and add some more explanations
+  * PMMIR.WIDTH -> PMMIR.THWIDTH in one comment
+  * Don't write EVTYPER.TC if TH is 0. Doesn't have any functional
+    effect but it might be a bit easier to understand the code.
+  * Expand the format field #define names
 
+Changes since v4:
 
-On 24/11/2023 07:05, Christoph Hellwig wrote:
-> On Thu, Nov 23, 2023 at 02:16:17PM +0000, Ben Dooks wrote:
->> @@ -319,7 +319,7 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
->>  static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
->>  {
->>  	if (user_mode(regs)) {
->> -		return __get_user(*r_val, addr);
->> +		return __get_user(*r_val, (u8 __user *)addr);
->>  	} else {
->>  		*r_val = *addr;
->>  		return 0;
-> 
-> This is the wrong way to approach it.  Pass the untype unsigned long
-> from the caller instead and do a single round of casts from that
-> depending on the address_space.
+  * Rebase onto v6.7-rc1, it no longer depends on kvmarm/next
+  * Remove change that moved ARMV8_PMU_EVTYPE_MASK to the asm files.
+    This actually depended on those files being included in a certain
+    order with arm_pmuv3.h to avoid circular includes. Now the
+    definition is done programmatically in arm_pmuv3.c instead.
 
-I sent a similar patch two days ago with the same modification. I'm not
-sure to get it. Why is it better to pass the "unsigned long" type from
-the caller ? I mean, the resulting code would look like this right ?
+Changes since v3:
 
-static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
-{
-	if (user_mode(regs)) {
-		return __put_user(val, (u8 __user *)addr);
-	} else {
-		*addr = (u8 *)val;
-		return 0;
-	}
-}
+  * Drop #include changes to KVM source files because since
+    commit bc512d6a9b92 ("KVM: arm64: Make PMEVTYPER<n>_EL0.NSH RES0 if
+    EL2 isn't advertised"), KVM doesn't use ARMV8_PMU_EVTYPE_MASK
+    anymore
 
-Is this better from a "semantic" point of view and be sure the casts are
-done in a single place ?
+Changes since v2:
 
-> 
-> And please also remove this horrible else after return entipattern
-> while you're at it.
+  * Split threshold_control attribute into two, threshold_compare and
+    threshold_count so that it's easier to use
+  * Add some notes to the first commit message and the cover letter
+    about the behavior in KVM
+  * Update the docs commit with regards to the split attribute
+ 
+Changes since v1:
 
-Acked,
+  * Fix build on aarch32 by disabling FEAT_PMUv3_TH and splitting event
+    type mask between the platforms
+  * Change armv8pmu_write_evtype() to take unsigned long instead of u64
+    so it isn't unnecessarily wide on aarch32
+  * Add UL suffix to aarch64 event type mask definition
 
-Thanks,
+----
 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+FEAT_PMUv3_TH (Armv8.8) is a new feature that allows conditional
+counting of PMU events depending on how much the event increments on
+a single cycle. Two new config fields for perf_event_open have been
+added, and a PMU cap file for reading the max_threshold. See the second
+commit message and the docs in the last commit for more details.
+
+The feature is not currently supported on KVM guests, and PMMIR is set
+to read as zero, so it's not advertised as available. But it can be
+added at a later time. Writes to PMEVTYPER.TC and TH from guests are
+already RES0.
+
+The change has been validated on the Arm FVP model:
+
+  # Zero values, works as expected (as before).
+  $ perf stat -e dtlb_walk/threshold=0,threshold_compare=0/ -- true
+
+    5962      dtlb_walk/threshold=0,threshold_compare=0/
+
+  # Threshold >= 255 causes count to be 0 because dtlb_walk doesn't
+  # increase by more than 1 per cycle.
+  $ perf stat -e dtlb_walk/threshold=255,threshold_compare=2/ -- true
+
+    0      dtlb_walk/threshold=255,threshold_compare=2/
+  
+  # Keeping comparison as >= but lowering the threshold to 1 makes the
+  # count return.
+  $ perf stat -e dtlb_walk/threshold=1,threshold_compare=2/ -- true
+
+    6329      dtlb_walk/threshold=1,threshold_compare=2/
+
+James Clark (3):
+  arm64: perf: Include threshold control fields in PMEVTYPER mask
+  arm64: perf: Add support for event counting threshold
+  Documentation: arm64: Document the PMU event counting threshold
+    feature
+
+ Documentation/arch/arm64/perf.rst | 72 ++++++++++++++++++++++++
+ drivers/perf/arm_pmuv3.c          | 93 ++++++++++++++++++++++++++++++-
+ include/linux/perf/arm_pmuv3.h    |  4 +-
+ 3 files changed, 166 insertions(+), 3 deletions(-)
+
+-- 
+2.34.1
+
