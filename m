@@ -2,591 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D81A7F859F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D8C7F85A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjKXVvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
+        id S231228AbjKXVvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXVvO (ORCPT
+        with ESMTP id S229557AbjKXVvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:51:14 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9C3198D
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:51:20 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-67a0fc36b25so7816006d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:51:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700862679; x=1701467479; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yQnKlVrPQoBrS1RSy+0lUjZfTeyHwN45jR0JclLQR0I=;
-        b=Z6IDYaJZqsUC9SP3Tsvjb8nsom3dc6+qe+dTCFHZbnCHVQP/1QxVCAkeyLcyqFAAqL
-         kfbXtkEOcY1B1iCzXr4iWTbirvA8ou8cG0OrCh2LoN3hZX3OnUubk6MztrEj2c34sLyc
-         9EQ8ervggDbgEtZW5KbWWjf2FLdhAKl0bezKEnVLTfn+EH+NUxgLAvBesDwyht7Z4JJ8
-         Yg36CUoX/F3nvMeH4d90o1bRgL80mG8EH2t2eqEE2VkTzf7fEVCnb/xr8ctQBxVbWeBb
-         DMsYhJ5+bwLRPGOhQ4PWiO73CWMdkmMb6R08hb6lOYzAyxU54PeDrbWEgMt4gdhR/94Y
-         As5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700862679; x=1701467479;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yQnKlVrPQoBrS1RSy+0lUjZfTeyHwN45jR0JclLQR0I=;
-        b=eT4mI21ycclzyAemQy22GMuDlxlz4BgAAOe9/1vjbh0yur51Edr98hR31OoLrB9Yh5
-         9zaYDZPTx/h6+G5et/jq2TXrvG4iNUgKIC5zqObJGiWOmd/3yji4pZVkhGwRArXeGUos
-         bHaqqRO1sEwOI5q2jQwYJbEl3Xi3EeW9ImaDYnXy71Rsk3/Hm/EAuuVGK86jZzP7CxQH
-         AojBvEqKlG0Fx2jFYAUDk2mssQIusY8v+MUFuH0SXoQOuCSXBSGoMviTuhuaapx6i5k6
-         ln+bsUILz/j1SBf+o2Mq0iVMlFnoRKjgNWxqgdulCCKomLiGBYnlo5i8XC40af1BeGgk
-         0J1A==
-X-Gm-Message-State: AOJu0Yz856Bx3vse5l5uKzvpS2S2HnTTA3z3shVuJFrDekwc1x8ZjAeY
-        6q2BHLnUI3JfA78lW652qo4R9Q==
-X-Google-Smtp-Source: AGHT+IHe0PikaYAV2+aNIJdLk9XQmmvI6WkOXG01DduZ/Yc5Tns7Km6TR6yr6xquG3XevlR38SVuCQ==
-X-Received: by 2002:a0c:ed46:0:b0:65d:4840:6eb4 with SMTP id v6-20020a0ced46000000b0065d48406eb4mr4247829qvq.6.1700862678852;
-        Fri, 24 Nov 2023 13:51:18 -0800 (PST)
-Received: from ?IPV6:2003:e8:4710:ee01::f88? (p200300e84710ee010000000000000f88.dip0.t-ipconnect.de. [2003:e8:4710:ee01::f88])
-        by smtp.gmail.com with ESMTPSA id ro13-20020a05620a398d00b0077d74f884d9sm1420142qkn.117.2023.11.24.13.51.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 13:51:18 -0800 (PST)
-Message-ID: <225f2b8e-0d6b-464a-a42e-b2d05afa954f@linaro.org>
-Date:   Fri, 24 Nov 2023 21:51:15 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/3] arm64: dts: qcom: Add base qcm6490 idp board dts
-Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Fri, 24 Nov 2023 16:51:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682951987
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:51:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700862683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Hgj8B8xMgHNPRV+C3WI4kW0phmnLrWnRPCMxmjhfjYA=;
+        b=aH+qg+PEzeH0DCTcmutCW+e8mmXAV4HNWH46V3wEdZ00jYWEUVFfSA4K1IcJ9LRlNrDa8C
+        IlIZuPzxCEgO3/0ujMDe6AUwJxXYbIpv+NqsPwCCedvNRmhv4mzG4W2WK0Ia40bzI1OSyq
+        6tJ+cN1/adEqz/mD7jn+k5a5nLktqho=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-372-NQ-g0QsfPie5Dl7zSx4g0A-1; Fri, 24 Nov 2023 16:51:19 -0500
+X-MC-Unique: NQ-g0QsfPie5Dl7zSx4g0A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96E91812C28;
+        Fri, 24 Nov 2023 21:51:18 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 939085028;
+        Fri, 24 Nov 2023 21:51:17 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Steve French <sfrench@samba.org>
+cc:     dhowells@redhat.com, Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, linux-cifs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231124121305.1954-1-quic_kbajaj@quicinc.com>
- <20231124121305.1954-3-quic_kbajaj@quicinc.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <20231124121305.1954-3-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: [PATCH] cifs: Set the file size after doing copychunk_range
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1297338.1700862676.1@warthog.procyon.org.uk>
+Date:   Fri, 24 Nov 2023 21:51:16 +0000
+Message-ID: <1297339.1700862676@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+    
+Set i_size on the inode after doing the copychunk_range operation as this
+value may be used by various things internally.  stat() hides the issue
+because setting ->time to 0 causes cifs_getatr() to revalidate the
+attributes.
 
+Also reduce the pagecache truncation to only invalidate the range of bytes
+that will be copied over otherwise we will discard dirty data that isn't
+inside the target range.
 
-On 24/11/2023 12:13, Komal Bajaj wrote:
-> Add DTS for Qualcomm IDP platform using QCM6490 SoC.
-> This adds debug uart, eMMC and usb support along with
-> regulators found on this board.
-> 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Fixes: 620d8745b35d ("Introduce cifs_copy_file_range()")
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Steve French <sfrench@samba.org>
+cc: Shyam Prasad N <nspmangalore@gmail.com>
+cc: Rohith Surabattula <rohiths.msft@gmail.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: linux-cifs@vger.kernel.org
+---
+ fs/smb/client/cifsfs.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Missing chassis-type type? With that (or without if it's intentionally 
-missing), please add
+diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
+index ea3a7a668b45..5a69e93c302e 100644
+--- a/fs/smb/client/cifsfs.c
++++ b/fs/smb/client/cifsfs.c
+@@ -1307,12 +1307,15 @@ ssize_t cifs_file_copychunk_range(unsigned int xid,
+ 		goto unlock;
+ 
+ 	/* should we flush first and last page first */
+-	truncate_inode_pages(&target_inode->i_data, 0);
++	truncate_inode_pages_range(&target_inode->i_data, destoff, len);
+ 
+ 	rc = file_modified(dst_file);
+-	if (!rc)
++	if (!rc) {
+ 		rc = target_tcon->ses->server->ops->copychunk_range(xid,
+ 			smb_file_src, smb_file_target, off, len, destoff);
++		if (rc > 0 && destoff + rc > i_size_read(target_inode))
++			truncate_setsize(target_inode, destoff + rc);
++	}
+ 
+ 	file_accessed(src_file);
+ 
 
-Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/Makefile        |   1 +
->   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 464 +++++++++++++++++++++++
->   2 files changed, 465 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index d6cb840b7050..77babebe4904 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -87,6 +87,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-maple.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-poplar.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-xiaomi-sagit.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-fairphone-fp5.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-idp.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= qdu1000-idp.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> new file mode 100644
-> index 000000000000..78ace02e42c0
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -0,0 +1,464 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include "sc7280.dtsi"
-> +#include "pm7325.dtsi"
-> +#include "pm8350c.dtsi"
-> +#include "pmk8350.dtsi"
-> +
-> +/delete-node/ &ipa_fw_mem;
-> +/delete-node/ &rmtfs_mem;
-> +/delete-node/ &video_mem;
-> +/delete-node/ &wlan_ce_mem;
-> +/delete-node/ &xbl_mem;
-> +
-> +/ {
-> +	model = "Qualcomm Technologies, Inc. QCM6490 IDP";
-> +	compatible = "qcom,qcm6490-idp", "qcom,qcm6490";
-> +
-> +	aliases {
-> +		serial0 = &uart5;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	reserved-memory {
-> +		xbl_mem: xbl@80700000 {
-> +			reg = <0x0 0x80700000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
-> +			reg = <0x0 0x81800000 0x0 0x1e00000>;
-> +			no-map;
-> +		};
-> +
-> +		camera_mem: camera@84300000 {
-> +			reg = <0x0 0x84300000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		wpss_mem: wpss@84800000 {
-> +			reg = <0x0 0x84800000 0x0 0x1900000>;
-> +			no-map;
-> +		};
-> +
-> +		adsp_mem: adsp@86100000 {
-> +			reg = <0x0 0x86100000 0x0 0x2800000>;
-> +			no-map;
-> +		};
-> +
-> +		cdsp_mem: cdsp@88900000 {
-> +			reg = <0x0 0x88900000 0x0 0x1e00000>;
-> +			no-map;
-> +		};
-> +
-> +		video_mem: video@8a700000 {
-> +			reg = <0x0 0x8a700000 0x0 0x700000>;
-> +			no-map;
-> +		};
-> +
-> +		cvp_mem: cvp@8ae00000 {
-> +			reg = <0x0 0x8ae00000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		ipa_fw_mem: ipa-fw@8b300000 {
-> +			reg = <0x0 0x8b300000 0x0 0x10000>;
-> +			no-map;
-> +		};
-> +
-> +		ipa_gsi_mem: ipa-gsi@8b310000 {
-> +			reg = <0x0 0x8b310000 0x0 0xa000>;
-> +			no-map;
-> +		};
-> +
-> +		gpu_microcode_mem: gpu-microcode@8b31a000 {
-> +			reg = <0x0 0x8b31a000 0x0 0x2000>;
-> +			no-map;
-> +		};
-> +
-> +		mpss_mem: mpss@8b800000 {
-> +			reg = <0x0 0x8b800000 0x0 0xf600000>;
-> +			no-map;
-> +		};
-> +
-> +		tz_stat_mem: tz-stat@c0000000 {
-> +			reg = <0x0 0xc0000000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		tags_mem: tags@c0100000 {
-> +			reg = <0x0 0xc0100000 0x0 0x1200000>;
-> +			no-map;
-> +		};
-> +
-> +		qtee_mem: qtee@c1300000 {
-> +			reg = <0x0 0xc1300000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		trusted_apps_mem: trusted_apps@c1800000 {
-> +			reg = <0x0 0xc1800000 0x0 0x1c00000>;
-> +			no-map;
-> +		};
-> +
-> +		debug_vm_mem: debug-vm@d0600000 {
-> +			reg = <0x0 0xd0600000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	vph_pwr: vph-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vph_pwr";
-> +		regulator-min-microvolt = <2500000>;
-> +		regulator-max-microvolt = <4350000>;
-> +	};
-> +};
-> +
-> +&apps_rsc {
-> +	regulators-0 {
-> +		compatible = "qcom,pm7325-rpmh-regulators";
-> +		qcom,pmic-id = "b";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-l1-l4-l12-l15-supply = <&vreg_s7b_0p972>;
-> +		vdd-l2-l7-supply = <&vreg_bob_3p296>;
-> +		vdd-l3-supply = <&vreg_s2b_0p876>;
-> +		vdd-l5-supply = <&vreg_s2b_0p876>;
-> +		vdd-l6-l9-l10-supply = <&vreg_s8b_1p272>;
-> +		vdd-l8-supply = <&vreg_s7b_0p972>;
-> +		vdd-l11-l17-l18-l19-supply = <&vreg_s1b_1p872>;
-> +		vdd-l13-supply = <&vreg_s7b_0p972>;
-> +		vdd-l14-l16-supply = <&vreg_s8b_1p272>;
-> +
-> +		vreg_s1b_1p872: smps1 {
-> +			regulator-min-microvolt = <1840000>;
-> +			regulator-max-microvolt = <2040000>;
-> +		};
-> +
-> +		vreg_s2b_0p876: smps2 {
-> +			regulator-min-microvolt = <570070>;
-> +			regulator-max-microvolt = <1050000>;
-> +		};
-> +
-> +		vreg_s7b_0p972: smps7 {
-> +			regulator-min-microvolt = <535000>;
-> +			regulator-max-microvolt = <1120000>;
-> +		};
-> +
-> +		vreg_s8b_1p272: smps8 {
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1500000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_RET>;
-> +		};
-> +
-> +		vreg_l1b_0p912: ldo1 {
-> +			regulator-min-microvolt = <825000>;
-> +			regulator-max-microvolt = <925000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l2b_3p072: ldo2 {
-> +			regulator-min-microvolt = <2700000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l3b_0p504: ldo3 {
-> +			regulator-min-microvolt = <312000>;
-> +			regulator-max-microvolt = <910000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l4b_0p752: ldo4 {
-> +			regulator-min-microvolt = <752000>;
-> +			regulator-max-microvolt = <820000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		reg_l5b_0p752: ldo5 {
-> +			regulator-min-microvolt = <552000>;
-> +			regulator-max-microvolt = <832000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6b_1p2: ldo6 {
-> +			regulator-min-microvolt = <1140000>;
-> +			regulator-max-microvolt = <1260000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7b_2p952: ldo7 {
-> +			regulator-min-microvolt = <2400000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l8b_0p904: ldo8 {
-> +			regulator-min-microvolt = <870000>;
-> +			regulator-max-microvolt = <970000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9b_1p2: ldo9 {
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1304000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l11b_1p504: ldo11 {
-> +			regulator-min-microvolt = <1504000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l12b_0p751: ldo12 {
-> +			regulator-min-microvolt = <751000>;
-> +			regulator-max-microvolt = <824000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l13b_0p53: ldo13 {
-> +			regulator-min-microvolt = <530000>;
-> +			regulator-max-microvolt = <824000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l14b_1p08: ldo14 {
-> +			regulator-min-microvolt = <1080000>;
-> +			regulator-max-microvolt = <1304000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l15b_0p765: ldo15 {
-> +			regulator-min-microvolt = <765000>;
-> +			regulator-max-microvolt = <1020000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l16b_1p1: ldo16 {
-> +			regulator-min-microvolt = <1100000>;
-> +			regulator-max-microvolt = <1300000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l17b_1p7: ldo17 {
-> +			regulator-min-microvolt = <1700000>;
-> +			regulator-max-microvolt = <1900000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l18b_1p8: ldo18 {
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l19b_1p8: ldo19 {
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-allow-set-load;
-> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-> +						   RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +
-> +	regulators-1 {
-> +		compatible = "qcom,pm8350c-rpmh-regulators";
-> +		qcom,pmic-id = "c";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-s9-supply = <&vph_pwr>;
-> +		vdd-s10-supply = <&vph_pwr>;
-> +		vdd-l1-l12-supply = <&vreg_s1b_1p872>;
-> +		vdd-l2-l8-supply = <&vreg_s1b_1p872>;
-> +		vdd-l3-l4-l5-l7-l13-supply = <&vreg_bob_3p296>;
-> +		vdd-l6-l9-l11-supply = <&vreg_bob_3p296>;
-> +		vdd-l10-supply = <&vreg_s7b_0p972>;
-> +		vdd-bob-supply = <&vph_pwr>;
-> +
-> +		vreg_s1c_2p19: smps1 {
-> +			regulator-min-microvolt = <2190000>;
-> +			regulator-max-microvolt = <2210000>;
-> +		};
-> +
-> +		vreg_s2c_0p752: smps2 {
-> +			regulator-min-microvolt = <750000>;
-> +			regulator-max-microvolt = <800000>;
-> +		};
-> +
-> +		vreg_s5c_0p752: smps5 {
-> +			regulator-min-microvolt = <465000>;
-> +			regulator-max-microvolt = <1050000>;
-> +		};
-> +
-> +		vreg_s7c_0p752: smps7 {
-> +			regulator-min-microvolt = <465000>;
-> +			regulator-max-microvolt = <800000>;
-> +		};
-> +
-> +		vreg_s9c_1p084: smps9 {
-> +			regulator-min-microvolt = <1010000>;
-> +			regulator-max-microvolt = <1170000>;
-> +		};
-> +
-> +		vreg_l1c_1p8: ldo1 {
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1980000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l2c_1p62: ldo2 {
-> +			regulator-min-microvolt = <1620000>;
-> +			regulator-max-microvolt = <1980000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l3c_2p8: ldo3 {
-> +			regulator-min-microvolt = <2800000>;
-> +			regulator-max-microvolt = <3540000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l4c_1p62: ldo4 {
-> +			regulator-min-microvolt = <1620000>;
-> +			regulator-max-microvolt = <3300000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l5c_1p62: ldo5 {
-> +			regulator-min-microvolt = <1620000>;
-> +			regulator-max-microvolt = <3300000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6c_2p96: ldo6 {
-> +			regulator-min-microvolt = <1650000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7c_3p0: ldo7 {
-> +			regulator-min-microvolt = <3000000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l8c_1p62: ldo8 {
-> +			regulator-min-microvolt = <1620000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9c_2p96: ldo9 {
-> +			regulator-min-microvolt = <2700000>;
-> +			regulator-max-microvolt = <35440000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l10c_0p88: ldo10 {
-> +			regulator-min-microvolt = <720000>;
-> +			regulator-max-microvolt = <1050000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l11c_2p8: ldo11 {
-> +			regulator-min-microvolt = <2800000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l12c_1p65: ldo12 {
-> +			regulator-min-microvolt = <1650000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l13c_2p7: ldo13 {
-> +			regulator-min-microvolt = <2700000>;
-> +			regulator-max-microvolt = <3544000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_bob_3p296: bob {
-> +			regulator-min-microvolt = <3008000>;
-> +			regulator-max-microvolt = <3960000>;
-> +		};
-> +	};
-> +};
-> +
-> +&qupv3_id_0 {
-> +	status = "okay";
-> +};
-> +
-> +&sdhc_1 {
-> +	non-removable;
-> +	no-sd;
-> +	no-sdio;
-> +
-> +	vmmc-supply = <&vreg_l7b_2p952>;
-> +	vqmmc-supply = <&vreg_l19b_1p8>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&tlmm {
-> +	gpio-reserved-ranges = <32 2>, /* ADSP */
-> +			       <48 4>; /* NFC */
-> +};
-> +
-> +&uart5 {
-> +	compatible = "qcom,geni-debug-uart";
-> +	status = "okay";
-> +};
-> +
-> +&usb_1 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_dwc3 {
-> +	dr_mode = "peripheral";
-> +};
-> +
-> +&usb_1_hsphy {
-> +	vdda-pll-supply = <&vreg_l10c_0p88>;
-> +	vdda33-supply = <&vreg_l2b_3p072>;
-> +	vdda18-supply = <&vreg_l1c_1p8>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_qmpphy {
-> +	vdda-phy-supply = <&vreg_l6b_1p2>;
-> +	vdda-pll-supply = <&vreg_l1b_0p912>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&wifi {
-> +	memory-region = <&wlan_fw_mem>;
-> +};
-> --
-> 2.42.0
-> 
-> 
-
--- 
-// Caleb (they/them)
