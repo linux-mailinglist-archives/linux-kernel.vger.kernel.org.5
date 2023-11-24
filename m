@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD07A7F775D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428B47F7760
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345461AbjKXPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
+        id S231302AbjKXPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbjKXPM0 (ORCPT
+        with ESMTP id S231206AbjKXPNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:12:26 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3444DC1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:12:33 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54b0c368d98so2868a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:12:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700838751; x=1701443551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=quAfw52oJT3Iu4f4DiSuO7KlI7QjDDj//SV/3y1fuKM=;
-        b=jjWdRf+JaAQYJf+lfA+Nh/8IGDDbOvHOe1vRhvRkOyQq16CWk+BPwgPpe5l0zRVjog
-         ltzhqba8Ug3LHf0ZXvez8RqUkAZefC8knq2JoX6uGjIT0VY/krpd5wDnmv2tQ1FNEj6I
-         4/lgryle1puSCMEEt5yu/i6UIXbld9GSdx1Pna+U2lBJM13NzHZ7Mr8ZAgU4p0rTwU3x
-         WL2AIkhxZf5nVmJZy6byLZuFxSIkBdyTIcWgv90kG7p1yNrCKRA10ktZoVRQ8/1pNUul
-         XSynh1mtlBuK4i4IdZFxYqOTd8k8qtyt52ifsxPbAGU1cHMXGY7SPkTb5CScsJPmHYv/
-         IF0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700838751; x=1701443551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=quAfw52oJT3Iu4f4DiSuO7KlI7QjDDj//SV/3y1fuKM=;
-        b=PWF0o+CWIAThg61kw0etiR6GA5ax/JG1gdKsCmBkeRBtUewK+YtwiqYqGfeioMC6KX
-         k93pjD9664xqn/eVQp0vZRPJrCKIPF4HjUavgc8KIV98t9kH2ert8LPT57MdZB2w1cGl
-         GeIHzkDzqPmxzQ0XMQZur29alS3rM1CztO1PfrBz+zBMV+rN/cT2V8BmnWPoFJXvqgKv
-         Ts92BZ+8A3LY4qX3QMNjdzw1houYDLnfV1sAmHujbFrbjqsmjH+EjOw3VYjE4puKSrsA
-         apIPh4WnNhaQQCkZUFfx5kBb9pVRa5PIZtE3CvMdQGfJ4WndSVAeef3yqSmNiEKvPfFX
-         f3Xw==
-X-Gm-Message-State: AOJu0Ywbl2vFpzvECqdabtRwc7M/o27sx5c3FUnfOAVuyaqSyFVGHEhk
-        o+D+UyZJAonaSLh55bU6fkifzye3csbju/t4ntyNVQ==
-X-Google-Smtp-Source: AGHT+IGr8o2vaGk4g6YM40MXMmczEWY89+5Ocxwtmih7cxA00JkoD3KjvhIVDs7wYG8aG9O+PyZcv4bA2VWF5pkkUBw=
-X-Received: by 2002:a05:6402:11c6:b0:54a:ee8b:7a99 with SMTP id
- j6-20020a05640211c600b0054aee8b7a99mr112274edw.0.1700838751574; Fri, 24 Nov
- 2023 07:12:31 -0800 (PST)
+        Fri, 24 Nov 2023 10:13:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224EF1725
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cpGcQbK5ALS/h/233m+c8jmOxYiT52WHP0nU+fSEvDI=; b=fX93P2C7tTpexgPCsWNuQcuoF5
+        V4NbDi/cjiBJ3iFD2y4kQwA8+IY1jUY//C5gTL7Y8jlJWwizOacgMGtmLWvpyP1Jxtmlv8KsF+u2Q
+        3AFGeeshrZuDXwCFRYI7nDjjzh5ZrGTMMIUvezBHV4zBK0vJKDx0VZIpALBPKeA84BikUEgoitHmR
+        deGOVtSFkgHm/2kSyrhYPGpPu5pc1VH0zHdq1nq6ZFG84alWCsKV9908uETUg2hAyPf5y4SR2mvzr
+        6bWeourxF/Pzo9Zfk32xV0m0+CJWq9as/ots/slGIkFbbfZPP1/KgynAsP/vY1Aix+BJgIpgbC0sJ
+        +O0DhaJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r6Xrz-008gyc-Bo; Fri, 24 Nov 2023 15:13:27 +0000
+Date:   Fri, 24 Nov 2023 15:13:27 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
+Message-ID: <ZWC9lwDAjMZsNzoG@casper.infradead.org>
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <ZV9267tQEhoPzCru@casper.infradead.org>
+ <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
 MIME-Version: 1.0
-References: <CAOQ4uxjssgw1tZrUQvtHHVacSgR9NE0yF8DA3+R5LNFAocCvVQ@mail.gmail.com>
- <000000000000258ac60606589787@google.com>
-In-Reply-To: <000000000000258ac60606589787@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 24 Nov 2023 16:11:54 +0100
-Message-ID: <CAG48ez2UkCR7LMaQfCQVLW4VOZG9CuPDMHG7cBtaAitM=zPBCg@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] KASAN: invalid-free in ovl_copy_up_one
-To:     amir73il@gmail.com,
-        syzbot <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 5:10=E2=80=AFPM syzbot
-<syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com> wrote:
-> syzbot has tested the proposed patch and the reproducer did not trigger a=
-ny issue:
->
-> Reported-and-tested-by: syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail=
-.com
->
-> Tested on:
->
-> commit:         8e9b46c4 ovl: do not encode lower fh with upper sb_wri..
-> git tree:       https://github.com/amir73il/linux.git ovl_want_write
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D10d10ffa68000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbb54ecdfa197f=
-132
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D477d8d8901756d1=
-cbba1
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
+On Fri, Nov 24, 2023 at 09:56:37AM +0000, Ryan Roberts wrote:
+> On 23/11/2023 15:59, Matthew Wilcox wrote:
+> > On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
+> >> This is v7 of a series to implement small-sized THP for anonymous memory
+> >> (previously called "large anonymous folios"). The objective of this is to
+> > 
+> > I'm still against small-sized THP.  We've now got people asking whether
+> > the THP counters should be updated when dealing with large folios that
+> > are smaller than PMD sized.  It's sowing confusion, and we should go
+> > back to large anon folios as a name.
+> 
+> I suspect I'm labouring the point here, but I'd like to drill into exactly what
+> you are objecting to. Is it:
+> 
+> A) Using the name "small-sized THP" (which is currently only used in the commit
+> logs and a couple of times in the documentation).
 
-It looks like the fix was submitted without the Reported-by tag, so
-syzkaller doesn't recognize that the fix has landed... I'll tell
-syzkaller now which commit the fix is supposed to be in, please
-correct me if this is wrong:
+Yes, this is what I'm objecting to.
 
-#syz fix: ovl: do not encode lower fh with upper sb_writers held
+> B) Exposing the controls for this feature as an extension to the existing
+> /sys/kernel/mm/transparent_hugepage/* sysfs interface (note the interface never
+> uses the term "small-sized").
+
+I don't object to the controls being here.  I still wish we didn't need
+an interface to control them at all, but I don't have the time to become
+an expert in anonymous memory and figure out how to make that happen.
+
+> If A) then this is easily solved by choosing another descriptive name and
+> updating those places. Personally I think it would be best to continue to use
+> "THP" since we are exposing the feature through that interface. Perhaps "large
+> folio THP".
+
+I think that continues the confusion about the existing interfaces we
+have which count THP (and mean "PMD sized THP").  I'd really prefer the
+term "THP" to unambiguously mean PMD sized THP.  I don't understand why
+you felt the need to move away from Large Anon Folios as a name.
+
