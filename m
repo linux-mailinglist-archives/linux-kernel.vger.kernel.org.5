@@ -2,321 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26627F6F76
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDCF7F6F77
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345170AbjKXJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
+        id S230317AbjKXJYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235262AbjKXJVx (ORCPT
+        with ESMTP id S229705AbjKXJYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:21:53 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68F61BF6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:21:26 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-548d60a4d60so2250620a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:21:26 -0800 (PST)
+        Fri, 24 Nov 2023 04:24:40 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843F510C9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:24:44 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so2356956a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:24:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700817684; x=1701422484; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RrmP3MEwKcn9VwohUVQtnnZXyH6FXy3hd9q1Xm2IOh0=;
-        b=zekm1Wwy0TpIhsam2iF5C/pMZiQhm2XEdS2eMz5Ezud7HEgiyEuTrYYSWynoMPAozI
-         KmSyQFT3dAdEP1KFxu4mCbazSUwOPWy77gLMkzvv144ygAzZ5NEUYLEZqXolc9oNbhJW
-         jCDNqbcFe4DtixdgcPlmbb9Z1sQv2VWP60KVIAWVL6rFgxMTLxurlby6QdL5XDfZMrxt
-         mG0zkxMktI/z4cYEeFhxLf6y4XNVaw/EThTUWqz9n5UgHN8ml22ry6EgZbpASlRKOLFG
-         og0FyRzu2etc2vQdxLst1GvNTaS1Lnt75uczF4MhXr9VUB7xV2gAEF5J/B6MmMCMuxgW
-         b4eQ==
+        d=tuxon.dev; s=google; t=1700817883; x=1701422683; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tP7iDHeY/GImPwmVPQj8nL6E/oGA2tu11UlMq0fOEuY=;
+        b=Co9JE82EK+QdDBxpvOsoAHUn9KmvE0NtViDmEyaS7ge1lpXFI45ON5XgjBjj3asx6q
+         hKJ8ZH3y9GYcnygpbeZmZw01S19IlBVfJU1nnElZ2VP5Dw70GiLoxvJvYoWCRcNDHtKL
+         ++YDCJ6NO8NvMGXfxvi1X86dZTYxCR6ewIidNJ/X/qHKMuPmn4GWow+g9tcEWDPoT248
+         FOeqyRcJwMM4sAff7/ipjeu9xZZuC4C1pUVlJsrAP8f8yWYA8Bkc1o6Zhzj8NDRHFCc5
+         1+UDsoQMtl1/S/ONDXk3Wzw33FglMSu66mo/LBRelD9qgusDT6tvqp+UX/G2Ux+pjnhj
+         5gUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700817684; x=1701422484;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RrmP3MEwKcn9VwohUVQtnnZXyH6FXy3hd9q1Xm2IOh0=;
-        b=TaSm/uxQHR91aDmOIAiD14tI2v2ZRbLO/RW2Li8HGQ5bJLONWPWNCy+Hulus143924
-         g38RtEklKVqo4FJd1fS9S+p0LeFCoLmLvlk4REsbWRjTHXJa2TerSteVxT5vgNZJPfKL
-         QL2xyywv0eY/HU27cXy8th8bxekBq/0ncb+9pJAwB82umiJTC/v6Rb4eo89mzqB5kg45
-         DpEBGjnYQSJKqxGD0B23i75Hs+Wk4BGdPOH7LLZmUPVX64yLCs172isyGTzuj5od2efp
-         6a8bqG+qV96ySO3Zmps3oE2w/6TcLcOUYYqnaBRKjsy2QHzzz/kKeabAHr2C9Tz9alJl
-         HrEA==
-X-Gm-Message-State: AOJu0YwkTJzfiGWP7vA/y7HV0eKdFeKN8aEz9aLYfruqP+y7AwSV+59N
-        5JX7/8Zqu6AjAiyC3vnozPXeXg==
-X-Google-Smtp-Source: AGHT+IEzrEq3mSp35q92xY1HRufPiiBbBHpdMj5vnsaxVLKzCnbnOgGj5e2j9XEBO95hzaO03zYv2w==
-X-Received: by 2002:a50:99d4:0:b0:53f:a526:779 with SMTP id n20-20020a5099d4000000b0053fa5260779mr1537398edb.12.1700817684404;
-        Fri, 24 Nov 2023 01:21:24 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id u1-20020aa7d541000000b00548b87c6ca1sm1558327edr.94.2023.11.24.01.21.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:21:24 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: correct white-spaces in examples
-Date:   Fri, 24 Nov 2023 10:21:21 +0100
-Message-Id: <20231124092121.16866-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1700817883; x=1701422683;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tP7iDHeY/GImPwmVPQj8nL6E/oGA2tu11UlMq0fOEuY=;
+        b=FLHXL98KRCEmVe1B+TlK2Gvk2rGChEMFn9B5aJVNXHKlWh7tLNsInSA8JGRaIdtJzW
+         4W4VgS7l74upHVUZEAcygT8rjKr+f5fF14+l941aafzTyfmN1UqHaIb4v6Dv/eHzDInJ
+         VJou1fYqZ/naM7EGaxHVqCGkdCZ3xyJX1RsmJS2XIN0wQt6Y6P/qyeWvo8vWeZkc/Ikl
+         ZcOlKK0A1TzWdyhjJ1DvJbIjG5hZqazgzMBQXgErahads7KAHCTFuAyyZp4ks1WGp/XG
+         7QWDrTR4ektWVJRLpbzOb0ysAVhpjlP7I/BTOkcMFvf0dP7zDepURC5JKe3UHV7oppwV
+         2Org==
+X-Gm-Message-State: AOJu0YxZhT6CGMUDoMciQRAHvRjw3nuFvUNN9dpdbCAheKpkfujCD49O
+        zM3zhJcezd4cKfOAGKiOk+Nz6g==
+X-Google-Smtp-Source: AGHT+IF5wnmdU+9Ge45kUoBqgtGwPWqSG7G8vXh5qyjB+1hbTEU57wYmB+BsFMxgRrbV9yMfGGawnQ==
+X-Received: by 2002:a17:906:2c45:b0:9da:eefb:854c with SMTP id f5-20020a1709062c4500b009daeefb854cmr1507598ejh.25.1700817882750;
+        Fri, 24 Nov 2023 01:24:42 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.3])
+        by smtp.gmail.com with ESMTPSA id dv23-20020a170906b81700b009fc6e3ef4e4sm1808465ejb.42.2023.11.24.01.24.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 01:24:42 -0800 (PST)
+Message-ID: <a162c0df-6c1d-4cdf-a25e-528c79106374@tuxon.dev>
+Date:   Fri, 24 Nov 2023 11:24:39 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/14] clk: renesas: rzg2l-cpg: Add support for MSTOP
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120070024.4079344-4-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVMpKVY8WX7dbtHfgnwgePH+i9+2BAumb37sFmqccb44g@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+Content-Language: en-US
+In-Reply-To: <CAMuHMdVMpKVY8WX7dbtHfgnwgePH+i9+2BAumb37sFmqccb44g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use only one and exactly one space around '=' in DTS example.
+Hi, Geert,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On 23.11.2023 18:35, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> RZ/{G2L, V2L, G3S} based CPG versions have support for saving extra
+>> power when clocks are disabled by activating module standby. This is done
+>> though MSTOP specific registers that are part of CPG. Each individual
+>> module have one or more bits associated in one MSTOP register (see table
+>> "Registers for Module Standby Mode" from HW manuals). Hardware manual
+>> associates modules' clocks to one or more MSTOP bits. There are 3 mappings
+>> available (identified by researching RZ/G2L, RZ/G3S, RZ/V2L HW manuals):
+>>
+>> case 1: N clocks mapped to N MSTOP bits (with N={0, ..., X})
+>> case 2: N clocks mapped to 1 MSTOP bit  (with N={0, ..., X})
+>> case 3: N clocks mapped to M MSTOP bits (with N={0, ..., X}, M={0, ..., Y})
+>>
+>> Case 3 has been currently identified on RZ/V2L for VCPL4 module.
+>>
+>> To cover all 3 cases the individual platform drivers will provide to
+>> clock driver MSTOP register offset and associated bits in this register
+>> as a bitmask and the clock driver will apply this bitmask to proper
+>> MSTOP register.
+>>
+>> As most of the modules have more than one clock and these clocks are
+>> mapped to 1 MSTOP bitmap that need to be applied to MSTOP registers,
+>> to avoid switching the module to/out of standby when the module has
+>> enabled/disabled clocks a counter has been associated to each module
+>> (though struct mstop::count) which is incremented/decremented every
+>> time a module's clock is enabled/disabled and the settings to MSTOP
+>> register are applied only when the counter reaches zero (counter zero
+>> means either 1st clock of the module is going to be enabled or all clocks
+>> of the module are going to be disabled).
+> 
+> Thanks for your patch!
+> 
+>> The MSTOP functionality has been instantiated at the moment for RZ/G3S.
+> 
+> Do you plan to add support for the other SoCs, too?
 
----
+Yes.
 
-Merging idea: Rob's DT.
-Should apply cleanly on Rob's for-next.
----
- .../devicetree/bindings/auxdisplay/hit,hd44780.yaml       | 2 +-
- .../devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml     | 2 +-
- Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml | 6 +++---
- .../devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml       | 2 +-
- .../devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml      | 2 +-
- .../interrupt-controller/st,stih407-irq-syscfg.yaml       | 4 ++--
- Documentation/devicetree/bindings/mmc/arm,pl18x.yaml      | 2 +-
- Documentation/devicetree/bindings/net/sff,sfp.yaml        | 2 +-
- .../devicetree/bindings/pci/toshiba,visconti-pcie.yaml    | 2 +-
- .../bindings/pinctrl/renesas,rzg2l-pinctrl.yaml           | 6 +++---
- .../devicetree/bindings/power/supply/richtek,rt9455.yaml  | 8 ++++----
- .../devicetree/bindings/regulator/mps,mp5416.yaml         | 4 ++--
- .../devicetree/bindings/regulator/mps,mpq7920.yaml        | 4 ++--
- .../devicetree/bindings/remoteproc/fsl,imx-rproc.yaml     | 8 ++++----
- 14 files changed, 27 insertions(+), 27 deletions(-)
+> 
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+>> --- a/drivers/clk/renesas/r9a08g045-cpg.c
+>> +++ b/drivers/clk/renesas/r9a08g045-cpg.c
+>> @@ -187,23 +187,39 @@ static const struct cpg_core_clk r9a08g045_core_clks[] __initconst = {
+>>  };
+>>
+>>  static const struct rzg2l_mod_clk r9a08g045_mod_clks[] = {
+>> -       DEF_MOD("gic_gicclk",           R9A08G045_GIC600_GICCLK, R9A08G045_CLK_P1, 0x514, 0),
+>> -       DEF_MOD("ia55_clk",             R9A08G045_IA55_CLK, R9A08G045_CLK_P1, 0x518, 1),
+>> -       DEF_MOD("dmac_aclk",            R9A08G045_DMAC_ACLK, R9A08G045_CLK_P3, 0x52c, 0),
+>> -       DEF_MOD("sdhi0_imclk",          R9A08G045_SDHI0_IMCLK, CLK_SD0_DIV4, 0x554, 0),
+>> -       DEF_MOD("sdhi0_imclk2",         R9A08G045_SDHI0_IMCLK2, CLK_SD0_DIV4, 0x554, 1),
+>> -       DEF_MOD("sdhi0_clk_hs",         R9A08G045_SDHI0_CLK_HS, R9A08G045_CLK_SD0, 0x554, 2),
+>> -       DEF_MOD("sdhi0_aclk",           R9A08G045_SDHI0_ACLK, R9A08G045_CLK_P1, 0x554, 3),
+>> -       DEF_MOD("sdhi1_imclk",          R9A08G045_SDHI1_IMCLK, CLK_SD1_DIV4, 0x554, 4),
+>> -       DEF_MOD("sdhi1_imclk2",         R9A08G045_SDHI1_IMCLK2, CLK_SD1_DIV4, 0x554, 5),
+>> -       DEF_MOD("sdhi1_clk_hs",         R9A08G045_SDHI1_CLK_HS, R9A08G045_CLK_SD1, 0x554, 6),
+>> -       DEF_MOD("sdhi1_aclk",           R9A08G045_SDHI1_ACLK, R9A08G045_CLK_P1, 0x554, 7),
+>> -       DEF_MOD("sdhi2_imclk",          R9A08G045_SDHI2_IMCLK, CLK_SD2_DIV4, 0x554, 8),
+>> -       DEF_MOD("sdhi2_imclk2",         R9A08G045_SDHI2_IMCLK2, CLK_SD2_DIV4, 0x554, 9),
+>> -       DEF_MOD("sdhi2_clk_hs",         R9A08G045_SDHI2_CLK_HS, R9A08G045_CLK_SD2, 0x554, 10),
+>> -       DEF_MOD("sdhi2_aclk",           R9A08G045_SDHI2_ACLK, R9A08G045_CLK_P1, 0x554, 11),
+>> -       DEF_MOD("scif0_clk_pck",        R9A08G045_SCIF0_CLK_PCK, R9A08G045_CLK_P0, 0x584, 0),
+>> -       DEF_MOD("gpio_hclk",            R9A08G045_GPIO_HCLK, R9A08G045_OSCCLK, 0x598, 0),
+>> +       DEF_MOD("gic_gicclk",           R9A08G045_GIC600_GICCLK, R9A08G045_CLK_P1, 0x514, 0,
+>> +                                       MSTOP(ACPU, BIT(3))),
+> 
+> According to Rev. 1.00 of the Hardware User's Manual, bit 3 of the
+> CPG_BUS_ACPU_MSTOP register is reserved?
 
-diff --git a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-index fde07e4b119d..406a922a714e 100644
---- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-+++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-@@ -113,7 +113,7 @@ examples:
-     hd44780 {
-             compatible = "hit,hd44780";
-             display-height-chars = <2>;
--            display-width-chars  = <16>;
-+            display-width-chars = <16>;
-             data-gpios = <&pcf8574 4 0>,
-                          <&pcf8574 5 0>,
-                          <&pcf8574 6 0>,
-diff --git a/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml b/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
-index 624984d51c10..7f8d98226437 100644
---- a/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
-+++ b/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
-@@ -125,7 +125,7 @@ examples:
-     clk25m: clock-oscillator-25m {
-       compatible = "fixed-clock";
-       #clock-cells = <0>;
--      clock-frequency  = <25000000>;
-+      clock-frequency = <25000000>;
-       clock-output-names = "clk25m";
-     };
- ...
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
-index 5fcc8dd012f1..be2616ff9af6 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
-@@ -80,9 +80,9 @@ examples:
-             compatible = "adi,ad7780";
-             reg = <0>;
- 
--            avdd-supply      = <&vdd_supply>;
--            powerdown-gpios  = <&gpio0 12 GPIO_ACTIVE_HIGH>;
--            adi,gain-gpios   = <&gpio1  5 GPIO_ACTIVE_LOW>;
-+            avdd-supply = <&vdd_supply>;
-+            powerdown-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
-+            adi,gain-gpios = <&gpio1  5 GPIO_ACTIVE_LOW>;
-             adi,filter-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
-         };
-     };
-diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
-index 73def67fbe01..b6a233cd5f6b 100644
---- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
-@@ -58,7 +58,7 @@ examples:
-             reg = <0x3600>;
-             interrupts = <0x0 0x36 0x0 IRQ_TYPE_EDGE_RISING>;
-             qcom,external-resistor-micro-ohms = <10000>;
--            #io-channel-cells  = <1>;
-+            #io-channel-cells = <1>;
-         };
-     };
- ...
-diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
-index b3a626389870..64abe9a4cd9e 100644
---- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
-@@ -46,6 +46,6 @@ examples:
-         pmic_rradc: adc@4500 {
-             compatible = "qcom,pmi8998-rradc";
-             reg = <0x4500>;
--            #io-channel-cells  = <1>;
-+            #io-channel-cells = <1>;
-         };
-     };
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-index 2b153d7c5421..e44e4e5708a7 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-@@ -55,8 +55,8 @@ examples:
-   - |
-     #include <dt-bindings/interrupt-controller/irq-st.h>
-     irq-syscfg {
--        compatible    = "st,stih407-irq-syscfg";
--        st,syscfg     = <&syscfg_cpu>;
-+        compatible = "st,stih407-irq-syscfg";
-+        st,syscfg = <&syscfg_cpu>;
-         st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-                         <ST_IRQ_SYSCFG_PMU_1>;
-         st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-index 2459a55ed540..940b12688167 100644
---- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-+++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-@@ -203,7 +203,7 @@ examples:
-       bus-width = <4>;
-       cap-sd-highspeed;
-       cap-mmc-highspeed;
--      cd-gpios  = <&gpio2 31 0x4>;
-+      cd-gpios = <&gpio2 31 0x4>;
-       st,sig-dir-dat0;
-       st,sig-dir-dat2;
-       st,sig-dir-cmd;
-diff --git a/Documentation/devicetree/bindings/net/sff,sfp.yaml b/Documentation/devicetree/bindings/net/sff,sfp.yaml
-index 973e478a399d..bf6cbc7c2ba3 100644
---- a/Documentation/devicetree/bindings/net/sff,sfp.yaml
-+++ b/Documentation/devicetree/bindings/net/sff,sfp.yaml
-@@ -120,7 +120,7 @@ examples:
-       pinctrl-names = "default";
-       pinctrl-0 = <&cps_sfpp0_pins>;
-       tx-disable-gpios = <&cps_gpio1 29 GPIO_ACTIVE_HIGH>;
--      tx-fault-gpios  = <&cps_gpio1 26 GPIO_ACTIVE_HIGH>;
-+      tx-fault-gpios = <&cps_gpio1 26 GPIO_ACTIVE_HIGH>;
-     };
- 
-     mdio {
-diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-index 53da2edd7c9a..120e3bb1e545 100644
---- a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-@@ -83,7 +83,7 @@ examples:
-                   <0x0 0x28050000 0x0 0x00010000>,
-                   <0x0 0x24200000 0x0 0x00002000>,
-                   <0x0 0x24162000 0x0 0x00001000>;
--            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
-+            reg-names = "dbi", "config", "ulreg", "smu", "mpu";
-             device_type = "pci";
-             bus-range = <0x00 0xff>;
-             num-lanes = <2>;
-diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
-index b5ca40d0e251..d476de82e5c3 100644
---- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
-@@ -185,17 +185,17 @@ examples:
-                     sd1_mux {
-                             pinmux = <RZG2L_PORT_PINMUX(19, 0, 1)>, /* CD */
-                                      <RZG2L_PORT_PINMUX(19, 1, 1)>; /* WP */
--                            power-source  = <3300>;
-+                            power-source = <3300>;
-                     };
- 
-                     sd1_data {
-                             pins = "SD1_DATA0", "SD1_DATA1", "SD1_DATA2", "SD1_DATA3";
--                            power-source  = <3300>;
-+                            power-source = <3300>;
-                     };
- 
-                     sd1_ctrl {
-                             pins = "SD1_CLK", "SD1_CMD";
--                            power-source  = <3300>;
-+                            power-source = <3300>;
-                     };
-             };
-     };
-diff --git a/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml b/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
-index 07e38be39f1b..89f9603499b4 100644
---- a/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
-@@ -79,10 +79,10 @@ examples:
-         interrupt-parent = <&gpio1>;
-         interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 
--        richtek,output-charge-current	    = <500000>;
--        richtek,end-of-charge-percentage    = <10>;
--        richtek,battery-regulation-voltage  = <4200000>;
--        richtek,boost-output-voltage	    = <5050000>;
-+        richtek,output-charge-current = <500000>;
-+        richtek,end-of-charge-percentage = <10>;
-+        richtek,battery-regulation-voltage = <4200000>;
-+        richtek,boost-output-voltage = <5050000>;
- 
-         richtek,min-input-voltage-regulation = <4500000>;
-         richtek,avg-input-current-regulation = <500000>;
-diff --git a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
-index 0221397eb51e..f825ee9efd81 100644
---- a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
-+++ b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
-@@ -62,8 +62,8 @@ examples:
-              regulator-name = "buck1";
-              regulator-min-microvolt = <600000>;
-              regulator-max-microvolt = <2187500>;
--             regulator-min-microamp  = <3800000>;
--             regulator-max-microamp  = <6800000>;
-+             regulator-min-microamp = <3800000>;
-+             regulator-max-microamp = <6800000>;
-              regulator-boot-on;
-             };
- 
-diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
-index 6de5b027f990..0d34af98403f 100644
---- a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
-+++ b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
-@@ -98,8 +98,8 @@ examples:
-              regulator-name = "buck1";
-              regulator-min-microvolt = <400000>;
-              regulator-max-microvolt = <3587500>;
--             regulator-min-microamp  = <460000>;
--             regulator-max-microamp  = <7600000>;
-+             regulator-min-microamp = <460000>;
-+             regulator-max-microamp = <7600000>;
-              regulator-boot-on;
-              mps,buck-ovp-disable;
-              mps,buck-phase-delay = /bits/ 8 <2>;
-diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-index 30632efdad8b..df36e29d974c 100644
---- a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-@@ -113,10 +113,10 @@ examples:
-     };
- 
-     imx7d-cm4 {
--      compatible	= "fsl,imx7d-cm4";
--      memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
--      syscon		= <&src>;
--      clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
-+      compatible = "fsl,imx7d-cm4";
-+      memory-region = <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-+      syscon = <&src>;
-+      clocks = <&clks IMX7D_ARM_M4_ROOT_CLK>;
-     };
- 
-   - |
--- 
-2.34.1
+Hm... you're right. I've followed table 44.4 Registers for Module Standby
+Mode to populate MSTOPs in r9a08g045_mod_clks[]. That table indicates bit 3
+for GIC.
 
+> 
+> Also, gic_gicclk is a critical module clock, so I guess this module
+> must never be put into standby?
+
+Good point. I'll remove the MSTOPs for critical clocks.
+
+> 
+>> --- a/drivers/clk/renesas/rzg2l-cpg.c
+>> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+>> @@ -1177,6 +1177,17 @@ rzg2l_cpg_register_core_clk(const struct cpg_core_clk *core,
+>>                 core->name, PTR_ERR(clk));
+>>  }
+>>
+>> +/**
+>> + * struct mstop - MSTOP specific data structure
+>> + * @count: reference counter for MSTOP settings (when zero the settings
+>> + *        are applied to register)
+>> + * @conf: MSTOP configuration (register offset, setup bits)
+>> + */
+>> +struct mstop {
+>> +       u32 count;
+>> +       u32 conf;
+>> +};
+>> +
+>>  /**
+>>   * struct mstp_clock - MSTP gating clock
+>>   *
+>> @@ -1186,6 +1197,7 @@ rzg2l_cpg_register_core_clk(const struct cpg_core_clk *core,
+>>   * @enabled: soft state of the clock, if it is coupled with another clock
+>>   * @priv: CPG/MSTP private data
+>>   * @sibling: pointer to the other coupled clock
+>> + * @mstop: MSTOP configuration
+>>   */
+>>  struct mstp_clock {
+>>         struct clk_hw hw;
+>> @@ -1194,10 +1206,46 @@ struct mstp_clock {
+>>         bool enabled;
+>>         struct rzg2l_cpg_priv *priv;
+>>         struct mstp_clock *sibling;
+>> +       struct mstop *mstop;
+>>  };
+>>
+>>  #define to_mod_clock(_hw) container_of(_hw, struct mstp_clock, hw)
+>>
+>> +/* Need to be called with a lock held to avoid concurent access to mstop->count. */
+> 
+> concurrent
+> 
+>> +static void rzg2l_mod_clock_module_set_standby(struct mstp_clock *clock,
+>> +                                              bool standby)
+>> +{
+>> +       struct rzg2l_cpg_priv *priv = clock->priv;
+>> +       struct mstop *mstop = clock->mstop;
+>> +       bool update = false;
+>> +       u32 value;
+>> +
+>> +       if (!mstop)
+>> +               return;
+>> +
+>> +       value = MSTOP_MASK(mstop->conf) << 16;
+>> +
+>> +       if (standby) {
+>> +               value |= MSTOP_MASK(mstop->conf);
+>> +               /* Avoid overflow. */
+>> +               if (mstop->count > 0)
+>> +                       mstop->count--;
+> 
+> Should we add a WARN() here, or is it sufficient to rely on the WARN()
+> in drivers/clk/clk.c:clk_core_disable()?
+
+I think it would be good to have it as mstop->count could be
+incremented/decremented by more than one clock and could overflow faster
+than struct clk_core::enable_count
+
+> 
+>> +
+>> +               if (!mstop->count)
+>> +                       update = true;
+>> +       } else {
+>> +               if (!mstop->count)
+>> +                       update = true;
+>> +
+>> +               /* Avoid overflow. */
+>> +               if (mstop->count + 1 != 0)
+>> +                       mstop->count++;
+> 
+> Trying to avoid an overflow won't help much here.  The counter
+> will be wrong afterwards anyway, and when decrementing again later, the
+> module will be put in standby too soon...
+
+That's true. Would you prefer to have a WARN() for this too?
+
+> 
+>> +       }
+>> +
+>> +       if (update)
+>> +               writel(value, priv->base + MSTOP_OFF(mstop->conf));
+>> +}
+>> +
+>>  static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
+>>  {
+>>         struct mstp_clock *clock = to_mod_clock(hw);
+> 
+>> @@ -1401,6 +1474,37 @@ rzg2l_cpg_register_mod_clk(const struct rzg2l_mod_clk *mod,
+>>                 }
+>>         }
+>>
+>> +       if (mod->mstop_conf) {
+>> +               struct mstop *mstop = rzg2l_mod_clock_get_mstop(priv, mod->mstop_conf);
+>> +
+>> +               if (mstop) {
+>> +                       clock->mstop = mstop;
+> 
+> Please move the common assignment after the if/else block...
+> 
+>> +               } else {
+> 
+> ... so this can just become "if (!mstop) {".
+
+Ok, I'll review it.
+
+> 
+>> +                       mstop = devm_kzalloc(dev, sizeof(*mstop), GFP_KERNEL);
+>> +                       if (!mstop) {
+>> +                               clk_unregister(clk);
+>> +                               goto fail;
+> 
+> Please use "goto unregister", and call clk_unregister() after the new
+> unregister label.
+
+I kept it like this as I considered otherwise the error path might become
+unnecessary complicated.
+
+> 
+>> +                       }
+>> +
+>> +                       mstop->conf = mod->mstop_conf;
+>> +                       clock->mstop = mstop;
+>> +               }
+>> +
+>> +               if (rzg2l_mod_clock_is_enabled(&clock->hw)) {
+>> +                       if (clock->sibling)
+>> +                               clock->mstop->count = 1;
+>> +                       else
+>> +                               clock->mstop->count++;
+>> +               }
+>> +
+>> +               /*
+>> +                * Out of reset all modules are enabled. Set module to standby
+>> +                * in case associated clocks are disabled at probe.
+> 
+> Is that always true?
+> What about kexec and crashdump kernels?
+
+I was referring to the hardware reset. In case we reach this point with
+clocks already enabled by a previous kernel the state of the clocks in
+hardware should be enabled and the mstop->count should be updated
+accordingly by the above if block. Let me know if I'm missing something.
+
+> 
+>> +                */
+>> +               if (!clock->mstop->count)
+>> +                       rzg2l_mod_clock_module_set_standby(clock, true);
+>> +       }
+>> +
+>>         return;
+>>
+>>  fail:
+>> diff --git a/drivers/clk/renesas/rzg2l-cpg.h b/drivers/clk/renesas/rzg2l-cpg.h
+>> index 6e38c8fc888c..10ee8aa4a5da 100644
+>> --- a/drivers/clk/renesas/rzg2l-cpg.h
+>> +++ b/drivers/clk/renesas/rzg2l-cpg.h
+> 
+>> @@ -68,6 +73,10 @@
+>>  #define SEL_PLL6_2     SEL_PLL_PACK(CPG_PL6_ETH_SSEL, 0, 1)
+>>  #define SEL_GPU2       SEL_PLL_PACK(CPG_PL6_SSEL, 12, 1)
+>>
+>> +#define MSTOP(name, bitmask)   ((CPG_##name##_MSTOP) << 16 | (bitmask))
+> 
+> I believe the bitmask is always a single bit.
+> So perhaps let MSTOP() take the bit number instead of the bitmaskl?
+> You can still store BIT(bit) inside the macro.
+
+It is not always the case. That is why I've added the bitmask. The
+identified scenarios are highlighted in commit description:
+
+case 1: N clocks mapped to N MSTOP bits (with N={0, ..., X})
+case 2: N clocks mapped to 1 MSTOP bit  (with N={0, ..., X})
+case 3: N clocks mapped to M MSTOP bits (with N={0, ..., X}, M={0, ..., Y})
+
+Thank you for your review,
+Claudiu Beznea
+
+> 
+>> +#define MSTOP_OFF(conf)                ((conf) >> 16)
+>> +#define MSTOP_MASK(conf)       ((conf) & GENMASK(15, 0))
+>> +
+>>  #define EXTAL_FREQ_IN_MEGA_HZ  (24)
+>>
+>>  /**
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
