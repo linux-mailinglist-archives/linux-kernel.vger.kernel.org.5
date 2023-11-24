@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D817F6F10
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7747F6F0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345146AbjKXJBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:01:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S1345089AbjKXJBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjKXJBT (ORCPT
+        with ESMTP id S229708AbjKXJBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Nov 2023 04:01:19 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BBED48;
-        Fri, 24 Nov 2023 01:01:25 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO6ptmO020283;
-        Fri, 24 Nov 2023 09:01:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=NGnhDR7j28cFRv3LX8e9alYaea5fVnn28Lkk2JCw0Ro=;
- b=jmyx1TIFvhD0N9nyuExx9moh+eh7ubq0zO37Ern1OICymJJQWuRg4FUUHKRKmrDiLoEx
- SPijU99Q8RPKo/ZnVYU7yzy7y/sz+btbmUCOQNqtYIXQncT/dDzY34hPtDEtWQKsCyrV
- kbD6DLj8QR9cqWoFx1p3mph/IW1Dod2w+i3AaAs3MCKrNGZSrhaSyNVQkj5E+bDDGPkb
- nBTyIwNIkpveY4RdY6R0dyjm9mm+P0O08wBVrITbox5WSdnv2I+pmcgisC9D+9TZDus0
- DGzCcT9nHRV/5LQuEMLvZn7AXFICiJ6HE+C9DA4b3Lp7Z6XYI4b3SrX1Y2CGZEN1mWm1 Vw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ujptr08db-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 09:01:08 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AO917Iu010147
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 09:01:07 GMT
-Received: from [10.216.4.60] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
- 2023 01:01:00 -0800
-Message-ID: <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
-Date:   Fri, 24 Nov 2023 14:30:56 +0530
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB50312B
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:01:24 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 012371063;
+        Fri, 24 Nov 2023 01:02:11 -0800 (PST)
+Received: from [10.57.71.2] (unknown [10.57.71.2])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 609D13F73F;
+        Fri, 24 Nov 2023 01:01:22 -0800 (PST)
+Message-ID: <bab848b8-edd3-4c57-9a96-f17a33e030d0@arm.com>
+Date:   Fri, 24 Nov 2023 09:01:20 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
- <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
- <6d4d959c-b155-471b-b13d-f6fda557cfe0@quicinc.com>
- <ZVYTFi3Jnnljl48L@hovoldconsulting.com>
- <e0789695-43ee-4285-95e9-4cdee24d6ffe@quicinc.com>
- <ZV9XTU-q038BaWn3@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZV9XTU-q038BaWn3@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dhiMc7KSABAEms8HT0fsRkfLLl9S9wUb
-X-Proofpoint-GUID: dhiMc7KSABAEms8HT0fsRkfLLl9S9wUb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- bulkscore=0 mlxscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 spamscore=0 mlxlogscore=546 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311240070
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
+ large folios
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Barry Song <21cnbao@gmail.com>
+Cc:     steven.price@arm.com, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        shy828301@gmail.com, v-songbaohua@oppo.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com
+References: <20231114014313.67232-1-v-songbaohua@oppo.com>
+ <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
+ <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
+ <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
+ <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
+ <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
+ <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com>
+ <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
+ <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
+ <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
+ <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
+ <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,56 +61,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/11/2023 08:55, David Hildenbrand wrote:
+> On 24.11.23 02:35, Barry Song wrote:
+>> On Mon, Nov 20, 2023 at 11:57 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>
+>>> On 20/11/2023 09:11, David Hildenbrand wrote:
+>>>> On 17.11.23 19:41, Barry Song wrote:
+>>>>> On Fri, Nov 17, 2023 at 7:28 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>
+>>>>>> On 17.11.23 01:15, Barry Song wrote:
+>>>>>>> On Fri, Nov 17, 2023 at 7:47 AM Barry Song <21cnbao@gmail.com> wrote:
+>>>>>>>>
+>>>>>>>> On Thu, Nov 16, 2023 at 5:36 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>>>
+>>>>>>>>> On 15.11.23 21:49, Barry Song wrote:
+>>>>>>>>>> On Wed, Nov 15, 2023 at 11:16 PM David Hildenbrand <david@redhat.com>
+>>>>>>>>>> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> On 14.11.23 02:43, Barry Song wrote:
+>>>>>>>>>>>> This patch makes MTE tags saving and restoring support large folios,
+>>>>>>>>>>>> then we don't need to split them into base pages for swapping out
+>>>>>>>>>>>> on ARM64 SoCs with MTE.
+>>>>>>>>>>>>
+>>>>>>>>>>>> arch_prepare_to_swap() should take folio rather than page as parameter
+>>>>>>>>>>>> because we support THP swap-out as a whole.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather than
+>>>>>>>>>>>> folio as swap-in always works at the granularity of base pages right
+>>>>>>>>>>>> now.
+>>>>>>>>>>>
+>>>>>>>>>>> ... but then we always have order-0 folios and can pass a folio, or what
+>>>>>>>>>>> am I missing?
+>>>>>>>>>>
+>>>>>>>>>> Hi David,
+>>>>>>>>>> you missed the discussion here:
+>>>>>>>>>>
+>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68MkhjMDw@mail.gmail.com/
+>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com/
+>>>>>>>>>
+>>>>>>>>> Okay, so you want to handle the refault-from-swapcache case where you
+>>>>>>>>> get a
+>>>>>>>>> large folio.
+>>>>>>>>>
+>>>>>>>>> I was mislead by your "folio as swap-in always works at the granularity of
+>>>>>>>>> base pages right now" comment.
+>>>>>>>>>
+>>>>>>>>> What you actually wanted to say is "While we always swap in small
+>>>>>>>>> folios, we
+>>>>>>>>> might refault large folios from the swapcache, and we only want to restore
+>>>>>>>>> the tags for the page of the large folio we are faulting on."
+>>>>>>>>>
+>>>>>>>>> But, I do if we can't simply restore the tags for the whole thing at once
+>>>>>>>>> at make the interface page-free?
+>>>>>>>>>
+>>>>>>>>> Let me elaborate:
+>>>>>>>>>
+>>>>>>>>> IIRC, if we have a large folio in the swapcache, the swap
+>>>>>>>>> entries/offset are
+>>>>>>>>> contiguous. If you know you are faulting on page[1] of the folio with a
+>>>>>>>>> given swap offset, you can calculate the swap offset for page[0] simply by
+>>>>>>>>> subtracting from the offset.
+>>>>>>>>>
+>>>>>>>>> See page_swap_entry() on how we perform this calculation.
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> So you can simply pass the large folio and the swap entry corresponding
+>>>>>>>>> to the first page of the large folio, and restore all tags at once.
+>>>>>>>>>
+>>>>>>>>> So the interface would be
+>>>>>>>>>
+>>>>>>>>> arch_prepare_to_swap(struct folio *folio);
+>>>>>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_entry);
+>>>>>>>>>
+>>>>>>>>> I'm sorry if that was also already discussed.
+>>>>>>>>
+>>>>>>>> This has been discussed. Steven, Ryan and I all don't think this is a good
+>>>>>>>> option. in case we have a large folio with 16 basepages, as do_swap_page
+>>>>>>>> can only map one base page for each page fault, that means we have
+>>>>>>>> to restore 16(tags we restore in each page fault) * 16(the times of page
+>>>>>>>> faults)
+>>>>>>>> for this large folio.
+>>>>>>>>
+>>>>>>>> and still the worst thing is the page fault in the Nth PTE of large folio
+>>>>>>>> might free swap entry as that swap has been in.
+>>>>>>>> do_swap_page()
+>>>>>>>> {
+>>>>>>>>       /*
+>>>>>>>>        * Remove the swap entry and conditionally try to free up the
+>>>>>>>> swapcache.
+>>>>>>>>        * We're already holding a reference on the page but haven't
+>>>>>>>> mapped it
+>>>>>>>>        * yet.
+>>>>>>>>        */
+>>>>>>>>        swap_free(entry);
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you might
+>>>>>>>> access
+>>>>>>>> a freed tag.
+>>>>>>>
+>>>>>>> And David, one more information is that to keep the parameter of
+>>>>>>> arch_swap_restore() unchanged as folio,
+>>>>>>> i actually tried an ugly approach in rfc v2:
+>>>>>>>
+>>>>>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+>>>>>>> +{
+>>>>>>> + if (system_supports_mte()) {
+>>>>>>> +      /*
+>>>>>>> +       * We don't support large folios swap in as whole yet, but
+>>>>>>> +       * we can hit a large folio which is still in swapcache
+>>>>>>> +       * after those related processes' PTEs have been unmapped
+>>>>>>> +       * but before the swapcache folio  is dropped, in this case,
+>>>>>>> +       * we need to find the exact page which "entry" is mapping
+>>>>>>> +       * to. If we are not hitting swapcache, this folio won't be
+>>>>>>> +       * large
+>>>>>>> +     */
+>>>>>>> + struct page *page = folio_file_page(folio, swp_offset(entry));
+>>>>>>> + mte_restore_tags(entry, page);
+>>>>>>> + }
+>>>>>>> +}
+>>>>>>>
+>>>>>>> And obviously everybody in the discussion hated it :-)
+>>>>>>>
+>>>>>>
+>>>>>> I can relate :D
+>>>>>>
+>>>>>>> i feel the only way to keep API unchanged using folio is that we
+>>>>>>> support restoring PTEs
+>>>>>>> all together for the whole large folio and we support the swap-in of
+>>>>>>> large folios. This is
+>>>>>>> in my list to do, I will send a patchset based on Ryan's large anon
+>>>>>>> folios series after a
+>>>>>>> while. till that is really done, it seems using page rather than folio
+>>>>>>> is a better choice.
+>>>>>>
+>>>>>> I think just restoring all tags and remembering for a large folio that
+>>>>>> they have been restored might be the low hanging fruit. But as always,
+>>>>>> devil is in the detail :)
+>>>>>
+>>>>> Hi David,
+>>>>> thanks for all your suggestions though my feeling is this is too complex and
+>>>>> is not worth it for at least  three reasons.
+>>>>
+>>>> Fair enough.
+>>>>
+>>>>>
+>>>>> 1. In multi-thread and particularly multi-processes, we need some locks to
+>>>>> protect and help know if one process is the first one to restore tags and if
+>>>>> someone else is restoring tags when one process wants to restore. there
+>>>>> is not this kind of fine-grained lock at all.
+>>>>
+>>>> We surely always hold the folio lock on swapin/swapout, no? So when these
+>>>> functions are called.
+>>>>
+>>>> So that might just work already -- unless I am missing something important.
+>>>
+>>> We already have a page flag that we use to mark the page as having had its mte
+>>> state associated; PG_mte_tagged. This is currently per-page (and IIUC, Matthew
+>>> has been working to remove as many per-page flags as possible). Couldn't we just
+>>> make arch_swap_restore() take a folio, restore the tags for *all* the pages and
+>>> repurpose that flag to be per-folio (so head page only)? It looks like the the
+>>> mte code already manages all the serialization requirements too. Then
+>>> arch_swap_restore() can just exit early if it sees the flag is already set on
+>>> the folio.
+>>>
+>>> One (probably nonsense) concern that just sprung to mind about having MTE work
+>>> with large folios in general; is it possible that user space could cause a large
+>>> anon folio to be allocated (THP), then later mark *part* of it to be tagged with
+>>> MTE? In this case you would need to apply tags to part of the folio only.
+>>> Although I have a vague recollection that any MTE areas have to be marked at
+>>> mmap time and therefore this type of thing is impossible?
+>>
+>> right, we might need to consider only a part of folio needs to be
+>> mapped and restored MTE tags.
+>> do_swap_page() can have a chance to hit a large folio but it only
+>> needs to fault-in a page.
+>>
+>> A case can be quite simple as below,
+>>
+>> 1. anon folio shared by process A and B
+>> 2. add_to_swap() as a large folio;
+>> 3. try to unmap A and B;
+>> 4. after A is unmapped(ptes become swap entries), we do a
+>> MADV_DONTNEED on a part of the folio. this can
+>> happen very easily as userspace is still working in 4KB level;
+>> userspace heap management can free an
+>> basepage area by MADV_DONTNEED;
+>> madvise(address, MADV_DONTNEED, 4KB);
+>> 5. A refault on address + 8KB, we will hit large folio in
+>> do_swap_page() but we will only need to map
+>> one basepage, we will never need this DONTNEEDed in process A.
+>>
+>> another more complicated case can be mprotect and munmap a part of
+>> large folios. since userspace
+>> has no idea of large folios in their mind, they can do all strange
+>> things. are we sure in all cases,
+>> large folios have been splitted into small folios?
+
+I don;'t think these examples you cite are problematic. Although user space
+thinks about things in 4K pages, the kernel does things in units of folios. So a
+folio is either fully swapped out or not swapped out at all. MTE tags can be
+saved/restored per folio, even if only part of that folio ends up being mapped
+back into user space.
+
+The problem is that MTE tagging could be active only for a selection of pages
+within the folio; that's where it gets tricky.
+
 > 
->> I didn't add missing interrupts on sc8280xp because I see that current
->> interrupts present are working fine (I see ADB working and wakeup
->> working as well), but the interrupt vector numbers are off by "1"
->> between hs specifics and DT (both upstream and downstream). Will sort it
->> out and clean that target up later.
+> To handle that, we'd have to identify
 > 
-> Which interrupt numbers are off by one here?
->   
-
-My bad, this might be the confusion. The HW specifics say:
-
-Controller-2, power_event irq:
-
-SYS_apcsQgicSPI[812]		Vector-number: 843
-
-
-Usually vector number = 32 + GIC number AFAIK.
-By that logic, If vector number is 843, GIC_SPI number is 811 which is 
-same as DT. Probably the GIC_SPI number is printed wrong. The DT matches 
-(vector number - 32).
-
-Sorry for mentioning that it is wrong. The DT entries are right and it 
-is working on upstream.
-
-The missing hs_phy_irq's have been put on the mail thread on this list 
-before.
-
-Regards,
-Krishna,
-
->> [1]: https://patchwork.kernel.org/project/linux-arm-msm/list/?series=803412
+> a) if a subpage has an mte tag to save during swapout
+> b) if a subpage has an mte tag to restore during swapin
 > 
-> I took a quick look at the series, and it looks like this will
-> eventually clean things up a lot. We should probably define a generic
-> order for the interrupts with the sometimes optional SS interrupts last.
+> I suspect b) can be had from whatever datastructure we're using to actually save
+> the tags?
 > 
-> Side note: It looks like the threading in that series is broken.
-> Consider using git-send-email for sending series as it takes care of
-> things like that.
+> For a), is there some way to have that information from the HW?
+
+Yes I agree with this approach. I don't know the answer to that question though;
+I'd assume it must be possible. Steven?
+
 > 
-
-Usually I do git send-email for the whole out folder where the patches 
-are present, but linux-usb list is common to all the patches in that 
-case, even the DT ones. So to avoid that and to send patches to only 
-relavant mailing lists, I did git send email individually on each patch 
-which might have caused this issue.
-
-Will make sure this won't happen again.
-
-Regards,
-Krishna,
 
