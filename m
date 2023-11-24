@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C37F6C47
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39FB7F6C4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjKXGXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
+        id S229776AbjKXGaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXGXO (ORCPT
+        with ESMTP id S229453AbjKXGaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:23:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43942D5C
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 22:23:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700806999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBsn2i0nliFo+phWtl46j5XfLoBPy3pcywVKmodl4XE=;
-        b=D4G6ZEfiI7sb7Q1opI0dF4se4oWNvD6soqIsEnaOACGZUZQXUBZ0x8GJigDYTT+2aNiDYp
-        opKEwQs9jPCFjBolRMKhwC1sS0I+Suas7pVNznWHIUdJERZarJbZY80SbIvrMNRoECQIRl
-        GflyqdllodmjuKQIdf6THPq8LtEhjlk=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-427-0iJpElyQP2i96o4mjZq6CQ-1; Fri, 24 Nov 2023 01:23:17 -0500
-X-MC-Unique: 0iJpElyQP2i96o4mjZq6CQ-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5b99999614bso1595639a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 22:23:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700806996; x=1701411796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eBsn2i0nliFo+phWtl46j5XfLoBPy3pcywVKmodl4XE=;
-        b=O0B3qk1im6xFMrLToPTtV79T81uMUwcnmAaNDpQlEKzsQxLnvKizS1oKndBtq7TAgR
-         1fnuOavTOuwy4rwAgoE5XPqlL/MGs/25VwnQVS3wz1/8XTOmJYwuPiWFxiceoCUfkD1W
-         tOPkn1+9eR15wyZElfLtyZfWX/a7B8f+6vm7AMOVAQaL3Znr9ZYLCtJfYsIGVtbY+l+u
-         GX0RC7CUQD3W4IeaPPTNVUGY4Z48TOYl3jXGNTb2c61QAL5Pv/oxfwZ4/jSjtxkIZ03L
-         ACAwgyEQBjCwb7KT4BxQ5l+i/UnQmXKi8gxMkV1FgCjs6WYZdV1rAW0JHePZqqQlZktC
-         qISg==
-X-Gm-Message-State: AOJu0YwcuENh5LBwoz6BdPch3HKlv1tPlH8KYcwUl/O+DZOu/E6C/C3r
-        9wLsDfBvhRDaqbjM7FwKfB4XGawjNneQ2jtWXiEjk2B0lVTTHWY40Fz5ljQQ5FHuqrkMy1Tm18b
-        aWPzldXdmva27dIf7AmuzXn2sXUSMfwmV/5vJvIfo
-X-Received: by 2002:a05:6a21:2711:b0:187:8eca:8dc6 with SMTP id rm17-20020a056a21271100b001878eca8dc6mr1882344pzb.34.1700806996660;
-        Thu, 23 Nov 2023 22:23:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHurVLY0iGJEBlzGiDzqMf52lCg1ORWNYsJKiEEd38ufrVuquai65EsJ4/P9zUrgJnhnYuiGXQnp1IxQ0PULu8=
-X-Received: by 2002:a05:6a21:2711:b0:187:8eca:8dc6 with SMTP id
- rm17-20020a056a21271100b001878eca8dc6mr1882334pzb.34.1700806996387; Thu, 23
- Nov 2023 22:23:16 -0800 (PST)
+        Fri, 24 Nov 2023 01:30:22 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE81AD;
+        Thu, 23 Nov 2023 22:30:27 -0800 (PST)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sc4jb3kDBzMnNt;
+        Fri, 24 Nov 2023 14:25:39 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 14:30:24 +0800
+Subject: Re: [PATCH v7 00/12] iommu: Prepare to deliver page faults to user
+ space
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+CC:     Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <1a029033-3c9e-aeab-06bf-1e7020c2bc7d@huawei.com>
+Date:   Fri, 24 Nov 2023 14:30:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20231123183835.635210-1-mkp@redhat.com> <655fc32bb506e_d14d4294b3@willemb.c.googlers.com.notmuch>
- <CAHcdBH7h-sq=Gzkan1du3uxx44WibK0yzdnUcZCuw-mp=9OxOg@mail.gmail.com> <655fe8e5b5cf5_d9fc5294a0@willemb.c.googlers.com.notmuch>
-In-Reply-To: <655fe8e5b5cf5_d9fc5294a0@willemb.c.googlers.com.notmuch>
-From:   Mike Pattrick <mkp@redhat.com>
-Date:   Fri, 24 Nov 2023 01:23:04 -0500
-Message-ID: <CAHcdBH4aMJwkR7fVP=Brwb-4=gon-pwh0CbjbFxsoEiGj4XjVA@mail.gmail.com>
-Subject: Re: [PATCH net-next] packet: Account for VLAN_HLEN in csum_start when
- virtio_net_hdr is enabled
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231115030226.16700-1-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.121.110]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 7:06=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Mike Pattrick wrote:
-> > On Thu, Nov 23, 2023 at 4:25=E2=80=AFPM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > Mike Pattrick wrote:
-> > > > Af_packet provides checksum offload offsets to usermode application=
-s
-> > > > through struct virtio_net_hdr when PACKET_VNET_HDR is enabled on th=
-e
-> > > > socket. For skbuffs with a vlan being sent to a SOCK_RAW socket,
-> > > > af_packet will include the link level header and so csum_start need=
-s
-> > > > to be adjusted accordingly.
-> > >
-> > > Is this patch based on observing an incorrect offset in a workload,
-> > > or on code inspection?
-> >
-> > Based on an incorrect offset in a workload. The setup involved sending
-> > vxlan traffic though a veth interface configured with a vlan. The
-> > vnet_hdr's csum_start value was off by 4, and this problem went away
-> > when the vlan was removed.
-> >
-> > I'll take another look at this patch.
->
-> This is a vlan device on top of a veth device? On which device and at
-> which point (ingress or egress) are you receiving the packet over the
-> packet socket?
+On 2023/11/15 11:02, Lu Baolu Wrote:
+> When a user-managed page table is attached to an IOMMU, it is necessary
+> to deliver IO page faults to user space so that they can be handled
+> appropriately. One use case for this is nested translation, which is
+> currently being discussed in the mailing list.
+> 
+> I have posted a RFC series [1] that describes the implementation of
+> delivering page faults to user space through IOMMUFD. This series has
+> received several comments on the IOMMU refactoring, which I am trying to
+> address in this series.
+> 
+> The major refactoring includes:
+> 
+> - [PATCH 01 ~ 04] Move include/uapi/linux/iommu.h to
+>   include/linux/iommu.h. Remove the unrecoverable fault data definition.
+> - [PATCH 05 ~ 06] Remove iommu_[un]register_device_fault_handler().
+> - [PATCH 07 ~ 10] Separate SVA and IOPF. Make IOPF a generic page fault
+>   handling framework.
+> - [PATCH 11 ~ 12] Improve iopf framework for iommufd use.
+> 
+> This is also available at github [2].
+> 
+> [1] https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
+> [2] https://github.com/LuBaolu/intel-iommu/commits/preparatory-io-pgfault-delivery-v7
+> 
+> Change log:
+> v7:
+>  - Rebase to v6.7-rc1.
+>  - Export iopf_group_response() for global use.
+>  - Release lock when calling iopf handler.
+>  - The whole series has been verified to work for SVA case on Intel
+>    platforms by Zhao Yan. Add her Tested-by to affected patches.
+> 
+> v6: https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
+>  - [PATCH 09/12] Check IS_ERR() against the iommu domain. [Jingqi/Jason]
+>  - [PATCH 12/12] Rename the comments and name of iopf_queue_flush_dev(),
+>    no functionality changes. [Kevin]
+>  - All patches rebased on the latest iommu/core branch.
+> 
+> v5: https://lore.kernel.org/linux-iommu/20230914085638.17307-1-baolu.lu@linux.intel.com/
+>  - Consolidate per-device fault data management. (New patch 11)
+>  - Improve iopf_queue_flush_dev(). (New patch 12)
+> 
+> v4: https://lore.kernel.org/linux-iommu/20230825023026.132919-1-baolu.lu@linux.intel.com/
+>  - Merge iommu_fault_event and iopf_fault. They are duplicate.
+>  - Move iommu_report_device_fault() and iommu_page_response() to
+>    io-pgfault.c.
+>  - Move iommu_sva_domain_alloc() to iommu-sva.c.
+>  - Add group->domain and use it directly in sva fault handler.
+>  - Misc code refactoring and refining.
+> 
+> v3: https://lore.kernel.org/linux-iommu/20230817234047.195194-1-baolu.lu@linux.intel.com/
+>  - Convert the fault data structures from uAPI to kAPI.
+>  - Merge iopf_device_param into iommu_fault_param.
+>  - Add debugging on domain lifetime for iopf.
+>  - Remove patch "iommu: Change the return value of dev_iommu_get()".
+>  - Remove patch "iommu: Add helper to set iopf handler for domain".
+>  - Misc code refactoring and refining.
+> 
+> v2: https://lore.kernel.org/linux-iommu/20230727054837.147050-1-baolu.lu@linux.intel.com/
+>  - Remove unrecoverable fault data definition as suggested by Kevin.
+>  - Drop the per-device fault cookie code considering that doesn't make
+>    much sense for SVA.
+>  - Make the IOMMU page fault handling framework generic. So that it can
+>    available for use cases other than SVA.
+> 
+> v1: https://lore.kernel.org/linux-iommu/20230711010642.19707-1-baolu.lu@linux.intel.com/
+> 
+> Lu Baolu (12):
+>   iommu: Move iommu fault data to linux/iommu.h
+>   iommu/arm-smmu-v3: Remove unrecoverable faults reporting
+>   iommu: Remove unrecoverable fault data
+>   iommu: Cleanup iopf data structure definitions
+>   iommu: Merge iopf_device_param into iommu_fault_param
+>   iommu: Remove iommu_[un]register_device_fault_handler()
+>   iommu: Merge iommu_fault_event and iopf_fault
+>   iommu: Prepare for separating SVA and IOPF
+>   iommu: Make iommu_queue_iopf() more generic
+>   iommu: Separate SVA and IOPF
+>   iommu: Consolidate per-device fault data management
+>   iommu: Improve iopf_queue_flush_dev()
+> 
+>  include/linux/iommu.h                         | 266 +++++++---
+>  drivers/iommu/intel/iommu.h                   |   2 +-
+>  drivers/iommu/iommu-sva.h                     |  71 ---
+>  include/uapi/linux/iommu.h                    | 161 ------
+>  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  14 +-
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  51 +-
+>  drivers/iommu/intel/iommu.c                   |  25 +-
+>  drivers/iommu/intel/svm.c                     |   8 +-
+>  drivers/iommu/io-pgfault.c                    | 469 ++++++++++++------
+>  drivers/iommu/iommu-sva.c                     |  66 ++-
+>  drivers/iommu/iommu.c                         | 232 ---------
+>  MAINTAINERS                                   |   1 -
+>  drivers/iommu/Kconfig                         |   4 +
+>  drivers/iommu/Makefile                        |   3 +-
+>  drivers/iommu/intel/Kconfig                   |   1 +
+>  15 files changed, 601 insertions(+), 773 deletions(-)
+>  delete mode 100644 drivers/iommu/iommu-sva.h
+>  delete mode 100644 include/uapi/linux/iommu.h
+> 
 
-Just for maximum clarity I'll include the extracted commands below,
-but roughly there is a vlan device on top of a vxlan device on top of
-a vlan device on top of a veth, in a namespace.
+Tested-By: Longfang Liu <liulongfang@huawei.com>
 
-ip netns add at_ns0
-ip netns exec at_ns0 ip link add dev at_vxlan1 type vxlan remote
-172.31.1.100 id 0 dstport 4789
-ip netns exec at_ns0 ip addr add dev at_vxlan1 10.2.1.1/24
-ip netns exec at_ns0 ip link set dev at_vxlan1 mtu 1450 up
-ip link add p0 type veth peer name ovs-p0
-ethtool -K p0 sg on
-ethtool -K p0 tso on
-ip link set p0 netns at_ns0
-ip link set dev ovs-p0 up
-ip netns exec at_ns0 ip addr add "172.31.2.1/24" dev p0
-ip netns exec at_ns0 ip link set dev p0 up
-ip netns exec at_ns0 ip link add link at_vxlan1 name at_vxlan1.100
-type vlan proto 802.1q id 100
-ip netns exec at_ns0 ip link set dev at_vxlan1.100 up
-ip netns exec at_ns0 ip addr add dev at_vxlan1.100 "10.1.1.1/24"
-ip netns exec at_ns0 ip link add link p0 name p0.42 type vlan proto 802.1q =
-id 42
-ip netns exec at_ns0 ip link set dev p0.42 up
-ip netns exec at_ns0 ip addr add dev p0.42 "172.31.1.1/24"
-ip addr add "172.31.1.100/24" dev p0
-ip link set dev p0 up
-ip netns exec at_ns0 ping 10.1.1.100
+The Arm SVA mode based on HiSilicon crypto accelerator completed the functional test
+and performance test of page fault scenarios.
+1. The IOMMU page fault processing function is normal.
+2. Performance test on 128 core ARM platform. performance is reduced:
 
-An AF_PACKET socket on ovs-p0 receives the incorrect csum_start.
-Setting up the same with a geneve tunnel and udpcsum enabled produces
-the same result. Removing vlan 100 also yields an incorrect
-csum_start. Removing only vlan 42 yields a correct csum_start.
+Threads  Performance
+8         -0.77%
+16        -1.1%
+32        -0.31%
+64        -0.49%
+128       -0.72%
+256       -1.7%
+384       -4.94%
+512       NA£¨iopf timeout£©
 
->
-> From a quick glance, in all cases that I see the VLAN tag is kept in
-> skb->vlan_tci, so is never part of the packet payload.
->
-> But checksum offload with VXLAN can be non-trivial on its own. If
-> type & SKB_GSO_UDP_TUNNEL_CSUM | SKB_GSO_TUNNEL_REMCSUM, say. Then
-> csum_start will point to the checksum in vxlanhdr.
->
+Finally, continuing to increase the number of threads will cause iommu's page fault
+processing to time out(more than 4.2 seconds).
+This problem occurs both in the before version(kernel6.7-rc1) and
+in the after modification's version.
 
+Thanks.
+Longfang.
