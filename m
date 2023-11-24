@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8DE7F74FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438E17F74FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345401AbjKXN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        id S1345658AbjKXN1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbjKXN1W (ORCPT
+        with ESMTP id S1345407AbjKXN1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:27:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D82C10F9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:10 -0800 (PST)
+        Fri, 24 Nov 2023 08:27:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26C170A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700832429;
+        s=mimecast20190719; t=1700832431;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qOqXc/Lc47PjYVBDjn5tNISm7M7uwGrIMk+t0cHF8N0=;
-        b=Ci6nzm9hcHMWZuOapqbpBSXFSXWl0TnzZyMigA7IRrFl1gTanwBv+Yxr8wUCSiBJO071Bt
-        MEK/fQHM2ZYEnjZIVNPCV7ntYVs3F6f0Gge60gEQr9Gbs9WlQj3RSxMpCtrZZEzpBXX0pM
-        er3r07Kwxy5b54n2RQrliMdEl3Nzk/E=
+        bh=QUP8GR2DnkC5694xV/qGgIseF+xugXnf+IpocEcF75Q=;
+        b=f2v4Nd9MWqwmzWHvH54xxheGVyGAyt5tAxJIMVpfBd0QdgkTuJFTFXpNhTI0bmsb+XtBuw
+        kKskpr0b9PT+eBiQ0HxvdQMgwW0ZzTWmPnqV9y9qoUWFdhaGf7jJhOjxbtF0fnoulpXgZl
+        +uGVUW0gJA7SwIMywIZvNl0TsromnDE=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-HfF3hCRgOCiCl6qXEnqmsA-1; Fri, 24 Nov 2023 08:27:04 -0500
-X-MC-Unique: HfF3hCRgOCiCl6qXEnqmsA-1
+ us-mta-508-EVwlOeefM6O30sNZp-JA9g-1; Fri, 24 Nov 2023 08:27:08 -0500
+X-MC-Unique: EVwlOeefM6O30sNZp-JA9g-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD25B811E86;
-        Fri, 24 Nov 2023 13:27:03 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC99C811E93;
+        Fri, 24 Nov 2023 13:27:07 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.194.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 477E52166B2A;
-        Fri, 24 Nov 2023 13:27:00 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ECEBC2166B2B;
+        Fri, 24 Nov 2023 13:27:03 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -54,9 +54,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Waiman Long <longman@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH WIP v1 09/20] mm: improve folio_mapped_shared() for partially-mappable folios using rmap IDs
-Date:   Fri, 24 Nov 2023 14:26:14 +0100
-Message-ID: <20231124132626.235350-10-david@redhat.com>
+Subject: [PATCH WIP v1 10/20] mm/memory: COW reuse support for PTE-mapped THP with rmap IDs
+Date:   Fri, 24 Nov 2023 14:26:15 +0100
+Message-ID: <20231124132626.235350-11-david@redhat.com>
 In-Reply-To: <20231124132626.235350-1-david@redhat.com>
 References: <20231124132626.235350-1-david@redhat.com>
 MIME-Version: 1.0
@@ -64,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,158 +72,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's make folio_mapped_shared() precise by using or rmap ID
-magic to identify if a single MM is responsible for all mappings.
+For now, we only end up reusing small folios and PMD-mapped large folios
+(i.e., THP) after fork(); PTE-mapped THPs are never reused, except when
+only a single page of the folio remains mapped. Instead, we end up copying
+each subpage even though the THP might be exclusive to the MM.
 
-If there is a lot of concurrent (un)map activity, we could theoretically
-spin for quite a while. But we're only looking at the rmap values in case
-we didn't already identify the folio as "obviously shared". In most
-cases, there should only be one or a handful of page tables involved.
+The logic we're using for small folios and PMD-mapped THPs is the
+following: Is the only reference to the folio from a single page table
+mapping? Then:
+  (a) There are no other references to the folio from other MMs
+      (e.g., page table mapping, GUP)
+  (b) There are no other references to the folio from page migration/
+      swapout/swapcache that might temporarily unmap the folio.
 
-For current THPs with ~512 .. 2048 subpages, we really shouldn't see a
-lot of concurrent updates that keep us spinning for a long time. Anyhow,
-if ever a problem this can be optimized later if there is real demand.
+Consequently, the folio is exclusive to that process and can be reused.
+In that case, we end up with folio_refcount(folio) == 1 and an implied
+folio_mapcount(folio) == 1, while holding the page table lock and the
+page lock to protect against possible races.
+
+For PTE-mapped THP, however, we have not one, but multiple references
+from page tables, whereby such THPs can be mapped into multiple
+page tables in the MM.
+
+Reusing the logic that we use for small folios and PMD-mapped THPs means,
+that when reusing a PTE-mapped THP, we want to make sure that:
+  (1) All folio references are from page table mappings.
+  (2) All page table mappings belong to the same MM.
+  (3) We didn't race with (un)mapping of the page related to other page
+      tables, such that the mapcount and refcount are stable.
+
+For (1), we can check
+	folio_refcount(folio) == folio_mapcount(folio)
+For (2) and (3), we can use our new rmap ID infrastructure.
+
+We won't bother with the swapcache and LRU cache for now. Add some sanity
+checks under CONFIG_DEBUG_VM, to identify any obvious problems early.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/mm.h   | 21 ++++++++++++---
- include/linux/rmap.h |  2 ++
- mm/rmap_id.c         | 63 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 82 insertions(+), 4 deletions(-)
+ mm/memory.c | 89 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 765e688690f1..1081a8faa1a3 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2113,6 +2113,17 @@ static inline size_t folio_size(struct folio *folio)
- 	return PAGE_SIZE << folio_order(folio);
- }
- 
+diff --git a/mm/memory.c b/mm/memory.c
+index 5048d58d6174..fb533995ff68 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3360,6 +3360,95 @@ static vm_fault_t wp_page_shared(struct vm_fault *vmf, struct folio *folio)
+ static bool wp_can_reuse_anon_folio(struct folio *folio,
+ 				    struct vm_area_struct *vma)
+ {
 +#ifdef CONFIG_RMAP_ID
-+bool __folio_large_mapped_shared(struct folio *folio, struct mm_struct *mm);
-+#else
-+static inline bool __folio_large_mapped_shared(struct folio *folio,
-+		struct mm_struct *mm)
-+{
-+	/* ... guess based on the mapcount of the first page of the folio. */
-+	return atomic_read(&folio->page._mapcount) > 0;
-+}
-+#endif
++	if (folio_test_large(folio)) {
++		bool retried = false;
++		unsigned long start;
++		int mapcount, i;
 +
- /**
-  * folio_mapped_shared - Report if a folio is certainly mapped by
-  *			 multiple entities in their page tables
-@@ -2141,8 +2152,11 @@ static inline size_t folio_size(struct folio *folio)
-  * PMD-mapped PMD-sized THP), the result will be exactly correct.
-  *
-  * For all other (partially-mappable) folios, such as PTE-mapped THP, the
-- * return value is partially fuzzy: true is not fuzzy, because it means
-- * "certainly mapped shared", but false means "maybe mapped exclusively".
-+ * return value is partially fuzzy without CONFIG_RMAP_ID: true is not fuzzy,
-+ * because it means "certainly mapped shared", but false means
-+ * "maybe mapped exclusively".
-+ *
-+ * With CONFIG_RMAP_ID, the result will be exactly correct.
-  *
-  * Note that this function only considers *current* page table mappings
-  * tracked via rmap -- that properly adjusts the folio mapcount(s) -- and
-@@ -2177,8 +2191,7 @@ static inline bool folio_mapped_shared(struct folio *folio,
- 	 */
- 	if (total_mapcount > folio_nr_pages(folio))
- 		return true;
--	/* ... guess based on the mapcount of the first page of the folio. */
--	return atomic_read(&folio->page._mapcount) > 0;
-+	return __folio_large_mapped_shared(folio, mm);
- }
- 
- #ifndef HAVE_ARCH_MAKE_PAGE_ACCESSIBLE
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 19c9dc3216df..a73e146d82d1 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -253,6 +253,8 @@ void __folio_set_large_rmap_val(struct folio *folio, int count,
- 		struct mm_struct *mm);
- void __folio_add_large_rmap_val(struct folio *folio, int count,
- 		struct mm_struct *mm);
-+bool __folio_has_large_matching_rmap_val(struct folio *folio, int count,
-+		struct mm_struct *mm);
- #else
- static inline void __folio_prep_large_rmap(struct folio *folio)
- {
-diff --git a/mm/rmap_id.c b/mm/rmap_id.c
-index e66b0f5aea2d..85a61c830f19 100644
---- a/mm/rmap_id.c
-+++ b/mm/rmap_id.c
-@@ -322,6 +322,69 @@ void __folio_add_large_rmap_val(struct folio *folio, int count,
- 	}
- }
- 
-+bool __folio_has_large_matching_rmap_val(struct folio *folio, int count,
-+		 struct mm_struct *mm)
-+{
-+	const unsigned int order = folio_order(folio);
-+	unsigned long diff = 0;
-+
-+	switch (order) {
-+#if MAX_ORDER >= RMAP_SUBID_6_MIN_ORDER
-+	case RMAP_SUBID_6_MIN_ORDER .. RMAP_SUBID_6_MAX_ORDER:
-+		diff |= atomic_long_read(&folio->_rmap_val0) ^ (get_rmap_subid_6(mm, 0) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val1) ^ (get_rmap_subid_6(mm, 1) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val2) ^ (get_rmap_subid_6(mm, 2) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val3) ^ (get_rmap_subid_6(mm, 3) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val4) ^ (get_rmap_subid_6(mm, 4) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val5) ^ (get_rmap_subid_6(mm, 5) * count);
-+		break;
-+#endif
-+#if MAX_ORDER >= RMAP_SUBID_5_MIN_ORDER
-+	case RMAP_SUBID_5_MIN_ORDER .. RMAP_SUBID_5_MAX_ORDER:
-+		diff |= atomic_long_read(&folio->_rmap_val0) ^ (get_rmap_subid_5(mm, 0) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val1) ^ (get_rmap_subid_5(mm, 1) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val2) ^ (get_rmap_subid_5(mm, 2) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val3) ^ (get_rmap_subid_5(mm, 3) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val4) ^ (get_rmap_subid_5(mm, 4) * count);
-+		break;
-+#endif
-+	default:
-+		diff |= atomic_long_read(&folio->_rmap_val0) ^ (get_rmap_subid_4(mm, 0) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val1) ^ (get_rmap_subid_4(mm, 1) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val2) ^ (get_rmap_subid_4(mm, 2) * count);
-+		diff |= atomic_long_read(&folio->_rmap_val3) ^ (get_rmap_subid_4(mm, 3) * count);
-+		break;
-+	}
-+	return !diff;
-+}
-+
-+bool __folio_large_mapped_shared(struct folio *folio, struct mm_struct *mm)
-+{
-+	unsigned long start;
-+	bool exclusive;
-+	int mapcount;
-+
-+	VM_WARN_ON_ONCE(!folio_test_large_rmappable(folio));
-+	VM_WARN_ON_ONCE(folio_test_hugetlb(folio));
-+
-+	/*
-+	 * Livelocking here is unlikely, as the caller already handles the
-+	 * "obviously shared" cases. If ever an issue and there is too much
-+	 * concurrent (un)mapping happening (using different page tables), we
-+	 * could stop earlier and just return "shared".
-+	 */
-+	do {
-+		start = raw_read_atomic_seqcount_begin(&folio->_rmap_atomic_seqcount);
++		/*
++		 * The assumption for anonymous folios is that each page can
++		 * only get mapped once into a MM.  This also holds for
++		 * small folios -- except when KSM is involved. KSM does
++		 * currently not apply to large folios.
++		 *
++		 * Further, each taken mapcount must be paired with exactly one
++		 * taken reference, whereby references must be incremented
++		 * before the mapcount when mapping a page, and references must
++		 * be decremented after the mapcount when unmapping a page.
++		 *
++		 * So if all references to a folio are from mappings, and all
++		 * mappings are due to our (MM) page tables, and there was no
++		 * concurrent (un)mapping, this folio is certainly exclusive.
++		 *
++		 * We currently don't optimize for:
++		 * (a) folio is mapped into multiple page tables in this
++		 *     MM (e.g., mremap) and other page tables are
++		 *     concurrently (un)mapping the folio.
++		 * (b) the folio is in the swapcache. Likely the other PTEs
++		 *     are still swap entries and folio_free_swap() would fail.
++		 * (c) the folio is in the LRU cache.
++		 */
++retry:
++		start = raw_read_atomic_seqcount(&folio->_rmap_atomic_seqcount);
++		if (start & ATOMIC_SEQCOUNT_WRITERS_MASK)
++			return false;
 +		mapcount = folio_mapcount(folio);
-+		if (unlikely(mapcount > folio_nr_pages(folio)))
-+			return true;
-+		exclusive = __folio_has_large_matching_rmap_val(folio, mapcount, mm);
-+	} while (raw_read_atomic_seqcount_retry(&folio->_rmap_atomic_seqcount,
-+						start));
 +
-+	return !exclusive;
-+}
++		/* Is this folio possibly exclusive ... */
++		if (mapcount > folio_nr_pages(folio) || folio_entire_mapcount(folio))
++			return false;
 +
- int alloc_rmap_id(void)
- {
- 	int id;
++		/* ... and are all references from mappings ... */
++		if (folio_ref_count(folio) != mapcount)
++			return false;
++
++		/* ... and do all mappings belong to us ... */
++		if (!__folio_has_large_matching_rmap_val(folio, mapcount, vma->vm_mm))
++			return false;
++
++		/* ... and was there no concurrent (un)mapping ? */
++		if (raw_read_atomic_seqcount_retry(&folio->_rmap_atomic_seqcount,
++						   start))
++			return false;
++
++		/* Safety checks we might want to drop in the future. */
++		if (IS_ENABLED(CONFIG_DEBUG_VM)) {
++			unsigned int mapcount;
++
++			if (WARN_ON_ONCE(folio_test_ksm(folio)))
++				return false;
++			/*
++			 * We might have raced against swapout code adding
++			 * the folio to the swapcache (which, by itself, is not
++			 * problematic). Let's simply check again if we would
++			 * properly detect the additional reference now and
++			 * properly fail.
++			 */
++			if (unlikely(folio_test_swapcache(folio))) {
++				if (WARN_ON_ONCE(retried))
++					return false;
++				retried = true;
++				goto retry;
++			}
++			for (i = 0; i < folio_nr_pages(folio); i++) {
++				mapcount = page_mapcount(folio_page(folio, i));
++				if (WARN_ON_ONCE(mapcount > 1))
++					return false;
++			}
++		}
++
++		/*
++		 * This folio is exclusive to us. Do we need the page lock?
++		 * Likely not, and a trylock would be unfortunate if this
++		 * folio is mapped into multiple page tables and we get
++		 * concurrent page faults. If there would be references from
++		 * page migration/swapout/swapcache, we would have detected
++		 * an additional reference and never ended up here.
++		 */
++		return true;
++	}
++#endif /* CONFIG_RMAP_ID */
+ 	/*
+ 	 * We have to verify under folio lock: these early checks are
+ 	 * just an optimization to avoid locking the folio and freeing
 -- 
 2.41.0
 
