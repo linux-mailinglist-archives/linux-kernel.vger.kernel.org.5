@@ -2,174 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B8A7F7A08
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACBD7F7A0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjKXRFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S231259AbjKXRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:06:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXRFc (ORCPT
+        with ESMTP id S229741AbjKXRGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:05:32 -0500
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63261718;
-        Fri, 24 Nov 2023 09:05:33 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id 0A87C2CE00BE;
-        Fri, 24 Nov 2023 18:05:30 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id qFpIe5Q3Kcxm; Fri, 24 Nov 2023 18:05:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id 875312CE00BF;
-        Fri, 24 Nov 2023 18:05:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl 875312CE00BF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1700845525;
-        bh=bEGIIU6XFTjGhVc6C6IiQ8qSXjZ6VNmdwsVWm1Cgupw=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=fJhNRi7EAZoPx7k8fZ+iijb8z4IV+km4hBo6mMA6DZ/0tI6N3rGFuiQuwd8NSm4t0
-         QAe3eDXU2xwQDbBr5b0FS2fosXkujRMqytK1Q00GliuzV5Dv8YOnjB/kbsyp1aHbcF
-         VvJ3za4OfNWylmqsESLdESJ1qR1Hn8JwO270+XNtGQr+pTdS7r/WbWkkYedRWu/RoJ
-         IRzG+3Oi92QT0hBsx5dOIZ+/5Me0CtcCALB8TE65NmOV0q/imcxXHXVp3k0yrku6Pc
-         mlYtDMHy0DRLzKx1L7wHp+rrmh8dyDChsTB8MtQKy+Cl8dKmysB9D/+q7iAD9WIwgA
-         p8Lwy92C7Otuw==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id BdYI3ict_4H3; Fri, 24 Nov 2023 18:05:25 +0100 (CET)
-Received: from ideapad.. (unknown [10.0.2.2])
-        by helios.alatek.com.pl (Postfix) with ESMTPSA id 402ED2CE00BE;
-        Fri, 24 Nov 2023 18:05:25 +0100 (CET)
-From:   Jan Kuliga <jankul@alatek.krakow.pl>
-To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
-        vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jan Kuliga <jankul@alatek.krakow.pl>
-Subject: [PATCH v2 1/5] dmaengine: xilinx: xdma: Add transfer termination callbacks
-Date:   Fri, 24 Nov 2023 18:05:17 +0100
-Message-Id: <20231124170517.130994-1-jankul@alatek.krakow.pl>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231122220921.117428-2-jankul@alatek.krakow.pl>
-References: <20231122220921.117428-2-jankul@alatek.krakow.pl>
+        Fri, 24 Nov 2023 12:06:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B6DD59
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:06:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E892C433C7;
+        Fri, 24 Nov 2023 17:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700845602;
+        bh=PPv7r8G9gWCUU0EJn3vhveqcEwikXh9jLw+nzQQY9WI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s098XSVgPCPMuCM9JTGjDOF6ArkD588pr3xbbacn2qrOnd9HdljQZka8/F74S7hX/
+         NCrzX39xQUb9ZC1YaRAG/Qblvr+/P97J4ZA0u56pvC3u9G+kuEwR4nl6VwlkZy78Pt
+         psqbG3gpul7rn/IGgdWC86LMED9JYliFM2YB+zwCcpl3grRq9jv6vibKGKBot89jut
+         Tj+gLKs6zd24iD6Jzn8vw2OAum0VVLRac51PEJZjO2Ei0fRwFK/fSMxRvvbTXifNfw
+         Xq70m4AbVloSNq5hz05Q8J/FhfY9FYKrXWXUfR/MIo9HqWCCtNUzAEc+U1fypTaVxx
+         6W6AIfwVULQxA==
+Date:   Fri, 24 Nov 2023 18:06:34 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de
+Subject: Re: [RESEND RFC PATCH v2 11/14] vfs: Wire up security hooks for
+ lsm-based device guard in userns
+Message-ID: <20231124-neidisch-drehbaren-d80ef7aa6390@brauner>
+References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+ <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The xdma driver currently doesn't implement proper transfer termination
-callbacks. Therefore, there is no way to gracefully terminate the
-on-going DMA transactions. That is particularly useful for cyclic DMA
-transfers. Implement these callbacks.
+On Wed, Oct 25, 2023 at 11:42:21AM +0200, Michael Weiß wrote:
+> Wire up security_inode_mknod_capns() in fs/namei.c. If implemented
+> and access is granted by an lsm, check ns_capable() instead of the
+> global CAP_MKNOD.
+> 
+> Wire up security_sb_alloc_userns() in fs/super.c. If implemented
+> and access is granted by an lsm, the created super block will allow
+> access to device nodes also if it was created in a non-inital userns.
+> 
+> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+> ---
+>  fs/namei.c | 16 +++++++++++++++-
+>  fs/super.c |  6 +++++-
+>  2 files changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index f601fcbdc4d2..1f68d160e2c0 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3949,6 +3949,20 @@ inline struct dentry *user_path_create(int dfd, const char __user *pathname,
+>  }
+>  EXPORT_SYMBOL(user_path_create);
+>  
+> +static bool mknod_capable(struct inode *dir, struct dentry *dentry,
+> +			  umode_t mode, dev_t dev)
+> +{
+> +	/*
+> +	 * In case of a security hook implementation check mknod in user
+> +	 * namespace. Otherwise just check global capability.
+> +	 */
+> +	int error = security_inode_mknod_nscap(dir, dentry, mode, dev);
+> +	if (!error)
+> +		return ns_capable(current_user_ns(), CAP_MKNOD);
+> +	else
+> +		return capable(CAP_MKNOD);
+> +}
+> +
+>  /**
+>   * vfs_mknod - create device node or file
+>   * @idmap:	idmap of the mount the inode was found from
+> @@ -3975,7 +3989,7 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+>  		return error;
+>  
+>  	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+> -	    !capable(CAP_MKNOD))
+> +	    !mknod_capable(dir, dentry, mode, dev))
+>  		return -EPERM;
+>  
+>  	if (!dir->i_op->mknod)
+> diff --git a/fs/super.c b/fs/super.c
+> index 2d762ce67f6e..bb01db6d9986 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -362,7 +362,11 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>  	}
+>  	s->s_bdi = &noop_backing_dev_info;
+>  	s->s_flags = flags;
+> -	if (s->s_user_ns != &init_user_ns)
+> +	/*
+> +	 * We still have to think about this here. Several concerns exist
+> +	 * about the security model, especially about malicious fuse.
+> +	 */
+> +	if (s->s_user_ns != &init_user_ns && security_sb_alloc_userns(s))
+>  		s->s_iflags |= SB_I_NODEV;
 
-Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
----
- drivers/dma/xilinx/xdma-regs.h |  1 +
- drivers/dma/xilinx/xdma.c      | 60 ++++++++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+Hm, no.
 
-diff --git a/drivers/dma/xilinx/xdma-regs.h b/drivers/dma/xilinx/xdma-reg=
-s.h
-index e641a5083e14..1f17ce165f92 100644
---- a/drivers/dma/xilinx/xdma-regs.h
-+++ b/drivers/dma/xilinx/xdma-regs.h
-@@ -76,6 +76,7 @@ struct xdma_hw_desc {
- #define XDMA_CHAN_CONTROL_W1S		0x8
- #define XDMA_CHAN_CONTROL_W1C		0xc
- #define XDMA_CHAN_STATUS		0x40
-+#define XDMA_CHAN_STATUS_RC		0x44
- #define XDMA_CHAN_COMPLETED_DESC	0x48
- #define XDMA_CHAN_ALIGNMENTS		0x4c
- #define XDMA_CHAN_INTR_ENABLE		0x90
-diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
-index 84a88029226f..013fd79d65b2 100644
---- a/drivers/dma/xilinx/xdma.c
-+++ b/drivers/dma/xilinx/xdma.c
-@@ -632,6 +632,64 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr=
-_t address,
- 	return NULL;
- }
-=20
-+/**
-+ * xdma_terminate_all - Halt the DMA channel
-+ * @chan: DMA channel
-+ */
-+static int xdma_terminate_all(struct dma_chan *chan)
-+{
-+	int ret;
-+	u32 val;
-+	unsigned long flags;
-+	struct xdma_chan *xchan =3D to_xdma_chan(chan);
-+	struct xdma_device *xdev =3D xchan->xdev_hdl;
-+	struct virt_dma_desc *vd;
-+	LIST_HEAD(head);
-+
-+	/* Clear the RUN bit to stop the transfer */
-+	ret =3D regmap_write(xdev->rmap, xchan->base + XDMA_CHAN_CONTROL_W1C,
-+							CHAN_CTRL_RUN_STOP);
-+	if (ret)
-+		return ret;
-+
-+	/* Clear the channel status register */
-+	ret =3D regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &val=
-);
-+	if (ret)
-+		return ret;
-+
-+	spin_lock_irqsave(&xchan->vchan.lock, flags);
-+
-+	/* Don't care if there were no descriptors issued */
-+	vd =3D vchan_next_desc(&xchan->vchan);
-+	if (vd) {
-+		/*
-+		 * No need to delete the vd from the vc.desc_issued list,
-+		 * every desc list is going to be spliced into vc.desc_terminated
-+		 * and initialized anyway.
-+		 */
-+		vchan_cookie_complete(vd);
-+		vchan_terminate_vdesc(vd);
-+	}
-+	vchan_get_all_descriptors(&xchan->vchan, &head);
-+	list_splice_tail(&head, &xchan->vchan.desc_terminated);
-+
-+	xchan->busy =3D false;
-+	spin_unlock_irqrestore(&xchan->vchan.lock, flags);
-+
-+	return 0;
-+}
-+
-+/**
-+ * xdma_synchronize - Synchronize current execution context to the DMA c=
-hannel
-+ * @chan: DMA channel
-+ */
-+static void xdma_synchronize(struct dma_chan *chan)
-+{
-+	struct xdma_chan *xchan =3D to_xdma_chan(chan);
-+
-+	vchan_synchronize(&xchan->vchan);
-+}
-+
- /**
-  * xdma_device_config - Configure the DMA channel
-  * @chan: DMA channel
-@@ -1093,6 +1151,8 @@ static int xdma_probe(struct platform_device *pdev)
- 	xdev->dma_dev.filter.mapcnt =3D pdata->device_map_cnt;
- 	xdev->dma_dev.filter.fn =3D xdma_filter_fn;
- 	xdev->dma_dev.device_prep_dma_cyclic =3D xdma_prep_dma_cyclic;
-+	xdev->dma_dev.device_terminate_all =3D xdma_terminate_all;
-+	xdev->dma_dev.device_synchronize =3D xdma_synchronize;
-=20
- 	ret =3D dma_async_device_register(&xdev->dma_dev);
- 	if (ret) {
---=20
-2.34.1
+We dont want to have security hooks called in alloc_super(). That's just
+the wrong layer for this. This is deeply internal stuff where we should
+avoid interfacing with other subsystems.
 
+Removing SB_I_NODEV here is also problematic or at least overly broad
+because you allow to circumvent this for _every_ filesystems including
+stuff like proc and so on where that doesn't make any sense.
