@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486737F7023
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E0C7F7027
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345193AbjKXJkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S233004AbjKXJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:40:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjKXJkf (ORCPT
+        with ESMTP id S234988AbjKXJkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:40:35 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E88D54
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:40:41 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-407da05f05aso11543105e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:40:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1700818840; x=1701423640; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=liKWi3k1bQmGEMyLltDAEJD618fY1ygP7q9s9GKBNQY=;
-        b=iCbh6pTSrlU3axKSDVlAEbvJ8FkJrYAlkp7tLPy6XcDdc2tocoULEnP8JKrWRUWL8s
-         8Qmq1stTFpQBnTpqByFwVoZ5cFaug1ugwtX8lRe6QzH+hj6nLD1bCO/YxV+581INpfGx
-         L6k4BedylFdg+ry+nqhJtkkfyrs69+IOUeT8j5Yhq9E9WiNCq5nMZOqBi2zCfPE/bZpX
-         0WnNvPB9fuIPv6WQjrtNo/AyQPGEnwYkn9nU+GsBzWtci2Ip8S1GIy4meYFVx8L31USE
-         btemkWbMp7HfTht8JzINJgLzLNK6qmJCFRnRJDleBMvX59NtXZyL8FAzvdO0LtW3ji2n
-         1R6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700818840; x=1701423640;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=liKWi3k1bQmGEMyLltDAEJD618fY1ygP7q9s9GKBNQY=;
-        b=dpWpOg4UId8UEUEj5s+DySv3+10XUxbRPV3zKzIVya3JE1t32V5tUMERx6TDcA9VWR
-         iSRPCPyzRqAmKv5fgBdeD4Z1kYxZjE+NifN4Sm2+YHvIVjFLQcrHyEILQmjEYYcWTYJ8
-         oIcnVGcAcJ6GkBdjKYjzUyLRhkdeN8waVpBPdM3Wr1/VswQ/LtBldDO81qYfzSLp/Orz
-         JY2c2PjZGG5CzohvMyWfxJTJ1xsksB3Ovv7vaNlx27Cv40SpyEB3lSFTTkMaJjzW/i3j
-         If1ht1ChDBY2jGXZ/dtRaxW95c5F9uqKp/hkrqR3hHymYe5VMDRSv3wdR8dIl/cEjh43
-         EThg==
-X-Gm-Message-State: AOJu0YxDyErr5SLOUaROOPcFdMBKMrFpZyEPnJ8R7jtOBAdDtiJWGEe3
-        g3QTVfu/sGBU9KLIaN6YIeqSKQ==
-X-Google-Smtp-Source: AGHT+IF9VLUBW6WyHhdlX2rn3vRUYeHRnBcJF0nS6mbPXvTDrFDn41SBn1hGDsyIKy9IjON6i7vOzg==
-X-Received: by 2002:a05:600c:a0b:b0:408:3cdf:32c with SMTP id z11-20020a05600c0a0b00b004083cdf032cmr2103866wmp.41.1700818840312;
-        Fri, 24 Nov 2023 01:40:40 -0800 (PST)
-Received: from localhost (cst-prg-91-180.cust.vodafone.cz. [46.135.91.180])
-        by smtp.gmail.com with ESMTPSA id q19-20020a05600c46d300b0040b35195e54sm4550012wmo.5.2023.11.24.01.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:40:39 -0800 (PST)
-Date:   Fri, 24 Nov 2023 10:40:34 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Christoph Muellner <christoph.muellner@vrull.eu>
-Cc:     linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Evan Green <evan@rivosinc.com>,
-        Xiao Wang <xiao.w.wang@intel.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Charlie Jenkins <charlie@rivosinc.com>
-Subject: Re: [PATCH 0/5] tools: selftests: riscv: Fix compiler warnings
-Message-ID: <20231124-3934c1b3c4b6dc3f076b0f9a@orel>
-References: <20231123185821.2272504-1-christoph.muellner@vrull.eu>
+        Fri, 24 Nov 2023 04:40:53 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680B6D54
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:40:59 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DD89166073A4;
+        Fri, 24 Nov 2023 09:40:56 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700818857;
+        bh=LDEJxxut8mOIXIweABuj+iaxliCKCshQ6GN/RJzXq3w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H7NSrk1l6pFC5gIp3b4sLAuNshK1i+hDEsPF9psqr556lGfmm6VPTib3oS6SjJRzv
+         vtTYi9Q6C59/NU5ixzekg0Y4lUnMO/aifagrBcH46kstlhMVb5SF2o5//VUL0ALir3
+         lUZeEUnL8WccwKfHdnbn7yRxGxkD85LjZfAL4didUTQ5MmoWMoDeX1cx/koTK2ypq7
+         F9VhDWI2+/HDSiXO7QQOwH6FKHpizf1n8dqKhBDvSsWAtFnwftTgUyoiARM1xoZIi6
+         aSvIDqVKAsehRjUqqm6P1BCqeWutZVZlWC9onUm5sRn90ZEtl4msQ7NpbQwlFHksFq
+         zoq1XcE9f2v3A==
+Date:   Fri, 24 Nov 2023 10:40:53 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put
+ drm-shmem pages
+Message-ID: <20231124104053.034496fb@collabora.com>
+In-Reply-To: <20231123154848.034f4710@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-16-dmitry.osipenko@collabora.com>
+        <20231123154848.034f4710@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231123185821.2272504-1-christoph.muellner@vrull.eu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -83,25 +70,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 07:58:16PM +0100, Christoph Muellner wrote:
-> From: Christoph Müllner <christoph.muellner@vrull.eu>
+On Thu, 23 Nov 2023 15:48:48 +0100
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
+
+> On Mon, 30 Oct 2023 02:01:54 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 > 
-> When building the RISC-V selftests with a riscv32 compiler I ran into
-> a couple of compiler warnings. While riscv32 support for these tests is
-> questionable, the fixes are so trivial that it is probably best to simply
-> apply them.
+> > To simplify the drm-shmem refcnt handling, we're moving away from
+> > the implicit get_pages() that is used by get_pages_sgt(). From now on
+> > drivers will have to pin pages while they use sgt. Panfrost's shrinker
+> > doesn't support swapping out BOs, hence pages are pinned and sgt is valid
+> > as long as pages' use-count > 0.
+> > 
+> > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> > ---
+> >  drivers/gpu/drm/panfrost/panfrost_gem.c | 17 +++++++++++++++++
+> >  drivers/gpu/drm/panfrost/panfrost_mmu.c |  6 ++----
+> >  2 files changed, 19 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> > index 6b77d8cebcb2..bb9d43cf7c3c 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> > @@ -47,8 +47,13 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
+> >  			}
+> >  		}
+> >  		kvfree(bo->sgts);
+> > +
+> > +		drm_gem_shmem_put_pages(&bo->base);
+> >  	}
+> >  
+> > +	if (!bo->is_heap && !obj->import_attach)
+> > +		drm_gem_shmem_put_pages(&bo->base);
+> > +
+> >  	drm_gem_shmem_free(&bo->base);
+> >  }
+> >  
+> > @@ -269,6 +274,7 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
+> >  {
+> >  	struct drm_gem_shmem_object *shmem;
+> >  	struct panfrost_gem_object *bo;
+> > +	int err;
+> >  
+> >  	/* Round up heap allocations to 2MB to keep fault handling simple */
+> >  	if (flags & PANFROST_BO_HEAP)
+> > @@ -282,7 +288,18 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
+> >  	bo->noexec = !!(flags & PANFROST_BO_NOEXEC);
+> >  	bo->is_heap = !!(flags & PANFROST_BO_HEAP);
+> >  
+> > +	if (!bo->is_heap) {
+> > +		err = drm_gem_shmem_get_pages(shmem);  
 > 
-> Note that the missing-include patch and some format string warnings
-> are also relevant for riscv64.
+> I really hate the fact we request pages here while we call
+> panfrost_mmu_map() in panfrost_gem_open(), because ultimately, pages
+> are requested for the MMU mapping. Also hate the quirk we have in shmem
+> to call free_pages() instead of put_pages_locked() when the BO refcount
+> dropped to zero, and I was hoping we could get rid of it at some point
+> by teaching drivers to request pages when they actually need it instead
+> of tying pages lifetime to the GEM object lifetime.
+> 
+> Maybe what we should do instead is move the get/put_pages() in
+> panfrost_mmu_map/unmap() (as I suggested), but have a special mapping
+> panfrost_mmu_evict/restore() helpers that kill/restore the MMU mappings
+> without releasing/acquiring the pages ref.
 
-I also posted [1] a couple days ago for the format warnings, but, as this
-series also includes rv32 fixes, then we can drop [1] in favor of this.
+Okay, so I played with your branch and did what I suggested here ^. The
+end result is available here [1]. I also split this patch in two:
 
-[1] https://lore.kernel.org/all/20231122171821.130854-2-ajones@ventanamicro.com/
+- A fix for the error path in panfrost_mmu_map_fault_addr() [2]
+- The explicit get/put_pages() stuff with pages ref owned by the
+  panfrost_gem_mapping object [3]
 
-For the series,
+[1]https://gitlab.freedesktop.org/bbrezillon/linux/-/commits/virtio-gpu-shrinker-v18
+[2]https://gitlab.freedesktop.org/bbrezillon/linux/-/commit/9d499e971fdae4d6e52f8871ca27c24b2a2c43d6
+[3]https://gitlab.freedesktop.org/bbrezillon/linux/-/commit/ba3de65bf1cf0ca95710e743ec85ca67ff1aa223
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
-Thanks,
-drew
