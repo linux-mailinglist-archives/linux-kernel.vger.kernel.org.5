@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4D87F71E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF23B7F71E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345599AbjKXKoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S1345628AbjKXKoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:44:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345606AbjKXKn6 (ORCPT
+        with ESMTP id S1345372AbjKXKog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:43:58 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D1BF10F8;
-        Fri, 24 Nov 2023 02:44:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16E251063;
-        Fri, 24 Nov 2023 02:44:49 -0800 (PST)
-Received: from [10.57.4.20] (unknown [10.57.4.20])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 991283F7A6;
-        Fri, 24 Nov 2023 02:44:00 -0800 (PST)
-Message-ID: <4a005396-46fd-443c-be15-6fe0e2a1dea5@arm.com>
-Date:   Fri, 24 Nov 2023 10:43:59 +0000
+        Fri, 24 Nov 2023 05:44:36 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87E81A8
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:44:42 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 89ECF66073AA;
+        Fri, 24 Nov 2023 10:44:40 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700822681;
+        bh=HUayWawTRXmfbHFm7UBPnjChIrhOUK/HDExzWJYbs9Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Menz/y9Qab2IoSBmYzFfmk1KN6E8CoUz5G+pXwk9yOTBHYfe/cJKYSblQATxcipuv
+         qkZwJsjhxlUo0F1iaaD3tWgPPYcKII0O+2Z7ZePgljna/NaROPlAQGJ/8iBH7Uqgyw
+         rfGcM2jEdw2DjE3wNNmhklrKmjvm4XCDg0vbxR1tbtqZcJQ0aZDHQ0g3velLy0iHqB
+         LOw3is/bW1TJEVMCS/CXfkG6Myqttr8A05sszW5QhtKm8eSxDes9T4MZC3tI7hpsYX
+         /1unloM6DUeT8GM3mK3QumfK4FdGm+6SSX+ALTTfLjaHyeFW/2CLrtqEOJxum/nOvf
+         ub3kWCL08gWXA==
+Date:   Fri, 24 Nov 2023 11:44:36 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Message-ID: <20231124114436.7c8ef723@collabora.com>
+In-Reply-To: <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
+        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/pelt: avoid underestimate of task utilization
-Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     lukasz.luba@arm.com, mingo@redhat.com, mgorman@suse.de,
-        rostedt@goodmis.org, bristot@redhat.com, peterz@infradead.org,
-        rafael@kernel.org, vschneid@redhat.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, bsegall@google.com, qyousef@layalina.io,
-        viresh.kumar@linaro.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20231122140119.472110-1-vincent.guittot@linaro.org>
-From:   Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20231122140119.472110-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 14:01, Vincent Guittot wrote:
-> [...]
+On Fri, 24 Nov 2023 11:40:06 +0100
+Maxime Ripard <mripard@kernel.org> wrote:
+
+> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:
+> > Add locked and remove unlocked postfixes from drm-shmem function names,
+> > making names consistent with the drm/gem core code.
+> > 
+> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>  
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 07f555857698..eeb505d28905 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4774,6 +4774,11 @@ static inline unsigned long task_util(struct task_struct *p)
->   	return READ_ONCE(p->se.avg.util_avg);
->   }
->   
-> +static inline unsigned long task_runnable(struct task_struct *p)
-> +{
-> +	return READ_ONCE(p->se.avg.runnable_avg);
-> +}
-> +
->   static inline unsigned long _task_util_est(struct task_struct *p)
->   {
->   	struct util_est ue = READ_ONCE(p->se.avg.util_est);
-> @@ -4892,6 +4897,14 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->   	if (task_util(p) > arch_scale_cpu_capacity(cpu_of(rq_of(cfs_rq))))
->   		return;
->   
-> +	/*
-> +	 * To avoid underestimate of task utilization, skip updates of ewma if
-> +	 * we cannot grant that thread got all CPU time it wanted.
-> +	 */
-> +	if ((ue.enqueued + UTIL_EST_MARGIN) < task_runnable(p))
-> +		goto done;
-> +
-> +
+> This contradicts my earlier ack on a patch but...
+> 
+> > ---
+> >  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
+> >  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
+> >  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
+> >  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
+> >  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
+> >  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
+> >  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
+> >  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
+> >  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
+> >  9 files changed, 64 insertions(+), 64 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > index 0d61f2b3e213..154585ddae08 100644
+> > --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
+> >  	.pin = drm_gem_shmem_object_pin,
+> >  	.unpin = drm_gem_shmem_object_unpin,
+> >  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
+> > -	.vmap = drm_gem_shmem_object_vmap,
+> > -	.vunmap = drm_gem_shmem_object_vunmap,
+> > +	.vmap = drm_gem_shmem_object_vmap_locked,
+> > +	.vunmap = drm_gem_shmem_object_vunmap_locked,  
+> 
+> While I think we should indeed be consistent with the names, I would
+> also expect helpers to get the locking right by default.
+> 
+> I'm not sure how reasonable it is, but I think I'd prefer to turn this
+> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
+> convert whatever function needs to be converted to the unlock suffix so
+> we get a consistent naming.
+> 
+> Does that make sense?
 
-Actually, does this also skip util_est increases as well, assuming no 
-FASTUP? When a task is ramping up, another task could join and then 
-blocks this task from ramping up its util_est.
-
-Or do we think this is intended behavior for !FASTUP?
-
->   	/*
->   	 * Update Task's estimated utilization
->   	 *
+I don't mind, as long as it's consistent, it's just that that there's
+probably more to patch if we do it the other way around.
