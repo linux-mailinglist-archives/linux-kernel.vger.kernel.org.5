@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EC37F7569
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82E47F7570
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjKXNkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:40:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
+        id S230487AbjKXNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbjKXNkn (ORCPT
+        with ESMTP id S230489AbjKXNpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:40:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC5A93;
-        Fri, 24 Nov 2023 05:40:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700833234; x=1701438034; i=wahrenst@gmx.net;
-        bh=wDCiSJTXhXpQsFxIqaxtzqUh0f8rh9J+42vGz//6r3g=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=mbD6rW591axLO9nG6RjUecFaWGmMuTdFBcXjDnx8A+sMTuj6ZJm6lPKjPJMJuoPG
-         cQ0ymjXO19HnByg2TcbooCQMQDe4aFd0INX02weL7dgSIuhmG90qvEKoikqHokh9c
-         FL3rmSd4LcVR1uxzYIHO7YMroVHWCeN4YxjQCiyFJgdVScWvHxXy7kPBvAsQ5z+Vf
-         LEI6ayHelbGrMKTLKtXH6NgJidsEDHO+s513YT8D1YL6bi9bz5Iu8xBRFwwoMiDBB
-         YFQ3lCdX8PfOmMnIlHKDqIT2bnXeBZqHIm9e88A8RjZkydRIRGyWl2JgGWE7XIGcx
-         QjSWkIK6GmPqYcEq4Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mqb1c-1rbAHK2b8y-00meq2; Fri, 24
- Nov 2023 14:40:34 +0100
-Message-ID: <d4385cad-41e2-4adc-99b1-45a5b75a2ad5@gmx.net>
-Date:   Fri, 24 Nov 2023 14:40:33 +0100
+        Fri, 24 Nov 2023 08:45:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1C71BE
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:45:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C789FC433C7;
+        Fri, 24 Nov 2023 13:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700833541;
+        bh=EzqT4v8vZXGnSVX9M8qsp06zVhLbFhH0kYlZVwhXdTc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o9CzBtB2XVBvWvf4qEK3/cdglI9Ej7m5YdPkCvTE+vmSq5ifMZ2s4WhZWi1FX+EXn
+         TRyZ00bY4BMjVSHD4o4EYG5nFg6paKOdsFYqoXpj0ZYYd/4/m6FZN03E28fvxwYaa0
+         g217e4oJwaTF2ou1LKMh5Fyn0oVi8xOHeExMJ3HE2SKEFeCuj/E/syDZMFAHBvC74o
+         w3qn/gPd+hCVGb4mXNnmDwlHA4rSNFL5BAY+onlyPUL9JrJp3IbyKG5IMZ7VknUqRe
+         mi9L9uzoAZY9rvSSx6sh1Nttv1AWD+eMAnnA3MsIXVqT64ts57gqtq0fSmqvnbGmV9
+         yECsf5Sc3zlRw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r6WVN-0000to-1Y;
+        Fri, 24 Nov 2023 14:46:02 +0100
+Date:   Fri, 24 Nov 2023 14:46:01 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+Message-ID: <ZWCpGdJRexnk98IN@hovoldconsulting.com>
+References: <20231122191335.3058-1-quic_kriskura@quicinc.com>
+ <ZV9dYpTYRXn63tXe@hovoldconsulting.com>
+ <1192d91f-11bf-44af-953a-14e08e2b6ca8@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4 net] qca_spi: Fix SPI thread creation
-To:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121163004.21232-1-wahrenst@gmx.net>
- <20231121163004.21232-2-wahrenst@gmx.net>
- <5327988fc5d02f3352be66b5f0a2ca9a468ef1da.camel@redhat.com>
-Content-Language: en-US
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <5327988fc5d02f3352be66b5f0a2ca9a468ef1da.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DOYujk5KfdaYRyp81U2Y1DK6veGK5ZiNBC/FBsxTxudFRfwtFvj
- O5RdCgz8/qaP92o9SEfJ360pINm5m03oUL5ETTRIKmXg/y+XAXLDjFj5lNdFvmOU1v+ccA2
- nV1yNrR9pS7pyUo3ZQJ2AG58I3WqUaVem7gDHpjFkDd3FDcruOJPMeRhJ65KRiA6A32oygB
- uYZyBphMSbVNKtEdeSVPQ==
-UI-OutboundReport: notjunk:1;M01:P0:xFBEfOC/kqE=;PB3XY0Mnx/3uowLtM/iMpiY5kva
- 1o9dLlQvXukvrJvwcp5afFJKgZDczmqWRUPS/rybM8hjRcHAKh86pJO1bcA948/RCYKYtlzXR
- oR/LXs+R7K7VoxOdicqj4qTBeBHaVO2NQvYQ8JMDDS/G5i4QMQJjprKFtMf5uNDwiXRk9Ilh2
- EoYj8v4ICvBO6DXDgLbW42Ib5UPoxGdHTu8mO0Smy0bqxmIqJRwSBTaVjKwhfvs3O8zoFTIOR
- TXjvwRolxYqonyf7kHkhr+9b+ZJDEuVSJdFMKpxe1jmCYo6ir3Jlu3s7r4j7/1pLJ0HboiuFW
- X5Guq3E6C6Djg4PtmnhHkgca4N3xxYJUlPG/I2JV1ubCTkHWMf5mAzVCPwLvQFM2rG9VosWne
- UV+RtwwDcLIGvguSiaSqKnsY5zxLfV/XC/v+lHpg8lv0hljDAPaYmRH2Tt4QGPXUwlBO605MB
- JBG/ixuoV7J8TlrYlA2hxtv0UmztIz4I1PVyASKH77tf2sFV8Rr0SBjMBdHqndTIxPu9bpYbo
- Ug3OatU92DmNQjFfyddiHDKnTyWaXY0tnUrGQCC3dvKXNRSu1jdX5vsEIBHU1HeNaJrgCGZ6R
- w4yFXNai/4KH0YXTkFYRg1pjhV5g/1elX9kAs0d9x6F4+r52PFi765JKua9naP/rMMgM3zjmr
- ldA9TrHtA/8qOvYzBeDGQfWH+XYW+4yecpM134sdbwytWiQ0hSskAs6jIHL1xwrH6d7hfZj58
- NikjFPZWac8XLypXQ1AJWroj9z46mcb5Zv7sstgsPqHX/D0QUvz+aJDh13FOx16SQsa95Cq0K
- l6hNrqCJVgOZyoy/zTnxrKLQhDFZRv5gd7JzK1J10N9yO0C009XqQ2c57PotzAtRmwEZ73EgA
- TVmtzUxEWgBypJkVOLNeXjifGum4GZlHry5RMPNDGjLmwYW7lWgZ2kj1B3SEUHrxWSDDmfq+V
- qJ2L+w==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1192d91f-11bf-44af-953a-14e08e2b6ca8@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,90 +64,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+On Fri, Nov 24, 2023 at 05:32:37PM +0530, Krishna Kurapati PSSNV wrote:
+> > 
+> > Thanks for sorting this out.
+> > 
+> > It seems like we have a few combinations of these interrupts and we
+> > should probably try to define the order for these once and for all and
+> > update the current devicetrees to match (even if it means adding new
+> > interrupts in the middle).
+> > 
+> > Instead of adding separate compatibles for the controllers without SS
+> > support, I suggest keeping that interrupt last as an optional one.
+> > 
+> > But IIUC we essentially have something like:
+> > 
+> > qusb2-:
+> > 
+> > 	- const: qusb2_phy
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> > qusb2:
+> > 
+> > 	- const: hs_phy_irq
+> > 	- const: qusb2_phy
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> > qusb2+:
+> > 
+> > 	- const: hs_phy_irq
+> > 	- const: qusb2_phy
+> > 	- const: dp_hs_phy_irq
+> > 	- const: dm_hs_phy_irq
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> 
+> This combination doesn't exist. So we can skip this one.
 
-Am 23.11.23 um 12:26 schrieb Paolo Abeni:
-> On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
->> The qca_spi driver create/stop the SPI kernel thread in case
->> of netdev_open/close. This is a big issue because it allows
->> userspace to prevent from restarting the SPI thread after
->> ring parameter changes (e.g. signals which stop the thread).
->> This could be done by terminating a script which changes
->> the ring parameter in a loop.
->>
->> So fix this by moving create/stop of the SPI kernel into
->> the init/uninit ops. The open/close ops could be realized just
->> by 'park/unpark' the SPI kernel thread.
->>
->> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for Q=
-CA7000")
->> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
->> ---
->>   drivers/net/ethernet/qualcomm/qca_spi.c | 35 ++++++++++++++++--------=
--
->>   1 file changed, 23 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethe=
-rnet/qualcomm/qca_spi.c
->> index bec723028e96..b11a998b2456 100644
->> --- a/drivers/net/ethernet/qualcomm/qca_spi.c
->> +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
->> @@ -580,6 +580,11 @@ qcaspi_spi_thread(void *data)
->>   	netdev_info(qca->net_dev, "SPI thread created\n");
->>   	while (!kthread_should_stop()) {
->>   		set_current_state(TASK_INTERRUPTIBLE);
->> +		if (kthread_should_park()) {
->> +			kthread_parkme();
->> +			continue;
->> +		}
->> +
->>   		if ((qca->intr_req =3D=3D qca->intr_svc) &&
->>   		    !qca->txr.skb[qca->txr.head])
->>   			schedule();
->> @@ -679,25 +684,17 @@ qcaspi_netdev_open(struct net_device *dev)
->>   	qca->sync =3D QCASPI_SYNC_UNKNOWN;
->>   	qcafrm_fsm_init_spi(&qca->frm_handle);
->>
->> -	qca->spi_thread =3D kthread_run((void *)qcaspi_spi_thread,
->> -				      qca, "%s", dev->name);
->> -
->> -	if (IS_ERR(qca->spi_thread)) {
->> -		netdev_err(dev, "%s: unable to start kernel thread.\n",
->> -			   QCASPI_DRV_NAME);
->> -		return PTR_ERR(qca->spi_thread);
->> -	}
->> -
->>   	ret =3D request_irq(qca->spi_dev->irq, qcaspi_intr_handler, 0,
->>   			  dev->name, qca);
->>   	if (ret) {
->>   		netdev_err(dev, "%s: unable to get IRQ %d (irqval=3D%d).\n",
->>   			   QCASPI_DRV_NAME, qca->spi_dev->irq, ret);
->> -		kthread_stop(qca->spi_thread);
->>   		return ret;
->>   	}
->>
->>   	/* SPI thread takes care of TX queue */
->> +	kthread_unpark(qca->spi_thread);
->> +	wake_up_process(qca->spi_thread);
-> The above looks racy: after 'request_irq()' the interrupt handler can
-> raise an irq before the thread being unparked.
-yes fixing the whole resource allocation issue requires patch 1 and 2
-applied, which should avoid the race. But i didn't want to combine both
-patches to keep it applicable for stable. My thought was that 2 smaller
-patches are more acceptable than a big one.
+Ok, good. I thought you said some QUSB2 platforms used DP/DM, but I guess
+that means they don't have the qusb2_phy interrupt then.
+ 
+> > femto-:
+> > 	- const: dp_hs_phy_irq
+> > 	- const: dm_hs_phy_irq
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> > femto:
+> > 	- const: hs_phy_irq
+> > 	- const: dp_hs_phy_irq
+> > 	- const: dm_hs_phy_irq
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> > Does this look like it would cover all of our currents SoCs?
+> > 
+> > Do all of them have the pwr_event interrupt?
+> 
+> Yes. From whatever targets I was able to find, only one of them didn't 
+> have the power_event irq. Rest all of them had. I will recheck that 
+> particular one again.
 
-Should i squash them?
+Please do. The driver polls the corresponding status register on all
+platforms currently, and perhaps this interrupt can one day be used to
+get rid of the polling.
+ 
+> > Note that DP comes before DM above as that seems like the natural order
+> > of these (plus before minus).
+> > 
+> > Now if the HS interrupt is truly unusable, I guess we can consider
+> > dropping it throughout and the above becomes just three permutations
+> > instead, which can even be expressed along the lines of:
+> 
+> Infact, I wanted to do this but since you mentioned before that if HW 
+> has it, we must describe it, I kept it in. But since this functionality 
+> is confirmed to be mutually exclusive of qusb2/{dp/dm}, I am aligned to 
+> skip it in bindings and drop it in DT.
 
-My concern is about the amount of affected devices. The QCA7000 is used
-mostly in EV charging stations and EVs. I don't how many of them use
-this driver.
+As I mentioned elsewhere, it depends on whether it can be used at all.
+Not simply whether there is some other mechanism that can be used in its
+stead. Such a decision should be left up to the implementation.
 
-> Additionally I think you can drop the 'if (qca->spi_thread)' in
-> qcaspi_intr_handler()
-Thanks i will check that for the next version.
->
-> Cheers,
->
-> Paolo
->
+That's why I said "truly unusable" above. It's still not clear to me
+whether that is the case or not.
 
+> > 	- anyOf:
+> > 	  - items:
+> > 	    - const: qusb2_phy
+> > 	  - items:
+> > 	    - const: dp_hs_phy_irq
+> > 	    - const: dm_hs_phy_irq
+> > 	- const: pwr_event
+> > 	- const: ss_phy_irq	(optional)
+> > 
+> 
+> This must cover all cases AFAIK. How about we keep pwr_event also 
+> optional for time being. The ones I am not able to find also would come 
+> up under still binding block.
+
+No, we should avoid that if we can as with two many optional things,
+these quickly gets messy (one optional interrupt at the end is fine and
+can be expressed using min/maxItems).
+
+If the "qusb2+" combination above isn't needed, then we're down to four
+permutations, which is few enough to be spelled out explicitly even if
+we decide that the hs_phy_irq should be kept in. Without hs_phy_irq, it
+seems there's really only two permutations.
+
+Johan
