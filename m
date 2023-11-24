@@ -2,52 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75127F7318
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E52B7F7320
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjKXLwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 06:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S230381AbjKXLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 06:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXLwC (ORCPT
+        with ESMTP id S230303AbjKXLyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 06:52:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4228D10E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:52:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9D6C433C8;
-        Fri, 24 Nov 2023 11:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700826727;
-        bh=rR/aXgCzzONVA73X2vn2J/CDyBB+Mz7i6pIZNUaAT+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rWPQ8txyoumQtc1u0fxAQ4LtWePS7hOY/AE33Ev0biAdTlxwPASNmA8BaObcVTMIl
-         v07i+al7fzlLSsEAn4ExpDX95guynhjgiewUl6tlujxoB66VJjH2A+0BjyuDQcy1Hh
-         /RpQhOm9zIo0DI6oCokt3iJRJcX5Cik8vWBidxXA=
-Date:   Fri, 24 Nov 2023 11:52:06 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chun Ng <chunn@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
+        Fri, 24 Nov 2023 06:54:55 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C548E10E0;
+        Fri, 24 Nov 2023 03:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7/9ELPCZSyNtTedfYVN0RIERqDSGzyj/VTh+0OOKOJ4=; b=Gqm+SH2WxYC3SW6jehiqHEIGvx
+        onKuc1sq6cP7JYqCQV6I+k3G+jf98LkqC9B3LwKbgLMdVmBHLwLlEv/AGXM2juldAAUNh+/+Ifia3
+        fjZe0lqpVvdtm+F+QoWzePxPpF+WHQnoTB305XXBJyQLbB9dNgFiunMC7PtaqJynhX7bXUDVkgybK
+        tp029/O+KPQ1PiTV/JUSbhwK1ia7A/XvEG/q632FVmhOyfHIxoYpyiGh/MB2MIEGw6+6eWQwVBJNa
+        E5CYY1M/QHrPtjv7Cu6Upz2QHzs/SFLveqZO6rIX148LBb/akZPQ+ZK7VhyuNsfhS6tn6s4CJEN27
+        WO4O9WCQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r6UlU-00DsrU-3A;
+        Fri, 24 Nov 2023 11:54:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 86BF03002BE; Fri, 24 Nov 2023 12:54:30 +0100 (CET)
+Date:   Fri, 24 Nov 2023 12:54:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     Christoph Muellner <christoph.muellner@vrull.eu>,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Ankita Garg <ankitag@nvidia.com>
-Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
-Message-ID: <2023112402-posing-dress-4bf2@gregkh>
-References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
- <ZV7eHE2Fxb75oRpG@archie.me>
- <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
- <ZV_rJtxdn1dU9ip0@archie.me>
- <ZV/2nPBs5r1nIaW4@casper.infradead.org>
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Lustig <dlustig@nvidia.com>
+Subject: Re: [RFC PATCH 0/5] RISC-V: Add dynamic TSO support
+Message-ID: <20231124115430.GS3818@noisy.programming.kicks-ass.net>
+References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
+ <20231124101519.GP3818@noisy.programming.kicks-ass.net>
+ <59da3e41-abb3-405a-8f98-c74bdf26935b@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZV/2nPBs5r1nIaW4@casper.infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <59da3e41-abb3-405a-8f98-c74bdf26935b@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,30 +73,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 01:04:28AM +0000, Matthew Wilcox wrote:
-> On Fri, Nov 24, 2023 at 07:15:34AM +0700, Bagas Sanjaya wrote:
-> > On Thu, Nov 23, 2023 at 03:38:18PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Nov 23, 2023 at 12:07:40PM +0700, Bagas Sanjaya wrote:
-> > > > Anyway, I'm adding this regression to regzbot:
-> > > > 
-> > > > #regzbot ^introduced: v6.0..v6.1
-> > > 
-> > > this is not a regression.  close it, you idiot.
-> > > 
-> > > 
-> > 
-> > why?
-> > 
-> > Confused...
+On Fri, Nov 24, 2023 at 12:04:09PM +0100, Jonas Oberhauser wrote:
+
+> > I think ARM64 approached this problem by adding the
+> > load-acquire/store-release instructions and for TSO based code,
+> > translate into those (eg. x86 -> arm64 transpilers).
 > 
-> yes.  you're perpetually confused.  stop trying to help, you only make
-> things worse.  learn about the things you work on, or give up.
+> 
+> Although those instructions have a bit more ordering constraints.
+> 
+> I have heard rumors that the apple chips also have a register that can be
+> set at runtime.
 
-Um, is this really called for?  Bagas is trying to help track
-regressions, and if something isn't a regression like you say here, a
-simple "This is not a regression, it's already resolved in newer
-kernels" is fine.
+Oh, I thought they made do with the load-acquire/store-release thingies.
+But to be fair, I haven't been paying *that* much attention to the apple
+stuff.
 
-Resorting to insults on the reporter is not ok.
+I did read about how they fudged some of the x86 flags thing.
 
-greg k-h
+> And there are some IBM machines that have a setting, but not sure how it is
+> controlled.
+
+Cute, I'm assuming this is the Power series (s390 already being TSO)? I
+wasn't aware they had this.
+
+> > IIRC Risc-V actually has such instructions as well, so *why* are you
+> > doing this?!?!
+> 
+> 
+> Unfortunately, at least last time I checked RISC-V still hadn't gotten such
+> instructions.
+> What they have is the *semantics* of the instructions, but no actual opcodes
+> to encode them.
+
+Well, that sucks..
+
+> I argued for them in the RISC-V memory group, but it was considered to be
+> outside the scope of that group.
+> 
+> Transpiling with sufficient DMB ISH to get the desired ordering is really
+> bad for performance.
+
+Ha!, quite dreadful I would imagine.
+
+> That is not to say that linux should support this. Perhaps linux should
+> pressure RISC-V into supporting implicit barriers instead.
+
+I'm not sure I count for much in this regard, but yeah, that sounds like
+a plan :-)
