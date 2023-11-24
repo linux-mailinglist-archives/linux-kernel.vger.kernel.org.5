@@ -2,146 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A32C7F77EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6607F77EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345865AbjKXPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
+        id S1345854AbjKXPhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345836AbjKXPfU (ORCPT
+        with ESMTP id S1345784AbjKXPhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:35:20 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2056.outbound.protection.outlook.com [40.107.93.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E45199A;
-        Fri, 24 Nov 2023 07:35:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KssHfeUrBgnk0k/B9F+2/fhd0DD3vX503EacQVohNNwuRmfF5b9njHpje1Nel968tv1jMgJ2KO+5JVawwwP/SyJE7VG1f9DLHFuz7QWM+gnHR9lD6/3e24qRkoIj2ds2X6uOIkNg+4Y0xvhVXn7xDVon2epxTZKBjwcMdrGeerEDL3Du6kTjZtqYR6akq6PB5St35UFQahC2S7/D7we/uHT8M8FRxfWaYLYMRIgj8OoR1yJrUy7sm5KXL1Oggs47I07yp9ouyoAzed8V/WNIMRijrHguQFYDHV2r9WZud3COFkNZK3pq0UypSeIq9rcqXZvlL6eC3he7tTo6x8cEog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=28FYHT2Sw9QobHVYU08OcWvAnUNMG7iYHtCHvLIoW5k=;
- b=UjvY3gvg0woDHjrwDP6l20eQiTB/fdXX3IwvCB4IilLoFGmytG0sb4mb0lOUlaJREVQPgzbs7Xm9v6Yz8iIHSZ0wLC9tpDEnlL+WatyjGIkqaiwxCHPXh9dhIZ6oM500nt6ri22JA+9p1nRVlSMw+3RX5KFcxdqNx/Jrf3tauNO4CoIFWvXtMFb7KsD97QVH1A8adNRHU3hdRs2FtIjoxt5EoDm6Z2K41ozR2WS+l/9Z1peoZc/vBKAoyrQ2efCLHPT/K6KhwrH/ZQsPHcZZbyovqYWK7O6AGit0QaxXMj3KnGMFZS6/uukKCgPHjvCBpcjwneKRrqBqwrHzUUyibg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=28FYHT2Sw9QobHVYU08OcWvAnUNMG7iYHtCHvLIoW5k=;
- b=Ogcdb8XNAX3+JsMxriAm7s2gCRejB9yd0Eoc9a9ZKNf0wRSuCmnjqSXIlCOYB5iViOBv+5meJHHnwrasX9pjhj7r6WgIznpt1uffXMYXZ6bKtHrjiShSTqIAaUBjKfs+UTGcljY71o5p6+6nZkAXQ2YGmhkH3VzSQAJBjdOiwYi+eW4O1rkdRCQflF3qoXoSkvtB5faoEtO2expQQnE6zGolD19m1jFC+guuaZ3xvF2yC6U/L7YPhLLOzrhwgPegvvxeXdqQdFGz2/Gi6AiUgUxkZjbs3hKLsOTf/7Q12uOkDeHXT5ZwObFiQ1gIsDpA7sFI5Od5c9nDyi4tdyKbKg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CY8PR12MB7707.namprd12.prod.outlook.com (2603:10b6:930:86::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Fri, 24 Nov
- 2023 15:35:23 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7025.020; Fri, 24 Nov 2023
- 15:35:22 +0000
-Date:   Fri, 24 Nov 2023 11:35:20 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        rafael@kernel.org, lenb@kernel.org, lpieralisi@kernel.org,
-        andre.draszik@linaro.org, quic_zhenhuah@quicinc.com
-Subject: Re: [PATCH] iommu: Avoid more races around device probe
-Message-ID: <20231124153520.GA558245@nvidia.com>
-References: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
-X-ClientProxiedBy: DM6PR02CA0113.namprd02.prod.outlook.com
- (2603:10b6:5:1b4::15) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Fri, 24 Nov 2023 10:37:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0125719D
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700840226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Qnms+DPVu8N4Y1chnKBFHigepbquSQ211tXQc+b4C5s=;
+        b=X4tOtZgTbMaJy+kWIdMPHPf76MnEnyAifIy+Duyj58yjO98xLevU375VENVdY+jOfd181j
+        mZlmTyUr80dSH/KMLyjC4eMa76ORWcjsi5+gR7oFaCIgP/tyuqvWQF8Y1RUuWIEBHEmGiO
+        ixXMg5trsR+de8WS2t4VwDNGPYT3Lyk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-600-4RTzFtKcNXWhUH0LKjsfmg-1; Fri, 24 Nov 2023 10:37:05 -0500
+X-MC-Unique: 4RTzFtKcNXWhUH0LKjsfmg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-407da05ee50so10923635e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:37:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700840223; x=1701445023;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qnms+DPVu8N4Y1chnKBFHigepbquSQ211tXQc+b4C5s=;
+        b=S03QeW4Zi8/09iVH1a+awPmv1tZtgPsCMZJyc9jxsnviGp6MF0t7JW8OZZuTi6LvmS
+         GooS0vCb0O2kxlSyV8ZSXy8WK/RGX9gLuVhvOKCrku+keXZQZCQo1VC7mNKsqQdN7g/a
+         82hVe35cUPrN6s8G7XTlrcffbt3FOsZGxZiBlXKsGfid7XglQ9+tfpWZ/mkowwstvgRA
+         FVha0aH0ZCkzYKGkj10uzed93Q88kzUJfdgfk+iUSiOWLIfVlXd/D3DbN2YT1PsrS/cI
+         Wwx73hU4onLe58XtlW641/2Dj3p7PnzLKVvKg/j6ejmpq+QMa1qCC18mdUK4tkgA1U8/
+         /49g==
+X-Gm-Message-State: AOJu0YwKZO0lIyv89BbegIOzYmzUZtjIgYyHhTPskSAnCsSepfF5Gcc2
+        FLLuLNh40v6LH3x7HK+9lTmNJXGZ7EgdcAz66AmwwxN1xmDE1cMs7sP22MuwM0i/OffgNlYS/Wg
+        FHIxOxMycM6C8/F5w26XEU4x7
+X-Received: by 2002:a05:600c:3c9d:b0:40b:3645:4678 with SMTP id bg29-20020a05600c3c9d00b0040b36454678mr2645121wmb.19.1700840223665;
+        Fri, 24 Nov 2023 07:37:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHYQuq/hD+iCLBMQH1TfNiQDkYm9QAKMDlKlPX2GvJEXkFR9fgULERONF6qNvYgYuDsgts27w==
+X-Received: by 2002:a05:600c:3c9d:b0:40b:3645:4678 with SMTP id bg29-20020a05600c3c9d00b0040b36454678mr2645100wmb.19.1700840223194;
+        Fri, 24 Nov 2023 07:37:03 -0800 (PST)
+Received: from ?IPV6:2003:cb:c721:a000:7426:f6b4:82a3:c6ab? (p200300cbc721a0007426f6b482a3c6ab.dip0.t-ipconnect.de. [2003:cb:c721:a000:7426:f6b4:82a3:c6ab])
+        by smtp.gmail.com with ESMTPSA id jg28-20020a05600ca01c00b004063cd8105csm6128004wmb.22.2023.11.24.07.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 07:37:02 -0800 (PST)
+Message-ID: <c1c266cd-a943-461e-b8ff-5f2eaba96a35@redhat.com>
+Date:   Fri, 24 Nov 2023 16:37:01 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7707:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23c59bf0-76d8-42c9-a8f9-08dbed02f898
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bP2xlG9KnMJrsVdXYUy/CZOj2kFDmi/9Drc3SlRrTIlgxEHMAeQ8K/f3fjYcVqqhlugXaFYAssj5L/fS7cn+st5Ff1N7zFNfLzTaTCJRlubjgB3/cbi9uY/wepzq+ydXf5eWWUU7og6kQZyPLaEeS7rTWsVLTLhQbeGqK+9lQT8M/BQ+NAXOsk+kEC3fhGlrHaZUsQNiRV+y7TDUxIXAFEbqYsmxXpK2ctS9IIqaUyAZR9EDR5gFjxt9jHQS0JR8w4YkqVqGEsRJze9xA8C/F9dDtf16d5j8XgMD93VeiF6mfaBR8XKpNL6pXMYwNX9+RLbUNWTdZdUOXoKmG+o2CtS1RO04jxAGlfDqPEQo8C7reWbsXYjVE7Gr2zARcA2wLqZl/XI1RoiTMtRlgBu3oF4D29OJaOMA9XRdJSIyitCOoE9EvjmVa822UZwle60Hz9wY0/b/TubCOV9bKec5ecMJoUBbRn7k27RxOyHZgnTVVO8bnL4eX3+oL+H/fQjpaygzGmGLHzV+6G7MB08kDd+5Rp35eMWpTBHAtcMuox+JwQq4kn/75FO4rds57QlYT8QRebVMinA6fm7eaaRp+fkYGWtadRtGEMG1RRrZyY1UewJihfmiQ9xaZSgVHpkfsuByZx+G7gmoCYCOI4rIpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(136003)(376002)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(66946007)(38100700002)(83380400001)(6486002)(966005)(478600001)(66476007)(6916009)(316002)(66556008)(6512007)(6506007)(2906002)(33656002)(36756003)(4326008)(8936002)(8676002)(5660300002)(7416002)(26005)(2616005)(1076003)(41300700001)(86362001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EQEK8Xba3Mpsd6v9+QGyFg7z5YQFNEbg2vpHOhXuv++EyISewaE0OfvkDgqZ?=
- =?us-ascii?Q?Ods007LfKHTAPlSQmnDzNYwWvAztNUCZ93Cg51M0JM+J4zUp5Rqi89Il2qa6?=
- =?us-ascii?Q?MQ1N9GmMnBKSWOKbL+9U3oCT3awS1fK/bdC+MRkAvM+BbuXGhx41RK74xw1o?=
- =?us-ascii?Q?fun2i5fb7xBO54YaMthCPqOtB6tz2J0D8PLj3CDZh/YP6j3leiiy4/bwzN8T?=
- =?us-ascii?Q?b339Tg3DbjXi0hlqd8dDpzUPIpcHOnp2I4hJmPrpwhPHrSYdnCn3HN1BFh4y?=
- =?us-ascii?Q?CXvpsUIpnvct4joEhhyn1e/n9z+eOKvt7CgBstNcBNYpvdT89I8nzOmVwY7b?=
- =?us-ascii?Q?McyitDd6rqqKQYM4dmBqP0SovSYaMKXtYFNR7wQA7lNswBwP+6ANNTm4CbYD?=
- =?us-ascii?Q?nnwAPSqeMSL0AslkpvNVCP7w0VsEy42MFoR8gSJmt+wXW7T7m8w9p51hI4uy?=
- =?us-ascii?Q?WozEBAkY2LdxVXIfoazfarfhqgDogbH3IrgTJv14afzEZ1UnqR2Tk82HlqjA?=
- =?us-ascii?Q?V4pkeJ2RIICXrTBtGbduUHYQYOT2y7oMndEwNZ9ZCUr1CdlWrFiNVk1PU8zz?=
- =?us-ascii?Q?r5vLWgYqBeF9B4FomLCjiucESudipiioSNsLr3gc0/a36QyhvDhMwQAx/dbO?=
- =?us-ascii?Q?jKSBjp4x80vK4bFt5uaU1jIYsySPKitZtZo9IRgVneGi9EmFWjSdor+oMjHN?=
- =?us-ascii?Q?xcgQgPX63IVXeYxXOIMrplnpgBUt4dlWwB+WZTnlSQOPdeYcUxz9ZHtJtU+S?=
- =?us-ascii?Q?RvatPPfBu6P3wc0o/LogjnSlENH0tzEps7w5eLxPCzYeaRva8jroNRMVKP4O?=
- =?us-ascii?Q?9a+596wrlpgxO+4UlaUTUxQCbs7TNVE2VElMeAVApL1azlPYzrrnIPx2FuJd?=
- =?us-ascii?Q?4RE94/CK2V7yMyJkfTT0v1QeujY2lTCe1cvtR8YDy1kQOX4Rd62VCeulDJwH?=
- =?us-ascii?Q?MdA4vFrKNp2L3ltwrvuIGIIMaYrjBk4TYon1lGqwfPA0MtH0NtUFTKcYgmvl?=
- =?us-ascii?Q?HjTNeP8HtXXFHmRuNCid2FNvSfFDzNvwm9BfOoDFtH1NSVHmVcwzsMd1pDV6?=
- =?us-ascii?Q?4P9ZxiiRuJYyBSl8UaXwPB+0jQncCqmkY7rF44FvPs5D3S6+oW9YV8XTuM4y?=
- =?us-ascii?Q?tvrWxH1bKRVwVfJ6fQ1eCssLwAgymMxBjAXHJvY5nBpmW9MPlgf1Wao1aynh?=
- =?us-ascii?Q?5itIPZ6UUmH4i+aFGCSB1bK8ZwuKVYKeEqXESo3hITHlZob9tvTpZUbJ/RVa?=
- =?us-ascii?Q?C/Px9FpHsUfCyw7GgA6CLPkEo5DqKHyBcrzBkxNYm4z7iigsk+I73jjvjLKX?=
- =?us-ascii?Q?AUat5n7weoGsegmrhqBpgGjmCLyFHBQoZAmoJcf865WdZfcFMMbK2S9DnYGn?=
- =?us-ascii?Q?Fl0yR4cE5/aqnlyTxkAoFkZS4cLOUt2U7PuJdV/op2TrDumrMd+Sr6GO79nC?=
- =?us-ascii?Q?1rE8Z2iaL0F1rXCtzfGhxfkodNs51owgMFQg2OtrX0krT8UnivOrL2ZOIAzs?=
- =?us-ascii?Q?jaxKFLIIMZhWtmQHXDohzjsS+MssqF+bI+lciakqKnh+lYwJ7jx8VNP1aRSt?=
- =?us-ascii?Q?NF8g4YaCAUPZEBaW4IwGKCVKZFTmfvsGW91/a4Bl?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23c59bf0-76d8-42c9-a8f9-08dbed02f898
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 15:35:22.1051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lL6e2eHMcHzLTjjAeYwUY2OQek3O00vkEUYw0QLzl/fQzgqODL8gA3S2oD3cyTji
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7707
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] mm/ksm: add ksm advisor
+To:     Stefan Roesch <shr@devkernel.io>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231028000945.2428830-1-shr@devkernel.io>
+ <20231028000945.2428830-2-shr@devkernel.io>
+ <d41ecf6d-d276-406c-a002-f4ffc9d82ef1@redhat.com>
+ <8734wxsn4u.fsf@devkernel.io>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <8734wxsn4u.fsf@devkernel.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 06:25:44PM +0000, Robin Murphy wrote:
-> It turns out there are more subtle races beyond just the main part of
-> __iommu_probe_device() itself running in parallel - the dev_iommu_free()
-> on the way out of an unsuccessful probe can still manage to trip up
-> concurrent accesses to a device's fwspec. Thus, extend the scope of
-> iommu_probe_device_lock() to also serialise fwspec creation and initial
-> retrieval.
+>>
 > 
-> Reported-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> Link: https://lore.kernel.org/linux-iommu/e2e20e1c-6450-4ac5-9804-b0000acdf7de@quicinc.com/
+> The min cpu case is to make sure that we scan fast enough to be able to
+> react fast enough to the changes in the number of pages. This helps in
+> determining in how quick we want to react to changes. This helps
+> especially with the startup phase of applications.
+> 
+> We can certainly only set a default value, that is not exposed in sysfs.
 
-Apparently this is "Closes:" nowadays
+Less toggles is better. So if we can just use some sane starting 
+default, that would be great.
 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index f17a1113f3d6..e0c962648dde 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -485,11 +485,12 @@ static void iommu_deinit_device(struct device *dev)
->  	dev_iommu_free(dev);
->  }
->  
-> +DEFINE_MUTEX(iommu_probe_device_lock);
-> +
+> 
+>>> +/**
+>>> + * struct advisor_ctx - metadata for KSM advisor
+>>> + * @start_scan: start time of the current scan
+>>> + * @scan_time: scan time of previous scan
+>>> + * @change: change in percent to pages_to_scan parameter
+>>> + * @cpu_percent: average cpu percent usage of the ksmd thread for the last scan
+>>> + */
+>>> +struct advisor_ctx {
+>>> +	ktime_t start_scan;
+>>> +	unsigned long scan_time;
+>>> +	unsigned long change;
+>>> +	unsigned long long cpu_time;
+>>> +};
+>>> +static struct advisor_ctx advisor_ctx;
+>>> +
+>>> +/* Define different advisor's */
+>>> +enum ksm_advisor_type {
+>>> +	KSM_ADVISOR_NONE,
+>>> +	KSM_ADVISOR_FIRST = KSM_ADVISOR_NONE,
+>>
+>> Unused, better drop it. 0 is the implicit first one.
+>>
+> Will change it accordingly.
+> 
+>>> +	KSM_ADVISOR_SCAN_TIME,
+>>> +	KSM_ADVISOR_LAST = KSM_ADVISOR_SCAN_TIME
+>>
+>> Instead of "_LAST", maybe use "_COUNT" and use that when checking for valid
+>> values.
+>>
+>> But: we likely want to store "strings" instead of magic numbers from user space
+>> instead.
+>>
+> 
+> Any recommendation for the naming of the parameters when I switch to
+> strings?
 
-Please put this at the top of the file with the other declarations, I
-will rebase the lockdep annotations from the other series
+Probably just "none" and "scan-time" ?
 
-Thanks,
-Jason
+>>> +}
+>>> +
+>>> +static void run_advisor(void)
+>>> +{
+>>> +	if (ksm_advisor == KSM_ADVISOR_SCAN_TIME) {
+>>> +		s64 scan_time;
+>>> +
+>>> +		/* Convert scan time to seconds */
+>>> +		scan_time = ktime_ms_delta(ktime_get(), advisor_ctx.start_scan);
+>>> +		scan_time = div_s64(scan_time, MSEC_PER_SEC);
+>>> +		scan_time = scan_time ? scan_time : 1;
+>>> +
+>>> +		scan_time_advisor((unsigned long)scan_time);
+>>> +	}
+>>
+>> We could have rescheduled in the meantime, right? Doesn't that mean that our CPU
+>> load consumption might be wrong in some cases?
+>>
+> Does it matter? I'm interested how long it takes to complete the scan,
+> including any scheduling.
+
+But isn't this also required to compute CPU load, so you can stay 
+between min-load and max-load?
+
+- ksm_advisor_min_cpu (minimum value for cpu percent usage)
+- ksm_advisor_max_cpu (maximum value for cpu percent usage)
+
+Likely, you want to exclude any rescheduling from there?
+
+I'll have to recheck the logic.
+
+-- 
+Cheers,
+
+David / dhildenb
+
