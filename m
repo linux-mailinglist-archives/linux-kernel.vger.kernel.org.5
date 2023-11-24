@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EF27F77F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3B17F77F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjKXPlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:41:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S1345839AbjKXPmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbjKXPlS (ORCPT
+        with ESMTP id S230491AbjKXPmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:41:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861851998;
-        Fri, 24 Nov 2023 07:41:24 -0800 (PST)
+        Fri, 24 Nov 2023 10:42:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7C710E7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700840484; x=1732376484;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c2Vqe3x33aE9kTCdbYkqqP9jPVzZrJzKmfGmmqpORXA=;
-  b=UKu3pAixytuP9mXP+dVovdcu4prB5K0S0sf8xDG9pxdtoJ2FhQLm2Rsm
-   thpV+hHN9KbYVqN590wnOqCs6Cm+Ikz0xpQUSlesSq8g8yD/SgJD6cUBK
-   XUpWJ23SWGXb9i6dEwkhFbyWBfbUReqo4njc3BEOWIMxAOGAsRarY7Xad
-   ytxEKJMQMMUPPHYfjw6Sd34Z3UfrRlusxaigGklUFTe0+lX8Ks2aYYfek
-   p6kQlxBbWFYB/Wp8yyIvfw5q4/LN21oMVLprxbCqY9MNGbX8PW/JAf9F3
-   cRFl8fLdX3Tcougam8F1EWLGMfGse3xtXJ1mRzCFYPQX/aFn417h8+o7U
+  t=1700840546; x=1732376546;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=n08FHZR0pPD7XbioaGNv0Bs8Qnnzea71fVp2iw1vlSs=;
+  b=MDTIIUdnREeFgtugnsHQBXXdXjCbVbKfEOGqmnrHblHueBJKnDyVZ96O
+   71X+OEpoIzgX9hc1y6e8FKFrVcD8w3LTwJx9VvzmvT57RAHBoYxi/Q6BJ
+   iLyxrvuvA+miI9Q0z3j+mkn5r1qWUqOh/zczHFQtMPGfNk4EFcCNp70HR
+   KDM1X5bxQV5yF3ry7+SbRN2SnD5S7puIDHTewS5TBs9jIFrw7cui74zV2
+   DzVN6Qxh0bkDBGICWnPfyvUyhQQEkN95sPLYY+XzRSP7Oe3GwCJ0zb217
+   N9+ufAf4pMnrM2I42LvQq+ZsqQ/+Rulus9Q448H7jFh61j/pRX6A1Qx1f
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="423577097"
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="395257451"
 X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="423577097"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 07:41:24 -0800
+   d="scan'208";a="395257451"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 07:42:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="833714362"
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="767510983"
 X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="833714362"
+   d="scan'208";a="767510983"
 Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2023 07:41:21 -0800
+  by orsmga002.jf.intel.com with ESMTP; 24 Nov 2023 07:42:24 -0800
 Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r6YIx-0002xm-2k;
-        Fri, 24 Nov 2023 15:41:19 +0000
-Date:   Fri, 24 Nov 2023 23:40:57 +0800
+        id 1r6YJy-0002yh-10;
+        Fri, 24 Nov 2023 15:42:22 +0000
+Date:   Fri, 24 Nov 2023 23:42:02 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, JP Kobryn <inwardvessel@gmail.com>,
-        bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-        peterz@infradead.org
-Subject: Re: [PATCH] rethook: Use __rcu pointer for rethook::handler
-Message-ID: <202311241808.rv9ceuAh-lkp@intel.com>
-References: <170078778632.209874.7893551840863388753.stgit@devnote2>
+To:     Yogesh Lal <quic_ylal@quicinc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Subject: drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect
+ type in argument 2 (different address spaces)
+Message-ID: <202311241941.zhn9yyEr-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170078778632.209874.7893551840863388753.stgit@devnote2>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.7-rc2 next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu-Google/rethook-Use-__rcu-pointer-for-rethook-handler/20231124-090634
-base:   linus/master
-patch link:    https://lore.kernel.org/r/170078778632.209874.7893551840863388753.stgit%40devnote2
-patch subject: [PATCH] rethook: Use __rcu pointer for rethook::handler
-config: x86_64-randconfig-r113-20231124 (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f1a09972a45ae63efbd1587337c4be13b1893330
+commit: a376c10d45a8e6ee5ea55791193f90625b35e156 remoteproc: qcom: pas: Adjust the phys addr wrt the mem region
+date:   9 months ago
+config: arm64-randconfig-r132-20231123 (https://download.01.org/0day-ci/archive/20231124/202311241941.zhn9yyEr-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce: (https://download.01.org/0day-ci/archive/20231124/202311241941.zhn9yyEr-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311241941.zhn9yyEr-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
->> kernel/trace/rethook.c:51:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
->> kernel/trace/rethook.c:51:9: sparse:    void ( [noderef] __rcu * )( ... )
->> kernel/trace/rethook.c:51:9: sparse:    void ( * )( ... )
-   kernel/trace/rethook.c:66:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/trace/rethook.c:66:9: sparse:    void ( [noderef] __rcu * )( ... )
-   kernel/trace/rethook.c:66:9: sparse:    void ( * )( ... )
-   kernel/trace/rethook.c:110:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/trace/rethook.c:110:9: sparse:    void ( [noderef] __rcu * )( ... )
-   kernel/trace/rethook.c:110:9: sparse:    void ( * )( ... )
-   kernel/trace/rethook.c:140:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/trace/rethook.c:140:19: sparse:    void ( [noderef] __rcu * )( ... )
-   kernel/trace/rethook.c:140:19: sparse:    void ( * )( ... )
-   kernel/trace/rethook.c:161:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/trace/rethook.c:161:19: sparse:    void ( [noderef] __rcu * )( ... )
-   kernel/trace/rethook.c:161:19: sparse:    void ( * )( ... )
-   kernel/trace/rethook.c:305:27: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/trace/rethook.c:305:27: sparse:    void ( [noderef] __rcu * )( ... )
-   kernel/trace/rethook.c:305:27: sparse:    void ( * )( ... )
+>> drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem * @@     got void * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     expected void const volatile [noderef] __iomem *
+   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     got void *
+   drivers/remoteproc/qcom_q6v5_pas.c:108:6: sparse: sparse: symbol 'adsp_segment_dump' was not declared. Should it be static?
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *mem_region @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     expected void *mem_region
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     got void [noderef] __iomem *
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *dtb_mem_region @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     expected void *dtb_mem_region
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     got void [noderef] __iomem *
 
-vim +51 kernel/trace/rethook.c
+vim +123 drivers/remoteproc/qcom_q6v5_pas.c
 
-    40	
-    41	/**
-    42	 * rethook_stop() - Stop using a rethook.
-    43	 * @rh: the struct rethook to stop.
-    44	 *
-    45	 * Stop using a rethook to prepare for freeing it. If you want to wait for
-    46	 * all running rethook handler before calling rethook_free(), you need to
-    47	 * call this first and wait RCU, and call rethook_free().
-    48	 */
-    49	void rethook_stop(struct rethook *rh)
-    50	{
-  > 51		rcu_assign_pointer(rh->handler, NULL);
-    52	}
-    53	
+   107	
+   108	void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
+   109			       void *dest, size_t offset, size_t size)
+   110	{
+   111		struct qcom_adsp *adsp = rproc->priv;
+   112		int total_offset;
+   113	
+   114		total_offset = segment->da + segment->offset + offset - adsp->mem_phys;
+   115		if (total_offset < 0 || total_offset + size > adsp->mem_size) {
+   116			dev_err(adsp->dev,
+   117				"invalid copy request for segment %pad with offset %zu and size %zu)\n",
+   118				&segment->da, offset, size);
+   119			memset(dest, 0xff, size);
+   120			return;
+   121		}
+   122	
+ > 123		memcpy_fromio(dest, adsp->mem_region + total_offset, size);
+   124	}
+   125	
 
 -- 
 0-DAY CI Kernel Test Service
