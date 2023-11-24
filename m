@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5093D7F7885
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E887C7F7887
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjKXQEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S231194AbjKXQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjKXQEk (ORCPT
+        with ESMTP id S231232AbjKXQE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:04:40 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BFA12B;
-        Fri, 24 Nov 2023 08:04:45 -0800 (PST)
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: laura.nao)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3328D660739E;
-        Fri, 24 Nov 2023 16:04:43 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700841884;
-        bh=LqihOK0Q++RpV7t8zDmObDhhj1W5mEV5lqPp+ZJjtFA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZVEHfkXZVaaljYC+c+rShwxSy6W2K/woOPGWZ2aqLDOZ/IElPcKWNsZDZC2v90jZc
-         itV08P9+7v8wplZvKM2c8AH0j89MwvO2xkjrU2Da7Nq4nbBiR/Iz5/wRgOZX180uMm
-         sxDwrFQ4TXcC/b8eL6pvt38G8ijksVAFo5rPW7mzJeBfl2sIbxOXidVorvihH3VHUM
-         Vpzfb7olMrTzWM71B/TZR69uSprO0LcdzR87r3uZPkeFWvw35ys81EKwv0I7IVDnOo
-         Q9NBBVJGOn0SL/fQH4wTVvU8P40BMVSGHcssaSbW6M03SeWmSktMAKP/eTxO/Ei5Rd
-         L4ruxXRf40P7w==
-From:   Laura Nao <laura.nao@collabora.com>
-To:     dan.carpenter@linaro.org
-Cc:     broonie@kernel.org, groeck@chromium.org, kernel@collabora.com,
-        kernelci@lists.linux.dev, laura.nao@collabora.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, rafael@kernel.org,
-        robh+dt@kernel.org, shuah@kernel.org
-Subject: Re: [RFC PATCH 0/2] Add a test to verify device probing on ACPI platforms
-Date:   Fri, 24 Nov 2023 17:04:42 +0100
-Message-Id: <20231124160442.50928-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <431009f0-56e7-46e8-a3a0-a8070554b727@suswa.mountain>
-References: <431009f0-56e7-46e8-a3a0-a8070554b727@suswa.mountain>
+        Fri, 24 Nov 2023 11:04:58 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8DF19AA
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:05:04 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5cd3c4457a0so17293797b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1700841904; x=1701446704; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FGMFcjXzbEdk+Sse8VkaimKNQr0g8bw7uTtgiPTBa4Y=;
+        b=qVmcs9xiioqxNCrBHmhMK3Y9pEMN/uCvw0r/CD+fTQXAeLtKHHqGiLVQ0DWTofHlA2
+         csK/pKPkcfiRPbwq50ZBZzrvMNd3BG0HPyRkVg6FaHSoEnp2GTZT0Kfp6ZkHorCPjY1I
+         K914M1AL/Dizr56uVnpXYp4jxfiHJCgCeoazky8IyFHrhvog0MQCaXR3nYLzX6gk+kc7
+         XGxEDVZ3FnTpLM2UTLTn2xMYZMhfekbwwSIgonrSOO4gh3ZqbRl72jzkeHS1pl52bX75
+         UIATDjGesE4TAJrhvNClNKeBo3NK/HovlKuZvlH2pFRlV+gEtrMN/CLamTW6bctb5fjn
+         dlMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700841904; x=1701446704;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FGMFcjXzbEdk+Sse8VkaimKNQr0g8bw7uTtgiPTBa4Y=;
+        b=oCDIPsEpG94IGNvnlaSHri7czu8pVS6rgUszohBth63/LMmJkicboXZlkqPsrlnDTG
+         cFyWjeQcMN+t9OXJSlM1XLYJTBKDBEWmVkqFe8+uTCL3tVixarTkZH9G5GItEp2PLgdc
+         p+Cfx68Nxp4XW/dq7s7cKAdRilhLtlnoDLwoFHzp4q6g8RSwj0c3i8CgiyDetyHtHhL0
+         S9yDqEpJuip7a6RcVEcwUgSzpCKxfS1U+HUUahD9t7Irri1RCAOCKjMFahXQFXbVRtet
+         zNFUDvYrS3CpDUnhkAE2e+GGtgVVhmv550cIJbOSFOQiiWs5yEdThaRp9vXyX01eCK7N
+         ggfA==
+X-Gm-Message-State: AOJu0YxCN4lSGJHXLR9UoDgZ/1dNz9ngy/fW2PDDUUPQSuLuvLOJul5s
+        ktcrXrtJGiSMyKWFo5MxsA0CriBWZwT+sGcXD8wKfQ==
+X-Google-Smtp-Source: AGHT+IHDgEc5/d/bHS+/3bhvmbDKVLXNvruKPPtv9g7wbHtBvMJ6nCQ5UHivqzqIt+ZGbt+K3E1Ap3ZKIgfp0CQUNE8=
+X-Received: by 2002:a25:8e0a:0:b0:da0:5ba2:6275 with SMTP id
+ p10-20020a258e0a000000b00da05ba26275mr2764586ybl.34.1700841904036; Fri, 24
+ Nov 2023 08:05:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231124104451.44271-1-shengyang.chen@starfivetech.com> <dab03c60-caa9-47e3-9dac-fa499227b67b@gmx.net>
+In-Reply-To: <dab03c60-caa9-47e3-9dac-fa499227b67b@gmx.net>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 24 Nov 2023 16:04:47 +0000
+Message-ID: <CAPY8ntAXYVTTfXL5HX-14t-VDe63eFgRBNKA0aG3RamKepxwDQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Add waveshare 7inch touchscreen panel support
+To:     Stefan Wahren <wahrenst@gmx.net>
+Cc:     Shengyang Chen <shengyang.chen@starfivetech.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        thierry.reding@gmail.com, neil.armstrong@linaro.org,
+        conor+dt@kernel.org, keith.zhao@starfivetech.com,
+        tzimmermann@suse.de, krzysztof.kozlowski+dt@linaro.org,
+        sam@ravnborg.org, linux-kernel@vger.kernel.org, mripard@kernel.org,
+        jack.zhu@starfivetech.com, robh+dt@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        florian.fainelli@broadcom.com, quic_jesszhan@quicinc.com,
+        changhuang.liang@starfivetech.com,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -57,79 +77,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 16:14, Dan Carpenter wrote:
-> On Thu, Nov 23, 2023 at 01:09:42PM +0100, Laura Nao wrote:
->>> Your talk was interesting at Linux Plumbers.
->>>
->>> https://www.youtube.com/watch?v=oE73eVSyFXQ [time +2:35]
->>>
->>> This is probably a stupid question, but why not just add something to
->>> call_driver_probe() which creates a sysfs directory tree with all the
->>> driver information?
->>>
->>
->> Thanks for the feedback!
->>
->> Improving the device driver model to publish driver and devices info
->> was indeed another option we considered. We could have a debugfs entry
->> storing this kind of information, similar to what devices_deferred
->> does and in a standardized format. This would provide an interface
->> that is easier to query at runtime for getting a list of devices that
->> were probed correctly.
->> This would cover devices with a driver that's built into the kernel or
->> as a module; in view of catching also those cases where a device is
->> not probed because the relevant config is not enabled, I think we'd
->> still need another way of building a list of devices present on the
->> platform to be used as reference.
-> 
-> Yeah.  So we'd still need patch #1 as-is and but patch #2 would probably
-> be simpler if we had this information in sysfs.  Or a different solution
-> would be to do what someone said in the LPC talk and just save the
-> output of the previous boot and complain if there was a regression where
-> something didn't probe.
-> 
-
-Right. The main drawback of using the status of a known good boot as
-reference is to keep it up to date over time. If support for a
-peripheral gets added at a later stage, the reference needs to be updated
-as well.
-
->>
->> The solution proposed in this RFC follows the same approach used for
->> dt based platforms for simplicity. But if adding a new sysfs entry
->> storing devices and driver info proves to be a viable option for
->> upstream, we can surely explore it and improve the probe test to
->> leverage that.
-> 
-> You're saying "simplicity" but I think you mean easiest from a political
-> point of view.  It's not the most simple format at all.  It's like
-> massive detective work to find the information and then you'll have to
-> redo it for DT and for USB.  Are there other kinds of devices which can
-> be probed?
-> 
-
-Yeah, that's what I meant. The ACPI use case is in a way simpler to
-handle than the dt one, as we can get information on non removable
-devices on enumerable buses such as PCI from the ACPI
-tables (leveraging the _ADR objects). But it still requires quite a lot
-digging in sysfs to get info on what was actually probed.
-So having a list of probed devices would help both use cases.
-
-> I feel like you're not valuing your stuff at the right level.  This
-> shouldn't be in debugfs.  It should be a first class citizen in sysfs.
-> 
-> The exact format for this information is slightly tricky and people will
-> probably debate that.  But I think most people will agree that it's
-> super useful.
+On Fri, 24 Nov 2023 at 15:00, Stefan Wahren <wahrenst@gmx.net> wrote:
 >
+> Hi Shengyang,
+>
+> [fix address of Emma]
 
-Right, agreeing on a format will be tricky. Judging by the response here
-and in LPC it's still worth a shot though. I'll put some thought into
-this and experiment a bit to come up with a proposal to submit in
-another RFC.
+Not merged to master yet, but Emma has stepped back from maintenance.
+https://lists.freedesktop.org/archives/dri-devel/2023-October/428829.html
+Dropped from the cc.
 
-Again, thanks for the helpful feedback!
+> Am 24.11.23 um 11:44 schrieb Shengyang Chen:
+> > This patchset adds waveshare 7inch touchscreen panel support
+> > for the StarFive JH7110 SoC.
+> >
+> > Patch 1 add new compatible for the raspberrypi panel driver and its dt-binding.
+> > Patch 2 add new display mode and new probing process for raspberrypi panel driver.
+> >
+> > Waveshare 7inch touchscreen panel is a kind of raspberrypi panel
+> > which can be drived by raspberrypi panel driver.
+> >
+> > The series has been tested on the VisionFive 2 board.
+> surprisingly i was recently working on the official Raspberry Pi
+> touchscreen and was able to get it running the new way.
+>
+> What do i mean with the new way. There is almost nothing special to the
+> Raspberry Pi touchscreen, so we should try to use/extend existing
+> components like:
+>
+> CONFIG_DRM_PANEL_SIMPLE
+> CONFIG_TOUCHSCREEN_EDT_FT5X06
+> CONFIG_DRM_TOSHIBA_TC358762
+>
+> The only special part is the Attiny on the connector PCB which requires:
+>
+> CONFIG_REGULATOR_RASPBERRYPI_TOUCHSCREEN_ATTINY
+>
+> So the whole point is to avoid writing monolitic drivers for simple
+> panel like that.
+>
+> There is a WIP branch based on top of Linux 6.7-rcX, which should
+> demonstrate this approach [1]. Unfortunately it is not ready for
+> upstreaming, but it has been tested on a Raspberry Pi 3 B Plus. Maybe
+> this is helpful for your case.
+>
+> Actually i consider panel-raspberrypi-touchscreen.c as a dead end, which
+> shouldn't be extended.
 
-Best,
-Laura
+Agreed.
 
+The panel control being bound in with the Atmel control has no hook
+for the EDT5x06 touch driver to hook in and keep the power to the
+touch controller active. When the panel disable gets called, bye bye
+touch overlay :-(
+
+And I'm reading the driver change as more of a hack to get it to work
+on your platform, not as adding support for the Waveshare panel
+variant.
+Waveshare deliberately cloned the behaviour of the Pi 7" panel in
+order to make it work with the old Pi firmware drivers, so it
+shouldn't need any significant changes. Where did the new timings come
+from?
+
+  Dave
+
+> Btw there are already DT overlays in mainline which seems to use the
+> Raspberry Pi 7inch panel (without touch function yet) [2].
+>
+> [1] - https://github.com/lategoodbye/rpi-zero/commits/v6.7-7inch-ts
+> [2] -
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x-rpidsi.dtso?h=v6.6.2&id=6b4da1354fd81adace0cda448c77d8f2a47d8474
+>
+> >
+> > Shengyang Chen (2):
+> >    dt-bindings: display: panel: raspberrypi: Add compatible property for
+> >      waveshare 7inch touchscreen panel
+> >    gpu: drm: panel: raspberrypi: add new display mode and new probing
+> >      process
+> >
+> >   .../panel/raspberrypi,7inch-touchscreen.yaml  |  4 +-
+> >   .../drm/panel/panel-raspberrypi-touchscreen.c | 99 ++++++++++++++++---
+> >   2 files changed, 91 insertions(+), 12 deletions(-)
+> >
+>
