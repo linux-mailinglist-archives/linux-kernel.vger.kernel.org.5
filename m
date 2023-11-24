@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C8F7F6CC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A047F6CB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjKXHSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
+        id S229711AbjKXHRI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 02:17:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKXHSO (ORCPT
+        with ESMTP id S229485AbjKXHRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:18:14 -0500
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9165D6C;
-        Thu, 23 Nov 2023 23:18:20 -0800 (PST)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AO1I3PB008868;
-        Fri, 24 Nov 2023 08:17:01 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=WWjvixk
-        x1+sUJudPBiinwlW6wYpb+vSAYAex868zvkg=; b=jfmXyDmPvHh1C5+3unAz+Ho
-        5UEqUR0Ax4OSewo92CA/TBJXpN8O24A3hUGgIY42UOg9BEo5RQ87dnfsj/3c/L2y
-        TXtc0KtJYndSMV7v4PwZSEnntTiqam+xXKRn08ZccQi8Hyq140ydHMoaWTUBvyI8
-        DavKKJdHuOBrs5ug6drUjm7PaEmARkhyXVgvdi2CUjOxb3a7q4rCHFC/vDWng03L
-        XiBdjSmWKeK5ihkU8YBVujH92aCrlyT5uC9nKPvZ99xufUhyh6BeJ1B8SCBoQWut
-        0zp5b4kspf43uuQCSK8NAJlbWyjl5CqVlaoK+Vi2x+DiDJgwhsja4dLbPyo8xkQ=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uhr8apax7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 08:17:01 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CD53110002A;
-        Fri, 24 Nov 2023 08:16:59 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 990E3215138;
-        Fri, 24 Nov 2023 08:16:59 +0100 (CET)
-Received: from localhost (10.252.31.103) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 24 Nov
- 2023 08:16:58 +0100
-From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-Subject: [PATCH RESEND 0/3] Update STM DSI PHY driver
-Date:   Fri, 24 Nov 2023 08:16:46 +0100
-Message-ID: <20231124071649.372270-1-raphael.gallais-pou@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 24 Nov 2023 02:17:06 -0500
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2258BD5E;
+        Thu, 23 Nov 2023 23:16:52 -0800 (PST)
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay05.hostedemail.com (Postfix) with ESMTP id 6CC5C409CB;
+        Fri, 24 Nov 2023 07:16:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 8CAE160009;
+        Fri, 24 Nov 2023 07:16:47 +0000 (UTC)
+Message-ID: <971ed2ceaeeba882d2b4c39015ee5ae5db3f5e82.camel@perches.com>
+Subject: Re: [PATCH v2 2/7] kexec_file: print out debugging message if
+ required
+From:   Joe Perches <joe@perches.com>
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+        nathan@kernel.org, yujie.liu@intel.com
+Date:   Thu, 23 Nov 2023 23:16:46 -0800
+In-Reply-To: <20231124033642.520686-3-bhe@redhat.com>
+References: <20231124033642.520686-1-bhe@redhat.com>
+         <20231124033642.520686-3-bhe@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.252.31.103]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Rspamd-Queue-Id: 8CAE160009
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Stat-Signature: r4oqtahenar8h64oxpqpoeo1n6zbhmda
+X-Rspamd-Server: rspamout08
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19c0OHTlDrKhb/Xt6M9rvhAh1ufC3tVTnk=
+X-HE-Tag: 1700810207-170549
+X-HE-Meta: U2FsdGVkX1+zlhNkZ9x3SOlShl6+X96epMaKjfHehHKyBsMtcvgR7F6Ii1tgURKZMXTJ4v77gzWxOCKJjrZ32dyx27aEd7KJtn+JaKan9d1JoOg5vx5spjNriOlsrJsAsKTNWoXgbsaaF0Aw9htJa6iNVZZnaP/omO8ddnk/a1hUgTJ/UY7dIv6hTgWYnyt0dTxqhxdXpQIY0i9zYhv989Np0jXyZefmSBvNLtvm6dtRPbiigZYQ2nQLsoXdSGX2/vxVXndB66Niab3Fp1e04lrREsrM7se2cR96ydP7F6f9OXdC0ttkSA5n1SXD5cD7
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series aims to add several features of the dw-mipi-dsi phy
-driver that are missing or need to be updated.
+On Fri, 2023-11-24 at 11:36 +0800, Baoquan He wrote:
+> Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
+> loading related codes.
 
-First patch adds runtime PM functionality to the driver.
+trivia for pr_debug -> kexec_dprintk conversions for
+the entire patch set:
 
-Second patch adds a clock provider generated by the PHY itself.  As
-explained in the commit log of the second patch, a clock declaration is
-missing.  Since this clock is parent of 'dsi_k', it leads to an orphan
-clock.  Most importantly this patch is an anticipation for future
-versions of the DSI PHY, and its inclusion within the display subsystem
-and the DRM framework.
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+[]
+> @@ -551,9 +551,12 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+>  		phdr->p_filesz = phdr->p_memsz = mend - mstart + 1;
+>  		phdr->p_align = 0;
+>  		ehdr->e_phnum++;
+> -		pr_debug("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+> +#ifdef CONFIG_KEXEC_FILE
+> +		kexec_dprintk("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, "
+> +			"sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+>  			phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
+>  			ehdr->e_phnum, phdr->p_offset);
 
-Last patch fixes a corner effect introduced previously.  Since 'dsi' and
-'dsi_k' are gated by the same bit on the same register, both reference
-work as peripheral clock in the device-tree.
+It's good form to rewrap continuation lines to the open parenthesis
 
-Raphael Gallais-Pou (2):
-  drm/stm: dsi: expose DSI PHY internal clock
-  arm: dts: st: fix DSI peripheral clock on stm32mp15 boards
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+[]
+> @@ -389,11 +391,12 @@ SYSCALL_DEFINE5(kexec_file_load, int, kernel_fd, int, initrd_fd,
+>  	if (ret)
+>  		goto out;
+>  
+> +	kexec_dprintk("nr_segments = %lu\n", image->nr_segments);
+>  	for (i = 0; i < image->nr_segments; i++) {
+>  		struct kexec_segment *ksegment;
+>  
+>  		ksegment = &image->segment[i];
+> -		pr_debug("Loading segment %d: buf=0x%p bufsz=0x%zx mem=0x%lx memsz=0x%zx\n",
+> +		kexec_dprintk("segment[%d]: buf=0x%p bufsz=0x%zx mem=0x%lx memsz=0x%zx\n",
+>  			 i, ksegment->buf, ksegment->bufsz, ksegment->mem,
+>  			 ksegment->memsz);
 
-Yannick Fertre (1):
-  drm/stm: dsi: add pm runtime ops
-
- arch/arm/boot/dts/st/stm32mp157.dtsi          |   2 +-
- arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts |   2 +-
- arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts |   2 +-
- arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts |   2 +-
- arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts |   2 +-
- drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         | 274 +++++++++++++++---
- 6 files changed, 240 insertions(+), 44 deletions(-)
-
--- 
-2.25.1
+here too etc...
 
