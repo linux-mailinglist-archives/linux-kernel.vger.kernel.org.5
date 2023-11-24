@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7831B7F6C25
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8D07F6C3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344070AbjKXGIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
+        id S231793AbjKXGSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbjKXGHs (ORCPT
+        with ESMTP id S229518AbjKXGSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:07:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07ECA2D43
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 22:05:17 -0800 (PST)
+        Fri, 24 Nov 2023 01:18:03 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2B52D66
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 22:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ar1rwHdCl3y9JDD69vl8bkIGheNCwRo/KQtZMmsfIVw=; b=tgCUAqVV4FyohYEzujI8LM3j60
-        5bF1S9Mzx38eyly9faACv0hev+BJbvED2RRb8L9CNQJVSsDkpQz9JoSsjb8ab+j4Q6pc7d89mewiy
-        1bvNsT5hRjfhMycqYw84PA3iLQ9KtZXjkvo1YjaQWc+Ucwvd5vHPFPLxcOKCZH2qbfgwLonGKt7FF
-        vr94dromewT5LykLJvWt5j+iWC+rRfVjv3uUf4XcOxx9bYtvPMr7wFvZl5Z/XCmDjHcjPOEIHtaf+
-        xTdvBspyHYZEX7eTr4WR0yjp2hi80dtfMYsriMEAUi2FSUYM1t6AK8pIvnlRXvCZI+9ELhPcAjVN2
-        +RzGdp/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r6PJJ-008Gcb-3y; Fri, 24 Nov 2023 06:05:05 +0000
-Date:   Fri, 24 Nov 2023 06:05:05 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peng Zhang <zhangpeng362@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, fengwei.yin@intel.com,
-        ying.huang@intel.com, aneesh.kumar@linux.ibm.com,
-        shy828301@gmail.com, hughd@google.com, david@redhat.com,
-        wangkefeng.wang@huawei.com, sunnanyong@huawei.com
-Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
- filemap_fault()
-Message-ID: <ZWA9EVlsuHIBi0xb@casper.infradead.org>
-References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+        bh=i3N5b877wwqEXJcttr8x40Ktc1dX/olxiJWVssayIyw=; b=Sho5UVclWCF9mc8IXFMKVdM4wQ
+        CL50tQt3DDPm88wweleeVf0oPoA7dRFLPole6BIEavVFYyp6RYgTfuG0MiMQhLL/CuVvKUHbKcL6j
+        WEynwjOBpdyUi7Q7/ChZ6XV2/K6wxBLG5BVGi8liPYppJGwM/GPU0rGxVrVOq4zxXu3lA09nNLmAi
+        JghIAFfNmusCy32yGgd4VE9QR6cuZ1dBuN9IwOAh/ChJRLKXNTlKjokMTE/zDx1L/OtTv+TPoI4Fx
+        Wp8WVQ5wjqZHZSoiOG0VYlekf7s/bZDknI0TNdWcZ0Kc9/MIaV+eV0ts4zGko9YeDr04wfHh0pVCz
+        XerJv5ng==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r6PJX-006F9E-2z;
+        Fri, 24 Nov 2023 06:05:19 +0000
+Date:   Thu, 23 Nov 2023 22:05:19 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Subject: Re: [PATCH] riscv: fix __user annotation in traps_misaligned.c
+Message-ID: <ZWA9HwUNHDFIw0wP@infradead.org>
+References: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+In-Reply-To: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -53,30 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 10:00:52PM +0800, Peng Zhang wrote:
-> From: ZhangPeng <zhangpeng362@huawei.com>
-> 
-> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
-> in application, which leading to an unexpected performance issue[1].
-> 
-> This caused by temporarily cleared pte during a read/modify/write update
-> of the pte, eg, do_numa_page()/change_pte_range().
+On Thu, Nov 23, 2023 at 02:16:17PM +0000, Ben Dooks wrote:
+> @@ -319,7 +319,7 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
+>  static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+>  {
+>  	if (user_mode(regs)) {
+> -		return __get_user(*r_val, addr);
+> +		return __get_user(*r_val, (u8 __user *)addr);
+>  	} else {
+>  		*r_val = *addr;
+>  		return 0;
 
-What I haven't quite understood yet is why we need to set the pte to
-zero on x86 in the specific case of do_numa_page().  I understand that
-ppc needs to.
+This is the wrong way to approach it.  Pass the untype unsigned long
+from the caller instead and do a single round of casts from that
+depending on the address_space.
 
-Could someone explain why the _default_ definition of
-ptep_modify_prot_start() is not:
-
-+++ b/include/linux/pgtable.h
-@@ -1074,7 +1074,7 @@ static inline pte_t ptep_modify_prot_start(struct vm_area_struct *vma,
-                                           unsigned long addr,
-                                           pte_t *ptep)
- {
--       return __ptep_modify_prot_start(vma, addr, ptep);
-+       return *ptep;
- }
-
- /*
+And please also remove this horrible else after return entipattern
+while you're at it.
 
