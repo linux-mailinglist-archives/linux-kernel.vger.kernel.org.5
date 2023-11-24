@@ -2,187 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9C37F6CE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D92767F6CEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjKXH13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
+        id S231283AbjKXHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXH1Y (ORCPT
+        with ESMTP id S229453AbjKXHbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:27:24 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1645D6E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:27:29 -0800 (PST)
-Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sc60q1xMqzsRRS;
-        Fri, 24 Nov 2023 15:23:55 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 24 Nov 2023 15:27:26 +0800
-Message-ID: <a4b53c04-681c-4cc0-07f1-db3fc702f8d1@huawei.com>
-Date:   Fri, 24 Nov 2023 15:27:25 +0800
+        Fri, 24 Nov 2023 02:31:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40202D5E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:31:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700811084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FaHqBQb0qHca3DpFmCMKVj8TczcBSszVdedfd+/j/zY=;
+        b=efKSUSJ/5ErZ6MX9W+104xZ6ZkgrdKtfMsuEBwz3LGCFIAU056tpVhPZP2LljfImyuk5mQ
+        ainnO3fOINlOOZ9m2ai6jfvJhNt2kxHpCRK54fxb3nb+EqFAj+sx9hfyoIfVrN4hzofGWT
+        d6CnSFTADEURmfbqSKqiN984P7wtiTo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-322-bY_SDG4EOvKYL0GtD_VeXQ-1; Fri,
+ 24 Nov 2023 02:31:21 -0500
+X-MC-Unique: bY_SDG4EOvKYL0GtD_VeXQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A72B61C05B0E;
+        Fri, 24 Nov 2023 07:31:20 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00FAF492BFA;
+        Fri, 24 Nov 2023 07:31:19 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 15:31:16 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm/page.c: move mem_init_print_info() to later place
+Message-ID: <ZWBRRK9C9MnvtEzW@MiWiFi-R3L-srv>
+References: <20231122043550.489889-1-bhe@redhat.com>
+ <20231122150817.GA634321@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     Yin Fengwei <fengwei.yin@intel.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <willy@infradead.org>, <aneesh.kumar@linux.ibm.com>,
-        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
-        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
- <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
- <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
- <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
- <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
- <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87ttpb7p4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <87ttpb7p4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.160]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000020.china.huawei.com (7.193.23.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122150817.GA634321@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/24 12:26, Huang, Ying wrote:
+On 11/22/23 at 05:08pm, Mike Rapoport wrote:
+> Hi Baoquan,
+> 
+> 
+> On Wed, Nov 22, 2023 at 12:35:50PM +0800, Baoquan He wrote:
+> 
+> > Subject: [PATCH] mm/page.c: move mem_init_print_info() to later place
+> 
+> We don't have mm/page.c, 
 
-> "Huang, Ying" <ying.huang@intel.com> writes:
->
->> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>
->>> On 2023/11/23 13:26, Yin Fengwei wrote:
->>>
->>>> On 11/23/23 12:12, zhangpeng (AS) wrote:
->>>>> On 2023/11/23 9:09, Yin Fengwei wrote:
->>>>>
->>>>>> Hi Peng,
->>>>>>
->>>>>> On 11/22/23 22:00, Peng Zhang wrote:
->>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>>
->>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->>>>>>> in application, which leading to an unexpected performance issue[1].
->>>>>>>
->>>>>>> This caused by temporarily cleared pte during a read/modify/write update
->>>>>>> of the pte, eg, do_numa_page()/change_pte_range().
->>>>>>>
->>>>>>> For the data segment of the user-mode program, the global variable area
->>>>>>> is a private mapping. After the pagecache is loaded, the private anonymous
->>>>>>> page is generated after the COW is triggered. Mlockall can lock COW pages
->>>>>>> (anonymous pages), but the original file pages cannot be locked and may
->>>>>>> be reclaimed. If the global variable (private anon page) is accessed when
->>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->>>>>>>
->>>>>>> At this time, the original private file page may have been reclaimed.
->>>>>>> If the page cache is not available at this time, a major fault will be
->>>>>>> triggered and the file will be read, causing additional overhead.
->>>>>>>
->>>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() before
->>>>>>> triggering a major fault.
->>>>>>>
->>>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>>>>>
->>>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>>>> ---
->>>>>>>     mm/filemap.c | 14 ++++++++++++++
->>>>>>>     1 file changed, 14 insertions(+)
->>>>>>>
->>>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
->>>>>>> index 71f00539ac00..bb5e6a2790dc 100644
->>>>>>> --- a/mm/filemap.c
->>>>>>> +++ b/mm/filemap.c
->>>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>>>>>>                 mapping_locked = true;
->>>>>>>             }
->>>>>>>         } else {
->>>>>>> +        pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
->>>>>>> +                          vmf->address, &vmf->ptl);
->>>>>>> +        if (ptep) {
->>>>>>> +            /*
->>>>>>> +             * Recheck pte with ptl locked as the pte can be cleared
->>>>>>> +             * temporarily during a read/modify/write update.
->>>>>>> +             */
->>>>>>> +            if (unlikely(!pte_none(ptep_get(ptep))))
->>>>>>> +                ret = VM_FAULT_NOPAGE;
->>>>>>> +            pte_unmap_unlock(ptep, vmf->ptl);
->>>>>>> +            if (unlikely(ret))
->>>>>>> +                return ret;
->>>>>>> +        }
->>>>>> I am curious. Did you try not to take PTL here and just check whether PTE is not NONE?
->>>>> Thank you for your reply.
->>>>>
->>>>> If we don't take PTL, the current use case won't trigger this issue either.
->>>> Is this verified by testing or just in theory?
->>> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_commit(),
->>> this issue will also trigger. Without delay, we haven't reproduced this problem
->>> so far.
->>>
->>>>> In most cases, if we don't take PTL, this issue won't be triggered. However,
->>>>> there is still a possibility of triggering this issue. The corner case is that
->>>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_start()
->>>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 passes the
->>>>> check whether the PTE is not NONE before task 1 updates PTE in
->>>>> ptep_modify_prot_commit() without taking PTL.
->>>> There is very limited operations between ptep_modify_prot_start() and
->>>> ptep_modify_prot_commit(). While the code path from page fault to this check is
->>>> long. My understanding is it's very likely the PTE is not NONE when do PTE check
->>>> here without hold PTL (This is my theory. :)).
->>> Yes, there is a high probability that this issue won't occur without taking PTL.
->>>
->>>> In the other side, acquiring/releasing PTL may bring performance impaction. It may
->>>> not be big deal because the IO operations in this code path. But it's better to
->>>> collect some performance data IMHO.
->>> We tested the performance of file private mapping page fault (page_fault2.c of
->>> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of will-it-scale).
->>> The difference in performance (in operations per second) before and after patch
->>> applied is about 0.7% on a x86 physical machine.
->> Whether is it improvement or reduction?
-> And I think that you need to test ramdisk cases too to verify whether
-> this will cause performance regression and how much.
+Thanks for reviewing.
 
-Yes, I will.
-In addition, are there any ramdisk test cases recommended? 😁
+Yes, this was queued in my local branch long time ago, I forgot to
+update the file name.
 
-> --
-> Best Regards,
-> Huang, Ying
->
->> --
->> Best Regards,
->> Huang, Ying
->>
->>> [1] https://github.com/antonblanchard/will-it-scale/tree/master
->>>
->>>> Regards
->>>> Yin, Fengwei
->>>>
->>>>>> Regards
->>>>>> Yin, Fengwei
->>>>>>
->>>>>>> +
->>>>>>>             /* No page in the page cache at all */
->>>>>>>             count_vm_event(PGMAJFAULT);
->>>>>>>             count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+> 
+> > Currently if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, only part of
+> > pages are initialized and added into buddy allocator at early stage. Then
+> > the system memory information printed by mem_init_print_info() is
+> > incorrect. The snippets of boot log are pasted here:
+> > -----------------------------------------------------------------------
+> > [    0.059606] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+> > [    0.059622] software IO TLB: area num 64.
+> > [    0.143887] Memory: 1767888K/133954872K available (20480K kernel code, 3284K rwdata, 8972K rodata, 4572K init, 4916K bss, 2529756K reserved, 0K cma-reserved)
+> > [    0.145111] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=64, Nodes=2
+> > ---------------------------------------------------------------------------
+> 
+> At this point only the pages that were initialized and free are available.
+> The message does not reflect that large part of memory is still not initialized,
+> but it's not wrong.
 
--- 
-Best Regards,
-Peng
+Agree. I noticed this because I often need check the memory init and
+memory size during kernel bootup. The current message gives people a
+shock at first glance because it looks like a huge reserved memory
+existing in system.
+
+> 
+> > Here, move mem_init_print_info() to later place until page init is
+> > finished. After the fix, the printed memory information is like this:
+> > -------------------------------------------------------------------------
+> > [  +0.001002] smpboot: Total of 64 processors activated (293724.92 BogoMIPS)
+> > [  +0.050086] node 0 deferred pages initialised in 45ms
+> > [  +0.007309] node 1 deferred pages initialised in 53ms
+> > [    4.035449] Memory: 131272772K/133954872K available (20480K kernel code, 3284K rwdata, 8972K rodata, 4572K init, 4916K bss, 2529700K reserved, 0K cma-reserved)
+> > [  +0.015995] devtmpfs: initialized
+> > [  +0.003943] x86/mm: Memory block size: 2048MB
+> > -------------------------------------------------------------------------
+> 
+> If we print this message that late, some of the memory will be allocated
+> from buddy and it maybe confusing.
+
+that's true.
+
+> 
+> I suggest to print how much memory is not yet initialized and leave
+> mem_init_print_info() where it is now.
+
+Sounds great to me, will work out a new version as suggested.
+
+>  
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > ---
+> >  include/linux/gfp.h | 1 +
+> >  init/main.c         | 1 +
+> >  mm/mm_init.c        | 3 +--
+> >  3 files changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> > index de292a007138..2d69fa59b489 100644
+> > --- a/include/linux/gfp.h
+> > +++ b/include/linux/gfp.h
+> > @@ -335,6 +335,7 @@ void drain_local_pages(struct zone *zone);
+> >  
+> >  void page_alloc_init_late(void);
+> >  void setup_pcp_cacheinfo(void);
+> > +void mem_init_print_info(void);
+> >  
+> >  /*
+> >   * gfp_allowed_mask is set to GFP_BOOT_MASK during early boot to restrict what
+> > diff --git a/init/main.c b/init/main.c
+> > index e24b0780fdff..88f238a478a1 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1547,6 +1547,7 @@ static noinline void __init kernel_init_freeable(void)
+> >  	workqueue_init_topology();
+> >  	padata_init();
+> >  	page_alloc_init_late();
+> > +	mem_init_print_info();
+>   
+> No need to make mem_init_print_info() global and call it from main.c, you
+> can call it from page_alloc_init_late().
+
+Agree, that's much better if we take that way.
+
+> 
+> >  	do_basic_setup();
+> >  
+> > diff --git a/mm/mm_init.c b/mm/mm_init.c
+> > index 077bfe393b5e..d08f7c7f75f1 100644
+> > --- a/mm/mm_init.c
+> > +++ b/mm/mm_init.c
+> > @@ -2703,7 +2703,7 @@ static void __init report_meminit(void)
+> >  		pr_info("mem auto-init: clearing system memory may take some time...\n");
+> >  }
+> >  
+> > -static void __init mem_init_print_info(void)
+> > +void __init mem_init_print_info(void)
+> >  {
+> >  	unsigned long physpages, codesize, datasize, rosize, bss_size;
+> >  	unsigned long init_code_size, init_data_size;
+> > @@ -2774,7 +2774,6 @@ void __init mm_core_init(void)
+> >  	kmsan_init_shadow();
+> >  	stack_depot_early_init();
+> >  	mem_init();
+> > -	mem_init_print_info();
+> >  	kmem_cache_init();
+> >  	/*
+> >  	 * page_owner must be initialized after buddy is ready, and also after
+> > -- 
+> > 2.41.0
+> > 
+> 
+> -- 
+> Sincerely yours,
+> Mike.
+> 
 
