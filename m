@@ -2,119 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466417F6C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3F27F6C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjKXGgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        id S230305AbjKXGjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKXGgH (ORCPT
+        with ESMTP id S229453AbjKXGjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:36:07 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB2AB0;
-        Thu, 23 Nov 2023 22:36:12 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-548696eac92so2062954a12.3;
-        Thu, 23 Nov 2023 22:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700807770; x=1701412570; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VEd0FiGVy5VmF1ZrlmZcok7cqApIhcHDIftpbUYcko0=;
-        b=EfdjMt9uuWtiW7IEaLNngRCDkaoZCEwcfstetKbQsGrJb9hkO28g9BiTdwqn0n9Hxl
-         15/hlyKPzvC/IfAnK00P5MOw7EuuxvVHbEE8KVBHDFMRqWlfse7a2YUUm+iqP5dxk4M6
-         c8Cj0+L0KoflauVKeKXAQJ+cPlKpifdn+7wyQQR+i85UNrUAyIpx+p5WHwJ/MclMsxLL
-         2NyFx7XFdpcNlhvGoWcmMkDhTuuEfMrwy0ZNAtasaBALK66O9M8uyAS2cwSesu+fEHUn
-         fHqROuJoGQIe8ISexAo3tX+BlJsCwkWq9JI0wW1sdYrUwhEv3klCAeBgGJMGokpL4ANM
-         nsjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700807770; x=1701412570;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VEd0FiGVy5VmF1ZrlmZcok7cqApIhcHDIftpbUYcko0=;
-        b=Bmb7aGXLQC7f+iK27UNyK/3lgQJiF4HFEgbApA3XcaJKiY9OwNAazlAWqPhE0Xdhjj
-         uwAAuYVfJugdXwugDqAePFSbAdcy0CLnp1J+em7t8/cwqwwlj7K2t07vIsV4HdA81DnN
-         q4iuCCv4cqQDivSLyobS77JuxQ0y96Qqbrc27i2pFdPMFcYTFSNi02F/WKf5c4MJ6QON
-         fI/QZ1cZAwbLRJ1wWD7f0Hb8OVm2rt3Vc8tN/O2DltgIzRxFkAayBtk5TpJUYBjlLEpt
-         xQCwYeGyJyXBNldoQNize7HnTVDSoaXhP3fb3jdUYekK/FGkPUcrP9/9a9Rw4gxmCr1V
-         HtRQ==
-X-Gm-Message-State: AOJu0YxVp/HO3oWP1eLG5SxG3y55AscZ+HvgUnTOVZg2TcT0ga4oxYpi
-        g5s0ojNv52xEIMn3x0pPwZ7ZZA+435UgtJuIKRJcxXOCKDI=
-X-Google-Smtp-Source: AGHT+IH6iWRv195qNazMTDd6j0f6sJgF97e7g/dgDK5e0EOnFVkxS7bWoTLgAO2i4siw6TUUEqKix9mMqW3w6lGzDts=
-X-Received: by 2002:a50:9e49:0:b0:547:6663:a164 with SMTP id
- z67-20020a509e49000000b005476663a164mr821557ede.40.1700807770436; Thu, 23 Nov
- 2023 22:36:10 -0800 (PST)
+        Fri, 24 Nov 2023 01:39:09 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1935FD46;
+        Thu, 23 Nov 2023 22:39:15 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO5IuF2010656;
+        Fri, 24 Nov 2023 06:39:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=XJfK9r4difAVXV2U8xd6TIUL/J9MDrHGpJaRZDcJCwI=;
+ b=h0fdekOxqWrWsryVRzqxaaHAQbLQjrwxHHlkirtJc59pqArq9WjoC4Vou5OLdRI3tJnX
+ eWXLumG5capce5VZlagy3M0IH5VNCr8I7Ld+ukz8Zw7BlTWobW7viWs7jI2DFkIkBADu
+ OUytbTh+kL0U/pT7UvJaB8u9SU2oTTb4HGZYKOSwova8fLkdjfQVDe+qyoeQ3iYsMPly
+ pBgMEiGFFgrNOxzYvxCOA+ub3GNDBwJKzL6f/3xIrJ15Th5bkVq/QIVP5xEuVsoXsagr
+ BfAveWxBo+FbBHsoWzZq3W/GETbe3tqrsw58UP/2dbI9NH69QFU21VqUETG5GMf5c4VM XQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uj4hwhw4x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 06:39:09 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AO6d8Su006461
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 06:39:08 GMT
+Received: from [10.216.35.253] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 22:39:02 -0800
+Message-ID: <ff021f49-f81b-0fd1-bd2c-895dbbb03d56@quicinc.com>
+Date:   Fri, 24 Nov 2023 12:08:59 +0530
 MIME-Version: 1.0
-References: <20231124060553.GA575483@ZenIV> <20231124060644.576611-1-viro@zeniv.linux.org.uk>
- <20231124060644.576611-15-viro@zeniv.linux.org.uk>
-In-Reply-To: <20231124060644.576611-15-viro@zeniv.linux.org.uk>
-From:   Cedric Blancher <cedric.blancher@gmail.com>
-Date:   Fri, 24 Nov 2023 07:35:34 +0100
-Message-ID: <CALXu0UcCGjyM6hFfdjG1eHJcmeR=9BVSaq7Vj9rtvKxb9szJdQ@mail.gmail.com>
-Subject: d_genocide()? What about d_holodomor(), d_massmurder(),
- d_execute_warcrimes()? Re: [PATCH 15/20] d_genocide(): move the extern into fs/internal.h
-To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sc7280: Move video-firmware to
+ chrome-common
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231002-sc7280-venus-pas-v2-0-bd2408891317@fairphone.com>
+ <20231002-sc7280-venus-pas-v2-2-bd2408891317@fairphone.com>
+ <4cfad910-1821-3a31-c372-3f6b199e8f71@quicinc.com>
+ <CX5ENKY70B5J.2D6DXKGI4EGX3@fairphone.com>
+From:   Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <CX5ENKY70B5J.2D6DXKGI4EGX3@fairphone.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _2PehKUl5y5-OQPPRjcBhX25pqjQpTVO
+X-Proofpoint-ORIG-GUID: _2PehKUl5y5-OQPPRjcBhX25pqjQpTVO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311240049
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023 at 07:08, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  fs/internal.h          | 1 +
->  include/linux/dcache.h | 3 ---
->  2 files changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/fs/internal.h b/fs/internal.h
-> index 9e9fc629f935..d9a920e2636e 100644
-> --- a/fs/internal.h
-> +++ b/fs/internal.h
-> @@ -219,6 +219,7 @@ extern void shrink_dcache_for_umount(struct super_block *);
->  extern struct dentry *__d_lookup(const struct dentry *, const struct qstr *);
->  extern struct dentry *__d_lookup_rcu(const struct dentry *parent,
->                                 const struct qstr *name, unsigned *seq);
-> +extern void d_genocide(struct dentry *);
 
-Seriously, who came up with THAT name? "Genocide" is not a nice term,
-not even if you ignore political correctness.
-Or what will be next? d_holodomor()? d_massmurder()? d_execute_warcrimes()?
+On 11/22/2023 7:50 PM, Luca Weiss wrote:
+> On Wed Nov 22, 2023 at 2:17 PM CET, Vikash Garodia wrote:
+>>
+>> On 10/2/2023 7:50 PM, Luca Weiss wrote:
+>>> If the video-firmware node is present, the venus driver assumes we're on
+>>> a system that doesn't use TZ for starting venus, like on ChromeOS
+>>> devices.
+>>>
+>>> Move the video-firmware node to chrome-common.dtsi so we can use venus
+>>> on a non-ChromeOS devices.
+>>>
+>>> At the same time also disable the venus node by default in the dtsi,
+>>> like it's done on other SoCs.
+>>>
+>>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>  arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi | 8 ++++++++
+>>>  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 6 ++----
+>>>  2 files changed, 10 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+>>> index 5d462ae14ba1..cd491e46666d 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+>>> @@ -104,6 +104,14 @@ &scm {
+>>>  	dma-coherent;
+>>>  };
+>>>  
+>>> +&venus {
+>>> +	status = "okay";
+>>> +
+>>> +	video-firmware {
+>>> +		iommus = <&apps_smmu 0x21a2 0x0>;
+>>> +	};
+>>> +};
+>>> +
+>>>  &watchdog {
+>>>  	status = "okay";
+>>>  };
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 66f1eb83cca7..fa53f54d4675 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -3740,6 +3740,8 @@ venus: video-codec@aa00000 {
+>>>  				 <&apps_smmu 0x2184 0x20>;
+0x2184 is a secure SID. I think qcm6490-fairphone-fp5.dts needs to override the
+iommus property as well to retain only the non secure SID i.e 0x2180 ? I am
+seeing below crash
 
-Ced
+Call trace:
+[   47.663593]  qcom_smmu_write_s2cr+0x64/0xa4
+[   47.663616]  arm_smmu_attach_dev+0x120/0x284
+[   47.663647]  __iommu_attach_device+0x24/0xf8
+[   47.676845]  __iommu_device_set_domain+0x70/0xd0
+[   47.681632]  __iommu_group_set_domain_internal+0x60/0x1b4
+[   47.687218]  iommu_setup_default_domain+0x358/0x418
+[   47.692258]  __iommu_probe_device+0x3e4/0x404
 
->
->  /*
->   * pipe.c
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 8c5e3bdf1147..b4324d47f249 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -243,9 +243,6 @@ extern void d_invalidate(struct dentry *);
->  /* only used at mount-time */
->  extern struct dentry * d_make_root(struct inode *);
->
-> -/* <clickety>-<click> the ramfs-type tree */
-> -extern void d_genocide(struct dentry *);
-> -
->  extern void d_mark_tmpfile(struct file *, struct inode *);
->  extern void d_tmpfile(struct file *, struct inode *);
->
-> --
-> 2.39.2
->
->
+Could you please reconfirm if Video SID 0x2184 (and mask) is allowed by the
+qcm6490-fairphone-fp5 hardware having TZ ?
 
+>>>  			memory-region = <&video_mem>;
+>>>  
+>>> +			status = "disabled";
+>>> +
+>>>  			video-decoder {
+>>>  				compatible = "venus-decoder";
+>>>  			};
+>>> @@ -3748,10 +3750,6 @@ video-encoder {
+>>>  				compatible = "venus-encoder";
+>>>  			};
+>>>  
+>>> -			video-firmware {
+>>> -				iommus = <&apps_smmu 0x21a2 0x0>;
+>>> -			};
+>>> -
+>>>  			venus_opp_table: opp-table {
+>>>  				compatible = "operating-points-v2";
+>>>  
+>>>
+>> Changes look good. Is this tested on SC7280 ?
+> 
+> Hi Vikash,
+> 
+> I didn't test it myself on sc7280 (just qcm6490-fp5) but dtx_diff
+> reports no differences except for status = okay property being added, so
+> there should be no change on those boards. See below.
+> 
+> Regards
+> Luca
 
---
-Cedric Blancher <cedric.blancher@gmail.com>
-[https://plus.google.com/u/0/+CedricBlancher/]
-Institute Pasteur
+I tested on SC7280 (herobrine) and all good.
+
+Regards,
+Vikash
