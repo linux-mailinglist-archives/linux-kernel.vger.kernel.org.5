@@ -2,111 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEF87F84CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56277F84CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346041AbjKXTkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        id S1346009AbjKXTkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:40:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346033AbjKXTkP (ORCPT
+        with ESMTP id S1345987AbjKXTkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Nov 2023 14:40:15 -0500
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680DEC2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:40:22 -0800 (PST)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4ac1988ca66so1220395e0c.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:40:22 -0800 (PST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D13B98;
+        Fri, 24 Nov 2023 11:40:21 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54afd43c83cso1166628a12.0;
+        Fri, 24 Nov 2023 11:40:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700854821; x=1701459621; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OfPuzQ88UTumZWzrpshNNxDAiNQ7rGXcChPe9HqpR3s=;
-        b=QsTDrsRX3hYGfPWERq7r8U9nyyGkM0Wtly2QBeOjSuusxBuubK/GNkkZMHlft0G4fC
-         eSAhhI91xaySkrZekI/Cm/67OlOP91Of060XTC5vjcQ7mOjfPHDGh8VGzD3oEJI7WOI4
-         iYf4/zFF8bQ/gZ4nnDEi5/oOX8tIAg2jHEIj7kF04MTfXGh3EjGXa4FckKUs7GViODsq
-         iWoqJt2XOHcFV9UipKs28KzD6mQiz4ezpqlLoxyOkWJhtebV7sp3CKj7FQZvV0GD6KF2
-         r7Mn6KW0mVOeAZRZQ7HxyHM7bJYtGMY3+pizEl9kUcLgsXGqVZ5HAiwePVaaqkRVJhzh
-         IXNA==
+        d=gmail.com; s=20230601; t=1700854820; x=1701459620; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKrRg2snxExqJdFGigUYh7T7Fc6aEzueP8JRF0HCrTo=;
+        b=jnEfe2+VbZBpN2wMsD3w96vpmbBE2wc2X/QwHv7yt0dtmByK91FIHcgt82ldqDrPrh
+         27bh8nXMj2zU6XTUipw9OiB/9PmqewQNYwSqscxSgwPEswURcJkPuhTtWmgMOAtxb9jN
+         OnH8pL94RXFUb0lc1KPjO+oamHC5n/XrL6mIsvmZ8rLGsN52PSddrj/r3HlQvt+VLg5J
+         xyw8ZvvhrHIzUswjeuEn8A163s4X8JrmG1jHN34/sAbVnx8CGSxwDl32yRaPgrYTSWLS
+         f2S68tS1TdoMfzDLjyXRwrM1UEutnFoCXswaAE+UaPifHNnYGUIMGmwqF+u6wN7CYI0X
+         GbPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700854821; x=1701459621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OfPuzQ88UTumZWzrpshNNxDAiNQ7rGXcChPe9HqpR3s=;
-        b=rSdmavVoShwQ09sVaztt+zNJPE94NlsAnyQB/+7zwXK7hCAL6SFkZ2bkNQNoVM2Wsd
-         yKv6F7EyrmYMl07Sedj/Nl8S0huHk5la6/osIOHg38R+1IyR8WtHNqtx2IU4rEgcokLo
-         sZiLjyIe8IFZAgN2M8RAvHAn5sjEVQVl+Wz5IpckT/gu89pGlZEGrWbVTANKF3I2bP0u
-         S9Q3Hl1QHN3AmGRHWwfSCEttcLMeqOZni72g3fLWoex4g+O5wj51uBI5ghejAmhSEbFd
-         ai8y2Gc7axGp6BuCz5+TIQ5lwcq1gYE5p7VRNsOURB7KZaqDQg+oL3k3mNaJWhj9tcr9
-         oQwA==
-X-Gm-Message-State: AOJu0YzmG5b5DF6aLal7gscnV/PHNZsL5i8Jxd89eipgdtSAsfBJ5lnL
-        UnIfb69Pdg3/O3QHUHtb/LEYDXV6ewPgq+ijUqTqBA==
-X-Google-Smtp-Source: AGHT+IGaj4iMx31WHoOJsNqKMY2PR3YY/foCeMKUh9ruPFkRvtuUyQmgXBGrcB2rE8J6OUiUjsGAphzg4M8S3DVAK54=
-X-Received: by 2002:a1f:4a45:0:b0:495:e688:72b7 with SMTP id
- x66-20020a1f4a45000000b00495e68872b7mr4731673vka.4.1700854821504; Fri, 24 Nov
- 2023 11:40:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700854820; x=1701459620;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DKrRg2snxExqJdFGigUYh7T7Fc6aEzueP8JRF0HCrTo=;
+        b=LJs8oVlIGs2PGAv9zlxz/hlgpEn+5hyUL5tXmQyt9zsOoWJSk80bEOV5oASbvwRaRv
+         YY58JPGqhSB3YJsHwNlfkONjAABZaD3Na99IvRCIX1vB4fojkoudDOqm2mvOoyO7x24g
+         5uyVT9l9ZZ8gNWM6pAR4Z+8JcM9pDtTRw1hTvQLogcIQe7wKqz004/3u0mwcTUPDPME2
+         ytnDtbbi3gRmEny5lmvqyrv7QvTSdg5NGD5JXMZwkkvsp0KcS0LioYuLegRawkpaYVnA
+         99i2JiIsO4nQqLlcKMijedOfcZN5DYk4aW+QNIHsopPMK7gP4KO6exWxo7N+Yu6umTXi
+         Mmng==
+X-Gm-Message-State: AOJu0YyhosQWHaPAKACqVnkqYKyf4EypDkQ8KReeR75lQPxjcIPEewSF
+        TiQ9X6F2xfj769T6sRcIHq8=
+X-Google-Smtp-Source: AGHT+IGItN29AlffdfAFP+pdBb+pUmXR0qRXvVcejscZr6unZPC/VQI53oWhDMvt4V3MPYz/KIrdxQ==
+X-Received: by 2002:a17:906:f1d4:b0:9fb:f99c:3ea with SMTP id gx20-20020a170906f1d400b009fbf99c03eamr2802823ejb.52.1700854819659;
+        Fri, 24 Nov 2023 11:40:19 -0800 (PST)
+Received: from skbuf ([188.26.185.12])
+        by smtp.gmail.com with ESMTPSA id h25-20020a170906111900b00a0435148ed7sm2464856eja.17.2023.11.24.11.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 11:40:19 -0800 (PST)
+Date:   Fri, 24 Nov 2023 21:40:16 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <20231124194016.tcmu4w2r7jrnv6mo@skbuf>
+References: <20231120135041.15259-1-ansuelsmth@gmail.com>
+ <20231120135041.15259-4-ansuelsmth@gmail.com>
+ <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
+ <20231121144244.GA1682395-robh@kernel.org>
+ <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
+ <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
+ <20231124165923.p2iozsrnwlogjzua@skbuf>
+ <b8981dc4-5db0-4418-b47d-3e763e20beac@lunn.ch>
 MIME-Version: 1.0
-References: <20231115165001.2932350-1-brgl@bgdev.pl> <CACRpkdbDny8X3WB_qJ4h_vbwrjno5ytAtNMgTeXg4jpegdUH2w@mail.gmail.com>
- <CAMRc=McZJzdj04Ckf_ygDhWNN2JcbTfY+yefOZSYx_nTE_Jpjg@mail.gmail.com> <CACRpkdb7QwWcq=mDa4y8bh_QLAFU+X9LCr0chrGVL-_9YE5P9A@mail.gmail.com>
-In-Reply-To: <CACRpkdb7QwWcq=mDa4y8bh_QLAFU+X9LCr0chrGVL-_9YE5P9A@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 24 Nov 2023 20:40:10 +0100
-Message-ID: <CAMRc=Md+5N_u0QkL+OTc2xVQuxP0dZY-1GbrdGQqwhdJrv4Cbg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] pinctrl: don't use gpiod_to_chip()
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8981dc4-5db0-4418-b47d-3e763e20beac@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 11:01=E2=80=AFAM Linus Walleij <linus.walleij@linar=
-o.org> wrote:
->
-> On Mon, Nov 20, 2023 at 4:06=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> > On Thu, Nov 16, 2023 at 2:43=E2=80=AFPM Linus Walleij <linus.walleij@li=
-naro.org> wrote:
-> > > On Wed, Nov 15, 2023 at 5:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgd=
-ev.pl> wrote:
-> > >
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > Let's start working towards removing gpiod_to_chip() from the kerne=
-l.
-> > > > Start with pinctrl. The first patch should go through the GPIO tree
-> > > > and become available through an immutable tag so that we can get mo=
-re
-> > > > conversions in this cycle elsewhere.
-> > >
-> > > Fair enough, maybe an immutable branch with all three patches?
-> > > Probably best to merga all three into both subsystems I think.
-> > >
-> >
-> > Nah, I don't think I need to pollute the GPIO tree with every pinctrl
-> > patch. It's enough to just merge the first one into GPIO and you do
-> > the same in pinctrl.
->
-> Fair enough, but I need that immutable branch for patch 1 so I
-> can merge the rest on top.
->
-> Yours,
-> Linus Walleij
+On Fri, Nov 24, 2023 at 07:35:35PM +0100, Andrew Lunn wrote:
+> > I think you are hitting some of the same points I have hit with DSA.
+> > The PHY package could be considered an SoC with lots of peripherals on
+> > it, for which you'd want separate drivers.
+> 
+> At least at the moment, this is not true. The package does just
+> contain PHYs. But it also has some properties which are shared across
+> those PHYs, e.g. reset. 
+> 
+> What you describe might become true in the future. e.g. The LED/GPIO
+> controller is currently part of the PHY, and each PHY has its own. I
+> could however imagine that becomes a block of its own, outside of the
+> PHY address space, and maybe it might want its own class LED
+> driver. Some PHYs have temperature sensors, which could be a package
+> sensor, so could in theory be an individual hwmon driver. However,
+> i've not yet seen such a package.
+> 
+> Do we consider this now? At the moment i don't see an MFD style system
+> is required. We could crystal ball gaze and come up with some
+> requirements, but i would prefer to have some real devices and
+> datasheets. Without them, we will get the requirements wrong.
+> 
+> I also think we are not that far away from it, in terms of DT, if you
+> consider the later comments. I suggested we need a phy package
+> specific compatible. At the moment, it will be ignored by the kernel,
+> the kernel does not need it, it probes the PHYs in the current way,
+> using the ID registers. But it could in future be used to probe a real
+> driver, which could be an MFD style driver. We need to see updated DT
+> binding examples, but i don't see why we cannot slot it in at a later
+> date.
 
-I applied the first patch (after fixing the typo in the commit
-message) and sent you the immutable branch to pull. Please apply the
-remaining patches to the pinctrl tree directly.
+I'm not suggesting to go for MFD right away. Just with a structure that
+is extensible to possibly cover that. For now, a package node with a
+Qualcomm compatible, with the most minimal driver that forwards MDIO
+access to PHY children.
 
-Thanks!
-Bart
+I can't speak for the future of PHY drivers, since I don't know enough
+about PHYs. I'm just coming from the DSA background where I really wish
+we had this sort of infrastructure earlier. Now I have the SJA1110 which
+still lacks support for the interrupt controller for its integrated
+PHYs, and a bunch of other IP blocks in the package, because it's so
+incredibly hard to make the driver support the old-style and the
+new-style device trees.
