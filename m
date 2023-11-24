@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4357D7F776D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06527F7771
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345621AbjKXPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        id S231295AbjKXPQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjKXPQd (ORCPT
+        with ESMTP id S231302AbjKXPQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:16:33 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560FE19AA;
-        Fri, 24 Nov 2023 07:16:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iyDJ7GDLCp7RzsNckl8cUetzIxYclIJv5z4zBoq++ZA=; b=1V686gKJOTmYTLJb/BLfWaUq58
-        ldH95fUtOZYY5STTxtGQNr2TpecXwQoJL9t6/m3BFt+szDJM+hp3iCozE+mEFBbGSQU6woOgDHckB
-        aTtG6E9O9giKHcX3g9BZ6KBPJspbjELOkX6+TvaM4E5S4JlHhcueo5aiL4TXBKOt4PyED2IfNYI6E
-        t8+0aYkoc8tXtG+f6jhYRScakm3cFtkbXxX3THbqUJCIW2rsosc95WjU3eKDLU4wGM30B0ZIy5UrZ
-        6HboUnbGmnMPML6w0IpYCcIwLe0UOkhDOebccdPXYsleoGVY5VXBaKoQV/rG82QrjTBY3BLFiNTmE
-        jVAfqn6w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58932)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r6Xui-00037d-2G;
-        Fri, 24 Nov 2023 15:16:16 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r6Xuf-0007La-5G; Fri, 24 Nov 2023 15:16:13 +0000
-Date:   Fri, 24 Nov 2023 15:16:13 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Jie Luo <quic_luoj@quicinc.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <ZWC+PbNjir7rT4MK@shell.armlinux.org.uk>
-References: <655e4939.5d0a0220.d9a9e.0491@mx.google.com>
- <6a030399-b8ed-4e2c-899f-d82eb437aafa@lunn.ch>
- <655f2ba9.5d0a0220.294f3.38d8@mx.google.com>
- <c697488a-d34c-4c98-b4c7-64aef2fe583f@lunn.ch>
- <ZV9jM7ve3Kl6ZxSl@shell.armlinux.org.uk>
- <e32d5c84-7a88-4d9f-868f-98514deae6e9@lunn.ch>
- <655fa905.df0a0220.49d9b.7afd@mx.google.com>
- <367c0aea-b110-4e3f-a161-59d27db11188@quicinc.com>
- <ZWCQv9oaACowJck0@shell.armlinux.org.uk>
- <4d159a99-f602-424e-a3c1-259c52e4d543@lunn.ch>
+        Fri, 24 Nov 2023 10:16:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B001619A6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:16:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700839017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qu5XgvxXAyH+ZZ5B41lPzFlUvRTTIlHyTD7FWxrfkec=;
+        b=asIsbGXBuASV3PFtTDC+t1pFhgypOweb7cHEP50gzAV8BctEt1HLkKoqq4xmryHEL4v89t
+        Gvsd4vGR0L77EIFS43vB5LMVZ/RDUesBSPsfV9kTkGTuPpQZ+XfMPx/AznWGWO3Kjow/gy
+        t8vRilnaRaIzjD57l+9fKshtFnIkzeE=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-bdXBE9L7PVi9-bT4dAIPXw-1; Fri, 24 Nov 2023 10:16:54 -0500
+X-MC-Unique: bdXBE9L7PVi9-bT4dAIPXw-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77891ef5fc9so20299785a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:16:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700839014; x=1701443814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qu5XgvxXAyH+ZZ5B41lPzFlUvRTTIlHyTD7FWxrfkec=;
+        b=HVc/PXLr5ZxsczIr755Isb/tOvY2K4j9lfpV05Lk9rK5KHcn9PaGadyIXxT08rcrCT
+         Rntd+V2nwyTireAZFQx3RiuxLx78ZbM60A94nwSxLZO22cUPuS7iBUMvZdRFqoPENdjf
+         l6RajTioT/KeA/Zt3z7b97V+aS6Az0I/m0vN4O6hllunwfDI49lTeViuBipHSEOl9tpJ
+         zMq/WbXiFKeTYuJbXGJOYxSbn2F+1+4kZVN7HC3eBdD7w/+Tu36ynGvtc5RgLRlWUB3M
+         rlXlVK7mZdaKhaa42RMn/x+kSd/Q6ZB9QVtDGj6nifEjdsyaKyNS1HDhsxdlnwEyfa5e
+         J1ZQ==
+X-Gm-Message-State: AOJu0YwsdORPwy3hWwOCmhL0BYIIRuNPMpM0R41sn9DvrBUO1PIE0an/
+        rKF6lyews+QzUhzJAydTGmKxq0/o9wlaIPCRngtM1WIRgnNiIN2jIr9L6r1VR14K3iPkN11uTFn
+        Mc+UZUDu6eJcdxkXqwCo+iAF7T+NJKppG
+X-Received: by 2002:a05:620a:294b:b0:77d:6a8f:abe with SMTP id n11-20020a05620a294b00b0077d6a8f0abemr3730028qkp.2.1700839014235;
+        Fri, 24 Nov 2023 07:16:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHiV7RVK5n3/J6Z2BUdBRcsJkNG7QL8NPXj8wfk67EQSwKUHdH0oqC8FQJ6z1t7hbeF9gdeaA==
+X-Received: by 2002:a05:620a:294b:b0:77d:6a8f:abe with SMTP id n11-20020a05620a294b00b0077d6a8f0abemr3729999qkp.2.1700839013922;
+        Fri, 24 Nov 2023 07:16:53 -0800 (PST)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id x20-20020a05620a0b5400b0077d71262d38sm1283844qkg.60.2023.11.24.07.16.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 07:16:53 -0800 (PST)
+Date:   Fri, 24 Nov 2023 10:16:51 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/Kconfig: Make hugetlbfs a menuconfig
+Message-ID: <ZWC-YwFlifVFsUOa@x1n>
+References: <20231123223929.1059375-1-peterx@redhat.com>
+ <de256121-f613-42d3-b267-9cd9fbfc8946@infradead.org>
+ <7830CCC4-B1E4-4CCD-B96B-61744FAF2C79@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4d159a99-f602-424e-a3c1-259c52e4d543@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <7830CCC4-B1E4-4CCD-B96B-61744FAF2C79@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 03:44:20PM +0100, Andrew Lunn wrote:
-> > 		First Serdes mode	Second Serdes mode
-> > Option 1	PSGMII for copper	Disabled
-> > 		ports 0-4
-> > Option 2	PSGMII for copper	1000BASE-X / 100BASE-FX
-> > 		ports 0-4
-> > Option 3	QSGMII for copper	SGMII for
-> > 		ports 0-3		copper port 4
+On Fri, Nov 24, 2023 at 10:37:06AM +0800, Muchun Song wrote:
+> >> +if HUGETLBFS
+> >> config HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON
+> >> bool "HugeTLB Vmemmap Optimization (HVO) defaults to on"
+> >> default n
+> >> @@ -282,6 +275,15 @@ config HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON
+> >>  The HugeTLB VmemmapvOptimization (HVO) defaults to off. Say Y here to
+> > 
+> > Is this small 'v'            ^ a typo?
 > 
-> With option 2, can the second SERDES also do SGMII? You are likely to
-> need that when a Copper SFP module is inserted into the cage.
+> Yes. Thanks for pointing it out. Although it is not related to this
+> patch, but it will be nice for me to carry this tiny typo fix. Hi,
+> Peter, would you like help me do this?
 
-The document states "The fiber port supports 1000BASE-X/100BASE-FX".
+Sure, this patch is indeed more or less moving that around; I can touch
+that up.  I'll resend.
 
-The same is true of Marvell 88x3310's fiber port - it supports only
-fiber not SGMII. This is actually something else that - when the
-patches for stacked PHYs mature - will need to be addressed. If we
-have a 1G copper SFP plugged into an interface that only supports
-1000base-X then we need a way to switch the PHY on the SFP module
-to 1000base-X if it's in SGMII mode.
-
-Some copper SFPs come up in 1000base-X mode, and we currently rely
-on the 88e1111 driver to switch them to SGMII mode. Others do want
-SGMII mode (like Mikrotik RJ01 where the PHY is inaccessible and
-thus can't be reconfigured.)
+Thanks,
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Peter Xu
+
