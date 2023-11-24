@@ -2,62 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACBD7F7A0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5607F7A16
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjKXRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:06:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        id S231173AbjKXRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXRGg (ORCPT
+        with ESMTP id S229741AbjKXRIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:06:36 -0500
+        Fri, 24 Nov 2023 12:08:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B6DD59
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:06:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E892C433C7;
-        Fri, 24 Nov 2023 17:06:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F53D4E
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:08:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACDAEC433CA;
+        Fri, 24 Nov 2023 17:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700845602;
-        bh=PPv7r8G9gWCUU0EJn3vhveqcEwikXh9jLw+nzQQY9WI=;
+        s=k20201202; t=1700845691;
+        bh=N6eKa6WfMK+P6QxFOZlfSTYYVqTpDOay3TuZvDz49n0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s098XSVgPCPMuCM9JTGjDOF6ArkD588pr3xbbacn2qrOnd9HdljQZka8/F74S7hX/
-         NCrzX39xQUb9ZC1YaRAG/Qblvr+/P97J4ZA0u56pvC3u9G+kuEwR4nl6VwlkZy78Pt
-         psqbG3gpul7rn/IGgdWC86LMED9JYliFM2YB+zwCcpl3grRq9jv6vibKGKBot89jut
-         Tj+gLKs6zd24iD6Jzn8vw2OAum0VVLRac51PEJZjO2Ei0fRwFK/fSMxRvvbTXifNfw
-         Xq70m4AbVloSNq5hz05Q8J/FhfY9FYKrXWXUfR/MIo9HqWCCtNUzAEc+U1fypTaVxx
-         6W6AIfwVULQxA==
-Date:   Fri, 24 Nov 2023 18:06:34 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de
-Subject: Re: [RESEND RFC PATCH v2 11/14] vfs: Wire up security hooks for
- lsm-based device guard in userns
-Message-ID: <20231124-neidisch-drehbaren-d80ef7aa6390@brauner>
-References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
- <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
+        b=sHxMm9u1mMdx4N1F/JdO5WDKNIARNwK+oEk/f5MTc2gwWWXdnb4XOhlos6fZv0ckr
+         1py3975fia0mRXMPlQMdjVjKxL53JpgTwcG3rvnHQpCr8BcrM7H6w+zU9dB77D/D5z
+         83YrmiGMtVn855hQ1ZmWM+NjyvOV6dQVgH+bmtjfwSWXd7FTC9DuqpBVan5Z+TJ44Q
+         R1HDPglOvv1jfIcHG3Tn7/h/iwhhgXLQvr6Sn3KAE9qLHCGzUkimLx/KpzvilSIitM
+         PC3BT4wrUiLNAkwnulC5I6OOvqMQiSBXdYaU7qBSDI4r9mygQeqrTHn45pxrxMIH9V
+         MODQ2dzif3ppw==
+Date:   Fri, 24 Nov 2023 17:08:04 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Shinas Rasheed <srasheed@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
+        mschmidt@redhat.com, pabeni@redhat.com, kuba@kernel.org,
+        davem@davemloft.net, wizhao@redhat.com, konguyen@redhat.com,
+        jesse.brandeburg@intel.com, sumang@marvell.com,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net-next v2 2/2] octeon_ep: get max rx packet length from
+ firmware
+Message-ID: <20231124170804.GU50352@kernel.org>
+References: <20231122183435.2510656-1-srasheed@marvell.com>
+ <20231122183435.2510656-3-srasheed@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20231122183435.2510656-3-srasheed@marvell.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -68,77 +57,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 11:42:21AM +0200, Michael Weiß wrote:
-> Wire up security_inode_mknod_capns() in fs/namei.c. If implemented
-> and access is granted by an lsm, check ns_capable() instead of the
-> global CAP_MKNOD.
+On Wed, Nov 22, 2023 at 10:34:35AM -0800, Shinas Rasheed wrote:
+> Max receive packet length can vary across SoCs, so
+> this needs to be queried from respective firmware and
+> filled by driver. A control net get mtu api should be
+> implemented to do the same.
 > 
-> Wire up security_sb_alloc_userns() in fs/super.c. If implemented
-> and access is granted by an lsm, the created super block will allow
-> access to device nodes also if it was created in a non-inital userns.
-> 
-> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> ---
->  fs/namei.c | 16 +++++++++++++++-
->  fs/super.c |  6 +++++-
->  2 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index f601fcbdc4d2..1f68d160e2c0 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -3949,6 +3949,20 @@ inline struct dentry *user_path_create(int dfd, const char __user *pathname,
->  }
->  EXPORT_SYMBOL(user_path_create);
+> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+
+...
+
+> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+> index 2da00a701df2..423eec5ff3ad 100644
+> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+> @@ -1307,6 +1307,7 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  {
+>  	struct octep_device *octep_dev = NULL;
+>  	struct net_device *netdev;
+> +	int max_rx_pktlen;
+>  	int err;
 >  
-> +static bool mknod_capable(struct inode *dir, struct dentry *dentry,
-> +			  umode_t mode, dev_t dev)
-> +{
-> +	/*
-> +	 * In case of a security hook implementation check mknod in user
-> +	 * namespace. Otherwise just check global capability.
-> +	 */
-> +	int error = security_inode_mknod_nscap(dir, dentry, mode, dev);
-> +	if (!error)
-> +		return ns_capable(current_user_ns(), CAP_MKNOD);
-> +	else
-> +		return capable(CAP_MKNOD);
-> +}
+>  	err = pci_enable_device(pdev);
+> @@ -1377,8 +1378,15 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  
+>  	netdev->hw_features = NETIF_F_SG;
+>  	netdev->features |= netdev->hw_features;
 > +
->  /**
->   * vfs_mknod - create device node or file
->   * @idmap:	idmap of the mount the inode was found from
-> @@ -3975,7 +3989,7 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
->  		return error;
+> +	max_rx_pktlen = octep_ctrl_net_get_mtu(octep_dev, OCTEP_CTRL_NET_INVALID_VFID);
+> +	if (max_rx_pktlen < 0) {
+> +		dev_err(&octep_dev->pdev->dev,
+> +			"Failed to get max receive packet size; err = %d\n", max_rx_pktlen);
+> +		goto register_dev_err;
+
+Hi Shinas,
+
+This jump will cause this function to return err.  But err is 0 here.
+Perhaps it should be set to a negative error value instead?
+
+> +	}
+>  	netdev->min_mtu = OCTEP_MIN_MTU;
+> -	netdev->max_mtu = OCTEP_MAX_MTU;
+> +	netdev->max_mtu = max_rx_pktlen - (ETH_HLEN + ETH_FCS_LEN);
+>  	netdev->mtu = OCTEP_DEFAULT_MTU;
 >  
->  	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
-> -	    !capable(CAP_MKNOD))
-> +	    !mknod_capable(dir, dentry, mode, dev))
->  		return -EPERM;
->  
->  	if (!dir->i_op->mknod)
-> diff --git a/fs/super.c b/fs/super.c
-> index 2d762ce67f6e..bb01db6d9986 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -362,7 +362,11 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
->  	}
->  	s->s_bdi = &noop_backing_dev_info;
->  	s->s_flags = flags;
-> -	if (s->s_user_ns != &init_user_ns)
-> +	/*
-> +	 * We still have to think about this here. Several concerns exist
-> +	 * about the security model, especially about malicious fuse.
-> +	 */
-> +	if (s->s_user_ns != &init_user_ns && security_sb_alloc_userns(s))
->  		s->s_iflags |= SB_I_NODEV;
-
-Hm, no.
-
-We dont want to have security hooks called in alloc_super(). That's just
-the wrong layer for this. This is deeply internal stuff where we should
-avoid interfacing with other subsystems.
-
-Removing SB_I_NODEV here is also problematic or at least overly broad
-because you allow to circumvent this for _every_ filesystems including
-stuff like proc and so on where that doesn't make any sense.
+>  	err = octep_ctrl_net_get_mac_addr(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
+> -- 
+> 2.25.1
+> 
