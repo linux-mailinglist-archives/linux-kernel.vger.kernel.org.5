@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916817F7DFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CCA7F7EA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbjKXS2p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 13:28:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
+        id S230484AbjKXSej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 13:34:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjKXS2o (ORCPT
+        with ESMTP id S229575AbjKXSei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 13:28:44 -0500
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019251BDA;
-        Fri, 24 Nov 2023 10:28:51 -0800 (PST)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f947682bfdso249027fac.0;
-        Fri, 24 Nov 2023 10:28:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700850530; x=1701455330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oLMFfODH5jS5YDFDQszChNMcGREuaPeTgi8qOTAaUV4=;
-        b=Dud0luotF7MeDx3pnMruQU57XyPHns2evqyITZ3plpa0J26zuCXq4X1nGCt5wS3ddu
-         QDvSl1EeNo1/H/M2g1YwLedzjqQGMzcyi9CfNvz6qW2zrBs3O7nJe4kX1ztEYLWnn5be
-         zvCQ9Q2jkUUup3NcYDDwHM0mamgp3B0liKA5sVAHfOrrz8yNA6AB0zcxqeKjuz2rYW1G
-         95dxlWAbNrw55lNtVvznaxtQgyOuhs6DxuQcbM5H0EtLOjwKG4GwqJTSdBjAF9TSJCUt
-         nlF2cE5XlJwfe5PhRt1nBIiFQ10lZ+XytLtdEh6beu1zJ4cWh4GqrtTDGSZBHNHUzzmp
-         eCmQ==
-X-Gm-Message-State: AOJu0YwnhntB6fZObdO/xLo3rop38pGun5wKZ/Vvzfk+VRkr6bYuz7Tz
-        V+RThvFgFKuEmJIccsAg+hjhRwqtdgzmkqiq0DQ=
-X-Google-Smtp-Source: AGHT+IFA23KXKUtBvwZXL0qoxd/H2xL519xL2sSsV0wJ/6Bp+k3CisKabYhut6LpNi87nfOtk/l9p04HId0O/+d5TrU=
-X-Received: by 2002:a05:6870:d914:b0:1f9:602e:7b0d with SMTP id
- gq20-20020a056870d91400b001f9602e7b0dmr5597329oab.2.1700850530254; Fri, 24
- Nov 2023 10:28:50 -0800 (PST)
+        Fri, 24 Nov 2023 13:34:38 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7872319AA;
+        Fri, 24 Nov 2023 10:34:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700850882; x=1701455682; i=rwarsow@gmx.de;
+        bh=Z0sKSE9k2MBhD/p3zzvyLHNgYVL/IX9EG0njTrSSTAI=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=pwHPTH6FgjUAm58943zV1byWWHxDa9IuZzDakysd4YeuI2YK3AafNHTpoGCfdJ1n
+         jkC/XPlVMCayXAsofq3tWY5ekZNL8MT+UMb0wZPiMZJxQ3RDN7e9IgpBX91Yn6VtI
+         e5j8nk+I41rhnSOvx+bCeql15fRS8urKVm9h48GXKndqXOLRvxmpeQHMPlFwgkIvy
+         YxIzSrUgjRk6MHs+jqOSe29bWQEnQ18wggX/qAKeNenV1DuD68EvPbGHfPQ2iCRgD
+         dvg+5C7IzwzjsbIdGRSDerTgjZPgKSZcvPDmykFlJ00H3xYeXHObAQLfTVWva1f/g
+         azsbXqnEO3H8tWPozw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([87.122.80.112]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MSt8W-1qjvw41ADe-00UGYd; Fri, 24
+ Nov 2023 19:34:42 +0100
+Message-ID: <3d842616-34f1-4e75-977c-eb09bb70862d@gmx.de>
+Date:   Fri, 24 Nov 2023 19:34:41 +0100
 MIME-Version: 1.0
-References: <20231123070010.4013969-1-arnd@kernel.org>
-In-Reply-To: <20231123070010.4013969-1-arnd@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 24 Nov 2023 19:28:39 +0100
-Message-ID: <CAJZ5v0gNE8expsADwoTgDEoTa_5G-R_sBobFEiqLOh0VS5yVug@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: thermal_lib: include "internal.h" for function prototypes
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Zhang Rui <rui.zhang@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.6 000/530] 6.6.3-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:46C3qdJzyJxs5Ui5SHdIS1SqcikRIjiMyfznfiq/dx+f6x0rbnM
+ AHwx1IHPAg4dbshKzFl7vBe8cETkaPFmYa0OuAyw1ogzSJhyrlDGyR56NBT3dgWV0yIOYY7
+ n/gYuUWnVvnFp369JTSKjuiIqkd4JqKSSW3ewGv/+51VfwTHnJvu0VllDs8rt8SXpFdnris
+ +Tuq9933qdH3lMVNkMVtg==
+UI-OutboundReport: notjunk:1;M01:P0:8MRSnYosezI=;Z4N3UdgwMeEzhQWhgRZ5ut/tlWT
+ HkTvezners/i9FSpVUdsdMR2APuiY/mt3yjOqnUoVCjuYMD0KnTNRq7E8KnDT6MG52FVZRAvr
+ JNDb6LgNCDY5dpC4nEpMNXJKblctOGToo+2OG5YOPaiPtuNKv8XJ8U6PNHFj6DWEWo0ypye2R
+ 2LHo66ojaPivyVtTaSdt9xfm9cy2WzrHmhoCjTap9WsMmElkcaXbXS81f1ZQjKhpdXFXGbL6P
+ t8i+t+kZOlZwlsCScZAVJKEcxYGgQ4CNoD1FPf1rg4NsD65m7Jb6ET5mmNyhW3fxyH0KCW+td
+ HjW3nWUuD7GT0kOM7hSBQ6TXea+RkMmkfZZXG+wn3tLalwFF7y+yUDlqsoXbqUfySM9yuuYTV
+ MUrs22g5KOnPUbogyC7+Jt2lkMGCA5ZdVMDD2FJEILs08P/zFVH5WKggUiQgMR0eOtk3QgsP+
+ 5X/T0ZAb7Fwy+Yh5oM7deMK0qngmDVsKhr5pE/TkOkCmnsCfEeRDTTqOPsn0+jJ+ujAK+cMh9
+ QwLeYVysBYS3kuZaN+3+D8vwm5XsiSAyNMLNeoeTMdOQBSpqzAQB2h3pHbYzfL3r1JjKJetrR
+ r4KNE62toge2fNlFMKMtI/iuhxK7i9sdH5YUg0gahZl8w1ovaf9clGaFMnSxrwKE5wI0g0u6Q
+ KT5u2UpYc+a8C39shu44pTpAyAUsOnU87wh2e1u6hUtkGLFvH3oREaKZ/6NQylSsrAewYJZ3k
+ m9vuX35ki5d/a0dwLlU36HfwOu4RWX56+9ZzagJw6/l4Z6Wmk9tCn+jZU/Ikt1tNvns66nd9C
+ oSI+SDJsvulbWGi57ipGA/sH5n6nhlqnCME/67Ueg10xAWF+6BQn+1Jknf1YsMGpaEkvUe/sD
+ N4g5HOdrEKuGZOtCVBrGWwuji9d3sWopiF0EwD1ilIrlPxBcjLrhgJTWUv+15YeNStsnOdhWK
+ DiucKA==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 8:00 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The newly added functions are declared in a header that is not included
-> before the definition:
->
-> drivers/acpi/thermal_lib.c:46:5: error: no previous prototype for 'acpi_active_trip_temp' [-Werror=missing-prototypes]
->    46 | int acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
->       |     ^~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/thermal_lib.c:57:5: error: no previous prototype for 'acpi_passive_trip_temp' [-Werror=missing-prototypes]
->    57 | int acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
->       |     ^~~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/thermal_lib.c:63:5: error: no previous prototype for 'acpi_hot_trip_temp' [-Werror=missing-prototypes]
->    63 | int acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
->       |     ^~~~~~~~~~~~~~~~~~
-> drivers/acpi/thermal_lib.c:69:5: error: no previous prototype for 'acpi_critical_trip_temp' [-Werror=missing-prototypes]
->    69 | int acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
->       |     ^~~~~~~~~~~~~~~~~~~~~~~
->
-> Fixes: 6908097aa5a7 ("ACPI: thermal_lib: Add functions returning temperature in deci-Kelvin")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/acpi/thermal_lib.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/acpi/thermal_lib.c b/drivers/acpi/thermal_lib.c
-> index 646ff6bda6dd..4e0519ca9739 100644
-> --- a/drivers/acpi/thermal_lib.c
-> +++ b/drivers/acpi/thermal_lib.c
-> @@ -9,6 +9,7 @@
->  #include <linux/acpi.h>
->  #include <linux/units.h>
->  #include <linux/thermal.h>
-> +#include "internal.h"
->
->  /*
->   * Minimum temperature for full military grade is 218°K (-55°C) and
-> --
+Hi Greg
 
-Applied, thanks!
+6.6.3-rc1
+
+compiles, boots and runs[1] here on x86_64
+(Intel Rocket Lake: i5-11400)
+
+Thanks
+
+[1] a vbox crash I first got known off today:
+https://www.virtualbox.org/ticket/21898
+
+
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
+
