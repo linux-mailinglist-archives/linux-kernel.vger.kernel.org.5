@@ -2,68 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C787F6A06
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A42527F6A09
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjKXBHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S229831AbjKXBJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXBHR (ORCPT
+        with ESMTP id S229453AbjKXBJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:07:17 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EAD1B6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:07:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1700788038;
-        bh=2xxxAalZ73cRwdZRWpl45yBEiTMvShJqt0Ovd9kac2g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aLUR6BoFlBYtiJSS1etIcfjzdaRpP7n06oAX400JbB3OP61oS/wOD/3jq4bPjiHo7
-         3wV4SPvTP17Yymwb3AVOw5cxJL3maWt8kTqxiWD0fQM4wcqqDzYWLfxL3K9rkKAnFf
-         ojmOBd5/ZElekPwIA7twndtJZFq7XZH8nRc4O9ntZ4Cxpv3JrqzErLQo5ugIGxzrhe
-         AnO4HeawO2liLqIkV6zztDc+3tAcLf8juI796b7ZvbBbqqPK25FTyG884GBMkPQKCQ
-         LJw3I9E1ued7g3z1a+HLCZCJix/By7U4i3qv7cRtce+cFZDtLBozzgMFENOcehn3bS
-         8PA1SWmy4fqQQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SbxfF0fnlz4wd2;
-        Fri, 24 Nov 2023 12:07:17 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
- hugepd processing
-In-Reply-To: <ZV4co7wcI-_wK91F@x1n>
-References: <20231116012908.392077-1-peterx@redhat.com>
- <20231116012908.392077-7-peterx@redhat.com>
- <ZVsYMMJpmFV2T/Zc@infradead.org> <ZVzT5_3Zn-Y-6xth@x1n>
- <ZV21GCbG48nTLDzn@infradead.org> <ZV4co7wcI-_wK91F@x1n>
-Date:   Fri, 24 Nov 2023 12:06:24 +1100
-Message-ID: <87y1eoq7sf.fsf@mail.lhotse>
+        Thu, 23 Nov 2023 20:09:49 -0500
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1221BE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:09:54 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3AO199em043798;
+        Fri, 24 Nov 2023 09:09:09 +0800 (+08)
+        (envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SbxZ81N8sz2K5kLN;
+        Fri, 24 Nov 2023 09:03:44 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 24 Nov 2023 09:09:06 +0800
+From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
+To:     <jaegeuk@kernel.org>, <chao@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <hongyu.jin@unisoc.com>
+Subject: [PATCH] f2fs: show more discard stat by sysfs
+Date:   Fri, 24 Nov 2023 09:08:48 +0800
+Message-ID: <1700788128-29002-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Originating-IP: [10.0.73.87]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 3AO199em043798
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,40 +49,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Xu <peterx@redhat.com> writes:
-> On Wed, Nov 22, 2023 at 12:00:24AM -0800, Christoph Hellwig wrote:
->> On Tue, Nov 21, 2023 at 10:59:35AM -0500, Peter Xu wrote:
-...
->> 
->> If dropping the check is the right thing for now (and I think the ppc
->> maintainers and willy as the large folio guy might have a more useful
->> opinions than I do), leaving a comment in would be very useful.
->
-> Willy is in the loop, and I just notice I didn't really copy ppc list, even
-> I planned to..  I am adding the list (linuxppc-dev@lists.ozlabs.org) into
-> this reply.  I'll remember to do so as long as there's a new version.
+The current pending_discard attr just only shows the discard_cmd_cnt
+information, which is not very meaningful. More discard information
+can be shown so that we can check them through sysfs when needed.
 
-Thanks.
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+---
+ fs/f2fs/sysfs.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-> The other reason I feel like hugepd may or may not be further developed for
-> new features like large folio is that I saw Power9 started to shift to
-> radix pgtables, and afaics hugepd is only supported in hash tables
-> (hugepd_ok()).
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 417fae96..f98e680 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -134,13 +134,22 @@ static ssize_t cp_status_show(struct f2fs_attr *a,
+ 	return sysfs_emit(buf, "%x\n", le32_to_cpu(F2FS_CKPT(sbi)->ckpt_flags));
+ }
+ 
+-static ssize_t pending_discard_show(struct f2fs_attr *a,
++static ssize_t discard_stat_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+-	if (!SM_I(sbi)->dcc_info)
++	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
++
++	if (!dcc)
+ 		return -EINVAL;
+-	return sysfs_emit(buf, "%llu\n", (unsigned long long)atomic_read(
+-				&SM_I(sbi)->dcc_info->discard_cmd_cnt));
++
++	return sysfs_emit(buf, "%llu, %llu, %llu, %u\n",
++			(unsigned long long)atomic_read(
++				&dcc->discard_cmd_cnt),
++			(unsigned long long)atomic_read(
++				&dcc->issued_discard),
++			(unsigned long long)atomic_read(
++				&dcc->queued_discard),
++			dcc->undiscard_blks);
+ }
+ 
+ static ssize_t gc_mode_show(struct f2fs_attr *a,
+@@ -1016,7 +1025,7 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
+ F2FS_GENERAL_RO_ATTR(encoding);
+ F2FS_GENERAL_RO_ATTR(mounted_time_sec);
+ F2FS_GENERAL_RO_ATTR(main_blkaddr);
+-F2FS_GENERAL_RO_ATTR(pending_discard);
++F2FS_GENERAL_RO_ATTR(discard_stat);
+ F2FS_GENERAL_RO_ATTR(gc_mode);
+ #ifdef CONFIG_F2FS_STAT_FS
+ F2FS_GENERAL_RO_ATTR(moved_blocks_background);
+@@ -1074,7 +1083,7 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
+ 	ATTR_LIST(discard_urgent_util),
+ 	ATTR_LIST(discard_granularity),
+ 	ATTR_LIST(max_ordered_discard),
+-	ATTR_LIST(pending_discard),
++	ATTR_LIST(discard_stat),
+ 	ATTR_LIST(gc_mode),
+ 	ATTR_LIST(ipu_policy),
+ 	ATTR_LIST(min_ipu_util),
+-- 
+1.9.1
 
-Because it's powerpc it's not quite that simple :}
-
-Power9 uses the Radix MMU by default, but the hash page table MMU is
-still supported.
-
-However although hugepd is used with the hash page table MMU, that's
-only when PAGE_SIZE=4K. These days none of the major distros build with
-4K pages.
-
-But some of the non-server CPU platforms also use hugepd. 32-bit 8xx
-does, which is actively maintained by Christophe.
-
-And I believe Freescale e6500 can use it, but that is basically
-orphaned, and although I boot test it I don't run any hugetlb tests.
-(I guess I should do that).
-
-cheers
