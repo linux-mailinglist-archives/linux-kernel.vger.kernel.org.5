@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EAE7F77B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240CD7F7764
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345829AbjKXPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        id S1345737AbjKXPOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345799AbjKXPY1 (ORCPT
+        with ESMTP id S231356AbjKXPOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:24:27 -0500
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [IPv6:2001:41d0:203:375::b4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E464419AD
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:24:32 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
-        t=1700838871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 24 Nov 2023 10:14:35 -0500
+Received: from vsrv.gekmihesg.de (vsrv.gekmihesg.de [IPv6:2a01:4f8:c17:74cc::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62F21727;
+        Fri, 24 Nov 2023 07:14:40 -0800 (PST)
+Message-ID: <c47d3540ece151a2fb30e1c7b5881cb8922db915.camel@gekmihesg.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gekmihesg.de;
+        s=201901; t=1700838878; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mc7Wf0hW6FowFM4Mm7qR65l0E98I4NpTxHZ7srPzTOc=;
-        b=wkVvMqHUqI8TxuJSHJUgA8mxyczMeeUC99Yz/tNb1r7Myj4sN7l2EK/Q0rfSuOFEf4t5sF
-        vKjL5Rd/Hyds14IHXsQOjg2rNPtIjIUyZPhBJ9JwaDL255ckALplmxOGruk5AlgpkE7Sk1
-        UfDI3+bJ3d6UyWkGeP1v/MBptd2Y97+UhXIFLeQJ9FPbD37RvZ2e8YCC1pmhtvbvLpFhPj
-        C3vdz1MF3pD9KCx+b+HoUNBtIyPuZNIoaH441+D55iMUYY+85ztWHwgsryXIaij6x0qW32
-        4CYpSy9dQQLXSQLFjML3kZqphN/AdJjOPToem+Vr38z5+GXi9cKAcWRizHTmDA==
-From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Date:   Fri, 24 Nov 2023 16:14:22 +0100
-Subject: [PATCH v2 2/2] drm/bridge: adv7511: get edid in hpd_work to update
- CEC phys address
+        bh=zM6/fUk0rJdOH5EFD8vEbULY8RybL+qMHsTdcrITXSg=;
+        b=i0aTYYjO2rovw4TCdihadQUQyTdJv1/OKn6WurEMPqhuSjRBeIWKj0bM9Df0gjCAMSOLUR
+        4uP7YSt0SS/j4bycc03OVfBVs5VEls9l+08MmwQPMG96ir1b1m3xYmOxWqrsqKPIc9Ih6b
+        eXveoQs5DFbko80Af2hu7gZz3xoLApw=
+Subject: [PATCH] bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
+From:   Markus Weippert <markus@gekmihesg.de>
+To:     Bcache Linux <linux-bcache@vger.kernel.org>
+Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        Zheng Wang <zyytlz.wz@163.com>, linux-kernel@vger.kernel.org,
+        Stefan =?ISO-8859-1?Q?F=F6rster?= <cite@incertum.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Coly Li <colyli@suse.de>
+Date:   Fri, 24 Nov 2023 16:14:37 +0100
+In-Reply-To: <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
+References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
+         <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+         <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
+         <989C39B9-A05D-4E4F-A842-A4943A29FFD6@suse.de>
+         <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
+         <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231124-adv7511-cec-edid-v2-2-f0e5eeafdfc2@bang-olufsen.dk>
-References: <20231124-adv7511-cec-edid-v2-0-f0e5eeafdfc2@bang-olufsen.dk>
-In-Reply-To: <20231124-adv7511-cec-edid-v2-0-f0e5eeafdfc2@bang-olufsen.dk>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-X-Migadu-Flow: FLOW_OUT
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=markus smtp.mailfrom=markus@gekmihesg.de
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -60,128 +60,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+Commit 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+node allocations") replaced IS_ERR_OR_NULL by IS_ERR. This leads to a
+NULL pointer dereference.
 
-The adv7511 driver is solely responsible for setting the physical
-address of its CEC adapter. To do this, it must read the EDID. However,
-EDID is only read when either the drm_bridge_funcs :: get_edid or
-drm_connector_helper_funcs :: get_modes ops are called. Without loss of
-generality, it cannot be assumed that these ops are called when a sink
-gets attached. Therefore there exist scenarios in which the CEC physical
-address will be invalid (f.f.f.f), rendering the CEC adapter inoperable.
+BUG: kernel NULL pointer dereference, address: 0000000000000080
+Call Trace:
+ ? __die_body.cold+0x1a/0x1f
+ ? page_fault_oops+0xd2/0x2b0
+ ? exc_page_fault+0x70/0x170
+ ? asm_exc_page_fault+0x22/0x30
+ ? btree_node_free+0xf/0x160 [bcache]
+ ? up_write+0x32/0x60
+ btree_gc_coalesce+0x2aa/0x890 [bcache]
+ ? bch_extent_bad+0x70/0x170 [bcache]
+ btree_gc_recurse+0x130/0x390 [bcache]
+ ? btree_gc_mark_node+0x72/0x230 [bcache]
+ bch_btree_gc+0x5da/0x600 [bcache]
+ ? cpuusage_read+0x10/0x10
+ ? bch_btree_gc+0x600/0x600 [bcache]
+ bch_gc_thread+0x135/0x180 [bcache]
 
-Address this problem by always fetching the EDID in the HPD work when we
-detect a connection. The CEC physical address is set in the process.
-This is done by moving the EDID DRM helper into an internal helper
-function so that it can be cleanly called from an earlier section of
-the code. The EDID getter has not changed in practice.
+The relevant code starts with:
 
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+    new_nodes[0] =3D NULL;
+
+    for (i =3D 0; i < nodes; i++) {
+        if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b->key)))
+            goto out_nocoalesce;
+    // ...
+out_nocoalesce:
+    // ...
+    for (i =3D 0; i < nodes; i++)
+        if (!IS_ERR(new_nodes[i])) {  // IS_ERR_OR_NULL before
+028ddcac477b
+            btree_node_free(new_nodes[i]);  // new_nodes[0] is NULL
+            rw_unlock(true, new_nodes[i]);
+        }
+
+This patch replaces IS_ERR() by IS_ERR_OR_NULL() to fix this.
+
+Fixes: 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+node allocations")
+Link:
+https://lore.kernel.org/all/3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de/
+Cc: stable@vger.kernel.org
+Cc: Zheng Wang <zyytlz.wz@163.com>
+Cc: Coly Li <colyli@suse.de>
+Signed-off-by: Markus Weippert <markus@gekmihesg.de>
+
 ---
- drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 74 ++++++++++++++++++----------
- 1 file changed, 48 insertions(+), 26 deletions(-)
+ drivers/md/bcache/btree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 5ffc5904bd59..1f1d3a440895 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -542,6 +542,36 @@ static int adv7511_get_edid_block(void *data, u8 *buf, unsigned int block,
- 	return 0;
- }
- 
-+static struct edid *__adv7511_get_edid(struct adv7511 *adv7511,
-+				       struct drm_connector *connector)
-+{
-+	struct edid *edid;
-+
-+	/* Reading the EDID only works if the device is powered */
-+	if (!adv7511->powered) {
-+		unsigned int edid_i2c_addr =
-+					(adv7511->i2c_edid->addr << 1);
-+
-+		__adv7511_power_on(adv7511);
-+
-+		/* Reset the EDID_I2C_ADDR register as it might be cleared */
-+		regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR,
-+			     edid_i2c_addr);
-+	}
-+
-+	edid = drm_do_get_edid(connector, adv7511_get_edid_block, adv7511);
-+
-+	if (!adv7511->powered)
-+		__adv7511_power_off(adv7511);
-+
-+	adv7511_set_config_csc(adv7511, connector, adv7511->rgb,
-+			       drm_detect_hdmi_monitor(edid));
-+
-+	cec_s_phys_addr_from_edid(adv7511->cec_adap, edid);
-+
-+	return edid;
-+}
-+
- /* -----------------------------------------------------------------------------
-  * Hotplug handling
-  */
-@@ -595,8 +625,24 @@ static void adv7511_hpd_work(struct work_struct *work)
- 		adv7511->connector.status = status;
- 
- 		if (adv7511->connector.dev) {
--			if (status == connector_status_disconnected)
-+			if (status == connector_status_disconnected) {
- 				cec_phys_addr_invalidate(adv7511->cec_adap);
-+			} else {
-+				struct edid *edid;
-+
-+				/*
-+				 * Get the updated EDID so that the CEC
-+				 * subsystem gets informed of any change in CEC
-+				 * address. The helper returns a newly allocated
-+				 * edid structure, so free it to prevent
-+				 * leakage.
-+				 */
-+				edid = __adv7511_get_edid(adv7511,
-+							  &adv7511->connector);
-+				if (edid)
-+					kfree(edid);
-+			}
-+
- 			drm_kms_helper_hotplug_event(adv7511->connector.dev);
- 		} else {
- 			drm_bridge_hpd_notify(&adv7511->bridge, status);
-@@ -611,31 +657,7 @@ static void adv7511_hpd_work(struct work_struct *work)
- static struct edid *adv7511_get_edid(struct adv7511 *adv7511,
- 				     struct drm_connector *connector)
- {
--	struct edid *edid;
--
--	/* Reading the EDID only works if the device is powered */
--	if (!adv7511->powered) {
--		unsigned int edid_i2c_addr =
--					(adv7511->i2c_edid->addr << 1);
--
--		__adv7511_power_on(adv7511);
--
--		/* Reset the EDID_I2C_ADDR register as it might be cleared */
--		regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR,
--			     edid_i2c_addr);
--	}
--
--	edid = drm_do_get_edid(connector, adv7511_get_edid_block, adv7511);
--
--	if (!adv7511->powered)
--		__adv7511_power_off(adv7511);
--
--	adv7511_set_config_csc(adv7511, connector, adv7511->rgb,
--			       drm_detect_hdmi_monitor(edid));
--
--	cec_s_phys_addr_from_edid(adv7511->cec_adap, edid);
--
--	return edid;
-+	return __adv7511_get_edid(adv7511, connector);
- }
- 
- static int adv7511_get_modes(struct adv7511 *adv7511,
-
--- 
-2.42.1
-
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index de3019972..261596791 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -1522,7 +1522,7 @@ static int btree_gc_coalesce(struct btree *b,
+struct btree_op *op,
+        bch_keylist_free(&keylist);
+=20
+        for (i =3D 0; i < nodes; i++)
+-               if (!IS_ERR(new_nodes[i])) {
++               if (!IS_ERR_OR_NULL(new_nodes[i])) {
+                        btree_node_free(new_nodes[i]);
+                        rw_unlock(true, new_nodes[i]);
+                }
+--
