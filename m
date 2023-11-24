@@ -2,88 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75E27F69A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 01:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9625F7F69B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 01:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjKXAGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 19:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
+        id S229831AbjKXAPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 19:15:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjKXAGG (ORCPT
+        with ESMTP id S229477AbjKXAPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 19:06:06 -0500
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7295E10E3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-28079cae9fdso1403496a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
+        Thu, 23 Nov 2023 19:15:33 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A492DD73
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:15:39 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cf74ad87e0so11276155ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:15:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700784939; x=1701389739; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UOQxpoxQBCNJvC6K8xY7JNQFw7lekkoXyyaiOUVybHI=;
+        b=jtwphVtU/iWozORdBU2epC7GS/AfJ2eiyIIwd/rCflPAq0v2pnkTEqAX/YghXGv5ES
+         7mKWQD166w6A5sJpDnemAKAX/PRY8zS+KqsZyi6ixnfapCfJ94XU0I7+lsKb1QbDfqft
+         Zs2EwXfpzqf+3tfQQ1pMO/M2HQhdF3zk6iS+MZHPGLcj/57gkrx7n8G7Gs+BPwhDqXP0
+         p7L3P85tPNWp1egNNfyVCXiv89P/XZJBkPL2NEe28b06MdPajW2wPyc1ziznO97W24IY
+         J1mrj6YcW5GpZQ/kbfJsPwG0peOHP+KBSVxF11Uj2sEbuGPKLpS4oqtYxWOoIBEiK5PI
+         sfhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700784372; x=1701389172;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=rOSf99YvdlprQ9dkXXZsDHEJT1w5OZCl6QS+2WOsXYSlrv/H3wDeXuYDtwz9Fw1R3b
-         9bwvO9j+C+aA0+VipXingEBIMrqPOjhy0znokbeqzrG5sthn6al1bemP6z2OvJHvBVbC
-         0SRtts51CuE7SFSWrtqHUX4/9QxIcqCQV+qphyTrrZFnxEMVIdUxArKGdH+P7Sq2RG5S
-         gSktNTPrwc/gGBhtA3n/ua3gfG2AT236c0C71A17lMagOX3RTzyw0TQSso9sOTkse4PB
-         8JBnHBMeBWMTsftkpA4tpZxE6BT4wAAHF6Y4gZE5Lo9fWhID51a3R3cZbfbZlccFH4yv
-         KeHg==
-X-Gm-Message-State: AOJu0YxcCzGOq4kC1SKUD5XhJfq99JKqhpflnEoVvvkMJUDeyaR50g+I
-        meGBQv2erMhPeFK4IRcaS6Q2++uqu7DLQ6H59C3ZsSqWFvKL
-X-Google-Smtp-Source: AGHT+IH4WTBky6ydAmsIf8sWYpziUR2At8/kwEH+H4BuxT4x7gw6xHBkO6awptlXoHP15FAo0eZsGGO3X6iZK+6d7mdP0LEzTNDv
+        d=1e100.net; s=20230601; t=1700784939; x=1701389739;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UOQxpoxQBCNJvC6K8xY7JNQFw7lekkoXyyaiOUVybHI=;
+        b=ScbF/XlS8QHQBxDxs2M3nCnENx64BucZ9PT/JYhtJLzeQ65MD2MQ+zuFUaxRA1jY/J
+         jmgE7d8DnmrR2m4iBna10Wbg6B8E6HE9r8D2k+hjOMKuO1e2CZHUM4Hx6Am6I1PXPTD7
+         kbdNoHR+UmwCKiV7N1YZoT6B9S/9eqZnYCSvEDNwQBxbBmr5PNFb/lJQTLrxVfqOGUBJ
+         KjY5clVdTT0iLglBkNAvKkVYpKUhhnF5ddw/gunqzog/nxTxS9bZdoaG1rvp1p2XfM/3
+         IXdxBppR1zX6UdTaU0QeyAouQWhFz4pgoVv34S8ZPfblwD4ZNSFhFBVWZNFcKrPP/tdS
+         XT3Q==
+X-Gm-Message-State: AOJu0Yz+Bp4Q+tj3HLELFbfo0yl2Xny2HLtzUbg3sG5avw15afq4HUJg
+        SWbfIWahIjqRB/fRzWW2rkg=
+X-Google-Smtp-Source: AGHT+IF2N+iIqdw7ZHI5UTpWEk8mydR61zWnnhEX3hodaYJl763l3Si0dDToYHt8dV9hcaqvgpGxXA==
+X-Received: by 2002:a17:903:11c8:b0:1cc:511d:eb43 with SMTP id q8-20020a17090311c800b001cc511deb43mr1032137plh.61.1700784939083;
+        Thu, 23 Nov 2023 16:15:39 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id h7-20020a170902b94700b001cc2ebd2c2csm1907659pls.256.2023.11.23.16.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 16:15:37 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id AD2F310210547; Fri, 24 Nov 2023 07:15:34 +0700 (WIB)
+Date:   Fri, 24 Nov 2023 07:15:34 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Chun Ng <chunn@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Ankita Garg <ankitag@nvidia.com>
+Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
+Message-ID: <ZV_rJtxdn1dU9ip0@archie.me>
+References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
+ <ZV7eHE2Fxb75oRpG@archie.me>
+ <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:4a84:b0:27d:9f7:74ba with SMTP id
- lp4-20020a17090b4a8400b0027d09f774bamr252386pjb.0.1700784371825; Thu, 23 Nov
- 2023 16:06:11 -0800 (PST)
-Date:   Thu, 23 Nov 2023 16:06:11 -0800
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000528278060adab82b@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From:   syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EoRIruQuJ6zaLywE"
+Content-Disposition: inline
+In-Reply-To: <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+--EoRIruQuJ6zaLywE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#syz fix: exact-commit-title
+On Thu, Nov 23, 2023 at 03:38:18PM +0000, Matthew Wilcox wrote:
+> On Thu, Nov 23, 2023 at 12:07:40PM +0700, Bagas Sanjaya wrote:
+> > Anyway, I'm adding this regression to regzbot:
+> >=20
+> > #regzbot ^introduced: v6.0..v6.1
+>=20
+> this is not a regression.  close it, you idiot.
+>=20
+>=20
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+why?
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+Confused...
 
----
-[1] I expect the commit to be present in:
+--=20
+An old man doll... just what I always wanted! - Clara
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+--EoRIruQuJ6zaLywE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+-----BEGIN PGP SIGNATURE-----
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZV/rJgAKCRD2uYlJVVFO
+o6hyAP9fiTuPiFsneZoBQnhzNsR1BsG/B71Gz5mNrcD7gDPc2gD/UyYGMzZWtopz
+kk8xCnTgdiyHgKx8WzJEMF+Hmw+T1g0=
+=i6TV
+-----END PGP SIGNATURE-----
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+--EoRIruQuJ6zaLywE--
