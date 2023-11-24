@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F243D7F6E01
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC9D7F6E08
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjKXIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S1344731AbjKXIZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKXIYO (ORCPT
+        with ESMTP id S229485AbjKXIZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:24:14 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C6AD54
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:24:20 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so2208007a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:24:20 -0800 (PST)
+        Fri, 24 Nov 2023 03:25:18 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7530BD4E
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:21 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a02c48a0420so225319066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700814259; x=1701419059; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700814320; x=1701419120; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hoSKzu7DQcGOUwvzPYoeXKGNiw1KdwY6pBIA3ZrdaU4=;
-        b=Wq6GcR3Ydc6s++gtWyQadtaLhfgFuJ1Ux954S6V4aYxmkOYBnTdpczz4a98sb5rWPf
-         fOg0Qf3CIMcN7cN0KLuAZ7TXW/YgNjEsgPM0/NOKeUkoiq72cjoaoHvoFNJ+AhnzxHDZ
-         xlE6jhYyZ0iZWN9lm9afv70S3y4aeBu6KxaP3K+aq1iTJbhsdYf5gHcBQwNFDAqAmq5L
-         DE5jKF07OvYaa3m41RxZXYx8Hl6Sy6LsU0lIqvmmC2HcPrzhmBaEP+/quz9viiThTD2A
-         pJX/9NbTR02SBq43XBhr4NPBfj+Dma/lpnJgMuzBIEB0J9UuEf8ntDYiuIGK6TlfNEHH
-         yrvw==
+        bh=VQx/yGjupMkkRvWL9A4bZaH/KOhUjLaz22zA4RFLQJk=;
+        b=ICHv950ra/EcUI+mtQ+3e2bvCZyvACrIB2NobvcKCwFh5hyaGzDKNAFD6MP33Ltjd7
+         lGA0U0TmpVUR4/zzhy7uvl0CRJVKVGlEeVl9V36rnA5vbUT3oPoHMjUu95jesh8HM7lq
+         SOjAkj1JH3dCIRtOKbdONH7B1vKws0h08gB9ewk1WvwcQv8TGu6pXU/Q65eY5X3zRVDa
+         eON8J+LpMrLky/BlBpwyn8iEWgC+r5eySRtBGIB3uPBa0JcICX8xCgM78iXD9hTSkwZn
+         pTfFXOVrnO+GqEun6zu33BZfKyyzAvBJXRnU8+1GPTg1/APRJwoFLHGl/aJA8Vi+33/6
+         5WUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700814259; x=1701419059;
+        d=1e100.net; s=20230601; t=1700814320; x=1701419120;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hoSKzu7DQcGOUwvzPYoeXKGNiw1KdwY6pBIA3ZrdaU4=;
-        b=qTqdT8QqCbUlcCeKCK5sq6piK4esJ+vxmcClaJmsfkdmLbrJ429SQNuMB34pEz+Qry
-         msy2BylFcrpLyypnORGSCIPl6WsVb5qNAXSn5qv7eaZtBtIUP+IeOi8HsnrwaL3XCWrx
-         nYfzse0aJCdcZbiXyu6nrdUooY5IuNwR+yJ6ZCu52JGACAJ85keLbprjW/b5pqUsF6ce
-         6339l54LHXxujeWqNrGz6RhU/heRxSY1i+Z29TN0ZvTf3ZOxn8x8uXP923V8TXk1xpuO
-         o2jUUA/+Kqg5PqocH0UTuAOlkBsoeZXsnYWPNVYliZ2xzNaLxmQ2WsJkMttpivXudQk2
-         Em8w==
-X-Gm-Message-State: AOJu0YxMKNPbIHKTwzEM2RJPccEHZMfVZqVmryJmVVnGlTBMlIIZ/DLK
-        89sBYo/JF+QVGAzNkmYX0QishA==
-X-Google-Smtp-Source: AGHT+IEn7JaN98CYK9SV6hIU5p5BxrRW8xnUspUlu6ZiHyKfMk5N7uSzv5UmJLQHRMFtJaUeVdsUMA==
-X-Received: by 2002:a17:907:2da9:b0:9fe:38b7:4278 with SMTP id gt41-20020a1709072da900b009fe38b74278mr1798138ejc.16.1700814258755;
-        Fri, 24 Nov 2023 00:24:18 -0800 (PST)
+        bh=VQx/yGjupMkkRvWL9A4bZaH/KOhUjLaz22zA4RFLQJk=;
+        b=EtoYY8MaNMl00I/FWDqptftOTfp/ktGYFiizhTd6BGGjb2w0dKtZfwNI+tgsfwyomB
+         vEaARFOA0P1MI1xTrwjdoX3R+NsmhyTKOsR1WDbwdujris2rh173yTYT3jE52c2KS4XA
+         zcuIJ3d3vbwZ4bcV2vVB2WeTeouqfYEWsqtZ9qX8dMVWfpj3+V7VtLA1W6GgEWx8XCpj
+         tPU0v7Z73+8X6wIDJUidN/mAuNL2tkQxOlTLUKDt4lSA7jr84iZK0xFndyq8Spp5iS3M
+         jt5JiNhL2EWzha6Y0Rfx7BhbNm+BBC7/dyiV/X3piJk5X3bHKLmFgaVg9TDRROu5f1MB
+         StGA==
+X-Gm-Message-State: AOJu0Yw2nQcx46mcWrRabbMd/Cb+HrnIzaMjcAVjHuPAb5MUg/skrgAi
+        b3P+sHS4IJCY+sURqxpbZGN2N94sfgFWvW3J80E=
+X-Google-Smtp-Source: AGHT+IGYiWWY25YHaih3jTXWRFh5kA1Z/H5VKuRPHhTi3XXwH72zAuAIrKM5YD5vIy2iOXCLnFPZew==
+X-Received: by 2002:a17:906:b54:b0:a02:5bb:5658 with SMTP id v20-20020a1709060b5400b00a0205bb5658mr1386023ejg.47.1700814319941;
+        Fri, 24 Nov 2023 00:25:19 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.24.17
+        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.25.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:24:18 -0800 (PST)
-Message-ID: <8dd46bcd-c1fa-4876-b4d9-e4bb91ce5de9@linaro.org>
-Date:   Fri, 24 Nov 2023 09:24:16 +0100
+        Fri, 24 Nov 2023 00:25:19 -0800 (PST)
+Message-ID: <f443830a-ba16-4c5e-9260-6fb38a09cc10@linaro.org>
+Date:   Fri, 24 Nov 2023 09:25:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] dt-bindings: mmc: mtk-sd: add 64-steps tuning
- related property
+Subject: Re: [PATCH v2 15/21] dt-bindings: mips: cpu: Add I-Class I6500
+ Multiprocessor Core
 Content-Language: en-US
-To:     Axe Yang <axe.yang@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231124070839.12484-1-axe.yang@mediatek.com>
- <20231124070839.12484-3-axe.yang@mediatek.com>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
+ <20231123152639.561231-16-gregory.clement@bootlin.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,50 +118,41 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231124070839.12484-3-axe.yang@mediatek.com>
+In-Reply-To: <20231123152639.561231-16-gregory.clement@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 08:08, Axe Yang wrote:
-> Add 'mediatek,tune-64-steps' option. This property will give MSDC
-> a chance to achieve a more optimal calibration result, thus avoiding
-> potential CRC issues.
-
-Documentation goes before users.
-
+On 23/11/2023 16:26, Gregory CLEMENT wrote:
+> The MIPS Warrior I-class I6500 was announced by Imagination
+> Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
 > 
-> Signed-off-by: Axe Yang <axe.yang@mediatek.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> index 3fffa467e4e1..c33301e2ea33 100644
-> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> @@ -145,6 +145,14 @@ properties:
->      minimum: 0
->      maximum: 7
->  
-> +  mediatek,tune-64-steps:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Some Soc need enable 64-steps tuning for better delay value to avoid CRC issue.
+> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
+> index cf382dea3922c..b5165cf103e94 100644
+> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
+> @@ -39,6 +39,7 @@ properties:
+>        - mti,mips24KEc
+>        - mti,mips14KEc
+>        - mti,mips14Kc
+> +      - img,i6500
 
-This scales poorly. Instead should be enum with number of tuning steps.
-
-> +      If present, tune 64 steps to cover a complete clock cycle.
-> +      If not present, tune only 32 steps. For eMMC and SD, this can also yield
-> +      satisfactory calibration results in most cases.
+Don't break the order of entries.
 
 Best regards,
 Krzysztof
