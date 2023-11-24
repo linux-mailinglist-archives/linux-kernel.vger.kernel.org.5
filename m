@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F44E7F70B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFAB7F70B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbjKXKCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:02:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
+        id S235252AbjKXKCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXKCK (ORCPT
+        with ESMTP id S229668AbjKXKCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:02:10 -0500
-Received: from mx.msync.work (mx.msync.work [62.182.159.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49131B6;
-        Fri, 24 Nov 2023 02:02:15 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8C26D621CA;
-        Fri, 24 Nov 2023 10:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1700820132; h=from:subject:date:message-id:to:mime-version:content-type:
-         content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
-        bh=H98COdnbfmR0Z7+Y4wrDzDOT7wGeif7oLU80xotr7Cg=;
-        b=G8qXOg2ZwxS0VqU2OLG5A9GeE0U5E874KNp6+MorX63r6nMF92WQBNmBJERLVKhudHCDin
-        Ce9MM7UxIuwJrWR/4TC0aG0MUHJOvW7zenHqaWStbyTPPWHKS9r8QXzqZwWVoDxAEZ1RxQ
-        DEghevRtfIrHPU0SZv0qMba1n6rLbdBbc0wTnW5ab0Rkb03znTKgxD5h8vwp4Cls2lLrcD
-        tPQVY2p6tQFIKHYtp8uhdJ23zwcC1o2KbxQYZQGZdx+9qsKLm9JSA6FRxiuPI6IVHWL4vK
-        92tln74wmCPojy+UIimfYfyspZjszAtu4OlksbnrnHyGzrAtj9of6SbXOxCsmQ==
-Message-ID: <798aeac1-bca9-4512-a11c-d7145aeb5645@lexina.in>
-Date:   Fri, 24 Nov 2023 13:02:06 +0300
+        Fri, 24 Nov 2023 05:02:41 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A6B1B6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:02:47 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54aecf9270fso710190a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:02:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1700820165; x=1701424965; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5csYTmQGy3z4bAN0r6APXLt4Snp34nfDUTEQWBMPna8=;
+        b=eT6N0vV/25xW0STSQSwWJZJcribg6eck6GHIB2CYleCPMMT2cvL/mymnnf793gS/oC
+         /KELBbjFxEb0weamm5hVYuzF7Xf5IrzuZkYDphZJnjO+4jyhY1VzotjDE625vpHc3TNY
+         0IAGRt5Hw3Y941QaG7UbdX9GiQ2KlfAllM8ZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700820165; x=1701424965;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5csYTmQGy3z4bAN0r6APXLt4Snp34nfDUTEQWBMPna8=;
+        b=c+IxOHmukuEYOKtULVDqRyR97f30/R/RELf6kghEyw6GSFFDhCEssJujcu0LsXb4D6
+         mzZOhGZKCSOOUiRMawoHoLjWiOKvDzcGRTmEOBnHujZIYl4/f4HX5l3nAYDK33sIRn4w
+         ksHHOcVNXxfe5IqJsqFxtqesSQEaJyV77cIxfeNcn3emWB0uekr13L6m5XuxP0Yyf0Rn
+         knYRWVNGd7yhzC6dBSZwaqBA/uxqV3qlHcFcuw4bon3+fjBCs/DDeClCbWuXmlHLtpmN
+         24vNZ54DmQ/C73+GaMsFPRQG9XUfOEJnmOtdkPo1GAVoJpFSkiDZqWjAagkfdBCNOmxx
+         nBVw==
+X-Gm-Message-State: AOJu0YxlkIQ/PG6Y8hm7fPnp73W++BNxg5ESkuzCXHr5rVkH7QqI45cI
+        buDCImgyr7pDAQDE8xJFtuvS6D1bzNHz0js49Z9QpA==
+X-Google-Smtp-Source: AGHT+IEQhr8vTHKYV1CC4+1sE3VpHU6n5sVo3sIi2W3tqIz7X8brK06exgxjIqL9O1SqVQ9+tr1wgw==
+X-Received: by 2002:a17:906:3a87:b0:a03:24d9:12ce with SMTP id y7-20020a1709063a8700b00a0324d912cemr1665021ejd.63.1700820165499;
+        Fri, 24 Nov 2023 02:02:45 -0800 (PST)
+Received: from localhost.localdomain ([2001:b07:6474:ebbf:7c18:b9c9:f303:f6bb])
+        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b00a0290da4a50sm1863015ejb.186.2023.11.24.02.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 02:02:44 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Kumar Gala <galak@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Rob Herring <robh@kernel.org>, Scott Wood <oss@buserror.net>,
+        Timur Tabi <timur@freescale.com>,
+        Zhicheng Fan <b32736@freescale.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/85xx: Fix typo in code comment
+Date:   Fri, 24 Nov 2023 11:02:37 +0100
+Message-ID: <20231124100241.660374-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: amlogic: minor whitespace cleanup around '='
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231124094700.58071-1-krzysztof.kozlowski@linaro.org>
-Content-Language: en-US, ru-RU
-From:   Viacheslav <adeep@lexina.in>
-Autocrypt: addr=adeep@lexina.in; keydata=
- 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
-In-Reply-To: <20231124094700.58071-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,59 +74,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+s/singals/signals/
 
-24/11/2023 12.47, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before and after '='
-> sign.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->   .../boot/dts/amlogic/meson-axg-jethome-jethub-j110-rev-2.dts    | 2 +-
->   arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4.dtsi        | 2 +-
->   arch/arm64/boot/dts/amlogic/meson-g12b-bananapi.dtsi            | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j110-rev-2.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j110-rev-2.dts
-> index 0062667c4f65..c9e84db0831a 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j110-rev-2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j110-rev-2.dts
-> @@ -30,7 +30,7 @@ &sd_emmc_b {
->   &uart_B {
->   	bluetooth {
->   		compatible = "realtek,rtl8822cs-bt";
-> -		enable-gpios  = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
-> +		enable-gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
->   		host-wake-gpios = <&gpio GPIOZ_8 GPIO_ACTIVE_HIGH>;
->   		device-wake-gpios = <&gpio GPIOZ_6 GPIO_ACTIVE_HIGH>;
->   	};
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4.dtsi
-> index 995ce10d5c81..08c33ec7e9f1 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4.dtsi
-> @@ -369,7 +369,7 @@ &uart_A {
->   
->   	bluetooth {
->   		compatible = "realtek,rtl8822cs-bt";
-> -		enable-gpios  = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-> +		enable-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
->   		host-wake-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
->   		device-wake-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
->   	};
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi.dtsi
-> index 0a6a12808568..4b8db872bbf3 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi.dtsi
-> @@ -487,7 +487,7 @@ &uart_A {
->   
->   	bluetooth {
->   		compatible = "realtek,rtl8822cs-bt";
-> -		enable-gpios  = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-> +		enable-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
->   		host-wake-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
->   		device-wake-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
->   	};
+Fixes: 04e358d896a7 ("powerpc/85xx: Add Quicc Engine support for p1025rdb")
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
+ arch/powerpc/platforms/85xx/mpc85xx_rdb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Viacheslav Bocharov<adeep@lexina.in>
+diff --git a/arch/powerpc/platforms/85xx/mpc85xx_rdb.c b/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
+index ec9f60fbebc7..e0cec670d8db 100644
+--- a/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
++++ b/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
+@@ -76,7 +76,7 @@ static void __init mpc85xx_rdb_setup_arch(void)
+ 			/* P1025 has pins muxed for QE and other functions. To
+ 			* enable QE UEC mode, we need to set bit QE0 for UCC1
+ 			* in Eth mode, QE0 and QE3 for UCC5 in Eth mode, QE9
+-			* and QE12 for QE MII management singals in PMUXCR
++			* and QE12 for QE MII management signals in PMUXCR
+ 			* register.
+ 			*/
+ 				setbits32(&guts->pmuxcr, MPC85xx_PMUXCR_QE(0) |
+-- 
+2.42.0
 
