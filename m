@@ -2,104 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EAA7F7075
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9297F7086
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345338AbjKXJuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:50:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S235229AbjKXJvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjKXJuB (ORCPT
+        with ESMTP id S1345377AbjKXJul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:50:01 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546B810FD
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:50:07 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so244346266b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:50:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700819406; x=1701424206; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9+ThUuyBMc8tE0TTrcKzb0NqRa+0wf0OPRYLrcEY5ZA=;
-        b=YqYHg7Rxa9F7UGL0wuq5+JB/3WC8qAQlQRtD5GpoZaMZoeTUSmYZBpEVlC9Fg0rVVL
-         wxC1MqjS5bYXTYPlWiswpUkVDMUdS0YatrTz+Tqvu//fS1ZEK+pXhe0kYeXleAVzl5U0
-         sGgDyBh+xGag+PY2UHbaAU/3HSJ2hfs6TBefgfLXprYZ63H02EdeIYBaHK+dwuLhOdf3
-         1F2n4id2Ld0vwTHmKpiBT+Oz0542ziicOcKTZgJzkqV53owXkSVpfiWww0jVWBzfJwu0
-         gEgc/4TzxJ4dbrEZhvu0F6yZXY7uUrw/IZglmL1ldvWJLAQdOHvaMyHEiJkgfHygOJKA
-         d9Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700819406; x=1701424206;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9+ThUuyBMc8tE0TTrcKzb0NqRa+0wf0OPRYLrcEY5ZA=;
-        b=rE30HdZKn3oqmSI9XDx01OgAOhVYecbJzb4xbm0lGDDWs+3rY0+fayLobw+OUMC/6d
-         QtLNyLgHI2BQOXzDIq0HFsBf8V8DH7NMdbawl8gMD4QcdpLijeYEC0XvEgmrl2kvJQsh
-         xItHER22Ac4WmRGeruRtsGq1jahqYFfeHhC8aQI8sBHBOmFS60yonr4cEVsQiPg722Ge
-         rci7KUc7fFgQk2JnpSVU9nCAUyHouFys9VzPPhox1EfQ0IDIh9daMDmkkK4cuyQ+43DP
-         yCxXI5PCiK7rWFEAySnVywWjgSTy9BgzbbeZDlbB1lCNB24mpcCtXHv7QgZ63XZaD5wk
-         VfRw==
-X-Gm-Message-State: AOJu0YzLeni4Qg8bPDH108JHAWl1ucR6ZXbAkm5by0d/DoKn2suLX7xS
-        16M4ZMB0+Br1f0u/8VmMqbaKZA==
-X-Google-Smtp-Source: AGHT+IEMLYuBQprXx6furIjSydQTpd2dYUw25t53EyujGSlUTPIszuYrOq7XHBbcwqek1qk4573viA==
-X-Received: by 2002:a17:906:39d9:b0:a04:9608:3c89 with SMTP id i25-20020a17090639d900b00a0496083c89mr1486389eje.75.1700819405717;
-        Fri, 24 Nov 2023 01:50:05 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id t27-20020a1709063e5b00b009fd727116b4sm1839941eji.129.2023.11.24.01.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:50:05 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 2/2] arm64: dts: ti: minor whitespace cleanup around '='
-Date:   Fri, 24 Nov 2023 10:50:00 +0100
-Message-Id: <20231124095000.58487-2-krzysztof.kozlowski@linaro.org>
+        Fri, 24 Nov 2023 04:50:41 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E37A1710;
+        Fri, 24 Nov 2023 01:50:47 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AO6xNTZ010106;
+        Fri, 24 Nov 2023 03:50:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=0
+        BSvJ7usnWbGiPGf6UjTYXjzO1zlA/tY5Les5VqpUOI=; b=Jyxy9nFX8iQChZ0cS
+        0BqOsuaBamyyKCpuiVvHH0G92KfBp30rU7A9qdkw1LoGX1T6v9uYQO7Ap0VKWIua
+        NXr64i11q6N++FXaQNvAX57YThBAFwkwQiH8uLXk/r4l6ZcpGgdpC1Vc84fRAlGv
+        /XbelQ3KhDkuLUiLXg4gK4lawpm5ZoyaM8BNn+y4t+kgSRSetrR3EC42tTx0pqMw
+        hXQ0i4Re7FpDedcfAimsvCCLb1+u/w9bzrErIPvF/pQbmeHUQ0SmmTKC9jmE27rX
+        2Nkn8C4/VPQI9D68je5kuPDvy15Yk2AC1XVMyWE7WVc4/MekNCiXWovdXBRyvn2c
+        YYnHg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uetjpem55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 03:50:34 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 24 Nov
+ 2023 09:50:32 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Fri, 24 Nov 2023 09:50:32 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 64696357F;
+        Fri, 24 Nov 2023 09:50:32 +0000 (UTC)
+From:   Maciej Strozek <mstrozek@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek <mstrozek@opensource.cirrus.com>
+Subject: [RESEND] ASoC: cs43130: Allow configuration of bit clock and frame inversion
+Date:   Fri, 24 Nov 2023 09:50:30 +0000
+Message-ID: <20231124095030.24539-1-mstrozek@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231124095000.58487-1-krzysztof.kozlowski@linaro.org>
-References: <20231124095000.58487-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: UevVvw5fily_5khQIm2O0txDPIJE2xNH
+X-Proofpoint-ORIG-GUID: UevVvw5fily_5khQIm2O0txDPIJE2xNH
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTS code coding style expects exactly one space before and after '='
-sign.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
 ---
- arch/arm64/boot/dts/ti/k3-am69-sk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Resending patch which previously broke x86 allmodconfig [1], now rebased on
+for-next branch
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-index 9868c7049bfb..d6a7ae086244 100644
---- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-@@ -671,7 +671,7 @@ exp1: gpio@21 {
- 		reg = <0x21>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
--		gpio-line-names	= "BOARDID_EEPROM_WP", "CAN_STB", "GPIO_uSD_PWR_EN",
-+		gpio-line-names = "BOARDID_EEPROM_WP", "CAN_STB", "GPIO_uSD_PWR_EN",
- 				"IO_EXP_MCU_RGMII_RST#", "IO_EXP_PCIe0_4L_PERST#",
- 				"IO_EXP_PCIe1_M.2_RTSz", "IO_EXP_PCIe3_M.2_RTSz",
- 				"PM_INA_BUS_EN", "ENET1_EXP_PWRDN", "EXP1_ENET_RSTz",
--- 
+[1]: https://lore.kernel.org/all/ZVfLMIbCpShVAYBf@finisterre.sirena.org.uk/
+
+ sound/soc/codecs/cs43130.c | 42 ++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 4f16baf4eafb..0f3ead84665f 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -620,6 +620,27 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
+ 		return -EINVAL;
+ 	}
+
++	switch (cs43130->dais[dai_id].dai_invert) {
++	case SND_SOC_DAIFMT_NB_NF:
++		sclk_edge = 1;
++		lrck_edge = 0;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		sclk_edge = 0;
++		lrck_edge = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		sclk_edge = 1;
++		lrck_edge = 1;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		sclk_edge = 0;
++		lrck_edge = 1;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	switch (cs43130->dais[dai_id].dai_mode) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		dai_mode_val = 0;
+@@ -632,8 +653,6 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
+ 	}
+
+ 	frm_size = bitwidth_sclk * params_channels(params);
+-	sclk_edge = 1;
+-	lrck_edge = 0;
+ 	loc_ch1 = 0;
+ 	loc_ch2 = bitwidth_sclk * (params_channels(params) - 1);
+
+@@ -1516,6 +1535,25 @@ static int cs43130_pcm_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_NB_NF;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_IB_NF;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_NB_IF;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_IB_IF;
++		break;
++	default:
++		dev_err(cs43130->dev, "Unsupported invert mode 0x%x\n",
++			fmt & SND_SOC_DAIFMT_INV_MASK);
++		return -EINVAL;
++	}
++
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		cs43130->dais[codec_dai->id].dai_format = SND_SOC_DAIFMT_I2S;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index 694286b78d03..dbdb5b262f1b 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -497,6 +497,7 @@ struct cs43130_dai {
+ 	unsigned int			sclk;
+ 	unsigned int			dai_format;
+ 	unsigned int			dai_mode;
++	unsigned int			dai_invert;
+ };
+
+ struct	cs43130_private {
+--
 2.34.1
 
