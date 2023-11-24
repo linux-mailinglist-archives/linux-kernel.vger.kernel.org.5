@@ -2,186 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39FB7F6C4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F567F6C51
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjKXGaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S231169AbjKXGct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:32:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXGaW (ORCPT
+        with ESMTP id S229453AbjKXGcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:30:22 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE81AD;
-        Thu, 23 Nov 2023 22:30:27 -0800 (PST)
-Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sc4jb3kDBzMnNt;
-        Fri, 24 Nov 2023 14:25:39 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 24 Nov 2023 14:30:24 +0800
-Subject: Re: [PATCH v7 00/12] iommu: Prepare to deliver page faults to user
- space
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <1a029033-3c9e-aeab-06bf-1e7020c2bc7d@huawei.com>
-Date:   Fri, 24 Nov 2023 14:30:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 24 Nov 2023 01:32:45 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D330591;
+        Thu, 23 Nov 2023 22:32:51 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 1DB30603EE;
+        Fri, 24 Nov 2023 06:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1700807571;
+        bh=+gS/X74h4UfVNPZhsitLFhRKfvXbk2HaAi+3m9/w4LA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fOyeZFM3XB/N1+TWPkAPihd+noaGWJronK71K0i3yOCY4UcLBv1uy0Mq2MrhaW5sw
+         L4fWQqlSnNwNM4oVau/CDo1e6vK0+H9Sa1Qnal8PBAV9kQ1REiOgueHKoHaCb/3t2t
+         yZntys8VgzYz07KKMJVtaV+czADccc7zutPFMiv2U1IAdF5JP2BH8MMUmHXvQ3WtHX
+         NXIe/acjhZKOzAA2QpDnySk9I7tLMJYuaJmMh0hsENtiUIIBnGFACcoG4S3WXHXI2R
+         H4BmW0ylNun2MKKfpeTN6NzDcA5hxRPfwA+u0B6d1pQF2SkROP87ijITBwdeXHIC+n
+         xAapRrmmE8Viw==
+Date:   Fri, 24 Nov 2023 08:32:10 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     oe-kbuild@lists.linux.dev,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev,
+        "David S . Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] serial: core: Move console character device
+ handling from printk
+Message-ID: <20231124063210.GI5169@atomide.com>
+References: <20231121113203.61341-4-tony@atomide.com>
+ <6933c98f-7f76-4955-ba0f-89ea340b672d@suswa.mountain>
+ <8a4c0b43-cf63-400d-b33d-d9c447b7e0b9@suswa.mountain>
 MIME-Version: 1.0
-In-Reply-To: <20231115030226.16700-1-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.121.110]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000005.china.huawei.com (7.193.23.27)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a4c0b43-cf63-400d-b33d-d9c447b7e0b9@suswa.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/15 11:02, Lu Baolu Wrote:
-> When a user-managed page table is attached to an IOMMU, it is necessary
-> to deliver IO page faults to user space so that they can be handled
-> appropriately. One use case for this is nested translation, which is
-> currently being discussed in the mailing list.
+* Dan Carpenter <dan.carpenter@linaro.org> [231123 07:29]:
+> On Thu, Nov 23, 2023 at 10:24:24AM +0300, Dan Carpenter wrote:
+> > Hi Tony,
+> > 
+> > kernel test robot noticed the following build warnings:
+> > 
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/printk-Save-console-options-for-add_preferred_console_match/20231121-193809
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > patch link:    https://lore.kernel.org/r/20231121113203.61341-4-tony%40atomide.com
+> > patch subject: [PATCH v3 3/3] serial: core: Move console character device handling from printk
+> > config: parisc-randconfig-r081-20231122 (https://download.01.org/0day-ci/archive/20231122/202311221437.5Gil0Pml-lkp@intel.com/config)
+> > compiler: hppa-linux-gcc (GCC) 13.2.0
+> > reproduce: (https://download.01.org/0day-ci/archive/20231122/202311221437.5Gil0Pml-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Reported-by: Dan Carpenter <error27@gmail.com>
+> > | Closes: https://lore.kernel.org/r/202311221437.5Gil0Pml-lkp@intel.com/
+> > 
+> > smatch warnings:
+> > drivers/tty/serial/serial_base_bus.c:266 serial_base_add_preferred_console() error: uninitialized symbol 'nmbr_match'.
+> > drivers/tty/serial/serial_base_bus.c:265 serial_base_add_preferred_console() error: uninitialized symbol 'char_match'.
+> > 
+> > vim +/nmbr_match +266 drivers/tty/serial/serial_base_bus.c
+> > 
+> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  261  int serial_base_add_preferred_console(struct uart_driver *drv,
+> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  262  				      struct uart_port *port)
+> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  263  {
+> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  264  	const char *port_match __free(kfree);
+> > b1b8726ec3f40b Tony Lindgren 2023-11-21 @265  	const char *char_match __free(kfree);
+> > b1b8726ec3f40b Tony Lindgren 2023-11-21 @266  	const char *nmbr_match __free(kfree);
+> > 
+> > These need to be initialized to NULL.
+> > 
+> > 	const char *char_match __free(kfree) = NULL;
+> > 
 > 
-> I have posted a RFC series [1] that describes the implementation of
-> delivering page faults to user space through IOMMUFD. This series has
-> received several comments on the IOMMU refactoring, which I am trying to
-> address in this series.
+> Let's add a todo to make checkpatch warn about this.
 > 
-> The major refactoring includes:
-> 
-> - [PATCH 01 ~ 04] Move include/uapi/linux/iommu.h to
->   include/linux/iommu.h. Remove the unrecoverable fault data definition.
-> - [PATCH 05 ~ 06] Remove iommu_[un]register_device_fault_handler().
-> - [PATCH 07 ~ 10] Separate SVA and IOPF. Make IOPF a generic page fault
->   handling framework.
-> - [PATCH 11 ~ 12] Improve iopf framework for iommufd use.
-> 
-> This is also available at github [2].
-> 
-> [1] https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
-> [2] https://github.com/LuBaolu/intel-iommu/commits/preparatory-io-pgfault-delivery-v7
-> 
-> Change log:
-> v7:
->  - Rebase to v6.7-rc1.
->  - Export iopf_group_response() for global use.
->  - Release lock when calling iopf handler.
->  - The whole series has been verified to work for SVA case on Intel
->    platforms by Zhao Yan. Add her Tested-by to affected patches.
-> 
-> v6: https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
->  - [PATCH 09/12] Check IS_ERR() against the iommu domain. [Jingqi/Jason]
->  - [PATCH 12/12] Rename the comments and name of iopf_queue_flush_dev(),
->    no functionality changes. [Kevin]
->  - All patches rebased on the latest iommu/core branch.
-> 
-> v5: https://lore.kernel.org/linux-iommu/20230914085638.17307-1-baolu.lu@linux.intel.com/
->  - Consolidate per-device fault data management. (New patch 11)
->  - Improve iopf_queue_flush_dev(). (New patch 12)
-> 
-> v4: https://lore.kernel.org/linux-iommu/20230825023026.132919-1-baolu.lu@linux.intel.com/
->  - Merge iommu_fault_event and iopf_fault. They are duplicate.
->  - Move iommu_report_device_fault() and iommu_page_response() to
->    io-pgfault.c.
->  - Move iommu_sva_domain_alloc() to iommu-sva.c.
->  - Add group->domain and use it directly in sva fault handler.
->  - Misc code refactoring and refining.
-> 
-> v3: https://lore.kernel.org/linux-iommu/20230817234047.195194-1-baolu.lu@linux.intel.com/
->  - Convert the fault data structures from uAPI to kAPI.
->  - Merge iopf_device_param into iommu_fault_param.
->  - Add debugging on domain lifetime for iopf.
->  - Remove patch "iommu: Change the return value of dev_iommu_get()".
->  - Remove patch "iommu: Add helper to set iopf handler for domain".
->  - Misc code refactoring and refining.
-> 
-> v2: https://lore.kernel.org/linux-iommu/20230727054837.147050-1-baolu.lu@linux.intel.com/
->  - Remove unrecoverable fault data definition as suggested by Kevin.
->  - Drop the per-device fault cookie code considering that doesn't make
->    much sense for SVA.
->  - Make the IOMMU page fault handling framework generic. So that it can
->    available for use cases other than SVA.
-> 
-> v1: https://lore.kernel.org/linux-iommu/20230711010642.19707-1-baolu.lu@linux.intel.com/
-> 
-> Lu Baolu (12):
->   iommu: Move iommu fault data to linux/iommu.h
->   iommu/arm-smmu-v3: Remove unrecoverable faults reporting
->   iommu: Remove unrecoverable fault data
->   iommu: Cleanup iopf data structure definitions
->   iommu: Merge iopf_device_param into iommu_fault_param
->   iommu: Remove iommu_[un]register_device_fault_handler()
->   iommu: Merge iommu_fault_event and iopf_fault
->   iommu: Prepare for separating SVA and IOPF
->   iommu: Make iommu_queue_iopf() more generic
->   iommu: Separate SVA and IOPF
->   iommu: Consolidate per-device fault data management
->   iommu: Improve iopf_queue_flush_dev()
-> 
->  include/linux/iommu.h                         | 266 +++++++---
->  drivers/iommu/intel/iommu.h                   |   2 +-
->  drivers/iommu/iommu-sva.h                     |  71 ---
->  include/uapi/linux/iommu.h                    | 161 ------
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  14 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  51 +-
->  drivers/iommu/intel/iommu.c                   |  25 +-
->  drivers/iommu/intel/svm.c                     |   8 +-
->  drivers/iommu/io-pgfault.c                    | 469 ++++++++++++------
->  drivers/iommu/iommu-sva.c                     |  66 ++-
->  drivers/iommu/iommu.c                         | 232 ---------
->  MAINTAINERS                                   |   1 -
->  drivers/iommu/Kconfig                         |   4 +
->  drivers/iommu/Makefile                        |   3 +-
->  drivers/iommu/intel/Kconfig                   |   1 +
->  15 files changed, 601 insertions(+), 773 deletions(-)
->  delete mode 100644 drivers/iommu/iommu-sva.h
->  delete mode 100644 include/uapi/linux/iommu.h
-> 
+> KTODO: make checkpatch warn about __free() functions without an initializer
 
-Tested-By: Longfang Liu <liulongfang@huawei.com>
+Yes good idea.
 
-The Arm SVA mode based on HiSilicon crypto accelerator completed the functional test
-and performance test of page fault scenarios.
-1. The IOMMU page fault processing function is normal.
-2. Performance test on 128 core ARM platform. performance is reduced:
+Thanks,
 
-Threads  Performance
-8         -0.77%
-16        -1.1%
-32        -0.31%
-64        -0.49%
-128       -0.72%
-256       -1.7%
-384       -4.94%
-512       NA£¨iopf timeout£©
-
-Finally, continuing to increase the number of threads will cause iommu's page fault
-processing to time out(more than 4.2 seconds).
-This problem occurs both in the before version(kernel6.7-rc1) and
-in the after modification's version.
-
-Thanks.
-Longfang.
+Tony
