@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461737F8580
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8F47F8581
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbjKXVbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S1345782AbjKXVbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjKXVa6 (ORCPT
+        with ESMTP id S231635AbjKXVbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:30:58 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981D519A6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:04 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9fdf7baabd9so72457266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:04 -0800 (PST)
+        Fri, 24 Nov 2023 16:31:06 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC771BE7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:11 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c99593d13aso314961fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700861463; x=1701466263; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700861470; x=1701466270; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xf+BvI0HCoud7UZk/jd1+lnn/zb5QtR4nqSkftIg4Lc=;
-        b=PXvrEAj3Qz8EmASthMqKBA/YnPfHbLZYh+HGfKdmJCROJUcAhCLZnKhDBwT2DDVI0Z
-         A5N7Np5adrGYFLtSe8q3Ah8q+otz7YmAEM5Kmt7GnnZ8YxKb7gC4uxQpC4vjRJV1ovOW
-         gVXii4mWNxcgUPTE+lmZTcKNrYnxRTselB3Lg7Lp8jXwu3Y7M5f5qGIlPTyomF7oOS/i
-         QERI7tbVg5+C9B21gicw+eVgdsy4FgysXau/8KOmdeqnmdLu9WGxM+dr5MCPxuKwL1XS
-         OjXkLf6+KpvFIBHIZNrQ/jKXv0LQ2iLHcFjXJKiKRvBU0X7dtsNkxAQi54wAisG9enwB
-         sYeQ==
+        bh=lucCRVdFyECgtyRqDncojEzhqXxZuxdPkU1gxZh8Hdk=;
+        b=LOnPrhxf97KA8njuQyb4D3o7Jj3FvjANsXmW/2m5EukFafvtxrAzbNOiv+wD01gUJT
+         O/hBR6zQqe4h2VKow35CtqRx7sRVrHd0aKGUxl+39XJQfSqh9MZtsv9c2MeRanjs+i1M
+         h7SWL2inVvgnUMXLMlkBCXhNKtoBTQjYN5uUtj+TxMMsJWNjqVfGjAEN0eo9AQ4BSr+b
+         6F/sXqIE3GZGQ7URfwcsLypntKjtyOAk7fqEV6Vfr2WJoNmaOeUMs8oss6wBG2OMDHPd
+         poUCn96ehf31EqbCyhQyNxgUJgpfh9TToNws/Rk0KcBOufH6Clp3A91Aba7Ie9QNGhS/
+         n1Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700861463; x=1701466263;
+        d=1e100.net; s=20230601; t=1700861470; x=1701466270;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xf+BvI0HCoud7UZk/jd1+lnn/zb5QtR4nqSkftIg4Lc=;
-        b=N/WEALV4Gp3MKIiRO1mnWxux6LcQf71N5edn0lKDyfFf2Apb1xIBXChDAjOV/rqA2i
-         T0DPPTPBEdpVfyPrJcT539BxXNmI33jXZj+DVw4ihbK84JJ3stwolB6QF+1+bcW2CwcS
-         /+Sqs4PdLgLQIOTY6Jv4aufGMmzvozGhdwCNZA47bce8ElUU17J2h03TgSkjStXXHR2G
-         FJJSf04O5CVmVQL6XrM3K5jbPxtGFZq8GOJjqX05PZ/YptOQoYQny2fRvIozrGXuG3lM
-         RUb+l4YYK7U8nF+1kKDc8pMRTd1i9OhuYSTsUW0PTyFDRpwAa8sHk4jUTAETxJuQpzXc
-         yMog==
-X-Gm-Message-State: AOJu0Yy54eOi04XGtb72uOs9iNkhDtxPAoIxwGAg+F8a/IqyzSyzvcRp
-        7w9Rj3s/ayDZcwlyZmKPdSk=
-X-Google-Smtp-Source: AGHT+IHK17C1vO9U+6o18kae1SZLjDwGP/MMYNJWQnBOz67HwUmYH5p5n4LeoSWvCS+SdGOSsC5/KA==
-X-Received: by 2002:a17:906:5812:b0:a01:97e6:6771 with SMTP id m18-20020a170906581200b00a0197e66771mr3351041ejq.0.1700861463124;
-        Fri, 24 Nov 2023 13:31:03 -0800 (PST)
+        bh=lucCRVdFyECgtyRqDncojEzhqXxZuxdPkU1gxZh8Hdk=;
+        b=iyQ2ZgYUAdwO38MchEkGUp8QEf6Eodn3nXYduwtXedA9rt8NrTJt/lca4ul+r77HGO
+         j767YS3G3he5e0DXs6iP+MhDzFzoLBI13OWUR0zzMUCoBrJd9OcDccm1T9gTVWmOjQS+
+         15fnjlSEfO4FmZJ/EUGK6RVP9h3ygrLo+eAdD6qKvw2KeT85NK2vSBaCpA2eJO3apHeX
+         MxgsKioNShV8PTBIufwWKOIao67GGP+pEjlHOu5ILPr0lJPAedxNWc9MOHZ/B/HMTuqu
+         6vGYSwGQmSYcN5tXeDGRsoJz4yM6t+Uy+iFZpExuiSriWbybIU8Uf47bs0E3HwWKEYGb
+         lwFw==
+X-Gm-Message-State: AOJu0YxCk43J9UTrT6SklziMB4hguOe3LN1Qo6lLJlvAtXmRQMEXr4cm
+        u7qi4pzZo1wtd5p2pUz2tQ0=
+X-Google-Smtp-Source: AGHT+IEGC+FkWool5xrxMKIxPHFJxPbScb7nXCa1f+4jiux3ltzhvrqQmA0uEENYkpc9LpAwkhCweQ==
+X-Received: by 2002:a2e:150e:0:b0:2c8:3406:6641 with SMTP id s14-20020a2e150e000000b002c834066641mr2393867ljd.1.1700861469951;
+        Fri, 24 Nov 2023 13:31:09 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id lv20-20020a170906bc9400b0098884f86e41sm2499299ejb.123.2023.11.24.13.31.02
+        by smtp.gmail.com with ESMTPSA id si12-20020a170906cecc00b009fca9f39e98sm2538605ejb.26.2023.11.24.13.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 13:31:02 -0800 (PST)
-Date:   Fri, 24 Nov 2023 22:31:01 +0100
+        Fri, 24 Nov 2023 13:31:09 -0800 (PST)
+Date:   Fri, 24 Nov 2023 22:31:08 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] staging: rtl8192e: Remove unused function
- rtllib_send_beacon()
-Message-ID: <fca983a276ae67dc9cd124e236fe9d210fd997d3.1700860759.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 5/8] staging: rtl8192e: Remove unused function
+ rtllib_get_beacon_()
+Message-ID: <ed825d5fb1946530c310afca1d3f27e46da35f06.1700860759.git.philipp.g.hortmann@gmail.com>
 References: <cover.1700860758.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,40 +71,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function rtllib_send_beacon().
+Remove unused function rtllib_get_beacon_().
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib_softmac.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 430951c88123..4e33a453f86e 100644
+index 4e33a453f86e..8c7ad56d4402 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -351,22 +351,6 @@ static inline struct sk_buff *rtllib_probe_req(struct rtllib_device *ieee)
- 	return skb;
+@@ -2130,25 +2130,6 @@ static void rtllib_associate_retry_wq(void *data)
+ 	mutex_unlock(&ieee->wx_mutex);
  }
  
--static struct sk_buff *rtllib_get_beacon_(struct rtllib_device *ieee);
--
--static void rtllib_send_beacon(struct rtllib_device *ieee)
+-static struct sk_buff *rtllib_get_beacon_(struct rtllib_device *ieee)
 -{
+-	static const u8 broadcast_addr[] = {
+-		0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+-	};
 -	struct sk_buff *skb;
+-	struct rtllib_probe_response *b;
 -
--	if (!ieee->ieee_up)
--		return;
--	skb = rtllib_get_beacon_(ieee);
+-	skb = rtllib_probe_resp(ieee, broadcast_addr);
 -
--	if (skb) {
--		softmac_mgmt_xmit(skb, ieee);
--		ieee->softmac_stats.tx_beacons++;
--	}
+-	if (!skb)
+-		return NULL;
+-
+-	b = (struct rtllib_probe_response *)skb->data;
+-	b->header.frame_control = cpu_to_le16(IEEE80211_STYPE_BEACON);
+-
+-	return skb;
 -}
 -
- /* Enables network monitor mode, all rx packets will be received. */
- void rtllib_EnableNetMonitorMode(struct net_device *dev,
- 		bool bInitState)
+ void rtllib_softmac_stop_protocol(struct rtllib_device *ieee)
+ {
+ 	rtllib_stop_scan_syncro(ieee);
 -- 
 2.42.0
 
