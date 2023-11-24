@@ -2,247 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C697F6A5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5407F6A60
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjKXB7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51348 "EHLO
+        id S229831AbjKXCCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXB7p (ORCPT
+        with ESMTP id S229477AbjKXCCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:59:45 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0369F1A5;
-        Thu, 23 Nov 2023 17:59:50 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sbypp15P7z4f3jry;
-        Fri, 24 Nov 2023 09:59:46 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id D936C1A05C4;
-        Fri, 24 Nov 2023 09:59:47 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgCnqxGSA2BlSO0SBw--.61513S3;
-        Fri, 24 Nov 2023 09:59:47 +0800 (CST)
-Subject: Re: [PATCH -next 6/8] md: factor out a helper to stop sync_thread
-To:     Yu Kuai <yukuai1@huaweicloud.com>, Xiao Ni <xni@redhat.com>
-Cc:     song@kernel.org, neilb@suse.de, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231110172834.3939490-1-yukuai1@huaweicloud.com>
- <20231110172834.3939490-7-yukuai1@huaweicloud.com>
- <CALTww2-ivzhRRMYBoVSZ32uRUPL8Lii=z3SHGbMijsximdn=7A@mail.gmail.com>
- <CALTww2-YiGbw9HAA-hvEbCmWuOHpdHkx1KCBciRW9d6r=j44nQ@mail.gmail.com>
- <df362513-42a5-ea85-6bc4-784bba263f1b@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <b94b2298-2ffb-23f2-ab1b-157ab786d6a1@huaweicloud.com>
-Date:   Fri, 24 Nov 2023 09:59:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 23 Nov 2023 21:02:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B058D71
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:02:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CF9C433C8;
+        Fri, 24 Nov 2023 02:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700791358;
+        bh=vAEaSRrrunnPXOVy4bsXVdIwG/ogF59c2LODwnQzEt4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=saHSp2NGZSUTai55h6E/zojAAH5KLgETopqUR4weaJMLSG1LQs6NF2IAs0s2/i+22
+         UZhSNjk6pzb4sMzNkRdhAVD80mbjyzuOb3IhXglsfSkTeoN9dMBVjV5iFOD9wTYXTP
+         gdXoCE1zMrq6Rcz5gQxj0oa+h47Wkyqa7LSuUHwLfMcfG2VUzEYxtQ6ROoaoKcdVR0
+         C/K9deOrEhsRI4X5q11x6H4iynQWFHIJuwnonWC8rHjmL9aonwEFNDRT03QgwMDTAT
+         3qmptPLoTpSBJhqAV22y3xQToV3Px8XDPGqHx8Wba2nKyXObCQ8DMwrvZPrpWjSAaH
+         RNJ66RSsAx2XA==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1f94b07b6b3so934079fac.2;
+        Thu, 23 Nov 2023 18:02:37 -0800 (PST)
+X-Gm-Message-State: AOJu0Yye6WyQZ+4bEOLdrYylxd/AxbeKVsFGHmEAYQsiK+YABYVONZDr
+        /JdBBRdYGRqvecvugjWzbzpJdsx7C1tVuDj+UI0=
+X-Google-Smtp-Source: AGHT+IEXLhrYz62zQkNtoO8dCJ28Tw410tNLUfxQpIU86fcJ/umAfhAjdKaOzRXZpNtKM8MrERktOT0JcgBObXR6rrw=
+X-Received: by 2002:a05:6870:658d:b0:1f5:c6f9:f4a5 with SMTP id
+ fp13-20020a056870658d00b001f5c6f9f4a5mr1266436oab.25.1700791357395; Thu, 23
+ Nov 2023 18:02:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <df362513-42a5-ea85-6bc4-784bba263f1b@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCnqxGSA2BlSO0SBw--.61513S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr45Kw48JFyDJrWxAr17trb_yoW7Ar43p3
-        yfJas8Jr48Jry3ZrZrK3WDAayrZw12vrWDtry3Wa4fJw1Syr47KFyY9F18AFWkta95ta1U
-        Zw4rJFW3uFy8Gr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
-        UUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20231122235527.180507-1-kent.overstreet@linux.dev>
+In-Reply-To: <20231122235527.180507-1-kent.overstreet@linux.dev>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 24 Nov 2023 11:02:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
+Message-ID: <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Allow gcov to be enabled on the command line
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Nov 23, 2023 at 8:55=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> This allows gcov to be enabled for a particular kernel source
+> subdirectory on the command line, without editing makefiles, like so:
+>
+>   make GCOV_PROFILE_fs_bcachefs=3Dy
+>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: linux-kbuild@vger.kernel.org
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>  scripts/Kbuild.include | 10 ++++++++++
+>  scripts/Makefile.lib   |  2 +-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+> index 7778cc97a4e0..5341736f2e30 100644
+> --- a/scripts/Kbuild.include
+> +++ b/scripts/Kbuild.include
+> @@ -277,3 +277,13 @@ ifneq ($(and $(filter notintermediate, $(.FEATURES))=
+,$(filter-out 4.4,$(MAKE_VER
+>  else
+>  .SECONDARY:
+>  endif
+> +
+> + # expand_parents(a/b/c) =3D a/b/c a/b a
+> +expand_parents2 =3D $(if $(subst .,,$(1)),$(call expand_parents,$(1)),)
+> +expand_parents  =3D $(1) $(call expand_parents2,$(patsubst %/,%,$(dir $(=
+1))))
+> +
+> +# flatten_dirs(a/b/c) =3D a_b_c a_b a
+> +flatten_dirs =3D $(subst /,_,$(call expand_parents,$(1)))
+> +
+> +# eval_vars(X_,a/b/c) =3D $(X_a_b_c) $(X_a_b) $(X_a)
+> +eval_vars =3D $(foreach var,$(call flatten_dirs,$(2)),$($(1)$(var)))
 
-在 2023/11/21 21:01, Yu Kuai 写道:
->>>
->>> It looks like the three roles (md_set_readonly, do_md_stop and
->>> stop_sync_thread) need to wait for different events. We can move these
->>> codes out this helper function and make this helper function to be
->>> more common.
->>
->> Or get lock again before returning this function and leave the wait here?
 
-How about following patch?
 
-  drivers/md/md.c | 89 
-+++++++++++++++++++++++++++++++++++------------------------------------------------------
-  1 file changed, 35 insertions(+), 54 deletions(-)
+I do not like tricky code like this.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 78f32a2e434c..fe46b67f6e87 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -4868,35 +4868,18 @@ action_show(struct mddev *mddev, char *page)
-         return sprintf(page, "%s\n", action_names[get_sync_action(mddev)]);
-  }
+Also, with "fs_bcachefs", it is unclear which directory
+is enabled.
 
--static int stop_sync_thread(struct mddev *mddev)
-+static void prepare_to_stop_sync_thread(struct mddev *mddev)
-+       __releases(&mddev->reconfig_mutex)
-  {
--       int err = mddev_lock(mddev);
--
--       if (err)
--               return err;
--
--       /*
--        * Check again in case MD_RECOVERY_RUNNING is cleared before lock is
--        * held.
--        */
--       if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
--               mddev_unlock(mddev);
--               return 0;
--       }
--
--       if (work_pending(&mddev->sync_work))
--               flush_workqueue(md_misc_wq);
--
-         set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-         /*
--        * Thread might be blocked waiting for metadata update which 
-will now
--        * never happen
-+        * Thread might be blocked waiting for metadata update which
-+        * will now never happen.
-          */
-         md_wakeup_thread_directly(mddev->sync_thread);
--
-         mddev_unlock(mddev);
--
--       return 0;
-+       if (work_pending(&mddev->sync_work))
-+               flush_work(&mddev->sync_work);
-  }
 
-  static int idle_sync_thread(struct mddev *mddev)
-@@ -4905,13 +4888,17 @@ static int idle_sync_thread(struct mddev *mddev)
-         int err;
 
-         clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--       err = stop_sync_thread(mddev);
-+       err = mddev_lock(mddev);
-         if (err)
-                 return err;
 
--       err = wait_event_interruptible(resync_wait,
-+       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-+               prepare_to_stop_sync_thread(mddev);
-+               err = wait_event_interruptible(resync_wait,
-                         sync_seq != atomic_read(&mddev->sync_seq) ||
-                         !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+       }
+How about this?
+
+
+
+[1] Specify the list of directories by GCOV_PROFILE_DIRS
+
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 1a965fe68e01..286a569556b3 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -147,8 +147,12 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y)
+$(CPPFLAGS_$(target-stem).lds)
+ # (in this order)
+ #
+ ifeq ($(CONFIG_GCOV_KERNEL),y)
++ifneq ($(filter $(obj),$(GCOV_PROFILE_DIRS)),)
++export GCOV_PROFILE_SUBDIR :=3D y
++endif
 +
-         return err;
-  }
-
-@@ -4920,12 +4907,15 @@ static int frozen_sync_thread(struct mddev *mddev)
-         int err;
-
-         set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--       err = stop_sync_thread(mddev);
-+       err = mddev_lock(mddev);
-         if (err)
-                 return err;
-
--       err = wait_event_interruptible(resync_wait,
-+       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-+               prepare_to_stop_sync_thread(mddev);
-+               err = wait_event_interruptible(resync_wait,
-                         !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+       }
-
-         return err;
-  }
-@@ -6350,11 +6340,11 @@ static void md_clean(struct mddev *mddev)
-  static void __md_stop_writes(struct mddev *mddev)
-  {
-         set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--       if (work_pending(&mddev->sync_work))
--               flush_workqueue(md_misc_wq);
--       if (mddev->sync_thread) {
--               set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--               md_reap_sync_thread(mddev);
-+       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-+               prepare_to_stop_sync_thread(mddev);
-+               wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
-+                                                 &mddev->recovery));
-+               mddev_lock_nointr(mddev);
-         }
-
-         del_timer_sync(&mddev->safemode_timer);
-@@ -6447,18 +6437,15 @@ static int md_set_readonly(struct mddev *mddev, 
-struct block_device *bdev)
-                 did_freeze = 1;
-                 set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-         }
--       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--               set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-
--       /*
--        * Thread might be blocked waiting for metadata update which 
-will now
--        * never happen
--        */
--       md_wakeup_thread_directly(mddev->sync_thread);
-+       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-+               prepare_to_stop_sync_thread(mddev);
-+               wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
-+                                                 &mddev->recovery));
-+       } else {
-+               mddev_unlock(mddev);
-+       }
-
--       mddev_unlock(mddev);
--       wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
--                                         &mddev->recovery));
-         wait_event(mddev->sb_wait,
-                    !test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags));
-         mddev_lock_nointr(mddev);
-@@ -6509,19 +6496,13 @@ static int do_md_stop(struct mddev *mddev, int mode,
-                 did_freeze = 1;
-                 set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-         }
--       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--               set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+ _c_flags +=3D $(if $(patsubst n%,, \
 -
--       /*
--        * Thread might be blocked waiting for metadata update which 
-will now
--        * never happen
--        */
--       md_wakeup_thread_directly(mddev->sync_thread);
+$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
+\
++
+$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFI=
+G_GCOV_PROFILE_ALL)),
+\
+                $(CFLAGS_GCOV))
+ endif
 
--       mddev_unlock(mddev);
--       wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
--                                         &mddev->recovery));
--       mddev_lock_nointr(mddev);
-+       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-+               prepare_to_stop_sync_thread(mddev);
-+               wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
-+                                                 &mddev->recovery));
-+               mddev_lock_nointr(mddev);
-+       }
 
-         mutex_lock(&mddev->open_mutex);
-         if ((mddev->pers && atomic_read(&mddev->openers) > !!bdev) ||
 
+Usage:
+
+  $ make GCOV_PROFILE_DIRS=3Dfs/bcachefs
+
+   ->  enable GCOV in fs/bachefs and its subdirectories.
+
+or
+
+  $ make GCOV_PROFILE_DIRS=3D"drivers/gpio drivers/pinctrl"
+
+   -> enable GCOV in drivers/gpio, drivers/pinctrl, and their subdirectorie=
+s.
+
+
+
+
+[2] Do equivalent, but from a CONFIG option
+
+
+config GCOV_PROFILE_DIRS
+      string "Directories to enable GCOV"
+
+
+Then, you can set CONFIG_GCOV_PROFILE_DIRS=3D"fs/bcachefs"
+
+
+This might be a more natural approach because we already have
+CONFIG_GCOV_PROFILE_ALL, although it might eventually go away
+because CONFIG_GCOV_PROFILE_ALL=3Dy is almost equivalent to
+CONFIG_GCOV_PROFILE_DIRS=3D"."
+
+
+
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 1a965fe68e01..286a569556b3 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -147,8 +147,12 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y)
+$(CPPFLAGS_$(target-stem).lds)
+ # (in this order)
+ #
+ ifeq ($(CONFIG_GCOV_KERNEL),y)
++ifneq ($(filter $(obj),$(CONFIG_GCOV_PROFILE_DIRS)),)
++export GCOV_PROFILE_SUBDIR :=3D y
++endif
++
+ _c_flags +=3D $(if $(patsubst n%,, \
+-
+$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
+\
++
+$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFI=
+G_GCOV_PROFILE_ALL)),
+\
+                $(CFLAGS_GCOV))
+ endif
+
+
+
+
+
+
+
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 1a965fe68e01..0b4581a8bc33 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -148,7 +148,7 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y) $=
+(CPPFLAGS_$(target-stem).lds)
+>  #
+>  ifeq ($(CONFIG_GCOV_KERNEL),y)
+>  _c_flags +=3D $(if $(patsubst n%,, \
+> -               $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GC=
+OV_PROFILE_ALL)), \
+> +               $(GCOV_PROFILE_$(basetarget).o)$(call eval_vars,GCOV_PROF=
+ILE_,$(src))$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
+>                 $(CFLAGS_GCOV))
+>  endif
+>
+> --
+> 2.42.0
+>
+
+
+--
+Best Regards
+Masahiro Yamada
