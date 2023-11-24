@@ -2,427 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FE37F7C5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5F87F7C66
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjKXSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 13:14:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        id S230104AbjKXSOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 13:14:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXSO1 (ORCPT
+        with ESMTP id S231454AbjKXSOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 13:14:27 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCD41BC0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:33 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45faf180a15so459591137.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700849673; x=1701454473; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vruCw4XDPfGPNPhxq4EcKnwxHszATHynx+1RDcFbdIc=;
-        b=mAwERIISoi6+K477o9D/Vw2S+/tBbLJ2PWReN2SWlDM6ZwN3Qssk0FIHh8q4hsOILY
-         oecIdRwz2fSTg7J6EnAeyrdQnC3+pmDh1lwbyanpPkaLpayBtoOAVYUQFi6dbygYOwmC
-         Z95RogGWsbXkWvw8dCNc04Ua32T4H/nP7hjg0InrcwAeL7q82sifUUnSZjmOnde6Klwn
-         NBaqHnmX7TTjlMXePDrgtl9xCxPPyNPttn0OTLeYQbu75wTmqovr32d456QnIylPocWr
-         Xx6cKYWd8ch4AmFh1ldQLtoKVmsYUYmQUPDyd+rw4PF6fXh3dTHTtn6nW5MV3RbfG1ib
-         Twlw==
+        Fri, 24 Nov 2023 13:14:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA581BD2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700849689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jayixR5r6VyMF6ruxCXdvNk+pP1D8SwAjs84TIg2nWE=;
+        b=Zoo640W5UvRuC98eSvXgzbJD22EL68xQVbCnnUhUN6rKGIWJTGu31LqdeozAtgjilfOs2L
+        bo6iS+WaCtcc5SmtqEyqayiyKsokQbhqUDPXcUD1s51uElwuhACtTVu9aetsXEse0p0xxF
+        /RhxLi0wR65IR8tLYUITL8Rj8yK3U/U=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-412-jbSOI5g5P3OFNHXaVgwHrw-1; Fri, 24 Nov 2023 13:14:48 -0500
+X-MC-Unique: jbSOI5g5P3OFNHXaVgwHrw-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-679f44810d9so21121296d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 10:14:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700849673; x=1701454473;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vruCw4XDPfGPNPhxq4EcKnwxHszATHynx+1RDcFbdIc=;
-        b=v7/HT/OjENQ9fIemAA4sv2D9BkfKrC33yRxsOjrFsqjlAZkMImjh/1Jm9MT+vj1Eik
-         R/7wA8mAoCHIGywCW5KAx8T5Cqo62qQ8ugyLiso+UzIkHyyvfR2D49tr4QJ26KZh9ubz
-         I27f7v1jD6FJcN2ipIuEAd+mG/UiPre5gPhMyKQMe7TFDLDZrQ435T5MmbM4VwUbfYJM
-         vciL3wonfRkxqk3hU7vITbtZoTN/0/lgERe1TEZumNJWKx19VGqEQRwywwwfHaMgPFWc
-         j1oIAmH7WBEGjqtznLnR5J60c9x45zvnWiokrnpTqyZJinmWo/ABwO8jcMTVCep5Xgwy
-         Qrfg==
-X-Gm-Message-State: AOJu0YypN+Jm0deVs6HWpOZQHtVQQk5/ztdTHnei6bHx2+4PAewDiJRF
-        q5TPGHVXiy3IENZQOBZQAHTDy2LgsOG8Fb/uy0M=
-X-Google-Smtp-Source: AGHT+IGKnQedA3sJnyzfbhCbFLnRqMZEHtehkyNRJiNZKIzRuXJYl7My1s37YJk58PDxsd6cSZU4ZjpAVocLtccLhBQ=
-X-Received: by 2002:a05:6122:c96:b0:4ab:d065:d1b with SMTP id
- ba22-20020a0561220c9600b004abd0650d1bmr3241929vkb.8.1700849672562; Fri, 24
- Nov 2023 10:14:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700849688; x=1701454488;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jayixR5r6VyMF6ruxCXdvNk+pP1D8SwAjs84TIg2nWE=;
+        b=CcfVmkGV66H3UhL391nnHpXEncMhos8OlGfCI4wq2HpTJeYRo276l/r8r9ujHY4UtO
+         rN4VG1Rbebt38Qej2/FixBFKCkoJvS/3+VODsOK8xvDuW4BTeFp5yIRk+kOph1NhzvBo
+         48DcgdpKpfp2zS3ZY6FGH6HjLfL3K2xpfrLds8jrKgKbhaZBWi1gVJUmqAbchACUl4Yd
+         VwWj4ontqaiqll0L3ITYNCvK6P4Y48WMOTJuY8+YBS1PH64iMBoxxXt6Te18QyNnz4l0
+         F8yOlRCPzi+ODQP41jgzN12r08xrFj5B7xVfEFFUFkQOdF7Dd1YA08sts9oX584ibame
+         rHwA==
+X-Gm-Message-State: AOJu0YxXaxzUtbiVKPoEN02tbEzZ85ItYHmDA5WsDzkohRsKld8EGhCJ
+        j6PFXfUbhh212GAHHGgErbLeDgnu2s01eL3O2e66kROhbsjrzEO/FjvPs8aXoT9phHAgRuhrz79
+        mr+XFLMlPaccIDFMzC6Uc2mgu
+X-Received: by 2002:ad4:42a1:0:b0:679:e459:66 with SMTP id e1-20020ad442a1000000b00679e4590066mr3792210qvr.55.1700849687797;
+        Fri, 24 Nov 2023 10:14:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE9wpyuHWoHfdTHuBWyEG1G0mr4qBCQ3ozLCnEUmhsRho272BBXa5JXGDKRO/WBwS4a5ruh0g==
+X-Received: by 2002:ad4:42a1:0:b0:679:e459:66 with SMTP id e1-20020ad442a1000000b00679e4590066mr3792179qvr.55.1700849687550;
+        Fri, 24 Nov 2023 10:14:47 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id jy19-20020a0562142b5300b0067a165ccc72sm674469qvb.22.2023.11.24.10.14.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 10:14:46 -0800 (PST)
+Message-ID: <7b809e6b-aee8-4600-9f0c-07c10fa5d12b@redhat.com>
+Date:   Fri, 24 Nov 2023 19:14:42 +0100
 MIME-Version: 1.0
-References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com> <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com> <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com> <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
- <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
- <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com> <bab848b8-edd3-4c57-9a96-f17a33e030d0@arm.com>
- <71c4b8b2-512a-4e50-9160-6ee77a5ec0a4@arm.com>
-In-Reply-To: <71c4b8b2-512a-4e50-9160-6ee77a5ec0a4@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sat, 25 Nov 2023 07:14:21 +1300
-Message-ID: <CAGsJ_4yoYowJLm+cC8i-HujLcNJKGut+G-NnjRhg2eGkYvXz8Q@mail.gmail.com>
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-To:     Steven Price <steven.price@arm.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/3] KVM: selftests: aarch64: Move the pmu helper
+ function into lib/
+Content-Language: en-US
+To:     Shaoqin Huang <shahuang@redhat.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev
+Cc:     James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231123063750.2176250-1-shahuang@redhat.com>
+ <20231123063750.2176250-3-shahuang@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+In-Reply-To: <20231123063750.2176250-3-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 10:55=E2=80=AFPM Steven Price <steven.price@arm.com=
-> wrote:
->
-> On 24/11/2023 09:01, Ryan Roberts wrote:
-> > On 24/11/2023 08:55, David Hildenbrand wrote:
-> >> On 24.11.23 02:35, Barry Song wrote:
-> >>> On Mon, Nov 20, 2023 at 11:57=E2=80=AFPM Ryan Roberts <ryan.roberts@a=
-rm.com> wrote:
-> >>>>
-> >>>> On 20/11/2023 09:11, David Hildenbrand wrote:
-> >>>>> On 17.11.23 19:41, Barry Song wrote:
-> >>>>>> On Fri, Nov 17, 2023 at 7:28=E2=80=AFPM David Hildenbrand <david@r=
-edhat.com> wrote:
-> >>>>>>>
-> >>>>>>> On 17.11.23 01:15, Barry Song wrote:
-> >>>>>>>> On Fri, Nov 17, 2023 at 7:47=E2=80=AFAM Barry Song <21cnbao@gmai=
-l.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>> On Thu, Nov 16, 2023 at 5:36=E2=80=AFPM David Hildenbrand <davi=
-d@redhat.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> On 15.11.23 21:49, Barry Song wrote:
-> >>>>>>>>>>> On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <d=
-avid@redhat.com>
-> >>>>>>>>>>> wrote:
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> On 14.11.23 02:43, Barry Song wrote:
-> >>>>>>>>>>>>> This patch makes MTE tags saving and restoring support larg=
-e folios,
-> >>>>>>>>>>>>> then we don't need to split them into base pages for swappi=
-ng out
-> >>>>>>>>>>>>> on ARM64 SoCs with MTE.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> arch_prepare_to_swap() should take folio rather than page a=
-s parameter
-> >>>>>>>>>>>>> because we support THP swap-out as a whole.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter ra=
-ther than
-> >>>>>>>>>>>>> folio as swap-in always works at the granularity of base pa=
-ges right
-> >>>>>>>>>>>>> now.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> ... but then we always have order-0 folios and can pass a fo=
-lio, or what
-> >>>>>>>>>>>> am I missing?
-> >>>>>>>>>>>
-> >>>>>>>>>>> Hi David,
-> >>>>>>>>>>> you missed the discussion here:
-> >>>>>>>>>>>
-> >>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-=
-fR06ijv4Ac68MkhjMDw@mail.gmail.com/
-> >>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4=
-fbbhGguOkNzmh1Veocg@mail.gmail.com/
-> >>>>>>>>>>
-> >>>>>>>>>> Okay, so you want to handle the refault-from-swapcache case wh=
-ere you
-> >>>>>>>>>> get a
-> >>>>>>>>>> large folio.
-> >>>>>>>>>>
-> >>>>>>>>>> I was mislead by your "folio as swap-in always works at the gr=
-anularity of
-> >>>>>>>>>> base pages right now" comment.
-> >>>>>>>>>>
-> >>>>>>>>>> What you actually wanted to say is "While we always swap in sm=
-all
-> >>>>>>>>>> folios, we
-> >>>>>>>>>> might refault large folios from the swapcache, and we only wan=
-t to restore
-> >>>>>>>>>> the tags for the page of the large folio we are faulting on."
-> >>>>>>>>>>
-> >>>>>>>>>> But, I do if we can't simply restore the tags for the whole th=
-ing at once
-> >>>>>>>>>> at make the interface page-free?
-> >>>>>>>>>>
-> >>>>>>>>>> Let me elaborate:
-> >>>>>>>>>>
-> >>>>>>>>>> IIRC, if we have a large folio in the swapcache, the swap
-> >>>>>>>>>> entries/offset are
-> >>>>>>>>>> contiguous. If you know you are faulting on page[1] of the fol=
-io with a
-> >>>>>>>>>> given swap offset, you can calculate the swap offset for page[=
-0] simply by
-> >>>>>>>>>> subtracting from the offset.
-> >>>>>>>>>>
-> >>>>>>>>>> See page_swap_entry() on how we perform this calculation.
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> So you can simply pass the large folio and the swap entry corr=
-esponding
-> >>>>>>>>>> to the first page of the large folio, and restore all tags at =
-once.
-> >>>>>>>>>>
-> >>>>>>>>>> So the interface would be
-> >>>>>>>>>>
-> >>>>>>>>>> arch_prepare_to_swap(struct folio *folio);
-> >>>>>>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_e=
-ntry);
-> >>>>>>>>>>
-> >>>>>>>>>> I'm sorry if that was also already discussed.
-> >>>>>>>>>
-> >>>>>>>>> This has been discussed. Steven, Ryan and I all don't think thi=
-s is a good
-> >>>>>>>>> option. in case we have a large folio with 16 basepages, as do_=
-swap_page
-> >>>>>>>>> can only map one base page for each page fault, that means we h=
-ave
-> >>>>>>>>> to restore 16(tags we restore in each page fault) * 16(the time=
-s of page
-> >>>>>>>>> faults)
-> >>>>>>>>> for this large folio.
-> >>>>>>>>>
-> >>>>>>>>> and still the worst thing is the page fault in the Nth PTE of l=
-arge folio
-> >>>>>>>>> might free swap entry as that swap has been in.
-> >>>>>>>>> do_swap_page()
-> >>>>>>>>> {
-> >>>>>>>>>       /*
-> >>>>>>>>>        * Remove the swap entry and conditionally try to free up=
- the
-> >>>>>>>>> swapcache.
-> >>>>>>>>>        * We're already holding a reference on the page but have=
-n't
-> >>>>>>>>> mapped it
-> >>>>>>>>>        * yet.
-> >>>>>>>>>        */
-> >>>>>>>>>        swap_free(entry);
-> >>>>>>>>> }
-> >>>>>>>>>
-> >>>>>>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15,=
- you might
-> >>>>>>>>> access
-> >>>>>>>>> a freed tag.
-> >>>>>>>>
-> >>>>>>>> And David, one more information is that to keep the parameter of
-> >>>>>>>> arch_swap_restore() unchanged as folio,
-> >>>>>>>> i actually tried an ugly approach in rfc v2:
-> >>>>>>>>
-> >>>>>>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
-> >>>>>>>> +{
-> >>>>>>>> + if (system_supports_mte()) {
-> >>>>>>>> +      /*
-> >>>>>>>> +       * We don't support large folios swap in as whole yet, bu=
-t
-> >>>>>>>> +       * we can hit a large folio which is still in swapcache
-> >>>>>>>> +       * after those related processes' PTEs have been unmapped
-> >>>>>>>> +       * but before the swapcache folio  is dropped, in this ca=
-se,
-> >>>>>>>> +       * we need to find the exact page which "entry" is mappin=
-g
-> >>>>>>>> +       * to. If we are not hitting swapcache, this folio won't =
-be
-> >>>>>>>> +       * large
-> >>>>>>>> +     */
-> >>>>>>>> + struct page *page =3D folio_file_page(folio, swp_offset(entry)=
-);
-> >>>>>>>> + mte_restore_tags(entry, page);
-> >>>>>>>> + }
-> >>>>>>>> +}
-> >>>>>>>>
-> >>>>>>>> And obviously everybody in the discussion hated it :-)
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> I can relate :D
-> >>>>>>>
-> >>>>>>>> i feel the only way to keep API unchanged using folio is that we
-> >>>>>>>> support restoring PTEs
-> >>>>>>>> all together for the whole large folio and we support the swap-i=
-n of
-> >>>>>>>> large folios. This is
-> >>>>>>>> in my list to do, I will send a patchset based on Ryan's large a=
-non
-> >>>>>>>> folios series after a
-> >>>>>>>> while. till that is really done, it seems using page rather than=
- folio
-> >>>>>>>> is a better choice.
-> >>>>>>>
-> >>>>>>> I think just restoring all tags and remembering for a large folio=
- that
-> >>>>>>> they have been restored might be the low hanging fruit. But as al=
-ways,
-> >>>>>>> devil is in the detail :)
-> >>>>>>
-> >>>>>> Hi David,
-> >>>>>> thanks for all your suggestions though my feeling is this is too c=
-omplex and
-> >>>>>> is not worth it for at least  three reasons.
-> >>>>>
-> >>>>> Fair enough.
-> >>>>>
-> >>>>>>
-> >>>>>> 1. In multi-thread and particularly multi-processes, we need some =
-locks to
-> >>>>>> protect and help know if one process is the first one to restore t=
-ags and if
-> >>>>>> someone else is restoring tags when one process wants to restore. =
-there
-> >>>>>> is not this kind of fine-grained lock at all.
-> >>>>>
-> >>>>> We surely always hold the folio lock on swapin/swapout, no? So when=
- these
-> >>>>> functions are called.
-> >>>>>
-> >>>>> So that might just work already -- unless I am missing something im=
-portant.
-> >>>>
-> >>>> We already have a page flag that we use to mark the page as having h=
-ad its mte
-> >>>> state associated; PG_mte_tagged. This is currently per-page (and IIU=
-C, Matthew
-> >>>> has been working to remove as many per-page flags as possible). Coul=
-dn't we just
-> >>>> make arch_swap_restore() take a folio, restore the tags for *all* th=
-e pages and
-> >>>> repurpose that flag to be per-folio (so head page only)? It looks li=
-ke the the
-> >>>> mte code already manages all the serialization requirements too. The=
-n
-> >>>> arch_swap_restore() can just exit early if it sees the flag is alrea=
-dy set on
-> >>>> the folio.
-> >>>>
-> >>>> One (probably nonsense) concern that just sprung to mind about havin=
-g MTE work
-> >>>> with large folios in general; is it possible that user space could c=
-ause a large
-> >>>> anon folio to be allocated (THP), then later mark *part* of it to be=
- tagged with
-> >>>> MTE? In this case you would need to apply tags to part of the folio =
-only.
-> >>>> Although I have a vague recollection that any MTE areas have to be m=
-arked at
-> >>>> mmap time and therefore this type of thing is impossible?
-> >>>
-> >>> right, we might need to consider only a part of folio needs to be
-> >>> mapped and restored MTE tags.
-> >>> do_swap_page() can have a chance to hit a large folio but it only
-> >>> needs to fault-in a page.
-> >>>
-> >>> A case can be quite simple as below,
-> >>>
-> >>> 1. anon folio shared by process A and B
-> >>> 2. add_to_swap() as a large folio;
-> >>> 3. try to unmap A and B;
-> >>> 4. after A is unmapped(ptes become swap entries), we do a
-> >>> MADV_DONTNEED on a part of the folio. this can
-> >>> happen very easily as userspace is still working in 4KB level;
-> >>> userspace heap management can free an
-> >>> basepage area by MADV_DONTNEED;
-> >>> madvise(address, MADV_DONTNEED, 4KB);
-> >>> 5. A refault on address + 8KB, we will hit large folio in
-> >>> do_swap_page() but we will only need to map
-> >>> one basepage, we will never need this DONTNEEDed in process A.
-> >>>
-> >>> another more complicated case can be mprotect and munmap a part of
-> >>> large folios. since userspace
-> >>> has no idea of large folios in their mind, they can do all strange
-> >>> things. are we sure in all cases,
-> >>> large folios have been splitted into small folios?
-> >
-> > I don;'t think these examples you cite are problematic. Although user s=
-pace
-> > thinks about things in 4K pages, the kernel does things in units of fol=
-ios. So a
-> > folio is either fully swapped out or not swapped out at all. MTE tags c=
-an be
-> > saved/restored per folio, even if only part of that folio ends up being=
- mapped
-> > back into user space.
+Hi Shaoqin,
 
-I am not so optimistic :-)
+On 11/23/23 07:37, Shaoqin Huang wrote:
+> Move those pmu helper function into lib/, thus it can be used by other
+functions
 
-but zap_pte_range() due to DONTNEED on a part of swapped-out folio can
-free a part of swap
-entries? thus, free a part of MTE tags in a folio?
-after process's large folios are swapped out, all PTEs in a large
-folio become swap
-entries, but DONTNEED on a part of this area will only set a part of
-swap entries to
-PTE_NONE, thus decrease the swapcount of this part?
+Not really into lib but rather in vpmu.h header.
+> pmu test.
 
-zap_pte_range
-    ->
-          entry =3D pte_to_swp_entry
-                  -> free_swap_and_cache(entry)
-                      -> mte tags invalidate
+no functional change intended
+> 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  .../kvm/aarch64/vpmu_counter_access.c         | 118 -----------------
+>  .../selftests/kvm/include/aarch64/vpmu.h      | 119 ++++++++++++++++++
+>  2 files changed, 119 insertions(+), 118 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> index 17305408a334..62d6315790ab 100644
+> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> @@ -20,12 +20,6 @@
+>  #include <perf/arm_pmuv3.h>
+>  #include <linux/bitfield.h>
+>  
+> -/* The max number of the PMU event counters (excluding the cycle counter) */
+> -#define ARMV8_PMU_MAX_GENERAL_COUNTERS	(ARMV8_PMU_MAX_COUNTERS - 1)
+> -
+> -/* The cycle counter bit position that's common among the PMU registers */
+> -#define ARMV8_PMU_CYCLE_IDX		31
+> -
+>  static struct vpmu_vm *vpmu_vm;
+>  
+>  struct pmreg_sets {
+> @@ -35,118 +29,6 @@ struct pmreg_sets {
+>  
+>  #define PMREG_SET(set, clr) {.set_reg_id = set, .clr_reg_id = clr}
+>  
+> -static uint64_t get_pmcr_n(uint64_t pmcr)
+> -{
+> -	return (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
+> -}
+> -
+> -static void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
+> -{
+> -	*pmcr = *pmcr & ~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+> -	*pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
+> -}
+> -
+> -static uint64_t get_counters_mask(uint64_t n)
+> -{
+> -	uint64_t mask = BIT(ARMV8_PMU_CYCLE_IDX);
+> -
+> -	if (n)
+> -		mask |= GENMASK(n - 1, 0);
+> -	return mask;
+> -}
+> -
+> -/* Read PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
+> -static inline unsigned long read_sel_evcntr(int sel)
+> -{
+> -	write_sysreg(sel, pmselr_el0);
+> -	isb();
+> -	return read_sysreg(pmxevcntr_el0);
+> -}
+> -
+> -/* Write PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
+> -static inline void write_sel_evcntr(int sel, unsigned long val)
+> -{
+> -	write_sysreg(sel, pmselr_el0);
+> -	isb();
+> -	write_sysreg(val, pmxevcntr_el0);
+> -	isb();
+> -}
+> -
+> -/* Read PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
+> -static inline unsigned long read_sel_evtyper(int sel)
+> -{
+> -	write_sysreg(sel, pmselr_el0);
+> -	isb();
+> -	return read_sysreg(pmxevtyper_el0);
+> -}
+> -
+> -/* Write PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
+> -static inline void write_sel_evtyper(int sel, unsigned long val)
+> -{
+> -	write_sysreg(sel, pmselr_el0);
+> -	isb();
+> -	write_sysreg(val, pmxevtyper_el0);
+> -	isb();
+> -}
+> -
+> -static inline void enable_counter(int idx)
+> -{
+> -	uint64_t v = read_sysreg(pmcntenset_el0);
+> -
+> -	write_sysreg(BIT(idx) | v, pmcntenset_el0);
+> -	isb();
+> -}
+> -
+> -static inline void disable_counter(int idx)
+> -{
+> -	uint64_t v = read_sysreg(pmcntenset_el0);
+> -
+> -	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
+> -	isb();
+> -}
+> -
+> -static void pmu_disable_reset(void)
+> -{
+> -	uint64_t pmcr = read_sysreg(pmcr_el0);
+> -
+> -	/* Reset all counters, disabling them */
+> -	pmcr &= ~ARMV8_PMU_PMCR_E;
+> -	write_sysreg(pmcr | ARMV8_PMU_PMCR_P, pmcr_el0);
+> -	isb();
+> -}
+> -
+> -#define RETURN_READ_PMEVCNTRN(n) \
+> -	return read_sysreg(pmevcntr##n##_el0)
+> -static unsigned long read_pmevcntrn(int n)
+> -{
+> -	PMEVN_SWITCH(n, RETURN_READ_PMEVCNTRN);
+> -	return 0;
+> -}
+> -
+> -#define WRITE_PMEVCNTRN(n) \
+> -	write_sysreg(val, pmevcntr##n##_el0)
+> -static void write_pmevcntrn(int n, unsigned long val)
+> -{
+> -	PMEVN_SWITCH(n, WRITE_PMEVCNTRN);
+> -	isb();
+> -}
+> -
+> -#define READ_PMEVTYPERN(n) \
+> -	return read_sysreg(pmevtyper##n##_el0)
+> -static unsigned long read_pmevtypern(int n)
+> -{
+> -	PMEVN_SWITCH(n, READ_PMEVTYPERN);
+> -	return 0;
+> -}
+> -
+> -#define WRITE_PMEVTYPERN(n) \
+> -	write_sysreg(val, pmevtyper##n##_el0)
+> -static void write_pmevtypern(int n, unsigned long val)
+> -{
+> -	PMEVN_SWITCH(n, WRITE_PMEVTYPERN);
+> -	isb();
+> -}
+> -
+>  /*
+>   * The pmc_accessor structure has pointers to PMEV{CNTR,TYPER}<n>_EL0
+>   * accessors that test cases will use. Each of the accessors will
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> index 0a56183644ee..e0cc1ca1c4b7 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> @@ -1,10 +1,17 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  
+>  #include <kvm_util.h>
+> +#include <perf/arm_pmuv3.h>
+>  
+>  #define GICD_BASE_GPA	0x8000000ULL
+>  #define GICR_BASE_GPA	0x80A0000ULL
+>  
+> +/* The max number of the PMU event counters (excluding the cycle counter) */
+> +#define ARMV8_PMU_MAX_GENERAL_COUNTERS	(ARMV8_PMU_MAX_COUNTERS - 1)
+> +
+> +/* The cycle counter bit position that's common among the PMU registers */
+> +#define ARMV8_PMU_CYCLE_IDX		31
+> +
+>  struct vpmu_vm {
+>  	struct kvm_vm *vm;
+>  	struct kvm_vcpu *vcpu;
+> @@ -14,3 +21,115 @@ struct vpmu_vm {
+>  struct vpmu_vm *create_vpmu_vm(void *guest_code);
+>  
+>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
+> +
+> +static inline uint64_t get_pmcr_n(uint64_t pmcr)
+> +{
+> +	return (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
+> +}
+> +
+> +static inline void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
+> +{
+> +	*pmcr = *pmcr & ~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+> +	*pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
+> +}
+> +
+> +static inline uint64_t get_counters_mask(uint64_t n)
+> +{
+> +	uint64_t mask = BIT(ARMV8_PMU_CYCLE_IDX);
+> +
+> +	if (n)
+> +		mask |= GENMASK(n - 1, 0);
+> +	return mask;
+> +}
+> +
+> +/* Read PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
+> +static inline unsigned long read_sel_evcntr(int sel)
+> +{
+> +	write_sysreg(sel, pmselr_el0);
+> +	isb();
+> +	return read_sysreg(pmxevcntr_el0);
+> +}
+> +
+> +/* Write PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
+> +static inline void write_sel_evcntr(int sel, unsigned long val)
+> +{
+> +	write_sysreg(sel, pmselr_el0);
+> +	isb();
+> +	write_sysreg(val, pmxevcntr_el0);
+> +	isb();
+> +}
+> +
+> +/* Read PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
+> +static inline unsigned long read_sel_evtyper(int sel)
+> +{
+> +	write_sysreg(sel, pmselr_el0);
+> +	isb();
+> +	return read_sysreg(pmxevtyper_el0);
+> +}
+> +
+> +/* Write PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
+> +static inline void write_sel_evtyper(int sel, unsigned long val)
+> +{
+> +	write_sysreg(sel, pmselr_el0);
+> +	isb();
+> +	write_sysreg(val, pmxevtyper_el0);
+> +	isb();
+> +}
+> +
+> +static inline void enable_counter(int idx)
+> +{
+> +	uint64_t v = read_sysreg(pmcntenset_el0);
+> +
+> +	write_sysreg(BIT(idx) | v, pmcntenset_el0);
+> +	isb();
+> +}
+> +
+> +static inline void disable_counter(int idx)
+> +{
+> +	uint64_t v = read_sysreg(pmcntenset_el0);
+> +
+> +	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
+> +	isb();
+> +}
+> +
+> +static inline void pmu_disable_reset(void)
+> +{
+> +	uint64_t pmcr = read_sysreg(pmcr_el0);
+> +
+> +	/* Reset all counters, disabling them */
+> +	pmcr &= ~ARMV8_PMU_PMCR_E;
+> +	write_sysreg(pmcr | ARMV8_PMU_PMCR_P, pmcr_el0);
+> +	isb();
+> +}
+> +
+> +#define RETURN_READ_PMEVCNTRN(n) \
+> +	return read_sysreg(pmevcntr##n##_el0)
+> +static inline unsigned long read_pmevcntrn(int n)
+> +{
+> +	PMEVN_SWITCH(n, RETURN_READ_PMEVCNTRN);
+> +	return 0;
+> +}
+> +
+> +#define WRITE_PMEVCNTRN(n) \
+> +	write_sysreg(val, pmevcntr##n##_el0)
+> +static inline void write_pmevcntrn(int n, unsigned long val)
+> +{
+> +	PMEVN_SWITCH(n, WRITE_PMEVCNTRN);
+> +	isb();
+> +}
+> +
+> +#define READ_PMEVTYPERN(n) \
+> +	return read_sysreg(pmevtyper##n##_el0)
+> +static inline unsigned long read_pmevtypern(int n)
+> +{
+> +	PMEVN_SWITCH(n, READ_PMEVTYPERN);
+> +	return 0;
+> +}
+> +
+> +#define WRITE_PMEVTYPERN(n) \
+> +	write_sysreg(val, pmevtyper##n##_el0)
+> +static inline void write_pmevtypern(int n, unsigned long val)
+> +{
+> +	PMEVN_SWITCH(n, WRITE_PMEVTYPERN);
+> +	isb();
+> +}
 
-> >
-> > The problem is that MTE tagging could be active only for a selection of=
- pages
-> > within the folio; that's where it gets tricky.
-> >
-> >>
-> >> To handle that, we'd have to identify
-> >>
-> >> a) if a subpage has an mte tag to save during swapout
-> >> b) if a subpage has an mte tag to restore during swapin
-> >>
-> >> I suspect b) can be had from whatever datastructure we're using to act=
-ually save
-> >> the tags?
-> >>
-> >> For a), is there some way to have that information from the HW?
-> >
-> > Yes I agree with this approach. I don't know the answer to that questio=
-n though;
-> > I'd assume it must be possible. Steven?
->
-> Architecturally 'all' pages have MTE metadata (although see Alex's
-> series[1] which would change this).
->
-> The question is: could user space have put any data in the tag storage?
-> We currently use the PG_mte_tagged page flag to keep track of pages
-> which have been mapped (to user space) with MTE enabled. If the page has
-> never been exposed to user space with MTE enabled (since being cleared)
-> then there's nothing of interest to store.
->
-> It would be possible to reverse this scheme - we could drop the page
-> flag and just look at the actual tag storage. If it's all zeros then
-> obviously there's no point in storing it. Note that originally we had a
-> lazy clear of tag storage - i.e. if user space only had mapping without
-> MTE enabled then the tag storage could contain junk. I believe that's
-> now changed and the tag storage is always cleared at the same time as
-> the data storage.
->
-> The VMAs (obviously) also carry the information about whether a range is
-> MTE-enabled (the VM_MTE flag controlled by PROT_MTE in user space), but
-> there could be many VMAs and they may have different permissions, so
-> fetching the state from there would be expensive.
->
-> Not really relevant here, but the kernel can also use MTE (HW_TAGS
-> KASAN) - AFAIK there's no way of identifying if the MTE tag storage is
-> used or not for kernel pages. But this only presents an issue for
-> hibernation which uses a different mechanism to normal swap.
->
-> Steve
->
-> [1]
-> https://lore.kernel.org/r/20231119165721.9849-1-alexandru.elisei%40arm.co=
-m
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
 Thanks
-Barry
+
+Eric
+
