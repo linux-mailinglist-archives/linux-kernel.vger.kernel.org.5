@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCF07F7091
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AC77F7092
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345324AbjKXJw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:52:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
+        id S1345349AbjKXJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235345AbjKXJwO (ORCPT
+        with ESMTP id S230386AbjKXJwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:52:14 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8080E1727;
-        Fri, 24 Nov 2023 01:52:03 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2E591063;
-        Fri, 24 Nov 2023 01:52:49 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E34173F7A6;
-        Fri, 24 Nov 2023 01:52:01 -0800 (PST)
-Message-ID: <b85d165d-7f21-5896-a969-1f162903582b@arm.com>
-Date:   Fri, 24 Nov 2023 09:52:00 +0000
+        Fri, 24 Nov 2023 04:52:21 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2527C170A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:52:28 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so2328445a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:52:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1700819546; x=1701424346; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lPiBn2j7nRC2ohY93oZwJpQOBSGsTTZbyG2+TlPFQiA=;
+        b=GuRLhXgIIoNoHiXXElj/Uz50alI1JdzaFBgz6HNm0jkMA8K2Bb0bcsJbbw+Jfdf+B2
+         cuGzMW/kI0M8GKmj3emS/8uoHTYV+/tD8CEHXZA3I+XmO8Dxho0k4v2g8k5dIGE62/K6
+         zU/qZDypAnI+Mlqiz7q/BiPH3Tkdl7BZ9L14M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700819546; x=1701424346;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lPiBn2j7nRC2ohY93oZwJpQOBSGsTTZbyG2+TlPFQiA=;
+        b=pjx8I2pvMguBfW+jQsGqoVSb7EUJNggVC6pOWvPA0bu8F6S/0E4ioJ84QCoBDlY+CW
+         nzMuD/mX32N0Yhpvr22kaO1Z3l5IZh6SnNaAmA60CIXEvUN1aFpL2RmfrDwqccy1HR5T
+         JkWXxzcLA0SKr1MUk8mHsrUCIgIejoaiE/I5khLjRZfMtm4HM4hJmiCDUVXwShf4wcWx
+         GTJs0ydxos0Fnt1CI0nRAS9Buvy0NmYS64JZjokz2kj09fHg01oRBkgYPJ+vD3CexG4/
+         tUoiXwSgMGkZBlEvlzEXf/QsW2dDuKmOi17vGD+qvJC8l4BXt3Kqa+61al/aB7XM7R8W
+         hh/A==
+X-Gm-Message-State: AOJu0Yw8CsVKXGLPCDR5N4x+UijNUhWORfb1vCW6srDu9rdQU5rdDlvu
+        HwmqySMjg1j5LB46SuJoG9ofGdJMcIgrXKF4T066vw==
+X-Google-Smtp-Source: AGHT+IEBfhEmsD5EKPJl+/lEhxi4nG9SttIahQn1yPMeWAXJB+1krEHdfcyXCHFNF8KJVIk8quJgcQ==
+X-Received: by 2002:a50:d745:0:b0:543:5741:c9cd with SMTP id i5-20020a50d745000000b005435741c9cdmr1359620edj.34.1700819546366;
+        Fri, 24 Nov 2023 01:52:26 -0800 (PST)
+Received: from localhost.localdomain ([2001:b07:6474:ebbf:7c18:b9c9:f303:f6bb])
+        by smtp.gmail.com with ESMTPSA id i7-20020aa7c9c7000000b0054855988fedsm1588384edt.37.2023.11.24.01.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 01:52:26 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Helge Deller <deller@gmx.de>, Zhou Zhu <zzhu3@marvell.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH] video: fbdev: mmp: Fix typo in code comment
+Date:   Fri, 24 Nov 2023 10:52:11 +0100
+Message-ID: <20231124095221.659445-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
- counting threshold feature
-From:   James Clark <james.clark@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Namhyung Kim <namhyung@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
-        will@kernel.org, mark.rutland@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231113112507.917107-1-james.clark@arm.com>
- <20231113112507.917107-4-james.clark@arm.com>
- <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
- <0bcda96e-df9a-4342-af4e-e4485c33ff55@arm.com>
- <4f959354-74c7-5240-bf8f-78a49fb34437@arm.com>
-Content-Language: en-US
-In-Reply-To: <4f959354-74c7-5240-bf8f-78a49fb34437@arm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+s/singals/signals/
 
+Fixes: 641b4b1b6a7c ("video: mmpdisp: add spi port in display controller")
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
-On 23/11/2023 15:45, James Clark wrote:
-> 
-> 
-> On 23/11/2023 05:50, Anshuman Khandual wrote:
->>
->>
->> On 11/21/23 03:01, Namhyung Kim wrote:
->>> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
->>>> Add documentation for the new Perf event open parameters and
->>>> the threshold_max capability file.
->>>>
->>>> Signed-off-by: James Clark <james.clark@arm.com>
->>>> ---
->>>>  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
->>>>  1 file changed, 56 insertions(+)
->>>>
->>>> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
->>>> index 1f87b57c2332..36b8111a710d 100644
->>>> --- a/Documentation/arch/arm64/perf.rst
->>>> +++ b/Documentation/arch/arm64/perf.rst
->>>> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
->>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
->>>>  .. _tools/lib/perf/tests/test-evsel.c:
->>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
->>>> +
->>>> +Event Counting Threshold
->>>> +==========================================
->>>> +
->>>> +Overview
->>>> +--------
->>>> +
->>>> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
->>>> +events whose count meets a specified threshold condition. For example if
->>>> +threshold_compare is set to 2 ('Greater than or equal'), and the
->>>> +threshold is set to 2, then the PMU counter will now only increment by
->>>> +when an event would have previously incremented the PMU counter by 2 or
->>>> +more on a single processor cycle.
->>>> +
->>>> +To increment by 1 after passing the threshold condition instead of the
->>>> +number of events on that cycle, add the 'threshold_count' option to the
->>>> +commandline.
->>>> +
->>>> +How-to
->>>> +------
->>>> +
->>>> +The threshold, threshold_compare and threshold_count values can be
->>>> +provided per event:
->>>> +
->>>> +.. code-block:: sh
->>>> +
->>>> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
->>>> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
->>> Can you please explain this a bit more?
->>>
->>> I guess the first event counts stall_slot PMU if the event if it's
->>> greater than or equal to 2.  And as threshold_count is not set,
->>> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
->>
->> Hence without 'threshold_count' being set, the other two config requests
->> will not have an effect, is that correct ?
-> 
-> Yeah I can mention this. It's implied because 0 is the default value of
-> config fields, and 0 is a valid value for compare and count field, so
-> threshold=0 has to be the way to disable it. But I can mention it
-> explicitly.
-> 
+ drivers/video/fbdev/mmp/hw/mmp_spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-To avoid any confusion, I thought you meant threshold here instead of
-threshold_count. But I replied in more detail about the same issue on
-patch 2.
+diff --git a/drivers/video/fbdev/mmp/hw/mmp_spi.c b/drivers/video/fbdev/mmp/hw/mmp_spi.c
+index 16401eb95c6c..64e34b7e739e 100644
+--- a/drivers/video/fbdev/mmp/hw/mmp_spi.c
++++ b/drivers/video/fbdev/mmp/hw/mmp_spi.c
+@@ -91,7 +91,7 @@ static int lcd_spi_setup(struct spi_device *spi)
+ 	writel(tmp, reg_base + LCD_SPU_SPI_CTRL);
+ 
+ 	/*
+-	 * After set mode it need a time to pull up the spi singals,
++	 * After set mode it need a time to pull up the spi signals,
+ 	 * or it would cause the wrong waveform when send spi command,
+ 	 * especially on pxa910h
+ 	 */
+-- 
+2.42.0
 
