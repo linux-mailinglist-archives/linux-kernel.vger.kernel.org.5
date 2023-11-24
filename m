@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E717F72A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E537F72A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344808AbjKXLZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 06:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
+        id S230405AbjKXLZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 06:25:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbjKXLZD (ORCPT
+        with ESMTP id S230489AbjKXLY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 06:25:03 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467AA10F1;
-        Fri, 24 Nov 2023 03:25:09 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO65kVg030441;
-        Fri, 24 Nov 2023 11:25:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=cU3i0if0uj1/U3YTw/bULzJG89OYtknDdvsSeSeTMFQ=;
- b=VsaGrL97RnHw5QlYg3jWT/LhBUCK4pGxvpJyUxcA5RbH6kKOhUic8bnpU6u5wr+Qw2/C
- hywESInjIqZXl6ib1VUeP42uhK5NXGnVHL9SGVoigF0h+3DrAIaTb7AIcuUyrQ5Ic2NS
- 13arb7dLmMEko3m3OlRfzwfEGggXeGnSxosEkqv4/+hwF+twZtPOzY8NJAKrIdycbYJR
- 8KghOQwCMOuJRv5SK2DPe4YzJg46avQqh5iuZo3w6P5PUCnY4n9nrs1vjuY1/IXhjV4r
- gsOWzyKWgfthw92S99AijzZXRdRYnaNaTsH2E7TPU0MFCeOl1O4YZhflMd3xstVGO4fN gg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ujp8x0vd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 11:25:04 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AOBP3GJ001801
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Nov 2023 11:25:03 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
- 2023 03:25:00 -0800
-Message-ID: <a2137dac-9660-53ae-8950-4902c05a3f66@quicinc.com>
-Date:   Fri, 24 Nov 2023 16:54:55 +0530
+        Fri, 24 Nov 2023 06:24:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2357E1702;
+        Fri, 24 Nov 2023 03:25:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700825103; x=1732361103;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=8HBC5nuhSjPqE1UlKy9QKbtcJWfkVzdP3fyBc0MI/qE=;
+  b=YteXy2ec3G6/40XyMoYl2k/QNwhz3sAx+g7lnPbYfz50wZ0NTDqszVlt
+   nT8tP7wK/qmN7bSObip8O//uei9kmH9mmHSF/5nA142C4XSHI+1V+mLoN
+   24qqSIe+d6bMO6TFd0ePe+3HtqOG6EoltbUX/KOfZ/jIF9tqI/Ln0eYUv
+   yaW+mlIpQNKoYOB1zhP9p/HKxcZVcQTdoX/wpj7b8akfeoRH4nw1UdAYt
+   WX5L2iw08VE8l9WJeXGURcS9ne6JGpTQhVRPVUm3H4XACZO0/5dTNCzx7
+   HySQTM4dyYm0X6wlW/tmhy41oARvwzKd5B2fsw+aMiI5u0SyPUDIUA1Cv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396314838"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="396314838"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 03:25:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="911422551"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="911422551"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 03:25:01 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r6UIs-0000000GhQM-2OqW;
+        Fri, 24 Nov 2023 13:24:58 +0200
+Date:   Fri, 24 Nov 2023 13:24:58 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pinctrl: pinconf-generic: resize the pin config
+ array directly
+Message-ID: <ZWCIChQ3TKtxv2b-@smile.fi.intel.com>
+References: <20231120222832.4063882-1-masahiroy@kernel.org>
+ <20231120222832.4063882-2-masahiroy@kernel.org>
+ <CAK7LNATK3BVDZ88v7MWjzOk3Kv8CR4Tz_k77yi1OO=zc+71j=g@mail.gmail.com>
+ <CACRpkdaMBrWUR8OYLPiQNNJ64mfenFyQa9f4iB+w5kZ44WjSeQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH] clk: qcom: gpucc-sm8150: Update the gpu_cc_pll1 config
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231122042814.4158076-1-quic_skakitap@quicinc.com>
- <2b619607-1219-46db-a439-0f087b8b5d3b@linaro.org>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <2b619607-1219-46db-a439-0f087b8b5d3b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ydM-1n_1jOPXzMw-NiIRuY0MrpUlZy96
-X-Proofpoint-ORIG-GUID: ydM-1n_1jOPXzMw-NiIRuY0MrpUlZy96
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxlogscore=537 clxscore=1015 spamscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311240089
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaMBrWUR8OYLPiQNNJ64mfenFyQa9f4iB+w5kZ44WjSeQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 24, 2023 at 11:06:50AM +0100, Linus Walleij wrote:
+> On Tue, Nov 21, 2023 at 11:21 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > On Tue, Nov 21, 2023 at 7:28 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > pinconf_generic_parse_dt_config() allocates memory that is large enough
+> > > to contain all the config parameters. Then, kmemdup() copies the found
+> > > configs to the memory with the exact size.
+> > >
+> > > There is no need to allocate memory twice; you can directly resize the
+> > > initial memory using krealloc_array().
+> > >
+> > > I also changed kcalloc() to kmalloc_array() to keep the consistency with
+> > > krealloc_array(). This change has no impact because you do not need to
+> > > zero out the 'cfg' array.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > Sorry, I retract this patch set.
+> >
+> > krealloc() does not save any memory
+> > when the new_size is smaller than the current size.
+> 
+> But the first part where you switch to kmalloc_array() is still a nice change.
+> 
+> The fact that we use kmemdup to be able to also shrink the allocation is a
+> bit of an oddity I guess, but let's run this patch by Andy Shevchenko, and
+> ask what he thinks about simply introducing kmemdup_array() or if he
+> has other ideas for this.
 
-On 11/22/2023 9:32 PM, Konrad Dybcio wrote:
->
->
-> On 11/22/23 05:28, Satya Priya Kakitapalli wrote:
->> Update the test_ctl_hi_val and test_ctl_hi1_val of gpu_cc_pll1
->> as per latest HW recommendation.
-> IIRC there is SM8150 v2.1 that's there on most devices and v2.2
-> that was used on the Microsoft Duo (or v2.0 and v2.1 respectively,
-> not sure, don't have any device on hand to read it back), do these
-> settings apply to both? Are they different for mobile vs auto?
->
+https://lore.kernel.org/all/20231017052322.2636-2-kkartik@nvidia.com/
 
-Yes these settings apply to all v2.x devices, also they are same for 
-auto and mobile.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> Konrad
