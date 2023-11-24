@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD75A7F6DD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95B47F6DD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344795AbjKXIPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S232004AbjKXIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344572AbjKXIOz (ORCPT
+        with ESMTP id S232747AbjKXIPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:14:55 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0912B10EC
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:15:01 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c503dbe50dso19513851fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:15:00 -0800 (PST)
+        Fri, 24 Nov 2023 03:15:03 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3191702
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:15:08 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso19668581fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700813699; x=1701418499; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700813707; x=1701418507; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6oXYAGeXachCCe2/bIuP5OEv/Ub7oTlTCCZrnr5GJzY=;
-        b=H2EPh4l5Irng4ffln7rTANrVyjn1TPTepjwmQrRqpFFoc9G8vwM9JnjaMUQPjZhWnS
-         Jtv+9T7A0JCJTPFH1tXzI8VEpYl4OJgOqQFjoH8+4EiXG8/ohULopJ2IqC1UOcZ5AYdJ
-         RwOQssp1b0KPG92lt8f4u/evcuaeJuBjgSjcH4Os26AXfTUKc3rp9cKHwohjYG8SbVgs
-         5PI2WbR8NZfr6Ck4hkQ82jBYMfePQ441WNc+IdqeziL1lkw2ROZepxNxvdbPhucW/IOZ
-         ukcLQQlqnFkXBUVewN7B2yupHw3GY3LyDcTDWYUNj0AJ/j/Xft8NJq828J6yxm19K4y6
-         Cy9g==
+        bh=5EYwIkp2+JQBbwt8LYg5s9Pu8iHhOSMhe1Ch2bTUfS8=;
+        b=ScsPkB3QuOm4j8YMdBtHYMMuSKvWPwBFsTISzw1rJ1YeZiH6kWXMJrVWWiy+O97c2h
+         q1jipEBmSJDfDdD0QhVFO1PSHBLgNFphq+59BiXRb6T1u8Zz+EzmUsxiOnKzUYUyYP9R
+         Omt7WLbHWLGWKuuPFDq28hMKdl6cJxVU5JSz+wp/ErlZc0HBMmHQ5MxY28O9FeT53SK+
+         BxHRXt+i5jRYA8zQPb1gO6ATUgsxAUzXQIYAQgZXobzRKFK+7V5K/MQOA4E4mSJrHNkw
+         ZPIojiTicSTK0cJ6hOuTkma+moaVRghdwziQfaThP1Xt14wke3OyLWNkE3wi6ed20kfa
+         h32Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700813699; x=1701418499;
+        d=1e100.net; s=20230601; t=1700813707; x=1701418507;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6oXYAGeXachCCe2/bIuP5OEv/Ub7oTlTCCZrnr5GJzY=;
-        b=VHvZT3WPJgOWzNixzNihCi3fkcm8/kzT7yV157HbIXvS0iBlT2YZ5tNVtH9iHmTTYK
-         MDPiG70BNmYlz2RGrY+95XoQufPOfq6oxwt7xAapG5QhVzM0H8/cQXUP1NFU0kYktwNg
-         If+FfKiSygPS/P7zx0COdgCPwvtC4cE7robAQNL5rcGOYIikVC2o0yxstTw3YRukq+XI
-         6+diDaEFYZpiYDJIch53r1SS7TaB5TKzCiIUtUZc1Bqr/hRYlxW1klPvdIi04DCjlKgH
-         lAGwX7ygyev8S8/bZeeElviXV7nEwawxSQxXdFQ1tmFnLafceFKO9E3eCx+CspSmMLXJ
-         BD4g==
-X-Gm-Message-State: AOJu0Yzd5FnlonIcuVFlnKPU+/qWPbvqu79WdMpqol9nWH0my+cQThk+
-        66cA7Z2N+f5EvFve2ig3VdeElXhhkWpje0DPlSyv3T/4zKQ38A==
-X-Google-Smtp-Source: AGHT+IFRMh+bKAjZCpJBgtB/uvXxgv0uD8dPXcIWu+uZcx/fWJ9STjrWR/3JOQ4bOsE/AYrcPq1JnUdVcqrQsbVwcP8=
-X-Received: by 2002:a2e:97d8:0:b0:2c8:83c7:4046 with SMTP id
- m24-20020a2e97d8000000b002c883c74046mr1291556ljj.26.1700813698968; Fri, 24
- Nov 2023 00:14:58 -0800 (PST)
+        bh=5EYwIkp2+JQBbwt8LYg5s9Pu8iHhOSMhe1Ch2bTUfS8=;
+        b=As/genYMrLGIG4Qh3MG4aAyrShgtkD0rJvjJEa4mBAI42rkCYLharVFsU9AXwQTEcx
+         9u0ugA1fPIohShFDpSw24fzkENzvZaiilN3tjFqG2yPIdlXzHTX3eDWcRvRoiG43VRc+
+         1YEStcVGwQe4v6xIt5Uw1V7m9eeAG5HE1oQxikHXE3C+rvKiFiXvzD3ps+ydM35kTFUs
+         CVt01TwLOeFqIMm+e8Xi94/x6hTs9Zg9ofScMCuLADY1gw4cCiSqfNcTi0KJk2BcfNu3
+         2cN//Lx/kjch1SGh9MSRnMhotlmTJX4IdIMF8VObQxQcG2/L1yfTpbjxbKVYJeC7BhA8
+         ROyA==
+X-Gm-Message-State: AOJu0YzMvV+3vTzIEFBmc3tXc7EHF7figKjRK7H1TjH0TmraiMzogb2j
+        b0Gv+/ThDIHnRzhf9qZ0jDMQ1cV4kh84lID8E6A=
+X-Google-Smtp-Source: AGHT+IHuAjr2hg83x7hwu14c0h4KwHcHHqArvnEQR9FpmuSLSDWtPuPaAuIT+hAxfw1N2h1khf2ZD80b2NpE99GcMHk=
+X-Received: by 2002:a2e:90c2:0:b0:2c8:8024:3447 with SMTP id
+ o2-20020a2e90c2000000b002c880243447mr1378942ljg.44.1700813706787; Fri, 24 Nov
+ 2023 00:15:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-5-ryncsn@gmail.com>
- <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
- <CAMgjq7D_OJiaNPWquFqxk5DKZXqoUMrD7Y_CRM7D0RnRnHmW7Q@mail.gmail.com>
- <CAF8kJuOzXAy8Er_knD0hi60Tb+XDMrijg-W83KD=Zdjqbu1Dmw@mail.gmail.com>
- <CAMgjq7DNVkyhwyXz9PRcp3XTBNvznZ97dOFFA_DGsJks12_pQw@mail.gmail.com> <CAF8kJuM05apUTd9Mpv6s4sZ6SfSAWD+hM_KLiDfatoXu5QwFbg@mail.gmail.com>
-In-Reply-To: <CAF8kJuM05apUTd9Mpv6s4sZ6SfSAWD+hM_KLiDfatoXu5QwFbg@mail.gmail.com>
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-22-ryncsn@gmail.com>
+ <CAF8kJuN5GELAdh5ZJHthtgJCaYkgQ38BmzLZerUp6fS+pVU=WQ@mail.gmail.com>
+In-Reply-To: <CAF8kJuN5GELAdh5ZJHthtgJCaYkgQ38BmzLZerUp6fS+pVU=WQ@mail.gmail.com>
 From:   Kairui Song <ryncsn@gmail.com>
-Date:   Fri, 24 Nov 2023 16:14:41 +0800
-Message-ID: <CAMgjq7Bax-EOiXXDRxpHFoyrQWRQdSWbZ0KN7-W8YsocV5C97w@mail.gmail.com>
-Subject: Re: [PATCH 04/24] mm/swap: avoid setting page lock bit and doing
- extra unlock check
+Date:   Fri, 24 Nov 2023 16:14:49 +0800
+Message-ID: <CAMgjq7CMvT-YLQoeRKCaNUDLyzuLzCi7s8rzgsNxpncc=7AWcg@mail.gmail.com>
+Subject: Re: [PATCH 21/24] swap: make swapin_readahead result checking
+ argument mandatory
 To:     Chris Li <chrisl@kernel.org>
 Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         "Huang, Ying" <ying.huang@intel.com>,
@@ -79,62 +76,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8823=E6=97=A5=
-=E5=91=A8=E5=9B=9B 04:57=E5=86=99=E9=81=93=EF=BC=9A
+Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8822=E6=97=A5=
+=E5=91=A8=E4=B8=89 13:18=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Hi Kairui,
->
-> On Wed, Nov 22, 2023 at 9:33=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wr=
-ote:
->
-> > > There are two different charges. Memcg charging and memcg swapin char=
-ging.
-> > > The folio_put will do the memcg discharge, the corresponding memcg
-> > > charge is in follio allocation.
+> On Sun, Nov 19, 2023 at 11:49=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
+rote:
 > >
-> > Hi Chris,
+> > From: Kairui Song <kasong@tencent.com>
 > >
-> > I didn't get your idea here... By "memcg swapin charge", do you mean
-> > "memory.swap.*"? And "memcg charging" means "memory.*"?. There is no
+> > This is only one caller now in page fault path, make the result return
+> > argument mandatory.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > ---
+> >  mm/swap_state.c | 17 +++++++----------
+> >  1 file changed, 7 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+> > index 6f39aa8394f1..0433a2586c6d 100644
+> > --- a/mm/swap_state.c
+> > +++ b/mm/swap_state.c
+> > @@ -913,7 +913,6 @@ static struct page *swapin_no_readahead(swp_entry_t=
+ entry, gfp_t gfp_mask,
+> >  struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+> >                               struct vm_fault *vmf, enum swap_cache_res=
+ult *result)
+> >  {
+> > -       enum swap_cache_result cache_result;
+> >         struct swap_info_struct *si;
+> >         struct mempolicy *mpol;
+> >         void *shadow =3D NULL;
+> > @@ -928,29 +927,27 @@ struct page *swapin_readahead(swp_entry_t entry, =
+gfp_t gfp_mask,
+> >
+> >         folio =3D swap_cache_get_folio(entry, vmf, &shadow);
+> >         if (folio) {
+> > +               *result =3D SWAP_CACHE_HIT;
+> >                 page =3D folio_file_page(folio, swp_offset(entry));
+> > -               cache_result =3D SWAP_CACHE_HIT;
+> >                 goto done;
+> >         }
+> >
+> >         mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+> >         if (swap_use_no_readahead(si, swp_offset(entry))) {
+> > +               *result =3D SWAP_CACHE_BYPASS;
 >
-> Sorry I should have used the function name then there is no ambiguity.
-> "memcg swapin charge" I mean function mem_cgroup_swapin_charge_folio().
-> This function will look up the swap entry and find the memcg by swap entr=
-y then
-> charge to that memcg.
+> Each of this "*result" will compile into memory store instructions.
+> The compiler most likely can't optimize and combine them together
+> because the store can cause segfault from the compiler's point of
+> view. The multiple local variable assignment can be compiled into a
+> few registers assignment so it does not cost as much as multiple
+> memory stores.
 >
-> > memcg charge related code in folio allocation (alloc_pages_mpol),
-> > actually the mem_cgroup_swapin_charge_folio here is doing memcg charge
-> > not memcg swapin charge. Swapin path actually need to uncharge
-> > "memory.swap" by mem_cgroup_swapin_uncharge_swap in later part of this
-> > function.
+> >                 page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx=
+, vmf->vma->vm_mm);
+> > -               cache_result =3D SWAP_CACHE_BYPASS;
+> >                 if (shadow)
+> >                         workingset_refault(page_folio(page), shadow);
+> > -       } else if (swap_use_vma_readahead(si)) {
+> > -               page =3D swap_vma_readahead(entry, gfp_mask, mpol, ilx,=
+ vmf);
+> > -               cache_result =3D SWAP_CACHE_MISS;
+> >         } else {
+> > -               page =3D swap_cluster_readahead(entry, gfp_mask, mpol, =
+ilx);
+> > -               cache_result =3D SWAP_CACHE_MISS;
+> > +               *result =3D SWAP_CACHE_MISS;
+> > +               if (swap_use_vma_readahead(si))
+> > +                       page =3D swap_vma_readahead(entry, gfp_mask, mp=
+ol, ilx, vmf);
+> > +               else
+> > +                       page =3D swap_cluster_readahead(entry, gfp_mask=
+, mpol, ilx);
 >
-> I still think you have a bug there.
+> I recall you introduce or heavy modify this function in previous patch be=
+fore.
+> Consider combine some of the patch and present the final version sooner.
+> From the reviewing point of view, don't need to review so many
+> internal version which get over written any way.
 >
-> Take this make up example:
-> Let say the for loop runs 3 times and the 3rd time breaks out the for loo=
-p.
-> The original code will call:
-> filemap_get_folio() 3 times
-> folio_put() 2 times
-> mem_cgroup_swapin_charge_folio() 1 time.
+> >         }
+> >         mpol_cond_put(mpol);
+> >  done:
+> >         put_swap_device(si);
+> > -       if (result)
+> > -               *result =3D cache_result;
 >
-> With your patch, it will call:
-> filemap_get_folio() 3 times
-> folio_put() 2 times
-> mem_cgroup_swapin_charge_folio() 3 times.
->
-> Do you see the behavior difference there?
+> The original version with check and assign it at one place is better.
+> Safer and produce better code.
 
-Hi Chris.
-
-folio_put will discharge a page if it's charged, in original code the
-2 folio_put call simply free the page since it's not charged. But in
-this patch, folio_put will cancel previous
-mem_cgroup_swapin_charge_folio call, so actually the 3
-mem_cgroup_swapin_charge_folio calls will only charge once. (2 calls
-was cancelled by folio_put).
-
-I think this is making it confusing indeed and causing more trouble in
-error path (the uncharge could be more expensive than unlock check),
-will rework this part.
+Yes, that's less error-prone indeed, saving a "if" seems doesn't worth
+all the potential trouble, will drop this.
