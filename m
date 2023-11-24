@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48017F7716
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6397F771A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345486AbjKXPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
+        id S1345491AbjKXPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:03:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345384AbjKXPDA (ORCPT
+        with ESMTP id S1345384AbjKXPDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:03:00 -0500
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF5A1AE
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:03:07 -0800 (PST)
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5c19a0a2fbfso1959468a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:03:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700838186; x=1701442986;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdOGYRw72XNJqmdPubXE3DN830RearWPfGL+ky1culY=;
-        b=Y6URr5aczekmUNO8lYt0BBcNAAfFyVOtZ/RQX6f36aWHi99Ij1um+vGrlj7wgzErVx
-         A/6ZFQfoZgUZP36WpRitAIddB69yLctzo9VVb/74nz+mHnj7syN/dzV5mNaqBN738p9x
-         2jr0vYVam9ePUIzfjXnvuts+3AekVMYxkYmNfjc6dg4hcYYanTonMxq+Fr3YiItKStC+
-         dQbkMlfrhteB47vi+GyaD1Tutm1WRgeqE/0xUhgDK7xBmowrmNuJMNMsX6Qia4WE98IY
-         omLDiKZOtJEC+/rI+L1nFRVZwqInC0P1UgQ2dc2WCCr1u02hgx8XagpmSqGAlq+vNlt7
-         rqcA==
-X-Gm-Message-State: AOJu0YxZayWsauzooJue+L7x3A35TKEUB6h4uncJGSeEt3SzfGS37dN8
-        D0OBcGBmY3qRQPl3K394BenG/lputMj7lgCCWlf3f43Dwe71
-X-Google-Smtp-Source: AGHT+IF/OpCjhF/WWI5/IHCmdz64ebIxIlZdyR8GxPdJXc2tF7B4AjJYFdaK8E6F44vImX4ZB8se0iKG2x374ePup4X7r0EXlqZs
+        Fri, 24 Nov 2023 10:03:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8BBD72
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:03:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700838228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0XJZJPBiFQgSSe+XxCMWeD8kd9qiENSYyfcir+QL/Yw=;
+        b=ZqRsm4TjKbz7wDF4jhZubkBINCncZkHRvX5E2POK8vUh4os92P9VXPznpwtW/ddDyWwwWV
+        WYjo6hFqKVlHQ1OVm1dQ5kk79QLOFk4VJbO14dNPKe0vdptLz6FwwbEcE2mFHG/W7Ywj6P
+        h7/lg2HQiJiaFOuZkT7gBFxnOXaZJO0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-651-YwIFWucYO1i2thUxLoGzug-1; Fri,
+ 24 Nov 2023 10:03:47 -0500
+X-MC-Unique: YwIFWucYO1i2thUxLoGzug-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7F8B33C01E0B;
+        Fri, 24 Nov 2023 15:03:46 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.226.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 40A7B40C6EB9;
+        Fri, 24 Nov 2023 15:03:44 +0000 (UTC)
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Simon Horman <horms@kernel.org>, mschmidt@redhat.com,
+        netdev@vger.kernel.org
+Subject: [PATCH iwl-next v5 0/5] i40e: Simplify VSI and VEB handling
+Date:   Fri, 24 Nov 2023 16:03:38 +0100
+Message-ID: <20231124150343.81520-1-ivecera@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a63:4c:0:b0:5bd:d756:86d2 with SMTP id 73-20020a63004c000000b005bdd75686d2mr426223pga.10.1700838186595;
- Fri, 24 Nov 2023 07:03:06 -0800 (PST)
-Date:   Fri, 24 Nov 2023 07:03:06 -0800
-In-Reply-To: <CAG48ez3AazYzfJCFgu2MKSoxMEpJXz0td+rbeCOhsM38i78m3A@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eebb5d060ae73f1e@google.com>
-Subject: Re: [syzbot] [fs?] possible deadlock in pipe_write
-From:   syzbot <syzbot+011e4ea1da6692cf881c@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, jannh@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The series simplifies handling of VSIs and VEBs by introducing for-each
+iterating macros, 'find' helper functions. Also removes the VEB
+recursion because the VEBs cannot have sub-VEBs according datasheet and
+fixes the support for floating VEBs.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+The series content:
+Patch 1 - Uses existing helper function for find FDIR VSI instead of loop
+Patch 2 - Adds and uses macros to iterate VSI and VEB arrays
+Patch 3 - Adds 2 helper functions to find VSIs and VEBs by their SEID
+Patch 4 - Fixes broken support for floating VEBs
+Patch 5 - Removes VEB recursion and simplifies VEB handling
 
-Reported-and-tested-by: syzbot+011e4ea1da6692cf881c@syzkaller.appspotmail.com
+Changelog:
+v1->v2 - small correction in patch 4 description
+       - changed helper names in patch 3
+v2->v3 - correct patch files (v2 was broken)
+v3->v4 - added kdoc stuff
+       - fixed wrong check in i40e_ndo_bridge_getlink()
+v4->v5 - fixed VSI/VEB interation macros
 
-Tested on:
+Ivan Vecera (5):
+  i40e: Use existing helper to find flow director VSI
+  i40e: Introduce and use macros for iterating VSIs and VEBs
+  i40e: Add helpers to find VSI and VEB by SEID and use them
+  i40e: Fix broken support for floating VEBs
+  i40e: Remove VEB recursion
 
-commit:         56c486e6 fs/pipe: Fix lockdep false-positive in watchq..
-git tree:       https://github.com/thejh/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=128b880ce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6a76f6c7029ca2
-dashboard link: https://syzkaller.appspot.com/bug?extid=011e4ea1da6692cf881c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+ drivers/net/ethernet/intel/i40e/i40e.h        |  93 ++-
+ drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c |  10 +-
+ .../net/ethernet/intel/i40e/i40e_debugfs.c    |  97 ++-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 563 ++++++++----------
+ 4 files changed, 373 insertions(+), 390 deletions(-)
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+-- 
+2.41.0
+
