@@ -2,87 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77387F714C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D6B7F7150
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345511AbjKXKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S1345498AbjKXKVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:21:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345407AbjKXKVP (ORCPT
+        with ESMTP id S1345481AbjKXKVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:21:15 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604D89F
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:21:22 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c1b986082dso1603471a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:21:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700821282; x=1701426082;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AXb4DzTGGaCknFGpuIEtkP1AUuOyS77E3cnXSc5q+ms=;
-        b=BmQ/MVCyEXHZcr4ZUc25BguuLiPO7tneS5x12zoKBWTsfpR33Lv5e3oJ9KGacy3bbU
-         PK5W6od2lVRxbmQq+lzFU23rhscp8ZeBftp72nMIk6tQi2zJpmAVRRESk0Z8sc8ZIGil
-         6tAJnSvst6Kzyp/tOZSMoabVy+lKGDDPGDF3gerwmP/Yc49H6CUSmuIZvjiuH7M9ryLh
-         Nuenudd2KBz/7k++ynxr6hoVpnkO+3rWaSQOTNC2GF6qC4LTS1xOFHfnF7xt7/BBGLlE
-         5G+ymn8xFTG96doghopiOS5353Vf3jKSwTqouQcNEfG6T6GI2RZCruqBvAyAsfQ3Ievw
-         sm/g==
-X-Gm-Message-State: AOJu0YzJihnpeFLyONzmjFKva1u/l8LQvzfWp2NGfsnFp0AE7EqLgx8f
-        QL5fGwwQ/F9PwUVPOTfNzix4UjRfLr5GfjdqZzvYxQLbn+N1
-X-Google-Smtp-Source: AGHT+IEt3PxQJrmAk4K31zjAVHsptoaHQ8Escb2erc2tdAMxWiJi+WxzZ78DLWWSoDJrH4fipx4JHtkANgHPOa/SQ0qfUyP+bkzW
+        Fri, 24 Nov 2023 05:21:47 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F58BC
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:21:53 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3A34B66073A8;
+        Fri, 24 Nov 2023 10:21:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700821311;
+        bh=0UstT5q4XGqLhugf7BzP/6tcf1OIPQXVhYROpLfPmeg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=E8m+CKdVsUsF1G5OGRdCsKrrZW+LRi+CVh6lbl/tdwkzCZtajmPyZJuB8N+ZEOjwc
+         jKrNzEFNediRAs+okyNZfM8vfSJfSzaYWtc0dbDWAUG8C24mDncKKUqM0vhg/eegTA
+         RpvVx+URcsvGso2fab608xlkfGa4o2EpUA1dm+HMysDditQ4CygQOshoNHelFJtWLd
+         IOiiTR1RYJvfdJCBxv7QB19SWwK+35dV7P1vYkr1nLzNdcr4lXAteYh/sumOKQ+rqU
+         QtZU7WUDfyIR0E9XJMdp/3YIkp7JdgMEQzzFljpGSx1Ti6+BdmQiTMb4JxYXnzvaZf
+         w6g8swatrZHyA==
+Date:   Fri, 24 Nov 2023 11:21:47 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     steven.price@arm.com, robh@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski@linaro.org, kernel@collabora.com
+Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
+ interrupts
+Message-ID: <20231124112147.19b6b6b7@collabora.com>
+In-Reply-To: <c4a8eb63-2d67-42c3-a6b4-c6ad3bd9ab8e@collabora.com>
+References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
+        <20231123113530.46191ded@collabora.com>
+        <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
+        <20231123135933.34d643f7@collabora.com>
+        <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
+        <20231123145103.23b6eac9@collabora.com>
+        <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
+        <20231123164019.629c91f9@collabora.com>
+        <5e60f1d1-8e3a-42ca-af56-126faa67ea86@collabora.com>
+        <c4a8eb63-2d67-42c3-a6b4-c6ad3bd9ab8e@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a63:2587:0:b0:5bd:839e:caf1 with SMTP id
- l129-20020a632587000000b005bd839ecaf1mr977648pgl.3.1700821281893; Fri, 24 Nov
- 2023 02:21:21 -0800 (PST)
-Date:   Fri, 24 Nov 2023 02:21:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000557820060ae35051@google.com>
-Subject: [syzbot] Monthly staging report (Nov 2023)
-From:   syzbot <syzbot+list87ce6f9405b095bc851c@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello staging maintainers/developers,
+On Fri, 24 Nov 2023 11:12:57 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
 
-This is a 31-day syzbot report for the staging subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/staging
+> Il 24/11/23 10:17, AngeloGioacchino Del Regno ha scritto:
+> > Il 23/11/23 16:40, Boris Brezillon ha scritto: =20
+> >> On Thu, 23 Nov 2023 16:14:12 +0100
+> >> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> >> wrote:
+> >> =20
+> >>> Il 23/11/23 14:51, Boris Brezillon ha scritto: =20
+> >>>> On Thu, 23 Nov 2023 14:24:57 +0100
+> >>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> >>>> wrote: =20
+> >>>>>>>
+> >>>>>>> So, while I agree that it'd be slightly more readable as a diff i=
+f those
+> >>>>>>> were two different commits I do have reasons against splitting...=
+.. =20
+> >>>>>>
+> >>>>>> If we just need a quick fix to avoid PWRTRANS interrupts from kick=
+ing
+> >>>>>> in when we power-off the cores, I think we'd be better off dropping
+> >>>>>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
+> >>>>>> at [re]initialization time, and then have a separate series that f=
+ixes
+> >>>>>> the problem more generically. =20
+> >>>>>
+> >>>>> But that didn't work:
+> >>>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@li=
+naro.org/ =20
+> >>>>
+> >>>> I meant, your 'ignore-core_mask' fix + the
+> >>>> 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
+> >>>>
+> >>>> So,
+> >>>>
+> >>>> https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@col=
+labora.com/
+> >>>> +
+> >>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@lin=
+aro.org/ =20
+> >>>>>
+> >>>>>
+> >>>>> ...while this "full" solution worked:
+> >>>>> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@li=
+naro.org/
+> >>>>>
+> >>>>> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@li=
+naro.org/
+> >>>>>
+> >>>>>
+> >>>>> ...so this *is* a "quick fix" already... :-) =20
+> >>>>
+> >>>> It's a half-baked solution for the missing irq-synchronization-on-su=
+spend
+> >>>> issue IMHO. I understand why you want it all in one patch that can s=
+erve
+> >>>> as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores=
+ in
+> >>>> panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
+> >>>> even simpler diff (see below), and then fully address the
+> >>>> irq-synhronization-on-suspend issue in a follow-up patchset. =20
+> >>>> --->8--- =20
+> >>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c=20
+> >>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> >>>> index 09f5e1563ebd..6e2d7650cc2b 100644
+> >>>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> >>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> >>>> @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_devic=
+e *pfdev)
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpu_write(pfd=
+ev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+> >>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpu_write(pfdev, GPU_INT_MASK,=
+ GPU_IRQ_MASK_ALL); =20
+> >>
+> >> We probably want a comment here:
+> >>
+> >> =C2=A0=C2=A0=C2=A0=C2=A0/* Only enable the interrupts we care about. */
+> >> =20
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpu_write(pfdev, GPU_INT_MASK,
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GPU_IRQ_MASK_ERROR |
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GPU_IRQ_CLEAN_CACHES_COMPLETED); =20
+> >>>
+> >>> ...but if we do that, the next patch(es) will contain a partial rever=
+t of this
+> >>> commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_M=
+ASK_ALL)... =20
+> >>
+> >> Why should we revert it? We're not processing the PWRTRANS interrupts
+> >> in the interrupt handler, those should never have been enabled in the
+> >> first place. The only reason we'd want to revert that change is if we
+> >> decide to do have interrupt-based waits in the poweron/off
+> >> implementation, which, as far as I'm aware, is not something we intend
+> >> to do any time soon.
+> >> =20
+> >=20
+> > You're right, yes. Okay, I'll push the new code soon.
+> >=20
+> > Cheers!
+> >  =20
+>=20
+> Update: I was running some (rather fast) tests here because I ... felt li=
+ke playing
+> with it, basically :-)
+>=20
+> So, I had an issue with MediaTek platforms being unable to cut power to t=
+he GPU or
+> disable clocks aggressively... and after trying "this and that" I couldn'=
+t get it
+> working (in runtime suspend).
+>=20
+> Long story short - after implementing `panfrost_{job,mmu,gpu}_suspend_irq=
+()` (only
+> gpu irq, as you said, is a half solution), I can not only turn off clocks=
+, but even
+> turn off GPU power supplies entirely, bringing the power consumption of t=
+he GPU
+> itself during *runtime* suspend to ... zero.
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 4 issues are still open and 24 have been fixed so far.
+Very nice!
 
-Some of the still happening issues:
+>=20
+> The result of this test makes me truly happy, even though complete powerc=
+ut during
+> runtime suspend may not be feasible for other reasons (takes ~200000ns on=
+ AVG,
+> MIN ~160000ns, but the MAX is ~475000ns - and beware that I haven't run t=
+hat for
+> long, I'd suspect to get up to 1-1.5ms as max time, so that's a big no).
 
-Ref Crashes Repro Title
-<1> 376     Yes   INFO: task hung in r871xu_dev_remove
-                  https://syzkaller.appspot.com/bug?extid=f39c1dad0b7db49ca4a8
-<2> 239     Yes   INFO: task hung in netdev_run_todo (2)
-                  https://syzkaller.appspot.com/bug?extid=9d77543f47951a63d5c1
-<3> 2       Yes   memory leak in _r8712_init_xmit_priv (2)
-                  https://syzkaller.appspot.com/bug?extid=83763e624cfec6b462cb
+Do you know what's taking so long? I'm disabling clks + the main power
+domain in panthor (I leave the regulators enabled), but I didn't get to
+measure the time it takes to enter/exit suspend. I might have to do
+what you did in panfrost and have different paths for system and RPM
+suspend.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> This means that I will take a day or two and I'll push both the "simple" =
+fix for
+> the Really-power-off and also some more commits to add the full irq sync.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Thanks for working on that, and sorry if I've been picky in my previous
+reviews. Looking forward to review these new patches.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+Regards,
 
-You may send multiple commands in a single email message.
+Boris
