@@ -2,253 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3587F6A30
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0667F6A35
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjKXBhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S230146AbjKXBjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKXBhG (ORCPT
+        with ESMTP id S229453AbjKXBjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:37:06 -0500
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2059.outbound.protection.outlook.com [40.107.100.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC89FD5E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:37:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h1K+vP2n0BWSe/uy4fgdwu3GJpBpWLmO0fl7A41aUZy0hO2HsuOSc8cLcXMEhWsVa296HUWDXlLRdxZrtNen922Gcd5hOAUIG8RgLrwB8IZkjiZSLQNfUlM1TtNsmHn4KnOoa/pH3f5dXeModFTdRSvYiAMj7d0U4aB9fvlE6VjvmOsh/EJkTwCispZMGPALbmk+ClcqPTYrGYW39tSirAQGzHUNUcGAGm0Huwqia9eoUF5fq7wFfmy/Im+8Unl7XUubHoofAe15qnEpaReFolt4QTUJ+nYtqcnYUHVy3Ik33v+K2hUBsFj/mqr5Ledi/IapIIP5v4f8I9xcGkUyxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fvmbO4I2dympCT/mU1uktCBEszR0uPFg7gGkKrM5n50=;
- b=VUW2vwHrpjndRvM3FMhLXGOrAUgkhO0rQztxTfKu683DM4X/csMyuKHbEj1gP9GJxzf6kakXct8AJtBW6HFLzGmxALuGdqvsecgzj7/iPDslVnnIHcM6ix8CtJgcD9U2F25lRWiBKBFdfLjOQLhKZ7yfFK6b8+GuBrxYoN8qpYIB3W/nXi2tuoWvkxW+FG+wsW9eKnxP/LkxrmoEup+qTSJE0Y91P+ryHOoOyR7Hwkp8r6sC9KRdXl8Ox3vy9HOAIK2ESFks5xlQt3ZlFE+njNnb2LmiS+7b3NKGlNVIza+rpNFeYralYioxHgT1zmUq5w4UgvKRTbsFzSWe1ZcygQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fvmbO4I2dympCT/mU1uktCBEszR0uPFg7gGkKrM5n50=;
- b=Da/Hlea0Aarg6gNMZpMBjDdA/cxRbmPLq5GHNqao6qlGReIjLN4pJhIQm1EvEFn9X7y68Xq1+dzwxwLlip1rEusv3Grf7qVTlngBMiQkqtoA/URm3AtizODFPRFicjSxE82WMI81zw8ktfsc7VzX0Dew0y3Kik4+FHhKJJBUqkeWgEeEZO8xLjZCbulyzbRd/dkmQosa9s3IsVZmvUvV+il4dtkqYnrYl8tud7Uqrb7rJsH26IgfJsE0ELk9ezVEdOS2xs7lpxTuxRhCLxKEiVVWJBbIHG+FDAp6l6tzGNJFK6LU8RJYxIQHhY70cPVIDQtj+NaFLzYAxlulYc8epw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by CY8PR12MB8362.namprd12.prod.outlook.com (2603:10b6:930:7e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Fri, 24 Nov
- 2023 01:37:09 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::b8a:1b58:1edf:90e6]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::b8a:1b58:1edf:90e6%7]) with mapi id 15.20.7025.020; Fri, 24 Nov 2023
- 01:37:09 +0000
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231115163018.1303287-15-ryan.roberts@arm.com>
- <87fs0xxd5g.fsf@nvdebian.thelocal>
- <3b4f6bff-6322-4394-9efb-9c3b9ef52010@arm.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
- optimize process teardown
-Date:   Fri, 24 Nov 2023 12:35:30 +1100
-In-reply-to: <3b4f6bff-6322-4394-9efb-9c3b9ef52010@arm.com>
-Message-ID: <87y1eovsn5.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY5PR01CA0076.ausprd01.prod.outlook.com
- (2603:10c6:10:1f5::6) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        Thu, 23 Nov 2023 20:39:00 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D36D69
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:39:06 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-548a2c20f50so1906475a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700789945; x=1701394745; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MCjIjD8tavb0cbgjvIEQTL7WpfbPqahU1xHEzB2I5uM=;
+        b=F0IsYUDEKq4ZAkR8od3oIMqnQdqSYe7mCjWfH/SpI/2eHwnK8TgXJlSywgZYI0bWI3
+         Y6JXdYOjZqY9eXveqhOqw4kboaPkXqhgWAr6I5yaSH9eMMk+b12us0ffwd5nUQgqIqot
+         ik4gz40N7U/V1KKtX06oDcUIDy0u26UTfVSOqNL/MbOCwR+U2RKsf4SPpelrW/8j6GVr
+         NwZ7vga0EUxOuqQtIa00eqP+MrRyy9Cul/ITGdWaym/6vBrmOHD8NokZHl6VwuTqjFlL
+         WXPuffy3y+ecZ953CpH6/d+NvB3P7AGmlb+Kf+V78bmLbWcYiG/FiKtwYq5lVlG3Sa10
+         uCgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700789945; x=1701394745;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MCjIjD8tavb0cbgjvIEQTL7WpfbPqahU1xHEzB2I5uM=;
+        b=h0CB5+JtVyiBgX+0IE1FfivjGJh7s2Uvxqvx4k/JZ3fPq9Mm82jdTfzYlLZD0SVR1b
+         +uhV/tUD4p/68bgJHno9rQG11Ni8787UdAviz6lfJ5xtgWmO1Lf4RcY2Jw+zZHb+6FZZ
+         Fclfbd9SQqtUAOmJugC0e62pUojvLUvY1s7lgNDVergcWA6SjrJ3FpxV7dvOUzWXpK2t
+         0ijmZaMpfxLofBPjTXo2uARaAc+sKPBbCqAlPSvKOMsXbxX6Ef1S4GCUK/kIRB8aJGrA
+         DdLyskK94rG7waliuN3uX5VKY38XNnOakA4Rpb3YIjVBftEi9eBTvW4Vkn+0snVN+TzO
+         swyQ==
+X-Gm-Message-State: AOJu0YzOa7pD8Onl4BN5w6fCLu4K4RnJ+QyoVBhMpA9ZpubTpWHAB+AE
+        sXjZc+rDQxague4xB0R1Ra9fXaQaqLRabNogiIE=
+X-Google-Smtp-Source: AGHT+IFMWsDCoDTnUOis1NEZFxzHDDlNlqWsjIu1KiRS8KmbJxKLEmmKnV3HPDf4zStiqHzmYEqYOYCsUEvKAdWFLas=
+X-Received: by 2002:a17:906:b21a:b0:9ff:5b5c:12a6 with SMTP id
+ p26-20020a170906b21a00b009ff5b5c12a6mr753905ejz.40.1700789944473; Thu, 23 Nov
+ 2023 17:39:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|CY8PR12MB8362:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7070b62-863e-48fe-289b-08dbec8dde9d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lz+GN2mTRRc5SiWTEj5SqhUAj+3lotlMjVmNU7SX3Nct2HIiJE4qgySTkGJ0tV97vDYYOFrO1txofuFSQgWgQoMIucvL0np3YVtQHSPCrUZsk7kgNcaI9Et7RfpCewbpw8/KnoHlYTd/s0i/PVz19OrHOW8BKYuHI10v/96aZ+8fwOXjwZBEb8iqrX0xq/lhDuRNrpQz5eDa42itB67t6dnN/upzjNs3Lt/GqA68sFeRATQwsIEF+an47ihz0tQj1r6raNCHT+TVNr7Y4yadZXF1JJzFYrZo+lVcc3pTSPNtnpJZ/2misaUEuF3UHDQ/ONrQ8mxVLV84clbVHrbN5MXlcz6ruX2Bndu1xr4QSPuWHyJZcPG5CECSoU55z88MTICtM76D2IlpO/WrZ70Yqz0f7VAU1R+g3AVrsydBFpSyf0WRKhyH9OD9m+XH6/9OZPJzEBGPCvGS/ITKtypZ8nW1RMqCFB2jj2Fkts5j5/FT/JQxPHDKbICFmSEjFiGiYRhQyHINzmFbtrHRWdvmjm3lkCxmgbiWe9l6c48QqszBTSIEJM2vgOUA7ffSz0bS
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(39860400002)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(7416002)(6666004)(4326008)(8676002)(8936002)(2906002)(86362001)(5660300002)(41300700001)(38100700002)(66899024)(6916009)(26005)(83380400001)(6512007)(9686003)(478600001)(6506007)(53546011)(6486002)(66476007)(66556008)(316002)(54906003)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M5tdhscV4DzKk6mfgj3aVbSuAvFtYBiRicsN65RHRO9RrUwqQ2p1tqeUcVIV?=
- =?us-ascii?Q?c8PuXL3BIEXm2yYlNQHEflAnqJjPzRW9hUq0DjxgJ+mpvvHOb9Vg3OBwz1/t?=
- =?us-ascii?Q?oc+uj+miRtPN32Ag16x2qnfdPtegVnlfKYobfrKgAcUojSRuCQc5aPz2sxxr?=
- =?us-ascii?Q?kq+CayRoB9Hnwmbws6EDTsXYulztHmgSJ2X0P5i8FKZBOLD6xu3TM1c9iBn5?=
- =?us-ascii?Q?ccDlT8ag+Gpk8BzRAY7VFaW1jHJpGNnZcf+6wdcgBQsvNH1FaEGgYVkEy395?=
- =?us-ascii?Q?k7uw/YwC0y6HDwjy7sCj2E7nA0TN4IkWyTBID8QKu1GMU2KN+JDNnb1wVLBg?=
- =?us-ascii?Q?hzBXzQitjvKIvQFj0yjft/JiRhT4UxfVU2ddSJgLxR56isG/Rsmq2tdZuuya?=
- =?us-ascii?Q?Lnz75nBWkjW+UsWBSCLaIFNivXWjfVgkq5hnoH2vZfAVG/LsCqm/SScdUaNH?=
- =?us-ascii?Q?WFe35vQt89FuGunCKtjSZBRRb3Jx0N6xLlnOKmyuKdUEPqoUxG/D7Qu9B7Tk?=
- =?us-ascii?Q?hMmhRYDw3Yr+NzD0IdXcOt3solWouX8wvPlS58wa1Wo+qO1W18+53QdD8SIA?=
- =?us-ascii?Q?3e7xF3OPva+1sQj4yFPHZr+/RAR1xCCZ2PEq5Q0Yq2jzjRk+LgFxbv4It4lm?=
- =?us-ascii?Q?C8vWNXQx/ljgCTjPzFfPeYfNojFT/J4pq8UyTQr4bfP3TqA6c2BXnEqp5qh3?=
- =?us-ascii?Q?DWgAaRVqah1BNHuZzowdtVOURoGAlb/5ecxcs7nXliKpNz3CBXcIK3HjEGC6?=
- =?us-ascii?Q?BNDA0GKnqtK0YtFz/cgizXznbp2rfMmsVtFVdS61cm6suJENzklpbQgKP2Te?=
- =?us-ascii?Q?fVvIXdhKmJivpynVXSTLb9vzBSDlfDw3pUam6Nwx3B6Suvhs6sVa2PZpxRcL?=
- =?us-ascii?Q?BrXMjdgT9XngtuKFe2Q9UkZKYrHyznd+jUsTIQjeC0aCOOzTLlT2bRB8U6R9?=
- =?us-ascii?Q?pFcToCWjCnTdltbxy8VFOX3aecG7hH+2zuQ+8zbztC1Tge+cB9M+8CI8GUjd?=
- =?us-ascii?Q?s+/slaPKb6Jhpgo1Q5eJXep0NxprK5nheHs40sr6TR4e6/5gSqX8XsO2MCKa?=
- =?us-ascii?Q?oL8a6CVr41xCxdfL+sQYkY4dBU06IEXO6HWIoWkg6K0zcDFPSkFHX18S0msV?=
- =?us-ascii?Q?Irdtg1i0s2zEfoCipAUE27Co0XZrmBJnGxedqosv8B5SIgYDlzN91sM+pA36?=
- =?us-ascii?Q?eh6fWJ3o2wta2iBvEfW4V8rVQXIHer7X6r21I3fx0DASboYFBuJaXEKkU2I5?=
- =?us-ascii?Q?1hd+6PI0MEvNtrPaXrqvlknOrKKW/BDGm6lxBx2vQjOvbVg/M2RQgt+LMZA7?=
- =?us-ascii?Q?pUbY/qpqK7zCkGrvMzAd62W5GOZKAGjpL/Ndz3p5ctV0pGxSNZUD/azmw2bb?=
- =?us-ascii?Q?OLrW3zFfJG5zLpJO68fmIIIXFtltuPyoRkGJotgGHP+9Y9ebdyLchx+Q8Iro?=
- =?us-ascii?Q?oV/qeDfjFeTZGk3BwQK79viHj94uhghOBrxMfilpy1qxa3cR+ObMCInviEYW?=
- =?us-ascii?Q?tgo6hhLDT1cyf525GWyRqIvoVmrB5GV6lHVWuHv8F3biKY2e+CgaXEAlDAdk?=
- =?us-ascii?Q?5D05LIc6Hg6L38bYxwZaim+OPsjORg6DpXaDqPy4?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7070b62-863e-48fe-289b-08dbec8dde9d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:37:08.2080
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a/0sgeOzI+GGR6tVnH1IuH9SblclhlnIsMFmcopRAE9qoxjoN2T6p/XLbUvO+DTCSID2mK9npQdkYJ4l2GFPZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8362
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 24 Nov 2023 11:38:52 +1000
+Message-ID: <CAPM=9txezDxgPxV4UJ-RPVxuAqO4k2kdDj-oUAyFdP+CztJPzg@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.7-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+Back to regular scheduled fixes pull request, mainly a bunch of msm,
+some i915 and otherwise a few scattered, one memory crasher in the
+nouveau GSP paths is helping stabilise that work.
 
-> On 23/11/2023 05:13, Alistair Popple wrote:
->> 
->> Ryan Roberts <ryan.roberts@arm.com> writes:
->> 
->>> ptep_get_and_clear_full() adds a 'full' parameter which is not present
->>> for the fallback ptep_get_and_clear() function. 'full' is set to 1 when
->>> a full address space teardown is in progress. We use this information to
->>> optimize arm64_sys_exit_group() by avoiding unfolding (and therefore
->>> tlbi) contiguous ranges. Instead we just clear the PTE but allow all the
->>> contiguous neighbours to keep their contig bit set, because we know we
->>> are about to clear the rest too.
->>>
->>> Before this optimization, the cost of arm64_sys_exit_group() exploded to
->>> 32x what it was before PTE_CONT support was wired up, when compiling the
->>> kernel. With this optimization in place, we are back down to the
->>> original cost.
->>>
->>> This approach is not perfect though, as for the duration between
->>> returning from the first call to ptep_get_and_clear_full() and making
->>> the final call, the contpte block in an intermediate state, where some
->>> ptes are cleared and others are still set with the PTE_CONT bit. If any
->>> other APIs are called for the ptes in the contpte block during that
->>> time, we have to be very careful. The core code currently interleaves
->>> calls to ptep_get_and_clear_full() with ptep_get() and so ptep_get()
->>> must be careful to ignore the cleared entries when accumulating the
->>> access and dirty bits - the same goes for ptep_get_lockless(). The only
->>> other calls we might resonably expect are to set markers in the
->>> previously cleared ptes. (We shouldn't see valid entries being set until
->>> after the tlbi, at which point we are no longer in the intermediate
->>> state). Since markers are not valid, this is safe; set_ptes() will see
->>> the old, invalid entry and will not attempt to unfold. And the new pte
->>> is also invalid so it won't attempt to fold. We shouldn't see this for
->>> the 'full' case anyway.
->>>
->>> The last remaining issue is returning the access/dirty bits. That info
->>> could be present in any of the ptes in the contpte block. ptep_get()
->>> will gather those bits from across the contpte block. We don't bother
->>> doing that here, because we know that the information is used by the
->>> core-mm to mark the underlying folio as accessed/dirty. And since the
->>> same folio must be underpinning the whole block (that was a requirement
->>> for folding in the first place), that information will make it to the
->>> folio eventually once all the ptes have been cleared. This approach
->>> means we don't have to play games with accumulating and storing the
->>> bits. It does mean that any interleaved calls to ptep_get() may lack
->>> correct access/dirty information if we have already cleared the pte that
->>> happened to store it. The core code does not rely on this though.
->> 
->> Does not *currently* rely on this. I can't help but think it is
->> potentially something that could change in the future though which would
->> lead to some subtle bugs.
->
-> Yes, there is a risk, although IMHO, its very small.
->
->> 
->> Would there be any may of avoiding this? Half baked thought but could
->> you for example copy the access/dirty information to the last (or
->> perhaps first, most likely invalid) PTE?
->
-> I spent a long time thinking about this and came up with a number of
-> possibilities, none of them ideal. In the end, I went for the simplest one
-> (which works but suffers from the problem that it depends on the way it is
-> called not changing).
+Regards,
+Dave.
 
-Ok, that answers my underlying question of "has someone thought about
-this and are there any easy solutions". I suspected that was the case
-given the excellent write up though!
+drm-fixes-2023-11-24:
+drm fixes for 6.7-rc3
 
-> 1) copy the access/dirty flags into all the remaining uncleared ptes within the
-> contpte block. This is how I did it in v1; although it was racy. I think this
-> could be implemented correctly but its extremely complex.
->
-> 2) batch calls from the core-mm (like I did for pte_set_wrprotects()) so that we
-> can clear 1 or more full contpte blocks in a single call - the ptes are never in
-> an intermediate state. This is difficult because ptep_get_and_clear_full()
-> returns the pte that was cleared so its difficult to scale that up to multiple ptes.
->
-> 3) add ptep_get_no_access_dirty() and redefine the interface to only allow that
-> to be called while ptep_get_and_clear_full() calls are on-going. Then assert in
-> the other functions that ptep_get_and_clear_full() is not on-going when they are
-> called. So we would get a clear sign that usage patterns have changed. But there
-> is no easy place to store that state (other than scanning a contpte block
-> looking for pte_none() amongst pte_valid_cont() entries) and it all felt ugly.
->
-> 4) The simple approach I ended up taking; I thought it would be best to keep it
-> simple and see if anyone was concerned before doing something more drastic.
->
-> What do you think? If we really need to solve this, then option 1 is my
-> preferred route, but it would take some time to figure out and reason about a
-> race-free scheme.
+msm:
+- Fix the VREG_CTRL_1 for 4nm CPHY to match downstream
+- Remove duplicate call to drm_kms_helper_poll_init() in msm_drm_init()
+- Fix the safe_lut_tbl[] for sc8280xp to match downstream
+- Don't attach the drm_dp_set_subconnector_property() for eDP
+- Fix to attach drm_dp_set_subconnector_property() for DP. Otherwise
+  there is a bootup crash on multiple targets
+- Remove unnecessary NULL check left behind during cleanup
 
-Well I like simple, and I agree the risk is small. But I can't help feel
-the current situation is too subtle, mainly because it is architecture
-specific and the assumptions are not communicated in core-mm code
-anywhere. But also none of the aternatives seem much better.
+i915:
+- Fix race between DP MST connectore registration and setup
+- Fix GT memory leak on probe error path
 
-However there are only three callers of ptep_get_and_clear_full(), and
-all of these hold the PTL. So if I'm not mistaken that should exclude
-just about all users of ptep_get*() which will take the ptl before hand.
+panel:
+- Fixes for innolux and auo,b101uan08.3 panel.
+- Fix Himax83102-j02 timings.
 
-So really that only leaves ptep_get_lockless() that could/should
-interleave right? From a quick glance of those users none look at the
-young/dirty information anyway, so I wonder if we can just assert in the
-core-mm that ptep_get_lockless() does not return young/dirty information
-and clear it in the helpers? That would make things explicit and
-consistent which would address my concern (although I haven't looked too
-closely at the details there).
+ivpu:
+- Fix ivpu MMIO reset.
 
-> Thanks,
-> Ryan
+ast:
+- AST fix on connetor disconnection.
 
+nouveau:
+- gsp memory corruption fix.
+
+rockchip:
+- color fix.
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
+
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-11-24
+
+for you to fetch changes up to b3ca8a08d8ed0dc8a9e236d9294efd58554a7b05:
+
+  Merge tag 'drm-intel-fixes-2023-11-23' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2023-11-24
+11:18:29 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.7-rc3
+
+msm:
+- Fix the VREG_CTRL_1 for 4nm CPHY to match downstream
+- Remove duplicate call to drm_kms_helper_poll_init() in msm_drm_init()
+- Fix the safe_lut_tbl[] for sc8280xp to match downstream
+- Don't attach the drm_dp_set_subconnector_property() for eDP
+- Fix to attach drm_dp_set_subconnector_property() for DP. Otherwise
+  there is a bootup crash on multiple targets
+- Remove unnecessary NULL check left behind during cleanup
+
+i915:
+- Fix race between DP MST connectore registration and setup
+- Fix GT memory leak on probe error path
+
+panel:
+- Fixes for innolux and auo,b101uan08.3 panel.
+- Fix Himax83102-j02 timings.
+
+ivpu:
+- Fix ivpu MMIO reset.
+
+ast:
+- AST fix on connetor disconnection.
+
+nouveau:
+- gsp memory corruption fix.
+
+rockchip:
+- color fix.
+
+----------------------------------------------------------------
+Abel Vesa (1):
+      drm/msm/dp: don't touch DP subconnector property in eDP case
+
+Andrzej Hajda (1):
+      drm/i915: do not clean GT table on error path
+
+Bjorn Andersson (1):
+      drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
+
+Cong Yang (1):
+      drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02 panel HFP and HBP
+
+Dan Carpenter (1):
+      drm/msm: remove unnecessary NULL check
+
+Dave Airlie (4):
+      nouveau/gsp: allocate enough space for all channel ids.
+      Merge tag 'drm-msm-fixes-2023-11-21' of
+https://gitlab.freedesktop.org/drm/msm into drm-fixes
+      Merge tag 'drm-misc-fixes-2023-11-23' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2023-11-23' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Dmitry Baryshkov (2):
+      drm/msm: remove exra drm_kms_helper_poll_init() call
+      drm/msm/dp: attach the DP subconnector property
+
+Imre Deak (1):
+      drm/i915/dp_mst: Fix race between connector registration and setup
+
+Jacek Lawrynowicz (1):
+      accel/ivpu/37xx: Fix hangs related to MMIO reset
+
+Jonas Karlman (1):
+      drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
+
+Jonathan Marek (1):
+      drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
+
+Marek Vasut (2):
+      drm/panel: simple: Fix Innolux G101ICE-L01 bus flags
+      drm/panel: simple: Fix Innolux G101ICE-L01 timings
+
+Thomas Zimmermann (1):
+      drm/ast: Disconnect BMC if physical connector is connected
+
+Xuxin Xiong (1):
+      drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
+
+ drivers/accel/ivpu/ivpu_hw_37xx.c                  | 46 ++++++++--------
+ drivers/gpu/drm/ast/ast_drv.h                      | 13 ++++-
+ drivers/gpu/drm/ast/ast_mode.c                     | 62 +++++++++++++++++++---
+ drivers/gpu/drm/i915/display/intel_dp_mst.c        | 16 +++---
+ drivers/gpu/drm/i915/gt/intel_gt.c                 | 11 ----
+ drivers/gpu/drm/i915/i915_driver.c                 |  4 +-
+ .../drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h   |  1 +
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c           |  3 +-
+ drivers/gpu/drm/msm/dp/dp_display.c                | 15 ++++--
+ drivers/gpu/drm/msm/dp/dp_drm.c                    |  3 ++
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c          |  2 +-
+ drivers/gpu/drm/msm/msm_drv.c                      |  2 -
+ drivers/gpu/drm/nouveau/nvkm/engine/fifo/r535.c    |  2 +-
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c     |  9 ++--
+ drivers/gpu/drm/panel/panel-simple.c               | 13 ++---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c        | 14 +++--
+ 16 files changed, 138 insertions(+), 78 deletions(-)
