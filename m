@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144DA7F6DD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789A47F6DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjKXIQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
+        id S1344244AbjKXIQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbjKXIP4 (ORCPT
+        with ESMTP id S231801AbjKXIQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:15:56 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC09610EA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:16:00 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso217639766b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:16:00 -0800 (PST)
+        Fri, 24 Nov 2023 03:16:14 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBBFD44
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:16:17 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so2187772a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700813759; x=1701418559; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700813776; x=1701418576; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SoLnDSm2QhLoUeLRbQg3MncMN7BpHZCXy1OSQzrGGr8=;
-        b=VJZdDyX1+LUmQl5FtQDOSWQqBNRVe50hRTpeAyXoTlAWaDODJtU4zldDZImbIg3Cc/
-         7L3JRB3CIWOtgLvhDb694NW93jaofiT2W565G6orq3xAfPs/jaTULl7/dW8QXtO27kQU
-         Ck9vlvMvm55s/EL04Z549rt0O1VPEWnNkNCzUvS2te4G9XZxUvHPCVR4AS2X8gTCzD7T
-         5FRW40Uxogkpon44fq0/p3d39Z9N2A/WjOrUyRZ0CBEsG+G9ZPrQYqs3L+6t/uZzE++T
-         V6qP/2ZKIzaulFwOPiv0qnPL0Xoan8PNYBeFwbPyp9ZA5+alxjDH6cvqsUtKeARiFK/F
-         OtUQ==
+        bh=JG26eN2L6aLKDyKOYcGVR0lUniHJPCQSntM8z4DIVOk=;
+        b=TyKVTc/3upiROw4HwC9tuwpNdLqOcXQY+kDQvev1xGOkemCWHBylSPkVe/WDv+aXu3
+         YyjYrtru1kNb5k5VYyik9GXCMLg/h/5IQ89ZV4tWAjqJfSHHxZrseVAjEoA1cRb8wZ2I
+         bFPu+glT2cqTVxTtbjHHyc0EIQDf/uDhCWURA1mt7l8GViaWoGofS4h/P6ON4Gh/VOkU
+         6vDo/mF93J/0Ef+afKKE4ABOjWXdycpVa1J3QL9uGUtDqV1fqWgajiJdAAV9M98rtmjO
+         emx7b3W5tzrZpbIMDR+2NR0KRTxMYA5vwcSoONOH1gVgKobrj8MW2Oti2v1Y90zN/77o
+         fbvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700813759; x=1701418559;
+        d=1e100.net; s=20230601; t=1700813776; x=1701418576;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SoLnDSm2QhLoUeLRbQg3MncMN7BpHZCXy1OSQzrGGr8=;
-        b=JqpJVmAfUTdh0iJyY27legE1Yb/baDZF7sVlQNNk99THIAgWXxcgaDroGqAiXcLL2Y
-         qxsLawMx8k69UbuiMd4tWF6mQZuTXimSugKKW/pingNRXJw1uWINCcJFWo5TWbyLb0m1
-         EjQpjqwAdyFgf0quhJfMdaGZamVXOozUCxjMZ+dAWxQykby9uRJxM3KQUkL8sf4mO+k+
-         tWgorFDPBFkHntyFcpUNI2qzM0m2bWM557QHKOipcVIf9GqdvHAcKfH8hUZEznq39dxq
-         vqBHmM8eczlDQESSXAf+8WaYEPETU4BF6TSF0b2+EpCLTkU9jG0xeMZNUmmu6Dxjs7+b
-         2W3A==
-X-Gm-Message-State: AOJu0YwW7nofB2X/sQHF2HmlCtpCHET8dUDiazjdAmqai14wb1N26ElE
-        CSRncY/uB1ZwV3tZWaR6HuErrw==
-X-Google-Smtp-Source: AGHT+IFb3nkd0+NsGXU/NkMNtpfzhYScfyeYEnz5ZBZpqdoJ2fmNX90Lj0chNqfsfggurnAPHh7tvg==
-X-Received: by 2002:a17:906:e99:b0:a04:b801:66f7 with SMTP id p25-20020a1709060e9900b00a04b80166f7mr1396865ejf.23.1700813759173;
-        Fri, 24 Nov 2023 00:15:59 -0800 (PST)
+        bh=JG26eN2L6aLKDyKOYcGVR0lUniHJPCQSntM8z4DIVOk=;
+        b=mOAgrx6t9QjDCwUpGuVdQ/UZRK4SQRUc2GqfMxXKWQ6ZVPjfSMBR/gcBkPk9NyFR7g
+         G6UBkBwYc5hhc5mD+QIPjdfZbzREmYOA5THL0kgT3UxnWcTzXMlSNjCg9jSVXc7u4pQ/
+         jNynZS5C0M9CF83YHX3jAItLcYeqzD9xgHdUjVfts+GiDGX3gheFXdAMDvap6be1Pg0i
+         fs+IqzraxOyvhTBx07AmxSS6csrrC3hwsXxFyg5Fe2tlM3kRUSEgD6WQmybMyTE4hDN+
+         1AHipu2MM2fFdr187BNTN2440uBHLVHc8+kkSPLewgBT3fwfVE2b+O9mgOGU1Hog222O
+         8AzA==
+X-Gm-Message-State: AOJu0YwJ4iq+wxl4pU4BHyYDhQJ1XqhcPLobmfuzS+RXs3ABiH7uFnvE
+        o3JkgrUj95J1ML+rre4JEJ7F3A==
+X-Google-Smtp-Source: AGHT+IHvEGARAll4TmWO+j3FaaSx29hM6EFAS6hAZQOERT7Ue2PvNJ/2OdioC2PB13mTrBe+qrbpIw==
+X-Received: by 2002:a17:906:af13:b0:a00:53cc:8590 with SMTP id lx19-20020a170906af1300b00a0053cc8590mr1306786ejb.40.1700813776197;
+        Fri, 24 Nov 2023 00:16:16 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id x22-20020a1709060a5600b009c3827134e5sm1749428ejf.117.2023.11.24.00.15.57
+        by smtp.gmail.com with ESMTPSA id x22-20020a1709060a5600b009c3827134e5sm1749428ejf.117.2023.11.24.00.16.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:15:58 -0800 (PST)
-Message-ID: <29b953cd-7f5d-4e81-9a38-d3883847059c@linaro.org>
-Date:   Fri, 24 Nov 2023 09:15:57 +0100
+        Fri, 24 Nov 2023 00:16:15 -0800 (PST)
+Message-ID: <eef3b144-9986-4057-8c3f-bb7711aab9a3@linaro.org>
+Date:   Fri, 24 Nov 2023 09:16:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: dma: ti: k3-bcdma: Describe cfg
+Subject: Re: [PATCH v3 3/4] dt-bindings: dma: ti: k3-pktdma: Describe cfg
  register regions
 Content-Language: en-US
 To:     Vignesh Raghavendra <vigneshr@ti.com>,
@@ -66,7 +66,7 @@ To:     Vignesh Raghavendra <vigneshr@ti.com>,
 Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20231124045722.191817-1-vigneshr@ti.com>
- <20231124045722.191817-3-vigneshr@ti.com>
+ <20231124045722.191817-4-vigneshr@ti.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,7 +112,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231124045722.191817-3-vigneshr@ti.com>
+In-Reply-To: <20231124045722.191817-4-vigneshr@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,14 +126,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 24/11/2023 05:57, Vignesh Raghavendra wrote:
-> Block copy DMA(BCDMA)module on K3 SoCs have ring, BCHAN, TX and RX
-> channel cfg register regions which are usually configured by a Device
-> Management firmware. But certain entities such as bootloader (like
-> U-Boot) may have to access them directly. Describe this region in the
-> binding documentation for completeness of module description.
+> Packet DMA (PKTDMA) module on K3 SoCs have ring cfg, TX and RX channel
+> cfg and RX flow cfg register regions which are usually configured by a
+> Device Management firmware. But certain entities such as bootloader
+> (like U-Boot) may have to access them directly. Describe this region in
+> the binding documentation for completeness of module description.
 > 
 > Keep the binding compatible with existing DTS files by requiring first
-> five regions to be present at least.
+> four regions to be present at least.
 > 
 > Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 > ---
