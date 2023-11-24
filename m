@@ -2,183 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D5B7F78EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CED7F78F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjKXQ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S230155AbjKXQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjKXQ27 (ORCPT
+        with ESMTP id S229741AbjKXQ3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:28:59 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A430D19B9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:29:05 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so2950581a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700843344; x=1701448144; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=m59lGOjhmNFmUbmnXXYOyMU0r5AKqEjyJwepUZSyZQs=;
-        b=LQdDPWkisiaDFG9+ozXNaMU5eaJY5JJMKszxbOueRWIgfMDUliQMh42l6WiddSw98/
-         gLBTjL+YHpU2jz84qMak0+ksBg9UcR5S4GTPcxco9BJt7Xz3ze2VwMQ3sxOKbe7r5yPV
-         vQEA3VNcP1rwVgy3pDL8Fy0HR7r+tq7yaGoLxfk8wudR1v+bF7Nl0Gej23LaRGuaGV11
-         ZwQLyQfgwHyefU+ZR9egKhSuNI/BiI1/vH02qwzJEmRYKvqavyc+Ika2mKGZtjYE0FJt
-         FvkI5ul0LB63wgsEab8a59SXCO6IS8jiB5BrfLIHmjm7v5nqm4/wDlKW88gm/W95ewVw
-         D2eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700843344; x=1701448144;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m59lGOjhmNFmUbmnXXYOyMU0r5AKqEjyJwepUZSyZQs=;
-        b=KCdE0gH6jWkxCYcaI7WB7TLAVJai3OGwOdIyfN0VVM6smUcogSq2ifs6hoA723ns5t
-         jrbcBrt5+Y2lHL3nZZBVXg0pqPikUCI5036tDpNljqiH4+dZzfY+qgd/Y04acYoaG2bk
-         +NyBuQe+Son9bdVbdKIeeMiLK9be/4nckdALF9VTcWUlXiYOXa5HwkdR5ag8vvu0ke0d
-         ghSP3RyTt+urGATEQUkWqDN8cbir0BXJh3yk9JeInQPiJWGL/DRP6XarVZ6+QUHnrsbf
-         BecDVo+m/jTXCQbTn4KlfcPpnwN/OtQz3to7xVRCCwaeEcKcXOOebkyZlmd0G8y5UUuj
-         nfzg==
-X-Gm-Message-State: AOJu0Yxk2QPBVZU1bSxiWct/+ZmEDUCGDw3mGOHYurd0m1xXtkHickLo
-        vgnGJ7SJQEaqrsH6BIlcVRzjEA==
-X-Google-Smtp-Source: AGHT+IHmw2v9akiv8lLwobosBbnycWxS+mTHFNHjdgc73oGvRIXlhS7yygAOU243HPtOYOWLXofSgQ==
-X-Received: by 2002:a50:f699:0:b0:540:12fc:ed1d with SMTP id d25-20020a50f699000000b0054012fced1dmr2691693edn.12.1700843344125;
-        Fri, 24 Nov 2023 08:29:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id n21-20020aa7c455000000b00548c945bac0sm1943343edr.45.2023.11.24.08.29.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 08:29:03 -0800 (PST)
-Message-ID: <850b0eec-c991-40b6-92e1-2bc46eecdae5@linaro.org>
-Date:   Fri, 24 Nov 2023 17:29:02 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [LINUX PATCH v2 1/3] clocksource: timer-cadence-ttc: Do not probe
- TTC device configured as PWM
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     "Sayyed, Mubin" <mubin.sayyed@amd.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "mubin10@gmail.com" <mubin10@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "Simek, Michal" <michal.simek@amd.com>
-References: <20231114124748.581850-1-mubin.sayyed@amd.com>
- <20231114124748.581850-2-mubin.sayyed@amd.com>
- <d37db10b-f9fa-49b0-8b1e-36e20acbcfd6@linaro.org>
- <DM4PR12MB593888B73B65D25E42490EF29DB1A@DM4PR12MB5938.namprd12.prod.outlook.com>
- <e0f28ec5-b980-490b-a857-5218fe521381@linaro.org>
- <DM4PR12MB5938CB10059DF7E39A2A0E239DB8A@DM4PR12MB5938.namprd12.prod.outlook.com>
- <a701ba6e-ae4e-4c4d-9d93-c54e56c3348e@linaro.org>
- <DM4PR12MB5938256CC0E50256004ED6B19DB8A@DM4PR12MB5938.namprd12.prod.outlook.com>
- <9fb984b3-331b-45ce-8f82-03bc476acd3c@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <9fb984b3-331b-45ce-8f82-03bc476acd3c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Fri, 24 Nov 2023 11:29:31 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AF9199A;
+        Fri, 24 Nov 2023 08:29:37 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EA59A21E75;
+        Fri, 24 Nov 2023 16:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700843373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RnLFi4GJJHGz6wMxhsSIgbgHlypgMQFR88Q3hpHSyhI=;
+        b=CBUsUsEhSLNPRluRHLjiLQNp3FuaH7bSL2Yw7oBDKWuXr9T6NO1uBzpoPojoANDTbG70vP
+        v8TgonhYdajtraqNPVfFNBhcvFNNos9qWYpsn0gnthArTyPM6wWzWtKsOXtHl4X8D76Tfr
+        gtzq+hqsbTtxF/IWC3RZfHLGezvJcx4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700843373;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RnLFi4GJJHGz6wMxhsSIgbgHlypgMQFR88Q3hpHSyhI=;
+        b=qz/eHiR/VC4sSjLEeDqvic4tGZ/r9n/nwps/OZxPd/EBK1Wa0dYhL0rdputcWRFubZPzab
+        0QPu6Nbq/xWFmtDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A29D132E2;
+        Fri, 24 Nov 2023 16:29:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id oGAbA2rPYGX9RQAAn2gu4w
+        (envelope-from <colyli@suse.de>); Fri, 24 Nov 2023 16:29:30 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH] bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <c47d3540ece151a2fb30e1c7b5881cb8922db915.camel@gekmihesg.de>
+Date:   Sat, 25 Nov 2023 00:29:12 +0800
+Cc:     Bcache Linux <linux-bcache@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Zheng Wang <zyytlz.wz@163.com>, linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Stefan_F=C3=B6rster?= <cite@incertum.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B68E455A-D6EB-4BB9-BD60-F2F8C3C8C21A@suse.de>
+References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
+ <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+ <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
+ <989C39B9-A05D-4E4F-A842-A4943A29FFD6@suse.de>
+ <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
+ <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
+ <c47d3540ece151a2fb30e1c7b5881cb8922db915.camel@gekmihesg.de>
+To:     Markus Weippert <markus@gekmihesg.de>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Score: 1.53
+X-Spamd-Result: default: False [1.53 / 50.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         MV_CASE(0.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         FREEMAIL_ENVRCPT(0.00)[163.com];
+         REPLY(-4.00)[];
+         BAYES_HAM(-1.18)[88.95%];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_SPAM_LONG(3.49)[0.997];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,gekmihesg.de:email];
+         NEURAL_SPAM_SHORT(2.81)[0.937];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,leemhuis.info,163.com,incertum.net,linuxfoundation.org,kernel.dk,lists.linux.dev];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 17:24, Krzysztof Kozlowski wrote:
->>>>> So again, one driver binding.
->>>> [Mubin]: I will explore whether mfd framework can be used to handle this.
->>>
->>> You do not need MFD for this, because you do not have a really MFD. This is just
->>> one device, so I expect here one driver. Why do you need multiple drivers (which
->>> also would solve that problem but why?)?
->> Cadence TTC IP can be used as timer(clocksource/clockevent) and PWM device.
->> We have drivers/clocksource/timer-cadence-ttc.c for clocksource/clockevent functionality. 
->> New driver for PWM functionality will be added to drivers/pwm/pwm-cadence.c (3/3 of this
->> Series).  In given SoC,  multiple instances of TTC IP are possible(ZynqMP  Ultrscale SoC has 4
->> Instances), few of them could be configured as clocksource/clockevent devices and others
->> as PWM ones. So,  cloksource as well as PWM drivers for cadence TTC IP would be enabled in 
->> the kernel. 
->>
->> Now in this scenario, each TTC device would be matching with 2 drivers, clocksource and PWM, since
->> compatible string is same.  If I don’t add #pwm-cells checking in clocksource driver and return 
->> -ENODEV based on that, each device would always bind with clocksource driver. PWM driver 
->> would never probe since clocksource driver probes ahead of PWM one in probing order.
-> 
-> None of these above explain why you need two drivers.
 
-And please do not answer to this with again: "I have two drivers...".
 
-> 
->>
->> I am exploring mfd to deal with said scenario. Do you see any better way to handle this? 
-> 
-> You basically repeated previous sentence about MFD without answering.
-> Yeah, better way could be to have one driver. Why you cannot have it
-> that way?
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+> 2023=E5=B9=B411=E6=9C=8824=E6=97=A5 23:14=EF=BC=8CMarkus Weippert =
+<markus@gekmihesg.de> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Commit 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+> node allocations") replaced IS_ERR_OR_NULL by IS_ERR. This leads to a
+> NULL pointer dereference.
+>=20
+> BUG: kernel NULL pointer dereference, address: 0000000000000080
+> Call Trace:
+> ? __die_body.cold+0x1a/0x1f
+> ? page_fault_oops+0xd2/0x2b0
+> ? exc_page_fault+0x70/0x170
+> ? asm_exc_page_fault+0x22/0x30
+> ? btree_node_free+0xf/0x160 [bcache]
+> ? up_write+0x32/0x60
+> btree_gc_coalesce+0x2aa/0x890 [bcache]
+> ? bch_extent_bad+0x70/0x170 [bcache]
+> btree_gc_recurse+0x130/0x390 [bcache]
+> ? btree_gc_mark_node+0x72/0x230 [bcache]
+> bch_btree_gc+0x5da/0x600 [bcache]
+> ? cpuusage_read+0x10/0x10
+> ? bch_btree_gc+0x600/0x600 [bcache]
+> bch_gc_thread+0x135/0x180 [bcache]
+>=20
+> The relevant code starts with:
+>=20
+>    new_nodes[0] =3D NULL;
+>=20
+>    for (i =3D 0; i < nodes; i++) {
+>        if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b->key)))
+>            goto out_nocoalesce;
+>    // ...
+> out_nocoalesce:
+>    // ...
+>    for (i =3D 0; i < nodes; i++)
+>        if (!IS_ERR(new_nodes[i])) {  // IS_ERR_OR_NULL before
+> 028ddcac477b
+>            btree_node_free(new_nodes[i]);  // new_nodes[0] is NULL
+>            rw_unlock(true, new_nodes[i]);
+>        }
+>=20
+> This patch replaces IS_ERR() by IS_ERR_OR_NULL() to fix this.
+>=20
+> Fixes: 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+> node allocations")
+> Link:
+> =
+https://lore.kernel.org/all/3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de/
+> Cc: stable@vger.kernel.org
+> Cc: Zheng Wang <zyytlz.wz@163.com>
+> Cc: Coly Li <colyli@suse.de>
+> Signed-off-by: Markus Weippert <markus@gekmihesg.de>
 
-Best regards,
-Krzysztof
+Added into my for-next.  Thanks for patching up.
+
+Coly Li
+
+
+>=20
+> ---
+> drivers/md/bcache/btree.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+> index de3019972..261596791 100644
+> --- a/drivers/md/bcache/btree.c
+> +++ b/drivers/md/bcache/btree.c
+> @@ -1522,7 +1522,7 @@ static int btree_gc_coalesce(struct btree *b,
+> struct btree_op *op,
+>        bch_keylist_free(&keylist);
+>=20
+>        for (i =3D 0; i < nodes; i++)
+> -               if (!IS_ERR(new_nodes[i])) {
+> +               if (!IS_ERR_OR_NULL(new_nodes[i])) {
+>                        btree_node_free(new_nodes[i]);
+>                        rw_unlock(true, new_nodes[i]);
+>                }
+> --
 
