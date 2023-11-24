@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC187F6A05
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C787F6A06
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjKXBFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S230008AbjKXBHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXBFH (ORCPT
+        with ESMTP id S229453AbjKXBHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:05:07 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4561DD48;
-        Thu, 23 Nov 2023 17:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700787913;
-        bh=s9SKoVd6sdnEnEA2415LDa12idYEiEDjdTjzypXYR+E=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=AdqQszBonguXvlEMtiDDg0SoW3MeKa7twOHRGFzgd0tnzfY99la/UrKAgBm+pONsK
-         FhrM++V32eJtqlZZMTa7uCFyPI8Dq41rfAnOwIDWeNVHgqY58eeozKZ7zbVtpjzepf
-         hZajl7u0+CCVi1tjl16Zi1GsQXdMzJoWlfXN9Y6o=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8D2E212869A4;
-        Thu, 23 Nov 2023 20:05:13 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id uUK3h_duTxhG; Thu, 23 Nov 2023 20:05:13 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700787913;
-        bh=s9SKoVd6sdnEnEA2415LDa12idYEiEDjdTjzypXYR+E=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=AdqQszBonguXvlEMtiDDg0SoW3MeKa7twOHRGFzgd0tnzfY99la/UrKAgBm+pONsK
-         FhrM++V32eJtqlZZMTa7uCFyPI8Dq41rfAnOwIDWeNVHgqY58eeozKZ7zbVtpjzepf
-         hZajl7u0+CCVi1tjl16Zi1GsQXdMzJoWlfXN9Y6o=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+        Thu, 23 Nov 2023 20:07:17 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EAD1B6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1700788038;
+        bh=2xxxAalZ73cRwdZRWpl45yBEiTMvShJqt0Ovd9kac2g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aLUR6BoFlBYtiJSS1etIcfjzdaRpP7n06oAX400JbB3OP61oS/wOD/3jq4bPjiHo7
+         3wV4SPvTP17Yymwb3AVOw5cxJL3maWt8kTqxiWD0fQM4wcqqDzYWLfxL3K9rkKAnFf
+         ojmOBd5/ZElekPwIA7twndtJZFq7XZH8nRc4O9ntZ4Cxpv3JrqzErLQo5ugIGxzrhe
+         AnO4HeawO2liLqIkV6zztDc+3tAcLf8juI796b7ZvbBbqqPK25FTyG884GBMkPQKCQ
+         LJw3I9E1ued7g3z1a+HLCZCJix/By7U4i3qv7cRtce+cFZDtLBozzgMFENOcehn3bS
+         8PA1SWmy4fqQQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6F3321285F91;
-        Thu, 23 Nov 2023 20:05:12 -0500 (EST)
-Message-ID: <ce0c752cd1ed482bff97c6c62266440e3ff8f937.camel@HansenPartnership.com>
-Subject: Re: Fwd: sign-file.c:149:17: warning: implicit declaration of
- function =?UTF-8?Q?=E2=80=98ENGINE=5Fload=5Fbuiltin=5Fengines=E2=80=99?=
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dennis Clarke <dclarke@blastwave.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Keyrings <keyrings@vger.kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Nov 2023 20:05:06 -0500
-In-Reply-To: <7fce272f-65f5-9aa8-5f28-aeecb98a8ab4@blastwave.org>
-References: <1fca50c4-6d7b-4c9b-bcea-4df17e2c2e7e@gmail.com>
-         <e110cfff-08f9-4bbc-6b69-0d67ae6562b6@blastwave.org>
-         <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
-         <7fce272f-65f5-9aa8-5f28-aeecb98a8ab4@blastwave.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SbxfF0fnlz4wd2;
+        Fri, 24 Nov 2023 12:07:17 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
+ hugepd processing
+In-Reply-To: <ZV4co7wcI-_wK91F@x1n>
+References: <20231116012908.392077-1-peterx@redhat.com>
+ <20231116012908.392077-7-peterx@redhat.com>
+ <ZVsYMMJpmFV2T/Zc@infradead.org> <ZVzT5_3Zn-Y-6xth@x1n>
+ <ZV21GCbG48nTLDzn@infradead.org> <ZV4co7wcI-_wK91F@x1n>
+Date:   Fri, 24 Nov 2023 12:06:24 +1100
+Message-ID: <87y1eoq7sf.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -73,59 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-11-23 at 18:42 -0500, Dennis Clarke wrote:
-> On 11/23/23 09:53, James Bottomley wrote:
-> > On Fri, 2023-11-17 at 00:34 -0500, Dennis Clarke wrote:
-> > > On 11/16/23 18:41, Bagas Sanjaya wrote:
-> > > > Hi,
-> > > > 
-> > > > I notice a bug report on Bugzilla [1]. Quoting from it:
-> > > > 
-> > > <snip>
-> > > > > Not related to
-> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=215750 but I
-> > > > > *feel* that this code needs a hug.
-> > > > 
-> > > > See Bugzilla for the full thread.
-> > > > 
-> > > > AFAIK, this looks like a bug when the kernel is compiled
-> > > > against custom (non-system) version of OpenSSL library.
-> > > > 
-> > > 
-> > > I do not know what you could possibly mean. There is nothing
-> > > "custom" about OpenSSL. For that matter the gcc compiler I am
-> > > using was also built by me. Works fine. The sign-file.c source
-> > > compiles fine.
-> > 
-> > This has all the hallmarks of an openssl compiled without engine
-> > support; is the symbol OPENSSL_NO_ENGINE set?  And which distro did
-> > you get this library from?
-> > 
-> > James
-> > 
-> 
-> I am looking into this. The code will likely age into some deprecated
-> calls and I think that I may be way out on the edge here.
+Peter Xu <peterx@redhat.com> writes:
+> On Wed, Nov 22, 2023 at 12:00:24AM -0800, Christoph Hellwig wrote:
+>> On Tue, Nov 21, 2023 at 10:59:35AM -0500, Peter Xu wrote:
+...
+>> 
+>> If dropping the check is the right thing for now (and I think the ppc
+>> maintainers and willy as the large folio guy might have a more useful
+>> opinions than I do), leaving a comment in would be very useful.
+>
+> Willy is in the loop, and I just notice I didn't really copy ppc list, even
+> I planned to..  I am adding the list (linuxppc-dev@lists.ozlabs.org) into
+> this reply.  I'll remember to do so as long as there's a new version.
 
-So you did build without engine support ...
- 
->  However the code will need a pile of ifndef stuff and then call the
-> correct future looking calls for OpenSSL 3.x etc etc etc ... the
-> usual stuff
+Thanks.
 
-Well, not really: openssl is highly configurable and if it gets
-configured wrongly, stuff like this happens.  That's why distros have a
-fairly inclusive configuration and they stick to it.  No-one can cope
-with the combinatoric explosion of openssl configuration possibilities
-(even though they have ifdefs for most of them) so the only way is
-really to fix a standard configuration and assume you're building for
-it.
+> The other reason I feel like hugepd may or may not be further developed for
+> new features like large folio is that I saw Power9 started to shift to
+> radix pgtables, and afaics hugepd is only supported in hash tables
+> (hugepd_ok()).
 
-Openssl has been talking for ages about removing engine support, but
-they've been unable to do so due to the rather slow pace of conversion
-of their own engines.  I anticipate this code can be removed in favour
-of the pkcs11 provider long before openssl actually manages to remove
-engines.
+Because it's powerpc it's not quite that simple :}
 
-James
+Power9 uses the Radix MMU by default, but the hash page table MMU is
+still supported.
 
+However although hugepd is used with the hash page table MMU, that's
+only when PAGE_SIZE=4K. These days none of the major distros build with
+4K pages.
+
+But some of the non-server CPU platforms also use hugepd. 32-bit 8xx
+does, which is actively maintained by Christophe.
+
+And I believe Freescale e6500 can use it, but that is basically
+orphaned, and although I boot test it I don't run any hugetlb tests.
+(I guess I should do that).
+
+cheers
