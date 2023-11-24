@@ -2,228 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF897F6A0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7809E7F6A15
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjKXBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S230082AbjKXBXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXBPB (ORCPT
+        with ESMTP id S229477AbjKXBXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:15:01 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2041.outbound.protection.outlook.com [40.107.94.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793A4D56
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:15:06 -0800 (PST)
+        Thu, 23 Nov 2023 20:23:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3212D56;
+        Thu, 23 Nov 2023 17:23:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700788997; x=1732324997;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=giDLjx1pK5ou4jiCkT18aG2UVNLnT9eo67V5tjtuX/A=;
+  b=ECCI+S+onnmDjDAFpiHtdehQp5Lz//C4SCkIlS108xrADJrJItsk3iw+
+   Jvy6qnCAW9xIk3JTylbzfIm8BI58xVmGaU+N7+7QT9qCNBpZC7RrJrrph
+   +d3CqH5qK/uEqcahwiUisyxrMhtg9ZsJqG75c9o98klSdJKG1OxwAtzzk
+   H+0/ZvK+7szuH1IR2RAK3IGCJmBl+y8zwakyQzqgtLQy3jk2YV6/l7EZM
+   sVW7TPANb4LPgrWn9timrJA8bf9rtrRVU5HE/iVK95czFnZSLEuuK4M7+
+   bzAHwakODHXR042/rlOsWBbvvb7KSOA86gNRAsBaxdGsQIKGm2yyTMdVR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="423481097"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="423481097"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 17:23:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="771104816"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="771104816"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Nov 2023 17:23:17 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 23 Nov 2023 17:23:16 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 23 Nov 2023 17:23:16 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 23 Nov 2023 17:23:16 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iw01N3zzszFXRD7bAESbKJKs4c9H2EtqxOeFj7poHlsJMuqXsDc6T2inoEcReSlt8G60IjAC2/t85EnbhDBa2HsZNHKef+niKtsSq918USAoBsgQebyyOtlrAYsl4VNvVqtuLvAFEjilOB3pE7qNvGlpl38Z7yIBA64fMUYOCysf3K5I8x6oNOmDXw9rk6TPzEhkWQsMrjiBpucYlPlYw8/55V1Z43wIOxdb4iOGx5lRHrCv83lSKbzxu1Jw5qhEbhUkzEDZdDOg5GW9I8D/3GYd2E4k3DCA67d5cJOxj41zIodO9QGR5Qmkk3E9zqytEVw1HUInCYYuyFqqtCOjtA==
+ b=csMlEy/sNVgLgV6eVV8mVTCRrNpSoVt4imjbnrH4tBsciMS8RSvFC1c6+ZEZFCe+xWr6Ncevkg5bZ6+d0jzxXGzal8/5ct93Z9M4ukzt5WzpALwND2R+4ohwhNTi8rNYBXhEv9H+YObA4vrj5uRf7iVXXR4Rdt8JnpZ0DK0tJ44T5vuRLD5n7GKOq9C8XADlP/ZznqRdGTaY+w4VHSZcaru/QxmRB587XkntKan8ItVDiCkl1Y6H9TmeY7wtEr0B0nB2cgqci8DfYlf6afk06I+DoEk70oFdO34n5E+EOI8EwVGpkvk8mPDL83A0AmkYhzMxq643JofDboo6PdKpuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ywbDS5mUEMlExfMKe8IaLTShh9Gz2liVAy0qQ1Jhz8M=;
- b=cyAlrlJxUzUNLdmnyksLowIQRdAykaDqM/1tVRQeyVk+wHc8sTzbUb9hCkRgk0/73JfcnL0ON0Qv4pr9fJJyW9mr3qyOLQsfC0Luaphrn9xMRRupR9+24Dm7ooBBTIoshArdd8D9F45AsHjqM2vCqt2QxFZ9qFWh5qGh0EqzfOwU94nWt3vg/GmFcvm+WudwpsmKCygvZUFlMwrMpfdWoGmjlqO5eiRwC14FcO8+XAXPumqS1+VJFDGB1aHbJMCOSpoqsEBC2OTrbzJ2F7j3XV6AHzzkbhS9cmrCBIkRmGI/VV/V5U9CV3XocLMAIw7TZfAXWWUxMIahZRH6eF6svA==
+ bh=CD+m0I5nQ0jMzvqRH3BmQXwMn8MaqMiFtwS64hlFCrM=;
+ b=iIYy/Ez6ZiGfPQ+vJMc4x/4q2mhhsEMi38rLcJhhs9wKaIznzsAtUgx2bB2yEKpPL/sZxGwGs1g1x1IYoK0NTPWKTLBL6s4VcN03Pcf4xt8qT7nKr9+lgkxVqL4ZGLWOaK5rXoVYbFFCx3Op95tC3/97zshi0YEQ0m/hFcq9ICSn8z6hE6Nxm17Gzyy7n9SPsZ3pGCXBkWBI9EAulEZ3fkSAmFWVnQVqoSGL5+/3Q167FwbD7xr3Ud7Ie0LBX5c0zRkA43fuILvEVIZhYLephexEPyX1xFSCPccDoPCpI7vSCSiCw/VfrC4oADOm/pTKmHkCervmD/cAxr0eIZbvtw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywbDS5mUEMlExfMKe8IaLTShh9Gz2liVAy0qQ1Jhz8M=;
- b=Q3R5LC7xNUCkpCiCVMsRC2y4YRu3JM00zfRzNuJF6C/Vszxwk0cTclbKZwpfJHBEY2z3GihmbtP3ZIuLO2txkD/DpIpKhVmQRWZuAzRaD/wjfUAlAgYtS6hqG/Eu9n9pLGAI5rq3q0t0dY4J9UQnhAEt0m5vKKUE5LFxpu2JFjyA6kSDBpFTilEYkci4nN6Hr/3MW/aHuAxjm2YFXoUSDWWgoPOsjx6W62tiZxQmETffNFnntmP4ZzMBVnEzr70U0qx4ImddMg6PlPgFGah7GOw1F495/O7QU+v4qaCEmmL3LMtMssaTAuaQsJR1uRsljjjGn1L1pmozqAy0LU7BgQ==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by BL1PR12MB5352.namprd12.prod.outlook.com (2603:10b6:208:314::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Fri, 24 Nov
- 2023 01:15:01 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6b9f:df87:1ee2:88ca]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6b9f:df87:1ee2:88ca%6]) with mapi id 15.20.7025.019; Fri, 24 Nov 2023
- 01:15:00 +0000
-Message-ID: <f102daf5-aa26-4f78-941e-e885bf541d6d@nvidia.com>
-Date:   Thu, 23 Nov 2023 17:14:39 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
- <7f76ee6c-f0e6-443b-bcff-3637895dec66@redhat.com>
- <ZV97RO3i02+NmwD2@casper.infradead.org>
- <7d4efbe8-5690-4db0-be06-399353679982@redhat.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <7d4efbe8-5690-4db0-be06-399353679982@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB6397.namprd11.prod.outlook.com (2603:10b6:8:ca::12) by
+ PH0PR11MB5610.namprd11.prod.outlook.com (2603:10b6:510:e9::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.20; Fri, 24 Nov 2023 01:23:07 +0000
+Received: from DS0PR11MB6397.namprd11.prod.outlook.com
+ ([fe80::e486:f8af:ca6c:7219]) by DS0PR11MB6397.namprd11.prod.outlook.com
+ ([fe80::e486:f8af:ca6c:7219%7]) with mapi id 15.20.7025.019; Fri, 24 Nov 2023
+ 01:23:07 +0000
+Date:   Fri, 24 Nov 2023 09:18:28 +0800
+From:   Yujie Liu <yujie.liu@intel.com>
+To:     "bhe@redhat.com" <bhe@redhat.com>
+CC:     lkp <lkp@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
+Message-ID: <ZV/55OkN7bV02LY8@yujie-X299>
+References: <20231114153253.241262-3-bhe@redhat.com>
+ <202311160431.BXPc7NO9-lkp@intel.com>
+ <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
+ <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
+ <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
+ <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR13CA0203.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::28) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+In-Reply-To: <ZV9YYEK4L160ECQ+@MiWiFi-R3L-srv>
+X-ClientProxiedBy: SG3P274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::21)
+ To DS0PR11MB6397.namprd11.prod.outlook.com (2603:10b6:8:ca::12)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|BL1PR12MB5352:EE_
-X-MS-Office365-Filtering-Correlation-Id: db174ce7-9e79-4ae6-1110-08dbec8ac77d
+X-MS-TrafficTypeDiagnostic: DS0PR11MB6397:EE_|PH0PR11MB5610:EE_
+X-MS-Office365-Filtering-Correlation-Id: be219e76-a4bb-4b89-244b-08dbec8be9b8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6IcGNABYEWFjNLSqCBRykOslf9eyGvJxXVknvK4KHW+DWifiG1Srgl3Pj+xdyG7EmkH2w/UVdR1qVemBDocjJDli5Aidb5APeot0EeIx4SLUlK58/tM6lzgzh8WY7EkvPYRLzuUCIY/TXfpbYVoztCh/+yVk1/MqT95ZWw9MH6TVmRBJ4VCZTFuprq7STO+L2sy2tiUVenpJAKzAmhq9krsnKfmyD2La8OfZjDDltXYPGyJFtJQzMhlfd0cHI4Y0QsEcdDKGRpEcJqmlKRQmDh/nxg6J9FV31pc6+AvdZjhlM+iDQM2g2fXL8bN6FtM354iw+2dB6fNSysLYDBWPPGLeMVluL/nfNObTk6ySXMUbEHU2zwF8VK5w3Vy1xdi7pJV6/LlXOpWhfbyTe6ibjAH9HrP1IZROC9ARyzrO0SxQb7avd8Qnzn8t4m2ouXjY/6nMFTW8TCXcPZ7bD9ieVdYf67kwhmu0kNawiakB/0I46NROU5wSrdqS9pZeLLs2NMHJyi+QFk2vsbkAsP6HJCw6oJgEsacHH0AoHOorJqIEV4XvYjEak1k7NRQAkt2kxG/7E+Hvd1CSWj+EXvMPbhb1xyVhG3EPRNNBUHo9CbA899x4nZf/9/jIDP30bX1pLENHYZqyNa6Z96J9LnHa0teS857m9Ah8RVlYhI4W6fPTkUeBAdyK8tC4SgCFuSCZfAONatrmTl3OmuXUlj9vcK/RKuz4al2AqwKd8q5SH38=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39860400002)(396003)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(83380400001)(31686004)(2616005)(31696002)(86362001)(41300700001)(7416002)(5660300002)(2906002)(4326008)(8676002)(8936002)(316002)(66946007)(66556008)(66476007)(54906003)(110136005)(38100700002)(6512007)(36756003)(53546011)(6506007)(6666004)(66899024)(6486002)(966005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TiCikscQSMD1iTaarxAD/5cTl8Cwdd2f4LdV5zKNfBWFEuOCplGKM22wKuWxTElYPGGEU/CqhYLTR+voPwa2yx6hoyg5tdCDZoLKmwP57KTHdVGsrYe7onQ0mDHXX9FqgxF/M+xk8Q1ptrvvMWuqk6oJQyvTpzOaqxp1vWF7s9ALEch+nJPi3wdYFXksDiIB9zZdf8R/Z93Zk7nje7r6tOc/W50x/DR6QHgq0aiKJ9V6NYF3NTkYETJa6CCwPOebAapYiQCKRU1HkSQRG/fTxs8NngrCrTnXZkp8SM67ZLk6rjeVCOEELnO/Vjcgf2kKi3+YwCda8/9c9pgt5B/OU1UfqXXAXGpfwtCqp/bWqMHE7+bRgU1GJqbRHD6GzbSYBqGx80P5kuTYumZPFBGAj1IXkvBE77nLwdEuRERkVtmc8HM4nIwlrwT95/AeR1Fqt5IwVuFfZ8mfhlb1oaEc3nv95qNsJmBPhE3K5JU54etXb/ycVtkaYhpZqmwioUc5vaelcJZ68q/xX7fQfz25ahmriBOcWVxbCQ0yHyqcMQrKe9m4K4MCVZCoILdZR3+r5gZZ2eHPN68rgbSITESt3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6397.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(136003)(376002)(396003)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(7416002)(15650500001)(2906002)(4001150100001)(44832011)(41300700001)(8676002)(8936002)(4326008)(5660300002)(316002)(66476007)(66556008)(54906003)(6916009)(86362001)(966005)(6486002)(6666004)(478600001)(83380400001)(6506007)(9686003)(6512007)(66946007)(26005)(33716001)(82960400001)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RC9rT01kWC8xMlJyeGJWQXNUL2NSSE5SU3dEdXNWYzJrMHJOUFJQYUN5NWF5?=
- =?utf-8?B?TXd3RWJEQUdSV1NJN1YzOVUyWiszV0lxR2pXU1pOMEI1Tks1eWp5emNJVXVS?=
- =?utf-8?B?a0ZYbm5KN2hYNHVMVGhnQmh5QU1XNjFQbzdPK1UzNXRtNDNoZ2xxVE5ZeXJh?=
- =?utf-8?B?RDVzQjE2ZVV6QllQdnFUSVdESlNvdU5nY3piTUdVMVhlT2lzaUpWZUMwZWwz?=
- =?utf-8?B?STBUdTc3RjBLS0pDNHd2WWU0M28waWk2dGtTSzc5MExKZUtTVStucEpDRUdF?=
- =?utf-8?B?aUxVTU9Cb0d4czJsWWNwR3VJVjFjUFVCckxYa3N4RnA5eU9rRytXdE1ITk1m?=
- =?utf-8?B?ZWVVdHJlMFBFTHA3N3dPelVTRUpXenk5RWNvWmlWUDNRNHJLUEw1Y1dZUzdJ?=
- =?utf-8?B?dldhZjFndHZENjJHZTlWRStjYStjVFNMMmFzTVBidzBKdXE4b0xDdjhaWlIy?=
- =?utf-8?B?b1BkNGVITkNSd2l5c3pjbGdoSm9yc1MvR3A5eU8xQXhpTEtPRjRqU1ZNb0NI?=
- =?utf-8?B?ZlpMVURCRURNQ0xmTVMwY3pjd1ZEY0tvNFNMWjRHTmV0eUVWNWdxalJ3QzBh?=
- =?utf-8?B?a2JhWmNFVU1ld3F2RFIvRisrb2JucUcxZUtSM2pLMklucnFSeGVTN3pySmhn?=
- =?utf-8?B?REI4MzhabFFFRzA4WTh4ZU43aDRRRTBOVjRZVE8rNE1hdVNYQktFTDdTejBx?=
- =?utf-8?B?MFEwcXhHUDl4OU13enhXZVJnZFY1Z1Jyd2Z5UnBocVVRM2U1THZoaVI2ZG9h?=
- =?utf-8?B?eXhpZllnbTlaV2JURHNvVlFnQ2NMMjd1WEhjWWE2ZkFGWkRIUjNoZUF2RWFQ?=
- =?utf-8?B?TkZQNENkR1g4cVRuZFdnMGY0U1pmb3NTekI4bEdXM0tJaUNRSG4zVm9YNWZm?=
- =?utf-8?B?U1IwT29IUVE1aDdKWWxxRUdGQjNqRDBPMXZxUFdFcEZrQVYvYVRRdDVUb2x1?=
- =?utf-8?B?d3dqSVNyY3RxTklmbVlXNEJaR0F4KzByamNYSWtLRkFvWmsyYzRTSEk4RC9m?=
- =?utf-8?B?UlVwQzZyOUlLODZUZk1uUVRObk9EcmpELzVseEtTbjhDeEtsS0t0WXV3d3Zs?=
- =?utf-8?B?ZXpERWdWTkVkazBZZlBPS1hOSmlHaVdlQWZMa3J3eStKbUplWGJYNTdCWE4w?=
- =?utf-8?B?dHlGMDZvQzNtR3ZjRUpINzduamtVVFRPVW5tVy84S1JZYjFiUmRMcDVPZkty?=
- =?utf-8?B?ZldYWDBtY0pNblVwOHBYZ1VZakhZWEFTbktzb1pYTTAvUSt4S0l1dlBNMDRK?=
- =?utf-8?B?YS9WL0ljaC9meTREMUpSYTVqWEtOVG9WRi8zdWxvck5YZkpxeGFwQVpadXJ0?=
- =?utf-8?B?c3NRZDJvWjhjRC9LSVNhT3YzTGpxRzVtMDVUcEw4KzRwaEh6c1o1bktpUStp?=
- =?utf-8?B?cU8zZ1hxcmhTMVZMYkxsMkFEeis5dXJYdkRNUjNRNmFzdEVQTDJOWlV1cDRo?=
- =?utf-8?B?RXcyblBoTVhkQVhIY3BpYXhZb3k4bFFaT216M2VIY2djd1JadkNBSG5BY2xO?=
- =?utf-8?B?SDFqbEtYd0pmQ1Y2TE5WS3BLMXNDN2x0Nlgxa2RQNzR2MmxZTFY0NUJpSEp3?=
- =?utf-8?B?b3dhaWhvQnJNd2JwUUZIaDNSRDFBN3gvN2ZiZ1ZVbno3dFh5Y2JxRWJlcUww?=
- =?utf-8?B?RVNQaENSVlp6SGJ6cFZDMWhxZXBubEdLUFV2U1F4cFRIV1FJS09HVEYvb3ZC?=
- =?utf-8?B?OWhGQmVGWnE0WElkT3Q1NVBZYU1Na0V6eTFmK3owdmNuT0thUC8yU3R0YjZm?=
- =?utf-8?B?eFNJNHdaWTlUMnBqTUx0d29JQjJxOUtOUkV4R3F2WERRdGttdUN5aldvTm0x?=
- =?utf-8?B?eFdtSnNtWnl3K09Yb0hoMUFqek8rRjF4MzBNU1RoNUQxY25Mc1F3TXdjNW9j?=
- =?utf-8?B?THhpOWZKWllOTUZ2c3UzUmdRVjdkTll3K0x6akozZEZaLzhDWk5sdmJUUkNz?=
- =?utf-8?B?YUxyTmVNSXYvb1RPRHN4ZjJRUWlFQ1JjQ0N3N3NSZEZ1dlQ0Q2lRU2ZsbXF2?=
- =?utf-8?B?Um0zT2sxaWlHZVFpaERFMEJJTE9KbTZjTUw0ZGtuQWU5d2JIemtDYTl1anJE?=
- =?utf-8?B?Lzk1MW1QaloxbmhjOTBLUDVDeWVLRGZNbG5oa3ZvKzF5aE5hT2Jtc1NuOFVL?=
- =?utf-8?B?ZzZmVDNMeElPMktXa1JpUzl1UFFCRmF6RVhSZFUzWWJJb3M3U2pSSzFNSUJZ?=
- =?utf-8?B?UGc9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db174ce7-9e79-4ae6-1110-08dbec8ac77d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?Kgji6FxfbMwf6om+C9KcMa/brpUq8Waq6ZM9hSisGicV2kWuzntJdDcIwW?=
+ =?iso-8859-1?Q?IWLkyOoPT3JVnYEbYakiqq6gnWoZ/wIQwgUpfHVOyNjFb4XNdTe8LMO3KC?=
+ =?iso-8859-1?Q?bswku3yJ3xZdWrdvDBKU/D8r5EXrwP48R8qRCeczI6APApAx2a9UaRLV9J?=
+ =?iso-8859-1?Q?3/4WcLcKMbLvS/NIuto4ZELQpwoBwVcCKwUJYOLFkPl7q1o+DeLMAkIbEh?=
+ =?iso-8859-1?Q?u3WMQqdh8YWybANHeSi2JHyVkwPGm2j+l1wq+iO1ySO1MWVVaFSSCg0t0C?=
+ =?iso-8859-1?Q?nL1vrfhQh5zhCMx962T/XF6hy10cr+1ETrWJrQYnw1mEFJ902V/FlW1NXU?=
+ =?iso-8859-1?Q?Yy3cT2BSdHjjix8DkQmggY7soC/rCqNrZVuknbYOle0AJ0CjuW9wIfOpzt?=
+ =?iso-8859-1?Q?yWGhLDmifULXShzcx8dmqnlQAU+EcLUPyUPLHz7klfRquSoIDq8t2ZI3rc?=
+ =?iso-8859-1?Q?ATT6KzxKj9lMENaXrYcYiTcnk2PS0YAsAxaOOUWUTspJEHpuFEHIisxdkV?=
+ =?iso-8859-1?Q?Xl/ANvfrkmSxQEfmh9zTnHalbvmyXDJXqXo+kKmebKWk8ePyFskI8U++9R?=
+ =?iso-8859-1?Q?OLzMDS8juAcUggupo2Xyl2sXe/IsktgBXSnsZHyZQn1L0ePcelAHNSv14t?=
+ =?iso-8859-1?Q?9fx9YqLuRwX0Ar/qyChV8xwzd645LOJWBt2smfKODUCPydIr4OxWUs8CG0?=
+ =?iso-8859-1?Q?+2w97oTWiBdsDzBNfNNEgD2Z/ZS8b98/NTXxhDjcxkuei6qRoHfwsqvaVC?=
+ =?iso-8859-1?Q?rxVsbWuqhKunbBmFn6FIkmqQwfr7DY5xdfT/hVnQHyZN6er8I2WYoNDRYM?=
+ =?iso-8859-1?Q?GlontphZlsZLI3qa+IXuec5mU/iehmKe54JZhkNq+8Q0KNsADciIPunK3U?=
+ =?iso-8859-1?Q?wvI3p4u5poUl3Rmji5GfHM9w4IGavkUNcfYdbSzRROpQKNOjk9UsSVdXQf?=
+ =?iso-8859-1?Q?vwUI4isLAg1mEeAElAAFEoplJ6+ZAp5TaXJc1Ijkyd8z9M6XsGQklfHxpQ?=
+ =?iso-8859-1?Q?inpl3S873NsFUzzHak7iqDEqbQgrnhATOJdSgTb+pXRVeAKa/V5nYMvfGO?=
+ =?iso-8859-1?Q?IDNb3hZtoEdpPN52FEIKySd5jkRg4fqIQVhub0POL+QLyAgXNXWzHhzYrP?=
+ =?iso-8859-1?Q?UeONDTVjNGCqsRGRas4hNrPruPeWz6xqHYG3AyHbvk1ntZ3HBg9goGX/Du?=
+ =?iso-8859-1?Q?iWV46gbv1sx0pz/nZJCmV1HObu+MFlE+32sKXo8txkGDX0TrBHQPS49tYE?=
+ =?iso-8859-1?Q?pwh2CTYJi25DDx5aJk5wy+BTlDZnj6i/ZL7EWi6b1QLimwiSAT2+R5Ni6F?=
+ =?iso-8859-1?Q?uzTajsJF6kgUu9/Uf70w9ZV1CqLtVJDeeNh+Errg3HKsp6SY8RHZcEYDu7?=
+ =?iso-8859-1?Q?76ORtYuys9VT7w8h+K+LBAehTM7Lo3A8sS5lXDUzj9mAM7LjLMaH6+3YKw?=
+ =?iso-8859-1?Q?jUVo+SddD+jHWcUwm2NoSoVBGTWhmPrNWb5BF3SznjEzF0XkKu6O/1Zils?=
+ =?iso-8859-1?Q?SZl00tJwwpc+/mpBCd5dJUIULSL62XPwrMRZhLtb6s316Ge+APObBHb7mR?=
+ =?iso-8859-1?Q?cEPeKWQehbIrpJDLPuCHIb87uGCx1re47rLZo9dAy900xIT6HpIkR8pqQp?=
+ =?iso-8859-1?Q?kwEqVeTX4sAZ1LuKJjTx3co+RUL3nny9jp?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: be219e76-a4bb-4b89-244b-08dbec8be9b8
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6397.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:15:00.0781
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:23:07.2136
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MaxHkKLbW8IdHOTXMuc+9XYsxvxD+Xp6dg7SD1CcqczlC58lOoRPTvQXKxVwIoMdv7FQtQNUZ3BRXFCXxgXOEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5352
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: sV/YbkV8w1kluPULThxwkFnQVDpSyR5rxxcGE5D07ZKr5naTp2wFcBlGAGn4kRXs4fbJmNMx2SQW7Yyh0aeL6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5610
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 08:50, David Hildenbrand wrote:
-> On 23.11.23 17:18, Matthew Wilcox wrote:
->> On Thu, Nov 23, 2023 at 05:05:37PM +0100, David Hildenbrand wrote:
->>> On 23.11.23 16:59, Matthew Wilcox wrote:
->>>> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
->>>>> Note: I'm resending this at Andrew's suggestion due to having 
->>>>> originally sent
->>>>> it during LPC. I'm hoping its in a position where the feedback is 
->>>>> minor enough
->>>>> that I can rework in time for v6.8, but so far haven't had any.
->>>>>
->>>>> Hi All,
->>>>>
->>>>> This is v7 of a series to implement small-sized THP for anonymous 
->>>>> memory
->>>>> (previously called "large anonymous folios"). The objective of this 
->>>>> is to
->>>>
->>>> I'm still against small-sized THP.Â  We've now got people asking whether
->>>> the THP counters should be updated when dealing with large folios that
->>>> are smaller than PMD sized.Â  It's sowing confusion, and we should go
->>>> back to large anon folios as a name.
->>>>
->>>
->>> I disagree.
->>>
->>> https://lore.kernel.org/all/65dbdf2a-9281-a3c3-b7e3-a79c5b60b357@redhat.com/
->>
->> And yet:
->> https://lore.kernel.org/linux-mm/20231106193315.GB3661273@cmpxchg.org/
->>
->> "This is a small THP so we don't account it as a THP, we only account
->> normal THPs as THPs" is a bizarre position to take.
->>
->> Not to mention that saying a foo is a small huge baz is just bizarre.
->> Am I a small giant?Â  Or just a large human?
+On Thu, Nov 23, 2023 at 09:49:20PM +0800, bhe@redhat.com wrote:
+> On 11/17/23 at 10:01pm, Baoquan He wrote:
+> > On 11/17/23 at 09:37am, Liu, Yujie wrote:
+> > > Hi Baoquan,
+> > > 
+> > > On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
+> > > > Hi,
+> > > > 
+> > > > On 11/16/23 at 05:04am, kernel test robot wrote:
+> > > > > Hi Baoquan,
+> > > > > 
+> > > > > kernel test robot noticed the following build errors:
+> > > > > 
+> > > > > [auto build test ERROR on arm64/for-next/core]
+> > > > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
+> > > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > > > And when submitting patch, we suggest to use '--base' as documented in
+> > > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > > > 
+> > > > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
+> > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> > > > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
+> > > > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
+> > > > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
+> > > > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> > > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
+> > > > > 
+> > > > 
+> > > > Thanks for reporting.
+> > > > 
+> > > > I met below failure when following the steps of provided reproducer.
+> > > > Could anyone help check what's wrong with that?
+> > > 
+> > > Sorry this seems to be a bug in the reproducer. Could you please change
+> > > the compiler parameter to "COMPILER=clang-16" and rerun the command? We
+> > > will fix the issue ASAP.
 > 
-> I like that analogy. Yet, "small giant" sounds "bigger" in some way IMHO ;)
+> Any update for the reproducer? I would like to post v2 with the fix. I
+> doubt it's the same issue as another report on this patch, while not
+> quite sure.
+
+Setting "COMPILER=clang-16" is exactly the correct fix and should
+reproduce the issue in this report. We've fixed the steps of reproducer
+but this will only take effect in future reports.
+
+Thanks,
+Yujie
+
+> > 
+> > Here you are. Thanks for your quick response.
+> > ------------------------------
+> > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> > Compiler will be installed in /root/0day
+> > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
+> > /root/linux                                                                             
+> > tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
+> > PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+> > make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
+> > make[1]: Entering directory '/root/linux/build_dir'
+> >   GEN     Makefile
+> >   HOSTCC  scripts/basic/fixdep
+> >   HOSTCC  scripts/kconfig/conf.o
+> >   HOSTCC  scripts/kconfig/confdata.o
+> >   HOSTCC  scripts/kconfig/expr.o
+> >   HOSTCC  scripts/kconfig/lexer.lex.o
+> >   HOSTCC  scripts/kconfig/menu.o
+> >   HOSTCC  scripts/kconfig/parser.tab.o
+> >   HOSTCC  scripts/kconfig/preprocess.o
+> >   HOSTCC  scripts/kconfig/symbol.o
+> >   HOSTCC  scripts/kconfig/util.o
+> >   HOSTLD  scripts/kconfig/conf
+> > #
+> > # configuration written to .config
+> > #
+> > make[1]: Leaving directory '/root/linux/build_dir'
+> > 
+> > > 
+> > > > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+> > > > Compiler will be installed in /root/0day
+> > > > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
+> > > > get1: /pub/tools/llvm/files/: files/: Is a directory
+> > > > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
+> > > > clang crosstool install failed
+> > > > Install clang compiler failed
+> > > > setup_crosstool failed
+> > > 
+> > > 
+> > 
 > 
-> I'll note that "small-sized THP" is just a temporary feature name, it 
-> won't be exposed as such to the user in sysfs etc. In a couple of years, 
-> it will be forgotten.
-> 
-> To me it makes sense: it's a hugepage (not a page) but smaller compared 
-> to what we previously had. But again, there won't be a "small_thp" 
-> toggle anywhere.
-> 
-> Long-term it's simply going to be a THP. Quoting from my writeup:
-> 
-> "Nowadays, when somebody says that they are using hugetlb huge pages, 
-> the first question frequently is "which huge page size?". The same will
-> happen with transparent huge pages I believe.".
-> 
-> 
-> Regarding the accounting: as I said a couple of times, "AnonHugePages" 
-> should have been called "AnonPmdMapped" or similar; that's what it 
-> really is: as soon as a THP is PTE-mapped, it's not accounted there. But 
-> we can't fix that I guess, unless we add some "world switch" for any 
-> workloads that would care about a different accounting.
-> 
-> So we're really only concerned about:
-> * AnonHugePages
-> * ShmemHugePages
-> * FileHugePages
-
-
-The v6 patchset had these counters:
-
-/proc/vmstat:  nr_anon_thp_pte
-/proc/meminfo: AnonHugePteMap
-
-...which leads to another naming possibility: pte-thp, or pte-mapped-thp,
-something along those lines.
-
-pte-thp avoids the "small huge" complaint, at least.
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
