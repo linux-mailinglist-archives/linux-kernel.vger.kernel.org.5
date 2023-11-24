@@ -2,238 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AFB7F6E68
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B49A7F6E3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345009AbjKXIjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
+        id S1344572AbjKXIdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:33:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKXIjH (ORCPT
+        with ESMTP id S229485AbjKXIdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:39:07 -0500
-X-Greylist: delayed 368 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 00:39:14 PST
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45E1AD;
-        Fri, 24 Nov 2023 00:39:13 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 5A57C60B1C;
-        Fri, 24 Nov 2023 08:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1700814812;
-        bh=X9UAYrEpltlL4BFSrotnsyJ28JU1NDy+XhYUgWFsj3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=deq8gQJoV8AuDJyfkujArZSATCptJGPR0oRvGeUQHKRlosVOvT+oW0d7diQ6tztdi
-         PgqjHJn6mqxEpebsOYh9vNXzAf0cgcnySdleHpY5arlQOCEKe68YzB+y9u+dMD2vJR
-         WhuxWudhbeaeCkdg/URqXQwtJ8w2In3hd7zSx5onHwfszgAcA6F5B62DF2M5pLZsgv
-         deaEPLf1R0VOS3sCQwk3FIGCTXhQvZrBdi7FMPyyst07aPjGnh5+uZTPQG1islIacA
-         riYzbWoxf8TfsNjPEqKHvN/RYuSmSiixjV9Z5KajH8QWWa+L41EHiA/nty5hFChEC4
-         75L2s+1h3F4eA==
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fri, 24 Nov 2023 03:33:18 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0A1BD
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:33:24 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507ad511315so2271662e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:33:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700814802; x=1701419602; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IVRC0zmRyp43W4q3MRWR+VBca239RoOPT5L46Kgcx/I=;
+        b=qIBV6BfFc3SpjnN3BCfcblfrp0nqhYUnPc+DWSkhSz/38hx3fPHQc4Eja5jVKmAGSu
+         nxcY17iTPJUuZfb9pUk0pnQOUIX31EKYEi6PpbCdA3KqeUv0VhoiNSH3ImhupK6eY87z
+         ahwc7oFTQpIuvjTHn4lh4SQu6CQBl6aOlr4Dku8ILkB7Yu41wPMQGbJF0/YYHXpZqJDW
+         xOggcrU0yn/dqe3YtREW/WJGPD23AFTsbbm0LNT+p91RbFdTuZoRuVtahja83O/Q6owM
+         BpuckpFOyThoxY7KMzFVy6+nAwuc96yQXqG01Me57fVt5HwtTYwGXCsATMwA8WwjVBSY
+         Rkag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700814802; x=1701419602;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IVRC0zmRyp43W4q3MRWR+VBca239RoOPT5L46Kgcx/I=;
+        b=atFyu0IYhfaVgDPXrnIQK6khwIUWf1NGBTSCYirSjzBZWDfU6ymg1se5aPzA6DuE7k
+         f6OQmuqTOxQvMSdTzkkFYYrnCc7pFoEn66qy/cLPNMWmbD0oZYYqKhm+L3o1gEpB7w08
+         q1n/tkzOZwb6OnPOHY4cVZD8wJcEqS6Uw6Pbt/IDVJQfpcESbhXDMmqxbqLLxH54lFSl
+         oOB7JDMdD+IiRh1KZANqa5+bkeieaXwxD0NttyxDmeX1SCkIl/oQVfOcPgq93fcg4tY8
+         ipYLfuIvpDIPjFdulBQcFchp0N+JMEdQndEQ9xqLwdgjEhn4rW6m8JTlOOSh8fHnZCND
+         lrpA==
+X-Gm-Message-State: AOJu0YwLGTQYcgzOlZBdb+bkTKWip6bzTBj2qd1z64Y7Ftgqxq1DCRys
+        RK6djQ4g11cCN9u3RLbnF68MkA==
+X-Google-Smtp-Source: AGHT+IHyEWpOXy+wjpDhxzy7qj32CzoZVgpuF4BaHV6SCcxwB3sl+hSfmBUyobobcf4Zy4NpyI1ZFQ==
+X-Received: by 2002:ac2:488d:0:b0:509:7915:a1d6 with SMTP id x13-20020ac2488d000000b005097915a1d6mr1195666lfc.58.1700814802599;
+        Fri, 24 Nov 2023 00:33:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b009f28db2b702sm1774296ejb.209.2023.11.24.00.33.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 00:33:22 -0800 (PST)
+Message-ID: <160fc6c4-b07d-49c5-976b-aa0fa35e4f0f@linaro.org>
+Date:   Fri, 24 Nov 2023 09:33:20 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] ASoC: dt-bindings: document WCD939x Audio Codec
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, Dhruva Gole <d-gole@ti.com>
-Subject: [PATCH v4 2/2] Input: gpio-keys - Add system suspend support for dedicated wakeirqs
-Date:   Fri, 24 Nov 2023 10:32:41 +0200
-Message-ID: <20231124083241.40780-2-tony@atomide.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231124083241.40780-1-tony@atomide.com>
-References: <20231124083241.40780-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-2-21d4ad9276de@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-2-21d4ad9276de@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoCs have a separate dedicated wake-up interrupt controller that can
-be used to wake up the system from deeper idle states. We already support
-configuring a separate interrupt for a gpio-keys button to be used with a
-gpio line. However, we are lacking support system suspend for cases where
-a separate interrupt needs to be used in deeper sleep modes.
+On 23/11/2023 15:49, Neil Armstrong wrote:
 
-Because of it's nature, gpio-keys does not know about the runtime PM state
-of the button gpios, and may have several gpio buttons configured for each
-gpio-keys device instance. Implementing runtime PM support for gpio-keys
-does not help, and we cannot use drivers/base/power/wakeirq.c support. We
-need to implement custom wakeirq support for gpio-keys.
+> +  Qualcomm WCD9390/WCD9395 Codec is a standalone Hi-Fi audio codec IC.
+> +  It has RX and TX Soundwire slave devices.
+> +  The WCD9390/WCD9395 IC has a functionally separate USB-C Mux subsystem
+> +  accessible over an I2C interface.
+> +  The Audio Headphone and Microphone data path between the Codec and the USB-C Mux
+> +  subsystems are external to the IC, thus requiring DT port-endpoint graph description
+> +  to handle USB-C altmode & orientation switching for Audio Accessory Mode.
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +  - $ref: qcom,wcd93xx-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,wcd9390-codec
+> +      - qcom,wcd9395-codec
 
-For handling a dedicated wakeirq for system suspend, we enable and disable
-it with gpio_keys_enable_wakeup() and gpio_keys_disable_wakeup() that we
-already use based on device_may_wakeup().
+9395 should be compatible with 9390, so please express it with a list
+using fallback. I know that earlier wcd93xx do not follow that concept,
+but maybe we will fix them some point as well.
 
-Some systems may have a dedicated wakeirq that can also be used as the
-main interrupt, this is already working for gpio-keys. Let's add some
-wakeirq related comments while at it as the usage with a gpio line and
-separate interrupt line may not be obvious.
+> +
+> +  mode-switch:
+> +    description: Flag the port as possible handle of altmode switching
+> +    type: boolean
+> +
+> +  orientation-switch:
+> +    description: Flag the port as possible handler of orientation switching
+> +    type: boolean
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description:
+> +      A port node to link the WCD939x Codec node to USB MUX subsystems for the
+> +      purpose of handling altmode muxing and orientation switching to detecte and
+> +      enable Audio Accessory Mode.
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    codec {
+> +        compatible = "qcom,wcd9390-codec";
+> +        reset-gpios = <&tlmm 32 0>;
 
-Tested-by: Dhruva Gole <d-gole@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
+Please define for the GPIO flag.
 
-No changes from v1
+> +        #sound-dai-cells = <1>;
+> +        qcom,tx-device = <&wcd939x_tx>;
+> +        qcom,rx-device = <&wcd939x_rx>;
+> +        qcom,micbias1-microvolt = <1800000>;
+> +        qcom,micbias2-microvolt = <1800000>;
+> +        qcom,micbias3-microvolt = <1800000>;
+> +        qcom,micbias4-microvolt = <1800000>;
+> +        qcom,hphl-jack-type-normally-closed;
+> +        qcom,ground-jack-type-normally-closed;
+> +        qcom,mbhc-buttons-vthreshold-microvolt = <75000 150000 237000 500000 500000 500000 500000 500000>;
+> +        qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soundwire@3210000 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x03210000 0x2000>;
+> +        wcd939x_rx: codec@0,4 {
+> +            compatible = "sdw20217010e00";
+> +            reg  = <0 4>;
 
----
- drivers/input/keyboard/gpio_keys.c | 69 ++++++++++++++++++++++++++++--
- include/linux/gpio_keys.h          |  2 +
- 2 files changed, 67 insertions(+), 4 deletions(-)
+Just one space before '='
 
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -45,7 +45,9 @@ struct gpio_button_data {
- 	unsigned int software_debounce;	/* in msecs, for GPIO-driven buttons */
- 
- 	unsigned int irq;
-+	unsigned int wakeirq;
- 	unsigned int wakeup_trigger_type;
-+
- 	spinlock_t lock;
- 	bool disabled;
- 	bool key_pressed;
-@@ -511,6 +513,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 	struct gpio_button_data *bdata = &ddata->data[idx];
- 	irq_handler_t isr;
- 	unsigned long irqflags;
-+	const char *wakedesc;
- 	int irq;
- 	int error;
- 
-@@ -575,6 +578,14 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 					!gpiod_cansleep(bdata->gpiod);
- 		}
- 
-+		/*
-+		 * If an interrupt was specified, use it instead of the gpio
-+		 * interrupt and use the gpio for reading the state. A separate
-+		 * interrupt may be used as the main button interrupt for
-+		 * runtime PM to detect events also in deeper idle states. If a
-+		 * dedicated wakeirq is used for system suspend only, see below
-+		 * for bdata->wakeirq setup.
-+		 */
- 		if (button->irq) {
- 			bdata->irq = button->irq;
- 		} else {
-@@ -672,6 +683,36 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 		return error;
- 	}
- 
-+	if (!button->wakeirq)
-+		return 0;
-+
-+	/* Use :wakeup suffix like drivers/base/power/wakeirq.c does */
-+	wakedesc = devm_kasprintf(dev, GFP_KERNEL, "%s:wakeup", desc);
-+	if (!wakedesc)
-+		return -ENOMEM;
-+
-+	bdata->wakeirq = button->wakeirq;
-+	irqflags |= IRQF_NO_SUSPEND;
-+
-+	/*
-+	 * Wakeirq shares the handler with the main interrupt, it's only
-+	 * active during system suspend. See gpio_keys_button_enable_wakeup()
-+	 * and gpio_keys_button_disable_wakeup().
-+	 */
-+	error = devm_request_any_context_irq(dev, bdata->wakeirq, isr,
-+					     irqflags, wakedesc, bdata);
-+	if (error < 0) {
-+		dev_err(dev, "Unable to claim wakeirq %d; error %d\n",
-+			bdata->irq, error);
-+		return error;
-+	}
-+
-+	/*
-+	 * Disable wakeirq until suspend. IRQF_NO_AUTOEN won't work if
-+	 * IRQF_SHARED was set based on !button->can_disable.
-+	 */
-+	disable_irq_nosync(bdata->wakeirq);
-+
- 	return 0;
- }
- 
-@@ -728,7 +769,7 @@ gpio_keys_get_devtree_pdata(struct device *dev)
- 	struct gpio_keys_platform_data *pdata;
- 	struct gpio_keys_button *button;
- 	struct fwnode_handle *child;
--	int nbuttons;
-+	int nbuttons, irq;
- 
- 	nbuttons = device_get_child_node_count(dev);
- 	if (nbuttons == 0)
-@@ -750,9 +791,19 @@ gpio_keys_get_devtree_pdata(struct device *dev)
- 	device_property_read_string(dev, "label", &pdata->name);
- 
- 	device_for_each_child_node(dev, child) {
--		if (is_of_node(child))
--			button->irq =
--				irq_of_parse_and_map(to_of_node(child), 0);
-+		if (is_of_node(child)) {
-+			irq = of_irq_get_byname(to_of_node(child), "irq");
-+			if (irq > 0)
-+				button->irq = irq;
-+
-+			irq = of_irq_get_byname(to_of_node(child), "wakeup");
-+			if (irq > 0)
-+				button->wakeirq = irq;
-+
-+			if (!button->irq && !button->wakeirq)
-+				button->irq =
-+					irq_of_parse_and_map(to_of_node(child), 0);
-+		}
- 
- 		if (fwnode_property_read_u32(child, "linux,code",
- 					     &button->code)) {
-@@ -921,6 +972,11 @@ gpio_keys_button_enable_wakeup(struct gpio_button_data *bdata)
- 		}
- 	}
- 
-+	if (bdata->wakeirq) {
-+		enable_irq(bdata->wakeirq);
-+		disable_irq_nosync(bdata->irq);
-+	}
-+
- 	return 0;
- }
- 
-@@ -929,6 +985,11 @@ gpio_keys_button_disable_wakeup(struct gpio_button_data *bdata)
- {
- 	int error;
- 
-+	if (bdata->wakeirq) {
-+		enable_irq(bdata->irq);
-+		disable_irq_nosync(bdata->wakeirq);
-+	}
-+
- 	/*
- 	 * The trigger type is always both edges for gpio-based keys and we do
- 	 * not support changing wakeup trigger for interrupt-based keys.
-diff --git a/include/linux/gpio_keys.h b/include/linux/gpio_keys.h
---- a/include/linux/gpio_keys.h
-+++ b/include/linux/gpio_keys.h
-@@ -21,6 +21,7 @@ struct device;
-  *			disable button via sysfs
-  * @value:		axis value for %EV_ABS
-  * @irq:		Irq number in case of interrupt keys
-+ * @wakeirq:		Optional dedicated wake-up interrupt
-  */
- struct gpio_keys_button {
- 	unsigned int code;
-@@ -34,6 +35,7 @@ struct gpio_keys_button {
- 	bool can_disable;
- 	int value;
- 	unsigned int irq;
-+	unsigned int wakeirq;
- };
- 
- /**
--- 
-2.42.1
+> +            qcom,rx-port-mapping = <1 2 3 4 5 6>;
+> +        };
+> +    };
+> +
+> +    soundwire@3230000 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x03230000 0x2000>;
+> +        wcd938x_tx: codec@0,3 {
+> +            compatible = "sdw20217010e00";
+> +            reg  = <0 3>;
+
+Ditto
+
+
+Best regards,
+Krzysztof
+
