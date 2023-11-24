@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B757F8625
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 23:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3D47F862B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 23:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjKXW36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 17:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S229694AbjKXWcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 17:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXW35 (ORCPT
+        with ESMTP id S229584AbjKXWcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 17:29:57 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3181701
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 14:30:03 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b3e7f2fd9so2089485e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 14:30:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1700865001; x=1701469801; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N9aMoVAYZDthyr2anGCDJRxJF5mVykGeJEK+2TP+uDA=;
-        b=mpKF3jkvLQkZD3AydPUFWQgxTtNJ5BpR+u5CWkZSHj66HKpXkh6NYDf8iI4KTZdHxw
-         b+N/rdZcKumT0oDyCJlgLfzSsoqudC6zoVJv10aL4zkrumjviYZLlLWoLZpjfNLqzcQl
-         yjIbOA4BOOanvOsw9BU7VF7bA3rNIAWsnEg1xqZqIqbMeeNM3ztwwk/bu5odN4Y4i65C
-         ynsbgnk2FD9PDr+80W234Rinv1Ri7c4cKS0HcbF1nd90QuYUDZCVFM7CAOvlElCiMcnT
-         fufl7nbPlLZOXq6t4ZrIbze0/j1QyRQ1ZFnka9IVKiH81A8MJnRqzfYXU1ZfjMSQ0cp5
-         e/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700865001; x=1701469801;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N9aMoVAYZDthyr2anGCDJRxJF5mVykGeJEK+2TP+uDA=;
-        b=DQ4CjCvz1MaTUM3TEpfC9gAs8BswMBy5P7WrZJF2TGzd67bRBKVX2olLPE9u9gkLP3
-         ZBqWZf+qcg4YBN7UL67wqDh/8sl04dzqqF4JLr1ncrAu8PWzMInQbVAWBcvTKPYKirYd
-         72XLErsAbs/nnjoMBHn3VHFwA1vqCepEgOWtJEYQwxDPqOZhLKKTIhhkhnAZXRPC+rFJ
-         5El+wIz6aph2TT3Ha4I5prm4JINERMOrox+ccqIFpVQDUeGiZ5zId5U7HCQWRQYsZW1S
-         fGVNY0S5/27UR0P8ZPy7/Qe9F371NH3InLStPdFkWc6uO5fOR9T+OhTZeaWX4xYm4sZ5
-         qPgQ==
-X-Gm-Message-State: AOJu0Yz2QKDD7XC7KzaPdSjFdNpVsKzDqtqIq5OVnVH69VUMPt2JDSTd
-        ZZEPnFY7+CWdmrWJk8YZpqahQg==
-X-Google-Smtp-Source: AGHT+IEriUeR3Amtpl0U1j/IWdPGBWZcNP0dPbDNg/M3cJq/yy5X8cAy7YxhVmrIlfkD8JFMWZQvYg==
-X-Received: by 2002:a7b:c857:0:b0:40b:35f2:3b42 with SMTP id c23-20020a7bc857000000b0040b35f23b42mr3286516wml.22.1700865000755;
-        Fri, 24 Nov 2023 14:30:00 -0800 (PST)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id m5-20020a5d56c5000000b00332cbd59f8bsm5274213wrw.25.2023.11.24.14.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 14:30:00 -0800 (PST)
-Date:   Fri, 24 Nov 2023 22:29:58 +0000
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-Cc:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH V2] media: stk1160: Fixed high volume of stk1160_dbg
- messages
-Message-ID: <ZWEj5sDUs83qn0pc@equinox>
-References: <20231122161304.12434-1-ghanshyam1898@gmail.com>
+        Fri, 24 Nov 2023 17:32:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FFF10F7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 14:32:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4D35C433C8;
+        Fri, 24 Nov 2023 22:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700865161;
+        bh=11MQ+yZzITnqG5iCSLzAR411rSB6tjFg5VyDfzbjJAM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XhXhw1f/S1WGDrAxGBXKoFRjkAl3m8ee/Z6PP7+fkqRZHpPw0P1gqNELFuM1dbqSs
+         6fa6akfIxfcqRgbU/Pmj46etXPL+xKU6Z6ucguTJEScf7sh48+bXECbUClAwaFCliP
+         DSFJvBkAlhezpVWCqnSflQWwxjUHTpadGKfM51138/a38+otC8lpu+3wwmKXL9TbET
+         EZcKh68iwwoLw5hpvFBt/LgC4G2GcYm0EGbds/YTx6R/VC1NJfFUzrz8dKuv9weQbF
+         k1yztCZeocTb5l7lFX3QCMRsUJFMbojpa+ROwgIn3OBomvPF2oL6ZcMpJD6VZE/g5s
+         lLzN914NGjREQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/7] cpuidle: Handle TIF_NR_POLLING on behalf of polling idle states
+Date:   Fri, 24 Nov 2023 23:32:19 +0100
+Message-ID: <20231124223226.24249-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122161304.12434-1-ghanshyam1898@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 09:43:04PM +0530, Ghanshyam Agrawal wrote:
-> The function stk1160_dbg gets called too many times, which causes
-> the output to get flooded with messages. Since stk1160_dbg uses
-> printk, it is now replaced with dev_warn_ratelimited.
-> 
-> Suggested-by: Phillip Potter <phil@philpotter.co.uk>
-> Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-> ---
-> v2:
-> Thanks for your suggestions Phillip. I have updated the TODO comment and 
-> used dev_warn_ratelimited for inclusion of kernel warning.
-> 
->  drivers/media/usb/stk1160/stk1160-video.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+The TIF_NR_POLLING handling against polling idle states (mwait and also
+software polling) is a bit messy, with quite some wasted cycles spent
+on useless atomic operations. This is a try to consolidate this state
+handling from the cpuidle core.
 
-Hi Ghanshyam,
+Frederic Weisbecker (4):
+  x86: Add a comment about the "magic" behind shadow sti before mwait
+  cpuidle: Remove unnecessary current_clr_polling_and_test() from
+    haltpoll
+  cpuidle: s/CPUIDLE_FLAG_POLLING/CPUIDLE_FLAG_POLLING_SOFT
+  cpuidle: Handle TIF_NR_POLLING on behalf of software polling idle
+    states
 
-Thank you for the patch, but it is sadly incorrect.
+Peter Zijlstra (3):
+  x86: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer reprogram
+  cpuidle: Introduce CPUIDLE_FLAG_POLLING_HARD
+  cpuidle: Handle TIF_NR_POLLING on behalf of CPUIDLE_FLAG_POLLING_HARD
+    states
 
-You have created this V2 against a tree including the V1 version of your
-patch. A V2 patch should apply cleanly against the source tree, with no
-previous version first needing to be applied.
+ Documentation/driver-api/pm/cpuidle.rst |  2 +-
+ arch/x86/include/asm/mwait.h            | 23 +++++++++++---
+ drivers/acpi/processor_idle.c           |  3 ++
+ drivers/cpuidle/cpuidle-haltpoll.c      |  5 +---
+ drivers/cpuidle/cpuidle-powernv.c       | 12 +-------
+ drivers/cpuidle/cpuidle-pseries.c       | 15 ++--------
+ drivers/cpuidle/cpuidle.c               | 22 +++++++++++++-
+ drivers/cpuidle/governors/ladder.c      |  4 +--
+ drivers/cpuidle/governors/menu.c        |  8 ++---
+ drivers/cpuidle/governors/teo.c         |  8 ++---
+ drivers/cpuidle/poll_state.c            | 32 ++++++++------------
+ drivers/idle/intel_idle.c               | 24 +++++++--------
+ include/linux/cpuidle.h                 |  3 +-
+ include/linux/sched/idle.h              |  7 ++++-
+ kernel/sched/idle.c                     | 40 +++++++++----------------
+ 15 files changed, 104 insertions(+), 104 deletions(-)
 
-On another note, why are you using dev_warn_ratelimited here, and if
-there's a good reason, why not use it for the other callsites in this
-function? (Genuine question here, I've not studied the difference).
+-- 
+2.42.1
 
-Please create a V3, many thanks.
-
-Nacked-by: Phillip Potter <phil@philpotter.co.uk>
-
-Regards,
-Phil
