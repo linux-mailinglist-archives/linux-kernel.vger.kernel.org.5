@@ -2,270 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B4B7F705F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC7F7064
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345265AbjKXJtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        id S1345308AbjKXJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjKXJtF (ORCPT
+        with ESMTP id S230344AbjKXJtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Nov 2023 04:49:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E8710FA;
-        Fri, 24 Nov 2023 01:49:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700819351; x=1732355351;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=m+O2iEouFoLlSPXcWmyIB9dFD9aAcWMkJLAYTZIh6qY=;
-  b=BOylP2D1Mwy6QNmU0mTX9Z/AAYWBGtXRGiaxL24ihZnwFHZvolHGPsl8
-   wWeI5rkB7D7jt8qj0MVAuN4OLu7zJ3uSOU+cfNkWtypxxGzne1pX0ME6h
-   bifyXFcaoA5WVSAdyrXAENvM0PJ8pntVY5xmdEQxfAwk90IPXWvMvlevW
-   AK6qghAIAOTcmW7ONhGXL6tsKOg3qkVtM5mmWwBZeer9iYzErdncIvG4H
-   BuwJV2SOZ+kJ9040PBoHqFUj3v5G44bd25ix+uW+9t0HnQPbnDwOMiz79
-   OPYEtA/rV8wPIEQVuNzzslF3gCHKr+fgzt8KY9fQ1IM+RYmMn4RvY4wxW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371751267"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="371751267"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:49:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="838037405"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="838037405"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Nov 2023 01:49:08 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r6So5-0002L8-3D;
-        Fri, 24 Nov 2023 09:49:06 +0000
-Date:   Fri, 24 Nov 2023 17:49:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap
- cleanup.h support
-Message-ID: <202311241214.jcL84du7-lkp@intel.com>
-References: <20231123040355.82139-13-david.e.box@linux.intel.com>
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1994610F7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:49:11 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5484ef5e3d2so2265404a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700819349; x=1701424149; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UUdTnaaBHnW2fjhe6sI21VXYoayTY5LZbV+9rSQdYMc=;
+        b=pGlP4PeBy4NTZf9BrqvXX3Q5jgWh+tHYEXYGZ+DqepOd58n91sajaZeJTUDbO4TVjp
+         4M8AM32wI3SZ4MZTnbVCATUFZZmXlb5ybdJ4XDRhVsOyQWFs8p5SJf/UDBFRhMKW620I
+         oO0ALAKfBamcC+LKHyHLjE2Hg1bd5QFVgdNXBkB8cP2FiXT7lluMaYxjZbhbXPLnUnLD
+         e1nDcHKmqfWEkk8vT1g+FtJJhNumnjy+lKrmbDZ48qLayBj60y7u3l/0VXYCDaMxWspj
+         oQGG61+f518Q7jX6z8bsbHPVcdWIgCnHKzkGyN5EYcee/zQPCJjX2B1u///cfBHs+dZC
+         zyMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700819349; x=1701424149;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UUdTnaaBHnW2fjhe6sI21VXYoayTY5LZbV+9rSQdYMc=;
+        b=MR0LarRuQd0kgQ4vCTPjGH+YiPmoG/7ESLKpeTDWIJC5JzIXDiLs8+Xc8WZ02xZo0U
+         HtnK/dtNVtl6Xx7UOYJk55eB7nk7meLwcbUJwjwr/tidqJILO9eXF5v11g/sDuvZ8gAm
+         PLYdNLDX3/0QYa1tMU7G9yLhjPkqoTPE+jtJaZqOjWR6n6ZTyWKS4nXD4T5Cqg+HBIR2
+         oaqrGvLvDe/HqPvRLd/z0IVi1tx2k22xxY+LeFw2ZEHryBprXR9Aq5LpF/c19Oxvty+9
+         qxHEdAjKBJk92uJdTuZR9+DaWBhvT59UjH70tc5ijNSTFrWC86BMo2sIXue8+VSZjT5i
+         tDIA==
+X-Gm-Message-State: AOJu0YyvU9rQDvnYf13QMFrfFnOjZSnyE/95JAGlE1pq0kmdF2wVfONZ
+        9EaTM9d6zEhvHSP5UbWXrTmcdQ==
+X-Google-Smtp-Source: AGHT+IFvkCKst+6yxzZMwo06iOJIDvsxsngV5hArSa+rFOZbFNoN9V7sg2i35tPibbR6FhG4eZ7r/A==
+X-Received: by 2002:a17:906:9c12:b0:9df:e39d:e0ed with SMTP id ff18-20020a1709069c1200b009dfe39de0edmr1453162ejc.24.1700819349499;
+        Fri, 24 Nov 2023 01:49:09 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id h24-20020a170906591800b009fdc684a79esm1857025ejq.124.2023.11.24.01.49.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 01:49:08 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ARM: dts: st: minor whitespace cleanup around '='
+Date:   Fri, 24 Nov 2023 10:49:05 +0100
+Message-Id: <20231124094905.58425-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123040355.82139-13-david.e.box@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+The DTS code coding style expects exactly one space before and after '='
+sign.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm/boot/dts/st/ste-dbx5x0.dtsi           | 18 +++++++++---------
+ arch/arm/boot/dts/st/ste-hrefprev60.dtsi       |  2 +-
+ arch/arm/boot/dts/st/ste-hrefv60plus.dtsi      |  2 +-
+ arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi  |  8 ++++----
+ arch/arm/boot/dts/st/ste-snowball.dts          |  2 +-
+ .../dts/st/ste-ux500-samsung-codina-tmo.dts    |  2 +-
+ .../boot/dts/st/ste-ux500-samsung-codina.dts   |  2 +-
+ .../boot/dts/st/ste-ux500-samsung-gavini.dts   |  2 +-
+ .../boot/dts/st/ste-ux500-samsung-janice.dts   |  2 +-
+ .../arm/boot/dts/st/ste-ux500-samsung-kyle.dts |  2 +-
+ arch/arm/boot/dts/st/stih407-pinctrl.dtsi      |  8 ++++----
+ arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts  |  2 +-
+ arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts  |  2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts  |  2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts  |  2 +-
+ 15 files changed, 29 insertions(+), 29 deletions(-)
 
-[auto build test ERROR on b85ea95d086471afb4ad062012a4d73cd328fa86]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-intel-vsec-Fix-xa_alloc-memory-leak/20231123-120726
-base:   b85ea95d086471afb4ad062012a4d73cd328fa86
-patch link:    https://lore.kernel.org/r/20231123040355.82139-13-david.e.box%40linux.intel.com
-patch subject: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap cleanup.h support
-config: s390-randconfig-001-20231123 (https://download.01.org/0day-ci/archive/20231124/202311241214.jcL84du7-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241214.jcL84du7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311241214.jcL84du7-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-                                                             ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-   #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-                                                        ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-                                                             ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-   #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-                                                        ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:693:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:701:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:709:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:718:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:727:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:736:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> include/asm-generic/io.h:1070:38: error: call to undeclared function 'iounmap'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-   DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
-                                        ^
-   arch/s390/include/asm/io.h:29:17: note: expanded from macro 'iounmap'
-   #define iounmap iounmap
-                   ^
-   include/asm-generic/io.h:1070:38: note: did you mean 'vunmap'?
-   arch/s390/include/asm/io.h:29:17: note: expanded from macro 'iounmap'
-   #define iounmap iounmap
-                   ^
-   include/linux/vmalloc.h:167:13: note: 'vunmap' declared here
-   extern void vunmap(const void *addr);
-               ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:591:
-   In file included from arch/s390/include/asm/hw_irq.h:6:
-   In file included from include/linux/pci.h:37:
-   In file included from include/linux/device.h:32:
-   In file included from include/linux/device/driver.h:21:
-   In file included from include/linux/module.h:19:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:160:
-   include/linux/compat.h:454:22: warning: array index 3 is past the end of the array (that has type 'const unsigned long[1]') [-Warray-bounds]
-           case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
-                               ^        ~
-   arch/s390/include/asm/signal.h:22:9: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:591:
-   In file included from arch/s390/include/asm/hw_irq.h:6:
-   In file included from include/linux/pci.h:37:
-   In file included from include/linux/device.h:32:
-   In file included from include/linux/device/driver.h:21:
-   In file included from include/linux/module.h:19:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:160:
-   include/linux/compat.h:454:10: warning: array index 7 is past the end of the array (that has type 'compat_sigset_word[2]' (aka 'unsigned int[2]')) [-Warray-bounds]
-           case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
-                   ^     ~
-   include/linux/compat.h:130:2: note: array 'sig' declared here
-           compat_sigset_word      sig[_COMPAT_NSIG_WORDS];
-           ^
-   include/linux/compat.h:454:42: warning: array index 6 is past the end of the array (that has type 'compat_sigset_word[2]' (aka 'unsigned int[2]')) [-Warray-bounds]
-           case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
-                                                   ^     ~
-   include/linux/compat.h:130:2: note: array 'sig' declared here
-           compat_sigset_word      sig[_COMPAT_NSIG_WORDS];
-           ^
-   include/linux/compat.h:454:53: warning: array index 3 is past the end of the array (that has type 'const unsigned long[1]') [-Warray-bounds]
-           case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
-                                                              ^        ~
-   arch/s390/include/asm/signal.h:22:9: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:591:
-   In file included from arch/s390/include/asm/hw_irq.h:6:
-   In file included from include/linux/pci.h:37:
-   In file included from include/linux/device.h:32:
-   In file included from include/linux/device/driver.h:21:
-   In file included from include/linux/module.h:19:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:160:
-   include/linux/compat.h:456:22: warning: array index 2 is past the end of the array (that has type 'const unsigned long[1]') [-Warray-bounds]
-           case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
-                               ^        ~
-   arch/s390/include/asm/signal.h:22:9: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/s390/kernel/asm-offsets.c:11:
-   In file included from include/linux/kvm_host.h:19:
-   In file included from include/linux/msi.h:27:
-   In file included from include/linux/irq.h:591:
-   In file included from arch/s390/include/asm/hw_irq.h:6:
-   In file included from include/linux/pci.h:37:
-   In file included from include/linux/device.h:32:
-   In file included from include/linux/device/driver.h:21:
-   In file included from include/linux/module.h:19:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:160:
-   include/linux/compat.h:456:10: warning: array index 5 is past the end of the array (that has type 'compat_sigset_word[2]' (aka 'unsigned int[2]')) [-Warray-bounds]
-           case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
-                   ^     ~
-   include/linux/compat.h:130:2: note: array 'sig' declared here
-           compat_sigset_word      sig[_COMPAT_NSIG_WORDS];
-           ^
-   include/linux/compat.h:456:42: warning: array index 4 is past the end of the array (that has type 'compat_sigset_word[2]' (aka 'unsigned int[2]')) [-Warray-bounds]
-           case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
-                                                   ^     ~
-   include/linux/compat.h:130:2: note: array 'sig' declared here
-           compat_sigset_word      sig[_COMPAT_NSIG_WORDS];
-           ^
-   include/linux/compat.h:456:53: warning: array index 2 is past the end of the array (that has type 'const unsigned long[1]') [-Warray-bounds]
-           case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
-
-
-vim +/iounmap +1070 include/asm-generic/io.h
-
-  1068	
-  1069	#ifdef iounmap
-> 1070	DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
-  1071	#endif
-  1072	
-
+diff --git a/arch/arm/boot/dts/st/ste-dbx5x0.dtsi b/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
+index d5d88771ef97..0f87abeddc33 100644
+--- a/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
++++ b/arch/arm/boot/dts/st/ste-dbx5x0.dtsi
+@@ -425,7 +425,7 @@ rtc@80154000 {
+ 		gpio0: gpio@8012e000 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8012e000 0x80>;
++			reg = <0x8012e000 0x80>;
+ 			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -440,7 +440,7 @@ gpio0: gpio@8012e000 {
+ 		gpio1: gpio@8012e080 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8012e080 0x80>;
++			reg = <0x8012e080 0x80>;
+ 			interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -455,7 +455,7 @@ gpio1: gpio@8012e080 {
+ 		gpio2: gpio@8000e000 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8000e000 0x80>;
++			reg = <0x8000e000 0x80>;
+ 			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -470,7 +470,7 @@ gpio2: gpio@8000e000 {
+ 		gpio3: gpio@8000e080 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8000e080 0x80>;
++			reg = <0x8000e080 0x80>;
+ 			interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -485,7 +485,7 @@ gpio3: gpio@8000e080 {
+ 		gpio4: gpio@8000e100 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8000e100 0x80>;
++			reg = <0x8000e100 0x80>;
+ 			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -500,7 +500,7 @@ gpio4: gpio@8000e100 {
+ 		gpio5: gpio@8000e180 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8000e180 0x80>;
++			reg = <0x8000e180 0x80>;
+ 			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -515,7 +515,7 @@ gpio5: gpio@8000e180 {
+ 		gpio6: gpio@8011e000 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8011e000 0x80>;
++			reg = <0x8011e000 0x80>;
+ 			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -530,7 +530,7 @@ gpio6: gpio@8011e000 {
+ 		gpio7: gpio@8011e080 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0x8011e080 0x80>;
++			reg = <0x8011e080 0x80>;
+ 			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -545,7 +545,7 @@ gpio7: gpio@8011e080 {
+ 		gpio8: gpio@a03fe000 {
+ 			compatible = "stericsson,db8500-gpio",
+ 				"st,nomadik-gpio";
+-			reg =  <0xa03fe000 0x80>;
++			reg = <0xa03fe000 0x80>;
+ 			interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+diff --git a/arch/arm/boot/dts/st/ste-hrefprev60.dtsi b/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
+index 9859ee91a15e..c87fd27b4434 100644
+--- a/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
++++ b/arch/arm/boot/dts/st/ste-hrefprev60.dtsi
+@@ -62,7 +62,7 @@ spi@80002000 {
+ 
+ 		// External Micro SD slot
+ 		mmc@80126000 {
+-			cd-gpios  = <&tc3589x_gpio 3 GPIO_ACTIVE_HIGH>;
++			cd-gpios = <&tc3589x_gpio 3 GPIO_ACTIVE_HIGH>;
+ 		};
+ 
+ 		pinctrl {
+diff --git a/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi b/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
+index e66fa59c2de6..f87f4150ea68 100644
+--- a/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
++++ b/arch/arm/boot/dts/st/ste-hrefv60plus.dtsi
+@@ -191,7 +191,7 @@ gpio@8011e080 {
+ 
+ 		// External Micro SD slot
+ 		mmc@80126000 {
+-			cd-gpios  = <&gpio2 31 GPIO_ACTIVE_HIGH>; // 95
++			cd-gpios = <&gpio2 31 GPIO_ACTIVE_HIGH>; // 95
+ 		};
+ 
+ 		pinctrl {
+diff --git a/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi b/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
+index 6816eef39d45..4d37c5fb553c 100644
+--- a/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
++++ b/arch/arm/boot/dts/st/ste-nomadik-stn8815.dtsi
+@@ -52,7 +52,7 @@ mtu1: mtu@101e3000 {
+ 
+ 	gpio0: gpio@101e4000 {
+ 		compatible = "st,nomadik-gpio";
+-		reg =  <0x101e4000 0x80>;
++		reg = <0x101e4000 0x80>;
+ 		interrupt-parent = <&vica>;
+ 		interrupts = <6>;
+ 		interrupt-controller;
+@@ -66,7 +66,7 @@ gpio0: gpio@101e4000 {
+ 
+ 	gpio1: gpio@101e5000 {
+ 		compatible = "st,nomadik-gpio";
+-		reg =  <0x101e5000 0x80>;
++		reg = <0x101e5000 0x80>;
+ 		interrupt-parent = <&vica>;
+ 		interrupts = <7>;
+ 		interrupt-controller;
+@@ -80,7 +80,7 @@ gpio1: gpio@101e5000 {
+ 
+ 	gpio2: gpio@101e6000 {
+ 		compatible = "st,nomadik-gpio";
+-		reg =  <0x101e6000 0x80>;
++		reg = <0x101e6000 0x80>;
+ 		interrupt-parent = <&vica>;
+ 		interrupts = <8>;
+ 		interrupt-controller;
+@@ -94,7 +94,7 @@ gpio2: gpio@101e6000 {
+ 
+ 	gpio3: gpio@101e7000 {
+ 		compatible = "st,nomadik-gpio";
+-		reg =  <0x101e7000 0x80>;
++		reg = <0x101e7000 0x80>;
+ 		ngpio = <28>;
+ 		interrupt-parent = <&vica>;
+ 		interrupts = <9>;
+diff --git a/arch/arm/boot/dts/st/ste-snowball.dts b/arch/arm/boot/dts/st/ste-snowball.dts
+index 27c2ec51e732..1322abfc7acf 100644
+--- a/arch/arm/boot/dts/st/ste-snowball.dts
++++ b/arch/arm/boot/dts/st/ste-snowball.dts
+@@ -266,7 +266,7 @@ mmc@80126000 {
+ 			pinctrl-1 = <&mc0_a_1_sleep>;
+ 
+ 			/* GPIO218 MMC_CD */
+-			cd-gpios  = <&gpio6 26 GPIO_ACTIVE_LOW>;
++			cd-gpios = <&gpio6 26 GPIO_ACTIVE_LOW>;
+ 
+ 			status = "okay";
+ 		};
+diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
+index 463942ae755e..c623cc35c5ea 100644
+--- a/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
++++ b/arch/arm/boot/dts/st/ste-ux500-samsung-codina-tmo.dts
+@@ -310,7 +310,7 @@ mmc@80126000 {
+ 			pinctrl-names = "default", "sleep";
+ 			pinctrl-0 = <&mc0_a_2_default>;
+ 			pinctrl-1 = <&mc0_a_2_sleep>;
+-			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
++			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
+ 			status = "okay";
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
+index c1ae0e23fe45..2355ca6e9ad6 100644
+--- a/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
++++ b/arch/arm/boot/dts/st/ste-ux500-samsung-codina.dts
+@@ -402,7 +402,7 @@ mmc@80126000 {
+ 			pinctrl-names = "default", "sleep";
+ 			pinctrl-0 = <&mc0_a_2_default>;
+ 			pinctrl-1 = <&mc0_a_2_sleep>;
+-			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
++			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
+ 			status = "okay";
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
+index b21e40da3dfd..ad9a20ccaaeb 100644
+--- a/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
++++ b/arch/arm/boot/dts/st/ste-ux500-samsung-gavini.dts
+@@ -362,7 +362,7 @@ mmc@80126000 {
+ 			pinctrl-0 = <&mc0_a_2_default>;
+ 			pinctrl-1 = <&mc0_a_2_sleep>;
+ 			/* "flash detect" actually card detect */
+-			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>;
++			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>;
+ 			status = "okay";
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
+index 6e586e875565..229f7c32103c 100644
+--- a/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
++++ b/arch/arm/boot/dts/st/ste-ux500-samsung-janice.dts
+@@ -412,7 +412,7 @@ mmc@80126000 {
+ 			pinctrl-names = "default", "sleep";
+ 			pinctrl-0 = <&mc0_a_2_default>;
+ 			pinctrl-1 = <&mc0_a_2_sleep>;
+-			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
++			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
+ 			status = "okay";
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts b/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
+index ba4421080b2a..cdb147dcc1db 100644
+--- a/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
++++ b/arch/arm/boot/dts/st/ste-ux500-samsung-kyle.dts
+@@ -238,7 +238,7 @@ mmc@80126000 {
+ 			pinctrl-names = "default", "sleep";
+ 			pinctrl-0 = <&mc0_a_1_default>;
+ 			pinctrl-1 = <&mc0_a_1_sleep>;
+-			cd-gpios  = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
++			cd-gpios = <&gpio6 25 GPIO_ACTIVE_LOW>; // GPIO217
+ 			status = "okay";
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
+index 7815669fe813..dcb821f567fa 100644
+--- a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
+@@ -462,14 +462,14 @@ pio19: pio@9209000 {
+ 			serial0 {
+ 				pinctrl_serial0: serial0-0 {
+ 					st,pins {
+-						tx =  <&pio17 0 ALT1 OUT>;
+-						rx =  <&pio17 1 ALT1 IN>;
++						tx = <&pio17 0 ALT1 OUT>;
++						rx = <&pio17 1 ALT1 IN>;
+ 					};
+ 				};
+ 				pinctrl_serial0_hw_flowctrl: serial0-0_hw_flowctrl {
+ 					st,pins {
+-						tx =  <&pio17 0 ALT1 OUT>;
+-						rx =  <&pio17 1 ALT1 IN>;
++						tx = <&pio17 0 ALT1 OUT>;
++						rx = <&pio17 1 ALT1 IN>;
+ 						cts = <&pio17 2 ALT1 IN>;
+ 						rts = <&pio17 3 ALT1 OUT>;
+ 					};
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
+index afcd6285890c..69d693ae26dd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
+@@ -59,7 +59,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
+index 39358d902000..89bfb4143ba7 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
+@@ -65,7 +65,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
+index 07ea765a4553..ca7a3a0f16af 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
+@@ -64,7 +64,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
+index 813086ec2489..f6510b93f912 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
+@@ -70,7 +70,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
