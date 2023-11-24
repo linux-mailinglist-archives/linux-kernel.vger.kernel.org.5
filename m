@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193CE7F70A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9137F70AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235238AbjKXJ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        id S234713AbjKXKAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXJ6J (ORCPT
+        with ESMTP id S229668AbjKXKAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:58:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038601A5;
-        Fri, 24 Nov 2023 01:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lQ2sEyo0urN4jqBS+Brek2Bt3vMQro1GUUqvYK8rVKg=; b=BjHyofms7LwAPkjS/tCo81dqdf
-        liv0pQJOMBKG92oyTeTaSxR7JKhtPG90Qk+jDVwl0eXgFwZXTK8iTJfaV3tOAA+2158stf9cmoccC
-        cWA1T3V/bsTghJosQRtjs9NXmAC5n4+ZR7+g45jyi4yhCbskaLjYxPeQ1ZRkNQOyFL1DyP0x5iN6c
-        KdUjrm3+OtMB75K1RKaII80q8Gj6LymQcaCudX1TbnA7OoJ11MLCerN1VuiotnlLtjyhMkzpfYkFi
-        5aICT41xJ1YubZnl1s0uHdYIXjDOqCz27eUg8cBCouyWDgjlrtQQNkvlBrK5qdWHnVUy5UaYCaYrq
-        IzN65htw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r6Swm-008Rgh-Se; Fri, 24 Nov 2023 09:58:04 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 87E75300338; Fri, 24 Nov 2023 10:58:04 +0100 (CET)
-Date:   Fri, 24 Nov 2023 10:58:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        boqun.feng@gmail.com, longman@redhat.com, will@kernel.org,
-        mingo@redhat.com
-Subject: Re: [PATCH 2/6] locking/lockdep: lockdep_set_no_check_recursion()
-Message-ID: <20231124095804.GO3818@noisy.programming.kicks-ass.net>
-References: <20231122235113.180132-1-kent.overstreet@linux.dev>
- <20231122235113.180132-3-kent.overstreet@linux.dev>
+        Fri, 24 Nov 2023 05:00:40 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 560891AB;
+        Fri, 24 Nov 2023 02:00:46 -0800 (PST)
+Received: from [192.168.1.150] (181-28-144-85.ftth.glasoperator.nl [85.144.28.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9844C20B74C0;
+        Fri, 24 Nov 2023 02:00:41 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9844C20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1700820045;
+        bh=TeRTeq8Ab0NebTdEjigLF0N3D06Mm51J5Eb7h9xqKQI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jO7vNFx2Waub77EPXbAmhsNTXDyhvYWhqOAPtHY+m3ubeSojbzit0I9PjznVQq7GW
+         ke26RpAECLS423AmH3ggOuh0kgd5DCthbDjP8LcwyjRFOycoknBLZzrR01KeztWxP4
+         qCOt6plQL8At7N1nDKogqCrmysq8fAmreYQ/x8G0=
+Message-ID: <281e1f13-811b-4897-b3d9-18d233af25f7@linux.microsoft.com>
+Date:   Fri, 24 Nov 2023 11:00:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122235113.180132-3-kent.overstreet@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/3] x86/tdx: Provide stub tdx_accept_memory() for
+ non-TDX configs
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
+        stefan.bader@canonical.com, tim.gardner@canonical.com,
+        roxana.nicolescu@canonical.com, cascardo@canonical.com,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        sashal@kernel.org, stable@vger.kernel.org
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <20231122170106.270266-3-jpiotrowski@linux.microsoft.com>
+ <20231123141113.l3kwputphhj3hxub@box.shutemov.name>
+Content-Language: en-US
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20231123141113.l3kwputphhj3hxub@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 06:51:09PM -0500, Kent Overstreet wrote:
-> This adds a method to tell lockdep not to check lock ordering within a
-> lock class - but to still check lock ordering w.r.t. other lock types.
+On 23/11/2023 15:11, Kirill A. Shutemov wrote:
+> On Wed, Nov 22, 2023 at 06:01:06PM +0100, Jeremi Piotrowski wrote:
+>> When CONFIG_INTEL_TDX_GUEST is not defined but CONFIG_UNACCEPTED_MEMORY=y is,
+>> the kernel fails to link with an undefined reference to tdx_accept_memory from
+>> arch_accept_memory. Provide a stub for tdx_accept_memory to fix the build for
+>> that configuration.
+>>
+>> CONFIG_UNACCEPTED_MEMORY is also selected by CONFIG_AMD_MEM_ENCRYPT, and there
+>> are stubs for snp_accept_memory for when it is not defined. Previously this did
+>> not result in an error when CONFIG_INTEL_TDX_GUEST was not defined because the
+>> branch that references tdx_accept_memory() was being discarded due to
+>> DISABLE_TDX_GUEST being set.
 > 
-> This is for bcachefs, where for btree node locks we have our own
-> deadlock avoidance strategy w.r.t. other btree node locks (cycle
-> detection), but we still want lockdep to check lock ordering w.r.t.
-> other lock types.
+> And who unsets it now?
+> 
 
-So earlier you added custom sort order.
-
-Additionally there is the wound-wait mutexes that also have semantics
-similar to what you describe.
-
-Explain why you can't use either your own added feature or the existing
-infrastructure to solve this?
+Who unsets what now? DISABLE_TDX_GUEST still works the same as before, but patch 2
+changed the check in arch_accept_memory() to be more specific
+(cc_platform_has(CC_ATTR_TDX_MODULE_CALLS)). The stub should have been there all
+along for CONFIG_AMD_MEM_ENCRPYT=y && CONFIG_INTEL_TDX_GUEST=n configs, but it
+happened to work without it.
