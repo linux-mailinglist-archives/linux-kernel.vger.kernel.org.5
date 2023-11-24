@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D297F855C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAFE7F855E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbjKXVG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:06:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        id S229907AbjKXVKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjKXVG0 (ORCPT
+        with ESMTP id S229584AbjKXVKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:06:26 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFCF19A4;
-        Fri, 24 Nov 2023 13:06:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700859980; x=1701464780; i=linosanfilippo@gmx.de;
-        bh=waACyJjsbxli114kJbSpe0nQ+w64SGuqCsiUKQxNS74=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:
-         In-Reply-To;
-        b=KkVT0ZuysgXKX5BSXEzEY5llZYzoChlXc+lh7BelNklX+I701Iw1RujbvhTsK+EZ
-         Q27dYbou/2liYLZPtwpRG1/9A4UtmLysQNMIEV3bK/jTnSNs5GRyIclUK+E1oDavf
-         U0Vf5n4kKJQwv3fL3jM1oj+CMY15bCXQBNnEfTiiGXdqEDBHnz5BIOQRoyKTtWwbE
-         6te1ic98wF0sorlsSzPJanXyP+BUjX3zEpelb5TsWPoUYVh/VnjRSEfBuTJQg+XZU
-         qzw2hhiq44/gZcZsEKfJXdyA8kk4DzxaZut2ucpuz7+OKNTrx3++GslH3omNWnq1/
-         Rv6pxhpSxR0piTD4Pw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.37] ([84.180.20.141]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N3KTo-1rGE7K1HqE-010Kfy; Fri, 24
- Nov 2023 22:06:20 +0100
-Subject: Re: [PATCH v5] tty: serial: Add RS422 flag to struct serial_rs485
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231121095122.15948-1-crescentcy.hsieh@moxa.com>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <aa1f0e1e-1587-592c-7e86-e8f168b71c21@gmx.de>
-Date:   Fri, 24 Nov 2023 22:06:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 24 Nov 2023 16:10:00 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD911990;
+        Fri, 24 Nov 2023 13:10:07 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507a98517f3so3070122e87.0;
+        Fri, 24 Nov 2023 13:10:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700860205; x=1701465005; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wVO89DxZvW04y67tvwrlTV9VwiUMtZyXH6adWuhrdRo=;
+        b=HEn9glMa/xrQbKtV9vu9UChqzLaX7oEu+6Py2skf8l02wiNu+ZbBqyzTD2fZEXih/4
+         zfRCy5KoM7+eQpJDRKbnQzeAsqic2ld6ypTRXlkw1NPkxOuo0Lq69GmUzPsqPHUYdE1b
+         aJkT3isN55J7exBkF6pXYUur4QFkQhDM6650X0IVX0Co4TUdwRIZYfjQCedPhUoKQlGY
+         hcQoHV1alB7fhXyAtSLtS3Z6AnOiwlWYdEpeaq7zyFvOV4SYjqBrpM5WOU6usMIMC83B
+         sgZvgAQYJlYe3v3ar3VS3nDdkBIbWzkzlOmL/2+qQf12KgjuzeZGrrHTfR7UKSG5zVIS
+         9MsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700860205; x=1701465005;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wVO89DxZvW04y67tvwrlTV9VwiUMtZyXH6adWuhrdRo=;
+        b=ZN/kOwwj5Nyzxy+JIvbB3/b8wEpyWEBv89hdC+xXvZDK+pnua08VqbJcJU/EynuLMC
+         beKZXG6VcDRHiO5vr/+t/VXEMw7TYSL70OQLyezphNznhfBnwWoM70wrPXnEhjHe14J3
+         Fd7NoZDxJrRT1LucwT8j5jgDfa4cW16n9wXSlX150NwZAF6SHygTOM1Sezc1pfuaOtVv
+         iVuLq1LEg94Pjik2DbP6MZBWrMHGmQoRtEuArrtn+r7cT/VAq3LXWSgVSsnm0xfa2ymZ
+         gySSqGhRi2tge9HRulU/Xnt77cHVGmA5/rqLtq8A/5TweCiPYsuKjmt3QcMrUnVf17AC
+         bX9w==
+X-Gm-Message-State: AOJu0YyDGJKNXZ3L4YA8D8N+546drilvjb+I/uBBO+hRazQHBGfaf9iP
+        Ne9utuDTraqP74b1o10vLTs=
+X-Google-Smtp-Source: AGHT+IH3nqShraHW1QykxqsIbDujWXOJ/I+HVxV6vLUEpulinhiUthzPAgbnooun2fEsW0kJTzdWXA==
+X-Received: by 2002:a05:6512:3b87:b0:508:264e:2ded with SMTP id g7-20020a0565123b8700b00508264e2dedmr3889979lfv.38.1700860205071;
+        Fri, 24 Nov 2023 13:10:05 -0800 (PST)
+Received: from localhost.localdomain (109-252-174-150.dynamic.spd-mgts.ru. [109.252.174.150])
+        by smtp.gmail.com with ESMTPSA id e15-20020a19690f000000b0050919538b00sm619326lfc.79.2023.11.24.13.10.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 13:10:04 -0800 (PST)
+From:   Elena Salomatkina <elena.salomatkina.cmc@gmail.com>
+To:     Sunil Goutham <sgoutham@marvell.com>
+Cc:     Elena Salomatkina <elena.salomatkina.cmc@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
+        Simon Horman <horms@kernel.org>
+Subject: [PATCH net] octeontx2-af: Fix possible buffer overflow
+Date:   Sat, 25 Nov 2023 00:08:02 +0300
+Message-Id: <20231124210802.109763-1-elena.salomatkina.cmc@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20231121095122.15948-1-crescentcy.hsieh@moxa.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:a2ecakQEAjk1lc36DACgRA0A6KG9hOr2z2l5D4HevMNiaQNnscc
- Q9JN4fjO6fXMFpFvudTlJLogbXhICqy8vlnh7C1PpY5o/fzGZcbB+YuPgwRI+7Ojp7WpvKE
- vqXsIGPSiA4z+QHMqGVHLqXz9NyT6JBnkJGqhNlhNrnt0xOtIYMsmyoWNOENXw7oYghAxD7
- yohE6c+7QK2z5gfcz+aSA==
-UI-OutboundReport: notjunk:1;M01:P0:37SFlWokMW8=;oEZcXWjPsEKAeb8O0WaKJnGfBAv
- lOHv63ABG9aSH6af+KJwH6eovVDjENt8sU3qUv6SkLDy1XJwo1/oIB/Mcu1UX1xjbIVvWK6ks
- r77SpGEJv+wIh3YBkvMgUg3OuUNJqtApfo3aJ9P3T0koHvOoqThnGFEzMWpp5mBhO6i5945QU
- dB00Nb9idyrhd0NfUfM2SarPvaScsMb3Ucu1TN/wopAsAmOtdLb6UDZ63FTh92NX2Ex/ARPh0
- eRcAhmNrQ/OZZLRRotlionCvQSPksNhNmdCt5jNK3rrpm2WmoC7wex0KUyUFl0Uo0B+N3kQ9z
- d8FOqEnUSpF5pGTb5RgsPgLnbD61opE/BWwwqbOBcF5v1m4z3B4ZkZc9fhzGqc4ydcceqowbq
- dXAOUmOsdzZ0Lb3v5jFhaOhpSa7hWvlOEerewTOFVM3juDB/7ojlnCQn+JFob0gCizXQcqn56
- guTsmahaK1m5hNzPZyxNfdsvKUtlvhQ5ayV9mfeRgCFnZPVFQdCi5aQ9t6uPXP+7QKN9/MggR
- hQjmlCC58HrAPEtgE61eUl6Zk0qCQ454tGgaOLJUS966CXzE/9rWusKm8fC5AYKevyiVerZfd
- Bo6KifOSt0PMAUzmxzq0rZyIUD3EkKdurT93LxN6sQhnBjPSb+gbmZcQ7bntsinjk6q58Y5+u
- g2uIQtY2U7kFA9eAVlCmDnMlPMQUznQzKiIN/+89XoTmJRL11CCNhK5l+IOevSTTkD6AiYCZC
- KqsGLAM6wWXwAXb8t/N5v1Z9b9O4HvJGAUZJbVc3YmzxQa7dai7Sz+TQHk6sBu8tYLLe9tMgm
- J+YFCA10NUTFc5P2TvfFcs00Pjx5E1PrlqCV9C0rt3Pk9g+heETdNcmVWEXAvxh24sPim92y0
- YrneVFg0C5SSwOIHbkS0l+wqh1IMBMDVarsbNLpCHU7H/Kbuky7cvRjDagvW8dCMsUtzNRi54
- QqTElA==
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,71 +79,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.11.23 at 10:51, Crescent CY Hsieh wrote:
-> Add "SER_RS485_MODE_RS422" flag to struct serial_rs485, so that serial
-> port can switch interface into RS422 if supported by using ioctl command
-> "TIOCSRS485".
->
-> By treating RS422 as a mode of RS485, which means while enabling RS422
-> there are two flags need to be set (SER_RS485_ENABLED and
-> SER_RS485_MODE_RS422), it would make things much easier. For example
-> some places that checks for "SER_RS485_ENABLED" won't need to be rewritt=
-en.
->
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
->
-> ---
-> Changes from v4 to v5:
-> - Revise commit message.
-> - Delete RS422 checks within uart_set_rs485_termination().
->
-> Changes from v3 to v4:
-> - Include 'linux/const.h' header in '/include/uapi/linux/serial.h'
-> - Replace BIT() with _BITUL() which defined in
->   '/include/uapi/linux/const.h'
->
-> Changes from v2 to v3:
-> - Remove "SER_RS422_ENABLED" flag from legacy flags.
-> - Revise "SER_RS422_ENABLED" into "SER_RS485_MODE_RS422".
-> - Remove the code which checks the conflicts between SER_RS485_ENABLED
->   and SER_RS422_ENABLED.
-> - Add return check in uart_set_rs485_termination().
->
-> Changes from v1 to v2:
-> - Revise the logic that checks whether RS422/RS485 are enabled
->   simultaneously.
->
-> v4: https://lore.kernel.org/all/20231113094136.52003-1-crescentcy.hsieh@=
-moxa.com/
-> v3: https://lore.kernel.org/all/20231108060719.11775-1-crescentcy.hsieh@=
-moxa.com/
-> v2: https://lore.kernel.org/all/20231101064404.45711-1-crescentcy.hsieh@=
-moxa.com/
-> v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@m=
-oxa.com/
->
-> ---
->  drivers/tty/serial/serial_core.c |  7 +++++++
->  include/uapi/linux/serial.h      | 19 +++++++++++--------
->  2 files changed, 18 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/seria=
-l_core.c
-> index 831d03361..db1ebed7f 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -1376,6 +1376,13 @@ static void uart_sanitize_serial_rs485(struct uar=
-t_port *port, struct serial_rs4
->  		return;
->  	}
->
-> +	/* Clear other RS485 flags and return if enabling RS422 */
-> +	if (rs485->flags & SER_RS485_MODE_RS422) {
-> +		memset(rs485, 0, sizeof(*rs485));
-> +		rs485->flags |=3D (SER_RS485_ENABLED | SER_RS485_MODE_RS422);
+A loop in rvu_mbox_handler_nix_bandprof_free() contains
+a break if (idx == MAX_BANDPROF_PER_PFFUNC),
+but if idx may reach MAX_BANDPROF_PER_PFFUNC
+buffer '(*req->prof_idx)[layer]' overflow happens before that check.
 
-Does not RS422 also require termination resistors? So what about SER_RS485=
-_TERMINATE_BUS?
+The patch moves the break to the
+beginning of the loop.
 
-Regards,
-Lino
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: e8e095b3b370 ("octeontx2-af: cn10k: Bandwidth profiles config support").
+Signed-off-by: Elena Salomatkina <elena.salomatkina.cmc@gmail.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index 23c2f2ed2fb8..c112c71ff576 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -5505,6 +5505,8 @@ int rvu_mbox_handler_nix_bandprof_free(struct rvu *rvu,
+ 
+ 		ipolicer = &nix_hw->ipolicer[layer];
+ 		for (idx = 0; idx < req->prof_count[layer]; idx++) {
++			if (idx == MAX_BANDPROF_PER_PFFUNC)
++				break;
+ 			prof_idx = req->prof_idx[layer][idx];
+ 			if (prof_idx >= ipolicer->band_prof.max ||
+ 			    ipolicer->pfvf_map[prof_idx] != pcifunc)
+@@ -5518,8 +5520,6 @@ int rvu_mbox_handler_nix_bandprof_free(struct rvu *rvu,
+ 			ipolicer->pfvf_map[prof_idx] = 0x00;
+ 			ipolicer->match_id[prof_idx] = 0;
+ 			rvu_free_rsrc(&ipolicer->band_prof, prof_idx);
+-			if (idx == MAX_BANDPROF_PER_PFFUNC)
+-				break;
+ 		}
+ 	}
+ 	mutex_unlock(&rvu->rsrc_lock);
+-- 
+2.34.1
+
