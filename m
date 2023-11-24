@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9137F70AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C99E7F70AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbjKXKAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S231147AbjKXKAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXKAk (ORCPT
+        with ESMTP id S230418AbjKXKAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:00:40 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 560891AB;
-        Fri, 24 Nov 2023 02:00:46 -0800 (PST)
-Received: from [192.168.1.150] (181-28-144-85.ftth.glasoperator.nl [85.144.28.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9844C20B74C0;
-        Fri, 24 Nov 2023 02:00:41 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9844C20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1700820045;
-        bh=TeRTeq8Ab0NebTdEjigLF0N3D06Mm51J5Eb7h9xqKQI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jO7vNFx2Waub77EPXbAmhsNTXDyhvYWhqOAPtHY+m3ubeSojbzit0I9PjznVQq7GW
-         ke26RpAECLS423AmH3ggOuh0kgd5DCthbDjP8LcwyjRFOycoknBLZzrR01KeztWxP4
-         qCOt6plQL8At7N1nDKogqCrmysq8fAmreYQ/x8G0=
-Message-ID: <281e1f13-811b-4897-b3d9-18d233af25f7@linux.microsoft.com>
-Date:   Fri, 24 Nov 2023 11:00:39 +0100
+        Fri, 24 Nov 2023 05:00:53 -0500
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA711A5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:00:58 -0800 (PST)
+X-UUID: 5b514d6c8ab011eea33bb35ae8d461a2-20231124
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=YdRXmOt9Y5eMiagSvm9fvGMfzv8pEl9C4bUpAbreCaE=;
+        b=WzO/y1u9OqScBIk46Bhab9OSByKbdOQBgvth8Eie6vZhwP041fD6mYUSUNvnarC/kOH73ELNc579eXmJmqlJ9FkKff2Fp0bUnyLOcPQPGPooR03XfFvjnaTk2ocEB13OndW2yDaXPnYGyVyF52RpaCvvMZqDg+Fx5c1ZtnUfilo=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:54b5e2a1-747a-4b8c-8f6a-6cb1be461a8a,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:364b77b,CLOUDID:20be0773-1bd3-4f48-b671-ada88705968c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 5b514d6c8ab011eea33bb35ae8d461a2-20231124
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <shawn.sung@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1513326457; Fri, 24 Nov 2023 18:00:54 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 24 Nov 2023 18:00:53 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 24 Nov 2023 18:00:53 +0800
+From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>, CK Hu <ck.hu@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Hsiao Chien Sung <shawn.sung@mediatek.com>
+Subject: [PATCH v4 0/1] Fix errors when reporting rotation capability
+Date:   Fri, 24 Nov 2023 18:00:51 +0800
+Message-ID: <20231124100052.18599-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] x86/tdx: Provide stub tdx_accept_memory() for
- non-TDX configs
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        sashal@kernel.org, stable@vger.kernel.org
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231122170106.270266-3-jpiotrowski@linux.microsoft.com>
- <20231123141113.l3kwputphhj3hxub@box.shutemov.name>
-Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231123141113.l3kwputphhj3hxub@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 15:11, Kirill A. Shutemov wrote:
-> On Wed, Nov 22, 2023 at 06:01:06PM +0100, Jeremi Piotrowski wrote:
->> When CONFIG_INTEL_TDX_GUEST is not defined but CONFIG_UNACCEPTED_MEMORY=y is,
->> the kernel fails to link with an undefined reference to tdx_accept_memory from
->> arch_accept_memory. Provide a stub for tdx_accept_memory to fix the build for
->> that configuration.
->>
->> CONFIG_UNACCEPTED_MEMORY is also selected by CONFIG_AMD_MEM_ENCRYPT, and there
->> are stubs for snp_accept_memory for when it is not defined. Previously this did
->> not result in an error when CONFIG_INTEL_TDX_GUEST was not defined because the
->> branch that references tdx_accept_memory() was being discarded due to
->> DISABLE_TDX_GUEST being set.
-> 
-> And who unsets it now?
-> 
+This commit is based on 20231024130048.14749-1-shawn.sung@mediatek.com.
 
-Who unsets what now? DISABLE_TDX_GUEST still works the same as before, but patch 2
-changed the check in arch_accept_memory() to be more specific
-(cc_platform_has(CC_ATTR_TDX_MODULE_CALLS)). The stub should have been there all
-along for CONFIG_AMD_MEM_ENCRPYT=y && CONFIG_INTEL_TDX_GUEST=n configs, but it
-happened to work without it.
+This bug was found when running IGT tests.
+For CRTCs that doesn't support rotation should still return
+DRM_MODE_ROTATE_0, otherwise the test will fail to restart.
+Returns the hardware capabilities accordingly.
+
+Changes in v4:
+- Remove rotation property from the driver data since
+  OVL rotation property for all chips are the same
+
+Changes in v3:
+- Return 0 (not support) if rotation capabilities is not defined
+  in the driver data.
+
+Changes in v2:
+- Restore DRM_MODE_ROTATE_180 (reflect x + reflect y = rotate 180)
+- Define supported rotations in the driver data
+
+Hsiao Chien Sung (1):
+  drm/mediatek: Fix errors when reporting rotation capability
+
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h        |  1 +
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c        | 18 ++++++------------
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c    |  9 +++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c    |  1 +
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c       |  2 +-
+ 5 files changed, 18 insertions(+), 13 deletions(-)
+
+--
+2.39.2
+
