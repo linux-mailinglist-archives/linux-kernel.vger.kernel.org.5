@@ -2,134 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7077F6AD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A107F6AD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbjKXDPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 22:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        id S230284AbjKXDQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 22:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXDPD (ORCPT
+        with ESMTP id S229453AbjKXDQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 22:15:03 -0500
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2175.outbound.protection.outlook.com [40.92.62.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D66AD6E;
-        Thu, 23 Nov 2023 19:15:09 -0800 (PST)
+        Thu, 23 Nov 2023 22:16:04 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2108.outbound.protection.outlook.com [40.107.243.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A24910F5;
+        Thu, 23 Nov 2023 19:16:07 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lrYJFbZS6A9f613pvDSwgGnQ6eiATq5kAAC02Z43+OmicWt86LVDhwnjXusofQAxey123P1BziEHhEhmt9Z5J0SHa/wZSFXvOx2be3GzGl8/p6IQAViGR5p+knEwpsXzkjhGIqKchej8Vag57n5f6kOp+J8TUaeYx+vQTqkJYH7sS6gY96o2qL03NlydRdMWXSQ9vEMfzg2A+z5GfgDChIDGiUVCndasrdideb2kplhezKFpVYxXTMXuZTx8MCS7vEFdv+jFAFOu+dXExo0xJyC/nkOlePA1B8ucQSHCbs2bqHgrCrr5WOwQW2VTxNJGFWbdX+2uw9grWgu7hpl5Tw==
+ b=XVRq42zz8rr70Cj8gFygwyhLDvI04I7COfMNXFvkd8ydCk3t6i9uoGe4HpLYFC2RyfaLxrnHzaOECnZGmJtZraGTIACXoMbxEx+gG/hY45WqwP+7IR5L6+5uCKyJlkalcYZfN5Ysgi5eCnutOf4vx7S580hfXzyzPW/cLIS5ruM/fqVYzgTzAAQ9pes/mWAiJs9KLmbLgyAxwkgoylCzoK40KIQclogkyY4DCKtPFOVfFlup2Q7pcYhkahMWWji6TqRowBIqVmwpp+yxLHQJAKKRjvTd00rdHyEmbd3qvUmGqxp1NG+B8iuAv8YzIwjytQsSr/mbRTbw5/7knzurvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sLS3jQ4B5TLvkD0a2py422r176qpz2qbnVmhZLrnqKo=;
- b=epbTrJWtByuyyAlpTRFeprVX01nJF7KzAUkTCLIX2mkeoolEefmhDnPhKRVsxDSrORwbwJvIN5cvUEbenp/hRz1/KyUKBuJ3na7Wozi/IoQJiK0Uen02BSZfPpHs9XO5EpNF4HLuQd/4BFABJHTdQuvaj5BK9UhN+e9tUdr8ddymua4AmrVcsS7SFGBH89x2ZLff9SGvd+LKl6gfk5CXIqkIDyyt+lfHo3yvR6MpVppvHhEcqct4EGDwfPynqUmzkRvChRTYHZVIti+LuGaQmvtYSfcaXz2KZfuTjuQISkKhKRgVHEzW3tLh1o40Vmo+PFgbNioNWtqkL9vC3EcjYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ bh=9ULVDnZW07tHeZLi9IvabMzFmsTEFLea4bY33CL7RzY=;
+ b=XLh6UPez4HmZS8qZhrHevcNZKbZBwtVx4P7TB9ywrlpujeGFA/R/nlC63jyE2sOzRFWQpo7gAEcr/qLtdOCTslQqrpk+wy5t7R/Iq6GR0FYb3UPcRsAWao9JycgEWZYXA+DYz/8mkMzWuEhNA8C9WzsmaemY+c/5ZxMyYHBA8CpA/dx3xGkRTHR2AOYT8o7dNUEfS/lEfvirCZXcCXEFVDpzLa0sp3l0Iz8bNONoGeqig2JEveUh4erFtXvTifg4Sn7hy/EqYex5iD+dGfw0LVZCRB+WWQMnoo1/VMI8Jc3fQGHU+TsOgaTQ4gDhltQ6wfdAAVNRkInflyZan20vuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sLS3jQ4B5TLvkD0a2py422r176qpz2qbnVmhZLrnqKo=;
- b=IL8RdGwhs2YhokrXUUmKHjp2ZvSw07L3bVHVrpDMWelTpkXGaGqlmGhc1zuQMmItxjPrObDwdaiEJSC4NXFiPfB8cJQ26k1eILxs7uIQ9B44UUCnu1QAi8hETZT36B66AARcAeVZryETE55NPD0CH5pMQTFbg5RlBExmOHvUu9sDlX3R+eIwYgVz0q/8bLyBteEeeO34Gl7Mij39Ka4HTLnROkSA091LB+7/lJrkK9qhU16H9vZj62yXIBhCa9YpVkBsJmMZ44EAnqzeFGqOu+SejcojNC51XfAIvHBhMRJQNGFwBM1DFhyj32k8XcemODcPqcitFbWGkKzViiZbKA==
-Received: from MEYP282MB3659.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:175::9)
- by SY4P282MB3874.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1ce::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Fri, 24 Nov
- 2023 03:15:03 +0000
-Received: from MEYP282MB3659.AUSP282.PROD.OUTLOOK.COM
- ([fe80::993c:bda0:82:7997]) by MEYP282MB3659.AUSP282.PROD.OUTLOOK.COM
- ([fe80::993c:bda0:82:7997%7]) with mapi id 15.20.7025.021; Fri, 24 Nov 2023
- 03:15:01 +0000
-From:   =?utf-8?B?6LCiIOazog==?= <xiebo_60@live.com>
-To:     "apatel@ventanamicro.com" <apatel@ventanamicro.com>
-CC:     "Alistair.Francis@wdc.com" <Alistair.Francis@wdc.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "atishp@atishpatra.org" <atishp@atishpatra.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: Re: [PATCH v2 7/9] irqchip: Add RISC-V advanced PLIC driver
-Thread-Topic: [PATCH v2 7/9] irqchip: Add RISC-V advanced PLIC driver
-Thread-Index: AQHaHoRpKslbTmeWL0Ksf5zQwQQB2Q==
-Date:   Fri, 24 Nov 2023 03:15:01 +0000
-Message-ID: <MEYP282MB3659056CB565E754B71988EB83B8A@MEYP282MB3659.AUSP282.PROD.OUTLOOK.COM>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-tmn:  [tKb0p8NdwIA2ye5t1NbTFmPWed3bb3ya]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MEYP282MB3659:EE_|SY4P282MB3874:EE_
-x-ms-office365-filtering-correlation-id: 503aa639-313e-48b6-469c-08dbec9b8bda
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KfFyaFjxZUItIa4rwgHYSe5ceGmAGgRT2F86Ky12aJRwnBraVxs7qz8KHghPpgiWT/nIODnJUs4FHgTeoVuKObk/3IFeD6YTK4RCrZQmvnWN6WWEyTQmR49O9xW+1d8zwZQiVOI3m/tXYObWEdn0JUUEGVm94Zm6jWvnEIAiGM2oH5sqeQA6oE5BaLHBeOqkTrKmVFjmJpqtqmLAT8l1LNsyMeAsnyjBCwbW+OnQxgdfrCGIsWV2D4o4sNlYjfm9vUrL9W3NCH9a8tuziwTu7AqK4fwBaJXgHKBmtjPZ0WOQWfp0pjjoKolI5uQIHDbuAWQkttEpOR4SF0bJej11Kzc7P6TRAbRbeKzHt2zhbGk+agKCkAS/A1kf/DIBbaPMDObmeyUjWAqtU4wv8/f6glmtWPovLA305K9vQYx97PcfwX1aBDWimwG0CqnNZEh27jcB6aWHyjkJf8FkbLfcQqqiroGC+MMSJwFTuBmepuaOJvEyx/vrWBQfkiV1jqd1gFWcnT3bbajKrm9v10GZ7Ex7In5gp27K4TE/lQB76ymGtzfCh9FiyZ3Yx413h0U/
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmJWL1hGN3dUTGZVNWVVS2VPVHBpQytzeUhJK1h3L2tZY2cxOWNFaFRaSnJW?=
- =?utf-8?B?U1ordE5ITVVETDlNR0xPcW5naW1jNHJ3Ym9IVDZPSDUrODc4NlJwelVuZW0w?=
- =?utf-8?B?aUdWU1M4Vkw5ck1vTmt6T3JNYjdxVjJKSlNTZzVqY3o2YTcrVjdqZlgwa045?=
- =?utf-8?B?bVJMMEZFK3JPSThNQzlEMis5QmJ4VUZYSkczMzQ0YzBGU1J0bmFtdVd0bjJH?=
- =?utf-8?B?SzBsb1ZuM1N1SHlLMW1UTXF5SkxscWlTTCtwT0pxOFRubkY2VVhRdVdqOEMr?=
- =?utf-8?B?Ukhndk1PU2k4V2I0ME5uNFpjc0JuSkVGazd4ejlNdkZIT1o3OHVvU01BaVBt?=
- =?utf-8?B?UWxiaDBTSWFMN3lIK2h1R0FaVE1sUVFpWjRmQlBHTFVRcDJRUnV0dGp1aUdG?=
- =?utf-8?B?QTUvZGJHcGVZV3V0UllnSXQ0TThxMi81L2J1UWIyQ0pSeVVzNEZrZDNXcXVL?=
- =?utf-8?B?N0NIMEtIQ2ZYRUpRY0wwUlhXR3ZEdUpWL2FtSjg0OHMyMG5WSFNOemlaS0dL?=
- =?utf-8?B?Y2U4cGdTYW1lOUk0VDJ0TGxhZDNVdlJzRVMybkhONlNId1NzZ1hsc1FreFE0?=
- =?utf-8?B?QzhWVE5jKy9rRStZOHBsUkJDVHVaUEs3L3pJcDAwb3VMRkI0R1RIZXZ0V1B0?=
- =?utf-8?B?b29vZmNUdVo3endpc1libXBuSUswZHRzMXF5S1RBTHNmMUtqWkxuRTZlR2VF?=
- =?utf-8?B?UkdXdlh5MTJ0M2pDTnZzMC90SFdtbG0yQkQ4QjNlMFpzUmN6UWd4SXdhMUdZ?=
- =?utf-8?B?RFZ6bTM1a3krVkVpOUIwR3dHVmdGZWpBY0w2ZjlKYWRiaktQU21QbTZBZWIr?=
- =?utf-8?B?ZnFlcTBKdDVpcmNGMFlPSXdpaEhJbUt6UEpUcUhyRWl4MlN3dHNxL1pNSG9v?=
- =?utf-8?B?N25FTUhZRldFUmtVRTNKaVV6QmFCelR2NWVnU1NQMlZVVTlZd2xyZ0p2Z1M2?=
- =?utf-8?B?cnVBK3dYSzRqU2NFYXRiU1ovS3ZwZ3puVldyeHJPSGQ3SXMyaTNNVUhGMU4x?=
- =?utf-8?B?NlFXZURGeTNGdE9hUmgrM2NRcndlMnAwQU45NndkNXdFaEZDa0ZDR2JpRXZT?=
- =?utf-8?B?K25odDk4cmZBeGszMHgyUkRpTVZuS3ZFOGhkanJOZzY4TXYzVTJRMWtrVVRQ?=
- =?utf-8?B?Q1RaVXhOWDVwS0lmc3BySTZScjU3aG91Wk9IanlvVHNrOWFzcFlna0pXNEJu?=
- =?utf-8?B?dWNvNFVMYmVqZWVxUVk1UmdDSjhGZzkyUE1NU3doM0loZjErZG04aXhoMlVZ?=
- =?utf-8?B?dlZuSUQ2SWtXaWdOTWhNTXR1ZkFjenJCTHpKL0JaYnJ3V0lLRHV0RVozMTkw?=
- =?utf-8?B?RWdGcmxIZWlCcXJCMDlIRjZVMTF4UHNueTBsZWs5MFhRKzdXYVdZcnh6RVFk?=
- =?utf-8?B?eDU2M1FlZzBqT0h2OE5Mby81ck1IYytLT2VuOW4wY3RKM3hMSVByd0RQcnoy?=
- =?utf-8?B?NDRqMVhnK1lHc1J3UU1UbkYyTitJWkFJKzczUUVwRDR6cml2UFQ0NDFBWHky?=
- =?utf-8?B?TzBmY3dQVlR3dXZLZUptNExnTVEzQjJMd2ZZNUZnZFZNbnVFWHd6QnR1SWtI?=
- =?utf-8?Q?A6WQ9SVNCTJaSCOIoMDMiNmxxehBvEWotPHJdGq9lMrbmY?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ bh=9ULVDnZW07tHeZLi9IvabMzFmsTEFLea4bY33CL7RzY=;
+ b=jae3BwU8oncvo+TxnQeGkIfZ5caL1yCwRSp3gzbOY6aGzrk0E4TIJpYNLrSbjkMkeUFscsZYVqNCuqWmHiy8ar4hclVyVVO4cK0YQnH19rWU5wjk9Dt7yVRZWdKte3FgP4p8E/GfJxnKcCaZ2Q4COcLSsOv6BJrptPlOu/MOI/U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ PH0PR01MB6102.prod.exchangelabs.com (2603:10b6:510:13::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.21; Fri, 24 Nov 2023 03:16:02 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com
+ ([fe80::3f45:6905:e017:3b77]) by PH0PR01MB7975.prod.exchangelabs.com
+ ([fe80::3f45:6905:e017:3b77%7]) with mapi id 15.20.7025.020; Fri, 24 Nov 2023
+ 03:16:01 +0000
+From:   Huang Shijie <shijie@os.amperecomputing.com>
+To:     catalin.marinas@arm.com
+Cc:     will@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Huang Shijie <shijie@os.amperecomputing.com>
+Subject: [PATCH v4] arm64: irq: set the correct node for VMAP stack
+Date:   Fri, 24 Nov 2023 11:15:13 +0800
+Message-Id: <20231124031513.81548-1-shijie@os.amperecomputing.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <ZV-EA46rBJ9WK4UH@arm.com>
+References: <ZV-EA46rBJ9WK4UH@arm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH0PR03CA0211.namprd03.prod.outlook.com
+ (2603:10b6:610:e7::6) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|PH0PR01MB6102:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89449542-e180-4de6-dd50-08dbec9ba416
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: so55jnm1HnBjNs2MBoteuvelyJHgH1k1QWDSRGW8sLt/n/qLz8Q2wkaBJgtEx/1VpD7Ql4i9WpoZ2aoaR/Lvb93JTnl4VE4LrpiY7JzzsUdDcMdc+0drza3r9jNj/MKiWDhN0y+yAB56twxCkN50tOC67JxvJVsmCWJxdWNIwZX5hzxP3yOcH9qeYKW2gTXuIwzqbkI4FVThy/UXIEFUWVLAJqfyeBCXobQ9bPwfd0AdiUNMdksWjX7YtNB0qTsamnFAJ3u37HEVy4N3xvJTMVEnuLBlmU0R0cX9QL30O9pQ0oP89+eDAm70rVTfXh4i30vdyYCIilsjY3f+Ys4/5ka6bmugYQJ9aRXnBakPIkCHLbgY/PGufw76ysP3U84CNdUfRC6DE7oGBHfuicU+tauy4uEfg+OUVHEU6vLYZAgRJbU0Poi4PCJJ7ayGBzj6/CbqhFJKr1Yeo9nOzVUAvV0ML4bF9Z0FnxSgFPqsUQxazLIEHX9jpNAMfP4SC4a7CRzQG2WD8jTVelfJyZgazIa+EnKf8eak5q7VynUbxwlHFsrBqiWu41Kwkx8QJqJYKD+VXQntuEidfCtdMlavAFwgmw+B1HLApfywTXPyUY1CrEG8/bDgZdPhharr9Euk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39840400004)(366004)(396003)(136003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(6486002)(478600001)(6506007)(52116002)(6666004)(38350700005)(5660300002)(86362001)(8936002)(2906002)(41300700001)(66946007)(38100700002)(66476007)(66556008)(6916009)(4326008)(8676002)(316002)(107886003)(1076003)(2616005)(83380400001)(26005)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Oo16UmguACxF1IBAwcY3BB+j1ptMBo32AmusLeEMHJLDeJzdnbhVBctWNwdt?=
+ =?us-ascii?Q?ULcYW8aXHH6YkpSc1AKTv4GjwUxub3i28/TJEkCe+4LpPAL2Y8NyB3DkkStP?=
+ =?us-ascii?Q?AUb6U3Uo388v0Rk9olt+aucJxb1S9O7FYbNJfKfy0gxZrPtTPQbGNWzDxhUT?=
+ =?us-ascii?Q?EkatqTv8aZGwketz8S6bPpfmUmiNFEBiwhWSu9dNmvK8fWxGjyv79K5ca+fJ?=
+ =?us-ascii?Q?jGYdMOBZZRGhqi8r6rRNzetE3G8/P9UWiF5vZ98trtjv4gZMarXFnzbseJur?=
+ =?us-ascii?Q?0dcoB+RyqsqxE04GJEX2qiEOSfrNnp9jyuevINCHuJ1R7SJCFKDki1aRViAf?=
+ =?us-ascii?Q?MrrvqKH+gOx3XtFW0kG2I8H/RP0QovDm7gna2iikiRHuv48gZr1iSElmf0I0?=
+ =?us-ascii?Q?HPDFwgpwOhDRXzeH3rrwh/ZjgqW2gHXTt8fvN+9gOaHZQTPw9FCFLl+KL3oE?=
+ =?us-ascii?Q?uum9kSMFXJ7TddWJsLkZZNh4H4U5r1awRzCTy1iZTv2Zw5SjB7gTtFTjAxFC?=
+ =?us-ascii?Q?AIaeM6S6fYHEIifYnOexmOdHWyevd/BoV7RWfceMRdS7to8tHmJWFnaNmoiH?=
+ =?us-ascii?Q?67CZnq/l3g68VloWlRv9XfETxXaWtznz1vBUWbFBblBh+aJhG0FAQ2bGSjvD?=
+ =?us-ascii?Q?q5wicIJwRmg9375xLH2k5/z4evzF/PGCmpGANCVPdgSDjdYXzvQOYaEeipul?=
+ =?us-ascii?Q?9H9faLFXjOna2644N/khVztBfuLgXef3ASlA9dc4AJFLIiwy8T422yNvvH/O?=
+ =?us-ascii?Q?sTbY2bHG54oKDFOMX2WJnVRfdXUvUWBtAePQ2hPh9vFSFP0+5ExIu5YDTqXz?=
+ =?us-ascii?Q?k/tME9+y+b4k/hGJUZ6Fwqo8m/m3mXifEzWDx/DqsEQROyJPo2CxEfow+cqI?=
+ =?us-ascii?Q?oBYQKSjAs3MUbeJ8qY2hXEKhLWl7EEXolBfpknk7XDpFkyM4K12m6zmRuaEM?=
+ =?us-ascii?Q?aSZqmvOulfpn0ezEHJxpHIwM8MEnTwb1XisawtCZtJ22dzXeAjVWiSVQ/stM?=
+ =?us-ascii?Q?gz00Tu4jiOyi5vE53/hIHwWtvhTYfBGAVaN5JM7xAxiVj4QwLEWve7N2U4wI?=
+ =?us-ascii?Q?E1VQE/+2j++aZnUdaHckQrhUCcMwWN5oCqCL6voxP3RVcUOmkoFncFthNohH?=
+ =?us-ascii?Q?EJE7Ynqg/5EfwQsPVHCsgtaxHjbCqP2K5kGUnRtW0xknsIaGxtOy2mysIVNb?=
+ =?us-ascii?Q?VDTt0jDsP4O0d/u/Eb9ESp2J1Uif0jTfhPshUoM1NWOjYa0HDmmnYk6M1SWk?=
+ =?us-ascii?Q?9ktlXxIOt2d+Cp0hjKNYUBLXTP1QAetzsuLFFFxu1l84v6I5IjF6AEkq2tWN?=
+ =?us-ascii?Q?Wfd5Jmu4CeCbDAHb6p46Ue8QJoCI7oUr7KCabcV47UPF+ccs/vTYjMAbCWQZ?=
+ =?us-ascii?Q?Qn7yJ62zK9F2RcUHWnoz/hm0q0Bv/swMtH0d2cg5ZO+DgFUvOa2KK0/a9dom?=
+ =?us-ascii?Q?tFY36Dga0ZqmJtCDUf5cg+ZTY7wvw5CQwcbs8cVvMJMLRFNSjJi4ZcboRsW/?=
+ =?us-ascii?Q?8gvLe/2XgDa8JyUDTD5Wey+Tp0CB6kd79VoOSge0o/643zKqqxy3j54VIL+k?=
+ =?us-ascii?Q?CguJDpEGxH6J4zqlWjKwb6FCAkNu6FIZAQEOLi86R+3y6jqaZR5MuSQofyGT?=
+ =?us-ascii?Q?2QcaSxzrK770QKgY0njJXd0=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89449542-e180-4de6-dd50-08dbec9ba416
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3659.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 503aa639-313e-48b6-469c-08dbec9b8bda
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2023 03:15:01.2987
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 03:15:42.1577
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY4P282MB3874
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qy5GGw4rt24749QG8bw1sO3/f4mCKegzKvKZ3C+IqV/h9+eb0E10bpOLGRfqxsq4AwC2gvx05T0Ey3xbyES02uH3lKoDYbikqCgKGzDZt5CHa5KM/pUMUHCDvYvUPHOg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6102
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gYWxsLArigILigILigILigILigILigIIKSSBoYXZlIGEgcXVlc3Rpb24gcmVnYXJkaW5n
-IHRoZSBoYW5kbGluZyBvZiBwb3RlbnRpYWwgaXNzdWVzIGR1cmluZyB0aGUgTVNJIGludGVycnVw
-dCBzZW5kaW5nIHByb2Nlc3MuIEl0IGFwcGVhcnMgdGhhdCBpZiB0aGUgQVBMSUMgdGFyZ2V0IHJl
-Z2lzdGVyJ3MgdmFsdWUgaXMgbW9kaWZpZWQgZHVyaW5nIHRoZSBNU0kgaW50ZXJydXB0IHNlbmRp
-bmcgcHJvY2VzcywgaXQgY291bGQgcG90ZW50aWFsbHkgbGVhZCB0byBNU0kgaW50ZXJydXB0IHNl
-bmQgZmFpbHVyZXMuIFRoZSBjb2RlIGRvZXNuJ3Qgc2VlbSB0byBhY2NvdW50IGZvciB0aGlzIHNj
-ZW5hcmlvIG9yIHRha2UgYXBwcm9wcmlhdGUgbWVhc3VyZXMuCgpJIGFtIHJlYWNoaW5nIG91dCB0
-byBzZWVrIGNsYXJpZmljYXRpb24gb24gd2hldGhlciB0aGlzIHNpdHVhdGlvbiBoYXMgYmVlbiBj
-b25zaWRlcmVkIGFuZCBpZiB0aGVyZSBhcmUgc3BlY2lmaWMgcmVhc29ucyBmb3Igbm90IGFkZHJl
-c3NpbmcgaXQgaW4gdGhlIGNvZGUuIFlvdXIgaW5zaWdodHMgaW50byB0aGlzIG1hdHRlciB3b3Vs
-ZCBiZSBoaWdobHkgYXBwcmVjaWF0ZWQuCgpUaGFuayB5b3UgZm9yIHlvdXIgdGltZSwgYW5kIEkg
-bG9vayBmb3J3YXJkIHRvIHlvdXIgcmVzcG9uc2UuCgpCZXN0IHJlZ2FyZHMKCg==
+In current code, init_irq_stacks() will call cpu_to_node().
+The cpu_to_node() depends on percpu "numa_node" which is initialized in:
+     arch_call_rest_init() --> rest_init() -- kernel_init()
+	--> kernel_init_freeable() --> smp_prepare_cpus()
+
+But init_irq_stacks() is called in init_IRQ() which is before
+arch_call_rest_init().
+
+So in init_irq_stacks(), the cpu_to_node() does not work, it
+always return 0. In NUMA, it makes the node 1 cpu accesses the IRQ stack which
+is in the node 0.
+
+This patch fixes it by:
+  1.) export the early_cpu_to_node(), and use it in the init_irq_stacks().
+  2.) change init_irq_stacks() to __init function.
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>  
+Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+---
+v3 --> v4:
+	1.) keep early_cpu_to_node() as __init function.
+	2.) change init_irq_stacks() to __init function.
+
+---
+ arch/arm64/kernel/irq.c    | 5 +++--
+ drivers/base/arch_numa.c   | 2 +-
+ include/asm-generic/numa.h | 2 ++
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
+index 6ad5c6ef5329..9f253d8efe90 100644
+--- a/arch/arm64/kernel/irq.c
++++ b/arch/arm64/kernel/irq.c
+@@ -22,6 +22,7 @@
+ #include <linux/vmalloc.h>
+ #include <asm/daifflags.h>
+ #include <asm/exception.h>
++#include <asm/numa.h>
+ #include <asm/softirq_stack.h>
+ #include <asm/stacktrace.h>
+ #include <asm/vmap_stack.h>
+@@ -51,13 +52,13 @@ static void init_irq_scs(void)
+ }
+ 
+ #ifdef CONFIG_VMAP_STACK
+-static void init_irq_stacks(void)
++static void __init init_irq_stacks(void)
+ {
+ 	int cpu;
+ 	unsigned long *p;
+ 
+ 	for_each_possible_cpu(cpu) {
+-		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, cpu_to_node(cpu));
++		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
+ 		per_cpu(irq_stack_ptr, cpu) = p;
+ 	}
+ }
+diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+index eaa31e567d1e..5b59d133b6af 100644
+--- a/drivers/base/arch_numa.c
++++ b/drivers/base/arch_numa.c
+@@ -144,7 +144,7 @@ void __init early_map_cpu_to_node(unsigned int cpu, int nid)
+ unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
+ EXPORT_SYMBOL(__per_cpu_offset);
+ 
+-static int __init early_cpu_to_node(int cpu)
++int __init early_cpu_to_node(int cpu)
+ {
+ 	return cpu_to_node_map[cpu];
+ }
+diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+index 1a3ad6d29833..c32e0cf23c90 100644
+--- a/include/asm-generic/numa.h
++++ b/include/asm-generic/numa.h
+@@ -35,6 +35,7 @@ int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+ void __init numa_set_distance(int from, int to, int distance);
+ void __init numa_free_distance(void);
+ void __init early_map_cpu_to_node(unsigned int cpu, int nid);
++int __init early_cpu_to_node(int cpu);
+ void numa_store_cpu_info(unsigned int cpu);
+ void numa_add_cpu(unsigned int cpu);
+ void numa_remove_cpu(unsigned int cpu);
+@@ -46,6 +47,7 @@ static inline void numa_add_cpu(unsigned int cpu) { }
+ static inline void numa_remove_cpu(unsigned int cpu) { }
+ static inline void arch_numa_init(void) { }
+ static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
++static inline int early_cpu_to_node(int cpu) { return 0; }
+ 
+ #endif	/* CONFIG_NUMA */
+ 
+-- 
+2.40.1
+
