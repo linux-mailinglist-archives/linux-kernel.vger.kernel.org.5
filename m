@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 947F67F6D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99E37F6D2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344244AbjKXHzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
+        id S229485AbjKXHsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:48:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXHzB (ORCPT
+        with ESMTP id S230245AbjKXHsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:55:01 -0500
-X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Nov 2023 23:55:07 PST
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F6BEA
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:55:07 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C91F421BBD;
-        Fri, 24 Nov 2023 07:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1700812135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sU+C0vHoKvhJD4Uv4mnBRoNOjRD+hZerlysfHrSpe9E=;
-        b=hs+esi5z6A1UQFAQsb44lAYtBT60iEkaYuqK6zOtFyidKvF0snqJbnVAxj+nSCOAtVllD6
-        EicbiDWUM7hdk11Ioxdq/ZcbXZ8QWMhvjVVrTeuGBHr5CVB3Ym4NWE5oPfcMrOMCR3niL4
-        1OIAzZvzyUSLvcaLJEtdjsNhwxcGR7E=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 84287139E8;
-        Fri, 24 Nov 2023 07:48:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id ulviHmdVYGWPOgAAn2gu4w
-        (envelope-from <jgross@suse.com>); Fri, 24 Nov 2023 07:48:55 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org
-Subject: [PATCH] x86/xen: fix percpu vcpu_info allocation
-Date:   Fri, 24 Nov 2023 08:48:52 +0100
-Message-Id: <20231124074852.25161-1-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
+        Fri, 24 Nov 2023 02:48:53 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE4DD73;
+        Thu, 23 Nov 2023 23:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=28ZlngaXvYd70NmiLVOgj+NejQ6ZUD3E3kKj3Lcl1lE=; b=TdTMLY1k87Tw14a+6kU+4Ty53L
+        p+L5YjjM9q52xjNsO4xcLYPGjwx7N6B2y1D04waeHJNrPkJeWNx0NWNOjDJxP8VqFBfbRD5F9nwZg
+        xKS0tJ/Qb1ThAcYhyWszcL4I0uzxTxLKtymx3zDtErFZ9tyCjC1S0g7gB/f/ncYV+iMVAs8d28mmD
+        0gdJ8poMY+wj3EP1zIo6JVV/DqMXaqQrULYsXLrMcQS2XC+oEED3RiA/vo2RqED1nq5WjBo/25O7X
+        U387UjiprwRrJMZws3Bz7ijxgd1EHyBANKHm8JrSUFzkcYD4VKE2reC057MlHFdPtsMr80kc+YHAw
+        BpdYQYlg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r6Qvp-002RzH-07;
+        Fri, 24 Nov 2023 07:48:57 +0000
+Date:   Fri, 24 Nov 2023 07:48:57 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Cedric Blancher <cedric.blancher@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: d_genocide()? What about d_holodomor(), d_massmurder(),
+ d_execute_warcrimes()? Re: [PATCH 15/20] d_genocide(): move the extern into
+ fs/internal.h
+Message-ID: <20231124074856.GA581958@ZenIV>
+References: <20231124060553.GA575483@ZenIV>
+ <20231124060644.576611-1-viro@zeniv.linux.org.uk>
+ <20231124060644.576611-15-viro@zeniv.linux.org.uk>
+ <CALXu0UcCGjyM6hFfdjG1eHJcmeR=9BVSaq7Vj9rtvKxb9szJdQ@mail.gmail.com>
+ <20231124065759.GT38156@ZenIV>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 4.70
-X-Spamd-Result: default: False [4.70 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[40.20%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124065759.GT38156@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today the percpu struct vcpu_info is allocated via DEFINE_PER_CPU(),
-meaning that it could cross a page boundary. In this case registering
-it with the hypervisor will fail, resulting in a panic().
+On Fri, Nov 24, 2023 at 06:57:59AM +0000, Al Viro wrote:
+> > > +extern void d_genocide(struct dentry *);
+> > 
+> > Seriously, who came up with THAT name? "Genocide" is not a nice term,
+> > not even if you ignore political correctness.
+> > Or what will be next? d_holodomor()? d_massmurder()? d_execute_warcrimes()?
+> 
+> kill_them_all(), on the account of that being what it's doing?
 
-This can easily be fixed by using DEFINE_PER_CPU_ALIGNED() instead,
-as struct vcpu_info is guaranteed to have a size of 64 bytes, matching
-the cache line size of x86 64-bit processors (Xen doesn't support
-32-bit processors).
+To elaborate a bit: what that function does (well, tries to do - it has
+serious limitations, which is why there is only one caller remaining and
+that one is used only when nothing else can access the filesystem anymore)
+is "kill given dentry, along with all its children, all their children,
+etc."
 
-Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- arch/x86/xen/enlighten.c | 6 +++++-
- arch/x86/xen/xen-ops.h   | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+I sincerely doubt that you will be able to come up with _any_ word
+describing such action in any real-world context that would not come
+with very nasty associations.
 
-diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
-index 0337392a3121..3c61bb98c10e 100644
---- a/arch/x86/xen/enlighten.c
-+++ b/arch/x86/xen/enlighten.c
-@@ -33,9 +33,12 @@ EXPORT_SYMBOL_GPL(hypercall_page);
-  * and xen_vcpu_setup for details. By default it points to share_info->vcpu_info
-  * but during boot it is switched to point to xen_vcpu_info.
-  * The pointer is used in xen_evtchn_do_upcall to acknowledge pending events.
-+ * Make sure that xen_vcpu_info doesn't cross a page boundary by making it
-+ * cache-line aligned (the struct is guaranteed to have a size of 64 bytes,
-+ * which matches the cache line size of 64-bit x86 processors).
-  */
- DEFINE_PER_CPU(struct vcpu_info *, xen_vcpu);
--DEFINE_PER_CPU(struct vcpu_info, xen_vcpu_info);
-+DEFINE_PER_CPU_ALIGNED(struct vcpu_info, xen_vcpu_info);
- 
- /* Linux <-> Xen vCPU id mapping */
- DEFINE_PER_CPU(uint32_t, xen_vcpu_id);
-@@ -160,6 +163,7 @@ void xen_vcpu_setup(int cpu)
- 	int err;
- 	struct vcpu_info *vcpup;
- 
-+	BUILD_BUG_ON(sizeof(*vcpup) > SMP_CACHE_BYTES);
- 	BUG_ON(HYPERVISOR_shared_info == &xen_dummy_shared_info);
- 
- 	/*
-diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
-index 408a2aa66c69..a87ab36889e7 100644
---- a/arch/x86/xen/xen-ops.h
-+++ b/arch/x86/xen/xen-ops.h
-@@ -21,7 +21,7 @@ extern void *xen_initial_gdt;
- struct trap_info;
- void xen_copy_trap_info(struct trap_info *traps);
- 
--DECLARE_PER_CPU(struct vcpu_info, xen_vcpu_info);
-+DECLARE_PER_CPU_ALIGNED(struct vcpu_info, xen_vcpu_info);
- DECLARE_PER_CPU(unsigned long, xen_cr3);
- DECLARE_PER_CPU(unsigned long, xen_current_cr3);
- 
--- 
-2.35.3
+Context: a bunch of filesystems have directory tree entirely in dcache;
+creating a file or directory bumps the reference count of dentry in
+question, so instead of going back to 0 after e.g. mkdir(2) returns
+it is left with refcount 1, which prevents its eviction.  In effect,
+all positive dentries in there are artificially kept busy.  On
+rmdir(2) or unlink(2) that extra reference is dropped and they
+get evicted.
 
+For filesystems like e.g. tmpfs that's a fairly obvious approach -
+they don't *have* any backing store, so dcache is not just caching
+the underlying objects - it's all there is.
+
+For such filesystems there is a quick way to do an equivalent of
+rm -rf - simply go over the subtree you want to remove and decrement
+refcounts of everything positive.  That's fine on filesystem shutdown,
+but for anything in use it is *too* quick - you'd better not do that
+if there are mountpoints in the subtree you are removing, etc.
+
+At the moment we have 3 callers in the kernel; one in selinuxfs, removing
+stale directories on policy reload (not quite safe, but if attacker can
+do selinux policy reload, you are beyond lost), another in
+simple_fill_super() failure handling (safe, since filesystem is not
+mounted at the time, but actually pointless - normal cleanup after
+failure will take them out just fine) and the last one in
+kill_litter_super().  That one is actually fine - we are shutting the
+filesystem down and nobody can access it at that point unless the
+kernel is deeply broken.
+
+By the end of this series only that one caller remains, which is
+reason for taking the declaration from include/linux/dcache.h to
+fs/internal.h - making sure no new callers get added.  Not because
+of the identifier having nasty connotations, but because it's
+pretty hard to use correctly.
