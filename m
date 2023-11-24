@@ -2,218 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821DE7F6EA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4906C7F6EB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345098AbjKXIlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
+        id S232854AbjKXInx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbjKXIl3 (ORCPT
+        with ESMTP id S232893AbjKXInc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:41:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DAD91
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700815290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uae6umIvihz9hD9eDNpHrM2v+MklsEpu9QPr6jgBbKo=;
-        b=L/op+qLvyZCvgZHWF4ty+H5+xedOpyuiRd7LUqUacJXzOjymyiBPBfkmu7Sv/vpJXTamE5
-        Doc8zx38mnUHqk+L4BZnBFSH70uVTUt/+PJcpRXKX3mSKXBGYCV1orcLf4PzP3VfD8S6/s
-        Jq1tQOqfCLfwF7vp5OGNYPG4ccxvEJk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-rJQ0dHUbP3yq8gLe1UD0gw-1; Fri, 24 Nov 2023 03:41:29 -0500
-X-MC-Unique: rJQ0dHUbP3yq8gLe1UD0gw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-543298e3cc8so1167149a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:29 -0800 (PST)
+        Fri, 24 Nov 2023 03:43:32 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06609268C
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:42:21 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c8872277fcso17206541fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:42:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700815339; x=1701420139; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WH1E9Yiihx2PWEpcKcucZ3CZsR2RWQov3IVdjYVdKl0=;
+        b=RHCtPkeqz+NmSWSX2kbwtCMH1GdMvbFYKPUOHUiIu28aZBipjPr9hm33qfe7js2XYj
+         PyYKV2IccAH7hdlL05jV6rfQaXkOBUMcSX7vLCJQRW531Xr2LE+wXU8FkjNbkl750e/a
+         zarEHvPgi3jftNwSjDCPVzIIeBe0nxN8iyU14bl2P4Eq/Bj1vo9LxOW+E+y7uRUCoTLC
+         B1lOKOJ8yU4oVOAbA0gAokbzxEN4/L30Jdzxa5jKIFsBA/W4c7dnJL9zDfvr7e3sWY4w
+         0GKf1RZryyBnyQM+1rV8GQWVjgNN7sPrmKVibYnnW0Puy4GgQ2kzfiZixjE1/fnvU8lu
+         0i8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700815288; x=1701420088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uae6umIvihz9hD9eDNpHrM2v+MklsEpu9QPr6jgBbKo=;
-        b=wzgh9LRZG24OcRBneev27ZZ8bCatKiFxMSfXszoVErCzrW3mmzbFwwhwN3C/mpyiFX
-         vs1MEY6C3whd/WaEotQHfqDG5onNGYJRz/U/GCJQyhVhx3V6XfHYzSB76Lg74tECxpCR
-         9qHcvYSZ0Ex+mJwGpnv1w0Hxk968lMR+fh3UAHyT7obIPZKnCoecUR3uFNOeIWmycXoj
-         4W4pnoMPr5/enJIrl/P6qAZEU+IV3bQCaRFTyYPnAi/FbADWpmfOM8qxVDTf/GgiNcYY
-         fNZDrLNlIQWnByydIBB/2kj0nfkoR3Lt1xRvWvWxNz83g8fAJ/o96vlrlRfZc27qvR9D
-         26nw==
-X-Gm-Message-State: AOJu0YzaPUMF2RSuJsfAoAOmZ/L+phMwBKMmnaK77t2UKxumnXeavHRH
-        +jjPnj14NtpvwllEFTLOEwGzNn/oaqw1lTgsFRlBw5R1CqHQK6RjPWw0RPVKpr+jODG3YagJxmD
-        VdiBdQadjEtdTWJsI5b37TMla
-X-Received: by 2002:a50:ab58:0:b0:540:118:e8f with SMTP id t24-20020a50ab58000000b0054001180e8fmr1539443edc.24.1700815288289;
-        Fri, 24 Nov 2023 00:41:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IELiUzhZFnbJ82OfiqMC5ixm/aul3tuw7FDsrJkBoJ1/2MyN0oeJBzjV6LRyahA3oVvVYOtRg==
-X-Received: by 2002:a50:ab58:0:b0:540:118:e8f with SMTP id t24-20020a50ab58000000b0054001180e8fmr1539430edc.24.1700815287950;
-        Fri, 24 Nov 2023 00:41:27 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id e18-20020a056402089200b00548a408f662sm1548936edy.49.2023.11.24.00.41.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:41:27 -0800 (PST)
-Message-ID: <1d0f5076-1c8b-49c6-a5d8-5796d829a368@redhat.com>
-Date:   Fri, 24 Nov 2023 09:41:26 +0100
+        d=1e100.net; s=20230601; t=1700815339; x=1701420139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WH1E9Yiihx2PWEpcKcucZ3CZsR2RWQov3IVdjYVdKl0=;
+        b=WhIsflgb/km6mOdqZXEgQz1b9dWqbwvtVdSQ3NsvBK+UxICt99YU/txN28+JOiu57h
+         Vh3fsnDwZAFadPaCq1d1Ko1DRmBfgCE2SO5N8Z/HQEHvqMCikFhb9Hv4O4Qbpnx2JzXC
+         5Hi+VIylWuvsdYd/W/15QHCqlJOJkPDPDD0IpRhqJDJUcsw2pKtR7A1Bkoprt4LeqtfO
+         2UDIX32ynw8BeKrGwzeQ5xY6M0NDd2eKFOFhnSBqL+O2Q+bI8VN1sgmqVU2rQp67s/C1
+         UpltFSb/90U3kE292yw0XMvCrSaym9Sy8981nN8sCmPH29RmJHgbIUDMYNjDl3oGQfpq
+         PI3Q==
+X-Gm-Message-State: AOJu0YyOQ20s7oeK1Gty/E4+YPbqTrbNpuWKfIxiBaS7Xj5asIblkuJg
+        45oGwMiy6zpAVWXdPtbw+0C6gfG9U6Ym7063hEk=
+X-Google-Smtp-Source: AGHT+IE0xgST11HOt5zFOR9kA3j6Z2IeyY2fjGPyfA5/yarVtW+fG4L0Q8MIwWSzD/URIQnACCJY/nlH5ft3H9+dbE0=
+X-Received: by 2002:a2e:9645:0:b0:2c3:e35d:13d with SMTP id
+ z5-20020a2e9645000000b002c3e35d013dmr1857701ljh.5.1700815339317; Fri, 24 Nov
+ 2023 00:42:19 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: asus-wmi: disable USB0 hub on ROG Ally
- before suspend
-Content-Language: en-US, nl
-To:     "Luke D. Jones" <luke@ljones.dev>
-Cc:     ilpo.jarvinen@linux.intel.com, corentin.chary@gmail.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231124082749.23353-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231124082749.23353-1-luke@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-12-ryncsn@gmail.com>
+ <CAF8kJuN+4HswStj4wSZHGQdx9g2tqzCtMA+6CLO7+HmozL6t2Q@mail.gmail.com>
+In-Reply-To: <CAF8kJuN+4HswStj4wSZHGQdx9g2tqzCtMA+6CLO7+HmozL6t2Q@mail.gmail.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Fri, 24 Nov 2023 16:42:00 +0800
+Message-ID: <CAMgjq7DpBOYec5FLvByZY8-xMwdWH2HRA9hFvNT3PDyxfaqBYw@mail.gmail.com>
+Subject: Re: [PATCH 11/24] mm/swap: also handle swapcache lookup in swapin_readahead
+To:     Chris Li <chrisl@kernel.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke,
-
-Thank you for the patch.
-
-On 11/24/23 09:27, Luke D. Jones wrote:
-> ASUS have worked around an issue in XINPUT in Windows by tweaking the MCU
-> firmware to disable the USB0 hub on screen disable when suspending.
-
-Can you please do s/XINPUT/XInput game controller emulation/ I had to duckduckgo
-XINPUT to figure out what this was about :)
-
-> The issue we have with this however is one of timing - the call the tells
-> the MCU to this isn't able to complete before suspend is done so we call
-> this in a prepare() and add a small msleep() to ensure it is done.
-> 
-> Without this the MCU is unable to initialise itself correctly on resume.
-> 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  drivers/platform/x86/asus-wmi.c | 43 +++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 6a79f16233ab..c28829d45fb5 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -16,6 +16,7 @@
->  #include <linux/acpi.h>
->  #include <linux/backlight.h>
->  #include <linux/debugfs.h>
-> +#include <linux/delay.h>
->  #include <linux/dmi.h>
->  #include <linux/fb.h>
->  #include <linux/hwmon.h>
-> @@ -132,6 +133,9 @@ module_param(fnlock_default, bool, 0444);
->  #define ASUS_SCREENPAD_BRIGHT_MAX 255
->  #define ASUS_SCREENPAD_BRIGHT_DEFAULT 60
->  
-> +/* Controls the power state of the USB0 hub on ROG Ally which input is on */
-> +#define ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
-> +
->  static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
->  
->  static int throttle_thermal_policy_write(struct asus_wmi *);
-> @@ -300,6 +304,9 @@ struct asus_wmi {
->  
->  	bool fnlock_locked;
->  
-> +	/* The ROG Ally device requires the USB hub to be disabled before suspend */
-> +	bool pre_suspend_ec0_csee_disable;
-> +
->  	struct asus_wmi_debug debug;
->  
->  	struct asus_wmi_driver *driver;
-> @@ -4488,6 +4495,8 @@ static int asus_wmi_add(struct platform_device *pdev)
->  	asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
->  	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
->  	asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
-> +	asus->pre_suspend_ec0_csee_disable = acpi_has_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE)
-> +						&& dmi_match(DMI_BOARD_NAME, "RC71L");
->  
->  	err = fan_boost_mode_check_present(asus);
->  	if (err)
-> @@ -4654,6 +4663,38 @@ static int asus_hotk_resume(struct device *device)
->  		asus_wmi_fnlock_update(asus);
->  
->  	asus_wmi_tablet_mode_get_state(asus);
-> +
-> +	return 0;
-> +}
-> +
-> +static int asus_hotk_resume_early(struct device *device)
-> +{
-> +	struct asus_wmi *asus = dev_get_drvdata(device);
-> +	acpi_status status;
-> +
-> +	if (asus->pre_suspend_ec0_csee_disable) {
-> +		status = acpi_execute_simple_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE, 0xB8);
-> +		if (ACPI_FAILURE(status)) {
-> +			pr_warn("failed to set USB hub power on\n");
-> +			return 1;
-
-On an error this should return -ESOMETHING not 1,
-or IMHO better, just only warn and continue with the return 0
-below. When you change this to only warn please also
-drop the {}
-
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int asus_hotk_prepare(struct device *device)
-> +{
-> +	struct asus_wmi *asus = dev_get_drvdata(device);
-> +	acpi_status status;
-> +
-> +	if (asus->pre_suspend_ec0_csee_disable) {
-> +		status = acpi_execute_simple_method(NULL, ASUS_USB0_PWR_SB_PCI0_SBRG_EC0_CSEE, 0xB7);
-> +		msleep(500); /* sleep required to ensure n-key is disabled before sleep continues */
-> +		if (ACPI_FAILURE(status)) {
-> +			pr_warn("failed to set USB hub power off\n");
-> +			// return 1;
-> +		}
-
-Please drop the commented "return 1;" and the { } .
-
-With these changes you can add my:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-to v2 of the patch.
-
-Regards,
-
-Hans
+Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8822=E6=97=A5=
+=E5=91=A8=E4=B8=89 00:07=E5=86=99=E9=81=93=EF=BC=9A
 
 
+>
+> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
+rote:
+> >
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > No feature change, just prepare for later commits.
+>
+> You need to have a proper commit message why this change needs to happen.
+> Preparing is too generic, it does not give any real information.
+> For example, it seems you want to reduce one swap cache lookup because
+> swap_readahead already has it?
+>
+> I am a bit puzzled at this patch. It shuffles a lot of sensitive code.
+> However I do not get  the value.
+> It seems like this patch should be merged with the later patch that
+> depends on it to be judged together.
+>
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > ---
+> >  mm/memory.c     | 61 +++++++++++++++++++++++--------------------------
+> >  mm/swap.h       | 10 ++++++--
+> >  mm/swap_state.c | 26 +++++++++++++--------
+> >  mm/swapfile.c   | 30 +++++++++++-------------
+> >  4 files changed, 66 insertions(+), 61 deletions(-)
+> >
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index f4237a2e3b93..22af9f3e8c75 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -3786,13 +3786,13 @@ static vm_fault_t handle_pte_marker(struct vm_f=
+ault *vmf)
+> >  vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >  {
+> >         struct vm_area_struct *vma =3D vmf->vma;
+> > -       struct folio *swapcache, *folio =3D NULL;
+> > +       struct folio *swapcache =3D NULL, *folio =3D NULL;
+> > +       enum swap_cache_result cache_result;
+> >         struct page *page;
+> >         struct swap_info_struct *si =3D NULL;
+> >         rmap_t rmap_flags =3D RMAP_NONE;
+> >         bool exclusive =3D false;
+> >         swp_entry_t entry;
+> > -       bool swapcached;
+> >         pte_t pte;
+> >         vm_fault_t ret =3D 0;
+> >
+> > @@ -3850,42 +3850,37 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >         if (unlikely(!si))
+> >                 goto out;
+> >
+> > -       folio =3D swap_cache_get_folio(entry, vma, vmf->address);
+> > -       if (folio)
+> > -               page =3D folio_file_page(folio, swp_offset(entry));
+> > -       swapcache =3D folio;
+>
+> Is the motivation that swap_readahead() already has a swap cache look up =
+so you
+> remove this look up here?
 
+Yes, the cache look up can is moved and shared in swapin_readahead,
+and this also make it possible to use that look up to return a shadow
+when entry is not a page, so another shadow look up can be saved for
+sync (ZRAM) swapin path. This can help improve ZRAM performance for
+~4% for a 10G ZRAM, and should improves more when the cache tree grows
+large.
 
+>
+> > -
+> > -       if (!folio) {
+> > -               page =3D swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
+> > -                                       vmf, &swapcached);
+> > -               if (page) {
+> > -                       folio =3D page_folio(page);
+> > -                       if (swapcached)
+> > -                               swapcache =3D folio;
+> > -               } else {
+> > +       page =3D swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
+> > +                               vmf, &cache_result);
+> > +       if (page) {
+> > +               folio =3D page_folio(page);
+> > +               if (cache_result !=3D SWAP_CACHE_HIT) {
+> > +                       /* Had to read the page from swap area: Major f=
+ault */
+> > +                       ret =3D VM_FAULT_MAJOR;
+> > +                       count_vm_event(PGMAJFAULT);
+> > +                       count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
+> > +               }
+> > +               if (cache_result !=3D SWAP_CACHE_BYPASS)
+> > +                       swapcache =3D folio;
+> > +               if (PageHWPoison(page)) {
+>
+> There is a lot of code shuffle here. From the diff it is hard to tell
+> if they are doing the same thing as before.
+>
+> >                         /*
+> > -                        * Back out if somebody else faulted in this pt=
+e
+> > -                        * while we released the pte lock.
+> > +                        * hwpoisoned dirty swapcache pages are kept fo=
+r killing
+> > +                        * owner processes (which may be unknown at hwp=
+oison time)
+> >                          */
+> > -                       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vm=
+f->pmd,
+> > -                                       vmf->address, &vmf->ptl);
+> > -                       if (likely(vmf->pte &&
+> > -                                  pte_same(ptep_get(vmf->pte), vmf->or=
+ig_pte)))
+> > -                               ret =3D VM_FAULT_OOM;
+> > -                       goto unlock;
+> > +                       ret =3D VM_FAULT_HWPOISON;
+> > +                       goto out_release;
+> >                 }
+> > -
+> > -               /* Had to read the page from swap area: Major fault */
+> > -               ret =3D VM_FAULT_MAJOR;
+> > -               count_vm_event(PGMAJFAULT);
+> > -               count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
+> > -       } else if (PageHWPoison(page)) {
+> > +       } else {
+> >                 /*
+> > -                * hwpoisoned dirty swapcache pages are kept for killin=
+g
+> > -                * owner processes (which may be unknown at hwpoison ti=
+me)
+> > +                * Back out if somebody else faulted in this pte
+> > +                * while we released the pte lock.
+> >                  */
+> > -               ret =3D VM_FAULT_HWPOISON;
+> > -               goto out_release;
+> > +               vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+> > +                               vmf->address, &vmf->ptl);
+> > +               if (likely(vmf->pte &&
+> > +                          pte_same(ptep_get(vmf->pte), vmf->orig_pte))=
+)
+> > +                       ret =3D VM_FAULT_OOM;
+> > +               goto unlock;
+> >         }
+> >
+> >         ret |=3D folio_lock_or_retry(folio, vmf);
+> > diff --git a/mm/swap.h b/mm/swap.h
+> > index a9a654af791e..ac9136eee690 100644
+> > --- a/mm/swap.h
+> > +++ b/mm/swap.h
+> > @@ -30,6 +30,12 @@ extern struct address_space *swapper_spaces[];
+> >         (&swapper_spaces[swp_type(entry)][swp_offset(entry) \
+> >                 >> SWAP_ADDRESS_SPACE_SHIFT])
+> >
+> > +enum swap_cache_result {
+> > +       SWAP_CACHE_HIT,
+> > +       SWAP_CACHE_MISS,
+> > +       SWAP_CACHE_BYPASS,
+> > +};
+>
+> Does any function later care about CACHE_BYPASS?
+>
+> Again, better introduce it with the function that uses it. Don't
+> introduce it for "just in case I might use it later".
 
-> +	}
->  	return 0;
->  }
->  
-> @@ -4701,6 +4742,8 @@ static const struct dev_pm_ops asus_pm_ops = {
->  	.thaw = asus_hotk_thaw,
->  	.restore = asus_hotk_restore,
->  	.resume = asus_hotk_resume,
-> +	.resume_early = asus_hotk_resume_early,
-> +	.prepare = asus_hotk_prepare,
->  };
->  
->  /* Registration ***************************************************************/
+Yes,  callers in shmem will also need to know if the page is cached in
+swap, and need a value to indicate the bypass case. I can add some
+comments here to indicate the usage.
 
+>
+> > +
+> >  void show_swap_cache_info(void);
+> >  bool add_to_swap(struct folio *folio);
+> >  void *get_shadow_from_swap_cache(swp_entry_t entry);
+> > @@ -55,7 +61,7 @@ struct page *__read_swap_cache_async(swp_entry_t entr=
+y, gfp_t gfp_mask,
+> >  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
+> >                                     struct mempolicy *mpol, pgoff_t ilx=
+);
+> >  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
+> > -                             struct vm_fault *vmf, bool *swapcached);
+> > +                             struct vm_fault *vmf, enum swap_cache_res=
+ult *result);
+> >
+> >  static inline unsigned int folio_swap_flags(struct folio *folio)
+> >  {
+> > @@ -92,7 +98,7 @@ static inline struct page *swap_cluster_readahead(swp=
+_entry_t entry,
+> >  }
+> >
+> >  static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp=
+_mask,
+> > -                       struct vm_fault *vmf, bool *swapcached)
+> > +                       struct vm_fault *vmf, enum swap_cache_result *r=
+esult)
+> >  {
+> >         return NULL;
+> >  }
+> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+> > index d87c20f9f7ec..e96d63bf8a22 100644
+> > --- a/mm/swap_state.c
+> > +++ b/mm/swap_state.c
+> > @@ -908,8 +908,7 @@ static struct page *swapin_no_readahead(swp_entry_t=
+ entry, gfp_t gfp_mask,
+> >   * @entry: swap entry of this memory
+> >   * @gfp_mask: memory allocation flags
+> >   * @vmf: fault information
+> > - * @swapcached: pointer to a bool used as indicator if the
+> > - *              page is swapped in through swapcache.
+> > + * @result: a return value to indicate swap cache usage.
+> >   *
+> >   * Returns the struct page for entry and addr, after queueing swapin.
+> >   *
+> > @@ -918,30 +917,39 @@ static struct page *swapin_no_readahead(swp_entry=
+_t entry, gfp_t gfp_mask,
+> >   * or vma-based(ie, virtual address based on faulty address) readahead=
+.
+> >   */
+> >  struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+> > -                             struct vm_fault *vmf, bool *swapcached)
+> > +                             struct vm_fault *vmf, enum swap_cache_res=
+ult *result)
+> >  {
+> > +       enum swap_cache_result cache_result;
+> >         struct swap_info_struct *si;
+> >         struct mempolicy *mpol;
+> > +       struct folio *folio;
+> >         struct page *page;
+> >         pgoff_t ilx;
+> > -       bool cached;
+> > +
+> > +       folio =3D swap_cache_get_folio(entry, vmf->vma, vmf->address);
+> > +       if (folio) {
+> > +               page =3D folio_file_page(folio, swp_offset(entry));
+> > +               cache_result =3D SWAP_CACHE_HIT;
+> > +               goto done;
+> > +       }
+> >
+> >         si =3D swp_swap_info(entry);
+> >         mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+> >         if (swap_use_no_readahead(si, swp_offset(entry))) {
+> >                 page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx=
+, vmf->vma->vm_mm);
+> > -               cached =3D false;
+> > +               cache_result =3D SWAP_CACHE_BYPASS;
+> >         } else if (swap_use_vma_readahead(si)) {
+> >                 page =3D swap_vma_readahead(entry, gfp_mask, mpol, ilx,=
+ vmf);
+> > -               cached =3D true;
+> > +               cache_result =3D SWAP_CACHE_MISS;
+> >         } else {
+> >                 page =3D swap_cluster_readahead(entry, gfp_mask, mpol, =
+ilx);
+> > -               cached =3D true;
+> > +               cache_result =3D SWAP_CACHE_MISS;
+> >         }
+> >         mpol_cond_put(mpol);
+> >
+> > -       if (swapcached)
+> > -               *swapcached =3D cached;
+> > +done:
+> > +       if (result)
+> > +               *result =3D cache_result;
+> >
+> >         return page;
+> >  }
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index 01c3f53b6521..b6d57fff5e21 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -1822,13 +1822,21 @@ static int unuse_pte_range(struct vm_area_struc=
+t *vma, pmd_t *pmd,
+> >
+> >         si =3D swap_info[type];
+> >         do {
+> > -               struct folio *folio;
+> > +               struct page *page;
+> >                 unsigned long offset;
+> >                 unsigned char swp_count;
+> > +               struct folio *folio =3D NULL;
+> >                 swp_entry_t entry;
+> >                 int ret;
+> >                 pte_t ptent;
+> >
+> > +               struct vm_fault vmf =3D {
+> > +                       .vma =3D vma,
+> > +                       .address =3D addr,
+> > +                       .real_address =3D addr,
+> > +                       .pmd =3D pmd,
+> > +               };
+>
+> Is this code move caused by skipping the swap cache look up here?
+
+Yes.
+
+>
+> This is very sensitive code related to swap cache racing. It needs
+> very careful reviewing. Better not shuffle it for no good reason.
+
+Thanks for the suggestion, I'll try to avoid these shuffling, but
+cache lookup is moved into swappin_readahead so some changes in the
+original caller are not avoidable...
