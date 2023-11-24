@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45967F84FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E177F84FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjKXT6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:58:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        id S1346124AbjKXT6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbjKXT55 (ORCPT
+        with ESMTP id S235301AbjKXT6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 14:57:57 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF8E1987
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:58:04 -0800 (PST)
+        Fri, 24 Nov 2023 14:58:15 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EC410F6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:58:19 -0800 (PST)
 Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CF9B21FE90;
-        Fri, 24 Nov 2023 19:58:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7AC9E1FE92;
+        Fri, 24 Nov 2023 19:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700855882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1700855897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=rL7u06+WD+aE2+8equGsGoE7y/tVOqmNf5x3nllorEI=;
-        b=KjB4L2sXfNur0f/FabkZEkw3kNGcXvWSv11EpyAEscgbnt7t+V11Up9d4mybmigCfOdWmZ
-        jzcbAdjYNx62MzhKVTCJo/ms7tY0yuWDSJcCC4wPEbZEJ3D2+o8UqSNWyZvzEghXELnb20
-        cl4eUyNKIuxgFdHPU0spXJtUiaGD128=
+        bh=DjYte/Mctgmrrgkn7xRs0TNg9KtN5CCgmihnS5E7cF0=;
+        b=x3vw6TRKweflrN4jq3gzp3J9Tztzz4CQziwkjFOyLDOcJMkJCYreg4s0xWi6VQBNZeKtQ/
+        /y26yDCppJ10wNdUceaJ2b8ActKsmL0moHrpyWywvWA/YiBLe7qp5YVzYxMJXvA0Ctjnrd
+        CSXJSi/gSxWqbPoJN0SthoNqDQJ47M4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700855882;
+        s=susede2_ed25519; t=1700855897;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=rL7u06+WD+aE2+8equGsGoE7y/tVOqmNf5x3nllorEI=;
-        b=Cw40MhUyvssBlKCwj8rHAwDqF5hVptjseRaftR9uOGzG+83CzXWkyqoVKylaTxMxO0BzjZ
-        vSPKUofr9NpUDxCQ==
+        bh=DjYte/Mctgmrrgkn7xRs0TNg9KtN5CCgmihnS5E7cF0=;
+        b=Ck8OiKFWRsiMDMq2mcW+F9tuCIjeoPI8IvWNGjGnlf1WtSRe2LqBreR/KPm80RPA57LvsH
+        I+m8Wr0EkGTW1UDw==
 Received: from localhost (dwarf.suse.cz [10.100.12.32])
-        by relay2.suse.de (Postfix) with ESMTP id 103522C145;
-        Fri, 24 Nov 2023 19:58:01 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 20:58:00 +0100
+        by relay2.suse.de (Postfix) with ESMTP id 8DC052C145;
+        Fri, 24 Nov 2023 19:58:16 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 20:58:16 +0100
 From:   Jiri Bohac <jbohac@suse.cz>
 To:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
         Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, mhocko@suse.cz
-Subject: [PATCH 2/4] kdump: implement reserve_crashkernel_cma
-Message-ID: <ZWEASEz37xE2Cmb5@dwarf.suse.cz>
+Subject: [PATCH 3/4] kdump, x86: implement crashkernel CMA reservation
+Message-ID: <ZWEAWMJtesa3O9M5@dwarf.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -49,7 +49,7 @@ In-Reply-To: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
 X-Spamd-Bar: +++++++++++++
 X-Spam-Score: 13.49
 X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: CF9B21FE90
+X-Rspamd-Queue-Id: 7AC9E1FE92
 Authentication-Results: smtp-out2.suse.de;
         dkim=none;
         dmarc=none;
@@ -92,117 +92,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-reserve_crashkernel_cma() reserves CMA ranges for the
-crash kernel. If allocating the requested size fails, 
-try to reserve in smaller pieces.
-
-Store the reserved ranges in the crashk_cma_ranges array
-and the number of ranges in crashk_cma_cnt.
+Implement the crashkernel CMA reservation for x86:
+- enable parsing of the cma suffix by parse_crashkernel()
+- reserve memory with reserve_crashkernel_cma()
+- add the CMA-reserved ranges to the e820 map for the crash kernel
+- exclude the CMA-reserved ranges from vmcore
 
 Signed-off-by: Jiri Bohac <jbohac@suse.cz>
 
 ---
- include/linux/crash_core.h |  9 +++++++
- kernel/crash_core.c        | 52 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+ arch/x86/kernel/crash.c | 26 ++++++++++++++++++++++----
+ arch/x86/kernel/setup.c |  5 +++--
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-index f1edefcf7377..5afe3866d35a 100644
---- a/include/linux/crash_core.h
-+++ b/include/linux/crash_core.h
-@@ -14,6 +14,13 @@
- extern struct resource crashk_res;
- extern struct resource crashk_low_res;
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index c92d88680dbf..f27d09386157 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -147,10 +147,10 @@ static struct crash_mem *fill_up_crash_elf_data(void)
+ 		return NULL;
  
-+extern struct range crashk_cma_ranges[];
-+#ifdef CONFIG_CMA
-+extern int crashk_cma_cnt;
-+#else
-+#define crashk_cma_cnt 0
-+#endif
-+
- #define CRASH_CORE_NOTE_NAME	   "CORE"
- #define CRASH_CORE_NOTE_HEAD_BYTES ALIGN(sizeof(struct elf_note), 4)
- #define CRASH_CORE_NOTE_NAME_BYTES ALIGN(sizeof(CRASH_CORE_NOTE_NAME), 4)
-@@ -98,6 +105,8 @@ int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
- 		unsigned long long *low_size, unsigned long long *cma_size,
- 		bool *high);
+ 	/*
+-	 * Exclusion of crash region and/or crashk_low_res may cause
+-	 * another range split. So add extra two slots here.
++	 * Exclusion of crash region, crashk_low_res and/or crashk_cma_ranges
++	 * may cause range splits. So add extra slots here.
+ 	 */
+-	nr_ranges += 2;
++	nr_ranges += 2 + crashk_cma_cnt;
+ 	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
+ 	if (!cmem)
+ 		return NULL;
+@@ -168,6 +168,7 @@ static struct crash_mem *fill_up_crash_elf_data(void)
+ static int elf_header_exclude_ranges(struct crash_mem *cmem)
+ {
+ 	int ret = 0;
++	int i;
  
-+void __init reserve_crashkernel_cma(unsigned long long cma_size);
-+
- #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
- #ifndef DEFAULT_CRASH_KERNEL_LOW_SIZE
- #define DEFAULT_CRASH_KERNEL_LOW_SIZE	(128UL << 20)
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 1e952d2e451b..d71ecd59f16b 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -15,6 +15,7 @@
- #include <linux/memblock.h>
- #include <linux/kexec.h>
- #include <linux/kmemleak.h>
-+#include <linux/cma.h>
+ 	/* Exclude the low 1M because it is always reserved */
+ 	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
+@@ -182,8 +183,17 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
+ 	if (crashk_low_res.end)
+ 		ret = crash_exclude_mem_range(cmem, crashk_low_res.start,
+ 					      crashk_low_res.end);
++	if (ret)
++		return ret;
  
- #include <asm/page.h>
- #include <asm/sections.h>
-@@ -475,6 +476,57 @@ void __init reserve_crashkernel_generic(char *cmdline,
- }
- #endif
- 
-+#ifdef CONFIG_CMA
-+#define CRASHKERNEL_CMA_RANGES_MAX 4
-+
-+struct range crashk_cma_ranges[CRASHKERNEL_CMA_RANGES_MAX];
-+int crashk_cma_cnt = 0;
-+
-+void __init reserve_crashkernel_cma(unsigned long long cma_size)
-+{
-+	unsigned long long request_size = roundup(cma_size, PAGE_SIZE);
-+	unsigned long long reserved_size = 0;
-+
-+	while (cma_size > reserved_size &&
-+	       crashk_cma_cnt < CRASHKERNEL_CMA_RANGES_MAX) {
-+
-+		struct cma *res;
-+
-+		if (cma_declare_contiguous(0, request_size, 0, 0, 0, false,
-+				       "crashkernel", &res)) {
-+			/* reservation failed, try half-sized blocks */
-+			if (request_size <= PAGE_SIZE)
-+				break;
-+
-+			request_size = roundup(request_size / 2, PAGE_SIZE);
-+			continue;
-+		}
-+
-+		crashk_cma_ranges[crashk_cma_cnt].start = cma_get_base(res);
-+		crashk_cma_ranges[crashk_cma_cnt].end =
-+			crashk_cma_ranges[crashk_cma_cnt].start +
-+			cma_get_size(res) - 1;
-+		++crashk_cma_cnt;
-+		reserved_size += request_size;
+-	return ret;
++	for (i = 0; i < crashk_cma_cnt; ++i) {
++		ret = crash_exclude_mem_range(cmem, crashk_cma_ranges[i].start,
++					      crashk_cma_ranges[i].end);
++		if (ret)
++			return ret;
 +	}
 +
-+	if (cma_size > reserved_size)
-+		pr_warn("crashkernel CMA reservation failed: %lld MB requested, %lld MB reserved in %d ranges\n",
-+			cma_size >> 20, reserved_size >> 20, crashk_cma_cnt);
-+	else
-+		pr_info("crashkernel CMA reserved: %lld MB in %d ranges\n",
-+			reserved_size >> 20, crashk_cma_cnt);
-+}
++	return 0;
+ }
+ 
+ static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
+@@ -336,6 +346,14 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+ 		add_e820_entry(params, &ei);
+ 	}
+ 
++	for (i = 0; i < crashk_cma_cnt; ++i) {
++		ei.addr = crashk_cma_ranges[i].start;
++		ei.size = crashk_cma_ranges[i].end -
++			  crashk_cma_ranges[i].start + 1;
++		ei.type = E820_TYPE_RAM;
++		add_e820_entry(params, &ei);
++	}
 +
-+#else /* CONFIG_CMA */
-+struct range crashk_cma_ranges[0];
-+void __init reserve_crashkernel_cma(unsigned long long cma_size)
-+{
-+	if (cma_size)
-+		pr_warn("crashkernel CMA reservation failed: CMA disabled\n");
-+}
-+#endif
-+
- int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
- 			  void **addr, unsigned long *sz)
+ out:
+ 	vfree(cmem);
+ 	return ret;
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index f271b2cc3054..5994d18fd2a0 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -468,7 +468,7 @@ static void __init memblock_x86_reserve_range_setup_data(void)
+ 
+ static void __init arch_reserve_crashkernel(void)
  {
+-	unsigned long long crash_base, crash_size, low_size = 0;
++	unsigned long long crash_base, crash_size, low_size = 0, cma_size = 0;
+ 	char *cmdline = boot_command_line;
+ 	bool high = false;
+ 	int ret;
+@@ -478,7 +478,7 @@ static void __init arch_reserve_crashkernel(void)
+ 
+ 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
+ 				&crash_size, &crash_base,
+-				&low_size, NULL, &high);
++				&low_size, &cma_size, &high);
+ 	if (ret)
+ 		return;
+ 
+@@ -489,6 +489,7 @@ static void __init arch_reserve_crashkernel(void)
+ 
+ 	reserve_crashkernel_generic(cmdline, crash_size, crash_base,
+ 				    low_size, high);
++	reserve_crashkernel_cma(cma_size);
+ }
+ 
+ static struct resource standard_io_resources[] = {
 
 -- 
 Jiri Bohac <jbohac@suse.cz>
