@@ -2,123 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FEF7F7149
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AD57F714E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345568AbjKXKTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        id S1345567AbjKXKVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345526AbjKXKTE (ORCPT
+        with ESMTP id S1345427AbjKXKVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:19:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1368CA2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:19:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD8AC433C8;
-        Fri, 24 Nov 2023 10:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700821150;
-        bh=OEZjeJvaa0W7vSTE88cnpZau4Nam/6qChCui4cXBaN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EIQvHAcWdH+aWdppBQyEJjgBwjnj5PnnQhO+8xHsqSeB6JHVnW6G1hVn2zzCxm480
-         H5bD3Fi5C1IuNoVzMIG9SgfodwjThbhDJjL0fgsXBSA5YCYGM1T0QVnzvKjJSkfVcC
-         PvGPze6kTiRqJHjygRYv9msfNlebGeRIyr9LPvNKLPrmKxODAccrpw463vn+mwFbUC
-         umgQVa122MGu4N+Yb3ab54opcbQZ+YXPTMLDqnfbqRgk4ic+347sp+IYJ5s9us5mZB
-         6eYz6vPGdNc2JP4GhfqOrjurYebJVCs8OIu2U0SIUxn1IXKANYUGg1cXvQsN6R319N
-         vXJKMdOHPjiDw==
-Date:   Fri, 24 Nov 2023 10:19:07 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
-Message-ID: <ZWB4myckLrpBYLm+@finisterre.sirena.org.uk>
-References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
+        Fri, 24 Nov 2023 05:21:16 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74459A2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:21:22 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b2a85c99bso1316185e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:21:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700821281; x=1701426081; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vk+K03FMpa5I++N+IPb24j4gsziH07t0yvKcvp4gCiw=;
+        b=aHzbpTLOfD6d3KOPshpE6hLklIeXuCTdTTThqPZKUKDyGYy0bI5g5RwIj0bwA15tep
+         w4hpnST0y0Kexim5YeycDpOhbLg8HeZtr129/SHQmKqUI7TBtuePKO7qCso7GFmUzKlp
+         p5HUJOlWT03LocPfgN/nCTu81Qg3ItkzX1lfY4MgnIwUTTnoTrYOUYT6GxddZYRyPM26
+         19MIN18J23XiQZNSy5DOp1fJ3xLKrH/dSLolw+/tHwQJhIPFBDdhGUpp9P+wjhBof/a3
+         bFFc4M313aUzj8qANKWlJIi4eZ0mCAP0cO9k3C/eO+lqu7YcRxuW4OkmmYQR/NTI4W0y
+         8O9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700821281; x=1701426081;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vk+K03FMpa5I++N+IPb24j4gsziH07t0yvKcvp4gCiw=;
+        b=cM27zWSXm/i0BuqIRTkfv1JglvHF2N0FAqZHjabsldbSkR8JGPnUzCUvbTHn6DhspK
+         w5hEgQmoTQURl4RGWXfUHU2P83D/DlxLHh9pekiAJvZ3PCD0u3cfR8+6Ha/0vBv6VaH1
+         K/b22MSrI3JXLJkZJ8gwZXFQgGgOQvdDGNi14VUxBb0+F9x6vqHaRzJc2WrCtGa6psi5
+         4Eo7NxvNXfVTiRTX2DOj5gky8mzXtV6lZJCOHctk7QmXPKBuER1Hb/myU4QgBUHuPuv5
+         nk9SwlTs1zV8NrfP0LdBwL9DTUjjgOUeASm+hcYTIYONcZEBYVhbf1SxQIPzcG1VPpjO
+         ZgBQ==
+X-Gm-Message-State: AOJu0Ywwz/E0jSPzIe3p1wQXCn2Aqmq2eIam9IsILk7fnQSq3zhd31Fn
+        fCOjoL89N5N+cQLBACCfkQ25jA==
+X-Google-Smtp-Source: AGHT+IHfAetx+moACOMxx0ZqVDGW0f2zx0GRuaQijEBgGWyP33sq9c4jdtFCKMaWouOHYVP0LZ7Pnw==
+X-Received: by 2002:adf:d1ee:0:b0:32f:9b7c:fe73 with SMTP id g14-20020adfd1ee000000b0032f9b7cfe73mr1629025wrd.5.1700821280779;
+        Fri, 24 Nov 2023 02:21:20 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:3471:930b:671b:cf77? ([2a01:e0a:999:a3a0:3471:930b:671b:cf77])
+        by smtp.gmail.com with ESMTPSA id c9-20020adfef49000000b0032fb7b4f191sm3952549wrp.91.2023.11.24.02.21.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 02:21:20 -0800 (PST)
+Message-ID: <5a4971eb-853a-493c-8c02-0c7bd14b88d6@rivosinc.com>
+Date:   Fri, 24 Nov 2023 11:21:19 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VQ2nRTjyMlGPMvXH"
-Content-Disposition: inline
-In-Reply-To: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: fix __user annotation in traps_misaligned.c
+To:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu
+References: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
+Content-Language: en-US
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ben,
 
---VQ2nRTjyMlGPMvXH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I sent a similar patch two days ago
+(https://lore.kernel.org/linux-riscv/20231122135141.2936663-1-cleger@rivosinc.com/).
 
-On Thu, Nov 23, 2023 at 03:49:15PM +0100, Neil Armstrong wrote:
+On 23/11/2023 15:16, Ben Dooks wrote:
+> The instruction reading code can read from either user or kernel addresses
+> and thus the use of __user on pointers to instructions depends on which
+> context. Fix a few sparse warnings by using __user for user-accesses and
+> remove it when not.
+> 
+> Fixes:
+> 
+> arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:322:24: warning: incorrect type in initializer (different address spaces)
+> arch/riscv/kernel/traps_misaligned.c:322:24:    expected unsigned char const [noderef] __user *__gu_ptr
+> arch/riscv/kernel/traps_misaligned.c:322:24:    got unsigned char const [usertype] *addr
+> arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
+> arch/riscv/kernel/traps_misaligned.c:332:24: warning: incorrect type in initializer (different address spaces)
+> arch/riscv/kernel/traps_misaligned.c:332:24:    expected unsigned char [noderef] __user *__gu_ptr
+> arch/riscv/kernel/traps_misaligned.c:332:24:    got unsigned char [usertype] *addr
+> 
+> Fixes: 7c83232161f60 ("riscv: add support for misaligned trap handling in S-mode")
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> ---
+>  arch/riscv/kernel/traps_misaligned.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+> index 5eba37147caa..446e3d4eeea9 100644
+> --- a/arch/riscv/kernel/traps_misaligned.c
+> +++ b/arch/riscv/kernel/traps_misaligned.c
+> @@ -319,7 +319,7 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
+>  static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+>  {
+>  	if (user_mode(regs)) {
+> -		return __get_user(*r_val, addr);
+> +		return __get_user(*r_val, (u8 __user *)addr);
+>  	} else {
+>  		*r_val = *addr;
+>  		return 0;
+> @@ -329,7 +329,7 @@ static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+>  static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+>  {
+>  	if (user_mode(regs)) {
+> -		return __put_user(val, addr);
+> +		return __put_user(val, (u8 __user *)addr);
+>  	} else {
+>  		*addr = val;
+>  		return 0;
+> @@ -343,7 +343,7 @@ static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+>  	if (user_mode(regs)) {				\
+>  		__ret = __get_user(insn, insn_addr);	\
+>  	} else {					\
+> -		insn = *insn_addr;			\
+> +		insn = *(__force u16 *)insn_addr;	\
 
-> +	if (wcd939x->variant == WCD9390) {
-> +		if (mode_val == CLS_H_HIFI || mode_val == CLS_AB_HIFI) {
-> +			dev_info(component->dev, "%s: Invalid HPH Mode, default to CLS_H_ULP\n",
-> +				 __func__);
-> +			mode_val = CLS_H_ULP;
-> +		}
-> +	}
-> +	if (mode_val == CLS_H_NORMAL) {
-> +		dev_info(component->dev, "%s: Invalid HPH Mode, default to class_AB\n",
-> +			 __func__);
-> +		mode_val = CLS_H_ULP;
-> +	}
+__read_insn() is called with either a u32 or a u16 pointer which is why
+this macros did not used a specific type. Doing so would result in
+loading half of what is needed. My patch addresses that.
 
-This lets people spam the logs from userspace, why not just return an
-error?
+Thanks
 
-> +	if (hphr)
-> +		wcd939x->comp2_enable = value;
-> +	else
-> +		wcd939x->comp1_enable = value;
-
-Are there really no constraints on the values for these things?
-
-> +static const struct snd_kcontrol_new wcd9390_snd_controls[] = {
-> +	SOC_ENUM_EXT("EAR PA GAIN", wcd939x_ear_pa_gain_enum,
-> +		     wcd939x_ear_pa_gain_get, wcd939x_ear_pa_gain_put),
-
-Gains should be be named Volume.  Is there no TLV information?
-
-> +static irqreturn_t wcd939x_wd_handle_irq(int irq, void *data)
-> +{
-> +	return IRQ_HANDLED;
-> +}
-
-Why even request the interrupt if it's just going to be ignored?
-
---VQ2nRTjyMlGPMvXH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVgeJoACgkQJNaLcl1U
-h9AZqgf9ER6M6fjDX85XA+DwqPsutTqM7mFbCjQypc4RvoCAFr404QMv94Pqj49B
-yVWWJEJ450NwalztnrIUsq8eTs9Fs/KpIhqEh202WlqHHd2EKGoAyHh6IEqF/yni
-F1YbWwejYTdL+16hOhMCtr0AtdhxEOe74omNJNcePl/yWCLx14CAA/snSAgVObjQ
-NO1Uhh1AgnAEO+S1jOvuGb3BzIor2UpcFNqhvKa6jkgRpEk/ZEUQjzJ/1bGdOF5r
-ny1HRvZgIcwIKyioGRREjdPmIGHFg+gLe3+LESxVy32YhpKkWaqYa4UT2wcVgtTp
-ej3yYYHUfeYQ6XtbWTd/o/wtzwlIWQ==
-=IuYR
------END PGP SIGNATURE-----
-
---VQ2nRTjyMlGPMvXH--
+>  		__ret = 0;				\
+>  	}						\
+>  							\
