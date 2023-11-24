@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEFC7F7992
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E45B7F7997
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjKXQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
+        id S1345536AbjKXQml convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 11:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbjKXQlY (ORCPT
+        with ESMTP id S231285AbjKXQmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:41:24 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D16A1FFA;
-        Fri, 24 Nov 2023 08:41:26 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-332c46d5988so1292363f8f.1;
-        Fri, 24 Nov 2023 08:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700844084; x=1701448884; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ni28SjVJ2Wu+8xAjSvXwvNtZzS7NfB4KdQGTVTIay/Q=;
-        b=j4R1JAUR+Y7FTDP6YmroBgnY9pcmxk5UrgGEtmqlaWeHYOUanAQ3Nt93QMmAHEfHOg
-         O/27W4YYO2MJh51ZoEflJPox1Zbrss+7yo9udqyyw5EpLQNo4linGOJMjsnyzU/eb6jt
-         CNpX+llD4D3spDMsbCdT3wHHowshI8uLzcdrn/bv8sRghczCu04JY0MlrkhCVMkk0XL6
-         4+EyaSheokUNGk1pDIS3ms35YSrrzvZHEpn8Ha2fnCQY7FO/LjKBE/Va8Jss/4/UnJEn
-         CugZKmluCvlIy+0TnkDYMEVaJBzC6cp9BdBOQXOCnaQvO8I499Ve7AoDOQzkWT44534W
-         gJ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700844084; x=1701448884;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ni28SjVJ2Wu+8xAjSvXwvNtZzS7NfB4KdQGTVTIay/Q=;
-        b=KhE3HEWF+L+OM8nCRCWiD6jDnaPVVCIeQGzRRUkjWxeAFBZBoFhkorc9TRQjRaNroH
-         ozEyeUr+KLFI9H9m9mHMM1JpCvZj6RIMjDzufzAHJigJbtASrUWZ79Il+GysoHvs87uO
-         rESLfgY8CM0+AHn8olkx2bGgVMNgB5n3R+jIrvfY9Sq17Kd5yz5c/hY/zpHxqV9kL05y
-         bQCEmB2TXTjYMpyqgk9u0V1umPczGl5l0SQhDldhwCzxBxVDui9E5puwmd2TmhErj/3/
-         NdrrAF1TkYUTKKUN4DM9D+a1JKnIrYJGncvx3jRMrLpdrx1gOfb/2nEy8E9NEURg9nVw
-         Q+QA==
-X-Gm-Message-State: AOJu0YzP1QPypAknkgmphAqCR5B7ULKOoKWB/O4AQYZAkKYSq8x87cdl
-        LwPFKq/3nks99ivsL1rv4lG+UFhtJ7X+kg==
-X-Google-Smtp-Source: AGHT+IF1Q+NzbFRUNcZX11rtSRiGBfnsmXXAM+zIIUixrSW8rGMXThtOprWk/P5d0O8fxnf0ynvBlw==
-X-Received: by 2002:adf:fc52:0:b0:332:d3f7:46f7 with SMTP id e18-20020adffc52000000b00332d3f746f7mr2389461wrs.53.1700844084450;
-        Fri, 24 Nov 2023 08:41:24 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id e2-20020a5d4e82000000b00323293bd023sm4720711wru.6.2023.11.24.08.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 08:41:23 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: chips-media: wave5: Fix spelling mistake "bufferur" -> "buffer"
-Date:   Fri, 24 Nov 2023 16:41:23 +0000
-Message-Id: <20231124164123.300870-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Fri, 24 Nov 2023 11:42:39 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04653199A;
+        Fri, 24 Nov 2023 08:42:44 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 72B201FDF6;
+        Fri, 24 Nov 2023 16:42:42 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EDA38132E2;
+        Fri, 24 Nov 2023 16:42:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id rLxzJ37SYGU5SQAAn2gu4w
+        (envelope-from <colyli@suse.de>); Fri, 24 Nov 2023 16:42:38 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH] bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <11a7d768-c6e7-4a6e-875d-87858bf023a5@kernel.dk>
+Date:   Sat, 25 Nov 2023 00:42:21 +0800
+Cc:     Markus Weippert <markus@gekmihesg.de>,
+        Bcache Linux <linux-bcache@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Zheng Wang <zyytlz.wz@163.com>, linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Stefan_F=C3=B6rster?= <cite@incertum.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <640974BB-8D2A-4B64-B8F6-C59E931DDFE4@suse.de>
+References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
+ <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+ <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
+ <989C39B9-A05D-4E4F-A842-A4943A29FFD6@suse.de>
+ <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
+ <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
+ <c47d3540ece151a2fb30e1c7b5881cb8922db915.camel@gekmihesg.de>
+ <B68E455A-D6EB-4BB9-BD60-F2F8C3C8C21A@suse.de>
+ <54706535-208b-43b5-814f-570ffa7b29bb@kernel.dk>
+ <910112B4-168D-4ECC-B374-7E6668B778F9@suse.de>
+ <11a7d768-c6e7-4a6e-875d-87858bf023a5@kernel.dk>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-Spamd-Bar: +++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of colyli@suse.de) smtp.mailfrom=colyli@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [13.70 / 50.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         MV_CASE(0.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         FREEMAIL_ENVRCPT(0.00)[163.com];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         BAYES_HAM(-0.09)[64.76%];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_SPAM_SHORT(3.00)[1.000];
+         MX_GOOD(-0.01)[];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,gekmihesg.de:email,kernel.dk:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[gekmihesg.de,vger.kernel.org,leemhuis.info,163.com,incertum.net,linuxfoundation.org,lists.linux.dev];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 13.70
+X-Rspamd-Queue-Id: 72B201FDF6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,26 +104,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in a dev_dbg message. Fix it.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-index 8b1417ece96e..ef227af72348 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-@@ -1281,7 +1281,7 @@ static int fill_ringbuffer(struct vpu_instance *inst)
- 
- 		/* Don't write buffers passed the last one while draining. */
- 		if (v4l2_m2m_is_last_draining_src_buf(m2m_ctx, vbuf)) {
--			dev_dbg(inst->dev->dev, "last src buffer written to the ring bufferur\n");
-+			dev_dbg(inst->dev->dev, "last src buffer written to the ring buffer\n");
- 			break;
- 		}
- 	}
--- 
-2.39.2
+> 2023年11月25日 00:35，Jens Axboe <axboe@kernel.dk> 写道：
+> 
+> On 11/24/23 9:34 AM, Coly Li wrote:
+>> 
+>> 
+>>> 2023?11?25? 00:31?Jens Axboe <axboe@kernel.dk> ???
+>>> 
+>>> On 11/24/23 9:29 AM, Coly Li wrote:
+>>>> 
+>>>> 
+>>>>> 2023?11?24? 23:14?Markus Weippert <markus@gekmihesg.de> ???
+>>>>> 
+>>>>> Commit 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+>>>>> node allocations") replaced IS_ERR_OR_NULL by IS_ERR. This leads to a
+>>>>> NULL pointer dereference.
+>>>>> 
+>>>>> BUG: kernel NULL pointer dereference, address: 0000000000000080
+>>>>> Call Trace:
+>>>>> ? __die_body.cold+0x1a/0x1f
+>>>>> ? page_fault_oops+0xd2/0x2b0
+>>>>> ? exc_page_fault+0x70/0x170
+>>>>> ? asm_exc_page_fault+0x22/0x30
+>>>>> ? btree_node_free+0xf/0x160 [bcache]
+>>>>> ? up_write+0x32/0x60
+>>>>> btree_gc_coalesce+0x2aa/0x890 [bcache]
+>>>>> ? bch_extent_bad+0x70/0x170 [bcache]
+>>>>> btree_gc_recurse+0x130/0x390 [bcache]
+>>>>> ? btree_gc_mark_node+0x72/0x230 [bcache]
+>>>>> bch_btree_gc+0x5da/0x600 [bcache]
+>>>>> ? cpuusage_read+0x10/0x10
+>>>>> ? bch_btree_gc+0x600/0x600 [bcache]
+>>>>> bch_gc_thread+0x135/0x180 [bcache]
+>>>>> 
+>>>>> The relevant code starts with:
+>>>>> 
+>>>>>  new_nodes[0] = NULL;
+>>>>> 
+>>>>>  for (i = 0; i < nodes; i++) {
+>>>>>      if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b->key)))
+>>>>>          goto out_nocoalesce;
+>>>>>  // ...
+>>>>> out_nocoalesce:
+>>>>>  // ...
+>>>>>  for (i = 0; i < nodes; i++)
+>>>>>      if (!IS_ERR(new_nodes[i])) {  // IS_ERR_OR_NULL before
+>>>>> 028ddcac477b
+>>>>>          btree_node_free(new_nodes[i]);  // new_nodes[0] is NULL
+>>>>>          rw_unlock(true, new_nodes[i]);
+>>>>>      }
+>>>>> 
+>>>>> This patch replaces IS_ERR() by IS_ERR_OR_NULL() to fix this.
+>>>>> 
+>>>>> Fixes: 028ddcac477b ("bcache: Remove unnecessary NULL point check in
+>>>>> node allocations")
+>>>>> Link:
+>>>>> https://lore.kernel.org/all/3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de/
+>>>>> Cc: stable@vger.kernel.org
+>>>>> Cc: Zheng Wang <zyytlz.wz@163.com>
+>>>>> Cc: Coly Li <colyli@suse.de>
+>>>>> Signed-off-by: Markus Weippert <markus@gekmihesg.de>
+>>>> 
+>>>> Added into my for-next.  Thanks for patching up.
+>>> 
+>>> We should probably get this into the current release, rather than punt
+>>> it to 6.8.
+>> 
+>> Yes, copied. So far I don?t have other bcache patches for 6.7, I feel
+>> I might be redundant if I send you another for -rc4 series with this
+>> single patch.
+>> 
+>> Could you please directly take it into -rc4?
+> 
+> Sure, I'll just grab it as-is.
+
+Thanks for doing this.
+
+Coly Li
 
