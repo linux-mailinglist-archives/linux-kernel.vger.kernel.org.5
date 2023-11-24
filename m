@@ -2,53 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D51487F6B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A920B7F6B31
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjKXEHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 23:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
+        id S230201AbjKXEQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 23:16:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXEHP (ORCPT
+        with ESMTP id S229453AbjKXEQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 23:07:15 -0500
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BA8D56
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 20:07:19 -0800 (PST)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1cc281f1214so16353115ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 20:07:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700798839; x=1701403639;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h0vRuOm3bYedFbYqbLhxDQ5YfI/esjpwLN9DwiNIFQ8=;
-        b=r9x2r+hZrlfaayTytXNxPaZITq13rCSad4Xsih230LO1KuRjoieUOd9DMbA6Wq2yUZ
-         XoqKmfrbhnT+T8trOYuQSUxHZeLk/RGCxOmQVHDFrhGpqkhlUhbLz7JDwaMXpTqz19Kd
-         +T1YdKaWzXHS9MTla9wLxWswlhdhI4/oeHHYkKb0B5zwsclutH6H4wnw1QcHD+RMHEtC
-         UCsxAF7GiwvaUuy0S9v0+ZvJg6UQRaUNpEMpC9VkX0jDCbz0kMOi133M/wdfCYShtG+Q
-         50Mg8yYsD0DBJFLnOU1pIqp3JhrMSmiw7prluc/T2GqVDJyxzh+yymmVCH9y8ZCxB22R
-         QVdA==
-X-Gm-Message-State: AOJu0Yx9VyEOHUo81xIhKu7d0+o7CrCt+WZYOZNYlSHQavyD7o0AG4ju
-        eMLBD0r1W5hD/kBg98AkvwDXxepH03HyOm/GAcirHLqc+N+j
-X-Google-Smtp-Source: AGHT+IHZRsewILwuiH0XfYhzpcc84TnIwHPhnSJafwQ5uSyAIc6bJMXvt5C0NCc/uA2o/BuZhV4Ek2XWQlFjz0aEbVOdqG/fV7zE
+        Thu, 23 Nov 2023 23:16:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEAA101
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 20:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700799397; x=1732335397;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=wLbfhTiNsp3RmLNz+uw+lM6yKEd6DDGxnCGNuclyhiQ=;
+  b=c+dwFPnloZKqX/SphJnrwz8E2Smk/w1fB9/YVfeMAoTeL6aMyY7BC/xg
+   mLm6uEuVzcuI5mYbfWidsj+BHMSzHf2WL6+mXnsfawmDtYQ3Jxg2l3GtJ
+   /NHyspaq7lQemffV9AQW93aBTHDsEYeGV7JjBmOfZwYANjD/ywql6xMil
+   STPsdSMMmuWJhL5+EWws/2GMHjyFjUS7J3H2VSvHRRoTXmkAGwxVpyJLp
+   T+WJb/3/yhlwymg3IFwjIpFjg7s9aZVccEAruYTZwsc+2V6DSADZv2gzP
+   xdskke3Mqyg56o/pR3gZ364Rx3BdHjBvHVuxPK+y2PC2SDmq1uBW8x8Rq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382766473"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="382766473"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 20:16:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="858254423"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="858254423"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 20:15:57 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc:     Yin Fengwei <fengwei.yin@intel.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <willy@infradead.org>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com> (zhangpeng's
+        message of "Thu, 23 Nov 2023 15:57:44 +0800")
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+        <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
+        <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
+        <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
+        <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
+Date:   Fri, 24 Nov 2023 12:13:56 +0800
+Message-ID: <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:22d2:b0:1cc:42bf:5c1f with SMTP id
- y18-20020a17090322d200b001cc42bf5c1fmr380444plg.4.1700798839555; Thu, 23 Nov
- 2023 20:07:19 -0800 (PST)
-Date:   Thu, 23 Nov 2023 20:07:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa8c0c060ade165e@google.com>
-Subject: [syzbot] [btrfs?] memory leak in clear_state_bit
-From:   syzbot <syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,88 +72,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+"zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
 
-syzbot found the following issue on:
+> On 2023/11/23 13:26, Yin Fengwei wrote:
+>
+>> On 11/23/23 12:12, zhangpeng (AS) wrote:
+>>> On 2023/11/23 9:09, Yin Fengwei wrote:
+>>>
+>>>> Hi Peng,
+>>>>
+>>>> On 11/22/23 22:00, Peng Zhang wrote:
+>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>
+>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>
+>>>>> This caused by temporarily cleared pte during a read/modify/write upd=
+ate
+>>>>> of the pte, eg, do_numa_page()/change_pte_range().
+>>>>>
+>>>>> For the data segment of the user-mode program, the global variable ar=
+ea
+>>>>> is a private mapping. After the pagecache is loaded, the private anon=
+ymous
+>>>>> page is generated after the COW is triggered. Mlockall can lock COW p=
+ages
+>>>>> (anonymous pages), but the original file pages cannot be locked and m=
+ay
+>>>>> be reclaimed. If the global variable (private anon page) is accessed =
+when
+>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>>>>>
+>>>>> At this time, the original private file page may have been reclaimed.
+>>>>> If the page cache is not available at this time, a major fault will be
+>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>
+>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() befo=
+re
+>>>>> triggering a major fault.
+>>>>>
+>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa174=
+34ee@huawei.com/
+>>>>>
+>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>> ---
+>>>>>  =C2=A0 mm/filemap.c | 14 ++++++++++++++
+>>>>>  =C2=A0 1 file changed, 14 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>> index 71f00539ac00..bb5e6a2790dc 100644
+>>>>> --- a/mm/filemap.c
+>>>>> +++ b/mm/filemap.c
+>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 mapping_locked =3D true;
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pte_t *ptep =3D pte_offse=
+t_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 vmf->address, &vmf->ptl);
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ptep) {
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 * Recheck pte with ptl locked as the pte can be cleared
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 * temporarily during a read/modify/write update.
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 */
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i=
+f (unlikely(!pte_none(ptep_get(ptep))))
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D VM_FAULT_NOPAGE;
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 p=
+te_unmap_unlock(ptep, vmf->ptl);
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i=
+f (unlikely(ret))
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> I am curious. Did you try not to take PTL here and just check whether =
+PTE is not NONE?
+>>> Thank you for your reply.
+>>>
+>>> If we don't take PTL, the current use case won't trigger this issue eit=
+her.
+>> Is this verified by testing or just in theory?
+>
+> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_c=
+ommit(),
+> this issue will also trigger. Without delay, we haven't reproduced this p=
+roblem
+> so far.
+>
+>>> In most cases, if we don't take PTL, this issue won't be triggered. How=
+ever,
+>>> there is still a possibility of triggering this issue. The corner case =
+is that
+>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_st=
+art()
+>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 pas=
+ses the
+>>> check whether the PTE is not NONE before task 1 updates PTE in
+>>> ptep_modify_prot_commit() without taking PTL.
+>> There is very limited operations between ptep_modify_prot_start() and
+>> ptep_modify_prot_commit(). While the code path from page fault to this c=
+heck is
+>> long. My understanding is it's very likely the PTE is not NONE when do P=
+TE check
+>> here without hold PTL (This is my theory. :)).
+>
+> Yes, there is a high probability that this issue won't occur without taki=
+ng PTL.
+>
+>> In the other side, acquiring/releasing PTL may bring performance impacti=
+on. It may
+>> not be big deal because the IO operations in this code path. But it's be=
+tter to
+>> collect some performance data IMHO.
+>
+> We tested the performance of file private mapping page fault (page_fault2=
+.c of
+> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of w=
+ill-it-scale).
+> The difference in performance (in operations per second) before and after=
+ patch
+> applied is about 0.7% on a x86 physical machine.
 
-HEAD commit:    98b1cc82c4af Linux 6.7-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1617a610e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b9d95ada516af
-dashboard link: https://syzkaller.appspot.com/bug?extid=81670362c283f3dd889c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e5bdd4e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b506f0e80000
+Whether is it improvement or reduction?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6b6d520f592c/disk-98b1cc82.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c2cb6183fd56/vmlinux-98b1cc82.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/de520cfc8b93/bzImage-98b1cc82.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/97f709bf4312/mount_0.gz
+--
+Best Regards,
+Huang, Ying
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com
-
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-BUG: memory leak
-unreferenced object 0xffff888100812800 (size 64):
-  comm "syz-executor358", pid 5076, jiffies 4294970941 (age 12.950s)
-  hex dump (first 32 bytes):
-    00 00 48 00 00 00 00 00 ff ff 48 00 00 00 00 00  ..H.......H.....
-    60 b6 52 02 00 c9 ff ff 60 b6 52 02 00 c9 ff ff  `.R.....`.R.....
-  backtrace:
-    [<ffffffff816339bd>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff816339bd>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff816339bd>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff816339bd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-    [<ffffffff8157e845>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-    [<ffffffff8215ec8b>] kmalloc include/linux/slab.h:600 [inline]
-    [<ffffffff8215ec8b>] ulist_add_merge fs/btrfs/ulist.c:210 [inline]
-    [<ffffffff8215ec8b>] ulist_add_merge+0xcb/0x2b0 fs/btrfs/ulist.c:198
-    [<ffffffff821b3964>] add_extent_changeset fs/btrfs/extent-io-tree.c:199 [inline]
-    [<ffffffff821b3964>] add_extent_changeset fs/btrfs/extent-io-tree.c:186 [inline]
-    [<ffffffff821b3964>] clear_state_bit+0xa4/0x1f0 fs/btrfs/extent-io-tree.c:559
-    [<ffffffff821b4b12>] __clear_extent_bit+0x432/0x840 fs/btrfs/extent-io-tree.c:731
-    [<ffffffff82169c7d>] __btrfs_qgroup_release_data+0x21d/0x4a0 fs/btrfs/qgroup.c:4123
-    [<ffffffff820e2737>] alloc_ordered_extent+0x57/0x2c0 fs/btrfs/ordered-data.c:159
-    [<ffffffff820e2dc8>] btrfs_alloc_ordered_extent+0x78/0x4f0 fs/btrfs/ordered-data.c:274
-    [<ffffffff820ab67a>] btrfs_create_dio_extent+0xba/0x1b0 fs/btrfs/inode.c:6953
-    [<ffffffff820c47ac>] btrfs_get_blocks_direct_write fs/btrfs/inode.c:7343 [inline]
-    [<ffffffff820c47ac>] btrfs_dio_iomap_begin+0xcbc/0x11a0 fs/btrfs/inode.c:7594
-    [<ffffffff81772039>] iomap_iter+0x219/0x590 fs/iomap/iter.c:91
-    [<ffffffff8177968b>] __iomap_dio_rw+0x2bb/0xd40 fs/iomap/direct-io.c:658
-    [<ffffffff820c4da3>] btrfs_dio_write+0x73/0xa0 fs/btrfs/inode.c:7798
-    [<ffffffff820cf774>] btrfs_direct_write fs/btrfs/file.c:1543 [inline]
-    [<ffffffff820cf774>] btrfs_do_write_iter+0x454/0x960 fs/btrfs/file.c:1684
-    [<ffffffff816924c4>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816924c4>] do_iter_readv_writev+0x154/0x220 fs/read_write.c:735
-    [<ffffffff81693c4c>] do_iter_write+0xec/0x370 fs/read_write.c:860
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> [1] https://github.com/antonblanchard/will-it-scale/tree/master
+>
+>>
+>> Regards
+>> Yin, Fengwei
+>>
+>>>> Regards
+>>>> Yin, Fengwei
+>>>>
+>>>>> +
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* No page in=
+ the page cache at all */
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 count_vm_even=
+t(PGMAJFAULT);
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 count_memcg_e=
+vent_mm(vmf->vma->vm_mm, PGMAJFAULT);
