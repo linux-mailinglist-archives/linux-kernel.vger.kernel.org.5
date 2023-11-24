@@ -2,46 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E267F702D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7E37F700B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345253AbjKXJli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
+        id S1345158AbjKXJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:37:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjKXJld (ORCPT
+        with ESMTP id S229708AbjKXJh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:41:33 -0500
-X-Greylist: delayed 331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 01:41:40 PST
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092BCD54;
-        Fri, 24 Nov 2023 01:41:39 -0800 (PST)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        Fri, 24 Nov 2023 04:37:28 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0C5130;
+        Fri, 24 Nov 2023 01:37:32 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 2D6EC100004;
+        Fri, 24 Nov 2023 12:37:29 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2D6EC100004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700818649;
+        bh=dtiyxtmPH0TSIzM6r3/YxZhPNjL7NhlWfSbuYozZXDg=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=knUtII8402sq5S9M2saPnvqSLQWFwuniAHU6Qb2h4yy5xKY8YSQ3zgf5pjqg1b4zq
+         WE7JSQOf7Pl6/GR8Ro1tE8EQrHOfDm8jA71/ZrN8kSwoxXbtdJOmAVy5sm0g7oLmBF
+         5OjKj0VpWMEzBSaCX5dDSKlClr9e+yE30stS54XS3K2gYg2CJ13+S76wl37YhOzIKY
+         A4CxfmVDcxXu5NGAofjvxkXccYvCp6QCbsbBhBmQquj8hxfdtizXadFlQ7H65qA/np
+         BL0ZG54bB30vFecbi5mypxCjFRSoL4KiSffnwPcWn74vBAQcLwz90kkjd6HsLAMC5h
+         OEMDGpHneAa3g==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 536DB81E3F3;
-        Fri, 24 Nov 2023 10:36:06 +0100 (CET)
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Cedric Blancher <cedric.blancher@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: d_genocide()? What about d_holodomor(), d_massmurder(),
- d_execute_warcrimes()? Re: [PATCH 15/20] d_genocide(): move the extern into
- fs/internal.h
-Date:   Fri, 24 Nov 2023 10:36:05 +0100
-Message-ID: <10399078.nUPlyArG6x@lichtvoll.de>
-In-Reply-To: <20231124074856.GA581958@ZenIV>
-References: <20231124060553.GA575483@ZenIV> <20231124065759.GT38156@ZenIV>
- <20231124074856.GA581958@ZenIV>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 24 Nov 2023 12:37:28 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
+ 2023 12:37:28 +0300
+Date:   Fri, 24 Nov 2023 12:37:22 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Lee Jones <lee@kernel.org>
+CC:     <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
+        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        George Stark <gnstark@salutedevices.com>
+Subject: Re: [PATCH v4 06/11] leds: aw200xx: add delay after software reset
+Message-ID: <20231124093722.picykrqaewxlxa7h@CAB-WSD-L081021>
+References: <20231121202835.28152-1-ddrokosov@salutedevices.com>
+ <20231121202835.28152-7-ddrokosov@salutedevices.com>
+ <20231123163816.GG1354538@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231123163816.GG1354538@google.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181570 [Nov 24 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, {Track_Chinese_Simplified, text}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/24 06:01:00 #22520095
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,47 +87,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro - 24.11.23, 08:48:57 CET:
-> On Fri, Nov 24, 2023 at 06:57:59AM +0000, Al Viro wrote:
-> > > > +extern void d_genocide(struct dentry *);
-> > > 
-> > > Seriously, who came up with THAT name? "Genocide" is not a nice
-> > > term,
-> > > not even if you ignore political correctness.
-> > > Or what will be next? d_holodomor()? d_massmurder()?
-> > > d_execute_warcrimes()?> 
-> > kill_them_all(), on the account of that being what it's doing?
+Hello Lee,
+
+Thank you for the detailed review!
+
+Please find my answer below.
+
+On Thu, Nov 23, 2023 at 04:38:16PM +0000, Lee Jones wrote:
+> On Tue, 21 Nov 2023, Dmitry Rokosov wrote:
 > 
-> To elaborate a bit: what that function does (well, tries to do - it has
-> serious limitations, which is why there is only one caller remaining and
-> that one is used only when nothing else can access the filesystem
-> anymore) is "kill given dentry, along with all its children, all their
-> children, etc."
+> > From: George Stark <gnstark@salutedevices.com>
+> > 
+> > According to datasheets of aw200xx devices software reset takes at
+> > least 1ms so add delay after reset before issuing commands to device.
+> 
+> Are you able to use an auto-correct tool to sharpen the grammar a little?
+> 
+> > Signed-off-by: George Stark <gnstark@salutedevices.com>
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > ---
+> >  drivers/leds/leds-aw200xx.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/leds/leds-aw200xx.c b/drivers/leds/leds-aw200xx.c
+> > index 4bce5e7381c0..bb17e48b3e2a 100644
+> > --- a/drivers/leds/leds-aw200xx.c
+> > +++ b/drivers/leds/leds-aw200xx.c
+> > @@ -321,6 +321,9 @@ static int aw200xx_chip_reset(const struct aw200xx *const chip)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	/* according to datasheet software reset takes at least 1ms */
+> 
+> Please start sentences with an uppercase char.
+> 
+> "According to the datasheet, software resets take at least 1ms"
+>               ^                            ^     ^
+> 
 
-I never got why in the context of computers anything is ever being killed. 
-It does not live to begin with.
+Here it's only one 'software reset' mentioned.
 
-You can stop something, remove it, delete it, destroy it, pause it, resume 
-it, overwrite it and you can do it really quickly or (almost) instantly or 
-slowly or recursively or some combination of those, but kill? You cannot 
-kill what does not live. 
-
-d_delete/destroy/remove_recursively() could be a suitable function name. 
-Pick one.
-
-Similar it is with the term children or parent. There are no children in 
-computer software. Period. But here it may be more difficult to find 
-alternative wording. Would still be good to find something, cause I was 
-quite taken aback by the wording of the OOM killer. (Actually I was taken 
-aback that an operating system could even have something that forcefully 
-quits a process without saving data. It never matched my expectations of 
-reliability and stability.)
-
-So how about stopping to put meaning into computer software source code 
-that simply is not there to begin with? How about starting to use terms 
-that describe what is actually being done and what is actually there?
+> > +	fsleep(1000);
+> > +
+> >  	regcache_mark_dirty(chip->regmap);
+> >  	return regmap_write(chip->regmap, AW200XX_REG_FCD, AW200XX_FCD_CLEAR);
+> >  }
+> > -- 
+> > 2.36.0
+> > 
+> 
+> -- 
+> Lee Jones [李琼斯]
 
 -- 
-Martin
-
-
+Thank you,
+Dmitry
