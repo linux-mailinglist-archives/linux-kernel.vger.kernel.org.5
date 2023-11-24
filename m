@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3F67F7763
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706367F77B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345657AbjKXPOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S1345802AbjKXPYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:24:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbjKXPO3 (ORCPT
+        with ESMTP id S1345621AbjKXPY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:14:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9782AD56
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:14:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB495C433CA;
-        Fri, 24 Nov 2023 15:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700838876;
-        bh=KdKTZsOg24qTQaP8tfzt2EsYKLZONlOAY7qgWOfXOR8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m4SR6wXmqA3ry2hBHj6Nr8FGO6D84hmFAqMr3U6rU1757OTWePqNumGCcg9OI2tiv
-         HrHehyiS22O4Ik90ZIsqze6I6zY3bpNstncesaf1WxRfQUT0lwnp8bvsEjSewAo0cJ
-         IouNEO1ZJckO7ABuswYLCiXF5pnSNIdEIm3zfKLg=
-Date:   Fri, 24 Nov 2023 15:13:58 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chun Ng <chunn@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Ankita Garg <ankitag@nvidia.com>
-Subject: Re: [REGRESSION]: mmap performance regression starting with k-6.1
-Message-ID: <2023112421-many-jaybird-6200@gregkh>
-References: <PH7PR12MB7937B0DF19E7E8539703D0E3D6BAA@PH7PR12MB7937.namprd12.prod.outlook.com>
- <ZV7eHE2Fxb75oRpG@archie.me>
- <ZV9x6qZ5z8YTvTC4@casper.infradead.org>
- <ZV_rJtxdn1dU9ip0@archie.me>
- <ZV/2nPBs5r1nIaW4@casper.infradead.org>
- <2023112402-posing-dress-4bf2@gregkh>
- <ZWC8BOtPW2bWBFqh@casper.infradead.org>
+        Fri, 24 Nov 2023 10:24:26 -0500
+X-Greylist: delayed 599 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 07:24:31 PST
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [IPv6:2001:41d0:203:375::b9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA1C1735
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:24:31 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
+        t=1700838869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=peq91xezvaQKWqcf4IslfnLpo00aDgps9HSfXps+xtk=;
+        b=uT8OLHRNdk68+oUdZqQn4HY5lfrInyAaLq7rpzCI1VqxaHE4YZV0SrdUAX47q6Nk64tp/V
+        qOtjqkhxqZv626Lnd7Gop6NVRUgiHOqSi2EfwENvKf1F0nesDQltPPOaEc2b4pmo41Pnp1
+        mZ7BkzsrO+/TsP+uejLgBTEPZr3Qt5XocnRdt+JkXYXPz7jJy2ZcIDI0VP/Bpq1zX6+eTW
+        cNtpdB6c59HkPgAA/EF/448k3PsyHwXD6baaGTolNLRIBWXnIRo0YN12QOjaRytLrBk4fj
+        5MOUjdtSqvzkv7X+2ehPpN87OTU8h5vEXtlLrATfyKPj7ARfGZE+jMtVCy1rPQ==
+From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Subject: [PATCH v2 0/2] drm/bridge: adv7511: get edid in hpd_work to update
+ CEC phys address
+Date:   Fri, 24 Nov 2023 16:14:20 +0100
+Message-Id: <20231124-adv7511-cec-edid-v2-0-f0e5eeafdfc2@bang-olufsen.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWC8BOtPW2bWBFqh@casper.infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAMy9YGUC/32OQQrCMBBFr1Jm7UgmNcS68h7SRZpM7KC0kmhQS
+ u9u7AFcvg///b9A5iSc4dQskLhIlnmqoHcN+NFNV0YJlUEr3ZKiA7pQrCFCzx45SMAYrRlC63y
+ nO6i1R+Io70156SuPkp9z+mwLhX7pH1khJHTm6NmxGozl81BP4Hx/xczTPtygX9f1C/++WGu2A
+ AAA
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,41 +62,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 03:06:44PM +0000, Matthew Wilcox wrote:
-> On Fri, Nov 24, 2023 at 11:52:06AM +0000, Greg KH wrote:
-> > On Fri, Nov 24, 2023 at 01:04:28AM +0000, Matthew Wilcox wrote:
-> > > On Fri, Nov 24, 2023 at 07:15:34AM +0700, Bagas Sanjaya wrote:
-> > > > On Thu, Nov 23, 2023 at 03:38:18PM +0000, Matthew Wilcox wrote:
-> > > > > On Thu, Nov 23, 2023 at 12:07:40PM +0700, Bagas Sanjaya wrote:
-> > > > > > Anyway, I'm adding this regression to regzbot:
-> > > > > > 
-> > > > > > #regzbot ^introduced: v6.0..v6.1
-> > > > > 
-> > > > > this is not a regression.  close it, you idiot.
-> > > > > 
-> > > > > 
-> > > > 
-> > > > why?
-> > > > 
-> > > > Confused...
-> > > 
-> > > yes.  you're perpetually confused.  stop trying to help, you only make
-> > > things worse.  learn about the things you work on, or give up.
-> > 
-> > Um, is this really called for?  Bagas is trying to help track
-> > regressions, and if something isn't a regression like you say here, a
-> > simple "This is not a regression, it's already resolved in newer
-> > kernels" is fine.
-> 
-> Bagas has a long history of inappropriately attempting to "help" and due
-> to a lack of understanding wasting peoples time.  He's not too dissimilar
-> to the various wrongbots we've had over the years, including Richard B
-> Johnson, Markus Elfring, etc.  I've tried to help guide him towards being
-> a more productive contributor, but'have failed.  Mostly I ignore him now,
-> but when he's instructing a bot to harass me, that crosses a line.
+This series fixes a small bug where the CEC adapter could have an
+invalid CEC address even though we got a hotplug connect and could have
+read it.
 
-Nope, still not justification to lash out at an individual, sorry.
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+---
+Changes in v2:
+- Rearrange driver code to avoid the previous prototype of
+  adv7511_get_edid(), per Laurent's feedback
+- Free the returned EDID to prevent a memory leak, per Jani's comment
+- Link to v1: https://lore.kernel.org/r/20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk
 
-Please be more careful, and kind, in the future.
+---
+Alvin Šipraga (2):
+      drm/bridge: adv7511: rearrange hotplug work code
+      drm/bridge: adv7511: get edid in hpd_work to update CEC phys address
 
-greg k-h
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 154 ++++++++++++++++-----------
+ 1 file changed, 90 insertions(+), 64 deletions(-)
+---
+base-commit: ab93edb2f94c3c0d5965be3815782472adbe3f52
+change-id: 20231014-adv7511-cec-edid-ff75bd3ac929
+
