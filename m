@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 256247F857E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D812A7F857F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbjKXVae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S232291AbjKXVa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:30:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjKXVaZ (ORCPT
+        with ESMTP id S234686AbjKXVao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:30:25 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6383F1BD2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:30:27 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54373788ec4so551602a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:30:27 -0800 (PST)
+        Fri, 24 Nov 2023 16:30:44 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18EC1BCD
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:30:42 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50ba6881282so148891e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:30:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700861425; x=1701466225; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700861441; x=1701466241; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yWJ0nXVb1bOTAnFt8TBwH1+zkjpEMLZEr+/8w0q7iWk=;
-        b=jEbUvEBw2KcIcLVtimgIJ8MmTgXSwMQQgvJa38KmjfXqc4kLOyvIP9Y6fWbZcbRrlc
-         +4s7KsRdtCpUMyCciS//MDfYgvZ1J4b2VTN3wlhU9ifoCY55bPCB+qJNeyRjXRujmg/E
-         toHlXxOxf/kTTijwtvyVB1ReXP7YBSl1FsCOeOQ5ZimG5Vmd930ikXJGCSSPLpIIXWyS
-         mRElomaufGjY03boC5gqpW6ySGPpfPvZDUSsqoD2EsLfnnWJSJSuEVev/EPw44PdJGpz
-         xyjLdWJUbfeWI74wIys0in0ah2yPgkMBExOjXv1Cez3vJ8VFu78cJwRUlx98dZ7zLHo4
-         xlSg==
+        bh=7G27DLDSnr98RUfDdYxVys5pn2qiQC28hb1GX/OMO0I=;
+        b=MabYu45wjiDBq4byElOD5vzbuPvynSuopzPPa42V4xYNkyse2nj2y0YRrMH1oiw1TK
+         iqUHvlDKVTzkrvvfuSRrVOsfb1chQMZOUyumG/qu8nE9KSjDTcQwUp14NjNMmMmit2RI
+         Cvgv4f8FMegFf2Ekg01vd2AOmbKwQ5x8iIy5tuWb4pa30mFlv4SiHiv5ebU4+xelVn2j
+         E+caj/0gT9sulh0/zk6Hx5A/TSoFrxflT8tH6iD6DIL+8UgIx6AE4vV0mfnioE3zATlB
+         rdY12p4UaJFhiP7UCugYPg+fsej/xO1ZMQFJIOUpNA2yqXnMOljbBe0lnhExkGgCQcF6
+         Ikxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700861425; x=1701466225;
+        d=1e100.net; s=20230601; t=1700861441; x=1701466241;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yWJ0nXVb1bOTAnFt8TBwH1+zkjpEMLZEr+/8w0q7iWk=;
-        b=gvFVw1/5nKK0se2Y7tHsUu2Xwkgz9vchSD39fAr0ODNBDZrKiO9pRveSsMfKkpoVPo
-         Niby+bdOba3oj/vsVXkamPcPwTrIKFu6eaikb2THHp9EyiGVKQMiA3mbGyMAurW2BlzQ
-         8gm8cKvH2SIOy596KrcpFo+EjD4VaeYtPxRd+FxY4i7gbmE38PWC+4GxS0qAI1xQd+p/
-         wsTPP3U/eOI6TRKfk5PMTndDM7MTcmnwXHKThmam72Wb0RY5QTzrFcOlARyKmxQHOBrF
-         cR1TVfhsst6SJlrDQhFSlZjhYTxe5fZVs44iaGjE8dCcscNuqamVJyjj1lOzYPGctFwG
-         cTDg==
-X-Gm-Message-State: AOJu0Yx0ZuQKt1Ek1YmS5U3FgmoZT5F88ffa8przMZFzDu5XEHWu1x1g
-        cz7a8pSrT1osJ75PXio2A14=
-X-Google-Smtp-Source: AGHT+IHmiEyndG8fPfAOadU1BbBZ66/E8F65iYc+ddfSmrclkAjyvW2GZQV2LvgeDPSu7oEPl9SBAQ==
-X-Received: by 2002:a05:6402:f18:b0:54b:1f3:344c with SMTP id i24-20020a0564020f1800b0054b01f3344cmr2177455eda.2.1700861425221;
-        Fri, 24 Nov 2023 13:30:25 -0800 (PST)
+        bh=7G27DLDSnr98RUfDdYxVys5pn2qiQC28hb1GX/OMO0I=;
+        b=S4hs5B9r6juA7w2kGyppnhEOJOE/WkruBUjQYzK6mATFt1uZ6SLWgLw3RDJrZDYzGS
+         VntthGNmbFrIFGeuabyfcdqBfXR3agmgbJcDfge73gBdCgY2UsQZ4ucTBJ/8adQZLnbF
+         o5onzufIWf+izHPf6kkO7Htk03IsZJ5YDB6A35y4kKLPbccI3Q51vR5OwaCQ2jG8iGOt
+         09BMkkS+ZVCMo2jIXzNGdYAa4QYpjMt7qMDVpJ2x7FMukvVW5J73n4aENR+ntGNV+jrD
+         476XY3GIXrqZEbGpZ6nNtNq2zNgWCTuJF/QsfjQlEEVH2tt3qRzXkZuBQpifx0Ubyyj+
+         BIYw==
+X-Gm-Message-State: AOJu0Yz3257uxFwmzLWURAd5Og359cT/5Db/06Iy94jUrYDJNBt5nvuO
+        KtmLv5QbptJKoRZrDzAN6Nc=
+X-Google-Smtp-Source: AGHT+IFlYdG7tyeIYbb8Y7pITwOO+/AGFM093dRsUC8/YvjlAYnA3fBVfLMrwtAQKK6QP0i2QzzMKQ==
+X-Received: by 2002:a05:6512:3b0a:b0:507:b1b8:cf0a with SMTP id f10-20020a0565123b0a00b00507b1b8cf0amr2922142lfv.3.1700861440913;
+        Fri, 24 Nov 2023 13:30:40 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id h14-20020aa7c94e000000b00548a57d4f7bsm2215631edt.36.2023.11.24.13.30.24
+        by smtp.gmail.com with ESMTPSA id x22-20020a170906135600b009efe6fdf615sm2519712ejb.150.2023.11.24.13.30.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 13:30:25 -0800 (PST)
-Date:   Fri, 24 Nov 2023 22:30:23 +0100
+        Fri, 24 Nov 2023 13:30:40 -0800 (PST)
+Date:   Fri, 24 Nov 2023 22:30:39 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] staging: rtl8192e: Remove unused interrupt for IMR_BcnInt
-Message-ID: <64a1f672dbe2ed2c6a660fa1044bd058fe3ba91a.1700860758.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 2/8] staging: rtl8192e: Remove unused function
+ rtllib_get_beacon()
+Message-ID: <d76eeb7e273f4fcfec4ae8879e56d237363ebde2.1700860758.git.philipp.g.hortmann@gmail.com>
 References: <cover.1700860758.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,103 +71,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver does not support AP Mode therefore no beacons need to be send.
-Remove unused interrupt for IMR_BcnInt.
+Remove unused function rtllib_get_beacon().
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- .../staging/rtl8192e/rtl8192e/r8192E_dev.c    |  2 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c  | 37 -------------------
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h  |  1 -
- 3 files changed, 1 insertion(+), 39 deletions(-)
+ drivers/staging/rtl8192e/rtllib.h         |  1 -
+ drivers/staging/rtl8192e/rtllib_softmac.c | 21 ---------------------
+ 2 files changed, 22 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-index 8fe4c03b19c1..73315a236e76 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-@@ -1802,7 +1802,7 @@ rtl92e_init_variables(struct net_device  *dev)
- 			    IMR_MGNTDOK | IMR_COMDOK | IMR_HIGHDOK |
- 			    IMR_BDOK | IMR_RXCMDOK | IMR_TIMEOUT0 |
- 			    IMR_RDU | IMR_RXFOVW | IMR_TXFOVW |
--			    IMR_BcnInt | IMR_TBDOK | IMR_TBDER);
-+			    IMR_TBDOK | IMR_TBDER);
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index 5d6563d12480..835b407ab180 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1693,7 +1693,6 @@ void rtllib_softmac_start_protocol(struct rtllib_device *ieee);
+ void rtllib_reset_queue(struct rtllib_device *ieee);
+ void rtllib_wake_all_queues(struct rtllib_device *ieee);
+ void rtllib_stop_all_queues(struct rtllib_device *ieee);
+-struct sk_buff *rtllib_get_beacon(struct rtllib_device *ieee);
  
- 	priv->bfirst_after_down = false;
- }
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index c3466291e221..fc6e8ea039a3 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -416,38 +416,6 @@ static int _rtl92e_handle_assoc_response(struct net_device *dev,
- 	return 0;
+ void notify_wx_assoc_event(struct rtllib_device *ieee);
+ void rtllib_ps_tx_ack(struct rtllib_device *ieee, short success);
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 2ce4f64f88f6..0ad08165fd85 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -2180,27 +2180,6 @@ static struct sk_buff *rtllib_get_beacon_(struct rtllib_device *ieee)
+ 	return skb;
  }
  
--static void _rtl92e_prepare_beacon(struct tasklet_struct *t)
+-struct sk_buff *rtllib_get_beacon(struct rtllib_device *ieee)
 -{
--	struct r8192_priv *priv = from_tasklet(priv, t,
--					       irq_prepare_beacon_tasklet);
--	struct net_device *dev = priv->rtllib->dev;
--	struct sk_buff *pskb = NULL, *pnewskb = NULL;
--	struct cb_desc *tcb_desc = NULL;
--	struct rtl8192_tx_ring *ring = NULL;
--	struct tx_desc *pdesc = NULL;
+-	struct sk_buff *skb;
+-	struct rtllib_probe_response *b;
 -
--	ring = &priv->tx_ring[BEACON_QUEUE];
--	pskb = __skb_dequeue(&ring->queue);
--	kfree_skb(pskb);
+-	skb = rtllib_get_beacon_(ieee);
+-	if (!skb)
+-		return NULL;
 -
--	pnewskb = rtllib_get_beacon(priv->rtllib);
--	if (!pnewskb)
--		return;
+-	b = (struct rtllib_probe_response *)skb->data;
+-	b->header.seq_ctrl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
 -
--	tcb_desc = (struct cb_desc *)(pnewskb->cb + 8);
--	tcb_desc->queue_index = BEACON_QUEUE;
--	tcb_desc->data_rate = 2;
--	tcb_desc->ratr_index = 7;
--	tcb_desc->tx_dis_rate_fallback = 1;
--	tcb_desc->tx_use_drv_assinged_rate = 1;
--	skb_push(pnewskb, priv->rtllib->tx_headroom);
+-	if (ieee->seq_ctrl[0] == 0xFFF)
+-		ieee->seq_ctrl[0] = 0;
+-	else
+-		ieee->seq_ctrl[0]++;
 -
--	pdesc = &ring->desc[0];
--	rtl92e_fill_tx_desc(dev, pdesc, tcb_desc, pnewskb);
--	__skb_queue_tail(&ring->queue, pnewskb);
--	pdesc->OWN = 1;
+-	return skb;
 -}
+-EXPORT_SYMBOL(rtllib_get_beacon);
 -
- void rtl92e_config_rate(struct net_device *dev, u16 *rate_config)
+ void rtllib_softmac_stop_protocol(struct rtllib_device *ieee)
  {
- 	struct r8192_priv *priv = rtllib_priv(dev);
-@@ -785,8 +753,6 @@ static void _rtl92e_init_priv_task(struct net_device *dev)
- 	INIT_DELAYED_WORK(&priv->rtllib->hw_sleep_wq, (void *)rtl92e_hw_sleep_wq);
- 	tasklet_setup(&priv->irq_rx_tasklet, _rtl92e_irq_rx_tasklet);
- 	tasklet_setup(&priv->irq_tx_tasklet, _rtl92e_irq_tx_tasklet);
--	tasklet_setup(&priv->irq_prepare_beacon_tasklet,
--		      _rtl92e_prepare_beacon);
- }
- 
- static short _rtl92e_get_channel_map(struct net_device *dev)
-@@ -1810,9 +1776,6 @@ static irqreturn_t _rtl92e_irq(int irq, void *netdev)
- 	if (inta & IMR_ROK)
- 		tasklet_schedule(&priv->irq_rx_tasklet);
- 
--	if (inta & IMR_BcnInt)
--		tasklet_schedule(&priv->irq_prepare_beacon_tasklet);
--
- 	if (inta & IMR_RDU) {
- 		rtl92e_writel(dev, INTA_MASK,
- 			      rtl92e_readl(dev, INTA_MASK) & ~IMR_RDU);
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index e7b331c4661c..846f0f7a737b 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -219,7 +219,6 @@ struct r8192_priv {
- 
- 	struct tasklet_struct		irq_rx_tasklet;
- 	struct tasklet_struct		irq_tx_tasklet;
--	struct tasklet_struct		irq_prepare_beacon_tasklet;
- 
- 	struct mutex				wx_mutex;
- 	struct mutex				rf_mutex;
+ 	rtllib_stop_scan_syncro(ieee);
 -- 
 2.42.0
 
