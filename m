@@ -2,117 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F567F6C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0987F6C52
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjKXGct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
+        id S229720AbjKXGfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXGcp (ORCPT
+        with ESMTP id S229485AbjKXGfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:32:45 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D330591;
-        Thu, 23 Nov 2023 22:32:51 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 1DB30603EE;
-        Fri, 24 Nov 2023 06:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1700807571;
-        bh=+gS/X74h4UfVNPZhsitLFhRKfvXbk2HaAi+3m9/w4LA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fOyeZFM3XB/N1+TWPkAPihd+noaGWJronK71K0i3yOCY4UcLBv1uy0Mq2MrhaW5sw
-         L4fWQqlSnNwNM4oVau/CDo1e6vK0+H9Sa1Qnal8PBAV9kQ1REiOgueHKoHaCb/3t2t
-         yZntys8VgzYz07KKMJVtaV+czADccc7zutPFMiv2U1IAdF5JP2BH8MMUmHXvQ3WtHX
-         NXIe/acjhZKOzAA2QpDnySk9I7tLMJYuaJmMh0hsENtiUIIBnGFACcoG4S3WXHXI2R
-         H4BmW0ylNun2MKKfpeTN6NzDcA5hxRPfwA+u0B6d1pQF2SkROP87ijITBwdeXHIC+n
-         xAapRrmmE8Viw==
-Date:   Fri, 24 Nov 2023 08:32:10 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     oe-kbuild@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>, lkp@intel.com,
-        oe-kbuild-all@lists.linux.dev,
-        "David S . Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] serial: core: Move console character device
- handling from printk
-Message-ID: <20231124063210.GI5169@atomide.com>
-References: <20231121113203.61341-4-tony@atomide.com>
- <6933c98f-7f76-4955-ba0f-89ea340b672d@suswa.mountain>
- <8a4c0b43-cf63-400d-b33d-d9c447b7e0b9@suswa.mountain>
+        Fri, 24 Nov 2023 01:35:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D9AD6E;
+        Thu, 23 Nov 2023 22:35:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700807717; x=1732343717;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KqgTpFydo+QWkaZJI+x7pUz3D2ua6/nmG4hD68KScWA=;
+  b=d/sHiK3S3Uf1L6VoZmBn/7JrEyyxH3VJDRmYBrVHhVKG4H9e6nABtsRf
+   BeTBdDwYIqynlgE+aCAXFvONZl78iQc5FUFYNK9aj8vL3Idp0dq9n9b/k
+   R83mbPqBIeJ9hoC/yFZ6HkSQlU0TVwUyUfCGvgH9ikrRqvOcQXw9Fra4e
+   tsRaq8dNhVfeM+E2INKHCkRj8IJ0CUE4NkVXkZDs7JVBHlqXHoIZzvBlu
+   PlZ1cGpkokPsof10XLuS65mkK6/pkPEb2L2TKGorVNgPvIdQEpvwx+45x
+   psFs4ONFp9aWJmj/iwSrNkvyrlz+Vm7iGfJmZMeWEUkFsqXyB2GeADRZM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="371728384"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="371728384"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 22:35:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="885186104"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="885186104"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Nov 2023 22:35:15 -0800
+Date:   Fri, 24 Nov 2023 14:33:20 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/9] KVM: x86: Update guest cpu_caps at runtime for
+ dynamic CPUID-based features
+Message-ID: <ZWBDsOJpdi7hWaYV@yilunxu-OptiPlex-7050>
+References: <20231110235528.1561679-1-seanjc@google.com>
+ <20231110235528.1561679-7-seanjc@google.com>
+ <4484647425e2dbf92c76a173b7b14e346f60362d.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a4c0b43-cf63-400d-b33d-d9c447b7e0b9@suswa.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <4484647425e2dbf92c76a173b7b14e346f60362d.camel@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dan Carpenter <dan.carpenter@linaro.org> [231123 07:29]:
-> On Thu, Nov 23, 2023 at 10:24:24AM +0300, Dan Carpenter wrote:
-> > Hi Tony,
+On Sun, Nov 19, 2023 at 07:35:30PM +0200, Maxim Levitsky wrote:
+> On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
+> > When updating guest CPUID entries to emulate runtime behavior, e.g. when
+> > the guest enables a CR4-based feature that is tied to a CPUID flag, also
+> > update the vCPU's cpu_caps accordingly.  This will allow replacing all
+> > usage of guest_cpuid_has() with guest_cpu_cap_has().
 > > 
-> > kernel test robot noticed the following build warnings:
+> > Take care not to update guest capabilities when KVM is updating CPUID
+> > entries that *may* become the vCPU's CPUID, e.g. if userspace tries to set
+> > bogus CPUID information.  No extra call to update cpu_caps is needed as
+> > the cpu_caps are initialized from the incoming guest CPUID, i.e. will
+> > automatically get the updated values.
 > > 
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > Note, none of the features in question use guest_cpu_cap_has() at this
+> > time, i.e. aside from settings bits in cpu_caps, this is a glorified nop.
 > > 
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/printk-Save-console-options-for-add_preferred_console_match/20231121-193809
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> > patch link:    https://lore.kernel.org/r/20231121113203.61341-4-tony%40atomide.com
-> > patch subject: [PATCH v3 3/3] serial: core: Move console character device handling from printk
-> > config: parisc-randconfig-r081-20231122 (https://download.01.org/0day-ci/archive/20231122/202311221437.5Gil0Pml-lkp@intel.com/config)
-> > compiler: hppa-linux-gcc (GCC) 13.2.0
-> > reproduce: (https://download.01.org/0day-ci/archive/20231122/202311221437.5Gil0Pml-lkp@intel.com/reproduce)
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/cpuid.c | 48 +++++++++++++++++++++++++++++++-------------
+> >  1 file changed, 34 insertions(+), 14 deletions(-)
 > > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Reported-by: Dan Carpenter <error27@gmail.com>
-> > | Closes: https://lore.kernel.org/r/202311221437.5Gil0Pml-lkp@intel.com/
-> > 
-> > smatch warnings:
-> > drivers/tty/serial/serial_base_bus.c:266 serial_base_add_preferred_console() error: uninitialized symbol 'nmbr_match'.
-> > drivers/tty/serial/serial_base_bus.c:265 serial_base_add_preferred_console() error: uninitialized symbol 'char_match'.
-> > 
-> > vim +/nmbr_match +266 drivers/tty/serial/serial_base_bus.c
-> > 
-> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  261  int serial_base_add_preferred_console(struct uart_driver *drv,
-> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  262  				      struct uart_port *port)
-> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  263  {
-> > e4ebdcd790e0f3 Tony Lindgren 2023-11-21  264  	const char *port_match __free(kfree);
-> > b1b8726ec3f40b Tony Lindgren 2023-11-21 @265  	const char *char_match __free(kfree);
-> > b1b8726ec3f40b Tony Lindgren 2023-11-21 @266  	const char *nmbr_match __free(kfree);
-> > 
-> > These need to be initialized to NULL.
-> > 
-> > 	const char *char_match __free(kfree) = NULL;
-> > 
+> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > index 36bd04030989..37a991439fe6 100644
+> > --- a/arch/x86/kvm/cpuid.c
+> > +++ b/arch/x86/kvm/cpuid.c
+> > @@ -262,31 +262,48 @@ static u64 cpuid_get_supported_xcr0(struct kvm_cpuid_entry2 *entries, int nent)
+> >  	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
+> >  }
+> >  
+> > +static __always_inline void kvm_update_feature_runtime(struct kvm_vcpu *vcpu,
+> > +						       struct kvm_cpuid_entry2 *entry,
+> > +						       unsigned int x86_feature,
+> > +						       bool has_feature)
+> > +{
+> > +	if (entry)
+> > +		cpuid_entry_change(entry, x86_feature, has_feature);
+> > +
+> > +	if (vcpu)
+> > +		guest_cpu_cap_change(vcpu, x86_feature, has_feature);
+> > +}
+> > +
+> >  static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
+> >  				       int nent)
+> >  {
+> >  	struct kvm_cpuid_entry2 *best;
+> > +	struct kvm_vcpu *caps = vcpu;
+> > +
+> > +	/*
+> > +	 * Don't update vCPU capabilities if KVM is updating CPUID entries that
+> > +	 * are coming in from userspace!
+> > +	 */
+> > +	if (entries != vcpu->arch.cpuid_entries)
+> > +		caps = NULL;
 > 
-> Let's add a todo to make checkpatch warn about this.
-> 
-> KTODO: make checkpatch warn about __free() functions without an initializer
+> I think that this should be decided by the caller. Just a boolean will suffice.
 
-Yes good idea.
+kvm_set_cpuid() calls this function only to validate/adjust the temporary
+"entries" variable. While kvm_update_cpuid_runtime() calls it to do system
+level changes.
+
+So I kind of agree to make the caller fully awared, how about adding a
+newly named wrapper for kvm_set_cpuid(), like:
+
+
+  static void kvm_adjust_cpuid_entry(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
+				     int nent)
+
+  {
+	WARN_ON(entries == vcpu->arch.cpuid_entries);
+	__kvm_update_cpuid_runtime(vcpu, entries, nent);
+  }
+
+> 
+> Or even better: since the userspace CPUID update is really not important in terms of performance,
+> why to special case it? 
+> 
+> Even if these guest caps are later overwritten, I don't see why we
+> need to avoid updating them, and in fact introduce a small risk of them not being consistent
+
+IIUC, for kvm_set_cpuid() case, KVM may then fail the userspace cpuid setting,
+so we can't change guest caps at this phase.
 
 Thanks,
+Yilun
 
-Tony
+> with the other cpu caps.
+> 
+> With this we can avoid having the 'cap' variable which is *very* confusing as well.
+> 
+> 
+> >  
+> >  	best = cpuid_entry2_find(entries, nent, 1, KVM_CPUID_INDEX_NOT_SIGNIFICANT);
+> > -	if (best) {
+> > -		/* Update OSXSAVE bit */
+> > -		if (boot_cpu_has(X86_FEATURE_XSAVE))
+> > -			cpuid_entry_change(best, X86_FEATURE_OSXSAVE,
+> > +
+> > +	if (boot_cpu_has(X86_FEATURE_XSAVE))
+> > +		kvm_update_feature_runtime(caps, best, X86_FEATURE_OSXSAVE,
+> >  					   kvm_is_cr4_bit_set(vcpu, X86_CR4_OSXSAVE));
+> >  
+> > -		cpuid_entry_change(best, X86_FEATURE_APIC,
+> > -			   vcpu->arch.apic_base & MSR_IA32_APICBASE_ENABLE);
+> > +	kvm_update_feature_runtime(caps, best, X86_FEATURE_APIC,
+> > +				   vcpu->arch.apic_base & MSR_IA32_APICBASE_ENABLE);
+> >  
+> > -		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT))
+> > -			cpuid_entry_change(best, X86_FEATURE_MWAIT,
+> > -					   vcpu->arch.ia32_misc_enable_msr &
+> > -					   MSR_IA32_MISC_ENABLE_MWAIT);
+> > -	}
+> > +	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT))
+> > +		kvm_update_feature_runtime(caps, best, X86_FEATURE_MWAIT,
+> > +					   vcpu->arch.ia32_misc_enable_msr & MSR_IA32_MISC_ENABLE_MWAIT);
+> >  
+> >  	best = cpuid_entry2_find(entries, nent, 7, 0);
+> > -	if (best && boot_cpu_has(X86_FEATURE_PKU))
+> > -		cpuid_entry_change(best, X86_FEATURE_OSPKE,
+> > -				   kvm_is_cr4_bit_set(vcpu, X86_CR4_PKE));
+> > +	if (boot_cpu_has(X86_FEATURE_PKU))
+> > +		kvm_update_feature_runtime(caps, best, X86_FEATURE_OSPKE,
+> > +					   kvm_is_cr4_bit_set(vcpu, X86_CR4_PKE));
+> >  
+> >  	best = cpuid_entry2_find(entries, nent, 0xD, 0);
+> >  	if (best)
+> > @@ -353,6 +370,9 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  	 * Reset guest capabilities to userspace's guest CPUID definition, i.e.
+> >  	 * honor userspace's definition for features that don't require KVM or
+> >  	 * hardware management/support (or that KVM simply doesn't care about).
+> > +	 *
+> > +	 * Note, KVM has already done runtime updates on guest CPUID, i.e. this
+> > +	 * will also correctly set runtime features in guest CPU capabilities.
+> >  	 */
+> >  	for (i = 0; i < NR_KVM_CPU_CAPS; i++) {
+> >  		const struct cpuid_reg cpuid = reverse_cpuid[i];
+> 
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> 
