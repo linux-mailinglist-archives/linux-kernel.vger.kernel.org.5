@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A517F86C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6868D7F86CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbjKXXhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 18:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        id S231624AbjKXXhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 18:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjKXXhB (ORCPT
+        with ESMTP id S231705AbjKXXhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 18:37:01 -0500
+        Fri, 24 Nov 2023 18:37:24 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699B51988
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCF11BF7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700869026;
+        s=mimecast20190719; t=1700869042;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PxcVKcnovZ3WmT6VXlVQva+pEVKvpiQ4FcmwXIH6X8E=;
-        b=IH6sLM7ur5DNCRNGIRhTBNb1JhqsPGzLfMwDmFXv6LYEguOOUi7NknrUDOyPqkOLhgaZEx
-        gaWhe4vX/Ru4oEJDRf3DSzPWO2Ip65SEG2xcOKBchvOUGZwUS1PhtShQJEqEs/xBbn/JqC
-        piqcsJcxZRxTUsJGUj5zL5jeirLTjWU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=o9d7VDWKIT6kRskPMwA56/YhEUxpKcUgE6jJTCtxE4g=;
+        b=GyUpfxc5idVSCOyae70eVTS76DAXdqXEX1L+TypCYDVESd74bL3GZyZaSzOrncB1uRwcEo
+        bPOuD5jkmMP+mNZ1x1w8E7q+JJmaelmSUGt5JXA7KPwJXDC7us/Mn2GGD3MfGDs9tFoMgt
+        O1Q6GnAq4S3N+FgEi4pHTV0u0UByuYQ=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-9IwhIyghOqu5cXKQc8alNQ-1; Fri, 24 Nov 2023 18:37:05 -0500
-X-MC-Unique: 9IwhIyghOqu5cXKQc8alNQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a02cc56af16so159225866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:05 -0800 (PST)
+ us-mta-140-tB0QsRk9ORK4P2vGGDvG9Q-1; Fri, 24 Nov 2023 18:37:09 -0500
+X-MC-Unique: tB0QsRk9ORK4P2vGGDvG9Q-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5079a3362afso2264325e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700869024; x=1701473824;
+        d=1e100.net; s=20230601; t=1700869028; x=1701473828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PxcVKcnovZ3WmT6VXlVQva+pEVKvpiQ4FcmwXIH6X8E=;
-        b=IDoM7VhE/wN0WzHL3ldn1U4A99TR7HgNE/5zbSowf6rImh4YcH4+mruu7H7Ry363db
-         9LDF0DPD/gLOBTOpUsbvXPzbV4WwYXvMbU9yHVpXrx7sc5ovwMrgCrMqdhpvsBG6jgor
-         rz8dqLVPSfOGrMcUnG6vT5TvCU1QhDka4IcO+l0pJal1dWXF5D0TUahdAbHsyAAP50dQ
-         Hqd/qeCveUciiEpBE5gMkxrHzUTCES/7oOZoCWGdTiW/H11B8VCAk6Tzbd0ZuMvvVHPR
-         wfV+D23Z0anbGRXApMwLTdAun9NedE73HA7nw2rI1Fl5x7fC9NtLh2yZpkTaKIa1bG/i
-         CF0g==
-X-Gm-Message-State: AOJu0Yx2kNC1liOjoNLe6W/EoVmKxdnpJAUD2VJf/zAIKDL9Q8o3JWld
-        MSqkQcs7ljbr2AuFNxyrqFER31BtBrKqIa6er0B2fvHfhwQw/0ZOHB8g9iX2VGFZoxswyVzOJqq
-        RAS4SKE355EmaMpFoqI4YVkvy
-X-Received: by 2002:a17:906:51c8:b0:a00:2947:409d with SMTP id v8-20020a17090651c800b00a002947409dmr3186800ejk.12.1700869024363;
-        Fri, 24 Nov 2023 15:37:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHi3IqHfjuue65RKfXtgnC8RUrgAB9/KKEn/ifKMbimZnKv4/th/PQwNIcKNEiUQH3jh7UVig==
-X-Received: by 2002:a17:906:51c8:b0:a00:2947:409d with SMTP id v8-20020a17090651c800b00a002947409dmr3186782ejk.12.1700869023988;
-        Fri, 24 Nov 2023 15:37:03 -0800 (PST)
+        bh=o9d7VDWKIT6kRskPMwA56/YhEUxpKcUgE6jJTCtxE4g=;
+        b=ma+TMA0HVIXbD4I+iz1XwgmDFeg5fbFh/X0zGRQuprcF9+ZBjSYN31LynzdObgHNfP
+         h0/K2obYegOV3NW9wjJ/xU97lC8ku08Ypk2Ud1J/z384D0ezoBhogZHry9W2l7Yfef49
+         UKQsfywFp/hcYf6B7qwMOUltHcAkTINH1g9MObEqJpcrqUhdTH9U7l8j6+SZ9bIUBrRE
+         SMKofGyTsjKcZC7SU+054p0XIT5B1llQF9mNJ04jywr2A/rpmoFqJ8S4gGgFtX6gDYDi
+         NXiHfWSXg6shvHUqa7wiVIvnSQdnln8o7r0W02aUrb+poQqPafW9N4K3SrHqpbPVnEIW
+         +9Xw==
+X-Gm-Message-State: AOJu0YxHa9UcxB1Vbdb2/+QlzfX8177YvBMWRQ7reQjnnyUABK/v3Yx7
+        54fcLdMUimTmeEqK9Uc4s4ufOD1CrFUOS7IF1UzcJ+uoPUHso+Pn45OL9peqBSQVxvZ/77s4BMd
+        bOK4VnXhj7emx2YZYQ+tdajvB
+X-Received: by 2002:a05:6512:a92:b0:500:99a9:bc40 with SMTP id m18-20020a0565120a9200b0050099a9bc40mr3990392lfu.69.1700869027855;
+        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHASf51P/stzy6MO1wClOrbLB0m2h5TDmbZM6s6hMIvpjkKqyVWebotr5L22G9Z2BXEHBKA2A==
+X-Received: by 2002:a05:6512:a92:b0:500:99a9:bc40 with SMTP id m18-20020a0565120a9200b0050099a9bc40mr3990385lfu.69.1700869027648;
+        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
 Received: from pollux.. ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id w1-20020a170906b18100b00a046a773175sm2636639ejy.122.2023.11.24.15.37.03
+        by smtp.gmail.com with ESMTPSA id n18-20020a17090625d200b009fe1d575365sm2664262ejb.55.2023.11.24.15.37.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 15:37:03 -0800 (PST)
+        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
 From:   Danilo Krummrich <dakr@redhat.com>
 To:     mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
         frank.binns@imgtec.com, donald.robson@imgtec.com,
         matt.coster@imgtec.com, sarah.walker@imgtec.com
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next 2/5] drm/imagination: vm: check for drm_gpuvm_range_valid()
-Date:   Sat, 25 Nov 2023 00:36:37 +0100
-Message-ID: <20231124233650.152653-3-dakr@redhat.com>
+Subject: [PATCH drm-misc-next 3/5] drm/imagination: vm: fix drm_gpuvm reference count
+Date:   Sat, 25 Nov 2023 00:36:38 +0100
+Message-ID: <20231124233650.152653-4-dakr@redhat.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231124233650.152653-1-dakr@redhat.com>
 References: <20231124233650.152653-1-dakr@redhat.com>
@@ -81,74 +81,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend pvr_device_addr_and_size_are_valid() by the corresponding GPUVM
-sanity checks. This includes a, previously missing, overflow check for
-the base address and size of the requested mapping.
+The driver specific reference count indicates whether the VM should be
+teared down, whereas GPUVM's reference count indicates whether the VM
+structure can finally be freed.
+
+Hence, free the VM structure in pvr_gpuvm_free() and drop the last
+GPUVM reference after tearing down the VM. Generally, this prevents
+lifetime issues such as the VM being freed as long as drm_gpuvm_bo
+structures still hold references to the VM.
 
 Fixes: ff5f643de0bf ("drm/imagination: Add GEM and VM related code")
 Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 ---
- drivers/gpu/drm/imagination/pvr_vm.c | 9 ++++++---
- drivers/gpu/drm/imagination/pvr_vm.h | 3 ++-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/imagination/pvr_vm.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/imagination/pvr_vm.c b/drivers/gpu/drm/imagination/pvr_vm.c
-index 09d481c575b0..1e89092c3dcc 100644
+index 1e89092c3dcc..e0d74d9a6190 100644
 --- a/drivers/gpu/drm/imagination/pvr_vm.c
 +++ b/drivers/gpu/drm/imagination/pvr_vm.c
-@@ -239,7 +239,7 @@ pvr_vm_bind_op_map_init(struct pvr_vm_bind_op *bind_op,
- 		return -EINVAL;
- 	}
+@@ -64,6 +64,12 @@ struct pvr_vm_context {
+ 	struct drm_gem_object dummy_gem;
+ };
  
--	if (!pvr_device_addr_and_size_are_valid(device_addr, size) ||
-+	if (!pvr_device_addr_and_size_are_valid(vm_ctx, device_addr, size) ||
- 	    offset & ~PAGE_MASK || size & ~PAGE_MASK ||
- 	    offset >= pvr_obj_size || offset_plus_size > pvr_obj_size)
- 		return -EINVAL;
-@@ -295,7 +295,7 @@ pvr_vm_bind_op_unmap_init(struct pvr_vm_bind_op *bind_op,
++static inline
++struct pvr_vm_context *to_pvr_vm_context(struct drm_gpuvm *gpuvm)
++{
++	return container_of(gpuvm, struct pvr_vm_context, gpuvm_mgr);
++}
++
+ struct pvr_vm_context *pvr_vm_context_get(struct pvr_vm_context *vm_ctx)
  {
- 	int err;
+ 	if (vm_ctx)
+@@ -535,7 +541,7 @@ pvr_device_addr_and_size_are_valid(struct pvr_vm_context *vm_ctx,
  
--	if (!pvr_device_addr_and_size_are_valid(device_addr, size))
-+	if (!pvr_device_addr_and_size_are_valid(vm_ctx, device_addr, size))
- 		return -EINVAL;
- 
- 	bind_op->type = PVR_VM_BIND_TYPE_UNMAP;
-@@ -505,6 +505,7 @@ pvr_device_addr_is_valid(u64 device_addr)
- /**
-  * pvr_device_addr_and_size_are_valid() - Tests whether a device-virtual
-  * address and associated size are both valid.
-+ * @vm_ctx: Target VM context.
-  * @device_addr: Virtual device address to test.
-  * @size: Size of the range based at @device_addr to test.
-  *
-@@ -523,9 +524,11 @@ pvr_device_addr_is_valid(u64 device_addr)
-  *  * %false otherwise.
-  */
- bool
--pvr_device_addr_and_size_are_valid(u64 device_addr, u64 size)
-+pvr_device_addr_and_size_are_valid(struct pvr_vm_context *vm_ctx,
-+				   u64 device_addr, u64 size)
+ void pvr_gpuvm_free(struct drm_gpuvm *gpuvm)
  {
- 	return pvr_device_addr_is_valid(device_addr) &&
-+	       drm_gpuvm_range_valid(&vm_ctx->gpuvm_mgr, device_addr, size) &&
- 	       size != 0 && (size & ~PVR_DEVICE_PAGE_MASK) == 0 &&
- 	       (device_addr + size <= PVR_PAGE_TABLE_ADDR_SPACE_SIZE);
+-
++	kfree(to_pvr_vm_context(gpuvm));
  }
-diff --git a/drivers/gpu/drm/imagination/pvr_vm.h b/drivers/gpu/drm/imagination/pvr_vm.h
-index cf8b97553dc8..f2a6463f2b05 100644
---- a/drivers/gpu/drm/imagination/pvr_vm.h
-+++ b/drivers/gpu/drm/imagination/pvr_vm.h
-@@ -29,7 +29,8 @@ struct drm_exec;
- /* Functions defined in pvr_vm.c */
  
- bool pvr_device_addr_is_valid(u64 device_addr);
--bool pvr_device_addr_and_size_are_valid(u64 device_addr, u64 size);
-+bool pvr_device_addr_and_size_are_valid(struct pvr_vm_context *vm_ctx,
-+					u64 device_addr, u64 size);
+ static const struct drm_gpuvm_ops pvr_vm_gpuva_ops = {
+@@ -655,12 +661,11 @@ pvr_vm_context_release(struct kref *ref_count)
+ 	WARN_ON(pvr_vm_unmap(vm_ctx, vm_ctx->gpuvm_mgr.mm_start,
+ 			     vm_ctx->gpuvm_mgr.mm_range));
  
- struct pvr_vm_context *pvr_vm_create_context(struct pvr_device *pvr_dev,
- 					     bool is_userspace_context);
+-	drm_gpuvm_put(&vm_ctx->gpuvm_mgr);
+ 	pvr_mmu_context_destroy(vm_ctx->mmu_ctx);
+ 	drm_gem_private_object_fini(&vm_ctx->dummy_gem);
+ 	mutex_destroy(&vm_ctx->lock);
+ 
+-	kfree(vm_ctx);
++	drm_gpuvm_put(&vm_ctx->gpuvm_mgr);
+ }
+ 
+ /**
 -- 
 2.42.0
 
