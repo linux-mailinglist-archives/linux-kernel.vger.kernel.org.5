@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E877F7658
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1B57F7675
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbjKXOaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S230484AbjKXOiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjKXOaA (ORCPT
+        with ESMTP id S229742AbjKXOio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:30:00 -0500
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA6619A2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:30:07 -0800 (PST)
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5bd0c909c50so2007422a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:30:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700836206; x=1701441006;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XmlYxFX8Lvp4eVsNiTQXfk92Tw++VYQTInnvw7OtykI=;
-        b=CS2c9s49QuWuN7XQtZabzqVzccqfHRGiurmyjklD2VNsom6MIFhmdJru856BZwgNM1
-         A4vSlQ5js66D6cPffG0omoV3GMcJwNGYMWKDLKAk3aiW9AEU11dRsrV1wm0+7QcZnJNu
-         i5jvGqWviXVOuanCgfB5GiENt/kqWVEDuZXSnlalSnQVFWDJc8m5oFSm8Ud7SKIvV2Yd
-         RHFmtGDB5IkUpqwi3dnbuXK4cVeL/qcKwy3317G342lgW79/1bd97GVsHSM/AC0M7HDz
-         li+grhhGOLUfE3cP+f44hKHQmSrwg4anZxduXVC6fMfIW2h+21tUbgMF5zyo8i2+cdbG
-         DOrQ==
-X-Gm-Message-State: AOJu0YxdvgVqSWAJq9uk8hIkVFDx76fKi1x5zspATWUKTbgHD96p+X0W
-        xANNFgjcSYEEwv40UJnDO5P1zAJ/N0MwBajsP1N0sg6ceYka
-X-Google-Smtp-Source: AGHT+IEHRaK+tB+XKcsGSRVx1JJ6EsTQX0fMR9MKKQbApUJmorZBfK+3yhwBYsS27hljCN4lT6uLw4CcgZV0HnAqbB6bBDLh9lnW
+        Fri, 24 Nov 2023 09:38:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875DE19A3;
+        Fri, 24 Nov 2023 06:38:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700836731; x=1732372731;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QKgJEGRCbdv2EWGbewfRTODn2GZOxw9ytLOYIn7uuOQ=;
+  b=L1/kyVmIVn1Dddb4n3hQEVXNkMjvRp0P2uctbs5mnDfvYCF85KU+wWWH
+   X9T+2UrK5KleGAtP+JeWAASN7z4AvjkyXun7uX6Ry12ktp2WFjU1JN3wO
+   SPP8LKF340YlD74jZv6un3ZcdaevZBVgkFlaI37+TiASAHyegMwQ3gpVT
+   wvZ4XXGBZrblSZymOccm7KETGJV0p58RpqcmS7a4Lb8SkG3sSJMh07ZF4
+   di0kBDViFNRNdhDKU4J5A69UltanAMcxXnRkb11d3byVhN329eOsP0lfI
+   QdpVpyeZtzQMsSnFa8OptGY58PPIu/V/SJScVdPNMvC2ecToQqdfIRPx8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="392198719"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="392198719"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 06:38:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="743906526"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="743906526"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 06:38:42 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r6XCh-0000000GjtS-2kli;
+        Fri, 24 Nov 2023 16:30:47 +0200
+Date:   Fri, 24 Nov 2023 16:30:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        oe-kbuild-all@lists.linux.dev, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>
+Subject: Re: [PATCH v2 06/21] pinctrl: equilibrium: Convert to use struct
+ pingroup
+Message-ID: <ZWCzl-EYXdymay4p@smile.fi.intel.com>
+References: <20231123193355.3400852-7-andriy.shevchenko@linux.intel.com>
+ <202311241401.ZPILPdov-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a63:9044:0:b0:5c2:e13:3267 with SMTP id
- a65-20020a639044000000b005c20e133267mr409640pge.4.1700836206511; Fri, 24 Nov
- 2023 06:30:06 -0800 (PST)
-Date:   Fri, 24 Nov 2023 06:30:06 -0800
-In-Reply-To: <tencent_47C9842EF3AED1CC8927C046F412C5066506@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e90c8b060ae6c95c@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
-From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202311241401.ZPILPdov-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Nov 24, 2023 at 09:19:45PM +0800, kernel test robot wrote:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+...
 
-Reported-and-tested-by: syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311241401.ZPILPdov-lkp@intel.com/
+> 
+> smatch warnings:
+> drivers/pinctrl/pinctrl-equilibrium.c:719 eqbr_build_groups() warn: unsigned 'grp->npins' is never less than zero.
 
-Tested on:
+Thank you for the report!
 
-commit:         037266a5 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c1e294e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af04b7c4d36966d8
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5b339d16ffa61fd512d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1450c3af680000
+...
 
-Note: testing is done by a robot and is best-effort only.
+>    718			grp->npins = of_property_count_u32_elems(np, "pins");
+>  > 719			if (grp->npins < 0) {
+>    720				dev_err(dev, "No pins in the group: %s\n", prop->name);
+>    721				of_node_put(np);
+>    722				return -EINVAL;
+>    723			}
+
+Surprisingly (to me) the _count_u32_elems() can return a negative error code...
+Fine, I redo a bit the code by introducing a new patch that will use err instead
+of ->npins (which sounds better approach anyway).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
