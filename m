@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BA97F7625
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBF97F762C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjKXORj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S231191AbjKXOSC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 09:18:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbjKXORh (ORCPT
+        with ESMTP id S231177AbjKXOR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:17:37 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CC2199D;
-        Fri, 24 Nov 2023 06:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1700835449; x=1701440249; i=wahrenst@gmx.net;
-        bh=0a7YQ4lsvuCcWSyrWmIaRT00/YgNIgJjYXSSYuJHFSU=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=GPeFmwbCnGKyVHovdOH2ExKNFKgT+XZCcA3mmhb3ymLLMSaM8g6d/aiueuEgp+Xm
-         jUXqnRefuBftIEXAW0UsEisp9zrnjqTZ+2TAxsRwzn4C1QFVsBawlboaCp8P8msUM
-         9rohH3DVZ4T3a4aRyMHx9g6Lm5JIp/UeuCXcH08OEDi2mtPdJBKcUa6qOjCZy+NPe
-         zAsPdlS/0Vmk1pdD3KZLrc4dZpk69Y11vob5z30vC5E9Vdv1ODVv6FVklJtcY8HHl
-         9P+FTvHAuLX/PxQ08Lx4ayEdcZ43tEnbeC6ez4BLK+O07Q2Lxiaq4oM5+0TiAYOfj
-         PNbw8qnIIPwYhDLlzg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mv31c-1rO3sf2agK-00qwLX; Fri, 24
- Nov 2023 15:17:29 +0100
-Message-ID: <0d1cf97c-abbe-4a7a-a634-312caa882fad@gmx.net>
-Date:   Fri, 24 Nov 2023 15:17:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4 net] qca_spi: Fix ethtool -G iface tx behavior
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121163004.21232-1-wahrenst@gmx.net>
- <20231121163004.21232-4-wahrenst@gmx.net>
- <ea0087881f20dc154ca08a5b748b853246e2b86f.camel@redhat.com>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <ea0087881f20dc154ca08a5b748b853246e2b86f.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i2FP/ku1jKnGiHWTItr1bg83wGE9T0yCvG8I54CbMYJ8AODEn9K
- ofuzskXR/046hb1Jn+XMcjfj3PICRu7Zz2sIudKCrQ9doIe4z69YiB98cov9rHooNUAtRFR
- 4HYcBPCco0Eu97CVwyoO23q4oDbzKdpAH9c71C2/dvshqCq8HJ9FddYYMQyO/q7fugTftx6
- 4eLzwAXznEhfmNTC1WEdA==
-UI-OutboundReport: notjunk:1;M01:P0:H4YQHzAewko=;D932sCf0IX8wgn841dEIMW6J1ig
- LW1QK+E0IJv23KyL/XXmnZwe4tNuA/XQ+jeV0RpxF28asO9MRemApQcoM93uvTVnMGDios15j
- XIWcq1MS8WlmhhyOg1lv934jIQXuwmiqBCqJs9tIbGkfrPCX1/To+gmzPu0z6POwYkUjmGvUN
- 1NUhdXefhIhB6ytaFDHnsSP4N7H0uv6IHW2O/7i9K+fJ0kHYvRQQO3rS4ECYYGO0alnHqrrPo
- 0nz2AW5RyhrevKmgtgTK6wdWEcRWR9bDqSjemK6rBRNt//9Kxg8jLYP7ehPLiT2EckBIpMZMQ
- h+k1zcz/WZB2Edc6aqxbWRuLynShW/YaM1wWYdfHPxjF4TEvFhQodzZUb9rXNk0h7HnadvG/+
- oZQTylLDqqugYmIWUvXlmX575+oIfKPl7JXbidp8YeGbm7s4cvZHWPZfXbALo2nK6bTKkDIMl
- Nx1osF4RDZnPg9W6zbQMz7qDScrS0TA6aFV4vA1N0b16gEqIiCaAoDVoZ8TUZ2EBnAwL/0OIT
- eseECf7cswdarh1nL77UJ6WtlVolsmqzIIqyjbJzSbBkcnEc5v+KUNTUVDEP6SDyd4FVBFMce
- dcKqnblFIAh0UQS8P2YGHTcJeL3Xdl+c4dW5jFQH17HsxEZlj+mn2B6S4uPUe7mDfSNrq+1Fz
- HfssF8UejeYxYXXrlSQsKSskQ0ePXuJXb3QRkQlg2Mon4sGMs39ftb0vKE4e60kIEVPkkcL6H
- rhT/1sfT5zrgFYBhb1SBk9+YhVXH2lE1sZXCsoOYsO9TQh5PdWZEKV1uEPC6Aqr/TEmLw9LP7
- 0bXB3UfKtZKdIvinSITgM53ICLzsYZwXYWxXi9gJmMRJuE2Gq6z77bhBe0ZCsw7YHMDOrmlnY
- iuNBh6Ai2UDx8nEMijWL+x8g/2cmWY0nEtc+hhfMDd2sHrOucKaafQbd7M+5nT3CuGrwBfhwY
- 3bKuWwOqXnAY/U1xDDYYKxOS2u4=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 24 Nov 2023 09:17:59 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE1919A5;
+        Fri, 24 Nov 2023 06:18:05 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E0E01FE7D;
+        Fri, 24 Nov 2023 14:18:04 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BCFCE139E8;
+        Fri, 24 Nov 2023 14:18:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id l0A5GpiwYGXWIAAAn2gu4w
+        (envelope-from <colyli@suse.de>); Fri, 24 Nov 2023 14:18:00 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: bcache: kernel NULL pointer dereference since 6.1.39
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
+Date:   Fri, 24 Nov 2023 22:17:46 +0800
+Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        Zheng Wang <zyytlz.wz@163.com>, linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Stefan_F=C3=B6rster?= <cite@incertum.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Bcache Linux <linux-bcache@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <3DF4A87A-2AC1-4893-AE5F-E921478419A9@suse.de>
+References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
+ <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+ <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
+ <989C39B9-A05D-4E4F-A842-A4943A29FFD6@suse.de>
+ <1c2a1f362d667d36d83a5ba43218bad199855b11.camel@gekmihesg.de>
+To:     Markus Weippert <markus@gekmihesg.de>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+         REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 6E0E01FE7D
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
 
-Am 23.11.23 um 12:51 schrieb Paolo Abeni:
-> On Tue, 2023-11-21 at 17:30 +0100, Stefan Wahren wrote:
->> After calling ethtool -g it was not possible to adjust the TX ring size
->> again.
-> Could you please report the exact command sequence that will fail?
-ethtool -g eth1
-ethtool -G eth1 tx 8
->
->
->> The reason for this is that the readonly setting rx_pending get
->> initialized and after that the range check in qcaspi_set_ringparam()
->> fails regardless of the provided parameter. Since there is no adjustabl=
-e
->> RX ring at all, drop it from qcaspi_get_ringparam().
->> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for Q=
-CA7000")
->> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
->> ---
->>   drivers/net/ethernet/qualcomm/qca_debug.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/et=
-hernet/qualcomm/qca_debug.c
->> index 6f2fa2a42770..613eb688cba2 100644
->> --- a/drivers/net/ethernet/qualcomm/qca_debug.c
->> +++ b/drivers/net/ethernet/qualcomm/qca_debug.c
->> @@ -252,9 +252,7 @@ qcaspi_get_ringparam(struct net_device *dev, struct=
- ethtool_ringparam *ring,
->>   {
->>   	struct qcaspi *qca =3D netdev_priv(dev);
->>
->> -	ring->rx_max_pending =3D 4;
->>   	ring->tx_max_pending =3D TX_RING_MAX_LEN;
->> -	ring->rx_pending =3D 4;
->>   	ring->tx_pending =3D qca->txr.count;
->>   }
-> I think it's preferable update qcaspi_set_ringparam() to complete
-> successfully when the provided arguments don't change the rx_pending
-> default (4)
 
-Sorry, i didn't get. The whole point is that there is no RX ring at all,
-just a TX ring. During the time of writing this driver, i was under the
-assumption that the driver needs to provide a rx_pending in
-qcaspi_get_ringparam even this is no RX ring. The number 4 represent the
-maximum of 4 packets which can be received at once. But it's not a ring.
+> 2023年11月24日 21:55，Markus Weippert <markus@gekmihesg.de> 写道：
+> 
+> On Fri, 2023-11-24 at 21:46 +0800, Coly Li wrote:
+>> 
+>> 
+>>> 2023年11月24日 21:29，Markus Weippert <markus@gekmihesg.de> 写道：
+>>> 
+>>>> On 23.11.23 14:53, Stefan Förster wrote:
+>>>>> 
+>>>>> starting with kernel 6.1.39, we see the following error message
+>>>>> with
+>>>>> heavy I/O loads. We needed to revert
+>>>> 
+>>>> Thx for the report. I assume that problem still occurs with the
+>>>> latest
+>>>> 6.1.y kernel?
+>>>> 
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.1.39&id=68118c339c6e1e16ae017bef160dbe28a27ae9c8
+>>>> 
+>>>> FWIW, that is mainline commit 028ddcac477b69 ("bcache: Remove
+>>>> unnecessary NULL point check in node allocations") [v6.5-rc1].
+>>>> 
+>>>> Did a quick check and noticed a fix for that change was recently
+>>>> mainlined as f72f4312d43883 ("bcache: replace a mistaken IS_ERR()
+>>>> by
+>>>> IS_ERR_OR_NULL() in btree_gc_coalesce()") [v6.7-rc2-post]:
+>>>> https://lore.kernel.org/all/20231118163852.9692-1-colyli@suse.de/
+>>>> 
+>>>> It is expected to soon be interegrated into a 6.1.y kernel.
+>>>> 
+>>>> But maybe it's something else. I CCed the involved people, they
+>>>> might
+>>>> know.
+>>> 
+>>> We applied f72f4312d43883 to the current Debian kernel (based on
+>>> 6.1.55) but it didn't help, same stack trace.
+>>> Looking at the description, __bch_btree_node_alloc() should never
+>>> be
+>>> able to return NULL anyway after
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.1.39&id=7ecea5ce3dc17339c280c75b58ac93d8c8620d9f
+>>> But I didn't verify all callers, so this might still be correct, if
+>>> it's not always initialized with the return value of
+>>> __bch_btree_node_alloc().
+>>> 
+>>> Anyway, I think we fixed it by applying this:
+>>> 
+>>> diff -Naurp a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+>>> --- a/drivers/md/bcache/btree.c 2023-09-23 11:11:13.000000000 +0200
+>>> +++ b/drivers/md/bcache/btree.c 2023-11-24 13:13:09.840013759 +0100
+>>> @@ -1489,7 +1489,7 @@ out_nocoalesce:
+>>> bch_keylist_free(&keylist);
+>>> 
+>>> for (i = 0; i < nodes; i++)
+>>> - if (!IS_ERR(new_nodes[i])) {
+>>> + if (!IS_ERR_OR_NULL(new_nodes[i])) {
+>>> btree_node_free(new_nodes[i]);
+>>> rw_unlock(true, new_nodes[i]);
+>>> }
+>>> 
+>> 
+>> The above change is what commit f72f4312d43883 ("bcache: replace a
+>> mistaken IS_ERR() by IS_ERR_OR_NULL() in btree_gc_coalesce()” does.
+> 
+> But f72f4312d43883 reverts @@ -1340,7 +1340,7 @@, while the patch we
+> applied reverts @@ -1487,7 +1487,7 @@ instead.
+> Applying f72f4312d43883 didn't help for us.
+> 
 
-Best regards
+OK, I know what you mean.  Yes, your fix is necessary too.
 
-> Cheers,
->
-> Paolo
->
+Would you like to post patch for your fix?
 
+Thanks.
+
+Coly Li
+
+
+>> 
+>> Although the above patch is suggested to go into 6.5+ kernel, for
+>> this condition it should go into all stable kernels where commit
+>> 028ddcac477b69 ("bcache: Remove unnecessary NULL point check in node
+>> allocations”) were merged into.
+[snipped]
