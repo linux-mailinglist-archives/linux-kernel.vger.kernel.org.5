@@ -2,67 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA777F6AA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096787F6AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbjKXC3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S230443AbjKXCbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKXC3L (ORCPT
+        with ESMTP id S229478AbjKXCbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:29:11 -0500
-Received: from mail.oetec.com (mail.oetec.com [108.160.241.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E101BE;
-        Thu, 23 Nov 2023 18:29:13 -0800 (PST)
-Received: from [172.16.35.9] (cpe8c6a8d4d360a-cm8c6a8d4d3608.cpe.net.cable.rogers.com [99.253.151.152])
-        (authenticated bits=0)
-        by mail.oetec.com (8.17.1/8.16.1) with ESMTPSA id 3AO2SFvu006653
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Thu, 23 Nov 2023 21:28:19 -0500 (EST)
-        (envelope-from dclarke@blastwave.org)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=blastwave.org;
-        s=default; t=1700792902;
-        bh=JRz+QuHSFTwfDW25GUsrNtjXacUb05swqDkWCTxkAA8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=BNW7zGXLRrdeN3QwI6yFl0ZSPczO6S18wtTyd1fajx00RENDtEwrEgEbgpDIHDQk1
-         gxwSbQM/SKdn32KslD73V1g+YF6kTBLVD9854eX7o14nObG8Nf/uy38zwgeZHeu8zc
-         dgGIAIeXTAfcpjP7tyr1AVl0I3EECTg3ctdx5pQAF0O4ExMcKp4AHFJ6d6qXgFJvIv
-         MUIqsz5uRQPsLZSAd7AXxVWGQaJ96hjrEl7fz5SrP74D579eY3003Hb5+SYTsMDlOF
-         8BSHROPpIR53R4+AqdcqxPyTlqP6nGzUMDepszvWAIZTh1BmMPOucuGdWQ9x/8i0F6
-         9OciftRgCyLzg==
-Message-ID: <267f0b5a-5da4-4145-c0b9-304d5716c225@blastwave.org>
-Date:   Thu, 23 Nov 2023 21:28:12 -0500
+        Thu, 23 Nov 2023 21:31:11 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D5A1BD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:31:17 -0800 (PST)
+Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SbzR40YJ6zsRPs;
+        Fri, 24 Nov 2023 10:27:44 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 10:31:14 +0800
+From:   Peng Zhang <zhangpeng362@huawei.com>
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <fengwei.yin@intel.com>, <ying.huang@intel.com>,
+        <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
+        <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
+        ZhangPeng <zhangpeng362@huawei.com>
+Subject: [PATCH] mm: filemap: avoid unnecessary major faults in filemap_fault()
+Date:   Fri, 24 Nov 2023 10:31:07 +0800
+Message-ID: <20231124023107.571059-1-zhangpeng362@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: =?UTF-8?Q?Re=3a_Fwd=3a_sign-file=2ec=3a149=3a17=3a_warning=3a_impli?=
- =?UTF-8?Q?cit_declaration_of_function_=e2=80=98ENGINE=5fload=5fbuiltin=5fen?=
- =?UTF-8?B?Z2luZXPigJk=?=
-Content-Language: en-CA
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Keyrings <keyrings@vger.kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <1fca50c4-6d7b-4c9b-bcea-4df17e2c2e7e@gmail.com>
- <e110cfff-08f9-4bbc-6b69-0d67ae6562b6@blastwave.org>
- <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
-From:   Dennis Clarke <dclarke@blastwave.org>
-Organization: GENUNIX
-In-Reply-To: <164a4d4434e77ba1b65624a081799a073a3aced7.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-oetec-MailScanner-Information: Please contact the ISP for more information
-X-oetec-MailScanner-ID: 3AO2SFvu006653
-X-oetec-MailScanner: Found to be clean
-X-oetec-MailScanner-From: dclarke@blastwave.org
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000020.china.huawei.com (7.193.23.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,47 +51,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 09:53, James Bottomley wrote:
-> On Fri, 2023-11-17 at 00:34 -0500, Dennis Clarke wrote:
->> On 11/16/23 18:41, Bagas Sanjaya wrote:
->>> Hi,
->>>
->>> I notice a bug report on Bugzilla [1]. Quoting from it:
->>>
->> <snip>
->>>> Not related to
->>>> https://bugzilla.kernel.org/show_bug.cgi?id=215750 but I *feel*
->>>> that this code needs a hug.
->>>
->>> See Bugzilla for the full thread.
->>>
->>> AFAIK, this looks like a bug when the kernel is compiled against
->>> custom (non-system) version of OpenSSL library.
->>>
->>
->> I do not know what you could possibly mean. There is nothing "custom"
->> about OpenSSL. For that matter the gcc compiler I am using was also
->> built by me. Works fine. The sign-file.c source compiles fine.
-> 
-> This has all the hallmarks of an openssl compiled without engine
-> support; is the symbol OPENSSL_NO_ENGINE set?  And which distro did you
-> get this library from?
-> 
-> James
-> 
+From: ZhangPeng <zhangpeng362@huawei.com>
 
+The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+in application, which leading to an unexpected performance issue[1].
 
-Its okay.
+This caused by temporarily cleared pte during a read/modify/write update
+of the pte, eg, do_numa_page()/change_pte_range().
 
-I can fix it.
+For the data segment of the user-mode program, the global variable area
+is a private mapping. After the pagecache is loaded, the private anonymous
+page is generated after the COW is triggered. Mlockall can lock COW pages
+(anonymous pages), but the original file pages cannot be locked and may
+be reclaimed. If the global variable (private anon page) is accessed when
+vmf->pte is zeroed in numa fault, a file page fault will be triggered.
 
-To work with new OpenSSL 3.2.0 and old stuff .. for a while ....
+At this time, the original private file page may have been reclaimed.
+If the page cache is not available at this time, a major fault will be
+triggered and the file will be read, causing additional overhead.
 
+Fix this by rechecking the pte by holding ptl in filemap_fault() before
+triggering a major fault.
 
+We tested the performance of file private mapping page fault
+(page_fault2.c of will-it-scale [2]) and file shared mapping page fault
+(page_fault3.c of will-it-scale). The difference in performance (in
+operations per second) before and after patch applied is about 0.7% on a
+x86 physical machine.
 
+[1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+[2] https://github.com/antonblanchard/will-it-scale/tree/master
+
+Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+---
+RFC->v1: - Update commit message and add RB from Yin Fengwei
+         - Add error handling when ptep == NULL per Huang, Ying and
+           Matthew Wilcox
+
+ mm/filemap.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 71f00539ac00..f3dcabdbc810 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 			mapping_locked = true;
+ 		}
+ 	} else {
++		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
++						  vmf->address, &vmf->ptl);
++		if (unlikely(!ptep))
++			return VM_FAULT_NOPAGE;
++		/*
++		 * Recheck pte with ptl locked as the pte can be cleared
++		 * temporarily during a read/modify/write update.
++		 */
++		if (unlikely(!pte_none(ptep_get(ptep))))
++			ret = VM_FAULT_NOPAGE;
++		pte_unmap_unlock(ptep, vmf->ptl);
++		if (unlikely(ret))
++			return ret;
++
+ 		/* No page in the page cache at all */
+ 		count_vm_event(PGMAJFAULT);
+ 		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
 -- 
---
-Dennis Clarke
-RISC-V/SPARC/PPC/ARM/CISC
-UNIX and Linux spoken
+2.25.1
 
