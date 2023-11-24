@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09107F708D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCF07F7091
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjKXJvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
+        id S1345324AbjKXJw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345423AbjKXJvG (ORCPT
+        with ESMTP id S235345AbjKXJwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:51:06 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454561989
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:51:12 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a00191363c1so250407366b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:51:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700819471; x=1701424271; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KuDOFshCyU3coVU446XYIMnSf85Dt0KIkrnt8ifjQVE=;
-        b=VnFZTfHNGJf/2wVUiJQ5e0a12QNPA4mNA/xCwK7Olcz+38TGUG2I5Al5WBn5rht9Uz
-         Hc8GWwGE0ki+ZGNanhaVEn5DebRH5017cyMt0qMY55qxKgCbzW7K5j7AkAwugkIIB7yo
-         PTs7mHQWrj0mNzAF6/UqkSmektmYszb44yN/dP3VIwEEHLjlDbjzJcxgZAlu8d4IHdiP
-         eJ0Hc5C4f9SL/dK57v/zIwLi6ny/TWrhsV8QYmWa0IHUhYO+isZ9Z3qdFNH4xRwWexGW
-         Dk4A/y14ipFN3Kmt2TWfZyW1PvW+ixEUJGCvEwo9hbb1eUveYHKuZ7QdJ/+R/YZENyil
-         XhPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700819471; x=1701424271;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KuDOFshCyU3coVU446XYIMnSf85Dt0KIkrnt8ifjQVE=;
-        b=RjZJAGoTGk/3uzAirCiKyjFb4qc/rGpGbvduq3tWqc5DADNTp4XIDwGc5FymIb/S5G
-         mI3ZsX/YavgPqjjpTwYS6CgWpM0m9X1zHeo6C8wROW8AkjpcyKf91B+KjgtzGgRiSo42
-         XCVyIHh2v0dpkD5syWA/Ite+n6tgRcfuueO1CMzyTumto/GX9oZrRgyIBEXYTffrgQUW
-         Co/qDJRep2drgrlAw/m06sA9/uRRjhyN3k7Y563NPZM8QMT5ymQXPa/AGoD/6hGk8Hkg
-         zeT1Ar+BDpCz1swrqwgwVP5bOIwMhvfbYp5vggEbe1enHO4XEMwR8WF5/fwlo103f6MQ
-         g+9A==
-X-Gm-Message-State: AOJu0Yx9vkjgv3i90O9AQbds5rb110t7ytApIWJs+Bfzz6rWyCdsc5cJ
-        D+XknYy+/Sy4ZbncOeBVJ9P3Kg==
-X-Google-Smtp-Source: AGHT+IFnYUEpxM6+MO4FHi8gA7/3IXWQ5LtYjgtsMjqaoP5O6widfgKgio/Ol9NNPz9PpvhuAF02Qg==
-X-Received: by 2002:a17:906:3915:b0:9ff:9db9:1da7 with SMTP id f21-20020a170906391500b009ff9db91da7mr1597217eje.29.1700819470822;
-        Fri, 24 Nov 2023 01:51:10 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ga10-20020a170906b84a00b009fd0102f71asm1860789ejb.176.2023.11.24.01.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 01:51:10 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Li Yang <leoyang.li@nxp.com>, Stefan Agner <stefan@agner.ch>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/2] arm64: dts: freescale: minor whitespace cleanup around '='
-Date:   Fri, 24 Nov 2023 10:51:04 +0100
-Message-Id: <20231124095104.58772-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231124095104.58772-1-krzysztof.kozlowski@linaro.org>
-References: <20231124095104.58772-1-krzysztof.kozlowski@linaro.org>
+        Fri, 24 Nov 2023 04:52:14 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8080E1727;
+        Fri, 24 Nov 2023 01:52:03 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2E591063;
+        Fri, 24 Nov 2023 01:52:49 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E34173F7A6;
+        Fri, 24 Nov 2023 01:52:01 -0800 (PST)
+Message-ID: <b85d165d-7f21-5896-a969-1f162903582b@arm.com>
+Date:   Fri, 24 Nov 2023 09:52:00 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
+ counting threshold feature
+From:   James Clark <james.clark@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Namhyung Kim <namhyung@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231113112507.917107-1-james.clark@arm.com>
+ <20231113112507.917107-4-james.clark@arm.com>
+ <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
+ <0bcda96e-df9a-4342-af4e-e4485c33ff55@arm.com>
+ <4f959354-74c7-5240-bf8f-78a49fb34437@arm.com>
+Content-Language: en-US
+In-Reply-To: <4f959354-74c7-5240-bf8f-78a49fb34437@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTS code coding style expects exactly one space before and after '='
-sign.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s-ep1.dts | 4 ++--
- arch/arm64/boot/dts/freescale/imx8mp.dtsi             | 4 ++--
- arch/arm64/boot/dts/freescale/imx93.dtsi              | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s-ep1.dts b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s-ep1.dts
-index e4215c83ee0f..da4b1807c275 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s-ep1.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s-ep1.dts
-@@ -57,8 +57,8 @@ sgtl5000: audio-codec@a {
- 		clocks = <&clk IMX8MP_CLK_CLKOUT1>;
- 		#sound-dai-cells = <0>;
- 
--		VDDA-supply  = <&reg_vcc_3v3_audio>;
--		VDDD-supply  = <&reg_vcc_1v8_audio>;
-+		VDDA-supply = <&reg_vcc_3v3_audio>;
-+		VDDD-supply = <&reg_vcc_1v8_audio>;
- 		VDDIO-supply = <&reg_vcc_1v8_audio>;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index c9a610ba4836..5070dff253c4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -793,8 +793,8 @@ pgc_audio: power-domain@5 {
- 							 <&clk IMX8MP_CLK_AUDIO_AXI>;
- 						assigned-clocks = <&clk IMX8MP_CLK_AUDIO_AHB>,
- 								  <&clk IMX8MP_CLK_AUDIO_AXI_SRC>;
--						assigned-clock-parents =  <&clk IMX8MP_SYS_PLL1_800M>,
--									  <&clk IMX8MP_SYS_PLL1_800M>;
-+						assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_800M>,
-+									 <&clk IMX8MP_SYS_PLL1_800M>;
- 						assigned-clock-rates = <400000000>,
- 								       <600000000>;
- 					};
-diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-index ceccf4766440..18a1c36f05d9 100644
---- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-@@ -755,7 +755,7 @@ lpuart8: serial@426a0000 {
- 				interrupts = <GIC_SPI 211 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX93_CLK_LPUART8_GATE>;
- 				clock-names = "ipg";
--				dmas =  <&edma2 90 0 1>, <&edma2 89 0 0>;
-+				dmas = <&edma2 90 0 1>, <&edma2 89 0 0>;
- 				dma-names = "rx", "tx";
- 				status = "disabled";
- 			};
--- 
-2.34.1
+On 23/11/2023 15:45, James Clark wrote:
+> 
+> 
+> On 23/11/2023 05:50, Anshuman Khandual wrote:
+>>
+>>
+>> On 11/21/23 03:01, Namhyung Kim wrote:
+>>> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
+>>>> Add documentation for the new Perf event open parameters and
+>>>> the threshold_max capability file.
+>>>>
+>>>> Signed-off-by: James Clark <james.clark@arm.com>
+>>>> ---
+>>>>  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
+>>>>  1 file changed, 56 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
+>>>> index 1f87b57c2332..36b8111a710d 100644
+>>>> --- a/Documentation/arch/arm64/perf.rst
+>>>> +++ b/Documentation/arch/arm64/perf.rst
+>>>> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
+>>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
+>>>>  .. _tools/lib/perf/tests/test-evsel.c:
+>>>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+>>>> +
+>>>> +Event Counting Threshold
+>>>> +==========================================
+>>>> +
+>>>> +Overview
+>>>> +--------
+>>>> +
+>>>> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+>>>> +events whose count meets a specified threshold condition. For example if
+>>>> +threshold_compare is set to 2 ('Greater than or equal'), and the
+>>>> +threshold is set to 2, then the PMU counter will now only increment by
+>>>> +when an event would have previously incremented the PMU counter by 2 or
+>>>> +more on a single processor cycle.
+>>>> +
+>>>> +To increment by 1 after passing the threshold condition instead of the
+>>>> +number of events on that cycle, add the 'threshold_count' option to the
+>>>> +commandline.
+>>>> +
+>>>> +How-to
+>>>> +------
+>>>> +
+>>>> +The threshold, threshold_compare and threshold_count values can be
+>>>> +provided per event:
+>>>> +
+>>>> +.. code-block:: sh
+>>>> +
+>>>> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
+>>>> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
+>>> Can you please explain this a bit more?
+>>>
+>>> I guess the first event counts stall_slot PMU if the event if it's
+>>> greater than or equal to 2.  And as threshold_count is not set,
+>>> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
+>>
+>> Hence without 'threshold_count' being set, the other two config requests
+>> will not have an effect, is that correct ?
+> 
+> Yeah I can mention this. It's implied because 0 is the default value of
+> config fields, and 0 is a valid value for compare and count field, so
+> threshold=0 has to be the way to disable it. But I can mention it
+> explicitly.
+> 
+
+To avoid any confusion, I thought you meant threshold here instead of
+threshold_count. But I replied in more detail about the same issue on
+patch 2.
 
