@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6607F77EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C0D7F77ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345854AbjKXPhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S1345871AbjKXPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:39:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345784AbjKXPhA (ORCPT
+        with ESMTP id S1345784AbjKXPjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:37:00 -0500
+        Fri, 24 Nov 2023 10:39:16 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0125719D
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:37:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBBA10E7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:39:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700840226;
+        s=mimecast20190719; t=1700840361;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Qnms+DPVu8N4Y1chnKBFHigepbquSQ211tXQc+b4C5s=;
-        b=X4tOtZgTbMaJy+kWIdMPHPf76MnEnyAifIy+Duyj58yjO98xLevU375VENVdY+jOfd181j
-        mZlmTyUr80dSH/KMLyjC4eMa76ORWcjsi5+gR7oFaCIgP/tyuqvWQF8Y1RUuWIEBHEmGiO
-        ixXMg5trsR+de8WS2t4VwDNGPYT3Lyk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=zbQKAp+Clj5/b7EZL4rrFhSja3A5Bbjru+mhH1vKgdg=;
+        b=DdghAXxP15hWQSAWsBhMv7qGoMM2IF2l5VwSuu6YG9qgka7ZbWanvn+ejbFiwKC6nE6BhN
+        FMDL7yfFmLwuOwD8X5hrj6Zh906ONhaA6mC3tTGL3B1izIZtlbJ0jOrHQF9tIRPCAZSycq
+        Zf3FHFFQBCt0bN1pJyi4UtNPsgFAQV4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-4RTzFtKcNXWhUH0LKjsfmg-1; Fri, 24 Nov 2023 10:37:05 -0500
-X-MC-Unique: 4RTzFtKcNXWhUH0LKjsfmg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-407da05ee50so10923635e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:37:04 -0800 (PST)
+ us-mta-682-I8EaWrkZPlma9z4HBD2BTw-1; Fri, 24 Nov 2023 10:39:20 -0500
+X-MC-Unique: I8EaWrkZPlma9z4HBD2BTw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332e11a22a0so1033859f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:39:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700840223; x=1701445023;
+        d=1e100.net; s=20230601; t=1700840359; x=1701445159;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
+         :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Qnms+DPVu8N4Y1chnKBFHigepbquSQ211tXQc+b4C5s=;
-        b=S03QeW4Zi8/09iVH1a+awPmv1tZtgPsCMZJyc9jxsnviGp6MF0t7JW8OZZuTi6LvmS
-         GooS0vCb0O2kxlSyV8ZSXy8WK/RGX9gLuVhvOKCrku+keXZQZCQo1VC7mNKsqQdN7g/a
-         82hVe35cUPrN6s8G7XTlrcffbt3FOsZGxZiBlXKsGfid7XglQ9+tfpWZ/mkowwstvgRA
-         FVha0aH0ZCkzYKGkj10uzed93Q88kzUJfdgfk+iUSiOWLIfVlXd/D3DbN2YT1PsrS/cI
-         Wwx73hU4onLe58XtlW641/2Dj3p7PnzLKVvKg/j6ejmpq+QMa1qCC18mdUK4tkgA1U8/
-         /49g==
-X-Gm-Message-State: AOJu0YwKZO0lIyv89BbegIOzYmzUZtjIgYyHhTPskSAnCsSepfF5Gcc2
-        FLLuLNh40v6LH3x7HK+9lTmNJXGZ7EgdcAz66AmwwxN1xmDE1cMs7sP22MuwM0i/OffgNlYS/Wg
-        FHIxOxMycM6C8/F5w26XEU4x7
-X-Received: by 2002:a05:600c:3c9d:b0:40b:3645:4678 with SMTP id bg29-20020a05600c3c9d00b0040b36454678mr2645121wmb.19.1700840223665;
-        Fri, 24 Nov 2023 07:37:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHYQuq/hD+iCLBMQH1TfNiQDkYm9QAKMDlKlPX2GvJEXkFR9fgULERONF6qNvYgYuDsgts27w==
-X-Received: by 2002:a05:600c:3c9d:b0:40b:3645:4678 with SMTP id bg29-20020a05600c3c9d00b0040b36454678mr2645100wmb.19.1700840223194;
-        Fri, 24 Nov 2023 07:37:03 -0800 (PST)
+        bh=zbQKAp+Clj5/b7EZL4rrFhSja3A5Bbjru+mhH1vKgdg=;
+        b=fsVWc5+ksLjiBsVmY4BzvGlEfroIaa0+fWMcosDPwVrhYlyNaXFKg6AeWyrkutLoqH
+         Kayo7ccULKXVuBzZVfn0HOkXnwlXLeu+UoZZltsrjv9HvkfWQNhfJL3yDUPH1IIIbmGz
+         Zw2uudPIATuU1RFVIC7R+I8/0XLtHKmLtz0Ypi1CIMpUZTar6FnpwrUUWMpAG5zxqan0
+         uct6351KBHFooRRzTF41ONLtzsWBv20dlA/VPiDaU4feL2FStcncw7LXtrQhv8rFeiL2
+         sK/xQiMGmWGglioRiI+fo4BT4YFB+DLn2VugLkEVrhN11LuSE1duiE50xBMKfx/kpTo4
+         2wSQ==
+X-Gm-Message-State: AOJu0YzYmQdNe9gGI33xdOgheVSfo9mbrLiMkcNCOw2cSMnBG4Hc2KaC
+        HLjZ2nvW3Z0byLuoE8DMxKFzSkzOXnGOgjKnTnd/I8xw22/muujDQ7AaqpXfObvyQohG9QyHtI5
+        1HwOyTFvg5Y+iqZqBOf8XxFoD9k2lZVEq
+X-Received: by 2002:a5d:5267:0:b0:332:d1cc:6374 with SMTP id l7-20020a5d5267000000b00332d1cc6374mr2927706wrc.47.1700840359184;
+        Fri, 24 Nov 2023 07:39:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEKEBIFzlraaubcICxVaebEeJHY8WOIHdv6sUvrrhq+8edkF2upiKeRj2OsjjADVkt8cS3flw==
+X-Received: by 2002:a5d:5267:0:b0:332:d1cc:6374 with SMTP id l7-20020a5d5267000000b00332d1cc6374mr2927679wrc.47.1700840358769;
+        Fri, 24 Nov 2023 07:39:18 -0800 (PST)
 Received: from ?IPV6:2003:cb:c721:a000:7426:f6b4:82a3:c6ab? (p200300cbc721a0007426f6b482a3c6ab.dip0.t-ipconnect.de. [2003:cb:c721:a000:7426:f6b4:82a3:c6ab])
-        by smtp.gmail.com with ESMTPSA id jg28-20020a05600ca01c00b004063cd8105csm6128004wmb.22.2023.11.24.07.37.02
+        by smtp.gmail.com with ESMTPSA id x1-20020adfec01000000b003313e4dddecsm4573111wrn.108.2023.11.24.07.39.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 07:37:02 -0800 (PST)
-Message-ID: <c1c266cd-a943-461e-b8ff-5f2eaba96a35@redhat.com>
-Date:   Fri, 24 Nov 2023 16:37:01 +0100
+        Fri, 24 Nov 2023 07:39:18 -0800 (PST)
+Message-ID: <d035af42-89a1-469e-87f4-8fbbfefa1332@redhat.com>
+Date:   Fri, 24 Nov 2023 16:39:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/4] mm/ksm: add ksm advisor
-To:     Stefan Roesch <shr@devkernel.io>
-Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Language: en-US
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
 References: <20231028000945.2428830-1-shr@devkernel.io>
  <20231028000945.2428830-2-shr@devkernel.io>
- <d41ecf6d-d276-406c-a002-f4ffc9d82ef1@redhat.com>
- <8734wxsn4u.fsf@devkernel.io>
-Content-Language: en-US
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -116,7 +114,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <8734wxsn4u.fsf@devkernel.io>
+In-Reply-To: <20231028000945.2428830-2-shr@devkernel.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -129,88 +127,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
+On 28.10.23 02:09, Stefan Roesch wrote:
+> This adds the ksm advisor. The ksm advisor automatically manages the
+> pages_to_scan setting to achieve a target scan time. The target scan
+> time defines how many seconds it should take to scan all the candidate
+> KSM pages. In other words the pages_to_scan rate is changed by the
+> advisor to achieve the target scan time. The algorithm has a max and min
+> value to:
+> - guarantee responsiveness to changes
+> - to avoid to spend too much CPU
 > 
-> The min cpu case is to make sure that we scan fast enough to be able to
-> react fast enough to the changes in the number of pages. This helps in
-> determining in how quick we want to react to changes. This helps
-> especially with the startup phase of applications.
+> The respective parameters are:
+> - ksm_advisor_target_scan_time (how many seconds a scan should take)
+> - ksm_advisor_min_cpu (minimum value for cpu percent usage)
+> - ksm_advisor_max_cpu (maximum value for cpu percent usage)
 > 
-> We can certainly only set a default value, that is not exposed in sysfs.
-
-Less toggles is better. So if we can just use some sane starting 
-default, that would be great.
-
+> - ksm_advisor_min_pages (minimum value for pages_to_scan per batch)
+> - ksm_advisor_max_pages (maximum value for pages_to_scan per batch)
 > 
->>> +/**
->>> + * struct advisor_ctx - metadata for KSM advisor
->>> + * @start_scan: start time of the current scan
->>> + * @scan_time: scan time of previous scan
->>> + * @change: change in percent to pages_to_scan parameter
->>> + * @cpu_percent: average cpu percent usage of the ksmd thread for the last scan
->>> + */
->>> +struct advisor_ctx {
->>> +	ktime_t start_scan;
->>> +	unsigned long scan_time;
->>> +	unsigned long change;
->>> +	unsigned long long cpu_time;
->>> +};
->>> +static struct advisor_ctx advisor_ctx;
->>> +
->>> +/* Define different advisor's */
->>> +enum ksm_advisor_type {
->>> +	KSM_ADVISOR_NONE,
->>> +	KSM_ADVISOR_FIRST = KSM_ADVISOR_NONE,
->>
->> Unused, better drop it. 0 is the implicit first one.
->>
-> Will change it accordingly.
+> The algorithm calculates the change value based on the target scan time
+> and the previous scan time. To avoid pertubations an exponentially
+> weighted moving average is applied.
 > 
->>> +	KSM_ADVISOR_SCAN_TIME,
->>> +	KSM_ADVISOR_LAST = KSM_ADVISOR_SCAN_TIME
->>
->> Instead of "_LAST", maybe use "_COUNT" and use that when checking for valid
->> values.
->>
->> But: we likely want to store "strings" instead of magic numbers from user space
->> instead.
->>
+> The advisor is managed by three main parameters: target scan time,
+> cpu min time and cpu max time for the ksmd background thread. These
+> parameters determine how aggresive ksmd scans.
 > 
-> Any recommendation for the naming of the parameters when I switch to
-> strings?
+> In addition there are min and max values for the pages_to_scan parameter
+> to make sure that its initial and max values are not set too low or too
+> high. This ensures that it is able to react to changes quickly enough.
+> 
+> The default values are:
+> - target scan time: 200 secs
+> - min cpu: 15%
+> - max cpu: 70%
+> - min pages: 500
+> - max pages: 30000
+> 
+> By default the advisor is disabled. Currently there are two advisors:
+> none and scan_time.
+> 
+> Tests with various workloads have shown considerable CPU savings. Most
+> of the workloads I have investigated have more candidate pages during
+> startup, once the workload is stable in terms of memory, the number of
+> candidate pages is reduced. Without the advisor, the pages_to_scan needs
+> to be sized for the maximum number of candidate pages. So having this
+> advisor definitely helps in reducing CPU consumption.
+> 
+> For the instagram workload, the advisor achieves a 25% CPU reduction.
+> Once the memory is stable, the pages_to_scan parameter gets reduced to
+> about 40% of its max value.
+> 
+> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+> ---
+>   mm/ksm.c | 159 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 158 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 7efcc68ccc6e..e18fecfb359d 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -21,6 +21,7 @@
+>   #include <linux/sched.h>
+>   #include <linux/sched/mm.h>
+>   #include <linux/sched/coredump.h>
+> +#include <linux/sched/cputime.h>
+>   #include <linux/rwsem.h>
+>   #include <linux/pagemap.h>
+>   #include <linux/rmap.h>
+> @@ -248,6 +249,9 @@ static struct kmem_cache *rmap_item_cache;
+>   static struct kmem_cache *stable_node_cache;
+>   static struct kmem_cache *mm_slot_cache;
+>   
+> +/* Default number of pages to scan per batch */
+> +#define DEFAULT_PAGES_TO_SCAN 100
+> +
+>   /* The number of pages scanned */
+>   static unsigned long ksm_pages_scanned;
+>   
+> @@ -276,7 +280,7 @@ static unsigned int ksm_stable_node_chains_prune_millisecs = 2000;
+>   static int ksm_max_page_sharing = 256;
+>   
+>   /* Number of pages ksmd should scan in one batch */
+> -static unsigned int ksm_thread_pages_to_scan = 100;
+> +static unsigned int ksm_thread_pages_to_scan = DEFAULT_PAGES_TO_SCAN;
+>   
+>   /* Milliseconds ksmd should sleep between batches */
+>   static unsigned int ksm_thread_sleep_millisecs = 20;
+> @@ -297,6 +301,155 @@ unsigned long ksm_zero_pages;
+>   /* The number of pages that have been skipped due to "smart scanning" */
+>   static unsigned long ksm_pages_skipped;
+>   
+> +/* Don't scan more than max pages per batch. */
+> +static unsigned long ksm_advisor_max_pages = 30000;
+> +
+> +/* At least scan this many pages per batch. */
+> +static unsigned long ksm_advisor_min_pages = 500;
+> +
+> +/* Min CPU for scanning pages per scan */
+> +static unsigned int ksm_advisor_min_cpu =  15;
+> +
+> +/* Max CPU for scanning pages per scan */
+> +static unsigned int ksm_advisor_max_cpu =  70;
+> +
+> +/* Target scan time in seconds to analyze all KSM candidate pages. */
+> +static unsigned long ksm_advisor_target_scan_time = 200;
+> +
+> +/* Exponentially weighted moving average. */
+> +#define EWMA_WEIGHT 30
+> +
+> +/**
+> + * struct advisor_ctx - metadata for KSM advisor
+> + * @start_scan: start time of the current scan
+> + * @scan_time: scan time of previous scan
+> + * @change: change in percent to pages_to_scan parameter
+> + * @cpu_percent: average cpu percent usage of the ksmd thread for the last scan
+> + */
+> +struct advisor_ctx {
+> +	ktime_t start_scan;
+> +	unsigned long scan_time;
+> +	unsigned long change;
+> +	unsigned long long cpu_time;
+> +};
+> +static struct advisor_ctx advisor_ctx;
+> +
+> +/* Define different advisor's */
+> +enum ksm_advisor_type {
+> +	KSM_ADVISOR_NONE,
+> +	KSM_ADVISOR_FIRST = KSM_ADVISOR_NONE,
+> +	KSM_ADVISOR_SCAN_TIME,
+> +	KSM_ADVISOR_LAST = KSM_ADVISOR_SCAN_TIME
+> +};
+> +static enum ksm_advisor_type ksm_advisor;
+> +
+> +static void init_advisor(void)
+> +{
+> +	advisor_ctx.start_scan = 0;
+> +	advisor_ctx.scan_time = 0;
+> +	advisor_ctx.change = 0;
+> +	advisor_ctx.cpu_time = 0;
+> +}
+> +
+> +/*
+> + * Use previous scan time if available, otherwise use current scan time as an
+> + * approximation for the previous scan time.
+> + */
+> +static inline unsigned long prev_scan_time(struct advisor_ctx *ctx,
+> +					   unsigned long scan_time)
+> +{
+> +	return ctx->scan_time ? ctx->scan_time : scan_time;
+> +}
+> +
+> +/* Calculate exponential weighted moving average */
+> +static unsigned long ewma(unsigned long prev, unsigned long curr)
+> +{
+> +	return ((100 - EWMA_WEIGHT) * prev + EWMA_WEIGHT * curr) / 100;
+> +}
+> +
+> +/*
+> + * The scan time advisor is based on the current scan rate and the target
+> + * scan rate.
+> + *
+> + *      new_pages_to_scan = pages_to_scan * (scan_time / target_scan_time)
+> + *
+> + * To avoid pertubations it calculates a change factor of previous changes.
+> + * A new change factor is calculated for each iteration and it uses an
+> + * exponentially weighted moving average. The new pages_to_scan value is
+> + * multiplied with that change factor:
+> + *
+> + *      new_pages_to_scan *= change facor
+> + *
+> + * In addition the new pages_to_scan value is capped by the max and min
+> + * limits.
+> + */
+> +static void scan_time_advisor(unsigned long scan_time)
+> +{
+> +	unsigned int cpu_percent;
+> +	unsigned long cpu_time;
+> +	unsigned long cpu_time_diff;
+> +	unsigned long cpu_time_diff_ms;
+> +	unsigned long pages;
+> +	unsigned long per_page_cost;
+> +	unsigned long factor;
+> +	unsigned long change;
+> +	unsigned long last_scan_time;
+> +
+> +	cpu_time = task_sched_runtime(current);
+> +	cpu_time_diff = cpu_time - advisor_ctx.cpu_time;
+> +	cpu_time_diff_ms = cpu_time_diff / 1000 / 1000;
+> +
+> +	cpu_percent = (cpu_time_diff_ms * 100) / (scan_time * 1000);
+> +	cpu_percent = cpu_percent ? cpu_percent : 1;
+> +	last_scan_time = prev_scan_time(&advisor_ctx, scan_time);
+> +
+> +	/* Calculate scan time as percentage of target scan time */
+> +	factor = ksm_advisor_target_scan_time * 100 / scan_time;
+> +	factor = factor ? factor : 1;
+> +
 
-Probably just "none" and "scan-time" ?
+^ ah, that's what I missed.
 
->>> +}
->>> +
->>> +static void run_advisor(void)
->>> +{
->>> +	if (ksm_advisor == KSM_ADVISOR_SCAN_TIME) {
->>> +		s64 scan_time;
->>> +
->>> +		/* Convert scan time to seconds */
->>> +		scan_time = ktime_ms_delta(ktime_get(), advisor_ctx.start_scan);
->>> +		scan_time = div_s64(scan_time, MSEC_PER_SEC);
->>> +		scan_time = scan_time ? scan_time : 1;
->>> +
->>> +		scan_time_advisor((unsigned long)scan_time);
->>> +	}
->>
->> We could have rescheduled in the meantime, right? Doesn't that mean that our CPU
->> load consumption might be wrong in some cases?
->>
-> Does it matter? I'm interested how long it takes to complete the scan,
-> including any scheduling.
+BTW, why do we pass in "scan_time" and not simply obtain it here, just 
+like we do with task_sched_runtime() ?
 
-But isn't this also required to compute CPU load, so you can stay 
-between min-load and max-load?
-
-- ksm_advisor_min_cpu (minimum value for cpu percent usage)
-- ksm_advisor_max_cpu (maximum value for cpu percent usage)
-
-Likely, you want to exclude any rescheduling from there?
-
-I'll have to recheck the logic.
 
 -- 
 Cheers,
