@@ -2,157 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9233D7F766B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688C67F766A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345375AbjKXOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S231194AbjKXOhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbjKXOhP (ORCPT
+        with ESMTP id S230104AbjKXOhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:37:15 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280D519A4;
-        Fri, 24 Nov 2023 06:37:22 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7046940E0258;
-        Fri, 24 Nov 2023 14:37:19 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PRqga3sbJpbf; Fri, 24 Nov 2023 14:37:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700836637; bh=ohccp6emLwawWzvtIzIh09L/4m/V7F4sqEbEIpoSnq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4ZWuUa1L7kfp2HdFjJoJ/VJsOFVSUnC0gO9qFwTG3YmBCUPdTYsVqDGWCWhKhwWt
-         bPMfC5FW5UvB9dmwy2CIqzCbKbi5cBjMdkDEa0CeXp+5M+QzDtnelk9TLL/EgQ5NHj
-         McXjzfHSJsgjpj9MqRmHPWcJCCMrAogxjUm0/Jsc72ebMXkCNQAv2djjGq5eNffoAf
-         OMq7FM/q2dgI4mAq6K/W2UfryaZEHOZo9PgaPQCJavHEyqMeOtbKdsxzha219KEvZA
-         X4wIE/IZYEGPevYKN2YBtPnPL5DpnWEEeMQiu/VmvTlcQD+X7yrx99Yo3AdwDF84Ox
-         hyEAoTZMYPGcbo29lPJ7jZX5gfw9buYqXMNsN85LAYacotEiG6IZhHOjIZnf6V/qGJ
-         D4elq+EAdSdHpU94MOeTRjyBVHsxMDXkGH0vd/cN/mdU/okeck6NZxDB9cxZmMQxdS
-         DdAcDBO8v99bXDYNhp74RKKFrlGzQVHoUWww+ITXNOeS5ImW+fkWgECNI4J6p5HHzc
-         tWYWb2LREZVw1alEGmVBJNZW9xdLYefPQ2qHOTWEU8lOdrrttsoCdCD/HPkTNRKylD
-         PudnxC5CBKqZvR0VTaguz2OUBxIbOEGUGX5BFTAzbznuxMmWe5UgIF62+gJycHagac
-         eB1F7hjjZjigIKjjHsZGVU5M=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        Fri, 24 Nov 2023 09:37:10 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1132B19A3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:37:16 -0800 (PST)
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD93F40E014B;
-        Fri, 24 Nov 2023 14:36:36 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 15:36:30 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 13/50] crypto: ccp: Define the SEV-SNP commands
-Message-ID: <20231124143630.GKZWC07hjqxkf60ni4@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-14-michael.roth@amd.com>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F2D543F886
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 14:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1700836634;
+        bh=cGwg+h1mClEhrndjxPbtDVi24ECb38Vx4CjAfkLm3D4=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=v3vTFPOOlaL/HNG3ZOrWVK4s4A1WnV10TEx/wATur3FFJpqxZ82KQQ2W16ocI90Rl
+         TcIj6UPfhmH7tZpY8cZV/1rgIfo56kOblVjNmUlyC3AvLgnju4seGrxSvGfzc/CkUe
+         oAO5yQN6x2SihBbYvubtdnzQXGGjevyIGoaOl6CF8BjxmqiibbN9T1ChD3PkbgXMYX
+         gpZ4jNE6oPfYNnwj83oGh/LGgdUB63IiWPvYcNk1AtMhtWGl2ZK3u2vwE4IFVpTxLb
+         pL+oaWfIjNtYyrY7I3JpA/W0wWJp4zXEXTeEuEflgoHINEsN2weFOpV4pHCTG7NzVh
+         7bKrcjiF6JqsA==
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c5032ab59eso17268881fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:37:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700836633; x=1701441433;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cGwg+h1mClEhrndjxPbtDVi24ECb38Vx4CjAfkLm3D4=;
+        b=gFYwtZc0uo2XyLZvI94H10pBQtTMSeLY0c1tmD3GaQe1xOXn/ofZuIdbddKJmbHaOO
+         xkq6K7pZ/zUo9jEGApSq7cZ0dDdqQQtTRimTAfPX3DQsxrDbDt0RckCo2GMwD8UMjy17
+         yv5ZcsZEuPSQMh43ZRq6MHWrB7PLGAe/YDXVgH4S0iXIeghtxR0PdD23QQ8hf+Ljyyeo
+         /ur+Zr6WmnUO1i3ugcxXPXLBQrVEyD4XH/qRD8LKZrYQgL/JbvSgwMM8/8zVc3muNCSm
+         5tsn5KylYUfQx4qRf8DMFB5TaG/QXuq0RfnCB0eGC8+643T2Iu/YGNAHsXMiiZY/Adaj
+         uXfA==
+X-Gm-Message-State: AOJu0YwspAiQqXE2wa+VwTUmyLV/c7hqUxJI2TA7ZT/UoE1uWaK5W3qm
+        VM4C1WZfiicdadOwbgA6+wW/7ZbOLhXQbQOEkzsBNlVJVqSYgXELWEEVK/rG0kuupXELIh5fbez
+        47r0Dxmr+cCLSJKnaL0OWV1afBHj2XpdgWtJxeOce8C5/wkkcXfqCqZyUMQ==
+X-Received: by 2002:a19:8c42:0:b0:509:448a:d with SMTP id i2-20020a198c42000000b00509448a000dmr1952354lfj.31.1700836633234;
+        Fri, 24 Nov 2023 06:37:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHoEfY0eVo4yCOZ1JPppE5or+AtqWrtaMSBx5MO4rxigdVW1Rx/L0Gn01Tvw0h7MYG18AyEEtxKjM4yDYQiFJE=
+X-Received: by 2002:a19:8c42:0:b0:509:448a:d with SMTP id i2-20020a198c42000000b00509448a000dmr1952334lfj.31.1700836632861;
+ Fri, 24 Nov 2023 06:37:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-14-michael.roth@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231123180246.750674-1-dimitri.ledkov@canonical.com> <87plzzu1w0.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87plzzu1w0.fsf@email.froward.int.ebiederm.org>
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Date:   Fri, 24 Nov 2023 14:36:36 +0000
+Message-ID: <CADWks+aY0jOq6erApu7i0wNVX3uXPbs=Zj7o3XHPMudOkYyeVA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] remove the last bits of a.out support
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:27:42AM -0500, Michael Roth wrote:
-> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> index 7fd17e82bab4..a7f92e74564d 100644
-> --- a/include/linux/psp-sev.h
-> +++ b/include/linux/psp-sev.h
-> @@ -78,6 +78,36 @@ enum sev_cmd {
->  	SEV_CMD_DBG_DECRYPT		= 0x060,
->  	SEV_CMD_DBG_ENCRYPT		= 0x061,
+On Fri, 24 Nov 2023 at 06:01, Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> +	/* SNP specific commands */
-> +	SEV_CMD_SNP_INIT			= 0x81,
+> Dimitri John Ledkov <dimitri.ledkov@canonical.com> writes:
+>
+> > I was working on how linux-libc-dev headers are shipped in Ubuntu and
+> > stumbled upon seemingly unused and useless linux/a.out.h header. It
+> > seems like it is an accidental leftover at this point.
+>
+> How do you see that they are unused?
+>
+> Are they never exported to userspace?
+>
+> Are there any userspace programs that care?
+>
+> Performing a quick debian code search I see chromium, qt6, ruby-rogue, hurd,
+> bazel_bootstrap, aboot, cde.
+>
+> I can imagine all kinds of reasons old code could be using headers for a
+> historical format.  Some of them are quite legitimate, and some of them
+> are quite silly.  If it is old code like aboot it may be that it is
+> difficult to test any changes.  If memory serves you have to flash your
+> firmware to change/test aboot.
+>
+> Because showing userspace does not care about the definitions in a file
+> is a completely different problem then showing the kernel does not care
+> about the definitions I left them, last time I was working in this area.
+> Keeping headers that will never change is not cost to the kernel so it
+> doesn't hurt us to be nice to historical userspace.
+>
+> My quick debian code search suggests that there are pieces of userspace
+> that still use linux/a.out.h.  Are you seeing something I am not?
+> Do all of those pieces of code compile just fine with a.out.h missing?
+>
 
-The other commands start with "0x0" - pls do that too here or unify with
-a pre-patch.
+I will recheck the above mentioned things again, but as far as I could
+tell up to this point, is that things mostly use a.out.h provided by
+glibc.
 
-> +	SEV_CMD_SNP_SHUTDOWN			= 0x82,
-> +	SEV_CMD_SNP_PLATFORM_STATUS		= 0x83,
-> +	SEV_CMD_SNP_DF_FLUSH			= 0x84,
-> +	SEV_CMD_SNP_INIT_EX			= 0x85,
-> +	SEV_CMD_SNP_SHUTDOWN_EX			= 0x86,
-> +	SEV_CMD_SNP_DECOMMISSION		= 0x90,
-> +	SEV_CMD_SNP_ACTIVATE			= 0x91,
-> +	SEV_CMD_SNP_GUEST_STATUS		= 0x92,
-> +	SEV_CMD_SNP_GCTX_CREATE			= 0x93,
-> +	SEV_CMD_SNP_GUEST_REQUEST		= 0x94,
-> +	SEV_CMD_SNP_ACTIVATE_EX			= 0x95,
-> +	SEV_CMD_SNP_LAUNCH_START		= 0xA0,
-> +	SEV_CMD_SNP_LAUNCH_UPDATE		= 0xA1,
-> +	SEV_CMD_SNP_LAUNCH_FINISH		= 0xA2,
-> +	SEV_CMD_SNP_DBG_DECRYPT			= 0xB0,
-> +	SEV_CMD_SNP_DBG_ENCRYPT			= 0xB1,
-> +	SEV_CMD_SNP_PAGE_SWAP_OUT		= 0xC0,
-> +	SEV_CMD_SNP_PAGE_SWAP_IN		= 0xC1,
-> +	SEV_CMD_SNP_PAGE_MOVE			= 0xC2,
-> +	SEV_CMD_SNP_PAGE_MD_INIT		= 0xC3,
-> +	SEV_CMD_SNP_PAGE_SET_STATE		= 0xC6,
-> +	SEV_CMD_SNP_PAGE_RECLAIM		= 0xC7,
-> +	SEV_CMD_SNP_PAGE_UNSMASH		= 0xC8,
-> +	SEV_CMD_SNP_CONFIG			= 0xC9,
-> +	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX	= 0xCA,
+Separately, I can do this change in a test-rebuild of ubuntu archive
+of all packages on amd64,. as that's the only Ubuntu arch that ships
+linux/a.out.h.
 
-You don't have to vertically align those to a different column due to
-this command's name not fitting - just do:
+As far as I can tell, the legacy userspace access to linux/a.out.h can
+use glibc's a.out.h instead. But yes, it would be pain, if code
+changes are required to things.
 
-        SEV_CMD_SNP_CONFIG              = 0x0C9,
-        SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX = 0x0CA,
-        SEV_CMD_SNP_COMMIT              = 0x0CB,
+> Eric
+>
+>
+> > Dimitri John Ledkov (5):
+> >   alpha: remove a.out support from tools/objstrip
+> >   alpha: stop shipping a.out.h uapi headers
+> >   m68k: stop shipping a.out.h uapi headers
+
+I think above three patches still can be merged in m68k & alpha trees.
+
+> >   x86: stop shipping a.out.h uapi headers
+> >   uapi: remove a.out.h uapi header
+> >
+
+And these two need further validation now, based on Eric's input.
+
+> >  arch/alpha/boot/tools/objstrip.c    |  52 +-----
+> >  arch/alpha/include/uapi/asm/a.out.h |  92 ----------
+> >  arch/m68k/include/uapi/asm/a.out.h  |  21 ---
+> >  arch/x86/include/uapi/asm/a.out.h   |  21 ---
+> >  include/uapi/Kbuild                 |   4 -
+> >  include/uapi/linux/a.out.h          | 251 ----------------------------
+> >  6 files changed, 6 insertions(+), 435 deletions(-)
+> >  delete mode 100644 arch/alpha/include/uapi/asm/a.out.h
+> >  delete mode 100644 arch/m68k/include/uapi/asm/a.out.h
+> >  delete mode 100644 arch/x86/include/uapi/asm/a.out.h
+> >  delete mode 100644 include/uapi/linux/a.out.h
 
 
-
-
-> +	SEV_CMD_SNP_COMMIT			= 0xCB,
-> +	SEV_CMD_SNP_VLEK_LOAD			= 0xCD,
-> +
->  	SEV_CMD_MAX,
->  };
-
-...
-
-> +/**
-> + * struct sev_data_snp_launch_start - SNP_LAUNCH_START command params
-> + *
-> + * @gctx_addr: system physical address of guest context page
-> + * @policy: guest policy
-> + * @ma_gctx_addr: system physical address of migration agent
-> + * @imi_en: launch flow is launching an IMI for the purpose of
-
-What is an "IMI"?
-
-Define it once for the readers pls.
 
 -- 
-Regards/Gruss,
-    Boris.
+okurrr,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Dimitri
