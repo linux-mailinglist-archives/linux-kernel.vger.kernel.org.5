@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC697F70FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067BC7F7100
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345470AbjKXKM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S1345491AbjKXKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345440AbjKXKM4 (ORCPT
+        with ESMTP id S1345440AbjKXKNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:12:56 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1DBA2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:13:02 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2479C66073A8;
-        Fri, 24 Nov 2023 10:13:00 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700820780;
-        bh=JA4jEFSQ/k1H01YILQjvqaLXSMv6mPvLjX3nObY4uww=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=fG8QmK6l87ZUpE31tA/N+7UPMr3+Bk9Z90aEYavqA3iB+vLD+P9Q58kEx3v9SBvSw
-         qdby8fRsQhmUZHS7HEuxio/JUGeupN/atYt/5E/uTaIGAUY1G6tiq74KoJoww49YRA
-         yu8baW+x5WBcZkAIjyJCy4dy1jQ/2OxiAHM8qDG6o8X8Qod+jH6C2l09nssZopdgFj
-         PGe1S7m5EiUGXaX41UMMmQtOZlrh+jCoP4VQqx9JmrWTEZcwKI7oBlXZ1355BsGUCv
-         DTImzoLmOlASeBEtwBBclVvUuYBt4N8jhYaMe3eA55P9NqEd96qzqwoARvzZtYl+OS
-         CtjtFJAc651Zw==
-Message-ID: <c4a8eb63-2d67-42c3-a6b4-c6ad3bd9ab8e@collabora.com>
-Date:   Fri, 24 Nov 2023 11:12:57 +0100
+        Fri, 24 Nov 2023 05:13:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71E710EC
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:13:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8937FC433C9;
+        Fri, 24 Nov 2023 10:13:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700820790;
+        bh=vis1BiFk98hLVEdtkKkxZn3B9EHbkZYHyPAFzLruJzs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xxy8hdsKFHpAb3C7+nUdIRN1CSeITx7p8FXrwpjmfHLA2Xxuv7ll2CtfAoDDVYMZN
+         EaW8go6udVVXR8WUxoJk9UKnIAIDFG9HxP3HrhNppbJ9q1TAJSuA0Iai1mdi2eaGiT
+         wy2xz0EShjp1X1sgJUKs7Nc7DAfzYOEG5IDj1wRvADerDyOw33ffstnUPc/E4j9xSO
+         klc94r10pKhuO3xu4byM/jxzT/XtYqE9eS2ZJuTY0ILn7OnCRTlRc6bkH14FmmW0uV
+         BXvipyW2oMgagR1DmbFg2ISTL5/0gypEqTMjzYU981sKT83tJrTRHat1TJwlaZdtlS
+         Un3XQmryJsiyw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r6TBh-0007C1-22;
+        Fri, 24 Nov 2023 11:13:30 +0100
+Date:   Fri, 24 Nov 2023 11:13:29 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+Message-ID: <ZWB3SWJWXwj0atdH@hovoldconsulting.com>
+References: <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
+ <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
+ <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
+ <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
+ <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
+ <6d4d959c-b155-471b-b13d-f6fda557cfe0@quicinc.com>
+ <ZVYTFi3Jnnljl48L@hovoldconsulting.com>
+ <e0789695-43ee-4285-95e9-4cdee24d6ffe@quicinc.com>
+ <ZV9XTU-q038BaWn3@hovoldconsulting.com>
+ <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Ignore core_mask for poweroff and sync
- interrupts
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     steven.price@arm.com, robh@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski@linaro.org, kernel@collabora.com
-References: <20231123095320.41433-1-angelogioacchino.delregno@collabora.com>
- <20231123113530.46191ded@collabora.com>
- <1740797f-f3ae-4868-924a-08d6d731e506@collabora.com>
- <20231123135933.34d643f7@collabora.com>
- <5019af46-f5ae-4db5-979e-802b61025ba4@collabora.com>
- <20231123145103.23b6eac9@collabora.com>
- <43cc8641-6a60-41d9-b8f2-32227235702a@collabora.com>
- <20231123164019.629c91f9@collabora.com>
- <5e60f1d1-8e3a-42ca-af56-126faa67ea86@collabora.com>
-In-Reply-To: <5e60f1d1-8e3a-42ca-af56-126faa67ea86@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 24/11/23 10:17, AngeloGioacchino Del Regno ha scritto:
-> Il 23/11/23 16:40, Boris Brezillon ha scritto:
->> On Thu, 23 Nov 2023 16:14:12 +0100
->> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> wrote:
->>
->>> Il 23/11/23 14:51, Boris Brezillon ha scritto:
->>>> On Thu, 23 Nov 2023 14:24:57 +0100
->>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>>> wrote:
->>>>>>>
->>>>>>> So, while I agree that it'd be slightly more readable as a diff if those
->>>>>>> were two different commits I do have reasons against splitting.....
->>>>>>
->>>>>> If we just need a quick fix to avoid PWRTRANS interrupts from kicking
->>>>>> in when we power-off the cores, I think we'd be better off dropping
->>>>>> GPU_IRQ_POWER_CHANGED[_ALL] from the value we write to GPU_INT_MASK
->>>>>> at [re]initialization time, and then have a separate series that fixes
->>>>>> the problem more generically.
->>>>>
->>>>> But that didn't work:
->>>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
->>>>
->>>> I meant, your 'ignore-core_mask' fix + the
->>>> 'drop GPU_IRQ_POWER_CHANGED[_ALL] in GPU_INT_MASK' one.
->>>>
->>>> So,
->>>>
->>>> https://lore.kernel.org/all/4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com/
->>>> +
->>>> https://lore.kernel.org/all/d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org/
->>>>>
->>>>>
->>>>> ...while this "full" solution worked:
->>>>> https://lore.kernel.org/all/39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org/
->>>>>
->>>>> https://lore.kernel.org/all/5b24cc73-23aa-4837-abb9-b6d138b46426@linaro.org/
->>>>>
->>>>>
->>>>> ...so this *is* a "quick fix" already... :-)
->>>>
->>>> It's a half-baked solution for the missing irq-synchronization-on-suspend
->>>> issue IMHO. I understand why you want it all in one patch that can serve
->>>> as a fix for 123b431f8a5c ("drm/panfrost: Really power off GPU cores in
->>>> panfrost_gpu_power_off()"), which is why I'm suggesting to go for an
->>>> even simpler diff (see below), and then fully address the
->>>> irq-synhronization-on-suspend issue in a follow-up patchset.
->>>> --->8---
->>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c 
->>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>>> index 09f5e1563ebd..6e2d7650cc2b 100644
->>>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>>> @@ -78,7 +78,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
->>>>           }
->>>>           gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
->>>> -       gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
->>
->> We probably want a comment here:
->>
->>     /* Only enable the interrupts we care about. */
->>
->>>> +       gpu_write(pfdev, GPU_INT_MASK,
->>>> +                 GPU_IRQ_MASK_ERROR |
->>>> +                 GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
->>>> +                 GPU_IRQ_CLEAN_CACHES_COMPLETED);
->>>
->>> ...but if we do that, the next patch(es) will contain a partial revert of this
->>> commit, putting back this to gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL)...
->>
->> Why should we revert it? We're not processing the PWRTRANS interrupts
->> in the interrupt handler, those should never have been enabled in the
->> first place. The only reason we'd want to revert that change is if we
->> decide to do have interrupt-based waits in the poweron/off
->> implementation, which, as far as I'm aware, is not something we intend
->> to do any time soon.
->>
+On Fri, Nov 24, 2023 at 02:30:56PM +0530, Krishna Kurapati PSSNV wrote:
+> > 
+> >> I didn't add missing interrupts on sc8280xp because I see that current
+> >> interrupts present are working fine (I see ADB working and wakeup
+> >> working as well), but the interrupt vector numbers are off by "1"
+> >> between hs specifics and DT (both upstream and downstream). Will sort it
+> >> out and clean that target up later.
+> > 
+> > Which interrupt numbers are off by one here?
+
+> Sorry for mentioning that it is wrong. The DT entries are right and it 
+> is working on upstream.
+
+Thanks for clarifying.
+
+> >> [1]: https://patchwork.kernel.org/project/linux-arm-msm/list/?series=803412
+> > 
+> > I took a quick look at the series, and it looks like this will
+> > eventually clean things up a lot. We should probably define a generic
+> > order for the interrupts with the sometimes optional SS interrupts last.
+> > 
+> > Side note: It looks like the threading in that series is broken.
+> > Consider using git-send-email for sending series as it takes care of
+> > things like that.
 > 
-> You're right, yes. Okay, I'll push the new code soon.
-> 
-> Cheers!
-> 
+> Usually I do git send-email for the whole out folder where the patches 
+> are present, but linux-usb list is common to all the patches in that 
+> case, even the DT ones. So to avoid that and to send patches to only 
+> relavant mailing lists, I did git send email individually on each patch 
+> which might have caused this issue.
 
-Update: I was running some (rather fast) tests here because I ... felt like playing
-with it, basically :-)
+I'd suggest that you just send two separate series, one with binding and
+driver updates, which will eventually be merged by Greg, and one with
+the devicetree changes, which goes through Bjorn's tree.
 
-So, I had an issue with MediaTek platforms being unable to cut power to the GPU or
-disable clocks aggressively... and after trying "this and that" I couldn't get it
-working (in runtime suspend).
+It's good if you could add a link to the binding series in the cover
+letter of the devicetree changes as they are of course going to be quite
+closely related and need to be reviewed in parallel.
 
-Long story short - after implementing `panfrost_{job,mmu,gpu}_suspend_irq()` (only
-gpu irq, as you said, is a half solution), I can not only turn off clocks, but even
-turn off GPU power supplies entirely, bringing the power consumption of the GPU
-itself during *runtime* suspend to ... zero.
-
-The result of this test makes me truly happy, even though complete powercut during
-runtime suspend may not be feasible for other reasons (takes ~200000ns on AVG,
-MIN ~160000ns, but the MAX is ~475000ns - and beware that I haven't run that for
-long, I'd suspect to get up to 1-1.5ms as max time, so that's a big no).
-
-This means that I will take a day or two and I'll push both the "simple" fix for
-the Really-power-off and also some more commits to add the full irq sync.
-
-Cheers!
-Angelo
-
->>>
->>> I'm not sure that it's worth changing this like that, then changing it back right
->>> after :-\
->>>
->>> Anyway, if anyone else agrees with doing it and then partially revert, I have no
->>> issues going with this one instead; what I care about ultimately is resolving the
->>> regression ASAP :-)
->>>
->>> Cheers,
->>> Angelo
->>>
->>>>           /*
->>>>            * All in-flight jobs should have released their cycle
->>>> @@ -425,11 +428,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
->>>>    void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->>>>    {
->>>> -       u64 core_mask = panfrost_get_core_mask(pfdev);
->>>>           int ret;
->>>>           u32 val;
->>>> -       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & 
->>>> core_mask);
->>>> +       gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
->>>>           ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
->>>>                                            val, !val, 1, 1000);
->>>>           if (ret)
->>>> @@ -441,7 +443,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->>>>           if (ret)
->>>>                   dev_err(pfdev->dev, "tiler power transition timeout");
->>>> -       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
->>>> +       gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
->>>>           ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
->>>>                                    val, !val, 0, 1000);
->>>>           if (ret)
->>>>
->>>
->>
-> 
-> 
-> 
-
-
-
+Johan
