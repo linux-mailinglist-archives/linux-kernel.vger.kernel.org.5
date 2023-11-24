@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8529D7F69C7
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8127F69C6
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 01:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjKXA10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 19:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
+        id S230023AbjKXA12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 19:27:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXA1Y (ORCPT
+        with ESMTP id S229478AbjKXA1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 19:27:24 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B50110C8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:27:30 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so16644061fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:27:30 -0800 (PST)
+        Thu, 23 Nov 2023 19:27:25 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B2310C2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:27:31 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c83d37a492so17885741fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:27:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1700785648; x=1701390448; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q8QM/m7UTtv+MC2zusUkJTGgTrqbe8gRAx9REDFyuSU=;
-        b=kRvkrt2ME06+64sbnWjGIGz9OeN3KFbdlPZCk6Htz8uuIVvLqj5G7mXzp4wlNm3bRk
-         QnuhH1Yvx4CzN4NKknKX42dYX99voJKjXarmoW/8SV2PT91kr7JluuO/Ta1BJ1Wul+8S
-         i1cfndvTTlGCopgzie4xQWu6yVpiTDtJPaFjIy5EiQ0kZX2DMCxAmW2P1Qq4FRCfTeiu
-         mMJVerT1bcYdOalTqZbgESxMYt9pKi94hpnX/4dHnXd7KyhknNqrly9GwSo7MjLIX6Vn
-         BTTnzoOxtjk//3hPh8PSbYWkelsNeJxf3t03za17Z47C3nock2n2LtqRGBQWWAjYqnpn
-         vxNQ==
+        d=arista.com; s=google; t=1700785650; x=1701390450; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=haVpn9fvl3FQKPXQqTZq8l5X+Z7fEQLSNTR+x6poikY=;
+        b=kuZ0+Y15aZOHrCN9ILYMuzyTZdieBL7vLkhqKn9r8miQfqXTteHyAKyIrWNKqfIRD0
+         PcltV302f7NG7g/Ou+M02IdWVYcKpNMCvCLdxFcXyNi1uEtXYg1mI2nCz2U24Zow4Lvt
+         mvtPfh2uN9WRwsiYo1GXP7uiUCs/YClsiwzXKWYfhqRZO7jviNxuuAZ9MknB2jp5Iqgy
+         Q8+9hg8DGYwLkXY/TZUETAVEJ+4QzNXHovp4+ZZqWJKs9UpskErUvXHWgjhEG0IcbDwT
+         rI0IOpQoBlT5kHCtS6PiIRK1RmNRB/T7gav60+N/QsIvjSZ7u+EUbU9TFpDeprbZZY1f
+         W3mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700785648; x=1701390448;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q8QM/m7UTtv+MC2zusUkJTGgTrqbe8gRAx9REDFyuSU=;
-        b=Tmg3CeVv4eGkv9MsR1JLSPADc01KKaiSDgEznINVnZA6Yj+RIi8tUxPjrZqmQtvo0a
-         hy1KlKbXmtUh8ft/qYQZfCRKDxURJM26p/gnMJGhcvy20hGW55hbFeznXzLA513KccCI
-         ekBswWA6A75ASwP7iUhVJXZUtaynUyniIZQbmHiGhd1zNew/IHBH1xZb9oNOYdKQGN0y
-         eSG+H8AxsHbBEiGDP7OOBHcBLWNcoW5/a/I4QpkatDccxEbGtvfEdMRTRuu1928i7xiH
-         amLFDixx8n0Lkzt2b8PRa+jrU9C1Th3UiooUTFR/vbd8yOQRWzXCieQcpX6VOyT3ZvP8
-         gE2g==
-X-Gm-Message-State: AOJu0YycoQyoyjy9zRpjFOtuw0RKK7Smv/OigbO6BZ65SdHuYQVM+YWR
-        iSzZRiMtqFMKoUa7/bALKoUKzg==
-X-Google-Smtp-Source: AGHT+IFh+qtjDvYkcbRMFlh/WyRvztcosddBJ2m0H91J1i9G+Zxs4K+RjS13PJvfkM83cKVos7a9uA==
-X-Received: by 2002:a2e:3615:0:b0:2c5:2fa8:716a with SMTP id d21-20020a2e3615000000b002c52fa8716amr689164lja.9.1700785648284;
-        Thu, 23 Nov 2023 16:27:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700785650; x=1701390450;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=haVpn9fvl3FQKPXQqTZq8l5X+Z7fEQLSNTR+x6poikY=;
+        b=F4meHhGimDVU/ErGf0lnXqJDaRmGhL7nSHBfamEElYiwwjnjeQBZqCpPHaGHUKIkAg
+         q+1pp/KtSaE53gk02LCQQJuYp+WWEK+be4QI2knkkxIBWzWrZnIir/uX312O03QyTQaV
+         t7fHjnjvfmnNFFH7DqlZs3s0Z9Yiq01R/+Rjk+QpzqHYrZQ1WziduSWYkqjf77M3fWxN
+         Xd2jxxyIEP2WBkiCyP9g1tcHfUx1pp0Bd8D8i3o8OvfhSW3DHRFudliYXE/ecjXMHTJx
+         dtip09mD6HZt88u81RCOKdTIimyYT+D+ek8XCkQGauG/4heTG/06rlQ4Jwvp9X79ms2D
+         4k6A==
+X-Gm-Message-State: AOJu0YydD1UCxbUW8BGxr/rqtK3vOO/VQjdd6LbyBIjhyfQRKt272hiK
+        SGdyC6mKLI53MqEbHf0fY4CP1w==
+X-Google-Smtp-Source: AGHT+IHvSX4dfruCcOgcRtZCAUPbc5qH1FOaW1B+QFPdn0Cp+RKfLN7Aj9D7LHFfPa23KeJI5ynAGQ==
+X-Received: by 2002:a05:651c:1208:b0:2c8:8813:2e7b with SMTP id i8-20020a05651c120800b002c888132e7bmr649558lja.2.1700785649997;
+        Thu, 23 Nov 2023 16:27:29 -0800 (PST)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id g9-20020a05600c310900b004094e565e71sm3453230wmo.23.2023.11.23.16.27.26
+        by smtp.gmail.com with ESMTPSA id g9-20020a05600c310900b004094e565e71sm3453230wmo.23.2023.11.23.16.27.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 16:27:27 -0800 (PST)
+        Thu, 23 Nov 2023 16:27:29 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
@@ -59,100 +60,52 @@ Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Francesco Ruggeri <fruggeri05@gmail.com>,
         Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v2 0/7] TCP-AO fixes
-Date:   Fri, 24 Nov 2023 00:27:13 +0000
-Message-ID: <20231124002720.102537-1-dima@arista.com>
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH v2 1/7] Documentation/tcp: Fix an obvious typo
+Date:   Fri, 24 Nov 2023 00:27:14 +0000
+Message-ID: <20231124002720.102537-2-dima@arista.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231124002720.102537-1-dima@arista.com>
+References: <20231124002720.102537-1-dima@arista.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Yep, my VIM spellchecker is not good enough for typos like this one.
 
-Changes from v1:
-- Use tcp_can_repair_sock() helper to limit TCP_AO_REPAIR (Eric)
-- Instead of hook to listen() syscall, allow removing current/rnext keys
-  on TCP_LISTEN (addressing Eric's objection)
-- Add sne_lock to protect snd_sne/rcv_sne
-- Don't move used_tcp_ao in struct tcp_request_sock (Eric)
+Fixes: 7fe0e38bb669 ("Documentation/tcp: Add TCP-AO documentation")
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Reported-by: Markus Elfring <Markus.Elfring@web.de>
+Closes: https://lore.kernel.org/all/2745ab4e-acac-40d4-83bf-37f2600d0c3d@web.de/
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ Documentation/networking/tcp_ao.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've been working on TCP-AO key-rotation selftests and as a result
-exercised some corner-cases that are not usually met in production.
-
-Here are a bunch of semi-related fixes:
-- Documentation typo (reported by Markus Elfring)
-- Proper alignment for TCP-AO option in TCP header that has MAC length
-  of non 4 bytes (now a selftest with randomized maclen/algorithm/etc
-  passes)
-- 3 uAPI restricting patches that disallow more things to userspace in
-  order to prevent it shooting itself in any parts of the body
-- SNEs READ_ONCE()/WRITE_ONCE() that went missing by my human factor
-- Avoid storing MAC length from SYN header as SYN-ACK will use
-  rnext_key.maclen (drops an extra check that fails on new selftests)
-
-Please, consider applying/pulling.
-
-The following changes since commit d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7:
-
-  Merge tag 'net-6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-11-23 10:40:13 -0800)
-
-are available in the Git repository at:
-
-  git@github.com:0x7f454c46/linux.git tcp-ao-post-merge-v2
-
-for you to fetch changes up to c5e4cecfcdc7f996acae740812d9ab2ebcd90517:
-
-  net/tcp: Don't store TCP-AO maclen on reqsk (2023-11-23 20:54:54 +0000)
-
-----------------------------------------------------------------
-
-Thanks,
-             Dmitry
-
-Cc: David Ahern <dsahern@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Francesco Ruggeri <fruggeri05@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Salam Noureddine <noureddine@arista.com>
-Cc: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
-Dmitry Safonov (7):
-  Documentation/tcp: Fix an obvious typo
-  net/tcp: Consistently align TCP-AO option in the header
-  net/tcp: Limit TCP_AO_REPAIR to non-listen sockets
-  net/tcp: Allow removing current/rnext TCP-AO keys on TCP_LISTEN sockets
-  net/tcp: Don't add key with non-matching VRF on connected sockets
-  net/tcp: Add sne_lock to access SNEs
-  net/tcp: Don't store TCP-AO maclen on reqsk
-
- Documentation/networking/tcp_ao.rst |  2 +-
- include/linux/tcp.h                 |  8 +---
- include/net/tcp_ao.h                |  8 +++-
- net/ipv4/tcp.c                      |  6 +++
- net/ipv4/tcp_ao.c                   | 57 +++++++++++++++++++----------
- net/ipv4/tcp_input.c                | 21 +++++++++--
- net/ipv4/tcp_ipv4.c                 |  4 +-
- net/ipv4/tcp_minisocks.c            |  2 +-
- net/ipv4/tcp_output.c               | 15 +++-----
- net/ipv6/tcp_ipv6.c                 |  2 +-
- 10 files changed, 81 insertions(+), 44 deletions(-)
-
-
-base-commit: d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7
+diff --git a/Documentation/networking/tcp_ao.rst b/Documentation/networking/tcp_ao.rst
+index cfa5bf1cc542..8a58321acce7 100644
+--- a/Documentation/networking/tcp_ao.rst
++++ b/Documentation/networking/tcp_ao.rst
+@@ -99,7 +99,7 @@ also [6.1]::
+    when it is no longer considered permitted.
+ 
+ Linux TCP-AO will try its best to prevent you from removing a key that's
+-being used, considering it a key management failure. But sine keeping
++being used, considering it a key management failure. But since keeping
+ an outdated key may become a security issue and as a peer may
+ unintentionally prevent the removal of an old key by always setting
+ it as RNextKeyID - a forced key removal mechanism is provided, where
 -- 
 2.43.0
 
