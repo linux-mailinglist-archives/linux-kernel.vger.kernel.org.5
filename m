@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804707F709D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9487F709E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjKXJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57626 "EHLO
+        id S230387AbjKXJ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:58:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjKXJ4j (ORCPT
+        with ESMTP id S229668AbjKXJ6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:56:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FC8992
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:56:46 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35B5D1063;
-        Fri, 24 Nov 2023 01:57:32 -0800 (PST)
-Received: from [10.57.71.2] (unknown [10.57.71.2])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09BD53F7A6;
-        Fri, 24 Nov 2023 01:56:42 -0800 (PST)
-Message-ID: <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
-Date:   Fri, 24 Nov 2023 09:56:37 +0000
+        Fri, 24 Nov 2023 04:58:04 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F9F1B6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:58:11 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a877e0f0d8so21149467b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:58:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700819890; x=1701424690; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s0r2ovNNQUwpmQosy3XQrJzCSVmmCu/fIH4I8jzx2+0=;
+        b=i9/t2S6iEh35bC8YQH0hgGJv+9qpTo0syhdxpLBtU6suiW5mugBso0Wztrt6NJctZI
+         qN3TIau9emPeq8q7S+Cm89lbaAKvT2VsGitV7EC0mgPVpXxfI6cj0Em4/fQCCC1pasfP
+         MVfJzNy2h48/jf33MCFaBbmtq82Dr/mPYwCZwzZiZ9bbIIRceX9+IbqRZf9TB1FRmM06
+         M+ozdIzSRaq1wONKXJ0YcaqGKLUv2WcH6nl1oLACA5aUYI+LUOBMC0K1e3FL6jdXdwWr
+         hss8l/vCKIn3/n7SYmWzJvTtqpSH3QNvG/MJJRKMbH5UwwRYAM22+9KHX+sqispLW7Gw
+         u27g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700819890; x=1701424690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s0r2ovNNQUwpmQosy3XQrJzCSVmmCu/fIH4I8jzx2+0=;
+        b=XU2oVr1UBRg8FpcwRNvDWLcPGy/ppO+YsyjO1oPq7zVcEwuB73kYcnIcvo2UbGkJel
+         mAVzBgcD89YGGzO2R6d7U2e9d5uqA18ogcZ47aVUx+lQS3Epwq+Q0p/hjsrY5cBFkjeB
+         k3JHquixI3JBA3K5Isp1ZyXKTi3xShgGKInMNG7yEPLGaitTEWqYhtxkza+bcHFft4mL
+         kW877IiE870kcrosq1Gj/5vWNbCUAFCdZd5uRrkMCTANV+BThHHHLENJjmpZLZmjAX/n
+         QMb84iCWR6xQdG1emF3wTvCrl7t1OYme2MwjBn5Mv0XHX/xKoPNdLlhJMfc4UiE4Me/F
+         s3bg==
+X-Gm-Message-State: AOJu0YxFRYR9pYFd/j3DWVU1HafKxx0dzyN3tnqXXmykIcaB5wWeIckh
+        SHyokpeVW3AoKoIECQW5LUEBJagZRv5VxOZb8stNCQ==
+X-Google-Smtp-Source: AGHT+IH3bPUgrfuFQLes8tecktD2wXSd8PJOzNH0dAaOMXtiZNeJPc+iVFWvKlDdSg+qekI3fv5dBHwrzlEH3fIx8NM=
+X-Received: by 2002:a0d:d904:0:b0:5cc:5421:e4e6 with SMTP id
+ b4-20020a0dd904000000b005cc5421e4e6mr4391983ywe.16.1700819890357; Fri, 24 Nov
+ 2023 01:58:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-GB
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZV9267tQEhoPzCru@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231116223045.274211-1-afd@ti.com>
+In-Reply-To: <20231116223045.274211-1-afd@ti.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 24 Nov 2023 10:57:59 +0100
+Message-ID: <CACRpkdaf9krpNkd-ZeGtaLS+UzM9Z7zSFtqFYdQk=TGLuUeB-Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: as3722: Use devm_gpiochip_add_data() to simplify
+ remove path
+To:     Andrew Davis <afd@ti.com>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,59 +71,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 15:59, Matthew Wilcox wrote:
-> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
->> Note: I'm resending this at Andrew's suggestion due to having originally sent
->> it during LPC. I'm hoping its in a position where the feedback is minor enough
->> that I can rework in time for v6.8, but so far haven't had any.
->>
->> Hi All,
->>
->> This is v7 of a series to implement small-sized THP for anonymous memory
->> (previously called "large anonymous folios"). The objective of this is to
-> 
-> I'm still against small-sized THP.  We've now got people asking whether
-> the THP counters should be updated when dealing with large folios that
-> are smaller than PMD sized.  It's sowing confusion, and we should go
-> back to large anon folios as a name.
+On Thu, Nov 16, 2023 at 11:30=E2=80=AFPM Andrew Davis <afd@ti.com> wrote:
 
-I suspect I'm labouring the point here, but I'd like to drill into exactly what
-you are objecting to. Is it:
+> Use devm version of gpiochip add function to handle removal for us.
+>
+> Signed-off-by: Andrew Davis <afd@ti.com>
 
-A) Using the name "small-sized THP" (which is currently only used in the commit
-logs and a couple of times in the documentation).
+Patch applied!
 
-B) Exposing the controls for this feature as an extension to the existing
-/sys/kernel/mm/transparent_hugepage/* sysfs interface (note the interface never
-uses the term "small-sized").
-
-If A) then this is easily solved by choosing another descriptive name and
-updating those places. Personally I think it would be best to continue to use
-"THP" since we are exposing the feature through that interface. Perhaps "large
-folio THP".
-
-If B) we could move the interface to /sys/kernel/mm/large_folio/*, but that
-introduces many more banana skins than the current approach IMHO:
-
-  - We would still want to expose the PMD-size large folio through this new
-    interface and so would still need "global" or equivalent for at least PMD
-    size, but "global" now points to a completely different sibling directory
-    structure. And it probably doesn't make any sense for the non-PMD-sizes to
-    have "global" because that would imply the THP interface could control the
-    non-PMD-sizes, which is what we are trying to separate in the first place.
-    So we end up with an asymmetry.
-
-  - When we get to adding other feature support for the smaller sizes (e.g.
-    khugepaged), we will end up having to duplicate all the controls from
-    transparent_hugepage/* to large_folio/*, then we have the problem that e.g.
-    scan rates could differ and we would end up needing 2 separate daemons.
-
-On the interface, David and I did request feedback on the proposal a number of
-times before I coded it up.
-
-I'm sure all solvable eventually, but I personally think it is overall simpler
-and more understandable as it is. I also agree with the other points raised in
-favor of "small-sized THP".
-
-Thanks,
-Ryan
+Yours,
+Linus Walleij
