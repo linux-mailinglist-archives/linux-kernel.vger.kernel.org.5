@@ -2,274 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81E67F6F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CD67F6F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbjKXJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S235154AbjKXJNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjKXJNA (ORCPT
+        with ESMTP id S230317AbjKXJNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:13:00 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EA3D68;
-        Fri, 24 Nov 2023 01:13:07 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sc8Qh0zm3z4f3m6w;
-        Fri, 24 Nov 2023 17:13:00 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 73ABF1A0516;
-        Fri, 24 Nov 2023 17:13:04 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgA3iA4faWBl+w0vBw--.5572S3;
-        Fri, 24 Nov 2023 17:13:04 +0800 (CST)
-Subject: Re: [PATCH -next v2 2/6] md: remove flag RemoveSynchronized
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20231021102059.3198284-1-yukuai1@huaweicloud.com>
- <20231021102059.3198284-3-yukuai1@huaweicloud.com>
- <CAPhsuW6kZ4voZQPsYQK4O9=5LtFvB8UY_oSWXkOTnek=aJPidw@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <fb6a482a-a546-3e6b-0a0a-238f81b0bb23@huaweicloud.com>
-Date:   Fri, 24 Nov 2023 17:13:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 24 Nov 2023 04:13:04 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A894D5A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:13:10 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9fa2714e828so226661366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:13:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700817189; x=1701421989; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2jYp9bXT9jDvYNvvs/Oe7OEauC69oXByuyHCREX6JEc=;
+        b=fxPrdwoB4dQ8Lj+SlhyZfurQFbP8v6w70lYwwDivq82t0UWpL0eW/4y/J0DWdNFmDR
+         uWNxQhdtXPlSe/bL09/FNLdE2eN61XrrL4MnT4kO2KmbC/uH9E+psiPkAD+YWsbFD/Qy
+         7ghN3e5HlLqhnRABsEbNaL5mbmeII8vKLIorWjCn/xopoU0jRzRAWj9d9yWfrwrCg9bd
+         FMN6+SfvxnLJ1MxwTV+WKzMjedBAXZauKwntAEmnOMXavxV6xoPv4uFfQdPCLsv6KcWi
+         GOJnmEYBFgEQtrIyqUOgBuElD4DSdxZjouAfoq96uOI7WlnCdod/hO+aX4xJfSKJi5+6
+         mrrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700817189; x=1701421989;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2jYp9bXT9jDvYNvvs/Oe7OEauC69oXByuyHCREX6JEc=;
+        b=F5i0f8LK3nmVarvmFGwASom1nsvMo2I1/IqMOXDsx+MVRgTKRDcWWhytOEqnNlS7IB
+         0rzPR+cskfhWZ4RTMrkduZQyN1bCJ85srttIqfq5byaauy3as+ajmqsH6bkCddJ876Tv
+         gtSTw9q9X7mHUuGFC2Jp+UeSnG8W9Tu0IWqx5l1lV26ligo0Kr9ZBzu5pvRrKQlQeLKS
+         z1AspMBWkr2uCiSuuOjljuayvh0Ktj4UNsSToV3BGF4cqd7LGLkkL3rlg0E81E7QBbTB
+         ncs1nym2iiWp2qA1prp10FTD3Q1Aw7PcoPSxkVSvZCb95qGZiAfz5+RIQilf30EWk3mk
+         Nq7w==
+X-Gm-Message-State: AOJu0YxvPhnPNc5qRzV9LRKQtaRqFNu/3JbxNuCdIQbWquAaIQy4aPcB
+        GPxzwb8ky2qEzFfFpxBHieJkGg==
+X-Google-Smtp-Source: AGHT+IF/DUJRunD6cOJ0P7qB5Vmg62L2vUxnhUXmHn7H6nGKmsAouTxsq+7EQY/kFMKl2n2/QvACIg==
+X-Received: by 2002:a17:906:3751:b0:9dc:2215:1593 with SMTP id e17-20020a170906375100b009dc22151593mr1421164ejc.25.1700817188666;
+        Fri, 24 Nov 2023 01:13:08 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id n17-20020a170906379100b009e5eaf7a9b6sm1805588ejc.139.2023.11.24.01.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 01:13:08 -0800 (PST)
+Message-ID: <b3a382e3-2f24-4481-adec-030cc79997b3@linaro.org>
+Date:   Fri, 24 Nov 2023 10:13:05 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW6kZ4voZQPsYQK4O9=5LtFvB8UY_oSWXkOTnek=aJPidw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgA3iA4faWBl+w0vBw--.5572S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1DJFy8Cr47Xry8GFyrCrg_yoWxJw45p3
-        93XFy3Cr4UXr4jkr4DXrWUCFyrXw17KrW8Cr93ua4Svas2vryDW34rJFW5Wr98ZFZ3Za10
-        qF1UJwsrGF1xKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUU
-        UU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+Content-Language: en-US
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Johan Hovold <johan@kernel.org>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+References: <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
+ <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
+ <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
+ <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
+ <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
+ <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
+ <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
+ <6d4d959c-b155-471b-b13d-f6fda557cfe0@quicinc.com>
+ <ZVYTFi3Jnnljl48L@hovoldconsulting.com>
+ <e0789695-43ee-4285-95e9-4cdee24d6ffe@quicinc.com>
+ <ZV9XTU-q038BaWn3@hovoldconsulting.com>
+ <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <4fc27dbb-b0aa-437a-a48c-9deea236282d@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 24/11/2023 10:00, Krishna Kurapati PSSNV wrote:
+>>
+>>> I didn't add missing interrupts on sc8280xp because I see that current
+>>> interrupts present are working fine (I see ADB working and wakeup
+>>> working as well), but the interrupt vector numbers are off by "1"
+>>> between hs specifics and DT (both upstream and downstream). Will sort it
+>>> out and clean that target up later.
+>>
+>> Which interrupt numbers are off by one here?
+>>   
+> 
+> My bad, this might be the confusion. The HW specifics say:
+> 
+> Controller-2, power_event irq:
+> 
+> SYS_apcsQgicSPI[812]		Vector-number: 843
+> 
+> 
+> Usually vector number = 32 + GIC number AFAIK.
+> By that logic, If vector number is 843, GIC_SPI number is 811 which is 
+> same as DT. Probably the GIC_SPI number is printed wrong. The DT matches 
+> (vector number - 32).
+> 
+> Sorry for mentioning that it is wrong. The DT entries are right and it 
+> is working on upstream.
+> 
+> The missing hs_phy_irq's have been put on the mail thread on this list 
+> before.
+> 
+> Regards,
+> Krishna,
+> 
+>>> [1]: https://patchwork.kernel.org/project/linux-arm-msm/list/?series=803412
+>>
+>> I took a quick look at the series, and it looks like this will
+>> eventually clean things up a lot. We should probably define a generic
+>> order for the interrupts with the sometimes optional SS interrupts last.
+>>
+>> Side note: It looks like the threading in that series is broken.
+>> Consider using git-send-email for sending series as it takes care of
+>> things like that.
+>>
+> 
+> Usually I do git send-email for the whole out folder where the patches 
+> are present, but linux-usb list is common to all the patches in that 
+> case, even the DT ones. So to avoid that and to send patches to only 
+> relavant mailing lists, I did git send email individually on each patch 
+> which might have caused this issue.
 
-在 2023/11/24 16:28, Song Liu 写道:
-> On Fri, Oct 20, 2023 at 7:25 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> rcu is not used correctly here, because synchronize_rcu() is called
->> before replacing old value, for example:
->>
->> remove_and_add_spares   // other path
->>   synchronize_rcu
->>   // called before replacing old value
->>   set_bit(RemoveSynchronized)
->>                          rcu_read_lock()
->>                          rdev = conf->mirros[].rdev
->>   pers->hot_remove_disk
->>    conf->mirros[].rdev = NULL;
->>    if (!test_bit(RemoveSynchronized))
->>     synchronize_rcu
->>     /*
->>      * won't be called, and won't wait
->>      * for concurrent readers to be done.
->>      */
->>                          // access rdev after remove_and_add_spares()
->>                          rcu_read_unlock()
->>
->> Fortunately, there is a separate rcu protection to prevent such rdev
->> to be freed:
->>
->> md_kick_rdev_from_array         //other path
->>                                  rcu_read_lock()
->>                                  rdev = conf->mirros[].rdev
->> list_del_rcu(&rdev->same_set)
->>
->>                                  rcu_read_unlock()
->>                                  /*
->>                                   * rdev can be removed from conf, but
->>                                   * rdev won't be freed.
->>                                   */
->> synchronize_rcu()
->> free rdev
->>
->> Hence remove this useless flag and prepare to remove rcu protection to
->> access rdev from 'conf'.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> 
-> RemoveSynchronized is not removed from md.h.
+I don't understand why. This is some weird workflow. If you do not use
+b4, then it is simple:
+git format-patch -10 -v13
+get_maintainers v13*
+git send-email v13*
+And that's it. Last two steps can be even one command, like I am doing
+(shared the macro multiple times).
 
-Yes, thanks for the notice.
-
-Kuai
-> 
-> 
->> ---
->>   drivers/md/md-multipath.c |  9 ---------
->>   drivers/md/md.c           | 37 ++++++-------------------------------
->>   drivers/md/raid1.c        |  9 ---------
->>   drivers/md/raid10.c       |  9 ---------
->>   drivers/md/raid5.c        |  9 ---------
->>   5 files changed, 6 insertions(+), 67 deletions(-)
->>
->> diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
->> index d22276870283..aa77133f3188 100644
->> --- a/drivers/md/md-multipath.c
->> +++ b/drivers/md/md-multipath.c
->> @@ -258,15 +258,6 @@ static int multipath_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
->>                          goto abort;
->>                  }
->>                  p->rdev = NULL;
->> -               if (!test_bit(RemoveSynchronized, &rdev->flags)) {
->> -                       synchronize_rcu();
->> -                       if (atomic_read(&rdev->nr_pending)) {
->> -                               /* lost the race, try later */
->> -                               err = -EBUSY;
->> -                               p->rdev = rdev;
->> -                               goto abort;
->> -                       }
->> -               }
->>                  err = md_integrity_register(mddev);
->>          }
->>   abort:
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 09686d8db983..68f3bb6e89cb 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -9250,44 +9250,19 @@ static int remove_and_add_spares(struct mddev *mddev,
->>          struct md_rdev *rdev;
->>          int spares = 0;
->>          int removed = 0;
->> -       bool remove_some = false;
->>
->>          if (this && test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
->>                  /* Mustn't remove devices when resync thread is running */
->>                  return 0;
->>
->>          rdev_for_each(rdev, mddev) {
->> -               if ((this == NULL || rdev == this) &&
->> -                   rdev->raid_disk >= 0 &&
->> -                   !test_bit(Blocked, &rdev->flags) &&
->> -                   test_bit(Faulty, &rdev->flags) &&
->> -                   atomic_read(&rdev->nr_pending)==0) {
->> -                       /* Faulty non-Blocked devices with nr_pending == 0
->> -                        * never get nr_pending incremented,
->> -                        * never get Faulty cleared, and never get Blocked set.
->> -                        * So we can synchronize_rcu now rather than once per device
->> -                        */
->> -                       remove_some = true;
->> -                       set_bit(RemoveSynchronized, &rdev->flags);
->> -               }
->> -       }
->> -
->> -       if (remove_some)
->> -               synchronize_rcu();
->> -       rdev_for_each(rdev, mddev) {
->> -               if ((this == NULL || rdev == this) &&
->> -                   (test_bit(RemoveSynchronized, &rdev->flags) ||
->> -                    rdev_removeable(rdev))) {
->> -                       if (mddev->pers->hot_remove_disk(
->> -                                   mddev, rdev) == 0) {
->> -                               sysfs_unlink_rdev(mddev, rdev);
->> -                               rdev->saved_raid_disk = rdev->raid_disk;
->> -                               rdev->raid_disk = -1;
->> -                               removed++;
->> -                       }
->> +               if ((this == NULL || rdev == this) && rdev_removeable(rdev) &&
->> +                   !mddev->pers->hot_remove_disk(mddev, rdev)) {
->> +                       sysfs_unlink_rdev(mddev, rdev);
->> +                       rdev->saved_raid_disk = rdev->raid_disk;
->> +                       rdev->raid_disk = -1;
->> +                       removed++;
->>                  }
->> -               if (remove_some && test_bit(RemoveSynchronized, &rdev->flags))
->> -                       clear_bit(RemoveSynchronized, &rdev->flags);
->>          }
->>
->>          if (removed && mddev->kobj.sd)
->> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
->> index c13088eae401..4348d670439d 100644
->> --- a/drivers/md/raid1.c
->> +++ b/drivers/md/raid1.c
->> @@ -1836,15 +1836,6 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
->>                          goto abort;
->>                  }
->>                  p->rdev = NULL;
->> -               if (!test_bit(RemoveSynchronized, &rdev->flags)) {
->> -                       synchronize_rcu();
->> -                       if (atomic_read(&rdev->nr_pending)) {
->> -                               /* lost the race, try later */
->> -                               err = -EBUSY;
->> -                               p->rdev = rdev;
->> -                               goto abort;
->> -                       }
->> -               }
->>                  if (conf->mirrors[conf->raid_disks + number].rdev) {
->>                          /* We just removed a device that is being replaced.
->>                           * Move down the replacement.  We drain all IO before
->> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
->> index 4b5f34f320c8..33ab00323cae 100644
->> --- a/drivers/md/raid10.c
->> +++ b/drivers/md/raid10.c
->> @@ -2219,15 +2219,6 @@ static int raid10_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
->>                  goto abort;
->>          }
->>          *rdevp = NULL;
->> -       if (!test_bit(RemoveSynchronized, &rdev->flags)) {
->> -               synchronize_rcu();
->> -               if (atomic_read(&rdev->nr_pending)) {
->> -                       /* lost the race, try later */
->> -                       err = -EBUSY;
->> -                       *rdevp = rdev;
->> -                       goto abort;
->> -               }
->> -       }
->>          if (p->replacement) {
->>                  /* We must have just cleared 'rdev' */
->>                  p->rdev = p->replacement;
->> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
->> index 27a4dce51c92..a80be51b4825 100644
->> --- a/drivers/md/raid5.c
->> +++ b/drivers/md/raid5.c
->> @@ -8202,15 +8202,6 @@ static int raid5_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
->>                  goto abort;
->>          }
->>          *rdevp = NULL;
->> -       if (!test_bit(RemoveSynchronized, &rdev->flags)) {
->> -               lockdep_assert_held(&mddev->reconfig_mutex);
->> -               synchronize_rcu();
->> -               if (atomic_read(&rdev->nr_pending)) {
->> -                       /* lost the race, try later */
->> -                       err = -EBUSY;
->> -                       rcu_assign_pointer(*rdevp, rdev);
->> -               }
->> -       }
->>          if (!err) {
->>                  err = log_modify(conf, rdev, false);
->>                  if (err)
->> --
->> 2.39.2
->>
-> 
-> .
-> 
+Best regards,
+Krzysztof
 
