@@ -2,332 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 009287F84FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABAB7F84FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbjKXT5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:57:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        id S232389AbjKXT56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjKXT5q (ORCPT
+        with ESMTP id S231860AbjKXT54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 14:57:46 -0500
-X-Greylist: delayed 193 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 11:57:52 PST
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C721710F6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:57:52 -0800 (PST)
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 469591FE89;
-        Fri, 24 Nov 2023 19:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700855871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=W/fT1pLSNri41feNsUCmL949IgVkjP0z0mkUiKdBhCw=;
-        b=GyCU9aqNKGMA1KdMC57xu14BtLdrUQSTPKe20/CvTYCk74TbAQZKm2diGqUl6kJ9uoh+AZ
-        0lPJzJFYCZ3VJ7qTMZOELCbZXaXNqheKH5/m6F1L6oKEqYo0NwYUPE7VTrCJLrG33lvYI/
-        wY5KvEnmClnS0SQ5rRRy2kZGlm5RaSI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700855871;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=W/fT1pLSNri41feNsUCmL949IgVkjP0z0mkUiKdBhCw=;
-        b=BquKKDNfVhyNnLh2p64LgZzw/GK7mILivQI74biCSPeKBsjmm4iDFIjwm+C7BHkVOBXLLw
-        m/2XTBZVbZDkqIAQ==
-Received: from localhost (dwarf.suse.cz [10.100.12.32])
-        by relay2.suse.de (Postfix) with ESMTP id 700D72C145;
-        Fri, 24 Nov 2023 19:57:49 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 20:57:49 +0100
-From:   Jiri Bohac <jbohac@suse.cz>
-To:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mhocko@suse.cz
-Subject: [PATCH 1/4] kdump: add crashkernel cma suffix
-Message-ID: <ZWEAPXiCCgAf1WrY@dwarf.suse.cz>
+        Fri, 24 Nov 2023 14:57:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6A61985
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:58:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700855882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ybZHlf/mJ5/agtbykqICZuSlViY9e9I6Dg/UHiB8cLQ=;
+        b=erN7nkvweqNrlLQB6ypKGRvL/GBd73AthtFjModZoWPm122byudHBSBVv2LV0bvMwdGMUy
+        Q6y8CN6SCcn+LvL+0YguzXCyRCmYErJNExzQP5lgduRwuQaPsoIezzUqS8giNRgOfU1h87
+        WYw2dqFynwJqhHskP5CH6rCBFiu5iT4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-115-UO0m5vkXNr-M-vmDPfxr6Q-1; Fri,
+ 24 Nov 2023 14:57:58 -0500
+X-MC-Unique: UO0m5vkXNr-M-vmDPfxr6Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 26F051C0515B;
+        Fri, 24 Nov 2023 19:57:58 +0000 (UTC)
+Received: from Diego (unknown [10.39.208.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B15F2026D68;
+        Fri, 24 Nov 2023 19:57:55 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 20:57:52 +0100 (CET)
+From:   Michael Petlan <mpetlan@redhat.com>
+X-X-Sender: Michael@Diego
+To:     Nick Forrington <nick.forrington@arm.com>
+cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        vmolnaro@redhat.com
+Subject: Re: [PATCH] perf test: Remove atomics from test_loop to avoid test
+ failures
+In-Reply-To: <20231102162225.50028-1-nick.forrington@arm.com>
+Message-ID: <alpine.LRH.2.20.2311242037260.11297@Diego>
+References: <20231102162225.50028-1-nick.forrington@arm.com>
+User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
-X-Spamd-Bar: ++++++++++++++++++
-X-Spam-Score: 18.59
-X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: 469591FE89
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=none;
-        spf=pass (smtp-out2.suse.de: domain of jbohac@suse.cz designates 149.44.160.134 as permitted sender) smtp.mailfrom=jbohac@suse.cz
-X-Spamd-Result: default: False [18.59 / 50.00];
-         RDNS_NONE(1.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         SPAMHAUS_XBL(0.00)[149.44.160.134:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_ALLOW(-0.20)[+ip4:149.44.0.0/16:c];
-         RWL_MAILSPIKE_GOOD(-1.00)[149.44.160.134:from];
-         HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
-         HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
-         RCPT_COUNT_FIVE(0.00)[6];
-         MID_RHS_MATCH_FROMTLD(0.00)[];
-         MX_GOOD(-0.01)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RDNS_DNSFAIL(0.00)[];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         TO_MATCH_ENVRCPT_SOME(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         HFILTER_HOSTNAME_UNKNOWN(2.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new optional ",cma" suffix to the crashkernel= command line option.
+On Thu, 2 Nov 2023, Nick Forrington wrote:
+> The current use of atomics can lead to test failures, as tests (such as
+> tests/shell/record.sh) search for samples with "test_loop" as the
+> top-most stack frame, but find frames related to the atomic operation
+> (e.g. __aarch64_ldadd4_relax).
+> 
+> This change simply removes the "count" variable, as it is not necessary.
 
-Add a new cma_size parameter to parse_crashkernel().
-When not NULL, call __parse_crashkernel to parse the CMA
-reservation size from "crashkernel=size,cma" and store it 
-in cma_size.
+Hello.
 
-Set cma_size to NULL in all calls to parse_crashkernel().
+I believe that it was there to prevent the compiler to optimize the loop
+out or some reason like that. Hopefully, it will work even without that
+on all architectures with all compilers that are used for building perf...
 
-Signed-off-by: Jiri Bohac <jbohac@suse.cz>
----
- arch/arm/kernel/setup.c              |  2 +-
- arch/arm64/mm/init.c                 |  2 +-
- arch/loongarch/kernel/setup.c        |  2 +-
- arch/mips/kernel/setup.c             |  2 +-
- arch/powerpc/kernel/fadump.c         |  2 +-
- arch/powerpc/kexec/core.c            |  2 +-
- arch/powerpc/mm/nohash/kaslr_booke.c |  2 +-
- arch/riscv/mm/init.c                 |  2 +-
- arch/s390/kernel/setup.c             |  2 +-
- arch/sh/kernel/machine_kexec.c       |  2 +-
- arch/x86/kernel/setup.c              |  2 +-
- include/linux/crash_core.h           |  3 ++-
- kernel/crash_core.c                  | 20 ++++++++++++++++----
- 13 files changed, 29 insertions(+), 16 deletions(-)
+I also think that the tests should be designed in a more robust way, so
+that they aren't directly dependent on exact stack frames, e.g. let's look
+at the "inet_pton" testcase...
 
-diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-index ff2299ce1ad7..cb940553c757 100644
---- a/arch/arm/kernel/setup.c
-+++ b/arch/arm/kernel/setup.c
-@@ -1010,7 +1010,7 @@ static void __init reserve_crashkernel(void)
- 	total_mem = get_total_mem();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
- 				&crash_size, &crash_base,
--				NULL, NULL);
-+				NULL, NULL, NULL);
- 	/* invalid value specified or crashkernel=0 */
- 	if (ret || !crash_size)
- 		return;
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 74c1db8ce271..819b8979584c 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -105,7 +105,7 @@ static void __init arch_reserve_crashkernel(void)
- 
- 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
- 				&crash_size, &crash_base,
--				&low_size, &high);
-+				&low_size, NULL, &high);
- 	if (ret)
- 		return;
- 
-diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
-index d183a745fb85..0489c8188b83 100644
---- a/arch/loongarch/kernel/setup.c
-+++ b/arch/loongarch/kernel/setup.c
-@@ -266,7 +266,7 @@ static void __init arch_parse_crashkernel(void)
- 	total_mem = memblock_phys_mem_size();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
- 				&crash_size, &crash_base,
--				NULL, NULL);
-+				NULL, NULL, NULL);
- 	if (ret < 0 || crash_size <= 0)
- 		return;
- 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 2d2ca024bd47..98afa80ec002 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -456,7 +456,7 @@ static void __init mips_parse_crashkernel(void)
- 	total_mem = memblock_phys_mem_size();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
- 				&crash_size, &crash_base,
--				NULL, NULL);
-+				NULL, NULL, NULL);
- 	if (ret != 0 || crash_size <= 0)
- 		return;
- 
-diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
-index d14eda1e8589..6fa5ab01f4e8 100644
---- a/arch/powerpc/kernel/fadump.c
-+++ b/arch/powerpc/kernel/fadump.c
-@@ -313,7 +313,7 @@ static __init u64 fadump_calculate_reserve_size(void)
- 	 * memory at a predefined offset.
- 	 */
- 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--				&size, &base, NULL, NULL);
-+				&size, &base, NULL, NULL, NULL);
- 	if (ret == 0 && size > 0) {
- 		unsigned long max_size;
- 
-diff --git a/arch/powerpc/kexec/core.c b/arch/powerpc/kexec/core.c
-index 85846cadb9b5..c1e0afd94c90 100644
---- a/arch/powerpc/kexec/core.c
-+++ b/arch/powerpc/kexec/core.c
-@@ -112,7 +112,7 @@ void __init reserve_crashkernel(void)
- 	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
- 	/* use common parsing */
- 	ret = parse_crashkernel(boot_command_line, total_mem_sz,
--			&crash_size, &crash_base, NULL, NULL);
-+			&crash_size, &crash_base, NULL, NULL, NULL);
- 	if (ret == 0 && crash_size > 0) {
- 		crashk_res.start = crash_base;
- 		crashk_res.end = crash_base + crash_size - 1;
-diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
-index b4f2786a7d2b..df083fe158b6 100644
---- a/arch/powerpc/mm/nohash/kaslr_booke.c
-+++ b/arch/powerpc/mm/nohash/kaslr_booke.c
-@@ -178,7 +178,7 @@ static void __init get_crash_kernel(void *fdt, unsigned long size)
- 	int ret;
- 
- 	ret = parse_crashkernel(boot_command_line, size, &crash_size,
--				&crash_base, NULL, NULL);
-+				&crash_base, NULL, NULL, NULL);
- 	if (ret != 0 || crash_size == 0)
- 		return;
- 	if (crash_base == 0)
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 2e011cbddf3a..d0bae97c9a7a 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -1355,7 +1355,7 @@ static void __init arch_reserve_crashkernel(void)
- 
- 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
- 				&crash_size, &crash_base,
--				&low_size, &high);
-+				&low_size, NULL, &high);
- 	if (ret)
- 		return;
- 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 5701356f4f33..4d18b6b8f5ca 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -619,7 +619,7 @@ static void __init reserve_crashkernel(void)
- 	int rc;
- 
- 	rc = parse_crashkernel(boot_command_line, ident_map_size,
--			       &crash_size, &crash_base, NULL, NULL);
-+			       &crash_size, &crash_base, NULL, NULL, NULL);
- 
- 	crash_base = ALIGN(crash_base, KEXEC_CRASH_MEM_ALIGN);
- 	crash_size = ALIGN(crash_size, KEXEC_CRASH_MEM_ALIGN);
-diff --git a/arch/sh/kernel/machine_kexec.c b/arch/sh/kernel/machine_kexec.c
-index fa3a7b36190a..e754860a7236 100644
---- a/arch/sh/kernel/machine_kexec.c
-+++ b/arch/sh/kernel/machine_kexec.c
-@@ -154,7 +154,7 @@ void __init reserve_crashkernel(void)
- 	int ret;
- 
- 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--			&crash_size, &crash_base, NULL, NULL);
-+			&crash_size, &crash_base, NULL, NULL, NULL);
- 	if (ret == 0 && crash_size > 0) {
- 		crashk_res.start = crash_base;
- 		crashk_res.end = crash_base + crash_size - 1;
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 1526747bedf2..f271b2cc3054 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -478,7 +478,7 @@ static void __init arch_reserve_crashkernel(void)
- 
- 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
- 				&crash_size, &crash_base,
--				&low_size, &high);
-+				&low_size, NULL, &high);
- 	if (ret)
- 		return;
- 
-diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-index 5126a4fecb44..f1edefcf7377 100644
---- a/include/linux/crash_core.h
-+++ b/include/linux/crash_core.h
-@@ -95,7 +95,8 @@ void final_note(Elf_Word *buf);
- 
- int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
- 		unsigned long long *crash_size, unsigned long long *crash_base,
--		unsigned long long *low_size, bool *high);
-+		unsigned long long *low_size, unsigned long long *cma_size,
-+		bool *high);
- 
- #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
- #ifndef DEFAULT_CRASH_KERNEL_LOW_SIZE
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index efe87d501c8c..1e952d2e451b 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -184,11 +184,13 @@ static int __init parse_crashkernel_simple(char *cmdline,
- 
- #define SUFFIX_HIGH 0
- #define SUFFIX_LOW  1
--#define SUFFIX_NULL 2
-+#define SUFFIX_CMA  2
-+#define SUFFIX_NULL 3
- static __initdata char *suffix_tbl[] = {
--	[SUFFIX_HIGH] = ",high",
--	[SUFFIX_LOW]  = ",low",
--	[SUFFIX_NULL] = NULL,
-+	[SUFFIX_HIGH]	= ",high",
-+	[SUFFIX_LOW]	= ",low",
-+	[SUFFIX_CMA]	= ",cma",
-+	[SUFFIX_NULL]	= NULL,
- };
- 
- /*
-@@ -310,9 +312,11 @@ int __init parse_crashkernel(char *cmdline,
- 			     unsigned long long *crash_size,
- 			     unsigned long long *crash_base,
- 			     unsigned long long *low_size,
-+			     unsigned long long *cma_size,
- 			     bool *high)
- {
- 	int ret;
-+	unsigned long long cma_base;
- 
- 	/* crashkernel=X[@offset] */
- 	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
-@@ -343,6 +347,14 @@ int __init parse_crashkernel(char *cmdline,
- 
- 		*high = true;
- 	}
-+
-+	/*
-+	* optional CMA reservation
-+	* cma_base is ignored
-+	*/
-+	if (cma_size)
-+		__parse_crashkernel(cmdline, 0, cma_size,
-+			&cma_base, suffix_tbl[SUFFIX_CMA]);
- #endif
- 	if (!*crash_size)
- 		ret = -EINVAL;
+The inet_pton test result check algorithm is designed to rely on exact
+stacktrace, without a possibility to specify something like "we want this
+and that in the stack trace, but otherwise, it does not matter which
+wrappers are aroung". Then there must be the following code to adjust
+the expected output exactly per architecture:
 
--- 
-Jiri Bohac <jbohac@suse.cz>
-SUSE Labs, Prague, Czechia
+    echo "ping[][0-9 \.:]+$event_name: \([[:xdigit:]]+\)" > $expected
+    echo ".*inet_pton\+0x[[:xdigit:]]+[[:space:]]\($libc|inlined\)$" >> $expected
+    case "$(uname -m)" in
+      s390x)
+        eventattr='call-graph=dwarf,max-stack=4'
+        echo "(__GI_)?getaddrinfo\+0x[[:xdigit:]]+[[:space:]]\($libc|inlined\)$" >> $expected
+        echo "main\+0x[[:xdigit:]]+[[:space:]]\(.*/bin/ping.*\)$" >> $expected
+      ;;
+      ppc64|ppc64le)
+        eventattr='max-stack=4'
+        echo "gaih_inet.*\+0x[[:xdigit:]]+[[:space:]]\($libc\)$" >> $expected
+        echo "getaddrinfo\+0x[[:xdigit:]]+[[:space:]]\($libc\)$" >> $expected
+        echo ".*(\+0x[[:xdigit:]]+|\[unknown\])[[:space:]]\(.*/bin/ping.*\)$" >> $expected
+      ;;
+      *)
+        eventattr='max-stack=3'
+        echo ".*(\+0x[[:xdigit:]]+|\[unknown\])[[:space:]]\(.*/bin/ping.*\)$" >> $expected
+      ;;
+    esac
+
+Of course, since it relies on libc version, then we need patches, such as
+    1f85d016768f ("perf test record+probe_libc_inet_pton: Fix call chain match on x86_64")
+    311693ce81c9 ("perf test record+probe_libc_inet_pton: Fix call chain match on s390")
+    fb710ddee75f ("perf test record_probe_libc_inet_pton: Fix test on s/390 where 'text_to_binary_address' now appears on the backtrace")
+    ...
+which break the test when used with older libc...
+
+I think that a better design of such test is either probing some program
+of ourselves that has predictable and stable function call sequence or
+be more robust in checking the stack trace.
+
+Thoughts?
+
+Michael
+
+> 
+> Fixes: 1962ab6f6e0b ("perf test workload thloop: Make count increments atomic")
+> Signed-off-by: Nick Forrington <nick.forrington@arm.com>
+> ---
+>  tools/perf/tests/workloads/thloop.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/tests/workloads/thloop.c b/tools/perf/tests/workloads/thloop.c
+> index af05269c2eb8..457b29f91c3e 100644
+> --- a/tools/perf/tests/workloads/thloop.c
+> +++ b/tools/perf/tests/workloads/thloop.c
+> @@ -7,7 +7,6 @@
+>  #include "../tests.h"
+>  
+>  static volatile sig_atomic_t done;
+> -static volatile unsigned count;
+>  
+>  /* We want to check this symbol in perf report */
+>  noinline void test_loop(void);
+> @@ -19,8 +18,7 @@ static void sighandler(int sig __maybe_unused)
+>  
+>  noinline void test_loop(void)
+>  {
+> -	while (!done)
+> -		__atomic_fetch_add(&count, 1, __ATOMIC_RELAXED);
+> +	while (!done);
+>  }
+>  
+>  static void *thfunc(void *arg)
+> -- 
+> 2.42.0
+> 
+> 
+> 
 
