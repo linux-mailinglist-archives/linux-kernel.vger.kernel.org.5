@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1C27F69EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 01:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 881CF7F69F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 01:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjKXAqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 19:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        id S230086AbjKXAq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 19:46:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXAqJ (ORCPT
+        with ESMTP id S229477AbjKXAqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 19:46:09 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7165ED4A
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:46:15 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf5ceadfd8so246745ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700786775; x=1701391575; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyESJhHP/pA7tKXWx5D4jkhxltBcaPXfc9yFdB3lYZU=;
-        b=DBUVo17z86SRMOOBFdHp2cYmFZYNHdOjvB2rZUe66ncJqD+NhueRu2xLfhqStXg6p3
-         WzXwV4J1F9Zj4qw5HrhYh1X8+dv6cPemftNkVkPo6eWGzt6tIE+c/5crxOV0PNDLv0aR
-         70XVWtbs+FCrpInWFk6sr4YFUymi/anQZzBp61IO0ogo3MeYeiuN75kZ0aTmobav19ad
-         uT60zBIfTdVNyH+Y7oU11PwUm01h/b1j+ZR2Mb0JGZsssY4oiXF0xtPS3OEWQc0gQiHp
-         ZWUg3g1FzAkPF/XIBseq8baAc5PFvS/A6HRIKS+7n/zCby7gZz0PIdJ63SnvAAKZ6GiD
-         KJhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700786775; x=1701391575;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyESJhHP/pA7tKXWx5D4jkhxltBcaPXfc9yFdB3lYZU=;
-        b=ddYQYJ2OCczob0F+t1EUHAkekr5Na368mq/dGVjnuFkatN0Slq6cFGSPOBxQne1a3/
-         YJY/w1pmA5FdDcUAwa2zazbDlXkgvdGNZhnmdhrAYrY6djeNSrcSwvr7ZAgAEl0hYrQi
-         NAW0XN/tO9xeqWT3hoYZuoZH4PQjNu1bu+j23RN4U4IxpO2eAPgX3qCzmOREa/tluR7b
-         76si46wSNP2gDsPNtYdOVMq2EEmzxiyO6bDu9gITpdxKXNPt/fDlxoGMfRHT4WVgWC9j
-         mrqxhSs7rlz9+z0ijHf2Ou1N3O4yVmFtrjrfP+gYqZaevsABtKbatFeaQjm0ayx3zRwX
-         McOg==
-X-Gm-Message-State: AOJu0YwQfonOFE9FnFb9FEtsWupd+AcfzUwxLw5HyVsxpYY2OU0OWhSG
-        0FgjZXf0+GnTyLjDgJEttptm8g==
-X-Google-Smtp-Source: AGHT+IG9L5wkvJ9LV55yMZVFmvH9BcaUHyRQbnf/LCI7b+GigUlq7H9pPPL4PRM5AdlOR0f0KUTRiw==
-X-Received: by 2002:a17:903:1245:b0:1cf:6573:9fe0 with SMTP id u5-20020a170903124500b001cf65739fe0mr609687plh.16.1700786774750;
-        Thu, 23 Nov 2023 16:46:14 -0800 (PST)
-Received: from [2620:0:1008:15:ab09:50a5:ec6d:7b5c] ([2620:0:1008:15:ab09:50a5:ec6d:7b5c])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902724100b001bde6fa0a39sm1951963pll.167.2023.11.23.16.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 16:46:13 -0800 (PST)
-Date:   Thu, 23 Nov 2023 16:46:13 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 01/21] mm/slab, docs: switch mm-api docs generation
- from slab.c to slub.c
-In-Reply-To: <20231120-slab-remove-slab-v2-1-9c9c70177183@suse.cz>
-Message-ID: <ea6d3060-1517-6eac-8939-1f3d004cef1a@google.com>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz> <20231120-slab-remove-slab-v2-1-9c9c70177183@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Thu, 23 Nov 2023 19:46:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D2110DD
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 16:46:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700786791; x=1732322791;
+  h=date:from:to:cc:subject:message-id;
+  bh=wwk43fZCnDykHBhpu4ZYG8H3qRyWDURs5GjTjFkKk1g=;
+  b=eK3zQDSa3P/Wu+c8/MEnjoFiXB3JYY32pkt+7Ls8Y1IgaFoTmWdHhs/y
+   tqT+RPMDz0L+5Ilsv1wkaPwG2pn8acr8YFq8xHp1pOvz5AyaK70Z1yQ5G
+   J7tIjc6taW663qzioQnEhnSnmxyFy2txFECMT3xZyH6J71yc5KUcwpjfH
+   fFMiZj+jYhiSrp4pzHazxyboceNp0DTe6rh/9JLCfuw0tGAzd4W8uY3dj
+   VBoLxk44YqNgE99B/H+c1h0fgg2FsxvMZ+i0WTY/m58NAlDLePg5cyYwT
+   n8G/ZpTo63usjQeY1PdNNr3KhLoUIcb7RpzWR5lsuabtMFDO7REfCtkNt
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389498671"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="389498671"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 16:46:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="796443995"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="796443995"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2023 16:46:29 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r6KKx-0001tf-0k;
+        Fri, 24 Nov 2023 00:46:27 +0000
+Date:   Fri, 24 Nov 2023 08:46:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/mm] BUILD SUCCESS
+ 8e5647a723c49d73b9f108a8bb38e8c29d3948ea
+Message-ID: <202311240816.tUPWIUD6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023, Vlastimil Babka wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+branch HEAD: 8e5647a723c49d73b9f108a8bb38e8c29d3948ea  x86/mm: Ensure input to pfn_to_kaddr() is treated as a 64-bit type
 
-> The SLAB implementation is going to be removed, and mm-api.rst currently
-> uses mm/slab.c to obtain kerneldocs for some API functions. Switch it to
-> mm/slub.c and move the relevant kerneldocs of exported functions from
-> one to the other. The rest of kerneldocs in slab.c is for static SLAB
-> implementation-specific functions that don't have counterparts in slub.c
-> and thus can be simply removed with the implementation.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+elapsed time: 740m
 
-This is new to v2 so I didn't technically get to test it.  But no testing 
-required on this one :)
+configs tested: 55
+configs skipped: 134
 
-Acked-by: David Rientjes <rientjes@google.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arm                               allnoconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                                defconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                          defconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                               defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
