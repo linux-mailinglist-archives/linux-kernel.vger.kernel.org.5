@@ -2,161 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E887C7F7887
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B977F789D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbjKXQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S231209AbjKXQK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjKXQE6 (ORCPT
+        with ESMTP id S229659AbjKXQK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:04:58 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8DF19AA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:05:04 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5cd3c4457a0so17293797b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:05:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1700841904; x=1701446704; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FGMFcjXzbEdk+Sse8VkaimKNQr0g8bw7uTtgiPTBa4Y=;
-        b=qVmcs9xiioqxNCrBHmhMK3Y9pEMN/uCvw0r/CD+fTQXAeLtKHHqGiLVQ0DWTofHlA2
-         csK/pKPkcfiRPbwq50ZBZzrvMNd3BG0HPyRkVg6FaHSoEnp2GTZT0Kfp6ZkHorCPjY1I
-         K914M1AL/Dizr56uVnpXYp4jxfiHJCgCeoazky8IyFHrhvog0MQCaXR3nYLzX6gk+kc7
-         XGxEDVZ3FnTpLM2UTLTn2xMYZMhfekbwwSIgonrSOO4gh3ZqbRl72jzkeHS1pl52bX75
-         UIATDjGesE4TAJrhvNClNKeBo3NK/HovlKuZvlH2pFRlV+gEtrMN/CLamTW6bctb5fjn
-         dlMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700841904; x=1701446704;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FGMFcjXzbEdk+Sse8VkaimKNQr0g8bw7uTtgiPTBa4Y=;
-        b=oCDIPsEpG94IGNvnlaSHri7czu8pVS6rgUszohBth63/LMmJkicboXZlkqPsrlnDTG
-         cFyWjeQcMN+t9OXJSlM1XLYJTBKDBEWmVkqFe8+uTCL3tVixarTkZH9G5GItEp2PLgdc
-         p+Cfx68Nxp4XW/dq7s7cKAdRilhLtlnoDLwoFHzp4q6g8RSwj0c3i8CgiyDetyHtHhL0
-         S9yDqEpJuip7a6RcVEcwUgSzpCKxfS1U+HUUahD9t7Irri1RCAOCKjMFahXQFXbVRtet
-         zNFUDvYrS3CpDUnhkAE2e+GGtgVVhmv550cIJbOSFOQiiWs5yEdThaRp9vXyX01eCK7N
-         ggfA==
-X-Gm-Message-State: AOJu0YxCN4lSGJHXLR9UoDgZ/1dNz9ngy/fW2PDDUUPQSuLuvLOJul5s
-        ktcrXrtJGiSMyKWFo5MxsA0CriBWZwT+sGcXD8wKfQ==
-X-Google-Smtp-Source: AGHT+IHDgEc5/d/bHS+/3bhvmbDKVLXNvruKPPtv9g7wbHtBvMJ6nCQ5UHivqzqIt+ZGbt+K3E1Ap3ZKIgfp0CQUNE8=
-X-Received: by 2002:a25:8e0a:0:b0:da0:5ba2:6275 with SMTP id
- p10-20020a258e0a000000b00da05ba26275mr2764586ybl.34.1700841904036; Fri, 24
- Nov 2023 08:05:04 -0800 (PST)
+        Fri, 24 Nov 2023 11:10:28 -0500
+X-Greylist: delayed 325 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 08:10:32 PST
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A98C1998
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:10:32 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700841904;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9n3c1WXBz4lxlyB6dBEMGNuqryUbttK1iJefoc3GvV0=;
+        b=ufUApXbkL4u8/4es/MN12fyBMDrWdeSuZO9T4Q4cExLIsNgxLNsikNO3pQoyjRxWphsZHt
+        RPTGkMn6TAouyrZgF+bHYgVnl0El5K+X0TznhffRH0f3w6HUZCsG6AKZsm2DRoIiLuLgIw
+        53LePh6Cp2om5pkGkFD0Jc1WCwg/6cE=
+From:   Sergei Shtepa <sergei.shtepa@linux.dev>
+To:     axboe@kernel.dk, hch@infradead.org, corbet@lwn.net,
+        snitzer@kernel.org
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        christian.koenig@amd.com, yi.l.liu@intel.com, jirislaby@kernel.org,
+        stfrench@microsoft.com, jpanis@baylibre.com, jgg@ziepe.ca,
+        contact@emersion.fr, dchinner@redhat.com, jack@suse.cz,
+        linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Sergei Shtepa <sergei.shtepa@veeam.com>
+Subject: [PATCH v6 00/11] blksnap - block devices snapshots module
+Date:   Fri, 24 Nov 2023 17:04:48 +0100
+Message-Id: <20231124160459.26227-1-sergei.shtepa@linux.dev>
 MIME-Version: 1.0
-References: <20231124104451.44271-1-shengyang.chen@starfivetech.com> <dab03c60-caa9-47e3-9dac-fa499227b67b@gmx.net>
-In-Reply-To: <dab03c60-caa9-47e3-9dac-fa499227b67b@gmx.net>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 24 Nov 2023 16:04:47 +0000
-Message-ID: <CAPY8ntAXYVTTfXL5HX-14t-VDe63eFgRBNKA0aG3RamKepxwDQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Add waveshare 7inch touchscreen panel support
-To:     Stefan Wahren <wahrenst@gmx.net>
-Cc:     Shengyang Chen <shengyang.chen@starfivetech.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        thierry.reding@gmail.com, neil.armstrong@linaro.org,
-        conor+dt@kernel.org, keith.zhao@starfivetech.com,
-        tzimmermann@suse.de, krzysztof.kozlowski+dt@linaro.org,
-        sam@ravnborg.org, linux-kernel@vger.kernel.org, mripard@kernel.org,
-        jack.zhu@starfivetech.com, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        florian.fainelli@broadcom.com, quic_jesszhan@quicinc.com,
-        changhuang.liang@starfivetech.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023 at 15:00, Stefan Wahren <wahrenst@gmx.net> wrote:
->
-> Hi Shengyang,
->
-> [fix address of Emma]
+From: Sergei Shtepa <sergei.shtepa@veeam.com>
 
-Not merged to master yet, but Emma has stepped back from maintenance.
-https://lists.freedesktop.org/archives/dri-devel/2023-October/428829.html
-Dropped from the cc.
+Hi all.
 
-> Am 24.11.23 um 11:44 schrieb Shengyang Chen:
-> > This patchset adds waveshare 7inch touchscreen panel support
-> > for the StarFive JH7110 SoC.
-> >
-> > Patch 1 add new compatible for the raspberrypi panel driver and its dt-binding.
-> > Patch 2 add new display mode and new probing process for raspberrypi panel driver.
-> >
-> > Waveshare 7inch touchscreen panel is a kind of raspberrypi panel
-> > which can be drived by raspberrypi panel driver.
-> >
-> > The series has been tested on the VisionFive 2 board.
-> surprisingly i was recently working on the official Raspberry Pi
-> touchscreen and was able to get it running the new way.
->
-> What do i mean with the new way. There is almost nothing special to the
-> Raspberry Pi touchscreen, so we should try to use/extend existing
-> components like:
->
-> CONFIG_DRM_PANEL_SIMPLE
-> CONFIG_TOUCHSCREEN_EDT_FT5X06
-> CONFIG_DRM_TOSHIBA_TC358762
->
-> The only special part is the Attiny on the connector PCB which requires:
->
-> CONFIG_REGULATOR_RASPBERRYPI_TOUCHSCREEN_ATTINY
->
-> So the whole point is to avoid writing monolitic drivers for simple
-> panel like that.
->
-> There is a WIP branch based on top of Linux 6.7-rcX, which should
-> demonstrate this approach [1]. Unfortunately it is not ready for
-> upstreaming, but it has been tested on a Raspberry Pi 3 B Plus. Maybe
-> this is helpful for your case.
->
-> Actually i consider panel-raspberrypi-touchscreen.c as a dead end, which
-> shouldn't be extended.
+I am happy to offer an improved version of the Block Devices Snapshots
+Module. It allows creating non-persistent snapshots of any block devices.
+The main purpose of such snapshots is to provide backups of block devices.
+See more in Documentation/block/blksnap.rst.
 
-Agreed.
+The Block Device Filtering Mechanism is added to the block layer. This
+allows attaching and detaching block device filters to the block layer.
+Filters allow extending the functionality of the block layer. See more
+in Documentation/block/blkfilter.rst.
 
-The panel control being bound in with the Atmel control has no hook
-for the EDT5x06 touch driver to hook in and keep the power to the
-touch controller active. When the panel disable gets called, bye bye
-touch overlay :-(
+The tool, library and tests for working with blksnap can be found on github.
+Link: https://github.com/veeam/blksnap/tree/stable-v2.0
+From the documentation, it is possible to learn how to manage the module
+using the library and console tool.
 
-And I'm reading the driver change as more of a hack to get it to work
-on your platform, not as adding support for the Waveshare panel
-variant.
-Waveshare deliberately cloned the behaviour of the Pi 7" panel in
-order to make it work with the old Pi firmware drivers, so it
-shouldn't need any significant changes. Where did the new timings come
-from?
+In the new version, the method of saving snapshot difference has been
+changed. Why this should have been done, Dave Chinner <david@fromorbit.com>
+described in detail in the comments to the previous version.
+Link: https://lore.kernel.org/lkml/20230612135228.10702-1-sergei.shtepa@veeam.com/T/#mfe9b8f46833011deea4b24714212230ac38db978
 
-  Dave
+The module is incompatible with features hardware inline encryption and
+data integrity. Thanks to Eric Biggers <ebiggers@kernel.org>.
+Link: https://lore.kernel.org/lkml/20230612135228.10702-1-sergei.shtepa@veeam.com/T/#m3f13e580876bff1d283eb2a79d1ecdef3b98cc42
+Unfortunately, I didn't have a chance to check it, since I don't have such
+equipment.
 
-> Btw there are already DT overlays in mainline which seems to use the
-> Raspberry Pi 7inch panel (without touch function yet) [2].
->
-> [1] - https://github.com/lategoodbye/rpi-zero/commits/v6.7-7inch-ts
-> [2] -
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x-rpidsi.dtso?h=v6.6.2&id=6b4da1354fd81adace0cda448c77d8f2a47d8474
->
-> >
-> > Shengyang Chen (2):
-> >    dt-bindings: display: panel: raspberrypi: Add compatible property for
-> >      waveshare 7inch touchscreen panel
-> >    gpu: drm: panel: raspberrypi: add new display mode and new probing
-> >      process
-> >
-> >   .../panel/raspberrypi,7inch-touchscreen.yaml  |  4 +-
-> >   .../drm/panel/panel-raspberrypi-touchscreen.c | 99 ++++++++++++++++---
-> >   2 files changed, 91 insertions(+), 12 deletions(-)
-> >
->
+And it is impossible to determine the presence of a blk-crypto-fallback at
+the block layer filter level. The filter receives already encrypted data.
+The original device continues to work without problems, but the data in
+the snapshot is encrypted. Perhaps they can be decrypted if specify the
+correct key when mounting the file system for snapshot image.
+
+Tested on amd64 and ppc64le with a page size of 64KiB and a storage block
+size of 4KiB.
+
+Based on LK v6.7-rc2.
+Compatible with branch 'for-next'.
+link: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git 
+
+v6 changes:
+- The difference storage has been changed.
+  In the previous version, the file was created only to reserve sector
+  ranges on a block device. The data was stored directly to the block
+  device in these sector ranges. Now saving and reading data is done using
+  'VFS' using vfs_iter_write() and vfs_iter_read() functions. This allows
+  not to depend on the filesystem and use, for example, tmpfs. Using an
+  unnamed temporary file allows hiding it from other processes and
+  automatically release it when the snapshot is closed.
+  However, now the module does not allow adding a block device to the
+  snapshot on which the difference storage is located. There is no way to
+  ensure the immutability of file metadata when writing data to a file.
+  This means that the metadata of the filesystem may change, which may
+  cause damage to the snapshot.
+- _IOW and _IOR were mixed up - fixed. 
+- Protection against the use of the snapshots for block devices with
+  hardware inline encryption and data integrity was implemented.
+  Compatibility with them was not planned and has not been tested at the
+  moment.
+
+v5 changes:
+- Rebase for "kernel/git/axboe/linux-block.git" branch "for-6.5/block".
+  Link: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/log/?h=for-6.5/block
+
+v4 changes:
+- Structures for describing the state of chunks are allocated dynamically.
+  This reduces memory consumption, since the struct chunk is allocated only
+  for those blocks for which the snapshot image state differs from the
+  original block device.
+- The algorithm for calculating the chunk size depending on the size of the
+  block device has been changed. For large block devices, it is now
+  possible to allocate a larger number of chunks, and their size is smaller.
+- For block devices, a 'filter' file has been added to /sys/block/<device>.
+  It displays the name of the filter that is attached to the block device.
+- Fixed a problem with the lack of protection against re-adding a block
+  device to a snapshot.
+- Fixed a bug in the algorithm of allocating the next bio for a chunk.
+  This problem was occurred on large disks, for which a chunk consists of
+  at least two bio.
+- The ownership mechanism of the diff_area structure has been changed.
+  This fixed the error of prematurely releasing the diff_area structure
+  when destroying the snapshot.
+- Documentation corrected.
+- The Sparse analyzer is passed.
+- Use __u64 type instead pointers in UAPI.
+
+v3 changes:
+- New block device I/O controls BLKFILTER_ATTACH and BLKFILTER_DETACH allow
+  to attach and detach filters.
+- New block device I/O control BLKFILTER_CTL allow sending command to
+  attached block device filter.
+- The copy-on-write algorithm for processing I/O units has been optimized
+  and has become asynchronous.
+- The snapshot image reading algorithm has been optimized and has become
+  asynchronous.
+- Optimized the finite state machine for processing chunks.
+- Fixed a tracking block size calculation bug.
+
+v2 changes:
+- Added documentation for Block Device Filtering Mechanism.
+- Added documentation for Block Devices Snapshots Module (blksnap).
+- The MAINTAINERS file has been updated.
+- Optimized queue code for snapshot images.
+- Fixed comments, log messages and code for better readability.
+
+v1 changes:
+- Forgotten "static" declarations have been added.
+- The text of the comments has been corrected.
+- It is possible to connect only one filter, since there are no others in
+  upstream.
+- Do not have additional locks for attach/detach filter.
+- blksnap.h moved to include/uapi/.
+- #pragma once and commented code removed.
+- uuid_t removed from user API.
+- Removed default values for module parameters from the configuration file.
+- The debugging code for tracking memory leaks has been removed.
+- Simplified Makefile.
+- Optimized work with large memory buffers, CBT tables are now in virtual
+  memory.
+- The allocation code of minor numbers has been optimized.
+- The implementation of the snapshot image block device has been
+  simplified, now it is a bio-based block device.
+- Removed initialization of global variables with null values.
+- only one bio is used to copy one chunk.
+- Checked on ppc64le.
+
+
+Sergei Shtepa (11):
+  documentation: Block Device Filtering Mechanism
+  block: Block Device Filtering Mechanism
+  documentation: Block Devices Snapshots Module
+  blksnap: header file of the module interface
+  blksnap: module management interface functions
+  blksnap: handling and tracking I/O units
+  blksnap: difference storage and chunk
+  blksnap: event queue from the difference storage
+  blksnap: snapshot and snapshot image block device
+  blksnap: Kconfig and Makefile
+  blksnap: prevents using devices with data integrity or inline
+    encryption
+
+ Documentation/block/blkfilter.rst             |  66 ++
+ Documentation/block/blksnap.rst               | 352 +++++++++
+ Documentation/block/index.rst                 |   2 +
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ MAINTAINERS                                   |  17 +
+ block/Makefile                                |   3 +-
+ block/bdev.c                                  |   2 +
+ block/blk-core.c                              |  35 +-
+ block/blk-filter.c                            | 238 +++++++
+ block/blk.h                                   |  11 +
+ block/genhd.c                                 |  10 +
+ block/ioctl.c                                 |   7 +
+ block/partitions/core.c                       |   9 +
+ drivers/block/Kconfig                         |   2 +
+ drivers/block/Makefile                        |   2 +
+ drivers/block/blksnap/Kconfig                 |  31 +
+ drivers/block/blksnap/Makefile                |  15 +
+ drivers/block/blksnap/cbt_map.c               | 228 ++++++
+ drivers/block/blksnap/cbt_map.h               |  90 +++
+ drivers/block/blksnap/chunk.c                 | 667 ++++++++++++++++++
+ drivers/block/blksnap/chunk.h                 | 142 ++++
+ drivers/block/blksnap/diff_area.c             | 601 ++++++++++++++++
+ drivers/block/blksnap/diff_area.h             | 175 +++++
+ drivers/block/blksnap/diff_buffer.c           | 115 +++
+ drivers/block/blksnap/diff_buffer.h           |  37 +
+ drivers/block/blksnap/diff_storage.c          | 291 ++++++++
+ drivers/block/blksnap/diff_storage.h          | 104 +++
+ drivers/block/blksnap/event_queue.c           |  81 +++
+ drivers/block/blksnap/event_queue.h           |  64 ++
+ drivers/block/blksnap/main.c                  | 475 +++++++++++++
+ drivers/block/blksnap/params.h                |  16 +
+ drivers/block/blksnap/snapimage.c             | 134 ++++
+ drivers/block/blksnap/snapimage.h             |  10 +
+ drivers/block/blksnap/snapshot.c              | 457 ++++++++++++
+ drivers/block/blksnap/snapshot.h              |  64 ++
+ drivers/block/blksnap/tracker.c               | 358 ++++++++++
+ drivers/block/blksnap/tracker.h               |  78 ++
+ include/linux/blk-filter.h                    |  51 ++
+ include/linux/blk_types.h                     |   1 +
+ include/linux/blkdev.h                        |   1 +
+ include/linux/sched.h                         |   1 +
+ include/uapi/linux/blk-filter.h               |  35 +
+ include/uapi/linux/blksnap.h                  | 388 ++++++++++
+ include/uapi/linux/fs.h                       |   3 +
+ 44 files changed, 5468 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/block/blkfilter.rst
+ create mode 100644 Documentation/block/blksnap.rst
+ create mode 100644 block/blk-filter.c
+ create mode 100644 drivers/block/blksnap/Kconfig
+ create mode 100644 drivers/block/blksnap/Makefile
+ create mode 100644 drivers/block/blksnap/cbt_map.c
+ create mode 100644 drivers/block/blksnap/cbt_map.h
+ create mode 100644 drivers/block/blksnap/chunk.c
+ create mode 100644 drivers/block/blksnap/chunk.h
+ create mode 100644 drivers/block/blksnap/diff_area.c
+ create mode 100644 drivers/block/blksnap/diff_area.h
+ create mode 100644 drivers/block/blksnap/diff_buffer.c
+ create mode 100644 drivers/block/blksnap/diff_buffer.h
+ create mode 100644 drivers/block/blksnap/diff_storage.c
+ create mode 100644 drivers/block/blksnap/diff_storage.h
+ create mode 100644 drivers/block/blksnap/event_queue.c
+ create mode 100644 drivers/block/blksnap/event_queue.h
+ create mode 100644 drivers/block/blksnap/main.c
+ create mode 100644 drivers/block/blksnap/params.h
+ create mode 100644 drivers/block/blksnap/snapimage.c
+ create mode 100644 drivers/block/blksnap/snapimage.h
+ create mode 100644 drivers/block/blksnap/snapshot.c
+ create mode 100644 drivers/block/blksnap/snapshot.h
+ create mode 100644 drivers/block/blksnap/tracker.c
+ create mode 100644 drivers/block/blksnap/tracker.h
+ create mode 100644 include/linux/blk-filter.h
+ create mode 100644 include/uapi/linux/blk-filter.h
+ create mode 100644 include/uapi/linux/blksnap.h
+
+-- 
+2.20.1
+
