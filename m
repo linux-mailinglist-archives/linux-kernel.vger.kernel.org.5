@@ -2,291 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97247F6A2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CBE7F6A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 02:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjKXBe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 20:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
+        id S230150AbjKXBfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 20:35:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXBeY (ORCPT
+        with ESMTP id S229711AbjKXBfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 20:34:24 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2084.outbound.protection.outlook.com [40.107.237.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9006B120
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:34:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MtZqOKP62ITNXfd0wYAtkMfxJJwiw9n9XaUXoOXJ0uiwKLXI9CQ+dZyAtqn1WsDFbdZtpgTF0d2pu/8BxEnilwa8lxKqmgw+Z8FXkC0VsvH5l7pSfxv5p6Z/1WljfivqLLwzvrRXLIqyuZHo96DQ94kjAKbR3Wh1jJgKPJTcLlfyBvIACrPb4N38bYl2jx+39RD1yJx+PHO7z6wDKv42QOMJ8u/iDIgPd+aGx3SMYHvQzRXV+y7gaujyrjTa3WPbPeGiNkKcmAwzdUTdFYYVP+YOtrzNQS0aCujXSX+bp9HHC3gaYBmPlgEvpdTn/jPUwSdsyKOCjpZN1ZS4UxRJBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v6xnlSJbD+2ddbVEeKDW79uwYVORajWaXp4Wyazn7GY=;
- b=O7D7HifNyh5DqC/K6yoaw2qqqp/PrhA9yGI9hPqCjsCyx0dv69emRUNgTMc1HSztbjeUPlalfKDLQNgf5vaSqD06APJtOzX3Taq0XrVZTHe09BD+UZCW33vAT/87yLktZv2GXwKHm1fAIp0RTN37PEvWuzQwJevRvSraw5zYem+KCMy9fVpaM0Diqm2moRIPykzFzTmwJuG0jXt6ri8FNEox/yOm0xEtI3sg5sv7aPDfkLV+GweAI6bErfVQzt4iyiVG8DfmB3KfnmyUTrKyv34DCc/vtX7Kgc+GhoBkftCsftURaCv0y0ZQnFjQCtjIGCum27ZIzdmZBD/OH42Crw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v6xnlSJbD+2ddbVEeKDW79uwYVORajWaXp4Wyazn7GY=;
- b=g9cblsLdMq2t6gYCAiB8TMxWWaJMdA5ImIWhD5+nAZXp9kxF0WiHLfIorvaM4ERrFkJe7njeKzHfBzPBhRsk2lUw0s2AVsNNVAYsXH7vkBLtmdtIKjXt/JQvjGLpjjsCaIM/WfpLF2nYoa+fi9aqbQCUpBs+syz3/Bu9iLq87Rrz0Vp1hGhsiiYPCV/bG9CtPNfTcIVDKsUthMhr4pZTgTj5yH3S1Xf9qQ58cXKZj42qPmplN+Fj/ovTIcZoCpPOgE524JztTymRvSu8tmS058KQkKeEi0ivtR+ZYY+c6VShQ6ETXJiaHJicD+wO056aSCymGonmneE0QHZHuvJBuQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- IA1PR12MB6139.namprd12.prod.outlook.com (2603:10b6:208:3e9::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Fri, 24 Nov
- 2023 01:34:27 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::a7c2:45b6:7733:2bf1]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::a7c2:45b6:7733:2bf1%7]) with mapi id 15.20.7025.019; Fri, 24 Nov 2023
- 01:34:27 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "\"Huang, Ying\"" <ying.huang@intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "\"Kirill A. Shutemov\"" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Date:   Thu, 23 Nov 2023 20:34:24 -0500
-X-Mailer: MailMate (1.14r5994)
-Message-ID: <F516C7FB-3B40-421B-B0DA-E865806EE6B9@nvidia.com>
-In-Reply-To: <7d4efbe8-5690-4db0-be06-399353679982@redhat.com>
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
- <7f76ee6c-f0e6-443b-bcff-3637895dec66@redhat.com>
- <ZV97RO3i02+NmwD2@casper.infradead.org>
- <7d4efbe8-5690-4db0-be06-399353679982@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_1CC793B5-DDDB-48B1-874E-528E06F8ED5B_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BLAPR03CA0090.namprd03.prod.outlook.com
- (2603:10b6:208:329::35) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+        Thu, 23 Nov 2023 20:35:15 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53405120
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:35:18 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-462abe45730so468623137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 17:35:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700789717; x=1701394517; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wG1ZuaRbCPBv0+UAInoHXoinm1O34IZTOsjDEN9VpmI=;
+        b=QMSR8lQJx9JiF0xfBZa7967dAX79xgMp4S2U7UXvAIAqswkXRtGuCyFoj8XJNo9Ftd
+         EKcZ9DFkcs6pgWge8qjAIsmh6cdzBus3qM60Bqkb07+jSY/hSbwA1eAXQjBPg17iUAXe
+         Uzvg7XukKhLa/qcwG0bJjY3lk9GzgfjhGKK1hj/DuhoXe/4IPDQULqDWwRP0v7LEQtVv
+         DfeFwmT9d8YHDTEZwQVU8tlXvFvNWxn3FFESAC0p0zf2YtSqXwsi36q4Dkc4AJxnwIS2
+         AugDTS8mNNr/qc6bkVgDZ6gnouP+1LOrLbiJg2kncGP6eCF9UDd+T/cZZ93IrgHjMkAs
+         ysxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700789717; x=1701394517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wG1ZuaRbCPBv0+UAInoHXoinm1O34IZTOsjDEN9VpmI=;
+        b=Kb5vTKCvrMi/satvFXh2dF0GEVNhDPXuz0RqmbdLTXVt+SUmERtYc8Z1VTiMzG7mV4
+         LGEk44loByyzJSZom0UzOybu3TEwl2YqUcZ2eDka+pgDXbH3AK4mV6TwfxS9htgptVJf
+         qV6Z5HjSTw/G9lmiWROMznq/ouMQBWWVGCA6deBhvpxn8wRq+ELBk1Z1U/q2UUkTW0NM
+         tQkVAwcOzHx29jnFduNkW7AWCsGY5FZo16a7JyUfwb0uu19ftOAjBLKNpL/6NEA8QRuV
+         y4+Zme8tAzLtb8naKUfw7zIS2JGAPt3h+zNRdhxjdTn95tEIr7c4JVdhyGYyaU8FZuvS
+         Rkgw==
+X-Gm-Message-State: AOJu0YxjvHxTSaKTTilf/1fjgvKOnUkGcwf42YT9Aqx11r8bXOhY37M9
+        nKGoCYI6L0UwAz8EQEcOErjGnYWuixARLbfBRnk=
+X-Google-Smtp-Source: AGHT+IFrFnFyALVSXBM657DQOsFzWG1PiI+L20o9Ck02MKBjcqSeZVZiCVh2b4opqse0rECIInlYosUnm8ldmV4dA2U=
+X-Received: by 2002:a67:eb0b:0:b0:45e:8fd7:1ae0 with SMTP id
+ a11-20020a67eb0b000000b0045e8fd71ae0mr1093082vso.8.1700789717296; Thu, 23 Nov
+ 2023 17:35:17 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|IA1PR12MB6139:EE_
-X-MS-Office365-Filtering-Correlation-Id: 03347c89-871f-4761-2d73-08dbec8d7f51
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lIbD3YgS1/3tlhsRpv++n/Zk7/kM6T7IdYLH33yUwNWQWdEjdHXg8AGGuiOnGPtwuPrZTjxTGTnkfbxifymQuFvbucu6um2UNB4zYNkgTx+UbA6GDbz5eJE3FVssxODDVjyn22moanzxI9EGWwhyqwaLvQmo07mBJmycUvN0SbJLfkWFEGVYU8DzpMRRZ/f5L1LowOb6XyhBm2OMetTln5LhuTdyQ1hWtas1Oxx2zbkTW7i3eWsa0yN0a5g36skwB8Cd3eZL/fi0MRaF8JLahL9RdPQ802qmy9aXv8Kz0M4OqdlUnFM23mJpf/jS6881FkT3Mr0zk+ZCZqCHNNN2Zdtg0049Y9GpIaMK7hVe9VJRr4bNpWyMUch5aL/RoLHg2/8waKmcuuANMCIU3q+6n6a9pIXZqlS0+r8n/9sT+32GSXMxwokg6Y2ooGwPFUK8n5ujerSf0YG23jqpCAfY+T6a9AYdMy5zUxTS8odc/VBFwcNUqXfucCAikUPAjfu8vAfl200AzrNQkLUVc/5jywTPBmHiI9imNP2x3lX0tZcJW+/05PzOKE3R7lsBjRjB3oRAuQn9ZzEy2z35yJT+ll8Ncup9XAsy/zVku0ab6/dkf9FD1vyrF236mKXusnmjvgB+UJUytk/j6DLUwHlDOY0Z7N0UNnP26dvZ5JtlbhvKlGo9BgjZ3SpVnywzu6JHV6Qy4gM5RYyKVVq6phwJbg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(366004)(396003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(66899024)(66476007)(66556008)(66946007)(54906003)(33656002)(38100700002)(36756003)(86362001)(6512007)(83380400001)(478600001)(8676002)(6506007)(6666004)(2616005)(6486002)(53546011)(7416002)(2906002)(26005)(316002)(6916009)(8936002)(41300700001)(235185007)(4326008)(5660300002)(966005)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2CXPQtLyIQrA5aJuefTuGvd25pICccl5AW5h7fnF0xoWLsPjwaUI6IpuqqV8?=
- =?us-ascii?Q?V/+0TUY98S/w778wbdxznIYzKDl97ag0qGumcODjKTs4ErX33eJV+S97teSq?=
- =?us-ascii?Q?9y2Nsuv9CSURl0WGxOHQYsg+lCUQWen1UqS7V+qedAN4r2BVtjRK7amR/azo?=
- =?us-ascii?Q?bLtiAIHduxLlWN3uqTbX2kl3Yg+IFDN4AoRwz7OurwyVN4VRgSnx1Wg1EUTm?=
- =?us-ascii?Q?aJfr9LfyC3v359gtYfkprOqI+3jU7F2PmlzesyQSp8E0B4995W9o9/boRiH7?=
- =?us-ascii?Q?2CxVxW+xoVTVcXE4JeMsfwL9OJDfXWg2tS3tpnqjD3a9zT0UJ+u9hm2lujAg?=
- =?us-ascii?Q?RWC6Ed4jqTKe1AGaag0/DPSWUr4tsFYNZNhSJNvghWP5u771SvfORRjxSECH?=
- =?us-ascii?Q?BAg9Ot496OO1x+i1Xs7TauyUekEw7VXdFx0h+x1zio9Zj1/V3mo925e65rl9?=
- =?us-ascii?Q?Mh32MdvswUDmToMM417ctFCaJtcsXUUQ4na4S+eXRrPy9t8s/f2eS/EGkmVM?=
- =?us-ascii?Q?40Uxtuit4uEOhqTfdNUGqP2wPXRcquV4bKgnsheb/VE1finrcv8XrIYqae8l?=
- =?us-ascii?Q?ixGvYiJuS8Y0kvzLQA3YITmLNXflPYSBTB1fIpj5U48UgcCqqMp8NhqZ9ca2?=
- =?us-ascii?Q?i8ScvoJtbx/hX68AC9rQBD2gxE3+X9dSTS1q2fVQVv1XRHIeCSTyz0PT0Vqj?=
- =?us-ascii?Q?c+v9K0fMqu8ArnxeDHDWjIoncumd6CCO3SNxIIuwBMxeNGoJD5VUcwa1TjCo?=
- =?us-ascii?Q?ueLCMKfcK74ymoWfva1FUc7xhMGpj/mR3HxckE4JQ8hTYLasssGzWAPG4C6a?=
- =?us-ascii?Q?liJZkNeh+x110QtmNtia4AYe80ectwVHdDVl4FHhOobEFIcZCCzqcWCdnKWc?=
- =?us-ascii?Q?PWUSmK3jJpvFaCpAKGDWSN51bvUJ6z/tPLl50eZSSwwwM6NXI0HSQ3SubjXe?=
- =?us-ascii?Q?PyqwvRwgzKRSaasXSJ3176Qi+B2nGtjbnviKJY+l6JmNq/LH/yuT0FMFjqjx?=
- =?us-ascii?Q?OrB5Jt8bEB/yTZ2QpqbdLCzxoX8Z9ZJZyba8Hndk3kgKtM6xehLi6zN3AVst?=
- =?us-ascii?Q?5eD21sYKfIVwDcSfI5jRlLhUfCcbPEoM2fiswODmO865pZPwWkWwFC0EFbDm?=
- =?us-ascii?Q?6o7p0DoelC1UBZmF4W1SqSFgtcrShT/p0meWzSV2lIX6sbP6WpQNJMBw2zpf?=
- =?us-ascii?Q?L8P0CuxcSpu2aMNXg9G+PH+03qxX8ic+YDOkqY3+PwdQtb4MuXZSmCs/+Ory?=
- =?us-ascii?Q?SQuStDcNaLCkx5uuI+TIDx/x1sCx+wX/gk/t2hjzW+RjRgLCVedY/iWAxgj7?=
- =?us-ascii?Q?ncoItyDKyUyjiYqMFht3Jfv9PBeDwFr5l7yUa8ow7T8zgspmluvfjiXM29h1?=
- =?us-ascii?Q?NBxn0BIMeswCToJRw6gWBgwvHeCU0DN43DlCQhQ8CztLpOVlgq6HAeQCcc3s?=
- =?us-ascii?Q?wSxNq36J8YWX8yIh4a5zntQSnGHcucgn5jAFEikHKSeELQO+781n+I8OyNKA?=
- =?us-ascii?Q?uadjhUcO0DigDvUiLnl8RKxqktb/QUHmWg6N0As09DJf+H5GsrQRRZAjXkiL?=
- =?us-ascii?Q?+k5a+hxm5B3UBWffSbc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03347c89-871f-4761-2d73-08dbec8d7f51
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 01:34:27.5350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 26DVGdCfa27E3+dIi/r9UtNM/womn2HVYXeMMK+gGutvC89s6FBTdsv6/M8VQlkj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6139
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
+ <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
+ <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com> <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
+ <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
+ <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com> <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
+ <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com> <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
+In-Reply-To: <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Fri, 24 Nov 2023 14:35:06 +1300
+Message-ID: <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
+Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
+ large folios
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     David Hildenbrand <david@redhat.com>, steven.price@arm.com,
+        akpm@linux-foundation.org, catalin.marinas@arm.com,
+        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_1CC793B5-DDDB-48B1-874E-528E06F8ED5B_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 20, 2023 at 11:57=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
+>
+> On 20/11/2023 09:11, David Hildenbrand wrote:
+> > On 17.11.23 19:41, Barry Song wrote:
+> >> On Fri, Nov 17, 2023 at 7:28=E2=80=AFPM David Hildenbrand <david@redha=
+t.com> wrote:
+> >>>
+> >>> On 17.11.23 01:15, Barry Song wrote:
+> >>>> On Fri, Nov 17, 2023 at 7:47=E2=80=AFAM Barry Song <21cnbao@gmail.co=
+m> wrote:
+> >>>>>
+> >>>>> On Thu, Nov 16, 2023 at 5:36=E2=80=AFPM David Hildenbrand <david@re=
+dhat.com> wrote:
+> >>>>>>
+> >>>>>> On 15.11.23 21:49, Barry Song wrote:
+> >>>>>>> On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <david=
+@redhat.com> wrote:
+> >>>>>>>>
+> >>>>>>>> On 14.11.23 02:43, Barry Song wrote:
+> >>>>>>>>> This patch makes MTE tags saving and restoring support large fo=
+lios,
+> >>>>>>>>> then we don't need to split them into base pages for swapping o=
+ut
+> >>>>>>>>> on ARM64 SoCs with MTE.
+> >>>>>>>>>
+> >>>>>>>>> arch_prepare_to_swap() should take folio rather than page as pa=
+rameter
+> >>>>>>>>> because we support THP swap-out as a whole.
+> >>>>>>>>>
+> >>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather=
+ than
+> >>>>>>>>> folio as swap-in always works at the granularity of base pages =
+right
+> >>>>>>>>> now.
+> >>>>>>>>
+> >>>>>>>> ... but then we always have order-0 folios and can pass a folio,=
+ or what
+> >>>>>>>> am I missing?
+> >>>>>>>
+> >>>>>>> Hi David,
+> >>>>>>> you missed the discussion here:
+> >>>>>>>
+> >>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06=
+ijv4Ac68MkhjMDw@mail.gmail.com/
+> >>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbh=
+GguOkNzmh1Veocg@mail.gmail.com/
+> >>>>>>
+> >>>>>> Okay, so you want to handle the refault-from-swapcache case where =
+you get a
+> >>>>>> large folio.
+> >>>>>>
+> >>>>>> I was mislead by your "folio as swap-in always works at the granul=
+arity of
+> >>>>>> base pages right now" comment.
+> >>>>>>
+> >>>>>> What you actually wanted to say is "While we always swap in small =
+folios, we
+> >>>>>> might refault large folios from the swapcache, and we only want to=
+ restore
+> >>>>>> the tags for the page of the large folio we are faulting on."
+> >>>>>>
+> >>>>>> But, I do if we can't simply restore the tags for the whole thing =
+at once
+> >>>>>> at make the interface page-free?
+> >>>>>>
+> >>>>>> Let me elaborate:
+> >>>>>>
+> >>>>>> IIRC, if we have a large folio in the swapcache, the swap entries/=
+offset are
+> >>>>>> contiguous. If you know you are faulting on page[1] of the folio w=
+ith a
+> >>>>>> given swap offset, you can calculate the swap offset for page[0] s=
+imply by
+> >>>>>> subtracting from the offset.
+> >>>>>>
+> >>>>>> See page_swap_entry() on how we perform this calculation.
+> >>>>>>
+> >>>>>>
+> >>>>>> So you can simply pass the large folio and the swap entry correspo=
+nding
+> >>>>>> to the first page of the large folio, and restore all tags at once=
+.
+> >>>>>>
+> >>>>>> So the interface would be
+> >>>>>>
+> >>>>>> arch_prepare_to_swap(struct folio *folio);
+> >>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_entry=
+);
+> >>>>>>
+> >>>>>> I'm sorry if that was also already discussed.
+> >>>>>
+> >>>>> This has been discussed. Steven, Ryan and I all don't think this is=
+ a good
+> >>>>> option. in case we have a large folio with 16 basepages, as do_swap=
+_page
+> >>>>> can only map one base page for each page fault, that means we have
+> >>>>> to restore 16(tags we restore in each page fault) * 16(the times of=
+ page
+> >>>>> faults)
+> >>>>> for this large folio.
+> >>>>>
+> >>>>> and still the worst thing is the page fault in the Nth PTE of large=
+ folio
+> >>>>> might free swap entry as that swap has been in.
+> >>>>> do_swap_page()
+> >>>>> {
+> >>>>>      /*
+> >>>>>       * Remove the swap entry and conditionally try to free up the =
+swapcache.
+> >>>>>       * We're already holding a reference on the page but haven't m=
+apped it
+> >>>>>       * yet.
+> >>>>>       */
+> >>>>>       swap_free(entry);
+> >>>>> }
+> >>>>>
+> >>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you=
+ might
+> >>>>> access
+> >>>>> a freed tag.
+> >>>>
+> >>>> And David, one more information is that to keep the parameter of
+> >>>> arch_swap_restore() unchanged as folio,
+> >>>> i actually tried an ugly approach in rfc v2:
+> >>>>
+> >>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> >>>> +{
+> >>>> + if (system_supports_mte()) {
+> >>>> +      /*
+> >>>> +       * We don't support large folios swap in as whole yet, but
+> >>>> +       * we can hit a large folio which is still in swapcache
+> >>>> +       * after those related processes' PTEs have been unmapped
+> >>>> +       * but before the swapcache folio  is dropped, in this case,
+> >>>> +       * we need to find the exact page which "entry" is mapping
+> >>>> +       * to. If we are not hitting swapcache, this folio won't be
+> >>>> +       * large
+> >>>> +     */
+> >>>> + struct page *page =3D folio_file_page(folio, swp_offset(entry));
+> >>>> + mte_restore_tags(entry, page);
+> >>>> + }
+> >>>> +}
+> >>>>
+> >>>> And obviously everybody in the discussion hated it :-)
+> >>>>
+> >>>
+> >>> I can relate :D
+> >>>
+> >>>> i feel the only way to keep API unchanged using folio is that we
+> >>>> support restoring PTEs
+> >>>> all together for the whole large folio and we support the swap-in of
+> >>>> large folios. This is
+> >>>> in my list to do, I will send a patchset based on Ryan's large anon
+> >>>> folios series after a
+> >>>> while. till that is really done, it seems using page rather than fol=
+io
+> >>>> is a better choice.
+> >>>
+> >>> I think just restoring all tags and remembering for a large folio tha=
+t
+> >>> they have been restored might be the low hanging fruit. But as always=
+,
+> >>> devil is in the detail :)
+> >>
+> >> Hi David,
+> >> thanks for all your suggestions though my feeling is this is too compl=
+ex and
+> >> is not worth it for at least  three reasons.
+> >
+> > Fair enough.
+> >
+> >>
+> >> 1. In multi-thread and particularly multi-processes, we need some lock=
+s to
+> >> protect and help know if one process is the first one to restore tags =
+and if
+> >> someone else is restoring tags when one process wants to restore. ther=
+e
+> >> is not this kind of fine-grained lock at all.
+> >
+> > We surely always hold the folio lock on swapin/swapout, no? So when the=
+se
+> > functions are called.
+> >
+> > So that might just work already -- unless I am missing something import=
+ant.
+>
+> We already have a page flag that we use to mark the page as having had it=
+s mte
+> state associated; PG_mte_tagged. This is currently per-page (and IIUC, Ma=
+tthew
+> has been working to remove as many per-page flags as possible). Couldn't =
+we just
+> make arch_swap_restore() take a folio, restore the tags for *all* the pag=
+es and
+> repurpose that flag to be per-folio (so head page only)? It looks like th=
+e the
+> mte code already manages all the serialization requirements too. Then
+> arch_swap_restore() can just exit early if it sees the flag is already se=
+t on
+> the folio.
+>
+> One (probably nonsense) concern that just sprung to mind about having MTE=
+ work
+> with large folios in general; is it possible that user space could cause =
+a large
+> anon folio to be allocated (THP), then later mark *part* of it to be tagg=
+ed with
+> MTE? In this case you would need to apply tags to part of the folio only.
+> Although I have a vague recollection that any MTE areas have to be marked=
+ at
+> mmap time and therefore this type of thing is impossible?
 
-On 23 Nov 2023, at 11:50, David Hildenbrand wrote:
+right, we might need to consider only a part of folio needs to be
+mapped and restored MTE tags.
+do_swap_page() can have a chance to hit a large folio but it only
+needs to fault-in a page.
 
-> On 23.11.23 17:18, Matthew Wilcox wrote:
->> On Thu, Nov 23, 2023 at 05:05:37PM +0100, David Hildenbrand wrote:
->>> On 23.11.23 16:59, Matthew Wilcox wrote:
->>>> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
->>>>> Note: I'm resending this at Andrew's suggestion due to having origi=
-nally sent
->>>>> it during LPC. I'm hoping its in a position where the feedback is m=
-inor enough
->>>>> that I can rework in time for v6.8, but so far haven't had any.
->>>>>
->>>>> Hi All,
->>>>>
->>>>> This is v7 of a series to implement small-sized THP for anonymous m=
-emory
->>>>> (previously called "large anonymous folios"). The objective of this=
- is to
->>>>
->>>> I'm still against small-sized THP.  We've now got people asking whet=
+A case can be quite simple as below,
+
+1. anon folio shared by process A and B
+2. add_to_swap() as a large folio;
+3. try to unmap A and B;
+4. after A is unmapped(ptes become swap entries), we do a
+MADV_DONTNEED on a part of the folio. this can
+happen very easily as userspace is still working in 4KB level;
+userspace heap management can free an
+basepage area by MADV_DONTNEED;
+madvise(address, MADV_DONTNEED, 4KB);
+5. A refault on address + 8KB, we will hit large folio in
+do_swap_page() but we will only need to map
+one basepage, we will never need this DONTNEEDed in process A.
+
+another more complicated case can be mprotect and munmap a part of
+large folios. since userspace
+has no idea of large folios in their mind, they can do all strange
+things. are we sure in all cases,
+large folios have been splitted into small folios?
+
+>
+> Thanks,
+> Ryan
+>
+>
+>
+> >
+> >>
+> >> 2. folios are not always large, in many cases, they have just one base=
+ page
+> >> and there is no tail to remember. and it seems pretty ugly if we turn =
+out have
+> >> to use different ways to remember restoring state for small folios and
+> >> large folios.
+> >
+> > if (folio_test_large(folio)) {
+> >
+> > } else {
+> >
+> > }
+> >
+> > Easy ;)
+> >
+> > Seriously, it's not that complicated and/or ugly.
+> >
+> >>
+> >> 3. there is nothing wrong to use page to restore tags since right now =
+swap-in
+> >> is page. restoring tags and swapping-in become harmonious with each ot=
 her
->>>> the THP counters should be updated when dealing with large folios th=
-at
->>>> are smaller than PMD sized.  It's sowing confusion, and we should go=
-
->>>> back to large anon folios as a name.
->>>>
->>>
->>> I disagree.
->>>
->>> https://lore.kernel.org/all/65dbdf2a-9281-a3c3-b7e3-a79c5b60b357@redh=
-at.com/
->>
->> And yet:
->> https://lore.kernel.org/linux-mm/20231106193315.GB3661273@cmpxchg.org/=
-
->>
->> "This is a small THP so we don't account it as a THP, we only account
->> normal THPs as THPs" is a bizarre position to take.
->>
->> Not to mention that saying a foo is a small huge baz is just bizarre.
->> Am I a small giant?  Or just a large human?
+> >> after this patch. I would argue what is really wrong is the current ma=
+inline.
+> >>
+> >> If eventually we are able to do_swap_page() for the whole large folio,=
+ we
+> >> move to folios for MTE tags as well. These two behaviours make a new
+> >> harmonious picture again.
+> >>
+> >
+> > Just making both functions consume folios is much cleaner and also more=
+ future
+> > proof.
+> >
+> > Consuming now a page where we used to consume a folio is a step backwar=
+ds.
+> >
 >
-> I like that analogy. Yet, "small giant" sounds "bigger" in some way IMH=
-O ;)
->
-> I'll note that "small-sized THP" is just a temporary feature name, it w=
-on't be exposed as such to the user in sysfs etc. In a couple of years, i=
-t will be forgotten.
->
-> To me it makes sense: it's a hugepage (not a page) but smaller compared=
- to what we previously had. But again, there won't be a "small_thp" toggl=
-e anywhere.
->
-> Long-term it's simply going to be a THP. Quoting from my writeup:
->
-> "Nowadays, when somebody says that they are using hugetlb huge pages, t=
-he first question frequently is "which huge page size?". The same will
-> happen with transparent huge pages I believe.".
 
-I agree. Especially our ultimate goal is to auto-tune THP sizes to give t=
-he best
-performance to user. Having a separate name for small sized THP is benefi=
-cial to
-kernel developers, since we want to use the right THP size for right
-workloads/scenarios. But for average user, it is better to keep interface=
-
-as simple as possible, so that they can just turn on THP and get good per=
-formance
-boost. For ninja users, I assume they know differences between THP sizes =
-to not
-confuse themselves and we can expose fine tune interfaces if really neces=
-sary.
-
->
->
-> Regarding the accounting: as I said a couple of times, "AnonHugePages" =
-should have been called "AnonPmdMapped" or similar; that's what it really=
- is: as soon as a THP is PTE-mapped, it's not accounted there. But we can=
-'t fix that I guess, unless we add some "world switch" for any workloads =
-that would care about a different accounting.
->
-> So we're really only concerned about:
-> * AnonHugePages
-> * ShmemHugePages
-> * FileHugePages
->
-> The question is if we really want to continue extending/adjusting the o=
-ld meminfo interfaces and talk about how to perform accounting there.
->
-> Because, as we learned, we might get a new file-based sysfs based inter=
-face, because Greg seems to be against exposing new values in the old sin=
-gle-file-based one.
-
-I am not aware of this. And it is interesting. Do you have a pointer?
-
->
-> In a new one, we have all freedom to expose what we actually want nowad=
-ays, and can just document that the old interface was designed with the a=
-ssumption that there is only a single THP size.
-
-This sounds like a good strategy and hopefully we could design the new TH=
-P interface
-more future proof.
-
->
-> ... like hugetlb, where we also only expose the "default hugetlb size" =
-parameters for legacy reasons:
->
-> HugePages_Total:       0
-> HugePages_Free:        0
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> Hugepagesize:       2048 kB
->
-> -- =
-
-> Cheers,
->
-> David / dhildenb
-
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_1CC793B5-DDDB-48B1-874E-528E06F8ED5B_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmVf/aEPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhU2YAP/j8GY4Zos2u0zPYV4oLmZfP4HaWgqhZBvJo7
-PFQ8SO1a+hpvfjG3yCTD1wRl2cjW4pIwtbaTAP0xRXJQo5HclG1I7/kB9H6llRl5
-pe3xmVCxT5H3JqaIHshV652g5MpB0/dT/bJaQqmxijDaeG3ktU5U+I4ylzwyqlsb
-lBNTl2ZIiZcJZkNfc1YPLNHi9IsnACGhJhaQE0DzBEv9JRNlKAOS7362s6h6rwia
-nzuBZriDEbBJG2UOpha+fMTrOu0vwybL3Pvd1v2hJSVuaTaYzzWwnBo1o6E1SRQW
-ekhKp2lsJlVFT5Q704MVvJGDKQowA0q3sHVv0LCJBXUQYtzV0Ptbr8mG66uhkNk4
-Iz35bqqyamOcTQw6++j5PlJzIH+TZD50gccpS7e5u2Zv8oeHlv7birLFWUEhByLw
-+bWp5hzrppNkvBP26yyeG5hJKGefbTtd4HJZwzOduvnq8iJ4X5YtfoRlhAhzizNT
-3FOXht7CYxeDVu4kzycEKwv1mtX2S0HPhmT8uhZ70mUTR6mPvGeaiBfPEzUPosi1
-aCmO+zs8Q7zxFah/MAniQvo9Ukk3fuBvDJoalRg37Aejc2prHJ44oMbrhbFOyNcE
-t6NtlGGbHqzDugHbW+647QNGkMqQeXTlRRaO4L8BTc8l4VEHqDOisUhK2/GrZSC6
-W+EgKZEN
-=sN4N
------END PGP SIGNATURE-----
-
---=_MailMate_1CC793B5-DDDB-48B1-874E-528E06F8ED5B_=--
+Thanks
+Barry
