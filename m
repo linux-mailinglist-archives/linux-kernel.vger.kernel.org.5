@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9574E7F856B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03317F8571
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjKXVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S230027AbjKXV22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXVWd (ORCPT
+        with ESMTP id S229557AbjKXV2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:22:33 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C6219A7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:22:39 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00b01955acso342313566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:22:39 -0800 (PST)
+        Fri, 24 Nov 2023 16:28:23 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B4AD41;
+        Fri, 24 Nov 2023 13:28:29 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a013d22effcso319356566b.2;
+        Fri, 24 Nov 2023 13:28:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700860957; x=1701465757; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=apBows719Ql6+y2BcpLIbVUnN8kkKRkZuJ5YeukjHu4=;
-        b=SH51FT7Ew+d98DyAlBHAA5qXQhUL6YaR5qhhTrR45XMN/ZzDLwzlz2jb94PanQ6S5s
-         MYctfLQnjyVSWdSer2cjH8nUQLLWB+Ez4lWt+RygNRFf8zDN+fE/kN3bryaLq0OTz9e4
-         p/+NZZhwRcvN3Iivq1MCNJ6OmSKRTL3iulN4c=
+        d=gmail.com; s=20230601; t=1700861308; x=1701466108; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EgxFuLlgH3HM3q2BEScFWv/UaGPrTtpxNJHVYrNWfFY=;
+        b=A36MXDXjdH8vLdc+3JwdHBmBWAqtulHau3qnl8WhgCat54zQUWYcR0edlgrFN9nYsr
+         6xMO5YsT1fCtHTaqAnvRRjWpzPoYrWlIQpzABzrLy7USxC+yXzJs93tgSc8u+2JbLmEh
+         ymnFvyGQG1OmOq+oJ1IW3XMZz/4dU5iHdYid7BuaecbzSZo4GLMyIjRvoyf0c6UJfFza
+         PvwH0Cyx3fGnXotVPx5kTxTc4znMpFU72SIBNxBeGrFfR7DRH8FficC4JX9YxGSwDpk+
+         YBRJ062xmwKXit3VD22b6V8aIKlrbOTSDFqmiy16zjTFgBZXrReGM7msitVLcI1wFxyj
+         M/Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700860957; x=1701465757;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1700861308; x=1701466108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=apBows719Ql6+y2BcpLIbVUnN8kkKRkZuJ5YeukjHu4=;
-        b=v1Wyd93t+wBIlexKMO/JV15u6QsaQtb7rTocP9lhpIT5CYNiIzBdVYnGOHatVUk6gw
-         y0Bl/gcLuLIT1+OTt5byKoU6Z2DgTZqNmJqmHStInJaDCzzVwfBTVKY7LO6dQT0dfl2p
-         WRwmIa/O3LH5G2mCnIORognY0SvZMoq+qMndsvxo+QZwkthAEdg7+ximegnZ7XMsuoK7
-         7s2e/7ESi4QwELYDz+BOvn/YdTji+ItT0vh+bNSWEDF2a4vmDBmS13nm6ag/5tKEL7W1
-         bPEd3itPxtRuW0NCguQ4jb/kXZdD6xmGkvNzlKaInYrSRzZ6FWHw8Y6Gue+2/MIUcAzO
-         0nRw==
-X-Gm-Message-State: AOJu0Yxz+yvfF+QI4Oy2ZqFFMY05KTH4QFQf+HAgY4PJmmiLDmUcZldW
-        4glZeGtuBSKVge0+O581XVEvlKd8/p/HFDoHq1/5FxlQ
-X-Google-Smtp-Source: AGHT+IHJ12w/jjtzDkN1lr/rUCesQUzo/njod+gfGl0d8ddtKHStuDKpIGT36tluqDrAVXpN4/7PgQ==
-X-Received: by 2002:a17:906:5307:b0:a09:589f:8853 with SMTP id h7-20020a170906530700b00a09589f8853mr2316220ejo.66.1700860957498;
-        Fri, 24 Nov 2023 13:22:37 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id kg23-20020a17090776f700b00a04431e5a44sm2560631ejc.16.2023.11.24.13.22.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 13:22:37 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-54b1812ae1fso182109a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:22:36 -0800 (PST)
-X-Received: by 2002:a50:d715:0:b0:548:564d:959a with SMTP id
- t21-20020a50d715000000b00548564d959amr2756303edi.3.1700860956448; Fri, 24 Nov
- 2023 13:22:36 -0800 (PST)
+        bh=EgxFuLlgH3HM3q2BEScFWv/UaGPrTtpxNJHVYrNWfFY=;
+        b=LL/3fI0ht0NNUE3EnemtzDuoU/R4FsYYWr+JTJrN8DoTmR2ANzGMXxlZqsfo68It2g
+         REzU5K1m22ux4+AG3/qCAT28T0Tmq1wW/E5ZfO+/jFLm1ZUHfd4AE4epmEUi6csYWLBl
+         lycw/jR7O9dZ0PmvuJUn1MbqJ/ob17t6u4MxE/rEoVQ3CXkac++xBwgtvsK3PTpRL2Gb
+         sh1EHSFtXet7rN210L6FcJg7G5TzBOj5iq+/kuwfCAJ+w2aSHuR1JWTE6xScuY/0UsE1
+         BRf6FTly6wNBoSXNB7adxkhKeEkXDSh3Tiu3Wv1a9CcCgMG7edq9k0OQSiS6QSvYce2c
+         SCag==
+X-Gm-Message-State: AOJu0YzGRxA0JjOKS66xkiKyVGcFnrrh7HLRn8WIy92QjP/9av17usD5
+        tw+7EwjBzJNfOsaBnPjUYug=
+X-Google-Smtp-Source: AGHT+IFeiagFA7FwlKDnDbRYuXKqW6azCJ0MnV15PtiuWdZrap2O9HO/Q2I73Q+h0vB/O9HIpQd3DA==
+X-Received: by 2002:a17:906:73c4:b0:a01:f06b:77c8 with SMTP id n4-20020a17090673c400b00a01f06b77c8mr3314784ejl.2.1700861307436;
+        Fri, 24 Nov 2023 13:28:27 -0800 (PST)
+Received: from StrangerPC.home.arpa ([2a0d:3344:1730:e300::11a1])
+        by smtp.gmail.com with ESMTPSA id n20-20020a170906119400b009fbdacf9363sm2520849eja.21.2023.11.24.13.28.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 13:28:27 -0800 (PST)
+From:   Luka Panio <lukapanio@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Cc:     Luka Panio <lukapanio@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v10 1/2] Add a compatible for Xiaomi Pad 6.
+Date:   Fri, 24 Nov 2023 22:27:31 +0100
+Message-ID: <20231124212732.731419-1-lukapanio@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231124060200.GR38156@ZenIV> <20231124060422.576198-1-viro@zeniv.linux.org.uk>
- <20231124060422.576198-2-viro@zeniv.linux.org.uk>
-In-Reply-To: <20231124060422.576198-2-viro@zeniv.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Nov 2023 13:22:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whGKvjHCtJ6W4pQ0_h_k9fiFQ8V2GpM=BqYnB2X=SJ+XQ@mail.gmail.com>
-Message-ID: <CAHk-=whGKvjHCtJ6W4pQ0_h_k9fiFQ8V2GpM=BqYnB2X=SJ+XQ@mail.gmail.com>
-Subject: Re: [PATCH v3 02/21] coda_flag_children(): cope with dentries turning negative
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 22:04, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> ->d_lock on parent does not stabilize ->d_inode of child.
-> We don't do much with that inode in there, but we need
-> at least to avoid struct inode getting freed under us...
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Luka Panio <lukapanio@gmail.com>
 
-Gaah. We've gone back and forth on this. Being non-preemptible is
-already equivalent to rcu read locking.
+---
+v2:
+Update commit message
 
-From Documentation/RCU/rcu_dereference.rst:
+v3:
+Update commit message
 
-                            With the new consolidated
-        RCU flavors, an RCU read-side critical section is entered
-        using rcu_read_lock(), anything that disables bottom halves,
-        anything that disables interrupts, or anything that disables
-        preemption.
+v4:
+Update commit message
 
-so I actually think the coda code is already mostly fine, because that
-parent spin_lock may not stabilize d_child per se, but it *does* imply
-a RCU read lock.
+v5:
+Update commit message
 
-So I think you should drop the rcu_read_lock/rcu_read_unlock from that patch.
+v6:
+Update commit message
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-But that
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index adbfaea32343..1bfae1b237d2 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -965,6 +965,7 @@ properties:
+               - sony,pdx203-generic
+               - sony,pdx206-generic
+               - xiaomi,elish
++              - xiaomi,pipa
+           - const: qcom,sm8250
+ 
+       - items:
+-- 
+2.42.0
 
-                struct inode *inode = d_inode_rcu(de);
-
-conversion is required to get a stable inode pointer.
-
-So half of this patch is unnecessary.
-
-Adding Paul to the cc just to verify that the docs are up-to-date and
-that we're still good here.
-
-Because we've gone back-and-forth on the "spinlocks are an implied RCU
-read-side critical section" a couple of times.
-
-                  Linus
