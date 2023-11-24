@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED77F77C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5677F77C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345736AbjKXP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        id S1345746AbjKXP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjKXP0e (ORCPT
+        with ESMTP id S231232AbjKXP1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:26:34 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7BE1735
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:26:39 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso22471a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:26:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700839598; x=1701444398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w9eOTiJRT5tAYEp6WQwpb4QnKWMhr1jjUH9P1tvXDqE=;
-        b=wHtmdvQI5ZYbCxdqnJi/A5AV8/Q5mw8vxg5b1ubxcELBLAJ1B01Z+tPzu47bb0+Gj/
-         Gt9+qo4TfcKOcdlozug0DM/0HWxxD0woYoEeuhUtkl/CrsQVOHChrl7QaZ4pP6iuyLRv
-         LUND/2qDPcFLkiku4i5+RpWxZgZgMhvZ8/6YoHVleHtj7H8xl15vclxMamwDF0a3tN9a
-         1SQNg0roxxWt8TJ6ysa6aljdGBvIApZS7nL6PKM0PaB5zoNpcAxVWdsstBLtqEk4aUHW
-         tBpEanQRP+3DSIqSoYjG1qSi2dZFPqJVzNLxFW267UtoWpvNIYGeTxSPjavzQQZYoE8K
-         BYog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700839598; x=1701444398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w9eOTiJRT5tAYEp6WQwpb4QnKWMhr1jjUH9P1tvXDqE=;
-        b=nSYUNE0CngLlmziAxQWn1q+bs+pY0r23uoTN6RXf6RwC5ZQsA7YbnQMLXQDEgCxv74
-         Bxrfz4uYnRdGh7rcLyfVbeTqqadJC+omzaGxFKRt6WME1Rq6IbYI+cNJYG0HuxFiFE67
-         MAZx3/xIZEiC9FspKwhXC9pqWVVFtVAFSl+UfP9wiFk8Mnt1iV1zy/Jj6ggMpSqIj9uP
-         ZZH6b0L3S75G57aQpNDQHKPjgvRAADfw8gd7vlkrtAi7QlIsk9bVjt4gzC/Yfvbb5R1V
-         593tncMlS4/nR9+wywILzRFiKzXrZsLJ0fzOT0rdg0pD5WtWqpbIt9L3MGZ59XjgTeiq
-         UwHA==
-X-Gm-Message-State: AOJu0Yz6tixmgrE5swXhVMG/UwWWPtIYXRdMijlkDznFpv73XJ98joQT
-        KQ0CDH60yitbHx9sENmKo+Mtbz714cn13VVltoPtP0NLQDO3ARXgpv0cIISdaDM=
-X-Google-Smtp-Source: AGHT+IEZRZrgTJQBje/frdbB1nFc6/Ki+XP+QH6veRpKt8y0jX8UQmYIDjFaOpU9dwbgIK3axfJj++DtHfw3lixxdts=
-X-Received: by 2002:a05:6402:b4c:b0:54a:e781:ce76 with SMTP id
- bx12-20020a0564020b4c00b0054ae781ce76mr116550edb.6.1700839598271; Fri, 24 Nov
- 2023 07:26:38 -0800 (PST)
+        Fri, 24 Nov 2023 10:27:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9691723
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:27:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31458C433C7;
+        Fri, 24 Nov 2023 15:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700839670;
+        bh=3S6A8b26Bij0bNrwt/t+xt24Lf0F8C0vOwZNJyVcNWU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pm1F5ZgXuK/SorA+zOMKMQQC8CS03YW6cr2R8Nt24B2t2nTlEQkZAU+W4HJJEAWmA
+         I1lhSuqKqGbN1E7I+fOG54BHhwfOifc7knWoGptLzU5KtVTKvdm7h12SPsPXAnYm9+
+         LM0z2qHnBkOf2DxrOcgZTpZ3VLqT4xnhkoz4Uv+w=
+Date:   Fri, 24 Nov 2023 15:27:48 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <2023112458-stature-commuting-c66f@gregkh>
+References: <20231124145338.3112416-1-o.rempel@pengutronix.de>
+ <2023112403-laxative-lustiness-6a7f@gregkh>
+ <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-References: <CAOQ4uxjssgw1tZrUQvtHHVacSgR9NE0yF8DA3+R5LNFAocCvVQ@mail.gmail.com>
- <000000000000258ac60606589787@google.com> <CAG48ez2UkCR7LMaQfCQVLW4VOZG9CuPDMHG7cBtaAitM=zPBCg@mail.gmail.com>
-In-Reply-To: <CAG48ez2UkCR7LMaQfCQVLW4VOZG9CuPDMHG7cBtaAitM=zPBCg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 24 Nov 2023 16:26:02 +0100
-Message-ID: <CAG48ez2_XT1XDML756zM2D07BjcJnw22pFiHHrOm-yHvGJHvdw@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] KASAN: invalid-free in ovl_copy_up_one
-To:     amir73il@gmail.com,
-        syzbot <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 4:11=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
->
-> On Wed, Sep 27, 2023 at 5:10=E2=80=AFPM syzbot
-> <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com> wrote:
-> > syzbot has tested the proposed patch and the reproducer did not trigger=
- any issue:
-> >
-> > Reported-and-tested-by: syzbot+477d8d8901756d1cbba1@syzkaller.appspotma=
-il.com
-> >
-> > Tested on:
-> >
-> > commit:         8e9b46c4 ovl: do not encode lower fh with upper sb_wri.=
-.
-> > git tree:       https://github.com/amir73il/linux.git ovl_want_write
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D10d10ffa680=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbb54ecdfa19=
-7f132
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D477d8d8901756=
-d1cbba1
-> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for=
- Debian) 2.40
->
-> It looks like the fix was submitted without the Reported-by tag, so
-> syzkaller doesn't recognize that the fix has landed... I'll tell
-> syzkaller now which commit the fix is supposed to be in, please
-> correct me if this is wrong:
->
-> #syz fix: ovl: do not encode lower fh with upper sb_writers held
+On Fri, Nov 24, 2023 at 03:21:40PM +0000, Mark Brown wrote:
+> On Fri, Nov 24, 2023 at 03:05:47PM +0000, Greg Kroah-Hartman wrote:
+> 
+> > Anyway, this is ripe for problems and issues in the long-run, what is so
+> > special about this hardware that it can not just shutdown in the
+> > existing order that it has to be "first" over everyone else?  What
+> > exactly does this prevent and what devices are requiring this?
+> 
+> > And most importantly, what has changed in the past 20+ years to
+> > suddenly require this new functionality and how does any other operating
+> > system handle it?
+> 
+> This came out of some discussions about trying to handle emergency power
+> failure notifications.
 
-(Ah, and just for the record: I hadn't realized when writing this that
-the fix was actually in a newer version of the same patch... "git
-range-diff 44ef23e481b02df2f17599a24f81cf0045dc5256~1..44ef23e481b02df2f175=
-99a24f81cf0045dc5256
-5b02bfc1e7e3811c5bf7f0fa626a0694d0dbbd77~1..5b02bfc1e7e3811c5bf7f0fa626a069=
-4d0dbbd77"
-shows an added "ovl_get_index_name", I guess that's the fix?)
+I'm sorry, but I don't know what that means.  Are you saying that the
+kernel is now going to try to provide a hard guarantee that some devices
+are going to be shut down in X number of seconds when asked?  If so, why
+not do this in userspace?
+
+thanks,
+
+greg k-h
