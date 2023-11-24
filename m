@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E177F84FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2587F84FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346124AbjKXT6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:58:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S233039AbjKXT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbjKXT6P (ORCPT
+        with ESMTP id S232995AbjKXT6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 14:58:15 -0500
+        Fri, 24 Nov 2023 14:58:22 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EC410F6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:58:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E92172A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:58:28 -0800 (PST)
 Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7AC9E1FE92;
-        Fri, 24 Nov 2023 19:58:17 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 476CF1FE8F;
+        Fri, 24 Nov 2023 19:58:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700855897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1700855907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=DjYte/Mctgmrrgkn7xRs0TNg9KtN5CCgmihnS5E7cF0=;
-        b=x3vw6TRKweflrN4jq3gzp3J9Tztzz4CQziwkjFOyLDOcJMkJCYreg4s0xWi6VQBNZeKtQ/
-        /y26yDCppJ10wNdUceaJ2b8ActKsmL0moHrpyWywvWA/YiBLe7qp5YVzYxMJXvA0Ctjnrd
-        CSXJSi/gSxWqbPoJN0SthoNqDQJ47M4=
+        bh=qGzEJ9/paLrY7yN9mHnVDrutfQTfMGd2dXLSP1MKgTo=;
+        b=LQLyN4VFubhseBPaSDv3sIMpCKyboHj3200tSV7VZiT2UHjBEltrsuDHzL43nvNBiYZTTZ
+        iwLzxf3sxhCN4ljw+PfEzCPGByK/j1R6NIZ3/KzzhiDFD60wm+UvbdJflOvhrQG3nb2UaD
+        cCdbkHkYvxoS91LEfTeebcj0m6aE3mQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700855897;
+        s=susede2_ed25519; t=1700855907;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=DjYte/Mctgmrrgkn7xRs0TNg9KtN5CCgmihnS5E7cF0=;
-        b=Ck8OiKFWRsiMDMq2mcW+F9tuCIjeoPI8IvWNGjGnlf1WtSRe2LqBreR/KPm80RPA57LvsH
-        I+m8Wr0EkGTW1UDw==
+        bh=qGzEJ9/paLrY7yN9mHnVDrutfQTfMGd2dXLSP1MKgTo=;
+        b=6N1XaEBpIJeFMnj/coakTwo4OtVDr1qA17zfdgNfSB5diJTD0EwzWrvRhafTW9pU1Y0b7j
+        HutLmei93GtJBKDw==
 Received: from localhost (dwarf.suse.cz [10.100.12.32])
-        by relay2.suse.de (Postfix) with ESMTP id 8DC052C145;
-        Fri, 24 Nov 2023 19:58:16 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 20:58:16 +0100
+        by relay2.suse.de (Postfix) with ESMTP id 679982C145;
+        Fri, 24 Nov 2023 19:58:25 +0000 (UTC)
+Date:   Fri, 24 Nov 2023 20:58:25 +0100
 From:   Jiri Bohac <jbohac@suse.cz>
 To:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
         Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, mhocko@suse.cz
-Subject: [PATCH 3/4] kdump, x86: implement crashkernel CMA reservation
-Message-ID: <ZWEAWMJtesa3O9M5@dwarf.suse.cz>
+Subject: [PATCH 4/4] kdump, documentation: describe craskernel CMA reservation
+Message-ID: <ZWEAYdO7VfT02EJz@dwarf.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -49,7 +49,7 @@ In-Reply-To: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
 X-Spamd-Bar: +++++++++++++
 X-Spam-Score: 13.49
 X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: 7AC9E1FE92
+X-Rspamd-Queue-Id: 476CF1FE8F
 Authentication-Results: smtp-out2.suse.de;
         dkim=none;
         dmarc=none;
@@ -92,109 +92,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the crashkernel CMA reservation for x86:
-- enable parsing of the cma suffix by parse_crashkernel()
-- reserve memory with reserve_crashkernel_cma()
-- add the CMA-reserved ranges to the e820 map for the crash kernel
-- exclude the CMA-reserved ranges from vmcore
-
-Signed-off-by: Jiri Bohac <jbohac@suse.cz>
+Describe the new crashkernel ",cma" suffix in Documentation/
 
 ---
- arch/x86/kernel/crash.c | 26 ++++++++++++++++++++++----
- arch/x86/kernel/setup.c |  5 +++--
- 2 files changed, 25 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/kdump/kdump.rst       | 10 ++++++++++
+ Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..f27d09386157 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -147,10 +147,10 @@ static struct crash_mem *fill_up_crash_elf_data(void)
- 		return NULL;
+diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+index 5762e7477a0c..4ec08e5843dc 100644
+--- a/Documentation/admin-guide/kdump/kdump.rst
++++ b/Documentation/admin-guide/kdump/kdump.rst
+@@ -317,6 +317,16 @@ crashkernel syntax
  
- 	/*
--	 * Exclusion of crash region and/or crashk_low_res may cause
--	 * another range split. So add extra two slots here.
-+	 * Exclusion of crash region, crashk_low_res and/or crashk_cma_ranges
-+	 * may cause range splits. So add extra slots here.
- 	 */
--	nr_ranges += 2;
-+	nr_ranges += 2 + crashk_cma_cnt;
- 	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
- 	if (!cmem)
- 		return NULL;
-@@ -168,6 +168,7 @@ static struct crash_mem *fill_up_crash_elf_data(void)
- static int elf_header_exclude_ranges(struct crash_mem *cmem)
- {
- 	int ret = 0;
-+	int i;
+             crashkernel=0,low
  
- 	/* Exclude the low 1M because it is always reserved */
- 	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
-@@ -182,8 +183,17 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
- 	if (crashk_low_res.end)
- 		ret = crash_exclude_mem_range(cmem, crashk_low_res.start,
- 					      crashk_low_res.end);
-+	if (ret)
-+		return ret;
- 
--	return ret;
-+	for (i = 0; i < crashk_cma_cnt; ++i) {
-+		ret = crash_exclude_mem_range(cmem, crashk_cma_ranges[i].start,
-+					      crashk_cma_ranges[i].end);
-+		if (ret)
-+			return ret;
-+	}
++4) crashkernel=size,cma
 +
-+	return 0;
- }
- 
- static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
-@@ -336,6 +346,14 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 		add_e820_entry(params, &ei);
- 	}
- 
-+	for (i = 0; i < crashk_cma_cnt; ++i) {
-+		ei.addr = crashk_cma_ranges[i].start;
-+		ei.size = crashk_cma_ranges[i].end -
-+			  crashk_cma_ranges[i].start + 1;
-+		ei.type = E820_TYPE_RAM;
-+		add_e820_entry(params, &ei);
-+	}
++   Reserves additional memory from CMA. A standard crashkernel reservation, as
++   described above, is still needed, but can be just small enough to hold the
++   kernel and initrd. All the memory the crash kernel needs for its runtime and
++   for running the kdump userspace processes can be provided by this CMA
++   reservation, re-using memory available to the production system's userspace.
++   Because of this re-using, the CMA reservation should not be used if it's
++   intended to dump userspce memory.
 +
- out:
- 	vfree(cmem);
- 	return ret;
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index f271b2cc3054..5994d18fd2a0 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -468,7 +468,7 @@ static void __init memblock_x86_reserve_range_setup_data(void)
+ Boot into System Kernel
+ -----------------------
+ 1) Update the boot loader (such as grub, yaboot, or lilo) configuration
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65731b060e3f..ee9fc40a97fd 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -914,6 +914,13 @@
+ 			0: to disable low allocation.
+ 			It will be ignored when crashkernel=X,high is not used
+ 			or memory reserved is below 4G.
++	crashkernel=size[KMG],cma
++			[KNL, X86] Reserve additional crash kernel memory from CMA.
++			This reservation is usable by the 1st system's userspace,
++			so this should not be used if dumping of userspace 
++			memory is intended. A standard crashkernel reservation, 
++			as described above, is still needed to hold the crash 
++			kernel and initrd. 
  
- static void __init arch_reserve_crashkernel(void)
- {
--	unsigned long long crash_base, crash_size, low_size = 0;
-+	unsigned long long crash_base, crash_size, low_size = 0, cma_size = 0;
- 	char *cmdline = boot_command_line;
- 	bool high = false;
- 	int ret;
-@@ -478,7 +478,7 @@ static void __init arch_reserve_crashkernel(void)
- 
- 	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
- 				&crash_size, &crash_base,
--				&low_size, NULL, &high);
-+				&low_size, &cma_size, &high);
- 	if (ret)
- 		return;
- 
-@@ -489,6 +489,7 @@ static void __init arch_reserve_crashkernel(void)
- 
- 	reserve_crashkernel_generic(cmdline, crash_size, crash_base,
- 				    low_size, high);
-+	reserve_crashkernel_cma(cma_size);
- }
- 
- static struct resource standard_io_resources[] = {
+ 	cryptomgr.notests
+ 			[KNL] Disable crypto self-tests
 
 -- 
 Jiri Bohac <jbohac@suse.cz>
