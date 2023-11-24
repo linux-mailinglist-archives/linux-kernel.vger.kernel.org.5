@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC9D7F6E08
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3BA7F6E0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344731AbjKXIZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        id S1344777AbjKXIZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:25:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKXIZS (ORCPT
+        with ESMTP id S229518AbjKXIZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:25:18 -0500
+        Fri, 24 Nov 2023 03:25:47 -0500
 Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7530BD4E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:21 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a02c48a0420so225319066b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DD4D5E
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:53 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a02d91ab195so225437666b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:25:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700814320; x=1701419120; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700814352; x=1701419152; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VQx/yGjupMkkRvWL9A4bZaH/KOhUjLaz22zA4RFLQJk=;
-        b=ICHv950ra/EcUI+mtQ+3e2bvCZyvACrIB2NobvcKCwFh5hyaGzDKNAFD6MP33Ltjd7
-         lGA0U0TmpVUR4/zzhy7uvl0CRJVKVGlEeVl9V36rnA5vbUT3oPoHMjUu95jesh8HM7lq
-         SOjAkj1JH3dCIRtOKbdONH7B1vKws0h08gB9ewk1WvwcQv8TGu6pXU/Q65eY5X3zRVDa
-         eON8J+LpMrLky/BlBpwyn8iEWgC+r5eySRtBGIB3uPBa0JcICX8xCgM78iXD9hTSkwZn
-         pTfFXOVrnO+GqEun6zu33BZfKyyzAvBJXRnU8+1GPTg1/APRJwoFLHGl/aJA8Vi+33/6
-         5WUA==
+        bh=06j1CkRWYwkZptG6xkvoWjM8LxtoGJ+O7LpPle04QGo=;
+        b=xewe7av6o7QUWQ5NQL7X0GYo6Tf9j8ovTDu/0XQE5yQGZIzuV9jN6jVkFtLz6r4UtZ
+         d4rr258vK6bkFCAxRiezRJwXqpJ0ZT6a9NCxnBdTl5/PmkjuXATTrDQLVXmror9mvo3h
+         YfT0dhx7ibohhFMZxza0OuROrTPXwDS86BjLQegizF0ikQFN2HpsKAmqJsCWLoPZCsrG
+         0vgdjqEZ1BcCW/s3Q48k5WD4cocfakvTiJFF2MRsWB0Iy2bpZhp/meq8eeGAQm95oqOC
+         sl5Iy8kETaH3S5xyTKzy/pA2z2ynfdOQTUeAHUd4jUVz8juscdvEKDqpeOihI4RrX0yD
+         fnVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700814320; x=1701419120;
+        d=1e100.net; s=20230601; t=1700814352; x=1701419152;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VQx/yGjupMkkRvWL9A4bZaH/KOhUjLaz22zA4RFLQJk=;
-        b=EtoYY8MaNMl00I/FWDqptftOTfp/ktGYFiizhTd6BGGjb2w0dKtZfwNI+tgsfwyomB
-         vEaARFOA0P1MI1xTrwjdoX3R+NsmhyTKOsR1WDbwdujris2rh173yTYT3jE52c2KS4XA
-         zcuIJ3d3vbwZ4bcV2vVB2WeTeouqfYEWsqtZ9qX8dMVWfpj3+V7VtLA1W6GgEWx8XCpj
-         tPU0v7Z73+8X6wIDJUidN/mAuNL2tkQxOlTLUKDt4lSA7jr84iZK0xFndyq8Spp5iS3M
-         jt5JiNhL2EWzha6Y0Rfx7BhbNm+BBC7/dyiV/X3piJk5X3bHKLmFgaVg9TDRROu5f1MB
-         StGA==
-X-Gm-Message-State: AOJu0Yw2nQcx46mcWrRabbMd/Cb+HrnIzaMjcAVjHuPAb5MUg/skrgAi
-        b3P+sHS4IJCY+sURqxpbZGN2N94sfgFWvW3J80E=
-X-Google-Smtp-Source: AGHT+IGYiWWY25YHaih3jTXWRFh5kA1Z/H5VKuRPHhTi3XXwH72zAuAIrKM5YD5vIy2iOXCLnFPZew==
-X-Received: by 2002:a17:906:b54:b0:a02:5bb:5658 with SMTP id v20-20020a1709060b5400b00a0205bb5658mr1386023ejg.47.1700814319941;
-        Fri, 24 Nov 2023 00:25:19 -0800 (PST)
+        bh=06j1CkRWYwkZptG6xkvoWjM8LxtoGJ+O7LpPle04QGo=;
+        b=ZsRjvzWMTGQSKFUmPDYZgTKysMhyG4bKiwCVYAkUZhxNGY06kGnDB7O7vTirb6YkkS
+         sUlfo5op8PIfm+v4YzIPHWec6NAgLULI49P0qfi7oiMz6/4IGBC/n5Lhj+Dwx3rMivSI
+         u0uLmUMaZ7LJHzkOlXXQfw+3UXy5gJgoyRI7Nae/rwnzBLpwq/fiqI0mSIQYVsNlqikZ
+         ZTpuEfI0pWooc3fNgl2GdM7064KTWr0z4rZRwbrfZzm4pnY1ebqmxDbXIUYu8a/oF+bM
+         XDhxQxKJVsI1neFUeRai0fC47mTNmpgm4IxwKsRWAyy3t2AWpRWMJZL1cQtV6abjEBeO
+         +LKg==
+X-Gm-Message-State: AOJu0YzGVfmnCeFsLCKp+Mb457DsWBfo8nwt3H1bhy8Bb2JjJg4fGIy4
+        dwY1nPBYNl/EQlfUa+ZIbo+yzQ==
+X-Google-Smtp-Source: AGHT+IE+1xFmOaGnWITGqhSW0oqgIUs1SmVbItPcvnsdp8dg5vCLhy+qv9eBsDdn3MaA1Qd2NzywHQ==
+X-Received: by 2002:a17:906:2c05:b0:a04:7e4d:6c19 with SMTP id e5-20020a1709062c0500b00a047e4d6c19mr1259271ejh.68.1700814352143;
+        Fri, 24 Nov 2023 00:25:52 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.25.18
+        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.25.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:25:19 -0800 (PST)
-Message-ID: <f443830a-ba16-4c5e-9260-6fb38a09cc10@linaro.org>
-Date:   Fri, 24 Nov 2023 09:25:17 +0100
+        Fri, 24 Nov 2023 00:25:51 -0800 (PST)
+Message-ID: <3d9677fb-c2a4-40ea-8820-7be18041f869@linaro.org>
+Date:   Fri, 24 Nov 2023 09:25:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 15/21] dt-bindings: mips: cpu: Add I-Class I6500
- Multiprocessor Core
+Subject: Re: [PATCH v2 17/21] dt-bindings: mfd: syscon: Document EyeQ5 OLB
 Content-Language: en-US
 To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
         Paul Burton <paulburton@kernel.org>,
@@ -68,11 +67,9 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
         Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 References: <20231123152639.561231-1-gregory.clement@bootlin.com>
- <20231123152639.561231-16-gregory.clement@bootlin.com>
+ <20231123152639.561231-18-gregory.clement@bootlin.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,9 +115,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231123152639.561231-16-gregory.clement@bootlin.com>
+In-Reply-To: <20231123152639.561231-18-gregory.clement@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -132,27 +129,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/11/2023 16:26, Gregory CLEMENT wrote:
-> The MIPS Warrior I-class I6500 was announced by Imagination
-> Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
+> Document Mobileye EyeQ5 compatibles for OLB registers that are
+> miscellaneous SoC related registers.
 > 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> It is used to expose SoC specific configuration such as for example
+> reset, clock or pinctrl.
+> 
 > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-> index cf382dea3922c..b5165cf103e94 100644
-> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-> @@ -39,6 +39,7 @@ properties:
->        - mti,mips24KEc
->        - mti,mips14KEc
->        - mti,mips14Kc
-> +      - img,i6500
 
-Don't break the order of entries.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
