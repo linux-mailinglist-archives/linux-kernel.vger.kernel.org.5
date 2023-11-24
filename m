@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1A67F70E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A3D7F70F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345545AbjKXKJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        id S1345731AbjKXKKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345491AbjKXKJS (ORCPT
+        with ESMTP id S1345523AbjKXKKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:09:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6727D10FF
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:09:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A744FC433C7;
-        Fri, 24 Nov 2023 10:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700820564;
-        bh=79vzGQR14LIqiyrjE435UvwcyEj3FQtGfxLgj0DBfG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cx7VnbdaZkkZAnBiPxYEIx64Y/JvpJGj5krvPkp1ZM+VpWMBH53OuLhAvX2kOKxy+
-         8PK0c1nycIfaYd2hb9fAtLgJ65QtsndmtoUTFKSBH71GKd0xPQDwlr+p+oEnRpsp6t
-         cF3I1ATnBHD9kKQbsLizzRB0az1GF6kWc5CAr1ceeE8PGlDde/l/r5vZ69MnfInUU1
-         2nT0imREu5j8ABcRI5Bw32GgtSvyvbgVox7WEPwo/c9LeHmngVQm+e3G+bbUOrlCR4
-         bhIpQRiLSefPtf3miU2GQzqAGi1IHFdmF5melWXbu3Jt6d2GQZLhdEmMc28NlpZzqI
-         5LUKUc8Akpqig==
-Date:   Fri, 24 Nov 2023 15:39:16 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qiang Yu <quic_qianyu@quicinc.com>
-Cc:     quic_jhugo@quicinc.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_cang@quicinc.com, quic_mrana@quicinc.com,
-        Hemant Kumar <quic_hemantk@quicinc.com>,
-        Lazarus Motha <quic_lmotha@quicinc.com>
-Subject: Re: [PATCH v4 4/4] bus: mhi: host: Take irqsave lock after TRE is
- generated
-Message-ID: <20231124100916.GB4536@thinkpad>
-References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
- <1699939661-7385-5-git-send-email-quic_qianyu@quicinc.com>
+        Fri, 24 Nov 2023 05:10:00 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB93C172A;
+        Fri, 24 Nov 2023 02:09:54 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548a2c20f50so2369312a12.1;
+        Fri, 24 Nov 2023 02:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700820593; x=1701425393; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=m8w2rneZWk50Vwtyw8hi2nEgxF9wwtMPjBvhGMN8LSY=;
+        b=DxzrDw4oE6wdVCydUtc4qHDQrAVPhnTuhV7IfIEj3gRNWY1sEykEPIYG63WTjdp/V1
+         6njjt+6NnU+gg+8Cz3bShLmZZn3widYK8Yygj4EhggrqUEpyO0gLIhJF9aS4Qt1pcmuj
+         pKGX/PJ3ma+I43FO50m6SMO/GCho4f43TU/zawjILpmHqd7vd1OS1N5u8wxGXE/TK2X+
+         KIW4iC5RPQRulbxs2NKoCVFKCw+5wsRVkiwXkcqwV6OVbKa42CDEx1gIzqcI+zrMeGHk
+         2fV33ywXXisQZ22kegTW+NEesWdk8woZjgaueyTNQgYpGqk/7qFJHkZN+54gZHWfB6pq
+         mmng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700820593; x=1701425393;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m8w2rneZWk50Vwtyw8hi2nEgxF9wwtMPjBvhGMN8LSY=;
+        b=noaWVVqBe0FQqNb++bbLhAQKkLko4zCia4NApTTaF/Qa5g29Vweh9wo2nEViab80BG
+         74jdXCb4dVRkSlR89Ok3gDirV/RKGQ8Sx0ZnPnD0V7aGKSkmUOVUMff3YAY79jBKTHnq
+         eqPWlwFUg3/G0ar03XRNAxCskCVio0L0L+C623BSO8S8n4+se/iyz/ip5NsezsBlp4Vy
+         k4UKNCtgrPBlvbyfG6hAKye0SyyRnjPuLnufq74eaKNTfDptU9eX7ze9BxHDoNKH95M4
+         09V9V3ufnJeBAlqUnnPcBHYbIpHsfuX3/a54VLFPs+vY6zKW68plJ8P84kAAx2uHBp4c
+         ho/g==
+X-Gm-Message-State: AOJu0YxKRJ4H+qvj39jmk+/z07RNCnwznB6MwpzxzCqq5gJErsFrVIIe
+        tK66WHL9WMrWFOGnq1rT0GN1D/Vx8Ui77g==
+X-Google-Smtp-Source: AGHT+IHbmSrZHLYpYV/fxcYSBbpGgcBecf9YXzxVjY/ahvMGyW0tbf8xJ1exeqv94Lcxie3mam9b7w==
+X-Received: by 2002:a50:9fab:0:b0:54b:824:9ea2 with SMTP id c40-20020a509fab000000b0054b08249ea2mr172505edf.16.1700820592946;
+        Fri, 24 Nov 2023 02:09:52 -0800 (PST)
+Received: from ?IPV6:2a01:c22:72cf:8300:64ee:eefa:7128:3642? (dynamic-2a01-0c22-72cf-8300-64ee-eefa-7128-3642.c22.pool.telefonica.de. [2a01:c22:72cf:8300:64ee:eefa:7128:3642])
+        by smtp.googlemail.com with ESMTPSA id t24-20020aa7d718000000b0053ff311f388sm1623563edq.23.2023.11.24.02.09.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 02:09:52 -0800 (PST)
+Message-ID: <d12be9e6-e136-45fc-9d0e-dd290ef25277@gmail.com>
+Date:   Fri, 24 Nov 2023 11:09:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699939661-7385-5-git-send-email-quic_qianyu@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/10] drivers/i2c/busses: Don't let i2c adapters declare
+ I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
+To:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231118180504.1785-1-hkallweit1@gmail.com>
+ <20231118180504.1785-6-hkallweit1@gmail.com>
+ <0cee5543-711d-3d6e-f416-18889badff18@axentia.se>
+Content-Language: en-US
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <0cee5543-711d-3d6e-f416-18889badff18@axentia.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 01:27:41PM +0800, Qiang Yu wrote:
-> From: Hemant Kumar <quic_hemantk@quicinc.com>
+On 24.11.2023 00:10, Peter Rosin wrote:
+> Hi!
 > 
-> If CONFIG_TRACE_IRQFLAGS is enabled, irq will be enabled once __local_bh_
-> enable_ip is called as part of write_unlock_bh. Hence, let's take irqsave
-
-"__local_bh_enable_ip" is a function name, so you should not break it.
-
-> lock after TRE is generated to avoid running write_unlock_bh when irqsave
-> lock is held.
+> 2023-11-18 at 19:04, Heiner Kallweit wrote:
+>> diff --git a/drivers/i2c/busses/i2c-kempld.c b/drivers/i2c/busses/i2c-kempld.c
+>> index e01d75308..9076ae4d7 100644
+>> --- a/drivers/i2c/busses/i2c-kempld.c
+>> +++ b/drivers/i2c/busses/i2c-kempld.c
+>> @@ -283,8 +283,8 @@ static const struct i2c_algorithm kempld_i2c_algorithm = {
+>>  static const struct i2c_adapter kempld_i2c_adapter = {
+>>  	.owner		= THIS_MODULE,
+>>  	.name		= "i2c-kempld",
+>> -	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD |
+>> -			  I2C_CLASS_DEPRECATED,
+>> +	.class		= I2C_CLASS_HWMON |
+>> +	I2C_CLASS_DEPRECATED,
 > 
-
-I still don't understand this commit message. Where is the write_unlock_bh()
-being called?
-
-- Mani
-
-> Signed-off-by: Hemant Kumar <quic_hemantk@quicinc.com>
-> Signed-off-by: Lazarus Motha <quic_lmotha@quicinc.com>
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> ---
->  drivers/bus/mhi/host/main.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
+> The above is less than ideal...
 > 
-> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> index 33f27e2..d7abd0b 100644
-> --- a/drivers/bus/mhi/host/main.c
-> +++ b/drivers/bus/mhi/host/main.c
-> @@ -1128,17 +1128,15 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
->  	if (unlikely(MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)))
->  		return -EIO;
->  
-> -	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
-> -
->  	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
-> -	if (unlikely(ret)) {
-> -		ret = -EAGAIN;
-> -		goto exit_unlock;
-> -	}
-> +	if (unlikely(ret))
-> +		return -EAGAIN;
->  
->  	ret = mhi_gen_tre(mhi_cntrl, mhi_chan, buf_info, mflags);
->  	if (unlikely(ret))
-> -		goto exit_unlock;
-> +		return ret;
-> +
-> +	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
->  
->  	/* Packet is queued, take a usage ref to exit M3 if necessary
->  	 * for host->device buffer, balanced put is done on buffer completion
-> @@ -1158,7 +1156,6 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
->  	if (dir == DMA_FROM_DEVICE)
->  		mhi_cntrl->runtime_put(mhi_cntrl);
->  
-> -exit_unlock:
->  	read_unlock_irqrestore(&mhi_cntrl->pm_lock, flags);
->  
->  	return ret;
-> -- 
-> 2.7.4
+> It should obviously be:
 > 
+> -	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD |
+> -			  I2C_CLASS_DEPRECATED,
+> +	.class		= I2C_CLASS_HWMON | I2C_CLASS_DEPRECATED,
 > 
+Sure. Thanks for the hint.
 
--- 
-மணிவண்ணன் சதாசிவம்
+> Cheers,
+> Peter
+
