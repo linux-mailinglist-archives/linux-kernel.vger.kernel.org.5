@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5F07F7043
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8787F7045
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbjKXJnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
+        id S1345236AbjKXJoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345386AbjKXJmo (ORCPT
+        with ESMTP id S229668AbjKXJoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:42:44 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391BA1703
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:42:47 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d9c66e70ebdso1477964276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:42:47 -0800 (PST)
+        Fri, 24 Nov 2023 04:44:02 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA30D71
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:44:08 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5cd81e76164so11221297b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:44:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700818966; x=1701423766; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700819048; x=1701423848; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FvRqnRUWRFewJ1yAX+bnqQAx4yyEA89YIIAsTWMu6tE=;
-        b=Uf9DKeHrbHwb15NXA/eFVlsGugk4qGwOIZiFmZno8OUo9ctbW7nbIHFlQUa00JM//1
-         81L3VXn0RnaFlwpwOT0o8AYJBIrBmmKqQ2517hfAgGHV7EDfey5sK0ePPsC8viLuvnwY
-         HOKrhvgr0lNnU3+ma9VRxQPuW9bim8kVaxlKkMCi9KOcHOIO5TwBVokZyaw9pzLZGA1f
-         u2gH5CxLGORvM6GqZDktR6BMyHYHxi8zKRs2G3kqVbARFJhmi+Rd4UcUXaALvgN7//al
-         CiRz9vpfFZV+HsQ/PM185T2S9dWXMb/JtGOQX/YDQ1/sUezR270ulryW4mzdG2Qjoa+H
-         +IRw==
+        bh=f8U6oK0q2++i/sXs1uKCpqaJWvWB9Mdi5xB6RzEIJfc=;
+        b=MVNOEcM9G0eEAXPXzLCdXukXdinFnlny0Mxgjbbf1swP99lTMhtRcktFhnnIqQTzgL
+         bAPySAAjZc6GyPEyUndZZAhaDszbigxus8UHFGpZ0Ov2y81xmP1b2D8K+avvXRf04JY7
+         cPS+xSFnlK4u9ir37JOwGG9dcPjOprYAdrJfnpihqJfrisxcnvVxYnwepFAG1dnLDSvy
+         yj+dYPC4cHOgyURMHSrn5vv7AmDQ0bc82ZhtADRXJXp2KlWO42qE7/qrWz69UTLppde1
+         BhWIBrQLD3Dw3OV55qNCHTFfXY0RqWGR/ui0RaffQ+120DACblH0nzi5CYul/i8K6uED
+         CV5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700818966; x=1701423766;
+        d=1e100.net; s=20230601; t=1700819048; x=1701423848;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FvRqnRUWRFewJ1yAX+bnqQAx4yyEA89YIIAsTWMu6tE=;
-        b=jc+K6LPclQJ0pFgV6QM0p3ULL1KLjiTCYQkloJmanLjNezzBW6mHWmuwikOt43/Bm9
-         OiaA2W9ys2Qxyv9Hr0ZeYQaIzae5a36aOvAtVR2saF9O3hRwZGEZ2tefJEupv6ILx/Ww
-         km0k7cP8UPV5vMjxGU+IRBuF7SjofIQHIbVsDllzATItgbOyaRPHHNyeGq5x7b8GJS6f
-         NAOiizKTDGbCdFM77CUclgCdO7wSXZ/xYElvHIf7uId6qSgb82wYZU+IueT790o/XEKd
-         PooYmLqnNEMkzEcaungPMbihC7m05JXA71x3xdU6f1giDstSbFCZp4eJ64QzUCY7zW+C
-         qs3w==
-X-Gm-Message-State: AOJu0YxK9dmIU4k02oA5MoDJ8F6RxkT9StCC6zud8noZXS60UXfpMllR
-        f+FlHfGqSmWq73Is/6mLkAjsKN9E1vlRplskKa4XGQ==
-X-Google-Smtp-Source: AGHT+IFyHi6ofsYMrVk1B+Dbc7BjO1/791M6O7w4Se/imKOkpVL2OEfLkYpCq4TxxkuqgvlJEoDku5P1gCq13JVPgIY=
-X-Received: by 2002:a25:4286:0:b0:d9c:7b92:90b9 with SMTP id
- p128-20020a254286000000b00d9c7b9290b9mr1698446yba.14.1700818966072; Fri, 24
- Nov 2023 01:42:46 -0800 (PST)
+        bh=f8U6oK0q2++i/sXs1uKCpqaJWvWB9Mdi5xB6RzEIJfc=;
+        b=OdM5/MkAZFx5H3u7bvmM6oDyWWBcOt/tBG6i3qPFKFSl7ls5avprgXUZdQdc/y7nxf
+         6hidkeybRN3tnZ/mdWKBi/wfrd8eVamLf/sCHL8ud7KCvcMautE1tAFvfgWLSTtNu9bD
+         z1H6pepn7RQPxHY/R/NbEIuFg6AhJk2qyrGJKDS0xvBgRRpMcaEnSdIDLHjGxdw6EuFN
+         cjeactIllhcqP647bdekvk3jw/SWHPcqTsEWRm0yLS6clrCvM1wnuofecoLgL9l6ABd6
+         3zjhpqiKqiBkAKg7mzgG3O3XVPdrfS6rER4TiJqj1bf2wDHtShsY422ekPsHYhi0WOPG
+         3MDw==
+X-Gm-Message-State: AOJu0Yz5c+cYGOUpVMQaBvFRLRbEFvW3YpT5moWSrfpPS4SBz3omsbFo
+        cAVcxUYb8S6rm1AjSben4cladIFB7G0lXwGJexGi0g==
+X-Google-Smtp-Source: AGHT+IGeuqMgtlqATuFeCx8iGbYWfLHMNuuqRCfht/XD+q5njaSfDP6xaMBZmj8/3Vrj0we0rCYnOvhSgUaQ0XkV8Ik=
+X-Received: by 2002:a81:4981:0:b0:5a7:c8a9:79e8 with SMTP id
+ w123-20020a814981000000b005a7c8a979e8mr2071750ywa.4.1700819048052; Fri, 24
+ Nov 2023 01:44:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20231115211209.1683449-1-william@wkennington.com>
-In-Reply-To: <20231115211209.1683449-1-william@wkennington.com>
+References: <20231117093921.31968-1-quic_sibis@quicinc.com>
+In-Reply-To: <20231117093921.31968-1-quic_sibis@quicinc.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 24 Nov 2023 10:42:35 +0100
-Message-ID: <CACRpkda_WwKTBnZ4gWpWg0bQs10s-zv72b8gdY_HQ7+ryo_MFQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: npcm7xx: prevent glitch when setting the GPIO to
- output high
-To:     "William A. Kennington III" <william@wkennington.com>
-Cc:     tmaimon77@gmail.com, tali.perry1@gmail.com, avifishman70@gmail.com,
-        joel@jms.id.au, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Fri, 24 Nov 2023 10:43:57 +0100
+Message-ID: <CACRpkdbi+H123TPe9yvGGo68o_uAxVZyiSHcJDxB7c8TSMZ-zg@mail.gmail.com>
+Subject: Re: [PATCH V2 0/2] pinctrl: qcom: Introduce Pinctrl/GPIO for X1E80100
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+        conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,19 +74,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:12=E2=80=AFPM William A. Kennington III
-<william@wkennington.com> wrote:
+On Fri, Nov 17, 2023 at 10:39=E2=80=AFAM Sibi Sankar <quic_sibis@quicinc.co=
+m> wrote:
 
-> From: Tomer Maimon <tmaimon77@gmail.com>
+> This series adds pinctrl/gpio support for the Qualcomm X1E80100 platform,
+> aka Snapdragon X Elite.
 >
-> Enable GPIO output after setting the output value to prevent a glitch
-> when pinctrl driver sets gpio pin to output high and the pin is in
-> the default state (high->low->high).
->
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> Signed-off-by: William A. Kennington III <william@wkennington.com>
+> Our v1 post of the patchsets adding support for Snapdragon X Elite SoC ha=
+d
+> the part number sc8380xp which is now updated to the new part number x1e8=
+0100
+> based on the new branding scheme and refers to the exact same SoC.
 
-Patch applied!
+Patches applied!
 
 Yours,
 Linus Walleij
