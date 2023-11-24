@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6868D7F86CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6926F7F86CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 00:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjKXXhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 18:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        id S231603AbjKXXhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 18:37:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbjKXXhY (ORCPT
+        with ESMTP id S231764AbjKXXhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 18:37:24 -0500
+        Fri, 24 Nov 2023 18:37:13 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCF11BF7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8891BDA
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700869042;
+        s=mimecast20190719; t=1700869036;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o9d7VDWKIT6kRskPMwA56/YhEUxpKcUgE6jJTCtxE4g=;
-        b=GyUpfxc5idVSCOyae70eVTS76DAXdqXEX1L+TypCYDVESd74bL3GZyZaSzOrncB1uRwcEo
-        bPOuD5jkmMP+mNZ1x1w8E7q+JJmaelmSUGt5JXA7KPwJXDC7us/Mn2GGD3MfGDs9tFoMgt
-        O1Q6GnAq4S3N+FgEi4pHTV0u0UByuYQ=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=izHSVRiDPLqloSEgKNfnuq4BC7zmY7Slqcod5ZMSAJI=;
+        b=DntNbxp29IGn24HuhJ5FqL3AqvX4po0NhSkVqo0I98gIAJabIPLtrOfGjVXevoQkeUiXeE
+        KTPjw2nNVTrjKnR/gNQ21UGt984KvO6mBMAc3iCJzrpPWSdnna9sw0CMZNQzjRsY5wspQt
+        11y49TSkIIsM+X98BO0G5jC+g1PLFHE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-140-tB0QsRk9ORK4P2vGGDvG9Q-1; Fri, 24 Nov 2023 18:37:09 -0500
-X-MC-Unique: tB0QsRk9ORK4P2vGGDvG9Q-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5079a3362afso2264325e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:08 -0800 (PST)
+ us-mta-376-cTesNTbOM8SUSOxoLDJUtw-1; Fri, 24 Nov 2023 18:37:12 -0500
+X-MC-Unique: cTesNTbOM8SUSOxoLDJUtw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a020d91dc93so173741666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 15:37:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700869028; x=1701473828;
+        d=1e100.net; s=20230601; t=1700869031; x=1701473831;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o9d7VDWKIT6kRskPMwA56/YhEUxpKcUgE6jJTCtxE4g=;
-        b=ma+TMA0HVIXbD4I+iz1XwgmDFeg5fbFh/X0zGRQuprcF9+ZBjSYN31LynzdObgHNfP
-         h0/K2obYegOV3NW9wjJ/xU97lC8ku08Ypk2Ud1J/z384D0ezoBhogZHry9W2l7Yfef49
-         UKQsfywFp/hcYf6B7qwMOUltHcAkTINH1g9MObEqJpcrqUhdTH9U7l8j6+SZ9bIUBrRE
-         SMKofGyTsjKcZC7SU+054p0XIT5B1llQF9mNJ04jywr2A/rpmoFqJ8S4gGgFtX6gDYDi
-         NXiHfWSXg6shvHUqa7wiVIvnSQdnln8o7r0W02aUrb+poQqPafW9N4K3SrHqpbPVnEIW
-         +9Xw==
-X-Gm-Message-State: AOJu0YxHa9UcxB1Vbdb2/+QlzfX8177YvBMWRQ7reQjnnyUABK/v3Yx7
-        54fcLdMUimTmeEqK9Uc4s4ufOD1CrFUOS7IF1UzcJ+uoPUHso+Pn45OL9peqBSQVxvZ/77s4BMd
-        bOK4VnXhj7emx2YZYQ+tdajvB
-X-Received: by 2002:a05:6512:a92:b0:500:99a9:bc40 with SMTP id m18-20020a0565120a9200b0050099a9bc40mr3990392lfu.69.1700869027855;
-        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHASf51P/stzy6MO1wClOrbLB0m2h5TDmbZM6s6hMIvpjkKqyVWebotr5L22G9Z2BXEHBKA2A==
-X-Received: by 2002:a05:6512:a92:b0:500:99a9:bc40 with SMTP id m18-20020a0565120a9200b0050099a9bc40mr3990385lfu.69.1700869027648;
-        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
+        bh=izHSVRiDPLqloSEgKNfnuq4BC7zmY7Slqcod5ZMSAJI=;
+        b=UZmwfuX9tC46EwzcNZfsZjwrlEAlJByhE4BjPH9hp7n69ZdUm8azsBgSPv9m0mlL4H
+         DZbWzdLJYBJPnSUfBRQ1lnMI9cl69onQlIf04kD0f/yCJXx00yvLSFB3jaBqB4G8uVaz
+         QR2jBPE/MwRtJ7Azm2+FC28BbM8jOG9BBjTDnxJW/bJVmAZVPh3WO2tBZCfieD++aFfz
+         3coxDvUluuI1nNlJI1qWqfULTYPsIiu/yLBUmoS7ZVZTF0wWI3icx2Gf8w2aWzfqDEvh
+         7VFq+CjdpORyOG6NiexKOh4UWyySWzliF3qGN9yhJj2SZeMGtJV9ergz6xIB9VIZIIhW
+         TDTw==
+X-Gm-Message-State: AOJu0YyR+QddqHv32UtL7XYjx49NCQsFcVvDOvF7At64ewvUJje7qaP8
+        ZL0GcqBCKnA/A205iu1xxm9UlGS6j26+Nh4cMwR9e5AdccYAuA7ewDnSQV9G8jElC/CD/zA95ay
+        3BXmrYsiSG+czKO5Kzbsp9dMq
+X-Received: by 2002:a17:906:2ad7:b0:9b7:37de:601a with SMTP id m23-20020a1709062ad700b009b737de601amr3498395eje.49.1700869031734;
+        Fri, 24 Nov 2023 15:37:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7AM/j8VK9NPe0eYzewGeBE2LWUQe7Blb8qYhXMJvXKt25UPVDkshQAwVtb5iSlMHYw7d5Ug==
+X-Received: by 2002:a17:906:2ad7:b0:9b7:37de:601a with SMTP id m23-20020a1709062ad700b009b737de601amr3498388eje.49.1700869031532;
+        Fri, 24 Nov 2023 15:37:11 -0800 (PST)
 Received: from pollux.. ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id n18-20020a17090625d200b009fe1d575365sm2664262ejb.55.2023.11.24.15.37.06
+        by smtp.gmail.com with ESMTPSA id lb16-20020a170907785000b009fda665860csm2641510ejc.22.2023.11.24.15.37.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 15:37:07 -0800 (PST)
+        Fri, 24 Nov 2023 15:37:10 -0800 (PST)
 From:   Danilo Krummrich <dakr@redhat.com>
 To:     mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
         frank.binns@imgtec.com, donald.robson@imgtec.com,
         matt.coster@imgtec.com, sarah.walker@imgtec.com
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next 3/5] drm/imagination: vm: fix drm_gpuvm reference count
-Date:   Sat, 25 Nov 2023 00:36:38 +0100
-Message-ID: <20231124233650.152653-4-dakr@redhat.com>
+        Danilo Krummrich <dakr@redhat.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH drm-misc-next 4/5] drm/gpuvm: fall back to drm_exec_lock_obj()
+Date:   Sat, 25 Nov 2023 00:36:39 +0100
+Message-ID: <20231124233650.152653-5-dakr@redhat.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231124233650.152653-1-dakr@redhat.com>
 References: <20231124233650.152653-1-dakr@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -81,61 +83,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver specific reference count indicates whether the VM should be
-teared down, whereas GPUVM's reference count indicates whether the VM
-structure can finally be freed.
+Fall back to drm_exec_lock_obj() if num_fences is zero for the
+drm_gpuvm_prepare_* function family.
 
-Hence, free the VM structure in pvr_gpuvm_free() and drop the last
-GPUVM reference after tearing down the VM. Generally, this prevents
-lifetime issues such as the VM being freed as long as drm_gpuvm_bo
-structures still hold references to the VM.
+Otherwise dma_resv_reserve_fences() would actually allocate slots even
+though num_fences is zero.
 
-Fixes: ff5f643de0bf ("drm/imagination: Add GEM and VM related code")
+Cc: Christian König <christian.koenig@amd.com>
 Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 ---
- drivers/gpu/drm/imagination/pvr_vm.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_gpuvm.c | 36 +++++++++++++++++++++++++++++++++---
+ include/drm/drm_gpuvm.h     | 23 +++--------------------
+ 2 files changed, 36 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/gpu/drm/imagination/pvr_vm.c b/drivers/gpu/drm/imagination/pvr_vm.c
-index 1e89092c3dcc..e0d74d9a6190 100644
---- a/drivers/gpu/drm/imagination/pvr_vm.c
-+++ b/drivers/gpu/drm/imagination/pvr_vm.c
-@@ -64,6 +64,12 @@ struct pvr_vm_context {
- 	struct drm_gem_object dummy_gem;
- };
+diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+index 54f5e8851de5..d1d1c2379e44 100644
+--- a/drivers/gpu/drm/drm_gpuvm.c
++++ b/drivers/gpu/drm/drm_gpuvm.c
+@@ -1085,6 +1085,36 @@ drm_gpuvm_put(struct drm_gpuvm *gpuvm)
+ }
+ EXPORT_SYMBOL_GPL(drm_gpuvm_put);
  
-+static inline
-+struct pvr_vm_context *to_pvr_vm_context(struct drm_gpuvm *gpuvm)
++static int
++exec_prepare_obj(struct drm_exec *exec, struct drm_gem_object *obj,
++		 unsigned int num_fences)
 +{
-+	return container_of(gpuvm, struct pvr_vm_context, gpuvm_mgr);
++	return num_fences ? drm_exec_prepare_obj(exec, obj, num_fences) :
++			    drm_exec_lock_obj(exec, obj);
 +}
 +
- struct pvr_vm_context *pvr_vm_context_get(struct pvr_vm_context *vm_ctx)
- {
- 	if (vm_ctx)
-@@ -535,7 +541,7 @@ pvr_device_addr_and_size_are_valid(struct pvr_vm_context *vm_ctx,
++/**
++ * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
++ * @gpuvm: the &drm_gpuvm
++ * @exec: the &drm_exec context
++ * @num_fences: the amount of &dma_fences to reserve
++ *
++ * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
++ *
++ * Using this function directly, it is the drivers responsibility to call
++ * drm_exec_init() and drm_exec_fini() accordingly.
++ *
++ * Returns: 0 on success, negative error code on failure.
++ */
++int
++drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
++		     struct drm_exec *exec,
++		     unsigned int num_fences)
++{
++	return exec_prepare_obj(exec, gpuvm->r_obj, num_fences);
++}
++EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_vm);
++
+ static int
+ __drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
+ 			    struct drm_exec *exec,
+@@ -1095,7 +1125,7 @@ __drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
+ 	int ret = 0;
  
- void pvr_gpuvm_free(struct drm_gpuvm *gpuvm)
- {
--
-+	kfree(to_pvr_vm_context(gpuvm));
- }
+ 	for_each_vm_bo_in_list(gpuvm, extobj, &extobjs, vm_bo) {
+-		ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
++		ret = exec_prepare_obj(exec, vm_bo->obj, num_fences);
+ 		if (ret)
+ 			break;
+ 	}
+@@ -1116,7 +1146,7 @@ drm_gpuvm_prepare_objects_locked(struct drm_gpuvm *gpuvm,
  
- static const struct drm_gpuvm_ops pvr_vm_gpuva_ops = {
-@@ -655,12 +661,11 @@ pvr_vm_context_release(struct kref *ref_count)
- 	WARN_ON(pvr_vm_unmap(vm_ctx, vm_ctx->gpuvm_mgr.mm_start,
- 			     vm_ctx->gpuvm_mgr.mm_range));
+ 	drm_gpuvm_resv_assert_held(gpuvm);
+ 	list_for_each_entry(vm_bo, &gpuvm->extobj.list, list.entry.extobj) {
+-		ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
++		ret = exec_prepare_obj(exec, vm_bo->obj, num_fences);
+ 		if (ret)
+ 			break;
  
--	drm_gpuvm_put(&vm_ctx->gpuvm_mgr);
- 	pvr_mmu_context_destroy(vm_ctx->mmu_ctx);
- 	drm_gem_private_object_fini(&vm_ctx->dummy_gem);
- 	mutex_destroy(&vm_ctx->lock);
+@@ -1186,7 +1216,7 @@ drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm, struct drm_exec *exec,
+ 	drm_gpuvm_for_each_va_range(va, gpuvm, addr, end) {
+ 		struct drm_gem_object *obj = va->gem.obj;
  
--	kfree(vm_ctx);
-+	drm_gpuvm_put(&vm_ctx->gpuvm_mgr);
- }
+-		ret = drm_exec_prepare_obj(exec, obj, num_fences);
++		ret = exec_prepare_obj(exec, obj, num_fences);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+index f94fec9a8517..b3f82ec7fb17 100644
+--- a/include/drm/drm_gpuvm.h
++++ b/include/drm/drm_gpuvm.h
+@@ -544,26 +544,9 @@ struct drm_gpuvm_exec {
+ 	} extra;
+ };
  
- /**
+-/**
+- * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
+- * @gpuvm: the &drm_gpuvm
+- * @exec: the &drm_exec context
+- * @num_fences: the amount of &dma_fences to reserve
+- *
+- * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
+- *
+- * Using this function directly, it is the drivers responsibility to call
+- * drm_exec_init() and drm_exec_fini() accordingly.
+- *
+- * Returns: 0 on success, negative error code on failure.
+- */
+-static inline int
+-drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
+-		     struct drm_exec *exec,
+-		     unsigned int num_fences)
+-{
+-	return drm_exec_prepare_obj(exec, gpuvm->r_obj, num_fences);
+-}
++int drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
++			 struct drm_exec *exec,
++			 unsigned int num_fences);
+ 
+ int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
+ 			      struct drm_exec *exec,
 -- 
 2.42.0
 
