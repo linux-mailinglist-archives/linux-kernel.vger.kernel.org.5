@@ -2,228 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601547F7815
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853C07F7823
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345901AbjKXPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        id S1345893AbjKXPt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345824AbjKXPqG (ORCPT
+        with ESMTP id S1345891AbjKXPtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:46:06 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9701992
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:46:11 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a08e4352992so116439366b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:46:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700840770; x=1701445570; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9wSiZKBdjfk9WzYTONxAZ9gvH4l3ttkbnn/4rhktlQ=;
-        b=ItUZL7O+Spdo5mhWiQhw3cVmhiv8+EQrtHcOV0b7rP6+k4B7OhE2/fiW43xF4G83iO
-         bMS8wE52QsVHyvPsi2+Big0irmUgK/6BxJEnzHkOBDJImcc+WjF/OfaeTMX3GXXHxygC
-         Y7mNaLKZmHpWEmxxCSU0WUlfFYm28QIOR8AcVkrLSP09tIv8fNQgqaCP/34SY9C9V1JX
-         u89UvRO2JmRjdJDZfVrvyuKLq6yfF76XVpsnX1+QXp4qFf8v5ki5X4p/g04uXKnpaA/p
-         RaAcjWdM3rIb53HPtFQnQxT/vCrCkL5dbMS1OQL4RJiYRWWkrtJqoiUcMErZd8Xup+5y
-         V5Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700840770; x=1701445570;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d9wSiZKBdjfk9WzYTONxAZ9gvH4l3ttkbnn/4rhktlQ=;
-        b=poZGZJo8onSncklaQ/EBlFxMc4UMnChW0g3WWpRF29uWbFWSqTtUx10Auo39Szdp1a
-         WW2pgY2fYzQsuV8DGt2LBdlBg9mNQeYiNnmepLGkzxqhLEm9NWVV+6mhou2/EuSly1Nk
-         bTV/m2rTfzgnchAH/4SVFWGibp4htimtV0D9UW4Tgq5gSXtFD6nePPY1lLU+PjnG6gXR
-         o9EKZWOnd0JD5xgAmkP4kQbAW/JOtOVXRdydvxro61UvUFLHYyTw2sqlwF8CSNtjqzVM
-         OUHxe0MuiJUM8pB2CeHzlLTpg0Lrh48AJmuZkXUXhGIJIts/3LTXjKJuh8KWhQ6ouzIs
-         ZhJg==
-X-Gm-Message-State: AOJu0YwwEQo6UCABFHHMGGWvRxc+aDij0iSli7THbMdC/rQTwmZBpfQy
-        XMzxFjhifrCBQdhtk1D8W2bwPg==
-X-Google-Smtp-Source: AGHT+IEksiLkwKJQbymecKFwdLHhu3BPyuhIcGdFn8R9s1GjBEva7JTyYDQrcquzbeC14VA7EPVqXg==
-X-Received: by 2002:a17:907:1a42:b0:9be:77cd:4c2c with SMTP id mf2-20020a1709071a4200b009be77cd4c2cmr1951910ejc.28.1700840770183;
-        Fri, 24 Nov 2023 07:46:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id v12-20020a170906338c00b009f2b7282387sm2176544eja.46.2023.11.24.07.46.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 07:46:09 -0800 (PST)
-Message-ID: <a90d980e-71a1-4b90-b1cb-66ac45d79031@linaro.org>
-Date:   Fri, 24 Nov 2023 16:46:06 +0100
+        Fri, 24 Nov 2023 10:49:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143131B5;
+        Fri, 24 Nov 2023 07:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700841002; x=1732377002;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QbtcaO740tBPAPpBK4rvmbroWz1PJY6JofPTWopFM0w=;
+  b=dAUdFUGdA7WeYmHQwLQi9dR6HM4WGKGIZ2g95z20PiXP4c08x56kEl3p
+   v61pD6WY/CHh5rjwN+jPHnJVLac+nHEQrvOQ5Moxd0OemOOiv9gIrVEr8
+   S4PY6ivQWK27LeLa/BTfs5NX4OSpWc0xq16Ni5osGS7AvvnFdr9ZuhxrU
+   C13v/iFBEltEEhofLOl6pEgtl1k/gTZopo5HDMo7iWhnXB47wmaKEumkS
+   kF8dIkRqWQS8zFDvwSVcrX+ouKKNWerzhc7wlz5GQ8FGKPf7ifwIKLYkq
+   Ce9JdCm6+HJo2vJJIPpYyc4I9qYFiF0ghBvcDVRHM6YzozspN3AUgOw9U
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="389592417"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="389592417"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 07:50:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="15659739"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa001.jf.intel.com with ESMTP; 24 Nov 2023 07:49:57 -0800
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        David Christensen <drc@linux.vnet.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v5 00/14] net: intel: start The Great Code Dedup + Page Pool for iavf
+Date:   Fri, 24 Nov 2023 16:47:18 +0100
+Message-ID: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
- encrypted bitstream loading
-To:     Conor Dooley <conor@kernel.org>,
-        "Manne, Nava kishore" <nava.kishore.manne@amd.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "hao.wu@intel.com" <hao.wu@intel.com>,
-        "yilun.xu@intel.com" <yilun.xu@intel.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "Levinsky, Ben" <ben.levinsky@amd.com>,
-        "Potthuri, Sai Krishna" <sai.krishna.potthuri@amd.com>,
-        "Shah, Tanmay" <tanmay.shah@amd.com>,
-        "dhaval.r.shah@amd.com" <dhaval.r.shah@amd.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Datta, Shubhrajyoti" <shubhrajyoti.datta@amd.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
- <20231122054404.3764288-2-nava.kishore.manne@amd.com>
- <20231122-exert-gleeful-e4476851c489@spud>
- <DM6PR12MB3993F0EC4930E68C54299B36CDB8A@DM6PR12MB3993.namprd12.prod.outlook.com>
- <20231124-tweezers-slug-0349a2188802@spud>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231124-tweezers-slug-0349a2188802@spud>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 13:48, Conor Dooley wrote:
-> On Fri, Nov 24, 2023 at 06:35:19AM +0000, Manne, Nava kishore wrote:
->> Hi Conor,
->>
->> 	Thanks for providing the review comments.
->> Please find my response inline.
->>
->>> -----Original Message-----
->>> From: Conor Dooley <conor@kernel.org>
->>> Sent: Wednesday, November 22, 2023 10:21 PM
->>> To: Manne, Nava kishore <nava.kishore.manne@amd.com>
->>> Cc: mdf@kernel.org; hao.wu@intel.com; yilun.xu@intel.com;
->>> trix@redhat.com; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
->>> conor+dt@kernel.org; Simek, Michal <michal.simek@amd.com>;
->>> mathieu.poirier@linaro.org; Levinsky, Ben <ben.levinsky@amd.com>;
->>> Potthuri, Sai Krishna <sai.krishna.potthuri@amd.com>; Shah, Tanmay
->>> <tanmay.shah@amd.com>; dhaval.r.shah@amd.com; arnd@arndb.de;
->>> Datta, Shubhrajyoti <shubhrajyoti.datta@amd.com>; linux-
->>> fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-
->>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
->>> Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
->>> encrypted bitstream loading
->>>
->>> On Wed, Nov 22, 2023 at 11:14:02AM +0530, Nava kishore Manne wrote:
->>>> Adds ‘encrypted-key-name’ property to support user-key encrypted
->>>> bitstream loading use case.
->>>>
->>>> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
->>>> ---
->>>>  .../devicetree/bindings/fpga/fpga-region.txt  | 32
->>>> +++++++++++++++++++
->>>
->>> Is there a reason that this has not yet been converted to yaml?
->>>
->> I am not sure about the complication involved here why it's not converted to yaml format.
->> Due to time constraints, I couldn’t spend much time so I have used this existing legacy format
->> to add my changes.
->>
->>>>  1 file changed, 32 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>>> b/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>>> index 528df8a0e6d8..309334558b3f 100644
->>>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>>> @@ -177,6 +177,9 @@ Optional properties:
->>>>  	it indicates that the FPGA has already been programmed with this
->>> image.
->>>>  	If this property is in an overlay targeting an FPGA region, it is a
->>>>  	request to program the FPGA with that image.
->>>> +- encrypted-key-name : should contain the name of an encrypted key file
->>> located
->>>> +	on the firmware search path. It will be used to decrypt the FPGA
->>> image
->>>> +	file with user-key.
->>>
->>> I might be misreading things, but your driver code seems to assume that this
->>> is an aes key. Nothing here seems to document that this is supposed to be a
->>> key of a particular type.
->>>
->>
->> Yes, these changes are intended to add the support for Aes user-key encrypted bitstream loading use case.
->> Will fix it in v2, something like below.
->> aes-key-file-name : Should contain the AES key file name on the firmware search path.
->> 		      The key file contains the AES key and it will be used to decrypt the FPGA image.
-> 
-> Then when someone comes along looking for a different type of encryption
-> we will end up with national-pride-foo-file-name etc. I think I'd rather
-> have a second property that notes what type of cipher is being used and
-> if that property is not present default to AES.
+Here's a two-shot: introduce Intel Ethernet common library (libie) and
+switch iavf to Page Pool. Details are in the commit messages; here's
+a summary:
 
-I wonder why does it need to be in DT in the first place? Why it cannot
-be appended to the FPGA binary image itself? Which also points to
-dubious security aspect of this approach... Shipping FPGA encrypted
-image with its decryption key sounds like marvelous idea.
+Not a secret there's a ton of code duplication between two and more Intel
+ethernet modules. Before introducing new changes, which would need to be
+copied over again, start decoupling the already existing duplicate
+functionality into a new module, which will be shared between several
+Intel Ethernet drivers. The first name that came to my mind was
+"libie" -- "Intel Ethernet common library". Also this sounds like
+"lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+"lib Internet Explorer" :P
+The series is only the beginning. From now on, adding every new feature
+or doing any good driver refactoring will remove much more lines than add
+for quite some time. There's a basic roadmap with some deduplications
+planned already, not speaking of that touching every line now asks:
+"can I share this?". The final destination is very ambitious: have only
+one unified driver for at least i40e, ice, iavf, and idpf with a struct
+ops for each generation. That's never gonna happen, right? But you still
+can at least try.
+PP conversion for iavf lands within the same series as these two are tied
+closely. libie will support Page Pool model only, so that a driver can't
+use much of the lib until it's converted. iavf is only the example, the
+rest will eventually be converted soon on a per-driver basis. That is
+when it gets really interesting. Stay tech.
 
-Even if this is suitable, why not using more arguments of firmware-name?
-This would scale even for multiple FPGA firmwares with different keys
-(although such need seems unlikely).
+Alexander Lobakin (14):
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: avoid calling no-op externals when possible
+  net: intel: introduce Intel Ethernet common library
+  iavf: kill "legacy-rx" for good
+  iavf: drop page splitting and recycling
+  page_pool: constify some read-only function arguments
+  page_pool: add DMA-sync-for-CPU inline helpers
+  libie: add Rx buffer management (via Page Pool)
+  iavf: pack iavf_ring more efficiently
+  iavf: switch to Page Pool
+  libie: add common queue stats
+  libie: add per-queue Page Pool stats
+  iavf: switch queue stats to libie
 
-Best regards,
-Krzysztof
+ MAINTAINERS                                   |   3 +-
+ drivers/net/ethernet/intel/Kconfig            |   6 +
+ drivers/net/ethernet/intel/Makefile           |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_common.c | 253 -------
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+ .../net/ethernet/intel/i40e/i40e_prototype.h  |   7 -
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  72 +-
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |  88 ---
+ drivers/net/ethernet/intel/iavf/iavf.h        |   2 +-
+ drivers/net/ethernet/intel/iavf/iavf_common.c | 253 -------
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    | 241 +------
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  42 +-
+ .../net/ethernet/intel/iavf/iavf_prototype.h  |   7 -
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 626 ++++--------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.h   | 174 +----
+ drivers/net/ethernet/intel/iavf/iavf_type.h   |  90 ---
+ .../net/ethernet/intel/iavf/iavf_virtchnl.c   |  17 +-
+ .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 316 ---------
+ drivers/net/ethernet/intel/ice/ice_main.c     |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  74 +--
+ drivers/net/ethernet/intel/libie/Kconfig      |   9 +
+ drivers/net/ethernet/intel/libie/Makefile     |   7 +
+ drivers/net/ethernet/intel/libie/internal.h   |  20 +
+ drivers/net/ethernet/intel/libie/rx.c         | 188 ++++++
+ drivers/net/ethernet/intel/libie/stats.c      | 190 ++++++
+ include/linux/net/intel/libie/rx.h            | 263 ++++++++
+ include/linux/net/intel/libie/stats.h         | 213 ++++++
+ include/net/page_pool/helpers.h               | 115 +++-
+ include/net/page_pool/types.h                 |  10 +-
+ net/core/page_pool.c                          |  50 +-
+ 30 files changed, 1270 insertions(+), 2069 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/libie/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libie/Makefile
+ create mode 100644 drivers/net/ethernet/intel/libie/internal.h
+ create mode 100644 drivers/net/ethernet/intel/libie/rx.c
+ create mode 100644 drivers/net/ethernet/intel/libie/stats.c
+ create mode 100644 include/linux/net/intel/libie/rx.h
+ create mode 100644 include/linux/net/intel/libie/stats.h
+
+---
+Directly to net-next, has non-Intel code changes :p
+
+From v4[0]:
+* make use of Jakub's &page_pool_params split;
+* #01: prevent frag fields from spanning into 2 cachelines after
+  splitting &page_pool_params into fast and slow;
+* #02-03: bring back the DMA sync shortcut, now as a per-page flag
+  (me, Yunsheng);
+* #04: let libie have its own Kconfig to stop further bloating of poor
+  intel/Kconfig;
+* #06: merge page split-reuse-recycle drop into one commit (Alex);
+* #07: decouple constifying of several Page Pool function arguments
+  into a separate commit, constify some more;
+* #09: stop abusing internal PP fields in the driver code (Yunsheng);
+* #09: calculate DMA sync size (::max_len) correctly: within one page,
+  not one buffer (Yunsheng);
+* #10: decouple rearranging &iavf_ring into separate commit, optimize
+  it even more;
+* #11: let the driver get back to the last descriptor to process after
+  an skb allocation fail, don't drop it (Alex);
+* #11: stop touching unrelated stuff like watchdog timeout etc. (Alex);
+* fix "Return:" in the kdoc (now `W=12 C=1` is clean), misc typos.
+
+From v3[1]:
+* base on the latest net-next, update bloat-o-meter and perf stats;
+* split generic PP optimizations into a separate series;
+* drop "optimize hotpath a bunch" commit: a lot of [controversial]
+  changes in one place, worth own series (Alex);
+* 02: pick Rev-by (Alex);
+* 03: move in-place recycling removal here from the dropped patch;
+* 05: new, add libie Rx buffer API separatelly from IAVF changes;
+* 05-06: use new "hybrid" allocation API from[2] to reduce memory usage
+  when a page can fit more than 1 truesize (also asked by David);
+* 06: merge with "always use order-0 page" commit to reduce diffs and
+  simplify things (Alex);
+* 09: fix page_alloc_fail counter.
+
+From v2[3]:
+* 0006: fix page_pool.h include in OcteonTX2 files (Jakub, Patchwork);
+* no functional changes.
+
+From v1[4]:
+* 0006: new (me, Jakub);
+* 0008: give the helpers more intuitive names (Jakub, Ilias);
+*  -^-: also expand their kdoc a bit for the same reason;
+*  -^-: fix kdoc copy-paste issue (Patchwork, Jakub);
+* 0011: drop `inline` from C file (Patchwork, Jakub).
+
+[0] https://lore.kernel.org/netdev/20230705155551.1317583-1-aleksander.lobakin@intel.com
+[1] https://lore.kernel.org/netdev/20230530150035.1943669-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20230629120226.14854-1-linyunsheng@huawei.com
+[3] https://lore.kernel.org/netdev/20230525125746.553874-1-aleksander.lobakin@intel.com
+[4] https://lore.kernel.org/netdev/20230516161841.37138-1-aleksander.lobakin@intel.com
+
+-- 
+2.42.0
 
