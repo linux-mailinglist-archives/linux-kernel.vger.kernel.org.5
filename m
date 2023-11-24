@@ -2,149 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C227F6DC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AABB7F6DA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345018AbjKXINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S231572AbjKXIEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbjKXINL (ORCPT
+        with ESMTP id S233055AbjKXIEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:13:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208141FED
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700812938; x=1732348938;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=MtmvYraCJNQKGzyRO3mx3t8JQ1nwkmRYUb9WLJq7st4=;
-  b=m7CJJFqbud4104WKsWcOuFPFmx7xRMANR6QC7H2Kr8mDntxwjvXNqhdJ
-   VdckYQGnkCAv7YfwoEuE7F7ClItvyyZlsqdiWKLVAjytA3xDMHJpk6iBM
-   9v1shoN4HkITEAgczVeDRou93CtzC1HuJ5pTDOrtJBIWb/FF1nYK7z3zu
-   +gd2XWmg6Sw5WX25MpWlQLlpYNGAYFVNpiUmGJWKUUoZr93QmvJ3RPoXe
-   N77Gc/nATu3W4gxxA7CiBgNhRT2wx+8e8TNCPR1guMLvCiaNmIQ3aA5xl
-   50Usx5g3Ivy3UXJA6uCesQLmqI4RLipYGpTaUPRHl+wYMbH8vB/6fsIfI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="478592958"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="478592958"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 00:01:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="796520369"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="796520369"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 00:01:06 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <fengwei.yin@intel.com>, <aneesh.kumar@linux.ibm.com>,
-        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
-        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
- filemap_fault()
-In-Reply-To: <513144c1-c0e0-fe63-e133-c2611a440a94@huawei.com> (zhangpeng's
-        message of "Fri, 24 Nov 2023 15:26:38 +0800")
-References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
-        <87a5r4988r.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <513144c1-c0e0-fe63-e133-c2611a440a94@huawei.com>
-Date:   Fri, 24 Nov 2023 15:59:05 +0800
-Message-ID: <87plzz7fau.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Fri, 24 Nov 2023 03:04:34 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEC94233;
+        Fri, 24 Nov 2023 00:00:22 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sc6pn3tfhz4f3lww;
+        Fri, 24 Nov 2023 16:00:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 459981A035D;
+        Fri, 24 Nov 2023 16:00:19 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDX2xERWGBlUnAqBw--.22901S4;
+        Fri, 24 Nov 2023 16:00:19 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, yukuai3@huawei.com, xni@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH v2 0/6] md: bugfix and cleanup for sync_thread
+Date:   Fri, 24 Nov 2023 15:59:47 +0800
+Message-Id: <20231124075953.1932764-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDX2xERWGBlUnAqBw--.22901S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrurWUGr17Xw4DtFW8urW3Wrg_yoWxZwc_WF
+        Z8ZFy3Gw17X3W7Ja4UZrnIvrW7CFs8u3yUXFy8trWayF4avryrWr4Dur4Ygw10vFWagasY
+        kryUAFWFyrnxWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbzxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+From: Yu Kuai <yukuai3@huawei.com>
 
-> On 2023/11/23 16:36, Huang, Ying wrote:
->
->> Peng Zhang <zhangpeng362@huawei.com> writes:
->>
->>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>
->>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->>> in application, which leading to an unexpected performance issue[1].
->>>
->>> This caused by temporarily cleared pte during a read/modify/write update
->>> of the pte, eg, do_numa_page()/change_pte_range().
->>>
->>> For the data segment of the user-mode program, the global variable area
->>> is a private mapping. After the pagecache is loaded, the private anonymous
->>> page is generated after the COW is triggered. Mlockall can lock COW pages
->>> (anonymous pages), but the original file pages cannot be locked and may
->>> be reclaimed. If the global variable (private anon page) is accessed when
->>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->>>
->>> At this time, the original private file page may have been reclaimed.
->>> If the page cache is not available at this time, a major fault will be
->>> triggered and the file will be read, causing additional overhead.
->>>
->>> Fix this by rechecking the pte by holding ptl in filemap_fault() before
->>> triggering a major fault.
->>>
->>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>
->>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->>
->> :-)
->>
->>> ---
->>>   mm/filemap.c | 14 ++++++++++++++
->>>   1 file changed, 14 insertions(+)
->>>
->>> diff --git a/mm/filemap.c b/mm/filemap.c
->>> index 71f00539ac00..bb5e6a2790dc 100644
->>> --- a/mm/filemap.c
->>> +++ b/mm/filemap.c
->>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>>   			mapping_locked = true;
->>>   		}
->>>   	} else {
->>> +		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
->>> +						  vmf->address, &vmf->ptl);
->>> +		if (ptep) {
->>> +			/*
->>> +			 * Recheck pte with ptl locked as the pte can be cleared
->>> +			 * temporarily during a read/modify/write update.
->>> +			 */
->>> +			if (unlikely(!pte_none(ptep_get(ptep))))
->>> +				ret = VM_FAULT_NOPAGE;
->>> +			pte_unmap_unlock(ptep, vmf->ptl);
->>> +			if (unlikely(ret))
->>> +				return ret;
->>> +		}
->>> +
->> Need to deal with ptep == NULL.  Although that is high impossible.
->
-> Maybe we don't need to deal with ptep == NULL, because it has been
-> considered later in filemap_fault()?
-> ptep == NULL means that the ptep has been replaced with a PMD entry.
-> In this case, major fault is also required.
+Changes in v2:
+ - add patch 2;
+ - split some patches from v1 that will be sent separately;
+ - rework some commit message;
+ - rework patch 5;
 
-I still think that we need to deal with that.  That is common error
-processing logic.
+Yu Kuai (6):
+  md: fix missing flush of sync_work
+  md: remove redundant check of 'mddev->sync_thread'
+  md: remove redundant md_wakeup_thread()
+  md: don't leave 'MD_RECOVERY_FROZEN' in error path of
+    md_set_readonly()
+  md: fix stopping sync thread
+  dm-raid: delay flushing event_work() after reconfig_mutex is released
 
---
-Best Regards,
-Huang, Ying
+ drivers/md/dm-raid.c |   3 +
+ drivers/md/md.c      | 149 ++++++++++++++++++++-----------------------
+ drivers/md/raid5.c   |   6 +-
+ 3 files changed, 75 insertions(+), 83 deletions(-)
 
->>
->>>   		/* No page in the page cache at all */
->>>   		count_vm_event(PGMAJFAULT);
->>>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+-- 
+2.39.2
+
