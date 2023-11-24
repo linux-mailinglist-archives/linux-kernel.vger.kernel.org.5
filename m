@@ -2,40 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03917F6A86
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E567F6A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjKXCEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S230469AbjKXCEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjKXCEg (ORCPT
+        with ESMTP id S231663AbjKXCEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:04:36 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 47071D72;
-        Thu, 23 Nov 2023 18:04:33 -0800 (PST)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 55569602610F3;
-        Fri, 24 Nov 2023 10:04:25 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     dan.carpenter@linaro.org, pkshih@realtek.com, kvalo@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com
-Cc:     Su Hui <suhui@nfschina.com>, lizetao1@huawei.com,
-        linville@tuxdriver.com, Larry.Finger@lwfinger.net,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2 2/2] wifi: rtlwifi: rtl8821ae: phy: fix an undefined bitwise shift behavior
-Date:   Fri, 24 Nov 2023 10:03:54 +0800
-Message-Id: <20231124020352.1660621-2-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231124020352.1660621-1-suhui@nfschina.com>
+        Thu, 23 Nov 2023 21:04:32 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783C11708
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:04:06 -0800 (PST)
+Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SbyvD4YXCzvR5d;
+        Fri, 24 Nov 2023 10:03:36 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 10:04:01 +0800
+Message-ID: <e41dff89-9fc0-66ca-3156-9d61dbc3d92d@huawei.com>
+Date:   Fri, 24 Nov 2023 10:04:00 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "Huang, Ying" <ying.huang@intel.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <fengwei.yin@intel.com>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+ <87a5r4988r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <5b0e168a-dd43-80d4-2eeb-5c8a5d470f5e@huawei.com>
+ <ZV9wt4+F/soWxVhR@casper.infradead.org>
+From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <ZV9wt4+F/soWxVhR@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.160]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000020.china.huawei.com (7.193.23.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,57 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang staic checker warning:
-drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:184:49:
-	The result of the left shift is undefined due to shifting by '32',
-	which is greater or equal to the width of type 'u32'.
-	[core.UndefinedBinaryOperatorResult]
+On 2023/11/23 23:33, Matthew Wilcox wrote:
 
-If the value of the right operand is negative or is greater than or
-equal to the width of the promoted left operand, the behavior is
-undefined.[1][2]
+> On Thu, Nov 23, 2023 at 05:09:04PM +0800, zhangpeng (AS) wrote:
+>>>> +		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>>>> +						  vmf->address, &vmf->ptl);
+>>>> +		if (ptep) {
+>>>> +			/*
+>>>> +			 * Recheck pte with ptl locked as the pte can be cleared
+>>>> +			 * temporarily during a read/modify/write update.
+>>>> +			 */
+>>>> +			if (unlikely(!pte_none(ptep_get(ptep))))
+>>>> +				ret = VM_FAULT_NOPAGE;
+>>>> +			pte_unmap_unlock(ptep, vmf->ptl);
+>>>> +			if (unlikely(ret))
+>>>> +				return ret;
+>>>> +		}
+>>>> +
+>>> Need to deal with ptep == NULL.  Although that is high impossible.
+>> If ptep == NULL, we may just need to return VM_FAULT_SIGBUS.
+>> I'll add it in the next version.
+> no?  wouldn't ptep being NULL mean that the ptep has been replaced with
+> a PMD entry, and thus should return NOPAGE?
 
-For example, when using different gcc's compilation optimizaation options
-(-O0 or -O2), the result of '(u32)data << 32' is different. One is 0, the
-other is old value of data. Let _rtl8821ae_phy_calculate_bit_shift()'s
-return value less than 32 to fix this problem. Warn if bitmask is zero.
+Yes, ptep == NULL means that the ptep has been replaced with a PMD entry.
+I'll add return NOPAGE in the next version.
 
-[1]:https://stackoverflow.com/questions/11270492/what-does-the-c-
-standard-say-about-bitshifting-more-bits-than-the-width-of-type
-[2]:https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
+Thanks!
 
-Fixes: 21e4b0726dc6 ("rtlwifi: rtl8821ae: Move driver from staging to regular tree")
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
-v2: 
- - fix the subject prefix problem
- - silence the warning by not return 32 bits rather than adding a type cast.(Thanks to Dan and Ping-Ke)
-
-By the way, there some similar problems in
-_rtl88e_phy_calculate_bit_shift(), _rtl92c_phy_calculate_bit_shift() and
-so on...
-
- drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-index 6df270e29e66..52ab1b0761c0 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-@@ -31,7 +31,12 @@ static u32 _rtl8821ae_phy_calculate_bit_shift(u32 bitmask)
- {
- 	u32 i = ffs(bitmask);
- 
--	return i ? i - 1 : 32;
-+	if (!i) {
-+		WARN_ON_ONCE(1);
-+		return 0;
-+	}
-+
-+	return i - 1;
- }
- static bool _rtl8821ae_phy_bb8821a_config_parafile(struct ieee80211_hw *hw);
- /*static bool _rtl8812ae_phy_config_mac_with_headerfile(struct ieee80211_hw *hw);*/
 -- 
-2.30.2
+Best Regards,
+Peng
 
