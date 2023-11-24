@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F07B27F6F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4C57F6F2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbjKXJJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
+        id S232199AbjKXJLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbjKXJJt (ORCPT
+        with ESMTP id S230317AbjKXJLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:09:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AC9D5A;
-        Fri, 24 Nov 2023 01:09:55 -0800 (PST)
+        Fri, 24 Nov 2023 04:11:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1082C1BD;
+        Fri, 24 Nov 2023 01:11:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700816995; x=1732352995;
+  t=1700817075; x=1732353075;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QYDq6Z5tWNEhZ/J5NePC3bRbFwseCQaqr4/k79zRT+I=;
-  b=mFFtnsM5WrosV8S5HFysiMce0CybzIRKWfVqR+R1EaJ8RLYPv57i1vPq
-   Tk1iknXmx0PqOPk4ZBYxLQPeU6bjmi/CKKAE1FaKAbsHs7+SOSMtvyGTm
-   S35YzVGCtbAn2H+NgR/JY1ZxTtAyBQUBpJRyJJin+n0FXLn5y/MZGEQKW
-   3+i3dDLACIDEH1GJyYPaVL6Eh7xKN4beZnP0EXU5tLsH9g5p9LntvNY3V
-   iYjpY3h/vbJ9IwxH5CjbWT8qHBLAtVzGVdduvxl+sbEtgjfKMXjzmGq6K
-   T9RxboqHsPGo5PGKBUsMz0eOYQyeKE3Ipz1PALXVhkJchmyG/hAM/96co
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="478603449"
+  bh=UxqqJUYgDGy0V41HkWwj4VqlLP4xwU5p+Vk173/E2Ho=;
+  b=CoTr3eZbZ+IHbwU8jKYiSpppSmFe+BVcqymxtRKZroKJ80OoG/+38qVq
+   iebwgmsupYJbmp2Ak8xUlz34tIyZqlq4NCZ2K+4T9DfrmDoyVr0KiUE1O
+   Ximfx6UELEqJ4QAGaHmwu86FrLowzfMjjSAimpojj/9o+RdL8oNq0+dnp
+   rkZ4YeYFuP09XPQG6g/LBVyam+/Rj7M4L6OH1INGey/y9ntWCJUgBMHWg
+   sykL8edNOq2CWY4JppyfCvfxjoAvM6cCNxoVGgo6NHbH7q/JA2vsM8+qC
+   73CiMG3Xs2alXtAJtw2puv1uXq8GqOhyXDKEJi+uK82TNPox5oGBQKCNY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5546722"
 X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="478603449"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:09:54 -0800
+   d="scan'208";a="5546722"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:10:04 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1014854104"
 X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="15911569"
+   d="scan'208";a="1014854104"
 Received: from mvlasov-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.220.89])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:09:52 -0800
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 01:10:01 -0800
 From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 4/6] scsi: lpfc: Use PCI_HEADER_TYPE_MFD instead of literal
-Date:   Fri, 24 Nov 2023 11:09:16 +0200
-Message-Id: <20231124090919.23687-4-ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 5/6] EDAC: Use PCI_HEADER_TYPE_MASK instead of literals
+Date:   Fri, 24 Nov 2023 11:09:17 +0200
+Message-Id: <20231124090919.23687-5-ilpo.jarvinen@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231124090919.23687-1-ilpo.jarvinen@linux.intel.com>
 References: <20231124090919.23687-1-ilpo.jarvinen@linux.intel.com>
@@ -64,26 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace literal 0x80 with PCI_HEADER_TYPE_MFD.
+Replace literal 0x7f with PCI_HEADER_TYPE_MASK.
 
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/edac/edac_pci_sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 9386e7b44750..4ac6afd3c2fe 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -4875,7 +4875,7 @@ void lpfc_reset_barrier(struct lpfc_hba *phba)
- 	lockdep_assert_held(&phba->hbalock);
+diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
+index 287cc51dbc86..901d4cd3ca38 100644
+--- a/drivers/edac/edac_pci_sysfs.c
++++ b/drivers/edac/edac_pci_sysfs.c
+@@ -521,7 +521,7 @@ static void edac_pci_dev_parity_clear(struct pci_dev *dev)
+ 	/* read the device TYPE, looking for bridges */
+ 	pci_read_config_byte(dev, PCI_HEADER_TYPE, &header_type);
  
- 	pci_read_config_byte(phba->pcidev, PCI_HEADER_TYPE, &hdrtype);
--	if (hdrtype != 0x80 ||
-+	if (hdrtype != PCI_HEADER_TYPE_MFD ||
- 	    (FC_JEDEC_ID(phba->vpd.rev.biuRev) != HELIOS_JEDEC_ID &&
- 	     FC_JEDEC_ID(phba->vpd.rev.biuRev) != THOR_JEDEC_ID))
- 		return;
+-	if ((header_type & 0x7F) == PCI_HEADER_TYPE_BRIDGE)
++	if ((header_type & PCI_HEADER_TYPE_MASK) == PCI_HEADER_TYPE_BRIDGE)
+ 		get_pci_parity_status(dev, 1);
+ }
+ 
+@@ -583,7 +583,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 	edac_dbg(4, "PCI HEADER TYPE= 0x%02x %s\n",
+ 		 header_type, dev_name(&dev->dev));
+ 
+-	if ((header_type & 0x7F) == PCI_HEADER_TYPE_BRIDGE) {
++	if ((header_type & PCI_HEADER_TYPE_MASK) == PCI_HEADER_TYPE_BRIDGE) {
+ 		/* On bridges, need to examine secondary status register  */
+ 		status = get_pci_parity_status(dev, 1);
+ 
 -- 
 2.30.2
 
