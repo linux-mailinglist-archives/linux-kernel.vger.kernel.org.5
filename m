@@ -2,217 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA787F6AD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C117F6AE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbjKXDRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 22:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S229831AbjKXDby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 22:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXDRq (ORCPT
+        with ESMTP id S229453AbjKXDbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 22:17:46 -0500
-Received: from mail-m17233.xmail.ntesmail.com (mail-m17233.xmail.ntesmail.com [45.195.17.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41E6D5A
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:17:50 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=TvyncbnD1BwJI/4WtgnViRmweaDkV2vAM3/hFiAU4Nyt29+2TQeCfuqnf4N8HNV2sO5Ne3GPGjJKeztV6pJAZYWQ2Ab38CxnMMWC5h3pJbJvcEL3P/cgTqejznrLaC0MKMdbGtMlcDqx2lIp2XlW+tMnSG2AoGrtx1b+TpjBMzg=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=E1uwfkSjmCfXCZeYRdm+oiAgspLZgUeCqcA2/4m3/ts=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12762.qiye.163.com (Hmail) with ESMTPA id B16C75C0408;
-        Fri, 24 Nov 2023 11:17:24 +0800 (CST)
-Message-ID: <c373eff2-4a89-45b9-ba9f-10b7fc1a51d6@rock-chips.com>
-Date:   Fri, 24 Nov 2023 11:17:23 +0800
+        Thu, 23 Nov 2023 22:31:52 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55221D43
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:31:57 -0800 (PST)
+Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sc0rc59f6zvR8X;
+        Fri, 24 Nov 2023 11:31:28 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 11:31:53 +0800
+Message-ID: <fedd15a2-1c22-598d-beb7-ab514886ef35@huawei.com>
+Date:   Fri, 24 Nov 2023 11:31:53 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] drm/rockchip: rk3066_hdmi: Remove useless output
- format
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
 Content-Language: en-US
-To:     Johan Jonker <jbx6244@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
-        hjc@rock-chips.com
-Cc:     airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
- <bb5cac77-a705-738e-13ae-667ea87f1cb1@gmail.com> <4308014.ejJDZkT8p0@phil>
- <bff69815-1185-c74f-82ab-5b8f7faccfac@gmail.com>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <bff69815-1185-c74f-82ab-5b8f7faccfac@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGk5KSVZIGkseSxkaQksYSxhVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
-        tLWQY+
-X-HM-Tid: 0a8bff55093fb229kuuub16c75c0408
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRw6KTo5ETw6LC8YMQs1EUoW
-        ISxPFCNVSlVKTEtLTEJOQ09OQ01KVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBQ0tMSzcG
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,URI_DOTEDU autolearn=no autolearn_force=no version=3.4.6
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <fengwei.yin@intel.com>, <ying.huang@intel.com>,
+        <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
+        <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20231124023107.571059-1-zhangpeng362@huawei.com>
+From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <20231124023107.571059-1-zhangpeng362@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.160]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000020.china.huawei.com (7.193.23.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan:
+please ignore this...
 
-some information bellow hope can help a bit.
+On 2023/11/24 10:31, Peng Zhang wrote:
 
-On 11/23/23 20:54, Johan Jonker wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
 >
-> On 11/20/23 18:06, Heiko Stuebner wrote:
->> Hi Johan,
->>
->> Am Donnerstag, 2. November 2023, 14:42:19 CET schrieb Johan Jonker:
->>> The Rk3066 hdmi output format is hard coded to RGB. Remove
->>> all useless code related to colorimetry and enc_out_format.
->>>
->>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
->> I guess my first question is, is the hardcoding happening just because
->> of missing functionality in the driver, or does the hardware only
->> support RGB?
-> This driver can do so much more..., but is crippled by various causes.
-> If in need for a full functional rk3066 driver a little bit help/advise/action from other people is needed.
+> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+> in application, which leading to an unexpected performance issue[1].
 >
-> 1:
-> Missing rk3066 TRM HDMI register info.
-> Could Rockchip (= Sandy Huang) disclose this info to the open source community?
-
-The  HDMI on rk3066 is from a IP vendor, so the detail of this IP are not even
-
-include in the TRM.
-
-As it is a chip which is more than 10 yeas old, I contacted the author of the bsp
-
-driver, got some information bellow:
-
-This IP is almost the same with sh_mobile_hdmi, unfortunately, SH-Mobile HDMI drivers
-
-is removed out of mainline in 2015[0], but with a quick look at it, the register definition
-
-is the same as rk3066 hdmi and with more detail description.
-
-
-[0]https://lkml.kernel.org/stable/20191122100825.930987859@linuxfoundation.org/
-
+> This caused by temporarily cleared pte during a read/modify/write update
+> of the pte, eg, do_numa_page()/change_pte_range().
 >
-> As a way around we can look at older driver code and port to mainline.
-> More info gives better results.
-> rk30_hdmi_config_csc() function:
-> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/chips/rkpx2/rkpx2_hdmi_hw.c#L315
+> For the data segment of the user-mode program, the global variable area
+> is a private mapping. After the pagecache is loaded, the private anonymous
+> page is generated after the COW is triggered. Mlockall can lock COW pages
+> (anonymous pages), but the original file pages cannot be locked and may
+> be reclaimed. If the global variable (private anon page) is accessed when
+> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
 >
-> 2:
-> Could DRM people show us examples for:
-> - How to advertise to the VOP driver what data formats (RGB, YCBCR) it can send to the HDMI driver or any other Rockchip DRM sub driver other then RGB.
-> - Advertise EDID data monitor modes RGB444, YCBCR444 and YCBCR422 to the HDMI driver.
+> At this time, the original private file page may have been reclaimed.
+> If the page cache is not available at this time, a major fault will be
+> triggered and the file will be read, causing additional overhead.
 >
-> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/rk_hdmi_edid.c#L217C1-L218C41
+> Fix this by rechecking the pte by holding ptl in filemap_fault() before
+> triggering a major fault.
+>
+> We tested the performance of file private mapping page fault
+> (page_fault2.c of will-it-scale [2]) and file shared mapping page fault
+> (page_fault3.c of will-it-scale). The difference in performance (in
+> operations per second) before and after patch applied is about 0.7% on a
+> x86 physical machine.
+>
+> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+> [2] https://github.com/antonblanchard/will-it-scale/tree/master
+>
+> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> ---
+> RFC->v1: - Update commit message and add RB from Yin Fengwei
+>           - Add error handling when ptep == NULL per Huang, Ying and
+>             Matthew Wilcox
+>
+>   mm/filemap.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 71f00539ac00..f3dcabdbc810 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>   			mapping_locked = true;
+>   		}
+>   	} else {
+> +		pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+> +						  vmf->address, &vmf->ptl);
+> +		if (unlikely(!ptep))
+> +			return VM_FAULT_NOPAGE;
+> +		/*
+> +		 * Recheck pte with ptl locked as the pte can be cleared
+> +		 * temporarily during a read/modify/write update.
+> +		 */
+> +		if (unlikely(!pte_none(ptep_get(ptep))))
+> +			ret = VM_FAULT_NOPAGE;
+> +		pte_unmap_unlock(ptep, vmf->ptl);
+> +		if (unlikely(ret))
+> +			return ret;
+> +
+>   		/* No page in the page cache at all */
+>   		count_vm_event(PGMAJFAULT);
+>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
 
+-- 
+Best Regards,
+Peng
 
-RK3066 vop can only output RGB full range to HDMI, so the full to limit rgb to yuv conversion is done by rk30_hdmi_config_csc.
-
->
-> 3:
-> Advise when what Infoframe is needed for only RGB vs. the rest according to the specification.
-> https://engineering.purdue.edu/ece477/Archive/2012/Spring/S12-Grp10/Datasheets/CEC_HDMI_Specification.pdf
->
-> rk3066 currently only sends avi info. Does it need vsi as well? Can anyone give some clarity here?
-> inno_hdime sends avi and vsi info.
-
-vsi is used for 3d and hdmi 1.4 format(4K24/25/30, not support by rk3066), or vendor specific data like timecode, dolby,
-
-so as a basic function, we don't need it.
-
->
-> 4:
-> rk3066_hdmi and inno_hdmi are HDMI 1.4a drivers for DVI and HDMI.
-> Validated by drm_match_cea_mode() this function only gives us both HDMI + HDMI2 focus, but nothing for old DVI monitors.
-> How to improve?
->
-> 5:
-> Sound support was submitted:
-> Re: [PATCH v6 2/5] drm: rockchip: add sound support to rk3066 hdmi driver
-> https://lore.kernel.org/linux-rockchip/48dbe9b7-0aa0-f459-301f-f380e2b7f2f8@gmail.com/
->
-> No reply was given (by Heiko or others) on why it wasn't applied or what needs to be improved.
->
-> Without reply no improvement.
->
-> Johan
->
->
->>
->>> ---
->>>   drivers/gpu/drm/rockchip/rk3066_hdmi.c | 20 +-------------------
->>>   1 file changed, 1 insertion(+), 19 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/rockchip/rk3066_hdmi.c b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
->>> index 0e7aae341960..f2b1b2faa096 100644
->>> --- a/drivers/gpu/drm/rockchip/rk3066_hdmi.c
->>> +++ b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
->>> @@ -23,8 +23,6 @@
->>>
->>>   struct hdmi_data_info {
->>>   	int vic; /* The CEA Video ID (VIC) of the current drm display mode. */
->>> -	unsigned int enc_out_format;
->>> -	unsigned int colorimetry;
->>>   };
->>>
->>>   struct rk3066_hdmi_i2c {
->>> @@ -200,14 +198,7 @@ static int rk3066_hdmi_config_avi(struct rk3066_hdmi *hdmi,
->>>   	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
->>>   						      &hdmi->connector, mode);
->>>
->>> -	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV444)
->>> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
->>> -	else if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV422)
->>> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV422;
->>> -	else
->>> -		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
->>> -
->>> -	frame.avi.colorimetry = hdmi->hdmi_data.colorimetry;
->>> +	frame.avi.colorspace = HDMI_COLORSPACE_RGB;
->>>   	frame.avi.scan_mode = HDMI_SCAN_MODE_NONE;
->>>
->>>   	return rk3066_hdmi_upload_frame(hdmi, rc, &frame,
->>> @@ -329,15 +320,6 @@ static int rk3066_hdmi_setup(struct rk3066_hdmi *hdmi,
->>>   	struct drm_display_info *display = &hdmi->connector.display_info;
->>>
->>>   	hdmi->hdmi_data.vic = drm_match_cea_mode(mode);
->>> -	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
->>> -
->>> -	if (hdmi->hdmi_data.vic == 6 || hdmi->hdmi_data.vic == 7 ||
->>> -	    hdmi->hdmi_data.vic == 21 || hdmi->hdmi_data.vic == 22 ||
->>> -	    hdmi->hdmi_data.vic == 2 || hdmi->hdmi_data.vic == 3 ||
->>> -	    hdmi->hdmi_data.vic == 17 || hdmi->hdmi_data.vic == 18)
->>> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_601;
->>> -	else
->>> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
->> while I can understand the RGB output format, why does the colorimetry
->> also get removed? This looks like it is dependent on the mode itself
->> and not the output format?
-> >From the old driver these conditions apply whether csc is needed.
-> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/chips/rkpx2/rkpx2_hdmi_hw.c#L320C1-L324C3
->
-> 	if( ((vpara->input_color == VIDEO_INPUT_COLOR_RGB) && (vpara->output_color == VIDEO_OUTPUT_RGB444)) ||
-> 		((vpara->input_color == VIDEO_INPUT_COLOR_YCBCR) && (vpara->output_color != VIDEO_OUTPUT_RGB444) ))
-> 	{
-> 		return;
-> 	}
->
->> Thanks
->> Heiko
->>
->>
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
