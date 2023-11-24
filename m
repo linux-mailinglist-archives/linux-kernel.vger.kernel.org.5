@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353497F7DE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916817F7DFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 19:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjKXS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 13:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        id S231173AbjKXS2p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 13:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjKXS2D (ORCPT
+        with ESMTP id S229575AbjKXS2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 13:28:03 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411211BC9;
-        Fri, 24 Nov 2023 10:28:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700850472; x=1701455272; i=w_armin@gmx.de;
-        bh=YOwNjDfGnJRJthcNBht0dNRhiwLqkmRlexlwOFwzi44=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=RG0xaV/0Th+t69dZ+vzHSCjLERYvu/mBSKNlrG1LxgamPxKcUzarGDd8dkLM8KJM
-         ye0glsE1DZCQX7W5MTKNHX4BD1he20dTbxg5h+YgdV/G2IxMcZZn21Jamp0jaXFKY
-         Hfl73iQgLLGg34AVBbZoMzyvj5Rwpk+KMHPaFDfj0RWIgdC+mBRZQRGlE1qPlmVH4
-         gOHgAautMpOakAi5XEayHTkk/D/GEM9sjlVcxaPgbMMFi9FdMA4n/Wrwjz7ZYye9G
-         QBT65sQyZGRvYahEP8xzhFAU2as37wUz8Alxh7VRzscJjiewzMPN6Cw4+iRz3meZy
-         84AxzmxPMxEgG1ixWg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MatVh-1rifTf1kSJ-00cULO; Fri, 24 Nov 2023 19:27:52 +0100
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (acpi_power_meter) Fix 4.29 MW bug
-Date:   Fri, 24 Nov 2023 19:27:47 +0100
-Message-Id: <20231124182747.13956-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+        Fri, 24 Nov 2023 13:28:44 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019251BDA;
+        Fri, 24 Nov 2023 10:28:51 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f947682bfdso249027fac.0;
+        Fri, 24 Nov 2023 10:28:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700850530; x=1701455330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oLMFfODH5jS5YDFDQszChNMcGREuaPeTgi8qOTAaUV4=;
+        b=Dud0luotF7MeDx3pnMruQU57XyPHns2evqyITZ3plpa0J26zuCXq4X1nGCt5wS3ddu
+         QDvSl1EeNo1/H/M2g1YwLedzjqQGMzcyi9CfNvz6qW2zrBs3O7nJe4kX1ztEYLWnn5be
+         zvCQ9Q2jkUUup3NcYDDwHM0mamgp3B0liKA5sVAHfOrrz8yNA6AB0zcxqeKjuz2rYW1G
+         95dxlWAbNrw55lNtVvznaxtQgyOuhs6DxuQcbM5H0EtLOjwKG4GwqJTSdBjAF9TSJCUt
+         nlF2cE5XlJwfe5PhRt1nBIiFQ10lZ+XytLtdEh6beu1zJ4cWh4GqrtTDGSZBHNHUzzmp
+         eCmQ==
+X-Gm-Message-State: AOJu0YwnhntB6fZObdO/xLo3rop38pGun5wKZ/Vvzfk+VRkr6bYuz7Tz
+        V+RThvFgFKuEmJIccsAg+hjhRwqtdgzmkqiq0DQ=
+X-Google-Smtp-Source: AGHT+IFA23KXKUtBvwZXL0qoxd/H2xL519xL2sSsV0wJ/6Bp+k3CisKabYhut6LpNi87nfOtk/l9p04HId0O/+d5TrU=
+X-Received: by 2002:a05:6870:d914:b0:1f9:602e:7b0d with SMTP id
+ gq20-20020a056870d91400b001f9602e7b0dmr5597329oab.2.1700850530254; Fri, 24
+ Nov 2023 10:28:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FSfNVWMWv8UmnIPizhw0uZDKiGrcoL0B18QnbH5XNikbR+CPo+r
- UhCsbAxKGd8saZs5Jt0uMC7HphiM7y//Rx9IQjSIWQfmwlOwfqA3UZ3SMf0lyyyaD7ajvfI
- JrboNahOd1r8+D0fX+lQ4nWIKKII6nr8Ja5PFws2jFv6BeLj0lUHmB7/CGV44eVg/VfIo0T
- jHu8U291TkotvmhNi0X2w==
-UI-OutboundReport: notjunk:1;M01:P0:6rj7i4piqfE=;XFSf2fXxtxeD6KElg3zwEDlmweZ
- qYUnmgmsNyQ7o/HjxD2PMhsH2Mpn8U4KZEzR6KCeqgKfNQWOHddUg+3Tug7yWPkMR3c9CFvzd
- RnXpknb2ZfuyqacYzfI+SNLli75YvXTHORiSdWUj5/b8sBjGdfMo41UJIdLpOW5urBtownWu0
- Xwr+L0GFG3WNxQtVRtUPy1HMRHUcNlZ+xpRfpc9ejcM5B7aSCXQ1sD8G7kRvGx76argJMohcQ
- P/+9yI1ChUTdTPfUpYUb5WhhQ+zu0XPOnePGyiLCxQDVqR+mqq6W5LBtObrZxUwOOF3MteGQ5
- MAhJw/zcZyw/+0OGNYXxQMhiyW3pwyoi8XVc0ld8Clycht2R6pIesz54a2mFZdH1Hyws+2zyp
- aebSgkaVcCE3iNjLNeXz2mOB9y4438B/rkTXs84cxna6L0xHOoVeW6DEwZjJ2SnvjLG3F31J3
- HsKNtUsVlxtpznN960hs1bOeGSS73nmpDlOEC6JptUyVAh6sR3wlrDKdRIIt5SsW4Yb+lkD/l
- NG6ZUG1vMIL2WQmrxL5yOJoM+jfWneJeelH0om/k+5uv4S1dk7F+MrmnIuwR8UHWgZLjccTop
- 8C7Bdes/n7HfrgijlyfPFDRtSYIlLmecxSlMYRQUFbCzxcH37VXLk3LXvQSJlC4wpeYrkg04m
- XjKZvaLMG0ARBoP3gHaT4nRZWVvrvLSGMOa1eB8SMkHM8b5KHiG7na0yszd3jjW6VFL7SRa9A
- ctThhVEZ7TrmNsRiBchu+iYyawT9d/n1xGqOuyj323TBF0HNGpxpIzhcBwff5+u/5n5n+2eSU
- g/NMC3RMDPinFWkq+eZ8NWVbOp0iT1bgU2e7OQRAovRlXRzWkZ9ucSRxFP6f/h2MOGNVPRqjI
- IpnJUyoG6IHRm0uMDA1UPjThsprCSKYO7DZQmQLw9tdxxqpXusxCXuJ0R6p4Zf2xMZTHvWSPq
- TYnL2UBSZxMwlXVAruZZ1bdPU90=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231123070010.4013969-1-arnd@kernel.org>
+In-Reply-To: <20231123070010.4013969-1-arnd@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 24 Nov 2023 19:28:39 +0100
+Message-ID: <CAJZ5v0gNE8expsADwoTgDEoTa_5G-R_sBobFEiqLOh0VS5yVug@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: thermal_lib: include "internal.h" for function prototypes
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Zhang Rui <rui.zhang@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ACPI specification says:
+On Thu, Nov 23, 2023 at 8:00 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The newly added functions are declared in a header that is not included
+> before the definition:
+>
+> drivers/acpi/thermal_lib.c:46:5: error: no previous prototype for 'acpi_active_trip_temp' [-Werror=missing-prototypes]
+>    46 | int acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
+>       |     ^~~~~~~~~~~~~~~~~~~~~
+> drivers/acpi/thermal_lib.c:57:5: error: no previous prototype for 'acpi_passive_trip_temp' [-Werror=missing-prototypes]
+>    57 | int acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
+>       |     ^~~~~~~~~~~~~~~~~~~~~~
+> drivers/acpi/thermal_lib.c:63:5: error: no previous prototype for 'acpi_hot_trip_temp' [-Werror=missing-prototypes]
+>    63 | int acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
+>       |     ^~~~~~~~~~~~~~~~~~
+> drivers/acpi/thermal_lib.c:69:5: error: no previous prototype for 'acpi_critical_trip_temp' [-Werror=missing-prototypes]
+>    69 | int acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
+>       |     ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> Fixes: 6908097aa5a7 ("ACPI: thermal_lib: Add functions returning temperature in deci-Kelvin")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/acpi/thermal_lib.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/thermal_lib.c b/drivers/acpi/thermal_lib.c
+> index 646ff6bda6dd..4e0519ca9739 100644
+> --- a/drivers/acpi/thermal_lib.c
+> +++ b/drivers/acpi/thermal_lib.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/units.h>
+>  #include <linux/thermal.h>
+> +#include "internal.h"
+>
+>  /*
+>   * Minimum temperature for full military grade is 218°K (-55°C) and
+> --
 
-"If an error occurs while obtaining the meter reading or if the value
-is not available then an Integer with all bits set is returned"
-
-Since the "integer" is 32 bits in case of the ACPI power meter,
-userspace will get a power reading of 2^32 * 1000 miliwatts (~4.29 MW)
-in case of such an error. This was discovered due to a lm_sensors
-bugreport (https://github.com/lm-sensors/lm-sensors/issues/460).
-Fix this by returning -ENODATA instead.
-
-Tested-by: <urbinek@gmail.com>
-Fixes: de584afa5e18 ("hwmon driver for ACPI 4.0 power meters")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/hwmon/acpi_power_meter.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_m=
-eter.c
-index 8db740214ffd..703666b95bf4 100644
-=2D-- a/drivers/hwmon/acpi_power_meter.c
-+++ b/drivers/hwmon/acpi_power_meter.c
-@@ -31,6 +31,7 @@
- #define POWER_METER_CAN_NOTIFY	(1 << 3)
- #define POWER_METER_IS_BATTERY	(1 << 8)
- #define UNKNOWN_HYSTERESIS	0xFFFFFFFF
-+#define UNKNOWN_POWER		0xFFFFFFFF
-
- #define METER_NOTIFY_CONFIG	0x80
- #define METER_NOTIFY_TRIP	0x81
-@@ -348,6 +349,9 @@ static ssize_t show_power(struct device *dev,
- 	update_meter(resource);
- 	mutex_unlock(&resource->lock);
-
-+	if (resource->power =3D=3D UNKNOWN_POWER)
-+		return -ENODATA;
-+
- 	return sprintf(buf, "%llu\n", resource->power * 1000);
- }
-
-=2D-
-2.39.2
-
+Applied, thanks!
