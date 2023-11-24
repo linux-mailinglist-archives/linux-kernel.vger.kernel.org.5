@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BEA7F6F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F87F6F19
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjKXJGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        id S231801AbjKXJG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjKXJGB (ORCPT
+        with ESMTP id S229705AbjKXJG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:06:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6942BC
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:06:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B74521063;
-        Fri, 24 Nov 2023 01:06:52 -0800 (PST)
-Received: from [10.57.71.2] (unknown [10.57.71.2])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64DC23F73F;
-        Fri, 24 Nov 2023 01:06:03 -0800 (PST)
-Message-ID: <510adc26-9aed-4745-8807-dba071fadbbe@arm.com>
-Date:   Fri, 24 Nov 2023 09:06:01 +0000
+        Fri, 24 Nov 2023 04:06:56 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8641BD
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:07:01 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1DF50240013;
+        Fri, 24 Nov 2023 09:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700816820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PcaWZO0Dkmbqcz5MfADesr8jRHXPKhmFcuSLiJu9N6c=;
+        b=OxWvtk/PaHumDm4DrHkspMlPL9mIMLBuTz4yXJb5tYm/lJVB/J3hTg1v00iw0ZgEPpeLeq
+        0uRC5uy7xD5LueyouRR6+Er3w04yEgkLq5XZoEsFmy6oebOB/45j/tj237CsroX4aXNqKE
+        ftiQvBgxZlbh3l8wsYFwFdMs+x6dhO7nSwPy/5SOgYvBJIsb1lF3exerDASnSOi9fCpIa3
+        4vONdWZP717ZLGgAQpSh1K+bV4dSF1rgmVKxJzEUwDdbBG2fFFXJ5+9HKEqOJcfnZ4gnxb
+        wAB0yZar5TpeAXH8yhRZnJXNKV52DEZ3hYSVBjZ7fJRN+P4FGaqOOy/MEUPrHA==
+Date:   Fri, 24 Nov 2023 10:06:57 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Viacheslav Bocharov <adeep@lexina.in>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+        <linux-mtd@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] mtd: rawnand: meson: handle OOB buffer according OOB
+ layout
+Message-ID: <20231124100657.245d258f@xps-13>
+In-Reply-To: <ab3f6734-357c-9937-2e21-a935850d3af8@salutedevices.com>
+References: <20231109053953.3863664-1-avkrasnov@salutedevices.com>
+        <5a82e3b96c94b45821707eb5d392384e1a026c2e.camel@lexina.in>
+        <98c5a6ef-3865-9254-0af7-2d041a64d368@salutedevices.com>
+        <ab3f6734-357c-9937-2e21-a935850d3af8@salutedevices.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Content-Language: en-GB
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20231116012908.392077-1-peterx@redhat.com>
- <20231116012908.392077-7-peterx@redhat.com> <ZVsYMMJpmFV2T/Zc@infradead.org>
- <ZVzT5_3Zn-Y-6xth@x1n> <ZV21GCbG48nTLDzn@infradead.org>
- <ZV90JcnQ1RGud/0R@casper.infradead.org> <ZV-KQ0e0y9BTsHGv@x1n>
- <d2313c1d-1e50-49b7-bed7-840431af799a@arm.com> <ZV-sJsdFfXiCkylv@x1n>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZV-sJsdFfXiCkylv@x1n>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,62 +67,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 19:46, Peter Xu wrote:
-> On Thu, Nov 23, 2023 at 07:11:19PM +0000, Ryan Roberts wrote:
->> Hi,
->>
->> I'm not sure I've 100% understood the crossover between this series and my work
->> to support arm64's contpte mappings generally for anonymous and file-backed memory.
-> 
-> No worry, there's no confliction.  If you worked on that it's only be
-> something nice on top.  Also, I'm curious if you have performance numbers,
+Hi Arseniy,
 
-I have perf numbers for high level use cases (kernel compilation and Speedometer
-Java Script benchmarks) at
-https://lore.kernel.org/linux-arm-kernel/20230622144210.2623299-1-ryan.roberts@arm.com/
+avkrasnov@salutedevices.com wrote on Fri, 24 Nov 2023 10:50:54 +0300:
 
-I don't have any micro-benchmarks for GUP though, if that's your question. Is
-there an easy-to-use test I can run to get some numbers? I'd be happy to try it out.
+> Hello all, 2 weeks from 9.11, please ping
 
-> because I'm going to do some test for hugetlb cont_ptes (which is only the
-> current plan), and if you got those it'll be a great baseline for me,
-> because it should be similar in you case even though the goal is slightly
-> different.
-> 
->>
->> My approach is to transparently use contpte mappings when core-mm request pte
->> mappings that meet the requirements; and its all based around intercepting the
->> normal (non-hugetlb) helpers (e.g. set_ptes(), ptep_get() and friends). There is
->> no semantic change to the core-mm. See [1]. It relies on 1) the page cache using
->> large folios and 2) my "small-sized THP" series which starts using arbitrary
->> sized large folios for anonymous memory [2].
->>
->> If I've understood this conversation correctly there is an object called hugepd,
->> which today is only supported by powerpc, but which could allow the core-mm to
->> control the mapping granularity? I can see some value in exposing that control
->> to core-mm in the (very) long term.
-> 
-> For me it's needed immediately, because hugetlb_follow_page_mask() will be
-> gone after the last patch.
-> 
->>
->> [1] https://lore.kernel.org/all/20231115163018.1303287-1-ryan.roberts@arm.com/
->> [2] https://lore.kernel.org/linux-mm/20231115132734.931023-1-ryan.roberts@arm.com/
-> 
-> AFAICT you haven't yet worked on gup then, after I glimpsed the above
-> series.
+I'm waiting for Viacheslav.
 
-No, I haven't touched GUP at all. The approach is fully inside the arm64 arch
-code (except 1 patch to core-mm which enables an optimization). So as far as GUP
-and the rest of the core-mm is concerned, there are still only page-sized ptes
-and they can all be iterated over and accessed as normal.
+>=20
+> Thanks, Arseniy
+>=20
+>=20
+> On 09.11.2023 12:09, Arseniy Krasnov wrote:
+> > Hello, thanks for review!
+> >=20
+> > On 09.11.2023 11:06, Viacheslav Bocharov wrote: =20
+> >> Hi!
+> >>
+> >> On Thu, 2023-11-09 at 08:39 +0300, Arseniy Krasnov wrote: =20
+> >>> In case of MTD_OPS_AUTO_OOB mode, MTD/NAND layer fills/reads OOB buff=
+er
+> >>> according current OOB layout so we need to follow it in the driver.
+> >>>
+> >>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> >>> ---
+> >>>  drivers/mtd/nand/raw/meson_nand.c | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw=
+/meson_nand.c
+> >>> index 561d46d860b7..0d4d358152d7 100644
+> >>> --- a/drivers/mtd/nand/raw/meson_nand.c
+> >>> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> >>> @@ -510,7 +510,7 @@ static void meson_nfc_set_user_byte(struct nand_c=
+hip *nand, u8 *oob_buf)
+> >>>  	__le64 *info;
+> >>>  	int i, count;
+> >>> =20
+> >>> -	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D 2) {
+> >>> +	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D (2 =
++ nand->ecc.bytes)) {
+> >>>  		info =3D &meson_chip->info_buf[i];
+> >>>  		*info |=3D oob_buf[count];
+> >>>  		*info |=3D oob_buf[count + 1] << 8; =20
+> >> Seems something wrong with your logic here.
+> >> I think this code should most likely look like this:
+> >>
+> >> for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D nand->=
+ecc.bytes) {
+> >>     info =3D &meson_chip->info_buf[i];
+> >>     *info |=3D oob_buf[count];
+> >>     if (nand->ecc.bytes > 1)
+> >>       *info |=3D oob_buf[count + 1] << 8;
+> >> } =20
+> >=20
+> > For 64 bytes OOB and 512 bytes ECC this driver reports free areas as:
+> >=20
+> > AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+> > AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+> > AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+> > AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+> >=20
+> > where AA is free byte(user byte), BB - ECC codes. So to access user byt=
+es
+> > we need bytes 0,1,16,17,32,33,48,49. nand->ecc.bytes =3D=3D 14, so 'cou=
+nt' is
+> > increased at 16 every iteration, so i guess this is correct.
+> >=20
+> > WDYT?
+> >=20
+> > Thanks, Arseniy
+> >  =20
+> >>
+> >> =20
+> >>> @@ -523,7 +523,7 @@ static void meson_nfc_get_user_byte(struct nand_c=
+hip *nand, u8 *oob_buf)
+> >>>  	__le64 *info;
+> >>>  	int i, count;
+> >>> =20
+> >>> -	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D 2) {
+> >>> +	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D (2 =
++ nand->ecc.bytes)) {
+> >>>  		info =3D &meson_chip->info_buf[i];
+> >>>  		oob_buf[count] =3D *info;
+> >>>  		oob_buf[count + 1] =3D *info >> 8; =20
+> >> And there:
+> >>
+> >> for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D nand->=
+ecc.bytes) {
+> >>     info =3D &meson_chip->info_buf[i];
+> >>     oob_buf[count] =3D *info;
+> >>     if (nand->ecc.bytes > 1)
+> >>         oob_buf[count + 1] =3D *info >> 8;
+> >> }
+> >>
+> >>
+> >> This is more similar to the behavior of similar functions in the propr=
+ietary U-Boot.
+> >>
+> >> --
+> >> Viacheslav Bocharov
+> >> =20
 
-> 
-> It's a matter of whether one follow_page_mask() call can fetch more than
-> one page* for a cont_pte entry on aarch64 for a large non-hugetlb folio
-> (and if this series lands, it'll be the same to hugetlb or non-hugetlb).
-> Now the current code can only fetch one page I think.
-> 
-> Thanks,
-> 
 
+Thanks,
+Miqu=C3=A8l
