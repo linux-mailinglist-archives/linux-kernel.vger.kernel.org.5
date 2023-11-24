@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D637D7F6CFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC79D7F6CFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjKXHi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:38:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        id S231334AbjKXHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:41:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXHiz (ORCPT
+        with ESMTP id S229485AbjKXHlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:38:55 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27394BC;
-        Thu, 23 Nov 2023 23:38:58 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id C8E1B24E309;
-        Fri, 24 Nov 2023 15:38:44 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 24 Nov
- 2023 15:38:44 +0800
-Received: from [192.168.120.47] (171.223.208.138) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 24 Nov
- 2023 15:38:43 +0800
-Message-ID: <701877bd-313f-4604-a398-76a143f009d6@starfivetech.com>
-Date:   Fri, 24 Nov 2023 15:38:41 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 1/4] dt-bindings: pwm: Add OpenCores PWM module
-To:     Conor Dooley <conor@kernel.org>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Fri, 24 Nov 2023 02:41:12 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024AED5E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:41:18 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9fffa4c4f43so223454966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:41:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700811676; x=1701416476; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fe7LFiAVDzLRSxjoOCH/kO6LIkOeWYMi0jJKMHO+M30=;
+        b=EFeVVzcaKgPj8Wuw/qGbs778MDt/hrO/YETUFBa4H5Fk+0XzKiVNaYrsiUTqEW+02n
+         DqcBSZzHjwjhDnHdf7sNM4nStGbvzhX/3WVW1EM1CL3WzdT8pQTB81Bq9VEpRx0SaqTa
+         reDp4PArRiYAdTyIMLdpzeDIbm+9fFviTRRBjMc43OrR3RndiW5ZtoNbNMiLNhO4Z9Mo
+         hgSXxeNO84eImfHF5sSRZsDz76uw9y8E6CuXBcyAEjlym/psA+pkpmofkiIRqozgWcyf
+         FkJYFkTorbEwXjXuGRLhN+0ArWxMkJaSVf3j3eSJtnuxXiZz3PrOOvojK8A0werprcyn
+         Pb/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700811676; x=1701416476;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fe7LFiAVDzLRSxjoOCH/kO6LIkOeWYMi0jJKMHO+M30=;
+        b=NouWmrzj0ehLmi5NlIz+MHqjfNLNUqnaDonmYGRFlY9+BAG9R5l8dYWElwv/W++nnu
+         qiwUPDKvc6Nda2ANBKEIsOz7yTFfNXIotVkc3yc/rEoDjP7Pdd6Hswjskb5aVHWbgWr9
+         32AluRe0/wWUoVTVzceR1zYJao0Uj0lAFCBQ4pHbVxyBB+8cJGez348yxNcIJTdPKOLg
+         yrkbgJQJZ8e4DyyV9inJxp6LyWgevvtbsUN60o2MyyeGzpOj736cOL1/hxXPlZq+pRKU
+         Tgv/+DkWHZ3SDDCvV3yqvhYAjUcbHPi8a5tvPrhHVQQrAj04akOne55bJ/ZeOObsnARm
+         SDUg==
+X-Gm-Message-State: AOJu0Yz+TKGW+mKnizAUuTp1Sw7l9OV6ixcuIthJt5YgiZaYMCedTeKW
+        58D1LOLZhJabgf3KyefZTsCYBA==
+X-Google-Smtp-Source: AGHT+IHDrv06ivxtPgRXd+8inYekMaQKkAUnYCK1Xa+l7J5VfhociYD92/EJid18MCVCbwbs/iMh6Q==
+X-Received: by 2002:a17:907:740a:b0:9e5:d618:d6c1 with SMTP id gj10-20020a170907740a00b009e5d618d6c1mr1110958ejc.19.1700811676466;
+        Thu, 23 Nov 2023 23:41:16 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id hk15-20020a170906c9cf00b009fef7d22c98sm1736585ejb.35.2023.11.23.23.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 23:41:15 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20231110062039.103339-1-william.qiu@starfivetech.com>
- <20231110062039.103339-2-william.qiu@starfivetech.com>
- <afce202d-6234-4c5f-9018-facd9a56b5eb@linaro.org>
- <f4551a7a-61e6-4d97-94c2-da2e4e9e8cb3@starfivetech.com>
- <824cee7b-e4d3-461a-8bfb-4ad095c240fd@linaro.org>
- <20231113-sprung-tantrum-94659009b9d4@squawk>
- <1ba3e8d1-ed89-4aab-ae27-d8d31ee2f150@starfivetech.com>
- <20231122-jokester-reapply-eb000d976d56@spud>
-Content-Language: en-US
-From:   William Qiu <william.qiu@starfivetech.com>
-In-Reply-To: <20231122-jokester-reapply-eb000d976d56@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Peter Griffin <peter.griffin@linaro.org>,
+        semen.protsenko@linaro.org, Jaewon Kim <jaewon02.kim@samsung.com>
+Subject: Re: (subset) [PATCH 1/3] dt-bindings: pinctrl: samsung: use Exynos7 fallbacks for newer wake-up controllers
+Date:   Fri, 24 Nov 2023 08:41:13 +0100
+Message-Id: <170081167113.4921.3456428823798140178.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231122200407.423264-1-krzysztof.kozlowski@linaro.org>
+References: <20231122200407.423264-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,68 +83,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2023/11/23 1:36, Conor Dooley wrote:
-> On Wed, Nov 22, 2023 at 03:03:36PM +0800, William Qiu wrote:
->> 
->> 
->> On 2023/11/14 4:17, Conor Dooley wrote:
->> > On Mon, Nov 13, 2023 at 09:07:15PM +0100, Krzysztof Kozlowski wrote:
->> >> On 13/11/2023 10:42, William Qiu wrote:
->> >> > Will update.
->> >> >>> +
->> >> >>> +allOf:
->> >> >>> +  - $ref: pwm.yaml#
->> >> >>> +
->> >> >>> +properties:
->> >> >>> +  compatible:
->> >> >>> +    oneOf:
->> >> >>> +      - items:
->> >> >>> +          - enum:
->> >> >>> +              - starfive,jh7100-pwm
->> >> >>> +              - starfive,jh7110-pwm
->> >> >>> +          - const: opencores,pwm
->> >> >>
->> >> >> That's a very, very generic compatible. Are you sure, 100% sure, that
->> >> >> all designs from OpenCores from now till next 100 years will be 100%
->> >> >> compatible?
->> >> >>
->> >> > My description is not accurate enough, this is OpenCores PTC IP, and PWM
->> >> > is one of those modes, so it might be better to replace compatible with
->> >> > "opencores, ptc-pwm"
->> >> > 
->> >> > What do you think?
->> >> 
->> >> Sorry, maybe this answers maybe doesn't. What is "PTC"?
->> > 
->> > "pwm timer counter". AFAIU, the IP can be configured to provide all 3.
->> > I think that William pointed out on an earlier revision that they have
->> > only implemented the pwm on their hardware.
->> > I don't think putting in "ptc" is a sufficient differentiator though, as
->> > clearly there could be several different versions of "ptc-pwm" that have
->> > the same concern about "all designs from OpenCores for now till the next
->> > 100 years" being compatible.
+On Wed, 22 Nov 2023 21:04:05 +0100, Krzysztof Kozlowski wrote:
+> Older ARM8 SoCs like Exynos5433, Exynos7 and Exynos7885 have the pin
+> controller with wake-up interrupts muxed, thus the wake-up interrupt
+> controller device node has interrupts property, while its pin banks
+> might not (because they are muxed by the wake-up controller).
 > 
-> Perhaps noting what "ptc" stands for in the description field would be a
-> good idea.
+> Newer SoCs like Exynos850 and ExynosAutov9 do not used muxed wake-up
+> interrupts:
+> 1. Wake-up interrupt controller device node has no interrupts,
+> 2. Its pin banks have interrupts (since there is no muxing).
 > 
-I will add.
->> After discussion and review of materials, we plan to use "opencores,ptc-pwm-v1"
->> as this version of compatible, so that it can also be compatible in the future.
->> 
->> What do you think?
-> 
-> Do we know that it is actually "v1" of the IP? I would suggest using the
-> version that actually matches the version of the IP that you are using
-> in your SoC.
-> 
-> Thanks,
-> Conor.
+> [...]
 
-There is no version list on their official website, so it is not certain whether
-it is v1, but at least the driver is the first version.
+Applied, thanks!
 
-What do you think is the best way?
+[1/3] dt-bindings: pinctrl: samsung: use Exynos7 fallbacks for newer wake-up controllers
+      https://git.kernel.org/pinctrl/samsung/c/904140fa45533f6d05071e24492013da16c46b7f
 
-Thanks,
-William
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
