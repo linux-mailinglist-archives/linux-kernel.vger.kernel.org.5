@@ -2,58 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5407F6A60
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F427F6A69
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjKXCCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        id S230422AbjKXCCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKXCCb (ORCPT
+        with ESMTP id S230251AbjKXCCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:02:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B058D71
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:02:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CF9C433C8;
-        Fri, 24 Nov 2023 02:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700791358;
-        bh=vAEaSRrrunnPXOVy4bsXVdIwG/ogF59c2LODwnQzEt4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=saHSp2NGZSUTai55h6E/zojAAH5KLgETopqUR4weaJMLSG1LQs6NF2IAs0s2/i+22
-         UZhSNjk6pzb4sMzNkRdhAVD80mbjyzuOb3IhXglsfSkTeoN9dMBVjV5iFOD9wTYXTP
-         gdXoCE1zMrq6Rcz5gQxj0oa+h47Wkyqa7LSuUHwLfMcfG2VUzEYxtQ6ROoaoKcdVR0
-         C/K9deOrEhsRI4X5q11x6H4iynQWFHIJuwnonWC8rHjmL9aonwEFNDRT03QgwMDTAT
-         3qmptPLoTpSBJhqAV22y3xQToV3Px8XDPGqHx8Wba2nKyXObCQ8DMwrvZPrpWjSAaH
-         RNJ66RSsAx2XA==
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1f94b07b6b3so934079fac.2;
-        Thu, 23 Nov 2023 18:02:37 -0800 (PST)
-X-Gm-Message-State: AOJu0Yye6WyQZ+4bEOLdrYylxd/AxbeKVsFGHmEAYQsiK+YABYVONZDr
-        /JdBBRdYGRqvecvugjWzbzpJdsx7C1tVuDj+UI0=
-X-Google-Smtp-Source: AGHT+IEXLhrYz62zQkNtoO8dCJ28Tw410tNLUfxQpIU86fcJ/umAfhAjdKaOzRXZpNtKM8MrERktOT0JcgBObXR6rrw=
-X-Received: by 2002:a05:6870:658d:b0:1f5:c6f9:f4a5 with SMTP id
- fp13-20020a056870658d00b001f5c6f9f4a5mr1266436oab.25.1700791357395; Thu, 23
- Nov 2023 18:02:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20231122235527.180507-1-kent.overstreet@linux.dev>
-In-Reply-To: <20231122235527.180507-1-kent.overstreet@linux.dev>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 24 Nov 2023 11:02:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
-Message-ID: <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Allow gcov to be enabled on the command line
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org
+        Thu, 23 Nov 2023 21:02:39 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23998D72;
+        Thu, 23 Nov 2023 18:02:45 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO1jNiO015266;
+        Fri, 24 Nov 2023 02:02:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=0Ng7PzLWRUN5PalkUI/r7oq/iQlhZgewM1sHhRV/b/k=;
+ b=ECGZCL00vygNh+PUV5gvGed1LpVpCU7AdG7pzF9Z8KI3aSTOrYALRwYA9iMrun3VFWzS
+ Cxhnp4ju5bJ41wqtCaH/lg7Wfikym+5857Jz4RkwtHSi2nA99Up9BuAFwb/8fYIx/KNA
+ HftBjFo5Bpbiw0XS5MNMcB7sGBhg7fd+foZx49RJNRTc4+s120bDWEU0j1NiZ7i8qNbK
+ l8STevmDmrn8thyn0PpsZPYsu9Z85uQ689/XPgwp6z254ghbikGvf3qX4FWrYG6G9S4j
+ QIlqy6X/Mf8hfmbRCiEsMfwjSZ9Jo7HVzzZUjUNvYLb3keI5NbExPrh0Zl9NoxjqUNZw BA== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ujjes89q9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 02:02:42 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ANMn0lC010802;
+        Fri, 24 Nov 2023 02:02:41 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf80030uu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 02:02:41 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AO22dBc3539676
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Nov 2023 02:02:39 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F86320049;
+        Fri, 24 Nov 2023 02:02:39 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A2CD20040;
+        Fri, 24 Nov 2023 02:02:38 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Nov 2023 02:02:38 +0000 (GMT)
+Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id C622F60234;
+        Fri, 24 Nov 2023 13:02:35 +1100 (AEDT)
+Message-ID: <ef939be36737bba5d91aa6d5c8af19683aebd92c.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 2/4] eventfd: simplify eventfd_signal()
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+To:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Date:   Fri, 24 Nov 2023 13:02:25 +1100
+In-Reply-To: <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
+References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
+         <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
+Autocrypt: addr=ajd@linux.ibm.com; prefer-encrypt=mutual;
+ keydata=mDMEZPaWfhYJKwYBBAHaRw8BAQdAAuMUoxVRwqphnsFua1W+WBz6I2cIn0+Ox4YypJSdBJ+0MEFuZHJldyBEb25uZWxsYW4gKElCTSBzdHVmZikgPGFqZEBsaW51eC5pYm0uY29tPoiTBBMWCgA7FiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQj1Qx8QRYRqAdswD8DhIh4trRQYiPe+7LaM7q+0+Thz+CwUJCW3UFOf0SEO0BAPNdsi7aVV+4Oah6nYzqzH5Zbs4Tz5RY+Vsf+DD/EzUKuDgEZPaWfhIKKwYBBAGXVQEFAQEHQLN9moJRqN8Zop/kcyIjga+2qzLoVaNAL6+4diGnlr1xAwEIB4h4BBgWCgAgFiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwwACgkQj1Qx8QRYRqCYkwD/W+gIP9kITfU4wnLtueFUThxA0T/LF49M7k31Qb8rPCwBALeEYAlX648lzjSA07pJB68Jt39FuUno444dSVmhYtoH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 31fTWNmCyikAMfyiNj-46ApM598Jj2fJ
+X-Proofpoint-ORIG-GUID: 31fTWNmCyikAMfyiNj-46ApM598Jj2fJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=513
+ lowpriorityscore=0 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 malwarescore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311240014
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,174 +152,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 8:55=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> This allows gcov to be enabled for a particular kernel source
-> subdirectory on the command line, without editing makefiles, like so:
->
->   make GCOV_PROFILE_fs_bcachefs=3Dy
->
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nicolas Schier <nicolas@fjasle.eu>
-> Cc: linux-kbuild@vger.kernel.org
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->  scripts/Kbuild.include | 10 ++++++++++
->  scripts/Makefile.lib   |  2 +-
->  2 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-> index 7778cc97a4e0..5341736f2e30 100644
-> --- a/scripts/Kbuild.include
-> +++ b/scripts/Kbuild.include
-> @@ -277,3 +277,13 @@ ifneq ($(and $(filter notintermediate, $(.FEATURES))=
-,$(filter-out 4.4,$(MAKE_VER
->  else
->  .SECONDARY:
->  endif
-> +
-> + # expand_parents(a/b/c) =3D a/b/c a/b a
-> +expand_parents2 =3D $(if $(subst .,,$(1)),$(call expand_parents,$(1)),)
-> +expand_parents  =3D $(1) $(call expand_parents2,$(patsubst %/,%,$(dir $(=
-1))))
-> +
-> +# flatten_dirs(a/b/c) =3D a_b_c a_b a
-> +flatten_dirs =3D $(subst /,_,$(call expand_parents,$(1)))
-> +
-> +# eval_vars(X_,a/b/c) =3D $(X_a_b_c) $(X_a_b) $(X_a)
-> +eval_vars =3D $(foreach var,$(call flatten_dirs,$(2)),$($(1)$(var)))
+On Wed, 2023-11-22 at 13:48 +0100, Christian Brauner wrote:
+> Ever since the evenfd type was introduced back in 2007 in commit
+> e1ad7468c77d ("signal/timer/event: eventfd core") the
+> eventfd_signal()
+> function only ever passed 1 as a value for @n. There's no point in
+> keeping that additional argument.
+>=20
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
+Acked-by: Andrew Donnellan <ajd@linux.ibm.com> # ocxl
 
-
-I do not like tricky code like this.
-
-Also, with "fs_bcachefs", it is unclear which directory
-is enabled.
-
-
-
-
-How about this?
-
-
-
-[1] Specify the list of directories by GCOV_PROFILE_DIRS
-
-
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1a965fe68e01..286a569556b3 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -147,8 +147,12 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y)
-$(CPPFLAGS_$(target-stem).lds)
- # (in this order)
- #
- ifeq ($(CONFIG_GCOV_KERNEL),y)
-+ifneq ($(filter $(obj),$(GCOV_PROFILE_DIRS)),)
-+export GCOV_PROFILE_SUBDIR :=3D y
-+endif
-+
- _c_flags +=3D $(if $(patsubst n%,, \
--
-$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
-\
-+
-$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFI=
-G_GCOV_PROFILE_ALL)),
-\
-                $(CFLAGS_GCOV))
- endif
-
-
-
-Usage:
-
-  $ make GCOV_PROFILE_DIRS=3Dfs/bcachefs
-
-   ->  enable GCOV in fs/bachefs and its subdirectories.
-
-or
-
-  $ make GCOV_PROFILE_DIRS=3D"drivers/gpio drivers/pinctrl"
-
-   -> enable GCOV in drivers/gpio, drivers/pinctrl, and their subdirectorie=
-s.
-
-
-
-
-[2] Do equivalent, but from a CONFIG option
-
-
-config GCOV_PROFILE_DIRS
-      string "Directories to enable GCOV"
-
-
-Then, you can set CONFIG_GCOV_PROFILE_DIRS=3D"fs/bcachefs"
-
-
-This might be a more natural approach because we already have
-CONFIG_GCOV_PROFILE_ALL, although it might eventually go away
-because CONFIG_GCOV_PROFILE_ALL=3Dy is almost equivalent to
-CONFIG_GCOV_PROFILE_DIRS=3D"."
-
-
-
-
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1a965fe68e01..286a569556b3 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -147,8 +147,12 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y)
-$(CPPFLAGS_$(target-stem).lds)
- # (in this order)
- #
- ifeq ($(CONFIG_GCOV_KERNEL),y)
-+ifneq ($(filter $(obj),$(CONFIG_GCOV_PROFILE_DIRS)),)
-+export GCOV_PROFILE_SUBDIR :=3D y
-+endif
-+
- _c_flags +=3D $(if $(patsubst n%,, \
--
-$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
-\
-+
-$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFI=
-G_GCOV_PROFILE_ALL)),
-\
-                $(CFLAGS_GCOV))
- endif
-
-
-
-
-
-
-
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 1a965fe68e01..0b4581a8bc33 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -148,7 +148,7 @@ _cpp_flags     =3D $(KBUILD_CPPFLAGS) $(cppflags-y) $=
-(CPPFLAGS_$(target-stem).lds)
->  #
->  ifeq ($(CONFIG_GCOV_KERNEL),y)
->  _c_flags +=3D $(if $(patsubst n%,, \
-> -               $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GC=
-OV_PROFILE_ALL)), \
-> +               $(GCOV_PROFILE_$(basetarget).o)$(call eval_vars,GCOV_PROF=
-ILE_,$(src))$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
->                 $(CFLAGS_GCOV))
->  endif
->
-> --
-> 2.42.0
->
-
-
---
-Best Regards
-Masahiro Yamada
+--=20
+Andrew Donnellan    OzLabs, ADL Canberra
+ajd@linux.ibm.com   IBM Australia Limited
