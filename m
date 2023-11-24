@@ -2,123 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623AD7F6AD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA787F6AD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjKXDPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 22:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S230372AbjKXDRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 22:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXDPo (ORCPT
+        with ESMTP id S229453AbjKXDRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 22:15:44 -0500
-Received: from mta22.hihonor.com (mta22.hihonor.com [81.70.192.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D812D6F
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:15:49 -0800 (PST)
-Received: from w013.hihonor.com (unknown [10.68.26.19])
-        by mta22.hihonor.com (SkyGuard) with ESMTPS id 4Sc0Tg4XnGzYkxhQ;
-        Fri, 24 Nov 2023 11:15:03 +0800 (CST)
-Received: from a002.hihonor.com (10.68.31.193) by w013.hihonor.com
- (10.68.26.19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Fri, 24 Nov
- 2023 11:15:46 +0800
-Received: from a007.hihonor.com (10.68.22.31) by a002.hihonor.com
- (10.68.31.193) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Fri, 24 Nov
- 2023 11:15:46 +0800
-Received: from a007.hihonor.com ([fe80::ccdd:b4b:ae86:edd4]) by
- a007.hihonor.com ([fe80::ccdd:b4b:ae86:edd4%10]) with mapi id 15.02.1258.025;
- Fri, 24 Nov 2023 11:15:46 +0800
-From:   gaoxu <gaoxu2@hihonor.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        yipengxiang <yipengxiang@hihonor.com>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBtbSxvb21fcmVhcGVyOiBhdm9pZCBydW4gcXVldWVf?=
- =?gb2312?Q?oom=5Freaper_if_task_is_not_oom?=
-Thread-Topic: [PATCH] mm,oom_reaper: avoid run queue_oom_reaper if task is not
- oom
-Thread-Index: AdodQUgb0N3ZJU2TSUK/4IicgpocdQAZdvMAADdSyGA=
-Date:   Fri, 24 Nov 2023 03:15:46 +0000
-Message-ID: <242025e9a8c84f6b96ba3f180ea01be9@hihonor.com>
-References: <400d13bddb524ef6af37cb2220808c75@hihonor.com>
- <ZV8SenfRYnkKwqu6@tiehlicka>
-In-Reply-To: <ZV8SenfRYnkKwqu6@tiehlicka>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.164.11.140]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 23 Nov 2023 22:17:46 -0500
+Received: from mail-m17233.xmail.ntesmail.com (mail-m17233.xmail.ntesmail.com [45.195.17.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41E6D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:17:50 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=TvyncbnD1BwJI/4WtgnViRmweaDkV2vAM3/hFiAU4Nyt29+2TQeCfuqnf4N8HNV2sO5Ne3GPGjJKeztV6pJAZYWQ2Ab38CxnMMWC5h3pJbJvcEL3P/cgTqejznrLaC0MKMdbGtMlcDqx2lIp2XlW+tMnSG2AoGrtx1b+TpjBMzg=;
+        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+        bh=E1uwfkSjmCfXCZeYRdm+oiAgspLZgUeCqcA2/4m3/ts=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+        by mail-m12762.qiye.163.com (Hmail) with ESMTPA id B16C75C0408;
+        Fri, 24 Nov 2023 11:17:24 +0800 (CST)
+Message-ID: <c373eff2-4a89-45b9-ba9f-10b7fc1a51d6@rock-chips.com>
+Date:   Fri, 24 Nov 2023 11:17:23 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/4] drm/rockchip: rk3066_hdmi: Remove useless output
+ format
+Content-Language: en-US
+To:     Johan Jonker <jbx6244@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
+        hjc@rock-chips.com
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
+ <bb5cac77-a705-738e-13ae-667ea87f1cb1@gmail.com> <4308014.ejJDZkT8p0@phil>
+ <bff69815-1185-c74f-82ab-5b8f7faccfac@gmail.com>
+From:   Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <bff69815-1185-c74f-82ab-5b8f7faccfac@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGk5KSVZIGkseSxkaQksYSxhVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
+        tLWQY+
+X-HM-Tid: 0a8bff55093fb229kuuub16c75c0408
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRw6KTo5ETw6LC8YMQs1EUoW
+        ISxPFCNVSlVKTEtLTEJOQ09OQ01KVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBQ0tMSzcG
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,URI_DOTEDU autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyNCBOb3YgMjAyMyAwODo1MSAgTWljaGFsIEhvY2tvIDxtaG9ja29Ac3VzZS5jb20+
-IHdyb3RlOg0KPiBPbiBXZWQgMjItMTEtMjMgMTI6NDY6NDQsIGdhb3h1IHdyb3RlOg0KPj4gVGhl
-IGZ1bmN0aW9uIHF1ZXVlX29vbV9yZWFwZXIgdGVzdHMgYW5kIHNldHMgdHNrLT5zaWduYWwtPm9v
-bV9tbS0+ZmxhZ3MuDQo+PiBIb3dldmVyLCBpdCBpcyBuZWNlc3NhcnkgdG8gY2hlY2sgaWYgJ3Rz
-aycgaXMgYW4gT09NIHZpY3RpbSBiZWZvcmUgDQo+PiBleGVjdXRpbmcgJ3F1ZXVlX29vbV9yZWFw
-ZXInIGJlY2F1c2UgdGhlIHZhcmlhYmxlIG1heSBiZSBOVUxMLg0KPj4gDQo+PiBXZSBlbmNvdW50
-ZXJlZCBzdWNoIGFuIGlzc3VlLCBhbmQgdGhlIGxvZyBpcyBhcyBmb2xsb3dzOg0KPj4gWzM3MDE6
-MTFfc2VlXU91dCBvZiBtZW1vcnk6IEtpbGxlZCBwcm9jZXNzIDMxNTQgKHN5c3RlbV9zZXJ2ZXIp
-IA0KPj4gdG90YWwtdm06MjM2NjIwNDRrQiwgYW5vbi1yc3M6MGtCLCBmaWxlLXJzczowa0IsIHNo
-bWVtLXJzczowa0IsDQo+PiBVSUQ6MTAwMCBwZ3RhYmxlczo0MDU2a0Igb29tX3Njb3JlX2Fkajot
-OTAwDQo+DQo+PiBbMzcwMToxMV9zZWVdW1JCL0VdcmJfc3JlYXNvbl9zdHJfc2V0OiBzcmVhc29u
-X3N0ciBzZXQgbnVsbF9wb2ludGVyDQo+PiBbMzcwMToxMV9zZWVdW1JCL0VdcmJfc3JlYXNvbl9z
-dHJfc2V0OiBzcmVhc29uX3N0ciBzZXQgdW5rbm93bl9hZGRyDQo+DQo+IFdoYXQgYXJlIHRoZXNl
-Pw0KVGhpcyBpcyBhIGxvZyBtZXNzYWdlIHRoYXQgd2UgYWRkZWQgb3Vyc2VsdmVzLg0KDQo+PiBb
-MzcwMToxMV9zZWVdVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJl
-bmNlIGF0IA0KPj4gdmlydHVhbCBhZGRyZXNzIDAwMDAwMDAwMDAwMDAzMjggWzM3MDE6MTFfc2Vl
-XXVzZXIgcGd0YWJsZTogNGsgcGFnZXMsIA0KPj4gMzktYml0IFZBcywgcGdkcD0wMDAwMDAwMDgy
-MWRlMDAwIFszNzAxOjExX3NlZV1bMDAwMDAwMDAwMDAwMDMyOF0gDQo+PiBwZ2Q9MDAwMDAwMDAw
-MDAwMDAwMCwNCj4+IHA0ZD0wMDAwMDAwMDAwMDAwMDAwLHB1ZD0wMDAwMDAwMDAwMDAwMDAwDQo+
-PiBbMzcwMToxMV9zZWVddHJhY2luZyBvZmYNCj4+IFszNzAxOjExX3NlZV1JbnRlcm5hbCBlcnJv
-cjogT29wczogOTYwMDAwMDUgWyMxXSBQUkVFTVBUIFNNUCANCj4+IFszNzAxOjExX3NlZV1DYWxs
-IHRyYWNlOg0KPj4gWzM3MDE6MTFfc2VlXSBxdWV1ZV9vb21fcmVhcGVyKzB4MzAvMHgxNzANCj4N
-Cj4gQ291bGQgeW91IHJlc29sdmUgdGhpcyBvZmZzZXQgaW50byB0aGUgY29kZSBsaW5lIHBsZWFz
-ZT8NCkR1ZSB0byB0aGUgYWRkaXRpb25hbCBjb2RlIHdlIGFkZGVkIGZvciBsb2cgcHVycG9zZXMs
-IHRoZSBsaW5lIG51bWJlcnMgbWF5IG5vdCBjb3JyZXNwb25kIHRvIHRoZSBvcmlnaW5hbCBMaW51
-eCBjb2RlLg0KDQpzdGF0aWMgdm9pZCBxdWV1ZV9vb21fcmVhcGVyKHN0cnVjdCB0YXNrX3N0cnVj
-dCAqdHNrKQ0Kew0KCS8qIG1tIGlzIGFscmVhZHkgcXVldWVkPyAqLw0KCWlmICh0ZXN0X2FuZF9z
-ZXRfYml0KE1NRl9PT01fUkVBUF9RVUVVRUQsICZ0c2stPnNpZ25hbC0+b29tX21tLT5mbGFncykp
-IC8vYSBudWxsIHBvaW50ZXIgZXhjZXB0aW9uIG9jY3VycmVkDQoJCXJldHVybjsNCi4uLg0KfQ0K
-Pj4gWzM3MDE6MTFfc2VlXSBfX29vbV9raWxsX3Byb2Nlc3MrMHg1OTAvMHg4NjAgWzM3MDE6MTFf
-c2VlXSANCj4+IG9vbV9raWxsX3Byb2Nlc3MrMHgxNDAvMHgyNzQgWzM3MDE6MTFfc2VlXSBvdXRf
-b2ZfbWVtb3J5KzB4MmY0LzB4NTRjIA0KPj4gWzM3MDE6MTFfc2VlXSBfX2FsbG9jX3BhZ2VzX3Ns
-b3dwYXRoKzB4NWQ4LzB4YWFjDQo+PiBbMzcwMToxMV9zZWVdIF9fYWxsb2NfcGFnZXMrMHg3NzQv
-MHg4MDAgWzM3MDE6MTFfc2VlXSANCj4+IHdwX3BhZ2VfY29weSsweGM0LzB4MTE2YyBbMzcwMTox
-MV9zZWVdIGRvX3dwX3BhZ2UrMHg0YmMvMHg2ZmMgDQo+PiBbMzcwMToxMV9zZWVdIGhhbmRsZV9w
-dGVfZmF1bHQrMHg5OC8weDJhOCBbMzcwMToxMV9zZWVdIA0KPj4gX19oYW5kbGVfbW1fZmF1bHQr
-MHgzNjgvMHg3MDAgWzM3MDE6MTFfc2VlXSANCj4+IGRvX2hhbmRsZV9tbV9mYXVsdCsweDE2MC8w
-eDJjYyBbMzcwMToxMV9zZWVdIGRvX3BhZ2VfZmF1bHQrMHgzZTAvMHg4MTggDQo+PiBbMzcwMTox
-MV9zZWVdIGRvX21lbV9hYm9ydCsweDY4LzB4MTdjIFszNzAxOjExX3NlZV0gZWwwX2RhKzB4M2Mv
-MHhhMCANCj4+IFszNzAxOjExX3NlZV0gZWwwdF82NF9zeW5jX2hhbmRsZXIrMHhjNC8weGVjIFsz
-NzAxOjExX3NlZV0gDQo+PiBlbDB0XzY0X3N5bmMrMHgxYjQvMHgxYjggWzM3MDE6MTFfc2VlXXRy
-YWNpbmcgb2ZmDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IEdhbyBYdSA8Z2FveHUyQGhpaG9ub3Iu
-Y29tPg0KPj4gLS0tDQo+PiAgbW0vb29tX2tpbGwuYyB8IDIgKy0NCj4+ICAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4+IA0KPj4gZGlmZiAtLWdpdCBhL21t
-L29vbV9raWxsLmMgYi9tbS9vb21fa2lsbC5jIGluZGV4IDllNjA3MWZkZS4uMzc1NGFiNGI2IA0K
-Pj4gMTAwNjQ0DQo+PiAtLS0gYS9tbS9vb21fa2lsbC5jDQo+PiArKysgYi9tbS9vb21fa2lsbC5j
-DQo+PiBAQCAtOTg0LDcgKzk4NCw3IEBAIHN0YXRpYyB2b2lkIF9fb29tX2tpbGxfcHJvY2Vzcyhz
-dHJ1Y3QgdGFza19zdHJ1Y3QgKnZpY3RpbSwgY29uc3QgY2hhciAqbWVzc2FnZSkNCj4+ICAJfQ0K
-Pj4gIAlyY3VfcmVhZF91bmxvY2soKTsNCj4+ICANCj4+IC0JaWYgKGNhbl9vb21fcmVhcCkNCj4+
-ICsJaWYgKGNhbl9vb21fcmVhcCAmJiB0c2tfaXNfb29tX3ZpY3RpbSh2aWN0aW0pKQ0KPj4gIAkJ
-cXVldWVfb29tX3JlYXBlcih2aWN0aW0pOw0KPg0KPiBJIGRvIG5vdCB1bmRlcnN0YW5kLiBXZSBh
-bHdheXMgZG8gc2VuZCBTSUdLSUxMIGFuZCBjYWxsIG1hcmtfb29tX3ZpY3RpbSh2aWN0aW0pOyBv
-biB2aWN0aW0gdGFzayB3aGVuIHJlYWNoaW5nIG91dCBoZXJlLiBIb3cgY2FuIHRza19pc19vb21f
-dmljdGltIGNhbiBldmVyIGJlIGZhbHNlPw0KVGhpcyBpcyBhIGxvdy1wcm9iYWJpbGl0eSBpc3N1
-ZSwgYXMgaXQgb25seSBvY2N1cnJlZCBvbmNlIGR1cmluZyB0aGUgbW9ua2V5IHRlc3RpbmcuDQpJ
-IGhhdmVuJ3QgYmVlbiBhYmxlIHRvIGZpbmQgdGhlIHJvb3QgY2F1c2UgZWl0aGVyLg0KDQo+PiAg
-DQo+PiAgCW1tZHJvcChtbSk7DQo+PiAtLQ0KPj4gMi4xNy4xDQo+PiANCj4+IA0KPg0KPi0tDQo+
-IE1pY2hhbCBIb2Nrbw0KPiBTVVNFIExhYnMNCg==
+Hi Johan:
+
+some information bellow hope can help a bit.
+
+On 11/23/23 20:54, Johan Jonker wrote:
+>
+> On 11/20/23 18:06, Heiko Stuebner wrote:
+>> Hi Johan,
+>>
+>> Am Donnerstag, 2. November 2023, 14:42:19 CET schrieb Johan Jonker:
+>>> The Rk3066 hdmi output format is hard coded to RGB. Remove
+>>> all useless code related to colorimetry and enc_out_format.
+>>>
+>>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+>> I guess my first question is, is the hardcoding happening just because
+>> of missing functionality in the driver, or does the hardware only
+>> support RGB?
+> This driver can do so much more..., but is crippled by various causes.
+> If in need for a full functional rk3066 driver a little bit help/advise/action from other people is needed.
+>
+> 1:
+> Missing rk3066 TRM HDMI register info.
+> Could Rockchip (= Sandy Huang) disclose this info to the open source community?
+
+The  HDMI on rk3066 is from a IP vendor, so the detail of this IP are not even
+
+include in the TRM.
+
+As it is a chip which is more than 10 yeas old, I contacted the author of the bsp
+
+driver, got some information bellow:
+
+This IP is almost the same with sh_mobile_hdmi, unfortunately, SH-Mobile HDMI drivers
+
+is removed out of mainline in 2015[0], but with a quick look at it, the register definition
+
+is the same as rk3066 hdmi and with more detail description.
+
+
+[0]https://lkml.kernel.org/stable/20191122100825.930987859@linuxfoundation.org/
+
+>
+> As a way around we can look at older driver code and port to mainline.
+> More info gives better results.
+> rk30_hdmi_config_csc() function:
+> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/chips/rkpx2/rkpx2_hdmi_hw.c#L315
+>
+> 2:
+> Could DRM people show us examples for:
+> - How to advertise to the VOP driver what data formats (RGB, YCBCR) it can send to the HDMI driver or any other Rockchip DRM sub driver other then RGB.
+> - Advertise EDID data monitor modes RGB444, YCBCR444 and YCBCR422 to the HDMI driver.
+>
+> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/rk_hdmi_edid.c#L217C1-L218C41
+
+
+RK3066 vop can only output RGB full range to HDMI, so the full to limit rgb to yuv conversion is done by rk30_hdmi_config_csc.
+
+>
+> 3:
+> Advise when what Infoframe is needed for only RGB vs. the rest according to the specification.
+> https://engineering.purdue.edu/ece477/Archive/2012/Spring/S12-Grp10/Datasheets/CEC_HDMI_Specification.pdf
+>
+> rk3066 currently only sends avi info. Does it need vsi as well? Can anyone give some clarity here?
+> inno_hdime sends avi and vsi info.
+
+vsi is used for 3d and hdmi 1.4 format(4K24/25/30, not support by rk3066), or vendor specific data like timecode, dolby,
+
+so as a basic function, we don't need it.
+
+>
+> 4:
+> rk3066_hdmi and inno_hdmi are HDMI 1.4a drivers for DVI and HDMI.
+> Validated by drm_match_cea_mode() this function only gives us both HDMI + HDMI2 focus, but nothing for old DVI monitors.
+> How to improve?
+>
+> 5:
+> Sound support was submitted:
+> Re: [PATCH v6 2/5] drm: rockchip: add sound support to rk3066 hdmi driver
+> https://lore.kernel.org/linux-rockchip/48dbe9b7-0aa0-f459-301f-f380e2b7f2f8@gmail.com/
+>
+> No reply was given (by Heiko or others) on why it wasn't applied or what needs to be improved.
+>
+> Without reply no improvement.
+>
+> Johan
+>
+>
+>>
+>>> ---
+>>>   drivers/gpu/drm/rockchip/rk3066_hdmi.c | 20 +-------------------
+>>>   1 file changed, 1 insertion(+), 19 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/rockchip/rk3066_hdmi.c b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+>>> index 0e7aae341960..f2b1b2faa096 100644
+>>> --- a/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+>>> +++ b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+>>> @@ -23,8 +23,6 @@
+>>>
+>>>   struct hdmi_data_info {
+>>>   	int vic; /* The CEA Video ID (VIC) of the current drm display mode. */
+>>> -	unsigned int enc_out_format;
+>>> -	unsigned int colorimetry;
+>>>   };
+>>>
+>>>   struct rk3066_hdmi_i2c {
+>>> @@ -200,14 +198,7 @@ static int rk3066_hdmi_config_avi(struct rk3066_hdmi *hdmi,
+>>>   	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
+>>>   						      &hdmi->connector, mode);
+>>>
+>>> -	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV444)
+>>> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
+>>> -	else if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV422)
+>>> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV422;
+>>> -	else
+>>> -		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+>>> -
+>>> -	frame.avi.colorimetry = hdmi->hdmi_data.colorimetry;
+>>> +	frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+>>>   	frame.avi.scan_mode = HDMI_SCAN_MODE_NONE;
+>>>
+>>>   	return rk3066_hdmi_upload_frame(hdmi, rc, &frame,
+>>> @@ -329,15 +320,6 @@ static int rk3066_hdmi_setup(struct rk3066_hdmi *hdmi,
+>>>   	struct drm_display_info *display = &hdmi->connector.display_info;
+>>>
+>>>   	hdmi->hdmi_data.vic = drm_match_cea_mode(mode);
+>>> -	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
+>>> -
+>>> -	if (hdmi->hdmi_data.vic == 6 || hdmi->hdmi_data.vic == 7 ||
+>>> -	    hdmi->hdmi_data.vic == 21 || hdmi->hdmi_data.vic == 22 ||
+>>> -	    hdmi->hdmi_data.vic == 2 || hdmi->hdmi_data.vic == 3 ||
+>>> -	    hdmi->hdmi_data.vic == 17 || hdmi->hdmi_data.vic == 18)
+>>> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_601;
+>>> -	else
+>>> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
+>> while I can understand the RGB output format, why does the colorimetry
+>> also get removed? This looks like it is dependent on the mode itself
+>> and not the output format?
+> >From the old driver these conditions apply whether csc is needed.
+> https://github.com/RockchipOpensourceCommunity/px2-android-kernel-3.0/blob/master/drivers/video/rockchip/hdmi/chips/rkpx2/rkpx2_hdmi_hw.c#L320C1-L324C3
+>
+> 	if( ((vpara->input_color == VIDEO_INPUT_COLOR_RGB) && (vpara->output_color == VIDEO_OUTPUT_RGB444)) ||
+> 		((vpara->input_color == VIDEO_INPUT_COLOR_YCBCR) && (vpara->output_color != VIDEO_OUTPUT_RGB444) ))
+> 	{
+> 		return;
+> 	}
+>
+>> Thanks
+>> Heiko
+>>
+>>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
