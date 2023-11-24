@@ -2,182 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDC57F7807
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601547F7815
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345913AbjKXPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        id S1345901AbjKXPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345916AbjKXPnq (ORCPT
+        with ESMTP id S1345824AbjKXPqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:43:46 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2052.outbound.protection.outlook.com [40.107.22.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869151BD9;
-        Fri, 24 Nov 2023 07:43:51 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JfvnZxnR4bV7U5WwFdg+ymCIpojuNiSc0jFqr0MqBaQvY3OzKj4yhmhZNjuK6Xm3TjVQ2P4W8DbiIP99DRMQMT6PldmiKRgR25+NYBOymT2qMRRtfyn/VNUYJIrzz7rKUDAjPCcUFlbgip/P4UXvSphYe4gN3ZZ9eF0wg8bxxCjQI/CZ4Ok/KZKZLPjuZAupreh7tQbIHH7QDPnBuED80X6FVoC6fejsB5QU2nV3XhK2ilX255+gsP2nyHDtNf/olBzi0G0JlpAujbXKOum0C4+KM9UU6lpa1Z307mBQGeFIfnQDUGCSbbvD+bt7FKSoB+iZrNgvDeP03rf+GFI4ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LeiRHHOiRlK7tVW0hP0iV4iv4hsQAbvq2O0CB/Ds0rk=;
- b=eWbohEFe9sKhH9b3FEHjIVy4FVXD59jVMFalD6bNbgMIn/+8ihtY1Gn9jw2ZrnvF+86AnOwMpsiDrJSfKhw+AcCS5ze6vq1EhrmxJw/17jbl5W4yQNy5JVCwJ6Tk73kUIGwNxU/0Pg/uRhhEV/eTOZFqctnZ7oGhHfnaqG2sKMLMiDo/wo25gFJBajLuv4Ibacym2LqXtjVZqIYDwBeg0T3w2PNr3pjwr2j8MEXtHSkEKwGtZ4tpekzquI4fATvC9VIWGciP7fZZyxzOy0sa6iJS2i1Q9cirEzEav/lcFhHzFBhLXELGf2UiuHhgdRQ8rqQdoMf5CJ8yLz/g3O4NMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LeiRHHOiRlK7tVW0hP0iV4iv4hsQAbvq2O0CB/Ds0rk=;
- b=qZdc2khBaKBcvQjrtC4mNK7RqxRG4OJrQU7U51zZ1c2NDxID5Yvk5YyN2mxCQb8+Upnr7Q4fHVRyjcF59UKUJRRNr6o6xzLNXOfw+s7CaBd2DJRuvxJ5YyruYf9PsZJ42pIKdMhtDD70NFQ6LFEo99A9xhv1X4IKyYtvpd+lHWQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by GVXPR04MB10071.eurprd04.prod.outlook.com (2603:10a6:150:11a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.14; Fri, 24 Nov
- 2023 15:43:47 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7046.012; Fri, 24 Nov 2023
- 15:43:47 +0000
-Date:   Fri, 24 Nov 2023 17:43:43 +0200
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231124154343.sr3ajyueoshke6tn@skbuf>
-References: <20231120220549.cvsz2ni3wj7mcukh@skbuf>
- <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
- <20231121094354.635ee8cd@kernel.org>
- <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
- <20231122140850.li2mvf6tpo3f2fhh@skbuf>
- <20231122085000.79f2d14c@kernel.org>
- <20231122165517.5cqqfor3zjqgyoow@skbuf>
- <20231122100142.338a2092@kernel.org>
- <20231123160056.070f3311@kmaincent-XPS-13-7390>
- <20231123093205.484356fc@kernel.org>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231123093205.484356fc@kernel.org>
-X-ClientProxiedBy: AM8P251CA0003.EURP251.PROD.OUTLOOK.COM
- (2603:10a6:20b:21b::8) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Fri, 24 Nov 2023 10:46:06 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9701992
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:46:11 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a08e4352992so116439366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:46:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700840770; x=1701445570; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9wSiZKBdjfk9WzYTONxAZ9gvH4l3ttkbnn/4rhktlQ=;
+        b=ItUZL7O+Spdo5mhWiQhw3cVmhiv8+EQrtHcOV0b7rP6+k4B7OhE2/fiW43xF4G83iO
+         bMS8wE52QsVHyvPsi2+Big0irmUgK/6BxJEnzHkOBDJImcc+WjF/OfaeTMX3GXXHxygC
+         Y7mNaLKZmHpWEmxxCSU0WUlfFYm28QIOR8AcVkrLSP09tIv8fNQgqaCP/34SY9C9V1JX
+         u89UvRO2JmRjdJDZfVrvyuKLq6yfF76XVpsnX1+QXp4qFf8v5ki5X4p/g04uXKnpaA/p
+         RaAcjWdM3rIb53HPtFQnQxT/vCrCkL5dbMS1OQL4RJiYRWWkrtJqoiUcMErZd8Xup+5y
+         V5Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700840770; x=1701445570;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d9wSiZKBdjfk9WzYTONxAZ9gvH4l3ttkbnn/4rhktlQ=;
+        b=poZGZJo8onSncklaQ/EBlFxMc4UMnChW0g3WWpRF29uWbFWSqTtUx10Auo39Szdp1a
+         WW2pgY2fYzQsuV8DGt2LBdlBg9mNQeYiNnmepLGkzxqhLEm9NWVV+6mhou2/EuSly1Nk
+         bTV/m2rTfzgnchAH/4SVFWGibp4htimtV0D9UW4Tgq5gSXtFD6nePPY1lLU+PjnG6gXR
+         o9EKZWOnd0JD5xgAmkP4kQbAW/JOtOVXRdydvxro61UvUFLHYyTw2sqlwF8CSNtjqzVM
+         OUHxe0MuiJUM8pB2CeHzlLTpg0Lrh48AJmuZkXUXhGIJIts/3LTXjKJuh8KWhQ6ouzIs
+         ZhJg==
+X-Gm-Message-State: AOJu0YwwEQo6UCABFHHMGGWvRxc+aDij0iSli7THbMdC/rQTwmZBpfQy
+        XMzxFjhifrCBQdhtk1D8W2bwPg==
+X-Google-Smtp-Source: AGHT+IEksiLkwKJQbymecKFwdLHhu3BPyuhIcGdFn8R9s1GjBEva7JTyYDQrcquzbeC14VA7EPVqXg==
+X-Received: by 2002:a17:907:1a42:b0:9be:77cd:4c2c with SMTP id mf2-20020a1709071a4200b009be77cd4c2cmr1951910ejc.28.1700840770183;
+        Fri, 24 Nov 2023 07:46:10 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id v12-20020a170906338c00b009f2b7282387sm2176544eja.46.2023.11.24.07.46.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 07:46:09 -0800 (PST)
+Message-ID: <a90d980e-71a1-4b90-b1cb-66ac45d79031@linaro.org>
+Date:   Fri, 24 Nov 2023 16:46:06 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|GVXPR04MB10071:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed6f69e1-828e-4594-cf7b-08dbed0425f1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: x02+izdP50aUeHGZcyo0+unsFYNaKxsAGj4w4irfIUprv8bAdwisGzMd5PJSqOAUmn8D+Y3rZ+8Q3h6fWbr205SQgEeievREugLlX597Jo7BFOpfOnhQQ38bxnqmM428sWNXfF434e9hQXnf9Qzvk+eXOoQW7FaWMYb+t1OopvIcMr+f3fwYSmPz+90w6PAAx8Ntl7spMA2Eh5R41gIjp3XboNRWIbV46qmQv6EaOzz4COPiCSAfkvtEXng0lMs8WUqEX9tnN0vCJU5srk9aNMGHHTsX6dsH3NllVReyMQsLBEo8NiOSAt6gbU4+Ho5zPff/TRNwg7xLhgZpC9314lo06sc3utauX+9X0fQ/otCwUkl02lDfy00QoCdHUaV/IlwWFMbUW1ZvH1e1MHRrmvi3STtbevTHNTBWt8MjrpUINAFEKsQEtKCihAxuCcSoXZ/ju4drMR8DMbyL7LjyPtzIEtj+amN7yLbK2zXmnVKq2eblZtZ9ZI3Paml6m6xVOCtwrDtMpPHJBVANUXndFQ3DSxHoYFSdSJ7CiM2l7lz6WinwO2pBzu2P5HnKrbTH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(478600001)(6486002)(9686003)(6512007)(6666004)(44832011)(6506007)(316002)(66476007)(66946007)(110136005)(54906003)(66556008)(8936002)(4326008)(8676002)(2906002)(33716001)(41300700001)(38100700002)(1076003)(86362001)(7416002)(66574015)(83380400001)(26005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?X8vUXq4N5btf1Uf1V6huanGX/0PXAOrbY565g8KcQLo/i9J6vUGGJ3dyXm?=
- =?iso-8859-1?Q?UhKQz5nPTdmq4H7/1LMQRNdSCCI6Eu5jPyZoO2sn1zmKBEVkkQX29J8kC5?=
- =?iso-8859-1?Q?c1z5SMkeHBkoSLJTITYCrgYgq9bnUvW/S5dvQn9m4GDWcpR7AoaAuyRgND?=
- =?iso-8859-1?Q?isyY2JlNjyJg+XEbd+Im0znbrOTkVj9SsCAXseyczncm1bDn6Qkne+ahJL?=
- =?iso-8859-1?Q?NOB6js0JDd5kNwQAxdAN3CdDvkVmBYioUZ9FL0oeV7h9/pmi93Njz2wDqa?=
- =?iso-8859-1?Q?IwoZrYlx1BKCYm+A0/quvWoKOE+2JC6z6zVsfCVqZ/8Nx9oThfDWAZLN72?=
- =?iso-8859-1?Q?iDhaYvqNlkapOk++qNTQQEaGf2Lmz1nF5mH8nyItlou2E3mgW/VmeIy3BR?=
- =?iso-8859-1?Q?rKdAdDSVQmBQbtF9LzodxOU9HukIyeGS1LvSr2ld9jHekY+OqbS9gDeyRX?=
- =?iso-8859-1?Q?6sq0omtLteTUwTSLc/EZgOhI9cXC9u5f5REoYyC2/pqPUG0CQ45qn8lVQn?=
- =?iso-8859-1?Q?XtavSCALHbfZpPZzXYboikmjf8ltAxtVxZSiHwHHvsmoaZUAaOqBf6EE+3?=
- =?iso-8859-1?Q?j6gATHc9xfdj1IzfVHW39T7PisUuNF9a7diaR+v39sToB65XEbmylBc2jW?=
- =?iso-8859-1?Q?CulW8o8BowkADnYTNwwVRPyfHd+7pXsESK91n9yXdL/AdL7BQFrnLWL/Li?=
- =?iso-8859-1?Q?EjTYn7MDT0g+/4XXVgEb55RG0YSyrjpJo3GC7wJekSArRkvMoRtdQ7WJHd?=
- =?iso-8859-1?Q?+t1ikB4fJByP03DZoI+lPyNXLXF87iuBGzLYEciKkpqYR6hiOqiwcckjcM?=
- =?iso-8859-1?Q?S+7mvO1m88472xMjFUrl1q0dcnHM4adGBNqE34QUcfic/wsK3EibRc5Eup?=
- =?iso-8859-1?Q?y89fWjMbN4t735NveTOEWPPAxTTpW5YeqODgi0sunQuLgfZt1dVq6Vj66A?=
- =?iso-8859-1?Q?UAQlddrsO2zXhnJ2ZBnNjI6PT81A3OygRVMKXxvsdVppPc9kVOnhzlbBr+?=
- =?iso-8859-1?Q?cpCY3kKczpE0xexNpKSFEXvuhkmcBpqLG1owFY870Qo9laJgAyqAPTQX8y?=
- =?iso-8859-1?Q?kCWlzt6yA0zh+yK63XaUc+5/z5QJpCaprSKK1UP0zUfugPgCrRMKc0N2gy?=
- =?iso-8859-1?Q?6boyYnnIvRWjzJcHgsRebNvFm39NUj+yiD/CMSioM+zekEg1aIEBz72mvS?=
- =?iso-8859-1?Q?MJFFYGF+nnBRIw4ajzT81b2t/xrIkNRXikRk+JYXEwmsmYgA3XHgDit/Tw?=
- =?iso-8859-1?Q?QjnEaoirQCj3nGs6dm/td03A/IWIx/NkuOPdZioyzR/QLBsZSHj3GQlzxo?=
- =?iso-8859-1?Q?X/lTykZ5hveVrE2VmA7p21rCW0MJ6S2VtKYDV04Bhza1kG87xx7aqshI2S?=
- =?iso-8859-1?Q?/+jorblLwcebfR7CjAlhjqINKF9q5Es1RUvl2L+gqqGiZgPl0BLWxlOU/K?=
- =?iso-8859-1?Q?vtC9BH4dHJuX0qB3jHrKhlvPobZZXrKNQ9h1VwXQD6l2Cx4q5ho3KyJQZy?=
- =?iso-8859-1?Q?v4kUFDSNVz5TLuiN7EJ4QE0uCL2cHnirWHen57NkVqfHIRQKJKEsFXgh+K?=
- =?iso-8859-1?Q?J/c5KbSAdy/mNio0Z1TupdRNHWDiiHWuHaOj9VO9JwkzgS4aRDQBr+Iej0?=
- =?iso-8859-1?Q?Citm+srIQKXmQ6btvNIAmcK23QmCMIwPcInihzYaUqA6gu18PkURipXg?=
- =?iso-8859-1?Q?=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed6f69e1-828e-4594-cf7b-08dbed0425f1
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 15:43:47.7484
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Reyokufp86UtbRBlhKrPnVsB8HIDR+apsT5k49hSSU7oczkw8Dktqb04v41UJ4vEjaAja1bPY4V/c8dalVeeFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB10071
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
+ encrypted bitstream loading
+To:     Conor Dooley <conor@kernel.org>,
+        "Manne, Nava kishore" <nava.kishore.manne@amd.com>
+Cc:     "mdf@kernel.org" <mdf@kernel.org>,
+        "hao.wu@intel.com" <hao.wu@intel.com>,
+        "yilun.xu@intel.com" <yilun.xu@intel.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "Levinsky, Ben" <ben.levinsky@amd.com>,
+        "Potthuri, Sai Krishna" <sai.krishna.potthuri@amd.com>,
+        "Shah, Tanmay" <tanmay.shah@amd.com>,
+        "dhaval.r.shah@amd.com" <dhaval.r.shah@amd.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Datta, Shubhrajyoti" <shubhrajyoti.datta@amd.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
+ <20231122054404.3764288-2-nava.kishore.manne@amd.com>
+ <20231122-exert-gleeful-e4476851c489@spud>
+ <DM6PR12MB3993F0EC4930E68C54299B36CDB8A@DM6PR12MB3993.namprd12.prod.outlook.com>
+ <20231124-tweezers-slug-0349a2188802@spud>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231124-tweezers-slug-0349a2188802@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 09:32:05AM -0800, Jakub Kicinski wrote:
-> On Thu, Nov 23, 2023 at 04:00:56PM +0100, K�ry Maincent wrote:
-> > So, do we have a consensus? Vlad, do you agree on putting all under ethtool?
-> > 
-> > ETHTOOL_GET_TS_INFO will be in charge of replacing the SIOCGHWSTAMP
-> > implementation. Need to add ETHTOOL_A_TSINFO_PHC_INDEX
-> > ETHTOOL_A_TSINFO_QUALIFIER to the request.
-> > 
-> > ETHTOOL_GET_TS_INFO will list all the hwtstamp provider (aka "{phc_index,
-> > qualifier}") through the dumpit callback. I will add a filter to be able to
-> > list only the hwtstamp provider of one netdev.
-> > 
-> > ETHTOOL_SET_TS_INFO will be in charge of replacing the SIOCSHWSTAMP
-> > implementation.
+On 24/11/2023 13:48, Conor Dooley wrote:
+> On Fri, Nov 24, 2023 at 06:35:19AM +0000, Manne, Nava kishore wrote:
+>> Hi Conor,
+>>
+>> 	Thanks for providing the review comments.
+>> Please find my response inline.
+>>
+>>> -----Original Message-----
+>>> From: Conor Dooley <conor@kernel.org>
+>>> Sent: Wednesday, November 22, 2023 10:21 PM
+>>> To: Manne, Nava kishore <nava.kishore.manne@amd.com>
+>>> Cc: mdf@kernel.org; hao.wu@intel.com; yilun.xu@intel.com;
+>>> trix@redhat.com; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+>>> conor+dt@kernel.org; Simek, Michal <michal.simek@amd.com>;
+>>> mathieu.poirier@linaro.org; Levinsky, Ben <ben.levinsky@amd.com>;
+>>> Potthuri, Sai Krishna <sai.krishna.potthuri@amd.com>; Shah, Tanmay
+>>> <tanmay.shah@amd.com>; dhaval.r.shah@amd.com; arnd@arndb.de;
+>>> Datta, Shubhrajyoti <shubhrajyoti.datta@amd.com>; linux-
+>>> fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>>> Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
+>>> encrypted bitstream loading
+>>>
+>>> On Wed, Nov 22, 2023 at 11:14:02AM +0530, Nava kishore Manne wrote:
+>>>> Adds ‘encrypted-key-name’ property to support user-key encrypted
+>>>> bitstream loading use case.
+>>>>
+>>>> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
+>>>> ---
+>>>>  .../devicetree/bindings/fpga/fpga-region.txt  | 32
+>>>> +++++++++++++++++++
+>>>
+>>> Is there a reason that this has not yet been converted to yaml?
+>>>
+>> I am not sure about the complication involved here why it's not converted to yaml format.
+>> Due to time constraints, I couldn’t spend much time so I have used this existing legacy format
+>> to add my changes.
+>>
+>>>>  1 file changed, 32 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>> b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>> index 528df8a0e6d8..309334558b3f 100644
+>>>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>> @@ -177,6 +177,9 @@ Optional properties:
+>>>>  	it indicates that the FPGA has already been programmed with this
+>>> image.
+>>>>  	If this property is in an overlay targeting an FPGA region, it is a
+>>>>  	request to program the FPGA with that image.
+>>>> +- encrypted-key-name : should contain the name of an encrypted key file
+>>> located
+>>>> +	on the firmware search path. It will be used to decrypt the FPGA
+>>> image
+>>>> +	file with user-key.
+>>>
+>>> I might be misreading things, but your driver code seems to assume that this
+>>> is an aes key. Nothing here seems to document that this is supposed to be a
+>>> key of a particular type.
+>>>
+>>
+>> Yes, these changes are intended to add the support for Aes user-key encrypted bitstream loading use case.
+>> Will fix it in v2, something like below.
+>> aes-key-file-name : Should contain the AES key file name on the firmware search path.
+>> 		      The key file contains the AES key and it will be used to decrypt the FPGA image.
 > 
-> If not we can do a vote/poll? Maybe others don't find the configuration
-> of timestamping as confusing as me.
+> Then when someone comes along looking for a different type of encryption
+> we will end up with national-pride-foo-file-name etc. I think I'd rather
+> have a second property that notes what type of cipher is being used and
+> if that property is not present default to AES.
 
-If you mean the ETHTOOL_MSG_TSINFO_GET netlink message (ETHTOOL_GET_TS_INFO
-is an ioctl), you're saying that you want to move the entire contents of
-SIOCGHWSTAMP there, by making the kernel call ndo_hwtstamp_get() in
-addition to the existing __ethtool_get_ts_info()?
+I wonder why does it need to be in DT in the first place? Why it cannot
+be appended to the FPGA binary image itself? Which also points to
+dubious security aspect of this approach... Shipping FPGA encrypted
+image with its decryption key sounds like marvelous idea.
 
-Yeah, I don't know, I don't have a real objection, I guess it's fine.
+Even if this is suitable, why not using more arguments of firmware-name?
+This would scale even for multiple FPGA firmwares with different keys
+(although such need seems unlikely).
 
-What will be a bit of an "?!" moment for users is when ethtool gains
-support for the SIOCGHWSTAMP/SIOCSHWSTAMP netlink replacements, but not
-for the original ioctls. So hwstamp_ctl will be able to change timestamping
-configuration, but ethtool wouldn't - all on the same system. Unless
-ethtool gains an ioctl fallback for a ioctl that was never down its alley.
+Best regards,
+Krzysztof
 
-But by all means, still hold a poll if you want to. I would vote for
-ethtool netlink, not because it's great, just because I don't have a
-better alternative to propose.
