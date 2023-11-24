@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE037F777A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0097F777C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345628AbjKXPSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        id S1345717AbjKXPS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbjKXPSv (ORCPT
+        with ESMTP id S1345384AbjKXPSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:18:51 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E5DC1;
-        Fri, 24 Nov 2023 07:18:57 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-332ed1bd4cbso189529f8f.2;
-        Fri, 24 Nov 2023 07:18:57 -0800 (PST)
+        Fri, 24 Nov 2023 10:18:52 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E844171D;
+        Fri, 24 Nov 2023 07:18:59 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3316c6e299eso1335675f8f.1;
+        Fri, 24 Nov 2023 07:18:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700839136; x=1701443936; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nc0B9c34z241FEQKtC8nWY35TPMki5fFxXhhehIVoNA=;
-        b=UUdHFR8PKFhJCTZ0UzmLv+dtsB5ABNqHN/r1+qxCvJbMHeY1O737Hm606iRQGOxqmT
-         /avDGvXQQNQBoUmrsgsdzabTT3Hlx2PG6vtjE9ySjoSpSdgOLOFojgfygThQ+QXTi0Nf
-         iwq5HbZG8lzuVt3xHYMFyvDq3FoyCNPqH1qIkkoGSF4PojON1/bp+dHhQ2N6CARkx/g/
-         XsY7k/Sv/6q4Lo6OykgAfTxoBFuhJaOZ7y2Pu2EN1tP0x/9sxPMdRrCxvyCm2h4WoZwm
-         qWMGdY6QqNk025taTcvUEz2nPIjoewRXMP2VWVPZZe2RA1JBSdLeEvxEnZDmHbe4BW04
-         ULtw==
+        d=gmail.com; s=20230601; t=1700839138; x=1701443938; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oVZXsVyggnQQBeZou9kqJ/xLa3R34SntugSTM7Apkww=;
+        b=atYfbph+gm3gERpa+4mV9KvgZJaSQ2RRGJE3629QYgCiAJ7SK41fWM/BeMvyeEBH6U
+         nt+gDC+1rvkQhrMQcuLl5QEIi2gGXE13+XSXJiEgFCUXJu3/uYlkPss6Ip77/RBEkY3V
+         +R7wRTsINppd2PgUXbokoWEJlG+KmyjIWaYrVyHKUu22qkTD27SkgkaKRZQMgt8OO+ys
+         t6bassJ7PawJNxkfivxQfRKSuPMNX3hg2kSKRXMMRAW4R1YucFEL4jTUp4CxlXcnuWSq
+         yucmQ537s2OTWf1EzawoxJvi3UBo0Sbz24NPz6x0fn3lUR8tVuxSh7RiMQO9O5unKFeN
+         tsBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700839136; x=1701443936;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nc0B9c34z241FEQKtC8nWY35TPMki5fFxXhhehIVoNA=;
-        b=fPnCgKugmtezVnHqV5zhDT/sWvnLKpNOejvXOdJXDnEXYXFtpuziKp7hoUVSe39IIM
-         7XAJsD0M9fs/eAB8wdZIGpNHDgQKnboPGyU8QVz5OTkDfWkgMd0m9ZjFCz1Gdz3/OsvF
-         z/UHyabyJsS0aqWADysQrj+vbQlx/QDmfRZ/M5bQO2pOxL0Y8F5MsJqER6T5B9QgELfO
-         W0GZUDeR91c+IiBwB/GLEwUgCPYT8pNhbiXimvcGWr5QKmqDgCOYonxO7uSkavS77M4O
-         4tRWaaaHLLY410GB7n2VRzo+7OtNspBPgJ4BYj3dKWqw6Wk/KN2/jcsG1annBKcXebNl
-         /KEA==
-X-Gm-Message-State: AOJu0Yxt9cszfZ+NhJqbj+bPnyq+E1xOxtCMBGWwwszt4rIYiXUiylg6
-        lcaQof9rbZTi5JtX2hmR0ak=
-X-Google-Smtp-Source: AGHT+IHWjV6p1i5kXyAASNDrZStBIwjJK7//qf9ptZT7vV4NEBlB4tmGL5p3BHuaiD1Ye5hG8Xyq8g==
-X-Received: by 2002:adf:e4c4:0:b0:331:7793:42fb with SMTP id v4-20020adfe4c4000000b00331779342fbmr2465493wrm.61.1700839136121;
-        Fri, 24 Nov 2023 07:18:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700839138; x=1701443938;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oVZXsVyggnQQBeZou9kqJ/xLa3R34SntugSTM7Apkww=;
+        b=Al/FfzPywMKITaVxfjnd75VaWhO6e+qkhiqU7JnSmtpcHipuFIGP4520gwT0dDgzzW
+         9Nv2K/sgW7ZwndkwHluEwXll0KDkUAeV8N45h1kS8yDZ0792JmapLijx77BXtNB1iSMz
+         xxZf5NhlbXtOCJvELkBcIw4opQqzbdlNP/m8HxSV01BbdWxu6Jd2NytRIICIpqKHrZzh
+         RwufoPfzd7NajqmsByZrpAyXDtuMEO6mEWbd3jPWSALfTQ39x5MQghcM0N8gubKxUjt8
+         WeeYBgNzRuGQ3UVgsnahERewMszx/MYwh83F/e9/VYn/KRtXzM4YqmOe/jbV7y+kWA3R
+         XerA==
+X-Gm-Message-State: AOJu0YzZC75SI52B9ihg9/qKg15cXjW2eravwxaMC2aKyzvRDIoY/kfL
+        F5cDu0gQpSvhFmCLN9kXaF8=
+X-Google-Smtp-Source: AGHT+IEfFoMOk/AAm4HKDjSM09wxomJAmCiy8eFqTw5kSVLp81Bj3hoLeWWuxaoMSltXvRxKDWFvyQ==
+X-Received: by 2002:a5d:54c3:0:b0:32f:7c27:423b with SMTP id x3-20020a5d54c3000000b0032f7c27423bmr2551373wrv.51.1700839137449;
+        Fri, 24 Nov 2023 07:18:57 -0800 (PST)
 Received: from localhost.localdomain ([78.209.42.235])
-        by smtp.googlemail.com with ESMTPSA id x12-20020adff64c000000b0032dcb08bf94sm4513699wrp.60.2023.11.24.07.18.54
+        by smtp.googlemail.com with ESMTPSA id x12-20020adff64c000000b0032dcb08bf94sm4513699wrp.60.2023.11.24.07.18.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 07:18:55 -0800 (PST)
+        Fri, 24 Nov 2023 07:18:57 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
@@ -57,10 +58,12 @@ To:     Bjorn Andersson <andersson@kernel.org>,
         Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH v7 0/3] clk: qcom: clk-rcg2: introduce support for multiple conf for same freq
-Date:   Fri, 24 Nov 2023 16:18:44 +0100
-Message-Id: <20231124151847.1915-1-ansuelsmth@gmail.com>
+Subject: [PATCH v7 1/3] clk: qcom: clk-rcg: introduce support for multiple conf for same freq
+Date:   Fri, 24 Nov 2023 16:18:45 +0100
+Message-Id: <20231124151847.1915-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231124151847.1915-1-ansuelsmth@gmail.com>
+References: <20231124151847.1915-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,59 +76,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This small series fix a current problem with ipq8074 where the 2 uniphy
-port doesn't work in some corner case with some clk configuration. The
-port to correctly work require a specific frequency, using the wrong one
-results in the port not transmitting data.
+Some RCG frequency can be reached by multiple configuration.
 
-With the current code with a requested freq of 125MHz, the frequency is
-set to 105MHz. This is caused by the fact that there are 2 different
-configuration to set 125MHz and it's always selected the first one that
-results in 105MHz.
+We currently declare multiple configuration for the same frequency but
+that is not supported and always the first configuration will be taken.
 
-In the original QSDK code, the frequency configuration selection is
-different and the CEIL FLOOR logic is not present. Instead it's used a
-BEST approach where the frequency table is checked and then it's checked
-if there are duplicate entry.
+These multiple configuration are needed as based on the current parent
+configuration, it may be needed to use a different configuration to
+reach the same frequency.
 
-This proposed implementation is more specific and introduce an entire new
-set of ops and a specific freq table to support this special configuration.
+To handle this introduce 3 new macro, C, FM and FMS:
 
-A union is introduced in rcg2 struct to not duplicate the struct.
-A new set of ops clk_rcg2_fm_ops are introduced to support this new kind
-of frequency table.
+- C is used to declare a freq_conf where src, pre_div, m and n are
+  provided.
 
-Changes v7:
-- Improve handling of exit condition on missing parent.
-Changes v6:
-- Small rework of best_conf selection to mute Sparse warn.
-Changes v5:
-- Rework selection logic with suggestion from Konrad
-- Return -EINVAL and WARN if we fail to find a correct conf
-Changes v4:
-- Drop suggested but wrong re-search patch
-- Move everything to separate ops and struct to not affect current rcg2
-  users.
-Changes v3:
-- Add qcom_find_freq_exact
-- Drop re-search on rcg2_set_rate
-- Rework multiple conf patch to follow new implementation
-Changes v2:
-- Out of RFC
-- Fix compile warning from buildbot related to F redefinition
+- FM is used to declare a freq_multi_tbl with the frequency and an
+  array of confs to insert all the config for the provided frequency.
 
-Christian Marangi (3):
-  clk: qcom: clk-rcg: introduce support for multiple conf for same freq
-  clk: qcom: clk-rcg2: add support for rcg2 freq multi ops
-  clk: qcom: gcc-ipq8074: rework nss_port5/6 clock to multiple conf
+- FMS is used to declare a freq_multi_tbl with the frequency and an
+  array of a single conf with the provided src, pre_div, m and n.
 
- drivers/clk/qcom/clk-rcg.h     |  24 ++++-
- drivers/clk/qcom/clk-rcg2.c    | 166 +++++++++++++++++++++++++++++++++
- drivers/clk/qcom/common.c      |  18 ++++
- drivers/clk/qcom/common.h      |   2 +
- drivers/clk/qcom/gcc-ipq8074.c | 120 +++++++++++++++---------
- 5 files changed, 285 insertions(+), 45 deletions(-)
+Struct clk_rcg2 is changed to add a union type to reference a simple
+freq_tbl or a complex freq_multi_tbl.
 
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/clk/qcom/clk-rcg.h | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/qcom/clk-rcg.h b/drivers/clk/qcom/clk-rcg.h
+index e6d84c8c7989..c81458db6ce4 100644
+--- a/drivers/clk/qcom/clk-rcg.h
++++ b/drivers/clk/qcom/clk-rcg.h
+@@ -17,6 +17,23 @@ struct freq_tbl {
+ 	u16 n;
+ };
+ 
++#define C(s, h, m, n) { (s), (2 * (h) - 1), (m), (n) }
++#define FM(f, confs) { (f), ARRAY_SIZE(confs), (confs) }
++#define FMS(f, s, h, m, n) { (f), 1, (const struct freq_conf []){ C(s, h, m, n) } }
++
++struct freq_conf {
++	u8 src;
++	u8 pre_div;
++	u16 m;
++	u16 n;
++};
++
++struct freq_multi_tbl {
++	unsigned long freq;
++	int num_confs;
++	const struct freq_conf *confs;
++};
++
+ /**
+  * struct mn - M/N:D counter
+  * @mnctr_en_bit: bit to enable mn counter
+@@ -138,6 +155,7 @@ extern const struct clk_ops clk_dyn_rcg_ops;
+  * @safe_src_index: safe src index value
+  * @parent_map: map from software's parent index to hardware's src_sel field
+  * @freq_tbl: frequency table
++ * @freq_multi_tbl: frequency table for clocks reachable with multiple RCGs conf
+  * @clkr: regmap clock handle
+  * @cfg_off: defines the cfg register offset from the CMD_RCGR + CFG_REG
+  * @parked_cfg: cached value of the CFG register for parked RCGs
+@@ -149,7 +167,10 @@ struct clk_rcg2 {
+ 	u8			hid_width;
+ 	u8			safe_src_index;
+ 	const struct parent_map	*parent_map;
+-	const struct freq_tbl	*freq_tbl;
++	union {
++		const struct freq_tbl		*freq_tbl;
++		const struct freq_multi_tbl	*freq_multi_tbl;
++	};
+ 	struct clk_regmap	clkr;
+ 	u8			cfg_off;
+ 	u32			parked_cfg;
 -- 
 2.40.1
 
