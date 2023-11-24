@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F297F767B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D1E7F767D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 15:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbjKXOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 09:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S231209AbjKXOjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 09:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbjKXOiy (ORCPT
+        with ESMTP id S230499AbjKXOi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 09:38:54 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852FA19A8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:39:00 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so25014a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:39:00 -0800 (PST)
+        Fri, 24 Nov 2023 09:38:58 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757E11718
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:39:04 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50ba71356ddso170380e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 06:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700836739; x=1701441539; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1700836742; x=1701441542; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5qT9ijJ1bpTu4n/ZbJUawbOnA+vfnCrxXXqloSbnIeQ=;
-        b=yDesW49T0+1evvm89TEnbWe/ZJLfnelZU76CL2gT+DrlXkFsU8RJ9HXX7T4xBS3nqG
-         YWvsclM5ILHTglF4+l518OLadzDDUjzfi0cwS0+rRB+kzOrai1+Ovgyb3G5TJFIba6H1
-         m9822nmo4TsdOkRtMaEfcpUlX1CgNMFRhmRNLpQsvNVrJjA/9hco8fRTkBs7v70cXe5r
-         OjnqoxQ22Kdrr+091RVsrfNbDXrOrLgdhxYzn7a1MuSpkQ5lNR9UmGK5HBx90kGv72RW
-         tX94HqQfSjb/6rLy7V6LkgrKhSNkA+Wlr+bv2DHqly7Xz3JUm71fCb3c4Cy++mbMmlfo
-         T4ow==
+        bh=oIB5HI2zbPMViiXeUmcjMKe9UaMCUWxP4QpCG/rkGCE=;
+        b=C424cdNRJxG2M7uQnzJ/m+1NW+UG8kkgo9DVjdW424urv97A9F+VYO8P8f6M8yMS9F
+         tubI70+/qnoDNHzqcpk/SFRA7ia5DDcs9z8uVI69PygLLFstoZYS1FeVjUy3G3/NO/8t
+         6RkaVxXv3RfINyD4GOLdyVPCCe3FRfoLEKBS/DinkkywmfwLDnlfDaYhtO7If6CQF0cG
+         kwhpMk29JQ1JIQUAaibw3xAFN2hT2ogT8m/lqXzWH5eWXCXgKrv+C9OsoiQKhgGDP6U+
+         jiQp91cnMiqpe1yvo6/w+M0PmTBjOl03t40ES3IbuoIg95DBotH1Fu94vLzzhsgGXfD2
+         kiyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700836739; x=1701441539;
+        d=1e100.net; s=20230601; t=1700836742; x=1701441542;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5qT9ijJ1bpTu4n/ZbJUawbOnA+vfnCrxXXqloSbnIeQ=;
-        b=VIZuUW4Mo1FeG2x4ZuHOd5VMF5U8W7N610726AUXziM5IDNBgJ9d169CL0cbyWGClF
-         O98WG/5ulUUvnxCzniL8eMs0a6lAXpMyPItf2koMVpuUO+PHBedHSHyprxADw9VHfgBx
-         XML/CzwNLx+TWNNU+z0T4qPjg/ME+KRTZzC7VieXNbl9Gyp3jlG3veMEoiZe5+g1xroH
-         9mM5CQV9w2o+wkNhjWMHPZuIfgtQUvj31uUhrlYTjwPmZRLSMlYCivXVbF1cObuoAK5n
-         YXgzyAK47dWwtVYSNKKE96K/bgzaH19/sW2imLqGKTqmUKwxpJkejzOh08SmpuAWBFJ1
-         cgWw==
-X-Gm-Message-State: AOJu0YxJeF3CnZfY4cB9jQVGRojWjBIBUEmg/pKPy9I084FncRbq/Eq/
-        rHNIAtQHavtc9Xf77Y+Yp+tQJx5xj7S46m0QqYroDQ==
-X-Google-Smtp-Source: AGHT+IEwCRCbej1gpkzx1rDgRxtOawzgZqRxAM9eZ4PKnqgFfodjGkhCziVIgeTfKfYyIu0AX68Mln+3VK3DNpzt/f4=
-X-Received: by 2002:a05:6402:11c6:b0:54a:ee8b:7a8c with SMTP id
- j6-20020a05640211c600b0054aee8b7a8cmr102165edw.0.1700836738829; Fri, 24 Nov
- 2023 06:38:58 -0800 (PST)
+        bh=oIB5HI2zbPMViiXeUmcjMKe9UaMCUWxP4QpCG/rkGCE=;
+        b=n3ekCLhXER1HGvuZFpMHdZ0zI9spJlJD0Uy6EeF1FRipuzn5ozUds/vSCi3Ck3hA+h
+         Ux/v/LRk+fopIHdSU0JmUy+FAMh3aj/uSaZ99BSy5Vr7oIHVosS69Sx7SErg+uiR2t+R
+         qiR7P7qKde+Ew1B4iUNKsuePhhhd/3v7itUb1BLN91QRyjtfdfRlXKDfX7dZED0Gr7xw
+         8wWQyaAvmbnIewjfUsxNSDWA1fxp6pTMtDZ/I2Fy+c+AKhidiUKyKrNymwSKVOZEuBA5
+         zapIC9hxawQ+jHpFeXsD9HYI97Ngi485fgaHBHazD6aDIFhulqV1yYvO4ILoCyAzKcHo
+         gceA==
+X-Gm-Message-State: AOJu0YzDZCsR/x/f+E81nHFSqtVhg6YWDHSGnglOgwQll4UO2C4wZlOZ
+        2WnDD+4e/TunN8iT5oEvpzgT4c/SMuxGyQMgbmBO
+X-Google-Smtp-Source: AGHT+IEtEQkJd1k/Ky6597iLeTfJxAs4uP2hyyJFFKocmbMLqlHjfBxQU/Ntue5KH/p8ujUm9cmjruw36NURi3X1U8M=
+X-Received: by 2002:a05:6512:2805:b0:509:5d4b:44c4 with SMTP id
+ cf5-20020a056512280500b005095d4b44c4mr2977498lfb.1.1700836742323; Fri, 24 Nov
+ 2023 06:39:02 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000778f1005dab1558e@google.com> <CAG48ez2AAk6JpZAA6GPVgvCmKimXHJXO906e=r=WGU06k=HB3A@mail.gmail.com>
- <1037989.1647878628@warthog.procyon.org.uk> <CAG48ez1+4dbZ9Vi8N4NKCtGwuXErkUs6bC=8Pf+6jiZbxrwR7g@mail.gmail.com>
-In-Reply-To: <CAG48ez1+4dbZ9Vi8N4NKCtGwuXErkUs6bC=8Pf+6jiZbxrwR7g@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 24 Nov 2023 15:38:21 +0100
-Message-ID: <CAG48ez3AazYzfJCFgu2MKSoxMEpJXz0td+rbeCOhsM38i78m3A@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in pipe_write
-To:     David Howells <dhowells@redhat.com>
-Cc:     syzbot <syzbot+011e4ea1da6692cf881c@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-8-lb@semihalf.com>
+ <CAJfuBxzWSyw-Xp3k5WzOexbRZFydCUp_nX4A_BZs8Gq0OE2U7Q@mail.gmail.com>
+ <CAK8ByeL=A6xC=q8Ah4im4JQGUcN_NZNg10pSezBPCeKW9J_DeQ@mail.gmail.com>
+ <CAJfuBxzH=G++Qs86OGUFTC2WuBZh8JZ4y7a7KcVi+7R8L3N7Fw@mail.gmail.com> <CAK8Bye+uX38zDyGdd4GbsYWfPACNiaiBW92vZuRjuM1VDQqe0A@mail.gmail.com>
+In-Reply-To: <CAK8Bye+uX38zDyGdd4GbsYWfPACNiaiBW92vZuRjuM1VDQqe0A@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Fri, 24 Nov 2023 15:38:51 +0100
+Message-ID: <CAK8ByeK8mVQbmYsbCdZGf4F=RHPbGguDcKfhtbWF3-MpVDNkbg@mail.gmail.com>
+Subject: Re: [PATCH v1 07/12] dyndbg: repack struct _ddebug
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,54 +83,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 21, 2022 at 5:17=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
-> On Mon, Mar 21, 2022 at 5:03 PM David Howells <dhowells@redhat.com> wrote=
-:
-> > Jann Horn <jannh@google.com> wrote:
+niedz., 12 lis 2023 o 17:28 =C5=81ukasz Bartosik <lb@semihalf.com> napisa=
+=C5=82(a):
+>
+> pt., 10 lis 2023 o 22:01 <jim.cromie@gmail.com> napisa=C5=82(a):
 > >
-> > > The syz reproducer is:
+> > On Fri, Nov 10, 2023 at 7:51=E2=80=AFAM =C5=81ukasz Bartosik <lb@semiha=
+lf.com> wrote:
 > > >
-> > > #{"threaded":true,"procs":1,"slowdown":1,"sandbox":"","close_fds":fal=
-se}
-> > > pipe(&(0x7f0000000240)=3D{<r0=3D>0xffffffffffffffff, <r1=3D>0xfffffff=
-fffffffff})
-> > > pipe2(&(0x7f00000001c0)=3D{0xffffffffffffffff, <r2=3D>0xfffffffffffff=
-fff}, 0x80)
-> > > splice(r0, 0x0, r2, 0x0, 0x1ff, 0x0)
-> > > vmsplice(r1, &(0x7f00000006c0)=3D[{&(0x7f0000000080)=3D"b5", 0x1}], 0=
-x1, 0x0)
+> > > sob., 4 lis 2023 o 02:49 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > > >
+> > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@sem=
+ihalf.com> wrote:
+> > > > >
+> > > > > From: Jim Cromie <jim.cromie@gmail.com>
+> > > > >
+> > > > > Move the JUMP_LABEL to the top of the struct, since theyre both
+> > > > > align(8) and this closes a pahole (unfortunately trading for padd=
+ing,
+> > > > > but still).
+> > > > >
+> > > > > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> > > >
+> > > > let me add, I havent really tested this, nevermind thorough.
+> > > > specifically, I didnt look for any offset dependence on the static-=
+key
+> > > > inside their container.
+> > > > Conversely, maybe theres a free default or something in there.
+> > > >
 > > >
-> > > That 0x80 is O_NOTIFICATION_PIPE (=3D=3DO_EXCL).
-> > >
-> > > It looks like the bug is that when you try to splice between a normal
-> > > pipe and a notification pipe, get_pipe_info(..., true) fails, so
-> > > splice() falls back to treating the notification pipe like a normal
-> > > pipe - so we end up in iter_file_splice_write(), which first locks th=
-e
-> > > input pipe, then calls vfs_iter_write(), which locks the output pipe.
-> > >
-> > > I think this probably (?) can't actually lead to deadlocks, since
-> > > you'd need another way to nest locking a normal pipe into locking a
-> > > watch_queue pipe, but the lockdep annotations don't make that clear.
+> > > Any idea how to properly test the relocation of the key ?
 > >
-> > Is this then a bug/feature in iter_file_splice_write() rather than in t=
-he
-> > watch queue code, per se?
+> > I was hoping Jason knew it from memory.
+> >
+> > I have booted dd-kitchen-sink, which includes it, and it didnt melt the=
+ box.
+> >
+> > I just checked `pahole vmlinux` output for the existence of 0-offset ke=
+ys.
+> > Its not conclusive, cuz im only looking at x86.
+> >
+> > it does occur, but only for "sub-types".
+> >
+> > struct static_key_true {
+> >         struct static_key          key;                  /*     0    16=
+ */
+> >
+> >         /* size: 16, cachelines: 1, members: 1 */
+> >         /* last cacheline: 16 bytes */
+> > };
+> > struct static_key_false {
+> >         struct static_key          key;                  /*     0    16=
+ */
+> >
+> >         /* size: 16, cachelines: 1, members: 1 */
+> >         /* last cacheline: 16 bytes */
+> > };
+> > struct static_key_false_deferred {
+> >         struct static_key_false    key;                  /*     0    16=
+ */
+> > ...};
+> > struct static_key_mod {
+> >         struct static_key_mod *    next;                 /*     0     8=
+ */
+> > ...};
+> > struct static_key_deferred {
+> >         struct static_key          key;                  /*     0    16=
+ */
 >
-> I think at least when you call splice() on two normal pipes from
-> userspace, it'll never go through this codepath for real pipes,
-> because pipe-to-pipe splicing is special-cased? And sendfile() bails
-> out in that case because pipes don't have a .splice_read() handler.
->
-> And with notification pipes, we don't take that special path in
-> splice(), and so we hit the lockdep warning. But I don't know whether
-> that makes it the fault of notification pipes...
->
-> Maybe it would be enough to just move the "if (pipe->watch_queue)"
-> check in pipe_write() up above the __pipe_lock(pipe)?
+> I will test it on arm64.
 
-[coming back to this thread 1.5 years later...]
-I've turned that idea into a fix, let's have syzbot try it out before
-I submit the fix patch:
+Hi Jim,
 
-#syz test: https://github.com/thejh/linux.git 56c486e68166
+I verified that relocation of JUMP_LABEL to the top of the _ddebug
+struct does not brak dynamic debug functionality on arm64.
+I double checked I had CONFIG_JUMP_LABEL enabled in the kernel config for a=
+rm64.
+I was able to enable/disable callsites and see debug logs being written.
+
+But if you're concerned there might be issue related to that
+relocation on other architectures then let's drop this patch
+and I will use pahole instead of padding for location of flags and
+trace destination fields.
+What do you think ?
+
+Thanks,
+Lukasz
