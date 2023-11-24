@@ -2,187 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD597F7162
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAF07F7163
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjKXK1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S230438AbjKXK2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKXK1w (ORCPT
+        with ESMTP id S230334AbjKXK2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:27:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9A392
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:27:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A33F0C433C8;
-        Fri, 24 Nov 2023 10:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700821678;
-        bh=qVwJcFDiIpymt6eUkHVD8R3OpoVEzT8XHjqe8OUw3gY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sYvu8MeE8IkSjV0il7aiZosZ3Ymd/EG2GU0ZPtN5SOXpcSpNNccXSaX6RKlIjaO7U
-         jvzp0UG0cp3SOzwlvfN0gdnHpTOEgaS/DXk49f+e9ywvaHydsCwhclZcOkluy1fQDb
-         sD5ZtP0dSOQL1ukPvfGAkae4ZCkjpSLMFkEPNHNJ1RkEiDinqraTlWCapZ2moQGS68
-         XOib7SnGPn9thxaCkYqdZG84EVhknmbxJMXiDLZ/mP3b7wcfAYvYCG9BEUqDBPQlAX
-         mp+M5zXVjvfmJLkZmuY4OVi1DG18xNl76hTe9eqiprWEJ5HUcI9y9vuvjdDvNNoI5X
-         sfriUGYRWbqPA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs fixes
-Date:   Fri, 24 Nov 2023 11:27:28 +0100
-Message-ID: <20231124-vfs-fixes-3420a81c0abe@brauner>
-X-Mailer: git-send-email 2.42.0
+        Fri, 24 Nov 2023 05:28:06 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53693110
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:28:12 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50aae766214so501841e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700821690; x=1701426490; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Nbo0FUidKX+K23TC4mX9mkPOe1qgse1OtvaVCBp4abk=;
+        b=bbFklktoX3PIbHn5sH/rkAjogtknbAF3+Q8wcYBQCQuziIdmLJXEfBUl0fIjASKWkA
+         iSeL04sAymq/CKbNVx7G/FhdViH5gQP/JNUumAzofd8NpADMucD3B1JT4xz1M+EYX610
+         TXDWyyt60i4NuNau9XHp/amXAN5dWDIqewHgHaUWdqPY9Qh5pPGK1PuTGJfDkniwztog
+         Obu8vRxtUzXR0IDrqn6Eh3V3zjpdKSfjnI4I+re3dnWSHMhnF3Z7PdF8MAGh2ggKwqQ2
+         vdrsnBogxip6NyDtv1YDiTGSO5u7r8PxJHz4XbqhYjf0B0lylOATRU2Gl8GIsOPzYFId
+         6V8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700821690; x=1701426490;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nbo0FUidKX+K23TC4mX9mkPOe1qgse1OtvaVCBp4abk=;
+        b=Xl50tI8RX87/9vYIFgzjfuJ8SXXSF3zbupfZMFRkzIFIRDrYCjAxkyIny0EXcVzJFV
+         6zqJ2tHaDHjd8fbDra59xCN7mO+j29bhW32tf2/bY15PL18s/G9sZykpQgZMVHO5xAZb
+         fH0do/ETisRUesA1nn0K6NXEpXm9FJgBXtZ9d35DgT3wHdvQE0z76IfVrebzVDjsZOCU
+         ceUWlHKCIF7yuFHEZEFDDHO3H9YGlEmeEPq+iMKgRIH2neIsa04A6H6OLJ0Huu18IkCD
+         MtPogNmU8vsdhmCbls2YzVpBZLqL3CHdPg2wEPmNTtJliapCoS6VUnjiesJNYmMM6/VI
+         qxjg==
+X-Gm-Message-State: AOJu0YykJxYsIVkEcustN72RT4wX/XwxEEPtE9s+9v2C/fCP9WqQrCuU
+        TeShR5MyMKT/cIaWiJ7aFxVtfg==
+X-Google-Smtp-Source: AGHT+IE3d4+XZv6KBciYkFY6vMzT3RRiHUMV/wCvD7eh8ji9/04Z6RQNti57N2iLRAT5l+jpr23OEw==
+X-Received: by 2002:a05:6512:3d25:b0:50a:bacb:5b74 with SMTP id d37-20020a0565123d2500b0050abacb5b74mr1743294lfv.4.1700821690465;
+        Fri, 24 Nov 2023 02:28:10 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:3471:930b:671b:cf77? ([2a01:e0a:999:a3a0:3471:930b:671b:cf77])
+        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2758299wru.67.2023.11.24.02.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 02:28:09 -0800 (PST)
+Message-ID: <7232f08e-dfe3-43d6-a4f7-abf8360bbfc1@rivosinc.com>
+Date:   Fri, 24 Nov 2023 11:28:08 +0100
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5043; i=brauner@kernel.org; h=from:subject:message-id; bh=qVwJcFDiIpymt6eUkHVD8R3OpoVEzT8XHjqe8OUw3gY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQmVE3I2WdSLlbuwSx69I7K3XS/i/s2F1zgC9+W4Pns1 D1WD0PljlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgImYzmdkOPZDQmJrhfnLmA83 ZVyW8B3lczkmpzB52Srt3C7eErHFlxn+GUg4V/3hj+N4rxjw7m6x1+TfW4vXlPKXnXz+dUbror0 TWAE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: fix __user annotation in traps_misaligned.c
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+References: <20231123141617.259591-1-ben.dooks@codethink.co.uk>
+ <ZWA9HwUNHDFIw0wP@infradead.org>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <ZWA9HwUNHDFIw0wP@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Linus,
 
-/* Summary */
-This contains the usual miscellaneous fixes:
 
-* Avoid calling back into LSMs from vfs_getattr_nosec() calls.
+On 24/11/2023 07:05, Christoph Hellwig wrote:
+> On Thu, Nov 23, 2023 at 02:16:17PM +0000, Ben Dooks wrote:
+>> @@ -319,7 +319,7 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
+>>  static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+>>  {
+>>  	if (user_mode(regs)) {
+>> -		return __get_user(*r_val, addr);
+>> +		return __get_user(*r_val, (u8 __user *)addr);
+>>  	} else {
+>>  		*r_val = *addr;
+>>  		return 0;
+> 
+> This is the wrong way to approach it.  Pass the untype unsigned long
+> from the caller instead and do a single round of casts from that
+> depending on the address_space.
 
-  IMA used to query inode properties accessing raw inode fields without
-  dedicated helpers. That was finally fixed a few releases ago by
-  forcing IMA to use vfs_getattr_nosec() helpers.
+I sent a similar patch two days ago with the same modification. I'm not
+sure to get it. Why is it better to pass the "unsigned long" type from
+the caller ? I mean, the resulting code would look like this right ?
 
-  The goal of the vfs_getattr_nosec() helper is to query for attributes
-  without calling into the LSM layer which would be quite problematic
-  because incredibly IMA is called from __fput()...
+static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
+{
+	if (user_mode(regs)) {
+		return __put_user(val, (u8 __user *)addr);
+	} else {
+		*addr = (u8 *)val;
+		return 0;
+	}
+}
 
-  __fput()
-    -> ima_file_free()
+Is this better from a "semantic" point of view and be sure the casts are
+done in a single place ?
 
-  What it does is to call back into the filesystem to update the file's
-  IMA xattr. Querying the inode without using vfs_getattr_nosec() meant
-  that IMA didn't handle stacking filesystems such as overlayfs
-  correctly. So the switch to vfs_getattr_nosec() is quite correct. But
-  the switch to vfs_getattr_nosec() revealed another bug when used on
-  stacking filesystems:
+> 
+> And please also remove this horrible else after return entipattern
+> while you're at it.
 
-  __fput()
-    -> ima_file_free()
-       -> vfs_getattr_nosec()
-          -> i_op->getattr::ovl_getattr()
-             -> vfs_getattr()
-                -> i_op->getattr::$WHATEVER_UNDERLYING_FS_getattr()
-                   -> security_inode_getattr() # calls back into LSMs
+Acked,
 
-  Now, if that __fput() happens from task_work_run() of an exiting task
-  current->fs and various other pointer could already be NULL. So
-  anything in the LSM layer relying on that not being NULL would be
-  quite surprised.
+Thanks,
 
-  Fix that by passing the information that this is a security request
-  through to the stacking filesystem by adding a new internal
-  ATT_GETATTR_NOSEC flag. Now the callchain becomes:
-
-  __fput()
-    -> ima_file_free()
-       -> vfs_getattr_nosec()
-          -> i_op->getattr::ovl_getattr()
-             -> if (AT_GETATTR_NOSEC)
-                       vfs_getattr_nosec()
-                else
-                       vfs_getattr()
-                -> i_op->getattr::$WHATEVER_UNDERLYING_FS_getattr()
-
-* Fix a bug introduced with the iov_iter rework from last cycle.
-
-  This broke /proc/kcore by copying too much and without the correct
-  offset.
-
-* Add a missing NULL check when allocating the root inode in
-  autofs_fill_super().
-
-* Fix stable writes for multi-device filesystems (xfs, btrfs etc) and
-  the block device pseudo filesystem.
-
-  Stable writes used to be a superblock flag only, making it a per
-  filesystem property. Add an additional AS_STABLE_WRITES mapping flag
-  to allow for fine-grained control.
-
-* Ensure that offset_iterate_dir() returns 0 after reaching the end of a
-  directory so it adheres to getdents() convention.
-
-/* Testing */
-clang: Debian clang version 16.0.6 (16)
-gcc: gcc (Debian 13.2.0-5) 13.2.0
-
-All patches are based on v6.7-rc1 and have been sitting in linux-next.
-No build failures or warnings were observed. Passes xfstests.
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with
-current mainline.
-
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.7-rc3.fixes
-
-for you to fetch changes up to 796432efab1e372d404e7a71cc6891a53f105051:
-
-  libfs: getdents() should return 0 after reaching EOD (2023-11-20 15:34:22 +0100)
-
-Please consider pulling these changes from the signed vfs-6.7-rc3.fixes tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-vfs-6.7-rc3.fixes
-
-----------------------------------------------------------------
-Christoph Hellwig (4):
-      filemap: add a per-mapping stable writes flag
-      block: update the stable_writes flag in bdev_add
-      xfs: clean up FS_XFLAG_REALTIME handling in xfs_ioctl_setattr_xflags
-      xfs: respect the stable writes flag on the RT device
-
-Chuck Lever (1):
-      libfs: getdents() should return 0 after reaching EOD
-
-Ian Kent (1):
-      autofs: add: new_inode check in autofs_fill_super()
-
-Omar Sandoval (1):
-      iov_iter: fix copy_page_to_iter_nofault()
-
-Stefan Berger (1):
-      fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
-
- block/bdev.c               |  2 ++
- fs/autofs/inode.c          | 56 +++++++++++++++++-----------------------------
- fs/ecryptfs/inode.c        | 12 ++++++++--
- fs/inode.c                 |  2 ++
- fs/libfs.c                 | 14 +++++++++---
- fs/overlayfs/inode.c       | 10 ++++-----
- fs/overlayfs/overlayfs.h   |  8 +++++++
- fs/stat.c                  |  6 ++++-
- fs/xfs/xfs_inode.h         |  8 +++++++
- fs/xfs/xfs_ioctl.c         | 30 ++++++++++++++++---------
- fs/xfs/xfs_iops.c          |  7 ++++++
- include/linux/pagemap.h    | 17 ++++++++++++++
- include/uapi/linux/fcntl.h |  3 +++
- lib/iov_iter.c             |  2 +-
- mm/page-writeback.c        |  2 +-
- 15 files changed, 121 insertions(+), 58 deletions(-)
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
