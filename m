@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFCC7F7136
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91F87F7141
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345906AbjKXKRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        id S1345402AbjKXKSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:18:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345606AbjKXKQf (ORCPT
+        with ESMTP id S1345728AbjKXKSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:16:35 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91E110FA;
-        Fri, 24 Nov 2023 02:16:36 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a02ba1f500fso251684166b.0;
-        Fri, 24 Nov 2023 02:16:36 -0800 (PST)
+        Fri, 24 Nov 2023 05:18:32 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDB210F5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:18:05 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cc3dd21b0cso16387777b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700820995; x=1701425795; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1700821085; x=1701425885; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CmI/uIQ6Rz6MtRkEfeCIhTUeSTfDQWhDOaE2Jo1gHkw=;
-        b=go7Qrl4KK6CKbXtxM7P2PCPTIn4BZSMVf/n58O7uymbxwsyFVBJ28r4CJ+2r5USRAx
-         PMPa+e3ZFzr2E7M+xVQfnpBxMoqLtxU5YfJR8d7XdHTyJfxnkvdcPm2g6uwMBAqwSlK8
-         p84TZvpQQD7ZJ4mUXSMfSdl52+0cUNpWLBnZLKAIMhP7enjX91hbs2D6zhfngQkgW5zI
-         thrXPJpKWMm1R3073XiRwGJ3YE6Kg3o1u/cEIOLRG9bTSZpvQuHYfxHOL9cIh2GdNmG0
-         yr1yHhm9x2iPLw09Czm85+pJwCDK+pQ13TcAjpAK3UfzqCejVOyrnKf44TnBM1Fu9AsR
-         DLYw==
+        bh=Xe7iByES8qCcfT1IfYNFaShLSvrVUDFw50wM8vwtGhs=;
+        b=y0MEdI7EHts4uF/isdmDFTtTGZzOpe6XZRUlT4bnZlmi+z8jT2bgyTejtglnxO9N38
+         PyjPF0QCy9KqQEBUbaO3L68e7vAzJ9EIPNPFwjz/fAd2jfSwzi/ocRwoO4x4qRPisCYg
+         Ms43zhEkuyLL5WSACdD29u2aNfzfFzMZS9thH8LISc3AbKNgTenxKxqqbwzU4sbNcOXl
+         Xr7UPj6hZGvuVCOlOvcfutwYDStQNLAvEo0jkrOHxKe3OIMTDSnISfr49RURHyHPa501
+         VShz1iC03befwAK8VkqrCGIFIhf+znF1JbZKQN2I0s080KdT/Gw1ZKBxmjSxCjmY3gJJ
+         ec5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700820995; x=1701425795;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700821085; x=1701425885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CmI/uIQ6Rz6MtRkEfeCIhTUeSTfDQWhDOaE2Jo1gHkw=;
-        b=csxjSGznNHKR0Is7IYeQuh6B6zPPS6Snw++DjHVqBDcp/VPn8Y9ImjKwCpvU2dtOwa
-         qrpqN59bGwne+szP+ElWIEQZ8q1ecynEfY0f0V7zDwZA8JxHhJk2m4WK9iJQO5Nc1iQd
-         27v4kgBJtiNSUl0AdmQH/O08oQdwJ7dxr7FkfwNLLECJUx4+R/wa+GjsKXnLJnm3I5kD
-         TRystu91WqdvsP1iaYoZoIqxD5kczO8fbendkRwtO5C3FFdnA+I6IqgvrLcRDaRHnQDg
-         BGY4PmtXkt1YMZgW+htzWgPSPrDjj7IyZG+0BtySUeJ5UtgI5gtCv7k1YYE3QRN6pZFb
-         16mA==
-X-Gm-Message-State: AOJu0Yw/oXxqvhIdzvoVtw5XCokN5V7L8Ge5n/5YRhIjAn2fQL4ZicNQ
-        yfAe3nV0kNVir1mY/zEiK9lTih5r5WV1xQ==
-X-Google-Smtp-Source: AGHT+IGleUJohNDiMb4cl8svyIOn0mt82nef225zJR4dEew+lBsivv8WdxG9Igavwtpw4/QWyiGOXw==
-X-Received: by 2002:a17:906:29e:b0:a01:dc84:1658 with SMTP id 30-20020a170906029e00b00a01dc841658mr1687689ejf.4.1700820994715;
-        Fri, 24 Nov 2023 02:16:34 -0800 (PST)
-Received: from zotac.lan. (dynamic-2a01-0c22-72cf-8300-2223-08ff-fe18-0310.c22.pool.telefonica.de. [2a01:c22:72cf:8300:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id oq12-20020a170906cc8c00b009fbf15cee7fsm1887801ejb.69.2023.11.24.02.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 02:16:33 -0800 (PST)
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>, Jim Cromie <jim.cromie@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/10] i2c: scx200_acb: Don't let i2c adapters declare I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
-Date:   Fri, 24 Nov 2023 11:16:19 +0100
-Message-ID: <20231124101619.6470-11-hkallweit1@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231124101619.6470-1-hkallweit1@gmail.com>
-References: <20231124101619.6470-1-hkallweit1@gmail.com>
+        bh=Xe7iByES8qCcfT1IfYNFaShLSvrVUDFw50wM8vwtGhs=;
+        b=Hvb56hGybjZfPkviTQ2mcdCtNe+ooSzQ5P+O0fQNXV2Efl+41JflEk+GZOL24s92iZ
+         G6ycWEcJ4XouiZ9lDWKcWiJqJ/SXG/z89KXCu1uCEvLtyQQ5G9FyfrYbEAa+i5vBJ64v
+         rm/EG5qv8ZYUpOiT55lMkdXfddRltrzbzi3jmpxoTE4tG/SQMSQSjUKzp2jGpfvoLvit
+         ai34kVpHYCT4OHxN6RkDixZ8iqZWZfUQSVCiHyUS3ntytA7l8EGT+1quoFp94CtgbqBp
+         IGF/VWH0XGiHNKz27ZHmc+Qv2pM928zdd6lSj2QHMJfHXUoNcAuloKfvFQ66XlAp7fMV
+         Jk/A==
+X-Gm-Message-State: AOJu0YyEQwBXd9/8RIos5BwkqXNtnnSo6gyGYZEMqToE9/ncE8/FLj6b
+        Okx8Kpmm0Xl1DkUTOIH1OjBfxKd0YJ8xkzxO6AJGwA==
+X-Google-Smtp-Source: AGHT+IG8iaEyiFM59ESevDjE9vPuHHbQDr1w/P/tGmZWOMIBN3A2ZiFwbVfmEed56HUcIuuKQk+nI+Fh1ToiAf1nTUE=
+X-Received: by 2002:a25:6d7:0:b0:db0:2f97:8757 with SMTP id
+ 206-20020a2506d7000000b00db02f978757mr1792022ybg.38.1700821084607; Fri, 24
+ Nov 2023 02:18:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231123193355.3400852-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 24 Nov 2023 11:17:53 +0100
+Message-ID: <CACRpkdbEoAvTs4c5e910bsBZej2Gs6H+SPLAXUnKM2qRk+5MTw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/21] pinctrl: Convert struct group_desc to use struct pingroup
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After removal of the legacy eeprom driver the only remaining I2C
-client device driver supporting I2C_CLASS_SPD is jc42. Because this
-driver also supports I2C_CLASS_HWMON, adapters don't have to
-declare support for I2C_CLASS_SPD if they support I2C_CLASS_HWMON.
-It's one step towards getting rid of I2C_CLASS_SPD mid-term.
+On Thu, Nov 23, 2023 at 8:34=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Series was created supported by Coccinelle and its splitpatch.
+> The struct group_desc has a lot of duplication with struct pingroup.
+> Deduplicate that by embeddind the latter in the former and convert
+> users.
+>
+> Linus, assuming everything is fine, I can push this to my tree.
+> Or you can apply it (assumming all CIs and people are happy with
+> the series).
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+I would give people some time to test the changes and ACK it,
+but admittedly it's a very tasty patch set and I am eager to merge
+it ASAP.
 
----
- drivers/i2c/busses/scx200_acb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Shall we give people a week and then we merge it?
 
-diff --git a/drivers/i2c/busses/scx200_acb.c b/drivers/i2c/busses/scx200_acb.c
-index 83c1db610..3648382b8 100644
---- a/drivers/i2c/busses/scx200_acb.c
-+++ b/drivers/i2c/busses/scx200_acb.c
-@@ -427,7 +427,7 @@ static struct scx200_acb_iface *scx200_create_iface(const char *text,
- 	snprintf(adapter->name, sizeof(adapter->name), "%s ACB%d", text, index);
- 	adapter->owner = THIS_MODULE;
- 	adapter->algo = &scx200_acb_algorithm;
--	adapter->class = I2C_CLASS_HWMON | I2C_CLASS_SPD;
-+	adapter->class = I2C_CLASS_HWMON;
- 	adapter->dev.parent = dev;
- 
- 	mutex_init(&iface->mutex);
+> NB. This series contains previously sent patches for Qualcomm and
+> Nuovoton. Here the updated version for Qualcomm that splits previous
+> patch to two and fixes compilation warnings.
 
+Fair enough, I'll just use this series.
+
+> NB. The function_desc is in plan to follow the similar deduplication.
+
+Yes!
+
+Yours,
+Linus Walleij
