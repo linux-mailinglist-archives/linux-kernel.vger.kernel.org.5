@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CFF7F79A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A631A7F79AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjKXQot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:44:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S231282AbjKXQrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbjKXQoo (ORCPT
+        with ESMTP id S229741AbjKXQre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:44:44 -0500
+        Fri, 24 Nov 2023 11:47:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D300419B3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:44:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48056C433C7;
-        Fri, 24 Nov 2023 16:44:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03819199A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:47:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E7F1C433C8;
+        Fri, 24 Nov 2023 16:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700844290;
-        bh=NJapw9r3ZsOAeD3DLgBX296z/MrigR0DCtZT3hKOuio=;
+        s=k20201202; t=1700844460;
+        bh=BVlDq5Ewu2rdhljejSY79vNe84v5IwBc/GsApe5yU/s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T4k9m2a4J9+l7t92XW0tq7E2AGmFIHF8IEv1SRcnzBSfDM0wdUsdiZgHk8vTWBu2N
-         W/DWQx5bh/90B+Ovbi3JN+QIgBg15UmPMVAI2Ovf3gpMa6hkHVVHJTKpGkGEchrgpH
-         BsqjV3yoAPwlpNOf/KUZNB53n132RYkLmRgmjP60xJVwfVEBkXLZfz0PZch2EGZCHi
-         o4gJ2BdTFtzsJBnLv4FmLWhHz61Qvmp5JtblTC7Gl4ZPxnPDvUB0WwZBX+1+aBQ04I
-         86rwDeck8aeosh72G27uZtMgOVcFmz9dAJSl41HAntepBR6IJ4hOjq8JfbpYdULEpl
-         wEcvPyITv6i0w==
-Date:   Fri, 24 Nov 2023 16:44:45 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2] firmware_loader: Expand Firmware upload
- error codes with firmware invalid error
-Message-ID: <20231124164445.GS50352@kernel.org>
-References: <20231121-feature_firmware_error_code-v2-1-f879a7734a4e@bootlin.com>
- <20231121173022.3cb2fcad@kernel.org>
- <20231122114325.5bacca5a@kmaincent-XPS-13-7390>
+        b=qzEdsyqs4qX/8QxQpY1uTGL4HjT8TD9PHyDFKrvVO8V4aMZWkHwQBR3R5xKe60OgY
+         4P/zM6kd9pWUB7TaKewQTegxNBwW64+j4X86xFW+QgfblB2uysr0eQLcZhkZXMmxKF
+         ZFTSkkV2hCRt1Ss+sFvxK4pyYPi/dK0e83c5jUHJlnksdwN1mD0ZZ1F9zFPi5hTTk2
+         ka5MZP1GYaHPzjk1T4E0YsZpsc5J4ZoGa9vlDNWZVXEFiJWLyw0rp7Drsr3vlxwQtA
+         wUhqVlnPDpoUxYfhHAqKqFTgnSv5zNhYEX6QvS3upn0WIwdVAWollBPUFNliLQR13/
+         zz+3aL1xxPz+Q==
+Date:   Fri, 24 Nov 2023 17:47:32 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de
+Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
+ non-initial user namespace
+Message-ID: <20231124-filzen-bohrinsel-7ff9c7f44fe1@brauner>
+References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231122114325.5bacca5a@kmaincent-XPS-13-7390>
+In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,34 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 11:43:25AM +0100, Köry Maincent wrote:
-> On Tue, 21 Nov 2023 17:30:22 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
-> 
-> > On Tue, 21 Nov 2023 11:50:35 +0100 Kory Maincent wrote:
-> > > No error code are available to signal an invalid firmware content.
-> > > Drivers that can check the firmware content validity can not return this
-> > > specific failure to the user-space
-> > > 
-> > > Expand the firmware error code with an additional code:
-> > > - "firmware invalid" code which can be used when the provided firmware
-> > >   is invalid  
-> > 
-> > Any idea what this is?
-> > 
-> > lib/test_firmware.o: warning: objtool: test_fw_upload_prepare() falls through
-> > to next function __cfi_test_fw_upload_cancel()
-> > 
-> > My build shows this on an incremental clang 17 build.
-> 
-> For my curiosity, how do you get this error?
-> 
-> Enabling test_firmware and building with W=1 does not show the error.
+> - Integrate this as LSM (Christian, Paul)
 
-Hi Kory,
+Huh, my rant made you write an LSM. I'm not sure if that's a good or bad
+thing...
 
-I am able to observe this warning when compiling with clang-16
+So I dislike this less than the initial version that just worked around
+SB_I_NODEV and this might be able to go somewhere. _But_ I want to see
+the rules written down:
 
-make LLVM=1 lib/test_firmware.o
+(1) current device access management
+    I summarized the current places where that's done very very briefly in
+    https://lore.kernel.org/all/20230815-feigling-kopfsache-56c2d31275bd@brauner
 
-...
+    * inode_permission()
+      -> devcgroup_inode_permission()
+
+    * vfs_mknod()
+      -> devcgroup_inode_mknod()
+
+    * blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
+      -> devcgroup_check_permission()
+
+    * drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
+      -> devcgroup_check_permission()
+
+    but that's not enough. What we need is a summary of how device node
+    creation and device node opening currently interact.
+
+    Because it is subtle. Currently you cannot even create device nodes
+    without capable(CAP_SYS_ADMIN) and you can't open any existing ones
+    if you lack capable(CAP_SYS_ADMIN).
+
+    Years ago we tried that insane model where we enabled userspace to
+    create device nodes but not open them. IOW, the capability check
+    for device node creation was lifted but the SB_I_NODEV limitation
+    wasn't lifted. That broke the whole world and had to be reverted.
+
+(2) LSM device access management
+
+    I really want to be able to see how you envision the permission
+    checking to work in the new model. Specifically:
+
+    * How do device node creation and device node opening interact.
+    * The consequences of allowing to remove the SB_I_NODEV restriction.
+    * Permission checking for users without and without a bpf guarded
+      profile.
+
+If you write this down we'll add it to documentation as well or to the
+commit messages. It won't be lost. It doesn't have to be some really
+long thing. I just want to better understand what you think this is
+going to do and what the code does.
