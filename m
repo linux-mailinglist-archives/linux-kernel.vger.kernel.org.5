@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08057F6A70
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8966D7F6A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjKXCCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:02:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
+        id S230421AbjKXCDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjKXCCr (ORCPT
+        with ESMTP id S230237AbjKXCCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:02:47 -0500
+        Thu, 23 Nov 2023 21:02:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D9810DB
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:02:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58686C433C7;
-        Fri, 24 Nov 2023 02:02:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8229D1702
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:02:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C03C433C7;
+        Fri, 24 Nov 2023 02:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700791367;
-        bh=3Y6FhYUfs1OMTK8TpsSil3XSBqWxbXFTm8ChxAufa00=;
+        s=k20201202; t=1700791370;
+        bh=OxyGD9C4bYBq2jBblGdmgpNMATLdO+dcbm5l6b/eOpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CS57FfiF6xyUpfkjxKHWVusOK8aWst3DmyHJFLm6QPQxMFqMuOr8gK4jYcD6TXcMr
-         DfWnvezfb1RcUBgtfGeIcYJl+OIW7ZxB4hvmJbRVxitbKSXjrKDjAWJTF7wL5sXumv
-         AlyrtCew6k1NuChpTHy/e8ssXjo2Ppf+sgIffvqNgKm/vfZWNyvT/AtBUvBbsPhlN4
-         nE02hD89e9aah8t/i8TNksbTR/fUl2D08TkglYm/aW6OkchJ3LwevtExVY4MXsDoOj
-         Tg3Gqes2Q7FKVewC+Rtp4fK+PlKpB3DRaVC3sA5dcN5CcqyuIsGtGzt9C84U92ltpj
-         HSgQ0HoGsxXsw==
+        b=Th0/dvj9thmDM8Ru6UETNQMROWztwcVt/f+NDRoIkaBe6H/uZUMpBmdqqpvyrorgE
+         m+seKIqm6whbvptNDeEmtt+GkJnBx9AwwzSsVg48Y0ogc28X4GZg9m5RV5ZZs19w+S
+         OEm39afj9PcHvz7c4GdbgDUkTtdBsLUH/3XiXWxOkQwfe0nIGxQrp7O4CR2UF1An7q
+         d+c1sOZDHwMyrVLfGDswc1pu7sQ4OPgBItavHxRmpwqOOHYuMR+DHJxl4cAbzwF/sf
+         VQ8l3rHbmwiCcLDA0Cf2ap9baN5nsui05oigIDQg6j4LNmntlZozcr7jOYpktn1B15
+         Hh7+Bp+f+AgEw==
 From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     linux-integrity@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
         Mimi Zohar <zohar@linux.ibm.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
         Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: [PATCH v6 2/8] tpm: Remove tpm_send()
-Date:   Fri, 24 Nov 2023 04:02:31 +0200
-Message-ID: <20231124020237.27116-3-jarkko@kernel.org>
+Subject: [PATCH v6 3/8] tpm: Move buffer handling from static inlines to real functions
+Date:   Fri, 24 Nov 2023 04:02:32 +0200
+Message-ID: <20231124020237.27116-4-jarkko@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231124020237.27116-1-jarkko@kernel.org>
 References: <20231124020237.27116-1-jarkko@kernel.org>
@@ -56,110 +56,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Open code the last remaining call site for tpm_send().
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
+separate out the tpm_buf_... handling functions from static inlines in
+tpm.h and move them to their own tpm-buf.c file.  This is a precursor
+to adding new functions for other TPM type handling because the amount
+of code will grow from the current 70 lines in tpm.h to about 200
+lines when the additions are done.  200 lines of inline functions is a
+bit too much to keep in a header file.
+
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
-v1 [2023-11-21]: A new patch.
+v3: make tpm_buf_tag static
+v4: remove space after spdx tag
+v5: fix checkpatch.pl --strict issues
 ---
- drivers/char/tpm/tpm-interface.c          | 25 -----------------------
- include/linux/tpm.h                       |  5 -----
- security/keys/trusted-keys/trusted_tpm1.c | 14 +++++++++++--
- 3 files changed, 12 insertions(+), 32 deletions(-)
+ drivers/char/tpm/Makefile  |  1 +
+ drivers/char/tpm/tpm-buf.c | 87 ++++++++++++++++++++++++++++++++++++++
+ include/linux/tpm.h        | 80 ++++-------------------------------
+ 3 files changed, 97 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/char/tpm/tpm-buf.c
 
-diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
-index 66b16d26eecc..163ae247bff2 100644
---- a/drivers/char/tpm/tpm-interface.c
-+++ b/drivers/char/tpm/tpm-interface.c
-@@ -342,31 +342,6 @@ int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
- }
- EXPORT_SYMBOL_GPL(tpm_pcr_extend);
+diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
+index 0222b1ddb310..ad3594e383e1 100644
+--- a/drivers/char/tpm/Makefile
++++ b/drivers/char/tpm/Makefile
+@@ -15,6 +15,7 @@ tpm-y += tpm-sysfs.o
+ tpm-y += eventlog/common.o
+ tpm-y += eventlog/tpm1.o
+ tpm-y += eventlog/tpm2.o
++tpm-y += tpm-buf.o
  
--/**
-- * tpm_send - send a TPM command
-- * @chip:	a &struct tpm_chip instance, %NULL for the default chip
-- * @cmd:	a TPM command buffer
-- * @buflen:	the length of the TPM command buffer
-- *
-- * Return: same as with tpm_transmit_cmd()
-- */
--int tpm_send(struct tpm_chip *chip, void *cmd, size_t buflen)
--{
--	struct tpm_buf buf;
--	int rc;
--
--	chip = tpm_find_get_ops(chip);
--	if (!chip)
--		return -ENODEV;
--
--	buf.data = cmd;
--	rc = tpm_transmit_cmd(chip, &buf, 0, "attempting to a send a command");
--
--	tpm_put_ops(chip);
--	return rc;
--}
--EXPORT_SYMBOL_GPL(tpm_send);
--
- int tpm_auto_startup(struct tpm_chip *chip)
- {
- 	int rc;
+ tpm-$(CONFIG_ACPI) += tpm_ppi.o eventlog/acpi.o
+ tpm-$(CONFIG_EFI) += eventlog/efi.o
+diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
+new file mode 100644
+index 000000000000..96cee41d5b9c
+--- /dev/null
++++ b/drivers/char/tpm/tpm-buf.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Handling of TPM command and other buffers.
++ */
++
++#include <linux/module.h>
++#include <linux/tpm.h>
++
++int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
++{
++	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
++	if (!buf->data)
++		return -ENOMEM;
++
++	buf->flags = 0;
++	tpm_buf_reset(buf, tag, ordinal);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(tpm_buf_init);
++
++void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
++{
++	struct tpm_header *head = (struct tpm_header *)buf->data;
++
++	head->tag = cpu_to_be16(tag);
++	head->length = cpu_to_be32(sizeof(*head));
++	head->ordinal = cpu_to_be32(ordinal);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_reset);
++
++void tpm_buf_destroy(struct tpm_buf *buf)
++{
++	free_page((unsigned long)buf->data);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_destroy);
++
++u32 tpm_buf_length(struct tpm_buf *buf)
++{
++	struct tpm_header *head = (struct tpm_header *)buf->data;
++
++	return be32_to_cpu(head->length);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_length);
++
++void tpm_buf_append(struct tpm_buf *buf,
++		    const unsigned char *new_data,
++		    unsigned int new_len)
++{
++	struct tpm_header *head = (struct tpm_header *)buf->data;
++	u32 len = tpm_buf_length(buf);
++
++	/* Return silently if overflow has already happened. */
++	if (buf->flags & TPM_BUF_OVERFLOW)
++		return;
++
++	if ((len + new_len) > PAGE_SIZE) {
++		WARN(1, "tpm_buf: overflow\n");
++		buf->flags |= TPM_BUF_OVERFLOW;
++		return;
++	}
++
++	memcpy(&buf->data[len], new_data, new_len);
++	head->length = cpu_to_be32(len + new_len);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_append);
++
++void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value)
++{
++	tpm_buf_append(buf, &value, 1);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_append_u8);
++
++void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value)
++{
++	__be16 value2 = cpu_to_be16(value);
++
++	tpm_buf_append(buf, (u8 *)&value2, 2);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_append_u16);
++
++void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
++{
++	__be32 value2 = cpu_to_be32(value);
++
++	tpm_buf_append(buf, (u8 *)&value2, 4);
++}
++EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
 diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index 6588ca87cf93..d9d645e9c52c 100644
+index d9d645e9c52c..bb0e8718a432 100644
 --- a/include/linux/tpm.h
 +++ b/include/linux/tpm.h
-@@ -422,7 +422,6 @@ extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
- 			struct tpm_digest *digest);
- extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
- 			  struct tpm_digest *digests);
--extern int tpm_send(struct tpm_chip *chip, void *cmd, size_t buflen);
- extern int tpm_get_random(struct tpm_chip *chip, u8 *data, size_t max);
- extern struct tpm_chip *tpm_default_chip(void);
- void tpm2_flush_context(struct tpm_chip *chip, u32 handle);
-@@ -443,10 +442,6 @@ static inline int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
- 	return -ENODEV;
- }
+@@ -326,77 +326,15 @@ struct tpm2_hash {
+ 	unsigned int tpm_id;
+ };
  
--static inline int tpm_send(struct tpm_chip *chip, void *cmd, size_t buflen)
+-static inline void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
 -{
--	return -ENODEV;
+-	struct tpm_header *head = (struct tpm_header *)buf->data;
+-
+-	head->tag = cpu_to_be16(tag);
+-	head->length = cpu_to_be32(sizeof(*head));
+-	head->ordinal = cpu_to_be32(ordinal);
 -}
- static inline int tpm_get_random(struct tpm_chip *chip, u8 *data, size_t max)
- {
- 	return -ENODEV;
-diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-index aa108bea6739..37bce84eef99 100644
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -356,17 +356,27 @@ static int TSS_checkhmac2(unsigned char *buffer,
-  */
- int trusted_tpm_send(unsigned char *cmd, size_t buflen)
- {
-+	struct tpm_buf buf;
- 	int rc;
+-
+-static inline int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
+-{
+-	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
+-	if (!buf->data)
+-		return -ENOMEM;
+-
+-	buf->flags = 0;
+-	tpm_buf_reset(buf, tag, ordinal);
+-	return 0;
+-}
+-
+-static inline void tpm_buf_destroy(struct tpm_buf *buf)
+-{
+-	free_page((unsigned long)buf->data);
+-}
+-
+-static inline u32 tpm_buf_length(struct tpm_buf *buf)
+-{
+-	struct tpm_header *head = (struct tpm_header *)buf->data;
+-
+-	return be32_to_cpu(head->length);
+-}
+-
+-static inline void tpm_buf_append(struct tpm_buf *buf,
+-				  const unsigned char *new_data,
+-				  unsigned int new_len)
+-{
+-	struct tpm_header *head = (struct tpm_header *)buf->data;
+-	u32 len = tpm_buf_length(buf);
+-
+-	/* Return silently if overflow has already happened. */
+-	if (buf->flags & TPM_BUF_OVERFLOW)
+-		return;
+-
+-	if ((len + new_len) > PAGE_SIZE) {
+-		WARN(1, "tpm_buf: overflow\n");
+-		buf->flags |= TPM_BUF_OVERFLOW;
+-		return;
+-	}
+-
+-	memcpy(&buf->data[len], new_data, new_len);
+-	head->length = cpu_to_be32(len + new_len);
+-}
+-
+-static inline void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value)
+-{
+-	tpm_buf_append(buf, &value, 1);
+-}
+-
+-static inline void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value)
+-{
+-	__be16 value2 = cpu_to_be16(value);
+-
+-	tpm_buf_append(buf, (u8 *) &value2, 2);
+-}
+-
+-static inline void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
+-{
+-	__be32 value2 = cpu_to_be32(value);
+-
+-	tpm_buf_append(buf, (u8 *) &value2, 4);
+-}
++int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal);
++void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal);
++void tpm_buf_destroy(struct tpm_buf *buf);
++u32 tpm_buf_length(struct tpm_buf *buf);
++void tpm_buf_append(struct tpm_buf *buf, const unsigned char *new_data,
++		    unsigned int new_len);
++void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
++void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
++void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
  
- 	if (!chip)
- 		return -ENODEV;
- 
-+	rc = tpm_try_get_ops(chip);
-+	if (rc)
-+		return rc;
-+
-+	buf.flags = 0;
-+	buf.data = cmd;
- 	dump_tpm_buf(cmd);
--	rc = tpm_send(chip, cmd, buflen);
-+	rc = tpm_transmit_cmd(chip, &buf, 4, "sending data");
- 	dump_tpm_buf(cmd);
-+
- 	if (rc > 0)
--		/* Can't return positive return codes values to keyctl */
-+		/* TPM error */
- 		rc = -EPERM;
-+
-+	tpm_put_ops(chip);
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(trusted_tpm_send);
+ /*
+  * Check if TPM device is in the firmware upgrade mode.
 -- 
 2.43.0
 
