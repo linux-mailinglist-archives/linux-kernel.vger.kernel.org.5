@@ -2,243 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D27767F8507
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 21:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1517F84BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346142AbjKXUDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 15:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        id S1345989AbjKXTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbjKXUDC (ORCPT
+        with ESMTP id S1345941AbjKXTfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 15:03:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6833C10F6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 12:03:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700856188; x=1732392188;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JOd7EwyxD3DRBP7ebSXKK+WZgK+reW2wbBEUTcLsQC8=;
-  b=Ctz+HQQM1eLOo62sJg29LBuDRYkoyNRxrv/7EJoBIU8ns1+RjH2g4Qrw
-   7lL347lYiUMT7CcHywNAb08Vl2zj/qKQmr1OdIU5R+6hmBR03ds9NoIc2
-   4oAy0+fSxOXv3KvvHZ+kvJxt8B8OBrPkVg0lzPsEguhs9AiScheqMnZa7
-   4MDHUlLVEwKD+KvN6V0TvyjCzVO3dUApKgmXN0P6zHhQ8I12vQwAr7ojJ
-   JdnKztrw8yl9NiqOg4efj97YEHJe9vazVZY61q2qfNKsvUfgLzoQKn3Fn
-   bAFgc3GHn1UjWi8NqYuw5/pKwiVWjWKAHHGL/ANUcRy9a+/xvbwrWNqhZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="396366609"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="396366609"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 12:03:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="833763318"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="833763318"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2023 12:03:06 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CD4B641A; Fri, 24 Nov 2023 22:03:03 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>
-Subject: [PATCH v1 5/5] mfd: intel-lpss: Provide Intel LPSS PM ops structure
-Date:   Fri, 24 Nov 2023 21:31:28 +0200
-Message-ID: <20231124200258.3682979-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20231124200258.3682979-1-andriy.shevchenko@linux.intel.com>
-References: <20231124200258.3682979-1-andriy.shevchenko@linux.intel.com>
+        Fri, 24 Nov 2023 14:35:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F69293
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:35:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700854552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=WpgGA1S9tEUCceeDcgeme0U/Hx75ujMCHkDsInmVnz8=;
+        b=hYZnUyJCtuxBJF3BJhLagfPVn9Du7PDIAMMowAboQjEov7BA1gd/fhhJZNwKa/3wA38+Tu
+        tn2PDd/VxHGnHmIoBPo2s6d4pnLnJve/WdlNYItwEsADxdPAK1YLyiXVHDduSXk2jtxFfT
+        NmOIpiqHKnFTm5vpXQ+a8ysSFTZVDpY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-478-3Xr004d5P6GkQuNJnoCXTw-1; Fri, 24 Nov 2023 14:35:51 -0500
+X-MC-Unique: 3Xr004d5P6GkQuNJnoCXTw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-332eecd96feso145714f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:35:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700854550; x=1701459350;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WpgGA1S9tEUCceeDcgeme0U/Hx75ujMCHkDsInmVnz8=;
+        b=dzDemH+zrsJhQunhQ5JHFz14Khi6AGp+OM761mdq0mGBXQ//Z2m51gp8vuk94rhtbf
+         RhBMKzoGmlhQQATAUXr3Pa9AgLS0JK/Cfl7vX7461Rda0J5Bu0IQrcdRbVG0BmWhKNcn
+         3B1KbtSD6ggXcJwxNt3a4c/5jQp/jw5jdXMs2dm593cy4jn2h518ozx6z9CcT8/cMohL
+         UZiFHQN5uX9ysdQsVkCi+uOfeLvobqevJe16cp3WMu9fjgAghVC/e2Ecml3hpU8OdNU5
+         2XkQgo2gj5r/pvBdj/1oVPDjlpKSl5p9I3/p8dVMjfYIj2a1x38J7/rR8AhECSNnTa91
+         wMJg==
+X-Gm-Message-State: AOJu0YycF7eFKXXIqJJi0SLoPz46655KItLN2Jsj8LUKoY++BfjM8HSU
+        7PJAI6j6hc6i3wACCpsv77k2QU2MCXHS+yJrSI3Mf8VyZYZFqnYJCBiam7okOxZfVO+LNvH/lAU
+        pfeKeJ792gDPXaHXaz4j01Qb8
+X-Received: by 2002:a5d:484b:0:b0:331:82c4:929f with SMTP id n11-20020a5d484b000000b0033182c4929fmr2558501wrs.27.1700854550037;
+        Fri, 24 Nov 2023 11:35:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGgpR5xD7cIvx/57aWOuiJdZd42w0gDGPcl6JL7MayZiXmJSxWmriDosq0n4Yf76TvU+Hgk/Q==
+X-Received: by 2002:a5d:484b:0:b0:331:82c4:929f with SMTP id n11-20020a5d484b000000b0033182c4929fmr2558467wrs.27.1700854549666;
+        Fri, 24 Nov 2023 11:35:49 -0800 (PST)
+Received: from ?IPV6:2003:cb:c721:a000:7426:f6b4:82a3:c6ab? (p200300cbc721a0007426f6b482a3c6ab.dip0.t-ipconnect.de. [2003:cb:c721:a000:7426:f6b4:82a3:c6ab])
+        by smtp.gmail.com with ESMTPSA id r5-20020a5d4985000000b00332d3b89561sm1764366wrq.97.2023.11.24.11.35.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 11:35:49 -0800 (PST)
+Message-ID: <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
+Date:   Fri, 24 Nov 2023 20:35:47 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
+ prep_new_page() to fail
+Content-Language: en-US
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com
+Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-6-alexandru.elisei@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231119165721.9849-6-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the help of EXPORT_NS_GPL_DEV_PM_OPS() and other *_PM_OPS() macros
-we may convert PM ops functions to become static. This also takes into
-account the PM configuration options such as CONFIG_PM and CONFIG_PM_SLEEP.
-This all removes a lot of ugly macros and ifdeffery in the driver.
+On 19.11.23 17:56, Alexandru Elisei wrote:
+> Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
+> storage for an allocated page. Reserving tag storage can fail, for example,
+> if the tag storage page has a short pin on it, so allow prep_new_page() ->
+> arch_prep_new_page() to similarly fail.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mfd/intel-lpss-acpi.c |  5 ++---
- drivers/mfd/intel-lpss-pci.c  |  5 ++---
- drivers/mfd/intel-lpss.c      | 18 ++++++++++--------
- drivers/mfd/intel-lpss.h      | 28 +---------------------------
- 4 files changed, 15 insertions(+), 41 deletions(-)
+But what are the side-effects of this? How does the calling code recover?
 
-diff --git a/drivers/mfd/intel-lpss-acpi.c b/drivers/mfd/intel-lpss-acpi.c
-index a9e2d9308a01..2a83f8678f1d 100644
---- a/drivers/mfd/intel-lpss-acpi.c
-+++ b/drivers/mfd/intel-lpss-acpi.c
-@@ -13,6 +13,7 @@
- #include <linux/ioport.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-@@ -205,15 +206,13 @@ static void intel_lpss_acpi_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- }
- 
--static INTEL_LPSS_PM_OPS(intel_lpss_acpi_pm_ops);
--
- static struct platform_driver intel_lpss_acpi_driver = {
- 	.probe = intel_lpss_acpi_probe,
- 	.remove_new = intel_lpss_acpi_remove,
- 	.driver = {
- 		.name = "intel-lpss",
- 		.acpi_match_table = intel_lpss_acpi_ids,
--		.pm = &intel_lpss_acpi_pm_ops,
-+		.pm = pm_ptr(&intel_lpss_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-index e1d89423daa6..8f5e10817a9c 100644
---- a/drivers/mfd/intel-lpss-pci.c
-+++ b/drivers/mfd/intel-lpss-pci.c
-@@ -13,6 +13,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
- 
-@@ -81,8 +82,6 @@ static void intel_lpss_pci_remove(struct pci_dev *pdev)
- 	intel_lpss_remove(&pdev->dev);
- }
- 
--static INTEL_LPSS_PM_OPS(intel_lpss_pci_pm_ops);
--
- static const struct property_entry spt_spi_properties[] = {
- 	PROPERTY_ENTRY_U32("intel,spi-pxa2xx-type", LPSS_SPT_SSP),
- 	{ }
-@@ -593,7 +592,7 @@ static struct pci_driver intel_lpss_pci_driver = {
- 	.probe = intel_lpss_pci_probe,
- 	.remove = intel_lpss_pci_remove,
- 	.driver = {
--		.pm = &intel_lpss_pci_pm_ops,
-+		.pm = pm_ptr(&intel_lpss_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/mfd/intel-lpss.c b/drivers/mfd/intel-lpss.c
-index 4a63703b6da5..177915845ba2 100644
---- a/drivers/mfd/intel-lpss.c
-+++ b/drivers/mfd/intel-lpss.c
-@@ -24,6 +24,7 @@
- #include <linux/ioport.h>
- #include <linux/mfd/core.h>
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/pm_qos.h>
- #include <linux/pm_runtime.h>
- #include <linux/sprintf.h>
-@@ -470,7 +471,6 @@ void intel_lpss_remove(struct device *dev)
- }
- EXPORT_SYMBOL_NS_GPL(intel_lpss_remove, INTEL_LPSS);
- 
--#ifdef CONFIG_PM
- static int resume_lpss_device(struct device *dev, void *data)
- {
- 	if (!dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND))
-@@ -479,7 +479,7 @@ static int resume_lpss_device(struct device *dev, void *data)
- 	return 0;
- }
- 
--int intel_lpss_prepare(struct device *dev)
-+static int intel_lpss_prepare(struct device *dev)
- {
- 	/*
- 	 * Resume both child devices before entering system sleep. This
-@@ -488,9 +488,8 @@ int intel_lpss_prepare(struct device *dev)
- 	device_for_each_child_reverse(dev, NULL, resume_lpss_device);
- 	return 0;
- }
--EXPORT_SYMBOL_NS_GPL(intel_lpss_prepare, INTEL_LPSS);
- 
--int intel_lpss_suspend(struct device *dev)
-+static int intel_lpss_suspend(struct device *dev)
- {
- 	struct intel_lpss *lpss = dev_get_drvdata(dev);
- 	unsigned int i;
-@@ -509,9 +508,8 @@ int intel_lpss_suspend(struct device *dev)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_NS_GPL(intel_lpss_suspend, INTEL_LPSS);
- 
--int intel_lpss_resume(struct device *dev)
-+static int intel_lpss_resume(struct device *dev)
- {
- 	struct intel_lpss *lpss = dev_get_drvdata(dev);
- 	unsigned int i;
-@@ -524,8 +522,12 @@ int intel_lpss_resume(struct device *dev)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_NS_GPL(intel_lpss_resume, INTEL_LPSS);
--#endif
-+
-+EXPORT_NS_GPL_DEV_PM_OPS(intel_lpss_pm_ops, INTEL_LPSS) = {
-+	.prepare = pm_sleep_ptr(&intel_lpss_prepare),
-+	LATE_SYSTEM_SLEEP_PM_OPS(intel_lpss_suspend, intel_lpss_resume)
-+	RUNTIME_PM_OPS(intel_lpss_suspend, intel_lpss_resume, NULL)
-+};
- 
- static int __init intel_lpss_init(void)
- {
-diff --git a/drivers/mfd/intel-lpss.h b/drivers/mfd/intel-lpss.h
-index 062ce95b68b9..c1d72b117ed5 100644
---- a/drivers/mfd/intel-lpss.h
-+++ b/drivers/mfd/intel-lpss.h
-@@ -30,32 +30,6 @@ int intel_lpss_probe(struct device *dev,
- 		     const struct intel_lpss_platform_info *info);
- void intel_lpss_remove(struct device *dev);
- 
--#ifdef CONFIG_PM
--int intel_lpss_prepare(struct device *dev);
--int intel_lpss_suspend(struct device *dev);
--int intel_lpss_resume(struct device *dev);
--
--#ifdef CONFIG_PM_SLEEP
--#define INTEL_LPSS_SLEEP_PM_OPS			\
--	.prepare = intel_lpss_prepare,		\
--	SET_LATE_SYSTEM_SLEEP_PM_OPS(intel_lpss_suspend, intel_lpss_resume)
--#else
--#define INTEL_LPSS_SLEEP_PM_OPS
--#endif
--
--#define INTEL_LPSS_RUNTIME_PM_OPS		\
--	.runtime_suspend = intel_lpss_suspend,	\
--	.runtime_resume = intel_lpss_resume,
--
--#else /* !CONFIG_PM */
--#define INTEL_LPSS_SLEEP_PM_OPS
--#define INTEL_LPSS_RUNTIME_PM_OPS
--#endif /* CONFIG_PM */
--
--#define INTEL_LPSS_PM_OPS(name)			\
--const struct dev_pm_ops name = {		\
--	INTEL_LPSS_SLEEP_PM_OPS			\
--	INTEL_LPSS_RUNTIME_PM_OPS		\
--}
-+extern const struct dev_pm_ops intel_lpss_pm_ops;
- 
- #endif /* __MFD_INTEL_LPSS_H */
+E.g., what if we need to populate a page into user space, but that 
+particular page we allocated fails to be prepared? So we inject a signal 
+into that poor process?
+
 -- 
-2.43.0.rc1.1.gbec44491f096
+Cheers,
+
+David / dhildenb
 
