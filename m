@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E1B7F7798
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D687F77A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 16:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbjKXPXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 10:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1345774AbjKXPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 10:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345599AbjKXPW7 (ORCPT
+        with ESMTP id S1345599AbjKXPXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 10:22:59 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4255819B1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 07:23:05 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63AEF1063;
-        Fri, 24 Nov 2023 07:23:51 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B04D3F73F;
-        Fri, 24 Nov 2023 07:23:02 -0800 (PST)
-Message-ID: <9379cf06-8f91-41ca-98dc-0f57b486952f@arm.com>
-Date:   Fri, 24 Nov 2023 15:23:00 +0000
+        Fri, 24 Nov 2023 10:23:49 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23882172A;
+        Fri, 24 Nov 2023 07:23:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700839436; x=1732375436;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hjHUasbUvdZyid1X5HvgmpQL0hPNRyInjUAbKjnNwBA=;
+  b=IhP5DcUudeE7JdZfJxS6kIaFYA3ATMgmU30Rst1mxKavhkUbHy4d7wVm
+   6g1i1RlOysSgptmXz6myS5Lsw3S00XnJbFtQFC9O5wumPYa2igtZPdFPa
+   cc/Aj/6U+Vn9w7R0luKH5VLiQtvJMU6RdJS3wlHP3BwyL7Vf+KYLDYmjl
+   RlmL47YhFWvSYAiLZSrSerkJmTLhgSPMKmbMyHHHtWMs46Zb9WhMUna+D
+   LyTJZsxwhTmsVIOFFYdhlqOZ5/sn83Xx0bzVGc3tVS87UGuieQK0vh2Bd
+   7wgJ41DDkXTY4C+85bSGUES2oI5AbUmi0eOCynCupfLRBtXoXvboLUQfu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="456781780"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="456781780"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 07:23:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="1014935597"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="1014935597"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Nov 2023 07:23:50 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r6Y20-0002wK-0N;
+        Fri, 24 Nov 2023 15:23:48 +0000
+Date:   Fri, 24 Nov 2023 23:23:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+        kernel@quicinc.com
+Subject: Re: [PATCH net-next v3 2/3] arm64: dts: qcom: sa8775p: enable Fault
+ IRQ
+Message-ID: <202311241629.yh1clHno-lkp@intel.com>
+References: <66690488f08912698301a2c203d7c562798806a2.1700737841.git.quic_jsuraj@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-GB
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
- <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
- <ZWC9lwDAjMZsNzoG@casper.infradead.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZWC9lwDAjMZsNzoG@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66690488f08912698301a2c203d7c562798806a2.1700737841.git.quic_jsuraj@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,51 +85,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 15:13, Matthew Wilcox wrote:
-> On Fri, Nov 24, 2023 at 09:56:37AM +0000, Ryan Roberts wrote:
->> On 23/11/2023 15:59, Matthew Wilcox wrote:
->>> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
->>>> This is v7 of a series to implement small-sized THP for anonymous memory
->>>> (previously called "large anonymous folios"). The objective of this is to
->>>
->>> I'm still against small-sized THP.  We've now got people asking whether
->>> the THP counters should be updated when dealing with large folios that
->>> are smaller than PMD sized.  It's sowing confusion, and we should go
->>> back to large anon folios as a name.
->>
->> I suspect I'm labouring the point here, but I'd like to drill into exactly what
->> you are objecting to. Is it:
->>
->> A) Using the name "small-sized THP" (which is currently only used in the commit
->> logs and a couple of times in the documentation).
-> 
-> Yes, this is what I'm objecting to.
-> 
->> B) Exposing the controls for this feature as an extension to the existing
->> /sys/kernel/mm/transparent_hugepage/* sysfs interface (note the interface never
->> uses the term "small-sized").
-> 
-> I don't object to the controls being here.  I still wish we didn't need
-> an interface to control them at all, but I don't have the time to become
-> an expert in anonymous memory and figure out how to make that happen.
-> 
->> If A) then this is easily solved by choosing another descriptive name and
->> updating those places. Personally I think it would be best to continue to use
->> "THP" since we are exposing the feature through that interface. Perhaps "large
->> folio THP".
-> 
-> I think that continues the confusion about the existing interfaces we
-> have which count THP (and mean "PMD sized THP").  I'd really prefer the
-> term "THP" to unambiguously mean PMD sized THP.  I don't understand why
-> you felt the need to move away from Large Anon Folios as a name.
-> 
+Hi Suraj,
 
-Because the controls are exposed in the sysfs THP directory (and therefore
-documented in the transhuge.rst document). It seems odd to refer to them as
-large anon folios within the kernel but expose them as as part of the THP interface.
+kernel test robot noticed the following build errors:
 
-But I'm certainly open to the idea of changing the name in the commit logs and
-being careful to distance it from THP transhuge.rst if that's the concensus. I
-am opposed to moving/changing the interface though - that's actually what I
-thought you were suggesting.
+[auto build test ERROR on net-next/main]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Suraj-Jaiswal/dt-bindings-net-qcom-ethqos-add-binding-doc-for-fault-IRQ-for-sa8775p/20231123-202252
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/66690488f08912698301a2c203d7c562798806a2.1700737841.git.quic_jsuraj%40quicinc.com
+patch subject: [PATCH net-next v3 2/3] arm64: dts: qcom: sa8775p: enable Fault IRQ
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231124/202311241629.yh1clHno-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241629.yh1clHno-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311241629.yh1clHno-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> Error: arch/arm64/boot/dts/qcom/sa8775p.dtsi:2344.10-11 syntax error
+   FATAL ERROR: Unable to parse input tree
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
