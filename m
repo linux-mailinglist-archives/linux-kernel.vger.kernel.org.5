@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050437F7A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7AB7F7A7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjKXRe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        id S231324AbjKXRgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbjKXRev (ORCPT
+        with ESMTP id S229742AbjKXRgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:34:51 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BD91BC2;
-        Fri, 24 Nov 2023 09:34:51 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2ec9a79bdso1367818b6e.3;
-        Fri, 24 Nov 2023 09:34:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700847291; x=1701452091; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=emE8oCCMObVTti3WryKtK+jq28122RLCctiS74g2B70=;
-        b=bCnVa/lWH7mzaYA+rJh+LPMPjnQ0O9roHMhel5jVynA7L2pXLZO5iLh9SbFvpsTZfE
-         Z9C2EelYFv3/LB7NT1LGMOW7Bxlf6qXqd+Z8qG3nyiA397kNy+49ccl6AhJPpStF5LdT
-         I/FR3PAOYlrZWyM7su+7l6qp1H/q3+ytx2dsUrKWqOvy9vb+lBZKPQrN93ZWhSBHtKAf
-         6zVCspmluioGI7xHlSnUrUPFaqe6Y3VXabd0wiZjkWKWrVozEqxbepCGDlYyO+znZuiS
-         jlJINVmemDTF+aGvMq+olmsW9Oj0igNZKKEbDmJJCWelP2BNMCuGBkQ7DSjNLok7zjP3
-         YvNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700847291; x=1701452091;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=emE8oCCMObVTti3WryKtK+jq28122RLCctiS74g2B70=;
-        b=r5HteV0Qxcqq3Dwdc77DH5YD2mJ023Z0M/OQ7ESn1vBknA4eOUqsBml5nBGaKUYcYs
-         5PK9qhm+IrF9wcOqsZrfr42u+2xiIBKTeUlkSS+45+i6M3asl05R/XOS3qK3TMdWSnTA
-         yvA2XRwsa2ticdUxIXKVgyhDX78SeAfTnZz/VkkJtzbmWox+5ZV64wLOdGZvbs50UjmF
-         88kRkIC18cFrTRcAklPNPjl4HzBxIgDGh+vcmifOwfVzlItXAoVGk7kTivHlY6tdowuW
-         8GOSsWKuBXUYhTigdzLIBrxgI2pKbjuFQ/pM1dhIaZMm3/0c623yN3pgC7AtEg0o44dH
-         m2FQ==
-X-Gm-Message-State: AOJu0YyLI9kSoSiouQmlJvFO+5JDjte4nCFMN9VJVapf0eDqaxkmajI5
-        SEfdaMHEzYUNETpzVMjQPB6dsxBivgM=
-X-Google-Smtp-Source: AGHT+IGEmQFPKJVdsB1JTaoH8/GVfWDjbl7LsFS0JEMsBIAesCPzS5YzxGLI472GNutJ8XgZvNO7Hw==
-X-Received: by 2002:a05:6808:219b:b0:3b6:d371:d4d4 with SMTP id be27-20020a056808219b00b003b6d371d4d4mr4765282oib.37.1700847290908;
-        Fri, 24 Nov 2023 09:34:50 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r30-20020a63515e000000b005b4b70738e5sm3348124pgl.8.2023.11.24.09.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 09:34:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <52909c46-4699-442b-9303-ec914fba093b@roeck-us.net>
-Date:   Fri, 24 Nov 2023 09:34:48 -0800
+        Fri, 24 Nov 2023 12:36:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D2B170B
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:36:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00F2FC433C8;
+        Fri, 24 Nov 2023 17:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700847409;
+        bh=Olz0jPHIcl5EtQacm8JgI+yY2ypimzcwd2gPIun1kJU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VwkZ4VqH5T10liHNpHjVoi9JlOybx52kdqVVO4yhpZGutmm/piF9vuNJS5XBtqIdE
+         SpDAF61n+kwvtxRmrQupv1NrFzOMnRlgurUgSP7O34cvpDzJAGdvIXQ0KF9ZoIgWLJ
+         iHF2XB1FjRjRfKTynWaoPQZTEcivjT8xMSDTfixsotbC9khsh+3d05zrfXAQKEAGwn
+         99VdsAFwdQLNlhDNYBP6/6he74hWgpVjdfNjQa0GteqtftoUgy2AwK0/vVi9JzXTjZ
+         mfuv+v9XmhXOA3eD4ZCKUUwPwCMdPPDqOSuj1OafPb84CXBYrtEbEXghgf93E+KhTp
+         F8RVGg8fnyMlQ==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2c5071165d5so28356541fa.0;
+        Fri, 24 Nov 2023 09:36:48 -0800 (PST)
+X-Gm-Message-State: AOJu0YxD2TO9Rf6eG4VJZuDdjoyDgtbW0ZvehKOeaRxVFGzloe1K9Ckd
+        QDrILutbwIQGxp8xfkmrUVgoX3nZVbJOBSxqJCY=
+X-Google-Smtp-Source: AGHT+IHcsAirvViTKl3O44TbsIBneeUalhap9x+zLwuPia+nDDJSnoYb4cciYXrR0waMFJNpUdnsmB7sgxjhN826v6Q=
+X-Received: by 2002:a2e:9d09:0:b0:2bc:c650:81b with SMTP id
+ t9-20020a2e9d09000000b002bcc650081bmr2475428lji.15.1700847407182; Fri, 24 Nov
+ 2023 09:36:47 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: sht3x: read out sensor serial number
-Content-Language: en-US
-To:     Stefan Gloor <code@stefan-gloor.ch>, jdelvare@suse.com,
-        corbet@lwn.net, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231124145519.11599-2-code@stefan-gloor.ch>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231124145519.11599-2-code@stefan-gloor.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+References: <20231108180210.3657203-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231108180210.3657203-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 24 Nov 2023 09:36:35 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7kkSMNpo9cm3L23o7T676iLa=7gq8V9YkCx0MA6ad+QQ@mail.gmail.com>
+Message-ID: <CAPhsuW7kkSMNpo9cm3L23o7T676iLa=7gq8V9YkCx0MA6ad+QQ@mail.gmail.com>
+Subject: Re: [PATCH -next] md: synchronize flush io with array reconfiguration
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, maan@systemlinux.org, neilb@suse.de,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/23 06:55, Stefan Gloor wrote:
-> Some of the temperature/humidity sensors of the STS3x/SHT3x family are
-> calibrated and factory-programmed with a unique serial number. This serial
-> number can be used to obtain a calibration certificate via an API provided
-> by the manufacturer (Sensirion). The serial number is exposed as a
-> non-standard sysfs attribute.
-> 
-> This feature is only available for STS32, STS33 and SHT33. The capability
-> to read out the serial number is not documented for other sensors such as
-> the STS31, but it is implemented in the ones I tested. To be safe, the
-> driver will silently set the serial number to zero if it can not be read.
-> 
-> Tested with:
-> 1x STS32: serial number present
-> 2x STS31: serial number present (feature not documented)
-> 1x SHT31: serial number present (feature not documented)
-> 
-> Signed-off-by: Stefan Gloor <code@stefan-gloor.ch>
+On Wed, Nov 8, 2023 at 2:07=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Currently rcu is used to protect iterating rdev from submit_flushes():
+>
+> submit_flushes                  remove_and_add_spares
+>                                  synchronize_rcu
+>                                  pers->hot_remove_disk()
+>  rcu_read_lock()
+>  rdev_for_each_rcu
+>   if (rdev->raid_disk >=3D 0)
+>                                  rdev->radi_disk =3D -1;
+>    atomic_inc(&rdev->nr_pending)
+>    rcu_read_unlock()
+>    bi =3D bio_alloc_bioset()
+>    bi->bi_end_io =3D md_end_flush
+>    bi->private =3D rdev
+>    submit_bio
+>    // issue io for removed rdev
+>
+> Fix this problem by grabbing 'acive_io' before iterating rdev, make sure
+> that remove_and_add_spares() won't concurrent with submit_flushes().
+>
+> Fixes: a2826aa92e2e ("md: support barrier requests on all personalities."=
+)
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-I am not going to accept this as sysfs attribute. Please implement
-using debugfs.
+LGTM.
 
+> ---
+>  drivers/md/md.c | 21 +++++++++++++++------
+>  1 file changed, 15 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 4ee4593c874a..eb3e455bcbae 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -529,6 +529,9 @@ static void md_end_flush(struct bio *bio)
+>         rdev_dec_pending(rdev, mddev);
+>
+>         if (atomic_dec_and_test(&mddev->flush_pending)) {
+> +               /* The pair is percpu_ref_tryget() from md_flush_request(=
+) */
+> +               percpu_ref_put(&mddev->active_io);
+> +
+>                 /* The pre-request flush has finished */
+>                 queue_work(md_wq, &mddev->flush_work);
+>         }
+> @@ -548,12 +551,8 @@ static void submit_flushes(struct work_struct *ws)
+>         rdev_for_each_rcu(rdev, mddev)
+>                 if (rdev->raid_disk >=3D 0 &&
+>                     !test_bit(Faulty, &rdev->flags)) {
+> -                       /* Take two references, one is dropped
+> -                        * when request finishes, one after
+> -                        * we reclaim rcu_read_lock
+> -                        */
+>                         struct bio *bi;
+> -                       atomic_inc(&rdev->nr_pending);
+> +
+>                         atomic_inc(&rdev->nr_pending);
+>                         rcu_read_unlock();
+>                         bi =3D bio_alloc_bioset(rdev->bdev, 0,
+> @@ -564,7 +563,6 @@ static void submit_flushes(struct work_struct *ws)
+>                         atomic_inc(&mddev->flush_pending);
+>                         submit_bio(bi);
+>                         rcu_read_lock();
+> -                       rdev_dec_pending(rdev, mddev);
+>                 }
+>         rcu_read_unlock();
+>         if (atomic_dec_and_test(&mddev->flush_pending))
+> @@ -617,6 +615,17 @@ bool md_flush_request(struct mddev *mddev, struct bi=
+o *bio)
+>         /* new request after previous flush is completed */
+>         if (ktime_after(req_start, mddev->prev_flush_start)) {
+>                 WARN_ON(mddev->flush_bio);
+> +               /*
+> +                * Grab a reference to make sure mddev_suspend() will wai=
+t for
+> +                * this flush to be done.
+> +                *
+> +                * md_flush_reqeust() is called under md_handle_request()=
+ and
+> +                * 'active_io' is already grabbed, hence percpu_ref_tryge=
+t()
+> +                * won't fail, percpu_ref_tryget_live() can't be used bec=
+ause
+> +                * percpu_ref_kill() can be called by mddev_suspend()
+> +                * concurrently.
+> +                */
+> +               percpu_ref_tryget(&mddev->active_io);
 
-Also, the attribute (sysfs or debugfs) should not exist if not supported.
-Please only provide if supported.
+Probably add an warn_on here to catch any issues in the future.
 
 Thanks,
-Guenter
+Song
 
+>                 mddev->flush_bio =3D bio;
+>                 bio =3D NULL;
+>         }
+> --
+> 2.39.2
+>
