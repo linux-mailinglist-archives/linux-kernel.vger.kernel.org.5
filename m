@@ -2,326 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585597F78EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D5B7F78EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjKXQ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:28:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        id S231200AbjKXQ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:29:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbjKXQ2j (ORCPT
+        with ESMTP id S229799AbjKXQ27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:28:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445481BC8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:28:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700843323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=shPFiNnieBfc+nA1jRG7H+c1jqVnxbi/cSpxWrKoPIY=;
-        b=NYDntzTPDB/qLPhvFOPzSokHrau8JIeWvcUVYxCOMb+dB4ZbuwUZ3YSpI/FYNnjW4ttdaA
-        7VnQrbVR+8+R30vMCMl7jp1QXhDgG4awrb/MA0eM4BPrnzfVd5mifBetv+TMfVEYcGGJuL
-        Gea700+W9+iLpZ+4Wy0KgfKBfbcutIY=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-587-sMc30x9pNwmmlxafpu_wWg-1; Fri, 24 Nov 2023 11:28:42 -0500
-X-MC-Unique: sMc30x9pNwmmlxafpu_wWg-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77d7b2e8623so122261285a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:28:42 -0800 (PST)
+        Fri, 24 Nov 2023 11:28:59 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A430D19B9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:29:05 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so2950581a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700843344; x=1701448144; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=m59lGOjhmNFmUbmnXXYOyMU0r5AKqEjyJwepUZSyZQs=;
+        b=LQdDPWkisiaDFG9+ozXNaMU5eaJY5JJMKszxbOueRWIgfMDUliQMh42l6WiddSw98/
+         gLBTjL+YHpU2jz84qMak0+ksBg9UcR5S4GTPcxco9BJt7Xz3ze2VwMQ3sxOKbe7r5yPV
+         vQEA3VNcP1rwVgy3pDL8Fy0HR7r+tq7yaGoLxfk8wudR1v+bF7Nl0Gej23LaRGuaGV11
+         ZwQLyQfgwHyefU+ZR9egKhSuNI/BiI1/vH02qwzJEmRYKvqavyc+Ika2mKGZtjYE0FJt
+         FvkI5ul0LB63wgsEab8a59SXCO6IS8jiB5BrfLIHmjm7v5nqm4/wDlKW88gm/W95ewVw
+         D2eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700843321; x=1701448121;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=shPFiNnieBfc+nA1jRG7H+c1jqVnxbi/cSpxWrKoPIY=;
-        b=uzR0CK7JCU9HDCQdPM9W+h0WbxT8IbW6SAsCTHwM5WTvxWZ/6r2wMoudnrms5zZbcT
-         hcajuvpjWKBO8BvfuzALAS3Vg9Q610hlhqZMg9sqI6aP87TcXlB05hJSxKej/X7Kgn1O
-         BcAZRCedqRDZuoyLKEcQW6l2xJOCo3Yz5wxO2FHNEUZp7bkM+k0xqQke1wqT7o8SrIVs
-         0VDqRHCg/t7GAYQFyttq0jOHDiyIpeNsTubWPm98a2CaoDr+27yYHq0k5ukyidAHmYsM
-         s9WGOh2Yk6AhEghOBq3mdFYfmMJYAKVk0woAIw+/wiZI6bTER6WrQn1XVd3TPysDLJid
-         JkNA==
-X-Gm-Message-State: AOJu0YyhDs65HQdwpKchnNzIgD19IAkyHVbhk7wrzaafZghqEjb5CZqN
-        P7yNJXFk0P9sX0QsAd8vTo0NmrKaG7LCJnmd4/kSH1mbE+dEX0X2elCBPa0O4Vj/4PmfU4PZIlk
-        EkvQA6/Wffz60ds88asx93kvPGm5FliA=
-X-Received: by 2002:a05:620a:2701:b0:77d:6181:7739 with SMTP id b1-20020a05620a270100b0077d61817739mr4287540qkp.37.1700843321308;
-        Fri, 24 Nov 2023 08:28:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEmxSYABF+msaHEnionUEKrfn80PJucxucAG9rpkXr0rbiwNZYvxkt2swhKo3X2R/1edhgsgA==
-X-Received: by 2002:a05:620a:2701:b0:77d:6181:7739 with SMTP id b1-20020a05620a270100b0077d61817739mr4287519qkp.37.1700843321035;
-        Fri, 24 Nov 2023 08:28:41 -0800 (PST)
-Received: from klayman.redhat.com (net-2-34-24-178.cust.vodafonedsl.it. [2.34.24.178])
-        by smtp.gmail.com with ESMTPSA id rk4-20020a05620a900400b007676f3859fasm1327608qkn.30.2023.11.24.08.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 08:28:40 -0800 (PST)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marco Pagani <marpagan@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org
-Subject: [RFC PATCH v2 2/2] fpga: set owner of fpga_manager_ops for existing low-level modules
-Date:   Fri, 24 Nov 2023 17:28:07 +0100
-Message-ID: <20231124162807.238724-3-marpagan@redhat.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231124162807.238724-1-marpagan@redhat.com>
-References: <20231124162807.238724-1-marpagan@redhat.com>
+        d=1e100.net; s=20230601; t=1700843344; x=1701448144;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m59lGOjhmNFmUbmnXXYOyMU0r5AKqEjyJwepUZSyZQs=;
+        b=KCdE0gH6jWkxCYcaI7WB7TLAVJai3OGwOdIyfN0VVM6smUcogSq2ifs6hoA723ns5t
+         jrbcBrt5+Y2lHL3nZZBVXg0pqPikUCI5036tDpNljqiH4+dZzfY+qgd/Y04acYoaG2bk
+         +NyBuQe+Son9bdVbdKIeeMiLK9be/4nckdALF9VTcWUlXiYOXa5HwkdR5ag8vvu0ke0d
+         ghSP3RyTt+urGATEQUkWqDN8cbir0BXJh3yk9JeInQPiJWGL/DRP6XarVZ6+QUHnrsbf
+         BecDVo+m/jTXCQbTn4KlfcPpnwN/OtQz3to7xVRCCwaeEcKcXOOebkyZlmd0G8y5UUuj
+         nfzg==
+X-Gm-Message-State: AOJu0Yxk2QPBVZU1bSxiWct/+ZmEDUCGDw3mGOHYurd0m1xXtkHickLo
+        vgnGJ7SJQEaqrsH6BIlcVRzjEA==
+X-Google-Smtp-Source: AGHT+IHmw2v9akiv8lLwobosBbnycWxS+mTHFNHjdgc73oGvRIXlhS7yygAOU243HPtOYOWLXofSgQ==
+X-Received: by 2002:a50:f699:0:b0:540:12fc:ed1d with SMTP id d25-20020a50f699000000b0054012fced1dmr2691693edn.12.1700843344125;
+        Fri, 24 Nov 2023 08:29:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id n21-20020aa7c455000000b00548c945bac0sm1943343edr.45.2023.11.24.08.29.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 08:29:03 -0800 (PST)
+Message-ID: <850b0eec-c991-40b6-92e1-2bc46eecdae5@linaro.org>
+Date:   Fri, 24 Nov 2023 17:29:02 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LINUX PATCH v2 1/3] clocksource: timer-cadence-ttc: Do not probe
+ TTC device configured as PWM
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     "Sayyed, Mubin" <mubin.sayyed@amd.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "git (AMD-Xilinx)" <git@amd.com>,
+        "mubin10@gmail.com" <mubin10@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "Simek, Michal" <michal.simek@amd.com>
+References: <20231114124748.581850-1-mubin.sayyed@amd.com>
+ <20231114124748.581850-2-mubin.sayyed@amd.com>
+ <d37db10b-f9fa-49b0-8b1e-36e20acbcfd6@linaro.org>
+ <DM4PR12MB593888B73B65D25E42490EF29DB1A@DM4PR12MB5938.namprd12.prod.outlook.com>
+ <e0f28ec5-b980-490b-a857-5218fe521381@linaro.org>
+ <DM4PR12MB5938CB10059DF7E39A2A0E239DB8A@DM4PR12MB5938.namprd12.prod.outlook.com>
+ <a701ba6e-ae4e-4c4d-9d93-c54e56c3348e@linaro.org>
+ <DM4PR12MB5938256CC0E50256004ED6B19DB8A@DM4PR12MB5938.namprd12.prod.outlook.com>
+ <9fb984b3-331b-45ce-8f82-03bc476acd3c@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <9fb984b3-331b-45ce-8f82-03bc476acd3c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch tentatively set the owner field of fpga_manager_ops to
-THIS_MODULE for existing fpga manager low-level control modules.
+On 24/11/2023 17:24, Krzysztof Kozlowski wrote:
+>>>>> So again, one driver binding.
+>>>> [Mubin]: I will explore whether mfd framework can be used to handle this.
+>>>
+>>> You do not need MFD for this, because you do not have a really MFD. This is just
+>>> one device, so I expect here one driver. Why do you need multiple drivers (which
+>>> also would solve that problem but why?)?
+>> Cadence TTC IP can be used as timer(clocksource/clockevent) and PWM device.
+>> We have drivers/clocksource/timer-cadence-ttc.c for clocksource/clockevent functionality. 
+>> New driver for PWM functionality will be added to drivers/pwm/pwm-cadence.c (3/3 of this
+>> Series).  In given SoC,  multiple instances of TTC IP are possible(ZynqMP  Ultrscale SoC has 4
+>> Instances), few of them could be configured as clocksource/clockevent devices and others
+>> as PWM ones. So,  cloksource as well as PWM drivers for cadence TTC IP would be enabled in 
+>> the kernel. 
+>>
+>> Now in this scenario, each TTC device would be matching with 2 drivers, clocksource and PWM, since
+>> compatible string is same.  If I don’t add #pwm-cells checking in clocksource driver and return 
+>> -ENODEV based on that, each device would always bind with clocksource driver. PWM driver 
+>> would never probe since clocksource driver probes ahead of PWM one in probing order.
+> 
+> None of these above explain why you need two drivers.
 
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
----
- drivers/fpga/altera-cvp.c             | 1 +
- drivers/fpga/altera-pr-ip-core.c      | 1 +
- drivers/fpga/altera-ps-spi.c          | 1 +
- drivers/fpga/dfl-fme-mgr.c            | 1 +
- drivers/fpga/ice40-spi.c              | 1 +
- drivers/fpga/lattice-sysconfig.c      | 1 +
- drivers/fpga/machxo2-spi.c            | 1 +
- drivers/fpga/microchip-spi.c          | 1 +
- drivers/fpga/socfpga-a10.c            | 1 +
- drivers/fpga/socfpga.c                | 1 +
- drivers/fpga/stratix10-soc.c          | 1 +
- drivers/fpga/tests/fpga-mgr-test.c    | 1 +
- drivers/fpga/tests/fpga-region-test.c | 1 +
- drivers/fpga/ts73xx-fpga.c            | 1 +
- drivers/fpga/versal-fpga.c            | 1 +
- drivers/fpga/xilinx-spi.c             | 1 +
- drivers/fpga/zynq-fpga.c              | 1 +
- drivers/fpga/zynqmp-fpga.c            | 1 +
- 18 files changed, 18 insertions(+)
+And please do not answer to this with again: "I have two drivers...".
 
-diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
-index 4ffb9da537d8..aeb913547dd8 100644
---- a/drivers/fpga/altera-cvp.c
-+++ b/drivers/fpga/altera-cvp.c
-@@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
- 	.write_init	= altera_cvp_write_init,
- 	.write		= altera_cvp_write,
- 	.write_complete	= altera_cvp_write_complete,
-+	.owner		= THIS_MODULE,
- };
- 
- static const struct cvp_priv cvp_priv_v1 = {
-diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera-pr-ip-core.c
-index df8671af4a92..354221c609e6 100644
---- a/drivers/fpga/altera-pr-ip-core.c
-+++ b/drivers/fpga/altera-pr-ip-core.c
-@@ -171,6 +171,7 @@ static const struct fpga_manager_ops alt_pr_ops = {
- 	.write_init = alt_pr_fpga_write_init,
- 	.write = alt_pr_fpga_write,
- 	.write_complete = alt_pr_fpga_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- int alt_pr_register(struct device *dev, void __iomem *reg_base)
-diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
-index 740980e7cef8..3be05796a6fc 100644
---- a/drivers/fpga/altera-ps-spi.c
-+++ b/drivers/fpga/altera-ps-spi.c
-@@ -228,6 +228,7 @@ static const struct fpga_manager_ops altera_ps_ops = {
- 	.write_init = altera_ps_write_init,
- 	.write = altera_ps_write,
- 	.write_complete = altera_ps_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int altera_ps_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
-index ab228d8837a0..740ce82e3ac9 100644
---- a/drivers/fpga/dfl-fme-mgr.c
-+++ b/drivers/fpga/dfl-fme-mgr.c
-@@ -264,6 +264,7 @@ static const struct fpga_manager_ops fme_mgr_ops = {
- 	.write = fme_mgr_write,
- 	.write_complete = fme_mgr_write_complete,
- 	.status = fme_mgr_status,
-+	.owner = THIS_MODULE,
- };
- 
- static void fme_mgr_get_compat_id(void __iomem *fme_pr,
-diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/ice40-spi.c
-index 7cbb3558b844..97afa6dc5d76 100644
---- a/drivers/fpga/ice40-spi.c
-+++ b/drivers/fpga/ice40-spi.c
-@@ -130,6 +130,7 @@ static const struct fpga_manager_ops ice40_fpga_ops = {
- 	.write_init = ice40_fpga_ops_write_init,
- 	.write = ice40_fpga_ops_write,
- 	.write_complete = ice40_fpga_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int ice40_fpga_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/lattice-sysconfig.c b/drivers/fpga/lattice-sysconfig.c
-index ba51a60f672f..1393cdd11e49 100644
---- a/drivers/fpga/lattice-sysconfig.c
-+++ b/drivers/fpga/lattice-sysconfig.c
-@@ -348,6 +348,7 @@ static const struct fpga_manager_ops sysconfig_fpga_mgr_ops = {
- 	.write_init = sysconfig_ops_write_init,
- 	.write = sysconfig_ops_write,
- 	.write_complete = sysconfig_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- int sysconfig_probe(struct sysconfig_priv *priv)
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 905607992a12..46193a47f863 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -358,6 +358,7 @@ static const struct fpga_manager_ops machxo2_ops = {
- 	.write_init = machxo2_write_init,
- 	.write = machxo2_write,
- 	.write_complete = machxo2_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int machxo2_spi_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/microchip-spi.c b/drivers/fpga/microchip-spi.c
-index 2a82c726d6e5..023ccdf2d5da 100644
---- a/drivers/fpga/microchip-spi.c
-+++ b/drivers/fpga/microchip-spi.c
-@@ -362,6 +362,7 @@ static const struct fpga_manager_ops mpf_ops = {
- 	.write_init = mpf_ops_write_init,
- 	.write = mpf_ops_write,
- 	.write_complete = mpf_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int mpf_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/socfpga-a10.c b/drivers/fpga/socfpga-a10.c
-index cc4861e345c9..a8ab74b30006 100644
---- a/drivers/fpga/socfpga-a10.c
-+++ b/drivers/fpga/socfpga-a10.c
-@@ -463,6 +463,7 @@ static const struct fpga_manager_ops socfpga_a10_fpga_mgr_ops = {
- 	.write_init = socfpga_a10_fpga_write_init,
- 	.write = socfpga_a10_fpga_write,
- 	.write_complete = socfpga_a10_fpga_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int socfpga_a10_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/socfpga.c b/drivers/fpga/socfpga.c
-index 723ea0ad3f09..87f3f4a367d0 100644
---- a/drivers/fpga/socfpga.c
-+++ b/drivers/fpga/socfpga.c
-@@ -538,6 +538,7 @@ static const struct fpga_manager_ops socfpga_fpga_ops = {
- 	.write_init = socfpga_fpga_ops_configure_init,
- 	.write = socfpga_fpga_ops_configure_write,
- 	.write_complete = socfpga_fpga_ops_configure_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int socfpga_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index cacb9cc5757e..63a5a2fe4911 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -393,6 +393,7 @@ static const struct fpga_manager_ops s10_ops = {
- 	.write_init = s10_ops_write_init,
- 	.write = s10_ops_write,
- 	.write_complete = s10_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int s10_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/tests/fpga-mgr-test.c b/drivers/fpga/tests/fpga-mgr-test.c
-index 6acec55b60ce..4c2a3e98f8ad 100644
---- a/drivers/fpga/tests/fpga-mgr-test.c
-+++ b/drivers/fpga/tests/fpga-mgr-test.c
-@@ -187,6 +187,7 @@ static const struct fpga_manager_ops fake_mgr_ops = {
- 	.write = op_write,
- 	.write_sg = op_write_sg,
- 	.write_complete = op_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static void fpga_mgr_test_get(struct kunit *test)
-diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
-index baab07e3fc59..2705c1b33d09 100644
---- a/drivers/fpga/tests/fpga-region-test.c
-+++ b/drivers/fpga/tests/fpga-region-test.c
-@@ -52,6 +52,7 @@ static int op_write(struct fpga_manager *mgr, const char *buf, size_t count)
-  */
- static const struct fpga_manager_ops fake_mgr_ops = {
- 	.write = op_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int op_enable_set(struct fpga_bridge *bridge, bool enable)
-diff --git a/drivers/fpga/ts73xx-fpga.c b/drivers/fpga/ts73xx-fpga.c
-index 4e1d2a4d3df4..20b8db0d150a 100644
---- a/drivers/fpga/ts73xx-fpga.c
-+++ b/drivers/fpga/ts73xx-fpga.c
-@@ -96,6 +96,7 @@ static const struct fpga_manager_ops ts73xx_fpga_ops = {
- 	.write_init	= ts73xx_fpga_write_init,
- 	.write		= ts73xx_fpga_write,
- 	.write_complete	= ts73xx_fpga_write_complete,
-+	.owner		= THIS_MODULE,
- };
- 
- static int ts73xx_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
-index 3710e8f01be2..02fd8ed36ff0 100644
---- a/drivers/fpga/versal-fpga.c
-+++ b/drivers/fpga/versal-fpga.c
-@@ -40,6 +40,7 @@ static int versal_fpga_ops_write(struct fpga_manager *mgr,
- static const struct fpga_manager_ops versal_fpga_ops = {
- 	.write_init = versal_fpga_ops_write_init,
- 	.write = versal_fpga_ops_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int versal_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-index e1a227e7ff2a..d58cf0ccbd41 100644
---- a/drivers/fpga/xilinx-spi.c
-+++ b/drivers/fpga/xilinx-spi.c
-@@ -218,6 +218,7 @@ static const struct fpga_manager_ops xilinx_spi_ops = {
- 	.write_init = xilinx_spi_write_init,
- 	.write = xilinx_spi_write,
- 	.write_complete = xilinx_spi_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int xilinx_spi_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
-index 96611d424a10..241e1fe48a13 100644
---- a/drivers/fpga/zynq-fpga.c
-+++ b/drivers/fpga/zynq-fpga.c
-@@ -548,6 +548,7 @@ static const struct fpga_manager_ops zynq_fpga_ops = {
- 	.write_init = zynq_fpga_ops_write_init,
- 	.write_sg = zynq_fpga_ops_write,
- 	.write_complete = zynq_fpga_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int zynq_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index f3434e2c487b..2f66400d2330 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -101,6 +101,7 @@ static const struct fpga_manager_ops zynqmp_fpga_ops = {
- 	.state = zynqmp_fpga_ops_state,
- 	.write_init = zynqmp_fpga_ops_write_init,
- 	.write = zynqmp_fpga_ops_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int zynqmp_fpga_probe(struct platform_device *pdev)
--- 
-2.42.0
+> 
+>>
+>> I am exploring mfd to deal with said scenario. Do you see any better way to handle this? 
+> 
+> You basically repeated previous sentence about MFD without answering.
+> Yeah, better way could be to have one driver. Why you cannot have it
+> that way?
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Best regards,
+Krzysztof
 
