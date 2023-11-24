@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1517F84BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698BE7F84BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 20:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345989AbjKXTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 14:35:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S1346018AbjKXTgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 14:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345941AbjKXTfr (ORCPT
+        with ESMTP id S1345941AbjKXTgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 14:35:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F69293
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:35:53 -0800 (PST)
+        Fri, 24 Nov 2023 14:36:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9A210FB
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:36:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700854552;
+        s=mimecast20190719; t=1700854617;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=WpgGA1S9tEUCceeDcgeme0U/Hx75ujMCHkDsInmVnz8=;
-        b=hYZnUyJCtuxBJF3BJhLagfPVn9Du7PDIAMMowAboQjEov7BA1gd/fhhJZNwKa/3wA38+Tu
-        tn2PDd/VxHGnHmIoBPo2s6d4pnLnJve/WdlNYItwEsADxdPAK1YLyiXVHDduSXk2jtxFfT
-        NmOIpiqHKnFTm5vpXQ+a8ysSFTZVDpY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=yhz7X34rtir/QI6I24qRvGRWw3KId1ROlCi2joxVTvo=;
+        b=CNDJ0ddkHrI9A3VF3AkFwvdzImtlL0A/L1L3PY63xAvpg4p2rkgOX2xXOUxvh0C/pWptsZ
+        XWxaw+yEvWQ98e6/NRLKd7M6An2HzKZDlfVQtn89Wl5INE8HzjYXTT5JioJOGBTVM7cbPD
+        FLtsxc+ptDLiZrnp0J67UNf9yQ44e0A=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-478-3Xr004d5P6GkQuNJnoCXTw-1; Fri, 24 Nov 2023 14:35:51 -0500
-X-MC-Unique: 3Xr004d5P6GkQuNJnoCXTw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-332eecd96feso145714f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:35:51 -0800 (PST)
+ us-mta-471--f0BSxjIPb2giY37zEAHiw-1; Fri, 24 Nov 2023 14:36:55 -0500
+X-MC-Unique: -f0BSxjIPb2giY37zEAHiw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332ee0580a9so264073f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 11:36:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700854550; x=1701459350;
+        d=1e100.net; s=20230601; t=1700854614; x=1701459414;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WpgGA1S9tEUCceeDcgeme0U/Hx75ujMCHkDsInmVnz8=;
-        b=dzDemH+zrsJhQunhQ5JHFz14Khi6AGp+OM761mdq0mGBXQ//Z2m51gp8vuk94rhtbf
-         RhBMKzoGmlhQQATAUXr3Pa9AgLS0JK/Cfl7vX7461Rda0J5Bu0IQrcdRbVG0BmWhKNcn
-         3B1KbtSD6ggXcJwxNt3a4c/5jQp/jw5jdXMs2dm593cy4jn2h518ozx6z9CcT8/cMohL
-         UZiFHQN5uX9ysdQsVkCi+uOfeLvobqevJe16cp3WMu9fjgAghVC/e2Ecml3hpU8OdNU5
-         2XkQgo2gj5r/pvBdj/1oVPDjlpKSl5p9I3/p8dVMjfYIj2a1x38J7/rR8AhECSNnTa91
-         wMJg==
-X-Gm-Message-State: AOJu0YycF7eFKXXIqJJi0SLoPz46655KItLN2Jsj8LUKoY++BfjM8HSU
-        7PJAI6j6hc6i3wACCpsv77k2QU2MCXHS+yJrSI3Mf8VyZYZFqnYJCBiam7okOxZfVO+LNvH/lAU
-        pfeKeJ792gDPXaHXaz4j01Qb8
-X-Received: by 2002:a5d:484b:0:b0:331:82c4:929f with SMTP id n11-20020a5d484b000000b0033182c4929fmr2558501wrs.27.1700854550037;
-        Fri, 24 Nov 2023 11:35:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgpR5xD7cIvx/57aWOuiJdZd42w0gDGPcl6JL7MayZiXmJSxWmriDosq0n4Yf76TvU+Hgk/Q==
-X-Received: by 2002:a5d:484b:0:b0:331:82c4:929f with SMTP id n11-20020a5d484b000000b0033182c4929fmr2558467wrs.27.1700854549666;
-        Fri, 24 Nov 2023 11:35:49 -0800 (PST)
+        bh=yhz7X34rtir/QI6I24qRvGRWw3KId1ROlCi2joxVTvo=;
+        b=O2rbiOoTWy9vwjIPrMarwnVGT1OWlPefVQ6NrpGk0Uu4CNoTjADF2gzQ4uymL6FRsQ
+         7AFrR0MjNEILETCTfXawYYMYTckINJGf6fdVPw41yOojcOKwLlsJyP47aXd2DMcSXTY0
+         yLcwlOXZ/VOtjmTzU/vAglyR1dpvdTR1Y7j35cB5qmUHdR9wthhNnGqhG1Z3qtQkXJtE
+         Q0PabLebUeyhtccjiKy3Z39+rbJCfNjMdtqy0D4TJAVbMS1IGShk6w76w9TfF67U5528
+         whX68UlLaVf5h+gd8Mkzt0uWVqMJ1KP1yhoJdCf8cma+7j9jgQW5QDUpoNB7jI/vCJuY
+         t7Dw==
+X-Gm-Message-State: AOJu0YxJePju0Hf5vgCt/juOE8f6fZ4kjlHbQ2Gb/ga9pY4QTl6JW0BG
+        KS4NYYjb2t9JFXD+63on+usQX83VWktYny9pH3HHFv0WXMG2/4h4QI9MlD9fTyFdHvavamvFMG3
+        PU3YO/WPu8qOW88rUEgGmTz3Y
+X-Received: by 2002:a05:6000:b8b:b0:332:c699:f7b0 with SMTP id dl11-20020a0560000b8b00b00332c699f7b0mr3529166wrb.31.1700854614556;
+        Fri, 24 Nov 2023 11:36:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEtWiibCD3+vrVp4mDgf1cyQncOLRSHqFl89/CuHG7jW1X5In5uJNqN36gsj25aPlrpopXgNQ==
+X-Received: by 2002:a05:6000:b8b:b0:332:c699:f7b0 with SMTP id dl11-20020a0560000b8b00b00332c699f7b0mr3529146wrb.31.1700854614204;
+        Fri, 24 Nov 2023 11:36:54 -0800 (PST)
 Received: from ?IPV6:2003:cb:c721:a000:7426:f6b4:82a3:c6ab? (p200300cbc721a0007426f6b482a3c6ab.dip0.t-ipconnect.de. [2003:cb:c721:a000:7426:f6b4:82a3:c6ab])
-        by smtp.gmail.com with ESMTPSA id r5-20020a5d4985000000b00332d3b89561sm1764366wrq.97.2023.11.24.11.35.47
+        by smtp.gmail.com with ESMTPSA id r5-20020a5d4985000000b00332d3b89561sm1764366wrq.97.2023.11.24.11.36.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 11:35:49 -0800 (PST)
-Message-ID: <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
-Date:   Fri, 24 Nov 2023 20:35:47 +0100
+        Fri, 24 Nov 2023 11:36:53 -0800 (PST)
+Message-ID: <45466b05-d620-41e5-8a2b-05c420b8fa7b@redhat.com>
+Date:   Fri, 24 Nov 2023 20:36:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
- prep_new_page() to fail
+Subject: Re: [PATCH RFC v2 06/27] mm: page_alloc: Allow an arch to hook early
+ into free_pages_prepare()
 Content-Language: en-US
 To:     Alexandru Elisei <alexandru.elisei@arm.com>,
         catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
@@ -80,7 +80,7 @@ Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
         linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
 References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-6-alexandru.elisei@arm.com>
+ <20231119165721.9849-7-alexandru.elisei@arm.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -127,13 +127,13 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231119165721.9849-6-alexandru.elisei@arm.com>
+In-Reply-To: <20231119165721.9849-7-alexandru.elisei@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,17 +141,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.23 17:56, Alexandru Elisei wrote:
-> Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
-> storage for an allocated page. Reserving tag storage can fail, for example,
-> if the tag storage page has a short pin on it, so allow prep_new_page() ->
-> arch_prep_new_page() to similarly fail.
+On 19.11.23 17:57, Alexandru Elisei wrote:
+> Add arch_free_pages_prepare() hook that is called before that page flags
+> are cleared. This will be used by arm64 when explicit management of tag
+> storage pages is enabled.
 
-But what are the side-effects of this? How does the calling code recover?
-
-E.g., what if we need to populate a page into user space, but that 
-particular page we allocated fails to be prepared? So we inject a signal 
-into that poor process?
+Can you elaborate a bit what exactly will be done by that code with that 
+information?
 
 -- 
 Cheers,
