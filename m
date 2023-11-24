@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E2E7F7202
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8643A7F7207
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345698AbjKXKso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        id S1345375AbjKXKs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345675AbjKXKsl (ORCPT
+        with ESMTP id S1345711AbjKXKsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:48:41 -0500
+        Fri, 24 Nov 2023 05:48:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546FED44
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:48:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D963C433C8;
-        Fri, 24 Nov 2023 10:48:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DBE1B2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:48:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F4192C433C7;
+        Fri, 24 Nov 2023 10:48:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700822927;
-        bh=zysSZGvXrCbjCkNU5T+HVpgGk/opMa6u/fjLGWPdamA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dTGLHLRkeWT7p2NtFKIaJPtU0xmJtdVXzOJTjqJ24XPyj6Az8c9s6/XRvnCB5fUr3
-         X6RVHahwnCGE5cIoe1l+aVNJMxGdDT8TXfWopsFBtpeEbRkM79Mh+JZUaboJwnnUi6
-         CTrlLz1+sRoQdzHiGAKBIQcUVnsTL0vDX28TOmfL5XRYWJDBfO1ZfyNsctD9iDVrUv
-         rHXj0jarstAfAHeLJV2KBmOLCDKs5vpqgtTUfb0gfJ+0HwRIYBWnAbIL+Fu+ZIcVXs
-         QBUDBU12X/eHss4YmdyUqhil//rSPydelKJ3UdcNj1ZwTpuFfuljf8USFKN+fOneoB
-         plgyAnkRdNZgQ==
-Date:   Fri, 24 Nov 2023 11:48:44 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 09/26] drm/shmem-helper: Switch
- drm_gem_shmem_vmap/vunmap to use pin/unpin
-Message-ID: <mvcfua6pzigfuaziynxmrzwkxpc3qphil7b6bbim43m63iajw7@zhizwn4pqgmi>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-10-dmitry.osipenko@collabora.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4lop2eds5vd4c6em"
-Content-Disposition: inline
-In-Reply-To: <20231029230205.93277-10-dmitry.osipenko@collabora.com>
+        s=k20201202; t=1700822934;
+        bh=kFNGBEV5KZVkGa0eNZHwyRy+Zdp7kSVSo5j7XiYUfFA=;
+        h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
+        b=Nv8zz3+x3ChUMdQEo3BExPH42WyXDDU6UihftL7511gbsoQpDDgl3vzQh+KWKHlm2
+         S7hjuLEwuJbJF4gGiqaG4GhOqbjp2PAqD7fsaxMgmI01a4QKxU6hgofrKRd8W7lnPa
+         E/yqeH13d5lTUkgbY5CLmip6hd1RTrGMFb0BmNvtvUqaFO3Rbeqq5d2yLF0ElKJgEL
+         d67ACiflF+1nsBPhYzSeKwVHYLcNa9LH7rYykM9BfSyMwEyw9A1yXHMIN7BTzRgzvE
+         xbZnarKTGcGU2vi/hjq8vwsqj40so7FqkX20R5Vv5JacvtPJYiJr8SrBTmU8HBW2yM
+         jHlO7V0FALPfw==
+Message-ID: <812abc1247327534cb3e044006a54513.mripard@kernel.org>
+Date:   Fri, 24 Nov 2023 10:48:51 +0000
+From:   "Maxime Ripard" <mripard@kernel.org>
+To:     "Dmitry Osipenko" <dmitry.osipenko@collabora.com>
+Subject: Re: [PATCH v18 10/26] drm/shmem-helper: Use refcount_t for
+ vmap_use_count
+In-Reply-To: <20231029230205.93277-11-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-11-dmitry.osipenko@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        "Boris Brezillon" <boris.brezillon@collabora.com>,
+        "Chia-I Wu" <olvaffe@gmail.com>,
+        =?utf-8?b?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "David Airlie" <airlied@gmail.com>,
+        "Emma Anholt" <emma@anholt.net>,
+        "Gerd Hoffmann" <kraxel@redhat.com>,
+        "Gurchetan Singh" <gurchetansingh@chromium.org>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Melissa Wen" <mwen@igalia.com>, "Qiang Yu" <yuq825@gmail.com>,
+        "Steven Price" <steven.price@arm.com>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,40 +62,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---4lop2eds5vd4c6em
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Oct 30, 2023 at 02:01:48AM +0300, Dmitry Osipenko wrote:
-> The vmapped pages shall be pinned in memory and previously get/put_pages()
-> were implicitly hard-pinning/unpinning the pages. This will no longer be
-> the case with addition of memory shrinker because pages_use_count > 0 won=
-'t
-> determine anymore whether pages are hard-pinned (they will be soft-pinned=
-),
-> while the new pages_pin_count will do the hard-pinning. Switch the
-> vmap/vunmap() to use pin/unpin() functions in a preparation of addition
-> of the memory shrinker support to drm-shmem.
->=20
+On Mon, 30 Oct 2023 02:01:49 +0300, Dmitry Osipenko wrote:
+> Use refcount_t helper for vmap_use_count to make refcounting consistent
+> with pages_use_count and pages_pin_count that use refcount_t. This also
+> makes vmapping to benefit from the refcount_t's overflow checks.
+> 
 > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> 
+> [ ... ]
 
-The naming convention discussion aside, and once it's settled and fixed:
 Acked-by: Maxime Ripard <mripard@kernel.org>
 
+Thanks!
 Maxime
-
---4lop2eds5vd4c6em
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWB/jAAKCRDj7w1vZxhR
-xa3pAP9hrcOY656LtJ0jepRAz3Rd+bj52uTM2ZvzdbEGSMjhwQEAj7bIm9/CTTzB
-VnDL++pXP/ULo/+hXA7txBt3hwH+Awk=
-=aWnC
------END PGP SIGNATURE-----
-
---4lop2eds5vd4c6em--
