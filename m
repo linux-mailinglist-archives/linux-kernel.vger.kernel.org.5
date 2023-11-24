@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F7E7F78CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11587F788A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjKXQU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
+        id S231349AbjKXQFK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Nov 2023 11:05:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKXQU0 (ORCPT
+        with ESMTP id S231494AbjKXQFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:20:26 -0500
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EB712B
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:20:31 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700841909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5yGW+7zC7kl+eEIUhoSp3TXjUTFyRBrnT16mbCZw/Uk=;
-        b=HQLKbHPjG5ECRX3W2QDUsBCOVgOd4zNCuHfcIt73YpGytD2dwouao5IYeV1HGmFHYs1AgF
-        BfFqDeoybgM1Excty5fp0fBgzf+Hikw9ySRxFeccUON0VIoABOKMK6vYDwcoolLMOYnZMJ
-        COMNmajOOBR72yHoy7i9ELgNscr7gJg=
-From:   Sergei Shtepa <sergei.shtepa@linux.dev>
-To:     axboe@kernel.dk, hch@infradead.org, corbet@lwn.net,
-        snitzer@kernel.org
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
-        christian.koenig@amd.com, yi.l.liu@intel.com, jirislaby@kernel.org,
-        stfrench@microsoft.com, jpanis@baylibre.com, jgg@ziepe.ca,
-        contact@emersion.fr, dchinner@redhat.com, jack@suse.cz,
-        linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Sergei Shtepa <sergei.shtepa@veeam.com>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: [PATCH v6 04/11] blksnap: header file of the module interface
-Date:   Fri, 24 Nov 2023 17:04:52 +0100
-Message-Id: <20231124160459.26227-5-sergei.shtepa@linux.dev>
-In-Reply-To: <20231124160459.26227-1-sergei.shtepa@linux.dev>
-References: <20231124160459.26227-1-sergei.shtepa@linux.dev>
+        Fri, 24 Nov 2023 11:05:07 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A11B5;
+        Fri, 24 Nov 2023 08:05:11 -0800 (PST)
+Received: from lhrpeml500003.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ScKZ640DQz684Xd;
+        Sat, 25 Nov 2023 00:05:02 +0800 (CST)
+Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
+ lhrpeml500003.china.huawei.com (7.191.162.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 24 Nov 2023 16:05:08 +0000
+Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
+ lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.035;
+ Fri, 24 Nov 2023 16:05:08 +0000
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     kernel test robot <lkp@intel.com>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave@stgolabs.net" <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "alison.schofield@intel.com" <alison.schofield@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>
+CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>,
+        "leo.duran@amd.com" <leo.duran@amd.com>,
+        "Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "jiaqiyan@google.com" <jiaqiyan@google.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "Jon.Grimm@amd.com" <Jon.Grimm@amd.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "jthoughton@google.com" <jthoughton@google.com>,
+        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "duenwen@google.com" <duenwen@google.com>,
+        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>
+Subject: RE: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox
+ command
+Thread-Topic: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox
+ command
+Thread-Index: AQHaHjSmCJSxSfmspkqILDwEeyXpzrCJdYKAgAAt7ZA=
+Date:   Fri, 24 Nov 2023 16:05:08 +0000
+Message-ID: <6629bb080d9d4edea68866860d73fad7@huawei.com>
+References: <20231123174355.1176-2-shiju.jose@huawei.com>
+ <202311241526.R8n6AibH-lkp@intel.com>
+In-Reply-To: <202311241526.R8n6AibH-lkp@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.147.215]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,440 +87,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Shtepa <sergei.shtepa@veeam.com>
+Hi,
 
-The header file contains a set of declarations, structures and control
-requests (ioctl) that allows to manage the module from the user space.
+These warnings are fixed. Will add in the next version.
 
-Co-developed-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Christoph Hellwig <hch@infradead.org>
-Tested-by: Donald Buczek <buczek@molgen.mpg.de>
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- .../userspace-api/ioctl/ioctl-number.rst      |   1 +
- MAINTAINERS                                   |   1 +
- include/uapi/linux/blksnap.h                  | 388 ++++++++++++++++++
- 3 files changed, 390 insertions(+)
- create mode 100644 include/uapi/linux/blksnap.h
+Thanks,
+Shiju
 
-diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-index 4ea5b837399a..81acae1b1859 100644
---- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -203,6 +203,7 @@ Code  Seq#    Include File                                           Comments
- 'V'   C0     linux/ivtvfb.h                                          conflict!
- 'V'   C0     linux/ivtv.h                                            conflict!
- 'V'   C0     media/si4713.h                                          conflict!
-+'V'   00-1F  uapi/linux/blksnap.h                                    conflict!
- 'W'   00-1F  linux/watchdog.h                                        conflict!
- 'W'   00-1F  linux/wanrouter.h                                       conflict! (pre 3.9)
- 'W'   00-3F  sound/asound.h                                          conflict!
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9c81e4c83139..9770c4d4b15d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3598,6 +3598,7 @@ M:	Sergei Shtepa <sergei.shtepa@veeam.com>
- L:	linux-block@vger.kernel.org
- S:	Supported
- F:	Documentation/block/blksnap.rst
-+F:	include/uapi/linux/blksnap.h
- 
- BLOCK LAYER
- M:	Jens Axboe <axboe@kernel.dk>
-diff --git a/include/uapi/linux/blksnap.h b/include/uapi/linux/blksnap.h
-new file mode 100644
-index 000000000000..be1474f2025c
---- /dev/null
-+++ b/include/uapi/linux/blksnap.h
-@@ -0,0 +1,388 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/* Copyright (C) 2023 Veeam Software Group GmbH */
-+#ifndef _UAPI_LINUX_BLKSNAP_H
-+#define _UAPI_LINUX_BLKSNAP_H
-+
-+#include <linux/types.h>
-+
-+#define BLKSNAP_CTL "blksnap-control"
-+#define BLKSNAP_IMAGE_NAME "blksnap-image"
-+#define BLKSNAP 'V'
-+
-+/**
-+ * DOC: Block device filter interface.
-+ *
-+ * Control commands that are transmitted through the block device filter
-+ * interface.
-+ */
-+
-+/**
-+ * enum blkfilter_ctl_blksnap - List of commands for BLKFILTER_CTL ioctl
-+ *
-+ * @blkfilter_ctl_blksnap_cbtinfo:
-+ *	Get CBT information.
-+ *	The result of executing the command is a &struct blksnap_cbtinfo.
-+ *	Return 0 if succeeded, negative errno otherwise.
-+ * @blkfilter_ctl_blksnap_cbtmap:
-+ *	Read the CBT map.
-+ *	The option passes the &struct blksnap_cbtmap.
-+ *	The size of the table can be quite large. Thus, the table is read in
-+ *	a loop, in each cycle of which the next offset is set to
-+ *	&blksnap_tracker_read_cbt_bitmap.offset.
-+ *	Return a count of bytes read if succeeded, negative errno otherwise.
-+ * @blkfilter_ctl_blksnap_cbtdirty:
-+ *	Set dirty blocks in the CBT map.
-+ *	The option passes the &struct blksnap_cbtdirty.
-+ *	There are cases when some blocks need to be marked as changed.
-+ *	This ioctl allows to do this.
-+ *	Return 0 if succeeded, negative errno otherwise.
-+ * @blkfilter_ctl_blksnap_snapshotadd:
-+ *	Add device to snapshot.
-+ *	The option passes the &struct blksnap_snapshotadd.
-+ *	Return 0 if succeeded, negative errno otherwise.
-+ * @blkfilter_ctl_blksnap_snapshotinfo:
-+ *	Get information about snapshot.
-+ *	The result of executing the command is a &struct blksnap_snapshotinfo.
-+ *	Return 0 if succeeded, negative errno otherwise.
-+ */
-+enum blkfilter_ctl_blksnap {
-+	blkfilter_ctl_blksnap_cbtinfo,
-+	blkfilter_ctl_blksnap_cbtmap,
-+	blkfilter_ctl_blksnap_cbtdirty,
-+	blkfilter_ctl_blksnap_snapshotadd,
-+	blkfilter_ctl_blksnap_snapshotinfo,
-+};
-+
-+#ifndef UUID_SIZE
-+#define UUID_SIZE 16
-+#endif
-+
-+/**
-+ * struct blksnap_uuid - Unique 16-byte identifier.
-+ *
-+ * @b:
-+ *	An array of 16 bytes.
-+ */
-+struct blksnap_uuid {
-+	__u8 b[UUID_SIZE];
-+};
-+
-+/**
-+ * struct blksnap_cbtinfo - Result for the command
-+ *	&blkfilter_ctl_blksnap.blkfilter_ctl_blksnap_cbtinfo.
-+ *
-+ * @device_capacity:
-+ *	Device capacity in bytes.
-+ * @block_size:
-+ *	Block size in bytes.
-+ * @block_count:
-+ *	Number of blocks.
-+ * @generation_id:
-+ *	Unique identifier of change tracking generation.
-+ * @changes_number:
-+ *	Current changes number.
-+ */
-+struct blksnap_cbtinfo {
-+	__u64 device_capacity;
-+	__u32 block_size;
-+	__u32 block_count;
-+	struct blksnap_uuid generation_id;
-+	__u8 changes_number;
-+};
-+
-+/**
-+ * struct blksnap_cbtmap - Option for the command
-+ *	&blkfilter_ctl_blksnap.blkfilter_ctl_blksnap_cbtmap.
-+ *
-+ * @offset:
-+ *	Offset from the beginning of the CBT bitmap in bytes.
-+ * @length:
-+ *	Size of @buff in bytes.
-+ * @buffer:
-+ *	Pointer to the buffer for output.
-+ */
-+struct blksnap_cbtmap {
-+	__u32 offset;
-+	__u32 length;
-+	__u64 buffer;
-+};
-+
-+/**
-+ * struct blksnap_sectors - Description of the block device region.
-+ *
-+ * @offset:
-+ *	Offset from the beginning of the disk in sectors.
-+ * @count:
-+ *	Count of sectors.
-+ */
-+struct blksnap_sectors {
-+	__u64 offset;
-+	__u64 count;
-+};
-+
-+/**
-+ * struct blksnap_cbtdirty - Option for the command
-+ *	&blkfilter_ctl_blksnap.blkfilter_ctl_blksnap_cbtdirty.
-+ *
-+ * @count:
-+ *	Count of elements in the @dirty_sectors.
-+ * @dirty_sectors:
-+ *	Pointer to the array of &struct blksnap_sectors.
-+ */
-+struct blksnap_cbtdirty {
-+	__u32 count;
-+	__u64 dirty_sectors;
-+};
-+
-+/**
-+ * struct blksnap_snapshotadd - Option for the command
-+ *	&blkfilter_ctl_blksnap.blkfilter_ctl_blksnap_snapshotadd.
-+ *
-+ * @id:
-+ *	ID of the snapshot to which the block device should be added.
-+ */
-+struct blksnap_snapshotadd {
-+	struct blksnap_uuid id;
-+};
-+
-+#define IMAGE_DISK_NAME_LEN 32
-+
-+/**
-+ * struct blksnap_snapshotinfo - Result for the command
-+ *	&blkfilter_ctl_blksnap.blkfilter_ctl_blksnap_snapshotinfo.
-+ *
-+ * @error_code:
-+ *	Zero if there were no errors while holding the snapshot.
-+ *	The error code -ENOSPC means that while holding the snapshot, a snapshot
-+ *	overflow situation has occurred. Other error codes mean other reasons
-+ *	for failure.
-+ *	The error code is reset when the device is added to a new snapshot.
-+ * @image:
-+ *	If the snapshot was taken, it stores the block device name of the
-+ *	image, or empty string otherwise.
-+ */
-+struct blksnap_snapshotinfo {
-+	__s32 error_code;
-+	__u8 image[IMAGE_DISK_NAME_LEN];
-+};
-+
-+/**
-+ * DOC: Interface for managing snapshots
-+ *
-+ * Control commands that are transmitted through the blksnap module interface.
-+ */
-+enum blksnap_ioctl {
-+	blksnap_ioctl_version,
-+	blksnap_ioctl_snapshot_create,
-+	blksnap_ioctl_snapshot_destroy,
-+	blksnap_ioctl_snapshot_take,
-+	blksnap_ioctl_snapshot_collect,
-+	blksnap_ioctl_snapshot_wait_event,
-+};
-+
-+/**
-+ * struct blksnap_version - Module version.
-+ *
-+ * @major:
-+ *	Version major part.
-+ * @minor:
-+ *	Version minor part.
-+ * @revision:
-+ *	Revision number.
-+ * @build:
-+ *	Build number. Should be zero.
-+ */
-+struct blksnap_version {
-+	__u16 major;
-+	__u16 minor;
-+	__u16 revision;
-+	__u16 build;
-+};
-+
-+/**
-+ * define IOCTL_BLKSNAP_VERSION - Get module version.
-+ *
-+ * The version may increase when the API changes. But linking the user space
-+ * behavior to the version code does not seem to be a good idea.
-+ * To ensure backward compatibility, API changes should be made by adding new
-+ * ioctl without changing the behavior of existing ones. The version should be
-+ * used for logs.
-+ *
-+ * Return: 0 if succeeded, negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_VERSION							\
-+	_IOR(BLKSNAP, blksnap_ioctl_version, struct blksnap_version)
-+
-+/**
-+ * struct blksnap_snapshot_create - Argument for the
-+ *	&IOCTL_BLKSNAP_SNAPSHOT_CREATE control.
-+ *
-+ * @diff_storage_limit_sect:
-+ *	The maximum allowed difference storage size in sectors.
-+ * @diff_storage_fd:
-+ *	The difference storage file descriptor.
-+ * @id:
-+ *	Generated new snapshot ID.
-+ */
-+struct blksnap_snapshot_create {
-+	__u64 diff_storage_limit_sect;
-+	__u32 diff_storage_fd;
-+	struct blksnap_uuid id;
-+};
-+
-+/**
-+ * define IOCTL_BLKSNAP_SNAPSHOT_CREATE - Create snapshot.
-+ *
-+ * Creates a snapshot structure and initializes the difference storage.
-+ * A snapshot is created for several block devices at once. Several snapshots
-+ * can be created at the same time, but with the condition that one block
-+ * device can only be included in one snapshot.
-+ *
-+ * The difference storage can be dynamically increase as it fills up.
-+ * The file is increased in portions, the size of which is determined by the
-+ * module parameter &diff_storage_minimum. Each time the amount of free space
-+ * in the difference storage is reduced to the half of &diff_storage_minimum,
-+ * the file is expanded by a portion, until it reaches the allowable limit
-+ * &diff_storage_limit_sect.
-+ *
-+ * Return: 0 if succeeded, negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_SNAPSHOT_CREATE						\
-+	_IOWR(BLKSNAP, blksnap_ioctl_snapshot_create,				\
-+	     struct blksnap_snapshot_create)
-+
-+/**
-+ * define IOCTL_BLKSNAP_SNAPSHOT_DESTROY - Release and destroy the snapshot.
-+ *
-+ * Destroys snapshot with &blksnap_snapshot_destroy.id. This leads to the
-+ * deletion of all block device images of the snapshot. The difference storage
-+ * is being released. But the change tracker keeps tracking.
-+ *
-+ * Return: 0 if succeeded, negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_SNAPSHOT_DESTROY						\
-+	_IOW(BLKSNAP, blksnap_ioctl_snapshot_destroy,				\
-+	     struct blksnap_uuid)
-+
-+/**
-+ * define IOCTL_BLKSNAP_SNAPSHOT_TAKE - Take snapshot.
-+ *
-+ * Creates snapshot images of block devices and switches change trackers tables.
-+ * The snapshot must be created before this call, and the areas of block
-+ * devices should be added to the difference storage.
-+ *
-+ * Return: 0 if succeeded, negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_SNAPSHOT_TAKE						\
-+	_IOW(BLKSNAP, blksnap_ioctl_snapshot_take,				\
-+	     struct blksnap_uuid)
-+
-+/**
-+ * struct blksnap_snapshot_collect - Argument for the
-+ *	&IOCTL_BLKSNAP_SNAPSHOT_COLLECT control.
-+ *
-+ * @count:
-+ *	Size of &blksnap_snapshot_collect.ids in the number of 16-byte UUID.
-+ * @ids:
-+ *	Pointer to the array of struct blksnap_uuid for output.
-+ */
-+struct blksnap_snapshot_collect {
-+	__u32 count;
-+	__u64 ids;
-+};
-+
-+/**
-+ * define IOCTL_BLKSNAP_SNAPSHOT_COLLECT - Get collection of created snapshots.
-+ *
-+ * Multiple snapshots can be created at the same time. This allows for one
-+ * system to create backups for different data with a independent schedules.
-+ *
-+ * If in &blksnap_snapshot_collect.count is less than required to store the
-+ * &blksnap_snapshot_collect.ids, the array is not filled, and the ioctl
-+ * returns the required count for &blksnap_snapshot_collect.ids.
-+ *
-+ * So, it is recommended to call the ioctl twice. The first call with an null
-+ * pointer &blksnap_snapshot_collect.ids and a zero value in
-+ * &blksnap_snapshot_collect.count. It will set the required array size in
-+ * &blksnap_snapshot_collect.count. The second call with a pointer
-+ * &blksnap_snapshot_collect.ids to an array of the required size will allow to
-+ * get collection of active snapshots.
-+ *
-+ * Return: 0 if succeeded, -ENODATA if there is not enough space in the array
-+ * to store collection of active snapshots, or negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_SNAPSHOT_COLLECT						\
-+	_IOR(BLKSNAP, blksnap_ioctl_snapshot_collect,				\
-+	     struct blksnap_snapshot_collect)
-+
-+/**
-+ * enum blksnap_event_codes - Variants of event codes.
-+ *
-+ * @blksnap_event_code_corrupted:
-+ *	Snapshot image is corrupted event.
-+ *	If a chunk could not be allocated when trying to save data to the
-+ *	difference storage, this event is generated. However, this does not mean
-+ *	that the backup process was interrupted with an error. If the snapshot
-+ *	image has been read to the end by this time, the backup process is
-+ *	considered successful.
-+ */
-+enum blksnap_event_codes {
-+	blksnap_event_code_corrupted,
-+};
-+
-+/**
-+ * struct blksnap_snapshot_event - Argument for the
-+ *	&IOCTL_BLKSNAP_SNAPSHOT_WAIT_EVENT control.
-+ *
-+ * @id:
-+ *	Snapshot ID.
-+ * @timeout_ms:
-+ *	Timeout for waiting in milliseconds.
-+ * @time_label:
-+ *	Timestamp of the received event.
-+ * @code:
-+ *	Code of the received event &enum blksnap_event_codes.
-+ * @data:
-+ *	The received event body.
-+ */
-+struct blksnap_snapshot_event {
-+	struct blksnap_uuid id;
-+	__u32 timeout_ms;
-+	__u32 code;
-+	__s64 time_label;
-+	__u8 data[4096 - 32];
-+};
-+
-+/**
-+ * define IOCTL_BLKSNAP_SNAPSHOT_WAIT_EVENT - Wait and get the event from the
-+ *	snapshot.
-+ *
-+ * While holding the snapshot, the kernel module can transmit information about
-+ * changes in its state in the form of events to the user level.
-+ * It is very important to receive these events as quickly as possible, so the
-+ * user's thread is in the state of interruptible sleep.
-+ *
-+ * Return: 0 if succeeded, negative errno otherwise.
-+ */
-+#define IOCTL_BLKSNAP_SNAPSHOT_WAIT_EVENT					\
-+	_IOR(BLKSNAP, blksnap_ioctl_snapshot_wait_event,			\
-+	     struct blksnap_snapshot_event)
-+
-+/**
-+ * struct blksnap_event_corrupted - Data for the
-+ *	&blksnap_event_code_corrupted event.
-+ *
-+ * @dev_id_mj:
-+ *	Major part of original device ID.
-+ * @dev_id_mn:
-+ *	Minor part of original device ID.
-+ * @err_code:
-+ *	Error code.
-+ */
-+struct blksnap_event_corrupted {
-+	__u32 dev_id_mj;
-+	__u32 dev_id_mn;
-+	__s32 err_code;
-+};
-+
-+#endif /* _UAPI_LINUX_BLKSNAP_H */
--- 
-2.20.1
-
+>-----Original Message-----
+>From: kernel test robot <lkp@intel.com>
+>Sent: 24 November 2023 13:20
+>To: Shiju Jose <shiju.jose@huawei.com>; linux-cxl@vger.kernel.org; linux-
+>mm@kvack.org; dave@stgolabs.net; Jonathan Cameron
+><jonathan.cameron@huawei.com>; dave.jiang@intel.com;
+>alison.schofield@intel.com; vishal.l.verma@intel.com; ira.weiny@intel.com;
+>dan.j.williams@intel.com
+>Cc: oe-kbuild-all@lists.linux.dev; linux-acpi@vger.kernel.org; linux-
+>kernel@vger.kernel.org; david@redhat.com; Vilas.Sridharan@amd.com;
+>leo.duran@amd.com; Yazen.Ghannam@amd.com; rientjes@google.com;
+>jiaqiyan@google.com; tony.luck@intel.com; Jon.Grimm@amd.com;
+>dave.hansen@linux.intel.com; rafael@kernel.org; lenb@kernel.org;
+>naoya.horiguchi@nec.com; james.morse@arm.com; jthoughton@google.com;
+>somasundaram.a@hpe.com; erdemaktas@google.com; pgonda@google.com;
+>duenwen@google.com; mike.malvestuto@intel.com
+>Subject: Re: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES
+>mailbox command
+>
+>Hi,
+>
+>kernel test robot noticed the following build warnings:
+>
+>[auto build test WARNING on krzk-mem-ctrl/for-next] [also build test WARNING
+>on linus/master v6.7-rc2 next-20231124] [If your patch is applied to the wrong
+>git tree, kindly drop us a note.
+>And when submitting patch, we suggest to use '--base' as documented in
+>https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+>url:    https://github.com/intel-lab-lkp/linux/commits/shiju-jose-huawei-com/cxl-
+>mbox-Add-GET_SUPPORTED_FEATURES-mailbox-command/20231124-014622
+>base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
+>for-next
+>patch link:    https://lore.kernel.org/r/20231123174355.1176-2-
+>shiju.jose%40huawei.com
+>patch subject: [PATCH v3 01/11] cxl/mbox: Add GET_SUPPORTED_FEATURES
+>mailbox command
+>config: i386-randconfig-061-20231124 (https://download.01.org/0day-
+>ci/archive/20231124/202311241526.R8n6AibH-lkp@intel.com/config)
+>compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git
+>ae42196bc493ffe877a7e3dff8be32035dea4d07)
+>reproduce (this is a W=1 build): (https://download.01.org/0day-
+>ci/archive/20231124/202311241526.R8n6AibH-lkp@intel.com/reproduce)
+>
+>If you fix the issue in a separate patch/commit (i.e. not just a new version of the
+>same patch/commit), kindly add following tags
+>| Reported-by: kernel test robot <lkp@intel.com>
+>| Closes:
+>| https://lore.kernel.org/oe-kbuild-all/202311241526.R8n6AibH-lkp@intel.
+>| com/
+>
+>sparse warnings: (new ones prefixed by >>)
+>>> drivers/cxl/core/mbox.c:1317:30: sparse: sparse: cast from restricted
+>>> __le32
+>
+>vim +1317 drivers/cxl/core/mbox.c
+>
+>  1305
+>  1306	int cxl_get_supported_features(struct cxl_memdev_state *mds,
+>  1307							struct
+>cxl_mbox_get_supp_feats_in *pi,
+>  1308							void *feats_out)
+>  1309	{
+>  1310		struct cxl_mbox_cmd mbox_cmd;
+>  1311		int rc;
+>  1312
+>  1313		mbox_cmd = (struct cxl_mbox_cmd) {
+>  1314			.opcode = CXL_MBOX_OP_GET_SUPPORTED_FEATURES,
+>  1315			.size_in = sizeof(*pi),
+>  1316			.payload_in = pi,
+>> 1317			.size_out = (size_t)pi->count,
+>  1318			.payload_out = feats_out,
+>  1319			.min_out = sizeof(struct cxl_mbox_get_supp_feats_out),
+>  1320		};
+>  1321		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+>  1322		if (rc < 0)
+>  1323			return rc;
+>  1324
+>  1325		return 0;
+>  1326	}
+>  1327	EXPORT_SYMBOL_NS_GPL(cxl_get_supported_features, CXL);
+>  1328
+>
+>--
+>0-DAY CI Kernel Test Service
+>https://github.com/intel/lkp-tests/wiki
