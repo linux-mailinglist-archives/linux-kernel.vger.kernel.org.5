@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD407F7A43
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CEF7F7A49
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbjKXRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
+        id S231285AbjKXRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXRS2 (ORCPT
+        with ESMTP id S230484AbjKXRYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:18:28 -0500
-X-Greylist: delayed 360 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 09:18:34 PST
-Received: from mx1.veeam.com (mx1.veeam.com [216.253.77.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BF41718;
-        Fri, 24 Nov 2023 09:18:34 -0800 (PST)
-Received: from mail.veeam.com (prgmbx02.amust.local [172.24.128.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 24 Nov 2023 12:24:21 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1541725;
+        Fri, 24 Nov 2023 09:24:27 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mx1.veeam.com (Postfix) with ESMTPS id B83DB400A9;
-        Fri, 24 Nov 2023 12:12:32 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com;
-        s=mx1-2022; t=1700845952;
-        bh=nrXhCkGTaOqUdOGnrTj2EvYUPyfJBBoTTlxHnvJ4qkw=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To:From;
-        b=fCG8Pel2PwaEyTHJHhbrJ0SfLKowU22VKykGLlxSR6NQdNzJA5sL4w/E5cFF94vVY
-         v9ZuIdlcX1EJUZC5rIHuWdtRAhukNlb5fgjLQIT1I0WgRUtwL93U6bM6bCUE9wgNMV
-         vsj3+S4oelmJfCqbUFfS7hn667QdD5BmgLQTJDRvE97dN0O2wbOVxZ5rxHDe28P7JX
-         UjWqPsWiJdACzOWykzv23bew4SLG58IucRTBH321om/y3XxfQ4krFcPEg+JOXtY8e1
-         9tTVWJUpSxWvudNXVorn2H79jCWVcrXxUHlxVCykAGYElm4xmJbeLLhKAqh9LRjH7D
-         9WmiacGijFckw==
-Received: from [172.24.10.107] (172.24.10.107) by prgmbx02.amust.local
- (172.24.128.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Fri, 24 Nov
- 2023 18:12:31 +0100
-Message-ID: <14d5d31e-0dbe-8d04-91a6-82a886f8e92a@veeam.com>
-Date:   Fri, 24 Nov 2023 18:12:25 +0100
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5289121EB4;
+        Fri, 24 Nov 2023 17:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700846663;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HxPPN20iBqWe0yb/pnf+KxCWGpSg8jYorXXnEZgUTj8=;
+        b=JKq3gy1y0+zqGnocWkqKqCkVdKB7hBsxtY+cqoV5K1aO2lInhionEPN+zXTr25ojWBDBgI
+        uVr5YrrfU9XYHNl9qeZvMyOeoTb8x1AEVhrzkJrFFlPx++Vx7uiGxElcuElrIr/Q+mNXhU
+        XJT5xcG2Ab/FXETFTy75ure7ZOFWVdI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700846663;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HxPPN20iBqWe0yb/pnf+KxCWGpSg8jYorXXnEZgUTj8=;
+        b=yPummDNZtI/L5rAxH3A6Cu5n6osmRTYKvDpoI00CFzb2d4j1eIBLKFCZGdDcY0P2EJCqPn
+        5/A5+Uts7OfrkZAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E88F9132E2;
+        Fri, 24 Nov 2023 17:24:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id BnfYNkbcYGWfUgAAn2gu4w
+        (envelope-from <dsterba@suse.cz>); Fri, 24 Nov 2023 17:24:22 +0000
+Date:   Fri, 24 Nov 2023 18:17:08 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Jann Horn <jannh@google.com>
+Cc:     syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in __kernel_write_iter
+Message-ID: <20231124171707.GF18929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <000000000000cf908705eaa8c5a7@google.com>
+ <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 00/11] blksnap - block devices snapshots module
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>,
-        Sergei Shtepa <sergei.shtepa@linux.dev>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "snitzer@kernel.org" <snitzer@kernel.org>
-CC:     "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <20231124165933.27580-1-sergei.shtepa@linux.dev>
- <7a54a166-56fd-4d6c-a5bf-792aa58a8fe5@kernel.dk>
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-In-Reply-To: <7a54a166-56fd-4d6c-a5bf-792aa58a8fe5@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.24.10.107]
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29F44B155A637662
-X-Veeam-MMEX: True
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Score: 5.09
+X-Spamd-Result: default: False [5.09 / 50.00];
+         ARC_NA(0.00)[];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d19f5d16783f901];
+         TAGGED_RCPT(0.00)[12e098239d20385264d3];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         REPLY(-4.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_SPAM_SHORT(2.89)[0.965];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,16 +104,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm very sorry.
+On Fri, Nov 24, 2023 at 05:21:20PM +0100, Jann Horn wrote:
+> On Mon, Oct 10, 2022 at 9:04 AM syzbot
+> <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com> wrote:
+> > HEAD commit:    a6afa4199d3d Merge tag 'mailbox-v6.1' of git://git.linaro...
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=110f6f0a880000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d19f5d16783f901
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
+> > compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/12e24d042ff9/disk-a6afa419.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/4862ae4e2edf/vmlinux-a6afa419.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 20347 at fs/read_write.c:504 __kernel_write_iter+0x639/0x740
+> [...]
+> >  __kernel_write fs/read_write.c:537 [inline]
+> >  kernel_write+0x1c5/0x340 fs/read_write.c:558
+> >  write_buf fs/btrfs/send.c:590 [inline]
+> >  send_header fs/btrfs/send.c:708 [inline]
+> >  send_subvol+0x1a7/0x4b60 fs/btrfs/send.c:7648
+> >  btrfs_ioctl_send+0x1e34/0x2340 fs/btrfs/send.c:8014
+> >  _btrfs_ioctl_send+0x2e8/0x420 fs/btrfs/ioctl.c:5233
+> >  btrfs_ioctl+0x5eb/0xc10
+> >  vfs_ioctl fs/ioctl.c:51 [inline]
+> 
+> The issue here is that BTRFS_IOC_SEND looks up an fd with fget() and
+> then writes into it with kernel_write(). Luckily the ioctl requires
+> CAP_SYS_ADMIN, and also Linux >=5.8 bails out on __kernel_write() on a
+> read-only file, so this has no security impact.
 
-Script get_maintainer.pl returns a very large list.
-I get "Error: too many recipients from 86.49.140.21"
-when trying to send an email from the smtp.migadu.com.
+I'm not sure if we could make the send ioctl safe for a non-root user,
+the code there has been doing tricks that have security implications.
 
-But it seems that for the third time it was possible to send
-a whole set of patches.
+> I'm about to send a fix, let's have syzkaller check it beforehand:
+> 
+> #syz test https://github.com/thejh/linux.git 573fd2562e0f
 
-I'm sorry for the inconvenience.
-Sending patches by mail gives me pain...
-It seems that I have already gone through all the rakes,
-but there are new ones.
+The fix looks correct to me, thanks.
