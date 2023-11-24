@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAB37F6DF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F243D7F6E01
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbjKXIUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
+        id S231490AbjKXIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344753AbjKXIUA (ORCPT
+        with ESMTP id S229485AbjKXIYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:20:00 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54951EA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:20:07 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ff26d7c0a6so227516466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:20:07 -0800 (PST)
+        Fri, 24 Nov 2023 03:24:14 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C6AD54
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:24:20 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so2208007a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:24:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700814006; x=1701418806; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700814259; x=1701419059; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LkVn7M+eAmMguDWpgjWJriPty1JjutndIswZF8OoUS4=;
-        b=MzWYidsym6ZxnnIHcoGrIWBJsJ+MjLGcyyXpw+zh783ZQwiP4+t7iISun4avFwBQWs
-         HPxAwHqGBNGC9fxwYRhRZl1OeT9eQC5btVPpls0jPiqpf9rwgdJC5eAkb4Y3vrcTDkjl
-         GP0TQh/OYOjWnaB83EaV1zDwECnFrqHqxz9bZdUeDdktvEZ9fGrtuGUXN5zeZts/Eauj
-         tlkAq7CIna/nSvG9BkMGUVUgfHOoaHDk2jzg0kBeTIqKtlNtQsSkNif1kP5JIkOmXcAd
-         cjNT8RozznLV6itV//RdkhjYDkv9tWQLL26WJ5987KidtP7ISMQzCpWXEBpEe8CubvhQ
-         G1/Q==
+        bh=hoSKzu7DQcGOUwvzPYoeXKGNiw1KdwY6pBIA3ZrdaU4=;
+        b=Wq6GcR3Ydc6s++gtWyQadtaLhfgFuJ1Ux954S6V4aYxmkOYBnTdpczz4a98sb5rWPf
+         fOg0Qf3CIMcN7cN0KLuAZ7TXW/YgNjEsgPM0/NOKeUkoiq72cjoaoHvoFNJ+AhnzxHDZ
+         xlE6jhYyZ0iZWN9lm9afv70S3y4aeBu6KxaP3K+aq1iTJbhsdYf5gHcBQwNFDAqAmq5L
+         DE5jKF07OvYaa3m41RxZXYx8Hl6Sy6LsU0lIqvmmC2HcPrzhmBaEP+/quz9viiThTD2A
+         pJX/9NbTR02SBq43XBhr4NPBfj+Dma/lpnJgMuzBIEB0J9UuEf8ntDYiuIGK6TlfNEHH
+         yrvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700814006; x=1701418806;
+        d=1e100.net; s=20230601; t=1700814259; x=1701419059;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LkVn7M+eAmMguDWpgjWJriPty1JjutndIswZF8OoUS4=;
-        b=SlVdIDRXJBSe0TDtWl/GbM+lyBiL1LCjsDobmNPZK+vPAUL43DXCCOecrIyUFj30/K
-         EiI064VPCI2BWJleNAdLZ9DnAD2IWXQplAFAyZVXPjmYHadLq1tcPjNDSLrsN0jARvng
-         RF0wh+gS01TzZKAnrVBjX3D54/TeAiGTB6N6TIcQ8pJcNMcUW/wXyKUUVwZPZoVDOZF/
-         C/cZTonOtrPCy+DgLbjGD6XOPfhWn/a2nN3FkoCeiwrfPo4sCoCrZTWGKfWT57CVrLRL
-         I3mw0Aq1Jz4beT5vaHxR8wP7znegm0ie4cWMMl+uwHaC163WShBlTadMSPBLrpUIxsnH
-         6p5g==
-X-Gm-Message-State: AOJu0YyNoZWUPKNE6munmzMfWd7AuVpT620C6C+S1QMAKrMcpV3WWnUO
-        xguGCvqK9trNtBRDLHNzoRyHgw==
-X-Google-Smtp-Source: AGHT+IHYTXuH5CEbAHeUCGEkj7ANC7TqgHM9TiqlhjcBuMnOJ4FT8HzQouom2k5x36GuHFG/BnO2LA==
-X-Received: by 2002:a17:906:5299:b0:a00:8706:c82e with SMTP id c25-20020a170906529900b00a008706c82emr1555608ejm.18.1700814005818;
-        Fri, 24 Nov 2023 00:20:05 -0800 (PST)
+        bh=hoSKzu7DQcGOUwvzPYoeXKGNiw1KdwY6pBIA3ZrdaU4=;
+        b=qTqdT8QqCbUlcCeKCK5sq6piK4esJ+vxmcClaJmsfkdmLbrJ429SQNuMB34pEz+Qry
+         msy2BylFcrpLyypnORGSCIPl6WsVb5qNAXSn5qv7eaZtBtIUP+IeOi8HsnrwaL3XCWrx
+         nYfzse0aJCdcZbiXyu6nrdUooY5IuNwR+yJ6ZCu52JGACAJ85keLbprjW/b5pqUsF6ce
+         6339l54LHXxujeWqNrGz6RhU/heRxSY1i+Z29TN0ZvTf3ZOxn8x8uXP923V8TXk1xpuO
+         o2jUUA/+Kqg5PqocH0UTuAOlkBsoeZXsnYWPNVYliZ2xzNaLxmQ2WsJkMttpivXudQk2
+         Em8w==
+X-Gm-Message-State: AOJu0YxMKNPbIHKTwzEM2RJPccEHZMfVZqVmryJmVVnGlTBMlIIZ/DLK
+        89sBYo/JF+QVGAzNkmYX0QishA==
+X-Google-Smtp-Source: AGHT+IEn7JaN98CYK9SV6hIU5p5BxrRW8xnUspUlu6ZiHyKfMk5N7uSzv5UmJLQHRMFtJaUeVdsUMA==
+X-Received: by 2002:a17:907:2da9:b0:9fe:38b7:4278 with SMTP id gt41-20020a1709072da900b009fe38b74278mr1798138ejc.16.1700814258755;
+        Fri, 24 Nov 2023 00:24:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id cf16-20020a170906b2d000b0099bd7b26639sm1761699ejb.6.2023.11.24.00.20.03
+        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1770936ejb.153.2023.11.24.00.24.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 00:20:05 -0800 (PST)
-Message-ID: <e416ab6b-af0a-46d4-ac1f-f78b449e8071@linaro.org>
-Date:   Fri, 24 Nov 2023 09:20:03 +0100
+        Fri, 24 Nov 2023 00:24:18 -0800 (PST)
+Message-ID: <8dd46bcd-c1fa-4876-b4d9-e4bb91ce5de9@linaro.org>
+Date:   Fri, 24 Nov 2023 09:24:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 2/3] arm64: dts: qcom: sa8775p: enable Fault
- IRQ
+Subject: Re: [PATCH v1 2/2] dt-bindings: mmc: mtk-sd: add 64-steps tuning
+ related property
 Content-Language: en-US
-To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+To:     Axe Yang <axe.yang@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     kernel@quicinc.com
-References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
- <66690488f08912698301a2c203d7c562798806a2.1700737841.git.quic_jsuraj@quicinc.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20231124070839.12484-1-axe.yang@mediatek.com>
+ <20231124070839.12484-3-axe.yang@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,27 +118,50 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <66690488f08912698301a2c203d7c562798806a2.1700737841.git.quic_jsuraj@quicinc.com>
+In-Reply-To: <20231124070839.12484-3-axe.yang@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 12:53, Suraj Jaiswal wrote:
-> Add changes to support fault IRQ Handling
-> Support for ethernet.
-> 
-You duplicated all the patches. I already responded to previous
-duplicates set, so also here:
+On 24/11/2023 08:08, Axe Yang wrote:
+> Add 'mediatek,tune-64-steps' option. This property will give MSDC
+> a chance to achieve a more optimal calibration result, thus avoiding
+> potential CRC issues.
 
-NAK, you did not test your patchset.
+Documentation goes before users.
+
+> 
+> Signed-off-by: Axe Yang <axe.yang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> index 3fffa467e4e1..c33301e2ea33 100644
+> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> @@ -145,6 +145,14 @@ properties:
+>      minimum: 0
+>      maximum: 7
+>  
+> +  mediatek,tune-64-steps:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Some Soc need enable 64-steps tuning for better delay value to avoid CRC issue.
+
+This scales poorly. Instead should be enum with number of tuning steps.
+
+> +      If present, tune 64 steps to cover a complete clock cycle.
+> +      If not present, tune only 32 steps. For eMMC and SD, this can also yield
+> +      satisfactory calibration results in most cases.
 
 Best regards,
 Krzysztof
