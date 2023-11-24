@@ -2,266 +2,476 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E747F7A94
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A4D7F7AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 18:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjKXRsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 12:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        id S231404AbjKXR5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 12:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXRsu (ORCPT
+        with ESMTP id S229742AbjKXR5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 12:48:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AE3171D
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:48:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700848135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=GxUuGgqvBiwXQGtDlv7ryFP6iHTy8SVVoV36zP4gnMI=;
-        b=Al4pcUIy/wg8bvSfdIerrlJbVfNYueaVjj4+H0j4zF/502fUa+L0Wc7J4yYVAYRt4fOgaW
-        mH/pry2cunVkePN5uOYQwaS1S69TsGFVgMi0oBQQy48i5mkyquUmLjy07ZdWSkHcHJn0sq
-        OuVk8JnT2xadhJQYDuJeHpQakCTZR0M=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-380-Uki9BwfaNoCeDgz0W3pJYg-1; Fri, 24 Nov 2023 12:48:54 -0500
-X-MC-Unique: Uki9BwfaNoCeDgz0W3pJYg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-332e899b927so743036f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:48:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700848133; x=1701452933;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GxUuGgqvBiwXQGtDlv7ryFP6iHTy8SVVoV36zP4gnMI=;
-        b=JRK9AOC/EZeuc22JTbh8DaEHJ6LCo1TUFhgDkEQUtf286kS2iKHReoc511u7ZZKpRZ
-         P5kAVqPeQN98bG7Pw//6en1nf1i6IrzgX+QqwzoQamP0cZjQj3G/3WyzByD9M5tEs0Kv
-         vEYPd1fwA5S+dajG4q+ffNba5N0/o8V29uSG3QHAdYMcKE1JGWdyxtIUnbGVrH66CRMr
-         PT99/DKFaHZxE4LaiMbQ27pns2erEwpVyg3N1ksPONnsIo+zRxMOP0SkwHbk359t4J5S
-         20JX43QqlSoe7n+6uvQNbNIbAeBQ+pxYjpf/7fCvp5Ey9raTLT2jk7IkkxfMCR3Vu227
-         rRyA==
-X-Gm-Message-State: AOJu0YwK8ArNXKkuj9Iwi+1Lx/+PEZUkZcSG5zVXG+xN0Uz2awM/MBv2
-        9Jms+r9o0UaZZr4+lbTGEFMw+5RU0/7MqmKZ+/LF1+U5rnjslDADb1SrhBwne8MNB76y4giodrd
-        PgoqCZgnf9DHA0cpmhz9KiZWu
-X-Received: by 2002:a05:600c:4fc5:b0:401:bd2e:49fc with SMTP id o5-20020a05600c4fc500b00401bd2e49fcmr2891460wmq.24.1700848133202;
-        Fri, 24 Nov 2023 09:48:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGNs2CSLxAJ5sxsCGnK8NIWQsksfySxAR/7AcX90Fs/Qgye84ZkQ6vfLRXECzpCtmFmHbyYNg==
-X-Received: by 2002:a05:600c:4fc5:b0:401:bd2e:49fc with SMTP id o5-20020a05600c4fc500b00401bd2e49fcmr2891445wmq.24.1700848132768;
-        Fri, 24 Nov 2023 09:48:52 -0800 (PST)
-Received: from ?IPV6:2003:cb:c721:a000:7426:f6b4:82a3:c6ab? (p200300cbc721a0007426f6b482a3c6ab.dip0.t-ipconnect.de. [2003:cb:c721:a000:7426:f6b4:82a3:c6ab])
-        by smtp.gmail.com with ESMTPSA id j14-20020a05600c190e00b0040b3525428bsm5704150wmq.2.2023.11.24.09.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 09:48:52 -0800 (PST)
-Message-ID: <ead82cbe-19c9-43ce-9f28-7ced118b130a@redhat.com>
-Date:   Fri, 24 Nov 2023 18:48:50 +0100
+        Fri, 24 Nov 2023 12:57:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8595719A6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 09:57:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1DE0C433C8;
+        Fri, 24 Nov 2023 17:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700848635;
+        bh=2JjcSbgitpI0HISfWEs/FS/TJekmaWwCjl5cbRCJIy0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XmaXolBS7G1Upq5wP0Py6drBFGx2hRzGRxbLuKZ5OoyIs5Z+rF89oe6rurmcS/kfG
+         v6/yRymqnNqqzBJfH8PI+CCjmcDkPMESkeRiiUw8kZRVOgpNR+cIIrCqOa2rx43LsK
+         KrSefakN1alZWPPgTNFd5QVxCFhfaY5Hfa36TjLY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: [PATCH 4.19 00/97] 4.19.300-rc1 review
+Date:   Fri, 24 Nov 2023 17:49:33 +0000
+Message-ID: <20231124171934.122298957@linuxfoundation.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 09/10] selftests/mm/cow: Generalize
- do_run_with_thp() helper
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <20231122162950.3854897-10-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231122162950.3854897-10-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.300-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.300-rc1
+X-KernelTest-Deadline: 2023-11-26T17:19+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.11.23 17:29, Ryan Roberts wrote:
-> do_run_with_thp() prepares (PMD-sized) THP memory into different states
-> before running tests. With the introduction of small-sized THP, we would
-> like to reuse this logic to also test those smaller THP sizes. So let's
-> add a size parameter which tells the function what size THP it should
-> operate on.
-> 
-> A separate commit will utilize this change to add new tests for
-> small-sized THP, where available.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->   tools/testing/selftests/mm/cow.c | 146 +++++++++++++++++--------------
->   1 file changed, 79 insertions(+), 67 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
-> index 7324ce5363c0..d03c453cfd5c 100644
-> --- a/tools/testing/selftests/mm/cow.c
-> +++ b/tools/testing/selftests/mm/cow.c
-> @@ -32,7 +32,7 @@
-> 
->   static size_t pagesize;
->   static int pagemap_fd;
-> -static size_t thpsize;
-> +static size_t pmdsize;
->   static int nr_hugetlbsizes;
->   static size_t hugetlbsizes[10];
->   static int gup_fd;
-> @@ -734,14 +734,14 @@ enum thp_run {
->   	THP_RUN_PARTIAL_SHARED,
->   };
-> 
-> -static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
-> +static void do_run_with_thp(test_fn fn, enum thp_run thp_run, size_t size)
+This is the start of the stable review cycle for the 4.19.300 release.
+There are 97 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Nit: can we still call it "thpsize" in this function? That makes it 
-clearer IMHO and avoids most renaming.
+Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
+Anything received after that time might be too late.
 
->   {
->   	char *mem, *mmap_mem, *tmp, *mremap_mem = MAP_FAILED;
-> -	size_t size, mmap_size, mremap_size;
-> +	size_t mmap_size, mremap_size;
->   	int ret;
-> 
-> -	/* For alignment purposes, we need twice the thp size. */
-> -	mmap_size = 2 * thpsize;
-> +	/* For alignment purposes, we need twice the requested size. */
-> +	mmap_size = 2 * size;
->   	mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
->   			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->   	if (mmap_mem == MAP_FAILED) {
-> @@ -749,36 +749,40 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
->   		return;
->   	}
-> 
-> -	/* We need a THP-aligned memory area. */
-> -	mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
-> +	/* We need to naturally align the memory area. */
-> +	mem = (char *)(((uintptr_t)mmap_mem + size) & ~(size - 1));
-> 
-> -	ret = madvise(mem, thpsize, MADV_HUGEPAGE);
-> +	ret = madvise(mem, size, MADV_HUGEPAGE);
->   	if (ret) {
->   		ksft_test_result_fail("MADV_HUGEPAGE failed\n");
->   		goto munmap;
->   	}
-> 
->   	/*
-> -	 * Try to populate a THP. Touch the first sub-page and test if we get
-> -	 * another sub-page populated automatically.
-> +	 * Try to populate a THP. Touch the first sub-page and test if
-> +	 * we get the last sub-page populated automatically.
->   	 */
->   	mem[0] = 0;
-> -	if (!pagemap_is_populated(pagemap_fd, mem + pagesize)) {
-> +	if (!pagemap_is_populated(pagemap_fd, mem + size - pagesize)) {
->   		ksft_test_result_skip("Did not get a THP populated\n");
->   		goto munmap;
->   	}
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.300-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-Yes! I have a patch lying around here that does that same. :)
+thanks,
 
-I guess there is no need to set MADV_NOHUGEPAGE on the remainder of the 
-mmap'ed are:
+greg k-h
 
-Assume we want a 64KiB thp. We mmap'ed 128KiB. If we get a reasonably 
-aligned area, we might populate a 128KiB THP.
+-------------
+Pseudo-Shortlog of commits:
 
-But I assume the MADV_HUGEPAGE will in all configurations properly 
-create a separate 64KiB VMA and we'll never get 128 KiB populated. So 
-this should work reliably.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.300-rc1
 
-> -	memset(mem, 0, thpsize);
-> +	memset(mem, 0, size);
-> 
-> -	size = thpsize;
->   	switch (thp_run) {
->   	case THP_RUN_PMD:
->   	case THP_RUN_PMD_SWAPOUT:
-> +		if (size != pmdsize) {
-> +			ksft_test_result_fail("test bug: can't PMD-map size\n");
-> +			goto munmap;
-> +		}
+Eric Dumazet <edumazet@google.com>
+    net: sched: fix race condition in qdisc_graft()
 
-Maybe rather "assert()" because that's a real BUG in the test?
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    iomap: Set all uptodate bits for an Uptodate page
 
-[...]
+Dongli Zhang <dongli.zhang@oracle.com>
+    scsi: virtio_scsi: limit number of hw queues by nr_cpu_ids
 
-> +	pmdsize = read_pmd_pagesize();
-> +	if (pmdsize)
-> +		ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
+Christian König <christian.koenig@amd.com>
+    drm/amdgpu: fix error handling in amdgpu_bo_list_get()
 
-Maybe simply: "detected PMD size". Zes, we read it via the THP 
-interface, but that shouldn't matter much.
+Kemeng Shi <shikemeng@huaweicloud.com>
+    ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
 
--- 
-Cheers,
+Kemeng Shi <shikemeng@huaweicloud.com>
+    ext4: correct return value of ext4_convert_meta_bg
 
-David / dhildenb
+Kemeng Shi <shikemeng@huaweicloud.com>
+    ext4: correct offset of gdb backup in non meta_bg group to update_backups
+
+Max Kellermann <max.kellermann@ionos.com>
+    ext4: apply umask if ACL support is disabled
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
+
+Vikash Garodia <quic_vgarodia@quicinc.com>
+    media: venus: hfi: add checks to handle capabilities from firmware
+
+Vikash Garodia <quic_vgarodia@quicinc.com>
+    media: venus: hfi: fix the check to handle session buffer requirement
+
+Vikash Garodia <quic_vgarodia@quicinc.com>
+    media: venus: hfi_parser: Add check to keep the number of codecs within range
+
+Sean Young <sean@mess.org>
+    media: sharp: fix sharp encoding
+
+Sean Young <sean@mess.org>
+    media: lirc: drop trailing space from scancode transmit
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    i2c: i801: fix potential race in i801_block_transaction_byte_by_byte
+
+Alexander Sverdlin <alexander.sverdlin@siemens.com>
+    net: dsa: lan9303: consequently nested-lock physical MDIO
+
+Pavel Krasavin <pkrasavin@imaqliq.com>
+    tty: serial: meson: fix hard LOCKUP on crtscts mode
+
+Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+    serial: meson: Use platform_get_irq() to get the interrupt
+
+Neil Armstrong <narmstrong@baylibre.com>
+    tty: serial: meson: retrieve port FIFO size from DT
+
+Colin Ian King <colin.king@canonical.com>
+    serial: meson: remove redundant initialization of variable id
+
+Dmitry Safonov <dima@arista.com>
+    tty/serial: Migrate meson_uart to use has_sysrq
+
+Loys Ollivier <lollivier@baylibre.com>
+    tty: serial: meson: if no alias specified use an available id
+
+Chandradeep Dey <codesigning@chandradeepdey.com>
+    ALSA: hda/realtek - Enable internal speaker of ASUS K6500ZC
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: info: Fix potential deadlock at disconnection
+
+Helge Deller <deller@gmx.de>
+    parisc/power: Fix power soft-off when running on qemu
+
+Helge Deller <deller@gmx.de>
+    parisc/pgtable: Do not drop upper 5 address bits of physical address
+
+Helge Deller <deller@gmx.de>
+    parisc: Prevent booting 64-bit kernels on PA1.x machines
+
+Heiko Carstens <hca@linux.ibm.com>
+    s390/cmma: fix handling of swapper_pg_dir and invalid_pg_dir
+
+Heiko Carstens <hca@linux.ibm.com>
+    s390/cmma: fix initial kernel address space page table walk
+
+Alain Volmat <alain.volmat@foss.st.com>
+    dmaengine: stm32-mdma: correct desc prep when channel running
+
+Sanjuán García, Jorge <Jorge.SanjuanGarcia@duagon.com>
+    mcb: fix error handling for different scenarios when parsing
+
+Eric Biggers <ebiggers@google.com>
+    quota: explicitly forbid quota files from being encrypted
+
+Zhihao Cheng <chengzhihao1@huawei.com>
+    jbd2: fix potential data lost in recovering journal raced with synchronizing fs bdev
+
+Brian Geffon <bgeffon@google.com>
+    PM: hibernate: Clean up sync_read handling in snapshot_write_next()
+
+Brian Geffon <bgeffon@google.com>
+    PM: hibernate: Use __get_safe_page() rather than touching the list
+
+Dan Carpenter <dan.carpenter@linaro.org>
+    mmc: vub300: fix an error code
+
+Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+    clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+
+Helge Deller <deller@gmx.de>
+    parisc/power: Add power soft-off when running on qemu
+
+Helge Deller <deller@gmx.de>
+    parisc/pdc: Add width field to struct pdc_model
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    PCI: keystone: Don't discard .probe() callback
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    PCI: keystone: Don't discard .remove() callback
+
+Herve Codina <herve.codina@bootlin.com>
+    genirq/generic_chip: Make irq_remove_generic_chip() irqdomain aware
+
+Rong Chen <rong.chen@amlogic.com>
+    mmc: meson-gx: Remove setting of CMD_CFG_ERROR
+
+Lukas Wunner <lukas@wunner.de>
+    PCI/sysfs: Protect driver's D3cold preference from user space
+
+David Woodhouse <dwmw@amazon.co.uk>
+    hvc/xen: fix error path in xen_hvc_init() to always register frontend driver
+
+Paul Moore <paul@paul-moore.com>
+    audit: don't WARN_ON_ONCE(!current->mm) in audit_exe_compare()
+
+Paul Moore <paul@paul-moore.com>
+    audit: don't take task_lock() in audit_exe_compare() code path
+
+Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+    KVM: x86: Ignore MSR_AMD64_TW_CFG access
+
+Kees Cook <keescook@chromium.org>
+    randstruct: Fix gcc-plugin performance mode to stay in group
+
+Vikash Garodia <quic_vgarodia@quicinc.com>
+    media: venus: hfi: add checks to perform sanity on queue pointers
+
+Anastasia Belova <abelova@astralinux.ru>
+    cifs: spnego: add ';' in HOST_KEY_LEN
+
+Vlad Buslov <vladbu@nvidia.com>
+    macvlan: Don't propagate promisc change to lower dev in passthru
+
+Linus Walleij <linus.walleij@linaro.org>
+    net: ethernet: cortina: Fix MTU max setting
+
+Linus Walleij <linus.walleij@linaro.org>
+    net: ethernet: cortina: Handle large frames
+
+Linus Walleij <linus.walleij@linaro.org>
+    net: ethernet: cortina: Fix max RX frame define
+
+Eric Dumazet <edumazet@google.com>
+    ptp: annotate data-race around q->head and q->tail
+
+Juergen Gross <jgross@suse.com>
+    xen/events: fix delayed eoi list handling
+
+Willem de Bruijn <willemb@google.com>
+    ppp: limit MRU to 64K
+
+Shigeru Yoshida <syoshida@redhat.com>
+    tipc: Fix kernel-infoleak due to uninitialized TLV value
+
+Shigeru Yoshida <syoshida@redhat.com>
+    tty: Fix uninit-value access in ppp_sync_receive()
+
+Eric Dumazet <edumazet@google.com>
+    ipvlan: add ipvlan_route_v6_outbound() helper
+
+Olga Kornievskaia <kolga@netapp.com>
+    NFSv4.1: fix SP4_MACH_CRED protection for pnfs IO
+
+Dan Carpenter <dan.carpenter@linaro.org>
+    pwm: Fix double shift bug
+
+Wayne Lin <wayne.lin@amd.com>
+    drm/amd/display: Avoid NULL dereference of timing generator
+
+Bob Peterson <rpeterso@redhat.com>
+    gfs2: ignore negated quota changes
+
+Hans Verkuil <hverkuil-cisco@xs4all.nl>
+    media: vivid: avoid integer overflow
+
+Rajeshwar R Shinde <coolrrsh@gmail.com>
+    media: gspca: cpia1: shift-out-of-bounds in set_flicker
+
+Axel Lin <axel.lin@ingics.com>
+    i2c: sun6i-p2wi: Prevent potential division by zero
+
+Hardik Gajjar <hgajjar@de.adit-jv.com>
+    usb: gadget: f_ncm: Always set current gadget in ncm_bind()
+
+Yi Yang <yiyang13@huawei.com>
+    tty: vcc: Add check for kstrdup() in vcc_probe()
+
+Jiri Kosina <jkosina@suse.cz>
+    HID: Add quirk for Dell Pro Wireless Keyboard and Mouse KM5221W
+
+Wenchao Hao <haowenchao2@huawei.com>
+    scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup()
+
+Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+    atm: iphase: Do PCI error checks on own line
+
+Cezary Rojewski <cezary.rojewski@intel.com>
+    ALSA: hda: Fix possible null-ptr-deref when assigning a stream
+
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+    ARM: 9320/1: fix stack depot IRQ stack filter
+
+Manas Ghandat <ghandatmanas@gmail.com>
+    jfs: fix array-index-out-of-bounds in diAlloc
+
+Manas Ghandat <ghandatmanas@gmail.com>
+    jfs: fix array-index-out-of-bounds in dbFindLeaf
+
+Juntong Deng <juntong.deng@outlook.com>
+    fs/jfs: Add validity check for db_maxag and db_agpref
+
+Juntong Deng <juntong.deng@outlook.com>
+    fs/jfs: Add check for negative db_l2nbperpage
+
+Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+    RDMA/hfi1: Use FIELD_GET() to extract Link Width
+
+Lu Jialin <lujialin4@huawei.com>
+    crypto: pcrypt - Fix hungtask for PADATA_RESET
+
+zhujun2 <zhujun2@cmss.chinamobile.com>
+    selftests/efivarfs: create-read: fix a resource leak
+
+Qu Huang <qu.huang@linux.dev>
+    drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
+
+Mario Limonciello <mario.limonciello@amd.com>
+    drm/amd: Fix UBSAN array-index-out-of-bounds for Polaris and Tonga
+
+Mario Limonciello <mario.limonciello@amd.com>
+    drm/amd: Fix UBSAN array-index-out-of-bounds for SMU7
+
+Olli Asikainen <olli.asikainen@gmail.com>
+    platform/x86: thinkpad_acpi: Add battery quirk for Thinkpad X120e
+
+ZhengHan Wang <wzhmmmmm@gmail.com>
+    Bluetooth: Fix double free in hci_conn_cleanup
+
+Eric Dumazet <edumazet@google.com>
+    net: annotate data-races around sk->sk_dst_pending_confirm
+
+Eric Dumazet <edumazet@google.com>
+    net: annotate data-races around sk->sk_tx_queue_mapping
+
+Dmitry Antipov <dmantipov@yandex.ru>
+    wifi: ath10k: fix clang-specific fortify warning
+
+Dmitry Antipov <dmantipov@yandex.ru>
+    wifi: ath9k: fix clang-specific fortify warnings
+
+Ping-Ke Shih <pkshih@realtek.com>
+    wifi: mac80211: don't return unset power in ieee80211_get_tx_power()
+
+Mike Rapoport (IBM) <rppt@kernel.org>
+    x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+
+Ronald Wahl <ronald.wahl@raritan.com>
+    clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
+
+Jacky Bai <ping.bai@nxp.com>
+    clocksource/drivers/timer-imx-gpt: Fix potential memory leak
+
+Shuai Xue <xueshuai@linux.alibaba.com>
+    perf/core: Bail out early if the request AUX area is out of bound
+
+John Stultz <jstultz@google.com>
+    locking/ww_mutex/test: Fix potential workqueue corruption
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/arm/include/asm/exception.h                   |  4 --
+ arch/parisc/include/uapi/asm/pdc.h                 |  1 +
+ arch/parisc/kernel/entry.S                         |  7 ++--
+ arch/parisc/kernel/head.S                          |  5 +--
+ arch/s390/mm/page-states.c                         | 19 +++++++--
+ arch/x86/include/asm/msr-index.h                   |  1 +
+ arch/x86/include/asm/numa.h                        |  7 ----
+ arch/x86/kvm/x86.c                                 |  2 +
+ arch/x86/mm/numa.c                                 |  7 ----
+ crypto/pcrypt.c                                    |  4 ++
+ drivers/atm/iphase.c                               | 20 +++++----
+ drivers/clk/qcom/gcc-ipq8074.c                     |  6 ---
+ drivers/clocksource/tcb_clksrc.c                   |  1 +
+ drivers/clocksource/timer-imx-gpt.c                | 18 +++++---
+ drivers/dma/stm32-mdma.c                           |  4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c        |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c        |  6 +++
+ drivers/gpu/drm/amd/display/dc/core/dc_stream.c    |  4 +-
+ drivers/gpu/drm/amd/include/pptable.h              |  4 +-
+ drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h | 16 +++----
+ drivers/hid/hid-ids.h                              |  1 +
+ drivers/hid/hid-quirks.c                           |  1 +
+ drivers/i2c/busses/i2c-i801.c                      | 19 ++++-----
+ drivers/i2c/busses/i2c-sun6i-p2wi.c                |  5 +++
+ drivers/infiniband/hw/hfi1/pcie.c                  |  9 +---
+ drivers/mcb/mcb-core.c                             |  1 +
+ drivers/mcb/mcb-parse.c                            |  2 +-
+ drivers/media/platform/qcom/venus/hfi_msgs.c       |  2 +-
+ drivers/media/platform/qcom/venus/hfi_parser.c     | 15 +++++++
+ drivers/media/platform/qcom/venus/hfi_venus.c      | 10 +++++
+ drivers/media/platform/vivid/vivid-rds-gen.c       |  2 +-
+ drivers/media/rc/ir-sharp-decoder.c                |  8 ++--
+ drivers/media/rc/lirc_dev.c                        |  6 ++-
+ drivers/media/usb/gspca/cpia1.c                    |  3 ++
+ drivers/mmc/host/meson-gx-mmc.c                    |  1 -
+ drivers/mmc/host/vub300.c                          |  1 +
+ drivers/net/dsa/lan9303_mdio.c                     |  4 +-
+ drivers/net/ethernet/cortina/gemini.c              | 45 +++++++++++++-------
+ drivers/net/ethernet/cortina/gemini.h              |  4 +-
+ drivers/net/ethernet/realtek/r8169_main.c          |  4 +-
+ drivers/net/ipvlan/ipvlan_core.c                   | 41 +++++++++++-------
+ drivers/net/macvlan.c                              |  2 +-
+ drivers/net/ppp/ppp_synctty.c                      |  6 ++-
+ drivers/net/wireless/ath/ath10k/debug.c            |  2 +-
+ drivers/net/wireless/ath/ath9k/debug.c             |  2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_debug.c     |  2 +-
+ drivers/parisc/power.c                             | 16 ++++++-
+ drivers/pci/controller/dwc/pci-keystone.c          |  8 ++--
+ drivers/pci/pci-acpi.c                             |  2 +-
+ drivers/pci/pci-sysfs.c                            |  5 +--
+ drivers/platform/x86/thinkpad_acpi.c               |  1 +
+ drivers/ptp/ptp_chardev.c                          |  3 +-
+ drivers/ptp/ptp_clock.c                            |  5 ++-
+ drivers/ptp/ptp_private.h                          |  8 +++-
+ drivers/ptp/ptp_sysfs.c                            |  3 +-
+ drivers/scsi/libfc/fc_lport.c                      |  6 +++
+ drivers/scsi/virtio_scsi.c                         |  1 +
+ drivers/tty/hvc/hvc_xen.c                          |  5 ++-
+ drivers/tty/serial/meson_uart.c                    | 49 +++++++++++++++-------
+ drivers/tty/vcc.c                                  | 16 +++++--
+ drivers/usb/gadget/function/f_ncm.c                | 27 +++++-------
+ drivers/xen/events/events_base.c                   |  4 +-
+ fs/cifs/cifs_spnego.c                              |  4 +-
+ fs/ext4/acl.h                                      |  5 +++
+ fs/ext4/resize.c                                   | 19 ++++-----
+ fs/gfs2/quota.c                                    | 11 +++++
+ fs/iomap.c                                         |  3 ++
+ fs/jbd2/recovery.c                                 |  8 ++++
+ fs/jfs/jfs_dmap.c                                  | 23 +++++++---
+ fs/jfs/jfs_imap.c                                  |  5 ++-
+ fs/nfs/nfs4proc.c                                  |  5 ++-
+ fs/quota/dquot.c                                   | 14 +++++++
+ include/linux/pwm.h                                |  4 +-
+ include/net/sock.h                                 | 26 ++++++++----
+ kernel/audit_watch.c                               |  9 +++-
+ kernel/events/ring_buffer.c                        |  6 +++
+ kernel/irq/generic-chip.c                          | 25 ++++++++---
+ kernel/locking/test-ww_mutex.c                     | 20 +++++----
+ kernel/padata.c                                    |  2 +-
+ kernel/power/snapshot.c                            | 16 ++++---
+ net/bluetooth/hci_conn.c                           |  6 +--
+ net/bluetooth/hci_sysfs.c                          | 23 +++++-----
+ net/core/sock.c                                    |  2 +-
+ net/ipv4/tcp_output.c                              |  2 +-
+ net/mac80211/cfg.c                                 |  4 ++
+ net/sched/sch_api.c                                |  5 ++-
+ net/tipc/netlink_compat.c                          |  1 +
+ scripts/gcc-plugins/randomize_layout_plugin.c      | 11 +++--
+ sound/core/info.c                                  | 21 ++++++----
+ sound/hda/hdac_stream.c                            |  6 ++-
+ sound/pci/hda/patch_realtek.c                      |  1 +
+ tools/testing/selftests/efivarfs/create-read.c     |  2 +
+ 93 files changed, 514 insertions(+), 273 deletions(-)
+
 
