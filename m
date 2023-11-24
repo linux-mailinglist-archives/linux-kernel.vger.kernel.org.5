@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6427F71B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A537F71BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345595AbjKXKkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        id S1345407AbjKXKlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345599AbjKXKkV (ORCPT
+        with ESMTP id S1345395AbjKXKlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:40:21 -0500
+        Fri, 24 Nov 2023 05:41:02 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EDC1AE
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:40:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0480C433C7;
-        Fri, 24 Nov 2023 10:40:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236BE91
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:41:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DADEC433C8;
+        Fri, 24 Nov 2023 10:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700822428;
-        bh=y+1TDiBAnMt4VxdCKGR5QS2biqH47tvAiQJ9i4yez2Y=;
+        s=k20201202; t=1700822468;
+        bh=B9wGFKlvp/YZEopRaAvdU1A2HubEm3DJLIXAlfjLLZA=;
         h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-        b=p/qa+RJdm7WokbrVvywi9obaB050hb9y0zng38ZwWloP45PRz9232CjxOYzodFL8L
-         gRibElH+QG/dcvyBOrWEQED3vZjkhgtvRO5jbcTTOzHXl8kJR/SHt51HgicJgDeK6t
-         FnC5SWQYnR15tJhpZFgGipbCieJveCjAfpWuZzbnyF8RPh5dDt99LCC65nIFbYNSp6
-         FiGYFMdrKwQ+xpUTiO5gbQVwNBlfKEcl39Y3h01GRO/KwBKd71tFV3ohenFQK4m8d0
-         RyxAnwN1W8Rv+7n6JjcXMwcWRNcuP1XBOes1rA1hxsvmlCZYCapgbcKHVP/vT17+SO
-         ojiNCUBS7DoLg==
-Message-ID: <74226af80ecee1c3544c1bcf66565514.mripard@kernel.org>
-Date:   Fri, 24 Nov 2023 10:40:25 +0000
+        b=L69sDpmu9gMgz1zrB8/1oyyUf/W8N4ry1cjMHW049czR5sJm4eG5fugpYRBBKZuv4
+         W88Pn8p+EOJyPbq8U3moFuVR220+C6w/WiP+epLu7J+0iNf7PDI0lwF2DcW3NIw39D
+         oSuL+Rnu1jyCxKR9e8SbLyIpSdpje4k2huqZftU98Q51+pi9Y4JzU/DSGgcPO+RS0J
+         oV+SH4b3cmrABZlj9GcxMMSueE17XDXq0dpYHnUQdXAXR3l2CjBuGCwc5DUEm2Arh1
+         jc8FmE9NPKOLuuCHWVN5ectENAGY+uVpxn2/AWtRT/wbYAGkOC1qb4Wny7CPDFF+TH
+         lHPyI9A+eZ8wA==
+Message-ID: <5b594d30e08b4acaf7aaf9b7a4419d2a.mripard@kernel.org>
+Date:   Fri, 24 Nov 2023 10:41:05 +0000
 From:   "Maxime Ripard" <mripard@kernel.org>
 To:     "Dmitry Osipenko" <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH v18 05/26] drm/shmem-helper: Remove obsoleted is_iomem
- test
-In-Reply-To: <20231029230205.93277-6-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-6-dmitry.osipenko@collabora.com>
+Subject: Re: [PATCH v18 06/26] drm/shmem-helper: Add and use pages_pin_count
+In-Reply-To: <20231029230205.93277-7-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-7-dmitry.osipenko@collabora.com>
 Cc:     dri-devel@lists.freedesktop.org, kernel@collabora.com,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
@@ -62,12 +61,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 02:01:44 +0300, Dmitry Osipenko wrote:
-> Everything that uses the mapped buffer should be agnostic to is_iomem.
-> The only reason for the is_iomem test is that we're setting shmem->vaddr
-> to the returned map->vaddr. Now that the shmem->vaddr code is gone, remove
-> the obsoleted is_iomem test to clean up the code.
->=20
+On Mon, 30 Oct 2023 02:01:45 +0300, Dmitry Osipenko wrote:
+> Add separate pages_pin_count for tracking of whether drm-shmem pages are
+> moveable or not. With the addition of memory shrinker support to drm-shme=
+m,
+> the pages_use_count will no longer determine whether pages are hard-pinned
+> in memory, but whether pages exist and are soft-pinned (and could be swap=
+ped
+> out). The pages_pin_count > 1 will hard-pin pages in memory.
 >=20
 > [ ... ]
 
