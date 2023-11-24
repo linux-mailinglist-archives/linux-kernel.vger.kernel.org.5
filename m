@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F52F7F858A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9DE7F858D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjKXVly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        id S230408AbjKXVna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKXVlv (ORCPT
+        with ESMTP id S229557AbjKXVn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:41:51 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F09172E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:41:57 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a03a900956dso446293766b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:41:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700862115; x=1701466915; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnKDKbUOd1WxbpDbxgYGPaEFH1QtfgYmXWR7clpWkts=;
-        b=hw8/Lzju34oPqCwtW9K+Ik359I2sQBTHXMjwvM1VpVG3tnmd7irO9ywXrdv/8toqDb
-         auG+QAhSieej4w97kyz7RDQz3exhMSaboVWx9jTyOK9+aPNzlAqW2CfieOPUnjX6rdl2
-         BCzVUvHFmVG5U21bv06mEiaK5RGr8LuV6yid8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700862115; x=1701466915;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DnKDKbUOd1WxbpDbxgYGPaEFH1QtfgYmXWR7clpWkts=;
-        b=JCw0ksnHwuF9/h4oSXdODiG0pBHtJuDWQZbrViGGLAr55aUo7pL20CUvK+sFvix/lp
-         B+20pOap3LItxrSth1B51/HXsww2oXYgpH1GYm5NuLhRtlfPhAh/KjF8dw0kzIny8+be
-         Hs5lLhkxzUeZ8SqFGQRUZ55q7WG/7tfkKk2Ype+dgu0RoUiqs3DVSl/ACMgbvVk1UNo9
-         2T8Nf8Ni9wAWnYnAKFy1PAahRBpyWFEyI9vBu3/LY9AAZv6jQfC9E/fwRf8tsNdVzEef
-         DBE+MW8GRTzGoG9WOT92HrDzyz1WS/Y+PB/2BSoL6Y8wVVGOnSGuc3/5xRduAk2B01mh
-         33pg==
-X-Gm-Message-State: AOJu0YzP5DcQDUrDLmWml4KtGlcsNY0XCOsfn/I1ONUZdstGQUYBEhLn
-        smasLCAhJjJw4BEeO7xWJ3sQ6ERQb79illfKnjAyENig
-X-Google-Smtp-Source: AGHT+IEcWmm2BQHhvlGjFiIHEm7RCy60aGGmYp5IV2IyZI7FoxzW97CRiXwDXY8Uh7KNVplZiJntsw==
-X-Received: by 2002:a17:906:5308:b0:a01:bd67:d2fb with SMTP id h8-20020a170906530800b00a01bd67d2fbmr6600572ejo.0.1700862115331;
-        Fri, 24 Nov 2023 13:41:55 -0800 (PST)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id ks20-20020a170906f85400b009db53aa4f7bsm2544964ejb.28.2023.11.24.13.41.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 13:41:54 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a002562bd8bso449764266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:41:54 -0800 (PST)
-X-Received: by 2002:a17:906:518c:b0:9ee:29fe:9499 with SMTP id
- y12-20020a170906518c00b009ee29fe9499mr7818143ejk.4.1700862114559; Fri, 24 Nov
- 2023 13:41:54 -0800 (PST)
+        Fri, 24 Nov 2023 16:43:28 -0500
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D93173D;
+        Fri, 24 Nov 2023 13:43:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5Op8b0I8io/cQDemiwtxI1Z5ZjO+RqtdJ3vH9IjLNJc=; b=jGxtCFewdD+ATRtqBWnzy5/xU6
+        l0e1EzcPpJQdrGpTLz0wqtsqL8X64FvuDSlyT0bkasNXw6z7dwmtrkOE1rEWheCcyQCEVLJtsM2Ia
+        aZhfpjye5j1Zne9sn+N6S4w/RZYU/BVJV50irOefBUui+d4uCneLRN4WmPXIKUtu5QLRpEICMc6lV
+        xUtSZmMUfletzSrI3znctClNB+D6ePslFfIz6rXT1X2TuM4FtSoWzUZ+v0hVdzXNwqru/bM0CopES
+        L5w2sWlnWGH+o2R+PE1ITW+vsoLSKVv8gL7xEKgINclf9Wn+4GZTKUht4ugPnXDqbGmjW7wk43zRb
+        LZoiyrXA==;
+Received: from 201-92-23-238.dsl.telesp.net.br ([201.92.23.238] helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1r6dxC-006pom-Bo; Fri, 24 Nov 2023 22:43:14 +0100
+Message-ID: <66ab7a03-6794-28c5-5a92-548c8700ae7c@igalia.com>
+Date:   Fri, 24 Nov 2023 18:43:08 -0300
 MIME-Version: 1.0
-References: <20231124060553.GA575483@ZenIV>
-In-Reply-To: <20231124060553.GA575483@ZenIV>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Nov 2023 13:41:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgZNitYwL0kC4GWxWo9zfNXX-8Nhe=D6VtAhP9CAG_xcw@mail.gmail.com>
-Message-ID: <CAHk-=wgZNitYwL0kC4GWxWo9zfNXX-8Nhe=D6VtAhP9CAG_xcw@mail.gmail.com>
-Subject: Re: [PATCHES] assorted dcache stuff
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 0/5] pstore: add tty frontend and multi-backend
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Yuanhe Shu <xiangzao@linux.alibaba.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        tony.luck@intel.com, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230928024244.257687-1-xiangzao@linux.alibaba.com>
+ <202309282030.8CE179EBB@keescook>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <202309282030.8CE179EBB@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 at 22:05, Al Viro <viro@zeniv.linux.org.uk> wrote:
+Hi Yuanhe / Kees.
+
+My apologies (and embarrassment) for responding almost 2mo later...
+
+
+On 29/09/2023 00:49, Kees Cook wrote:
+> [...]
+>> Another problem is that currently pstore only supports a single backend.
+>> For debugging kdump problems, we hope to save the console logs and tty
+>> logs to the ramoops backend of pstore, as it will not be lost after
+>> rebooting. If the user has enabled another backend, the ramoops backend
+>> will not be registered. To this end, we add the multi-backend function
+>> to support simultaneous registration of multiple backends.
+> 
+> Ah very cool; I really like this idea. I'd wanted to do it for a while
+> just to make testing easier, but I hadn't had time to attempt it.
+
+I found the idea of multi-backend quite interesting, thanks for that!!!
+And to add on what's Kees mentioned, not sure others' opinions but seems
+to me this is a bit more straightforward / path-of-less-resistance than
+the the tty frontend, so I'd suggest split the series and focus first on
+this and once accepted, hook the tty thingy.
+
+Not that the series can't be sent altogether, reviews could work in
+parallel...I just see them as a bit tangential one to the other, personally.
+
+> [...]
+> - The multi-backend will enable _all possible_ backends, and that's a
+>   big change that will do weird things for some pstore users. I would
+>   prefer a pstore option to opt-in to enabling all backends. Perhaps
+>   have "pstore.backend=" be parsed with commas, so a list of backends
+>   can be provided, or "all" for the "all backends" behavior.
+> 
+> - Moving the pstorefs files into a subdirectory will break userspace
+>   immediately (e.g. systemd-pstore expects very specifically named
+>   files). Using subdirectories seems like a good idea, but perhaps
+>   we need hardlinks into the root pstorefs for the "first" backend,
+>   or some other creative solution here.
 >
->         Assorted dcache cleanups.
 
-Looks obvious enough to me.
+Big +1 in these two, commas are a very nice idea and changing the sysfs
+current way of exposing pstore logs would break at least kdumpst (the
+Steam Deck/Arch pstore / kdump tool), besides systemd-pstore that was
+already mentioned (and who knows what more tools / scripts out in the
+field).
 
-Famous last words.
+Overall, thanks a bunch for this work Yuanhe!
+Cheers,
 
-                  Linus
+
+Guilherme
