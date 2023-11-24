@@ -2,75 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1637F754E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0307F7551
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbjKXNen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        id S230494AbjKXNfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbjKXNeP (ORCPT
+        with ESMTP id S1345481AbjKXNen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:34:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B58E173B;
-        Fri, 24 Nov 2023 05:34:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700832847; x=1732368847;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BqOo8o3FAxQ3sv9OF/Du7NB3vD4Ym6X99rsyMxspLOM=;
-  b=KTge55eBh93oK3Q0xtIOLcD0Un9M7udXR1ayJ26jEE/EHZzmEw7zG4wF
-   Q/9nvVX1jC3i36KBf5ItSg6EtXPKPWEqQsC2ZiKh0+z6BUSDZyxevz1gN
-   NPsGFdcKMcsZI+TAfcSOnUHUTvn7aGsnDXbX/zo8WqBJ3HgX0BaEplYVc
-   Vok53/RAOQhz4HnngzcolIitnDYRSak1mc8IektnZtw860eGY9nEsUeNt
-   r72Cxpz+I31Z5n4sAP70mU5hyaizpNkuD60iAPkFKaNE9SHxZbZWaYUNZ
-   fntzwTIalpjc+y9HrkvK48YgPHLE8iHCHLNnHqLKQou/m8A11ltYanHgj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="389576992"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="389576992"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 05:34:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="15634065"
-Received: from dlemiech-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.59.78])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 05:34:02 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id A48F510A38A; Fri, 24 Nov 2023 16:33:58 +0300 (+03)
-Date:   Fri, 24 Nov 2023 16:33:58 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        sashal@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Message-ID: <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
- <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
- <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
- <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
+        Fri, 24 Nov 2023 08:34:43 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2521FF9;
+        Fri, 24 Nov 2023 05:34:48 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vx1k3KH_1700832884;
+Received: from 30.221.129.111(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vx1k3KH_1700832884)
+          by smtp.aliyun-inc.com;
+          Fri, 24 Nov 2023 21:34:46 +0800
+Message-ID: <83d3784e-1fed-36b6-22a8-52995fac429e@linux.alibaba.com>
+Date:   Fri, 24 Nov 2023 21:34:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next 0/7] net/smc: implement SMCv2.1 virtual ISM
+ device support
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, wintera@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1700402277-93750-1-git-send-email-guwen@linux.alibaba.com>
+ <30b53b21-40ad-407a-bef7-ddc28f8978e2@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <30b53b21-40ad-407a-bef7-ddc28f8978e2@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.5 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,64 +51,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 12:04:56PM +0100, Jeremi Piotrowski wrote:
-> On 24/11/2023 11:43, Kirill A. Shutemov wrote:
-> > On Fri, Nov 24, 2023 at 11:31:44AM +0100, Jeremi Piotrowski wrote:
-> >> On 23/11/2023 14:58, Kirill A. Shutemov wrote:
-> >>> On Wed, Nov 22, 2023 at 06:01:04PM +0100, Jeremi Piotrowski wrote:
-> >>>> Check for additional CPUID bits to identify TDX guests running with Trust
-> >>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
-> >>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
-> >>>>
-> >>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is visible
-> >>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
-> >>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
-> >>>> aware mechanisms for what's left. So currently such guests do not have
-> >>>> X86_FEATURE_TDX_GUEST set.
-> >>>>
-> >>>> We want the kernel to have X86_FEATURE_TDX_GUEST set for all TDX guests so we
-> >>>> need to check these additional CPUID bits, but we skip further initialization
-> >>>> in the function as we aren't guaranteed access to TDX module calls.
-> >>>
-> >>> I don't follow. The idea of partitioning is that L2 OS can be
-> >>> unenlightened and have no idea if it runs indide of TD. But this patch
-> >>> tries to enumerate TDX anyway.
-> >>>
-> >>> Why?
-> >>>
-> >>
-> >> That's not the only idea of partitioning. Partitioning provides different privilege
-> >> levels within the TD, and unenlightened L2 OS can be made to work but are inefficient.
-> >> In our case Linux always runs enlightened (both with and without TD partitioning), and
-> >> uses TDX functionality where applicable (TDX vmcalls, PTE encryption bit).
-> > 
-> > What value L1 adds in this case? If L2 has to be enlightened just run the
-> > enlightened OS directly as L1 and ditch half-measures. I think you can
-> > gain some performance this way.
-> > 
+
+
+On 2023/11/24 21:11, Wenjia Zhang wrote:
 > 
-> It's primarily about the privilege separation, performance is a reason
-> one doesn't want to run unenlightened. The L1 makes the following possible:
-> - TPM emulation within the trust domain but isolated from the OS
-> - infrastructure interfaces for things like VM live migration
-> - support for Virtual Trust Levels[1], Virtual Secure Mode[2]
 > 
-> These provide a lot of value to users, it's not at all about half-measures.
+> On 19.11.23 14:57, Wen Gu wrote:
+>> The fourth edition of SMCv2 adds the SMC version 2.1 feature updates for
+>> SMC-Dv2 with virtual ISM. Virtual ISM are created and supported mainly by
+>> OS or hypervisor software, comparable to IBM ISM which is based on platform
+>> firmware or hardware.
+>>
+>> With the introduction of virtual ISM, SMCv2.1 makes some updates:
+>>
+>> - Introduce feature bitmask to indicate supplemental features.
+>> - Reserve a range of CHIDs for virtual ISM.
+>> - Support extended GIDs (128 bits) in CLC handshake.
+>>
+>> So this patch set aims to implement these updates in Linux kernel. And it
+>> acts as the first part of the new version of [1].
+>>
+>> [1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
+>>
+>> Wen Gu (7):
+>>    net/smc: Rename some variable 'fce' to 'fce_v2x' for clarity
+>>    net/smc: support SMCv2.x supplemental features negotiation
+>>    net/smc: introduce virtual ISM device support feature
+>>    net/smc: define a reserved CHID range for virtual ISM devices
+>>    net/smc: compatible with 128-bits extend GID of virtual ISM device
+>>    net/smc: disable SEID on non-s390 archs where virtual ISM may be used
+>>    net/smc: manage system EID in SMC stack instead of ISM driver
+>>
+>>   drivers/s390/net/ism.h     |  6 ---
+>>   drivers/s390/net/ism_drv.c | 54 +++++++--------------------
+>>   include/linux/ism.h        |  1 -
+>>   include/net/smc.h          | 16 +++++---
+>>   net/smc/af_smc.c           | 68 ++++++++++++++++++++++++++-------
+>>   net/smc/smc.h              |  7 ++++
+>>   net/smc/smc_clc.c          | 93 ++++++++++++++++++++++++++++++++--------------
+>>   net/smc/smc_clc.h          | 22 +++++++----
+>>   net/smc/smc_core.c         | 30 ++++++++++-----
+>>   net/smc/smc_core.h         |  8 ++--
+>>   net/smc/smc_diag.c         |  7 +++-
+>>   net/smc/smc_ism.c          | 57 ++++++++++++++++++++--------
+>>   net/smc/smc_ism.h          | 31 +++++++++++++++-
+>>   net/smc/smc_pnet.c         |  4 +-
+>>   14 files changed, 269 insertions(+), 135 deletions(-)
+>>
+> 
+> Hi Wen Gu,
+> 
+> Just FYI, the review is still on going and some tests on our plateform still need to do. I'll give you my comments as 
+> soon as the testing is done. I think it would be at the beginning of next week.
+> 
+> Thanks,
+> Wenjia
 
-Hm. Okay.
+Hi Wenjian,
 
-Can we take a step back? What is bigger picture here? What enlightenment
-do you expect from the guest when everything is in-place?
+Thank you very much. I appreciate that you help to test them on your platform since I can only test
+them with loopback-ism.
 
-So far I see that you try to get kernel think that it runs as TDX guest,
-but not really. This is not very convincing model.
+And I am going to send a new version which is rebased to the latest net-next and fix two existing
+comments. If the current tests have not started yet, could you please test based on my upcoming v2 ?
 
-Why does L2 need to know if it runs under TDX or SEV? Can't it just think
-it runs as Hyper-V guest and all difference between TDX and SEV abstracted
-by L1?
-
-So far, I failed to see coherent design. Maybe I just don't know where to
-look.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Thanks and regards,
+Wen Gu
