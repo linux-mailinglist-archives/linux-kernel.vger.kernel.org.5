@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14DB7F7894
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A45F7F7896
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjKXQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        id S1345491AbjKXQIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:08:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjKXQI1 (ORCPT
+        with ESMTP id S229659AbjKXQIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:08:27 -0500
+        Fri, 24 Nov 2023 11:08:41 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CC2D53
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:08:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEC8199A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:08:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700842112;
+        s=mimecast20190719; t=1700842127;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=cmsrkiY67tdSL4I4FDP974bqK0BocuUfUMFhGGwoOH0=;
-        b=Zz534stYnlfhPYKGEf+Y0/zYMe3Ontdri2HIRSVDGhjfXXBDK2NashIiEty7dT1eRoo3wW
-        CwqZNaGNQiW69tpM0dClD52hNK0twltr+mvhcgFOGmvxdaPzhlNeBRoEaa3VH0Viz/koBU
-        +XeTriLFwRbr3hw2I5UJ1PbE17PuO9k=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=fDHUw944JuBDjccgWURYSTGVRnttpEGwcc0SxiiIiWE=;
+        b=XXDmmVqy6kpcfg5BceY202F/jYvhFPbHdJMsVAWKZDabDdbClRlchnrW9cOvDdSQCK3SQR
+        S2g/2FXKmtlKzuXYIB2R82iKH68KvUcO9GtPdT0wsC24tra5568KLrnFDU1cNPciVCSO2J
+        LDvaKyzi9D39/V7PZTU3Nz5QnM8Samg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-425-oChJ37fHM9aGEcSC8BpIVQ-1; Fri, 24 Nov 2023 11:08:31 -0500
-X-MC-Unique: oChJ37fHM9aGEcSC8BpIVQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67a16ff92abso8727946d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:08:31 -0800 (PST)
+ us-mta-635-iGroKavIOYuqjHwJKiVJmQ-1; Fri, 24 Nov 2023 11:08:45 -0500
+X-MC-Unique: iGroKavIOYuqjHwJKiVJmQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-679f44810d9so19560546d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:08:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700842110; x=1701446910;
+        d=1e100.net; s=20230601; t=1700842125; x=1701446925;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cmsrkiY67tdSL4I4FDP974bqK0BocuUfUMFhGGwoOH0=;
-        b=qn6hTiXX3WejaD4gUPb8Plvw8Po+cAfyKaMHVfk74qrJzxiKkln88oWb8UMrp1dW0w
-         qbKPcFCkjmt1LwkOk3qHqkH1HWjIOP8em88R54vLP9y19RrUb5nLZq+WKZlm4r0cLTlW
-         sYv8axxDMeBMnSIlbMcSs6pJsvdEAEp4FeJdY1QY1ia7dzRbtSX/QCjBJuTN+te8Y5zv
-         h7G2xb31kFrAIAIEJFH9CjAbnQW7UspDz020FYoyFJsZnWkZYt+uzB1vDNahMD44O5kP
-         5zm8IPmABcsq4DeBZnZ56vUGLJ/iIXCiyQzzKfxth4MngVuHqheb2vxoTqcvluwO26GG
-         Tkbg==
-X-Gm-Message-State: AOJu0YyeYMcyTzc3ARIVkrIq9KoMnQZOLmR8JeCfhAK92FjCZ27v0HdB
-        UeVopidxtwUGPGFQByZq5rr6jYA5W6l1SL00sZCT5EKx3rky1rGaMqLANQWXpAvkbGhA54rzpNL
-        RK7TYPlFQ0kQG3/AYvHK3RVnw
-X-Received: by 2002:a0c:efc8:0:b0:66f:bc3f:bd7 with SMTP id a8-20020a0cefc8000000b0066fbc3f0bd7mr3703820qvt.27.1700842110519;
-        Fri, 24 Nov 2023 08:08:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGXQy7rC3OFnwpDFz32XJyMJXH3K21FMQ2Wp7skKcym3brbTwQY0ByVOhsgcc9sEZN9TK9xqQ==
-X-Received: by 2002:a0c:efc8:0:b0:66f:bc3f:bd7 with SMTP id a8-20020a0cefc8000000b0066fbc3f0bd7mr3703805qvt.27.1700842110328;
-        Fri, 24 Nov 2023 08:08:30 -0800 (PST)
+        bh=fDHUw944JuBDjccgWURYSTGVRnttpEGwcc0SxiiIiWE=;
+        b=WuRHUJfW3fuoCXIsrbN88KIYoROvdSsZuVU0J2/HYBBC6qcvb0FvUcvO59p6rlW+f6
+         COBsMyFZsJJ97FvqwDJ/ggY07oOjpPhsS7+yPZcciAhqMobVh2snQ1YgJx313PGQufLp
+         CfrQeDC4FZS02lzyBZpgDqadYzGyb9r7V/9sVEVxM9isokSQ3zbms+iWOK74zMe2KLYW
+         a/3Mki8E6HBY7RwABcqEJrfJa6zsM4MTrDM073vfr/QZSOgzSz/CJ4P75MH2PogKujbb
+         YQS6OpkH6xSLyo0aWOPe3oWgBNb0aWEAs9itPzsvFS5jZBUuIGlUzBC8OXFRjY3eyoJn
+         okOA==
+X-Gm-Message-State: AOJu0YxH5y6C1DxY0NzGdF+ZDD+rIXdr4VXf8ZkqDmfyVivKQj0SwFqw
+        jCRdiPBPhwYoS5hL2wAQz3bS+6CVpn7I6UaCuteZkhe2Vjiry3kxirGX0Qxp58JY+zvZHrlknjn
+        sjiFJ3OhYBZ/iNtVN6BeUJg5Z
+X-Received: by 2002:a05:6214:2d12:b0:67a:46:5da8 with SMTP id mz18-20020a0562142d1200b0067a00465da8mr3813716qvb.58.1700842125259;
+        Fri, 24 Nov 2023 08:08:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG3MtL/Od4S13LcBLlGcA6LFuOswzvfoIpjOoiey6zb636OkL8bkCVK8DKaVAQZR1N9sPY2sw==
+X-Received: by 2002:a05:6214:2d12:b0:67a:46:5da8 with SMTP id mz18-20020a0562142d1200b0067a00465da8mr3813692qvb.58.1700842125011;
+        Fri, 24 Nov 2023 08:08:45 -0800 (PST)
 Received: from [10.32.181.74] (nat-pool-mxp-t.redhat.com. [149.6.153.186])
-        by smtp.googlemail.com with ESMTPSA id p15-20020ad451cf000000b0067a1cf7737bsm333015qvq.130.2023.11.24.08.08.27
+        by smtp.googlemail.com with ESMTPSA id p15-20020ad451cf000000b0067a1cf7737bsm333015qvq.130.2023.11.24.08.08.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 08:08:29 -0800 (PST)
-Message-ID: <da4b9e89-00c7-4067-b962-e86805a345c6@redhat.com>
-Date:   Fri, 24 Nov 2023 17:08:27 +0100
+        Fri, 24 Nov 2023 08:08:43 -0800 (PST)
+Message-ID: <cc65a15b-b8cc-4119-b5a2-ee487f7aaaef@redhat.com>
+Date:   Fri, 24 Nov 2023 17:08:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] KVM: x86: add more information to the kvm_entry
- tracepoint
+Subject: Re: [PATCH v3 3/4] KVM: x86: add information about pending requests
+ to kvm_exit tracepoint
 Content-Language: en-US
 To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -71,7 +71,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, x86@kernel.org,
         Dave Hansen <dave.hansen@linux.intel.com>
 References: <20230928103640.78453-1-mlevitsk@redhat.com>
- <20230928103640.78453-3-mlevitsk@redhat.com>
+ <20230928103640.78453-4-mlevitsk@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
 Autocrypt: addr=pbonzini@redhat.com; keydata=
  xsEhBFRCcBIBDqDGsz4K0zZun3jh+U6Z9wNGLKQ0kSFyjN38gMqU1SfP+TUNQepFHb/Gc0E2
@@ -108,13 +108,14 @@ Autocrypt: addr=pbonzini@redhat.com; keydata=
  JBrdmNZSQDz0iKmSrx8xkoXYfA3bgtFN8WJH2xgFL28XnqY4M6dLhJwV3z08tPSRqYFm4NMP
  dRsn0/7oymhneL8RthIvjDDQ5ktUjMe8LtHr70OZE/TT88qvEdhiIVUogHdo4qBrk41+gGQh
  b906Dudw5YhTJFU3nC6bbF2nrLlB4C/XSiH76ZvqzV0Z/cAMBo5NF/w=
-In-Reply-To: <20230928103640.78453-3-mlevitsk@redhat.com>
+In-Reply-To: <20230928103640.78453-4-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -122,150 +123,49 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 9/28/23 12:36, Maxim Levitsky wrote:
-> Add VMX/SVM specific interrupt injection info to vm entry tracepoint.
-> Also add a flag showing that immediate vm exit is set to happen after
-> the entry.
+> This allows to gather information on how often kvm interrupts vCPUs due
+> to specific requests.
 > 
 > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->   arch/x86/include/asm/kvm-x86-ops.h |  1 +
->   arch/x86/include/asm/kvm_host.h    |  5 ++++-
->   arch/x86/kvm/svm/svm.c             | 17 +++++++++++++++++
->   arch/x86/kvm/trace.h               | 15 +++++++++++++--
->   arch/x86/kvm/vmx/vmx.c             | 12 ++++++++++++
->   5 files changed, 47 insertions(+), 3 deletions(-)
+>   arch/x86/kvm/trace.h | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index f654a7f4cc8c0c..346fed6e3c33aa 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -99,6 +99,7 @@ KVM_X86_OP(get_l2_tsc_multiplier)
->   KVM_X86_OP(write_tsc_offset)
->   KVM_X86_OP(write_tsc_multiplier)
->   KVM_X86_OP(get_exit_info)
-> +KVM_X86_OP(get_entry_info)
->   KVM_X86_OP(check_intercept)
->   KVM_X86_OP(handle_exit_irqoff)
->   KVM_X86_OP(sched_in)
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 383a1d0cc0743b..321721813474f7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1679,13 +1679,16 @@ struct kvm_x86_ops {
->   	void (*write_tsc_multiplier)(struct kvm_vcpu *vcpu);
->   
->   	/*
-> -	 * Retrieve somewhat arbitrary exit information.  Intended to
-> +	 * Retrieve somewhat arbitrary exit/entry information.  Intended to
->   	 * be used only from within tracepoints or error paths.
->   	 */
->   	void (*get_exit_info)(struct kvm_vcpu *vcpu, u32 *reason,
->   			      u64 *info1, u64 *info2,
->   			      u32 *exit_int_info, u32 *exit_int_info_err_code);
->   
-> +	void (*get_entry_info)(struct kvm_vcpu *vcpu,
-> +				u32 *inj_info, u32 *inj_info_error_code);
-> +
->   	int (*check_intercept)(struct kvm_vcpu *vcpu,
->   			       struct x86_instruction_info *info,
->   			       enum x86_intercept_stage stage,
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 60b130b7f9d510..cd65c04be3d0e2 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3504,6 +3504,22 @@ static void svm_get_exit_info(struct kvm_vcpu *vcpu, u32 *reason,
->   		*error_code = 0;
->   }
->   
-> +static void svm_get_entry_info(struct kvm_vcpu *vcpu,
-> +			u32 *inj_info,
-> +			u32 *inj_info_error_code)
-> +{
-> +	struct vmcb_control_area *control = &to_svm(vcpu)->vmcb->control;
-> +
-> +	*inj_info = control->event_inj;
-> +
-> +	if ((*inj_info & SVM_EXITINTINFO_VALID) &&
-> +	    (*inj_info & SVM_EXITINTINFO_VALID_ERR))
-> +		*inj_info_error_code = control->event_inj_err;
-> +	else
-> +		*inj_info_error_code = 0;
-> +
-> +}
-> +
->   static int svm_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->   {
->   	struct vcpu_svm *svm = to_svm(vcpu);
-> @@ -4992,6 +5008,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->   	.required_apicv_inhibits = AVIC_REQUIRED_APICV_INHIBITS,
->   
->   	.get_exit_info = svm_get_exit_info,
-> +	.get_entry_info = svm_get_entry_info,
->   
->   	.vcpu_after_set_cpuid = svm_vcpu_after_set_cpuid,
->   
 > diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index 83843379813ee3..28e8a63368cc02 100644
+> index 28e8a63368cc02..e275a02a21e523 100644
 > --- a/arch/x86/kvm/trace.h
 > +++ b/arch/x86/kvm/trace.h
-> @@ -21,14 +21,25 @@ TRACE_EVENT(kvm_entry,
->   	TP_STRUCT__entry(
->   		__field(	unsigned int,	vcpu_id		)
->   		__field(	unsigned long,	rip		)
-> -	),
-> +		__field(	u32,		inj_info	)
-> +		__field(	u32,		inj_info_err	)
-> +		__field(	bool,		req_imm_exit	)
-> +		),
->   
->   	TP_fast_assign(
->   		__entry->vcpu_id        = vcpu->vcpu_id;
->   		__entry->rip		= kvm_rip_read(vcpu);
-> +		__entry->req_imm_exit	= vcpu->arch.req_immediate_exit;
-> +
-> +		static_call(kvm_x86_get_entry_info)(vcpu,
-> +					  &__entry->inj_info,
-> +					  &__entry->inj_info_err);
->   	),
->   
-> -	TP_printk("vcpu %u, rip 0x%lx", __entry->vcpu_id, __entry->rip)
-> +	TP_printk("vcpu %u, rip 0x%lx inj 0x%08x inj_error_code 0x%08x%s",
-> +			__entry->vcpu_id, __entry->rip,
-> +			__entry->inj_info, __entry->inj_info_err,
-> +			__entry->req_imm_exit ? " [req_imm_exit]" : "")
->   );
+> @@ -316,12 +316,14 @@ TRACE_EVENT(name,							     \
+>   		__field(	u32,	        intr_info	)	     \
+>   		__field(	u32,	        error_code	)	     \
+>   		__field(	unsigned int,	vcpu_id         )	     \
+> +		__field(	u64,		requests        )	     \
+>   	),								     \
+>   									     \
+>   	TP_fast_assign(							     \
+>   		__entry->guest_rip	= kvm_rip_read(vcpu);		     \
+>   		__entry->isa            = isa;				     \
+>   		__entry->vcpu_id        = vcpu->vcpu_id;		     \
+> +		__entry->requests       = READ_ONCE(vcpu->requests);	     \
+>   		static_call(kvm_x86_get_exit_info)(vcpu,		     \
+>   					  &__entry->exit_reason,	     \
+>   					  &__entry->info1,		     \
+> @@ -331,11 +333,13 @@ TRACE_EVENT(name,							     \
+>   	),								     \
+>   									     \
+>   	TP_printk("vcpu %u reason %s%s%s rip 0x%lx info1 0x%016llx "	     \
+> -		  "info2 0x%016llx intr_info 0x%08x error_code 0x%08x",	     \
+> +		  "info2 0x%016llx intr_info 0x%08x error_code 0x%08x "      \
+> +		  "requests 0x%016llx",					     \
+>   		  __entry->vcpu_id,					     \
+>   		  kvm_print_exit_reason(__entry->exit_reason, __entry->isa), \
+>   		  __entry->guest_rip, __entry->info1, __entry->info2,	     \
+> -		  __entry->intr_info, __entry->error_code)		     \
+> +		  __entry->intr_info, __entry->error_code, 		     \
+> +		  __entry->requests)					     \
+>   )
 >   
 >   /*
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index eb7e42235e8811..9dd13f52d4999c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6156,6 +6156,17 @@ static void vmx_get_exit_info(struct kvm_vcpu *vcpu, u32 *reason,
->   	}
->   }
->   
-> +static void vmx_get_entry_info(struct kvm_vcpu *vcpu,
-> +			      u32 *inj_info,
-> +			      u32 *inj_info_error_code)
-> +{
-> +	*inj_info = vmcs_read32(VM_ENTRY_INTR_INFO_FIELD);
-> +	if (is_exception_with_error_code(*inj_info))
-> +		*inj_info_error_code = vmcs_read32(VM_ENTRY_EXCEPTION_ERROR_CODE);
-> +	else
-> +		*inj_info_error_code = 0;
-> +}
-> +
->   static void vmx_destroy_pml_buffer(struct vcpu_vmx *vmx)
->   {
->   	if (vmx->pml_pg) {
-> @@ -8297,6 +8308,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->   	.get_mt_mask = vmx_get_mt_mask,
->   
->   	.get_exit_info = vmx_get_exit_info,
-> +	.get_entry_info = vmx_get_entry_info,
->   
->   	.vcpu_after_set_cpuid = vmx_vcpu_after_set_cpuid,
->   
 
 Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
