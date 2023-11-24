@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E647F6D6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127417F6D71
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345207AbjKXH7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S1345212AbjKXH7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbjKXH6j (ORCPT
+        with ESMTP id S232516AbjKXH6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Nov 2023 02:58:39 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB4A10F6;
-        Thu, 23 Nov 2023 23:58:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2503310E5;
+        Thu, 23 Nov 2023 23:58:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700812725; x=1732348725;
+  t=1700812726; x=1732348726;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5NwdFWB8PYqE9sGf4NOEiLQEKXylN+xEDDw+kzJt/SQ=;
-  b=BvfzpAqKXlFPm/yaTspJK3HzWJgd/tkCjhIx3LP7Lkq0OOyuA6vyB1yi
-   ybavQSg41I+2osqGuwqIdVcuG88lvkhZkRgJtQEE4Td7sOl9YuHMqeIeS
-   Jp/cwAsw6Uf8vW9eusCL7srgTe45dI3rjp+HEuJD2+ANtN9UrTNYJLsVQ
-   ZZOwODip4CVINxXIwStSQhte1NPlabuP9Suw3FwisvpRFc3W/Mwb0BPDg
-   l6TaWyqUOTUr/WIkX1kmNUNo3Y3QqpkkXGEp2+6Uji26n93ztRmwimU6Q
-   OaF6ZxX+o3nfPK+bP8jcl6m33YTv6ezw76qMMqOc+a7ehDRPET/yBBING
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="458872334"
+  bh=jVspOmCjg1McK1b3XG5KaxcWZtyy3fHwRn/aLy9fqlo=;
+  b=gZiSVb/eJLERdZxx0/7iO0dENOirLCU5mgdVBx+a0PIaIfMWODmg7LTh
+   ThNp5b8Qw4/66zNwey7p20y3Rm5FP3wZG7ss9U9iN7P2yQVHSzDvgPjb5
+   s82rQaOaoo1m2NJbfDGB3FmImBaSFxuXc+4wz18DMtWgUkMw2ECYg+qbe
+   GAs8E5pI5VeM/Axyr/wybILa0XXAk6L29Yarxg7iokHB6ImKi2ok/MRFS
+   +YcUB66TRl3amrZxrJx17BbKQCj40a7hJgy9xEy9OqKH8AAHpXi/Err6b
+   3pgEZ1ikp4ol4hAFB21J6qyUJvVTyBBOlgkP9O6BOozccF8XOhuh7J0vt
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="458872343"
 X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="458872334"
+   d="scan'208";a="458872343"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 23:58:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833629826"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833629830"
 X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="833629826"
+   d="scan'208";a="833629830"
 Received: from unknown (HELO embargo.jf.intel.com) ([10.165.9.183])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 23:58:39 -0800
 From:   Yang Weijiang <weijiang.yang@intel.com>
@@ -44,10 +44,11 @@ To:     seanjc@google.com, pbonzini@redhat.com, dave.hansen@intel.com,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, chao.gao@intel.com,
         rick.p.edgecombe@intel.com, mlevitsk@redhat.com,
-        john.allen@amd.com, weijiang.yang@intel.com
-Subject: [PATCH v7 12/26] KVM: x86: Report XSS as to-be-saved if there are supported features
-Date:   Fri, 24 Nov 2023 00:53:16 -0500
-Message-Id: <20231124055330.138870-13-weijiang.yang@intel.com>
+        john.allen@amd.com, weijiang.yang@intel.com,
+        Zhang Yi Z <yi.z.zhang@linux.intel.com>
+Subject: [PATCH v7 13/26] KVM: x86: Refresh CPUID on write to guest MSR_IA32_XSS
+Date:   Fri, 24 Nov 2023 00:53:17 -0500
+Message-Id: <20231124055330.138870-14-weijiang.yang@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231124055330.138870-1-weijiang.yang@intel.com>
 References: <20231124055330.138870-1-weijiang.yang@intel.com>
@@ -63,45 +64,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+Update CPUID.(EAX=0DH,ECX=1).EBX to reflect current required xstate size
+due to XSS MSR modification.
+CPUID(EAX=0DH,ECX=1).EBX reports the required storage size of all enabled
+xstate features in (XCR0 | IA32_XSS). The CPUID value can be used by guest
+before allocate sufficient xsave buffer.
 
-Add MSR_IA32_XSS to list of MSRs reported to userspace if supported_xss
-is non-zero, i.e. KVM supports at least one XSS based feature.
+Note, KVM does not yet support any XSS based features, i.e. supported_xss
+is guaranteed to be zero at this time.
 
-Before enabling CET virtualization series, guest IA32_MSR_XSS is
-guaranteed to be 0, i.e., XSAVES/XRSTORS is executed in non-root mode
-with XSS == 0, which equals to the effect of XSAVE/XRSTOR.
+Opportunistically modify XSS write access logic as:
+If XSAVES is not enabled in the guest CPUID, forbid setting IA32_XSS msr
+to anything but 0, even if the write is host initiated.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
 Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- arch/x86/kvm/x86.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/include/asm/kvm_host.h |  3 ++-
+ arch/x86/kvm/cpuid.c            | 15 ++++++++++++++-
+ arch/x86/kvm/x86.c              | 16 ++++++++++++----
+ 3 files changed, 28 insertions(+), 6 deletions(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 499bd42e3a32..f536102f1eca 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -756,7 +756,6 @@ struct kvm_vcpu_arch {
+ 	bool at_instruction_boundary;
+ 	bool tpr_access_reporting;
+ 	bool xfd_no_write_intercept;
+-	u64 ia32_xss;
+ 	u64 microcode_version;
+ 	u64 arch_capabilities;
+ 	u64 perf_capabilities;
+@@ -812,6 +811,8 @@ struct kvm_vcpu_arch {
+ 
+ 	u64 xcr0;
+ 	u64 guest_supported_xcr0;
++	u64 guest_supported_xss;
++	u64 ia32_xss;
+ 
+ 	struct kvm_pio_request pio;
+ 	void *pio_data;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 0351e311168a..1d9843b34196 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -275,7 +275,8 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+ 	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+ 	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+ 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+-		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
++		best->ebx = xstate_required_size(vcpu->arch.xcr0 |
++						 vcpu->arch.ia32_xss, true);
+ 
+ 	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
+ 	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+@@ -312,6 +313,17 @@ static u64 vcpu_get_supported_xcr0(struct kvm_vcpu *vcpu)
+ 	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
+ }
+ 
++static u64 vcpu_get_supported_xss(struct kvm_vcpu *vcpu)
++{
++	struct kvm_cpuid_entry2 *best;
++
++	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 1);
++	if (!best)
++		return 0;
++
++	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
++}
++
+ static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
+ {
+ 	struct kvm_cpuid_entry2 *entry;
+@@ -358,6 +370,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	vcpu->arch.guest_supported_xcr0 = vcpu_get_supported_xcr0(vcpu);
++	vcpu->arch.guest_supported_xss = vcpu_get_supported_xss(vcpu);
+ 
+ 	kvm_update_pv_runtime(vcpu);
+ 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 360f4b8a4944..f7d4cc61bc55 100644
+index f7d4cc61bc55..649a100ffd25 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -1464,6 +1464,7 @@ static const u32 msrs_to_save_base[] = {
- 	MSR_IA32_UMWAIT_CONTROL,
- 
- 	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
-+	MSR_IA32_XSS,
- };
- 
- static const u32 msrs_to_save_pmu[] = {
-@@ -7317,6 +7318,10 @@ static void kvm_probe_msr_to_save(u32 msr_index)
- 		if (!(kvm_get_arch_capabilities() & ARCH_CAP_TSX_CTRL_MSR))
- 			return;
+@@ -3901,20 +3901,28 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			vcpu->arch.ia32_tsc_adjust_msr += adj;
+ 		}
  		break;
-+	case MSR_IA32_XSS:
-+		if (!kvm_caps.supported_xss)
-+			return;
-+		break;
- 	default:
+-	case MSR_IA32_XSS:
+-		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_XSAVES))
++	case MSR_IA32_XSS: {
++		/*
++		 * If KVM reported support of XSS MSR, even guest CPUID doesn't
++		 * support XSAVES, still allow userspace to set default value(0)
++		 * to this MSR.
++		 */
++		if (!guest_cpuid_has(vcpu, X86_FEATURE_XSAVES) &&
++		    !(msr_info->host_initiated && data == 0))
+ 			return 1;
+ 		/*
+ 		 * KVM supports exposing PT to the guest, but does not support
+ 		 * IA32_XSS[bit 8]. Guests have to use RDMSR/WRMSR rather than
+ 		 * XSAVES/XRSTORS to save/restore PT MSRs.
+ 		 */
+-		if (data & ~kvm_caps.supported_xss)
++		if (data & ~vcpu->arch.guest_supported_xss)
+ 			return 1;
++		if (vcpu->arch.ia32_xss == data)
++			break;
+ 		vcpu->arch.ia32_xss = data;
+ 		kvm_update_cpuid_runtime(vcpu);
  		break;
- 	}
++	}
+ 	case MSR_SMI_COUNT:
+ 		if (!msr_info->host_initiated)
+ 			return 1;
 -- 
 2.27.0
 
