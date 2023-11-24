@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F1A7F78AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8406D7F78B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345434AbjKXQLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        id S231277AbjKXQLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:11:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjKXQLg (ORCPT
+        with ESMTP id S1345505AbjKXQLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:11:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9461B19AA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700842301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=gVnyc+iJ+KiZKpFBiD0j4BpZFWXYn4m5bglNqialQuQ=;
-        b=EBxgYZVKTpyflrDy2Ut6hplETi+q1z3sHsoG53cI/Gy91DUHSGuYDH2a2Cbo4pVHAk05SX
-        fPaphlZ6JeJU5VmFBG8MdQkm+/VKPGuMzW+W29VQvNo+EFtWPvcn3kD8z0jOnL3bn7Cdbc
-        3iIiGLk1lBxE4RrXaTNdPT/Zh5v7LIQ=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-671-4cSFkkQTMUKoGsK_CQkv1A-1; Fri, 24 Nov 2023 11:11:40 -0500
-X-MC-Unique: 4cSFkkQTMUKoGsK_CQkv1A-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77d7a92f883so109819985a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:11:40 -0800 (PST)
+        Fri, 24 Nov 2023 11:11:45 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D51119AB;
+        Fri, 24 Nov 2023 08:11:49 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a03a900956dso398610166b.1;
+        Fri, 24 Nov 2023 08:11:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700842308; x=1701447108; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I35NveYhkoZ28DMqDop9zJmkqxtTHkbKlKYsYxwRQuE=;
+        b=huFi1LIGb+FA19Pp5QUqdux4rLG4jOmab9aAEmc2lFcqUWvO0jo7QIjgj0ptLgbM5E
+         +AMxlu0YqhxoJuuv4Ma1j/xglUIRfR2aVnbw+pKvjwrNjTR8u5IfIBz9IUlHH8q0dFgG
+         2khzNu4MwiAitKWPIVkyrVG1TRqno4Sd7kEj7YfWNp3CxeCz3zNFqSSEtEjjpKPp+x8N
+         5Fd+Tk+xs5oTvlFcCdb5fSjOKEzM31Y1enALCfy84tocIcO8NRqF7Ccoths/+Dc+VuFC
+         9nBxzwxu/hKabMRZKycsdB4mzl50EkegasLM7PdA8+m/id3h5FiMjeXzwWW8+omX42eM
+         CgoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700842300; x=1701447100;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gVnyc+iJ+KiZKpFBiD0j4BpZFWXYn4m5bglNqialQuQ=;
-        b=TqJAPQ1R8WiT+rNgHavorvTG8WYX+4pUkUfbqfKA0ftci/d6qCLTuk23n4nN3sZV1/
-         UdSaDPFNE5oKb4lZ71UnWgtJK9gYjkYBf6/EDOWrS3wdYRsC5yiCJdgX69Ce4oGgjUGb
-         zs3ZkGcAm/E+H5FGm57KySvGhzaULob/M544z5PQI88Ss8ZGZQ0TmPIb92CodGoGgBEN
-         a8uMZJjX9Q3eHas0gzPvIDlxyhF0Wgmh+BLiPiKp5Awvna3ItDXBLJFPCEBreI7c8inT
-         fumrezd52tyEOuK+nL9ajN991GdIrVx42PxCqdPhNP6hciCQSKan7sET4Ogqb82V8lOT
-         Ijkg==
-X-Gm-Message-State: AOJu0YwPgtmtAEE0undptnqB3bYFzfZZe9y2Q7XuaVO8oG+ybJT4/1CQ
-        rakL/LfSf996sfpYYgt19TX4uC2hScwPfGh/68Ur2+OBk4Z+vRm7eJhNRTQDMuUMRztPvUzXJUd
-        TXsyZlnIGG3EqjAJzYnPfV15v
-X-Received: by 2002:a05:620a:3792:b0:778:af06:640e with SMTP id pi18-20020a05620a379200b00778af06640emr3428398qkn.16.1700842300039;
-        Fri, 24 Nov 2023 08:11:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE4C0MFSdgRbt6SFbCLc2O4yqi2ZPuleRbYexSgR4VNJn+tjFGhceDh116YyF+ElQAT7ogDUg==
-X-Received: by 2002:a05:620a:3792:b0:778:af06:640e with SMTP id pi18-20020a05620a379200b00778af06640emr3428379qkn.16.1700842299748;
-        Fri, 24 Nov 2023 08:11:39 -0800 (PST)
-Received: from [10.32.181.74] (nat-pool-mxp-t.redhat.com. [149.6.153.186])
-        by smtp.googlemail.com with ESMTPSA id u21-20020ae9c015000000b0076efaec147csm1318135qkk.45.2023.11.24.08.11.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 08:11:39 -0800 (PST)
-Message-ID: <a10d3a01-939c-493c-b93c-b3821735e062@redhat.com>
-Date:   Fri, 24 Nov 2023 17:11:36 +0100
+        d=1e100.net; s=20230601; t=1700842308; x=1701447108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I35NveYhkoZ28DMqDop9zJmkqxtTHkbKlKYsYxwRQuE=;
+        b=O9vVlHjaA2n00va5feBvhGRCsjFLguDiUwvoCIrBMN9KwLwcZ7oNKx/y1VFV62+sHg
+         IyxcznYE8zjo9Xx66VAkVHm/H3q7bFSEgEkfG6wisrHWzzrtNeHHUEL0uuKv7I9sn5Qi
+         8iiLmwHuSMHC0+4k8Xlkhfj0YlG+UnlmFPGJagxbUWDdVuMzOaRJX8H9nkvn9vm0LTPB
+         3nBehCb9+wu5MXRGsDML8xfeGBFjVWSOCAg6Etl5yTxuKvhm6BP6V1ECl1PaclaBF/37
+         40UDiYZ5Qpy0if6DPKPl0Cemf/PQ2NJxw5K3FaM1MELeejYteNHfz0KYX6U9lhTqvraq
+         Wh2A==
+X-Gm-Message-State: AOJu0Yxdnkjoa3srSy3MIC9O5qWOCn1csxgwFWoVCZDDoSoAqiFbnx+w
+        5mcAqVgDs9b3cLarXv/HOmM=
+X-Google-Smtp-Source: AGHT+IGtJ3UGtPKqhJP4J6tZy5FGZu9hyca3DpcSgvFJPVdTvOhpNj9dj0Jf+zI1m+YQ7QJao754aw==
+X-Received: by 2002:a17:906:7494:b0:a01:d701:2f1d with SMTP id e20-20020a170906749400b00a01d7012f1dmr3109574ejl.14.1700842307727;
+        Fri, 24 Nov 2023 08:11:47 -0800 (PST)
+Received: from skbuf ([188.26.185.12])
+        by smtp.gmail.com with ESMTPSA id n20-20020a170906119400b009fbdacf9363sm2211170eja.21.2023.11.24.08.11.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 08:11:47 -0800 (PST)
+Date:   Fri, 24 Nov 2023 18:11:45 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     netdev@vger.kernel.org, woojung.huh@microchip.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        marex@denx.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 2/2] net: dsa: microchip: add property to
+ select internal RMII reference clock
+Message-ID: <20231124161145.q4zww6m5hi3ccqzk@skbuf>
+References: <cover.1700841353.git.ante.knezic@helmholz.de>
+ <4e62cff653c7845bb848de5af44abe7e5578f624.1700841353.git.ante.knezic@helmholz.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] KVM: x86: add new nested vmexit tracepoints
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <20230928103640.78453-1-mlevitsk@redhat.com>
- <20230928103640.78453-5-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20230928103640.78453-5-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e62cff653c7845bb848de5af44abe7e5578f624.1700841353.git.ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 12:36, Maxim Levitsky wrote:
-> Add 3 new tracepoints for nested VM exits which are intended
-> to capture extra information to gain insights about the nested guest
-> behavior.
-> 
-> The new tracepoints are:
-> 
-> - kvm_nested_msr
-> - kvm_nested_hypercall
-> 
-> These tracepoints capture extra register state to be able to know
-> which MSR or which hypercall was done.
-> 
-> - kvm_nested_page_fault
-> 
-> This tracepoint allows to capture extra info about which host pagefault
-> error code caused the nested page fault.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+On Fri, Nov 24, 2023 at 05:01:48PM +0100, Ante Knezic wrote:
+> +static int ksz88x3_config_rmii_clk(struct ksz_device *dev, int cpu_port)
+> +{
+> +	struct device_node *ports, *port, *cpu_node;
+> +	bool rmii_clk_internal;
+> +
+> +	if (!ksz_is_ksz88x3(dev))
+> +		return 0;
+> +
+> +	cpu_node = NULL;
+> +
+> +	ports = of_get_child_by_name(dev->dev->of_node, "ports");
+> +	if (!ports)
+> +		ports = of_get_child_by_name(dev->dev->of_node,
+> +					     "ethernet-ports");
+> +	if (!ports)
+> +		return -ENODEV;
+> +
+> +	for_each_available_child_of_node(ports, port) {
+> +		u32 index;
+> +
+> +		if (of_property_read_u32(port, "reg", &index) < 0)
+> +			return -ENODEV;
+> +
+> +		if (index == cpu_port) {
+> +			cpu_node = port;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!cpu_node)
+> +		return -ENODEV;
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Too much code. Assuming you have struct dsa_port *cpu_dp, you can access
+cpu_dp->dn instead of re-parsing the device tree.
 
-with just one question below that can be fixed when applying:
+> +
+> +	rmii_clk_internal = of_property_read_bool(cpu_node,
+> +						  "microchip,rmii-clk-internal");
+> +
+> +	ksz_cfg(dev, KSZ88X3_REG_FVID_AND_HOST_MODE,
+> +		KSZ88X3_PORT3_RMII_CLK_INTERNAL, rmii_clk_internal);
+> +
+> +	return 0;
+> +}
 
-> @@ -1139,6 +1145,22 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
->   				       vmcb12->control.exit_int_info_err,
->   				       KVM_ISA_SVM);
->   
-> +	/* Collect some info about nested VM exits */
-> +	switch (vmcb12->control.exit_code) {
-> +	case SVM_EXIT_MSR:
-> +		trace_kvm_nested_msr(vmcb12->control.exit_info_1 == 1,
-> +				     kvm_rcx_read(vcpu),
-> +				     (vmcb12->save.rax & -1u) |
-> +				     (((u64)(kvm_rdx_read(vcpu) & -1u) << 32)));
-
-Why the second "& -1u"?  (And I also prefer 0xFFFFFFFFull
-
-Paolo
-
+Please wait for 24 hours before reposting, maybe you get more feedback.
