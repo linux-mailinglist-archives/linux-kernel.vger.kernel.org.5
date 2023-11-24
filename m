@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 416A67F6E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237D57F6E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345091AbjKXIlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S1345129AbjKXIlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjKXIlX (ORCPT
+        with ESMTP id S232004AbjKXIl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 03:41:23 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779C3D73
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:28 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3316ad2bee5so953934f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:28 -0800 (PST)
+        Fri, 24 Nov 2023 03:41:29 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6E2D5A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:30 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd644a96so2247289e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700815287; x=1701420087; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700815288; x=1701420088; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pmqHf7vG3OgSbkZDuoqTVPYV9KLNSSDAPn0Rr1mvHIw=;
-        b=hucOygj6dzJxypEDNYXM3M/QtRLbKURLjKzWyeUi3Prs5KuxlCQQ817DaXYFOEcX/v
-         eErmRNYMoH6IeNcmoP9PwKZct9aoWJy+xcL6cjEdBWLPstFRsxOGuNbZVCePVYWDB9u/
-         QpDDtUHCriE3JP3uPzMc9Uv/RKqVgqyF2aDqJJz+B+k7ng+137hK2ZmkVOWearEfv32Y
-         vVEqw1QRrcKeF5tAPL8OWPG/iuJFLaHKeMRB1EHIWyddXA15ehtDCkgXHs5IAfmTBlw9
-         Q/XHgGnHPbMsPhR4aMfYQ2A95Lt4eTXxzy6qOfFWE3lIayFn9+t5DZyLmC487exDgzFo
-         pIxA==
+        bh=m2ZTLCIzGtDzdo93FJ4l2pfkops6GMcXVN1dXIsoDYI=;
+        b=KQbERA6zxEIyWLb7XzeJ4Oe2a++OW9PwqQjeSWVTXgj4EN3+4ykzz0wfoskIWOnbUx
+         4N64NoewPGv/SUK3lKEdOO5/PsT6nTgHBzOYwZR90qEA7qXAhYIu80O7oWdEpqmHWeZj
+         IDTJBStMTpebNRYdagmSqB/pH7UsA0mfHtSl951vs5UjBG4uopyWfDGKBLQxRfIKihEG
+         PrpFJbYFOrmbugxkstPN5kY4v2Flujpqih58TxRWCubU1ih9xpTV+MnIvt9fPT37iIVI
+         RgNjqnc/OxiG1IDWpd5gYfzHcdMc4MrYtBHhWdWzKE5g01jiV1kv7Jcbn5C1RTOC1bY3
+         RXeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700815287; x=1701420087;
+        d=1e100.net; s=20230601; t=1700815288; x=1701420088;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pmqHf7vG3OgSbkZDuoqTVPYV9KLNSSDAPn0Rr1mvHIw=;
-        b=KinvBm8MybuTr+4Qwv+OkIJkc6dli6I9Fwx1ct7HW/7J3+oO8p4vy+A2blbGWatw24
-         OwqN8JtMtoEJP0Y91ATLT0x/Eyw43amsuV3yepZjUvYQ6bry5XX+fySmxg2JyNg9paN9
-         NF42MU2DsD5Sq7zpUdaZZ/oKy8THia04HHYUoyPnnIDYnbevRsQtPwct5A3YBzWQj6bp
-         UdCtA1/m1J92prmGXr2b8hRxBEP+WD7v6OLAdAcE6x9Wr6POyeed4CiwelPdZyYcBJsh
-         KSBx+q5D5dsyOlQluNlmqdwiQvxNvtpYQVcLumu+27LVoHaO+uypwhpJM5RXSb6dzOr1
-         kEHA==
-X-Gm-Message-State: AOJu0YxeEPghPYf6nIVp+uMci2gg5VqmIO86CkeiZmtb/wxpO0+9Cke1
-        yukysSDxlxGhEK0sKRHbUW9Y4g==
-X-Google-Smtp-Source: AGHT+IFPKfH4bRgwYLSScdIAX4eq/D8aF5dbD0VbyY0HPbjeV7slo9I4RmgXoBTePe/TnCrXi0Gj6g==
-X-Received: by 2002:adf:f10d:0:b0:331:6c3b:4f1b with SMTP id r13-20020adff10d000000b003316c3b4f1bmr1399602wro.6.1700815286963;
-        Fri, 24 Nov 2023 00:41:26 -0800 (PST)
+        bh=m2ZTLCIzGtDzdo93FJ4l2pfkops6GMcXVN1dXIsoDYI=;
+        b=XzJPckyBcoJ1Fz3RRcucWEUbJEtv7Gl6Sm8JMUmGupvntYfwSnQPwpF1ZVIaonRprL
+         RE4JkUoyGi4HF8q8Du0mvQRJUnUtKBDnJKx7NSqjQ99n3SEmE+OMIEKMrpIAt7u6RU5m
+         1Ca7DThSir2gN3mHKc8DMX5z5SP+gi59LDtR5PgJReBjqCTXPYwKfEs3nTl+ixbZaFSk
+         yKS3s5QzSHuy3iv0LBdVCG4UwXEmCn18UPmW8d0bH4ZNGeJp6T57bvhbX8CdR7+QKrZi
+         radq3WorlmN+0diEqMJtE6ocAPFGSCeXMzAMXsfyNYKmjL0JIyYiImJrJo/vzPD1dCBx
+         pkpQ==
+X-Gm-Message-State: AOJu0Yz9yLKUKNC64do/4qnmyuKyfznSj7iormvFukdBPhNe4q/bom4q
+        DhFqcfa6hB/qWfg+OgZRgqoARA==
+X-Google-Smtp-Source: AGHT+IF7kjc01o/SSdybHjyNhj71mp3t5jB+vgaS6Zawv8K1Yz8ZO/SXKRCN8wCpxqC5dFcGrXnmPg==
+X-Received: by 2002:ac2:48b0:0:b0:50a:71d8:c94f with SMTP id u16-20020ac248b0000000b0050a71d8c94fmr1135313lfg.60.1700815288264;
+        Fri, 24 Nov 2023 00:41:28 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2534562wru.67.2023.11.24.00.41.25
+        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2534562wru.67.2023.11.24.00.41.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 00:41:26 -0800 (PST)
+        Fri, 24 Nov 2023 00:41:27 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Fri, 24 Nov 2023 09:41:13 +0100
-Subject: [PATCH v9 02/12] dt-bindings: soc: amlogic,meson-gx-hhi-sysctrl:
- add example covering meson-axg-hhi-sysctrl
+Date:   Fri, 24 Nov 2023 09:41:14 +0100
+Subject: [PATCH v9 03/12] dt-bindings: phy:
+ amlogic,meson-axg-mipi-pcie-analog: drop text about parent syscon and drop
+ example
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-2-95256ed139e6@linaro.org>
+Message-Id: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-3-95256ed139e6@linaro.org>
 References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
 In-Reply-To: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
 To:     Jerome Brunet <jbrunet@baylibre.com>,
@@ -86,20 +87,20 @@ Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Conor Dooley <conor.dooley@microchip.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1847;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1573;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=KQGG1ytiHBIC5JgUp3eMPUlMvnricP4K9ae8Hqw91b4=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlYGGuRHAkz/o0FoARcM/nBhaSVY4S5HKY2Q4xPPDK
- g0HXtl+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWBhrgAKCRB33NvayMhJ0SoJD/
- 40QaN+xss8YhXmbPd7kcRXbNr00DUi9YXy17gL5d+nQzAJClUpXWM/LHE9EckZTKnrONy8hm8IyTsm
- +Q7v99Ma/k1BhRTuMLsWwfwFdFNoAm7OTDjKTKX3C8XSRZsYU+fUgVCAk9mLi0ILxo3unQMKEakNSO
- dE9rb6fvsHrXEVu4hEJRwGyxCKaj3v/DHp1F3CJPhnYNbdk+GJFAYD9mL6/Rquv7pfpR3IjTM6le/R
- CteRqtCWIuTLlnxJ2PR3bb6vtUGOpsAkWvdE95r40uUkhGJ5c4kZUY26dxnxstVIwWFeG2s7oL8t3S
- ZVlS1l/hLzSrpaeHiYKZfwxv5nccbZ/0qhpFqor44I2oPPA1T3HykRL+qs0mIMrBmmmK6W5gikOwrA
- GZifoZAOOG3AChGpZamhVtFHgvVgLP/SvPLmJamG2uSYLX4M7Wu2blhSuoHw/L2HdKB+d3880wK096
- fdWsEuUVgv8fRo95lxdriQPJb69/AHXgHKL4NQcNFjTNqOJ8YkkAquQwhf/yOaDIcnW3ERUKxybg5+
- 2lm/rhZbQ1IYLlYT1bip3o4J/rw6V6TvE6LtKHhjvs31uK1MH2UwobR7GUv+a6sJR+vtVHbwzC+9YM
- iNd8dCd57nIB+Awkk1LFT+YJgUoJCMyAh8AI+tTF+Y4Vrb1wSxd8bt5jIWKQ==
+ bh=8X7fhNCy/HvwIwzbk4yey3zcZzSI2bVpb2v4gVLXFlE=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlYGGu31exqQpuNJfZ3NjzAF/oHsRU6ubp/jrWqLQT
+ WaJLbsCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWBhrgAKCRB33NvayMhJ0VZEEA
+ CD9QWyKz5JqJKUffivHccIDuBx4b2ZX1upUOn4LYSEVYLaEcJbOEb6eAX5QsIvTezN2HvZAOD/TF9X
+ 9pmybusblHc3qqagjwruVann9xFjxmVQCB9SWYGaaQ0kQYjPaY5PMoVHthzTo9JWLHJSz24rKrbXDu
+ xLpfwHLzURD2kOC43HpN66RtC1etfxfHeGOidg6loQOI04C9jg8vbuQKk7i0kIDBhl8PiFEJ+wgw6L
+ D7M5mAuFYh9Tbd5Z5hbpNP6A+NahpX86HYi2TeKEMOMMCD92TqldpuV62F+Ry6VSJLYPVXi4i9FJ2y
+ BG4Ix/aRkBZrVNcPjfiOppcPJ0kO+XcRl3EUpuMo/bjnARyq7bqZoHTiJ+VMyLwNo/K5LsaelA5kmv
+ tA5YgY9gVsjAhiCEvOX8bGnkrRYLI6rINhOz1VqeVgbhFxOkYVfICfwTIaVpJmfniwQ4jOThbthyjO
+ CAAKJ0dXfO51MW7CDFudjjcdwaRBdjl0nEOEWQgIe/adFoJX+l1iF43Lq8JJYTIF2ignclF4V7fEdO
+ ihz9RrW4apafWFspszLmJDMa7hi6fS04cXDWU+4GidaAXBkpZmoJpvuwsx1qgdBLvOr6AlDgFvKXYk
+ z9mvyPn/fy3OaYQofJppI6cR8w4scLqA3Bd7v8qyOdKyjBKiNATHR5rXnrrA==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -112,56 +113,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a third example covering the meson-axg-hhi-sysctrl variant and more
-importantly the phy subnode.
+Since this bindings is referred from amlogic,meson-gx-hhi-sysctrl.yaml, drop the now
+useless description about the parent node and also drop the unnecessary example.
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml  | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ .../phy/amlogic,meson-axg-mipi-pcie-analog.yaml         | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-index 16977e4e4357..c6bce40946d4 100644
---- a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-+++ b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-@@ -158,3 +158,36 @@ examples:
-             };
-         };
-     };
-+
-+  - |
-+    system-controller@ff63c000 {
-+        compatible = "amlogic,meson-axg-hhi-sysctrl", "simple-mfd", "syscon";
-+        reg = <0xff63c000 0x400>;
-+
-+        clock-controller {
-+            compatible = "amlogic,axg-clkc";
-+            #clock-cells = <1>;
-+            clocks = <&xtal>;
-+            clock-names = "xtal";
-+        };
-+
-+        power-controller {
-+           compatible = "amlogic,meson-axg-pwrc";
-+           #power-domain-cells = <1>;
-+           amlogic,ao-sysctrl = <&sysctrl_AO>;
-+
-+           resets = <&reset_viu>,
-+                    <&reset_venc>,
-+                    <&reset_vcbus>,
-+                    <&reset_vencl>,
-+                    <&reset_vid_lock>;
-+           reset-names = "viu", "venc", "vcbus", "vencl", "vid_lock";
-+           clocks = <&clk_vpu>, <&clk_vapb>;
-+           clock-names = "vpu", "vapb";
-+        };
-+
-+        phy {
-+           compatible = "amlogic,axg-mipi-pcie-analog-phy";
-+           #phy-cells = <0>;
-+        };
-+    };
+diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+index 009a39808318..70def36e5688 100644
+--- a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
++++ b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+@@ -9,16 +9,6 @@ title: Amlogic AXG shared MIPI/PCIE analog PHY
+ maintainers:
+   - Remi Pommarel <repk@triplefau.lt>
+ 
+-description: |+
+-  The Everything-Else Power Domains node should be the child of a syscon
+-  node with the required property:
+-
+-  - compatible: Should be the following:
+-                "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
+-
+-  Refer to the bindings described in
+-  Documentation/devicetree/bindings/mfd/syscon.yaml
+-
+ properties:
+   compatible:
+     const: amlogic,axg-mipi-pcie-analog-phy
+@@ -31,10 +21,3 @@ required:
+   - "#phy-cells"
+ 
+ additionalProperties: false
+-
+-examples:
+-  - |
+-    mpphy: phy {
+-          compatible = "amlogic,axg-mipi-pcie-analog-phy";
+-          #phy-cells = <0>;
+-    };
 
 -- 
 2.34.1
