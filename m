@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9FA7F6A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BE57F6A98
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjKXCNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        id S230076AbjKXCRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXCNc (ORCPT
+        with ESMTP id S229453AbjKXCRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:13:32 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A10B93;
-        Thu, 23 Nov 2023 18:13:37 -0800 (PST)
+        Thu, 23 Nov 2023 21:17:14 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81B510D3;
+        Thu, 23 Nov 2023 18:17:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700792012;
-        bh=Y1hUnn+pQbhuBfNsxpEj/QRwkQ4NeXzcw+dSpFhqfwU=;
+        s=201702; t=1700792238;
+        bh=hVLznh1N/6w00XZWPeXHTEO2orW7OEONxjkwEONOiOQ=;
         h=Date:From:To:Cc:Subject:From;
-        b=p+nm8drqOCBwpWd34ThRCiYAMAOabK+e9oNJ0NPJ+IUbTJH0EIRk9mZ7DIEnaEfcP
-         yDI9/G4IKL5sIRCnQicktAmuK4dc/uoaxXJa9xz/N9eoB3HoWf6pAYn+AxBNlftau0
-         wimGcKmFBPZK5BHJaID+tx8EaPc+earaf9L6ea442ruGvjeXrQScWv+GpCOLtKzX3A
-         zL33oFkVXeeFTQEB934WyW+Mp8lhXiiHwcXsDytNpYsEHLqWYGHu/rvMoAX+/6nQib
-         dgaJFgiWWOSAWlVLND6Y97bxUJwT7JyA3dJw9lGcgDeIz+wJhFh/loIIn6Q5k1ibLY
-         5/8MSrODHrvAA==
+        b=pcZOQSMQDRl/XIhLufCTaMrUfvYhta8I1mDlKR12veDD6pptND11R90w6DylFfhJ8
+         KcNKFH3jAKfOiRtmDYN4INYdWL7hC6RzZohlQwMMEmUVRIkogh6KGn1ZzBByLmGhwj
+         io/7eTtVbj6RAkanGS7H7EYHOMjNFbs3TArkCJZBs7mcpJXejrG8IetIY7OrV8iQnN
+         xmJrVRZUKdZqvSXs/ZP6Dp3TXxj+pUkedd6WnurUj1oPvEfr9b1KwVA1IiWr7R7gNy
+         Fh5RJUxCE2zYjotDUDrYVr47Vevi7EMwZ5ub9e1Y+Wot3oBHp8XRBkuc1inKUadDEf
+         vNJ614CL5z4Nw==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sbz6h5SZGz4wcJ;
-        Fri, 24 Nov 2023 13:13:32 +1100 (AEDT)
-Date:   Fri, 24 Nov 2023 13:13:31 +1100
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SbzC15Zkrz4wx7;
+        Fri, 24 Nov 2023 13:17:17 +1100 (AEDT)
+Date:   Fri, 24 Nov 2023 13:17:16 +1100
 From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
+To:     Dave Airlie <airlied@redhat.com>
+Cc:     DRI <dri-devel@lists.freedesktop.org>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sarah Walker <sarah.walker@imgtec.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the vfs-brauner tree
-Message-ID: <20231124131331.23279543@canb.auug.org.au>
+Subject: linux-next: build warning after merge of the drm tree
+Message-ID: <20231124131716.13f6ec45@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/d99G7c6CcuxNJrumwDqQ7jK";
+Content-Type: multipart/signed; boundary="Sig_/iHKHr_3h.2UX98t0oNV=g3P";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
@@ -52,42 +56,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/d99G7c6CcuxNJrumwDqQ7jK
+--Sig_/iHKHr_3h.2UX98t0oNV=g3P
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-After merging the vfs-brauner tree, today's linux-next build (htmldocs)
-produced this warning:
+After merging the drm tree, today's linux-next build (htmldocs) produced
+this warning:
 
-Documentation/filesystems/api-summary:14: include/linux/fs.h:1655: WARNING:=
- Definition list ends without a blank line; unexpected unindent.
-include/linux/fs.h:1658: warning: Function parameter or member 'level' not =
-described in '__sb_write_started'
+Documentation/gpu/imagination/uapi.rst:124: WARNING: Title underline too sh=
+ort.
+
+CREATE_HWRT_DATASET and DESTROY_HWRT_DATASET
+--------------------------------------
 
 Introduced by commit
 
-  2a7b49f698d0 ("fs: create __sb_write_started() helper")
+  815d8b0425ad ("drm/imagination: Add driver documentation")
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/d99G7c6CcuxNJrumwDqQ7jK
+--Sig_/iHKHr_3h.2UX98t0oNV=g3P
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVgBssACgkQAVBC80lX
-0GyMUAf/fIjiVg40PcnniY4LBGE63ozKqMmhYuhoR47viE+Ni9ZQBNKXFeNtr1BP
-0Zshnj6VUHWHYX0SV0zkryx/hgE7TfnoKZoi70A7gtrQYNQJZGL3UZS3DptwQMAh
-LN9Z1juQmCMBOlsEcrjYZmDI8LdM9MwRgUOyD+LP/ii1n+RCg7ZiRQ4gTzmvpC3h
-FSfZQZjHLhLv7lSrG6qWqSma07I4cJuPImJxV2e9gxvclVEsrTNX/oNXjkmJG54a
-DqcHxQiau892m1khfh0nlMrgagIe2G37cBoRHDmwTUdu+aFjP22SNljQmBBoTLmU
-PRSf8Esmjhy33+2Glhsx1Qc8eFCg6w==
-=C6AZ
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVgB6wACgkQAVBC80lX
+0GzDKgf+IX4nKfbuqQG7jQERrxtwKtKeBdKnPIhO6UDc+IMWRbySt4rEZy3Jm/oD
+Gy9/85oEQg2E4aXjpCVcYjZ5JG8iGwjWV8l21jVfomMAZg8IfVzIh+C9g9IlcsC+
+KlGjgdY6R84kct8ycKyWvBU0lwNuxm6NxRhkftABxjk6IEP52a72O1vpl1bd7+i0
+uWhwfcO2n3MZ3RZTwLJ0BIV+Rbdc0Ex3s2hmXTUyYsGWHTA/OySVSJNVcOJvmMEu
+lSFjOjYlm4X0mbYJaINpB6ut+0+hYTF6y3ESZ+JwR8hj2T9SiyozjjkipxmNzEqc
+RjXrzigw+Q0YANLzE1zXA5qpJIyyww==
+=o6i3
 -----END PGP SIGNATURE-----
 
---Sig_/d99G7c6CcuxNJrumwDqQ7jK--
+--Sig_/iHKHr_3h.2UX98t0oNV=g3P--
