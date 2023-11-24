@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45E47F799A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02BD7F79A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345628AbjKXQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S1345427AbjKXQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345427AbjKXQml (ORCPT
+        with ESMTP id S231379AbjKXQol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:42:41 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959D819B5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:42:47 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4079ed65471so15582365e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:42:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700844166; x=1701448966; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nY57yW8jqPx4DCjz4gafCo99TqRgCQishv/BZqsXq+M=;
-        b=Wvr3re2xvbKnzDYL/dG3QRaJCPSfCQe4K0zb6Ido4yJ6oZD34H4ig7OUsHVW5VkFl0
-         ocQ972xInpVZcp6LwGcrhmftlRkqcaz+Gn9ejaL4Ii5Mfd9c0UwAlbqmShiODcfX/XgH
-         mIc/2kU81QmI92bDG2TxSy8U4dDn6QEjZIpI8gOyaRGi9VirzpKV2to6m7Us/c4ScIzd
-         jq5TTeqepGte+Q01zd/Po80ELNodwifNWB/YxY0Y4lSiTqJQ9kCKQ+R+q83OArwT3PE0
-         d4ojJjfGwvhW/CwyIQEVHgHzKiEGNGjASKHyAdQZiZGUTR6CZetfk4/8WdwRa39L+p12
-         hyzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700844166; x=1701448966;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nY57yW8jqPx4DCjz4gafCo99TqRgCQishv/BZqsXq+M=;
-        b=vO1VHlTy0Z5+9ixj+z1nqE+VaN1G+UiurDJiHlfpRJ19ECKv41lDGYcVukHxVvXS7j
-         nCHVmJqGXGYEE9dutBmFw41i5gUTHSQKxYpE5SiW1UHokg9aEXso2GBCcxSWTTk4Smqw
-         POnyDU5BTnN0JkAvveWGqu/im48W50Dj49IbwOgzfz3aJUm1sTSUA8XtodWc17kGyUYm
-         Q8oqwcmn/LdcehtQ2ULxkl2ZN2Sn7TrYSiJLCGMyv9mG6TC8v1p4gi3DOn10oFgz44NX
-         b9GqkJSDMp8LORlKNXsnn2X1zyYGcreZ3RWL/vO4DJl10OHEvs5geiYSe35tdCLLqZbH
-         Q8Vw==
-X-Gm-Message-State: AOJu0YyE7v/Iy5U+lar3GJoXCXocU020Fu0Aqu/5sGF6N/XSmwqbwagX
-        06hekg54Jcy4TsZJqdvuQRkpww==
-X-Google-Smtp-Source: AGHT+IF0qtFjt0i/sxwkQJ9BDFSUDAmlZ1vNck5maPD+WnShRNQ0koLnOjpHlDBfcr97NsaHGHftKA==
-X-Received: by 2002:a05:600c:1f93:b0:401:2ee0:7558 with SMTP id je19-20020a05600c1f9300b004012ee07558mr3057188wmb.32.1700844165899;
-        Fri, 24 Nov 2023 08:42:45 -0800 (PST)
-Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:1243:6910:fe68:2de5])
-        by smtp.googlemail.com with ESMTPSA id r4-20020a05600c458400b0040648217f4fsm6159082wmo.39.2023.11.24.08.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 08:42:45 -0800 (PST)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        Rob Herring <robh@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        "Lukas F. Hartmann" <lukas@mntre.com>
-In-Reply-To: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
-Subject: Re: (subset) [PATCH v9 00/12] drm/meson: add support for MIPI DSI
- Display
-Message-Id: <170084416459.2546450.3587219733392523958.b4-ty@baylibre.com>
-Date:   Fri, 24 Nov 2023 17:42:44 +0100
+        Fri, 24 Nov 2023 11:44:41 -0500
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D3173D;
+        Fri, 24 Nov 2023 08:44:45 -0800 (PST)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 7E15A5201D5;
+        Fri, 24 Nov 2023 17:44:44 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Fri, 24 Nov
+ 2023 17:44:44 +0100
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     <gregkh@linuxfoundation.org>, <quic_ugoswami@quicinc.com>,
+        <brauner@kernel.org>
+CC:     <jlayton@kernel.org>, <john@keeping.me.uk>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>
+Subject: [PATCH] usb: gadget: f_fs: Add the missing get_alt callback
+Date:   Fri, 24 Nov 2023 17:44:35 +0100
+Message-ID: <20231124164435.74727-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to clk-meson (v6.8/drivers), thanks!
+Some USB OTG hubs have multiple alternate configurations to offer,
+such as one for Carplay and another for Carlife.
 
-[01/12] dt-bindings: clk: g12a-clkc: add CTS_ENCL clock ids
-        https://github.com/BayLibre/clk-meson/commit/bd5ef3f21d17
-[06/12] clk: meson: g12a: add CTS_ENCL & CTS_ENCL_SEL clocks
-        https://github.com/BayLibre/clk-meson/commit/5de4e8353e32
+This patch implements and sets the get_alt callback to retrieve the
+currently used alternate setting. The new function allows dynamic
+retrieval of the current alternate setting for a specific interface. The
+current alternate setting values are stored in the 'cur_alt' array
+within the 'ffs_function' structure.
 
-Best regards,
---
-Jerome
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+ drivers/usb/gadget/function/f_fs.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+index efe3e3b85769..37c47c11f57a 100644
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -75,6 +75,7 @@ struct ffs_function {
+ 	short				*interfaces_nums;
+ 
+ 	struct usb_function		function;
++	int				cur_alt[MAX_CONFIG_INTERFACES];
+ };
+ 
+ 
+@@ -98,6 +99,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
+ static int ffs_func_bind(struct usb_configuration *,
+ 			 struct usb_function *);
+ static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
++static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
+ static void ffs_func_disable(struct usb_function *);
+ static int ffs_func_setup(struct usb_function *,
+ 			  const struct usb_ctrlrequest *);
+@@ -3232,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
+ 	ffs_data_reset(ffs);
+ }
+ 
++static int ffs_func_get_alt(struct usb_function *f,
++			    unsigned int interface)
++{
++	struct ffs_function *func = ffs_func_from_usb(f);
++	int intf = ffs_func_revmap_intf(func, interface);
++
++	return (intf < 0) ? intf : func->cur_alt[interface];
++}
++
+ static int ffs_func_set_alt(struct usb_function *f,
+ 			    unsigned interface, unsigned alt)
+ {
+@@ -3266,8 +3277,10 @@ static int ffs_func_set_alt(struct usb_function *f,
+ 
+ 	ffs->func = func;
+ 	ret = ffs_func_eps_enable(func);
+-	if (ret >= 0)
++	if (ret >= 0) {
+ 		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
++		func->cur_alt[interface] = alt;
++	}
+ 	return ret;
+ }
+ 
+@@ -3574,6 +3587,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
+ 	func->function.bind    = ffs_func_bind;
+ 	func->function.unbind  = ffs_func_unbind;
+ 	func->function.set_alt = ffs_func_set_alt;
++	func->function.get_alt = ffs_func_get_alt;
+ 	func->function.disable = ffs_func_disable;
+ 	func->function.setup   = ffs_func_setup;
+ 	func->function.req_match = ffs_func_req_match;
+-- 
+2.17.1
 
