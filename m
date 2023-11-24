@@ -2,111 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3337A7F79B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33BA7F79B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345407AbjKXQtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        id S231259AbjKXQwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:52:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjKXQtO (ORCPT
+        with ESMTP id S229741AbjKXQwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:49:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6730D60
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:49:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FBBBC433C7;
-        Fri, 24 Nov 2023 16:49:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700844561;
-        bh=Fkv7S7T1c3p07xBeyAOIkgcnZBtOBErEbzabrMqijuo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=s0ZiCfq2SxmdqlKvYoVPt2US2SeGksv6h7U//ZkEIU47MVVxNDOEw4a3UHXf+l4f+
-         NPT8ncWmIRTQDsMhTAPVbaZpYVaAkMwiDN5XFPd87aH6g2c8/zpnLhSAfG/Xvgbt9i
-         AAVLgpaSYsrRiucrbLTUvfk2/uJVzf3AGh9EMdZd1YcJDMJwbVnoil6ZjtRWoAXg3Z
-         h+gJazM/aJKcEw8rWXxtr7fLNj5elRChYuFC8EIasIcJy6jthEmDODTV90Ld0cY4lr
-         0caEaVM0DUqz5tzhXUqQG9fECU86px647MlYrIu7Ca6fzxvfzowGAiUNmRRdR7jOre
-         Q5/iQQ/3LWO+w==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso2981173e87.1;
-        Fri, 24 Nov 2023 08:49:21 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx7JKdAjhJNgfPpCPQ1w/oeUN+eudlj4riftblwNfG9MRu/jWMU
-        WTEl6NvffQVtFxW8DL4EEQ/eI2YxyW5PG6TLkw4=
-X-Google-Smtp-Source: AGHT+IGeK+8nt2GDtNKqNhYU2TqqgPt4FdEDMQwF96TjonxqToicZMjEM0/E5/eXz31EA1YEiLQiVPH94s0CWVt5Af8=
-X-Received: by 2002:ac2:5a59:0:b0:50a:a6d2:b631 with SMTP id
- r25-20020ac25a59000000b0050aa6d2b631mr2516579lfn.53.1700844559515; Fri, 24
- Nov 2023 08:49:19 -0800 (PST)
+        Fri, 24 Nov 2023 11:52:37 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591421725;
+        Fri, 24 Nov 2023 08:52:43 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-581ed744114so969824eaf.0;
+        Fri, 24 Nov 2023 08:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700844762; x=1701449562; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HwvURCD8JO2RIWqByNKqPi8KtIAW+ntHwZp3ixqrauc=;
+        b=QJ78VOfTLzEj4Y2G1Pm+ZZkJKXtysva91UHS5m7H6ECPO+UAhnkHEwyPyET2AoXffc
+         aXo2s4ptuU38qHrlMYQFA9QYqt7pH5Uj6CrJ4PPIdzn2u1d/PTyO09VBW+hy/yYhXjEu
+         nw3WpILIsMmnqnIZaOs3UFKz69yRvy/fthZjVRg7Z7q+QlRwInEZgi2loYd4khyGWeym
+         mkxFpnQJ2K6IkyUp+VjScvPdM2KF0+wpkN1IvWmpO7tj2J1VnymIiNwWGUNtE4euxLNA
+         VWQ4jA9MtkDbdROqC5J2nPO4KUXsOhvs27oFWXPqwbmfGf3qePOb3bXQyw0HUldsJKm8
+         pTSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700844762; x=1701449562;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HwvURCD8JO2RIWqByNKqPi8KtIAW+ntHwZp3ixqrauc=;
+        b=CX+kaqqlYSuMBGe9tmQYksfyW99F2CKgceXDIQGl0atIxB+Q8kpxxQ1HrTASQdA2JF
+         0osdPh7d44vmIH9mY/qV3qbYYNnttalL2gvitJjUz2mHMPPRg73jPVp+ly9x/CVMSyjd
+         fO/w45GOD4vymLtWFy9Th0OTYcDIic5gWr2boyk8fPCikLIrRBi6ZJmESXdvYoVPuT3g
+         XGv9KFd9TVUlZCoA//vgqxIrGTGVc/e0oznhieqr03VdH8m2UNwsKWEkFancEmua/DTm
+         Zp9gLiphsSttuhgl2cy7He71EMBK17lMYE4IrCEvVo9JzZ/SaJaAUQpfArXjMqDlOA49
+         YrZQ==
+X-Gm-Message-State: AOJu0YwB7ruiiEPGEOECEPuTVUkqoViB/TLEFVqR+jnfrxGUXVtlmRAz
+        bQhLOcxwzDdDX/i1Qazvtix5Yzups1l7mFDtYa4=
+X-Google-Smtp-Source: AGHT+IHyDITij++0oWIIfEE6LF/3Kb0JdsJVaCPpRgfdvGx+E5uurlL7PB8lD4NVooz9LQlIxdVmY5ODHj1CXNhlbnY=
+X-Received: by 2002:a05:6820:513:b0:581:d5a6:da4a with SMTP id
+ m19-20020a056820051300b00581d5a6da4amr4341978ooj.1.1700844762520; Fri, 24 Nov
+ 2023 08:52:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20231021102059.3198284-1-yukuai1@huaweicloud.com>
- <20231021102059.3198284-2-yukuai1@huaweicloud.com> <CAPhsuW5=fDpsAofik+4jHObFkRMcTTeQPbtXSBG_KAes0YgQGA@mail.gmail.com>
- <1f3080ca-cde6-2473-4679-a79fa744eb70@huaweicloud.com>
-In-Reply-To: <1f3080ca-cde6-2473-4679-a79fa744eb70@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 24 Nov 2023 08:49:07 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4d4mHQ9C=3gGKOG=QuXVH11ZtksQV3WV3CbYANgq7FYw@mail.gmail.com>
-Message-ID: <CAPhsuW4d4mHQ9C=3gGKOG=QuXVH11ZtksQV3WV3CbYANgq7FYw@mail.gmail.com>
-Subject: Re: [PATCH -next v2 1/6] md: remove useless debug code to print configuration
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231122182351.63214-1-linux.amoon@gmail.com> <20231122182351.63214-2-linux.amoon@gmail.com>
+ <20231123-skeletal-smirk-390543e2d6ab@spud> <CANAwSgQCOw_CY_Yy7zYHdme92O=O35Ev=MqHcznYnR=ycaxdPg@mail.gmail.com>
+ <20231124-clear-aids-2fd63e1dcbcf@spud>
+In-Reply-To: <20231124-clear-aids-2fd63e1dcbcf@spud>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Fri, 24 Nov 2023 22:22:26 +0530
+Message-ID: <CANAwSgSRp96fjGfHw2rRNW8S3iKSzL7QTBV4N8_+vPxDoos1gA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 1:12=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
+Hi Conor,
+
+On Fri, 24 Nov 2023 at 17:55, Conor Dooley <conor@kernel.org> wrote:
 >
-> Hi,
->
-> =E5=9C=A8 2023/11/24 16:17, Song Liu =E5=86=99=E9=81=93:
-> > On Fri, Oct 20, 2023 at 7:25=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.co=
-m> wrote:
-> >>
-> >> From: Yu Kuai <yukuai3@huawei.com>
-> >>
-> >> One the one hand, print_conf() can be called without grabbing
-> >> 'reconfig_mtuex' and current rcu protection to access rdev through 'co=
-nf'
-> >> is not safe. Fortunately, there is a separate rcu protection to access
-> >> rdev from 'mddev->disks', and rdev is always removed from 'conf' befor=
-e
-> >> 'mddev->disks'.
-> >>
-> >> On the other hand, print_conf() is just used for debug,
-> >> and user can always grab such information(/proc/mdstat and mdadm).
-> >>
-> >> There is no need to always enable this debug and try to fix misuse rcu
-> >> protection for accessing rdev from 'conf', hence remove print_conf().
-> >>
-> >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> On Fri, Nov 24, 2023 at 04:18:23PM +0530, Anand Moon wrote:
+> > Hi Conor
 > >
-> > I wouldn't call these debug functions useless. There is probably some
-> > users who use them for debugging (or even in some automations).
-> > How hard is it to keep these functions? Can we just add some lockdep
-> > to these functions to make sure they are called from safe places?
+> > On Thu, 23 Nov 2023 at 23:26, Conor Dooley <conor@kernel.org> wrote:
+> > >
+> > > On Wed, Nov 22, 2023 at 11:53:46PM +0530, Anand Moon wrote:
+> > > > Add the binding example for the USB3.1 Genesys Logic GL3523
+> > > > integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+> > > > hub.
+> > > >
+> > > > Onboard USB hub supports USB 3.x and USB 2.0 peer controllers.
+> > > > which has a common reset pin and power supply.
+> > > > peer-hub phandle each peer controller with proper gpio reset
+> > > > and help each peer power on during initialization
+> > > > and power off during suspend.
+> > > >
+> > > > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> > > > ---
+> > > > v4: Fix the description of peer-hub and update the commit message.
+> > > > Schematics of the Odroid N2+
+> > > > https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121.pdf
+> > > > V3: fix the dt_binding_check error, added new example for Genesys GL3523
+> > > > v2: added Genesys GL3523 binding
+> > > > v1: none
+> > > > ---
+> > > >  .../bindings/usb/genesys,gl850g.yaml          | 67 +++++++++++++++++--
+> > > >  1 file changed, 63 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > > index ee08b9c3721f..bc3b3f4c8473 100644
+> > > > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+> > > >  maintainers:
+> > > >    - Icenowy Zheng <uwu@icenowy.me>
+> > > >
+> > > > -allOf:
+> > > > -  - $ref: usb-device.yaml#
+> > > > -
+> > > >  properties:
+> > > >    compatible:
+> > > >      enum:
+> > > > @@ -27,12 +24,48 @@ properties:
+> > > >
+> > > >    vdd-supply:
+> > > >      description:
+> > > > -      the regulator that provides 3.3V core power to the hub.
+> > > > +      phandle to the regulator that provides power to the hub.
+> > > > +
+> > > > +  peer-hub:
+> > >
+> > > Should the property not be "peer-controller"? Your description refers to
+> > > them as such.
+> >
+> > No, as per my understanding, peer-hub represents a complete USB hub.
+> > See the lock diagram in the below link.
+> >
+> > >
+> > > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > > +    description:
+> > > > +      onboard USB hub supports USB 3.x and USB 2.0 peer controllers.
+> > >
+> > >
+> > > > +      which has a common reset pin and power supply.
+> > > > +      peer-hub phandle each peer controller with proper gpio reset
 >
-> Okay, I can keep these debug code, and since these code are
-> dereferencing rdev from conf, and they need new syncronization:
+> This is what I don't get. You say "peer-hub phandle each peer
+> controller..". It is hard for me to understand that portion of the
+> sentence, but the interchanging of "hub" and "controller" is
+> confusing. The title of the binding says "hub controller", so maybe it
+> is better to use that here.
 >
-> 1) dereference rdev from mddev->disks instead of conf, and use
-> rdev->raid_disk >=3D 0 to judge if this rdev is in conf. There might
-> be a race window that rdev can be removed from conf, however, I think
-> this dones't matter. Or:
+> > > > +      and help each peer power on during initialization
+> > > > +      and power off during suspend.
+> > >
+> > > I generally hate to talk about non-native speakers grammar etc, but what
+> > > you have here is in need of a lot of improvement. The below is my
+> > > attempt to understand what you are trying to say:
+> > >
+> > > "For onboard hubs that support USB 3.x and USB 2.0 controllers with
+> > > shared resets and power supplies, this property is used to identify
+> > > the controllers with which these are shared."
 >
-> 2) grab 'active_io' before print_conf(), to make sure rdev won't be
-> removed from conf.
+> "For onboard hub controllers that support USB 3.x and USB 2.0 hubs
+> with shared resets and power supplies, this property is used to identify
+> the hubs with which these are shared."
+>
+Thanks for your review comments.
+Ok will update this in the next version.
 
-I think for most of these cases, we can already do print_conf()
-safely (holding mutex/lock), no? We can grab active_io when it is
-really necessary.
+> I re-worded this again to try and remove the use of "controller".
+> Do you think that this still makes sense?
+>
+> > Sorry for the poor grammar, I will update this in the next v5.
+> >
+> > > Also - this is one particular system, what prevents there being a hub
+> > > that has more than 2 controllers? Also, as you insist that this is
+> > > generic, and not just for genesys, should this not be defined in a
+> > > common location?
+> >
+> > Here is the block diagram of the Genesys GL3523 hub.
+> > [0] https://www.genesyslogic.com.tw/en/product_view.php?show=67 [Block Diagram]
+> >
+> > It has two USB 2.0 and USB 3.1 controllers, so using peer-hub node
+> > the onboard hub module will bring up this hub.
+> >
+> > There are many examples that use similar properties hence it is generic.
+> >
+> > # Documentation/devicetree/bindings/usb/cypress,hx3.yaml
+> > # Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> > # Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> > # Documentation/devicetree/bindings/usb/ti,usb8041.yaml
+> > # Documentation/devicetree/bindings/usb/vialab,vl817.yaml
+>
+> Which brings me back to the unanswered question, should this not be
+> defined in a common location given there are several devices using it?
+> I assume because it only applies to hub controllers and not other types
+> of devices.
+>
+> Also, the descriptions that I saw when looking at some of those other
+> bindings are similarly poor. I can't bring myself to care any more,
+> just clean up the ambiguous wording here and I'll ack the next version,
+> I don't expect you to sort out the wording in other bindings.
+>
+Ok
+> Cheers,
+> Conor.
 
-Thanks,
-Song
+Thanks
+-Anand
