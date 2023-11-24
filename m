@@ -2,156 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60067F6B59
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C713C7F6B5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 05:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjKXEYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 23:24:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S231127AbjKXE2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 23:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXEYF (ORCPT
+        with ESMTP id S229453AbjKXE2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 23:24:05 -0500
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2083.outbound.protection.outlook.com [40.107.101.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC65511F;
-        Thu, 23 Nov 2023 20:24:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BkuXLfIDZWUh42v5ffp6sTupZjhZimD61vZWmFscZNDLYxRTfasd4Lkom8PsSriUsrV182l6kilg07xMe3AMlotWYFJWjeVEIqjjkA+6rZsd7Wmk/dgRouvyRbejPBCQtadEnELR32HleDFqWi0C6TRVU6c7JwvH+fQdrAhdvHw5Y8HlpADQQXV7MaukmGUuxXIAQcDpnIs60mc6aKZB+7+6jwpKySJX3+Axy35KDKrp1ieES19EirY38wj1xkmUlY3sB7yq/419PGokguzUNzGo/WOzkIaMbq1YBFBbq/qrPscS8zpAy73B+MQ9xO03n6+NigE1AF+6d32Pq4+u4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kVrLmkkNcvB4mm1wmls6Qvhorl8b2IkdmqVcDoI6+24=;
- b=fJUvvN0pX7JthIji9Th1WtK3BKOyUUuLNSUH490M31SWwz+vsg8aPshFx6+6b3+ysVXlnlRv/inQku9d8Ei5mWHq0SZBjRCh7w6MG1FXO6wYzRdsy/+nzTxQGBHWMUHw2wWCeOw5HBhkiQpcS5Z+WQ6qJCGlf+4bKuXgxbMsDFvooO1ipZLA+AB9The0qvGUgphzqBRwLoh4GwHWW7E0mDz8w7DuHpYC5/ZOgU5HFj3AbVK8Hifyqx6CXEKXr/4jrrfvsSL/CLqk2qoV0rzWHmY9Ng/6SPvRMb2851TKhKv6XkLtaOqHUsBbs+ALawRkfH2gfNj5OUAnqnXdiz67yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kVrLmkkNcvB4mm1wmls6Qvhorl8b2IkdmqVcDoI6+24=;
- b=1Bp+g8pK95uHTTdiKyr850YPlheyrzBOoNE9BQYRT4TqDpkn7SmijnfrqJ0abesqi8pDRSskkjwWRKg7/7CVsgwS4Qp1+701w0446hc6p5tXGJjPhKPlpv10Ey+hHKkzYbYNUDkn5AEwLr+Re0lalpEYK32gi7TlN4DMOBcYNSw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3888.namprd12.prod.outlook.com (2603:10b6:208:162::32)
- by SJ0PR12MB6941.namprd12.prod.outlook.com (2603:10b6:a03:448::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Fri, 24 Nov
- 2023 04:24:09 +0000
-Received: from MN2PR12MB3888.namprd12.prod.outlook.com
- ([fe80::6cb9:3a50:957a:f6b6]) by MN2PR12MB3888.namprd12.prod.outlook.com
- ([fe80::6cb9:3a50:957a:f6b6%2]) with mapi id 15.20.7025.021; Fri, 24 Nov 2023
- 04:24:09 +0000
-Date:   Fri, 24 Nov 2023 09:53:58 +0530
-From:   Wyes Karny <wyes.karny@amd.com>
-To:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Cc:     Huang Rui <ray.huang@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq/amd-pstate: Fix the return value of
- amd_pstate_fast_switch()
-Message-ID: <ZWAlXl6MP20khEwB@BLR-5CG13462PL.amd.com>
-References: <20231123082757.3527-1-gautham.shenoy@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123082757.3527-1-gautham.shenoy@amd.com>
-X-ClientProxiedBy: PN2PR01CA0124.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:6::9) To MN2PR12MB3888.namprd12.prod.outlook.com
- (2603:10b6:208:162::32)
+        Thu, 23 Nov 2023 23:28:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86291BE
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 20:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700800120; x=1732336120;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=J4Ile0Qosg4PQ4W33TLsXAlMkveaq9qRrr4ZS5TQ5es=;
+  b=gEbeAinWtbqgOe2WzAGsCu9uU62+ovPv7CN+HxxyqPrNNgXIvWfgAzII
+   8IEr+yeSeOPPKLzlP/Rgccxf0oBcbCAgyjlVIeU0Ys93cBg1FiBtmUot+
+   zv7G3NK835LDqpVpmoYEjG71cBm40skwH+j59PBifFvVStq0vWz+lAAvx
+   cGdkuqtj+1agdyxr/hUCgxlA3HrVa5TEMJ9384w+TjkUqQePFQllg+8j4
+   z58BUkQv0JPJJmdwVowAIO52Qd+KYnhZZWkH7mgTVe1gjkX8V3VCAQSlm
+   I2LPBoKE8YRzvpK0lLGnAfj8L2ALup+6wz5+tDzhh/I2CmOPSA6ozp8qt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="391238928"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="391238928"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 20:28:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1098976827"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="1098976827"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 20:28:37 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc:     Yin Fengwei <fengwei.yin@intel.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <willy@infradead.org>, <aneesh.kumar@linux.ibm.com>,
+        <shy828301@gmail.com>, <hughd@google.com>, <david@redhat.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com> (Ying Huang's
+        message of "Fri, 24 Nov 2023 12:13:56 +0800")
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+        <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
+        <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
+        <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
+        <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
+        <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Date:   Fri, 24 Nov 2023 12:26:36 +0800
+Message-ID: <87ttpb7p4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3888:EE_|SJ0PR12MB6941:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2c47a475-5c08-4732-f88f-08dbeca533f5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9DZ0IERmSGwk3L2i8emXYNJGOAB311V07eq69Uu7B9i0SOL87gb/NEnu7nfT1X7FDiSUQCNd+lvGdXF5KZIJz7fOn+I43KhRb3k6d5BpP1StKgUojvn7sEzzBKMWdEsPbHX/0ZbkUTtDQ5Izaw+tYS5gBUhX1WSJt3BlbMszZJvQBmFLfK90c6Q5aHnwPWANs8ZyHJgl2bQryOpJhvozuP6Z+1XjVKV41PJ28pOsjvH9uWFxtQ2N4IwPNVEJDCdhWEKfCPGQMVAguc3Vx3Xa6cOKgIZxIwraAxS5PfWYmIGR6Tivb3vMbKa6lDeG0aOIOddugrNyapI3o6HSzw/zL8wrUWHPc0agubUhq2/nIvAx1BbSGDJv8zpXpLZ9umlQqO3z5jR+Ndael2j+69G9lnY/owrPG1ASRq5ogAM2N9o8/3S0V2Si1E5TznK0T9Tly6S4YoSWUDJp4Rtnn0Jn+lcoTkV+KbXjce5T6naGfcYEY5y9PIQL4Eb81Q7TTt4H/AZnqSwPT+z8r855IXTY4w/0koEO9SHFoeirM2vONNfmH+9qq/uN5OSWhfF0TrHT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3888.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(83380400001)(26005)(6666004)(6512007)(66476007)(6506007)(41300700001)(44832011)(6862004)(5660300002)(2906002)(6486002)(316002)(478600001)(8936002)(8676002)(4326008)(6636002)(66556008)(54906003)(66946007)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4iTLR38LZgzGed8tVB67UaEQsqZc0CwYg+nRFlTFfSSXa/civqsX3Y/6LrtZ?=
- =?us-ascii?Q?32AWYBaJG54LSUMDENvo62pMjFBjYLH1H46IC3AbI0GdFyb8MKayOnRukP0D?=
- =?us-ascii?Q?TlFQzacjiQAfFN3R9sTK0B7UrHpTgW/8dY+lF0GC/HedsNuqzMkjMSd4hhzM?=
- =?us-ascii?Q?pZaxGfxEUAaujLCj5ZSD0L2X+3yQu+5636/112LlqOcV/vEtAwvf/L4cMsPv?=
- =?us-ascii?Q?zoi0WBQnifUXB+pUkgRgzPVeubAQB0Pth+oyA0s4wtp3IDl+vjFnBIv/Lh6R?=
- =?us-ascii?Q?TzcVg9abRp2NywIEhkslqY03qbqbt71pwHDTX2fRFd3YA5OwUM7GOZNKQj+w?=
- =?us-ascii?Q?tIRf8sVCFw3aeYpOU2EN0zl1BAuaF944qQGAaP9BdpylCMUT0hFH83iPDLj9?=
- =?us-ascii?Q?ShBog+2nT/Vhh2EXL2BWlMOOxSASueTgO0orFfKNqje8dgg6yz+l0yHuTivH?=
- =?us-ascii?Q?579ICEhgEm4DLyLnHwUIH9M8fOGGqVPEYT6ukAElOHWhMOpnvh+CahvJydZ7?=
- =?us-ascii?Q?Qh3xh9TNxPMe4HsGHr6hzNT5xtAvaPE0UZ6nNxq4OqM3L9XJdrdLeU9ONkuT?=
- =?us-ascii?Q?juOKvjjtPM+IuM8y0TgywvkZ40TCVWyrMCNn86K8AJdn88OEmoFYlYzmAE8N?=
- =?us-ascii?Q?WObY+26FbGZ5UrFH4Kr8ZQSzZR43foIYx/bwu05SDpORoRJNkbD9iyPPv1aS?=
- =?us-ascii?Q?ZKaRHn+ZdEJ/rBxRxbLFLEQmAaPvyPIzouEyuZXhoC3LeyFA5ZQ0ajbE9Ny0?=
- =?us-ascii?Q?RoL99d6zBFPB4C6Lugt4PBNEUifpiv1WVh1VHRYlzN3wV5DjiIFOeTelPfhL?=
- =?us-ascii?Q?UCkx62mBs8Ydlg0AtRCGJuZjQqe6lM/A6DVPjASbnrBkGSuKf7f9JKHQ/lEf?=
- =?us-ascii?Q?imVDxTT86vHhjJvyEiDC/nUGIErLy6k2sPpOOfNWNk2Go4fGF3iDtkWCU/qC?=
- =?us-ascii?Q?PdSqjAvhXUC3WQwRxBOEwDc7G+vBhVKxw8DZSorvVIrb9sj4CaCNPV6Ae8ml?=
- =?us-ascii?Q?xTgEfyidbVBp4pY/BVXKrXbvwHU5AvxUHGeOFozfDnuMCihkvA9zWLktLiw1?=
- =?us-ascii?Q?fzxQ9ejLWD/vWkrUFY3pGy9ttte7STPY+CL6EbB9xyPunKWqPnComM0jpw5c?=
- =?us-ascii?Q?fMhbx+qd9wjzZxu7y5nw/Lw91UfjdpnqueuIsNNyf7HJiBTFjbREA5jx3SXO?=
- =?us-ascii?Q?N+bZlQzFnafQsUac8ezwWDSjspAYkveCPt4LmP8TlphzoX/fgpc34S98Nk+U?=
- =?us-ascii?Q?a/3L+gvPRSjFUpJWZYZiAp25Z8Ye0geXxCCyzPDWNDFGXereyoZDC+M+9ceo?=
- =?us-ascii?Q?vhcMc/eNypjOMTG/ZdfPtAaABMNH1FLM9ki062VaVBw0ifKZq2NUmtOf/zRb?=
- =?us-ascii?Q?bQa5g6QJAEprBaGt+b9vCcvRJRXFu1mNMClmWuZRwy1DnXYCYIltj2btB7S5?=
- =?us-ascii?Q?aoMXOtn3noHuVl54llm1arZ6jEmWy7aNO1u2DOC9DtyBi7naULgj613opCrt?=
- =?us-ascii?Q?P+MBD4EGav5E1ntZe5Cg3qf0gKoOE642lNaORyaI3RMcLm5ERzEI56uixfgV?=
- =?us-ascii?Q?7x5nk5kxTaH887A/wzVjVvt2HRBF2SvYfqnsP7aX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c47a475-5c08-4732-f88f-08dbeca533f5
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3888.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 04:24:09.0595
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kUMnbqdMkd3CHig6rvOGB0bgtlLxh2Hpq7sKRCVsmbC958gRHZJCKq/t7g1sBhFbzErcxmnRA8wW3HTYi+ZBmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6941
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23 Nov 13:57, Gautham R. Shenoy wrote:
-> cpufreq_driver->fast_switch() callback expects a frequency as a return
-> value. amd_pstate_fast_switch() was returning the return value of
-> amd_pstate_update_freq(), which only indicates a success or failure.
-> 
-> Fix this by making amd_pstate_fast_switch() return the target_freq
-> when the call to amd_pstate_update_freq() is successful, and return
-> the current frequency from policy->cur when the call to
-> amd_pstate_update_freq() is unsuccessful.
-> 
-> Fixes: 4badf2eb1e98 ("cpufreq: amd-pstate: Add ->fast_switch() callback")
+"Huang, Ying" <ying.huang@intel.com> writes:
 
-Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>
+>> On 2023/11/23 13:26, Yin Fengwei wrote:
+>>
+>>> On 11/23/23 12:12, zhangpeng (AS) wrote:
+>>>> On 2023/11/23 9:09, Yin Fengwei wrote:
+>>>>
+>>>>> Hi Peng,
+>>>>>
+>>>>> On 11/22/23 22:00, Peng Zhang wrote:
+>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>>
+>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTUR=
+E)
+>>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>>
+>>>>>> This caused by temporarily cleared pte during a read/modify/write up=
+date
+>>>>>> of the pte, eg, do_numa_page()/change_pte_range().
+>>>>>>
+>>>>>> For the data segment of the user-mode program, the global variable a=
+rea
+>>>>>> is a private mapping. After the pagecache is loaded, the private ano=
+nymous
+>>>>>> page is generated after the COW is triggered. Mlockall can lock COW =
+pages
+>>>>>> (anonymous pages), but the original file pages cannot be locked and =
+may
+>>>>>> be reclaimed. If the global variable (private anon page) is accessed=
+ when
+>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggere=
+d.
+>>>>>>
+>>>>>> At this time, the original private file page may have been reclaimed.
+>>>>>> If the page cache is not available at this time, a major fault will =
+be
+>>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>>
+>>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() bef=
+ore
+>>>>>> triggering a major fault.
+>>>>>>
+>>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17=
+434ee@huawei.com/
+>>>>>>
+>>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>>> ---
+>>>>>>  =C2=A0 mm/filemap.c | 14 ++++++++++++++
+>>>>>>  =C2=A0 1 file changed, 14 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>>> index 71f00539ac00..bb5e6a2790dc 100644
+>>>>>> --- a/mm/filemap.c
+>>>>>> +++ b/mm/filemap.c
+>>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 mapping_locked =3D true;
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pte_t *ptep =3D pte_offs=
+et_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 vmf->address, &vmf->ptl);
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ptep) {
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+/*
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 * Recheck pte with ptl locked as the pte can be cleared
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 * temporarily during a read/modify/write update.
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 */
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+if (unlikely(!pte_none(ptep_get(ptep))))
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D VM_FAULT_NOPAGE;
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+pte_unmap_unlock(ptep, vmf->ptl);
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+if (unlikely(ret))
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>> I am curious. Did you try not to take PTL here and just check whether=
+ PTE is not NONE?
+>>>> Thank you for your reply.
+>>>>
+>>>> If we don't take PTL, the current use case won't trigger this issue ei=
+ther.
+>>> Is this verified by testing or just in theory?
+>>
+>> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_=
+commit(),
+>> this issue will also trigger. Without delay, we haven't reproduced this =
+problem
+>> so far.
+>>
+>>>> In most cases, if we don't take PTL, this issue won't be triggered. Ho=
+wever,
+>>>> there is still a possibility of triggering this issue. The corner case=
+ is that
+>>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_s=
+tart()
+>>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 pa=
+sses the
+>>>> check whether the PTE is not NONE before task 1 updates PTE in
+>>>> ptep_modify_prot_commit() without taking PTL.
+>>> There is very limited operations between ptep_modify_prot_start() and
+>>> ptep_modify_prot_commit(). While the code path from page fault to this =
+check is
+>>> long. My understanding is it's very likely the PTE is not NONE when do =
+PTE check
+>>> here without hold PTL (This is my theory. :)).
+>>
+>> Yes, there is a high probability that this issue won't occur without tak=
+ing PTL.
+>>
+>>> In the other side, acquiring/releasing PTL may bring performance impact=
+ion. It may
+>>> not be big deal because the IO operations in this code path. But it's b=
+etter to
+>>> collect some performance data IMHO.
+>>
+>> We tested the performance of file private mapping page fault (page_fault=
+2.c of
+>> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of =
+will-it-scale).
+>> The difference in performance (in operations per second) before and afte=
+r patch
+>> applied is about 0.7% on a x86 physical machine.
+>
+> Whether is it improvement or reduction?
 
-> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-> ---
->  drivers/cpufreq/amd-pstate.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 9a1e194d5cf8..300f81d36291 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -518,7 +518,9 @@ static int amd_pstate_target(struct cpufreq_policy *policy,
->  static unsigned int amd_pstate_fast_switch(struct cpufreq_policy *policy,
->  				  unsigned int target_freq)
->  {
-> -	return amd_pstate_update_freq(policy, target_freq, true);
-> +	if (!amd_pstate_update_freq(policy, target_freq, true))
-> +		return target_freq;
-> +	return policy->cur;
->  }
->  
->  static void amd_pstate_adjust_perf(unsigned int cpu,
-> -- 
-> 2.25.1
-> 
+And I think that you need to test ramdisk cases too to verify whether
+this will cause performance regression and how much.
+
+--
+Best Regards,
+Huang, Ying
+
+> --
+> Best Regards,
+> Huang, Ying
+>
+>> [1] https://github.com/antonblanchard/will-it-scale/tree/master
+>>
+>>>
+>>> Regards
+>>> Yin, Fengwei
+>>>
+>>>>> Regards
+>>>>> Yin, Fengwei
+>>>>>
+>>>>>> +
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* No page i=
+n the page cache at all */
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 count_vm_eve=
+nt(PGMAJFAULT);
+>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 count_memcg_=
+event_mm(vmf->vma->vm_mm, PGMAJFAULT);
