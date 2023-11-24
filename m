@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1635E7F7515
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B067F754C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345440AbjKXN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S235293AbjKXNeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235123AbjKXN2r (ORCPT
+        with ESMTP id S235228AbjKXNeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:28:47 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D39A26AD
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:47 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so2609337a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700832466; x=1701437266; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eokqNMXFjjI+HtrKv3iS9XiSFNSMnH+iWv/pd8rsZ+0=;
-        b=x+c58fovJs0+ddYdpX0ZNQJZSK2jpLYbUZCarPirybFHxIey/GNxWpwEoVUCI9IUR1
-         UIOBjQIhWNp3BB4P6+zMSD5U2b6GpLYvOfkcXATFowfhSqTB16paF17Doe3d6GYMAY9X
-         PudmkDIhxvyPAlzGxZo+tAJPWzB6oJypnET+ZhDs2MYeSFBO9VdjFjxwA+Es0wbgCX4G
-         hTIiLIJUSgblPMoqvwEKbChivCQiznMzhcJGEtd44ClhL0u86vT2D1ONceCtYgzQc71h
-         Oi5SGhxMlMANuVrSIxRdHuy0/LE+2HryCNOyUQMCcvVKXkvGWKILwq3ZO4KIk8noVBXC
-         RwXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700832466; x=1701437266;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eokqNMXFjjI+HtrKv3iS9XiSFNSMnH+iWv/pd8rsZ+0=;
-        b=MmS446a/6/WLX+ofVjgJgCVefBBzIUp9yFimwZtEdUCMSQUQYnrC5+fsnmFRXsyRlN
-         wJccmB7qnmpnhhzOfus+sILiOBX/MTMqcDT4cdrczWc+DXona3Atx6ZbWASi/qRMLByJ
-         SxpKKU+PkeA6jFeSnCSggROpIVEsiNxXfGK6kzfHk2pkhzdpI8QCq4Gdpd49cEHbQkkC
-         p9reAS/iEY8y3L1hq55v3hDoYcSUrj58VmS0ZTU0yjf2o0D8I9pTHtl9jioTdhB+L3C7
-         xeEegLFaLi1SFTxliQ0tkjZ3WALBJGk5Qp76JLBI+LC43nk+zRQhTMHOkfI1nW0d6Li7
-         kpcg==
-X-Gm-Message-State: AOJu0Yz0OLT1eDAZtiue4N/adxtzamc5rFG3BgprAnR23eUHRO9DBQtm
-        IxdfWD27RsvMlbh5RsxbiBSltA==
-X-Google-Smtp-Source: AGHT+IEq8OZ3/eZ7t78xqzGs9+bIpttmgyxecpHKoHPPwDEykJFXIauwbyyIFRQe5zb0SKOadfNRhA==
-X-Received: by 2002:aa7:dcc4:0:b0:54b:17c:d001 with SMTP id w4-20020aa7dcc4000000b0054b017cd001mr1169734edu.29.1700832466011;
-        Fri, 24 Nov 2023 05:27:46 -0800 (PST)
-Received: from [192.168.86.103] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id o26-20020a056402039a00b005487c48d9ebsm1793399edv.57.2023.11.24.05.27.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 05:27:45 -0800 (PST)
-Message-ID: <a2495939-0ad0-4b7c-8c77-618e79a1615c@linaro.org>
-Date:   Fri, 24 Nov 2023 13:27:45 +0000
+        Fri, 24 Nov 2023 08:34:00 -0500
+X-Greylist: delayed 272 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 05:33:53 PST
+Received: from vsrv.gekmihesg.de (vsrv.gekmihesg.de [IPv6:2a01:4f8:c17:74cc::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBEC210C;
+        Fri, 24 Nov 2023 05:33:53 -0800 (PST)
+Message-ID: <71576a9ff7398bfa4b8c0a1a1a2523383b056168.camel@gekmihesg.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gekmihesg.de;
+        s=201901; t=1700832555; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tvi71HIUFqmS5YOZB3JKUh9IA5LYRhf5uCgrQHgyQ/Y=;
+        b=rwMGoP8ISZ1/COYdMrSf3LsQSoobBlsOJj9+QwKfDDJ8I1HuZ0bxPcx9u+9C97xVMxLw8F
+        1lRzO/aKjx7FOyjsszIt/2Pjglw50U79CIoMnaCOk2yBa+Jmno7pefuRk9ERRYxsiAIri0
+        kqw6h5wF5kYU6vMfUx0FFJzT1CGk8NA=
+Subject: Re: bcache: kernel NULL pointer dereference since 6.1.39
+From:   Markus Weippert <markus@gekmihesg.de>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        Zheng Wang <zyytlz.wz@163.com>, Coly Li <colyli@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Stefan =?ISO-8859-1?Q?F=F6rster?= <cite@incertum.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        linux-bcache@vger.kernel.org
+Date:   Fri, 24 Nov 2023 14:29:14 +0100
+In-Reply-To: <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+References: <ZV9ZSyDLNDlzutgQ@pharmakeia.incertum.net>
+         <be371028-efeb-44af-90ea-5c307f27d4c6@leemhuis.info>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/5] misc: fastrpc: Add early wakeup support for
- fastRPC driver
-Content-Language: en-US
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        linux-arm-msm@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20231121112454.12764-1-quic_ekangupt@quicinc.com>
- <20231121112454.12764-2-quic_ekangupt@quicinc.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231121112454.12764-2-quic_ekangupt@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=markus smtp.mailfrom=markus@gekmihesg.de
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -76,466 +57,405 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Ekansh for the patch,
+> On 23.11.23 14:53, Stefan F=C3=B6rster wrote:
+> >=20
+> > starting with kernel 6.1.39, we see the following error message
+> > with
+> > heavy I/O loads. We needed to revert
+>=20
+> Thx for the report. I assume that problem still occurs with the
+> latest
+> 6.1.y kernel?
+>=20
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
+/?h=3Dv6.1.39&id=3D68118c339c6e1e16ae017bef160dbe28a27ae9c8
+>=20
+> FWIW, that is mainline commit 028ddcac477b69 ("bcache: Remove
+> unnecessary NULL point check in node allocations") [v6.5-rc1].
+>=20
+> Did a quick check and noticed a fix for that change was recently
+> mainlined as f72f4312d43883 ("bcache: replace a mistaken IS_ERR() by
+> IS_ERR_OR_NULL() in btree_gc_coalesce()") [v6.7-rc2-post]:
+> https://lore.kernel.org/all/20231118163852.9692-1-colyli@suse.de/
+>=20
+> It is expected to soon be interegrated into a 6.1.y kernel.
+>=20
+> But maybe it's something else. I CCed the involved people, they might
+> know.
 
-On 21/11/2023 11:24, Ekansh Gupta wrote:
-> CPU wake up and context switch latency are significant in FastRPC
-> overhead for remote calls. As part of this change, DSP sends early
-> signal of completion to CPU and FastRPC driver detects early signal
-> on the given context and starts polling on a memory for actual
-> completion. Multiple different response flags are added to support
-> DSP user early hint of approximate time of completion, early response
-> from DSP user to wake up CPU and poll on memory for actual completion.
-> Complete signal is also added which is sent by DSP user in case of
-> timeout after early response is sent.
-> 
-> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> ---
-> Changes in v3:
->    - Rebase the patch to latest kernel version
-> 
->   drivers/misc/fastrpc.c | 265 +++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 252 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index 8e77beb3a693..6b6ac3e3328d 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -106,6 +106,19 @@
->   #define USER_PD		(1)
->   #define SENSORS_PD	(2)
->   
-> +#define FASTRPC_RSP_VERSION2 2
-> +/* Early wake up poll completion number received from remoteproc */
-> +#define FASTRPC_EARLY_WAKEUP_POLL (0xabbccdde)
-> +/* timeout in us for polling until memory barrier */
-> +#define FASTRPC_POLL_TIME_MEM_UPDATE (500)
-> +/* timeout in us for busy polling after early response from remoteproc */
-> +#define FASTRPC_POLL_TIME (4000)
-> +/* timeout in us for polling completion signal after user early hint */
-> +#define FASTRPC_USER_EARLY_HINT_TIMEOUT (500)
+We applied f72f4312d43883 to the current Debian kernel (based on
+6.1.55) but it didn't help, same stack trace.
+Looking at the description, __bch_btree_node_alloc() should never be
+able to return NULL anyway after
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
+=3Dv6.1.39&id=3D7ecea5ce3dc17339c280c75b58ac93d8c8620d9f
+But I didn't verify all callers, so this might still be correct, if
+it's not always initialized with the return value of
+__bch_btree_node_alloc().
 
-> +/* CPU feature information to DSP */
+Anyway, I think we fixed it by applying this:
 
-> +#define FASTRPC_CPUINFO_DEFAULT (0)
-> +#define FASTRPC_CPUINFO_EARLY_WAKEUP (1)
-> +
->   #define miscdev_to_fdevice(d) container_of(d, struct fastrpc_device, miscdev)
->   
->   #define PERF_END ((void)0)
-> @@ -129,6 +142,15 @@
->   			(uint64_t *)(perf_ptr + offset)\
->   				: (uint64_t *)NULL) : (uint64_t *)NULL)
->   
+diff -Naurp a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+--- a/drivers/md/bcache/btree.c	2023-09-23 11:11:13.000000000 +0200
++++ b/drivers/md/bcache/btree.c	2023-11-24 13:13:09.840013759 +0100
+@@ -1489,7 +1489,7 @@ out_nocoalesce:
+ 	bch_keylist_free(&keylist);
+=20
+ 	for (i =3D 0; i < nodes; i++)
+-		if (!IS_ERR(new_nodes[i])) {
++		if (!IS_ERR_OR_NULL(new_nodes[i])) {
+ 			btree_node_free(new_nodes[i]);
+ 			rw_unlock(true, new_nodes[i]);
+ 		}
 
-Can you add some documentation to these flags.
+--
 
-> +enum fastrpc_response_flags {
-> +	NORMAL_RESPONSE = 0,
-> +	EARLY_RESPONSE = 1,
-> +	USER_EARLY_SIGNAL = 2,
-> +	COMPLETE_SIGNAL = 3,
-> +	STATUS_RESPONSE = 4,
-> +	POLL_MODE = 5,
-> +};
-> +
->   static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
->   						"sdsp", "cdsp"};
->   struct fastrpc_phy_page {
-> @@ -206,6 +228,14 @@ struct fastrpc_invoke_rsp {
->   	int retval;		/* invoke return value */
->   };
->   
-> +struct fastrpc_invoke_rspv2 {
-> +	u64 ctx;		/* invoke caller context */
-> +	int retval;		/* invoke return value */
-> +	u32 flags;		/* early response flags */
-> +	u32 early_wake_time;	/* user hint in us */
-> +	u32 version;		/* version number */
-> +};
-> +
->   struct fastrpc_buf_overlap {
->   	u64 start;
->   	u64 end;
-> @@ -272,11 +302,17 @@ struct fastrpc_invoke_ctx {
->   	int pid;
->   	int tgid;
->   	u32 sc;
-> +	/* user hint of completion time in us */
-> +	u32 early_wake_time;
->   	u32 *crc;
->   	u64 *perf_kernel;
->   	u64 *perf_dsp;
->   	u64 ctxid;
->   	u64 msg_sz;
-> +	/* work done status flag */
-> +	bool is_work_done;
-> +	/* response flags from remote processor */
-> +	enum fastrpc_response_flags rsp_flags;
->   	struct kref refcount;
->   	struct list_head node; /* list of ctxs */
->   	struct completion work;
-> @@ -321,7 +357,9 @@ struct fastrpc_channel_ctx {
->   	struct list_head invoke_interrupted_mmaps;
->   	bool secure;
->   	bool unsigned_support;
-> +	bool cpuinfo_status;
->   	u64 dma_mask;
-> +	u64 cpuinfo_todsp;
->   };
->   
->   struct fastrpc_device {
-> @@ -352,13 +390,21 @@ struct fastrpc_user {
->   	struct mutex mutex;
->   };
->   
-> +struct fastrpc_ctrl_latency {
-> +	u32 enable;	/* latency control enable */
-> +	u32 latency;	/* latency request in us */
-> +};
-> +
+That seems to run stable now. I suppose the culprit is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drive=
+rs/md/bcache/btree.c?h=3Dv6.1.55#n1448
 
-What is this struct? am not seeing it used anywhere in this patch.
+	new_nodes[0] =3D NULL;
+
+	for (i =3D 0; i < nodes; i++) {
+		if (__bch_keylist_realloc(&keylist, bkey_u64s(&r[i].b-
+>key)))
+			goto out_nocoalesce;
 
 
->   struct fastrpc_ctrl_smmu {
->   	u32 sharedcb;	/* Set to SMMU share context bank */
->   };
-> 
+So if __bch_keylist_realloc() succeeds, then btree_node_free() will be
+called with new_nodes[0] which is NULL.
 
->   struct fastrpc_internal_control {
->   	u32 req;
-> -	struct fastrpc_ctrl_smmu smmu;
-> +	union {
-> +		struct fastrpc_ctrl_latency lp;
-> +		struct fastrpc_ctrl_smmu smmu;
-> +	};
->   };
->   
->   static inline int64_t getnstimediff(struct timespec64 *start)
-> @@ -692,6 +738,8 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
->   	ctx->pid = current->pid;
->   	ctx->tgid = user->tgid;
->   	ctx->cctx = cctx;
-> +	ctx->rsp_flags = NORMAL_RESPONSE;
-> +	ctx->is_work_done = false;
->   	init_completion(&ctx->work);
->   	INIT_WORK(&ctx->put_work, fastrpc_context_put_wq);
->   
-> @@ -1302,6 +1350,115 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
->   
->   }
->   
-> +static int poll_for_remote_response(struct fastrpc_invoke_ctx *ctx, u32 timeout)
-> +{
-> +	int err = -EIO, ii = 0, jj = 0;
-
-variable naming is really odd.
-
-> +	u32 sc = ctx->sc;
-> +	struct fastrpc_invoke_buf *list;
-> +	struct fastrpc_phy_page *pages;
-> +	u64 *fdlist = NULL;
-> +	u32 *crclist = NULL, *poll = NULL;
-> +	unsigned int inbufs, outbufs, handles;
-> +
-> +	/* calculate poll memory location */
-> +	inbufs = REMOTE_SCALARS_INBUFS(sc);
-> +	outbufs = REMOTE_SCALARS_OUTBUFS(sc);
-> +	handles = REMOTE_SCALARS_INHANDLES(sc) + REMOTE_SCALARS_OUTHANDLES(sc);
-> +	list = fastrpc_invoke_buf_start(ctx->rpra, ctx->nscalars);
-> +	pages = fastrpc_phy_page_start(list, ctx->nscalars);
-> +	fdlist = (u64 *)(pages + inbufs + outbufs + handles);
-> +	crclist = (u32 *)(fdlist + FASTRPC_MAX_FDLIST);
-> +	poll = (u32 *)(crclist + FASTRPC_MAX_CRCLIST);
-> +
-> +	/* poll on memory for DSP response. Return failure on timeout */
-> +	for (ii = 0, jj = 0; ii < timeout; ii++, jj++) {
-> +		if (*poll == FASTRPC_EARLY_WAKEUP_POLL) {
-> +			/* Remote processor sent early response */
-> +			err = 0;
-> +			break;
-> +		}
-> +		if (jj == FASTRPC_POLL_TIME_MEM_UPDATE) {
-> +			/* Wait for DSP to finish updating poll memory */
-> +			rmb();
-
-Could you add a comment on why do we need this memory barrier here?
-Can we use dma_rmb() ?
+This is still the same in mainline:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
+vers/md/bcache/btree.c?id=3D31f5b956a197d4ec25c8a07cb3a2ab69d0c0b82f#n1481
 
 
-> +			jj = 0;
-> +		}
-> +		udelay(1);
-> +	}
-> +	return err;
-> +}
-> +
-> +static inline int fastrpc_wait_for_response(struct fastrpc_invoke_ctx *ctx,
-> +						u32 kernel)
-> +{
-> +	int interrupted = 0;
-> +
-> +	if (kernel)
-> +		wait_for_completion(&ctx->work);
-> +	else
-> +		interrupted = wait_for_completion_interruptible(&ctx->work);
-> +
-> +	return interrupted;
-> +}
-> +
-> +static void fastrpc_wait_for_completion(struct fastrpc_invoke_ctx *ctx,
-> +			int *ptr_interrupted, u32 kernel)
-> +{
-> +	int err = 0, jj = 0;
-unnecessary intializations.
 
-> +	bool wait_resp = false;
-> +	u32 wTimeout = FASTRPC_USER_EARLY_HINT_TIMEOUT;
-> +	u32 wakeTime = ctx->early_wake_time;
-> +
-> +	do {
-> +		switch (ctx->rsp_flags) {
-> +		/* try polling on completion with timeout */
-> +		case USER_EARLY_SIGNAL:
-> +			/* try wait if completion time is less than timeout */
-> +			/* disable preempt to avoid context switch latency */
-pl use proper multi-line commenting style here.
+>=20
+> Ciao, Thorsten
+>=20
+> > to make sure the systems don't suddenly get stuck.
+> >=20
+> > 1. Kernel 6.6.2-arch1-1 on Dell Latitude:
+> >=20
+> > [16816.214942] BUG: kernel NULL pointer dereference, address:
+> > 0000000000000080
+> > [16816.214948] #PF: supervisor read access in kernel mode
+> > [16816.214951] #PF: error_code(0x0000) - not-present page
+> > [16816.214953] PGD 0 P4D 0 [16816.214956] Oops: 0000 [#1] PREEMPT
+> > SMP NOPTI
+> > [16816.214960] CPU: 7 PID: 83416 Comm: bcache_gc Tainted:
+> > P=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> > OE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.6.2-arch1-1 #1 11215f9ba7ddfb5164467=
+4a5b2ced71612c62fe9
+> > [16816.214964] Hardware name: Dell Inc. Latitude 5431/06F77M, BIOS
+> > 1.17.0 09/21/2023
+> > [16816.214965] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
+> > [16816.214999] Code: 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
+> > 90 90
+> > 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
+> > 44 00
+> > 00 <48> 8b 83 80 00 00 00 48 8d ab 90 00 00 00 48 39 98 60 c3 00 00
+> > 75
+> > [16816.215001] RSP: 0018:ffffc90021777af8 EFLAGS: 00010207
+> > [16816.215004] RAX: 0000000000000001 RBX: 0000000000000000 RCX:
+> > ffff888515ce0670
+> > [16816.215006] RDX: 0000000000000000 RSI: ffff888515ce0680 RDI:
+> > 0000000000000000
+> > [16816.215007] RBP: ffffc90021777bf0 R08: ffff88819476d9e0 R09:
+> > 00000000013ffde8
+> > [16816.215009] R10: 0000000000000000 R11: ffffc9000061b000 R12:
+> > ffffc90021777e40
+> > [16816.215010] R13: ffffc90021777bf0 R14: ffffc90021777bd8 R15:
+> > ffff88819476c000
+> > [16816.215011] FS:=C2=A0 0000000000000000(0000)
+> > GS:ffff88886fdc0000(0000)
+> > knlGS:0000000000000000
+> > [16816.215013] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [16816.215015] CR2: 0000000000000080 CR3: 0000000294a20000 CR4:
+> > 0000000000f50ee0
+> > [16816.215017] PKRU: 55555554
+> > [16816.215018] Call Trace:
+> > [16816.215021]=C2=A0 <TASK>
+> > [16816.215024]=C2=A0 ? __die+0x23/0x70
+> > [16816.215030]=C2=A0 ? page_fault_oops+0x171/0x4e0
+> > [16816.215035]=C2=A0 ? __pfx_bch_ptr_bad+0x10/0x10 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215059]=C2=A0 ? exc_page_fault+0x7f/0x180
+> > [16816.215065]=C2=A0 ? asm_exc_page_fault+0x26/0x30
+> > [16816.215070]=C2=A0 ? btree_node_free+0xf/0x160 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215095]=C2=A0 ? btree_node_free+0xa3/0x160 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215118]=C2=A0 btree_gc_coalesce+0x2a7/0x890 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215144]=C2=A0 ? bch_extent_bad+0x81/0x190 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215172]=C2=A0 btree_gc_recurse+0x130/0x390 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215197]=C2=A0 ? btree_gc_mark_node+0x72/0x240 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215221]=C2=A0 bch_btree_gc+0x4b6/0x620 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215246]=C2=A0 ? __pfx_autoremove_wake_function+0x10/0x10
+> > [16816.215250]=C2=A0 ? __pfx_bch_gc_thread+0x10/0x10 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215272]=C2=A0 bch_gc_thread+0x139/0x190 [bcache
+> > 33eebe64448bb81d5f2a10179a48eb0a5bdb25a6]
+> > [16816.215295]=C2=A0 ? __pfx_autoremove_wake_function+0x10/0x10
+> > [16816.215298]=C2=A0 kthread+0xe5/0x120
+> > [16816.215302]=C2=A0 ? __pfx_kthread+0x10/0x10
+> > [16816.215306]=C2=A0 ret_from_fork+0x31/0x50
+> > [16816.215309]=C2=A0 ? __pfx_kthread+0x10/0x10
+> > [16816.215312]=C2=A0 ret_from_fork_asm+0x1b/0x30
+> > [16816.215318]=C2=A0 </TASK>
+> > [16816.215319] Modules linked in: bcache tun ccm rfcomm
+> > snd_seq_dummy
+> > snd_hrtimer snd_seq nvidia(POE) typec_displayport cmac algif_hash
+> > algif_skcipher af_alg bnep hid_sensor_custom hid_sensor_hub
+> > intel_ishtp_hid snd_hda_codec_hdmi snd_sof_pci_intel_tgl
+> > snd_sof_intel_hda_common soundwire_intel snd_sof_intel_hda_mlink
+> > soundwire_cadence snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp
+> > snd_sof snd_sof_utils intel_uncore_frequency
+> > intel_uncore_frequency_common snd_ctl_led snd_soc_hdac_hda
+> > r8153_ecm
+> > snd_hda_ext_core iwlmvm cdc_ether snd_soc_acpi_intel_match usbnet
+> > snd_soc_acpi soundwire_generic_allocation soundwire_bus
+> > snd_soc_core
+> > x86_pkg_temp_thermal snd_compress snd_hda_codec_realtek
+> > intel_powerclamp
+> > ac97_bus snd_hda_codec_generic dell_rbtn coretemp btusb
+> > snd_pcm_dmaengine snd_usb_audio mac80211 btrtl snd_hda_intel
+> > kvm_intel
+> > btintel snd_intel_dspcfg snd_intel_sdw_acpi snd_usbmidi_lib btbcm
+> > dell_laptop snd_ump btmtk libarc4 snd_hda_codec uvcvideo kvm
+> > snd_rawmidi
+> > bluetooth snd_hda_core videobuf2_vmalloc hid_multitouch iwlwifi
+> > [16816.215367]=C2=A0 dell_wmi snd_hwdep iTCO_wdt snd_seq_device uvc
+> > nls_iso8859_1 videobuf2_memops dell_smbios intel_pmc_bxt mei_hdcp
+> > mei_pxp spi_nor snd_pcm processor_thermal_device_pci r8152
+> > videobuf2_v4l2 dell_wmi_sysman irqbypass intel_rapl_msr dcdbas vfat
+> > iTCO_vendor_support fat rapl intel_cstate intel_uncore psmouse
+> > pcspkr
+> > dell_wmi_ddv firmware_attributes_class ledtrig_audio
+> > videobuf2_common
+> > ucsi_acpi dell_wmi_descriptor processor_thermal_device mousedev
+> > ecdh_generic snd_timer mii joydev mtd wmi_bmof e1000e cfg80211
+> > processor_thermal_rfim mei_me intel_lpss_pci i2c_i801 snd
+> > processor_thermal_mbox typec_ucsi intel_ish_ipc intel_lpss mei
+> > soundcore
+> > i2c_smbus processor_thermal_rapl rfkill thunderbolt typec idma64
+> > intel_ishtp roles intel_rapl_common igen6_edac i2c_hid_acpi
+> > int3403_thermal i2c_hid int340x_thermal_zone intel_hid
+> > int3400_thermal
+> > acpi_thermal_rel sparse_keymap acpi_tad acpi_pad mac_hid
+> > vboxnetflt(OE)
+> > vboxnetadp(OE) vboxdrv(OE) v4l2loopback(OE) videodev mc i2c_dev
+> > crypto_user fuse loop ip_tables x_tables ext4
+> > [16816.215420]=C2=A0 crc32c_generic crc16 mbcache jbd2 dm_crypt cbc
+> > encrypted_keys trusted asn1_encoder tee usbhid i915 dm_mod
+> > crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+> > i2c_algo_bit
+> > polyval_generic serio_raw rtsx_pci_sdmmc drm_buddy gf128mul atkbd
+> > ghash_clmulni_intel ttm mmc_core sha512_ssse3 libps2 vivaldi_fmap
+> > intel_gtt aesni_intel nvme crypto_simd drm_display_helper video
+> > nvme_core cryptd spi_intel_pci rtsx_pci spi_intel i8042 xhci_pci
+> > cec
+> > nvme_common xhci_pci_renesas serio wmi
+> > [16816.215451] CR2: 0000000000000080
+> > [16816.215453] ---[ end trace 0000000000000000 ]---
+> > [16816.215455] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
+> > [16816.215478] Code: 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
+> > 90 90
+> > 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
+> > 44 00
+> > 00 <48> 8b 83 80 00 00 00 48 8d ab 90 00 00 00 48 39 98 60 c3 00 00
+> > 75
+> > [16816.215480] RSP: 0018:ffffc90021777af8 EFLAGS: 00010207
+> > [16816.215481] RAX: 0000000000000001 RBX: 0000000000000000 RCX:
+> > ffff888515ce0670
+> > [16816.215483] RDX: 0000000000000000 RSI: ffff888515ce0680 RDI:
+> > 0000000000000000
+> > [16816.215484] RBP: ffffc90021777bf0 R08: ffff88819476d9e0 R09:
+> > 00000000013ffde8
+> > [16816.215486] R10: 0000000000000000 R11: ffffc9000061b000 R12:
+> > ffffc90021777e40
+> > [16816.215487] R13: ffffc90021777bf0 R14: ffffc90021777bd8 R15:
+> > ffff88819476c000
+> > [16816.215488] FS:=C2=A0 0000000000000000(0000)
+> > GS:ffff88886fdc0000(0000)
+> > knlGS:0000000000000000
+> > [16816.215490] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [16816.215492] CR2: 0000000000000080 CR3: 0000000294a20000 CR4:
+> > 0000000000f50ee0
+> > [16816.215493] PKRU: 55555554
+> > [16816.215494] note: bcache_gc[83416] exited with irqs disabled
+> >=20
+> > 2. Kernel 6.1.55 (Debian 6.1.0-13) on HPE Gen11:
+> >=20
+> > [60654.670443] BUG: kernel NULL pointer dereference, address:
+> > 0000000000000080
+> > [60654.677474] #PF: supervisor read access in kernel mode
+> > [60654.682651] #PF: error_code(0x0000) - not-present page
+> > [60654.687825] PGD 0 [60654.689852] Oops: 0000 [#1] PREEMPT SMP
+> > NOPTI
+> > [60654.694240] CPU: 16 PID: 146330 Comm: bcache_gc Tainted:
+> > G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> > W=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.1.0-13-amd64 =
+#1=C2=A0 Debian 6.1.55-1
+> > [60654.704399] Hardware name: HPE ProLiant DL380 Gen11/ProLiant
+> > DL380
+> > Gen11, BIOS 1.48 10/19/2023
+> > [60654.713071] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
+> > [60654.718437] Code: ff 48 89 d8 5b 5d 41 5c 41 5d c3 cc cc cc cc
+> > 66 66
+> > 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
+> > 44 00
+> > 00 <48> 8b 83 80 00 00 00 48 39 98 70 c3 00 00 0f 84 34 01 00 00 48
+> > 8d
+> > [60654.737342] RSP: 0018:ff77daed34cc3b18 EFLAGS: 00010207
+> > [60654.742604] RAX: 0000000080000000 RBX: 0000000000000000 RCX:
+> > 0000000000000000
+> > [60654.749790] RDX: 0000000000000001 RSI: ff2971b8de800690 RDI:
+> > 0000000000000000
+> > [60654.756975] RBP: ff77daed34cc3c10 R08: ff2971d852dc65e0 R09:
+> > ff2971b8de800000
+> > [60654.764536] R10: 0000000000000000 R11: ff77daed34a4d000 R12:
+> > ff77daed34cc3e60
+> > [60654.771987] R13: ff77daed34cc3c10 R14: ff77daed34cc3c00 R15:
+> > ff2971d851096400
+> > [60654.779410] FS:=C2=A0 0000000000000000(0000)
+> > GS:ff2971f7bf400000(0000)
+> > knlGS:0000000000000000
+> > [60654.787784] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [60654.793794] CR2: 0000000000000080 CR3: 0000000150610002 CR4:
+> > 0000000000771ee0
+> > [60654.801203] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> > 0000000000000000
+> > [60654.808609] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7:
+> > 0000000000000400
+> > [60654.816009] PKRU: 55555554
+> > [60654.818949] Call Trace:
+> > [60654.821623]=C2=A0 <TASK>
+> > [60654.823950]=C2=A0 ? __die_body.cold+0x1a/0x1f
+> > [60654.828110]=C2=A0 ? page_fault_oops+0xd2/0x2b0
+> > [60654.832352]=C2=A0 ? exc_page_fault+0x70/0x170
+> > [60654.836505]=C2=A0 ? asm_exc_page_fault+0x22/0x30
+> > [60654.840922]=C2=A0 ? btree_node_free+0xf/0x160 [bcache]
+> > [60654.845863]=C2=A0 ? up_write+0x32/0x60
+> > [60654.849396]=C2=A0 btree_gc_coalesce+0x2aa/0x890 [bcache]
+> > [60654.854512]=C2=A0 ? bch_extent_bad+0x70/0x170 [bcache]
+> > [60654.859452]=C2=A0 btree_gc_recurse+0x130/0x390 [bcache]
+> > [60654.864475]=C2=A0 ? btree_gc_mark_node+0x72/0x230 [bcache]
+> > [60654.869758]=C2=A0 bch_btree_gc+0x5da/0x600 [bcache]
+> > [60654.874428]=C2=A0 ? cpuusage_read+0x10/0x10
+> > [60654.878390]=C2=A0 ? bch_btree_gc+0x600/0x600 [bcache]
+> > [60654.883232]=C2=A0 bch_gc_thread+0x135/0x180 [bcache]
+> > [60654.887986]=C2=A0 ? cpuusage_read+0x10/0x10
+> > [60654.891944]=C2=A0 kthread+0xe6/0x110
+> > [60654.895290]=C2=A0 ? kthread_complete_and_exit+0x20/0x20
+> > [60654.900296]=C2=A0 ret_from_fork+0x1f/0x30
+> > [60654.904079]=C2=A0 </TASK>
+> > [60654.906455] Modules linked in: bonding tls cfg80211 rfkill
+> > intel_rapl_msr intel_rapl_common intel_uncore_frequency
+> > intel_uncore_frequency_common i10nm_edac nfit binfmt_misc libnvdimm
+> > x86_pkg_temp_thermal intel_powerclamp ipt_REJECT nf_reject_ipv4
+> > coretemp
+> > xt_comment nft_compat nf_tables nfnetlink nls_ascii nls_cp437
+> > kvm_intel
+> > vfat ipmi_ssif fat kvm irqbypass ghash_clmulni_intel sha512_ssse3
+> > sha512_generic aesni_intel crypto_simd cryptd mgag200
+> > drm_shmem_helper
+> > pmt_telemetry pmt_crashlog rapl intel_cstate acpi_ipmi evdev
+> > intel_sdsi
+> > pmt_class idxd hpwdt mei_me isst_if_mbox_pci isst_if_mmio
+> > drm_kms_helper
+> > intel_uncore pcspkr isst_if_common mei watchdog hpilo i2c_algo_bit
+> > ipmi_si idxd_bus acpi_tad intel_vsec sg acpi_power_meter button
+> > ipmi_devintf ipmi_msghandler loop fuse efi_pstore drm configfs
+> > efivarfs
+> > ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 btrfs
+> > blake2b_generic
+> > xor raid6_pq zstd_compress libcrc32c crc32c_generic ses enclosure
+> > bcache
+> > sd_mod scsi_transport_sas dm_mod nvme
+> > [60654.906508]=C2=A0 nvme_core xhci_pci t10_pi megaraid_sas ehci_pci
+> > xhci_hcd
+> > ehci_hcd crc64_rocksoft crc64 tg3 crc_t10dif scsi_mod usbcore
+> > crct10dif_generic crc32_pclmul crc32c_intel crct10dif_pclmul libphy
+> > scsi_common usb_common crct10dif_common wmi
+> > [60655.017712] CR2: 0000000000000080
+> > [60655.021262] ---[ end trace 0000000000000000 ]---
+> > [60655.173744] RIP: 0010:btree_node_free+0xf/0x160 [bcache]
+> > [60655.179337] Code: ff 48 89 d8 5b 5d 41 5c 41 5d c3 cc cc cc cc
+> > 66 66
+> > 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 55 53 48 89 fb 0f 1f
+> > 44 00
+> > 00 <48> 8b 83 80 00 00 00 48 39 98 70 c3 00 00 0f 84 34 01 00 00 48
+> > 8d
+> > [60655.198649] RSP: 0018:ff77daed34cc3b18 EFLAGS: 00010207
+> > [60655.204121] RAX: 0000000080000000 RBX: 0000000000000000 RCX:
+> > 0000000000000000
+> > [60655.211515] RDX: 0000000000000001 RSI: ff2971b8de800690 RDI:
+> > 0000000000000000
+> > [60655.218908] RBP: ff77daed34cc3c10 R08: ff2971d852dc65e0 R09:
+> > ff2971b8de800000
+> > [60655.226302] R10: 0000000000000000 R11: ff77daed34a4d000 R12:
+> > ff77daed34cc3e60
+> > [60655.233696] R13: ff77daed34cc3c10 R14: ff77daed34cc3c00 R15:
+> > ff2971d851096400
+> > [60655.241086] FS:=C2=A0 0000000000000000(0000)
+> > GS:ff2971f7bf400000(0000)
+> > knlGS:0000000000000000
+> > [60655.249438] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [60655.255432] CR2: 0000000000000080 CR3: 0000000150610002 CR4:
+> > 0000000000771ee0
+> > [60655.262825] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> > 0000000000000000
+> > [60655.270218] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7:
+> > 0000000000000400
+> > [60655.277607] PKRU: 55555554
+> > [60655.280543] note: bcache_gc[146330] exited with irqs disabled
+> >=20
+> > Reproducer for us:
+> >=20
+> > dd if=3D/dev/zero of=3Dloop0 bs=3D1M count=3D1024
+> > dd if=3D/dev/zero of=3Dloop1 bs=3D1M count=3D10240
+> > losetup loop0 loop0
+> > losetup loop1 loop1
+> > make-bcache -C /dev/loop0 -B /dev/loop1 --writeback
+> > mkfs.ext4 /dev/bcache0
+> > mount /dev/bcache0 /mnt
+> >=20
+> > Then run fio with:
+> >=20
+> > [global]
+> > bs=3D4k
+> > ioengine=3Dlibaio
+> > iodepth=3D4
+> > size=3D8g
+> > direct=3D1
+> > runtime=3D60
+> > directory=3D/mnt
+> > filename=3Dssd.test.file
+> >=20
+> > [seq-write]
+> > rw=3Dwrite
+> > stonewall
+> >=20
+> > [rand-write]
+> > rw=3Drandwrite
+> > stonewall
+> >=20
+> > [seq-read]
+> > rw=3Dread
+> > stonewall
+> >=20
+> > [rand-read]
+> > rw=3Drandread
+> > stonewall
+> >=20
+> >=20
+> > Cheers,
+> > Stefan
 
-> +			preempt_disable();
-> +			jj = 0;
-> +			wait_resp = false;
-> +			for (; wakeTime < wTimeout && jj < wTimeout; jj++) {
-> +				wait_resp = try_wait_for_completion(&ctx->work);
-> +				if (wait_resp)
-> +					break;
-> +				udelay(1);
-> +			}
-> +			preempt_enable();
-> +			if (!wait_resp) {
-> +				*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-> +				if (*ptr_interrupted || ctx->is_work_done)
-> +					return;
-> +			}
-> +			break;
-> +		/* busy poll on memory for actual job done */
-> +		case EARLY_RESPONSE:
-> +			err = poll_for_remote_response(ctx, FASTRPC_POLL_TIME);
-> +			/* Mark job done if poll on memory successful */
-> +			/* Wait for completion if poll on memory timeout */
-> +			if (!err) {
-> +				ctx->is_work_done = true;
-> +				return;
-> +			}
-> +			if (!ctx->is_work_done) {
-> +				*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-> +				if (*ptr_interrupted || ctx->is_work_done)
-> +					return;
-> +			}
-> +			break;
-> +		case COMPLETE_SIGNAL:
-> +		case NORMAL_RESPONSE:
-> +			*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-> +			if (*ptr_interrupted || ctx->is_work_done)
-> +				return;
-> +			break;
-> +		default:
-> +			*ptr_interrupted = -EBADR;
-> +			dev_err(ctx->fl->sctx->dev, "unsupported response type:0x%x\n", ctx->rsp_flags);
-> +			break;
-> +		}
-> +	} while (!ctx->is_work_done);
-> +}
-> +
->   static void fastrpc_update_invoke_count(u32 handle, u64 *perf_counter,
->   					struct timespec64 *invoket)
->   {
-> @@ -1325,7 +1482,7 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
->   	struct fastrpc_invoke *inv = &invoke->inv;
->   	u32 handle, sc;
->   	u64 *perf_counter = NULL;
-> -	int err = 0, perferr = 0;
-> +	int err = 0, perferr = 0, interrupted = 0;
->   	struct timespec64 invoket = {0};
->   
->   	if (fl->profile)
-> @@ -1374,15 +1531,18 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
->   	PERF_END);
->   
->   wait:
-> -	if (kernel) {
-> -		if (!wait_for_completion_timeout(&ctx->work, 10 * HZ))
-> -			err = -ETIMEDOUT;
-> -	} else {
-> -		err = wait_for_completion_interruptible(&ctx->work);
-> +	fastrpc_wait_for_completion(ctx, &interrupted, kernel);
-> +	if (interrupted != 0) {
-> +		err = interrupted;
-> +		goto bail;
->   	}
->   
-> -	if (err)
-> +	if (!ctx->is_work_done) {
-> +		err = -ETIMEDOUT;
-> +		dev_err(fl->sctx->dev, "Error: Invalid workdone state for handle 0x%x, sc 0x%x\n",
-> +			handle, sc);
->   		goto bail;
-> +	}
->   
->   	/* make sure that all memory writes by DSP are seen by CPU */
->   	dma_rmb();
-> @@ -2056,6 +2216,36 @@ static int fastrpc_get_info_from_kernel(struct fastrpc_ioctl_capability *cap,
->   	return 0;
->   }
->   
-> +static int fastrpc_send_cpuinfo_to_dsp(struct fastrpc_user *fl)
-> +{
-> +	int err = 0;
-> +	u64 cpuinfo = 0;
-> +	struct fastrpc_invoke_args args[1];
-> +	struct fastrpc_enhanced_invoke ioctl;
-> +
-> +	if (!fl)
-> +		return -EBADF;
-> +
-> +	cpuinfo = fl->cctx->cpuinfo_todsp;
-> +	/* return success if already updated to remote processor */
-> +	if (fl->cctx->cpuinfo_status)
-> +		return 0;
-> +
-> +	args[0].ptr = (u64)(uintptr_t)&cpuinfo;
-> +	args[0].length = sizeof(cpuinfo);
-> +	args[0].fd = -1;
-> +
-> +	ioctl.inv.handle = FASTRPC_DSP_UTILITIES_HANDLE;
-> +	ioctl.inv.sc = FASTRPC_SCALARS(1, 1, 0);
-> +	ioctl.inv.args = (__u64)args;
-> +
-> +	err = fastrpc_internal_invoke(fl, true, &ioctl);
-> +	if (!err)
-> +		fl->cctx->cpuinfo_status = true;
-> +
-> +	return err;
-> +}
-> +
->   static int fastrpc_get_dsp_info(struct fastrpc_user *fl, char __user *argp)
->   {
->   	struct fastrpc_ioctl_capability cap = {0};
-> @@ -2407,6 +2597,8 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
->   		break;
->   	case FASTRPC_IOCTL_INIT_ATTACH:
->   		err = fastrpc_init_attach(fl, ROOT_PD);
-> +		if (!err)
-> +			fastrpc_send_cpuinfo_to_dsp(fl);
->   		break;
->   	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
->   		err = fastrpc_init_attach(fl, SENSORS_PD);
-> @@ -2627,6 +2819,7 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
->   		err = fastrpc_device_register(rdev, data, secure_dsp, domains[domain_id]);
->   		if (err)
->   			goto fdev_error;
-> +		data->cpuinfo_todsp = FASTRPC_CPUINFO_DEFAULT;
->   		break;
->   	case CDSP_DOMAIN_ID:
->   		data->unsigned_support = true;
-> @@ -2638,6 +2831,7 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
->   		err = fastrpc_device_register(rdev, data, false, domains[domain_id]);
->   		if (err)
->   			goto fdev_error;
-> +		data->cpuinfo_todsp = FASTRPC_CPUINFO_EARLY_WAKEUP;
->   		break;
->   	default:
->   		err = -EINVAL;
-> @@ -2680,10 +2874,12 @@ static void fastrpc_notify_users(struct fastrpc_user *user)
->   	spin_lock(&user->lock);
->   	list_for_each_entry(ctx, &user->pending, node) {
->   		ctx->retval = -EPIPE;
-> +		ctx->is_work_done = true;
->   		complete(&ctx->work);
->   	}
->   	list_for_each_entry(ctx, &user->interrupted, node) {
->   		ctx->retval = -EPIPE;
-> +		ctx->is_work_done = true;
->   		complete(&ctx->work);
->   	}
->   	spin_unlock(&user->lock);
-> @@ -2720,31 +2916,74 @@ static void fastrpc_rpmsg_remove(struct rpmsg_device *rpdev)
->   	fastrpc_channel_ctx_put(cctx);
->   }
->   
-> +static void fastrpc_notify_user_ctx(struct fastrpc_invoke_ctx *ctx, int retval,
-> +		u32 rsp_flags, u32 early_wake_time)
-> +{
-> +	ctx->retval = retval;
-> +	ctx->rsp_flags = (enum fastrpc_response_flags)rsp_flags;
-> +	switch (rsp_flags) {
-> +	case NORMAL_RESPONSE:
-> +	case COMPLETE_SIGNAL:
-> +		/* normal and complete response with return value */
-> +		ctx->is_work_done = true;
-> +		complete(&ctx->work);
-> +		break;
-> +	case USER_EARLY_SIGNAL:
-> +		/* user hint of approximate time of completion */
-> +		ctx->early_wake_time = early_wake_time;
-> +		break;
-> +	case EARLY_RESPONSE:
-> +		/* rpc framework early response with return value */
-> +		complete(&ctx->work);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
->   static int fastrpc_rpmsg_callback(struct rpmsg_device *rpdev, void *data,
->   				  int len, void *priv, u32 addr)
->   {
->   	struct fastrpc_channel_ctx *cctx = dev_get_drvdata(&rpdev->dev);
->   	struct fastrpc_invoke_rsp *rsp = data;
-> +	struct fastrpc_invoke_rspv2 *rspv2 = NULL;
->   	struct fastrpc_invoke_ctx *ctx;
->   	unsigned long flags;
->   	unsigned long ctxid;
-> +	u32 rsp_flags = 0;
-> +	u32 early_wake_time = 0;
->   
->   	if (len < sizeof(*rsp))
->   		return -EINVAL;
->   
-> +	if (len >= sizeof(*rspv2)) {
-> +		rspv2 = data;
-> +		if (rspv2) {
-> +			early_wake_time = rspv2->early_wake_time;
-> +			rsp_flags = rspv2->flags;
-> +		}
-> +	}
-> +
->   	ctxid = ((rsp->ctx & FASTRPC_CTXID_MASK) >> 4);
->   
->   	spin_lock_irqsave(&cctx->lock, flags);
->   	ctx = idr_find(&cctx->ctx_idr, ctxid);
-> -	spin_unlock_irqrestore(&cctx->lock, flags);
->   
->   	if (!ctx) {
-> -		dev_err(&rpdev->dev, "No context ID matches response\n");
-> -		return -ENOENT;
-> +		dev_info(&cctx->rpdev->dev, "Warning: No context ID matches response\n");
-> +		spin_unlock_irqrestore(&cctx->lock, flags);
-> +		return 0;
->   	}
->   
-> -	ctx->retval = rsp->retval;
-> -	complete(&ctx->work);
-> +	if (rspv2) {
-> +		if (rspv2->version != FASTRPC_RSP_VERSION2) {
-> +			dev_err(&cctx->rpdev->dev, "Incorrect response version %d\n", rspv2->version);
-> +			spin_unlock_irqrestore(&cctx->lock, flags);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +	fastrpc_notify_user_ctx(ctx, rsp->retval, rsp_flags, early_wake_time);
-> +	spin_unlock_irqrestore(&cctx->lock, flags);
->   
->   	/*
->   	 * The DMA buffer associated with the context cannot be freed in
