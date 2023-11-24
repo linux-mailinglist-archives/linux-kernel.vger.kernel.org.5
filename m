@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC837F7909
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FF07F7906
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjKXQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
+        id S231200AbjKXQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjKXQch (ORCPT
+        with ESMTP id S229579AbjKXQcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:32:37 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22001BE
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lRSiH2QNyct0O1zK7Llfv4fzLag68+OyvxcKpYofq0w=; b=BbYbQT1LLbBcLhrp53tdnZgluP
-        zbNLnSXvIclXvHBaG5ExEIV/u4nbkydq0lE70BMjBjlIDn/zqhZB3x5G9ODHyt8jcWdSj2KrI0Czz
-        sFkKeyYQpmoF7ryksGfmWLRKC5hr2Dd/ZInEp9zriaiHBgfu+fsFLKFkyDBSopKQKMblsIFzCGe6n
-        Hd+zeZ5iAYYwB3bIfFQzrlx+I/0D356XXIgzftK2W8zprTjrq0xGD5iR91DGCjhvnv57HMUc39oGY
-        ciAFdsX7LVJLtN+fN0zE2VtlHyhLng8tWWsdl4mD9AxIWuc1MrUWsRVJnkzq5NGfxF4YRNPZfwbjl
-        TIoYX5lw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r6Z6L-00Dwsr-2g;
-        Fri, 24 Nov 2023 16:32:23 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 854253002BE; Fri, 24 Nov 2023 17:32:20 +0100 (CET)
-Date:   Fri, 24 Nov 2023 17:32:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     guoren@kernel.org
-Cc:     mark.rutland@arm.com, keescook@chromium.org, paulmck@kernel.org,
-        ubizjak@gmail.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH] locking/atomic: Add acquire and release fence for
- atomic(64)_read(set)
-Message-ID: <20231124163220.GU3818@noisy.programming.kicks-ass.net>
-References: <20231124162508.3331357-1-guoren@kernel.org>
+        Fri, 24 Nov 2023 11:32:35 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9230199A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:32:41 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r6Z6Z-0008Ui-5f; Fri, 24 Nov 2023 17:32:35 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r6Z6Y-00BJ4n-JF; Fri, 24 Nov 2023 17:32:34 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1r6Z6Y-003ev6-Gi; Fri, 24 Nov 2023 17:32:34 +0100
+Date:   Fri, 24 Nov 2023 17:32:34 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <20231124163234.GC819414@pengutronix.de>
+References: <20231124145338.3112416-1-o.rempel@pengutronix.de>
+ <2023112403-laxative-lustiness-6a7f@gregkh>
+ <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
+ <2023112458-stature-commuting-c66f@gregkh>
+ <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
+ <2023112435-dazzler-crisped-04a6@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231124162508.3331357-1-guoren@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023112435-dazzler-crisped-04a6@gregkh>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 11:25:08AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, Nov 24, 2023 at 03:56:19PM +0000, Greg Kroah-Hartman wrote:
+> On Fri, Nov 24, 2023 at 03:49:46PM +0000, Mark Brown wrote:
+> > On Fri, Nov 24, 2023 at 03:27:48PM +0000, Greg Kroah-Hartman wrote:
+> > > On Fri, Nov 24, 2023 at 03:21:40PM +0000, Mark Brown wrote:
+> > 
+> > > > This came out of some discussions about trying to handle emergency power
+> > > > failure notifications.
+> > 
+> > > I'm sorry, but I don't know what that means.  Are you saying that the
+> > > kernel is now going to try to provide a hard guarantee that some devices
+> > > are going to be shut down in X number of seconds when asked?  If so, why
+> > > not do this in userspace?
+> > 
+> > No, it was initially (or when I initially saw it anyway) handling of
+> > notifications from regulators that they're in trouble and we have some
+> > small amount of time to do anything we might want to do about it before
+> > we expire.
 > 
-> The definitions of atomic(64)_read(set) are relax version, so
-> add acquire and release fence for them.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> ---
+> So we are going to guarantee a "time" in which we are going to do
+> something?  Again, if that's required, why not do it in userspace using
+> a RT kernel?
 
-You lost the script change?
+For the HW in question I have only 100ms time before power loss. By
+doing it over use space some we will have even less time to react.
 
->  include/linux/atomic/atomic-arch-fallback.h | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
-> index 18f5744dfb5d..9775900eeefd 100644
-> --- a/include/linux/atomic/atomic-arch-fallback.h
-> +++ b/include/linux/atomic/atomic-arch-fallback.h
-> @@ -460,7 +460,10 @@ raw_atomic_read_acquire(const atomic_t *v)
->  #if defined(arch_atomic_read_acquire)
->  	return arch_atomic_read_acquire(v);
->  #elif defined(arch_atomic_read)
-> -	return arch_atomic_read(v);
-> +	int ret;
-> +	ret = arch_atomic_read(v);
-> +	__atomic_acquire_fence();
-> +	return ret;
->  #else
->  	int ret;
->  
-> @@ -509,6 +512,7 @@ raw_atomic_set_release(atomic_t *v, int i)
->  #if defined(arch_atomic_set_release)
->  	arch_atomic_set_release(v, i);
->  #elif defined(arch_atomic_set)
-> +	__atomic_release_fence();
->  	arch_atomic_set(v, i);
->  #else
->  	if (__native_word(atomic_t)) {
-> @@ -2576,7 +2580,10 @@ raw_atomic64_read_acquire(const atomic64_t *v)
->  #if defined(arch_atomic64_read_acquire)
->  	return arch_atomic64_read_acquire(v);
->  #elif defined(arch_atomic64_read)
-> -	return arch_atomic64_read(v);
-> +	s64 ret;
-> +	ret = arch_atomic64_read(v);
-> +	__atomic_acquire_fence();
-> +	return ret;
->  #else
->  	s64 ret;
->  
-> @@ -2625,6 +2632,7 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
->  #if defined(arch_atomic64_set_release)
->  	arch_atomic64_set_release(v, i);
->  #elif defined(arch_atomic64_set)
-> +	__atomic_release_fence();
->  	arch_atomic64_set(v, i);
->  #else
->  	if (__native_word(atomic64_t)) {
-> @@ -4657,4 +4665,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
->  }
->  
->  #endif /* _LINUX_ATOMIC_FALLBACK_H */
-> -// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
-> +// 3135f55051cf62b76664e528bf04337c44a14e72
-> -- 
-> 2.36.1
-> 
+In fact, this is not a new requirement. It exist on different flavors of
+automotive Linux for about 10 years. Linux in cars should be able to
+handle voltage drops for example on ignition and so on. The only new thing is
+the attempt to mainline it.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
