@@ -2,190 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92767F6CEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3E77F6CEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjKXHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:31:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        id S1343905AbjKXHbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXHbS (ORCPT
+        with ESMTP id S231531AbjKXHbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:31:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40202D5E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700811084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FaHqBQb0qHca3DpFmCMKVj8TczcBSszVdedfd+/j/zY=;
-        b=efKSUSJ/5ErZ6MX9W+104xZ6ZkgrdKtfMsuEBwz3LGCFIAU056tpVhPZP2LljfImyuk5mQ
-        ainnO3fOINlOOZ9m2ai6jfvJhNt2kxHpCRK54fxb3nb+EqFAj+sx9hfyoIfVrN4hzofGWT
-        d6CnSFTADEURmfbqSKqiN984P7wtiTo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-322-bY_SDG4EOvKYL0GtD_VeXQ-1; Fri,
- 24 Nov 2023 02:31:21 -0500
-X-MC-Unique: bY_SDG4EOvKYL0GtD_VeXQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A72B61C05B0E;
-        Fri, 24 Nov 2023 07:31:20 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00FAF492BFA;
-        Fri, 24 Nov 2023 07:31:19 +0000 (UTC)
-Date:   Fri, 24 Nov 2023 15:31:16 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm/page.c: move mem_init_print_info() to later place
-Message-ID: <ZWBRRK9C9MnvtEzW@MiWiFi-R3L-srv>
-References: <20231122043550.489889-1-bhe@redhat.com>
- <20231122150817.GA634321@kernel.org>
+        Fri, 24 Nov 2023 02:31:35 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3401B10C9;
+        Thu, 23 Nov 2023 23:31:39 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso1310354b3a.1;
+        Thu, 23 Nov 2023 23:31:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700811099; x=1701415899; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JFxWesjSbh6aPkk26uaeIMhL8HRb0v8T1NPm7HDO0SQ=;
+        b=M0yqrWDI8f1O2KvxkcEuoKyPmoubsykQZaBUPqOq+jVbKCuoz8K4cdd4R/+kOV19El
+         BBw2E6m09mIc4fG7/nQDJMtT5bDeRB8JFR13c9OPmEmyV5GmZEic/X0NPa98U+tqBkUd
+         kX0uDS+HAqG41upl51ZAGt8vsLDW0KgK67wLqZH+/ZLORo/Jkp8FgWlNog6l2dv1OM27
+         tqw81Wr+UIU7eXaWwHqfXmwC2TUW1AUKngzLTJe/kpEEyIdvQzN7QndXbb0LGF+qcSXn
+         m/yFM1uV4Xb+7bOTmPoUgSmwelVBlTUfo9jBPGBBF8YtvirrLXOKi3rYxelEfkgu/vu4
+         VviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700811099; x=1701415899;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JFxWesjSbh6aPkk26uaeIMhL8HRb0v8T1NPm7HDO0SQ=;
+        b=kh7rQFJDaqqf97hdmx4W/OHzrfxQMitil7C+VnUD8xo9umMynrTZ+M32HnolFuknXc
+         m1CH4O4mXI4unuoOikPrCEyqo/Zu8q/F9ndyj3Z9hJ1witk9BVQOf/GKiEobLoolRypa
+         pwwXGgJEDkROcOmVEk2IRfy8fE412f5FJy/ue/cGuO+XJQ556cGaE965JvU+rnZejyFV
+         uS72rO5VoMfakQGb6l9kMf8ZFrqTHXUHCBGDwDswGdka2iR0C0EnFPx1A2vU0cquM665
+         Ajb6KApcHUCMpSIzt56zllmE+7iUdP7jQNycXmSSGM26E8T8o6fkDZCqaIaEPwdwi5/9
+         pfkg==
+X-Gm-Message-State: AOJu0YwLe/d+vEGUQ4JNeVXxe576g8ieDx+SBfXyvXH7KPhrc+urEQuN
+        KuOnD6DaWHUafgnSf4hly90=
+X-Google-Smtp-Source: AGHT+IEUuxk6O9HR7RzPpWMcDtGQiK9lwkln1/Lk6avSdkpxqUoxV4w6/tPI87i/RCTAESAQaa46lw==
+X-Received: by 2002:a05:6a20:3c8b:b0:187:fbe3:b4d7 with SMTP id b11-20020a056a203c8b00b00187fbe3b4d7mr2227736pzj.9.1700811099268;
+        Thu, 23 Nov 2023 23:31:39 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id s23-20020aa78d57000000b006cbb18865a7sm2279388pfe.154.2023.11.23.23.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 23:31:38 -0800 (PST)
+From:   xu <xu.xin.sc@gmail.com>
+X-Google-Original-From: xu <xu.xin16@zte.com.cn>
+To:     tung.q.nguyen@dektech.com.au
+Cc:     davem@davemloft.net, jmaloy@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, xu.xin.sc@gmail.com,
+        xu.xin16@zte.com.cn, yang.yang29@zte.com.cn,
+        ying.xue@windriver.com, zhang.yunkai@zte.com.cn
+Subject: RE: [RFC PATCH] net/tipc: reduce tipc_node lock holding time in tipc_rcv
+Date:   Fri, 24 Nov 2023 07:31:34 +0000
+Message-Id: <20231124073134.2043605-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <DB9PR05MB9078EEC976944CACEC531C1388B9A@DB9PR05MB9078.eurprd05.prod.outlook.com>
+References: <DB9PR05MB9078EEC976944CACEC531C1388B9A@DB9PR05MB9078.eurprd05.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122150817.GA634321@kernel.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 at 05:08pm, Mike Rapoport wrote:
-> Hi Baoquan,
-> 
-> 
-> On Wed, Nov 22, 2023 at 12:35:50PM +0800, Baoquan He wrote:
-> 
-> > Subject: [PATCH] mm/page.c: move mem_init_print_info() to later place
-> 
-> We don't have mm/page.c, 
-
-Thanks for reviewing.
-
-Yes, this was queued in my local branch long time ago, I forgot to
-update the file name.
-
-> 
-> > Currently if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, only part of
-> > pages are initialized and added into buddy allocator at early stage. Then
-> > the system memory information printed by mem_init_print_info() is
-> > incorrect. The snippets of boot log are pasted here:
-> > -----------------------------------------------------------------------
-> > [    0.059606] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
-> > [    0.059622] software IO TLB: area num 64.
-> > [    0.143887] Memory: 1767888K/133954872K available (20480K kernel code, 3284K rwdata, 8972K rodata, 4572K init, 4916K bss, 2529756K reserved, 0K cma-reserved)
-> > [    0.145111] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=64, Nodes=2
-> > ---------------------------------------------------------------------------
-> 
-> At this point only the pages that were initialized and free are available.
-> The message does not reflect that large part of memory is still not initialized,
-> but it's not wrong.
-
-Agree. I noticed this because I often need check the memory init and
-memory size during kernel bootup. The current message gives people a
-shock at first glance because it looks like a huge reserved memory
-existing in system.
-
-> 
-> > Here, move mem_init_print_info() to later place until page init is
-> > finished. After the fix, the printed memory information is like this:
-> > -------------------------------------------------------------------------
-> > [  +0.001002] smpboot: Total of 64 processors activated (293724.92 BogoMIPS)
-> > [  +0.050086] node 0 deferred pages initialised in 45ms
-> > [  +0.007309] node 1 deferred pages initialised in 53ms
-> > [    4.035449] Memory: 131272772K/133954872K available (20480K kernel code, 3284K rwdata, 8972K rodata, 4572K init, 4916K bss, 2529700K reserved, 0K cma-reserved)
-> > [  +0.015995] devtmpfs: initialized
-> > [  +0.003943] x86/mm: Memory block size: 2048MB
-> > -------------------------------------------------------------------------
-> 
-> If we print this message that late, some of the memory will be allocated
-> from buddy and it maybe confusing.
-
-that's true.
-
-> 
-> I suggest to print how much memory is not yet initialized and leave
-> mem_init_print_info() where it is now.
-
-Sounds great to me, will work out a new version as suggested.
-
->  
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >  include/linux/gfp.h | 1 +
-> >  init/main.c         | 1 +
-> >  mm/mm_init.c        | 3 +--
-> >  3 files changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> > index de292a007138..2d69fa59b489 100644
-> > --- a/include/linux/gfp.h
-> > +++ b/include/linux/gfp.h
-> > @@ -335,6 +335,7 @@ void drain_local_pages(struct zone *zone);
-> >  
-> >  void page_alloc_init_late(void);
-> >  void setup_pcp_cacheinfo(void);
-> > +void mem_init_print_info(void);
-> >  
-> >  /*
-> >   * gfp_allowed_mask is set to GFP_BOOT_MASK during early boot to restrict what
-> > diff --git a/init/main.c b/init/main.c
-> > index e24b0780fdff..88f238a478a1 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -1547,6 +1547,7 @@ static noinline void __init kernel_init_freeable(void)
-> >  	workqueue_init_topology();
-> >  	padata_init();
-> >  	page_alloc_init_late();
-> > +	mem_init_print_info();
+>>Happy to see your reply. But Why? 'delete' is false from tipc_node_timeout(). Refer to:
+>>https://elixir.bootlin.com/linux/v6.7-rc2/source/net/tipc/node.c#L844
+>I should have explained it clearly:
+>1/ link status must be protected.
+>tipc_node_timeout()
+>   tipc_node_link_down()
+>   {
+>      struct tipc_link *l = le->link;
 >   
-> No need to make mem_init_print_info() global and call it from main.c, you
-> can call it from page_alloc_init_late().
+>      ...
+>     __tipc_node_link_down(); <-- link status is referred. 
+>      ...
+>     if (delete) {
+>        kfree(l);
+>        le->link = NULL;
+>     }
+>     ...
+>   }
+>
+>__tipc_node_link_down()
+>{
+>    ...
+>   if (!l || tipc_link_is_reset(l)) <-- read link status
+>    ...
+>    tipc_link_reset(l); <--- this function will reset all things related to link.
+>}
+>
+>2/ le->link must be protected.
+>bearer_disable()
+>{
+>   ...
+>   tipc_node_delete_links(net, bearer_id); <--- this will delete all links.
+>   ...
+>}
+>
+>tipc_node_delete_links()
+>{
+>   ...
+>  tipc_node_link_down(n, bearer_id, true);
+>   ...
+>}
 
-Agree, that's much better if we take that way.
+Could we please solve the problem mentioned above by adding spinlock(&le->lock)?
 
-> 
-> >  	do_basic_setup();
-> >  
-> > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > index 077bfe393b5e..d08f7c7f75f1 100644
-> > --- a/mm/mm_init.c
-> > +++ b/mm/mm_init.c
-> > @@ -2703,7 +2703,7 @@ static void __init report_meminit(void)
-> >  		pr_info("mem auto-init: clearing system memory may take some time...\n");
-> >  }
-> >  
-> > -static void __init mem_init_print_info(void)
-> > +void __init mem_init_print_info(void)
-> >  {
-> >  	unsigned long physpages, codesize, datasize, rosize, bss_size;
-> >  	unsigned long init_code_size, init_data_size;
-> > @@ -2774,7 +2774,6 @@ void __init mm_core_init(void)
-> >  	kmsan_init_shadow();
-> >  	stack_depot_early_init();
-> >  	mem_init();
-> > -	mem_init_print_info();
-> >  	kmem_cache_init();
-> >  	/*
-> >  	 * page_owner must be initialized after buddy is ready, and also after
-> > -- 
-> > 2.41.0
-> > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
-> 
+For example:
+
+(BTW, I have tested it, with this change, enabling RPS based on tipc port can improve 25% of general throughput)
+
+diff --git a/net/tipc/node.c b/net/tipc/node.c
+index 3105abe97bb9..470c272d798e 100644
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -1079,12 +1079,16 @@ static void tipc_node_link_down(struct tipc_node *n, int bearer_id, bool delete)
+                __tipc_node_link_down(n, &bearer_id, &xmitq, &maddr);
+        } else {
+                /* Defuse pending tipc_node_link_up() */
++               spin_lock_bh(&le->lock);
+                tipc_link_reset(l);
++               spin_unlock_bh(&le->lock);
+                tipc_link_fsm_evt(l, LINK_RESET_EVT);
+        }
+        if (delete) {
++               spin_lock_bh(&le->lock);
+                kfree(l);
+                le->link = NULL;
++               spin_unlock_bh(&le->lock);
+                n->link_cnt--;
+        }
+        trace_tipc_node_link_down(n, true, "node link down or deleted!");
+@@ -2154,14 +2158,15 @@ void tipc_rcv(struct net *net, struct sk_buff *skb, struct tipc_bearer *b)
+        /* Receive packet directly if conditions permit */
+        tipc_node_read_lock(n);
+        if (likely((n->state == SELF_UP_PEER_UP) && (usr != TUNNEL_PROTOCOL))) {
++               tipc_node_read_unlock(n);
+                spin_lock_bh(&le->lock);
+                if (le->link) {
+                        rc = tipc_link_rcv(le->link, skb, &xmitq);
+                        skb = NULL;
+                }
+                spin_unlock_bh(&le->lock);
+-       }
+-       tipc_node_read_unlock(n);
++       } else
++               tipc_node_read_unlock(n);
+ 
+        /* Check/update node state before receiving */
+        if (unlikely(skb)) {
+@@ -2169,12 +2174,13 @@ void tipc_rcv(struct net *net, struct sk_buff *skb, struct tipc_bearer *b)
+                        goto out_node_put;
+                tipc_node_write_lock(n);
+                if (tipc_node_check_state(n, skb, bearer_id, &xmitq)) {
++                       tipc_node_write_unlock(n);
+                        if (le->link) {
+                                rc = tipc_link_rcv(le->link, skb, &xmitq);
+                                skb = NULL;
+                        }
+-               }
+-               tipc_node_write_unlock(n);
++               } else
++                       tipc_node_write_unlock(n);
+        }
+ 
+        if (unlikely(rc & TIPC_LINK_UP_EVT))
 
