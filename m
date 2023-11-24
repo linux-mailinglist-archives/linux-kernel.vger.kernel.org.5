@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 858767F6E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416A67F6E8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 09:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345053AbjKXIlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 03:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
+        id S1345091AbjKXIlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 03:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKXIlX (ORCPT
+        with ESMTP id S231496AbjKXIlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Nov 2023 03:41:23 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44445D53
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:27 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b2a8c7ca9so12896385e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:27 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779C3D73
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:28 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3316ad2bee5so953934f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 00:41:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700815286; x=1701420086; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700815287; x=1701420087; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Rfvt+EmrHZv1zbeX+XtXPk6Fy/0gOVGXRVeJ603Il6c=;
-        b=iwUrUvVTHJBc8Uk5RhjZQLZC18A4z7Lvi+Jzk8DqTAT5fqyL2+uMprXn7LA+v7KKr9
-         uq0WVxsuGHi8TDgy/vd82P7/ypvuLYsJ6KkbQfJ98hoN2CMOn6BQGTPqH+E8cUy01FvM
-         xs71Z2mngstOQ0p5t+97aaka2QTr7kFZom0KCAhafu4bNu3fUL7vKDdJt++rF0fSzs7F
-         PcKfUKgmPzVhn2A8RqRabUoQ0mniKT4lw/y+i34aKLGyWJxfJ+2hRN171oVL6uTkvx25
-         cEppkjW5gSTF9l9tuKdok1VVH/FMGJxZVbWXDkIfaQBIZbHsjWWQ/ixKM53y1e9yXrUm
-         lcyw==
+        bh=pmqHf7vG3OgSbkZDuoqTVPYV9KLNSSDAPn0Rr1mvHIw=;
+        b=hucOygj6dzJxypEDNYXM3M/QtRLbKURLjKzWyeUi3Prs5KuxlCQQ817DaXYFOEcX/v
+         eErmRNYMoH6IeNcmoP9PwKZct9aoWJy+xcL6cjEdBWLPstFRsxOGuNbZVCePVYWDB9u/
+         QpDDtUHCriE3JP3uPzMc9Uv/RKqVgqyF2aDqJJz+B+k7ng+137hK2ZmkVOWearEfv32Y
+         vVEqw1QRrcKeF5tAPL8OWPG/iuJFLaHKeMRB1EHIWyddXA15ehtDCkgXHs5IAfmTBlw9
+         Q/XHgGnHPbMsPhR4aMfYQ2A95Lt4eTXxzy6qOfFWE3lIayFn9+t5DZyLmC487exDgzFo
+         pIxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700815286; x=1701420086;
+        d=1e100.net; s=20230601; t=1700815287; x=1701420087;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rfvt+EmrHZv1zbeX+XtXPk6Fy/0gOVGXRVeJ603Il6c=;
-        b=Cit/cMjAphxK6r0xbLtNc7kj3vaTzwqNWcri4PVSSbUyVB3ZuT0uUNFI2Xtf0qvT1q
-         s/Xm5f9vNCuDf2wuxT4uDL6caiTw2q2shaWAUl5cYZqKGH7iyF71gSaN6mlyQVE5Ph29
-         mi0JppXtohEJymsPsD2bUNBGkj65CVOCkSikloEbxSW0sxv6Bfrf0DfS8PdPIBuk0OrH
-         wZA+JbsTOy7UvIqwwnQy7jAjolitANOKgsZR+C0ITEJQKpgNgD7RqxxWchieZMdyiaLu
-         ssVDphuEPFVWPtzEhwrOagPGR9yqIVOn84GzoN3xUnCZ4B+Ak2OsYSbMIcZ2Holtw9/F
-         J9RQ==
-X-Gm-Message-State: AOJu0YyHD7vpa6wsMwsfPm/GoQclAvmPFQAXSPePJsE5LY6oZ4gm/iFP
-        u8SM7Q4IjB7ihoIahgEpN7hfQQ==
-X-Google-Smtp-Source: AGHT+IFnuchw8Ikyiy3m+j3gALkvJfoErNWWwqz7BB2ufK/58r0Gt+p5OXv1H8cdurIdKXJg/ONALw==
-X-Received: by 2002:adf:f48d:0:b0:332:e6d8:9345 with SMTP id l13-20020adff48d000000b00332e6d89345mr1676453wro.8.1700815285668;
-        Fri, 24 Nov 2023 00:41:25 -0800 (PST)
+        bh=pmqHf7vG3OgSbkZDuoqTVPYV9KLNSSDAPn0Rr1mvHIw=;
+        b=KinvBm8MybuTr+4Qwv+OkIJkc6dli6I9Fwx1ct7HW/7J3+oO8p4vy+A2blbGWatw24
+         OwqN8JtMtoEJP0Y91ATLT0x/Eyw43amsuV3yepZjUvYQ6bry5XX+fySmxg2JyNg9paN9
+         NF42MU2DsD5Sq7zpUdaZZ/oKy8THia04HHYUoyPnnIDYnbevRsQtPwct5A3YBzWQj6bp
+         UdCtA1/m1J92prmGXr2b8hRxBEP+WD7v6OLAdAcE6x9Wr6POyeed4CiwelPdZyYcBJsh
+         KSBx+q5D5dsyOlQluNlmqdwiQvxNvtpYQVcLumu+27LVoHaO+uypwhpJM5RXSb6dzOr1
+         kEHA==
+X-Gm-Message-State: AOJu0YxeEPghPYf6nIVp+uMci2gg5VqmIO86CkeiZmtb/wxpO0+9Cke1
+        yukysSDxlxGhEK0sKRHbUW9Y4g==
+X-Google-Smtp-Source: AGHT+IFPKfH4bRgwYLSScdIAX4eq/D8aF5dbD0VbyY0HPbjeV7slo9I4RmgXoBTePe/TnCrXi0Gj6g==
+X-Received: by 2002:adf:f10d:0:b0:331:6c3b:4f1b with SMTP id r13-20020adff10d000000b003316c3b4f1bmr1399602wro.6.1700815286963;
+        Fri, 24 Nov 2023 00:41:26 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2534562wru.67.2023.11.24.00.41.24
+        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm2534562wru.67.2023.11.24.00.41.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 00:41:25 -0800 (PST)
+        Fri, 24 Nov 2023 00:41:26 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Fri, 24 Nov 2023 09:41:12 +0100
-Subject: [PATCH v9 01/12] dt-bindings: clk: g12a-clkc: add CTS_ENCL clock
- ids
+Date:   Fri, 24 Nov 2023 09:41:13 +0100
+Subject: [PATCH v9 02/12] dt-bindings: soc: amlogic,meson-gx-hhi-sysctrl:
+ add example covering meson-axg-hhi-sysctrl
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-1-95256ed139e6@linaro.org>
+Message-Id: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-2-95256ed139e6@linaro.org>
 References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
 In-Reply-To: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
 To:     Jerome Brunet <jbrunet@baylibre.com>,
@@ -86,20 +86,20 @@ Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Conor Dooley <conor.dooley@microchip.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=761;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1847;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=OBDzXE6zqX89kc7pvzy4CIEH7gf5glqDzs5WzIgtsF0=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlYGGupCZ+JBm/j62lgDoGr7xNwQCD1mUMzIViQ3Q+
- 5BTtcTmJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWBhrgAKCRB33NvayMhJ0e0rEA
- C7eQ9byvp8DK/smW2cQqD8180I42XiMLdt3wZ7xVsHlZzRItzA+GMiMo8KBxOsciSTcMe2vQ3qkNz8
- /viQaJnuONTjKXGF1XzU0w2a1mU/w+GMAqpq5t5GYrsJYhBKucDz9O4ybGOoKdKFn12f8S8vjiTPdC
- +zThFD679SlacJRPuk0vKbwaPI4yFbHSvKWYKMtm1yYUOTWdf3asCcSbA1r7ZdSxR9n5ptrY/j0S+/
- 7MyDnuRCfp8bhrWJqlXGhdXqWuabpaTaiWo7WgKW1sfpHHJgnES0z1FOzy3t+/lECu07cuhyLkdHK6
- hBFrNDz28dCn70wp0d3lmAAKuMaGh0riTCG6cjJHW9y2nNUNfLScNubW48XowuSlqaadd5YUu67laO
- bsXX8vh7L1Nu5uT2wmRY2BZpkUek6F6XRKcvDP9fG/P7LNiGCNkG/gK2pGYR0D8pI8SfeZN3558EO5
- m43V1xVJ/3fhvgYUcrY9QiimI6m7WxdQhcxoePjjVBNYsQwezxq4FGFV6yYRLjjGzzPY1REEU0hYSx
- oHJQit3xEHjUuNXc2fQH7wAQLOFnTcqe1LFiHzo8u0TVEv0EaxKFo1fFXSlIPwb+jNK9flSKdZq9aV
- jjtxeGFXZGXslCW1Bd7c+mso633D4cWnl5ZWduv7cUenT9VDAgcrqQz9kh6w==
+ bh=KQGG1ytiHBIC5JgUp3eMPUlMvnricP4K9ae8Hqw91b4=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlYGGuRHAkz/o0FoARcM/nBhaSVY4S5HKY2Q4xPPDK
+ g0HXtl+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWBhrgAKCRB33NvayMhJ0SoJD/
+ 40QaN+xss8YhXmbPd7kcRXbNr00DUi9YXy17gL5d+nQzAJClUpXWM/LHE9EckZTKnrONy8hm8IyTsm
+ +Q7v99Ma/k1BhRTuMLsWwfwFdFNoAm7OTDjKTKX3C8XSRZsYU+fUgVCAk9mLi0ILxo3unQMKEakNSO
+ dE9rb6fvsHrXEVu4hEJRwGyxCKaj3v/DHp1F3CJPhnYNbdk+GJFAYD9mL6/Rquv7pfpR3IjTM6le/R
+ CteRqtCWIuTLlnxJ2PR3bb6vtUGOpsAkWvdE95r40uUkhGJ5c4kZUY26dxnxstVIwWFeG2s7oL8t3S
+ ZVlS1l/hLzSrpaeHiYKZfwxv5nccbZ/0qhpFqor44I2oPPA1T3HykRL+qs0mIMrBmmmK6W5gikOwrA
+ GZifoZAOOG3AChGpZamhVtFHgvVgLP/SvPLmJamG2uSYLX4M7Wu2blhSuoHw/L2HdKB+d3880wK096
+ fdWsEuUVgv8fRo95lxdriQPJb69/AHXgHKL4NQcNFjTNqOJ8YkkAquQwhf/yOaDIcnW3ERUKxybg5+
+ 2lm/rhZbQ1IYLlYT1bip3o4J/rw6V6TvE6LtKHhjvs31uK1MH2UwobR7GUv+a6sJR+vtVHbwzC+9YM
+ iNd8dCd57nIB+Awkk1LFT+YJgUoJCMyAh8AI+tTF+Y4Vrb1wSxd8bt5jIWKQ==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -112,27 +112,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new CLK ids for the CTS_ENCL and CTS_ENCL_SEL clocks
-on G12A compatible SoCs.
+Add a third example covering the meson-axg-hhi-sysctrl variant and more
+importantly the phy subnode.
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- include/dt-bindings/clock/g12a-clkc.h | 2 ++
- 1 file changed, 2 insertions(+)
+ .../soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml  | 33 ++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/include/dt-bindings/clock/g12a-clkc.h b/include/dt-bindings/clock/g12a-clkc.h
-index 387767f4e298..636d713f95ff 100644
---- a/include/dt-bindings/clock/g12a-clkc.h
-+++ b/include/dt-bindings/clock/g12a-clkc.h
-@@ -279,5 +279,7 @@
- #define CLKID_MIPI_DSI_PXCLK_DIV		268
- #define CLKID_MIPI_DSI_PXCLK_SEL		269
- #define CLKID_MIPI_DSI_PXCLK			270
-+#define CLKID_CTS_ENCL				271
-+#define CLKID_CTS_ENCL_SEL			272
- 
- #endif /* __G12A_CLKC_H */
+diff --git a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
+index 16977e4e4357..c6bce40946d4 100644
+--- a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
++++ b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
+@@ -158,3 +158,36 @@ examples:
+             };
+         };
+     };
++
++  - |
++    system-controller@ff63c000 {
++        compatible = "amlogic,meson-axg-hhi-sysctrl", "simple-mfd", "syscon";
++        reg = <0xff63c000 0x400>;
++
++        clock-controller {
++            compatible = "amlogic,axg-clkc";
++            #clock-cells = <1>;
++            clocks = <&xtal>;
++            clock-names = "xtal";
++        };
++
++        power-controller {
++           compatible = "amlogic,meson-axg-pwrc";
++           #power-domain-cells = <1>;
++           amlogic,ao-sysctrl = <&sysctrl_AO>;
++
++           resets = <&reset_viu>,
++                    <&reset_venc>,
++                    <&reset_vcbus>,
++                    <&reset_vencl>,
++                    <&reset_vid_lock>;
++           reset-names = "viu", "venc", "vcbus", "vencl", "vid_lock";
++           clocks = <&clk_vpu>, <&clk_vapb>;
++           clock-names = "vpu", "vapb";
++        };
++
++        phy {
++           compatible = "amlogic,axg-mipi-pcie-analog-phy";
++           #phy-cells = <0>;
++        };
++    };
 
 -- 
 2.34.1
