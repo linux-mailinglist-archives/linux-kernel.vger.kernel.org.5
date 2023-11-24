@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986817F70CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FA17F70D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345449AbjKXKGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
+        id S1345401AbjKXKHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:07:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345401AbjKXKG3 (ORCPT
+        with ESMTP id S1345451AbjKXKGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:06:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA44010F0;
-        Fri, 24 Nov 2023 02:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700820395; x=1732356395;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ohoDw7JZUTv1RjPou6a4xNAn3GHL7KxVPsE5YzKJdKk=;
-  b=BGQv4CNMGbgTkzoYhne64szpj0gFZ4rf9vxH0sYOFl0YPUwjFfRlWi39
-   0DdYL77ZHNX5S9yHHALJn+WN6vIx8YHX+DWK167DvqKl3icE3aPCWVz65
-   laLujl9Fjk8oBNmn4jVGD9SRZ6P1Lb+cbOwXe4PSzrf8qpUzK/veEH1uI
-   LNLoQ39NehRXspUQIX61QvoJtwZp5yGRCi/+m/xz2tU9/Ea6Wbg8smYNE
-   7jyckZgdO+3jZOyM42KeGtmgj3FkNoNuiqZd2xljU1D8XaIU49BUfiCU/
-   aSoT45kMybsoQwaIXt6AC7Nmi8+IYUFcLAauGBN+im8nv+y+1up02GnxY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="377430632"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="377430632"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 02:06:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1014863922"
-X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
-   d="scan'208";a="1014863922"
-Received: from dlemiech-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.59.78])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 02:06:29 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 6460210A38A; Fri, 24 Nov 2023 13:06:27 +0300 (+03)
-Date:   Fri, 24 Nov 2023 13:06:27 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     mhklinux@outlook.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, luto@kernel.org, peterz@infradead.org,
-        akpm@linux-foundation.org, urezki@gmail.com, hch@infradead.org,
-        lstoakes@gmail.com, thomas.lendacky@amd.com, ardb@kernel.org,
-        jroedel@suse.de, seanjc@google.com, rick.p.edgecombe@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-hyperv@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
- changing encrypted state
-Message-ID: <20231124100627.avltdnuhminwuzax@box>
-References: <20231121212016.1154303-1-mhklinux@outlook.com>
+        Fri, 24 Nov 2023 05:06:55 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439C11B6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:07:02 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5cc86fcea4fso14566587b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700820421; x=1701425221; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PWcP6gQgrwmdsnOkpH93ij3XRZvKw3Rujab02fsHwiU=;
+        b=qxN5ioYEcENuAMn/Jxr8Kcg+5ZM9glWmzc3x2Wi4S+x6rIHteCtrlCsNYbUfjdtyne
+         BOdb9FO72GTlLtiezDwv7z4FSZeDqFsIqJv3K7V9Er47Gp1Kz630X58BdnwoGtrxcEpe
+         1tvf9tPCzQGzUdh2tt2cnuSUV/TJi8E1wS6stwjJMQBwVvYT8hxvgDAhSopsGd12KbZh
+         QP2nKDWokcgtUjPWANTtF/8dgHgQlYDF6SwKsPZHxvKYIAma9EnC1co9CQ0vtrD4NJrS
+         P1CSCaqZd17kLEjuFbJESHzg++yLR3jYXQ3HozJxQFwMyl1Ep+MNrCZnxXFBGc5LBp/A
+         sSUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700820421; x=1701425221;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PWcP6gQgrwmdsnOkpH93ij3XRZvKw3Rujab02fsHwiU=;
+        b=FgpbKMBguREXER1NwMZQT51ifwgxaTO0tSLiGJItfqcq1wUdvaWDlNH9mLSRRXM7Se
+         Evwnn5YCtDyaQUGdoqS2JCBGlxV6TTtwTdAsle1zNpbJXKm4al9UieahZuBVn2ipoRqd
+         pC0pbWxZamAX6h5629TT2W3GCs3BKGPSYYFEcKwKNTHVPFyz8gKgp3LKwFZWpT2eYIYX
+         w60XFVuYzP8Tf/AwfNAFnldoobLIkkhk7HeMv57VuBtAz69G4cS+qEW63r/z64s4R4OT
+         hy7EaPq/xnUg60rNINzbplKaVNN4iRcZSDPIAot2AmE0e4N4iADblF7sE3qDFRoAsPei
+         F9CA==
+X-Gm-Message-State: AOJu0YzBx0DCS+u2oaBmdxIEy8crjUr0z8HUoHpIXsv7MPkq525qe8kK
+        TW59nGMo3KntVCnDtjKE6lmcsEyKJYVcnkK/hpNJUQ==
+X-Google-Smtp-Source: AGHT+IFSnAJD8pB6XNkHS4v3hhDyUz8bMnLEKTFJgyUyBO5NiU10+s0sV8dxVVUWj46P6kffDmIbWY6kXKt507dXHqo=
+X-Received: by 2002:a81:e950:0:b0:59b:c805:de60 with SMTP id
+ e16-20020a81e950000000b0059bc805de60mr2174447ywm.45.1700820421368; Fri, 24
+ Nov 2023 02:07:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121212016.1154303-1-mhklinux@outlook.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120222832.4063882-1-masahiroy@kernel.org>
+ <20231120222832.4063882-2-masahiroy@kernel.org> <CAK7LNATK3BVDZ88v7MWjzOk3Kv8CR4Tz_k77yi1OO=zc+71j=g@mail.gmail.com>
+In-Reply-To: <CAK7LNATK3BVDZ88v7MWjzOk3Kv8CR4Tz_k77yi1OO=zc+71j=g@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 24 Nov 2023 11:06:50 +0100
+Message-ID: <CACRpkdaMBrWUR8OYLPiQNNJ64mfenFyQa9f4iB+w5kZ44WjSeQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: pinconf-generic: resize the pin config array directly
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 01:20:08PM -0800, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> In a CoCo VM when a page transitions from encrypted to decrypted, or vice
-> versa, attributes in the PTE must be updated *and* the hypervisor must
-> be notified of the change.
+Hi Masahiro,
 
-Strictly speaking it is not true for TDX. Conversion to shared can be
-implicit: set shared bit and touch the page will do the conversion. MapGPA
-is optional.
+On Tue, Nov 21, 2023 at 11:21=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+> On Tue, Nov 21, 2023 at 7:28=E2=80=AFAM Masahiro Yamada <masahiroy@kernel=
+.org> wrote:
+> >
+> > pinconf_generic_parse_dt_config() allocates memory that is large enough
+> > to contain all the config parameters. Then, kmemdup() copies the found
+> > configs to the memory with the exact size.
+> >
+> > There is no need to allocate memory twice; you can directly resize the
+> > initial memory using krealloc_array().
+> >
+> > I also changed kcalloc() to kmalloc_array() to keep the consistency wit=
+h
+> > krealloc_array(). This change has no impact because you do not need to
+> > zero out the 'cfg' array.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Sorry, I retract this patch set.
+>
+> krealloc() does not save any memory
+> when the new_size is smaller than the current size.
 
-> Because there are two separate steps, there's
-> a window where the settings are inconsistent.  Normally the code that
-> initiates the transition (via set_memory_decrypted() or
-> set_memory_encrypted()) ensures that the memory is not being accessed
-> during a transition, so the window of inconsistency is not a problem.
-> However, the load_unaligned_zeropad() function can read arbitrary memory
-> pages at arbitrary times, which could read a transitioning page during
-> the window.  In such a case, CoCo VM specific exceptions are taken
-> (depending on the CoCo architecture in use).  Current code in those
-> exception handlers recovers and does "fixup" on the result returned by
-> load_unaligned_zeropad().  Unfortunately, this exception handling can't
-> work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode)
-> if the exceptions are routed to the paravisor.  The paravisor can't
-> do load_unaligned_zeropad() fixup, so the exceptions would need to
-> be forwarded from the paravisor to the Linux guest, but there are
-> no architectural specs for how to do that.
+But the first part where you switch to kmalloc_array() is still a nice chan=
+ge.
 
-Hm. Can't we inject #PF (or #GP) into L2 if #VE/#VC handler in L1 sees
-cross-page access to shared memory while no fixup entry for the page in
-L1. It would give L2 chance to handle the situation in a transparent way.
+The fact that we use kmemdup to be able to also shrink the allocation is a
+bit of an oddity I guess, but let's run this patch by Andy Shevchenko, and
+ask what he thinks about simply introducing kmemdup_array() or if he
+has other ideas for this.
 
-Maybe I miss something, I donno.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Yours,
+Linus Walleij
