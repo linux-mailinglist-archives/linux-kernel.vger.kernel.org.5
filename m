@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE577F750D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D597F74B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 14:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjKXN26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 08:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
+        id S1345155AbjKXNTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 08:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbjKXN2U (ORCPT
+        with ESMTP id S231133AbjKXNS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 08:28:20 -0500
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B3419A1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:27:32 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
-        t=1700831884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Vh2HI7LlXpVzLq5VbBFa/JKlR1pzRd6vBC4WesJT8w=;
-        b=en/7+/NVm9Fo4O4adG2WBHTA6hkVigaqX+uPnGm8qCYVDmWNcSljdLKiVHFEqxXkdJv0ZV
-        dNQFyGOthyu68HAm+4kj1IV3dH3KR6qghLSV0OA6g7+DbnM6gb1DoqsgLE1iLtVp9AV1//
-        vPrjuk1u85oCYxF8k9jLM6KGP8WLeeM5vfTSWE7Enr98Br4nKAjQGaXOIbg6f6agbEZSFk
-        r/p3U7Fqr6/Y4+RRUkfAIX/ItAMHiDoDPbOgG27JllgGvEZXJ5jeEn9irT4ilyO2MXwwlu
-        kBwGlnT1gpDFjYQsy700N5ZaDc4dj52b8abmAgusbADZkYS9vB+z0gdWQtbHkw==
-From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Date:   Fri, 24 Nov 2023 14:17:44 +0100
-Subject: [PATCH v6 3/3] clk: si5351: allow PLLs to be adjusted without
- reset
+        Fri, 24 Nov 2023 08:18:59 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FF810E3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:19:04 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d7f225819eso1088846a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 05:19:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700831943; x=1701436743; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+IsPEocFWFNU7wGQIEAisF29Xg3VSlyKRLTccscNO9E=;
+        b=TP2MVE50JDH+nqLaqlO/HwSRgZDVxrDbuBDjGVSJCP2BadfVLGjZ5H02BYrh77iFel
+         FuIym3OmESxFoAfz9ehLq1uSwOnrOs/+1Z69H37aPT7/oKEoekUDlmSOTpUPw2NoSdaK
+         MbKsFeuZ8SkyuReQ6Ro/wg5K4CT19GveRIqNK9iYoKWcPbi4ufZK7AVVzuRDqx8kga7Q
+         NTjgDEJyGCfFt5OUIsnVZoCxkMYKKlgPH3aFbvAfjR2CJBwzIjv278DzaQqXqA2YgjPt
+         XAOqPQHrWNOlPwuOWw3/TuBfQCsU5J7GH+jds6qJYQf2i9Kf0C6bWGcsE8AELGcXf5vC
+         LLOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700831943; x=1701436743;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+IsPEocFWFNU7wGQIEAisF29Xg3VSlyKRLTccscNO9E=;
+        b=c728Gr4hM7wNwXRGOJLdQ7G/iWoX8gMtft14tXeGENmCBd/82WvFQU6ViGs3j5C3oB
+         mm2QfTbcErr0wheFIOBILO4IIg/D6xG/S/w0UQPNEhfTSAs4wA1vq729WOGq2aUG5SIZ
+         1GwhXS3vjZfRgwfyPjE9070I29nTF6ALhyO6W8DQuO5IQmZSbZ3bNb5M2ic+fc6ssgBh
+         vKdGcg6a0JtBFtALZH5Uk2E8sYzYYDXLrj0FC8cqqsSDnDcdWW885K5kylRR5yAx9Yj0
+         fhBxs9S24D6Db0OgD5GDaymdJwHk6Jl8j1UeDBXhZBpddLQxLF91/Cw1SvT+kTY/Som/
+         6u2g==
+X-Gm-Message-State: AOJu0YxUSoauEsrT8nMkyfXeKbkEaV2QnnsQpoDsh+j/QMi6aLHuEHyC
+        EPU+j4LlzgC8lDgsblCeTqA5DPYqXlY5bWck0HMgyg==
+X-Google-Smtp-Source: AGHT+IEYrU7CH1xoumT3h3m1mwxKQ1WLXLGoQzXY1Lp09JwV4vK5+bb4txzVMcP+t7Yg4FrQS0fDHMRv3X+QnpSrQJM=
+X-Received: by 2002:a05:6830:719f:b0:6bf:1f5f:ed18 with SMTP id
+ el31-20020a056830719f00b006bf1f5fed18mr3843687otb.1.1700831943509; Fri, 24
+ Nov 2023 05:19:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231124-alvin-clk-si5351-no-pll-reset-v6-3-69b82311cb90@bang-olufsen.dk>
-References: <20231124-alvin-clk-si5351-no-pll-reset-v6-0-69b82311cb90@bang-olufsen.dk>
-In-Reply-To: <20231124-alvin-clk-si5351-no-pll-reset-v6-0-69b82311cb90@bang-olufsen.dk>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+References: <20231124121305.1954-1-quic_kbajaj@quicinc.com> <20231124121305.1954-3-quic_kbajaj@quicinc.com>
+In-Reply-To: <20231124121305.1954-3-quic_kbajaj@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 24 Nov 2023 15:18:52 +0200
+Message-ID: <CAA8EJpqPw4A8vbA=OL-SSUeZEW1gvkEjQkjqSW6L0zksQQnUww@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] arm64: dts: qcom: Add base qcm6490 idp board dts
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-Cc:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rabeeh Khoury <rabeeh@solid-run.com>,
-        Jacob Siverskog <jacob@teenage.engineering>,
-        Sergej Sawazki <sergej@taudac.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Migadu-Flow: FLOW_OUT
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -60,140 +73,515 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+On Fri, 24 Nov 2023 at 14:13, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+>
+> Add DTS for Qualcomm IDP platform using QCM6490 SoC.
+> This adds debug uart, eMMC and usb support along with
+> regulators found on this board.
+>
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile        |   1 +
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 464 +++++++++++++++++++++++
+>  2 files changed, 465 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index d6cb840b7050..77babebe4904 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -87,6 +87,7 @@ dtb-$(CONFIG_ARCH_QCOM)       += msm8998-sony-xperia-yoshino-maple.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += msm8998-sony-xperia-yoshino-poplar.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += msm8998-xiaomi-sagit.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcm6490-fairphone-fp5.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)        += qcm6490-idp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcs404-evb-1000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcs404-evb-4000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qdu1000-idp.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> new file mode 100644
+> index 000000000000..78ace02e42c0
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -0,0 +1,464 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include "sc7280.dtsi"
+> +#include "pm7325.dtsi"
+> +#include "pm8350c.dtsi"
+> +#include "pmk8350.dtsi"
+> +
+> +/delete-node/ &ipa_fw_mem;
+> +/delete-node/ &rmtfs_mem;
+> +/delete-node/ &video_mem;
+> +/delete-node/ &wlan_ce_mem;
+> +/delete-node/ &xbl_mem;
+> +
+> +/ {
+> +       model = "Qualcomm Technologies, Inc. QCM6490 IDP";
+> +       compatible = "qcom,qcm6490-idp", "qcom,qcm6490";
+> +
+> +       aliases {
+> +               serial0 = &uart5;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path = "serial0:115200n8";
+> +       };
+> +
+> +       reserved-memory {
+> +               xbl_mem: xbl@80700000 {
+> +                       reg = <0x0 0x80700000 0x0 0x100000>;
+> +                       no-map;
+> +               };
+> +
+> +               cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
+> +                       reg = <0x0 0x81800000 0x0 0x1e00000>;
+> +                       no-map;
+> +               };
+> +
+> +               camera_mem: camera@84300000 {
+> +                       reg = <0x0 0x84300000 0x0 0x500000>;
+> +                       no-map;
+> +               };
+> +
+> +               wpss_mem: wpss@84800000 {
+> +                       reg = <0x0 0x84800000 0x0 0x1900000>;
+> +                       no-map;
+> +               };
+> +
+> +               adsp_mem: adsp@86100000 {
+> +                       reg = <0x0 0x86100000 0x0 0x2800000>;
+> +                       no-map;
+> +               };
+> +
+> +               cdsp_mem: cdsp@88900000 {
+> +                       reg = <0x0 0x88900000 0x0 0x1e00000>;
+> +                       no-map;
+> +               };
+> +
+> +               video_mem: video@8a700000 {
+> +                       reg = <0x0 0x8a700000 0x0 0x700000>;
+> +                       no-map;
+> +               };
+> +
+> +               cvp_mem: cvp@8ae00000 {
+> +                       reg = <0x0 0x8ae00000 0x0 0x500000>;
+> +                       no-map;
+> +               };
+> +
+> +               ipa_fw_mem: ipa-fw@8b300000 {
+> +                       reg = <0x0 0x8b300000 0x0 0x10000>;
+> +                       no-map;
+> +               };
+> +
+> +               ipa_gsi_mem: ipa-gsi@8b310000 {
+> +                       reg = <0x0 0x8b310000 0x0 0xa000>;
+> +                       no-map;
+> +               };
+> +
+> +               gpu_microcode_mem: gpu-microcode@8b31a000 {
+> +                       reg = <0x0 0x8b31a000 0x0 0x2000>;
+> +                       no-map;
+> +               };
+> +
+> +               mpss_mem: mpss@8b800000 {
+> +                       reg = <0x0 0x8b800000 0x0 0xf600000>;
+> +                       no-map;
+> +               };
+> +
+> +               tz_stat_mem: tz-stat@c0000000 {
+> +                       reg = <0x0 0xc0000000 0x0 0x100000>;
+> +                       no-map;
+> +               };
+> +
+> +               tags_mem: tags@c0100000 {
+> +                       reg = <0x0 0xc0100000 0x0 0x1200000>;
+> +                       no-map;
+> +               };
+> +
+> +               qtee_mem: qtee@c1300000 {
+> +                       reg = <0x0 0xc1300000 0x0 0x500000>;
+> +                       no-map;
+> +               };
+> +
+> +               trusted_apps_mem: trusted_apps@c1800000 {
+> +                       reg = <0x0 0xc1800000 0x0 0x1c00000>;
+> +                       no-map;
+> +               };
+> +
+> +               debug_vm_mem: debug-vm@d0600000 {
+> +                       reg = <0x0 0xd0600000 0x0 0x100000>;
+> +                       no-map;
+> +               };
+> +       };
+> +
+> +       vph_pwr: vph-pwr-regulator {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "vph_pwr";
+> +               regulator-min-microvolt = <2500000>;
+> +               regulator-max-microvolt = <4350000>;
+> +       };
+> +};
+> +
+> +&apps_rsc {
+> +       regulators-0 {
+> +               compatible = "qcom,pm7325-rpmh-regulators";
+> +               qcom,pmic-id = "b";
+> +
+> +               vdd-s1-supply = <&vph_pwr>;
+> +               vdd-s2-supply = <&vph_pwr>;
+> +               vdd-s3-supply = <&vph_pwr>;
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +               vdd-s6-supply = <&vph_pwr>;
+> +               vdd-s7-supply = <&vph_pwr>;
+> +               vdd-s8-supply = <&vph_pwr>;
+> +               vdd-l1-l4-l12-l15-supply = <&vreg_s7b_0p972>;
+> +               vdd-l2-l7-supply = <&vreg_bob_3p296>;
+> +               vdd-l3-supply = <&vreg_s2b_0p876>;
+> +               vdd-l5-supply = <&vreg_s2b_0p876>;
+> +               vdd-l6-l9-l10-supply = <&vreg_s8b_1p272>;
+> +               vdd-l8-supply = <&vreg_s7b_0p972>;
+> +               vdd-l11-l17-l18-l19-supply = <&vreg_s1b_1p872>;
+> +               vdd-l13-supply = <&vreg_s7b_0p972>;
+> +               vdd-l14-l16-supply = <&vreg_s8b_1p272>;
+> +
+> +               vreg_s1b_1p872: smps1 {
+> +                       regulator-min-microvolt = <1840000>;
+> +                       regulator-max-microvolt = <2040000>;
+> +               };
+> +
+> +               vreg_s2b_0p876: smps2 {
+> +                       regulator-min-microvolt = <570070>;
+> +                       regulator-max-microvolt = <1050000>;
+> +               };
+> +
+> +               vreg_s7b_0p972: smps7 {
+> +                       regulator-min-microvolt = <535000>;
+> +                       regulator-max-microvolt = <1120000>;
+> +               };
+> +
+> +               vreg_s8b_1p272: smps8 {
+> +                       regulator-min-microvolt = <1200000>;
+> +                       regulator-max-microvolt = <1500000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_RET>;
+> +               };
+> +
+> +               vreg_l1b_0p912: ldo1 {
+> +                       regulator-min-microvolt = <825000>;
+> +                       regulator-max-microvolt = <925000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l2b_3p072: ldo2 {
+> +                       regulator-min-microvolt = <2700000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l3b_0p504: ldo3 {
+> +                       regulator-min-microvolt = <312000>;
+> +                       regulator-max-microvolt = <910000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l4b_0p752: ldo4 {
+> +                       regulator-min-microvolt = <752000>;
+> +                       regulator-max-microvolt = <820000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               reg_l5b_0p752: ldo5 {
+> +                       regulator-min-microvolt = <552000>;
+> +                       regulator-max-microvolt = <832000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l6b_1p2: ldo6 {
+> +                       regulator-min-microvolt = <1140000>;
+> +                       regulator-max-microvolt = <1260000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l7b_2p952: ldo7 {
+> +                       regulator-min-microvolt = <2400000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l8b_0p904: ldo8 {
+> +                       regulator-min-microvolt = <870000>;
+> +                       regulator-max-microvolt = <970000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l9b_1p2: ldo9 {
+> +                       regulator-min-microvolt = <1200000>;
+> +                       regulator-max-microvolt = <1304000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l11b_1p504: ldo11 {
+> +                       regulator-min-microvolt = <1504000>;
+> +                       regulator-max-microvolt = <2000000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l12b_0p751: ldo12 {
+> +                       regulator-min-microvolt = <751000>;
+> +                       regulator-max-microvolt = <824000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l13b_0p53: ldo13 {
+> +                       regulator-min-microvolt = <530000>;
+> +                       regulator-max-microvolt = <824000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l14b_1p08: ldo14 {
+> +                       regulator-min-microvolt = <1080000>;
+> +                       regulator-max-microvolt = <1304000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l15b_0p765: ldo15 {
+> +                       regulator-min-microvolt = <765000>;
+> +                       regulator-max-microvolt = <1020000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l16b_1p1: ldo16 {
+> +                       regulator-min-microvolt = <1100000>;
+> +                       regulator-max-microvolt = <1300000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l17b_1p7: ldo17 {
+> +                       regulator-min-microvolt = <1700000>;
+> +                       regulator-max-microvolt = <1900000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l18b_1p8: ldo18 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <2000000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l19b_1p8: ldo19 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <2000000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +                       regulator-allow-set-load;
+> +                       regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+> +                                                  RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +       };
+> +
+> +       regulators-1 {
+> +               compatible = "qcom,pm8350c-rpmh-regulators";
+> +               qcom,pmic-id = "c";
+> +
+> +               vdd-s1-supply = <&vph_pwr>;
+> +               vdd-s2-supply = <&vph_pwr>;
+> +               vdd-s3-supply = <&vph_pwr>;
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +               vdd-s6-supply = <&vph_pwr>;
+> +               vdd-s7-supply = <&vph_pwr>;
+> +               vdd-s8-supply = <&vph_pwr>;
+> +               vdd-s9-supply = <&vph_pwr>;
+> +               vdd-s10-supply = <&vph_pwr>;
+> +               vdd-l1-l12-supply = <&vreg_s1b_1p872>;
+> +               vdd-l2-l8-supply = <&vreg_s1b_1p872>;
+> +               vdd-l3-l4-l5-l7-l13-supply = <&vreg_bob_3p296>;
+> +               vdd-l6-l9-l11-supply = <&vreg_bob_3p296>;
+> +               vdd-l10-supply = <&vreg_s7b_0p972>;
+> +               vdd-bob-supply = <&vph_pwr>;
+> +
+> +               vreg_s1c_2p19: smps1 {
+> +                       regulator-min-microvolt = <2190000>;
+> +                       regulator-max-microvolt = <2210000>;
+> +               };
+> +
+> +               vreg_s2c_0p752: smps2 {
+> +                       regulator-min-microvolt = <750000>;
+> +                       regulator-max-microvolt = <800000>;
+> +               };
+> +
+> +               vreg_s5c_0p752: smps5 {
+> +                       regulator-min-microvolt = <465000>;
+> +                       regulator-max-microvolt = <1050000>;
+> +               };
+> +
+> +               vreg_s7c_0p752: smps7 {
+> +                       regulator-min-microvolt = <465000>;
+> +                       regulator-max-microvolt = <800000>;
+> +               };
+> +
+> +               vreg_s9c_1p084: smps9 {
+> +                       regulator-min-microvolt = <1010000>;
+> +                       regulator-max-microvolt = <1170000>;
+> +               };
+> +
+> +               vreg_l1c_1p8: ldo1 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <1980000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l2c_1p62: ldo2 {
+> +                       regulator-min-microvolt = <1620000>;
+> +                       regulator-max-microvolt = <1980000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l3c_2p8: ldo3 {
+> +                       regulator-min-microvolt = <2800000>;
+> +                       regulator-max-microvolt = <3540000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l4c_1p62: ldo4 {
+> +                       regulator-min-microvolt = <1620000>;
+> +                       regulator-max-microvolt = <3300000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l5c_1p62: ldo5 {
+> +                       regulator-min-microvolt = <1620000>;
+> +                       regulator-max-microvolt = <3300000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l6c_2p96: ldo6 {
+> +                       regulator-min-microvolt = <1650000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l7c_3p0: ldo7 {
+> +                       regulator-min-microvolt = <3000000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l8c_1p62: ldo8 {
+> +                       regulator-min-microvolt = <1620000>;
+> +                       regulator-max-microvolt = <2000000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l9c_2p96: ldo9 {
+> +                       regulator-min-microvolt = <2700000>;
+> +                       regulator-max-microvolt = <35440000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l10c_0p88: ldo10 {
+> +                       regulator-min-microvolt = <720000>;
+> +                       regulator-max-microvolt = <1050000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l11c_2p8: ldo11 {
+> +                       regulator-min-microvolt = <2800000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l12c_1p65: ldo12 {
+> +                       regulator-min-microvolt = <1650000>;
+> +                       regulator-max-microvolt = <2000000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l13c_2p7: ldo13 {
+> +                       regulator-min-microvolt = <2700000>;
+> +                       regulator-max-microvolt = <3544000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_bob_3p296: bob {
+> +                       regulator-min-microvolt = <3008000>;
+> +                       regulator-max-microvolt = <3960000>;
+> +               };
+> +       };
+> +};
+> +
+> +&qupv3_id_0 {
+> +       status = "okay";
+> +};
+> +
+> +&sdhc_1 {
+> +       non-removable;
+> +       no-sd;
+> +       no-sdio;
+> +
+> +       vmmc-supply = <&vreg_l7b_2p952>;
+> +       vqmmc-supply = <&vreg_l19b_1p8>;
+> +
+> +       status = "okay";
+> +};
+> +
+> +&tlmm {
+> +       gpio-reserved-ranges = <32 2>, /* ADSP */
+> +                              <48 4>; /* NFC */
+> +};
+> +
+> +&uart5 {
+> +       compatible = "qcom,geni-debug-uart";
+> +       status = "okay";
+> +};
+> +
+> +&usb_1 {
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_dwc3 {
+> +       dr_mode = "peripheral";
+> +};
+> +
+> +&usb_1_hsphy {
+> +       vdda-pll-supply = <&vreg_l10c_0p88>;
+> +       vdda33-supply = <&vreg_l2b_3p072>;
+> +       vdda18-supply = <&vreg_l1c_1p8>;
+> +
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_qmpphy {
+> +       vdda-phy-supply = <&vreg_l6b_1p2>;
+> +       vdda-pll-supply = <&vreg_l1b_0p912>;
+> +
+> +       status = "okay";
+> +};
+> +
+> +&wifi {
+> +       memory-region = <&wlan_fw_mem>;
 
-Introduce a new PLL reset mode flag which controls whether or not to
-reset a PLL after adjusting its rate. The mode can be configured through
-platform data or device tree.
+qcom,ath11k-calibration-variant = "qualcomm-qca6490-idp";
 
-Since commit 6dc669a22c77 ("clk: si5351: Add PLL soft reset"), the
-driver unconditionally resets a PLL whenever its rate is adjusted.
-The rationale was that a PLL reset was required to get three outputs
-working at the same time. Before this change, the driver never reset the
-PLLs.
+Also please cc ath11k maliling list on the next submission
 
-Commit b26ff127c52c ("clk: si5351: Apply PLL soft reset before enabling
-the outputs") subsequently introduced an option to reset the PLL when
-enabling a clock output that sourced it. Here, the rationale was that
-this is required to get a deterministic phase relationship between
-multiple output clocks.
+> +};
 
-This clearly shows that it is useful to reset the PLLs in applications
-where multiple clock outputs are used. However, the Si5351 also allows
-for glitch-free rate adjustment of its PLLs if one avoids resetting the
-PLL. In our audio application where a single Si5351 clock output is used
-to supply a runtime adjustable bit clock, this unconditional PLL reset
-behaviour introduces unwanted glitches in the clock output.
+> --
+> 2.42.0
+>
+>
 
-It would appear that the problem being solved in the former commit
-may be solved by using the optional device tree property introduced in
-the latter commit, obviating the need for an unconditional PLL reset
-after rate adjustment. But it's not OK to break the default behaviour of
-the driver, and it cannot be assumed that all device trees are using the
-property introduced in the latter commit. Hence, the new behaviour is
-made opt-in.
 
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Rabeeh Khoury <rabeeh@solid-run.com>
-Cc: Jacob Siverskog <jacob@teenage.engineering>
-Cc: Sergej Sawazki <sergej@taudac.com>
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Acked-by: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
----
- drivers/clk/clk-si5351.c             | 47 +++++++++++++++++++++++++++++++++---
- include/linux/platform_data/si5351.h |  2 ++
- 2 files changed, 46 insertions(+), 3 deletions(-)
+--
+With best wishes
 
-diff --git a/drivers/clk/clk-si5351.c b/drivers/clk/clk-si5351.c
-index cbf7cde01157..bed0fe3bfa08 100644
---- a/drivers/clk/clk-si5351.c
-+++ b/drivers/clk/clk-si5351.c
-@@ -506,6 +506,8 @@ static int si5351_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct si5351_hw_data *hwdata =
- 		container_of(hw, struct si5351_hw_data, hw);
-+	struct si5351_platform_data *pdata =
-+		hwdata->drvdata->client->dev.platform_data;
- 	u8 reg = (hwdata->num == 0) ? SI5351_PLLA_PARAMETERS :
- 		SI5351_PLLB_PARAMETERS;
- 
-@@ -518,9 +520,10 @@ static int si5351_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 		(hwdata->params.p2 == 0) ? SI5351_CLK_INTEGER_MODE : 0);
- 
- 	/* Do a pll soft reset on the affected pll */
--	si5351_reg_write(hwdata->drvdata, SI5351_PLL_RESET,
--			 hwdata->num == 0 ? SI5351_PLL_RESET_A :
--					    SI5351_PLL_RESET_B);
-+	if (pdata->pll_reset[hwdata->num])
-+		si5351_reg_write(hwdata->drvdata, SI5351_PLL_RESET,
-+				 hwdata->num == 0 ? SI5351_PLL_RESET_A :
-+						    SI5351_PLL_RESET_B);
- 
- 	dev_dbg(&hwdata->drvdata->client->dev,
- 		"%s - %s: p1 = %lu, p2 = %lu, p3 = %lu, parent_rate = %lu, rate = %lu\n",
-@@ -1222,6 +1225,44 @@ static int si5351_dt_parse(struct i2c_client *client,
- 		}
- 	}
- 
-+	/*
-+	 * Parse PLL reset mode. For compatibility with older device trees, the
-+	 * default is to always reset a PLL after setting its rate.
-+	 */
-+	pdata->pll_reset[0] = true;
-+	pdata->pll_reset[1] = true;
-+
-+	of_property_for_each_u32(np, "silabs,pll-reset-mode", prop, p, num) {
-+		if (num >= 2) {
-+			dev_err(&client->dev,
-+				"invalid pll %d on pll-reset-mode prop\n", num);
-+			return -EINVAL;
-+		}
-+
-+		p = of_prop_next_u32(prop, p, &val);
-+		if (!p) {
-+			dev_err(&client->dev,
-+				"missing pll-reset-mode for pll %d\n", num);
-+			return -EINVAL;
-+		}
-+
-+		switch (val) {
-+		case 0:
-+			/* Reset PLL whenever its rate is adjusted */
-+			pdata->pll_reset[num] = true;
-+			break;
-+		case 1:
-+			/* Don't reset PLL whenever its rate is adjusted */
-+			pdata->pll_reset[num] = false;
-+			break;
-+		default:
-+			dev_err(&client->dev,
-+				"invalid pll-reset-mode %d for pll %d\n", val,
-+				num);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* per clkout properties */
- 	for_each_child_of_node(np, child) {
- 		if (of_property_read_u32(child, "reg", &num)) {
-diff --git a/include/linux/platform_data/si5351.h b/include/linux/platform_data/si5351.h
-index c71a2dd66143..5f412a615532 100644
---- a/include/linux/platform_data/si5351.h
-+++ b/include/linux/platform_data/si5351.h
-@@ -105,10 +105,12 @@ struct si5351_clkout_config {
-  * @clk_xtal: xtal input clock
-  * @clk_clkin: clkin input clock
-  * @pll_src: array of pll source clock setting
-+ * @pll_reset: array indicating if plls should be reset after setting the rate
-  * @clkout: array of clkout configuration
-  */
- struct si5351_platform_data {
- 	enum si5351_pll_src pll_src[2];
-+	bool pll_reset[2];
- 	struct si5351_clkout_config clkout[8];
- };
- 
-
--- 
-2.42.1
-
+Dmitry
