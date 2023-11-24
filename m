@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A592E7F7976
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 994E37F7990
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345717AbjKXQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S231325AbjKXQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:41:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345731AbjKXQjS (ORCPT
+        with ESMTP id S232389AbjKXQlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:39:18 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4605B19B5;
-        Fri, 24 Nov 2023 08:39:20 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b2afd049aso14504095e9.0;
-        Fri, 24 Nov 2023 08:39:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700843959; x=1701448759; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jHTMENAVi47XR6rxLgnHilsaqtzEhcUlvrvQs0OyJoU=;
-        b=N3Hb1HfBON2AGtnyEtP5G7PDn75WxAtzjeaXILVXfqsM6wS1Ul1yiSiulH7qKrKnLq
-         IskjTvPYYtjRUIBS3FqDk/KCTvevq/Cz5yFuiAgikRj+f6Aw47mcHWgDqdPEx4vneff8
-         rk3U3LfDGBAphr315s2nfg+nV1inLb8tAjGbR/S2aBgnszclj1e6X/vfmsY2dQbN0Pzw
-         pTyPv5S1LrmDRmVsxKRwrPjUkZMokWUpipG9kgJg9rw2CHG4mCNWNHTNEKr/xVlf67Aw
-         xaG8nTMGpMQH0Bw4uka92DPBfnhooYCaz7WQWGyXkhudmRD4Nmq2kXUcoAVw7eDkuBto
-         Fgng==
+        Fri, 24 Nov 2023 11:41:14 -0500
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA6A1988
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:41:08 -0800 (PST)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c19a2f606dso2027009a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:41:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700843959; x=1701448759;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jHTMENAVi47XR6rxLgnHilsaqtzEhcUlvrvQs0OyJoU=;
-        b=fFJeBS4H3z6CJbdwoKV4+Y0MMdGEaabZO5NQJk+p6cpsuxoa1mBV2aV5J+isrowzff
-         1feABuqoG4PrGbQeQraK4Q6LizLPqxmdjZBQJ8sc+j51Z0hg2q0GKarIyBE12DNqnd5/
-         lGBfU0ZfC9ZG6JK2lLdJe3eEg/5sEvH399IhTOKYRKcM76Mnq2ZsfgmH64DVmR/7a7AF
-         pBh6UwaOgu5v/ac+8NgeENq5rsW+663yBBXh2I41p+WQTKn0YcTWrwuF89yNFiKThIva
-         LEP2vPhM/UDzXojrUuGEKk2X8uDImLrEknfz9vqVfuc1aqkf2jHUR+SquEFOjST4j/40
-         5Mng==
-X-Gm-Message-State: AOJu0YzDg+kvnQrWvGa/H78h7oL2rp0J6+FOK4AdR66PtDIIUYh1TGG/
-        sx0qsCPRf3m8S4O/bR5wJME=
-X-Google-Smtp-Source: AGHT+IHgvt3JEGuFmzPkYjDljN5d22OqpBBoT+phXZicmhBss5j/DMGuOvopUBPJTeMCd+p8/KjybQ==
-X-Received: by 2002:a5d:5267:0:b0:332:d1cc:6374 with SMTP id l7-20020a5d5267000000b00332d1cc6374mr3108691wrc.47.1700843958487;
-        Fri, 24 Nov 2023 08:39:18 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id s15-20020adf978f000000b00332d41f0798sm4747110wrb.29.2023.11.24.08.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 08:39:17 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/imagination: Fix a couple of spelling mistakes in literal strings
-Date:   Fri, 24 Nov 2023 16:39:17 +0000
-Message-Id: <20231124163917.300685-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1700844068; x=1701448868;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zf3ri9xrbk3Wo2sorjp+QdDTuPFLBKHNR4Q6yiJudT8=;
+        b=rlNMmm7tEN3JgLPBO5rxuUWuI3yDchNqCzssahvJL8tZRz3U4umxdxsfdvGUSOjTgn
+         GEfPTI+x5i/s1RiYIKAUozZvtMvl8fVF+OhAR9pcCUXyvSHuWN6ozHXb3+aphq4djqPs
+         kis05JU5G229r/+SAPO91ZfDK6oOZ1iQFhekwkoF2gQfpyv/5XzR6gwxjbnTu+OJV4PF
+         tucdiVSAbYMvGG5MG5YDRvyl1qIraDdALL8ENll7Z6S4HTXEJFgQmB1dHpZ8DPsyHOP2
+         s0e1PtJjKAbqD/mfgUNASX69TJRZkyYSKuUGDy0vKslESYNiZbHmiYjLtYfMBfW8FCsM
+         JAsg==
+X-Gm-Message-State: AOJu0Yxf6syMklBOLqp078ZKiPaHFBSXP5Yixlys7TbqQ+tg5g/LkW9U
+        pD7ubyYZ/w5AY/WDssqzk3kDS0IQz+MM1k4ShmqpTwwMS2Vs
+X-Google-Smtp-Source: AGHT+IHLEITRzJFu9n2TX4LcYq/P2lezy8iiyCOTkf13yKoPE9EVcIP2UuQILHm4ztno9AlxVKk5LpEajnms8bro1J+d6/+Xo2h6
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:5765:0:b0:5bd:3e1c:c163 with SMTP id
+ h37-20020a635765000000b005bd3e1cc163mr544373pgm.1.1700844067709; Fri, 24 Nov
+ 2023 08:41:07 -0800 (PST)
+Date:   Fri, 24 Nov 2023 08:41:07 -0800
+In-Reply-To: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000796831060ae89e3f@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in __kernel_write_iter
+From:   syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, jannh@google.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a couple of spelling mistakes in literal strings in the
-stid_fmts array. Fix these.
+Hello,
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h b/drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
-index 571954182f33..56e11009e123 100644
---- a/drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
-+++ b/drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
-@@ -497,7 +497,7 @@ static const struct rogue_km_stid_fmt stid_fmts[] = {
- 	{ ROGUE_FW_LOG_CREATESFID(213, ROGUE_FW_GROUP_MAIN, 1),
- 	  "Safety Watchdog threshold period set to 0x%x clock cycles" },
- 	{ ROGUE_FW_LOG_CREATESFID(214, ROGUE_FW_GROUP_MAIN, 0),
--	  "MTS Safety Event trigged by the safety watchdog." },
-+	  "MTS Safety Event triggered by the safety watchdog." },
- 	{ ROGUE_FW_LOG_CREATESFID(215, ROGUE_FW_GROUP_MAIN, 3),
- 	  "DM%d USC tasks range limit 0 - %d, stride %d" },
- 	{ ROGUE_FW_LOG_CREATESFID(216, ROGUE_FW_GROUP_MAIN, 1),
-@@ -1114,7 +1114,7 @@ static const struct rogue_km_stid_fmt stid_fmts[] = {
- 	{ ROGUE_FW_LOG_CREATESFID(39, ROGUE_FW_GROUP_SPM, 2),
- 	  "3DMemFree matches freelist 0x%08x (FL type = %u)" },
- 	{ ROGUE_FW_LOG_CREATESFID(40, ROGUE_FW_GROUP_SPM, 0),
--	  "Raise the 3DMemFreeDedected flag" },
-+	  "Raise the 3DMemFreeDetected flag" },
- 	{ ROGUE_FW_LOG_CREATESFID(41, ROGUE_FW_GROUP_SPM, 1),
- 	  "Wait for pending grow on Freelist 0x%08x" },
- 	{ ROGUE_FW_LOG_CREATESFID(42, ROGUE_FW_GROUP_SPM, 1),
--- 
-2.39.2
+Reported-and-tested-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         573fd256 btrfs: send: Ensure send_fd is writable
+git tree:       https://github.com/thejh/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1461aad0e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7d33e2c9b952629
+dashboard link: https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
