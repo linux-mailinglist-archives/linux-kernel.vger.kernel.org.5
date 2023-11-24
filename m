@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490CB7F6C39
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160EA7F6C2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 07:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjKXGSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 01:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        id S1344340AbjKXGKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 01:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbjKXGSD (ORCPT
+        with ESMTP id S231922AbjKXGJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 01:18:03 -0500
+        Fri, 24 Nov 2023 01:09:44 -0500
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A714C13;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099684C16;
         Thu, 23 Nov 2023 22:06:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=/IlHdjyXvMUq90PQPZsasCErAt9FORhE4yKp5BHiqsk=; b=k4pyVtzOc2QWXYEOEOuKRMpx1h
-        6i5vBKNCgQb5KTf/XK60hSS3HkZQInhpBowEwAkDDeDuFpwoFpHLpKUEQlLBPkdWQwvTuF02foGNL
-        lA682vraOMmeUo8iKDHR3oarSUj7urIxu6jz4SjQDrAdV1IUfqp3+89lJoFOGU7QeMkj1yyMZalFw
-        E/H4kHQkiEJEQQSQMHFEpsEnpN5B4hgCQZnxaiRGkxlYsSBzYw0JM1i3Jf66QPrH073FwoxJQMCrv
-        krGRMDnJ09vA6SV6PC+35yDCR6lLKokFQX9nZOTursyH6MTA41qUQC8RWuYfyNqBKiSLisy398SOx
-        GLjKyGkQ==;
+        bh=LmN7YWFVeedmNnhXo1eJlBUZcdYWMPMK9OY6elEEKrk=; b=ZTyrOv0DE6D19HqqHyqvlNOsJ4
+        X2vB3RXCW234Z4IpK73Fms812wOExb+kaNWU+p+5TpXVbg4Y3FVy+ruXfooZK/o4zdK/DHAPhSoPD
+        8R0wWqqQinI5JRIbKaKQkosP9bj0jrNi/4DiQAtAtb4U3ZCtBJP4ornQmbtKDQzE2GU7+jGQYYuCK
+        jRfX52dnOlpcGvUzvwmk4rGSvgVA1t7sx60vNhu8h034oaAbNPpszwCLDcTJuIWqzo5yRqO+TYwdA
+        ALtVJbSRsEWLUFuBsQB/ePQFQU3vZcVRPdrmgIEM88ikSXA7k9yJ52WKLYtO6RkoRaHaTDMbX0TKh
+        7UQO7H7A==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r6PKx-002Q1Z-0V;
+        id 1r6PKx-002Q1g-1H;
         Fri, 24 Nov 2023 06:06:47 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christian Brauner <brauner@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 15/20] d_genocide(): move the extern into fs/internal.h
-Date:   Fri, 24 Nov 2023 06:06:39 +0000
-Message-Id: <20231124060644.576611-15-viro@zeniv.linux.org.uk>
+Subject: [PATCH 16/20] get rid of DCACHE_GENOCIDE
+Date:   Fri, 24 Nov 2023 06:06:40 +0000
+Message-Id: <20231124060644.576611-16-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231124060644.576611-1-viro@zeniv.linux.org.uk>
 References: <20231124060553.GA575483@ZenIV>
@@ -53,38 +53,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+... now that we never call d_genocide() other than from kill_litter_super()
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- fs/internal.h          | 1 +
- include/linux/dcache.h | 3 ---
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ fs/dcache.c            | 5 +----
+ include/linux/dcache.h | 1 -
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/fs/internal.h b/fs/internal.h
-index 9e9fc629f935..d9a920e2636e 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -219,6 +219,7 @@ extern void shrink_dcache_for_umount(struct super_block *);
- extern struct dentry *__d_lookup(const struct dentry *, const struct qstr *);
- extern struct dentry *__d_lookup_rcu(const struct dentry *parent,
- 				const struct qstr *name, unsigned *seq);
-+extern void d_genocide(struct dentry *);
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 1296a3fa4f93..440b46851f52 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -3196,10 +3196,7 @@ static enum d_walk_ret d_genocide_kill(void *data, struct dentry *dentry)
+ 		if (d_unhashed(dentry) || !dentry->d_inode)
+ 			return D_WALK_SKIP;
  
- /*
-  * pipe.c
+-		if (!(dentry->d_flags & DCACHE_GENOCIDE)) {
+-			dentry->d_flags |= DCACHE_GENOCIDE;
+-			dentry->d_lockref.count--;
+-		}
++		dentry->d_lockref.count--;
+ 	}
+ 	return D_WALK_CONTINUE;
+ }
 diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 8c5e3bdf1147..b4324d47f249 100644
+index b4324d47f249..981f529c6cb5 100644
 --- a/include/linux/dcache.h
 +++ b/include/linux/dcache.h
-@@ -243,9 +243,6 @@ extern void d_invalidate(struct dentry *);
- /* only used at mount-time */
- extern struct dentry * d_make_root(struct inode *);
+@@ -173,7 +173,6 @@ struct dentry_operations {
+ #define DCACHE_DONTCACHE		BIT(7) /* Purge from memory on final dput() */
  
--/* <clickety>-<click> the ramfs-type tree */
--extern void d_genocide(struct dentry *);
--
- extern void d_mark_tmpfile(struct file *, struct inode *);
- extern void d_tmpfile(struct file *, struct inode *);
+ #define DCACHE_CANT_MOUNT		BIT(8)
+-#define DCACHE_GENOCIDE			BIT(9)
+ #define DCACHE_SHRINK_LIST		BIT(10)
  
+ #define DCACHE_OP_WEAK_REVALIDATE	BIT(11)
 -- 
 2.39.2
 
