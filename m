@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5257F6CF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393D77F6CF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 08:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344496AbjKXHh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 02:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        id S1344624AbjKXHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 02:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXHh0 (ORCPT
+        with ESMTP id S229453AbjKXHhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 02:37:26 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2277C1A8;
-        Thu, 23 Nov 2023 23:37:29 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a0d4e79c1so4874096d6.1;
-        Thu, 23 Nov 2023 23:37:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700811448; x=1701416248; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RG/gsUHWvkT6+6+wGSY1vHckBzAuwdxp2sKBiJla/IM=;
-        b=WxLAdW1gLkJ5gdjZzt+Hi9zxWtia+g8x0Ofype9SJmgUHdG1nKmExQdhK41Y59lsG6
-         hHIiQMehBEiG0h1XEaNlSR09bPmzQpizuvEGJhe/yRDokQpFROu/mP3bDH8OCtqEvBAF
-         6vb7AKovYvrvvv/5v4npkvwekSpkYiywK2mfDYhcEt30ZhFj6pMZWDD1Il5bhYGe1Iix
-         CsUtWuFAvSfLSPHxuqrLTfcrSOZDnukvmhQBFLaurE0AOu8hOHTlU+O3w3ARugkeX6yq
-         NQGsydN2oYYSY7Ofm0Ex7Bf9JJEbUG4Gw1MqmnmA1DBT2L9PKbwINu4CH2mHtFzuNaLg
-         Q9mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700811448; x=1701416248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RG/gsUHWvkT6+6+wGSY1vHckBzAuwdxp2sKBiJla/IM=;
-        b=pJWcI2YsLX29/sxSZLrwMH8PdJ9SyqiOVVIYeT/pVU8wE2rR9Ut4AJlQlzSoPff+z5
-         xOEC+1B9Wun/7nhQFXZN6tLmm/OgAAC960TYuqMU0f6cd1sZ4ZJ1SqJIsxXkxDcgRuLt
-         TVzTdddUF3mS4vf9hHNlib+Y+fRbSDasw6dZmoRXSc2rmDWZld/55gWLn1cCwJNcNuFA
-         y1MGeeunN1cHaKI1uqItZTxgMwnM1c024e9+EcqWQrTokm9d8qR7vZDQP0Rjh0VPfY33
-         pPxBPZroCQb5LbHrhI54ZJxj5LAHfyraqdctF3WzSt0Xfop2pHjlMH4Tz6HNwwsiG4wN
-         06Gg==
-X-Gm-Message-State: AOJu0YzxzJCk0Nh7yIkwCt0dmbqhUhULusRTBJSwhda8pjxuLqIKWe2m
-        iiGRbz+U8bNo/O8vyXGDqEAOlqjUP3LZyXbX+WSUbS5m8OM=
-X-Google-Smtp-Source: AGHT+IFIgzLSZTxPu/9pqbHNF1McIBPTZSA1ASIa03RiyKiEHRPw6i5jY3pqVfKtA+LW45UiNtL6o5zH2D6HizzyLFQ=
-X-Received: by 2002:a0c:eecd:0:b0:679:e7dd:fa9 with SMTP id
- h13-20020a0ceecd000000b00679e7dd0fa9mr2164016qvs.10.1700811448213; Thu, 23
- Nov 2023 23:37:28 -0800 (PST)
+        Fri, 24 Nov 2023 02:37:51 -0500
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [IPv6:2001:41d0:203:375::ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5772BD72
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 23:37:56 -0800 (PST)
+Message-ID: <a2a9b649-04fc-4e75-94b0-d5df137a833a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700811473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VjMI1MPtpwadsFtx6psItLhcfNdYPfIwh32yRRxk1iA=;
+        b=aZfn3DXEU/+dBvXPclrLyl6Hx8KjxjmSAFh8Y3ztc1cJZArVhIbvUeG8i/ul499cTF2lhc
+        g8mZK19ZZlXa1FUkB35IVN794seOOPWr/j+CWkRaHBkJ6sbKJeH7ruG8GJqPt6r95+PYdM
+        vZjKD1ktjKkWyCLe1my5XGaEg6dC5nA=
+Date:   Fri, 24 Nov 2023 15:37:45 +0800
 MIME-Version: 1.0
-References: <20231124060553.GA575483@ZenIV> <20231124060644.576611-1-viro@zeniv.linux.org.uk>
- <20231124060644.576611-9-viro@zeniv.linux.org.uk>
-In-Reply-To: <20231124060644.576611-9-viro@zeniv.linux.org.uk>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 24 Nov 2023 09:37:16 +0200
-Message-ID: <CAOQ4uxgRiQCG_Q5TP+05_N4V=iFTemzGTd62ePgAgotK52EAAQ@mail.gmail.com>
-Subject: Re: [PATCH 09/20] [software coproarchaeology] dentry.h: kill a
- mysterious comment
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v5 08/20] drivers/gpu/drm/loongson/lsdc_i2c.c: remove
+ I2C_CLASS_DDC support
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>, linux-i2c@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20231123094040.592-1-hkallweit1@gmail.com>
+ <20231123094040.592-9-hkallweit1@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20231123094040.592-9-hkallweit1@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,61 +54,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 8:07=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
->
-> there's a strange comment in front of d_lookup() declaration:
->
-> /* appendix may either be NULL or be used for transname suffixes */
->
-> Looks like nobody had been curious enough to track its history;
-> it predates git, it predates bitkeeper and if you look through
-> the pre-BK trees, you finally arrive at this in 2.1.44-for-davem:
->   /* appendix may either be NULL or be used for transname suffixes */
->  -extern struct dentry * d_lookup(struct inode * dir, struct qstr * name,
->  -                               struct qstr * appendix);
->  +extern struct dentry * d_lookup(struct dentry * dir, struct qstr * name=
-);
-> In other words, it refers to the third argument d_lookup() used to have
-> back then.  It had been introduced in 2.1.43-pre, on June 12 1997,
-> along with d_lookup(), only to be removed by July 4 1997, presumably
-> when the Cthulhu-awful thing it used to be used for (look for
-> CONFIG_TRANS_NAMES in 2.1.43-pre, and keep a heavy-duty barfbag
-> ready) had been, er, noticed and recognized for what it had been.
->
-> Despite the appendectomy, the comment remained.  Some things really
-> need to be put out of their misery...
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  include/linux/dcache.h | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 9706bf1dc5de..a5e5e274eee0 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -270,7 +270,6 @@ extern void d_move(struct dentry *, struct dentry *);
->  extern void d_exchange(struct dentry *, struct dentry *);
->  extern struct dentry *d_ancestor(struct dentry *, struct dentry *);
->
-> -/* appendix may either be NULL or be used for transname suffixes */
->  extern struct dentry *d_lookup(const struct dentry *, const struct qstr =
-*);
->  extern struct dentry *d_hash_and_lookup(struct dentry *, struct qstr *);
->
+Hi,
 
-Al,
 
-Since you like pre-git archeology...
+On 2023/11/23 17:40, Heiner Kallweit wrote:
+> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> Class-based device auto-detection is a legacy mechanism and shouldn't
+> be used in new code. So we can remove this class completely now.
+>
+> Preferably this series should be applied via the i2c tree.
+>
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-Mind digging up what this comment in fs.h is about:
+Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
 
-/* needed for stackable file system support */
-extern loff_t default_llseek(struct file *file, loff_t offset, int whence);
+Thanks.
 
-Or we can just remove it without digging up what the comment used
-to refer to ;)
-
-Thanks,
-Amir.
