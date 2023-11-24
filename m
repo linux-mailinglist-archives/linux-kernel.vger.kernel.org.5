@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8F47F8581
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BEE7F8582
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 22:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345782AbjKXVbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 16:31:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        id S233056AbjKXVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 16:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjKXVbG (ORCPT
+        with ESMTP id S231548AbjKXVbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 16:31:06 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC771BE7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:11 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c99593d13aso314961fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:11 -0800 (PST)
+        Fri, 24 Nov 2023 16:31:12 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A9A19A8
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:18 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54b0a9fffa4so136783a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 13:31:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700861470; x=1701466270; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700861477; x=1701466277; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lucCRVdFyECgtyRqDncojEzhqXxZuxdPkU1gxZh8Hdk=;
-        b=LOnPrhxf97KA8njuQyb4D3o7Jj3FvjANsXmW/2m5EukFafvtxrAzbNOiv+wD01gUJT
-         O/hBR6zQqe4h2VKow35CtqRx7sRVrHd0aKGUxl+39XJQfSqh9MZtsv9c2MeRanjs+i1M
-         h7SWL2inVvgnUMXLMlkBCXhNKtoBTQjYN5uUtj+TxMMsJWNjqVfGjAEN0eo9AQ4BSr+b
-         6F/sXqIE3GZGQ7URfwcsLypntKjtyOAk7fqEV6Vfr2WJoNmaOeUMs8oss6wBG2OMDHPd
-         poUCn96ehf31EqbCyhQyNxgUJgpfh9TToNws/Rk0KcBOufH6Clp3A91Aba7Ie9QNGhS/
-         n1Bw==
+        bh=DyqSTfLJlN88c/SvS3E14EIDuuTHtFX/UzdV/6o/zM8=;
+        b=fSz+fgv+tnNu0ccBgF/J879ETncvu3OP3h+5TTOOfTsCHER4SJJR2MbLilMAuG/7Lh
+         Ip4NYLbHLVLFzgl/n9QBfXyaOTA1ZlZXjGwtMNO6bqZ1J2WP6U1P3gFEz2a36U7fMLmS
+         AwB3n9zdXMLMMw1XR5sI4b4mKU8uyw6lOIwI1TZLrlO4C12W8CPca4o98uSnidEJB5GK
+         YneT5bMMD6/Yi8g60/jQCNv0XuvjshTZT5bt3eDn28YMf1ZEzPR+aT3eGIWuMGgmmjuf
+         VHYilc1N+hlkYImK6cf9aFQciO2XfmM0QhETOdOYn50p4+wO/iKWU+v8sjoXQjQDzHGq
+         yykg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700861470; x=1701466270;
+        d=1e100.net; s=20230601; t=1700861477; x=1701466277;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lucCRVdFyECgtyRqDncojEzhqXxZuxdPkU1gxZh8Hdk=;
-        b=iyQ2ZgYUAdwO38MchEkGUp8QEf6Eodn3nXYduwtXedA9rt8NrTJt/lca4ul+r77HGO
-         j767YS3G3he5e0DXs6iP+MhDzFzoLBI13OWUR0zzMUCoBrJd9OcDccm1T9gTVWmOjQS+
-         15fnjlSEfO4FmZJ/EUGK6RVP9h3ygrLo+eAdD6qKvw2KeT85NK2vSBaCpA2eJO3apHeX
-         MxgsKioNShV8PTBIufwWKOIao67GGP+pEjlHOu5ILPr0lJPAedxNWc9MOHZ/B/HMTuqu
-         6vGYSwGQmSYcN5tXeDGRsoJz4yM6t+Uy+iFZpExuiSriWbybIU8Uf47bs0E3HwWKEYGb
-         lwFw==
-X-Gm-Message-State: AOJu0YxCk43J9UTrT6SklziMB4hguOe3LN1Qo6lLJlvAtXmRQMEXr4cm
-        u7qi4pzZo1wtd5p2pUz2tQ0=
-X-Google-Smtp-Source: AGHT+IEGC+FkWool5xrxMKIxPHFJxPbScb7nXCa1f+4jiux3ltzhvrqQmA0uEENYkpc9LpAwkhCweQ==
-X-Received: by 2002:a2e:150e:0:b0:2c8:3406:6641 with SMTP id s14-20020a2e150e000000b002c834066641mr2393867ljd.1.1700861469951;
-        Fri, 24 Nov 2023 13:31:09 -0800 (PST)
+        bh=DyqSTfLJlN88c/SvS3E14EIDuuTHtFX/UzdV/6o/zM8=;
+        b=T7UnuNjjUVOplVqG46+panWu+/CHv1FQlEGECjMysUb2Eu8K3kKiFtfTgiX7O+s121
+         H2iCZv7XuerbkEwRSwQOLazUDBW6wakE/ZQbogY2PELyxEZyeZdB20WaC7IgP+AzJ4j9
+         lqpZ776ylHVxBWEqJq421wXsxmxdi/S9uzNjT1U9D1BPmILFrpEDCjRdsczboWNBomNx
+         eDG9rLfI8ksZ50xYTZXKvQghx3fY+si2eDCztNCyLlZQJo5uCYxYEZDN3VDNAD8LR75T
+         psKwxFt0UY1gi+EGzWKKkZqCQwsNyM+riKiWNSTlvA7cMZx+8etZ4lVHz2iZgHlarAjb
+         ZrVQ==
+X-Gm-Message-State: AOJu0YwEUHkOqNXoM5vrTO91oI1LRlpwcbq9tj02vtrPPHHkEP6qgZ2/
+        hMhevVO067ktrjmi7acabfQ=
+X-Google-Smtp-Source: AGHT+IHrHPi58qXc5j3ILPT28jROxOczly3sw4sv0zRu2cJGZpENgvHS5Q9O1WF07W3ItU9Ud4N6BA==
+X-Received: by 2002:a05:6402:17db:b0:542:1ba5:68a4 with SMTP id s27-20020a05640217db00b005421ba568a4mr2990119edy.1.1700861476770;
+        Fri, 24 Nov 2023 13:31:16 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id si12-20020a170906cecc00b009fca9f39e98sm2538605ejb.26.2023.11.24.13.31.09
+        by smtp.gmail.com with ESMTPSA id t24-20020aa7d718000000b0053ff311f388sm2196289edq.23.2023.11.24.13.31.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 13:31:09 -0800 (PST)
-Date:   Fri, 24 Nov 2023 22:31:08 +0100
+        Fri, 24 Nov 2023 13:31:16 -0800 (PST)
+Date:   Fri, 24 Nov 2023 22:31:15 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] staging: rtl8192e: Remove unused function
- rtllib_get_beacon_()
-Message-ID: <ed825d5fb1946530c310afca1d3f27e46da35f06.1700860759.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 6/8] staging: rtl8192e: Remove unused function
+ rtllib_probe_resp()
+Message-ID: <be709ffea087df6f960075a51c0eab89f86ef8b2.1700860759.git.philipp.g.hortmann@gmail.com>
 References: <cover.1700860758.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,43 +71,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function rtllib_get_beacon_().
+Remove unused function rtllib_probe_resp().
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib_softmac.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 146 ----------------------
+ 1 file changed, 146 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 4e33a453f86e..8c7ad56d4402 100644
+index 8c7ad56d4402..d20970652432 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2130,25 +2130,6 @@ static void rtllib_associate_retry_wq(void *data)
- 	mutex_unlock(&ieee->wx_mutex);
+@@ -632,152 +632,6 @@ rtllib_authentication_req(struct rtllib_network *beacon,
+ 	return skb;
  }
  
--static struct sk_buff *rtllib_get_beacon_(struct rtllib_device *ieee)
+-static struct sk_buff *rtllib_probe_resp(struct rtllib_device *ieee,
+-					 const u8 *dest)
 -{
--	static const u8 broadcast_addr[] = {
--		0xff, 0xff, 0xff, 0xff, 0xff, 0xff
--	};
--	struct sk_buff *skb;
--	struct rtllib_probe_response *b;
+-	u8 *tag;
+-	int beacon_size;
+-	struct rtllib_probe_response *beacon_buf;
+-	struct sk_buff *skb = NULL;
+-	int encrypt;
+-	int atim_len, erp_len;
+-	struct lib80211_crypt_data *crypt;
 -
--	skb = rtllib_probe_resp(ieee, broadcast_addr);
+-	char *ssid = ieee->current_network.ssid;
+-	int ssid_len = ieee->current_network.ssid_len;
+-	int rate_len = ieee->current_network.rates_len + 2;
+-	int rate_ex_len = ieee->current_network.rates_ex_len;
+-	int wpa_ie_len = ieee->wpa_ie_len;
+-	u8 erpinfo_content = 0;
 -
+-	u8 *tmp_ht_cap_buf = NULL;
+-	u8 tmp_ht_cap_len = 0;
+-	u8 *tmp_ht_info_buf = NULL;
+-	u8 tmp_ht_info_len = 0;
+-	struct rt_hi_throughput *ht_info = ieee->ht_info;
+-	u8 *tmp_generic_ie_buf = NULL;
+-	u8 tmp_generic_ie_len = 0;
+-
+-	if (rate_ex_len > 0)
+-		rate_ex_len += 2;
+-
+-	if (ieee->current_network.capability & WLAN_CAPABILITY_IBSS)
+-		atim_len = 4;
+-	else
+-		atim_len = 0;
+-
+-	if ((ieee->current_network.mode == WIRELESS_MODE_G) ||
+-	   (ieee->current_network.mode == WIRELESS_MODE_N_24G &&
+-	   ieee->ht_info->bCurSuppCCK)) {
+-		erp_len = 3;
+-		erpinfo_content = 0;
+-		if (ieee->current_network.buseprotection)
+-			erpinfo_content |= ERP_UseProtection;
+-	} else {
+-		erp_len = 0;
+-	}
+-
+-	crypt = ieee->crypt_info.crypt[ieee->crypt_info.tx_keyidx];
+-	encrypt = crypt && crypt->ops &&
+-		((strcmp(crypt->ops->name, "R-WEP") == 0 || wpa_ie_len));
+-	if (ieee->ht_info->current_ht_support) {
+-		tmp_ht_cap_buf = (u8 *)&(ieee->ht_info->SelfHTCap);
+-		tmp_ht_cap_len = sizeof(ieee->ht_info->SelfHTCap);
+-		tmp_ht_info_buf = (u8 *)&(ieee->ht_info->SelfHTInfo);
+-		tmp_ht_info_len = sizeof(ieee->ht_info->SelfHTInfo);
+-		HTConstructCapabilityElement(ieee, tmp_ht_cap_buf,
+-					     &tmp_ht_cap_len, encrypt, false);
+-		HTConstructInfoElement(ieee, tmp_ht_info_buf, &tmp_ht_info_len,
+-				       encrypt);
+-
+-		if (ht_info->reg_rt2rt_aggregation) {
+-			tmp_generic_ie_buf = ieee->ht_info->sz_rt2rt_agg_buf;
+-			tmp_generic_ie_len =
+-				 sizeof(ieee->ht_info->sz_rt2rt_agg_buf);
+-			HTConstructRT2RTAggElement(ieee, tmp_generic_ie_buf,
+-						   &tmp_generic_ie_len);
+-		}
+-	}
+-
+-	beacon_size = sizeof(struct rtllib_probe_response) + 2 +
+-		ssid_len + 3 + rate_len + rate_ex_len + atim_len + erp_len
+-		+ wpa_ie_len + ieee->tx_headroom;
+-	skb = dev_alloc_skb(beacon_size);
 -	if (!skb)
 -		return NULL;
 -
--	b = (struct rtllib_probe_response *)skb->data;
--	b->header.frame_control = cpu_to_le16(IEEE80211_STYPE_BEACON);
+-	skb_reserve(skb, ieee->tx_headroom);
 -
+-	beacon_buf = skb_put(skb, (beacon_size - ieee->tx_headroom));
+-	ether_addr_copy(beacon_buf->header.addr1, dest);
+-	ether_addr_copy(beacon_buf->header.addr2, ieee->dev->dev_addr);
+-	ether_addr_copy(beacon_buf->header.addr3, ieee->current_network.bssid);
+-
+-	beacon_buf->header.duration_id = 0;
+-	beacon_buf->beacon_interval =
+-		cpu_to_le16(ieee->current_network.beacon_interval);
+-	beacon_buf->capability =
+-		cpu_to_le16(ieee->current_network.capability &
+-		WLAN_CAPABILITY_IBSS);
+-	beacon_buf->capability |=
+-		cpu_to_le16(ieee->current_network.capability &
+-		WLAN_CAPABILITY_SHORT_PREAMBLE);
+-
+-	if (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_SLOT_TIME)
+-		beacon_buf->capability |=
+-			cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT_TIME);
+-
+-	crypt = ieee->crypt_info.crypt[ieee->crypt_info.tx_keyidx];
+-	if (encrypt)
+-		beacon_buf->capability |= cpu_to_le16(WLAN_CAPABILITY_PRIVACY);
+-
+-	beacon_buf->header.frame_control = cpu_to_le16(IEEE80211_STYPE_PROBE_RESP);
+-	beacon_buf->info_element[0].id = MFIE_TYPE_SSID;
+-	beacon_buf->info_element[0].len = ssid_len;
+-
+-	tag = (u8 *)beacon_buf->info_element[0].data;
+-
+-	memcpy(tag, ssid, ssid_len);
+-
+-	tag += ssid_len;
+-
+-	*(tag++) = MFIE_TYPE_RATES;
+-	*(tag++) = rate_len - 2;
+-	memcpy(tag, ieee->current_network.rates, rate_len - 2);
+-	tag += rate_len - 2;
+-
+-	*(tag++) = MFIE_TYPE_DS_SET;
+-	*(tag++) = 1;
+-	*(tag++) = ieee->current_network.channel;
+-
+-	if (atim_len) {
+-		u16 val16;
+-		*(tag++) = MFIE_TYPE_IBSS_SET;
+-		*(tag++) = 2;
+-		val16 = ieee->current_network.atim_window;
+-		memcpy((u8 *)tag, (u8 *)&val16, 2);
+-		tag += 2;
+-	}
+-
+-	if (erp_len) {
+-		*(tag++) = MFIE_TYPE_ERP;
+-		*(tag++) = 1;
+-		*(tag++) = erpinfo_content;
+-	}
+-	if (rate_ex_len) {
+-		*(tag++) = MFIE_TYPE_RATES_EX;
+-		*(tag++) = rate_ex_len - 2;
+-		memcpy(tag, ieee->current_network.rates_ex, rate_ex_len - 2);
+-		tag += rate_ex_len - 2;
+-	}
+-
+-	if (wpa_ie_len) {
+-		memcpy(tag, ieee->wpa_ie, ieee->wpa_ie_len);
+-		tag += ieee->wpa_ie_len;
+-	}
 -	return skb;
 -}
 -
- void rtllib_softmac_stop_protocol(struct rtllib_device *ieee)
+ static struct sk_buff *rtllib_null_func(struct rtllib_device *ieee, short pwr)
  {
- 	rtllib_stop_scan_syncro(ieee);
+ 	struct sk_buff *skb;
 -- 
 2.42.0
 
