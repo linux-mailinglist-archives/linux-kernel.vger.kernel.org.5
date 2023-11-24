@@ -2,167 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 306017F6BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 06:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF237F6BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 06:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjKXFvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 00:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        id S230205AbjKXFxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 00:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXFva (ORCPT
+        with ESMTP id S229453AbjKXFxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 00:51:30 -0500
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D81D6F;
-        Thu, 23 Nov 2023 21:51:35 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vx0Jq84_1700805092;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vx0Jq84_1700805092)
-          by smtp.aliyun-inc.com;
-          Fri, 24 Nov 2023 13:51:33 +0800
-Date:   Fri, 24 Nov 2023 13:51:32 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
-        corbet@lwn.net, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, edumazet@google.com
-Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] net/smc: add sysctl for max conns per lgr
- for SMC-R v2.1
-Message-ID: <20231124055132.GK3323@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20231122135258.38746-1-guangguan.wang@linux.alibaba.com>
- <20231122135258.38746-3-guangguan.wang@linux.alibaba.com>
+        Fri, 24 Nov 2023 00:53:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E5E189
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 21:53:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66C6BC433C8;
+        Fri, 24 Nov 2023 05:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700805235;
+        bh=ooIeM9zrPd8Y6XlkSVUl/UIr5uogzou+iMHiysRXOmI=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=pvjVf3eA1p3rHJkqINuxxR4IP8hMbx8P8QVIV4YR5N39wRw0FTq/1AIz+cwLh6EGB
+         ANTyDwmH+VuKddT+AhnSljiU34hUSmDg6/GDU90UM9//u6Tef8D+mXOQAi9iIPlECd
+         Twigc69OQSiyOCn0IJTl+eecOz2jhA7qTJvTw7VAlT0oIaSsDg/1PpzT9uTHQOHhRb
+         5SAV8k/uq2OWe+WImgPiNt8NrzeUNJ+W4rTEDMxzq0M1bCLzAaNq7DzNaRS/Wurpr5
+         jP1y1RbaTtVZlmxZ32TFV7dbXEC6X4mVInKw9S/43DQRztmPPEqALBZQQt4jdZ4pcD
+         lnZcpVeSVRrzw==
+Message-ID: <160ecdfc-cb58-47fe-b9ce-fd126acc10fe@kernel.org>
+Date:   Fri, 24 Nov 2023 14:53:52 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122135258.38746-3-guangguan.wang@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] block: ioprio: Fix ioprio_check_cap() validation logic
+To:     Wei Gao <wegao@suse.com>, axboe@kernel.dk, hare@suse.de,
+        hch@lst.de, niklas.cassel@wdc.com, martin.petersen@oracle.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231124030525.31426-1-wegao@suse.com>
+Content-Language: en-US
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20231124030525.31426-1-wegao@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 09:52:58PM +0800, Guangguan Wang wrote:
->Add a new sysctl: net.smc.smcr_max_conns_per_lgr, which is
->used to control the preferred max connections per lgr for
->SMC-R v2.1. The default value of this sysctl is 255, and
->the acceptable value ranges from 16 to 255.
->
->Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+On 11/24/23 12:05, Wei Gao wrote:
+> The current logic "if (level >= IOPRIO_NR_LEVELS)" can not be reached since
+> level value get from IOPRIO_PRIO_LEVEL ONLY extract lower 3-bits of ioprio.
+> (IOPRIO_NR_LEVELS=8)
+> 
+> So this trigger LTP test case ioprio_set03 failed, the test case expect
+> error when set IOPRIO_CLASS_BE prio 8, in current implementation level
+> value will be 0 and obviously can not return error.
+> 
+> Fixes: eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+No. Please see below.
 
->---
-> Documentation/networking/smc-sysctl.rst |  6 ++++++
-> include/net/netns/smc.h                 |  1 +
-> net/smc/smc_clc.c                       |  5 +++--
-> net/smc/smc_sysctl.c                    | 12 ++++++++++++
-> net/smc/smc_sysctl.h                    |  1 +
-> 5 files changed, 23 insertions(+), 2 deletions(-)
->
->diff --git a/Documentation/networking/smc-sysctl.rst b/Documentation/networking/smc-sysctl.rst
->index c6ef86ef4c4f..a874d007f2db 100644
->--- a/Documentation/networking/smc-sysctl.rst
->+++ b/Documentation/networking/smc-sysctl.rst
->@@ -65,3 +65,9 @@ smcr_max_links_per_lgr - INTEGER
-> 	for SMC-R v2.1 and later.
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  block/ioprio.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> 	Default: 2
->+
->+smcr_max_conns_per_lgr - INTEGER
->+	Controls the max number of connections can be added to a SMC-R link group. The
->+	acceptable value ranges from 16 to 255. Only for SMC-R v2.1 and later.
->+
->+	Default: 255
->diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
->index da7023587824..fc752a50f91b 100644
->--- a/include/net/netns/smc.h
->+++ b/include/net/netns/smc.h
->@@ -23,5 +23,6 @@ struct netns_smc {
-> 	int				sysctl_wmem;
-> 	int				sysctl_rmem;
-> 	int				sysctl_max_links_per_lgr;
->+	int				sysctl_max_conns_per_lgr;
-> };
-> #endif
->diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->index 1f87c8895a27..0fda5156eef0 100644
->--- a/net/smc/smc_clc.c
->+++ b/net/smc/smc_clc.c
->@@ -944,7 +944,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
-> 	}
-> 	if (smcr_indicated(ini->smc_type_v2)) {
-> 		memcpy(v2_ext->roce, ini->smcrv2.ib_gid_v2, SMC_GID_SIZE);
->-		v2_ext->max_conns = SMC_CONN_PER_LGR_PREFER;
->+		v2_ext->max_conns = net->smc.sysctl_max_conns_per_lgr;
-> 		v2_ext->max_links = net->smc.sysctl_max_links_per_lgr;
-> 	}
-> 
->@@ -1191,7 +1191,8 @@ int smc_clc_srv_v2x_features_validate(struct smc_sock *smc,
-> 		return SMC_CLC_DECL_NOV2EXT;
-> 
-> 	if (ini->smcr_version & SMC_V2) {
->-		ini->max_conns = min_t(u8, pclc_v2_ext->max_conns, SMC_CONN_PER_LGR_PREFER);
->+		ini->max_conns = min_t(u8, pclc_v2_ext->max_conns,
->+				       net->smc.sysctl_max_conns_per_lgr);
-> 		if (ini->max_conns < SMC_CONN_PER_LGR_MIN)
-> 			return SMC_CLC_DECL_MAXCONNERR;
-> 
->diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
->index 3e9bb921e40a..a5946d1b9d60 100644
->--- a/net/smc/smc_sysctl.c
->+++ b/net/smc/smc_sysctl.c
->@@ -27,6 +27,8 @@ static const int net_smc_wmem_init = (64 * 1024);
-> static const int net_smc_rmem_init = (64 * 1024);
-> static int links_per_lgr_min = SMC_LINKS_ADD_LNK_MIN;
-> static int links_per_lgr_max = SMC_LINKS_ADD_LNK_MAX;
->+static int conns_per_lgr_min = SMC_CONN_PER_LGR_MIN;
->+static int conns_per_lgr_max = SMC_CONN_PER_LGR_MAX;
-> 
-> static struct ctl_table smc_table[] = {
-> 	{
->@@ -79,6 +81,15 @@ static struct ctl_table smc_table[] = {
-> 		.extra1		= &links_per_lgr_min,
-> 		.extra2		= &links_per_lgr_max,
-> 	},
->+	{
->+		.procname	= "smcr_max_conns_per_lgr",
->+		.data		= &init_net.smc.sysctl_max_conns_per_lgr,
->+		.maxlen		= sizeof(int),
->+		.mode		= 0644,
->+		.proc_handler	= proc_dointvec_minmax,
->+		.extra1		= &conns_per_lgr_min,
->+		.extra2		= &conns_per_lgr_max,
->+	},
-> 	{  }
-> };
-> 
->@@ -109,6 +120,7 @@ int __net_init smc_sysctl_net_init(struct net *net)
-> 	WRITE_ONCE(net->smc.sysctl_wmem, net_smc_wmem_init);
-> 	WRITE_ONCE(net->smc.sysctl_rmem, net_smc_rmem_init);
-> 	net->smc.sysctl_max_links_per_lgr = SMC_LINKS_PER_LGR_MAX_PREFER;
->+	net->smc.sysctl_max_conns_per_lgr = SMC_CONN_PER_LGR_PREFER;
-> 
-> 	return 0;
-> 
->diff --git a/net/smc/smc_sysctl.h b/net/smc/smc_sysctl.h
->index 5783dd7575dd..eb2465ae1e15 100644
->--- a/net/smc/smc_sysctl.h
->+++ b/net/smc/smc_sysctl.h
->@@ -24,6 +24,7 @@ static inline int smc_sysctl_net_init(struct net *net)
-> {
-> 	net->smc.sysctl_autocorking_size = SMC_AUTOCORKING_DEFAULT_SIZE;
-> 	net->smc.sysctl_max_links_per_lgr = SMC_LINKS_PER_LGR_MAX_PREFER;
->+	net->smc.sysctl_max_conns_per_lgr = SMC_CONN_PER_LGR_PREFER;
-> 	return 0;
-> }
-> 
->-- 
->2.24.3 (Apple Git-128)
+> diff --git a/block/ioprio.c b/block/ioprio.c
+> index b5a942519a79..f83029208f2a 100644
+> --- a/block/ioprio.c
+> +++ b/block/ioprio.c
+> @@ -33,7 +33,7 @@
+>  int ioprio_check_cap(int ioprio)
+>  {
+>  	int class = IOPRIO_PRIO_CLASS(ioprio);
+> -	int level = IOPRIO_PRIO_LEVEL(ioprio);
+> +	int data = IOPRIO_PRIO_DATA(ioprio);
+>  
+>  	switch (class) {
+>  		case IOPRIO_CLASS_RT:
+> @@ -49,13 +49,13 @@ int ioprio_check_cap(int ioprio)
+>  			fallthrough;
+>  			/* rt has prio field too */
+>  		case IOPRIO_CLASS_BE:
+> -			if (level >= IOPRIO_NR_LEVELS)
+> +			if (data >= IOPRIO_NR_LEVELS || data < 0)
+
+This is incorrect: data is the combination of level AND hints, so that value can
+be larger than or equal to 8 with the level still being valid. Hard NACK on this.
+
+The issue with LTP test case has been fixed in LTP and by changing the ioprio.h
+header file. See commit 01584c1e2337 ("scsi: block: Improve ioprio value
+validity checks") which introduces IOPRIO_BAD_VALUE() macro for that.
+
+And for ltp, the commits are:
+6b7f448fe392 ("ioprio: Use IOPRIO_PRIO_NUM to check prio range")
+7c84fa710f75 ("ioprio: use ioprio.h kernel header if it exists")
+
+So please update your setup, including your install of kernel user API header files.
+
+>  				return -EINVAL;
+>  			break;
+>  		case IOPRIO_CLASS_IDLE:
+>  			break;
+>  		case IOPRIO_CLASS_NONE:
+> -			if (level)
+> +			if (data)
+>  				return -EINVAL;
+>  			break;
+>  		case IOPRIO_CLASS_INVALID:
+
+-- 
+Damien Le Moal
+Western Digital Research
+
