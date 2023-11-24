@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A177F6ACF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B90827F6AD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 04:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjKXDFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 22:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        id S230268AbjKXDGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 22:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKXDFn (ORCPT
+        with ESMTP id S230349AbjKXDGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 22:05:43 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2048.outbound.protection.outlook.com [40.107.6.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC88D43;
-        Thu, 23 Nov 2023 19:05:50 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HEbWaRxp5ms+DrgR/u21V4YNSnKR2GorfXHnNsQVt/kdFC0ZAJpUbIx6Fcf/QX3PwOc7AFZ4UcC17iYUFRnvhPDpdduYAbEDetY0fTLHMLDqn3mIk8x8Kp3JgNys1Id//HkDE8wrDfxpRdlC7X02xwr2V1R72k1tjfl1r9KmbpJn9JUHKnNAes9PbbyxmBnRDNQH2lhHgx4kArsophUd03KXEWpHq4a96VzBm9cKHw0grwwVd6So9rVfGSiIezeL/jOlyJ6imeflZU8NO++pXGd6BNZg6LVU8i/x6hynA/5dxsBnRi1V64O4u57zjY91zCxLh4dHCaVx1WGTDFpW/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pEV7pXTpShHiKKEd0Z55xc3LMiRvWs8kvXcWdqoecVM=;
- b=K42llC8Vt3CKCaYZsaKvFK5r2ReO5ovAG5CF23uT5AkbhXJgiO/UejkrZo9qS5geFW/gN7t7hncLumaZx4UgJ98QItY7habOgw2LeLrM4SPCfKHqq8qhyfoOP1OPB4vuQuN7FmwASU3MDrBpgemXZocbPd/KGSMH2iz2SAV9OsV74IPJhezI8eVGWdHLwBGe9wnsXFZaKrSVxppeOKQYsUZA6OKQMJVZ9oxbkr2/JD6ybfx9eo37pAaYoKDbjIi4HNn+qM0IoYfK4uc3RsxdNnuzX4H2kQf2vxzlAEnmV7BQXNk7UVwulkV2tSzn8bhMeurowJZpP2xXqu3rCr+UOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pEV7pXTpShHiKKEd0Z55xc3LMiRvWs8kvXcWdqoecVM=;
- b=tq5uyujUE56pcVuogNPrKaEI+ThRbOpfOgy02/Y/u6B+WbjVarkfIDMvhCwcpdGi5KoIWfXtvsuUQDvDfgOtoK/D6Ck49GoC9Rp8BaV6FkUwGmgr7vV5Y878Lb65b6QVOyh95GXXNbtp1qt7PSzKmqU7jAcso562gzCwZ6+e/XsKqcJwQSQQ1TBkfbh9Nbdw4SzbgDO99GdbpztA8oI6s1r5w2ij23K9LW6h+IIneWF3cz6QewOJlcstIrs86ebJWm2MGuXFXirlpi3NzYlkpw5QCAfHddeGiWVAyN68Oeye2pgn5TIPjkzs7dEmUb0hq6DMlit17kY/Dpkg/qcdVA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by PA4PR04MB9687.eurprd04.prod.outlook.com (2603:10a6:102:270::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.13; Fri, 24 Nov
- 2023 03:05:47 +0000
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d]) by AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d%5]) with mapi id 15.20.7046.012; Fri, 24 Nov 2023
- 03:05:46 +0000
-From:   Wei Gao <wegao@suse.com>
-To:     axboe@kernel.dk, dlemoal@kernel.org, hare@suse.de, hch@lst.de,
-        niklas.cassel@wdc.com, martin.petersen@oracle.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wei Gao <wegao@suse.com>
-Subject: [PATCH v1] block: ioprio: Fix ioprio_check_cap() validation logic
-Date:   Thu, 23 Nov 2023 22:05:25 -0500
-Message-Id: <20231124030525.31426-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: FR2P281CA0076.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9a::18) To AS8PR04MB8199.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f6::21)
+        Thu, 23 Nov 2023 22:06:01 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B809FD54
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:06:05 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cf8890752dso16252235ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 19:06:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700795165; x=1701399965;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9tye5RLsZndCF4z9uvqv1tzmMoPwpru/z82t1thp6Cg=;
+        b=QcLU47a7Sul+hWmHOOer5ncAKpmGnLK+l97C03Qx9xHtb2EY0wcJgVeGNDHJWRCEv+
+         agPhPL2Kj/4E7BRGjNF24ArgMYMG9aFwgBVigKQCF6k9EXJgucAi5UAWXOL25sPzdYME
+         4uMT1eHmuXXFmat/jyFvgkqvL+FRidUFh7aZT5hvszwfUPOZ+fv3Jwg4ffzlbOdJxuvO
+         7K+QHUwXLAC+CsBj+DiCH46WarUuvVC2t6dmzU+6SLYYL9vxJIqRet9dktXebX+QDLUP
+         SWOhVzn9XhoTW2xl6dYANQ7z0vCIgG/LMVMfp9UoxNgDcRtCYYCRnipadCSPCi0GpU1H
+         hL4w==
+X-Gm-Message-State: AOJu0YyrGSEC3tiuPaoDgyRCvruvM/bPVPH6jmqXHpY9ylXV2PhGFsLS
+        9ELzDxBDwnq2Bhal7wXxcf8VGMsyQjRcLmNdywzj6hXt4nvBO5U=
+X-Google-Smtp-Source: AGHT+IEN70WDZW4BjbphMdWupNsUgNSFXVohoSqOy1jndt2Lzp3lsckExBLSJQf5CyBM3zwNliFcAkl7XrnmYFVMlqW7lDmZ89M5
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|PA4PR04MB9687:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7c01b3e4-6573-4a56-5abb-08dbec9a40ce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1Wx2AlTvfVFi/quU1i+UPPt0KvdQii2Qa4O/R8LHB1gdRN2RoECkvkf6uNzL0v4UHTGNKwvaMl6lzcxZqW95gbZl5SqxZwEguG3LMrCGQivcmlhHuovX2nNDPZHt7kDnv9GvNRL61t5+YguxLuXlaCmniYBSgmyt7ACc1ldoTGWywspPtKyyFk70TTK78H73vmLrY1ohh9xshrVsRVt4jEQI4iVJtBkf0FOApdNZCNtiJabh/tqz65RXkfmGEULJ3UvfLMvesahSkOtNNa/gpxunLeiQuPgqIT4y5cvsgT+U6k5YqGJU6pp1uuMPi4mOb6er1ufZ2tW5UPhC3HdHBnm7k1EwvqqVmp9ne39F9zjpH+5KvdXnkJOgWfBl51qk09k0UPkE+GfV674AKokODurlSlPVGiAM9Atq1VmtQfESE+rd/UEBKL1SNdBP6KN8xuRkPDaWLx9uahrdHDFT6Hj8flfjTbCf6W6h3HQMPtXWCea82xBJ2lLFpEFnl5rCWLgKnB5N0FW/F5nGt27fRAEAB3vlELjf5w3qxn4OdLlurXMsxsJjdACs9UpXsPS0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8199.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(376002)(346002)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(38100700002)(478600001)(6666004)(6486002)(2616005)(5660300002)(86362001)(2906002)(107886003)(1076003)(4326008)(26005)(66476007)(41300700001)(66556008)(8676002)(8936002)(83380400001)(316002)(66946007)(6506007)(6512007)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gWZyhRUAF/R3SmyP3v6SaeuC1cvBuEYNNvAY2q4wXsALyLWkNP5lxXR0OHRZ?=
- =?us-ascii?Q?QVbNSUQd3gM91KKlbybSQdHmtHmByyD4qmLWSA+kELeeKc2snuBpRe8Jgl8l?=
- =?us-ascii?Q?4u4INRmRi0IZ+7ZQhGoNRNHSCKR2vkoTeDsmGJEAv+ghw2Qrk5g55rv1BR7z?=
- =?us-ascii?Q?ByVE7SSsW6VorYw4TNzgDIQSsjNRHeoOzmFZUoDwX4guXHCBnNupJezG/Ky2?=
- =?us-ascii?Q?gRhcW9rnLpVRyGn1vWFDyrVM0b8YlGIwglpbsqS+rBVmONRkOS5l3jX29cT0?=
- =?us-ascii?Q?JiBL5t9py2m30Ms8w6Bg06A8ZQFVc2TRbma1hwuKHwxhKLK+66b/P7Ox6Hp0?=
- =?us-ascii?Q?BSaqPYErZ5ibYHlk5DiRnmXTC66fv452RyGEObKl+G3KoiSHpa/oI2tOr++4?=
- =?us-ascii?Q?E3XV/LXgBG3PY9y5MlXx5/NleOUBGHCf4Fptu0cPER48ZMn2unubwf5E6vo2?=
- =?us-ascii?Q?L29J4CXuhkV4cHfgFUPGJx0RgXHJiB3CH9E2PQPUMEVb2JCRX6ZSTa1MLgtB?=
- =?us-ascii?Q?cNTwYH++q725FCE9AYAWef0c0B6UmERAMny3aTaWbly6QPDpCSGr1yX46H1R?=
- =?us-ascii?Q?CqKrM9jDFCc3JuzjCL7o+T/N9Y5RjkxePbLZQsy6umy6Vt/JGBAS26hEXwXb?=
- =?us-ascii?Q?M0vMVYgtCq5senJj3XJeekhcJRNSyvrpPzWP02Gl7XHej57vqLIJKV/kfi6K?=
- =?us-ascii?Q?Z0fecYQVT6QRCnnVgBCzbRsamFfA4hdmtmh6uOdYO+e52dl7ogn5QzYD/wSN?=
- =?us-ascii?Q?lRgkLjROv/d1TmeCORG/9DbULl7pvrMvsF4eSQNHizTRqRtbQhFmmG5AYkUn?=
- =?us-ascii?Q?vcxWvqH4YTfD0/7k9g2nkV9HCg+kvA0gb9K6qun/TuB33PVrm0wQKmYdQ0kH?=
- =?us-ascii?Q?Os0Nq6EuQmDYW1B4ZSj7woXQDUVTUEUlXiOt6P+O/ED+dKihSnGR310VidgU?=
- =?us-ascii?Q?vP7YWT1GihFr7hS9wtmslzyKI93m4p3NUWE628UU0qrfqFQsKw1jW89DGVQj?=
- =?us-ascii?Q?sr5BR2/xkULTy5lranW/UVDMBzlmWE20n6+P/UmP0VXIH1yDMGGS9tpvYiIn?=
- =?us-ascii?Q?lbx4MIrrZHSeaWJImEKVAEqCrCpjrXPWOJZ6tBX2v/lBhbaGsYG857fVylAe?=
- =?us-ascii?Q?X87xYTlhubVtBymZcDuOVGjE0wifxbVUsgrhURt0hLARd4lUmFmVpUNhKwcm?=
- =?us-ascii?Q?KRKGMupZjWezdU5gtdX8NqIscBy94i5MrxAn3F4zDj5lMwFc+jq1UL3zacNB?=
- =?us-ascii?Q?2+9K1Xjxi1ZRxwvfg1XH9q6WAQFSFxAp57LmUwwboIt12kNIhGdUMYvQXeob?=
- =?us-ascii?Q?647kBYe+kw5gV0vloWa3mu8T+D9WWef2Dl2BKABdSFavw9VzgQCrbYk5xdKy?=
- =?us-ascii?Q?g89Uctvr+wzW8/1O6yhuLDbJbc9+p0fUNyAPXryYLe/TgrjCynEBzrw32dEk?=
- =?us-ascii?Q?76KmKVUcX2aMaiDNT07yHSlIWOZ8g8l1me1iYYu2RE6tTynvljk5U06kojj8?=
- =?us-ascii?Q?C5311HcUSFg7r9l0ndj6uxtEifOJRwCq+DVS1HZQtNYzeeLJoHwrqlZn2+zs?=
- =?us-ascii?Q?GSj/O5EhQ06esmrKP6k=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c01b3e4-6573-4a56-5abb-08dbec9a40ce
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2023 03:05:46.8152
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oBhBOnGiq+Mn3YGwrb2zgzsuobq13ZcIG3/3hC4AGvVc8nNHl8xhoIt40HmVLGpa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9687
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:2443:b0:1cf:6a75:33ba with SMTP id
+ l3-20020a170903244300b001cf6a7533bamr346753pls.4.1700795165013; Thu, 23 Nov
+ 2023 19:06:05 -0800 (PST)
+Date:   Thu, 23 Nov 2023 19:06:04 -0800
+In-Reply-To: <20231124025100.2028923-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a57e9c060add3b51@google.com>
+Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
+From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current logic "if (level >= IOPRIO_NR_LEVELS)" can not be reached since
-level value get from IOPRIO_PRIO_LEVEL ONLY extract lower 3-bits of ioprio.
-(IOPRIO_NR_LEVELS=8)
+Hello,
 
-So this trigger LTP test case ioprio_set03 failed, the test case expect
-error when set IOPRIO_CLASS_BE prio 8, in current implementation level
-value will be 0 and obviously can not return error.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in indx_insert_into_buffer
 
-Fixes: eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- block/ioprio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+R13: 000000000000000b R14: 00007ff4d479bf80 R15: 00007fff510c11d8
+ </TASK>
+------------[ cut here ]------------
+memcpy: detected field-spanning write (size 2600) of single field "hdr1" at fs/ntfs3/index.c:1914 (size 16)
+WARNING: CPU: 2 PID: 5504 at fs/ntfs3/index.c:1914 indx_insert_into_buffer.isra.0+0xffb/0x12e0 fs/ntfs3/index.c:1914
+Modules linked in:
+CPU: 2 PID: 5504 Comm: syz-executor.0 Not tainted 6.7.0-rc1-syzkaller-00344-g037266a5f723-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:indx_insert_into_buffer.isra.0+0xffb/0x12e0 fs/ntfs3/index.c:1914
+Code: ff e8 79 ca c1 fe c6 05 5b cb 3d 0c 01 90 b9 10 00 00 00 48 c7 c2 c0 cf 03 8b 48 89 ee 48 c7 c7 20 d0 03 8b e8 46 e9 87 fe 90 <0f> 0b 90 90 e9 2d fe ff ff 4c 89 e7 e8 e4 96 17 ff e9 31 f1 ff ff
+RSP: 0018:ffffc90003f9f6e8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 00000000fffffff4 RCX: ffffffff814ca799
+RDX: ffff88802c56d0c0 RSI: ffffffff814ca7a6 RDI: 0000000000000001
+RBP: 0000000000000a28 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000005 R12: 0000000000000000
+R13: 0000000000000f78 R14: ffff88802a0da800 R15: ffff88802c18a018
+FS:  00007ff4d532c6c0(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563e13dbe300 CR3: 000000001bcab000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ indx_insert_entry+0x1a5/0x460 fs/ntfs3/index.c:1983
+ ni_add_name+0x4d9/0x820 fs/ntfs3/frecord.c:3055
+ ni_rename+0xa1/0x1a0 fs/ntfs3/frecord.c:3087
+ ntfs_rename+0x91f/0xec0 fs/ntfs3/namei.c:322
+ vfs_rename+0x13e0/0x1c30 fs/namei.c:4844
+ do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+ __do_sys_rename fs/namei.c:5042 [inline]
+ __se_sys_rename fs/namei.c:5040 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7ff4d467cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff4d532c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007ff4d479bf80 RCX: 00007ff4d467cae9
+RDX: 0000000000000000 RSI: 0000000020000a40 RDI: 0000000020000300
+RBP: 00007ff4d532c120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007ff4d479bf80 R15: 00007fff510c11d8
+ </TASK>
 
-diff --git a/block/ioprio.c b/block/ioprio.c
-index b5a942519a79..f83029208f2a 100644
---- a/block/ioprio.c
-+++ b/block/ioprio.c
-@@ -33,7 +33,7 @@
- int ioprio_check_cap(int ioprio)
- {
- 	int class = IOPRIO_PRIO_CLASS(ioprio);
--	int level = IOPRIO_PRIO_LEVEL(ioprio);
-+	int data = IOPRIO_PRIO_DATA(ioprio);
- 
- 	switch (class) {
- 		case IOPRIO_CLASS_RT:
-@@ -49,13 +49,13 @@ int ioprio_check_cap(int ioprio)
- 			fallthrough;
- 			/* rt has prio field too */
- 		case IOPRIO_CLASS_BE:
--			if (level >= IOPRIO_NR_LEVELS)
-+			if (data >= IOPRIO_NR_LEVELS || data < 0)
- 				return -EINVAL;
- 			break;
- 		case IOPRIO_CLASS_IDLE:
- 			break;
- 		case IOPRIO_CLASS_NONE:
--			if (level)
-+			if (data)
- 				return -EINVAL;
- 			break;
- 		case IOPRIO_CLASS_INVALID:
--- 
-2.34.1
+
+Tested on:
+
+commit:         037266a5 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12026642e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af04b7c4d36966d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5b339d16ffa61fd512d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1403cb5ce80000
 
