@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8287F6A89
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617067F6A8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 03:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjKXCHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Nov 2023 21:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S230076AbjKXCMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Nov 2023 21:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKXCHm (ORCPT
+        with ESMTP id S229453AbjKXCMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Nov 2023 21:07:42 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB7B11F
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:07:49 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cf8b6db1a3so10914625ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:07:49 -0800 (PST)
+        Thu, 23 Nov 2023 21:12:21 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0129E1A8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:12:27 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c871890c12so18490231fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Nov 2023 18:12:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1700791946; x=1701396746; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h17AeJH/vAwlH2GqqKLdK7l5HtwpWvqKNZiJjWltD5g=;
+        b=qF+hYw1gyrbLsbWeGiEDCctnoxGtXlfs5NPV5/1GGnTTBvgfzFJOFy+a5p5/kyMJwI
+         TUmgKpVfdaM3NCeVkUXJWqIzmlp5PbE22B1S6cUZgL7eWO8t0eUBZ5vfJhoLENVEcGqt
+         Sw2+ZiO+HK5to6hUYGdM5W0klsixq5sHqSvzo7+ELv8UhXtqN0q0FP+kpb5tzrgvkqbC
+         O28StI8oUf9fR6X/rqHcJgiMVDPdnT6K54HWpAHaIgW90TOrZSU3SNKljsX8F2S9yp7N
+         uxy3I+wPsu9nfnxyfNknDZvM27acwodg68iXeInvFzXOuiRNegyeoVVTDF0eZp69HuFr
+         V55g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700791669; x=1701396469;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hef1CweRu8e7llvgBLATHqueH57m7YXFqXw0SCYijI4=;
-        b=dX4kxnaKG6F6loyS9KSWhsweYuZ0hYb+xS5UYSfbFih9gv/EwVLB0XD5IO2qBWYWp9
-         D1q3iBX3smyNhnm8fHojzzrzvgrT7QNa2KiNJMcU38gcG86Kiewbb/Oo9Mps4dGgZwCe
-         PY3X5typ6Wn88s4GV3SmZCHIKmrqc7uWlHfAdZptCqdpbODmnFX2eYGnIPtEgRC6F1Py
-         NyxAwkxyTHQjXUSjAE6ou8GOhRUzX2+EkSahgV8Tq2uuG78SNpNmUt4t4vGHStKBPGDh
-         EYL3Q1DSvLGM3wPHQN44CzEKO2MoJEb95xwotCvQKwb4ojhCuMTBA2cpzLv9fa6cd8cU
-         QIFg==
-X-Gm-Message-State: AOJu0YyiAAttCNTKPDRjOLyxuTCJR7OfnZzeTxiZBmxrd+T2Xh2ibuGZ
-        HtazlVrKbjDQ94mXB8A96k3UFlckyfOEaYlZOrDIAPD+okAl1YE=
-X-Google-Smtp-Source: AGHT+IEocPKaGGjnu151nmzDBw3/MW6ei9NJI7UNYr06ODzmCzgnLFx9Wf5o4YChbe6+f0G5yfd9vB+cuCIk629CYXz8MntuV4Ln
+        d=1e100.net; s=20230601; t=1700791946; x=1701396746;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h17AeJH/vAwlH2GqqKLdK7l5HtwpWvqKNZiJjWltD5g=;
+        b=DXDraZArrjP5tL2ain1zn9wL3eXNhljdAmHWffdOMzjvVqHm6DRvwED2r0vimb4ViW
+         WSyV+Mj53lXfIulzF7iT6jSthXnoeF0uF0a9E/RuA0FOcfhworuQqMuK2va4B2eW4+AY
+         4QSY9Q0pnBXA3kKutaYO7J0KbEovZJ7Putrw5ddspgcNL86ai7rKWxI2XwJ7Mkhd69lq
+         DBq58ddCw5xQypddAk1DQbIBTP+gHX8uolylIiQPdLlZBX073RqI7NC5vQvZ3dSy3Sae
+         jtTCKmaBsmyfJYanAxDfIjWcxucL7qW9CUFS0hjxYS9vjgCzqpCKkc12Ap3M0PSZWE4j
+         qnMA==
+X-Gm-Message-State: AOJu0Yx2+UUD1Wj69h/Fnm/B3NfR2rwl4jLA9Kyg4E55e6AojZUOKABN
+        4dBKQpPzytdbWJIFrZptNQSCh/bwEI26OOiZwhgyVA==
+X-Google-Smtp-Source: AGHT+IGTkMMu/oeAVyWpOz40u3BKEq8QkLhW7AGsLOoqKuxsiSQeaCWLWdVAHnMVGtxZ9Sw4qqI1Sg==
+X-Received: by 2002:a2e:93cf:0:b0:2c5:6e01:58b8 with SMTP id p15-20020a2e93cf000000b002c56e0158b8mr598992ljh.37.1700791945729;
+        Thu, 23 Nov 2023 18:12:25 -0800 (PST)
+Received: from ntb.petris.klfree.czf ([193.86.118.65])
+        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm1438586ejb.153.2023.11.23.18.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 18:12:25 -0800 (PST)
+Date:   Fri, 24 Nov 2023 03:12:23 +0100
+From:   Petr Malat <oss@malat.biz>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     paulmck@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] bootconfig: Apply early options from embedded config
+Message-ID: <ZWAGhy4ZuYvKQeh2@ntb.petris.klfree.czf>
+References: <20231121231342.193646-1-oss@malat.biz>
+ <20231121231342.193646-3-oss@malat.biz>
+ <4a67b4bb-d211-4726-8f43-d3f159127dd9@infradead.org>
+ <325042d6-ddd0-4278-a082-9587af77cabe@paulmck-laptop>
+ <20231123112207.417b502144a01fc94ad6f87d@kernel.org>
+ <ZV8jkGVup4KvKiYb@ntb.petris.klfree.czf>
+ <20231123231805.b4cb1b96426c956bd35bf53d@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:74c5:b0:1cc:6684:4ee0 with SMTP id
- f5-20020a17090274c500b001cc66844ee0mr218426plt.2.1700791669104; Thu, 23 Nov
- 2023 18:07:49 -0800 (PST)
-Date:   Thu, 23 Nov 2023 18:07:48 -0800
-In-Reply-To: <000000000000fb2f84060ad4da7f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000462659060adc6b43@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
-From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123231805.b4cb1b96426c956bd35bf53d@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hi!
+On Thu, Nov 23, 2023 at 11:18:05PM +0900, Masami Hiramatsu wrote:
+> On Thu, 23 Nov 2023 11:04:00 +0100
+> > On Thu, Nov 23, 2023 at 11:22:07AM +0900, Masami Hiramatsu wrote:
+> > > BTW, we also need to make a block-list for some early params. some of those
+> > > MUST be passed from the bootloader. E.g. initrd address and size will be
+> > > passed from the bootloader via commandline. Thus such params in the embedded
+> > > bootconfig should be filtered at the build time.
+> > 
+> > It's ok to configure these in the embedded bootconfig - in a case they are
+> > provided by the bootloader, the bootconfig value is overridden, if not, the
+> > value from bootconfig is used, so it works as expected.
+> 
+> I meant some params only bootloader knows, like where the initrd is loaded.
+> Anyway, if user sets such value, it will break the kernel boot as expected :P.
 
-***
+If somebody sets these by hand, he probably knows what is he doing. I
+remember myself hardcoding initrd size in Linux to workaround broken
+bootloader.
 
-Subject: [ntfs3?] WARNING in indx_insert_into_buffer
-Author: lizhi.xu@windriver.com
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 037266a5f723
-
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index cf92b2433f7a..540886474c0e 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -1905,6 +1905,8 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	}
- 
- 	if (err) {
-+		if (!hdr1_saved)
-+			goto out;
- 		/*
- 		 * Undo critical operations.
- 		 */
+I find it more important to warn the user when he tries to set early
+options in initrd (assuming my change gets merged), as that's what
+burned me.
+  Petr
