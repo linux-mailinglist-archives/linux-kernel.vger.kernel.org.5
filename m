@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66107F854F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 21:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CF67F8551
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 21:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346054AbjKXUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 15:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
+        id S231560AbjKXUv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 15:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjKXUsQ (ORCPT
+        with ESMTP id S229677AbjKXUv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 15:48:16 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F5F19A4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 12:48:22 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-423a0a25222so102951cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 12:48:22 -0800 (PST)
+        Fri, 24 Nov 2023 15:51:56 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7CD1990
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 12:52:02 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-58cdc801f69so1328207eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 12:52:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700858901; x=1701463701; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tFQWMpDN2F24cc/J03f4NVx2U6EwlQXtQnJp1TM3/K8=;
-        b=1LcHPJrkSE6LmyHMrgDoIEpZNHn/ywCyZYHVujYiNCy8y8v5qEqT6rE/drq/47cIwa
-         4yfcCQKfCCfSy+UnOyeX3+nAPOvRqPInA7EJWxm6m1GpsIsdUo733GMKcvRBufgfZjDa
-         Hyi6KwukEDyLeESd6CtwH8oGuWPzbUaN0jrkPf6UfaWubZpx4FX8kBmN7V/DRglmIwl0
-         NPcgFok1JYzrSMZp8Y5sVp4ms/ZycId2UIRAU1OJR5b8YPrarK1ipy/ATnbNqLvc57Mi
-         HVCyuEohN3wMNlt6WJxkBQL9fUlQP85/c6ET6wYrQ2F/fPRcVMOzhQ3/+7fuUsrG992f
-         vKxg==
+        d=linaro.org; s=google; t=1700859122; x=1701463922; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W4ZyDfd3honPM2/fA7tF19iIjRCm2MXFd8wkmMXPhO4=;
+        b=B/UG+KXHEQM36eF/q4tCkI/NqZJNrfD/p5YzELjzmaqjc5Hi/NOymdKGZrqWxXI/E/
+         PNyxRZhnXUinLYmM0k3B0X9RaiiyG9+jLAPVz99zpWDY1VJab1SrILvAD0ctlKwYxwgT
+         IjEmmW3v891PwRgShUrk9cCmPoTYKLJ0LhVUqNafq4tGiHHVoAguNCC+sCQwAAgES2j9
+         /yykuG+DuEIPWBTKHxJ+EUeZGP3RIOkbjA6MJuHrIdO6dn46WA4yNVPPnMBgqOgA30vM
+         Mway4v84QYV84jOAxUd9ELvRlJcwi390RQJjnpdWQjP9XkgCyl2sVqBTMBdjnm91YaM+
+         dFVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700858901; x=1701463701;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tFQWMpDN2F24cc/J03f4NVx2U6EwlQXtQnJp1TM3/K8=;
-        b=Mm/agt4l2Tm5LowflQIkRwUtEC9VGAuPNQCVevKDooTK+Ao/wh9KSy9LXpKa6qX354
-         u4vj54NUF7pj8meu3aDAQYeSSaLpFZL7jZQW9UVpWKM8YwAPrjz1uX9FCxLv5M2/jRMm
-         wvXJXRIMdlWsicgPY8IGFR4TfDn7vSolziMD5cSctk7Yvjg33BgsCvTeSA5vQdxwDdCN
-         PN/4ni1uhhj8DHRcL+p1jj/fHKvTEYXWMiCgKDwcrto/zQQInC+g0bAFA914Rm826Bht
-         /sUw7R1RG7kAmpS8crIoQvuEwvKTxI4gAXAR09mHT3/GQKmXubawA4Id6J0V4Liqed5T
-         EPgw==
-X-Gm-Message-State: AOJu0YzC64+2gKuBCKeR/Ol5vzNtxE48yMelNISs+auHslqE83uzOvTw
-        fbdXa+TTxC+VElUYTswnAxqdZFGjsAElAbteFkyDHw==
-X-Google-Smtp-Source: AGHT+IFlw/BprWhMGyCnxPL0swEeuxm4RjdXSiWCk+/jHDaoAAmc3zBMtDvNW474MpL5i9yKSS1/AA2MWkWolILaYOk=
-X-Received: by 2002:ac8:5885:0:b0:421:c8d7:58f1 with SMTP id
- t5-20020ac85885000000b00421c8d758f1mr705562qta.4.1700858900765; Fri, 24 Nov
- 2023 12:48:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700859122; x=1701463922;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W4ZyDfd3honPM2/fA7tF19iIjRCm2MXFd8wkmMXPhO4=;
+        b=JT288yQa4yGKmbZQAJXc0obZKCyvleCCNF16LzGpTgIp+91RY+137t5QDmCZVXVV5r
+         tJMyXSZZu19Uj+foxj3obHMKnD/Y+iCKqRO3rYsPol/JXNwSH1kPrTYnE9E98bekBpn9
+         J/nEY2gIZ6WsOReUf8R5mCpbsLFStQV91yJWvXT4USZO+Akv9ka2OO8SZQEBWl8i8R3b
+         GhCMxpDjQMOIXtj0UfpwSNUUThmiFN2k1Od/wRmeEaD1lPfiM0j54HYLBAWF4RU/WoJ0
+         cG9Pj0s88bArOEOO9Svr5z0Zz4ChVc8HmCAzgc7XtwHBAh556r78FCx2JzvstGW9hxkK
+         AVHg==
+X-Gm-Message-State: AOJu0Yxavdf5pHsTTI9LOU8c4KG2zvcGlSRotcwUgbnqyd9Hh95mjSd0
+        k4A4rzC1HhGz6EoyuQQ994A3IA==
+X-Google-Smtp-Source: AGHT+IFnPOoo7uHkuaczD7YVgTMWwAGAx+c+puPLrgID5BSi2hhH8bVTzbml5YEV1Q9nKQg47wIn6A==
+X-Received: by 2002:a05:6820:1517:b0:58d:363:e600 with SMTP id ay23-20020a056820151700b0058d0363e600mr5615984oob.9.1700859122092;
+        Fri, 24 Nov 2023 12:52:02 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.62.70])
+        by smtp.gmail.com with ESMTPSA id h6-20020a4aa9c6000000b005840b5783a1sm632335oon.43.2023.11.24.12.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Nov 2023 12:52:01 -0800 (PST)
+Message-ID: <8761f367-1928-40f2-a4da-9d57ecb73218@linaro.org>
+Date:   Fri, 24 Nov 2023 14:51:59 -0600
 MIME-Version: 1.0
-References: <20231120220549.cvsz2ni3wj7mcukh@skbuf> <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
- <20231121094354.635ee8cd@kernel.org> <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
- <20231122140850.li2mvf6tpo3f2fhh@skbuf> <20231122085000.79f2d14c@kernel.org>
- <20231122165517.5cqqfor3zjqgyoow@skbuf> <20231122100142.338a2092@kernel.org>
- <20231123160056.070f3311@kmaincent-XPS-13-7390> <20231123093205.484356fc@kernel.org>
- <20231124154343.sr3ajyueoshke6tn@skbuf> <20231124183431.5d4cc189@kmaincent-XPS-13-7390>
-In-Reply-To: <20231124183431.5d4cc189@kmaincent-XPS-13-7390>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Fri, 24 Nov 2023 15:47:43 -0500
-Message-ID: <CA+FuTSfQgqQyBHSgx32Vdnxs4wgMSyB9yEpJTObS5t1iYFcWBA@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.14 00/57] 4.14.331-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        hca@linux.ibm.com
+References: <20231124171930.281665051@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20231124171930.281665051@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,85 +80,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 12:34=E2=80=AFPM K=C3=B6ry Maincent
-<kory.maincent@bootlin.com> wrote:
->
-> On Fri, 24 Nov 2023 17:43:43 +0200
-> Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
->
-> > On Thu, Nov 23, 2023 at 09:32:05AM -0800, Jakub Kicinski wrote:
-> > > On Thu, Nov 23, 2023 at 04:00:56PM +0100, K=C3=B6ry Maincent wrote:
-> > > > So, do we have a consensus? Vlad, do you agree on putting all under
-> > > > ethtool?
-> > > >
-> > > > ETHTOOL_GET_TS_INFO will be in charge of replacing the SIOCGHWSTAMP
-> > > > implementation. Need to add ETHTOOL_A_TSINFO_PHC_INDEX
-> > > > ETHTOOL_A_TSINFO_QUALIFIER to the request.
-> > > >
-> > > > ETHTOOL_GET_TS_INFO will list all the hwtstamp provider (aka "{phc_=
-index,
-> > > > qualifier}") through the dumpit callback. I will add a filter to be=
- able
-> > > > to list only the hwtstamp provider of one netdev.
-> > > >
-> > > > ETHTOOL_SET_TS_INFO will be in charge of replacing the SIOCSHWSTAMP
-> > > > implementation.
-> > >
-> > > If not we can do a vote/poll? Maybe others don't find the configurati=
-on
-> > > of timestamping as confusing as me.
-> >
-> > If you mean the ETHTOOL_MSG_TSINFO_GET netlink message (ETHTOOL_GET_TS_=
-INFO
-> > is an ioctl), you're saying that you want to move the entire contents o=
-f
-> > SIOCGHWSTAMP there, by making the kernel call ndo_hwtstamp_get() in
-> > addition to the existing __ethtool_get_ts_info()?
->
-> Yes.
->
-> > Yeah, I don't know, I don't have a real objection, I guess it's fine.
-> >
-> > What will be a bit of an "?!" moment for users is when ethtool gains
-> > support for the SIOCGHWSTAMP/SIOCSHWSTAMP netlink replacements, but not
-> > for the original ioctls. So hwstamp_ctl will be able to change timestam=
-ping
-> > configuration, but ethtool wouldn't - all on the same system. Unless
-> > ethtool gains an ioctl fallback for a ioctl that was never down its all=
-ey.
->
-> Yes indeed. Would it break things if both ioctls and netlink can get and =
-set
-> the hwtstamps configuration? It is only configuration. Both happen under
-> rtnl_lock it should be alright.
->
-> The question is which hwtstamp provider will the original ioctls be able =
-to
-> change? Maybe the default one (MAC with phy whitelist) and only this one.
->
-> > But by all means, still hold a poll if you want to. I would vote for
-> > ethtool netlink, not because it's great, just because I don't have a
-> > better alternative to propose.
->
-> If you agree on that choice, let's go. Jakub and your are the most proact=
-ive
-> reviewers in this patch series. Willem you are the timestamping maintaine=
-r do
-> you also agree on this?
+Hello!
 
-I don't have a strong opinion. Ethtool netlink SGTM.
+On 24/11/23 11:50 a. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.331 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.331-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-For new network configuration we are moving away from ioctl towards
-netlink in general.
+There are System/390 build failures here:
 
-Ethtool itself made this move, where the old ioctl way of things
-continues to work, but will no longer be extended.
+-----8<-----
+   In function 'setup_lowcore_dat_off',
+       inlined from 'setup_arch' at /builds/linux/arch/s390/kernel/setup.c:961:2:
+   /builds/linux/arch/s390/kernel/setup.c:339:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+     339 |         memcpy(lc->stfle_fac_list, S390_lowcore.stfle_fac_list,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     340 |                sizeof(lc->stfle_fac_list));
+         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /builds/linux/arch/s390/kernel/setup.c:341:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+     341 |         memcpy(lc->alt_stfle_fac_list, S390_lowcore.alt_stfle_fac_list,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     342 |                sizeof(lc->alt_stfle_fac_list));
+         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /builds/linux/arch/s390/mm/page-states.c: In function 'mark_kernel_pgd':
+   /builds/linux/arch/s390/mm/page-states.c:181:45: error: request for member 'val' in something not a structure or union
+     181 |         max_addr = (S390_lowcore.kernel_asce.val & _ASCE_TYPE_MASK) >> 2;
+         |                                             ^
+   /builds/linux/arch/s390/mm/page-states.c: In function 'cmma_init_nodat':
+   /builds/linux/arch/s390/mm/page-states.c:208:14: error: 'i' undeclared (first use in this function); did you mean 'ix'?
+     208 |         for (i = 0; i < 4; i++)
+         |              ^
+         |              ix
+   /builds/linux/arch/s390/mm/page-states.c:208:14: note: each undeclared identifier is reported only once for each function it appears in
+   In file included from /builds/linux/arch/s390/include/asm/page.h:181,
+                    from /builds/linux/arch/s390/include/asm/thread_info.h:24,
+                    from /builds/linux/include/linux/thread_info.h:39,
+                    from /builds/linux/arch/s390/include/asm/preempt.h:6,
+                    from /builds/linux/include/linux/preempt.h:81,
+                    from /builds/linux/include/linux/spinlock.h:51,
+                    from /builds/linux/include/linux/mmzone.h:8,
+                    from /builds/linux/include/linux/gfp.h:6,
+                    from /builds/linux/include/linux/mm.h:10,
+                    from /builds/linux/arch/s390/mm/page-states.c:13:
+   /builds/linux/arch/s390/mm/page-states.c:210:30: error: 'invalid_pg_dir' undeclared (first use in this function)
+     210 |         page = virt_to_page(&invalid_pg_dir);
+         |                              ^~~~~~~~~~~~~~
+   /builds/linux/include/asm-generic/memory_model.h:54:45: note: in definition of macro '__pfn_to_page'
+      54 | #define __pfn_to_page(pfn)      (vmemmap + (pfn))
+         |                                             ^~~
+   /builds/linux/arch/s390/include/asm/page.h:164:34: note: in expansion of macro '__pa'
+     164 | #define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
+         |                                  ^~~~
+   /builds/linux/arch/s390/include/asm/page.h:167:45: note: in expansion of macro 'virt_to_pfn'
+     167 | #define virt_to_page(kaddr)     pfn_to_page(virt_to_pfn(kaddr))
+         |                                             ^~~~~~~~~~~
+   /builds/linux/arch/s390/mm/page-states.c:210:16: note: in expansion of macro 'virt_to_page'
+     210 |         page = virt_to_page(&invalid_pg_dir);
+         |                ^~~~~~~~~~~~
+   make[3]: *** [/builds/linux/scripts/Makefile.build:329: arch/s390/mm/page-states.o] Error 1
+   make[3]: Target '__build' not remade because of errors.
+   make[2]: *** [/builds/linux/scripts/Makefile.build:588: arch/s390/mm] Error 2
+   In file included from /builds/linux/arch/s390/kernel/lgr.c:12:
+   In function 'stfle',
+       inlined from 'lgr_info_get' at /builds/linux/arch/s390/kernel/lgr.c:121:2:
+   /builds/linux/arch/s390/include/asm/facility.h:88:9: warning: 'memcpy' reading 4 bytes from a region of size 0 [-Wstringop-overread]
+      88 |         memcpy(stfle_fac_list, &S390_lowcore.stfl_fac_list, 4);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   make[2]: Target '__build' not remade because of errors.
+----->8-----
 
-Since one of the APIs we use already uses ethtool, converting the
-other two there makes sense to me.
+This one above is with allnoconfig and GCC 12. Bisection points to:
 
-I'm not familiar enough with configuring CAN or wireless to know
-whether it would pose a problem for these mentioned cases.
+   commit 76dc317ac655dafe1747dba6ce689ae3c3a35dd6
+   Author: Heiko Carstens <hca@linux.ibm.com>
+   Date:   Tue Oct 24 10:15:20 2023 +0200
 
-> If anyone have another proposition let them speak now, or forever remain
-> silent! ;)
+       s390/cmma: fix handling of swapper_pg_dir and invalid_pg_dir
+       
+       commit 84bb41d5df48868055d159d9247b80927f1f70f9 upstream.
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
