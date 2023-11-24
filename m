@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F43F7F7031
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CC17F7044
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 10:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345319AbjKXJl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 04:41:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S1345387AbjKXJnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 04:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345278AbjKXJlr (ORCPT
+        with ESMTP id S235364AbjKXJm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 04:41:47 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F8810F8;
-        Fri, 24 Nov 2023 01:41:48 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 99F5112000C;
-        Fri, 24 Nov 2023 12:41:46 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 99F5112000C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700818906;
-        bh=ZjjszLeVnBPwoAj6f6uQYU1y6GX4z6DbNr2+xOZZZGo=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=UhUTZuL+2i7sGTzkhnmT9eCZmSAravoRcnQYqakh1ENk5N4Tb8EeQ/AQEQGdSznS9
-         F/pTPIVdNYdZY7zYTwdDd5n9jGOhKNdYVpx+8AQurqsvvvbaWwckaSIH3Ys+tqBoap
-         EXDmoQl0uty8aT9u4EPSlf6x21aTWiZLxhrIyLkWOzSDhEHV6PtJdGG2sehiV0yXy/
-         VpF7QTGgiGt9nWu81PJc6Jr68W35Gn8ib7r+26wQPLA0i19Mh+Gl8qHZ8rUx0wo3Cd
-         ITql7ePcZD+lhSjQ9F5N9FWbmCxggPwcpcmSaYF2fm7CAbOOw5w2kMtCJnjqnFvkT0
-         jpM3wBawvCoHQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 24 Nov 2023 12:41:46 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
- 2023 12:41:46 +0300
-Date:   Fri, 24 Nov 2023 12:41:46 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Lee Jones <lee@kernel.org>
-CC:     <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
-        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        George Stark <gnstark@salutedevices.com>
-Subject: Re: [PATCH v4 04/11] leds: aw200xx: calculate dts property
- display_rows in the driver
-Message-ID: <20231124094146.qsgmmbwulemjikpg@CAB-WSD-L081021>
-References: <20231121202835.28152-1-ddrokosov@salutedevices.com>
- <20231121202835.28152-5-ddrokosov@salutedevices.com>
- <20231123163252.GF1354538@google.com>
+        Fri, 24 Nov 2023 04:42:59 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EDF1736
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:42:59 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso313665a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 01:42:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1700818978; x=1701423778; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=to4wr7o29hJLCsI5wEPXc4ZsMUCJc0r7+FdlNSU99fk=;
+        b=UseAgOlNzJodxgpj/GiK12Bwh0jhIQpLUqoWG19Muv2gUdwDw016gFKnHq2GcAEXhC
+         7AoG9Phft6oVLHz2O+vroiZvuHEaoQNrQ7jLKa8mh3EELIJrv+sck5PxuO5A9tF85JkS
+         1Q3wRBf2GZJt02eEUQ1yVK824vjZQ84+5TH18=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700818978; x=1701423778;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=to4wr7o29hJLCsI5wEPXc4ZsMUCJc0r7+FdlNSU99fk=;
+        b=oxrqIldlSx+xwDYcfudr0imFLhX4K612ZDxVubGTq+agTkHHEfWnnV/KVF4/roXNdF
+         b/O6lPd/Uybcv63ZPprlxQTAJrlX5p3d7jl58HWxIv6uyA9pFPnx+xAkRKNIz/cUY/YD
+         3CYnqdp+xaqw8Xz5gj8+q2GcJog/JNEIkQsxFqnc1UPp2G7bobWm/yLNTIAbKk2FZirG
+         9JqTBqEyJm5R/21RnWZsN7tih5oa2Cs6v0ZxbXViycC1B2s1v1Qb5NuHAieMzw35DDWZ
+         Dgw2wkXLeqPAkd4j+5Fjnnrz0i0zOcBiPanpDlYA42+mkD6w2kDIDcDioOttGhLDGJ+w
+         SXVA==
+X-Gm-Message-State: AOJu0YwNvDkGrU3YsxmEO0E9iUEhyt7z8Z3X8I02oxrllYIuYXdOYkXt
+        /ucqMc2S76HhbRrpsG2AmBz0jtGUo9KNAF1127dvqA==
+X-Google-Smtp-Source: AGHT+IH3EXSz81Q3iGLUIaX7f+Td5N1csaSiswyO7wzlBhBwY/rrd8Kphlgy1/Xz60elHfn9o/VmOQ==
+X-Received: by 2002:a17:906:2707:b0:a04:c9c4:8fc with SMTP id z7-20020a170906270700b00a04c9c408fcmr1544976ejc.18.1700818978131;
+        Fri, 24 Nov 2023 01:42:58 -0800 (PST)
+Received: from localhost.localdomain ([2001:b07:6474:ebbf:7c18:b9c9:f303:f6bb])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170906398400b009fd541851f4sm1847685eje.198.2023.11.24.01.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 01:42:57 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Archit Taneja <architt@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/bridge: Fix typo in post_disable() description
+Date:   Fri, 24 Nov 2023 10:42:30 +0100
+Message-ID: <20231124094253.658064-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231123163252.GF1354538@google.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181570 [Nov 24 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, {Track_Chinese_Simplified, text}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/24 06:01:00 #22520095
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,121 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 04:32:52PM +0000, Lee Jones wrote:
-> On Tue, 21 Nov 2023, Dmitry Rokosov wrote:
-> 
-> > From: George Stark <gnstark@salutedevices.com>
-> > 
-> > Get rid of device tree property "awinic,display-rows". The property
-> > value actually means number of current switches and depends on how leds
-> 
-> Nit: LEDs
-> 
-> > are connected to the device. It should be calculated manually by max
-> > used led number. In the same way it is computed automatically now.
-> 
-> As above - I won't mention this again.
-> 
-> > Max used led is taken from led definition subnodes.
-> > 
-> > Signed-off-by: George Stark <gnstark@salutedevices.com>
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > ---
-> >  drivers/leds/leds-aw200xx.c | 39 +++++++++++++++++++++++++------------
-> >  1 file changed, 27 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/leds/leds-aw200xx.c b/drivers/leds/leds-aw200xx.c
-> > index 7762b3a132ac..4bce5e7381c0 100644
-> > --- a/drivers/leds/leds-aw200xx.c
-> > +++ b/drivers/leds/leds-aw200xx.c
-> > @@ -379,6 +379,30 @@ static void aw200xx_disable(const struct aw200xx *const chip)
-> >  	return gpiod_set_value_cansleep(chip->hwen, 0);
-> >  }
-> >  
-> > +static bool aw200xx_probe_get_display_rows(struct device *dev, struct aw200xx *chip)
-> > +{
-> > +	struct fwnode_handle *child;
-> > +	u32 max_source = 0;
-> > +
-> > +	device_for_each_child_node(dev, child) {
-> > +		u32 source;
-> > +		int ret;
-> > +
-> > +		ret = fwnode_property_read_u32(child, "reg", &source);
-> > +		if (ret || source >= chip->cdef->channels)
-> 
-> Shouldn't the second clause fail instantly?
-> 
+s/singals/signals/
 
-We already have such logic in the aw200xx_probe_fw() function, which
-skips the LED node with the wrong reg value too. Furthermore, we have
-strict reg constraints in the dt-bindings parts (in the current patch
-series), so we assume that the DT developer will not create an LED with
-the wrong reg value.
+Fixes: 199e4e967af4 ("drm: Extract drm_bridge.h")
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
-> > +			continue;
-> > +
-> > +		max_source = max(max_source, source);
-> > +	}
-> > +
-> > +	if (!max_source)
-> 
-> Since max_source is an integer, please use an '== 0' comparison.
-> 
+ include/drm/drm_bridge.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Okay
-
-> > +		return false;
-> > +
-> > +	chip->display_rows = max_source / chip->cdef->display_size_columns + 1;
-> > +
-> > +	return true;
-> > +}
-> > +
-> >  static int aw200xx_probe_fw(struct device *dev, struct aw200xx *chip)
-> >  {
-> >  	struct fwnode_handle *child;
-> > @@ -386,18 +410,9 @@ static int aw200xx_probe_fw(struct device *dev, struct aw200xx *chip)
-> >  	int ret;
-> >  	int i;
-> >  
-> > -	ret = device_property_read_u32(dev, "awinic,display-rows",
-> > -				       &chip->display_rows);
-> > -	if (ret)
-> > -		return dev_err_probe(dev, ret,
-> > -				     "Failed to read 'display-rows' property\n");
-> > -
-> > -	if (!chip->display_rows ||
-> > -	    chip->display_rows > chip->cdef->display_size_rows_max) {
-> > -		return dev_err_probe(dev, ret,
-> > -				     "Invalid leds display size %u\n",
-> > -				     chip->display_rows);
-> > -	}
-> > +	if (!aw200xx_probe_get_display_rows(dev, chip))
-> 
-> Function calls in side if() statements in general is rough.
-> 
-> Please break it out and use 'ret' as we usually do.
-> 
-> > +		return dev_err_probe(dev, -EINVAL,
-> 
-> Make this the return value from aw200xx_probe_get_display_rows() and use
-> 'ret' instead.
-> 
-
-No problem, I'll prepare a new version.
-
-> > +				     "No valid led definitions found\n");
-> >  
-> >  	current_max = aw200xx_imax_from_global(chip, AW200XX_IMAX_MAX_uA);
-> >  	current_min = aw200xx_imax_from_global(chip, AW200XX_IMAX_MIN_uA);
-> > -- 
-> > 2.36.0
-> > 
-> 
-> -- 
-> Lee Jones [李琼斯]
-
+diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+index cfb7dcdb66c4..9ef461aa9b9e 100644
+--- a/include/drm/drm_bridge.h
++++ b/include/drm/drm_bridge.h
+@@ -194,7 +194,7 @@ struct drm_bridge_funcs {
+ 	 * or &drm_encoder_helper_funcs.dpms hook.
+ 	 *
+ 	 * The bridge must assume that the display pipe (i.e. clocks and timing
+-	 * singals) feeding it is no longer running when this callback is
++	 * signals) feeding it is no longer running when this callback is
+ 	 * called.
+ 	 *
+ 	 * The @post_disable callback is optional.
 -- 
-Thank you,
-Dmitry
+2.42.0
+
