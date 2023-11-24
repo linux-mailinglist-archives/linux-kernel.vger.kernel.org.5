@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 251777F72EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB847F72FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 12:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbjKXLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 06:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        id S230303AbjKXLn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 06:43:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbjKXLlk (ORCPT
+        with ESMTP id S229580AbjKXLn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 06:41:40 -0500
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94806A2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:41:47 -0800 (PST)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28571255ec4so1798618a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:41:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700826107; x=1701430907;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AVfx+d8yR39xWdamd6Q4w2OlfL23Zow+F5xI2TOjvwM=;
-        b=l247jvNpxrRAOdjHeR52HS6AupqSqKowwvvPJ5o8cPvWsm2KxGZleX6/+aIHfd0JxX
-         IybL+udO1/CjBP2l/ZmCGnBsWUqJOtp3c5izTh3oHEd3sNQh1w/ZuzsC+cCNv2B9eDtB
-         Tvk2aAPkA5FfVl9jaqlCTgOibCoxoB3ylaaYNRnlzWKjbi6Kyj/q9cdwk5lLdVh4QSCX
-         MAFZ6VxHoYeUZEjViu/Ebwlnxenoon5lg5X2OBKdg5w5vbYLLivchG+NZfjoGF9HDWqu
-         j/+zhRLAl4rWK1IeGc88EvwWVeq5HlhGz7ZkDK1xrvCqt0LA3yPhZuYCIT24sfeedyop
-         P6Kg==
-X-Gm-Message-State: AOJu0Yz+kWz4XYAXeIU2TyE0MfjB/7dc3/+c0WdHfFuFAWA1uZXvxeBZ
-        dQeMh0Yb9Tn77LdXfKd7zFGKEUt1ohw9YC1/Dv0tZmTZTMwShg0=
-X-Google-Smtp-Source: AGHT+IFiWUsUtnEGVxIN/wWoVtbi7EkLd+YJhpIpjIpWChCeuJeAL7BwaBwbb867A5v5sXKK/2zICUHJGbj+Ek+RiuWfo9IS9CYT
+        Fri, 24 Nov 2023 06:43:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCE5D5A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 03:43:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D84C433C8;
+        Fri, 24 Nov 2023 11:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700826213;
+        bh=ERXxNMCtFjFijTwZokBWufbjcoRPAH0FiOFtD+UxMl4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sl/UcsyDG/GK+O/G6AYY3Qi4SlkkBzn7IBchA97Y0mfHNE151dozPr53KJdqzNfd2
+         QnAxu+OUZ4FdMSCnelgIViNADY+rpAGYT535cbI+y9UI3oqlFjrzga9OOAYU6iGalc
+         mLMC9HmkkjKvIpt/NKYbJAjM2Wyq8ZspkfB5ZO+Q=
+Date:   Fri, 24 Nov 2023 11:43:32 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Petr Tesarik <petr@tesarici.cz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [REGRESSION] USB ports do not work after suspend/resume cycle
+ with v6.6.2
+Message-ID: <2023112421-brisket-starless-c20d@gregkh>
+References: <5993222.lOV4Wx5bFT@natalenko.name>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:4388:b0:27d:15e2:b248 with SMTP id
- in8-20020a17090b438800b0027d15e2b248mr520652pjb.8.1700826107133; Fri, 24 Nov
- 2023 03:41:47 -0800 (PST)
-Date:   Fri, 24 Nov 2023 03:41:46 -0800
-In-Reply-To: <0000000000007b84a2060ac7d84b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f0c719060ae46fa8@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
-From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5993222.lOV4Wx5bFT@natalenko.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Thu, Nov 23, 2023 at 07:20:46PM +0100, Oleksandr Natalenko wrote:
+> Hello.
+> 
+> Since v6.6.2 kernel release I'm experiencing a regression with regard to USB ports behaviour after a suspend/resume cycle.
+> 
+> If a USB port is empty before suspending, after resuming the machine the port doesn't work. After a device insertion there's no reaction in the kernel log whatsoever, although I do see that the device gets powered up physically. If the machine is suspended with a device inserted into the USB port, the port works fine after resume.
+> 
+> This is an AMD-based machine with hci version 0x110 reported. As per the changelog between v6.6.1 and v6.6.2, 603 commits were backported into v6.6.2, and one of the commits was as follows:
+> 
+> $ git log --oneline v6.6.1..v6.6.2 -- drivers/usb/host/xhci-pci.c
+> 14a51fa544225 xhci: Loosen RPM as default policy to cover for AMD xHC 1.1
+> 
+> It seems that this commit explicitly enables runtime PM specifically for my platform. As per dmesg:
+> 
+> v6.6.1: quirks 0x0000000000000410
+> v6.6.2: quirks 0x0000000200000410
+> 
+> Here, bit 33 gets set, which, as expected, corresponds to:
+> 
+> drivers/usb/host/xhci.h
+> 1895:#define XHCI_DEFAULT_PM_RUNTIME_ALLOW      BIT_ULL(33)
+> 
+> This commit is backported from the upstream commit 4baf12181509, which is one of 16 commits of the following series named "xhci features":
+> 
+> https://lore.kernel.org/all/20231019102924.2797346-1-mathias.nyman@linux.intel.com/
+> 
+> It appears that there was another commit in this series, also from Basavaraj (in Cc), a5d6264b638e, which was not picked for v6.6.2, but which stated the following:
+> 
+> 	Use the low-power states of the underlying platform to enable runtime PM.
+> 	If the platform doesn't support runtime D3, then enabling default RPM will
+> 	result in the controller malfunctioning, as in the case of hotplug devices
+> 	not being detected because of a failed interrupt generation.
+> 
+> It felt like this was exactly my case. So, I've conducted two tests:
+> 
+> 1. Reverted 14a51fa544225 from v6.6.2. With this revert the USB ports started to work fine, just as they did in v6.6.1.
+> 2. Left 14a51fa544225 in place, but also applied upstream a5d6264b638e on top of v6.6.2. With this patch added the USB ports also work after a suspend/resume cycle.
+> 
+> This runtime PM enablement did also impact my AX200 Bluetooth device, resulting in long delays before headphones/speaker can connect, but I've solved this with btusb.enable_autosuspend=N. I think this has nothing to do with the original issue, and I'm OK with this workaround unless someone has got a different idea.
+> 
+> With that, please consider either reverting 14a51fa544225 from the stable kernel, or applying a5d6264b638e in addition to it. Given the mainline kernel has got both of them, I'm in favour of applying additional commit to the stable kernel.
 
-***
+I've applied this other commit as well to all of the affected branches,
+thanks for letting us know.
 
-Subject: [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
-Author: eadavis@qq.com
+> I'm also Cc'ing all the people from our Mastodon discussion where I initially complained about the issue as well as about stable kernel branch stability:
+> 
+> https://activitypub.natalenko.name/@oleksandr/statuses/01HFRXBYWMXF9G4KYPE3XHH0S8
+> 
+> I'm not going to expand more on that in this email, especially given Greg indicated he read the conversation, but I'm open to continuing this discussion as I still think that current workflow brings visible issues to ordinary users, and hence some adjustments should be made.
 
-please test uaf in __lock_sock
+What type of adjustments exactly?  Testing on wide ranges of systems is
+pretty hard, and this patch explicitly was set to be backported when it
+hit Linus's tree, it just looks like someone forgot to mark the
+follow-up patch that you found also to be properly backported.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git 8de1e7afcc1c
+We will always make mistakes, we are only human.  The best thing to do
+is if we get notified quickly of issues, like you did here, and work to
+resolve them, as we have done here.  So again, thanks for letting us
+know about the problem, and be sure to let us know of any future issues
+you might find as well.
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index c736186aba26..d7054e3d7146 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -285,6 +285,7 @@ static int sco_connect(struct sock *sk)
- 		goto unlock;
- 	}
- 
-+	hci_conn_get(hcon);
- 	/* Update source addr of the socket */
- 	bacpy(&sco_pi(sk)->src, &hcon->src);
- 
-@@ -300,7 +301,8 @@ static int sco_connect(struct sock *sk)
- 
- unlock:
- 	hci_dev_unlock(hdev);
--	hci_dev_put(hdev);
-+	if (err)
-+		hci_dev_put(hdev);
- 	return err;
- }
- 
-@@ -438,12 +440,13 @@ static void __sco_sock_close(struct sock *sk)
- 	case BT_CONNECTED:
- 	case BT_CONFIG:
- 		if (sco_pi(sk)->conn->hcon) {
-+			struct hci_conn *hcon = sco_pi(sk)->conn->hcon;
- 			sk->sk_state = BT_DISCONN;
- 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
- 			sco_conn_lock(sco_pi(sk)->conn);
--			hci_conn_drop(sco_pi(sk)->conn->hcon);
- 			sco_pi(sk)->conn->hcon = NULL;
- 			sco_conn_unlock(sco_pi(sk)->conn);
-+			hci_conn_put(hcon);
- 		} else
- 			sco_chan_del(sk, ECONNRESET);
- 		break;
+Remember, hardware is messy, and the kernel's job is to fix hardware
+issues and quirks in it.  Sometimes we get it wrong as we are trying to
+fix up inconsistencies and they cause other problems, so in the end, we
+can only grumble at the hardware companies for stuff like this, be
+patient with those of us who have to deal with this mess :)
 
+thanks,
+
+greg k-h
