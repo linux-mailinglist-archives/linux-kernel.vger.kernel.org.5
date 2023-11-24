@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4257F70F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D28B7F70F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 11:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345408AbjKXKLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 05:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
+        id S1345461AbjKXKLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 05:11:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345816AbjKXKKo (ORCPT
+        with ESMTP id S1345402AbjKXKLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 05:10:44 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23FD10FA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:10:48 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7c495bec2f7so13351241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 02:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700820647; x=1701425447; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RNwbKkpOOdlYnkUmnFUQa8oGNqtKbB29P4hnjmshOjc=;
-        b=W//U3hd2XG8neh8uv2ahWMhv+4QOrs4rJw1Yqp1tQHS9tvtecbnOhZVJHceKDtUzbZ
-         6DopOI0tR0IxayWWm6tVkjKPqmQN/j1ZdKJyw7jVc0D3mfsKzDcxX6dIP2LGzDfSXcUr
-         4AiGF+3tX4tB/WSTy/If/6b4/grwx6NtnAp7i6zX1K31hFNb0tCyo8GCqDHeAyo8Ti8Z
-         AnlBYhr3kJ24yTK++YpTtH2R2T0LH0ZZizt4QcYWzIrjwaHEBKaTLlJGY2Xhdk4z0EJD
-         /B8xrHT4TN5W/EawgCm0l/oRBALKmN7gOygqmRBYZV1IvBWGEUBeU2SIKenhPlOYOEcF
-         cLFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700820647; x=1701425447;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RNwbKkpOOdlYnkUmnFUQa8oGNqtKbB29P4hnjmshOjc=;
-        b=Oe5iEqVeJD897k5ghJav798ocgah/iY8KotRaROiFmVaqcc1oiL3zjrKlavZJoxAl5
-         WhWFqf3l6/sHgKmkD5granm/vCfsg7npzjPPJOkrElUKlcE3mQF4DYbK9XJMKIrNmR71
-         Wo8qUtQiap1QoEGHzd788dciwZYMdKEOn2HyOkRP5jdHaCdghwNR6dVuQaH3qypupTKo
-         yETOO3ifNr1h68vldeufAZh7VN+LF+ZJwAMLJJJyag60TWSbOHot8h9DaPpisWqUOq65
-         Q74Dp/NnNA3E//13k2pEJStKAOhfpTmxpvBLfhCj9prsmRFlWYuDaQCkZEpe+NK5q77q
-         J00A==
-X-Gm-Message-State: AOJu0YztfBr2x8kGpBI/vc5MJ0xcEyNW2AZorP+couJOqg4F4d0+2sq0
-        tPCkwhE5xj7GM1w9pqBe2d6PSyXkfOeKpP7a0Aq8h2h+Hge5xaVpK+E=
-X-Google-Smtp-Source: AGHT+IH1qYJUzvgMQWrRt/3NN7fan5ueWXzVBAKMLdmqcstxxzoVpfakJzluUr9qCtOyePI3AI91zWSiPENY9/RXLFw=
-X-Received: by 2002:a05:6122:a15:b0:4ac:a482:f0d8 with SMTP id
- 21-20020a0561220a1500b004aca482f0d8mr1264660vkn.7.1700820647430; Fri, 24 Nov
- 2023 02:10:47 -0800 (PST)
+        Fri, 24 Nov 2023 05:11:46 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF1591;
+        Fri, 24 Nov 2023 02:11:53 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AO6nseE009014;
+        Fri, 24 Nov 2023 10:11:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aLq/ovk4VH5cK5twhKpeS2jDdsQ5ce5PDq0X66lHvbQ=;
+ b=TeQWWyMf+6OD8gDhKsPaVgDL4myFMK0Ze5ha7EB40//ta/mhh0xNcVpa/kLkqeyj15Ed
+ PLBGi5g5uyEcU2JjVy6fkDnUhZNW4zDpXTPWZUTKsA/ZJxp1+7m9lGt4+wIKxf0GD10G
+ pvkln5vpKEyYxreltMV7ES2cEq0LyaFgL9Zw+gIVRHFviy6izW8tCdeKR2QmATqL4XYk
+ UpyDHzI0mH7cv9nYRPBJFfk/Iu6myQ3XaXUrXW9jaE76dqqoje38p0XTnYVbJyFI3oUn
+ WuLNTE2+DpgOWb+lPuuvM2AHadxTMppLx87A3yxHj1mQq9fuvp7QBxcarn5uwdLkGKv4 xQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ujhh4ry1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 10:11:48 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AOABlNI026963
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 10:11:47 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 24 Nov
+ 2023 02:11:42 -0800
+Message-ID: <e988d7ba-6fd5-46fd-a97e-ac5011b9f52b@quicinc.com>
+Date:   Fri, 24 Nov 2023 18:11:40 +0800
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 24 Nov 2023 15:40:36 +0530
-Message-ID: <CA+G9fYtV6X=c3JVTTAX89_=wc+uqLpzggnsbGSx-98m_5yd5yw@mail.gmail.com>
-Subject: next: arm64: vgettimeofday.c:10:5: error: conflicting types for
- '__vdso_clock_gettime'; have 'int(clockid_t, struct old_timespec32 *)' {aka
- 'int(int, struct old_timespec32 *)'}
-To:     open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/16] dt-bindings: arm: qcom: add SM8550 AIM300
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+ <20231117101817.4401-2-quic_tengfan@quicinc.com>
+ <519b89a2-550e-44a2-bff0-a6a86c50d073@linaro.org>
+ <54b68923-f670-482b-b4a2-ff5f5c867a91@linaro.org>
+ <7bf18b1e-463d-4030-99cd-4fcf2126fda2@quicinc.com>
+ <4eb76d38-93b5-424b-adce-3cc296fa03fb@linaro.org>
+ <6e399854-40a2-412b-8c41-4f9e6b17e38b@linaro.org>
+ <35dba126-0a0c-4f27-8b49-39de4d2cb797@quicinc.com>
+ <6221657b-0c01-44cf-817c-a54bd2cede07@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <6221657b-0c01-44cf-817c-a54bd2cede07@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: H-isuJjdGRioAkBfmeVBlV55Sb7r-d1H
+X-Proofpoint-ORIG-GUID: H-isuJjdGRioAkBfmeVBlV55Sb7r-d1H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-23_15,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=548 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 clxscore=1015 phishscore=0 bulkscore=0
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311240080
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build warnings / errors noticed on arm64 build on Linux next-20231124
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Build log:
---------
-arch/arm64/boot/dts/mediatek/mt8195.dtsi:464.4-27: Warning
-(interrupts_property): /soc/i2c@11d01000/pmic@34:#interrupt-cells:
-size is (8), expected multiple of 16
-arch/arm64/kernel/vdso32/vgettimeofday.c:10:5: error: conflicting
-types for '__vdso_clock_gettime'; have 'int(clockid_t,  struct
-old_timespec32 *)' {aka 'int(int,  struct old_timespec32 *)'}
-   10 | int __vdso_clock_gettime(clockid_t clock,
-      |     ^~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/kernel/vdso32/vgettimeofday.c:8:
-include/vdso/gettime.h:16:5: note: previous declaration of
-'__vdso_clock_gettime' with type 'int(clockid_t,  struct
-__kernel_timespec *)' {aka 'int(int,  struct __kernel_timespec *)'}
-   16 | int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
-      |     ^~~~~~~~~~~~~~~~~~~~
-arch/arm64/kernel/vdso32/vgettimeofday.c:28:5: error: conflicting
-types for '__vdso_clock_getres'; have 'int(clockid_t,  struct
-old_timespec32 *)' {aka 'int(int,  struct old_timespec32 *)'}
-   28 | int __vdso_clock_getres(clockid_t clock_id,
-      |     ^~~~~~~~~~~~~~~~~~~
-include/vdso/gettime.h:15:5: note: previous declaration of
-'__vdso_clock_getres' with type 'int(clockid_t,  struct
-__kernel_timespec *)' {aka 'int(int,  struct __kernel_timespec *)'}
-   15 | int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
-      |     ^~~~~~~~~~~~~~~~~~~
-make[3]: *** [arch/arm64/kernel/vdso32/Makefile:149:
-arch/arm64/kernel/vdso32/vgettimeofday.o] Error 1
 
 
+在 11/24/2023 3:47 PM, Krzysztof Kozlowski 写道:
+> On 24/11/2023 03:31, Tengfei Fan wrote:
+> 
+>>>>> AIM (Artificial Intelligence Module). This hardware platform can be used
+>>>>> to develop AI related software based on Qualcomm chipset. I also will
+>>>>> update this message to patch commit message.
+>>>>
+>>>> Does "Module" means it is physical module?
+>> Yes, AIM300 is a physical module.
+>>
+>>> Moreover, does it have anything specific that makes it different from
+>>> a MTP/QRD/regular 8550 SoM?
+>>> In general, you can develop AI software on any computer, there are no
+>>> runtime checks for "AI" presence in the naming ;)
+>>>
+>>> Or is it perhaps like QRB5165N [1], a base soc with what seems to
+>>> be a fat AI accelerator connected to it?
+>>
+>> AIM300 is something like C5165N SOM.
+>> AIM300 Series is a highly optimized family of modules designed to
+>> support AIoT applications, intergrated with qualcomm qcs8550 SOC inside.
+>> The Module is mounted onto Qualcomm AIoT carrier board to support
+>> verification, evaluation and development.
+> 
+> Then you send patches for wrong board. AIM is not a board.
+Yes, I used AIM as board by mistake, AIM300 AIOT is board.
+>>
+>> In next patch series, AIM300 AIoT carrier board will be a DTS, AIM300
+>> will be a DTSI, qcs8550 will be a DTSI.
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231124/testrun/21224014/suite/build/test/gcc-13-lkftconfig/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231124/testrun/21224014/suite/build/test/gcc-13-lkftconfig/history/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231124/testrun/21224014/suite/build/test/gcc-13-lkftconfig/details/
-
-
-
-Steps to reproduce:
----
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
---kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2YbbDYkIkXuo7IuAzRYY1HQS6Cr/config
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Thx and BRs,
+Tengfei Fan
