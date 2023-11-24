@@ -2,75 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F407F7875
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C53C7F787B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Nov 2023 17:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345932AbjKXQCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 11:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S1345407AbjKXQCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 11:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345918AbjKXQCA (ORCPT
+        with ESMTP id S230491AbjKXQCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 11:02:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0066F19A2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 08:02:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBF82C433C7;
-        Fri, 24 Nov 2023 16:02:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700841726;
-        bh=margAB1FzEUm28u+SgniGfAuXbnIN6dTK7wX7ICYgeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rPTG2RvjkMuXUNhYhCCpRkG9RWlYusNzNY8XVGNsFSwmwojcfr807/m/8S1bsnSL3
-         RS87G+2bFn/fJXYKzCSGpYaqm56tO+XtMYAoe0Mpur3NGPNMMo6rwxsEFbQ1KKNC7j
-         wOYT5+m+P1LFDRfeUDcax3hvJQzZR4dXyrXlMfjrnfEHSbEajqd2fTCpCCcnQYSgCB
-         OwjMNCiCQKmkCleo77Z2TJXIHLZ5ADqSqPU/4o6OlaPOMkeYShs7bIq9AIgv3ACpW4
-         MG83wjLWH/KRYQCA+JmD6cLfisi16jk7pCNDbuUFglJXvsrSKrmO3z5Y6IWppJdbKN
-         aFAPCO4rEbksw==
-Date:   Fri, 24 Nov 2023 17:02:02 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] fs/pipe: Fix lockdep false-positive in watchqueue
- pipe_write()
-Message-ID: <20231124-gearbeitet-unberechenbar-70241992a995@brauner>
-References: <20231124150822.2121798-1-jannh@google.com>
- <1210483.1700841227@warthog.procyon.org.uk>
+        Fri, 24 Nov 2023 11:02:43 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A671B5;
+        Fri, 24 Nov 2023 08:02:49 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AODACUB023392;
+        Fri, 24 Nov 2023 17:02:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=FIx1Yrt
+        cLveCC02iWnLW1Lr8XBOPNYeVOFiiPu2xIQ8=; b=6aVF5B/rBs+91n+/V8KIzyk
+        XDKQdZDb32l89xTctlCIVYJDixYEWC8v7grnnBlwcd6sOTEG/N91HqaTlU4i0ipR
+        +FB71z+U/SwQVPjfILaCN1dRbIeQENZE3jy4vRdXSpQ9J72EdjJaOyLVO10qJmxd
+        Og/zjepnYR6rw80ET33vhtEot7dqrXejT3H+WcToN3osOmsV3Y+uZu2YV7NDhYT6
+        kZOStn7gXYmBRpWe+xN0Nmw2JhVcnAhZdZctF0BLzOI2Or9AXnwFXhxGQ2iaTjfh
+        LYNpz0scLeyPXm8/0w1j1o+dlmhdZLConsZiFoLSCzcUXRhkcS5WQILuc2H4nPA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uhr8ahh9y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Nov 2023 17:02:37 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8141310002A;
+        Fri, 24 Nov 2023 17:02:36 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 64A46252233;
+        Fri, 24 Nov 2023 17:02:36 +0100 (CET)
+Received: from localhost (10.201.20.208) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 24 Nov
+ 2023 17:02:36 +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dmaengine: dmatest: prevent using swiotlb buffer with nobounce parameter
+Date:   Fri, 24 Nov 2023 17:02:35 +0100
+Message-ID: <20231124160235.2459326-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1210483.1700841227@warthog.procyon.org.uk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.208]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-24_02,2023-11-22_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 03:53:47PM +0000, David Howells wrote:
-> Jann Horn <jannh@google.com> wrote:
-> 
-> > +	/*
-> > +	 * Reject writing to watch queue pipes before the point where we lock
-> > +	 * the pipe.
-> > +	 * Otherwise, lockdep would be unhappy if the caller already has another
-> > +	 * pipe locked.
-> > +	 * If we had to support locking a normal pipe and a notification pipe at
-> > +	 * the same time, we could set up lockdep annotations for that, but
-> > +	 * since we don't actually need that, it's simpler to just bail here.
-> > +	 */
-> > +	if (pipe_has_watch_queue(pipe))
-> > +		return -EXDEV;
-> > +
-> 
-> Linus wanted it to be possible for the user to write to a notificaiton pipe.
+Source and destination data buffers are allocated with GPF_KERNEL flag.
+It means that, if the DDR is more than 2GB, buffers can be allocated above
+the 32-bit addressable space. In this case, and if the dma controller is
+only 32-bit compatible, swiotlb bounce buffer, located in the 32-bit
+addressable space, is used and introduces a memcpy.
 
-Since it has been disabled from the start and nothing has ever actually
-materialized we just don't need to care. If we start caring this needs
-more work anyway iirc.
+To prevent this extra memcpy, due to swiotlb bounce buffer use because
+source or destination data buffer is allocated above the 32-bit addressable
+space, force source and destination data buffers allocation with GPF_DMA
+instead, when nobounce parameter is true.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ drivers/dma/dmatest.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+index ffe621695e47..a4f608837849 100644
+--- a/drivers/dma/dmatest.c
++++ b/drivers/dma/dmatest.c
+@@ -21,6 +21,10 @@
+ #include <linux/slab.h>
+ #include <linux/wait.h>
+ 
++static bool nobounce;
++module_param(nobounce, bool, 0644);
++MODULE_PARM_DESC(nobounce, "Prevent using swiotlb buffer (default: use swiotlb buffer)");
++
+ static unsigned int test_buf_size = 16384;
+ module_param(test_buf_size, uint, 0644);
+ MODULE_PARM_DESC(test_buf_size, "Size of the memcpy test buffer");
+@@ -90,6 +94,7 @@ MODULE_PARM_DESC(polled, "Use polling for completion instead of interrupts");
+ 
+ /**
+  * struct dmatest_params - test parameters.
++ * @nobounce:		prevent using swiotlb buffer
+  * @buf_size:		size of the memcpy test buffer
+  * @channel:		bus ID of the channel to test
+  * @device:		bus ID of the DMA Engine to test
+@@ -106,6 +111,7 @@ MODULE_PARM_DESC(polled, "Use polling for completion instead of interrupts");
+  * @polled:		use polling for completion instead of interrupts
+  */
+ struct dmatest_params {
++	bool		nobounce;
+ 	unsigned int	buf_size;
+ 	char		channel[20];
+ 	char		device[32];
+@@ -215,6 +221,7 @@ struct dmatest_done {
+ struct dmatest_data {
+ 	u8		**raw;
+ 	u8		**aligned;
++	gfp_t		gfp_flags;
+ 	unsigned int	cnt;
+ 	unsigned int	off;
+ };
+@@ -533,7 +540,7 @@ static int dmatest_alloc_test_data(struct dmatest_data *d,
+ 		goto err;
+ 
+ 	for (i = 0; i < d->cnt; i++) {
+-		d->raw[i] = kmalloc(buf_size + align, GFP_KERNEL);
++		d->raw[i] = kmalloc(buf_size + align, d->gfp_flags);
+ 		if (!d->raw[i])
+ 			goto err;
+ 
+@@ -655,6 +662,13 @@ static int dmatest_func(void *data)
+ 		goto err_free_coefs;
+ 	}
+ 
++	src->gfp_flags = GFP_KERNEL;
++	dst->gfp_flags = GFP_KERNEL;
++	if (params->nobounce) {
++		src->gfp_flags = GFP_DMA;
++		dst->gfp_flags = GFP_DMA;
++	}
++
+ 	if (dmatest_alloc_test_data(src, buf_size, align) < 0)
+ 		goto err_free_coefs;
+ 
+@@ -1093,6 +1107,7 @@ static void add_threaded_test(struct dmatest_info *info)
+ 	struct dmatest_params *params = &info->params;
+ 
+ 	/* Copy test parameters */
++	params->nobounce = nobounce;
+ 	params->buf_size = test_buf_size;
+ 	strscpy(params->channel, strim(test_channel), sizeof(params->channel));
+ 	strscpy(params->device, strim(test_device), sizeof(params->device));
+-- 
+2.25.1
+
