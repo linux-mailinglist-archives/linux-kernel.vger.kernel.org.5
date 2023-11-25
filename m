@@ -2,66 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CD87F8D9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E1F7F8DB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbjKYTGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S232217AbjKYTKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYTGu (ORCPT
+        with ESMTP id S231901AbjKYTKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:06:50 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A289F1;
-        Sat, 25 Nov 2023 11:06:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1700939208; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=c0iqwX+9WViNTos0ONMkw6hHVD+swHKuJ/MY6sfol262oHkMJrJIygLv/0RkXXYxRCd7hSP7L5visPq8OqssdcgWzmrY5QyHqny2WbaqPR1KRrGdgq/jb5nELBqWWXO/Yy24Uxk+/ui32anWPUlenesR2LvYayT0XxTEiodB72I=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1700939208; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=Kjy5h53YNBfRPMZkuD1hYHLFz0/HrabUBTJReH2mQpU=; 
-        b=OfrrSf+rGqoog5SYAmftgjqrj5LVItOTkrjCeqNlRwf7az+brvTi8bmFJUUYFTSn6Rb1EqGAV4RJ5m+8MtCmTRO8XgSVZZXVLMmf1CZR6tAzFnEcHSzORgo6za/+Cff0cVTkMFdrf75MaZ04udv0LdN3bcUcwPNfZIyomkfHHs4=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1700939208;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=Kjy5h53YNBfRPMZkuD1hYHLFz0/HrabUBTJReH2mQpU=;
-        b=A+pqDO9IlsZ3IL+KhevF+swP+v+nT0vypBKBWC8lym/VPxLIl2IpAoS1QC0bmkPX
-        PcoR/evOPiy+i/2mcQLwIJoRxb4Xx4niDfLfG64rI9CDswn1tgX3+Mi4tIq4XZ4ARc7
-        BPVKf9CmfAofcMlesV9G/JTcIrEWtsvxL23L/PKo=
-Received: from mail.zoho.in by mx.zoho.in
-        with SMTP id 170093917663875.992804182481; Sun, 26 Nov 2023 00:36:16 +0530 (IST)
-Date:   Sun, 26 Nov 2023 00:36:16 +0530
-From:   Siddh Raman Pant <code@siddh.me>
-To:     "syzbot" <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "netdev" <netdev@vger.kernel.org>,
-        "syzkaller-bugs" <syzkaller-bugs@googlegroups.com>
-Message-ID: <18c07e01a4c.220c832d175971.1254981088507972317@siddh.me>
-In-Reply-To: <000000000000ee78fb060afe9767@google.com>
-References: <000000000000ee78fb060afe9767@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
- nfc_alloc_send_skb
+        Sat, 25 Nov 2023 14:10:23 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43DA7129;
+        Sat, 25 Nov 2023 11:10:29 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A032CDA7;
+        Sat, 25 Nov 2023 11:11:15 -0800 (PST)
+Received: from [10.57.5.64] (unknown [10.57.5.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 446CA3F6C4;
+        Sat, 25 Nov 2023 11:10:27 -0800 (PST)
+Message-ID: <f0ac7523-edce-4b0b-a142-14c03c912720@arm.com>
+Date:   Sat, 25 Nov 2023 19:10:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf test: Remove atomics from test_loop to avoid test
+ failures
+To:     Leo Yan <leo.yan@linaro.org>, Michael Petlan <mpetlan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        vmolnaro@redhat.com
+References: <20231102162225.50028-1-nick.forrington@arm.com>
+ <alpine.LRH.2.20.2311242037260.11297@Diego>
+ <20231125030529.GB178091@leoy-huanghe>
+Content-Language: en-GB
+From:   Nick Forrington <nick.forrington@arm.com>
+In-Reply-To: <20231125030529.GB178091@leoy-huanghe>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test final changes
 
-#syz test https://github.com/siddhpant/linux.git lock
+On 25/11/2023 03:05, Leo Yan wrote:
+> Hi all,
+>
+> On Fri, Nov 24, 2023 at 08:57:52PM +0100, Michael Petlan wrote:
+>> On Thu, 2 Nov 2023, Nick Forrington wrote:
+>>> The current use of atomics can lead to test failures, as tests (such as
+>>> tests/shell/record.sh) search for samples with "test_loop" as the
+>>> top-most stack frame, but find frames related to the atomic operation
+>>> (e.g. __aarch64_ldadd4_relax).
+> I am confused by above description.  As I went through the script
+> record.sh, which is the only test invoking the program 'test_loop',
+> but I don't find any test is related with stack frame.
+>
+> Do I miss anything?  I went through record.sh but no clue why the
+> failure is caused by stack frame.  All the testings use command:
+>
+>    if ! perf report -i "${perfdata}" -q | grep -q "${testsym}"
+>      ...
+>    fi
+>
+> @Nick, could you narrow down which specific test case causing the
+> failure.
+>
+> [...]
+
+
+All checks for ${testsym} in record.sh (including the example you 
+provide) can fail, as the expected symbol (test_loop) is not the 
+top-most function on the stack (and therefore not the symbol associated 
+with the sample).
+
+
+Example perf report output:
+
+# Overhead  Command  Shared Object          Symbol
+# ........  .......  ..................... .............................
+#
+     99.53%  perf     perf                   [.] __aarch64_ldadd4_relax
+
+...
+
+
+You can see the issue when recording/reporting with call stacks:
+
+# Children      Self  Command  Shared Object          Symbol
+# ........  ........  .......  ..................... 
+..........................................................
+#
+     99.52%    99.52%  perf     perf                   [.] 
+__aarch64_ldadd4_relax
+             |
+             |--49.77%--0xffffb905a5dc
+             |          0xffffb8ff0aec
+             |          thfunc
+             |          test_loop
+             |          __aarch64_ldadd4_relax
+
+...
+
+>
+>> I believe that it was there to prevent the compiler to optimize the loop
+>> out or some reason like that. Hopefully, it will work even without that
+>> on all architectures with all compilers that are used for building perf...
+> Agreed.
+>
+> As said above, I'd like to step back a bit for making clear what's the
+> exactly failure caused by the program.
+
+
+I don't think this loop could be sensibly optimised away, as it depends 
+on "done", which is defined at file scope (and assigned by a signal 
+handler).
+
+
+Cheers,
+Nick
+
+>
+> Thanks,
+> Leo
+>
