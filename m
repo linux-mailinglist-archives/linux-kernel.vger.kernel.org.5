@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8E27F8E75
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AAB7F8E74
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbjKYUGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 15:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S231829AbjKYUGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 15:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbjKYUF2 (ORCPT
+        with ESMTP id S230049AbjKYUF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 25 Nov 2023 15:05:28 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551ACEE;
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E923EE5;
         Sat, 25 Nov 2023 12:05:34 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 0859512001E;
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 92B4A100026;
         Sat, 25 Nov 2023 23:05:33 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0859512001E
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 92B4A100026
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
         s=mail; t=1700942733;
-        bh=/HrW0X+9rW0pBeZMX5Q2JYjOL2DcSt6189XJga8hqTE=;
+        bh=YEPAVovAT7fOQhJBeFq/4sGvowJqoh7IRxQv9siAkaY=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=pM20NMzQc2m9ujhSUIV3jSpaTOILc7uyt1WXfOkEdo0iJT6asvS4TXG8WWo36pgLO
-         5SA8TWA9WKrlCkL5qSFGguqDRG/PtTYymwvUM2EQbJ8qFCR7f7B1J7iBw925havXh9
-         Gi63TmZUnZne4OkozPVtCU2IbKuf2/UJL+pFDmcJyrZyPhXgGa2mswWLokgEB6BiE2
-         8d2gnMd/kQT1o2S1/zaHhIBG5nJ2hDNGkplOPSQMGbuXXB++cbuIu6C9MTShNR+8tY
-         ZBVuICSqkcr7A3xGbPPZRdn4XWv8cyEu+QdrEbFR9RzYZzkLBhMWFkqrs2FCOaUV1k
-         wmhmL4HayhUIg==
+        b=SA06F3cHj79CvuWu4fNJh6PqspH0A54BeC5ivg1kfP5tLTSOJps9JfgWXx3N1DTg8
+         ch6l8ZrPyUgSeNvys4k9HIbwOpLRUbHScFVu3aogzJnqcrooYYsrFz1S6yiAmUqLFP
+         eOMi3KKGL7obRf4H+iIQND6FB3kvIE5D4Ty44R4zA9QWMdtoQ0uLuHfzW08QIf+ltc
+         cScJ+Cw4IClS65PcTKNh03RareddeEI+H6vxagD4qdvIQfxuzXyK0pD9XoJVnp6mJp
+         qGX3vMCrcXb7FnUn1PTIMqpGM+Ym+8L+G/B/Ls3kCbDc/yTFtfz9S2B/UN1+/5Bbmt
+         wwQ2q2tFET6Ug==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sat, 25 Nov 2023 23:05:32 +0300 (MSK)
+        Sat, 25 Nov 2023 23:05:33 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 25 Nov 2023 23:05:32 +0300
+ 15.2.1118.40; Sat, 25 Nov 2023 23:05:33 +0300
 From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
 To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -45,12 +45,11 @@ To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
 CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-leds@vger.kernel.org>,
-        George Stark <gnstark@salutedevices.com>,
         Dmitry Rokosov <ddrokosov@salutedevices.com>,
         Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v5 10/11] dt-bindings: leds: awinic,aw200xx: add AW20108 device
-Date:   Sat, 25 Nov 2023 23:05:18 +0300
-Message-ID: <20231125200519.1750-11-ddrokosov@salutedevices.com>
+Subject: [PATCH v5 11/11] dt-bindings: leds: aw200xx: fix led pattern and add reg constraints
+Date:   Sat, 25 Nov 2023 23:05:19 +0300
+Message-ID: <20231125200519.1750-12-ddrokosov@salutedevices.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20231125200519.1750-1-ddrokosov@salutedevices.com>
 References: <20231125200519.1750-1-ddrokosov@salutedevices.com>
@@ -69,11 +68,11 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;www.awinic.com:7.1.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/11/25 18:50:00
-X-KSMG-LinksScanning: Clean, bases: 2023/11/25 18:50:00
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/25 18:32:00 #22537065
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,53 +85,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Stark <gnstark@salutedevices.com>
+AW200XX controllers have the capability to declare more than 0xf LEDs,
+therefore, it is necessary to accept LED names using an appropriate
+regex pattern.
 
-Add aw20108 compatible for Awinic AW20108 led controller.
+The register offsets can be adjusted within the specified range, with
+the maximum value corresponding to the highest number of LEDs that can
+be connected to the controller.
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
+Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
 Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../devicetree/bindings/leds/awinic,aw200xx.yaml    | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ .../bindings/leds/awinic,aw200xx.yaml         | 59 ++++++++++++++++++-
+ 1 file changed, 58 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-index a6dced59599d..67c1d960db1d 100644
+index 67c1d960db1d..54d6d1f08e24 100644
 --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
 +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-@@ -10,15 +10,19 @@ maintainers:
-   - Martin Kurbanov <mmkurbanov@sberdevices.ru>
- 
- description: |
--  This controller is present on AW20036/AW20054/AW20072.
--  It is a 3x12/6x9/6x12 matrix LED programmed via
--  an I2C interface, up to 36/54/72 LEDs or 12/18/24 RGBs,
--  3 pattern controllers for auto breathing or group dimming control.
-+  It is a matrix LED driver programmed via an I2C interface. Devices have
-+  a set of individually controlled leds and support 3 pattern controllers
-+  for auto breathing or group dimming control. Supported devices:
-+    - AW20036 (3x12) 36 LEDs
-+    - AW20054 (6x9)  54 LEDs
-+    - AW20072 (6x12) 72 LEDs
-+    - AW20108 (9x12) 108 LEDs
- 
-   For more product information please see the link below:
-   aw20036 - https://www.awinic.com/en/productDetail/AW20036QNR#tech-docs
-   aw20054 - https://www.awinic.com/en/productDetail/AW20054QNR#tech-docs
-   aw20072 - https://www.awinic.com/en/productDetail/AW20072QNR#tech-docs
-+  aw20108 - https://www.awinic.com/en/productDetail/AW20108QNR#tech-docs
- 
- properties:
-   compatible:
-@@ -26,6 +30,7 @@ properties:
-       - awinic,aw20036
-       - awinic,aw20054
-       - awinic,aw20072
-+      - awinic,aw20108
- 
-   reg:
+@@ -45,7 +45,7 @@ properties:
      maxItems: 1
+ 
+ patternProperties:
+-  "^led@[0-9a-f]$":
++  "^led@[0-9a-f]+$":
+     type: object
+     $ref: common.yaml#
+     unevaluatedProperties: false
+@@ -69,6 +69,63 @@ patternProperties:
+           where max-current-switch-number is determinated by led configuration
+           and depends on how leds are physically connected to the led driver.
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: awinic,aw20036
++    then:
++      patternProperties:
++        "^led@[0-9a-f]+$":
++          properties:
++            reg:
++              items:
++                minimum: 0
++                maximum: 36
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: awinic,aw20054
++    then:
++      patternProperties:
++        "^led@[0-9a-f]+$":
++          properties:
++            reg:
++              items:
++                minimum: 0
++                maximum: 54
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: awinic,aw20072
++    then:
++      patternProperties:
++        "^led@[0-9a-f]+$":
++          properties:
++            reg:
++              items:
++                minimum: 0
++                maximum: 72
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: awinic,aw20108
++    then:
++      patternProperties:
++        "^led@[0-9a-f]+$":
++          properties:
++            reg:
++              items:
++                minimum: 0
++                maximum: 108
++
+ required:
+   - compatible
+   - reg
 -- 
 2.36.0
 
