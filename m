@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C217F8F8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 22:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B610B7F8F8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 22:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjKYVtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 16:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S229804AbjKYV4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 16:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYVtJ (ORCPT
+        with ESMTP id S229456AbjKYV4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 16:49:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C15101
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 13:49:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BBFC433C7;
-        Sat, 25 Nov 2023 21:49:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700948956;
-        bh=p01SNS2qZBDCVzSPkDLOFpFyded+GzvCX/9pasvl/5c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=p5EdWPOv9u1qJKMRE6lTDg9F6QiT6VyEGHnF+Dw7bajfbIxE1aBNMa0pu3hCgJeHy
-         uO+wXDbs6TC7LsZfDiQK/yGaL77QXcrH0ik5rJdbdFiVnjTTqLKfne2hQcV8UIBQZ3
-         1Cp5pPT+FXaP7AgvT7AnRJLgVhz4tQIzFu/X8j7NzTVP9jPKEFjrMgjm53gHDg1xxG
-         SV/6GuBLu3j1u9jjN+/yNHvMrU2t3zSHRMHlFgfrm1WvX/C+LsRDKN1hv+TrJ0GHfm
-         xnsIBiTzc5m8Nrn9GWPiXQvp89uCxZm00UmC7mMUQI+a8pnSPZOHzlPWgf6LohPEmS
-         HFwZaNWeT8Zzg==
-Date:   Sat, 25 Nov 2023 15:49:12 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] gcc-plugins: randstruct: Update code comment in
- relayout_struct()
-Message-ID: <ZWJr2MWDjXLHE8ap@work>
+        Sat, 25 Nov 2023 16:56:15 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581D7107;
+        Sat, 25 Nov 2023 13:56:21 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 487E41C0071; Sat, 25 Nov 2023 22:56:19 +0100 (CET)
+Date:   Sat, 25 Nov 2023 22:56:18 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/368] 6.1.64-rc3 review
+Message-ID: <ZWJtgohui8nAjhbC@duo.ucw.cz>
+References: <20231125194359.201910779@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="KKZDARlBP9GPFXfu"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231125194359.201910779@linuxfoundation.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update code comment to clarify that the only element whose layout is
-not randomized is a proper C99 flexible-array member. This update is
-complementary to commit 1ee60356c2dc ("gcc-plugins: randstruct: Only
-warn about true flexible arrays")
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- scripts/gcc-plugins/randomize_layout_plugin.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--KKZDARlBP9GPFXfu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins/randomize_layout_plugin.c
-index 910bd21d08f4..746ff2d272f2 100644
---- a/scripts/gcc-plugins/randomize_layout_plugin.c
-+++ b/scripts/gcc-plugins/randomize_layout_plugin.c
-@@ -339,8 +339,7 @@ static int relayout_struct(tree type)
- 
- 	/*
- 	 * enforce that we don't randomize the layout of the last
--	 * element of a struct if it's a 0 or 1-length array
--	 * or a proper flexible array
-+	 * element of a struct if it's a proper flexible array
- 	 */
- 	if (is_flexible_array(newtree[num_fields - 1])) {
- 		has_flexarray = true;
--- 
-2.34.1
+Hi!
 
+> This is the start of the stable review cycle for the 6.1.64 release.
+> There are 368 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+6.1.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--KKZDARlBP9GPFXfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZWJtggAKCRAw5/Bqldv6
+8qicAKCrwfxnsVEI5qr/j9KR65AouuOwhQCgnAOQ3LDZygcL1Ddg7PD7U/s7Hzs=
+=Yaqv
+-----END PGP SIGNATURE-----
+
+--KKZDARlBP9GPFXfu--
