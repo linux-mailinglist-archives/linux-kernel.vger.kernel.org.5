@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073637F8919
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7349F7F8920
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbjKYIQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:16:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S231823AbjKYIQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKYIQa (ORCPT
+        with ESMTP id S231759AbjKYIQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:16:30 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96034B7;
+        Sat, 25 Nov 2023 03:16:32 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1619D7;
         Sat, 25 Nov 2023 00:16:36 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Scl7417pxz4f3l79;
-        Sat, 25 Nov 2023 16:16:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scl716Jk4z4f3m7R;
+        Sat, 25 Nov 2023 16:16:29 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id E71AC1A09FE;
-        Sat, 25 Nov 2023 16:16:33 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTP id 3AB1B1A02E9;
+        Sat, 25 Nov 2023 16:16:34 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgCnqxFfrWFlP8KIBw--.32848S5;
-        Sat, 25 Nov 2023 16:16:33 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgCnqxFfrWFlP8KIBw--.32848S6;
+        Sat, 25 Nov 2023 16:16:34 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v3 1/5] md: remove flag RemoveSynchronized
-Date:   Sat, 25 Nov 2023 16:16:00 +0800
-Message-Id: <20231125081604.3939938-2-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v3 2/5] md/raid10: remove rcu protection to access rdev from conf
+Date:   Sat, 25 Nov 2023 16:16:01 +0800
+Message-Id: <20231125081604.3939938-3-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231125081604.3939938-1-yukuai1@huaweicloud.com>
 References: <20231125081604.3939938-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCnqxFfrWFlP8KIBw--.32848S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFW3tw1DWF15Ww45uFWrGrg_yoW7KFyfp3
-        93XFy3ur4DXw4Utw4DArW7CFyrJw1UtayUCryfu34fZa43AryDX34rJFy5Zr90vFZaya1j
-        vF1UJw4DGFyUGFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqAp5UUUUU=
+X-CM-TRANSID: cCh0CgCnqxFfrWFlP8KIBw--.32848S6
+X-Coremail-Antispam: 1UD129KBjvAXoWfZrWxtr4DAw4DAr13trWxXrb_yoW8tF18Go
+        Z5JwnxKw1fAr9YqrW7JF1ftrsrua45Awn3uw15GrWDCFWqgw4FywsxGr45Za4YqF1SqFyU
+        Xr9rXw4vqF43A3yxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYQ7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20EY4v20xva
+        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M28IrcIa0x
+        kI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84AC
+        jcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr
+        1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l4I
+        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
+        xVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
+        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8I
+        cIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8BMNUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
@@ -66,206 +66,719 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-rcu is not used correctly here, because synchronize_rcu() is called
-before replacing old value, for example:
+Because it's safe to accees rdev from conf:
+ - If any spinlock is held, because synchronize_rcu() from
+   md_kick_rdev_from_array() will prevent 'rdev' to be freed until
+   spinlock is released;
+ - If 'reconfig_lock' is held, because rdev can't be added or removed from
+   array;
+ - If there is normal IO inflight, because mddev_suspend() will prevent
+   rdev to be added or removed from array;
+ - If there is sync IO inflight, because 'MD_RECOVERY_RUNNING' is
+   checked in remove_and_add_spares().
 
-remove_and_add_spares   // other path
- synchronize_rcu
- // called before replacing old value
- set_bit(RemoveSynchronized)
-                        rcu_read_lock()
-                        rdev = conf->mirros[].rdev
- pers->hot_remove_disk
-  conf->mirros[].rdev = NULL;
-  if (!test_bit(RemoveSynchronized))
-   synchronize_rcu
-   /*
-    * won't be called, and won't wait
-    * for concurrent readers to be done.
-    */
-                        // access rdev after remove_and_add_spares()
-                        rcu_read_unlock()
+And these will cover all the scenarios in raid10.
 
-Fortunately, there is a separate rcu protection to prevent such rdev
-to be freed:
-
-md_kick_rdev_from_array		//other path
-				rcu_read_lock()
-				rdev = conf->mirros[].rdev
-list_del_rcu(&rdev->same_set)
-
-				rcu_read_unlock()
-				/*
-				 * rdev can be removed from conf, but
-				 * rdev won't be freed.
-				 */
-synchronize_rcu()
-free rdev
-
-Hence remove this useless flag and prepare to remove rcu protection to
-access rdev from 'conf'.
+This patch also cleanup the code to handle the case that replacement
+replace rdev while IO is still inflight.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md-multipath.c |  9 ---------
- drivers/md/md.c           | 37 ++++++-------------------------------
- drivers/md/md.h           |  5 -----
- drivers/md/raid1.c        |  9 ---------
- drivers/md/raid10.c       |  9 ---------
- drivers/md/raid5.c        |  9 ---------
- 6 files changed, 6 insertions(+), 72 deletions(-)
+ drivers/md/raid10.c | 213 ++++++++++++--------------------------------
+ 1 file changed, 58 insertions(+), 155 deletions(-)
 
-diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
-index d22276870283..aa77133f3188 100644
---- a/drivers/md/md-multipath.c
-+++ b/drivers/md/md-multipath.c
-@@ -258,15 +258,6 @@ static int multipath_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 			goto abort;
- 		}
- 		p->rdev = NULL;
--		if (!test_bit(RemoveSynchronized, &rdev->flags)) {
--			synchronize_rcu();
--			if (atomic_read(&rdev->nr_pending)) {
--				/* lost the race, try later */
--				err = -EBUSY;
--				p->rdev = rdev;
--				goto abort;
--			}
--		}
- 		err = md_integrity_register(mddev);
- 	}
- abort:
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 2ffedc39edd6..0c246397d637 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9251,44 +9251,19 @@ static int remove_and_add_spares(struct mddev *mddev,
- 	struct md_rdev *rdev;
- 	int spares = 0;
- 	int removed = 0;
--	bool remove_some = false;
- 
- 	if (this && test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
- 		/* Mustn't remove devices when resync thread is running */
- 		return 0;
- 
- 	rdev_for_each(rdev, mddev) {
--		if ((this == NULL || rdev == this) &&
--		    rdev->raid_disk >= 0 &&
--		    !test_bit(Blocked, &rdev->flags) &&
--		    test_bit(Faulty, &rdev->flags) &&
--		    atomic_read(&rdev->nr_pending)==0) {
--			/* Faulty non-Blocked devices with nr_pending == 0
--			 * never get nr_pending incremented,
--			 * never get Faulty cleared, and never get Blocked set.
--			 * So we can synchronize_rcu now rather than once per device
--			 */
--			remove_some = true;
--			set_bit(RemoveSynchronized, &rdev->flags);
--		}
--	}
--
--	if (remove_some)
--		synchronize_rcu();
--	rdev_for_each(rdev, mddev) {
--		if ((this == NULL || rdev == this) &&
--		    (test_bit(RemoveSynchronized, &rdev->flags) ||
--		     rdev_removeable(rdev))) {
--			if (mddev->pers->hot_remove_disk(
--				    mddev, rdev) == 0) {
--				sysfs_unlink_rdev(mddev, rdev);
--				rdev->saved_raid_disk = rdev->raid_disk;
--				rdev->raid_disk = -1;
--				removed++;
--			}
-+		if ((this == NULL || rdev == this) && rdev_removeable(rdev) &&
-+		    !mddev->pers->hot_remove_disk(mddev, rdev)) {
-+			sysfs_unlink_rdev(mddev, rdev);
-+			rdev->saved_raid_disk = rdev->raid_disk;
-+			rdev->raid_disk = -1;
-+			removed++;
- 		}
--		if (remove_some && test_bit(RemoveSynchronized, &rdev->flags))
--			clear_bit(RemoveSynchronized, &rdev->flags);
- 	}
- 
- 	if (removed && mddev->kobj.sd)
-diff --git a/drivers/md/md.h b/drivers/md/md.h
-index 20f3f96cf4c1..b80f87bfa36c 100644
---- a/drivers/md/md.h
-+++ b/drivers/md/md.h
-@@ -189,11 +189,6 @@ enum flag_bits {
- 				 * than other devices in the array
- 				 */
- 	ClusterRemove,
--	RemoveSynchronized,	/* synchronize_rcu() was called after
--				 * this device was known to be faulty,
--				 * so it is safe to remove without
--				 * another synchronize_rcu() call.
--				 */
- 	ExternalBbl,            /* External metadata provides bad
- 				 * block management for a disk
- 				 */
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 35d12948e0a9..a678e0e6e102 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1863,15 +1863,6 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 			goto abort;
- 		}
- 		p->rdev = NULL;
--		if (!test_bit(RemoveSynchronized, &rdev->flags)) {
--			synchronize_rcu();
--			if (atomic_read(&rdev->nr_pending)) {
--				/* lost the race, try later */
--				err = -EBUSY;
--				p->rdev = rdev;
--				goto abort;
--			}
--		}
- 		if (conf->mirrors[conf->raid_disks + number].rdev) {
- 			/* We just removed a device that is being replaced.
- 			 * Move down the replacement.  We drain all IO before
 diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index a5927e98dc67..132a79523338 100644
+index 132a79523338..375c11d6159f 100644
 --- a/drivers/md/raid10.c
 +++ b/drivers/md/raid10.c
-@@ -2247,15 +2247,6 @@ static int raid10_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+@@ -743,7 +743,6 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+ 	struct geom *geo = &conf->geo;
+ 
+ 	raid10_find_phys(conf, r10_bio);
+-	rcu_read_lock();
+ 	best_dist_slot = -1;
+ 	min_pending = UINT_MAX;
+ 	best_dist_rdev = NULL;
+@@ -775,18 +774,11 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+ 		if (r10_bio->devs[slot].bio == IO_BLOCKED)
+ 			continue;
+ 		disk = r10_bio->devs[slot].devnum;
+-		rdev = rcu_dereference(conf->mirrors[disk].replacement);
++		rdev = conf->mirrors[disk].replacement;
+ 		if (rdev == NULL || test_bit(Faulty, &rdev->flags) ||
+ 		    r10_bio->devs[slot].addr + sectors >
+-		    rdev->recovery_offset) {
+-			/*
+-			 * Read replacement first to prevent reading both rdev
+-			 * and replacement as NULL during replacement replace
+-			 * rdev.
+-			 */
+-			smp_mb();
+-			rdev = rcu_dereference(conf->mirrors[disk].rdev);
+-		}
++		    rdev->recovery_offset)
++			rdev = conf->mirrors[disk].rdev;
+ 		if (rdev == NULL ||
+ 		    test_bit(Faulty, &rdev->flags))
+ 			continue;
+@@ -876,7 +868,6 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+ 		r10_bio->read_slot = slot;
+ 	} else
+ 		rdev = NULL;
+-	rcu_read_unlock();
+ 	*max_sectors = best_good_sectors;
+ 
+ 	return rdev;
+@@ -1198,9 +1189,8 @@ static void raid10_read_request(struct mddev *mddev, struct bio *bio,
+ 		 */
+ 		gfp = GFP_NOIO | __GFP_HIGH;
+ 
+-		rcu_read_lock();
+ 		disk = r10_bio->devs[slot].devnum;
+-		err_rdev = rcu_dereference(conf->mirrors[disk].rdev);
++		err_rdev = conf->mirrors[disk].rdev;
+ 		if (err_rdev)
+ 			snprintf(b, sizeof(b), "%pg", err_rdev->bdev);
+ 		else {
+@@ -1208,7 +1198,6 @@ static void raid10_read_request(struct mddev *mddev, struct bio *bio,
+ 			/* This never gets dereferenced */
+ 			err_rdev = r10_bio->devs[slot].rdev;
+ 		}
+-		rcu_read_unlock();
+ 	}
+ 
+ 	if (!regular_request_wait(mddev, conf, bio, r10_bio->sectors))
+@@ -1279,15 +1268,8 @@ static void raid10_write_one_disk(struct mddev *mddev, struct r10bio *r10_bio,
+ 	int devnum = r10_bio->devs[n_copy].devnum;
+ 	struct bio *mbio;
+ 
+-	if (replacement) {
+-		rdev = conf->mirrors[devnum].replacement;
+-		if (rdev == NULL) {
+-			/* Replacement just got moved to main 'rdev' */
+-			smp_mb();
+-			rdev = conf->mirrors[devnum].rdev;
+-		}
+-	} else
+-		rdev = conf->mirrors[devnum].rdev;
++	rdev = replacement ? conf->mirrors[devnum].replacement :
++			     conf->mirrors[devnum].rdev;
+ 
+ 	mbio = bio_alloc_clone(rdev->bdev, bio, GFP_NOIO, &mddev->bio_set);
+ 	if (replacement)
+@@ -1321,25 +1303,6 @@ static void raid10_write_one_disk(struct mddev *mddev, struct r10bio *r10_bio,
+ 	}
+ }
+ 
+-static struct md_rdev *dereference_rdev_and_rrdev(struct raid10_info *mirror,
+-						  struct md_rdev **prrdev)
+-{
+-	struct md_rdev *rdev, *rrdev;
+-
+-	rrdev = rcu_dereference(mirror->replacement);
+-	/*
+-	 * Read replacement first to prevent reading both rdev and
+-	 * replacement as NULL during replacement replace rdev.
+-	 */
+-	smp_mb();
+-	rdev = rcu_dereference(mirror->rdev);
+-	if (rdev == rrdev)
+-		rrdev = NULL;
+-
+-	*prrdev = rrdev;
+-	return rdev;
+-}
+-
+ static void wait_blocked_dev(struct mddev *mddev, struct r10bio *r10_bio)
+ {
+ 	int i;
+@@ -1348,11 +1311,11 @@ static void wait_blocked_dev(struct mddev *mddev, struct r10bio *r10_bio)
+ 
+ retry_wait:
+ 	blocked_rdev = NULL;
+-	rcu_read_lock();
+ 	for (i = 0; i < conf->copies; i++) {
+ 		struct md_rdev *rdev, *rrdev;
+ 
+-		rdev = dereference_rdev_and_rrdev(&conf->mirrors[i], &rrdev);
++		rdev = conf->mirrors[i].rdev;
++		rrdev = conf->mirrors[i].replacement;
+ 		if (rdev && unlikely(test_bit(Blocked, &rdev->flags))) {
+ 			atomic_inc(&rdev->nr_pending);
+ 			blocked_rdev = rdev;
+@@ -1391,7 +1354,6 @@ static void wait_blocked_dev(struct mddev *mddev, struct r10bio *r10_bio)
+ 			}
+ 		}
+ 	}
+-	rcu_read_unlock();
+ 
+ 	if (unlikely(blocked_rdev)) {
+ 		/* Have to wait for this device to get unblocked, then retry */
+@@ -1474,14 +1436,14 @@ static void raid10_write_request(struct mddev *mddev, struct bio *bio,
+ 
+ 	wait_blocked_dev(mddev, r10_bio);
+ 
+-	rcu_read_lock();
+ 	max_sectors = r10_bio->sectors;
+ 
+ 	for (i = 0;  i < conf->copies; i++) {
+ 		int d = r10_bio->devs[i].devnum;
+ 		struct md_rdev *rdev, *rrdev;
+ 
+-		rdev = dereference_rdev_and_rrdev(&conf->mirrors[d], &rrdev);
++		rdev = conf->mirrors[d].rdev;
++		rrdev = conf->mirrors[d].replacement;
+ 		if (rdev && (test_bit(Faulty, &rdev->flags)))
+ 			rdev = NULL;
+ 		if (rrdev && (test_bit(Faulty, &rrdev->flags)))
+@@ -1535,7 +1497,6 @@ static void raid10_write_request(struct mddev *mddev, struct bio *bio,
+ 			atomic_inc(&rrdev->nr_pending);
+ 		}
+ 	}
+-	rcu_read_unlock();
+ 
+ 	if (max_sectors < r10_bio->sectors)
+ 		r10_bio->sectors = max_sectors;
+@@ -1625,17 +1586,8 @@ static void raid10_end_discard_request(struct bio *bio)
+ 		set_bit(R10BIO_Uptodate, &r10_bio->state);
+ 
+ 	dev = find_bio_disk(conf, r10_bio, bio, &slot, &repl);
+-	if (repl)
+-		rdev = conf->mirrors[dev].replacement;
+-	if (!rdev) {
+-		/*
+-		 * raid10_remove_disk uses smp_mb to make sure rdev is set to
+-		 * replacement before setting replacement to NULL. It can read
+-		 * rdev first without barrier protect even replacement is NULL
+-		 */
+-		smp_rmb();
+-		rdev = conf->mirrors[dev].rdev;
+-	}
++	rdev = repl ? conf->mirrors[dev].replacement :
++		      conf->mirrors[dev].rdev;
+ 
+ 	raid_end_discard_bio(r10_bio);
+ 	rdev_dec_pending(rdev, conf->mddev);
+@@ -1785,11 +1737,11 @@ static int raid10_handle_discard(struct mddev *mddev, struct bio *bio)
+ 	 * inc refcount on their rdev.  Record them by setting
+ 	 * bios[x] to bio
+ 	 */
+-	rcu_read_lock();
+ 	for (disk = 0; disk < geo->raid_disks; disk++) {
+ 		struct md_rdev *rdev, *rrdev;
+ 
+-		rdev = dereference_rdev_and_rrdev(&conf->mirrors[disk], &rrdev);
++		rdev = conf->mirrors[disk].rdev;
++		rrdev = conf->mirrors[disk].replacement;
+ 		r10_bio->devs[disk].bio = NULL;
+ 		r10_bio->devs[disk].repl_bio = NULL;
+ 
+@@ -1809,7 +1761,6 @@ static int raid10_handle_discard(struct mddev *mddev, struct bio *bio)
+ 			atomic_inc(&rrdev->nr_pending);
+ 		}
+ 	}
+-	rcu_read_unlock();
+ 
+ 	atomic_set(&r10_bio->remaining, 1);
+ 	for (disk = 0; disk < geo->raid_disks; disk++) {
+@@ -1939,6 +1890,8 @@ static void raid10_status(struct seq_file *seq, struct mddev *mddev)
+ 	struct r10conf *conf = mddev->private;
+ 	int i;
+ 
++	lockdep_assert_held(&mddev->lock);
++
+ 	if (conf->geo.near_copies < conf->geo.raid_disks)
+ 		seq_printf(seq, " %dK chunks", mddev->chunk_sectors / 2);
+ 	if (conf->geo.near_copies > 1)
+@@ -1953,12 +1906,11 @@ static void raid10_status(struct seq_file *seq, struct mddev *mddev)
+ 	}
+ 	seq_printf(seq, " [%d/%d] [", conf->geo.raid_disks,
+ 					conf->geo.raid_disks - mddev->degraded);
+-	rcu_read_lock();
+ 	for (i = 0; i < conf->geo.raid_disks; i++) {
+-		struct md_rdev *rdev = rcu_dereference(conf->mirrors[i].rdev);
++		struct md_rdev *rdev = READ_ONCE(conf->mirrors[i].rdev);
++
+ 		seq_printf(seq, "%s", rdev && test_bit(In_sync, &rdev->flags) ? "U" : "_");
+ 	}
+-	rcu_read_unlock();
+ 	seq_printf(seq, "]");
+ }
+ 
+@@ -1980,7 +1932,6 @@ static int _enough(struct r10conf *conf, int previous, int ignore)
+ 		ncopies = conf->geo.near_copies;
+ 	}
+ 
+-	rcu_read_lock();
+ 	do {
+ 		int n = conf->copies;
+ 		int cnt = 0;
+@@ -1988,7 +1939,7 @@ static int _enough(struct r10conf *conf, int previous, int ignore)
+ 		while (n--) {
+ 			struct md_rdev *rdev;
+ 			if (this != ignore &&
+-			    (rdev = rcu_dereference(conf->mirrors[this].rdev)) &&
++			    (rdev = conf->mirrors[this].rdev) &&
+ 			    test_bit(In_sync, &rdev->flags))
+ 				cnt++;
+ 			this = (this+1) % disks;
+@@ -1999,7 +1950,6 @@ static int _enough(struct r10conf *conf, int previous, int ignore)
+ 	} while (first != 0);
+ 	has_enough = 1;
+ out:
+-	rcu_read_unlock();
+ 	return has_enough;
+ }
+ 
+@@ -2072,8 +2022,7 @@ static void print_conf(struct r10conf *conf)
+ 	pr_debug(" --- wd:%d rd:%d\n", conf->geo.raid_disks - conf->mddev->degraded,
+ 		 conf->geo.raid_disks);
+ 
+-	/* This is only called with ->reconfix_mutex held, so
+-	 * rcu protection of rdev is not needed */
++	lockdep_assert_held(&conf->mddev->reconfig_mutex);
+ 	for (i = 0; i < conf->geo.raid_disks; i++) {
+ 		rdev = conf->mirrors[i].rdev;
+ 		if (rdev)
+@@ -2190,7 +2139,7 @@ static int raid10_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 		err = 0;
+ 		if (rdev->saved_raid_disk != mirror)
+ 			conf->fullsync = 1;
+-		rcu_assign_pointer(p->rdev, rdev);
++		WRITE_ONCE(p->rdev, rdev);
+ 		break;
+ 	}
+ 
+@@ -2204,7 +2153,7 @@ static int raid10_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 			disk_stack_limits(mddev->gendisk, rdev->bdev,
+ 					  rdev->data_offset << 9);
+ 		conf->fullsync = 1;
+-		rcu_assign_pointer(p->replacement, rdev);
++		WRITE_ONCE(p->replacement, rdev);
+ 	}
+ 
+ 	print_conf(conf);
+@@ -2246,15 +2195,12 @@ static int raid10_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 		err = -EBUSY;
  		goto abort;
  	}
- 	*rdevp = NULL;
--	if (!test_bit(RemoveSynchronized, &rdev->flags)) {
--		synchronize_rcu();
--		if (atomic_read(&rdev->nr_pending)) {
--			/* lost the race, try later */
--			err = -EBUSY;
--			*rdevp = rdev;
--			goto abort;
--		}
--	}
+-	*rdevp = NULL;
++	WRITE_ONCE(*rdevp, NULL);
  	if (p->replacement) {
  		/* We must have just cleared 'rdev' */
- 		p->rdev = p->replacement;
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index ec6cb8185207..fb009e3df132 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -8232,15 +8232,6 @@ static int raid5_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 		goto abort;
+-		p->rdev = p->replacement;
++		WRITE_ONCE(p->rdev, p->replacement);
+ 		clear_bit(Replacement, &p->replacement->flags);
+-		smp_mb(); /* Make sure other CPUs may see both as identical
+-			   * but will never see neither -- if they are careful.
+-			   */
+-		p->replacement = NULL;
++		WRITE_ONCE(p->replacement, NULL);
  	}
- 	*rdevp = NULL;
--	if (!test_bit(RemoveSynchronized, &rdev->flags)) {
--		lockdep_assert_held(&mddev->reconfig_mutex);
--		synchronize_rcu();
--		if (atomic_read(&rdev->nr_pending)) {
--			/* lost the race, try later */
--			err = -EBUSY;
--			rcu_assign_pointer(*rdevp, rdev);
+ 
+ 	clear_bit(WantReplacement, &rdev->flags);
+@@ -2754,20 +2700,18 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 		if (s > (PAGE_SIZE>>9))
+ 			s = PAGE_SIZE >> 9;
+ 
+-		rcu_read_lock();
+ 		do {
+ 			sector_t first_bad;
+ 			int bad_sectors;
+ 
+ 			d = r10_bio->devs[sl].devnum;
+-			rdev = rcu_dereference(conf->mirrors[d].rdev);
++			rdev = conf->mirrors[d].rdev;
+ 			if (rdev &&
+ 			    test_bit(In_sync, &rdev->flags) &&
+ 			    !test_bit(Faulty, &rdev->flags) &&
+ 			    is_badblock(rdev, r10_bio->devs[sl].addr + sect, s,
+ 					&first_bad, &bad_sectors) == 0) {
+ 				atomic_inc(&rdev->nr_pending);
+-				rcu_read_unlock();
+ 				success = sync_page_io(rdev,
+ 						       r10_bio->devs[sl].addr +
+ 						       sect,
+@@ -2775,7 +2719,6 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 						       conf->tmppage,
+ 						       REQ_OP_READ, false);
+ 				rdev_dec_pending(rdev, mddev);
+-				rcu_read_lock();
+ 				if (success)
+ 					break;
+ 			}
+@@ -2783,7 +2726,6 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 			if (sl == conf->copies)
+ 				sl = 0;
+ 		} while (sl != slot);
+-		rcu_read_unlock();
+ 
+ 		if (!success) {
+ 			/* Cannot read from anywhere, just mark the block
+@@ -2807,20 +2749,18 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 
+ 		start = sl;
+ 		/* write it back and re-read */
+-		rcu_read_lock();
+ 		while (sl != slot) {
+ 			if (sl==0)
+ 				sl = conf->copies;
+ 			sl--;
+ 			d = r10_bio->devs[sl].devnum;
+-			rdev = rcu_dereference(conf->mirrors[d].rdev);
++			rdev = conf->mirrors[d].rdev;
+ 			if (!rdev ||
+ 			    test_bit(Faulty, &rdev->flags) ||
+ 			    !test_bit(In_sync, &rdev->flags))
+ 				continue;
+ 
+ 			atomic_inc(&rdev->nr_pending);
+-			rcu_read_unlock();
+ 			if (r10_sync_page_io(rdev,
+ 					     r10_bio->devs[sl].addr +
+ 					     sect,
+@@ -2839,7 +2779,6 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 					  rdev->bdev);
+ 			}
+ 			rdev_dec_pending(rdev, mddev);
+-			rcu_read_lock();
+ 		}
+ 		sl = start;
+ 		while (sl != slot) {
+@@ -2847,14 +2786,13 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 				sl = conf->copies;
+ 			sl--;
+ 			d = r10_bio->devs[sl].devnum;
+-			rdev = rcu_dereference(conf->mirrors[d].rdev);
++			rdev = conf->mirrors[d].rdev;
+ 			if (!rdev ||
+ 			    test_bit(Faulty, &rdev->flags) ||
+ 			    !test_bit(In_sync, &rdev->flags))
+ 				continue;
+ 
+ 			atomic_inc(&rdev->nr_pending);
+-			rcu_read_unlock();
+ 			switch (r10_sync_page_io(rdev,
+ 					     r10_bio->devs[sl].addr +
+ 					     sect,
+@@ -2882,9 +2820,7 @@ static void fix_read_error(struct r10conf *conf, struct mddev *mddev, struct r10
+ 			}
+ 
+ 			rdev_dec_pending(rdev, mddev);
+-			rcu_read_lock();
+ 		}
+-		rcu_read_unlock();
+ 
+ 		sectors -= s;
+ 		sect += s;
+@@ -3358,14 +3294,13 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 				/* Completed a full sync so the replacements
+ 				 * are now fully recovered.
+ 				 */
+-				rcu_read_lock();
+ 				for (i = 0; i < conf->geo.raid_disks; i++) {
+ 					struct md_rdev *rdev =
+-						rcu_dereference(conf->mirrors[i].replacement);
++						conf->mirrors[i].replacement;
++
+ 					if (rdev)
+ 						rdev->recovery_offset = MaxSector;
+ 				}
+-				rcu_read_unlock();
+ 			}
+ 			conf->fullsync = 0;
+ 		}
+@@ -3446,9 +3381,8 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 			struct raid10_info *mirror = &conf->mirrors[i];
+ 			struct md_rdev *mrdev, *mreplace;
+ 
+-			rcu_read_lock();
+-			mrdev = rcu_dereference(mirror->rdev);
+-			mreplace = rcu_dereference(mirror->replacement);
++			mrdev = mirror->rdev;
++			mreplace = mirror->replacement;
+ 
+ 			if (mrdev && (test_bit(Faulty, &mrdev->flags) ||
+ 			    test_bit(In_sync, &mrdev->flags)))
+@@ -3456,22 +3390,18 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 			if (mreplace && test_bit(Faulty, &mreplace->flags))
+ 				mreplace = NULL;
+ 
+-			if (!mrdev && !mreplace) {
+-				rcu_read_unlock();
++			if (!mrdev && !mreplace)
+ 				continue;
+-			}
+ 
+ 			still_degraded = 0;
+ 			/* want to reconstruct this device */
+ 			rb2 = r10_bio;
+ 			sect = raid10_find_virt(conf, sector_nr, i);
+-			if (sect >= mddev->resync_max_sectors) {
++			if (sect >= mddev->resync_max_sectors)
+ 				/* last stripe is not complete - don't
+ 				 * try to recover this sector.
+ 				 */
+-				rcu_read_unlock();
+ 				continue;
+-			}
+ 			/* Unless we are doing a full sync, or a replacement
+ 			 * we only need to recover the block if it is set in
+ 			 * the bitmap
+@@ -3487,14 +3417,12 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 				 * that there will never be anything to do here
+ 				 */
+ 				chunks_skipped = -1;
+-				rcu_read_unlock();
+ 				continue;
+ 			}
+ 			if (mrdev)
+ 				atomic_inc(&mrdev->nr_pending);
+ 			if (mreplace)
+ 				atomic_inc(&mreplace->nr_pending);
+-			rcu_read_unlock();
+ 
+ 			r10_bio = raid10_alloc_init_r10buf(conf);
+ 			r10_bio->state = 0;
+@@ -3513,10 +3441,9 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 			/* Need to check if the array will still be
+ 			 * degraded
+ 			 */
+-			rcu_read_lock();
+ 			for (j = 0; j < conf->geo.raid_disks; j++) {
+-				struct md_rdev *rdev = rcu_dereference(
+-					conf->mirrors[j].rdev);
++				struct md_rdev *rdev = conf->mirrors[j].rdev;
++
+ 				if (rdev == NULL || test_bit(Faulty, &rdev->flags)) {
+ 					still_degraded = 1;
+ 					break;
+@@ -3531,8 +3458,7 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 				int k;
+ 				int d = r10_bio->devs[j].devnum;
+ 				sector_t from_addr, to_addr;
+-				struct md_rdev *rdev =
+-					rcu_dereference(conf->mirrors[d].rdev);
++				struct md_rdev *rdev = conf->mirrors[d].rdev;
+ 				sector_t sector, first_bad;
+ 				int bad_sectors;
+ 				if (!rdev ||
+@@ -3611,7 +3537,6 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 				atomic_inc(&r10_bio->remaining);
+ 				break;
+ 			}
+-			rcu_read_unlock();
+ 			if (j == conf->copies) {
+ 				/* Cannot recover, so abort the recovery or
+ 				 * record a bad block */
+@@ -3738,12 +3663,10 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 
+ 			bio = r10_bio->devs[i].bio;
+ 			bio->bi_status = BLK_STS_IOERR;
+-			rcu_read_lock();
+-			rdev = rcu_dereference(conf->mirrors[d].rdev);
+-			if (rdev == NULL || test_bit(Faulty, &rdev->flags)) {
+-				rcu_read_unlock();
++			rdev = conf->mirrors[d].rdev;
++			if (rdev == NULL || test_bit(Faulty, &rdev->flags))
+ 				continue;
+-			}
++
+ 			sector = r10_bio->devs[i].addr;
+ 			if (is_badblock(rdev, sector, max_sync,
+ 					&first_bad, &bad_sectors)) {
+@@ -3753,7 +3676,6 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 					bad_sectors -= (sector - first_bad);
+ 					if (max_sync > bad_sectors)
+ 						max_sync = bad_sectors;
+-					rcu_read_unlock();
+ 					continue;
+ 				}
+ 			}
+@@ -3769,11 +3691,10 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 			bio_set_dev(bio, rdev->bdev);
+ 			count++;
+ 
+-			rdev = rcu_dereference(conf->mirrors[d].replacement);
+-			if (rdev == NULL || test_bit(Faulty, &rdev->flags)) {
+-				rcu_read_unlock();
++			rdev = conf->mirrors[d].replacement;
++			if (rdev == NULL || test_bit(Faulty, &rdev->flags))
+ 				continue;
+-			}
++
+ 			atomic_inc(&rdev->nr_pending);
+ 
+ 			/* Need to set up for writing to the replacement */
+@@ -3790,7 +3711,6 @@ static sector_t raid10_sync_request(struct mddev *mddev, sector_t sector_nr,
+ 			bio->bi_iter.bi_sector = sector + rdev->data_offset;
+ 			bio_set_dev(bio, rdev->bdev);
+ 			count++;
+-			rcu_read_unlock();
+ 		}
+ 
+ 		if (count < 2) {
+@@ -4500,11 +4420,11 @@ static int calc_degraded(struct r10conf *conf)
+ 	int degraded, degraded2;
+ 	int i;
+ 
+-	rcu_read_lock();
+ 	degraded = 0;
+ 	/* 'prev' section first */
+ 	for (i = 0; i < conf->prev.raid_disks; i++) {
+-		struct md_rdev *rdev = rcu_dereference(conf->mirrors[i].rdev);
++		struct md_rdev *rdev = conf->mirrors[i].rdev;
++
+ 		if (!rdev || test_bit(Faulty, &rdev->flags))
+ 			degraded++;
+ 		else if (!test_bit(In_sync, &rdev->flags))
+@@ -4514,13 +4434,12 @@ static int calc_degraded(struct r10conf *conf)
+ 			 */
+ 			degraded++;
+ 	}
+-	rcu_read_unlock();
+ 	if (conf->geo.raid_disks == conf->prev.raid_disks)
+ 		return degraded;
+-	rcu_read_lock();
+ 	degraded2 = 0;
+ 	for (i = 0; i < conf->geo.raid_disks; i++) {
+-		struct md_rdev *rdev = rcu_dereference(conf->mirrors[i].rdev);
++		struct md_rdev *rdev = conf->mirrors[i].rdev;
++
+ 		if (!rdev || test_bit(Faulty, &rdev->flags))
+ 			degraded2++;
+ 		else if (!test_bit(In_sync, &rdev->flags)) {
+@@ -4533,7 +4452,6 @@ static int calc_degraded(struct r10conf *conf)
+ 				degraded2++;
+ 		}
+ 	}
+-	rcu_read_unlock();
+ 	if (degraded2 > degraded)
+ 		return degraded2;
+ 	return degraded;
+@@ -4965,16 +4883,15 @@ static sector_t reshape_request(struct mddev *mddev, sector_t sector_nr,
+ 	blist = read_bio;
+ 	read_bio->bi_next = NULL;
+ 
+-	rcu_read_lock();
+ 	for (s = 0; s < conf->copies*2; s++) {
+ 		struct bio *b;
+ 		int d = r10_bio->devs[s/2].devnum;
+ 		struct md_rdev *rdev2;
+ 		if (s&1) {
+-			rdev2 = rcu_dereference(conf->mirrors[d].replacement);
++			rdev2 = conf->mirrors[d].replacement;
+ 			b = r10_bio->devs[s/2].repl_bio;
+ 		} else {
+-			rdev2 = rcu_dereference(conf->mirrors[d].rdev);
++			rdev2 = conf->mirrors[d].rdev;
+ 			b = r10_bio->devs[s/2].bio;
+ 		}
+ 		if (!rdev2 || test_bit(Faulty, &rdev2->flags))
+@@ -5008,7 +4925,6 @@ static sector_t reshape_request(struct mddev *mddev, sector_t sector_nr,
+ 		sector_nr += len >> 9;
+ 		nr_sectors += len >> 9;
+ 	}
+-	rcu_read_unlock();
+ 	r10_bio->sectors = nr_sectors;
+ 
+ 	/* Now submit the read */
+@@ -5061,20 +4977,17 @@ static void reshape_request_write(struct mddev *mddev, struct r10bio *r10_bio)
+ 		struct bio *b;
+ 		int d = r10_bio->devs[s/2].devnum;
+ 		struct md_rdev *rdev;
+-		rcu_read_lock();
+ 		if (s&1) {
+-			rdev = rcu_dereference(conf->mirrors[d].replacement);
++			rdev = conf->mirrors[d].replacement;
+ 			b = r10_bio->devs[s/2].repl_bio;
+ 		} else {
+-			rdev = rcu_dereference(conf->mirrors[d].rdev);
++			rdev = conf->mirrors[d].rdev;
+ 			b = r10_bio->devs[s/2].bio;
+ 		}
+-		if (!rdev || test_bit(Faulty, &rdev->flags)) {
+-			rcu_read_unlock();
++		if (!rdev || test_bit(Faulty, &rdev->flags))
+ 			continue;
 -		}
++
+ 		atomic_inc(&rdev->nr_pending);
+-		rcu_read_unlock();
+ 		md_sync_acct_bio(b, r10_bio->sectors);
+ 		atomic_inc(&r10_bio->remaining);
+ 		b->bi_next = NULL;
+@@ -5145,10 +5058,9 @@ static int handle_reshape_read_error(struct mddev *mddev,
+ 		if (s > (PAGE_SIZE >> 9))
+ 			s = PAGE_SIZE >> 9;
+ 
+-		rcu_read_lock();
+ 		while (!success) {
+ 			int d = r10b->devs[slot].devnum;
+-			struct md_rdev *rdev = rcu_dereference(conf->mirrors[d].rdev);
++			struct md_rdev *rdev = conf->mirrors[d].rdev;
+ 			sector_t addr;
+ 			if (rdev == NULL ||
+ 			    test_bit(Faulty, &rdev->flags) ||
+@@ -5157,14 +5069,12 @@ static int handle_reshape_read_error(struct mddev *mddev,
+ 
+ 			addr = r10b->devs[slot].addr + idx * PAGE_SIZE;
+ 			atomic_inc(&rdev->nr_pending);
+-			rcu_read_unlock();
+ 			success = sync_page_io(rdev,
+ 					       addr,
+ 					       s << 9,
+ 					       pages[idx],
+ 					       REQ_OP_READ, false);
+ 			rdev_dec_pending(rdev, mddev);
+-			rcu_read_lock();
+ 			if (success)
+ 				break;
+ 		failed:
+@@ -5174,7 +5084,6 @@ static int handle_reshape_read_error(struct mddev *mddev,
+ 			if (slot == first_slot)
+ 				break;
+ 		}
+-		rcu_read_unlock();
+ 		if (!success) {
+ 			/* couldn't read this block, must give up */
+ 			set_bit(MD_RECOVERY_INTR,
+@@ -5200,12 +5109,8 @@ static void end_reshape_write(struct bio *bio)
+ 	struct md_rdev *rdev = NULL;
+ 
+ 	d = find_bio_disk(conf, r10_bio, bio, &slot, &repl);
+-	if (repl)
+-		rdev = conf->mirrors[d].replacement;
+-	if (!rdev) {
+-		smp_mb();
+-		rdev = conf->mirrors[d].rdev;
 -	}
- 	if (!err) {
- 		err = log_modify(conf, rdev, false);
- 		if (err)
++	rdev = repl ? conf->mirrors[d].replacement :
++		      conf->mirrors[d].rdev;
+ 
+ 	if (bio->bi_status) {
+ 		/* FIXME should record badblock */
+@@ -5240,18 +5145,16 @@ static void raid10_finish_reshape(struct mddev *mddev)
+ 		mddev->resync_max_sectors = mddev->array_sectors;
+ 	} else {
+ 		int d;
+-		rcu_read_lock();
+ 		for (d = conf->geo.raid_disks ;
+ 		     d < conf->geo.raid_disks - mddev->delta_disks;
+ 		     d++) {
+-			struct md_rdev *rdev = rcu_dereference(conf->mirrors[d].rdev);
++			struct md_rdev *rdev = conf->mirrors[d].rdev;
+ 			if (rdev)
+ 				clear_bit(In_sync, &rdev->flags);
+-			rdev = rcu_dereference(conf->mirrors[d].replacement);
++			rdev = conf->mirrors[d].replacement;
+ 			if (rdev)
+ 				clear_bit(In_sync, &rdev->flags);
+ 		}
+-		rcu_read_unlock();
+ 	}
+ 	mddev->layout = mddev->new_layout;
+ 	mddev->chunk_sectors = 1 << conf->geo.chunk_shift;
 -- 
 2.39.2
 
