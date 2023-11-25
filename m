@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF7C7F8CE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416687F8CE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbjKYRqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 12:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S231697AbjKYRrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 12:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbjKYRqm (ORCPT
+        with ESMTP id S230169AbjKYRrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 12:46:42 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925A6127;
-        Sat, 25 Nov 2023 09:46:48 -0800 (PST)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AP4ek2x032078;
-        Sat, 25 Nov 2023 18:46:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=YgwDhWRiHXXOSB0ComoQD4DlrpUixDI/UziY9MZKeIM=; b=xc
-        Cp3+kLTmPPl7tn6XXuhabrMKkdZQEf2dgR6/hfBI5jMHJ9R6dQeSuf+96hEUDQk1
-        Tp0a25tgSoo2rAVcvgH9ixpDYwvAJ2gIBQss3Qlflwz4jDfPVkJs+lstFeekQSi+
-        W+05Qo/5O+lscQiNqeW/z0JAtPLBTBg51SRBSIjtUkmiS4tSuKafLIJgZBFDcuWe
-        hEnB0myFFg9md6IyhSbJzdn/RpLr/5EjUTg5wV+yQfCA0UjisBe7aUL9Hnj09nTh
-        6DOUY/PtU6cXXBQrkQav7j9P4qZWGaumRdyoaPKnvfE4c9pUVJBuhQmE4DobkVtk
-        1yAYaho8Qjls+2H6gvJw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uhr8amubt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 25 Nov 2023 18:46:40 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 25E7710002A;
-        Sat, 25 Nov 2023 18:46:40 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1839323695C;
-        Sat, 25 Nov 2023 18:46:40 +0100 (CET)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 25 Nov
- 2023 18:46:40 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Sylvain Petinot <sylvain.petinot@foss.st.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-CC:     Alain Volmat <alain.volmat@foss.st.com>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] media: i2c: st-vgxy61: add v4l2_fwnode ctrls parse and addition
-Date:   Sat, 25 Nov 2023 18:46:03 +0100
-Message-ID: <20231125174604.1378485-3-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231125174604.1378485-1-alain.volmat@foss.st.com>
-References: <20231125174604.1378485-1-alain.volmat@foss.st.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-25_17,2023-11-22_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 25 Nov 2023 12:47:39 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3531C133
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:47:45 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5be3799791fso3640158a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700934464; x=1701539264; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pQvrE1VjbnX/y6ByGIqcRM35RSO1PuZh7mCElTQgyQ=;
+        b=k1hQ6ZJB1bmgJmzfADagmXFnKtyI3Fwya/qNFf4Gc8YrLkkmHr0Rxm31cII4p8d4li
+         loEQpBJs/RAXM2iJJI09Pl+VKEHeSD9G68EjF8UZAwQb0MoCxr94pVXiW3hWkwE+8g2A
+         oR+zKUeUcuaPnsCgzJEMDJEqBvu67m9qF3j7KwAbT5l80gc0GcgVwo/bTrGO6EIh+uUN
+         FCuUcTvY1Pnh4lqFy6eDHiF5lfwFPn82iHpHeboLDXv1xlLcrYKJ3wUGRDp05gvZ4h3P
+         Pa/5O6yDWC0ebIt8htKbVbcJAnC4In3OH+xGnIOgtKWun5hqTKQ5ASAKmFDIoSFqX3M9
+         uFIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700934464; x=1701539264;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pQvrE1VjbnX/y6ByGIqcRM35RSO1PuZh7mCElTQgyQ=;
+        b=bQ49PseHbLjaw4uTfpFbwI5nKfisFGCtJ8x86sm2Xe+VZMnJfATFox4USk1zJiCYm2
+         /MGmEXyxiUqq1GSmtGv7fS72lVnPVh3G/26DBEuRfWIUTrNBXw2A+7OkrLEjbQYNfKox
+         JHmaI5lhWZ/lYyKypGg+jLzdp+8R18HqFh7Ms0OD0+2y5k/wFylwAkydGVtz4cTa0zU2
+         HB520R6P77CP8iVyCBthTxj5A0ZeBkje1RkwIkYyc1thS6DcUSkGQnCNZ4uEXfYuTV5v
+         f2fAOxAka866Sj0B+OXLww2W2j2r0V51qvDw4lO76EqRiwmOELx7mOZSrOJ908EBlXZu
+         V2Pw==
+X-Gm-Message-State: AOJu0YxLFv/Br65aiwTWz7sxldnRkZtodDMhwA18Mnqb+lb4dNd5cNw1
+        invtw92rMMm2c/sQgoQWoIYbo4WrdxVefw==
+X-Google-Smtp-Source: AGHT+IFflWgX+Gg7h8fTMTF6SpzYKnQOYwGbJCZ4v+j1BmllVH1kpuMX3VxlWRmMPr/i4NyYau2+euR5tvKkyw==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a63:d209:0:b0:5be:1194:9c0b with SMTP id
+ a9-20020a63d209000000b005be11949c0bmr1039251pgg.3.1700934464725; Sat, 25 Nov
+ 2023 09:47:44 -0800 (PST)
+Date:   Sat, 25 Nov 2023 17:47:42 +0000
+In-Reply-To: <20231123193937.11628-3-ddrokosov@salutedevices.com>
+Mime-Version: 1.0
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com> <20231123193937.11628-3-ddrokosov@salutedevices.com>
+Message-ID: <20231125174742.n3ybfum53yd27bo7@google.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace shrink_memcg
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
+        mhocko@suse.com, akpm@linux-foundation.org, kernel@sberdevices.ru,
+        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow parsing of the v4l2_fwnode properties from the DT and addition
-of those properties (such as orientation, rotation).
+On Thu, Nov 23, 2023 at 10:39:37PM +0300, Dmitry Rokosov wrote:
+> The shrink_memcg flow plays a crucial role in memcg reclamation.
+> Currently, it is not possible to trace this point from non-direct
+> reclaim paths. However, direct reclaim has its own tracepoint, so there
+> is no issue there. In certain cases, when debugging memcg pressure,
+> developers may need to identify all potential requests for memcg
+> reclamation including kswapd(). The patchset introduces the tracepoints
+> mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+> 
+> Example of output in the kswapd context (non-direct reclaim):
+>     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
+>     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
+>     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
+>     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
+>     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
+>     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+> 
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- drivers/media/i2c/st-vgxy61.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/media/i2c/st-vgxy61.c b/drivers/media/i2c/st-vgxy61.c
-index 93885ed167cb..d27a1bf7690a 100644
---- a/drivers/media/i2c/st-vgxy61.c
-+++ b/drivers/media/i2c/st-vgxy61.c
-@@ -1403,6 +1403,7 @@ static int vgxy61_init_controls(struct vgxy61_dev *sensor)
- 	const struct v4l2_ctrl_ops *ops = &vgxy61_ctrl_ops;
- 	struct v4l2_ctrl_handler *hdl = &sensor->ctrl_handler;
- 	const struct vgxy61_mode_info *cur_mode = sensor->current_mode;
-+	struct v4l2_fwnode_device_properties props;
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
-@@ -1457,6 +1458,14 @@ static int vgxy61_init_controls(struct vgxy61_dev *sensor)
- 		goto free_ctrls;
- 	}
- 
-+	ret = v4l2_fwnode_device_parse(&sensor->i2c_client->dev, &props);
-+	if (ret)
-+		goto free_ctrls;
-+
-+	ret = v4l2_ctrl_new_fwnode_properties(hdl, ops, &props);
-+	if (ret)
-+		goto free_ctrls;
-+
- 	sensor->sd.ctrl_handler = hdl;
- 	return 0;
- 
--- 
-2.25.1
-
+Acked-by: Shakeel Butt <shakeelb@google.com>
