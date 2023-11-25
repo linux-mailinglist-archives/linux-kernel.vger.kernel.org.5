@@ -2,51 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E1F7F8DB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E3F7F8DB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbjKYTKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
+        id S232237AbjKYTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjKYTKX (ORCPT
+        with ESMTP id S230286AbjKYTLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:10:23 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43DA7129;
-        Sat, 25 Nov 2023 11:10:29 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A032CDA7;
-        Sat, 25 Nov 2023 11:11:15 -0800 (PST)
-Received: from [10.57.5.64] (unknown [10.57.5.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 446CA3F6C4;
-        Sat, 25 Nov 2023 11:10:27 -0800 (PST)
-Message-ID: <f0ac7523-edce-4b0b-a142-14c03c912720@arm.com>
-Date:   Sat, 25 Nov 2023 19:10:25 +0000
+        Sat, 25 Nov 2023 14:11:55 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3857DF7;
+        Sat, 25 Nov 2023 11:12:02 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cbe7386263so1960912b3a.2;
+        Sat, 25 Nov 2023 11:12:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700939521; x=1701544321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3xk3ugOVnpI2pTDfmgiF4q+i5xA4WKTzHI6DOtI3zDs=;
+        b=mlAB4vMy4xTyrA3pmxnwQoCLVqy02baGFi6C19j/y+WoQWS5GuXgfWJv3NiVHVrBRX
+         wRa02zTLJJPLaIax15XT7jp67BJa93qUzmELq3zWzDotupAA1GSoTZg1fuVGWep6ZL79
+         WRyEXFGCkfO8gGgA4aj2MLFXyywukY+fSYkXprLvitt+rVAUIfRquZ0f5pJXBxUidlok
+         WfspgZo+AO6432qjcJTA51A0kjlJBZnFBtjg2O67oDiwzs6FvHkxsLGlmbTH49KU7PLM
+         8CnTLHXwWBhYkW3KPq39QPszUBDJR6MUYHREFhtF+jRJ9wEVcpQRH3eMDtMPr0n6s5+2
+         XGTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700939521; x=1701544321;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3xk3ugOVnpI2pTDfmgiF4q+i5xA4WKTzHI6DOtI3zDs=;
+        b=vtstnL8n12UmopgW1hKBRwnzwyAABiTxWKgzuupVADBAznx0Lt3BapAk5d3NEypU8d
+         WP8vLPjA4nzgQNpUmid3tIA9J7tGRREMY3LQ2oi38oQkXHHBkUnS6APgBpAqNqIjAjUT
+         OeVOw7YttmVKBcWt3loRciC+EoWVTlmYat9WHAjN2Fdb3CQbNwsiv7C0U609RhZPB0ru
+         LknDj23YMVqdLUSmcI25Zb7kTHDZtFbSi9hriJIU8yrq2LJ94l7ilMnxzvoIA94d4cU5
+         94673gVp7X2MKz4p2GZD+mJExlUE5hn2gGlNNovCoALe7Kpd/Lq0sNx7JFFR6RyvTf5U
+         q1ag==
+X-Gm-Message-State: AOJu0YzGRWDEm7nJAlchu7Cmpau5knq0BUG0ySkJ/m91nUyQyvi0n+Bs
+        wjYqixQDuqTKstBZFKgzoNeo0kj1p8M=
+X-Google-Smtp-Source: AGHT+IGD8naTfDUiWPBeJnR+Yo4y/9rpaGtpvxIBDO0LHhCEXLzfOPt6fvX7M1GGBFGomBPiRZcStg==
+X-Received: by 2002:a05:6a21:a59f:b0:18b:558e:9ec7 with SMTP id gd31-20020a056a21a59f00b0018b558e9ec7mr7674598pzc.11.1700939521548;
+        Sat, 25 Nov 2023 11:12:01 -0800 (PST)
+Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
+        by smtp.gmail.com with ESMTPSA id p27-20020a056a0026db00b006bd26bdc909sm4713314pfw.72.2023.11.25.11.12.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 11:12:00 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Danylo Piliaiev <dpiliaiev@igalia.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] drm/msm/a6xx: Add missing BIT(7) to REG_A6XX_UCHE_CLIENT_PF
+Date:   Sat, 25 Nov 2023 11:11:50 -0800
+Message-ID: <20231125191155.5375-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231121162137.60488-1-robdclark@gmail.com>
+References: <20231121162137.60488-1-robdclark@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf test: Remove atomics from test_loop to avoid test
- failures
-To:     Leo Yan <leo.yan@linaro.org>, Michael Petlan <mpetlan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        vmolnaro@redhat.com
-References: <20231102162225.50028-1-nick.forrington@arm.com>
- <alpine.LRH.2.20.2311242037260.11297@Diego>
- <20231125030529.GB178091@leoy-huanghe>
-Content-Language: en-GB
-From:   Nick Forrington <nick.forrington@arm.com>
-In-Reply-To: <20231125030529.GB178091@leoy-huanghe>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,85 +84,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Danylo Piliaiev <dpiliaiev@igalia.com>
 
-On 25/11/2023 03:05, Leo Yan wrote:
-> Hi all,
->
-> On Fri, Nov 24, 2023 at 08:57:52PM +0100, Michael Petlan wrote:
->> On Thu, 2 Nov 2023, Nick Forrington wrote:
->>> The current use of atomics can lead to test failures, as tests (such as
->>> tests/shell/record.sh) search for samples with "test_loop" as the
->>> top-most stack frame, but find frames related to the atomic operation
->>> (e.g. __aarch64_ldadd4_relax).
-> I am confused by above description.  As I went through the script
-> record.sh, which is the only test invoking the program 'test_loop',
-> but I don't find any test is related with stack frame.
->
-> Do I miss anything?  I went through record.sh but no clue why the
-> failure is caused by stack frame.  All the testings use command:
->
->    if ! perf report -i "${perfdata}" -q | grep -q "${testsym}"
->      ...
->    fi
->
-> @Nick, could you narrow down which specific test case causing the
-> failure.
->
-> [...]
+Downstream always set BIT(7)
 
+Signed-off-by: Danylo Piliaiev <dpiliaiev@igalia.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All checks for ${testsym} in record.sh (including the example you 
-provide) can fail, as the expected symbol (test_loop) is not the 
-top-most function on the stack (and therefore not the symbol associated 
-with the sample).
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 8176ea8da7a7..d10b22eeda74 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1782,7 +1782,7 @@ static int hw_init(struct msm_gpu *gpu)
+ 	else
+ 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x1fffff);
+ 
+-	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 1);
++	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, BIT(7) | 0x1);
+ 
+ 	/* Set weights for bicubic filtering */
+ 	if (adreno_is_a650_family(adreno_gpu)) {
+-- 
+2.42.0
 
-
-Example perf report output:
-
-# Overhead  Command  Shared Object          Symbol
-# ........  .......  ..................... .............................
-#
-     99.53%  perf     perf                   [.] __aarch64_ldadd4_relax
-
-...
-
-
-You can see the issue when recording/reporting with call stacks:
-
-# Children      Self  Command  Shared Object          Symbol
-# ........  ........  .......  ..................... 
-..........................................................
-#
-     99.52%    99.52%  perf     perf                   [.] 
-__aarch64_ldadd4_relax
-             |
-             |--49.77%--0xffffb905a5dc
-             |          0xffffb8ff0aec
-             |          thfunc
-             |          test_loop
-             |          __aarch64_ldadd4_relax
-
-...
-
->
->> I believe that it was there to prevent the compiler to optimize the loop
->> out or some reason like that. Hopefully, it will work even without that
->> on all architectures with all compilers that are used for building perf...
-> Agreed.
->
-> As said above, I'd like to step back a bit for making clear what's the
-> exactly failure caused by the program.
-
-
-I don't think this loop could be sensibly optimised away, as it depends 
-on "done", which is defined at file scope (and assigned by a signal 
-handler).
-
-
-Cheers,
-Nick
-
->
-> Thanks,
-> Leo
->
