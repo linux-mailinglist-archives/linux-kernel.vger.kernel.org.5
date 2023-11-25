@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C65D7F8E20
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54C27F8E23
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbjKYTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:42:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        id S229578AbjKYTo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjKYTmd (ORCPT
+        with ESMTP id S229456AbjKYTo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:42:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC262127
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:42:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFB3DC433C7;
-        Sat, 25 Nov 2023 19:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700941359;
-        bh=79ZNx7QbXwaR+DfeqRTqWoT3nqX+9Dx5NLciWccHvug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0NIOTBwZUI2ROKL5BP9uDPFQLAX4dOowNfklRMvs1UGB5Vm+IhldlYSzE8uiy0nJC
-         9UNw5LoGbnZgak3ouwW2tdKVlNNqtF/enAeyiAxohivjZXliHVLeUiL3IshAXyO0Ju
-         9UdC6Gj63jCBv3rRe/6DvpdMIQnb8SRj3xYcU7SE=
-Date:   Sat, 25 Nov 2023 19:42:36 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-Subject: Re: [PATCH 5.4 000/155] 5.4.262-rc2 review
-Message-ID: <2023112529-waking-breeding-bc77@gregkh>
-References: <20231125163112.419066112@linuxfoundation.org>
- <261a0a3b-d1a4-4fe8-8fd7-42e9e2786348@gmail.com>
+        Sat, 25 Nov 2023 14:44:58 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B7CB3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:45:04 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b38b3e433dso66283739f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:45:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700941504; x=1701546304;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5zFOfzzm7+x12sXeVeQwqDu3dzGCDPPPB+fZft3ol3s=;
+        b=hxDg0qDttlZDCNUdlvIzSAgZ0mxrMXa4FzI30MFFJr2V6QwfeUUvM46N5ur7XXtUcl
+         h+pFNBQZ3do3unXaPWXg8cgM8hAVYpj+qfbupDoNe+/MeDFbwlZjCjQPXHzbQwWbX1dc
+         JAKfyFnLypuiFLOer+/sIf4JERWh3BbEcuN4hJMsCgmf8NTUU1YJlKXEXo8Z87ZKpb3d
+         9mhbFLrwb5XMjIXrNTgz/8XEPPOl8NHCIs6ntOSUT1p/v4JbwQsv8HGTY4Ii+8bj/bKf
+         YwSAnZ9WR81IDZE+TxjEZtzrmRCyrlV2lhuueqqTQFbOzn+Mebo/6W9syK29UTS4sjsX
+         3Lww==
+X-Gm-Message-State: AOJu0YwJogBL2RwCnVpY6RZTpeaP9ouxU66/TDIlUBQuLxjLpiD1qT91
+        QBmOfcz3CGxMDHszb+llEfOf3FLJbyy6RKZxN3XJ9mo1tJJw
+X-Google-Smtp-Source: AGHT+IGy/jille76tRuHatrHMaPg0FZSslMdhHqT9yNBrbiA2KEi3FhpZSL3dovGyPgee+Yiv11zFDwqux9IItC/LYzdXYPE19or
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <261a0a3b-d1a4-4fe8-8fd7-42e9e2786348@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a5e:9919:0:b0:792:f7c:b139 with SMTP id
+ t25-20020a5e9919000000b007920f7cb139mr339557ioj.1.1700941504253; Sat, 25 Nov
+ 2023 11:45:04 -0800 (PST)
+Date:   Sat, 25 Nov 2023 11:45:04 -0800
+In-Reply-To: <18c07e01a4c.220c832d175971.1254981088507972317@siddh.me>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002518c5060aff4e27@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     code@siddh.me, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 10:07:33AM -0800, Florian Fainelli wrote:
-> 
-> 
-> On 11/25/2023 8:32 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.262 release.
-> > There are 155 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Mon, 27 Nov 2023 16:30:48 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.262-rc2.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> perf does not build on ARM and ARM64 with:
-> 
-> util/evsel.h: In function 'perf_evsel__has_branch_hw_idx':
-> util/evsel.h:387:54: error: 'PERF_SAMPLE_BRANCH_HW_INDEX' undeclared (first
-> use in this function); did you mean 'PERF_SAMPLE_BRANCH_IN_TX'?
->   387 |         return evsel->core.attr.branch_sample_type &
-> PERF_SAMPLE_BRANCH_HW_INDEX;
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->       | PERF_SAMPLE_BRANCH_IN_TX
-> util/evsel.h:387:54: note: each undeclared identifier is reported only once
-> for each function it appears in
-> 
-> dropping 946b6643e67f552a9966a06ab5a9032120eeeea9 ("perf tools: Add hw_idx
-> in struct branch_stack") allows me to build again for ARM and ARM64, howevef
-> for MIPS we also have:
-> 
-> 50a3ffda05679c55929bf2bdebc731dfafe3221b ("perf hist: Add missing puts to
-> hist__account_cycles") failing to build with:
-> 
-> util/hist.c:2600:5: warning: nested extern declaration of 'maps__put'
-> [-Wnested-externs]
-> util/hist.c:2600:23: error: 'struct addr_map_symbol' has no member named
-> 'ms'
->      maps__put(bi[i].to.ms.maps);
->                        ^
-> util/hist.c:2601:24: error: 'struct addr_map_symbol' has no member named
-> 'ms'
->      map__put(bi[i].from.ms.map);
->                         ^
-> util/hist.c:2602:25: error: 'struct addr_map_symbol' has no member named
-> 'ms'
->      maps__put(bi[i].from.ms.maps);
->                          ^
-> 
-> so I would suggest we just revert both commits. Once we do that, all is well
-> for ARM, ARM64 and MIPS.
+Hello,
 
-Thanks, both now dropped.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-greg k-h
+Reported-and-tested-by: syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         8872a44d lock
+git tree:       https://github.com/siddhpant/linux.git lock
+console output: https://syzkaller.appspot.com/x/log.txt?x=168d9a08e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6a76f6c7029ca2
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
