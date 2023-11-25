@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413697F8C80
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1E97F8C83
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjKYQoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 11:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
+        id S232333AbjKYQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 11:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjKYQoH (ORCPT
+        with ESMTP id S231736AbjKYQoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 11:44:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00794FF
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 08:44:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76B31C433C7;
-        Sat, 25 Nov 2023 16:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700930653;
-        bh=x3bZImpG/T/VeEsQdG09Wf8mRYw2KVFi2C7qJH6OKWM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d+65TYoKqSuMmz8AsGRk/m6ZCRj2WTInxxXK4ztcZ+IhxSCXJQ9zatgP5WJ0EBvoO
-         dbArQ18IyA7pzwIBnswZYZpnAURGC5wbdSFHzzRyS81sfzlQCxB17X7jsGDDShNyaY
-         fEWSLwAi223pSz6E8eeBi/8Cx/PgxtE70Q2D7nw/IimUBC54183cL/c72ZQCuhHJnc
-         gpPDwFEL9JfClCTQ0OaegJaN0xdCUq6Ydd5fxIPtVxAZtYB+IikUppEZcnyvxu9eKt
-         myvnhUNtlHOcTzxxxhI/d4UPjJJm8IrotI13IbPywsjWZSvD7+4D2A7s1GlqF0HOjG
-         0NgkY3Lfkwq2Q==
-Date:   Sat, 25 Nov 2023 16:44:04 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc:     <paul.cercueil@analog.com>, <Michael.Hennerich@analog.com>,
-        <lars@metafoo.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 7/7] iio: adc: ad7091r-base: Add debugfs reg access
-Message-ID: <20231125164404.64072ffb@jic23-huawei>
-In-Reply-To: <271203e245d324f94678d212e4daf13386bee463.1700751907.git.marcelo.schmitt1@gmail.com>
-References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
-        <271203e245d324f94678d212e4daf13386bee463.1700751907.git.marcelo.schmitt1@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 25 Nov 2023 11:44:22 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E41D13A;
+        Sat, 25 Nov 2023 08:44:28 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 429C91C0071; Sat, 25 Nov 2023 17:44:26 +0100 (CET)
+Date:   Sat, 25 Nov 2023 17:44:25 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 4.19 00/97] 4.19.300-rc1 review
+Message-ID: <ZWIkab2PnalL4ZmF@duo.ucw.cz>
+References: <20231124171934.122298957@linuxfoundation.org>
+ <d48b5514-759f-47a0-b024-494ce87ec60f@linaro.org>
+ <ZWHYlErVfVq8ZoOu@duo.ucw.cz>
+ <2023112518-traverse-unsecured-daa2@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="p9lJ+2E6bbm/ygVf"
+Content-Disposition: inline
+In-Reply-To: <2023112518-traverse-unsecured-daa2@gregkh>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 13:43:06 -0300
-Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
 
-> Add direct register access support for AD7091R-2/-4/-5/-8 ADCs.
-> 
-> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+--p9lJ+2E6bbm/ygVf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regmap provides it's own version of this, so I'm not sure I'd bother adding
-the IIO one. See regmap-debugfs.c
+Hi!
 
+> > > > This is the start of the stable review cycle for the 4.19.300 relea=
+se.
+> > > > There are 97 patches in this series, all will be posted as a respon=
+se
+> > > > to this one.  If anyone has any issues with these being applied, pl=
+ease
+> > > > let me know.
+> > >=20
+> > > We see this failure on Arm32:
+> > > And this one on Arm64:
+> >=20
+> > We see problems on arm, too:
+> >=20
+> > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelin=
+es/1084460512
+>=20
+> Note, posting odd links isn't going to really help much, I don't have
+> the cycle, and sometimes the connectivity (last few stable releases were
+> done on trains and planes), to check stuff like this.
+>=20
+> Info in an email is key, raw links is not going to help, sorry.
 
-> ---
->  drivers/iio/adc/ad7091r-base.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
-> index dbc60ea1bafc..4d5051316428 100644
-> --- a/drivers/iio/adc/ad7091r-base.c
-> +++ b/drivers/iio/adc/ad7091r-base.c
-> @@ -177,8 +177,20 @@ static int ad7091r_read_raw(struct iio_dev *iio_dev,
->  	return ret;
->  }
->  
-> +static int ad7091r_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-> +			      unsigned int writeval, unsigned int *readval)
-> +{
-> +	struct ad7091r_state *st  = iio_priv(indio_dev);
-> +
-> +	if (readval)
-> +		return regmap_read(st->map, reg, readval);
-> +
-> +	return regmap_write(st->map, reg, writeval);
-> +}
-> +
->  static const struct iio_info ad7091r_info = {
->  	.read_raw = ad7091r_read_raw,
-> +	.debugfs_reg_access = &ad7091r_reg_access,
->  };
->  
->  static irqreturn_t ad7091r_event_handler(int irq, void *private)
+Resources are limited on this side, too, but I'll try to keep it in
+mind.
 
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--p9lJ+2E6bbm/ygVf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZWIkaQAKCRAw5/Bqldv6
+8ipoAJ46UKxBTpiIYGQrYRakF9KCHkzNRgCgprqo2Zt1ep2pO7ha5S2jLNoPq84=
+=1inI
+-----END PGP SIGNATURE-----
+
+--p9lJ+2E6bbm/ygVf--
