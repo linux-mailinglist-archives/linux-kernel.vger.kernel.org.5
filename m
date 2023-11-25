@@ -2,52 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A19A77F8C2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FA07F8C2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjKYPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 10:51:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S232242AbjKYPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 10:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjKYPu7 (ORCPT
+        with ESMTP id S231808AbjKYPv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 10:50:59 -0500
+        Sat, 25 Nov 2023 10:51:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B47EDB
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:50:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AAEDC433C8;
-        Sat, 25 Nov 2023 15:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700927446;
-        bh=IMdjSRImTOsSj632Oy8vblfweC2HmmGiUhLrTQiSzSI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Debed8VxJmwqkFs3bQazCdvwV8ZnagzGwZO6SOGs/BnV71m+bJogDKl6a5H8twVT9
-         /2bqHceXiRQa9cAtRLp8p4wOpN8ezoEmWv+1Qp3b1LXcyhPdsXod+a1P07udKGnDNh
-         aV4PXJ0lCW4zDGzDj3k3WvToPqS9hHbBZzvW+7VcNyOJM4sG4K3kbyFAnP2/icg9/v
-         5pKTlfAGPl64GqBmqaetfzon67Y19P4YyMAJ9s+AoyBDNUwQQ7amfNDRTZEARqQ2j/
-         vllJZRWU8qTsXTuF7dEotw8VE4NGoXrwWeddQWEck6DzAxdSVQmJOBZWpXTfPcNFdA
-         IoT0LDJ1mlPFw==
-Date:   Sat, 25 Nov 2023 15:50:38 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Kim Seer Paller <kimseer.paller@analog.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Crt Mori <cmo@melexis.com>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v5 2/2] iio: frequency: admfm2000: New driver
-Message-ID: <20231125155038.5278de39@jic23-huawei>
-In-Reply-To: <20231124105116.5764-2-kimseer.paller@analog.com>
-References: <20231124105116.5764-1-kimseer.paller@analog.com>
-        <20231124105116.5764-2-kimseer.paller@analog.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC45EE1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:52:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2634BC433C8;
+        Sat, 25 Nov 2023 15:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700927522;
+        bh=XKFCiu+TQj4OtST5/T7Lg3zC/rplkSgWsiLSqkkdzfY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m9Z5nnQ/v9jzYT4fvj3KgbmbOV4gnkK2Snwo4bUbzdgSrqPiiYqilMtp6NeCO0ZTh
+         2Bnik7sfdF/PXnamij/KJpMViCD7PMTDsHciSHsO8LUklaRJdMr+cqDmefSkTYkbi6
+         dbWe53okpiE8lvqtc6MjLLgSxLpnShTzwiZRQNjg=
+Date:   Sat, 25 Nov 2023 15:52:00 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, hca@linux.ibm.com, mpe@ellerman.id.au
+Subject: Re: [PATCH 5.10 000/193] 5.10.202-rc1 review
+Message-ID: <2023112544-irk-purple-80b8@gregkh>
+References: <20231124171947.127438872@linuxfoundation.org>
+ <a67ec47c-6d4c-4a2f-a4c0-5284d895982a@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a67ec47c-6d4c-4a2f-a4c0-5284d895982a@linaro.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,244 +53,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023 18:51:16 +0800
-Kim Seer Paller <kimseer.paller@analog.com> wrote:
-
-> Dual microwave down converter module with input RF and LO frequency
-> ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
-> 8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
-> for each down conversion path.
+On Fri, Nov 24, 2023 at 04:19:32PM -0600, Daniel Díaz wrote:
+> Hello!
 > 
-> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
-I've +CC Linus and Bartosz for the question of GPIOs under the channel child
-nodes in DT.
-
-Some background for them.  This device has two separate channels and each of them
-has a mirrored set of attentuation and configuration controls via arrays of GPIOS.
-
-Currently they are
-switch1-gpios, switch2-gpios etc.
-
-I suggested we might be able to move those into the existing channel child nodes
-that are used for describing other per channel stuff.
-
-      channel@0 {
-        reg = <0>;
-        adi,mode = <1>;
-	switch-gpios = <&gpio 1 GPIO_ACTIVE_LOW>,
-                       <&gpio 2 GPIO_ACTIVE_HIGH>
-
-	attenuation-gpios = <&gpio 17 GPIO_ACTIVE_LOW>,
-                            <&gpio 22 GPIO_ACTIVE_LOW>,
-                            <&gpio 23 GPIO_ACTIVE_LOW>,
-                            <&gpio 24 GPIO_ACTIVE_LOW>,
-                            <&gpio 25 GPIO_ACTIVE_LOW>;
-      };
-
-I think there are suitable interfaces to do this in the GPIO firmware handling code
-but wanted your opinion on whether it is worth the effort.
-
-Relevant code is towards the end.
-
-A few trivial other comments. In general this looks very clean to me.
-
-Thanks,
-
-Jonathan
-
-> ---
-> V4 -> V5: Added missing return -ENODEV in setup function. Reordered variable
-> 	  declarations in probe function.
-> V1 -> V4: No changes.
+> On 24/11/23 11:52 a. m., Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.202 release.
+> > There are 193 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.202-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
->  MAINTAINERS                       |   1 +
->  drivers/iio/frequency/Kconfig     |  10 +
->  drivers/iio/frequency/Makefile    |   1 +
->  drivers/iio/frequency/admfm2000.c | 310 ++++++++++++++++++++++++++++++
->  4 files changed, 322 insertions(+)
->  create mode 100644 drivers/iio/frequency/admfm2000.c
+> System/390 fails here too:
 > 
-..
+> -----8<-----
+>   In function 'setup_lowcore_dat_off',
+>       inlined from 'setup_arch' at /builds/linux/arch/s390/kernel/setup.c:1165:2:
+>   /builds/linux/arch/s390/kernel/setup.c:410:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+>     410 |         memcpy(lc->stfle_fac_list, S390_lowcore.stfle_fac_list,
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     411 |                sizeof(lc->stfle_fac_list));
+>         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/s390/kernel/setup.c:412:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+>     412 |         memcpy(lc->alt_stfle_fac_list, S390_lowcore.alt_stfle_fac_list,
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     413 |                sizeof(lc->alt_stfle_fac_list));
+>         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/s390/mm/page-states.c: In function 'mark_kernel_pgd':
+>   /builds/linux/arch/s390/mm/page-states.c:175:45: error: request for member 'val' in something not a structure or union
+>     175 |         max_addr = (S390_lowcore.kernel_asce.val & _ASCE_TYPE_MASK) >> 2;
+>         |                                             ^
+>   In file included from /builds/linux/arch/s390/include/asm/page.h:186,
+>                    from /builds/linux/arch/s390/include/asm/thread_info.h:26,
+>                    from /builds/linux/include/linux/thread_info.h:39,
+>                    from /builds/linux/arch/s390/include/asm/preempt.h:6,
+>                    from /builds/linux/include/linux/preempt.h:78,
+>                    from /builds/linux/include/linux/spinlock.h:51,
+>                    from /builds/linux/include/linux/mmzone.h:8,
+>                    from /builds/linux/include/linux/gfp.h:6,
+>                    from /builds/linux/include/linux/mm.h:10,
+>                    from /builds/linux/arch/s390/mm/page-states.c:13:
+>   /builds/linux/arch/s390/mm/page-states.c: In function 'cmma_init_nodat':
+>   /builds/linux/arch/s390/mm/page-states.c:204:30: error: 'invalid_pg_dir' undeclared (first use in this function)
+>     204 |         page = virt_to_page(&invalid_pg_dir);
+>         |                              ^~~~~~~~~~~~~~
+>   /builds/linux/include/asm-generic/memory_model.h:54:45: note: in definition of macro '__pfn_to_page'
+>      54 | #define __pfn_to_page(pfn)      (vmemmap + (pfn))
+>         |                                             ^~~
+>   /builds/linux/arch/s390/include/asm/page.h:176:34: note: in expansion of macro 'phys_to_pfn'
+>     176 | #define virt_to_pfn(kaddr)      (phys_to_pfn(__pa(kaddr)))
+>         |                                  ^~~~~~~~~~~
+>   /builds/linux/arch/s390/include/asm/page.h:176:46: note: in expansion of macro '__pa'
+>     176 | #define virt_to_pfn(kaddr)      (phys_to_pfn(__pa(kaddr)))
+>         |                                              ^~~~
+>   /builds/linux/arch/s390/include/asm/page.h:179:45: note: in expansion of macro 'virt_to_pfn'
+>     179 | #define virt_to_page(kaddr)     pfn_to_page(virt_to_pfn(kaddr))
+>         |                                             ^~~~~~~~~~~
+>   /builds/linux/arch/s390/mm/page-states.c:204:16: note: in expansion of macro 'virt_to_page'
+>     204 |         page = virt_to_page(&invalid_pg_dir);
+>         |                ^~~~~~~~~~~~
+>   /builds/linux/arch/s390/mm/page-states.c:204:30: note: each undeclared identifier is reported only once for each function it appears in
+>     204 |         page = virt_to_page(&invalid_pg_dir);
+>         |                              ^~~~~~~~~~~~~~
+>   /builds/linux/include/asm-generic/memory_model.h:54:45: note: in definition of macro '__pfn_to_page'
+>      54 | #define __pfn_to_page(pfn)      (vmemmap + (pfn))
+>         |                                             ^~~
+>   /builds/linux/arch/s390/include/asm/page.h:176:34: note: in expansion of macro 'phys_to_pfn'
+>     176 | #define virt_to_pfn(kaddr)      (phys_to_pfn(__pa(kaddr)))
+>         |                                  ^~~~~~~~~~~
+>   /builds/linux/arch/s390/include/asm/page.h:176:46: note: in expansion of macro '__pa'
+>     176 | #define virt_to_pfn(kaddr)      (phys_to_pfn(__pa(kaddr)))
+>         |                                              ^~~~
+>   /builds/linux/arch/s390/include/asm/page.h:179:45: note: in expansion of macro 'virt_to_pfn'
+>     179 | #define virt_to_page(kaddr)     pfn_to_page(virt_to_pfn(kaddr))
+>         |                                             ^~~~~~~~~~~
+>   /builds/linux/arch/s390/mm/page-states.c:204:16: note: in expansion of macro 'virt_to_page'
+>     204 |         page = virt_to_page(&invalid_pg_dir);
+>         |                ^~~~~~~~~~~~
+>   make[3]: *** [/builds/linux/scripts/Makefile.build:286: arch/s390/mm/page-states.o] Error 1
+>   make[3]: Target '__build' not remade because of errors.
+>   make[2]: *** [/builds/linux/scripts/Makefile.build:503: arch/s390/mm] Error 2
+>   In file included from /builds/linux/arch/s390/kernel/lgr.c:13:
+>   In function '__stfle',
+>       inlined from 'stfle' at /builds/linux/arch/s390/include/asm/facility.h:99:2,
+>       inlined from 'lgr_info_get' at /builds/linux/arch/s390/kernel/lgr.c:122:2:
+>   /builds/linux/arch/s390/include/asm/facility.h:87:9: warning: 'memcpy' reading 4 bytes from a region of size 0 [-Wstringop-overread]
+>      87 |         memcpy(stfle_fac_list, &S390_lowcore.stfl_fac_list, 4);
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   In function 'pcpu_prepare_secondary',
+>       inlined from '__cpu_up' at /builds/linux/arch/s390/kernel/smp.c:911:2:
+>   /builds/linux/arch/s390/kernel/smp.c:277:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+>     277 |         memcpy(lc->stfle_fac_list, S390_lowcore.stfle_fac_list,
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     278 |                sizeof(lc->stfle_fac_list));
+>         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/s390/kernel/smp.c:279:9: warning: 'memcpy' reading 128 bytes from a region of size 0 [-Wstringop-overread]
+>     279 |         memcpy(lc->alt_stfle_fac_list, S390_lowcore.alt_stfle_fac_list,
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     280 |                sizeof(lc->alt_stfle_fac_list));
+>         |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   make[2]: Target '__build' not remade because of errors.
+> ----->8-----
+> 
+> That was allnoconfig with GCC 12. Bisection pointed to:
+> 
+>   commit 2e530ad14d778a089d8ec190a7e2a70421a8a71a
+>   Author: Heiko Carstens <hca@linux.ibm.com>
+>   Date:   Tue Oct 17 21:07:03 2023 +0200
+> 
+>       s390/cmma: fix initial kernel address space page table walk
+>       commit 16ba44826a04834d3eeeda4b731c2ea3481062b7 upstream.
 
-> +
-> +static int admfm2000_mode(struct iio_dev *indio_dev, u32 reg, u32 mode)
-> +{
-> +	struct admfm2000_state *st = iio_priv(indio_dev);
-> +	DECLARE_BITMAP(values, 2);
-> +
-> +	switch (mode) {
-> +	case ADMFM2000_MIXER_MODE:
-> +		values[0] = (reg == 0) ? 1 : 2;
-> +		gpiod_set_array_value_cansleep(st->sw_ch[reg]->ndescs,
-> +					       st->sw_ch[reg]->desc,
-> +					       NULL, values);
-> +		break;
-> +	case ADMFM2000_DIRECT_IF_MODE:
-> +		values[0] = (reg == 0) ? 2 : 1;
-> +		gpiod_set_array_value_cansleep(st->sw_ch[reg]->ndescs,
-> +					       st->sw_ch[reg]->desc,
-> +					       NULL, values);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
+Now dropped.
 
-I'd return in the good paths above as nothing useful to do down here.
+> 
+> 
+> Then there's also a PowerPC failure on allmodconfig:
+> 
+> -----8<-----
+>   /builds/linux/arch/powerpc/platforms/powernv/opal-prd.c:30:17: error: expected specifier-qualifier-list before 'DECLARE_FLEX_ARRAY'
+>      30 |                 DECLARE_FLEX_ARRAY(u8, data);
+>         |                 ^~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/powerpc/platforms/powernv/opal-prd.c: In function 'opal_prd_msg_notifier':
+>   /builds/linux/arch/powerpc/platforms/powernv/opal-prd.c:365:26: error: 'struct opal_prd_msg' has no member named 'data'
+>     365 |         memcpy(&item->msg.data, msg->params, msg_size);
+>         |                          ^
+>   make[4]: *** [/builds/linux/scripts/Makefile.build:286: arch/powerpc/platforms/powernv/opal-prd.o] Error 1
+> ----->8-----
+> 
+> I didn't bisect this one but would suspect this commit:
+> 
+>   commit 2342ac1ed7704304605e29e337ce073f00f75d1e
+>   Author: Michael Ellerman <mpe@ellerman.id.au>
+>   Date:   Tue Aug 22 00:28:19 2023 +1000
+> 
+>       powerpc/powernv: Fix fortify source warnings in opal-prd.c
+>       commit feea65a338e52297b68ceb688eaf0ffc50310a83 upstream.
 
-> +}
+thanks, now dropped.
 
-> +
-> +static int admfm2000_write_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan, int val,
-> +			     int val2, long mask)
-> +{
-> +	struct admfm2000_state *st = iio_priv(indio_dev);
-> +	int gain, ret;
-> +
-> +	if (val < 0)
-> +		gain = (val * 1000) - (val2 / 1000);
-> +	else
-> +		gain = (val * 1000) + (val2 / 1000);
-> +
-> +	if (gain > ADMF20000_MAX_GAIN || gain < ADMF20000_MIN_GAIN)
-> +		return -EINVAL;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_HARDWAREGAIN:
-> +		mutex_lock(&st->lock);
-guard(mutex)(&st->lock); 
-would tidy this up a tiny bit by allow a direct return.
-You will need to add {} around the whole case statement though.
-
-> +		st->gain[chan->channel] = ~((abs(gain) / 1000) & 0x1F);
-> +
-> +		ret = admfm2000_attenuation(indio_dev, chan->channel,
-> +					    st->gain[chan->channel]);
-> +
-> +		mutex_unlock(&st->lock);
-> +		if (ret)
-> +			return ret;
-return here.
-
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int admfm2000_channel_config(struct admfm2000_state *st,
-> +				    struct iio_dev *indio_dev)
-> +{
-> +	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
-> +	struct device *dev = &pdev->dev;
-> +	struct fwnode_handle *child;
-> +	u32 reg, mode;
-> +	int ret;
-> +
-> +	device_for_each_child_node(dev, child) {
-
-If the below handling of gpios suggestion works, that would become per channel
-and move in here.
-
-> +		ret = fwnode_property_read_u32(child, "reg", &reg);
-> +		if (ret) {
-> +			fwnode_handle_put(child);
-> +			return dev_err_probe(dev, ret,
-> +					     "Failed to get reg property\n");
-> +		}
-> +
-> +		if (reg >= indio_dev->num_channels) {
-> +			fwnode_handle_put(child);
-> +			return dev_err_probe(dev, -EINVAL, "reg bigger than: %d\n",
-> +					     indio_dev->num_channels);
-> +		}
-> +
-> +		ret = fwnode_property_read_u32(child, "adi,mode", &mode);
-> +		if (ret) {
-> +			fwnode_handle_put(child);
-> +			return dev_err_probe(dev, ret,
-> +					     "Failed to get mode property\n");
-> +		}
-> +
-> +		if (mode >= 2) {
-> +			fwnode_handle_put(child);
-> +			return dev_err_probe(dev, -EINVAL, "mode bigger than: 1\n");
-> +		}
-> +
-> +		ret = admfm2000_mode(indio_dev, reg, mode);
-> +		if (ret) {
-> +			fwnode_handle_put(child);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int admfm2000_setup(struct admfm2000_state *st,
-> +			   struct iio_dev *indio_dev)
-> +{
-> +	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
-> +	struct device *dev = &pdev->dev;
-> +
-Looking at this and considering if we can move the description into the channel
-child fwnodes of the main one, the interfaces exposed are a bit limited, but I think
-we can do it with devm_fwnode_gpiod_get_index() or potentially adding similar for
-the array forms.
-
-
-> +	st->sw_ch[0] = devm_gpiod_get_array(dev, "switch1", GPIOD_OUT_LOW);
-> +	if (IS_ERR(st->sw_ch[0]))
-> +		return dev_err_probe(dev, PTR_ERR(st->sw_ch[0]),
-> +				     "Failed to get gpios\n");
-> +
-> +	if (st->sw_ch[0]->ndescs != ADMF20000_MODE_GPIOS) {
-> +		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-> +			      ADMF20000_MODE_GPIOS);
-> +		return -ENODEV;
-> +	}
-> +
-> +	st->sw_ch[1] = devm_gpiod_get_array(dev, "switch2", GPIOD_OUT_LOW);
-> +	if (IS_ERR(st->sw_ch[1]))
-> +		return dev_err_probe(dev, PTR_ERR(st->sw_ch[1]),
-> +				     "Failed to get gpios\n");
-> +
-> +	if (st->sw_ch[1]->ndescs != ADMF20000_MODE_GPIOS) {
-> +		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-> +			      ADMF20000_MODE_GPIOS);
-> +		return -ENODEV;
-> +	}
-> +
-> +	st->dsa_gpios[0] = devm_gpiod_get_array(dev, "attenuation1",
-> +						GPIOD_OUT_LOW);
-> +	if (IS_ERR(st->dsa_gpios[0]))
-> +		return dev_err_probe(dev, PTR_ERR(st->dsa_gpios[0]),
-> +				     "Failed to get gpios\n");
-> +
-> +	if (st->dsa_gpios[0]->ndescs != ADMF20000_DSA_GPIOS) {
-> +		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-> +			      ADMF20000_DSA_GPIOS);
-> +		return -ENODEV;
-> +	}
-> +
-> +	st->dsa_gpios[1] = devm_gpiod_get_array(dev, "attenuation2",
-> +						GPIOD_OUT_LOW);
-> +	if (IS_ERR(st->dsa_gpios[1]))
-> +		return dev_err_probe(dev, PTR_ERR(st->dsa_gpios[1]),
-> +				     "Failed to get gpios\n");
-> +
-> +	if (st->dsa_gpios[1]->ndescs != ADMF20000_DSA_GPIOS) {
-> +		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-> +			      ADMF20000_DSA_GPIOS);
-> +		return -ENODEV;
-> +	}
-> +
-> +	return 0;
-> +}
-
+greg k-h
