@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B654E7F87D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8607F87D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbjKYCdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 21:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S231649AbjKYCeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 21:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKYCdw (ORCPT
+        with ESMTP id S229462AbjKYCd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 21:33:52 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4959419A7;
-        Fri, 24 Nov 2023 18:33:59 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2857670af8cso1489336a91.0;
-        Fri, 24 Nov 2023 18:33:59 -0800 (PST)
+        Fri, 24 Nov 2023 21:33:59 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D1E19AE;
+        Fri, 24 Nov 2023 18:34:05 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b709048d8eso2219468b3a.2;
+        Fri, 24 Nov 2023 18:34:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700879639; x=1701484439; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700879644; x=1701484444; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rhicU3/zHEQEppvUEunixypz6W920hQ+yafx5Cg+Em0=;
-        b=WdEE/hO+PSuRnQ1bFvWYrUGHocLsdfNq5Kg3QerXF0sOntxL3PP0QwLtYkN05+mP1g
-         OjpcvjfpeIjKyJLxPh1cRsh07s3p0Jb/0AY+gweGPl0LU+8YdODzphkWALfuHBmX7Gz4
-         bC8MXaE462fClF5lpX8kCXXuUUNahZvgrqRxEjZJTMPo2patGsmy2pdRkcyo5iKVWlbU
-         9hoXw1bLZt32w4D1ZshnnBpQxuI/9OK2irKA3p/Nzqp38TBgA/qhJOCv/S5eMq9HaP/W
-         94fl0+csHoWV5o0ubByEPutJaUKYF5zvFA4XKPkh6qQ/uwYko+6QfFJgX8uFpdiAeDLv
-         G4Zg==
+        bh=cwDxPrBV1gye210dmGOK3P4MxuKjaUxc9oeTylrdKVk=;
+        b=EAYKzt7wa84nfObW8UuTipq3DpXKs8tuLvZDkbA6GBeToyOwNpjqXHKQON/P2lMiw9
+         muPNCPj7ZBj+u2lDdzJoQwRvlXdyP+jaslkPsJWIZAULh38Jgt6hi4b+y8ZIoUlcTa/7
+         GR9QfR0Fl6r/UJcKKzuq4RGAMTlI0t5iAQ/YrkJlxJEEHF7WLo9Me5uWkiIrS4cxbXC0
+         DYzf0oWWEQIQST43R7PL4mxxF203gU2UIT5cJiJPFpJ6Mg4O9Rj6oJYiOER0rKlLKJ2o
+         ICStOfFy9VqIGFeeoWkbfGi72n4woAJ9yWBPlCVZLOZU8dh8uzlX6p3UAiRzNL60pHQJ
+         0prg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700879639; x=1701484439;
+        d=1e100.net; s=20230601; t=1700879644; x=1701484444;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rhicU3/zHEQEppvUEunixypz6W920hQ+yafx5Cg+Em0=;
-        b=UATEUrcbvYMgpbZQRD053EZ8J6YUMmwwftxXcEBeVL4eoANI15nWrQjdeUBs9SAT95
-         yF3VvgvwE85ED3D8ei9POR8lj6ZbJ4+7JziVbaq8qia5uNFp27Qsqnve5T4PIdxV8Hgl
-         Mm4sSt+cdwGrblNTtroVnkFdv8V4OSAFkCKA/88KHLLq5unl+6VdOqz8Y5IFVISWj/Rv
-         1hKa85FiK6vIVObe4Sn0S9SmN7TNZcR9IxQP4ToXV7roxG8BU72Lt1MJi8SXb5IPosmu
-         MPt4XU60EJXgEH6X98HnM0Fpm/d6dLrjgKW7n+EXjKJuH/8vKNUc0E18mccW4ucdrghy
-         Rq0A==
-X-Gm-Message-State: AOJu0Yy2fIYti5ZKX9KfPJnIxvAGdBfI6r6MERcbwFHNVfHILizSi3Jb
-        XehNA+duraGacsT+M0kwxHw=
-X-Google-Smtp-Source: AGHT+IGwFqWBPXHxByzRR+4RMJE9+zUPfmeQtuh0mWetWkfRsw8zAg1Xekm6TE2rDuAWrQnVntIWig==
-X-Received: by 2002:a17:90a:684e:b0:280:22e2:60ea with SMTP id e14-20020a17090a684e00b0028022e260eamr4562962pjm.3.1700879638631;
-        Fri, 24 Nov 2023 18:33:58 -0800 (PST)
+        bh=cwDxPrBV1gye210dmGOK3P4MxuKjaUxc9oeTylrdKVk=;
+        b=XJQbYMDVKsRPm1b0hk1/7ogs5M8T8ahGS8AF+UzchAYWQqn6jQUd9H1ZX4cy49UY1e
+         BGwuCwNNgu78aIuC2uYQ6zkb+FEHAIEfvCr8cVLpVmnXDDr3RBGIBx+eeqeSuRC9zPWy
+         upjJgnXpjxQCqqcU2XJUZHYMWXkjVS9wjm1enOjw2cFQSfEygW3z0quiGmnBywN+Q+8V
+         tb6Gm4jPcGGDlNqEfd9OoADCNDw+VMMmM5+ZTKGxPzZbQxGCL0aI0FALvwL0atusT8tF
+         2Z8b0oZVOsOJh3MsjSaCSP837/tEtReJpeaydvEdGdqqOisJnAD8mAevD3mYKeXcMI1B
+         rQ1g==
+X-Gm-Message-State: AOJu0Yws8zpzpwWHEdQCW+KQJPWbNVKv9Qt/jyYZ56yxouqKWNL87KV8
+        RJz0rEMgQaG+hpW/innAlDY=
+X-Google-Smtp-Source: AGHT+IGn+LcE04+sPvS0bUrNhEsTVIrXUWbqE3J0aelwrU/x6umTcfKFPBvWITjK+TMsFaXQp+nbJQ==
+X-Received: by 2002:a05:6a20:94c3:b0:18b:8b4:2de6 with SMTP id ht3-20020a056a2094c300b0018b08b42de6mr6582236pzb.37.1700879644585;
+        Fri, 24 Nov 2023 18:34:04 -0800 (PST)
 Received: from localhost.localdomain ([192.166.114.90])
-        by smtp.gmail.com with ESMTPSA id mz22-20020a17090b379600b002839a4f65c5sm3611353pjb.30.2023.11.24.18.33.53
+        by smtp.gmail.com with ESMTPSA id mz22-20020a17090b379600b002839a4f65c5sm3611353pjb.30.2023.11.24.18.33.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 18:33:58 -0800 (PST)
+        Fri, 24 Nov 2023 18:34:04 -0800 (PST)
 From:   Jianhua Lu <lujianhua000@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Jianhua Lu <lujianhua000@gmail.com>
-Subject: [PATCH v2 2/3] arm64: dts: qcom: sm8250-xiaomi-elish: Add pm8150b type-c node
-Date:   Sat, 25 Nov 2023 10:33:42 +0800
-Message-ID: <20231125023343.10939-2-lujianhua000@gmail.com>
+Subject: [PATCH v2 3/3] arm64: dts: qcom: sm8250-xiaomi-elish: Enable usb_1 otg
+Date:   Sat, 25 Nov 2023 10:33:43 +0800
+Message-ID: <20231125023343.10939-3-lujianhua000@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231125023343.10939-1-lujianhua000@gmail.com>
 References: <20231125023343.10939-1-lujianhua000@gmail.com>
@@ -79,76 +79,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add type-c node to feature otg function.
+Change dr_mode to otg and set usb_role_swith property to enable
+usb otg.
 
 Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
 ---
-No changes in v2.
+Changes in v2:
+  1. a new patch that I missed to generate.
 
- .../dts/qcom/sm8250-xiaomi-elish-common.dtsi  | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-index 3d4ea428e4cb..ba2119da1979 100644
+index ba2119da1979..6abca574398d 100644
 --- a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-@@ -6,6 +6,7 @@
- #include <dt-bindings/arm/qcom,ids.h>
- #include <dt-bindings/phy/phy.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/usb/pd.h>
- #include "sm8250.dtsi"
- #include "pm8150.dtsi"
- #include "pm8150b.dtsi"
-@@ -627,6 +628,37 @@ vol_up_n: vol-up-n-state {
- 	};
+@@ -696,11 +696,12 @@ &usb_1 {
  };
  
-+&pm8150b_typec {
-+	vdd-pdphy-supply = <&vreg_l2a_3p1>;
-+	status = "okay";
-+
-+	connector {
-+		compatible = "usb-c-connector";
-+
-+		power-role = "source";
-+		data-role = "dual";
-+		self-powered;
-+
-+		source-pdos = <PDO_FIXED(5000, 3000,
-+					 PDO_FIXED_DUAL_ROLE |
-+					 PDO_FIXED_USB_COMM |
-+					 PDO_FIXED_DATA_SWAP)>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				pm8150b_role_switch_in: endpoint {
-+					remote-endpoint = <&usb_1_role_switch_out>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &pon_pwrkey {
- 	status = "okay";
- };
-@@ -678,6 +710,10 @@ &usb_1_hsphy {
- 	status = "okay";
+ &usb_1_dwc3 {
+-	dr_mode = "peripheral";
++	dr_mode = "otg";
+ 	maximum-speed = "high-speed";
+ 	/* Remove USB3 phy */
+ 	phys = <&usb_1_hsphy>;
+ 	phy-names = "usb2-phy";
++	usb-role-switch;
  };
  
-+&usb_1_role_switch_out {
-+	remote-endpoint = <&pm8150b_role_switch_in>;
-+};
-+
- &ufs_mem_hc {
- 	vcc-supply = <&vreg_l17a_3p0>;
- 	vcc-max-microamp = <800000>;
+ &usb_1_hsphy {
 -- 
 2.41.0
 
