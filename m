@@ -2,156 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E82EE7F8AA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2257F8AAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjKYMMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S231933AbjKYMTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYMMt (ORCPT
+        with ESMTP id S229483AbjKYMTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:12:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E4810C1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:12:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0756C433C7;
-        Sat, 25 Nov 2023 12:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700914374;
-        bh=HaPs6rO9d02viq7dWMbdaoM03RBF1QX65JlhKX2KKcQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tjJVHMw53dN8MvofGbFCvqRLyBp8d4KD3v9p3MR2ir5f2sqPK/Yi2pCsrlUXUqEU1
-         PZsoI54sw3oatvY01aMh71m2kgvNQ/tSD64kB3wt2ShKlQIaIrMzY3bFNnShrs5M1A
-         br965+pL9uE44PkwUOr1gFvNbrHDJXR7lXdKAgK4+sZxZGZ4vBl48tPHGkL/JMzgmP
-         rtom8SJ1Af1Cs9BedYeDJubTAB6jQFpp+HkKpEM479SNzc8JsMH2gr/dDCeAfECyMI
-         ZyhsXzMePWmUzIipB7kJ23N5gbryxnE6h2VagHBIa0Ox5bNdowsWeUl1bMwmIoY51E
-         JNf5JYCYE8N0w==
-Date:   Sat, 25 Nov 2023 12:12:45 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Sat, 25 Nov 2023 07:19:33 -0500
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78D1DD;
+        Sat, 25 Nov 2023 04:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1700914777; bh=pUnc6hxaXO6k+t6qAK0K2kjbeQ69laez4MfOMiNz8t0=;
+        h=From:Subject:Date:To:Cc;
+        b=vOFJfOhT+k769Xljz9LeEMNUiBxOB5yd0EgijokaMF+mvSYUJvoTt+rGytYUDxQSG
+         VBIfJT9PFDzYSyB5QAYNEswS+NabnAKf1RROXllI35xFUnV3ypXGcP/sxdRcfv1pQR
+         swnBso414sqv/1pMXxP8biNEzkyB+yZBMmvQsoBE=
+From:   Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH v2 0/2] Small dtsi fixes for msm8953 SoC
+Date:   Sat, 25 Nov 2023 13:19:26 +0100
+Message-Id: <20231125-msm8953-misc-fixes-v2-0-df86655841d9@z3ntu.xyz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE7mYWUC/32NSw6CQBBEr0J6bZv5iAyuvIdhgUOP9AIw00j4h
+ Ls7cgCXryqvagOhyCRwyzaINLHw0Ccwpwx8W/cvQm4Sg1HGaqVz7KRzZW6xY/EYeCZBVwRbWKN
+ sKB0k8R3pKJL3qBK3LOMQl+Nj0r/079ykUeHTKdWQr0u6XO+r7cfPeV5WqPZ9/wKPeqA1tAAAA
+ A==
+To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: iio: chemical: add aosong,ags02ma
-Message-ID: <20231125121245.6664470d@jic23-huawei>
-In-Reply-To: <20231125100139.193584-2-anshulusr@gmail.com>
-References: <20231125100139.193584-1-anshulusr@gmail.com>
-        <20231125100139.193584-2-anshulusr@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=754; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=pUnc6hxaXO6k+t6qAK0K2kjbeQ69laez4MfOMiNz8t0=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlYeZW2TWHha+1ZSps8ueycuUS/D86jC1Ft1rR8
+ g0fHeCtQO+JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZWHmVgAKCRBy2EO4nU3X
+ VqImEADVTHqVBLbtRz9EIEHtpMvVHgobZi48tcKfPM+unqB8xnwu2cLVw+frphPgvJ82aNuuPjL
+ VH20C6ypW35zT9P3F6Hfwi6AvWFehJHa+8GMi4ui82B8tgQFcZX5vqtggRju+WQU2Gl65/4Ekpm
+ DAy5iiYZ9wBNENfofhzyow6S2pV+uBzThpJaqzlPRe2iUH9yTSPpu8Ub/SiwSQ1loyS+fK5BhfT
+ uP3AjCuEWj04R6ladenvKzUgNWRIDoRQsbt81P/KZFtXMkLEgeGSdAgTSzvghP+fPgyP9oyvVNz
+ REj34czSGfLlnc10EVuahCpOr5Uv/CGmDlzCPxR+upaFNulhPjRnYMPS+SlbByjbrXAVLa7vXOu
+ m8RTifp0BcmIWxc2DxA0Offc2mtzIGSLiRs0QjyfAAVCs7RgGxjKWFyNx7AGRQ64FyDy5aVp+W6
+ yRS4Po++wwyQs8gPwl4c8RBIYd70cmvEPHNxKBIwNhSFjfDONlkPIznsJnW469SNT5epp7ci5lF
+ WkITFjDUEAak4D4MR5aQR7FpYCZsBsgxUoiWMD5NM0kp7cxO1p20vR3WqZrPmSKL/e4PLJRsSCh
+ Mo+lcpeM1Xe1dVDtvJHUAPrY49n5ggPbDGad4pvzAE1LkGEN+NIjRBSg5lDPtGRH5VIcgZteSq1
+ 5rlfUE6Ss8qA3/g==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Nov 2023 15:31:37 +0530
-Anshul Dalal <anshulusr@gmail.com> wrote:
+Fix some small things in the qcom/msm8953.dtsi file to make dtbs_check
+happier than before.
 
-> Add bindings for Aosong AGS02MA TVOC sensor.
-> 
-> The sensor communicates over i2c with the default address 0x1a.
-> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
-> 
-> Datasheet:
->   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
-> Product-Page:
->   http://www.aosong.com/m/en/products-33.html
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> ---
-> 
-> Changes for v4:
-> - Changed node name from 'light-sensor' to 'voc-sensor'
-> 
-> v3: https://lore.kernel.org/lkml/20231121095800.2180870-2-anshulusr@gmail.com/
-> 
-> Changes for v3:
-> - Fixed commit message
-> - Removed "asair,ags02ma" compatible
-> 
-> v2: https://lore.kernel.org/lkml/20231115125810.1394854-2-anshulusr@gmail.com/
-> 
-> Changes for v2:
-> - Removed device from trivial-devices
-> - Added standalone binding with vdd-supply property
-> 
-> v1: https://lore.kernel.org/lkml/20231107173100.62715-2-anshulusr@gmail.com/
-> ---
->  .../bindings/iio/chemical/aosong,ags02ma.yaml | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml
-> new file mode 100644
-> index 000000000000..c176a6e102ac
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/chemical/aosong,ags02ma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aosong AGS02MA VOC Sensor
-> +
-> +description: |
-> +  AGS02MA is an TVOC (Total Volatile Organic Compounds) i2c sensor with default
-> +  address of 0x1a.
-> +
-> +  Datasheet:
-> +    https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
-> +
-> +maintainers:
-> +  - Anshul Dalal <anshulusr@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aosong,ags02ma
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  vdd-supply: true
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Changes in v2:
+- Expand on RAM address commit message (Stephan)
+- Pick up tags
+- Link to v1: https://lore.kernel.org/r/20231015-msm8953-misc-fixes-v1-0-b800deca9e46@z3ntu.xyz
 
-Similar to other review (I put more background there)
-Convention these days at least is to always require powersupplies
-that the device cannot work with out (even if you can use a fixed
-supply and rely on the regulator framework papering over that).
-We want to distinguish generally optional supplies from ones we might
-not specify in a given DT.
+---
+Luca Weiss (2):
+      arm64: dts: qcom: msm8953: Set initial address for memory
+      arm64: dts: qcom: msm8953: Use non-deprecated qcom,domain in LPASS
 
-Jonathan
+ arch/arm64/boot/dts/qcom/msm8953.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+---
+base-commit: 8c9660f6515396aba78d1168d2e17951d653ebf2
+change-id: 20231015-msm8953-misc-fixes-87f373203f98
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        voc-sensor@1a {
-> +            compatible = "aosong,ags02ma";
-> +            reg = <0x1a>;
-> +            vdd-supply = <&vdd_regulator>;
-> +        };
-> +    };
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
 
