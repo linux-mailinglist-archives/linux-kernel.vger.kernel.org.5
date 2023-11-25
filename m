@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E4F7F8AF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 401907F8AF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbjKYMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:54:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S232089AbjKYM4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbjKYMyX (ORCPT
+        with ESMTP id S232023AbjKYM4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:54:23 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2319ABC
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:26 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548d60a4d60so3644067a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:26 -0800 (PST)
+        Sat, 25 Nov 2023 07:56:46 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DCDA5
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:56:52 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so3651817a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:56:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700916864; x=1701521664; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=xwsnRDL1c2UPqNmwiMYiMuvGOKXcoVAjfq7yoygNLK8=;
-        b=v4PimsF3mnqAX8t/f2Ull7F7FZ0GWd9gTt3pAJUMsmvO4OoPLKE8naRvRfwZYFDmtI
-         D9Fu6c99DtiMla+JHDH5Nuvb1pj87dL9EUoqeLNm1y9Mln706UbAOTX2pDWo7LofegsD
-         zyg+1hCVajDEZdD05G9tpaI+oZdIezjlDTFKcQtZdEs9DNnLUBVElEEqd9HOqPHEn8AJ
-         5pE1gGeQHuXj+hFddFWuwqvbJ5NG9eM0rF3m/PXtnzfcok7Lp3am3AXCmb79QeQv94MV
-         yUoqZfS3z3Gj4TKHVlV7SJw97gRSVu88fOfY2kjHFGvs/hs7F/lqbYSU8oMVcbP7Uggo
-         1YKA==
+        d=linaro.org; s=google; t=1700917011; x=1701521811; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=czOs3NcJUUXQ6TvoXbjsk/IbutSpwpgfOeolvWDt+k0=;
+        b=Ay4LvuEuookjeTm9ommK9LkB4M6F/aaLYsKKmT0QIJMcvRAnMzeaPaTxib+VZg+mn7
+         jJJDFpWB9088yV0R+s31RIz45c6xckTegSrnMbJ2xpjyNzd7kkXSK8NdPvXpXXkNts6N
+         h5kaq8FD4O4YQEmunkVK/GGYK3wg20Uch8sJX9xadGByHjJNqizav3kwlgr5zkvthyNH
+         3MTfdmFWW+NEyHRTlDzSTvR2Oe/wfveGDPPlIucWWs5gxeTrA+fiZw9RNGD6UH43wQxP
+         fOYPlvYxNA78FLCxm8CeWVrjU9RiuqvpJSNbaQ9SJYSMMZ8R2m2CeXSaYgYFdZYzvABo
+         3oRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700916864; x=1701521664;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xwsnRDL1c2UPqNmwiMYiMuvGOKXcoVAjfq7yoygNLK8=;
-        b=KkcDvddLUQ1rTsZrt07YqM3vOOPbo1RsAldrJfgbvgvwyClWJWBP8kcwXOLeEMODSs
-         eIDi3calomzMzZw2Y0EfpP4NGBq2mzJZXqKOyT9+A46eiHdwjCmm0d0bGF586eCVKxyA
-         Z+l8AvPHYStFxjeinof+0e+RaAB9lrnauO+sHQfF4voT68HHrKcSOhgWTEzZGSm+WXBv
-         zI61ZnAVy8+2XL2mvk1gi1pK0pFGi7iOO+WxRyKmf7THpoz3Um/hQvTFQVE64tkZ/5Wg
-         kNNVUdnI4NQ/oocLiYOmMduPo6CO/m8Yo8hVxlZFwPXkDwho8FLay5AD+vd0S/gZkNFm
-         HrxQ==
-X-Gm-Message-State: AOJu0YzLj6zGQ4cX/Bsfh8mR5hdZokTe/Y6ZlbkGBcrtGD2LeiAodcac
-        HA6lYn0s7gUViAxl0O/hFY2TlQ==
-X-Google-Smtp-Source: AGHT+IFE0guTiNzxa6B9t4+k07MBqmi3ApjbPPecevqCqeBKdgV6XBtFgK4hjfYvKY4RhPzCNLz9GQ==
-X-Received: by 2002:a17:906:594c:b0:a04:c787:4117 with SMTP id g12-20020a170906594c00b00a04c7874117mr4721576ejr.19.1700916864595;
-        Sat, 25 Nov 2023 04:54:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700917011; x=1701521811;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=czOs3NcJUUXQ6TvoXbjsk/IbutSpwpgfOeolvWDt+k0=;
+        b=XwEyTDX9vSx8sK23mPXpvEBbw7uVqwcdnEbK03PsMdOgBfs2G37d1dagaUcKMxFtfn
+         IhEa6hcoKPoQOXiuUEatuJx8u+Cixk/ADcJUANvCFoDEfN3FGYst70lSQQR7py2Ujd73
+         1gRB73JVhEY4Q3XXZK5EnYEUvqnwJlmCORucZjz/SPptdkNLHROdce2e8AgTIjEmkFSl
+         eVPlEPZWNPPk08f2JgnKFHAWCq5Vow1ZSqlwPWWgpyAGCZsgADSq0XqOt4CJyw2jUzxQ
+         +XhL2N1NUeyd0IM8gaMXyfm0qf7MKNLb4+tn48aFgOGGwdCyshFyCWJaMYckZ/5yqMKv
+         u6Qw==
+X-Gm-Message-State: AOJu0Yyx95Yx0F+a00UY3r2Y8eXlPxo87eUBa4YEk/bCZn5ZW4cutDe/
+        Tq6LTLDH2N/jF2CLagvXRHrkfQ==
+X-Google-Smtp-Source: AGHT+IFdXYKV7LbfzbDEeh71TJ5AUg5pnKtwZk5+IqrMeTYt+hWq78Jf1aravz5shRoRrzmeCUqe+g==
+X-Received: by 2002:a05:6402:31e4:b0:54a:fb41:14c with SMTP id dy4-20020a05640231e400b0054afb41014cmr3470461edb.36.1700917010873;
+        Sat, 25 Nov 2023 04:56:50 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id uz2-20020a170907118200b00a098348d803sm1983946ejb.141.2023.11.25.04.54.22
+        by smtp.gmail.com with ESMTPSA id eh9-20020a0564020f8900b005486f7f654dsm3008547edb.7.2023.11.25.04.56.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 04:54:24 -0800 (PST)
-Message-ID: <6b30c1ba-9740-41f7-95c0-cdb1803fe19a@linaro.org>
-Date:   Sat, 25 Nov 2023 13:54:22 +0100
+        Sat, 25 Nov 2023 04:56:50 -0800 (PST)
+Message-ID: <cfcea2d9-7f7b-4434-b3a9-ea2fd1bee965@linaro.org>
+Date:   Sat, 25 Nov 2023 13:56:48 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/8] media: qcom: camss: Move VFE power-domain
- specifics into vfe.c
+Subject: Re: [PATCH v4 7/8] arm64: dts: qcom: sm8650-mtp: add interconnect
+ dependent device nodes
 Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231123-b4-camss-named-power-domains-v6-0-3ec2fd9e8e36@linaro.org>
- <20231123-b4-camss-named-power-domains-v6-4-3ec2fd9e8e36@linaro.org>
- <3b8e6b65-5f37-49e5-b83e-b89726867ed2@linaro.org>
+References: <20231124-topic-sm8650-upstream-dt-v4-0-e402e73cc5f0@linaro.org>
+ <20231124-topic-sm8650-upstream-dt-v4-7-e402e73cc5f0@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
  BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
@@ -107,9 +103,9 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <3b8e6b65-5f37-49e5-b83e-b89726867ed2@linaro.org>
+In-Reply-To: <20231124-topic-sm8650-upstream-dt-v4-7-e402e73cc5f0@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -120,27 +116,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.2023 13:53, Konrad Dybcio wrote:
-> On 23.11.2023 18:03, Bryan O'Donoghue wrote:
->> Moving the location of the hooks to VFE power domains has several
->> advantages.
->>
->> 1. Separation of concerns and functional decomposition.
->>    vfe.c should be responsible for and know best how manage
->>    power-domains for a VFE, excising from camss.c follows this
->>    principle.
->>
->> 2. Embedding a pointer to genpd in struct camss_vfe{} meas that we can
->>    dispense with a bunch of kmalloc array inside of camss.c.
->>
->> 3. Splitting up titan top gdsc from vfe/ife gdsc provides a base for
->>    breaking up magic indexes in dtsi.
->>
->> Suggested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
->> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
-> Reviewed-by: Konrad Dybcio <konrad.dybciolinaro.org>
+On 24.11.2023 10:20, Neil Armstrong wrote:
+> Now interconnect dependent devices are added in sm8650 DTSI,
+> now enable more devices for the Qualcomm SM8650 MTP board:
+> - PCIe
+> - Display
+> - DSPs
+> - SDCard
+> - UFS
+> - USB role switch with PMIC Glink
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
