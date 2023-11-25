@@ -2,134 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1717F8ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239CE7F8AE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbjKYMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        id S232124AbjKYMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbjKYMv3 (ORCPT
+        with ESMTP id S231933AbjKYMwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:51:29 -0500
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9D618C
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:51:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1700916693; x=1701175893;
-        bh=5cwlw0HuMDDbZgo/K1At3+rO2e/15vaUqRXcq/BERzM=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=FS3ez3D8nDEmE+MRVnSjRM9nxTRr8v9kzeCCfjs7zZYj3YGzeyW4G2sPVZfmcU2hW
-         CDdNb/nAxVfWR0uZ5lu30LwUdKIGM1ZzwAkldj471VMulFRmoTbdgN6qS2QSrYELEU
-         QSfRsiwmR0lL4KrlQTAsZA0hZ5BXW4cWJFaRDPkD0E22LxezynuZqdKe2JJiD2huVr
-         HOfNXZciWch/10Vm/Bu2ZLszU5hX6vGLGtAu8nBEomhkCbmT/PkPOVNrssLXl8I30g
-         ++D2QaElRThHrNYAUL9TUrIYwdqTGST66IGS560BcK817bPYxTnr7Jw0KOdZO2/mYq
-         2hX2k5YW7GDhw==
-Date:   Sat, 25 Nov 2023 12:51:23 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] rust: workqueue: add `#[pin_data]` to `Work`
-Message-ID: <20231125125024.1235933-3-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+        Sat, 25 Nov 2023 07:52:54 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C476B8;
+        Sat, 25 Nov 2023 04:52:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1700916776;
+        bh=8RBixFRBTmKUrLM1q1IL2B0QZNBqk4iPlBDUCbp6lfA=;
+        h=From:Subject:Date:To:Cc:From;
+        b=I8SiL3KL/XYeDM0VPw9zjtesa2gYkLoHvkBcnTC3TsJr2k7NNfsoyNj+C9j9og+56
+         AkX+gId2Yz6MztTTHIohQIY9gqR9Y9xgd3/bj+gpodmrkmlSpmtGdYd1uIPeTdBMg+
+         PTaEITi9y7n3HQj7sMX05fg2kfZV8MHEYebhPjw0=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH RFC 0/7] sysctl: constify sysctl ctl_tables
+Date:   Sat, 25 Nov 2023 13:52:49 +0100
+Message-Id: <20231125-const-sysctl-v1-0-5e881b0e0290@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIACHuYWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQ0Mz3eT8vOIS3eLK4uSSHN1UQxMzI5M0QyNL02QloJaCotS0zAqwcdF
+ KQW7OSrG1tQBowj1BYwAAAA==
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Granados <j.granados@samsung.com>
+Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700916776; l=5646;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=8RBixFRBTmKUrLM1q1IL2B0QZNBqk4iPlBDUCbp6lfA=;
+ b=yn5sxyWjNwIg3MCvIyTri53+1hRNy7eWYmeevr24Fh4Kc7YwoBmv6NGIzQUUIsojWtpS2yIxz
+ YWKOMvwkGzZBhqyeOcBcPzisZFK8vH7qkMSjnXwToIQTAgKc1b6fkec
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous two patches made it possible to add `#[pin_data]` to
-structs with default values to const generic paramters.
-This patch makes `Work` use `#[pin_data]` and removes an invocation of
-`pin_init_from_closure`. This function is intended as a low level manual
-escape hatch, so it is better to rely on the `pin_init!` macro.
+Problem description:
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+The kernel contains a lot of struct ctl_table throught the tree.
+These are very often 'static' definitions.
+It would be good to mark these tables const to avoid accidental or
+malicious modifications.
+Unfortunately the tables can not be made const because the core
+registration functions expect mutable tables.
+
+This is for two reasons:
+
+1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
+   the table. This should be fixable by only modifying the header
+   instead of the table itself.
+2) The table is passed to the handler function as a non-const pointer.
+
+This series is an aproach on fixing reason 2).
+
+Full process:
+
+* Introduce field proc_handler_new for const handlers (this series)
+* Migrate all core handlers to proc_handler_new (this series, partial)
+  This can hopefully be done in a big switch, as it only involves
+  functions and structures owned by the core sysctl code.
+* Migrate all other sysctl handlers to proc_handler_new.
+* Drop the old proc_handler_field.
+* Fix the sysctl core to not modify the tables anymore.
+* Adapt public sysctl APIs to take "const struct ctl_table *".
+* Teach checkpatch.pl to warn on non-const "struct ctl_table"
+  definitions.
+* Migrate definitions of "struct ctl_table" to "const" where applicable.
+ 
+
+Notes:
+
+Just casting the function pointers around would trigger
+CFI (control flow integrity) warnings.
+
+The name of the new handler "proc_handler_new" is a bit too long messing
+up the alignment of the table definitions.
+Maybe "proc_handler2" or "proc_handler_c" for (const) would be better.
+
 ---
+Thomas Weißschuh (7):
+      sysctl: add helper sysctl_run_handler
+      bpf: cgroup: call proc handler through helper
+      sysctl: add proc_handler_new to struct ctl_table
+      net: sysctl: add new sysctl table handler to debug message
+      treewide: sysctl: migrate proc_dostring to proc_handler_new
+      treewide: sysctl: migrate proc_dobool to proc_handler_new
+      treewide: sysctl: migrate proc_dointvec to proc_handler_new
 
-@Miguel: This patch is based on v6.7-rc2, because `workqueue.rs` has yet
-         to land in rust-next. The first two patches also apply to
-         rust-next.
+ arch/arm/kernel/isa.c                   |  6 +--
+ arch/csky/abiv1/alignment.c             |  8 ++--
+ arch/powerpc/kernel/idle.c              |  2 +-
+ arch/riscv/kernel/vector.c              |  2 +-
+ arch/s390/kernel/debug.c                |  2 +-
+ crypto/fips.c                           |  6 +--
+ drivers/char/hpet.c                     |  2 +-
+ drivers/char/random.c                   |  4 +-
+ drivers/infiniband/core/iwcm.c          |  2 +-
+ drivers/infiniband/core/ucma.c          |  2 +-
+ drivers/macintosh/mac_hid.c             |  4 +-
+ drivers/md/md.c                         |  4 +-
+ drivers/scsi/sg.c                       |  2 +-
+ drivers/tty/tty_io.c                    |  4 +-
+ fs/coda/sysctl.c                        |  6 +--
+ fs/coredump.c                           |  6 +--
+ fs/devpts/inode.c                       |  2 +-
+ fs/lockd/svc.c                          |  4 +-
+ fs/locks.c                              |  4 +-
+ fs/nfs/nfs4sysctl.c                     |  2 +-
+ fs/nfs/sysctl.c                         |  2 +-
+ fs/notify/dnotify/dnotify.c             |  2 +-
+ fs/ntfs/sysctl.c                        |  2 +-
+ fs/ocfs2/stackglue.c                    |  2 +-
+ fs/proc/proc_sysctl.c                   | 16 ++++---
+ fs/quota/dquot.c                        |  2 +-
+ include/linux/sysctl.h                  | 29 +++++++++---
+ init/do_mounts_initrd.c                 |  2 +-
+ io_uring/io_uring.c                     |  2 +-
+ ipc/mq_sysctl.c                         |  2 +-
+ kernel/acct.c                           |  2 +-
+ kernel/bpf/cgroup.c                     |  2 +-
+ kernel/locking/lockdep.c                |  4 +-
+ kernel/printk/sysctl.c                  |  4 +-
+ kernel/reboot.c                         |  4 +-
+ kernel/seccomp.c                        |  2 +-
+ kernel/signal.c                         |  2 +-
+ kernel/sysctl-test.c                    | 20 ++++-----
+ kernel/sysctl.c                         | 80 ++++++++++++++++-----------------
+ lib/test_sysctl.c                       | 10 ++---
+ mm/hugetlb.c                            |  2 +-
+ mm/hugetlb_vmemmap.c                    |  2 +-
+ mm/oom_kill.c                           |  4 +-
+ net/appletalk/sysctl_net_atalk.c        |  2 +-
+ net/core/sysctl_net_core.c              | 12 ++---
+ net/ipv4/route.c                        | 18 ++++----
+ net/ipv4/sysctl_net_ipv4.c              | 38 ++++++++--------
+ net/ipv4/xfrm4_policy.c                 |  2 +-
+ net/ipv6/addrconf.c                     | 72 ++++++++++++++---------------
+ net/ipv6/route.c                        |  8 ++--
+ net/ipv6/sysctl_net_ipv6.c              | 18 ++++----
+ net/ipv6/xfrm6_policy.c                 |  2 +-
+ net/mptcp/ctrl.c                        |  2 +-
+ net/netfilter/ipvs/ip_vs_ctl.c          | 36 +++++++--------
+ net/netfilter/nf_conntrack_standalone.c |  8 ++--
+ net/netfilter/nf_log.c                  |  2 +-
+ net/rds/ib_sysctl.c                     |  2 +-
+ net/rds/sysctl.c                        |  6 +--
+ net/sctp/sysctl.c                       | 26 +++++------
+ net/sunrpc/xprtrdma/transport.c         |  2 +-
+ net/sysctl_net.c                        |  5 ++-
+ net/unix/sysctl_net_unix.c              |  2 +-
+ net/x25/sysctl_net_x25.c                |  2 +-
+ net/xfrm/xfrm_sysctl.c                  |  4 +-
+ 64 files changed, 280 insertions(+), 262 deletions(-)
+---
+base-commit: 0f5cc96c367f2e780eb492cc9cab84e3b2ca88da
+change-id: 20231116-const-sysctl-e14624f1295c
 
- rust/kernel/workqueue.rs | 33 ++++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 15 deletions(-)
-
-diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
-index b67fb1ba168e..15bcfdb1ed33 100644
---- a/rust/kernel/workqueue.rs
-+++ b/rust/kernel/workqueue.rs
-@@ -334,8 +334,10 @@ pub trait WorkItem<const ID: u64 =3D 0> {
- /// Wraps the kernel's C `struct work_struct`.
- ///
- /// This is a helper type used to associate a `work_struct` with the [`Wor=
-kItem`] that uses it.
-+#[pin_data]
- #[repr(transparent)]
- pub struct Work<T: ?Sized, const ID: u64 =3D 0> {
-+    #[pin]
-     work: Opaque<bindings::work_struct>,
-     _inner: PhantomData<T>,
- }
-@@ -357,21 +359,22 @@ pub fn new(name: &'static CStr, key: &'static LockCla=
-ssKey) -> impl PinInit<Self
-     where
-         T: WorkItem<ID>,
-     {
--        // SAFETY: The `WorkItemPointer` implementation promises that `run=
-` can be used as the work
--        // item function.
--        unsafe {
--            kernel::init::pin_init_from_closure(move |slot| {
--                let slot =3D Self::raw_get(slot);
--                bindings::init_work_with_key(
--                    slot,
--                    Some(T::Pointer::run),
--                    false,
--                    name.as_char_ptr(),
--                    key.as_ptr(),
--                );
--                Ok(())
--            })
--        }
-+        pin_init!(Self {
-+            work: Opaque::ffi_init(|slot| {
-+                // SAFETY: The `WorkItemPointer` implementation promises t=
-hat `run` can be used as
-+                // the work item function.
-+                unsafe {
-+                    bindings::init_work_with_key(
-+                        slot,
-+                        Some(T::Pointer::run),
-+                        false,
-+                        name.as_char_ptr(),
-+                        key.as_ptr(),
-+                    )
-+                }
-+            }),
-+            _inner: PhantomData,
-+        })
-     }
-=20
-     /// Get a pointer to the inner `work_struct`.
---=20
-2.40.1
-
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
