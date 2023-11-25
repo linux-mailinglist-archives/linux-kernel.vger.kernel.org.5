@@ -2,310 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C27A7F892C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2887F892E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjKYIUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        id S231759AbjKYIWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKYIUv (ORCPT
+        with ESMTP id S229462AbjKYIWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:20:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ED8DB
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:20:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700900456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zFft4eSCdOMrdpLaXue5iGXf4Itn7tLvD8L9yc/5DXM=;
-        b=IVQH++aSv9q1fmMGwIdDJ5POSUj561IrcpqHNaasqjhQrY5TbFYPtptlRXjNdWgjzmFmCK
-        kqPgtyP7R/mOBIl/vog6RQsaOkR0lCgxd0klQLedJtcfpceBZ3A0X0E3j7Nff7woziKcQk
-        AD/J/ZXACcFUGmWxyhXFNXSJRGKMNI4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-561-s8aJHvZZNQuTMHrAnoz3QA-1; Sat,
- 25 Nov 2023 03:20:55 -0500
-X-MC-Unique: s8aJHvZZNQuTMHrAnoz3QA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 251921C05AB2;
-        Sat, 25 Nov 2023 08:20:55 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C44AC1596F;
-        Sat, 25 Nov 2023 08:20:55 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: remove CONFIG_HAVE_KVM_IRQFD
-Date:   Sat, 25 Nov 2023 03:20:54 -0500
-Message-Id: <20231125082054.1388342-1-pbonzini@redhat.com>
+        Sat, 25 Nov 2023 03:22:06 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FDCDB;
+        Sat, 25 Nov 2023 00:22:12 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6c4eaa5202aso2535761b3a.1;
+        Sat, 25 Nov 2023 00:22:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700900532; x=1701505332; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HXAMT1m/Mn+bDDg8lCVh+2sMt2ufqIKuHwMzy74xes8=;
+        b=iHzxbxUYCaJf9UxQflyjp1LehTgiKwq2qfRukvaqrx0MnsDxrT3x2Hy27gMjGo8kBO
+         wDQ67EKvc+CLxMlj92NExqDyObcNy5/38CyyBCD89SPtG3dNwWz5JEqBb6vHjm2unsv2
+         kIs9H2xcQRCnDo7QHKPq6uzSqZfNRhOWDb+vGx7yj4ifj+DRvCBw/5QUMlw7ccHc9hmS
+         jhpRUPSydFXCPFcYY8AgdIw9OemJeOITyyUD97eXrPoyZp0exPGKBhTyVU6CsaRhcnHR
+         4m3zF12ITm43Vk+g3QuwW4KI0l8rucROtIesetgUG6/AT0D+g2r1D6lu7BVnil/7mI4S
+         Mv/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700900532; x=1701505332;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HXAMT1m/Mn+bDDg8lCVh+2sMt2ufqIKuHwMzy74xes8=;
+        b=lS8C9MSEPjStTnPCPuckcWDUe1baljTaTGem1c2y7DQ3EJ2OMPbEkUlycynNNwFEFV
+         jDtMrX93TQKTQKORZOI2x6RRocdZLxB4I6zpOZrr2PtpgxUOuc2szdsQsmbgBYODdfPv
+         8+InsiKh48ltiSE71TMgFTBcrJ1cl11++AuxBSDhpsWrruEb0OM23T/Xx2/xpF89t6i5
+         LYq1wWdk1d4EidjYE2qLJbs0dZATqdzUyQWXWl+dqM0GLSZPYZDX0BGxmwYMevsjgxAb
+         NQRpGE2AZ9Wdfi8GrkJ5B8c41UpdSL/+G4mOO/LMohv/p4j0n2uYi16O8ifLLh+hX9Qf
+         Bcpg==
+X-Gm-Message-State: AOJu0YxGSnPPzIpeSX+lY8Dt8/1GsqzP650md3WWOyGRd3Rk/hrMNMCP
+        2EBviyOplSx71IScrBB7nPmYn27a/+8aVvwEQAI=
+X-Google-Smtp-Source: AGHT+IGIERX2T7/D9zdX3uAWBmI3HkeyREbrc0bFp4tUviYv26xYWhn+7W1oa8oyCvK0VLx70DDaHtjBNsFax/WpcLg=
+X-Received: by 2002:a05:6a20:8421:b0:185:876f:4f4d with SMTP id
+ c33-20020a056a20842100b00185876f4f4dmr8211221pzd.32.1700900532019; Sat, 25
+ Nov 2023 00:22:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231125073738.649948-1-ghanshyam1898@gmail.com> <2023112554-bagginess-banker-089e@gregkh>
+In-Reply-To: <2023112554-bagginess-banker-089e@gregkh>
+From:   Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Date:   Sat, 25 Nov 2023 13:51:35 +0530
+Message-ID: <CAG-BmocpXo5GY7KSh-nnw7Z6ExkMGKxetoeSdbyNjrqFCGJLQA@mail.gmail.com>
+Subject: Re: [PATCH V3] media: stk1160: Fixed high volume of stk1160_dbg messages
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Phillip Potter <phil@philpotter.co.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All platforms with a kernel irqchip have support for irqfd.  Unify the
-two configuration items so that userspace can expect to use irqfd to
-inject interrupts into the irqchip.
+On Sat, Nov 25, 2023 at 1:18=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Sat, Nov 25, 2023 at 01:07:38PM +0530, Ghanshyam Agrawal wrote:
+> > The function stk1160_dbg gets called too many times, which causes
+> > the output to get flooded with messages. Since stk1160_dbg uses
+> > printk, it is now replaced with printk_ratelimited directly.
+> >
+> > Suggested-by: Phillip Potter <phil@philpotter.co.uk>
+> > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+> > ---
+> > V3:
+> > Fixed the issue with my patch needing previous versions being applied
+> > first.
+> >
+> > Used printk_ratelimited instead of dev_warn_ratelimited because
+> > of compiler error "incompatible pointer type".
+> >
+> > V2:
+> > To add KERN_WARNING in printk_ratelimited, and later as per warning by
+> > the checkpatch script, replaced  printk_ratelimited with
+> > dev_warn_ratelimited.
+> >
+> > V1:
+> > The function stk1160_dbg gets called too many times, which causes
+> > the output to get flooded with messages. Since stk1160_dbg uses
+> > printk, it is now replaced with dev_warn_ratelimited.
+> >
+> >  drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/=
+usb/stk1160/stk1160-video.c
+> > index 4e966f6bf608..98417fa31d70 100644
+> > --- a/drivers/media/usb/stk1160/stk1160-video.c
+> > +++ b/drivers/media/usb/stk1160/stk1160-video.c
+> > @@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *sr=
+c, int len)
+> >
+> >       /*
+> >        * TODO: These stk1160_dbg are very spammy!
+> > -      * We should 1) check why we are getting them
+> > -      * and 2) add ratelimit.
+> > +      * We should check why we are getting them.
+> >        *
+> >        * UPDATE: One of the reasons (the only one?) for getting these
+> >        * is incorrect standard (mismatch between expected and configure=
+d).
+> > @@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *sr=
+c, int len)
+> >
+> >       /* Let the bug hunt begin! sanity checks! */
+> >       if (lencopy < 0) {
+> > -             stk1160_dbg("copy skipped: negative lencopy\n");
+> > +             printk_ratelimited(KERN_WARNING "copy skipped: negative l=
+encopy\n");
+>
+> You changed a debug message level to a KERN_WARNING level?  That feels
+> like a step backwards.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/arm64/kvm/Kconfig     | 1 -
- arch/powerpc/kvm/Kconfig   | 2 --
- arch/powerpc/kvm/powerpc.c | 2 +-
- arch/riscv/kvm/Kconfig     | 1 -
- arch/s390/kvm/Kconfig      | 1 -
- arch/x86/kvm/Kconfig       | 1 -
- include/linux/kvm_host.h   | 9 ++++-----
- include/trace/events/kvm.h | 8 ++++----
- virt/kvm/Kconfig           | 3 ---
- virt/kvm/eventfd.c         | 6 +++---
- virt/kvm/kvm_main.c        | 4 ++--
- 11 files changed, 14 insertions(+), 24 deletions(-)
+Hi Greg,
 
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 5d9b68b5a0b3..71ebc4dadcfd 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -29,7 +29,6 @@ menuconfig KVM
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_XFER_TO_GUEST_WORK
- 	select KVM_VFIO
--	select HAVE_KVM_IRQFD
- 	select HAVE_KVM_DIRTY_RING_ACQ_REL
- 	select NEED_KVM_DIRTY_RING_WITH_BITMAP
- 	select HAVE_KVM_MSI
-diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-index 8a3d08559f11..b24da1c8699b 100644
---- a/arch/powerpc/kvm/Kconfig
-+++ b/arch/powerpc/kvm/Kconfig
-@@ -224,7 +224,6 @@ config KVM_MPIC
- 	bool "KVM in-kernel MPIC emulation"
- 	depends on KVM && PPC_E500
- 	select HAVE_KVM_IRQCHIP
--	select HAVE_KVM_IRQFD
- 	select HAVE_KVM_IRQ_ROUTING
- 	select HAVE_KVM_MSI
- 	help
-@@ -237,7 +236,6 @@ config KVM_XICS
- 	bool "KVM in-kernel XICS emulation"
- 	depends on KVM_BOOK3S_64 && !KVM_MPIC
- 	select HAVE_KVM_IRQCHIP
--	select HAVE_KVM_IRQFD
- 	default y
- 	help
- 	  Include support for the XICS (eXternal Interrupt Controller
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index f6af752698d0..df0a90b37c17 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -578,7 +578,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		break;
- #endif
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- 	case KVM_CAP_IRQFD_RESAMPLE:
- 		r = !xive_enabled();
- 		break;
-diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-index 642f8d95289b..267bbf85c7ea 100644
---- a/arch/riscv/kvm/Kconfig
-+++ b/arch/riscv/kvm/Kconfig
-@@ -21,7 +21,6 @@ config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
- 	depends on RISCV_SBI && MMU
- 	select HAVE_KVM_IRQCHIP
--	select HAVE_KVM_IRQFD
- 	select HAVE_KVM_IRQ_ROUTING
- 	select HAVE_KVM_MSI
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
-diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
-index ed567b858535..bb6d90351119 100644
---- a/arch/s390/kvm/Kconfig
-+++ b/arch/s390/kvm/Kconfig
-@@ -26,7 +26,6 @@ config KVM
- 	select KVM_ASYNC_PF
- 	select KVM_ASYNC_PF_SYNC
- 	select HAVE_KVM_IRQCHIP
--	select HAVE_KVM_IRQFD
- 	select HAVE_KVM_IRQ_ROUTING
- 	select HAVE_KVM_INVALID_WAKEUPS
- 	select HAVE_KVM_NO_POLL
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 2efda4fc6a21..7a1280ccb525 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -27,7 +27,6 @@ config KVM
- 	select MMU_NOTIFIER
- 	select HAVE_KVM_IRQCHIP
- 	select HAVE_KVM_PFNCACHE
--	select HAVE_KVM_IRQFD
- 	select HAVE_KVM_DIRTY_RING_TSO
- 	select HAVE_KVM_DIRTY_RING_ACQ_REL
- 	select IRQ_BYPASS_MANAGER
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index b043202dd0b4..06c57b02d54e 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -776,8 +776,7 @@ struct kvm {
- 	 * Update side is protected by irq_lock.
- 	 */
- 	struct kvm_irq_routing_table __rcu *irq_routing;
--#endif
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+
- 	struct hlist_head irq_ack_notifier_list;
- #endif
- 
-@@ -963,7 +962,7 @@ static inline void kvm_arch_post_irq_routing_update(struct kvm *kvm)
- }
- #endif
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- int kvm_irqfd_init(void);
- void kvm_irqfd_exit(void);
- #else
-@@ -2014,7 +2013,7 @@ int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi);
- void kvm_eventfd_init(struct kvm *kvm);
- int kvm_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args);
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- int kvm_irqfd(struct kvm *kvm, struct kvm_irqfd *args);
- void kvm_irqfd_release(struct kvm *kvm);
- bool kvm_notify_irqfd_resampler(struct kvm *kvm,
-@@ -2035,7 +2034,7 @@ static inline bool kvm_notify_irqfd_resampler(struct kvm *kvm,
- {
- 	return false;
- }
--#endif /* CONFIG_HAVE_KVM_IRQFD */
-+#endif /* CONFIG_HAVE_KVM_IRQCHIP */
- 
- void kvm_arch_irq_routing_update(struct kvm *kvm);
- 
-diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
-index 3bd31ea23fee..011fba6b5552 100644
---- a/include/trace/events/kvm.h
-+++ b/include/trace/events/kvm.h
-@@ -62,7 +62,7 @@ TRACE_EVENT(kvm_vcpu_wakeup,
- 		  __entry->valid ? "valid" : "invalid")
- );
- 
--#if defined(CONFIG_HAVE_KVM_IRQFD)
-+#if defined(CONFIG_HAVE_KVM_IRQCHIP)
- TRACE_EVENT(kvm_set_irq,
- 	TP_PROTO(unsigned int gsi, int level, int irq_source_id),
- 	TP_ARGS(gsi, level, irq_source_id),
-@@ -82,7 +82,7 @@ TRACE_EVENT(kvm_set_irq,
- 	TP_printk("gsi %u level %d source %d",
- 		  __entry->gsi, __entry->level, __entry->irq_source_id)
- );
--#endif /* defined(CONFIG_HAVE_KVM_IRQFD) */
-+#endif /* defined(CONFIG_HAVE_KVM_IRQCHIP) */
- 
- #if defined(__KVM_HAVE_IOAPIC)
- #define kvm_deliver_mode		\
-@@ -170,7 +170,7 @@ TRACE_EVENT(kvm_msi_set_irq,
- 
- #endif /* defined(__KVM_HAVE_IOAPIC) */
- 
--#if defined(CONFIG_HAVE_KVM_IRQFD)
-+#if defined(CONFIG_HAVE_KVM_IRQCHIP)
- 
- #ifdef kvm_irqchips
- #define kvm_ack_irq_string "irqchip %s pin %u"
-@@ -197,7 +197,7 @@ TRACE_EVENT(kvm_ack_irq,
- 	TP_printk(kvm_ack_irq_string, kvm_ack_irq_parm)
- );
- 
--#endif /* defined(CONFIG_HAVE_KVM_IRQFD) */
-+#endif /* defined(CONFIG_HAVE_KVM_IRQCHIP) */
- 
- 
- 
-diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index 18b5a8fb491b..5cb3654b7fd8 100644
---- a/virt/kvm/Kconfig
-+++ b/virt/kvm/Kconfig
-@@ -11,9 +11,6 @@ config HAVE_KVM_PFNCACHE
- config HAVE_KVM_IRQCHIP
-        bool
- 
--config HAVE_KVM_IRQFD
--       bool
--
- config HAVE_KVM_IRQ_ROUTING
-        bool
- 
-diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
-index 89912a17f5d5..19534156d48c 100644
---- a/virt/kvm/eventfd.c
-+++ b/virt/kvm/eventfd.c
-@@ -28,7 +28,7 @@
- 
- #include <kvm/iodev.h>
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- 
- static struct workqueue_struct *irqfd_cleanup_wq;
- 
-@@ -531,7 +531,7 @@ void kvm_unregister_irq_ack_notifier(struct kvm *kvm,
- void
- kvm_eventfd_init(struct kvm *kvm)
- {
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- 	spin_lock_init(&kvm->irqfds.lock);
- 	INIT_LIST_HEAD(&kvm->irqfds.items);
- 	INIT_LIST_HEAD(&kvm->irqfds.resampler_list);
-@@ -540,7 +540,7 @@ kvm_eventfd_init(struct kvm *kvm)
- 	INIT_LIST_HEAD(&kvm->ioeventfds);
- }
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- /*
-  * shutdown any irqfd's that match fd+gsi
-  */
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..3bd98ff65945 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1227,7 +1227,7 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
- 	if (r)
- 		goto out_err_no_disable;
- 
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- 	INIT_HLIST_HEAD(&kvm->irq_ack_notifier_list);
- #endif
- 
-@@ -4539,7 +4539,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
- #ifdef CONFIG_HAVE_KVM_MSI
- 	case KVM_CAP_SIGNAL_MSI:
- #endif
--#ifdef CONFIG_HAVE_KVM_IRQFD
-+#ifdef CONFIG_HAVE_KVM_IRQCHIP
- 	case KVM_CAP_IRQFD:
- #endif
- 	case KVM_CAP_IOEVENTFD_ANY_LENGTH:
--- 
-2.39.1
+Thanks for your response. The log level should indeed be DEBUG
+as it was earlier.
 
+I only wanted to add a rate limit there because it was printing too
+many log messages as mentioned in the todo. Shall I update the
+log level  to DEBUG and resend the patch? Thank you very much
+again.
+
+Regards,
+Ghanshyam Agrawal
