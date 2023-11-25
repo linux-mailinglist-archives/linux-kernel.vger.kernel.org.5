@@ -2,140 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 679257F8FAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5207F8FB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjKYWKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 17:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S230185AbjKYWQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:16:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYWKW (ORCPT
+        with ESMTP id S229456AbjKYWQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 17:10:22 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E8DC5;
-        Sat, 25 Nov 2023 14:10:29 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-67a109e3b11so11422646d6.0;
-        Sat, 25 Nov 2023 14:10:29 -0800 (PST)
+        Sat, 25 Nov 2023 17:16:38 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C08119
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:16:44 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a0b7f793b8aso88693566b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:16:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700950228; x=1701555028; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700950602; x=1701555402; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Gi/V6VkHDBoVIJD4xE3AR8G9/CR9yukNzOviIw3quc=;
-        b=LUY8drNIpXArJ9s44h2zOeK7tE9SY1SqIfd8Veu8BhhTAC9U0Fbbj9AZlTkwVwq0on
-         LT6Q0QhMxaaH/mk2k/v/cFVmPyR+W9sRldS9kXOA2oLHuzmAmbXPE/PkZWgyI8PCgFF1
-         7A6L3OQOSL8R+H+Bh4eAnJfK19eAlXwkG/qj9Zda9x2OPSuhE5AKxgHU/wbe9sUC48y0
-         FhV04gFhCkvS3ayZ3M9zE4moeqdhLc6n+/YCxhWK3bC9/jTPTM98IHblVaFLPmnyIHDs
-         5tx9+SgpO3FxVkrS7NkC8BkZM4mV9ZQCmA6k4JqNZig2V7uGJwLePrGEGZIjJI1JGpuO
-         aMzQ==
+        bh=F5UmuoyqLYU22WbRQLHQv9DdVyEXzJd3jXlUkopZXFo=;
+        b=VfuP0yvrBLJYFCAMxgnco4td7hSucha4Oz7AwKgD5Vk6I+SdWNUGGItf4KPx+H2Q8I
+         YHB1g0uB3IcTNuZ/yuBYf5fc4l5kd+R286nIIb5StPG8AVmw4KeQbR8XetJn0m80Occa
+         GtEEGffp+DNHy/1ZAcT6HiMJ14wUFJ47BFcDgpYLVyeUVFMmB+m6t4NqYFvogR7Z1DIC
+         hfZlBzWv82QiTvfoamJDl1zo3aP14+e7NfHeCTRFOD1XXvJQZlWtphnPdWsOX+Vl2jra
+         IZjVgUOpGtVaaVbsWEpccve+wKY7ToQg9+eRLqU2+0xHG9ARtn5K7PBZ0gJANTH/7TCU
+         pGIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700950228; x=1701555028;
+        d=1e100.net; s=20230601; t=1700950602; x=1701555402;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Gi/V6VkHDBoVIJD4xE3AR8G9/CR9yukNzOviIw3quc=;
-        b=btkh70cFdAiFSXHtzs3pGVvIy/x4ihoo4tUL+mVWEV0zchIAvCJ56Yzb0m0Q/tT/dm
-         lS9/raq5MODP8eewnDZb7ir7Ozpo9Ic3xPq1RnLsNjZuR34bj2BvfHu/8/h7hmyzh1i7
-         hQwNMWgBi8ybjLExtydUAl2L4H96jkAPKOsJx9GkHJRLvT6w6VmhE9yb+YjlMuV+PeUr
-         RFgMR9t54eAc0nFVq2anVCQ0uIgfU4zIiwIUJB3xSMPTKq09G5Cv7EROxZHpdSBpVfOB
-         6JJU/9p2GAAkCH5BPOwiy1rBdrmkESqui+RG3iBPf/23XKn7ddj1rxWIvz3oP5CfnVva
-         kuiA==
-X-Gm-Message-State: AOJu0YyjMIFiewBEsjIDyU2RuH245ZRHbNhfoN/E1XYTEW1XP2VbOEs2
-        eRSjxvEfiP90kFMg5QLxgeM=
-X-Google-Smtp-Source: AGHT+IGb/92zuXaxvTJfqwz+OU+adixAO5e+VvZiE/MFmWMlKj8d53K+ln2N8inf2dyVBR+l++KDkQ==
-X-Received: by 2002:a05:6214:2d0f:b0:67a:2012:b9a1 with SMTP id mz15-20020a0562142d0f00b0067a2012b9a1mr5236934qvb.55.1700950228130;
-        Sat, 25 Nov 2023 14:10:28 -0800 (PST)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id kh7-20020a056214514700b0067a15ce9659sm1891537qvb.75.2023.11.25.14.10.25
+        bh=F5UmuoyqLYU22WbRQLHQv9DdVyEXzJd3jXlUkopZXFo=;
+        b=ErLWwhJNzfn7rC5eJFigXywLVCR7pqTebbkSeeGNjzwn3bGIfivS4+YqXDSOMw40nN
+         MaB8ReYKynYTIy2KFJga6ASzYAMTm2BxrKfNXZP6hFZqQ1/0N3AXKaXy8cGLEdeOZ4vn
+         7hqzixwmZiLihnc5MqrjFwDYIHdM3TIJPMVkGucbL0xrOcaBfNJAgEfJhcZ9QaPFy5iJ
+         luBeGiH7Dn07zLmCfn9jOSxNUre1ChTV+t4KCy/APGO9yvoc6xPa9n0+kD+f1Nx/wDVR
+         L/0+f4wFHSQXWfDfWzQlrnM+rjQUR05NLgTOw079++VWqWNyX3QvdK8+Qi0cPjhiU+68
+         /TiA==
+X-Gm-Message-State: AOJu0Yz7bOZLusO2xqCMOuNdoE60LF5qS+lnujvDp3OguM8HwPvH1/vR
+        elTVMoYD6q3U8q45JVV8TsHx2g==
+X-Google-Smtp-Source: AGHT+IEnIXW43aUJS2Tl7xKtLN87uxlxMCj4jhiu+X8wQZaLCC4VkGQ9WIC3iVHewMOEdDarrEnD0g==
+X-Received: by 2002:a17:906:2da:b0:9e4:6500:7540 with SMTP id 26-20020a17090602da00b009e465007540mr5200894ejk.58.1700950601908;
+        Sat, 25 Nov 2023 14:16:41 -0800 (PST)
+Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id cf16-20020a170906b2d000b0099bd7b26639sm3928731ejb.6.2023.11.25.14.16.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 14:10:27 -0800 (PST)
-Message-ID: <eb278f33-6bc0-40bd-a6bd-950a2c8a3adc@gmail.com>
-Date:   Sat, 25 Nov 2023 14:10:24 -0800
+        Sat, 25 Nov 2023 14:16:41 -0800 (PST)
+Message-ID: <2bb681c7-8a93-4010-b473-887d68c6a5d2@linaro.org>
+Date:   Sat, 25 Nov 2023 23:16:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/527] 6.6.3-rc3 review
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add SM6115 interconnect provider
+ driver
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231125194417.090791215@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231125194417.090791215@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Konrad Dybcio <konradybcio@kernel.org>
+References: <20231125-topic-6115icc-v1-0-fa51c0b556c9@linaro.org>
+ <20231125-topic-6115icc-v1-2-fa51c0b556c9@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231125-topic-6115icc-v1-2-fa51c0b556c9@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25.11.2023 16:59, Konrad Dybcio wrote:
+> Add a driver for managing NoC providers on SM6115.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+The following diff is missing:
 
 
-On 11/25/2023 11:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.3 release.
-> There are 527 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 27 Nov 2023 19:43:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.3-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+----o<----
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels build tested on 
-BMIPS_GENERIC:
+diff --git a/drivers/interconnect/qcom/sm6115.c b/drivers/interconnect/qcom/sm6115.c
+index d7600dfe56c0..5b21566d64a5 100644
+--- a/drivers/interconnect/qcom/sm6115.c
++++ b/drivers/interconnect/qcom/sm6115.c
+@@ -609,8 +609,8 @@ static struct qcom_icc_node xm_usb3_0 = {
+ static struct qcom_icc_node ebi = {
+        .name = "ebi",
+        .id = SM6115_SLAVE_EBI_CH0,
+-       .channels = 1,
+-       .buswidth = 8,
++       .channels = 2,
++       .buswidth = 4,
+        .mas_rpm_id = -1,
+        .slv_rpm_id = 0,
+ };
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+----o<----
+
+Georgi, if everything else is fine, could you please squash it while
+applying? Otherwise I'll just amend it in v2.
+
+Konrad
