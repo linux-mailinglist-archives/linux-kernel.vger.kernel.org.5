@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D8D7F8C8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8E27F8C8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjKYQuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 11:50:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S231808AbjKYQ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 11:56:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjKYQuR (ORCPT
+        with ESMTP id S230030AbjKYQ4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 11:50:17 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8FCAA;
-        Sat, 25 Nov 2023 08:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=qDrMZoJgPuorTOeOShLAAzI7/GxpWs/Y4O/DPqFLxBM=; b=PWoDYCafbAUSdVULNpIWQ24Wmd
-        oDGhE67ZDkbL8VSibIyKsjVwSgemiCTE6w/TQRsPpFiy4k+odfppobwNAkOiRBBV31TbgYqJ0uTpO
-        EMxlDzEBwi6R9N6c1GJkLF3bNk106KvANzWGiNiSUG5TcyrMkY5/TzXvF9Js6t16OU28=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6vr8-001CHy-Pr; Sat, 25 Nov 2023 17:50:10 +0100
-Date:   Sat, 25 Nov 2023 17:50:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sagar Cheluvegowda <quic_scheluve@quicinc.com>
-Subject: Re: [PATCH net-next] net: phy: mdio_device: Reset device only when
- necessary
-Message-ID: <37250e69-93f4-422f-bb4f-55a1d2238dcd@lunn.ch>
-References: <20231121-net-phy-reset-once-v1-1-37c960b6336c@redhat.com>
+        Sat, 25 Nov 2023 11:56:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9068B106
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 08:56:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F268C433C7;
+        Sat, 25 Nov 2023 16:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700931399;
+        bh=IPD5Po2zb9ZkslvDJpcIYJpLgsFXk1lDbitaI3nB7EU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QRf8irJ0QLq2+Z7Wof9rCOq2IOeb0Oq7E1KKjD4Bu8Op9vbhmytFPShygaV2HDJSf
+         AR0jwuOQjKmuUs10jO4SOJqNxX9GXs610AoW98Xs3VxOXNLkopqPn8OEYpo322i4o8
+         LE4ygU5VvUJP76icBhYMRFlSGf/SGgSMZXIJT+nebZm+7Nx0bzIwjGsRQNxeedGSXs
+         1xgIcpBd6Qn6oSbqPXrmh5nw7FkBO7z0PoSBPULxUeE0X8ZPWBEEg/OAGCdgAiP+0q
+         d3Hw0+JTFLerKOZPjX+xKdy4+dp6rd2VUuZ4CIi8zQiFYtXx2JM55STqlSnDa2bwtF
+         BWx4CACk0PnFA==
+Date:   Sat, 25 Nov 2023 16:56:25 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     mitrutzceclan <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leonard =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: adc: add AD7173
+Message-ID: <20231125165625.4f68cc49@jic23-huawei>
+In-Reply-To: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
+References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121-net-phy-reset-once-v1-1-37c960b6336c@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,173 +65,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 04:10:37PM -0600, Andrew Halaney wrote:
-> Currently the phy reset sequence is as shown below for a
-> devicetree described mdio phy on boot:
+On Thu, 23 Nov 2023 17:23:21 +0200
+mitrutzceclan <mitrutzceclan@gmail.com> wrote:
+
+> From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 > 
-> 1. Assert the phy_device's reset as part of registering
-> 2. Deassert the phy_device's reset as part of registering
-> 3. Deassert the phy_device's reset as part of phy_probe
-> 4. Deassert the phy_device's reset as part of phy_hw_init
+> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel applications
+> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+> primarily for measurement of signals close to DC but also delivers
+> outstanding performance with input bandwidths out to ~10kHz.
 > 
-> The extra two deasserts include waiting the deassert delay afterwards,
-> which is adding unnecessary delay.
-> 
-> Here's some snipped tracing output using the following command line
-> params "trace_event=gpio:* trace_options=stacktrace" illustrating
-> the reset handling and where its coming from:
-> 
->     /* Assert */
->        systemd-udevd-283     [002] .....     6.780434: gpio_value: 544 set 0
->        systemd-udevd-283     [002] .....     6.783849: <stack trace>
->      => gpiod_set_raw_value_commit
->      => gpiod_set_value_nocheck
->      => gpiod_set_value_cansleep
->      => mdio_device_reset
->      => mdiobus_register_device
->      => phy_device_register
->      => fwnode_mdiobus_phy_device_register
->      => fwnode_mdiobus_register_phy
->      => __of_mdiobus_register
->      => stmmac_mdio_register
->      => stmmac_dvr_probe
->      => stmmac_pltfr_probe
->      => devm_stmmac_pltfr_probe
->      => qcom_ethqos_probe
->      => platform_probe
-> 
->     /* Deassert */
->        systemd-udevd-283     [002] .....     6.802480: gpio_value: 544 set 1
->        systemd-udevd-283     [002] .....     6.805886: <stack trace>
->      => gpiod_set_raw_value_commit
->      => gpiod_set_value_nocheck
->      => gpiod_set_value_cansleep
->      => mdio_device_reset
->      => phy_device_register
->      => fwnode_mdiobus_phy_device_register
->      => fwnode_mdiobus_register_phy
->      => __of_mdiobus_register
->      => stmmac_mdio_register
->      => stmmac_dvr_probe
->      => stmmac_pltfr_probe
->      => devm_stmmac_pltfr_probe
->      => qcom_ethqos_probe
->      => platform_probe
-> 
->     /* Deassert */
->        systemd-udevd-283     [002] .....     6.882601: gpio_value: 544 set 1
->        systemd-udevd-283     [002] .....     6.886014: <stack trace>
->      => gpiod_set_raw_value_commit
->      => gpiod_set_value_nocheck
->      => gpiod_set_value_cansleep
->      => mdio_device_reset
->      => phy_probe
->      => really_probe
->      => __driver_probe_device
->      => driver_probe_device
->      => __device_attach_driver
->      => bus_for_each_drv
->      => __device_attach
->      => device_initial_probe
->      => bus_probe_device
->      => device_add
->      => phy_device_register
->      => fwnode_mdiobus_phy_device_register
->      => fwnode_mdiobus_register_phy
->      => __of_mdiobus_register
->      => stmmac_mdio_register
->      => stmmac_dvr_probe
->      => stmmac_pltfr_probe
->      => devm_stmmac_pltfr_probe
->      => qcom_ethqos_probe
->      => platform_probe
-> 
->     /* Deassert */
->       NetworkManager-477     [000] .....     7.023144: gpio_value: 544 set 1
->       NetworkManager-477     [000] .....     7.026596: <stack trace>
->      => gpiod_set_raw_value_commit
->      => gpiod_set_value_nocheck
->      => gpiod_set_value_cansleep
->      => mdio_device_reset
->      => phy_init_hw
->      => phy_attach_direct
->      => phylink_fwnode_phy_connect
->      => __stmmac_open
->      => stmmac_open
-> 
-> There's a lot of paths where the device is getting its reset
-> asserted and deasserted. Let's track the state and only actually
-> do the assert/deassert when it changes.
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 
-This only talks about GPIOs. There is also support for a linux reset
-controller. It is getting turned on/off as many times. You should
-mention this.
+An example of reference selection would be good to have. Otherwise
+looks fine to me, but I'll wait for the binding experts to take another
+look.
 
-Now, lets compare the GPIO and the reset controller:
-
-static int mdiobus_register_gpiod(struct mdio_device *mdiodev)
-{
-        /* Deassert the optional reset signal */
-        mdiodev->reset_gpio = gpiod_get_optional(&mdiodev->dev,
-                                                 "reset", GPIOD_OUT_LOW);
-        if (IS_ERR(mdiodev->reset_gpio))
-                return PTR_ERR(mdiodev->reset_gpio);
-
-        if (mdiodev->reset_gpio)
-                gpiod_set_consumer_name(mdiodev->reset_gpio, "PHY reset");
-
-        return 0;
-}
-
-static int mdiobus_register_reset(struct mdio_device *mdiodev)
-{
-        struct reset_control *reset;
-
-        reset = reset_control_get_optional_exclusive(&mdiodev->dev, "phy");
-        if (IS_ERR(reset))
-                return PTR_ERR(reset);
-
-        mdiodev->reset_ctrl = reset;
-
-        return 0;
-}
-
-For the GPIO controller, its clear what state it is in, because the
-get call sets it to GPIOD_OUT_LOW. The reset controller however does
-not have a clear state, we just get a reference to it.
-
-But:
-
-in mdiobus_register_device() we have:
-
-                err = mdiobus_register_reset(mdiodev);
-                if (err)
-                        return err;
-
-                /* Assert the reset signal */
-                mdio_device_reset(mdiodev, 1);
-
-suggesting the reset controller might have the opposite state to the
-GPIO?
-
-> diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-> index 044828d081d2..d2b9e62edaaa 100644
-> --- a/drivers/net/phy/mdio_device.c
-> +++ b/drivers/net/phy/mdio_device.c
-> @@ -122,6 +122,9 @@ void mdio_device_reset(struct mdio_device *mdiodev, int value)
->  	if (!mdiodev->reset_gpio && !mdiodev->reset_ctrl)
->  		return;
->  
-> +	if (mdiodev->reset_state == value)
-> +		return;
-> +
-
-mdiodev is set to all 0 at creation time, and the GPIO is also set to
-LOW when we get it. However, what about the reset controller?
-
-I think it would be better to initialize reset_state to -1, indicating
-we have no idea what the state is, and always perform the first reset
-to ensure we are into a know state for both GPIO and the reset
-controller.
-
-	Andrew
