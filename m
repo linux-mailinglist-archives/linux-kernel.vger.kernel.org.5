@@ -2,162 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD63B7F89F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 11:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74FB7F89FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 11:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjKYKeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 05:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        id S229569AbjKYKfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 05:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKYKeR (ORCPT
+        with ESMTP id S231887AbjKYKfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 05:34:17 -0500
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1565810EB
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:34:21 -0800 (PST)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-28566da831cso3500471a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:34:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700908460; x=1701513260;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Sat, 25 Nov 2023 05:35:44 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7462810F7
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:35:50 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507a3b8b113so3492631e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:35:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700908548; x=1701513348; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=se0ZOXdRV1peEbVSvfNfMV+mmpDxGBnZZU1k+8yU+cs=;
-        b=ZYBQeQdZGF1CX0LI8pV34+98ThMI/lOR8stqbDKOzgImWquTl0Zfc91Tku5nkb/mDV
-         M6SYZeaFblr88os1zVi7VflOhFLc9GyEFB6OndPOByp7q9BS66VJ48KpREeMeivDLqZX
-         1x8HeTW207yTwDQVcqDWG7Qu5tKdGCRF0a1RTMol0edA9LHlewM481654fecuUN7v4kt
-         yyTBWlw/XVNl+vx6TmSKceAzxj05JXzmdh2qwTY0E82AsGuM2EMCF8patZX+zngEG6Zw
-         2hseqA8N5pc4M5qC67RTXsgzZM6OYMPnKjfvK2vgWzomg+QNNWMfHFNQ/h5go3bQEv0s
-         lKyw==
-X-Gm-Message-State: AOJu0YzqUsUrQY8VzwwctiJGNXMblC9II7qAksZ3azsaWGyOrQrBCKaq
-        IoazclrjZ9ZRZuWRP53BePD5XG1+4l/kGiM1a8uqaZn3Gj30
-X-Google-Smtp-Source: AGHT+IHiwtbfJ/arwx77x/WBmptDnn6/xe3Nl8FvasT6WVkWm4tJ8ZA+a/aOx62z/xtMbpWI5VRW2xOW5A0UYYFf9PKjyDDciCaU
+        bh=MqxNrJVwDs2WdoKFev944uZmarI0ANLwOhScpWGLnnk=;
+        b=IMHMZ4fLeawhNhTZOvZvGSvTQDJWhVdmTOV+N5bhIHEx2bgV58rgQHBj/qsHCoP3IB
+         rOV5IwxkSZtv7vh4vOUgyt/MT4yThMVi2ElsEgyBr5F7FdxYNYo8+b+1odr7AehBU1tD
+         XPyltCp8Qmkv80ETKLQs6lBNSO0nN0fUeisb0n6FsY0fP8yqOHv7o8SBmU5clyMNpmiR
+         MTkLwNMTYB2AUKfzQo8+yXSwDA2aF5jcDN6x8CKbHZKUx4ixQJtAJUyvWtABbmTaDaaJ
+         yfK0XKEt5uIPjiBL4IsmYqoxEjSR8GuQCZ+QecJ4ikOB9S122IBrrZ3+kXQd5NUBAOe3
+         YMFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700908548; x=1701513348;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MqxNrJVwDs2WdoKFev944uZmarI0ANLwOhScpWGLnnk=;
+        b=RRgO+q6iTXtMYpBnoZyOtGYla8W8i3yM+f/a71JheLStJoposB8dINp+WNl7rkWILc
+         IVMdJija/rpC5kAshh15hxtY80FhBNlc2ElBM/6lJ9kUrVVFxzafoZLKeUy4hnQBK011
+         IAWZeimfBPZV0foSpIRyjrOGGayK2UPyYGbgrrxnB7p3vnxJV6DPk3glSrTB4PInnJDk
+         8YldS9eMHPP8AkLMtyRdRPC2rb0JxtLEjktWfTW4lqLafkwwliZe7SXxypR3FYQMkNzl
+         oC3zh35jSmayIpujgTZ12+NfXQIpGNIrFQLOdno5UA6ZhQ8CXKLhoiVKWRign9Nepg+m
+         f7nQ==
+X-Gm-Message-State: AOJu0Yzugvw2b/di91JPgWDoXjCySANYHAn0ukZdLZlkRl+YVYgzpIpb
+        1Rl0s3mxRq9mybu/tH2ys7EDB6GWMQXe1CWtwak=
+X-Google-Smtp-Source: AGHT+IFDeMxJv8ESHQtAC+BXY7ArCn2jdew6KcdqES69+x33qRmn3DwM1WEZxNqyBFdYo/x7lNfVRA==
+X-Received: by 2002:a05:6512:3f05:b0:508:11c3:c8ca with SMTP id y5-20020a0565123f0500b0050811c3c8camr4692843lfa.7.1700908548452;
+        Sat, 25 Nov 2023 02:35:48 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id v5-20020a170906488500b0099cc3c7ace2sm3326153ejq.140.2023.11.25.02.35.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 02:35:47 -0800 (PST)
+Message-ID: <be79e860-c276-42b3-90cf-96ddedad1d85@linaro.org>
+Date:   Sat, 25 Nov 2023 11:35:46 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2311:b0:1cf:91d4:2908 with SMTP id
- d17-20020a170903231100b001cf91d42908mr1086162plh.1.1700908460669; Sat, 25 Nov
- 2023 02:34:20 -0800 (PST)
-Date:   Sat, 25 Nov 2023 02:34:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009800de060af79c8f@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_mb_release_inode_pa
-From:   syzbot <syzbot+64f520f6fe02b8947407@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] dt-bindings: vendor-prefixes: add aosong
+Content-Language: en-US
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231125100139.193584-1-anshulusr@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231125100139.193584-1-anshulusr@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 25/11/2023 11:01, Anshul Dalal wrote:
+> Aosong Electronic Co., LTD. is a supplier for MEMS sensors such as AHT20
+> temperature and humidity sensor under the brand name Asair
+> 
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> ---
+> 
 
-syzbot found the following issue on:
+This is a friendly reminder during the review process.
 
-HEAD commit:    98b1cc82c4af Linux 6.7-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11583b58e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aec35c1281ec0aaf
-dashboard link: https://syzkaller.appspot.com/bug?extid=64f520f6fe02b8947407
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163a9768e80000
+It looks like you received a tag and forgot to add it.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b60687e82ad4/disk-98b1cc82.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/29477f0b04df/vmlinux-98b1cc82.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9aab12888a60/bzImage-98b1cc82.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9009db42dccd/mount_0.gz
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+64f520f6fe02b8947407@syzkaller.appspotmail.com
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
-------------[ cut here ]------------
-kernel BUG at fs/ext4/mballoc.c:5300!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 10719 Comm: syz-executor.1 Not tainted 6.7.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:ext4_mb_release_inode_pa.isra.0+0xa30/0xb80 fs/ext4/mballoc.c:5300
-Code: b5 fb ff ff e8 a1 1a 50 ff 90 0f 0b e8 99 1a 50 ff 31 ff 44 89 ee e8 ff 15 50 ff 45 85 ed 0f 84 81 f8 ff ff e8 81 1a 50 ff 90 <0f> 0b e8 69 e7 a5 ff e9 e5 f6 ff ff 48 89 d7 e8 5c e7 a5 ff e9 4a
-RSP: 0018:ffffc9000a1af690 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffffe428 RCX: ffffffff823665c1
-RDX: ffff88802b52a1c0 RSI: ffffffff823665cf RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000005 R12: ffff88806442ac08
-R13: 0000000000000002 R14: 1ffff92001435ee1 R15: ffff88806440c868
-FS:  00007fbecfbfe6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020027040 CR3: 000000007c40e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_discard_preallocations+0x796/0xfb0 fs/ext4/mballoc.c:5581
- ext4_truncate+0xd27/0x1310 fs/ext4/inode.c:4166
- ext4_truncate_failed_write fs/ext4/truncate.h:22 [inline]
- ext4_write_end+0xa8a/0xed0 fs/ext4/inode.c:1323
- ext4_da_write_end+0x926/0x1170 fs/ext4/inode.c:3019
- generic_perform_write+0x32f/0x600 mm/filemap.c:3929
- ext4_buffered_write_iter+0x11f/0x3c0 fs/ext4/file.c:299
- ext4_file_write_iter+0x819/0x1950 fs/ext4/file.c:696
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x64f/0xdf0 fs/read_write.c:584
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fbed087cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbecfbfe0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fbed099bf80 RCX: 00007fbed087cae9
-RDX: 000000000208e24b RSI: 0000000020000040 RDI: 0000000000000004
-RBP: 00007fbed08c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fbed099bf80 R15: 00007ffd459e66e8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_mb_release_inode_pa.isra.0+0xa30/0xb80 fs/ext4/mballoc.c:5300
-Code: b5 fb ff ff e8 a1 1a 50 ff 90 0f 0b e8 99 1a 50 ff 31 ff 44 89 ee e8 ff 15 50 ff 45 85 ed 0f 84 81 f8 ff ff e8 81 1a 50 ff 90 <0f> 0b e8 69 e7 a5 ff e9 e5 f6 ff ff 48 89 d7 e8 5c e7 a5 ff e9 4a
-RSP: 0018:ffffc9000a1af690 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffffe428 RCX: ffffffff823665c1
-RDX: ffff88802b52a1c0 RSI: ffffffff823665cf RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000005 R12: ffff88806442ac08
-R13: 0000000000000002 R14: 1ffff92001435ee1 R15: ffff88806440c868
-FS:  00007fbecfbfe6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020027040 CR3: 000000007c40e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+If a tag was not added on purpose, please state why and what changed.
 
+Best regards,
+Krzysztof
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
