@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA1C7F8FD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF6A7F8FD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjKYWef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 17:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        id S231438AbjKYWek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjKYWee (ORCPT
+        with ESMTP id S230313AbjKYWeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 17:34:34 -0500
+        Sat, 25 Nov 2023 17:34:36 -0500
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656AF119
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:34:40 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id A20495C0124;
-        Sat, 25 Nov 2023 17:34:39 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E261119
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:34:43 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id 80E765C01B6;
+        Sat, 25 Nov 2023 17:34:42 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 25 Nov 2023 17:34:39 -0500
+  by compute7.internal (MEProxy); Sat, 25 Nov 2023 17:34:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700951679; x=
-        1701038079; bh=KTI9C2I6tkQjoQs+7XIU28ci/b8dXWYt0juWD3lvkIw=; b=i
-        NlD9PtJdvZF6eNl8I3lIuD3KKoHqfc4iaqG1A5GbncfdguBSzHObQ/Hnm4RFbsjG
-        8BKNuFLCDrEv2RHDC5Ol0+ljM6z9ahlUhgOV1fh7V9M8xzGlUCxImTjcX41dLcGW
-        l0QujNYKf+HShpctljZ7zmIbazYsVgkp+eZGvkPNlCPhmVLSwMlzAmSRMt9opEf/
-        4xWzWh3Lh9QJd+SuhJwTHpxnh56fiALw8HUT82L4thi7bkD2/uN+EQd3SzhLF7FS
-        lp0elebxZ9etIsFQTq+/BJT35a6EgW5to/luq1SNZw7+EPK/zz2rio/diUzFv4pL
-        7WOnl8Pnr89I02SZ345Ww==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700951682; x=
+        1701038082; bh=gqciJXCIfQMDcREYb+UEOq9HfqNJt8A3t4egWRDGqsI=; b=Q
+        UT9YHRgBh1S72dl/0XWIa3Z5tdQUu+BEYQEnEYpSYh8vNgQSFCgI+Hfsd0gfkF4L
+        jvmJp3m9TWVJ0zW5RMwXaZLLF6HtKaT58HHYsdsomC9bTJJiAkiNV7ariKvlywrv
+        dSxaY55ET/9LJoI6XvWRBdBG3txePSp8dGn+Iip1HqBO6erlikFVE/UmKnAwE0ps
+        wubq1DKJLpTxus688jnJ7AyiduDpeofbCCPohzvWvGYvKaQKtyasGJYNvCubmoyU
+        LnHNqu8hc9D0LHDLumYygADNKhu78ic77uaFE32u5R/O3BHZLIfFhV/Pm6Vmaf+K
+        fm/lL6ZmXNaGixCC6Ixtw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700951679; x=
-        1701038079; bh=KTI9C2I6tkQjoQs+7XIU28ci/b8dXWYt0juWD3lvkIw=; b=C
-        RSYuou0gzqiWWD04OjZJjYxpDzQp6aYajgLpe8f6WjD5239lQHb05lr2tp0XkdVd
-        gP44No82gAiKVpcwinz+k9meQRFUNiIEU6F3t/rV2QEdruKUgWGkjURldMKddgFm
-        yTJWTC7l1uhAUyV4JAg+LMK/3aMlBWIWEpasRGkc2QtkF4bz+UQu5yulfm7osRzm
-        I6IwPVHMizXAj5JDjULuEjqw/4Uj/8FZtFi2iLZw6h1Qf09iDcao3BJZi7I95NR8
-        AN+pRoOqsXOyDsSf6o44ErnGxh7WTtspH07ye59pTEmw3hUOWb/4ll7mIRTI+FNA
-        BNU34mF1lTkztfi1saf0g==
-X-ME-Sender: <xms:f3ZiZTn2nXqL9kehcesxSn_yEbVAXKX3ryjbTajsUErl_zvcIx8-KA>
-    <xme:f3ZiZW0o-9KCXsDHuwLzm1mxTuaj8CBTsaih78_dt0hVe8SHOkJ2ML-_X907_jArk
-    pHCpvNCauAFOJgpOmU>
-X-ME-Received: <xmr:f3ZiZZp8Hj0wRqkGG80B-_JE490pbkqQuEb2hkTxURYXEd9B79u5XqjfJmuovw1IlbJjg7tFNYtcAyZLZv_1EhT51zAvdwGFuy8Alhz74agR>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700951682; x=
+        1701038082; bh=gqciJXCIfQMDcREYb+UEOq9HfqNJt8A3t4egWRDGqsI=; b=M
+        Y/i3bETuXS5fap91tWwSV8gTukGzzq/KjBSY2eE2Tfnnglut6bVZdMlu/cAB+Ztw
+        kA70aW+37BRxRiF7DjbT7sOhUMH1ivbPuOvks2AVoPzGQIyXv9PMaCcyayHIdtM3
+        7ZlqHVEYIs65WKk+ZR9lQHRRNcfhqmTQ6jfCSmCzda9LvR4EZMSDlh2r93LR3XsR
+        AJZbHrrYA38og8+fq/EuRiOCfJO7n4R0OVjpS5FYacZkfTYOqe/Nt+GFo6JvwcKh
+        vIQFVlBHvlDoGlkBxhsZR8KlCgN3g8s0vKa17dPszO7mkuwupNy8CtcFKSiWtWij
+        FTvyM/FYN9LC17Ny3fc4g==
+X-ME-Sender: <xms:gnZiZbYhT_5V_uUkp-9IBP5cwPEBkrg_uBvHU1zVRT0SAcrSOnJqxw>
+    <xme:gnZiZab6uI8YIeFYM4gWHdDHN51lj82bQ12oLx2wSYZpb-AVjYEEW3qjZflHpTvnr
+    LPdvSqC2_001LsL9Zw>
+X-ME-Received: <xmr:gnZiZd80XF-6bbMEZTNuCVfxHWXsr466zuVvLsmHAnEyu_QJGGhUVdrzjM7diindaEMg8C-hCwwNuGh54ltAPpmEhH9NzC6i25NmxCPWZKe3>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehjedgudeivdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
@@ -56,20 +56,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehjedgudeivdcutefuodetgg
     ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
     ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
     hfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:f3ZiZbnVyBjUG15_poYuT_MrHuTcxetmHRVT6kQh3ddNyA_7IrcRmQ>
-    <xmx:f3ZiZR36Vq7pqdZHH4kmN25htjW5zmuS-hkfvvituQ5CcDINvuqUdQ>
-    <xmx:f3ZiZasoYZlYjj7u6VAnN6hNRLv6buf6lEFgYcG2L2oP9vo4slAjXg>
-    <xmx:f3ZiZazYJxk4g7xeK0YOAgektTplc_OH5kyVPIN_1XKo01cGWt1huA>
+X-ME-Proxy: <xmx:gnZiZRpJOtZ0tO9MAJ_wB1Tj6Nq-NGPg3vIWDEAYI5L_KR-s-REhCg>
+    <xmx:gnZiZWpAusChDUl5fokMoHbwohVyZruR07Lkzn99TlzbrDJEenu9LA>
+    <xmx:gnZiZXRFyzNznd3YNUffiCgWnffVemoB3C2VJ9E-2lKHs38vQmHgDQ>
+    <xmx:gnZiZZVlw-hzjF1gPp8tDyQbDgijsiYY7U1MIu5ZifZUiPp9RWJoTg>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 25 Nov 2023 17:34:39 -0500 (EST)
+ 25 Nov 2023 17:34:41 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 1/5] staging: rtl8192e: renamed 2 variables nMcsRate, mcsRate
-Date:   Sat, 25 Nov 2023 17:34:28 -0500
-Message-ID: <20231125223432.13780-2-garyrookard@fastmail.org>
+Subject: [PATCH 2/5] staging: rtl8192e: renamed variable isShortGI
+Date:   Sat, 25 Nov 2023 17:34:29 -0500
+Message-ID: <20231125223432.13780-3-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231125223432.13780-1-garyrookard@fastmail.org>
 References: <20231125223432.13780-1-garyrookard@fastmail.org>
@@ -86,68 +86,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed 2 variables from CamelCase to Snake case nMcsRate
-and mcsRate.
-nMcsRate -> n_mcs_rate
-mcs_Rate -> mcs_rate
+Renamed from CamelCase to Snake case the variable isShortGI
+isShortGI -> is_short_gi
 
 Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-Driver/module rtl8192e compiles.
+Driver/module compiles.
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index f43249fd78d7..7e61ebd2bc25 100644
+index 7e61ebd2bc25..f002d948a316 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -103,7 +103,7 @@ void ht_update_default_setting(struct rtllib_device *ieee)
- 	ht_info->rx_reorder_pending_time = 30;
- }
- 
--static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
-+static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 n_mcs_rate)
- {
+@@ -108,10 +108,10 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 n_mcs_rate)
  	struct rt_hi_throughput *ht_info = ieee->ht_info;
  
-@@ -111,7 +111,7 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
- 	u8	isShortGI = (ht_info->bCurBW40MHz) ?
+ 	u8	is40MHz = (ht_info->bCurBW40MHz) ? 1 : 0;
+-	u8	isShortGI = (ht_info->bCurBW40MHz) ?
++	u8	is_short_gi = (ht_info->bCurBW40MHz) ?
  			    ((ht_info->bCurShortGI40MHz) ? 1 : 0) :
  			    ((ht_info->bCurShortGI20MHz) ? 1 : 0);
--	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
-+	return MCS_DATA_RATE[is40MHz][isShortGI][(n_mcs_rate & 0x7f)];
+-	return MCS_DATA_RATE[is40MHz][isShortGI][(n_mcs_rate & 0x7f)];
++	return MCS_DATA_RATE[is40MHz][is_short_gi][(n_mcs_rate & 0x7f)];
  }
  
  u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
-@@ -398,7 +398,7 @@ u8 HTGetHighestMCSRate(struct rtllib_device *ieee, u8 *pMCSRateSet,
- {
- 	u8		i, j;
- 	u8		bitMap;
--	u8		mcsRate = 0;
-+	u8		mcs_rate = 0;
- 	u8		availableMcsRate[16];
+@@ -119,24 +119,24 @@ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
+ 	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
+ 				   0x24, 0x30, 0x48, 0x60, 0x6c};
+ 	u8	is40MHz = 0;
+-	u8	isShortGI = 0;
++	u8	is_short_gi = 0;
  
- 	if (!pMCSRateSet || !pMCSFilter) {
-@@ -423,14 +423,14 @@ u8 HTGetHighestMCSRate(struct rtllib_device *ieee, u8 *pMCSRateSet,
- 			for (j = 0; j < 8; j++) {
- 				if ((bitMap % 2) != 0) {
- 					if (ht_mcs_to_data_rate(ieee, (8 * i + j)) >
--					    ht_mcs_to_data_rate(ieee, mcsRate))
--						mcsRate = 8 * i + j;
-+					    ht_mcs_to_data_rate(ieee, mcs_rate))
-+						mcs_rate = 8 * i + j;
- 				}
- 				bitMap >>= 1;
- 			}
- 		}
+ 	if (nDataRate < 12)
+ 		return CCKOFDMRate[nDataRate];
+ 	if (nDataRate >= 0x10 && nDataRate <= 0x1f) {
+ 		is40MHz = 0;
+-		isShortGI = 0;
++		is_short_gi = 0;
+ 	} else if (nDataRate >= 0x20  && nDataRate <= 0x2f) {
+ 		is40MHz = 1;
+-		isShortGI = 0;
++		is_short_gi = 0;
+ 	} else if (nDataRate >= 0x30  && nDataRate <= 0x3f) {
+ 		is40MHz = 0;
+-		isShortGI = 1;
++		is_short_gi = 1;
+ 	} else if (nDataRate >= 0x40  && nDataRate <= 0x4f) {
+ 		is40MHz = 1;
+-		isShortGI = 1;
++		is_short_gi = 1;
  	}
--	return mcsRate | 0x80;
-+	return mcs_rate | 0x80;
+-	return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
++	return MCS_DATA_RATE[is40MHz][is_short_gi][nDataRate & 0xf];
  }
  
- static u8 HTFilterMCSRate(struct rtllib_device *ieee, u8 *pSupportMCS,
+ bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
 -- 
 2.41.0
 
