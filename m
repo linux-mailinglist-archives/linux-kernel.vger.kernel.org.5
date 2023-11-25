@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF6A7F8FD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9674A7F8FD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjKYWek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 17:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        id S231996AbjKYWen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbjKYWeg (ORCPT
+        with ESMTP id S231537AbjKYWek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 17:34:36 -0500
+        Sat, 25 Nov 2023 17:34:40 -0500
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E261119
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:34:43 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id 80E765C01B6;
-        Sat, 25 Nov 2023 17:34:42 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6032311B
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:34:46 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id CAE9E5C0117;
+        Sat, 25 Nov 2023 17:34:45 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Sat, 25 Nov 2023 17:34:42 -0500
+  by compute1.internal (MEProxy); Sat, 25 Nov 2023 17:34:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700951682; x=
-        1701038082; bh=gqciJXCIfQMDcREYb+UEOq9HfqNJt8A3t4egWRDGqsI=; b=Q
-        UT9YHRgBh1S72dl/0XWIa3Z5tdQUu+BEYQEnEYpSYh8vNgQSFCgI+Hfsd0gfkF4L
-        jvmJp3m9TWVJ0zW5RMwXaZLLF6HtKaT58HHYsdsomC9bTJJiAkiNV7ariKvlywrv
-        dSxaY55ET/9LJoI6XvWRBdBG3txePSp8dGn+Iip1HqBO6erlikFVE/UmKnAwE0ps
-        wubq1DKJLpTxus688jnJ7AyiduDpeofbCCPohzvWvGYvKaQKtyasGJYNvCubmoyU
-        LnHNqu8hc9D0LHDLumYygADNKhu78ic77uaFE32u5R/O3BHZLIfFhV/Pm6Vmaf+K
-        fm/lL6ZmXNaGixCC6Ixtw==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700951685; x=
+        1701038085; bh=hA1LldQ2kqUSciH6ZS5YKPp5CEt1y2lK2c/ypEYCoDc=; b=C
+        0yby/o+kcRyWAiDnpp22W4dERtEjKiDScdL0FZ5I45tzNNbOtaR6MMeGXgrQ/DhD
+        nt/ied6QwL403IkUFyC6/yHlU7BdCPV1asBkqn5Md/yQOWsjnIADeMVBFddbQtl+
+        go0zA8kcoDTZIh+I0OhLsPGmscp29NKPtGAnTi8CRs3ibODJWiWoT6IXv1bBpY7r
+        kRlBb0m5gK9ddi3aVzOWUTbgQ2V03nz1bE1yPVWIoGsxEF6zHK4Wg01h3/tZEYoe
+        tyIVBdHtz3v6rtP4ZqfcwWgt6WwI53j0+28ah2NrO5hKG6TU5Adu+/Bl1aK6eYPN
+        h0UeT8cgusANeUDIc0EIA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700951682; x=
-        1701038082; bh=gqciJXCIfQMDcREYb+UEOq9HfqNJt8A3t4egWRDGqsI=; b=M
-        Y/i3bETuXS5fap91tWwSV8gTukGzzq/KjBSY2eE2Tfnnglut6bVZdMlu/cAB+Ztw
-        kA70aW+37BRxRiF7DjbT7sOhUMH1ivbPuOvks2AVoPzGQIyXv9PMaCcyayHIdtM3
-        7ZlqHVEYIs65WKk+ZR9lQHRRNcfhqmTQ6jfCSmCzda9LvR4EZMSDlh2r93LR3XsR
-        AJZbHrrYA38og8+fq/EuRiOCfJO7n4R0OVjpS5FYacZkfTYOqe/Nt+GFo6JvwcKh
-        vIQFVlBHvlDoGlkBxhsZR8KlCgN3g8s0vKa17dPszO7mkuwupNy8CtcFKSiWtWij
-        FTvyM/FYN9LC17Ny3fc4g==
-X-ME-Sender: <xms:gnZiZbYhT_5V_uUkp-9IBP5cwPEBkrg_uBvHU1zVRT0SAcrSOnJqxw>
-    <xme:gnZiZab6uI8YIeFYM4gWHdDHN51lj82bQ12oLx2wSYZpb-AVjYEEW3qjZflHpTvnr
-    LPdvSqC2_001LsL9Zw>
-X-ME-Received: <xmr:gnZiZd80XF-6bbMEZTNuCVfxHWXsr466zuVvLsmHAnEyu_QJGGhUVdrzjM7diindaEMg8C-hCwwNuGh54ltAPpmEhH9NzC6i25NmxCPWZKe3>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700951685; x=
+        1701038085; bh=hA1LldQ2kqUSciH6ZS5YKPp5CEt1y2lK2c/ypEYCoDc=; b=V
+        j0QA48i3SILZHBn7IkwFybXL3E+vCN21nT4GktfTTo65SVY/8jfcWXtl5mjfCbsO
+        Ol9eghLLDfcsPdFWfjdD31Bg5MVpcHrUM8JIBYIPhxl/1Mb/zpR+//AMWtHvt/Hb
+        irrPMGFJDNfKF4YusvG7kRL0RhiVi+qb0QTR8tPRIGzO8OIi1lmjXegyl4sbyCMJ
+        0nY8OI/dMheO4qWz7l6Ytvj3GEHTZQMkqko4XybGaCEYH3yuV00KbdekY2GY6F3j
+        D5yifra0x2cvvAyCF3ExD3V4mVFWthafEx6fYs8jmXWsE0e5KGK6SWHLFU06EyvU
+        6ANeDmVVNA2foU0kq02Ng==
+X-ME-Sender: <xms:hXZiZTGnMcNU3Lr-2AKVoz9p7KNWVfZf8m25Hzgc8NxANCRftbjqbA>
+    <xme:hXZiZQVSfJ9iP5Scb1bwLal_oU81s5oQcqPt_JrpuK0LYVk_FVSCYhYAgNB2Xkfyx
+    5qoM-wQUQ5pOHBUGSM>
+X-ME-Received: <xmr:hXZiZVLCm4Ppnm4pMaF3Xa-jbte60Kryf-TkbSlyDnldYITuZDukQdqZtdMUYjpr2Q3t0mHsVG6CS6d1aGyQTGd_HZUkLeSGq_v2kZnP4wB5>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehjedgudeivdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
@@ -56,20 +56,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehjedgudeivdcutefuodetgg
     ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
     ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
     hfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:gnZiZRpJOtZ0tO9MAJ_wB1Tj6Nq-NGPg3vIWDEAYI5L_KR-s-REhCg>
-    <xmx:gnZiZWpAusChDUl5fokMoHbwohVyZruR07Lkzn99TlzbrDJEenu9LA>
-    <xmx:gnZiZXRFyzNznd3YNUffiCgWnffVemoB3C2VJ9E-2lKHs38vQmHgDQ>
-    <xmx:gnZiZZVlw-hzjF1gPp8tDyQbDgijsiYY7U1MIu5ZifZUiPp9RWJoTg>
+X-ME-Proxy: <xmx:hXZiZRHVYn6bWFbsJv4YRKPptPMqgNa_12EPw2pzDBzBD1h9YawORQ>
+    <xmx:hXZiZZXCcQEyohAxBibl6G9b27YbmDoMEKVAH2gXmV8sK07qLu9YRg>
+    <xmx:hXZiZcNThOrYCcsLm1Q3S9rqTqGxR5c-68nCje0S8YwrZzuhZ3Bo3A>
+    <xmx:hXZiZcRO7Ij-d3A2wIdAlD31zCby1rNylZeWU84JFRVaiEwPfnH7tQ>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 25 Nov 2023 17:34:41 -0500 (EST)
+ 25 Nov 2023 17:34:45 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 2/5] staging: rtl8192e: renamed variable isShortGI
-Date:   Sat, 25 Nov 2023 17:34:29 -0500
-Message-ID: <20231125223432.13780-3-garyrookard@fastmail.org>
+Subject: [PATCH 3/5] staging: rtl8192e: renamed variable bCurBW40MHz
+Date:   Sat, 25 Nov 2023 17:34:30 -0500
+Message-ID: <20231125223432.13780-4-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231125223432.13780-1-garyrookard@fastmail.org>
 References: <20231125223432.13780-1-garyrookard@fastmail.org>
@@ -86,65 +86,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed from CamelCase to Snake case the variable isShortGI
-isShortGI -> is_short_gi
+Renamed from CamelCase to Snake case the variable bCurBW40MHz.
+bCurBW40MHz -> b_cur_bw_40mhz
 
 Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-Driver/module compiles.
+Driver/module rtl8192e compiles.
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HT.h        |  2 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c    | 16 ++++++++--------
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c |  4 ++--
+ drivers/staging/rtl8192e/rtllib_tx.c         | 10 +++++-----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
+index f8eb4d553fe0..e24b106ca700 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HT.h
++++ b/drivers/staging/rtl8192e/rtl819x_HT.h
+@@ -95,7 +95,7 @@ struct rt_hi_throughput {
+ 	u8 enable_ht;
+ 	u8 current_ht_support;
+ 	u8 bRegBW40MHz;
+-	u8 bCurBW40MHz;
++	u8 b_cur_bw_40mhz;
+ 	u8 bRegShortGI40MHz;
+ 	u8 bCurShortGI40MHz;
+ 	u8 bRegShortGI20MHz;
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 7e61ebd2bc25..f002d948a316 100644
+index f002d948a316..f4de5ad7d9d1 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -108,10 +108,10 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 n_mcs_rate)
+@@ -107,8 +107,8 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 n_mcs_rate)
+ {
  	struct rt_hi_throughput *ht_info = ieee->ht_info;
  
- 	u8	is40MHz = (ht_info->bCurBW40MHz) ? 1 : 0;
--	u8	isShortGI = (ht_info->bCurBW40MHz) ?
-+	u8	is_short_gi = (ht_info->bCurBW40MHz) ?
+-	u8	is40MHz = (ht_info->bCurBW40MHz) ? 1 : 0;
+-	u8	is_short_gi = (ht_info->bCurBW40MHz) ?
++	u8	is40MHz = (ht_info->b_cur_bw_40mhz) ? 1 : 0;
++	u8	is_short_gi = (ht_info->b_cur_bw_40mhz) ?
  			    ((ht_info->bCurShortGI40MHz) ? 1 : 0) :
  			    ((ht_info->bCurShortGI20MHz) ? 1 : 0);
--	return MCS_DATA_RATE[is40MHz][isShortGI][(n_mcs_rate & 0x7f)];
-+	return MCS_DATA_RATE[is40MHz][is_short_gi][(n_mcs_rate & 0x7f)];
- }
+ 	return MCS_DATA_RATE[is40MHz][is_short_gi][(n_mcs_rate & 0x7f)];
+@@ -575,7 +575,7 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
  
- u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
-@@ -119,24 +119,24 @@ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
- 	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
- 				   0x24, 0x30, 0x48, 0x60, 0x6c};
- 	u8	is40MHz = 0;
--	u8	isShortGI = 0;
-+	u8	is_short_gi = 0;
+ 	ht_info->current_ht_support = false;
  
- 	if (nDataRate < 12)
- 		return CCKOFDMRate[nDataRate];
- 	if (nDataRate >= 0x10 && nDataRate <= 0x1f) {
- 		is40MHz = 0;
--		isShortGI = 0;
-+		is_short_gi = 0;
- 	} else if (nDataRate >= 0x20  && nDataRate <= 0x2f) {
- 		is40MHz = 1;
--		isShortGI = 0;
-+		is_short_gi = 0;
- 	} else if (nDataRate >= 0x30  && nDataRate <= 0x3f) {
- 		is40MHz = 0;
--		isShortGI = 1;
-+		is_short_gi = 1;
- 	} else if (nDataRate >= 0x40  && nDataRate <= 0x4f) {
- 		is40MHz = 1;
--		isShortGI = 1;
-+		is_short_gi = 1;
+-	ht_info->bCurBW40MHz = false;
++	ht_info->b_cur_bw_40mhz = false;
+ 	ht_info->cur_tx_bw40mhz = false;
+ 
+ 	ht_info->bCurShortGI20MHz = false;
+@@ -721,7 +721,7 @@ static void HTSetConnectBwModeCallback(struct rtllib_device *ieee)
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+ 
+-	if (ht_info->bCurBW40MHz) {
++	if (ht_info->b_cur_bw_40mhz) {
+ 		if (ht_info->CurSTAExtChnlOffset == HT_EXTCHNL_OFFSET_UPPER)
+ 			ieee->set_chan(ieee->dev,
+ 				       ieee->current_network.channel + 2);
+@@ -766,19 +766,19 @@ void HTSetConnectBwMode(struct rtllib_device *ieee,
+ 			Offset = HT_EXTCHNL_OFFSET_NO_EXT;
+ 		if (Offset == HT_EXTCHNL_OFFSET_UPPER ||
+ 		    Offset == HT_EXTCHNL_OFFSET_LOWER) {
+-			ht_info->bCurBW40MHz = true;
++			ht_info->b_cur_bw_40mhz = true;
+ 			ht_info->CurSTAExtChnlOffset = Offset;
+ 		} else {
+-			ht_info->bCurBW40MHz = false;
++			ht_info->b_cur_bw_40mhz = false;
+ 			ht_info->CurSTAExtChnlOffset = HT_EXTCHNL_OFFSET_NO_EXT;
+ 		}
+ 	} else {
+-		ht_info->bCurBW40MHz = false;
++		ht_info->b_cur_bw_40mhz = false;
+ 		ht_info->CurSTAExtChnlOffset = HT_EXTCHNL_OFFSET_NO_EXT;
  	}
--	return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
-+	return MCS_DATA_RATE[is40MHz][is_short_gi][nDataRate & 0xf];
+ 
+ 	netdev_dbg(ieee->dev, "%s():ht_info->bCurBW40MHz:%x\n", __func__,
+-		   ht_info->bCurBW40MHz);
++		   ht_info->b_cur_bw_40mhz);
+ 
+ 	ht_info->sw_bw_in_progress = true;
+ 
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+index 28aba1d610f7..255867334be0 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -318,10 +318,10 @@ void rtllib_wx_sync_scan_wq(void *data)
+ 	ieee->ScanOperationBackupHandler(ieee->dev, SCAN_OPT_BACKUP);
+ 
+ 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht &&
+-	    ieee->ht_info->bCurBW40MHz) {
++	    ieee->ht_info->b_cur_bw_40mhz) {
+ 		b40M = 1;
+ 		chan_offset = ieee->ht_info->CurSTAExtChnlOffset;
+-		bandwidth = (enum ht_channel_width)ieee->ht_info->bCurBW40MHz;
++		bandwidth = (enum ht_channel_width)ieee->ht_info->b_cur_bw_40mhz;
+ 		ieee->set_bw_mode_handler(ieee->dev, HT_CHANNEL_WIDTH_20,
+ 				       HT_EXTCHNL_OFFSET_NO_EXT);
+ 	}
+diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
+index 9bf679438ad1..a74b92de024e 100644
+--- a/drivers/staging/rtl8192e/rtllib_tx.c
++++ b/drivers/staging/rtl8192e/rtllib_tx.c
+@@ -362,9 +362,9 @@ static void rtllib_query_HTCapShortGI(struct rtllib_device *ieee,
+ 		return;
+ 	}
+ 
+-	if (ht_info->bCurBW40MHz && ht_info->bCurShortGI40MHz)
++	if (ht_info->b_cur_bw_40mhz && ht_info->bCurShortGI40MHz)
+ 		tcb_desc->bUseShortGI = true;
+-	else if (!ht_info->bCurBW40MHz && ht_info->bCurShortGI20MHz)
++	else if (!ht_info->b_cur_bw_40mhz && ht_info->bCurShortGI20MHz)
+ 		tcb_desc->bUseShortGI = true;
  }
  
- bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
+@@ -383,7 +383,7 @@ static void rtllib_query_BandwidthMode(struct rtllib_device *ieee,
+ 
+ 	if ((tcb_desc->data_rate & 0x80) == 0)
+ 		return;
+-	if (ht_info->bCurBW40MHz && ht_info->cur_tx_bw40mhz &&
++	if (ht_info->b_cur_bw_40mhz && ht_info->cur_tx_bw40mhz &&
+ 	    !ieee->bandwidth_auto_switch.bforced_tx20Mhz)
+ 		tcb_desc->bPacketBW = true;
+ }
+@@ -441,9 +441,9 @@ static void rtllib_query_protectionmode(struct rtllib_device *ieee,
+ 		if (ht_info->current_ht_support && ht_info->enable_ht) {
+ 			u8 HTOpMode = ht_info->current_op_mode;
+ 
+-			if ((ht_info->bCurBW40MHz && (HTOpMode == 2 ||
++			if ((ht_info->b_cur_bw_40mhz && (HTOpMode == 2 ||
+ 						      HTOpMode == 3)) ||
+-			     (!ht_info->bCurBW40MHz && HTOpMode == 3)) {
++			     (!ht_info->b_cur_bw_40mhz && HTOpMode == 3)) {
+ 				tcb_desc->rts_rate = MGN_24M;
+ 				tcb_desc->bRTSEnable = true;
+ 				break;
 -- 
 2.41.0
 
