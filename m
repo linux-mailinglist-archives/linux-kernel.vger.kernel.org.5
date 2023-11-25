@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7DD7F88ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 08:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9617F7F88EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 08:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjKYHoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 02:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        id S231769AbjKYHoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 02:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231718AbjKYHn6 (ORCPT
+        with ESMTP id S231967AbjKYHoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 02:43:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B2B1990;
-        Fri, 24 Nov 2023 23:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700898224; x=1732434224;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NPrp5k8M2Z/T9LhMIJDXeX8+nnPUWI8hRvX1g/UAks0=;
-  b=UGePtL/P87MBcjYZf17l7Q0PQYcqWVRFGrx9XOY6GrX1Mt7fKJKKHv4n
-   21inqnqr+A/nWRYAXtsr3TfcmLgvU9AllGg7IycmWOky7ZtMMssmQwNnd
-   KxiHPrz0kEGeiNU0/9VN0ZqmCA63rmu0VnuaPN2zZFnzKawhjFyXJ8hi7
-   XVt8mEq/4IdVqWq+XPPPW2u4Wpdlrswxx3hCsZiGPKxAOndsrivXsqj7b
-   H2HlWdjyX6FPYE0RaWNAd5fHuWHthNosZDXcxI9W6+3Us+r9S7ONjnjHV
-   6yEVW/wfZEJkieitrWmRcVRMP/XEyUrm9aG/6MhxTLDkQblG9XTSy3OLK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="392266120"
-X-IronPort-AV: E=Sophos;i="6.04,225,1695711600"; 
-   d="scan'208";a="392266120"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 23:43:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="911623527"
-X-IronPort-AV: E=Sophos;i="6.04,225,1695711600"; 
-   d="scan'208";a="911623527"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Nov 2023 23:43:40 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r6nKE-0003kN-2Z;
-        Sat, 25 Nov 2023 07:43:38 +0000
-Date:   Sat, 25 Nov 2023 15:42:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH 12/12] iio: adc: adi-axi-adc: move to backend framework
-Message-ID: <202311251430.QfOfg5Ws-lkp@intel.com>
-References: <20231121-dev-iio-backend-v1-12-6a3d542eba35@analog.com>
+        Sat, 25 Nov 2023 02:44:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F62A10F7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 23:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700898225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FPcp2kfkJWwJkN3y6bMbR5mAObAMJOnKE0qW0hK6n2c=;
+        b=X7HxousYPPff3f+OxMxQrqy3Bvxy2JKAlTwR30/HfM1o8WNdfE0ppXx9iFwV4NRdpm4128
+        1q8XmNJWphP5EV2eNVghPBiNwSbLhC89/cBAYKNR1uwXt3xaudh2XT7uffc8APIrzil23U
+        JAp9CqLNZeIr1ykeRsgcqGSRpYmF7sc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-410-ove06uA9OCCzM7Henf4tFg-1; Sat, 25 Nov 2023 02:43:43 -0500
+X-MC-Unique: ove06uA9OCCzM7Henf4tFg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a01c7b09335so193537566b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 23:43:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700898222; x=1701503022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FPcp2kfkJWwJkN3y6bMbR5mAObAMJOnKE0qW0hK6n2c=;
+        b=i8HYQQN+c7zLOLkafGp0Q5uNTWNSn1iNSmtyphPG5ix1VkvqHUwskoAc4uN4N+C6cp
+         r8ZZ7gNYlibNdAN9OwssDS8eUWdjNGr96K3o2RAUEANDTDCrr0CBd9MsT421kbsfvgaN
+         dQSdxR4dHIHmO7iouv7RxsgRKKaDRvvdnCLc59ZoUoypM3RMMHilQXcb9ahpmxdu3sGA
+         khyGxxUEwk0zXByKQkPqGeJRCRa55+En9F7G7FAnaGJ1hK1oyi4EzXSNkUaSk0Wq4V1C
+         Lx4gY+6Ay20Q1biCEy/h0jVMpWznapn0Wn0SULb7D3v5kJsx8nUiRvjZxyM/lMNLfhn6
+         8mbQ==
+X-Gm-Message-State: AOJu0YyUc735kPBevFv/ygPAkqIQxPHqKEuvK4eyi4iDDF/mliEW0c0S
+        7Tlb6983ZB4zJ1rabUDPuie+J+BQoWdeODACZWOarBmuTyLImWnriwOe1gXV0M/zvA1hRoDWMOk
+        oV2zfGaOBuBL2VEGAn3PC/ozyZrgk7VN7g6T6dGVe
+X-Received: by 2002:a50:a6d4:0:b0:54b:1aae:8560 with SMTP id f20-20020a50a6d4000000b0054b1aae8560mr1088154edc.15.1700898222342;
+        Fri, 24 Nov 2023 23:43:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE3UOv4zlSap3s8nXa6WBtVb5dFpv4YY8ms50ZA2GiF/2GvnNXPJ3aXe2rbF3/WuWoFq3x+WGWcKaQlnPK2nKo=
+X-Received: by 2002:a50:a6d4:0:b0:54b:1aae:8560 with SMTP id
+ f20-20020a50a6d4000000b0054b1aae8560mr1088147edc.15.1700898222118; Fri, 24
+ Nov 2023 23:43:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121-dev-iio-backend-v1-12-6a3d542eba35@analog.com>
+References: <20231121073050.287080-1-lulu@redhat.com> <20231121073050.287080-5-lulu@redhat.com>
+ <CACGkMEtPk=n5RFp0yAKddYbsAm3dd1U8qgYXmHHOr9MP-+wWpg@mail.gmail.com>
+In-Reply-To: <CACGkMEtPk=n5RFp0yAKddYbsAm3dd1U8qgYXmHHOr9MP-+wWpg@mail.gmail.com>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Sat, 25 Nov 2023 15:43:04 +0800
+Message-ID: <CACLfguWEUgsbuvCzZUWiEtwJvQqun6mo-jkzhS=PYTNTzMWeiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] vduse: update the vq_info in ioctl
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, xieyongji@bytedance.com,
+        linux-kernel@vger.kernel.org, maxime.coquelin@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nuno,
+On Wed, Nov 22, 2023 at 3:12=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
+>
+> On Tue, Nov 21, 2023 at 3:31=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+> >
+> > In VDUSE_VQ_GET_INFO, the driver will sync the last_avail_idx
+>
+> For driver, did you mean virtio driver?
+>
+> > with reconnect info, After mapping the reconnect pages to userspace
+> > The userspace App will update the reconnect_time in
+> > struct vhost_reconnect_vring, If this is not 0 then it means this
+> > vq is reconnected and will update the last_avail_idx
+>
+> I have a hard time understanding the above.
+>
+sure, I will re-write this part
+thanks
+cindy
+> Thanks
+>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on jic23-iio/togreg]
-[also build test WARNING on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus robh/for-next linus/master v6.7-rc2 next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Nuno-Sa-via-B4-Relay/driver-core-allow-modifying-device_links-flags/20231121-182010
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20231121-dev-iio-backend-v1-12-6a3d542eba35%40analog.com
-patch subject: [PATCH 12/12] iio: adc: adi-axi-adc: move to backend framework
-config: arm-randconfig-r081-20231123 (https://download.01.org/0day-ci/archive/20231125/202311251430.QfOfg5Ws-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231125/202311251430.QfOfg5Ws-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311251430.QfOfg5Ws-lkp@intel.com/
-
-smatch warnings:
-drivers/iio/adc/adi-axi-adc.c:64 axi_adc_enable() warn: inconsistent indenting
-
-vim +64 drivers/iio/adc/adi-axi-adc.c
-
-    58	
-    59	static int axi_adc_enable(struct iio_backend *back)
-    60	{
-    61		struct adi_axi_adc_state *st = iio_backend_get_priv(back);
-    62		int ret;
-    63	
-  > 64		 ret = regmap_set_bits(st->regmap, ADI_AXI_REG_RSTN,
-    65				       ADI_AXI_REG_RSTN_MMCM_RSTN);
-    66		if (ret)
-    67			return ret;
-    68	
-    69		fsleep(10);
-    70		return regmap_set_bits(st->regmap, ADI_AXI_REG_RSTN,
-    71				       ADI_AXI_REG_RSTN_RSTN | ADI_AXI_REG_RSTN_MMCM_RSTN);
-    72	}
-    73	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
