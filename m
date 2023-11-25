@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1889B7F894B
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F2C7F8946
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbjKYIeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
+        id S231865AbjKYIeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjKYIeD (ORCPT
+        with ESMTP id S231784AbjKYIeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:34:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F671B2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:34:09 -0800 (PST)
+        Sat, 25 Nov 2023 03:34:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51249D7
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700901248;
+        s=mimecast20190719; t=1700901245;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vTG05EW/Vn1GRdMSm15A5fKBFtMK4HcJRfq9goQr52c=;
-        b=FNBaXQkynWxqYiYG4eF21f6HByuCnechu1fZIokweIKPC+GorVJUoiM0dy0+AhF36jR46W
-        jDTfP5rEcT3+AphBrRADg1MRB6AiClkUVeZeBis3DvXfCyKi8b1O/bmjM0RZMtV6YcJN1v
-        TbMGeZC8/3wj2v8K1vjurNmddtgDkNk=
+        bh=fifx1OpT0+LOXRVENBYb2+UgoxO00jGJFMkVPCqjJjc=;
+        b=QrLHbXNoqefMvdxr36o3dAw7PwuCetUXBwz1T0U4705luuliRzYbfP05UrF83xHOi7YfbI
+        4j60r4sfS4WvrLif2GzXpiuearOKkCD7HItzvfZrYxBOFrGkuYIs5nc+IJtvNYw8NLApJl
+        crsdGr+7UJS6oKQ0glwgxTBfXXFpWOo=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-540-qrcciyPnNpqRMq3RRfw8lA-1; Sat,
- 25 Nov 2023 03:34:01 -0500
-X-MC-Unique: qrcciyPnNpqRMq3RRfw8lA-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-263-PaiEfHzPMm2S3SRqgT_Spg-1; Sat,
+ 25 Nov 2023 03:34:02 -0500
+X-MC-Unique: PaiEfHzPMm2S3SRqgT_Spg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 974BE1C05AE3;
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C179B3C00097;
         Sat, 25 Nov 2023 08:34:01 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 74E291121306;
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F22C1121306;
         Sat, 25 Nov 2023 08:34:01 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     seanjc@google.com, mlevitsk@redhat.com
-Subject: [PATCH v2 2/4] KVM: x86/mmu: remove unnecessary "bool shared" argument from iterators
-Date:   Sat, 25 Nov 2023 03:33:58 -0500
-Message-Id: <20231125083400.1399197-3-pbonzini@redhat.com>
+Subject: [PATCH v2 3/4] KVM: x86/mmu: always take tdp_mmu_pages_lock
+Date:   Sat, 25 Nov 2023 03:33:59 -0500
+Message-Id: <20231125083400.1399197-4-pbonzini@redhat.com>
 In-Reply-To: <20231125083400.1399197-1-pbonzini@redhat.com>
 References: <20231125083400.1399197-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -53,8 +53,8 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,146 +62,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "bool shared" argument is more or less unnecessary in the
-for_each_*_tdp_mmu_root_yield_safe() macros.  Many users check for
-the lock before calling it; all of them either call small functions
-that do the check, or end up calling tdp_mmu_set_spte_atomic() and
-tdp_mmu_iter_set_spte().  Add a few assertions to make up for the
-lost check in for_each_*_tdp_mmu_root_yield_safe(), but even this
-is probably overkill and mostly for documentation reasons.
+It is cheap to take tdp_mmu_pages_lock in all write-side critical sections.
+We already do it all the time when zapping with read_lock(), so it is not
+a problem to do it from the kvm_tdp_mmu_zap_all() path (aka
+kvm_arch_flush_shadow_all(), aka VM destruction and MMU notifier release).
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 50 +++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ Documentation/virt/kvm/locking.rst |  7 +++----
+ arch/x86/include/asm/kvm_host.h    | 11 ++++++-----
+ arch/x86/kvm/mmu/tdp_mmu.c         | 24 ++++--------------------
+ 3 files changed, 13 insertions(+), 29 deletions(-)
 
-	v1->v2: keep lockdep_assert_held()
+	v1->v2: fix kerneldoc
 
+diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+index 3a034db5e55f..02880d5552d5 100644
+--- a/Documentation/virt/kvm/locking.rst
++++ b/Documentation/virt/kvm/locking.rst
+@@ -43,10 +43,9 @@ On x86:
+ 
+ - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock and kvm->arch.xen.xen_lock
+ 
+-- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock and
+-  kvm->arch.mmu_unsync_pages_lock are taken inside kvm->arch.mmu_lock, and
+-  cannot be taken without already holding kvm->arch.mmu_lock (typically with
+-  ``read_lock`` for the TDP MMU, thus the need for additional spinlocks).
++- kvm->arch.mmu_lock is an rwlock; critical sections for
++  kvm->arch.tdp_mmu_pages_lock and kvm->arch.mmu_unsync_pages_lock must
++  also take kvm->arch.mmu_lock
+ 
+ Everything else is a leaf: no other lock is taken inside the critical
+ sections.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index d7036982332e..f58d318e37aa 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1406,9 +1406,8 @@ struct kvm_arch {
+ 	 *	the MMU lock in read mode + RCU or
+ 	 *	the MMU lock in write mode
+ 	 *
+-	 * For writes, this list is protected by:
+-	 *	the MMU lock in read mode + the tdp_mmu_pages_lock or
+-	 *	the MMU lock in write mode
++	 * For writes, this list is protected by tdp_mmu_pages_lock; see
++	 * below for the details.
+ 	 *
+ 	 * Roots will remain in the list until their tdp_mmu_root_count
+ 	 * drops to zero, at which point the thread that decremented the
+@@ -1425,8 +1424,10 @@ struct kvm_arch {
+ 	 *  - possible_nx_huge_pages;
+ 	 *  - the possible_nx_huge_page_link field of kvm_mmu_page structs used
+ 	 *    by the TDP MMU
+-	 * It is acceptable, but not necessary, to acquire this lock when
+-	 * the thread holds the MMU lock in write mode.
++	 * Because the lock is only taken within the MMU lock, strictly
++	 * speaking it is redundant to acquire this lock when the thread
++	 * holds the MMU lock in write mode.  However it often simplifies
++	 * the code to do so.
+ 	 */
+ 	spinlock_t tdp_mmu_pages_lock;
+ #endif /* CONFIG_X86_64 */
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 05689c8d45b7..a85b31a3fc44 100644
+index a85b31a3fc44..d3473f4bf246 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -155,23 +155,20 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-  * If shared is set, this function is operating under the MMU lock in read
-  * mode.
+@@ -75,12 +75,6 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
+ 
+ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ {
+-	/*
+-	 * Either read or write is okay, but mmu_lock must be held because
+-	 * writers are not required to take tdp_mmu_pages_lock.
+-	 */
+-	lockdep_assert_held(&kvm->mmu_lock);
+-
+ 	if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
+ 		return;
+ 
+@@ -281,28 +275,18 @@ static void tdp_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+  *
+  * @kvm: kvm instance
+  * @sp: the page to be removed
+- * @shared: This operation may not be running under the exclusive use of
+- *	    the MMU lock and the operation must synchronize with other
+- *	    threads that might be adding or removing pages.
   */
--#define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, _only_valid)\
--	for (_root = tdp_mmu_next_root(_kvm, NULL, _only_valid);		\
--	     _root;								\
--	     _root = tdp_mmu_next_root(_kvm, _root, _only_valid))		\
--		if (kvm_lockdep_assert_mmu_lock_held(_kvm, _shared) &&		\
--		    kvm_mmu_page_as_id(_root) != _as_id) {			\
-+#define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _only_valid)\
-+	for (_root = tdp_mmu_next_root(_kvm, NULL, _only_valid);	\
-+	     ({ lockdep_assert_held(&(_kvm)->mmu_lock); }), _root;	\
-+	     _root = tdp_mmu_next_root(_kvm, _root, _only_valid))	\
-+		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
- 		} else
- 
--#define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared)	\
--	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
-+#define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)	\
-+	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, true)
- 
--#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
--	for (_root = tdp_mmu_next_root(_kvm, NULL, false);			\
--	     _root;								\
--	     _root = tdp_mmu_next_root(_kvm, _root, false))			\
--		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
--		} else
-+#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)			\
-+	for (_root = tdp_mmu_next_root(_kvm, NULL, false);		\
-+	     ({ lockdep_assert_held(&(_kvm)->mmu_lock); }), _root;	\
-+	     _root = tdp_mmu_next_root(_kvm, _root, false))
- 
- /*
-  * Iterate over all TDP MMU roots.  Requires that mmu_lock be held for write,
-@@ -840,7 +837,8 @@ bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush)
+-static void tdp_mmu_unlink_sp(struct kvm *kvm, struct kvm_mmu_page *sp,
+-			      bool shared)
++static void tdp_mmu_unlink_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
  {
- 	struct kvm_mmu_page *root;
+ 	tdp_unaccount_mmu_page(kvm, sp);
  
--	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
-+	lockdep_assert_held_write(&kvm->mmu_lock);
-+	for_each_tdp_mmu_root_yield_safe(kvm, root)
- 		flush = tdp_mmu_zap_leafs(kvm, root, start, end, true, flush);
+ 	if (!sp->nx_huge_page_disallowed)
+ 		return;
  
- 	return flush;
-@@ -862,7 +860,8 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
- 	 * is being destroyed or the userspace VMM has exited.  In both cases,
- 	 * KVM_RUN is unreachable, i.e. no vCPUs will ever service the request.
- 	 */
--	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
-+	lockdep_assert_held_write(&kvm->mmu_lock);
-+	for_each_tdp_mmu_root_yield_safe(kvm, root)
- 		tdp_mmu_zap_root(kvm, root, false);
+-	if (shared)
+-		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+-	else
+-		lockdep_assert_held_write(&kvm->mmu_lock);
+-
++	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+ 	sp->nx_huge_page_disallowed = false;
+ 	untrack_possible_nx_huge_page(kvm, sp);
+-
+-	if (shared)
+-		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
++	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
  }
  
-@@ -876,7 +875,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
+ /**
+@@ -331,7 +315,7 @@ static void handle_removed_pt(struct kvm *kvm, tdp_ptep_t pt, bool shared)
  
- 	read_lock(&kvm->mmu_lock);
+ 	trace_kvm_mmu_prepare_zap_page(sp);
  
--	for_each_tdp_mmu_root_yield_safe(kvm, root, true) {
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		if (!root->tdp_mmu_scheduled_root_to_zap)
- 			continue;
+-	tdp_mmu_unlink_sp(kvm, sp, shared);
++	tdp_mmu_unlink_sp(kvm, sp);
  
-@@ -1133,7 +1132,7 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
- {
- 	struct kvm_mmu_page *root;
- 
--	__for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false, false)
-+	__for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false)
- 		flush = tdp_mmu_zap_leafs(kvm, root, range->start, range->end,
- 					  range->may_block, flush);
- 
-@@ -1322,7 +1323,7 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
- 
- 	lockdep_assert_held_read(&kvm->mmu_lock);
- 
--	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-+	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
- 			     slot->base_gfn + slot->npages, min_level);
- 
-@@ -1354,6 +1355,8 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
- {
- 	struct kvm_mmu_page *sp;
- 
-+	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-+
- 	/*
- 	 * Since we are allocating while under the MMU lock we have to be
- 	 * careful about GFP flags. Use GFP_NOWAIT to avoid blocking on direct
-@@ -1504,8 +1507,7 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *kvm,
- 	int r = 0;
- 
- 	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
--
--	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, shared) {
-+	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id) {
- 		r = tdp_mmu_split_huge_pages_root(kvm, root, start, end, target_level, shared);
- 		if (r) {
- 			kvm_tdp_mmu_put_root(kvm, root);
-@@ -1568,8 +1570,7 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
- 	bool spte_set = false;
- 
- 	lockdep_assert_held_read(&kvm->mmu_lock);
--
--	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-+	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
- 				slot->base_gfn + slot->npages);
- 
-@@ -1703,8 +1704,7 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 	struct kvm_mmu_page *root;
- 
- 	lockdep_assert_held_read(&kvm->mmu_lock);
--
--	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-+	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		zap_collapsible_spte_range(kvm, root, slot);
- }
- 
+ 	for (i = 0; i < SPTE_ENT_PER_PAGE; i++) {
+ 		tdp_ptep_t sptep = pt + i;
 -- 
 2.39.1
 
