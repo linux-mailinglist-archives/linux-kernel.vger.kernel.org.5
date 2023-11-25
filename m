@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A307F89F3
+	by mail.lfdr.de (Postfix) with ESMTP id BCB307F89F4
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 11:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbjKYK0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 05:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S231856AbjKYKal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 05:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYK0d (ORCPT
+        with ESMTP id S229483AbjKYKaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 05:26:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6849D62
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:26:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700907998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wLQCR+hwcyQJXO1rzDrTi8/6fcFm4TdvVYYy57cW/E0=;
-        b=GsL/e3top406g4tUx1gVeX944tFnG5DgC1P3qxcD5f0sCPPWT0gmlUXz1C4sLufYrMw8C9
-        iZZmqMzIgnZdKd9jkWxzo3uKLGIJklaIvH5x1PTJJQxX3BZau82k6pcKYF8KHLhJuavZ4R
-        qRB1zK1caYnoTf/yWV+wGQA/qfKzkSo=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-217-eX_6BgD7MaexIHiOHTDneQ-1; Sat, 25 Nov 2023 05:26:36 -0500
-X-MC-Unique: eX_6BgD7MaexIHiOHTDneQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5be39ccc2e9so3333579a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:26:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700907995; x=1701512795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wLQCR+hwcyQJXO1rzDrTi8/6fcFm4TdvVYYy57cW/E0=;
-        b=Ue8LVaeXKYf8qIlt/TL2M76UsT3soPW3fGRtByNMuS+v5qGWExEzWIJMEI/LoPZaMn
-         9K1CwzTWMEW5GEnoSrTidMV8YHt8Qy/WfyfOi1Qm7N1c4Cxcq4OTl0WK7g8zBa1u/oBL
-         LIhM9xtc/9inXzIC9DClEPgGLusyZV9u0kt9whKqCWeLFV8i0WeSzcgy19XLrWwPUoxR
-         AQBBSimh+ndL5piJFObtQK4bH36vIm+sz3TbKMnrbcnb2/0z7dXTNul+yhRdNtNZTf1D
-         puXyx48/nHRVcwRGPg7sH8jmSLHZbXLZIoOJ58+WTqVP+FF/P9XNVkjytR981aWHIG4s
-         bakg==
-X-Gm-Message-State: AOJu0YycQy+o9PRhSfMTMyoU4+nXGzgLdPuAawzFO/vTENeU7v4yCXGi
-        ypOTduBj7vGH9cTnxhtd4BEO1F6YCZelbg5V7UeEDJWzeXzJEAYSm8QZ4aRgJcCqLm0ytlwvdzE
-        g0oME9Hzp1AnajoWjWKrRP7nrlcfVmLGzMnng1CH7
-X-Received: by 2002:a05:6a20:729c:b0:18b:826c:411b with SMTP id o28-20020a056a20729c00b0018b826c411bmr7123664pzk.17.1700907995673;
-        Sat, 25 Nov 2023 02:26:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGj+gQkJqIindZjd3rTyUNigqh/fYulbFnVwdUMwwH5xmJ5qdJwem2NEr8aPpml+N3jfIVMwuQGohO5FkUFNTg=
-X-Received: by 2002:a05:6a20:729c:b0:18b:826c:411b with SMTP id
- o28-20020a056a20729c00b0018b826c411bmr7123650pzk.17.1700907995306; Sat, 25
- Nov 2023 02:26:35 -0800 (PST)
+        Sat, 25 Nov 2023 05:30:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110CAD62
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:30:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F50C433C8;
+        Sat, 25 Nov 2023 10:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700908245;
+        bh=8M+nJvP3Pc02QBXEzHmQFiKyIaya/XkVZIIRM9foMfw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FQ0NDYAJfjaISX94FgEp8BBEXq6kVCoCIaQFOtPxwoUHwrTqO5a6BKo9odLqKeUc2
+         plyGL6jWtFx/fjYjUuCLoxuZWigXAd3jCYndMzSd5ZZexdN1wia30WP0neeVpkDfe7
+         nhAMBhLBP3F0V9S1rFittgifIzoZtljJRvloQZK7DA0P4XfWe2UUQ88s35ihaC2bRi
+         WzQwIs06ogw0Bn9655oxUIiJlT6rwexfCtABQPptnpu16Vj0Ejtghaxl7PzNACtHGt
+         8/cERrrpDU9aYFtdUVySNJbLMG+KNbhAJFfRg/l9aiBoEWZDyX1lYQXxqME7HKxMqK
+         sZh79yTv6ysLQ==
+Date:   Sat, 25 Nov 2023 10:30:42 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
+References: <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
+ <2023112458-stature-commuting-c66f@gregkh>
+ <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
+ <2023112435-dazzler-crisped-04a6@gregkh>
+ <20231124163234.GC819414@pengutronix.de>
+ <2023112453-flagstick-bullring-8511@gregkh>
+ <20231124185725.GA872366@pengutronix.de>
+ <2023112520-paper-image-ef5d@gregkh>
+ <20231125085038.GA877872@pengutronix.de>
+ <2023112506-unselfish-unkind-adcb@gregkh>
 MIME-Version: 1.0
-References: <20231124075953.1932764-1-yukuai1@huaweicloud.com>
-In-Reply-To: <20231124075953.1932764-1-yukuai1@huaweicloud.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Sat, 25 Nov 2023 18:26:24 +0800
-Message-ID: <CALTww28eDmnGC4SPPTezxS_QNvr_o5cz-npyhHMCRt=xcA+nVA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] md: bugfix and cleanup for sync_thread
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     song@kernel.org, yukuai3@huawei.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OWCscLjJZThyBHJJ"
+Content-Disposition: inline
+In-Reply-To: <2023112506-unselfish-unkind-adcb@gregkh>
+X-Cookie: Slow day.  Practice crawling.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 4:00=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Changes in v2:
->  - add patch 2;
->  - split some patches from v1 that will be sent separately;
->  - rework some commit message;
->  - rework patch 5;
->
-> Yu Kuai (6):
->   md: fix missing flush of sync_work
->   md: remove redundant check of 'mddev->sync_thread'
->   md: remove redundant md_wakeup_thread()
->   md: don't leave 'MD_RECOVERY_FROZEN' in error path of
->     md_set_readonly()
->   md: fix stopping sync thread
->   dm-raid: delay flushing event_work() after reconfig_mutex is released
->
->  drivers/md/dm-raid.c |   3 +
->  drivers/md/md.c      | 149 ++++++++++++++++++++-----------------------
->  drivers/md/raid5.c   |   6 +-
->  3 files changed, 75 insertions(+), 83 deletions(-)
->
-> --
-> 2.39.2
->
-For the series
-Acked-by: Xiao Ni <xni@redhat.com>
 
+--OWCscLjJZThyBHJJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Nov 25, 2023 at 09:09:01AM +0000, Greg Kroah-Hartman wrote:
+> On Sat, Nov 25, 2023 at 09:50:38AM +0100, Oleksij Rempel wrote:
+
+> > It prevents HW damage. In a typical automotive under-voltage labor it is
+> > usually possible to reproduce X amount of bricked eMMCs or NANDs on Y
+> > amount of under-voltage cycles (I do not have exact numbers right now).
+> > Even if the numbers not so high in the labor tests (sometimes something
+> > like one bricked device in a month of tests), the field returns are
+> > significant enough to care about software solution for this problem.
+
+> So hardware is attempting to rely on software in order to prevent the
+> destruction of that same hardware?  Surely hardware designers aren't
+> that crazy, right?  (rhetorical question, I know...)
+
+Surely software people aren't going to make no effort to integrate with
+the notification features that the hardware engineers have so helpfully
+provided us with?
+
+> > Same problem was seen not only in automotive devices, but also in
+> > industrial or agricultural. With other words, it is important enough to bring
+> > some kind of solution mainline.
+
+> But you are not providing a real solution here, only a "I am going to
+> attempt to shut down a specific type of device before the others, there
+> are no time or ordering guarantees here, so good luck!" solution.
+
+I'm not sure there are great solutions here, the system integrators are
+constrained by the what the application appropriate silicon that's on
+the market is capable of, the siicon is constrained by the area costs of
+dealing with corner cases for system robustness and how much of the
+market cares about fixing these issues and software is constrained by
+what hardware ends up being built.  Everyone's just got to try their
+best with the reality they're confronted with, hopefully what's possible
+will improve with time.
+
+> And again, how are you going to prevent the in-fighting of all device
+> types to be "first" in the list?
+
+It doesn't seem like the most complex integration challenge we've ever
+had to deal with TBH.
+
+--OWCscLjJZThyBHJJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVhzM4ACgkQJNaLcl1U
+h9Bczwf/ZOauVf2ZNMl+9um4sb53WEKA1gMNKZK4K6HTICY1ZeM6/Ke3rWF5ygNQ
+upPZi5ZTDR2iTnbeTkX3vM5IuY4msSWko+SZIaxLGXB+2d0mCXyTMb5tkfevq5Ky
+A6yjp5D6c9axsfQPPH5xsddudfHMdnbTXmgrwoYZeesZxLUoUH5O9QQwvqvEGkuT
+0LdWzipZ6EsJVl8HNzGbomkA6CApfVz9GoS2FqKt3NS8BHwh4Ye35HiD0/b6UyCH
+7aaeg0ai6ws+XN7w2PxNewkVhKkwTpOM46OPP01wjwve8qvzsjZMBQtHupMw785o
+/wV5S99o4IIR7iGqW31jmfgb3RUyiA==
+=JVcw
+-----END PGP SIGNATURE-----
+
+--OWCscLjJZThyBHJJ--
