@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC217F8C57
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575B87F8C5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjKYQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 11:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S232254AbjKYQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 11:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjKYQV6 (ORCPT
+        with ESMTP id S230030AbjKYQW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 11:21:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAF19F
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 08:22:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36919C433C8;
-        Sat, 25 Nov 2023 16:21:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700929324;
-        bh=47slQ7C1k9AETzS9asZhacrAtG9GZsJQSECZIsdAGjI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hBUlDWDBADGfqaINi7P44RSLl1DHvL1kAkuCDYaDJ1K1oYFoFYGZP8xO9r33MoOEP
-         o/nlZv20qLVTDGLVY09grPf1KLBw740Eig6hefAJ0Ak1OhroWuQv8wBbJfLmbto8vq
-         ydDaDAWC2IE8zkuiyvfoW0QUMPoXnm4+PoIcYeLNRmbdp3O99BXnnyCcO51dtVR+Mb
-         AGPeddIo+cZWuhqso81ECejiUT3qHRiJnSuP7uOJXSCOP58ilvlcdFxIOqtsw2rlzg
-         Ez0Nr7mdg7CvnyRAxNWpXYaVFM1QpDJRin33jq/NiXqRIs5dxIQQxIsrP7DNeFE1jf
-         wXIdo8otFungQ==
-Date:   Sat, 25 Nov 2023 16:21:55 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc:     <paul.cercueil@analog.com>, <Michael.Hennerich@analog.com>,
-        <lars@metafoo.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/7] iio: adc: ad7091r: Alloc IIO device before
- generic probe
-Message-ID: <20231125162155.2a3f980f@jic23-huawei>
-In-Reply-To: <0a648afb9a06471380a7993b20cb44a9026c8248.1700751907.git.marcelo.schmitt1@gmail.com>
-References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
-        <0a648afb9a06471380a7993b20cb44a9026c8248.1700751907.git.marcelo.schmitt1@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 25 Nov 2023 11:22:56 -0500
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425E79F;
+        Sat, 25 Nov 2023 08:23:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1700929349; bh=PAlRc2ja3hh6DeaWm9zc1SFzcPjmPGHqZ2p19AErk3o=;
+        h=From:Date:Subject:To:Cc;
+        b=WXA2qcl9v7BwZVhxsSk1xhOGD5Ht/FoltLKgnMNZbuPQY6j34wQArAvx/hY3IxuiI
+         dKm+XjZ4Snk9jWDdIonZsHOcsLk/R0X7nh0UO1GI/DHMWaNT+XVJy912QIQyiGaNpm
+         0yYPaqNNd+Wyg7diUsY7CVNUyChrbxqwVilnImmk=
+From:   Luca Weiss <luca@z3ntu.xyz>
+Date:   Sat, 25 Nov 2023 17:22:15 +0100
+Subject: [PATCH] Input: xpad - add Razer Wolverine V2 support
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Message-Id: <20231125-razer-wolverine-v2-v1-1-979fe9f9288e@z3ntu.xyz>
+X-B4-Tracking: v=1; b=H4sIADYfYmUC/x3MMQqAMAxA0atIZgNtpItXEYdqowaklRSqKN7d4
+ viH9x/IrMIZ+uYB5SJZUqxh2wbmzceVUUJtIEOdteRQ/c2KZ9pLhZGxEAbjyE7UefYOKjyUF7n
+ +6TC+7wcepOICZAAAAA==
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1124; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=PAlRc2ja3hh6DeaWm9zc1SFzcPjmPGHqZ2p19AErk3o=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlYh85IHrmrKDRYKR+d09mJfLAfIvc0J+BeffIi
+ DinFHOWPwKJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZWIfOQAKCRBy2EO4nU3X
+ Vs14D/9iC5JJyHV8M8HNrp2ivvOA7otQzZYCyfH/ZTtCwfBNUMzWIjMVqYOwSsjkPW/zYucXfaq
+ uCVG+2tnCWBrvxGuGPtx6A34cKuapwm46ddT2wzrmiJ9wYoJFaU2wgassw54wWcs/qbR1KmHeOh
+ jS+Ve1WkQF/2YO75cyW9zuDpWsvboiTA8NEQ66mHljmf3CTnqxn82P7Pbmnr0rJMOG6LhsiS26C
+ 3W8pDf7ELwXSk9WEDOqlxwCZi4Cdbbmvc0mbc7UJef1lFKB85zYj8ew72ishXxHsIhvBI9P8LSf
+ SljEc4mmzUVsf+tNLOoYE94b5ZkAC6F9c3C+9TnNL1k1YrWbsLW04B7QRo+FwDGFX56jRw8ry9i
+ 0GEkSViAu5GqZL0tdOxaY5s+7mD5jp+PTC4U6RhQg3205GR9e9CnmiVYDAVENZ47avoKHXZovV2
+ iDP0LBl2rCU8k+XHQZPLyAceWTP1Uiw/Ie5xbhisGMIUaHIAnbPJHe0kstUJayFLaeVydvH96Jj
+ 75jPhQVL8QxljqoWWTrALWxWjAHaxDg/VOzvZvsOu7pGaFlXOyxgWH3HLR7JLJLQkLdhVLzGSsr
+ HqO5qLlqagbjjs9FvG1Vp4hsjaeBnQS4YBhXdOV9vpKYHaKLMZhd0irtJd+GLPlxqAdfE1N4sgW
+ 3s+wy+l8/9S8wlA==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,20 +61,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Nov 2023 13:41:59 -0300
-Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
+Add the VID and PID of Razer Wolverine V2 to xpad_device.
 
-> Rework ad7091r probe functions so the IIO device is allocated before
-> the generic device probe function is called.
-> This change is needed for a follow up patch that passes a pointer to the
-> IIO device to a couple of regmap callback functions.
-> 
-> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> Signed-off-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+ drivers/input/joystick/xpad.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Why the gmail sign off? That's unusual enough that if it makes sense I'd like
-to see a comment below the --- on why.
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index f5c21565bb3c..e2c1848182de 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -286,6 +286,7 @@ static const struct xpad_device {
+ 	{ 0x146b, 0x0604, "Bigben Interactive DAIJA Arcade Stick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+ 	{ 0x1532, 0x0a00, "Razer Atrox Arcade Stick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOXONE },
+ 	{ 0x1532, 0x0a03, "Razer Wildcat", 0, XTYPE_XBOXONE },
++	{ 0x1532, 0x0a29, "Razer Wolverine V2", 0, XTYPE_XBOXONE },
+ 	{ 0x15e4, 0x3f00, "Power A Mini Pro Elite", 0, XTYPE_XBOX360 },
+ 	{ 0x15e4, 0x3f0a, "Xbox Airflo wired controller", 0, XTYPE_XBOX360 },
+ 	{ 0x15e4, 0x3f10, "Batarang Xbox 360 controller", 0, XTYPE_XBOX360 },
 
-Patch is fine, though I'll need to read further for why this is needed!
+---
+base-commit: 0f5cc96c367f2e780eb492cc9cab84e3b2ca88da
+change-id: 20231125-razer-wolverine-v2-d0521b23aea5
 
-Jonathan
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
+
