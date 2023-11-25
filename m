@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 166F07F8A14
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5FD7F8A16
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjKYLKM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Nov 2023 06:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S231893AbjKYLQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 06:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYLKK (ORCPT
+        with ESMTP id S229483AbjKYLQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 06:10:10 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B6DAD;
-        Sat, 25 Nov 2023 03:10:16 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1r6qXx-002LA1-AU; Sat, 25 Nov 2023 12:10:01 +0100
-Received: from p5dc55299.dip0.t-ipconnect.de ([93.197.82.153] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1r6qXx-0043jv-1z; Sat, 25 Nov 2023 12:10:01 +0100
-Message-ID: <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2] drm/virtio: Add suppport for non-native buffer
- formats
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        mad skateman <madskateman@gmail.com>,
-        Christian Zigotzky <info@xenosoft.de>
-Date:   Sat, 25 Nov 2023 12:09:59 +0100
-In-Reply-To: <37b9e5ab-e170-4071-a912-f3fec0d59d5c@xenosoft.de>
-References: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
-         <77c6gkquzq4sdtmrlko3lkxvcnipm2zfjem3kvhgslcellkefh@man7pbbzud47>
-         <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
-         <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
-         <37b9e5ab-e170-4071-a912-f3fec0d59d5c@xenosoft.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
+        Sat, 25 Nov 2023 06:16:09 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2055.outbound.protection.outlook.com [40.107.92.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A85127;
+        Sat, 25 Nov 2023 03:16:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N5tOhrgZEELKhEdyq9gZ9tR1SaJ69cf2JWQKApNCVkLvOgL/3ael0hBk/095/ox1vetjMxOs9EcKZD0ZgfsXU3ZaidC+hEwHKtXN4WYX0MRKCzX3DQJuEaLvE7LLwMJjP8UXizyk/7tF44eWsucHi59sz6PR1jyscgxHrhsYqHkGFVMkKoWXQWwWO2ed0/Rye/L6KRdnMNjxT4B/CzRgK9FJAlxTRf9L/EFzwDAL9fyQnofGZZi7qKGcjRFf0eLmNfJ39VzmswLltEb/BZ4eyC8Iwb/mOpOAP6a1oxGOwkq7NjF6Q928IiaYs+xmEV0Dp3NLOF2U+MZFPIUwAhm/sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hkHDGOZTkp5gZ4OBAd5yvPjRBrZOWac0U4thWag6mmM=;
+ b=cPzjyRqTrYcq5v2dApG+M2mtWtkjxccMNkV0T5dkaBq/+YY7puCuJSjjde5Zw8B4jXsC3nAIGCs7qx3aHQ8xPTYoDWhHOJNPfxXq20SO02wRdulNZ2eKLyU93NZkxjqCAOqWOpui8tav3mkWH0Zp8aJodxdqKHG/+Cb7fMvbOJSBE+ReR8gFjzeQQU9xsw3mc4vFah5HKZVkfBRLgp4lDMV2JZmE4eo8sLhx0UWXP/N3l4/wH9WIqhmbQx7xsP/QqhaGGcUaVSoaBaYt81ojzOTYZdIK3FM7w8Ex4PokT82mky+t4gyBQm5qMqbJHaPhAsR22Hdz5USOon6aDl+8qg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=grandegger.com smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hkHDGOZTkp5gZ4OBAd5yvPjRBrZOWac0U4thWag6mmM=;
+ b=Seoz3Qz2t8HSNa+pSY0yMK3jbpv6qUG7EcI24TNkWa6TdhAsez5Gn6yBmH2PdK24MtDJW4pxqZyeiZ6fk2q5V8NUOSsPn45H3mPiJvLT/skc9t1xErEEs/fbtUn7Dw2OAIvzRDSH0JOrT8zZyQFAblatJPkZ9tYyGhtxPBr4wi8=
+Received: from SN4PR0501CA0131.namprd05.prod.outlook.com
+ (2603:10b6:803:42::48) by IA1PR12MB9031.namprd12.prod.outlook.com
+ (2603:10b6:208:3f9::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.25; Sat, 25 Nov
+ 2023 11:16:10 +0000
+Received: from SN1PEPF000252A1.namprd05.prod.outlook.com
+ (2603:10b6:803:42:cafe::af) by SN4PR0501CA0131.outlook.office365.com
+ (2603:10b6:803:42::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.16 via Frontend
+ Transport; Sat, 25 Nov 2023 11:16:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ SN1PEPF000252A1.mail.protection.outlook.com (10.167.242.8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 11:16:09 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
+ 2023 05:15:48 -0600
+Received: from xhdvnc205.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Sat, 25 Nov 2023 05:15:43 -0600
+From:   Srinivas Goud <srinivas.goud@amd.com>
+To:     <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <p.zabel@pengutronix.de>
+CC:     <git@amd.com>, <michal.simek@xilinx.com>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <appana.durga.rao@xilinx.com>,
+        <naga.sureshkumar.relli@xilinx.com>,
+        Srinivas Goud <srgoud@xhdsgoud40.xilinx.com>
+Subject: [PATCH v6 0/3] can: xilinx_can: Add ECC feature support
+Date:   Sat, 25 Nov 2023 16:45:30 +0530
+Message-ID: <1700910933-23868-1-git-send-email-srinivas.goud@amd.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 93.197.82.153
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A1:EE_|IA1PR12MB9031:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6bbbd35-057a-4064-2b21-08dbeda7ed44
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NjcIhP+AJDRVD23BjQcpQeG4uJuulZVnB1s5ttOlZgiEtccCGfusCwPF8gv50eIe6rx65L9a40dsb2IfDatzCfJxPg3aZnMRvYv93lWZUDfDZnnKJD1zCReX710vUETBX5PYV2xnZicIPZMH2vGSRa10cLXjgNuTnhClZkT01RFwNxGvdloOV6QbnnY6hYYaxa4paYigMm05j5cjHGASwBGlqEOKXkc0raF+s5snSxGJ8AHodDm7z3eOt8Xa580TQrP77eZkHADwf40Yh+7BA9Siehb1uPsZkmECjsGMPqismMsHKDJj8mOALXMTFTL7INB4N8OZEQHbydbK/zB/iY7rJpL70yha79M9pi+pgFnWa+miUYQMvZmHwhlr9BrXrtjv6zSzePZ1On2w+lUplHtb6mNAVYkX+6c4Zl+RhWtKraL9DMf/5Kmpxq8pp99AOsAd0K+/bbEYh7Lr3Gk1P9dK7DvYsovGOxuwrI/sAeiBDjGiZDZ5UArGlnqO7kJkjmu1G7edWLUCiTNLPKYbtCWn5BlqtUQ2r1PmahOsWhcY9hHG89cEBsqsdrLrQqzzqC1ZJ/3MWRYE+jWzSqvjm03D+HNhcKvi3eYlCiXsAb5e2ML3eG63Dmu/kY3nxqRCjovcDYfc8Izcsm2raUJTE2LAclhmQwrqudVc6NIR7U1X1WZcrATX/fKzBU07PU0vUzSzhiiqvFGcX6vUg4iGNqJTFXYbPUbdonhOXg2mkaX/dRQdUhAr1RMO+qC4XQw22JaND1jIzt2f1NPxNQfDHQObtQEVCZatgQtrIqYtB/PswZmrJOlykeAjnwHrizDLmrRWhxv6X5tXW9ZVwhCmkw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(346002)(136003)(230173577357003)(230922051799003)(230273577357003)(64100799003)(82310400011)(451199024)(1800799012)(186009)(40470700004)(46966006)(36840700001)(83380400001)(426003)(336012)(82740400003)(26005)(2616005)(44832011)(8936002)(8676002)(4326008)(86362001)(40480700001)(36860700001)(47076005)(81166007)(356005)(478600001)(40460700003)(6666004)(54906003)(70586007)(70206006)(316002)(110136005)(921008)(36756003)(41300700001)(2906002)(7416002)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 11:16:09.8421
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6bbbd35-057a-4064-2b21-08dbeda7ed44
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A1.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9031
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-11-25 at 11:06 +0100, Christian Zigotzky wrote:
-> Could you please revert the v2 patch because of the issue with the 
-> virtio-mouse-pci cursor? I will try to use the v1 patch for the RC3 of 
-> kernel 6.7.
+From: Srinivas Goud <srgoud@xhdsgoud40.xilinx.com>
 
-I don't understand why the v2 patch should yield any different results as
-the only change compared to v1 is the fixed patch subject. There are no
-functional differences, I just diffed the patches against each other:
+Add ECC feature support to Tx and Rx FIFOs for Xilinx CAN Controller.
+ECC is an IP configuration option where counter registers are added in
+IP for 1bit/2bit ECC errors count and reset.
+Also driver reports 1bit/2bit ECC errors for FIFOs based on ECC error
+interrupts.
 
---- geert-patch-v1.patch        2023-11-25 12:09:19.122936658 +0100
-+++ geert-patch-v2.patch        2023-11-25 12:09:36.313039085 +0100
-@@ -34,6 +34,9 @@
- Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
- Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
- ---
-+v2:
-+  - Fix truncated one-line summary.
-+---
-  drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
-  drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
-  2 files changed, 13 insertions(+), 4 deletions(-)
+Add xlnx,has-ecc optional property for Xilinx AXI CAN controller
+to support ECC if the ECC block is enabled in the HW.
 
-Adrian
+Add ethtool stats interface for getting all the ECC errors information.
+
+There is no public documentation for it available.
+
+---
+BRANCH: linux-can-next/master
+
+Changes in v6:
+Update commit description
+
+Changes in v5:
+Fix review comments
+Change the sequence of updates the stats
+Add get_strings and get_sset_count stats interface
+Use u64 stats helper function
+
+Changes in v4:
+Fix DT binding check warning
+Update xlnx,has-ecc property description
+
+Changes in v3:
+Update mailing list
+Update commit description
+
+Changes in v2:
+Address review comments
+Add ethtool stats interface
+Update commit description
+
+
+Srinivas Goud (3):
+  dt-bindings: can: xilinx_can: Add 'xlnx,has-ecc' optional property
+  can: xilinx_can: Add ECC support
+  can: xilinx_can: Add ethtool stats interface for ECC errors
+
+ .../devicetree/bindings/net/can/xilinx,can.yaml    |   5 +
+ drivers/net/can/xilinx_can.c                       | 159 ++++++++++++++++++++-
+ 2 files changed, 160 insertions(+), 4 deletions(-)
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.1.1
+
