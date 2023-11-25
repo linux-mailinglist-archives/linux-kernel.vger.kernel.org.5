@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F43C7F8974
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85037F897C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjKYJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 04:03:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S231808AbjKYJJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 04:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbjKYJDC (ORCPT
+        with ESMTP id S229503AbjKYJI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 04:03:02 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BD518B;
-        Sat, 25 Nov 2023 01:03:07 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc9b626a96so19513105ad.2;
-        Sat, 25 Nov 2023 01:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700902987; x=1701507787; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lO9T1f7+xQGxacGqr4UGfolgAcK+nTqINcLwMQXMAsg=;
-        b=cuSaSWpYZKDgP5OZznBQC+hhG5HpKPrbP5shtmLwgz5AMkLuF6ouFTwNuBLxkgr69r
-         lZEu4ScQ+Oyko6jH+WHOr3DBSRVrHbAxOOElT98QCMV8Y8BDmdo2vBeB8jL2quclGMtw
-         WYdP3+syqXKG0GgmhCvn6Apts4Y3mb+MYileTT2JiLvc0L5JTpaeTEvi6ajYlPfi0c2M
-         ycH6T2ZBPtgL2PiZbvXNFElLUQ41Jldr/ttTdYBpeFD+2oDW/npnIe3dRt7Eupy2NQVv
-         ln208jFf9fFoEVdNsRgUxO70reY0J1Qq6ApE629KD3qbyZALate/3Ix66wN0MDhSJ1M4
-         KDrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700902987; x=1701507787;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lO9T1f7+xQGxacGqr4UGfolgAcK+nTqINcLwMQXMAsg=;
-        b=bpbXgo3tw/NoHQbSKT2qtiTTSUvwGrOP0or+mW7jRRbkikSGtUxq6UlIKCoucHIHCM
-         CmcfluoS8IsId5TdJ/8f9V5Xz7jN2io14dlFtEld43piNnZtVn4r5Nntu+aB6/FNMlkX
-         lOL+Vum+DduRVKgie0FK4bRep4g7Cdm9mhswL4OBybuXs3vrAXQFFByXno35Dy1H9YvP
-         1QTaApPIJYVY5X6hCj7+Mkyz+b9JOoZ+FXVUw9mF+uWG2SPrKPcw3nFbVNFvgaTtn5pv
-         VBHwsEJLrxrBnv0PXR0XOpqdj1b+Lv9+G0J3shSr2uWi9udyP9YiHvThWnmJGMPbSwOM
-         NV8A==
-X-Gm-Message-State: AOJu0Yw/QAlyDmjdSTRReziH6+GvWfWXaPId3K2ziuPSWYnGWqrgugOZ
-        x1eCvNFEVVYXdtMUVAqYN98=
-X-Google-Smtp-Source: AGHT+IHzHe+EX24z8BHIjaM3k4H/XwNhsDntn0KLOhQQwYivmHfHFxBAmxTh6FhgpXNa1WfjFYXxJQ==
-X-Received: by 2002:a05:6a20:6a22:b0:18c:346c:d59f with SMTP id p34-20020a056a206a2200b0018c346cd59fmr1985559pzk.62.1700902986672;
-        Sat, 25 Nov 2023 01:03:06 -0800 (PST)
-Received: from localhost.localdomain ([2401:4900:716a:b035:7b6d:4b79:e0d7:1a84])
-        by smtp.gmail.com with ESMTPSA id o10-20020a17090a3d4a00b0027dafa55306sm4511646pjf.40.2023.11.25.01.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 01:03:06 -0800 (PST)
-From:   Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-To:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org
-Cc:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: [PATCH V4] media: stk1160: Fixed high volume of stk1160_dbg messages
-Date:   Sat, 25 Nov 2023 14:32:36 +0530
-Message-Id: <20231125090236.654605-1-ghanshyam1898@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 25 Nov 2023 04:08:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CF7EA
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 01:09:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DAF0C433C8;
+        Sat, 25 Nov 2023 09:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700903344;
+        bh=MW8ZDrdn27gXIQAKUwEbdXYazJeTuzAYxnp0tKWlAGI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JKY/4ilC6JEquAcrxGLtsxIpaK2IIAJCb0VyL9wU4pIcQ4pIZ/M9ZSLdiatU+RLEP
+         uXHrJqwUVriaZ57JiZfi2LkP8mZrQjFOExQyrSTVtrm8/OzsisVTOqjw9hV5hR6oK4
+         j0NAjZZZMH8bwHYB9E7s9eYuEs3cUt7i1XEmhm8o=
+Date:   Sat, 25 Nov 2023 09:09:01 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <2023112506-unselfish-unkind-adcb@gregkh>
+References: <2023112403-laxative-lustiness-6a7f@gregkh>
+ <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
+ <2023112458-stature-commuting-c66f@gregkh>
+ <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
+ <2023112435-dazzler-crisped-04a6@gregkh>
+ <20231124163234.GC819414@pengutronix.de>
+ <2023112453-flagstick-bullring-8511@gregkh>
+ <20231124185725.GA872366@pengutronix.de>
+ <2023112520-paper-image-ef5d@gregkh>
+ <20231125085038.GA877872@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125085038.GA877872@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function stk1160_dbg gets called too many times, which causes
-the output to get flooded with messages. Since stk1160_dbg uses
-printk, it is now replaced with printk_ratelimited.
+On Sat, Nov 25, 2023 at 09:50:38AM +0100, Oleksij Rempel wrote:
+> On Sat, Nov 25, 2023 at 06:51:55AM +0000, Greg Kroah-Hartman wrote:
+> > On Fri, Nov 24, 2023 at 07:57:25PM +0100, Oleksij Rempel wrote:
+> > > On Fri, Nov 24, 2023 at 05:26:30PM +0000, Greg Kroah-Hartman wrote:
+> > > > On Fri, Nov 24, 2023 at 05:32:34PM +0100, Oleksij Rempel wrote:
+> > > > > On Fri, Nov 24, 2023 at 03:56:19PM +0000, Greg Kroah-Hartman wrote:
+> > > > > > On Fri, Nov 24, 2023 at 03:49:46PM +0000, Mark Brown wrote:
+> > > > > > > On Fri, Nov 24, 2023 at 03:27:48PM +0000, Greg Kroah-Hartman wrote:
+> > > > > > > > On Fri, Nov 24, 2023 at 03:21:40PM +0000, Mark Brown wrote:
+> > > > > > > 
+> > > > > > > > > This came out of some discussions about trying to handle emergency power
+> > > > > > > > > failure notifications.
+> > > > > > > 
+> > > > > > > > I'm sorry, but I don't know what that means.  Are you saying that the
+> > > > > > > > kernel is now going to try to provide a hard guarantee that some devices
+> > > > > > > > are going to be shut down in X number of seconds when asked?  If so, why
+> > > > > > > > not do this in userspace?
+> > > > > > > 
+> > > > > > > No, it was initially (or when I initially saw it anyway) handling of
+> > > > > > > notifications from regulators that they're in trouble and we have some
+> > > > > > > small amount of time to do anything we might want to do about it before
+> > > > > > > we expire.
+> > > > > > 
+> > > > > > So we are going to guarantee a "time" in which we are going to do
+> > > > > > something?  Again, if that's required, why not do it in userspace using
+> > > > > > a RT kernel?
+> > > > > 
+> > > > > For the HW in question I have only 100ms time before power loss. By
+> > > > > doing it over use space some we will have even less time to react.
+> > > > 
+> > > > Why can't userspace react that fast?  Why will the kernel be somehow
+> > > > faster?  Speed should be the same, just get the "power is cut" signal
+> > > > and have userspace flush and unmount the disk before power is gone.  Why
+> > > > can the kernel do this any differently?
+> > > > 
+> > > > > In fact, this is not a new requirement. It exist on different flavors of
+> > > > > automotive Linux for about 10 years. Linux in cars should be able to
+> > > > > handle voltage drops for example on ignition and so on. The only new thing is
+> > > > > the attempt to mainline it.
+> > > > 
+> > > > But your patch is not guaranteeing anything, it's just doing a "I want
+> > > > this done before the other devices are handled", that's it.  There is no
+> > > > chance that 100ms is going to be a requirement, or that some other
+> > > > device type is not going to come along and demand to be ahead of your
+> > > > device in the list.
+> > > > 
+> > > > So you are going to have a constant fight among device types over the
+> > > > years, and people complaining that the kernel is now somehow going to
+> > > > guarantee that a device is shutdown in a set amount of time, which
+> > > > again, the kernel can not guarantee here.
+> > > > 
+> > > > This might work as a one-off for a specific hardware platform, which is
+> > > > odd, but not anything you really should be adding for anyone else to use
+> > > > here as your reasoning for it does not reflect what the code does.
+> > > 
+> > > I see. Good point.
+> > > 
+> > > In my case umount is not needed, there is not enough time to write down
+> > > the data. We should send a shutdown command to the eMMC ASAP.
+> > 
+> > If you don't care about the data, why is a shutdown command to the
+> > hardware needed?  What does that do that makes anything "safe" if your
+> > data is lost.
+> 
+> It prevents HW damage. In a typical automotive under-voltage labor it is
+> usually possible to reproduce X amount of bricked eMMCs or NANDs on Y
+> amount of under-voltage cycles (I do not have exact numbers right now).
+> Even if the numbers not so high in the labor tests (sometimes something
+> like one bricked device in a month of tests), the field returns are
+> significant enough to care about software solution for this problem.
 
-Suggested-by: Phillip Potter <phil@philpotter.co.uk>
-Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
----
-V4:
-Updated printk_ratelimited to KERN_DEBUG level instead of
-KERN_WARNING level since the original function in use,
-stk1160_dbg, uses KERN_DEBUG level.
+So hardware is attempting to rely on software in order to prevent the
+destruction of that same hardware?  Surely hardware designers aren't
+that crazy, right?  (rhetorical question, I know...)
 
-V3:
-Fixed the issue with my patch needing previous versions being applied
-first.
+> Same problem was seen not only in automotive devices, but also in
+> industrial or agricultural. With other words, it is important enough to bring
+> some kind of solution mainline.
 
-Used printk_ratelimited instead of dev_warn_ratelimited because
-of compiler error "incompatible pointer type".
+But you are not providing a real solution here, only a "I am going to
+attempt to shut down a specific type of device before the others, there
+are no time or ordering guarantees here, so good luck!" solution.
 
-V2:
-To add KERN_WARNING in printk_ratelimited, and later as per warning by
-the checkpatch script, replaced  printk_ratelimited with
-dev_warn_ratelimited.
+And again, how are you going to prevent the in-fighting of all device
+types to be "first" in the list?
 
-V1:
-The function stk1160_dbg gets called too many times, which causes
-the output to get flooded with messages. Since stk1160_dbg uses
-printk, it is now replaced with dev_warn_ratelimited.
+thanks,
 
- drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-index 4e966f6bf608..366f0e4a5dc0 100644
---- a/drivers/media/usb/stk1160/stk1160-video.c
-+++ b/drivers/media/usb/stk1160/stk1160-video.c
-@@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 
- 	/*
- 	 * TODO: These stk1160_dbg are very spammy!
--	 * We should 1) check why we are getting them
--	 * and 2) add ratelimit.
-+	 * We should check why we are getting them.
- 	 *
- 	 * UPDATE: One of the reasons (the only one?) for getting these
- 	 * is incorrect standard (mismatch between expected and configured).
-@@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 
- 	/* Let the bug hunt begin! sanity checks! */
- 	if (lencopy < 0) {
--		stk1160_dbg("copy skipped: negative lencopy\n");
-+		printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
- 		return;
- 	}
- 
--- 
-2.25.1
-
+greg k-h
