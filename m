@@ -2,114 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED567F88AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 07:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA347F88AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 07:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjKYGqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 01:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
+        id S229980AbjKYGsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 01:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKYGqD (ORCPT
+        with ESMTP id S229458AbjKYGsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 01:46:03 -0500
-Received: from mta20.hihonor.com (mta20.hihonor.com [81.70.206.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2329DC1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 22:46:08 -0800 (PST)
-Received: from w013.hihonor.com (unknown [10.68.26.19])
-        by mta20.hihonor.com (SkyGuard) with ESMTPS id 4Scj6044vQzYmQ2N;
-        Sat, 25 Nov 2023 14:45:28 +0800 (CST)
-Received: from a002.hihonor.com (10.68.31.193) by w013.hihonor.com
- (10.68.26.19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Sat, 25 Nov
- 2023 14:46:05 +0800
-Received: from a007.hihonor.com (10.68.22.31) by a002.hihonor.com
- (10.68.31.193) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Sat, 25 Nov
- 2023 14:46:04 +0800
-Received: from a007.hihonor.com ([fe80::ccdd:b4b:ae86:edd4]) by
- a007.hihonor.com ([fe80::ccdd:b4b:ae86:edd4%10]) with mapi id 15.02.1258.025;
- Sat, 25 Nov 2023 14:46:04 +0800
-From:   gaoxu <gaoxu2@hihonor.com>
-To:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        yipengxiang <yipengxiang@hihonor.com>
-Subject: =?gb2312?B?u9i4tDogu9i4tDogW1BBVENIXSBtbSxvb21fcmVhcGVyOiBhdm9pZCBydW4g?=
- =?gb2312?B?cXVldWVfb29tX3JlYXBlciBpZiB0YXNrIGlzIG5vdCBvb20=?=
-Thread-Topic: =?gb2312?B?u9i4tDogW1BBVENIXSBtbSxvb21fcmVhcGVyOiBhdm9pZCBydW4gcXVldWVf?=
- =?gb2312?Q?oom=5Freaper_if_task_is_not_oom?=
-Thread-Index: AdodQUgb0N3ZJU2TSUK/4IicgpocdQAZdvMAADdSyGD//+LRAP/+FajQ
-Date:   Sat, 25 Nov 2023 06:46:04 +0000
-Message-ID: <1d84bf0d1aed45bbbc5941483d8e1695@hihonor.com>
-References: <400d13bddb524ef6af37cb2220808c75@hihonor.com>
- <ZV8SenfRYnkKwqu6@tiehlicka> <242025e9a8c84f6b96ba3f180ea01be9@hihonor.com>
- <ZWBtRGCXbz49UeXa@tiehlicka>
-In-Reply-To: <ZWBtRGCXbz49UeXa@tiehlicka>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.164.11.140]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Sat, 25 Nov 2023 01:48:08 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC8F18E;
+        Fri, 24 Nov 2023 22:48:13 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scj934PWTz4f3kKD;
+        Sat, 25 Nov 2023 14:48:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 61FC31A0B43;
+        Sat, 25 Nov 2023 14:48:10 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgBHShComGFlJRSDBw--.22491S3;
+        Sat, 25 Nov 2023 14:48:10 +0800 (CST)
+Subject: Re: [PATCH -next] md: synchronize flush io with array reconfiguration
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, maan@systemlinux.org, neilb@suse.de,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231108180210.3657203-1-yukuai1@huaweicloud.com>
+ <CAPhsuW7kkSMNpo9cm3L23o7T676iLa=7gq8V9YkCx0MA6ad+QQ@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <baef0c45-9136-ed83-fab5-e2ea7108f1a3@huaweicloud.com>
+Date:   Sat, 25 Nov 2023 14:48:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAPhsuW7kkSMNpo9cm3L23o7T676iLa=7gq8V9YkCx0MA6ad+QQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBHShComGFlJRSDBw--.22491S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4fuF4furW5ArWUCw4kZwb_yoW5ZF18p3
+        y0qay5trWUXFW7Cw43Jrs8GryfWw40vFW8tFW3A347ZwnrXrn5G3yrtF95Xr98Aryfu3yr
+        ur1qqwsruayjvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyNCBOb3YgMjAyMyAwOTozMSAgTWljaGFsIEhvY2tvIHdyb3RlOg0KPk9uIEZyaSAy
-NC0xMS0yMyAwMzoxNTo0NiwgZ2FveHUgd3JvdGU6DQo+Wy4uLl0NCj4+ID4+IFszNzAxOjExX3Nl
-ZV1VbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgDQo+
-PiA+PiB2aXJ0dWFsIGFkZHJlc3MgMDAwMDAwMDAwMDAwMDMyOCBbMzcwMToxMV9zZWVddXNlciBw
-Z3RhYmxlOiA0ayANCj4+ID4+IHBhZ2VzLCAzOS1iaXQgVkFzLCBwZ2RwPTAwMDAwMDAwODIxZGUw
-MDAgDQo+PiA+PiBbMzcwMToxMV9zZWVdWzAwMDAwMDAwMDAwMDAzMjhdIHBnZD0wMDAwMDAwMDAw
-MDAwMDAwLA0KPj4gPj4gcDRkPTAwMDAwMDAwMDAwMDAwMDAscHVkPTAwMDAwMDAwMDAwMDAwMDAN
-Cj4+ID4+IFszNzAxOjExX3NlZV10cmFjaW5nIG9mZg0KPj4gPj4gWzM3MDE6MTFfc2VlXUludGVy
-bmFsIGVycm9yOiBPb3BzOiA5NjAwMDAwNSBbIzFdIFBSRUVNUFQgU01QIA0KPj4gPj4gWzM3MDE6
-MTFfc2VlXUNhbGwgdHJhY2U6DQo+PiA+PiBbMzcwMToxMV9zZWVdIHF1ZXVlX29vbV9yZWFwZXIr
-MHgzMC8weDE3MA0KPj4gPg0KPj4gPiBDb3VsZCB5b3UgcmVzb2x2ZSB0aGlzIG9mZnNldCBpbnRv
-IHRoZSBjb2RlIGxpbmUgcGxlYXNlPw0KPj4gRHVlIHRvIHRoZSBhZGRpdGlvbmFsIGNvZGUgd2Ug
-YWRkZWQgZm9yIGxvZyBwdXJwb3NlcywgdGhlIGxpbmUgbnVtYmVycyBtYXkgbm90IGNvcnJlc3Bv
-bmQgdG8gdGhlIG9yaWdpbmFsIExpbnV4IGNvZGUuDQo+PiANCj4+IHN0YXRpYyB2b2lkIHF1ZXVl
-X29vbV9yZWFwZXIoc3RydWN0IHRhc2tfc3RydWN0ICp0c2spIHsNCj4+IAkvKiBtbSBpcyBhbHJl
-YWR5IHF1ZXVlZD8gKi8NCj4+IAlpZiAodGVzdF9hbmRfc2V0X2JpdChNTUZfT09NX1JFQVBfUVVF
-VUVELCAmdHNrLT5zaWduYWwtPm9vbV9tbS0+ZmxhZ3MpKSAvL2EgbnVsbCBwb2ludGVyIGV4Y2Vw
-dGlvbiBvY2N1cnJlZA0KPj4gCQlyZXR1cm47DQo+DQo+RGlkIHlvdSBtYW5hZ2UgdG8gbmFycm93
-IGl0IGRvd24gdG8gd2hpY2ggb2YgdGhlIGRlcmVmZXJlbmNlIHRoaXMgY29ycmVzcG9uZHMgdG8/
-IElzIGl0IHRzay0+c2lnbmFsID09IE5VTEwgb3Igc2lnbmFsLT5vb21fbW0gPT0gTlVMTC4NCj5U
-aGUgZmF1bHRpbmcgYWRkcmVzcyBkb2Vzbid0IG1hdGNoIG5laXRoZXIgd2l0aCBteSBjb25maWdz
-Lg0KDQpbLi4uXQ0KDQo+PiA+PiAtLS0gYS9tbS9vb21fa2lsbC5jDQo+PiA+PiArKysgYi9tbS9v
-b21fa2lsbC5jDQo+PiA+PiBAQCAtOTg0LDcgKzk4NCw3IEBAIHN0YXRpYyB2b2lkIF9fb29tX2tp
-bGxfcHJvY2VzcyhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnZpY3RpbSwgY29uc3QgY2hhciAqbWVzc2Fn
-ZSkNCj4+ID4+ICAJfQ0KPj4gPj4gIAlyY3VfcmVhZF91bmxvY2soKTsNCj4+ID4+ICANCj4+ID4+
-IC0JaWYgKGNhbl9vb21fcmVhcCkNCj4+ID4+ICsJaWYgKGNhbl9vb21fcmVhcCAmJiB0c2tfaXNf
-b29tX3ZpY3RpbSh2aWN0aW0pKQ0KPj4gPj4gIAkJcXVldWVfb29tX3JlYXBlcih2aWN0aW0pOw0K
-Pj4gPg0KPj4gPiBJIGRvIG5vdCB1bmRlcnN0YW5kLiBXZSBhbHdheXMgZG8gc2VuZCBTSUdLSUxM
-IGFuZCBjYWxsIG1hcmtfb29tX3ZpY3RpbSh2aWN0aW0pOyBvbiB2aWN0aW0gdGFzayB3aGVuIHJl
-YWNoaW5nIG91dCBoZXJlLiBIb3cgY2FuIHRza19pc19vb21fdmljdGltIGNhbiBldmVyIGJlIGZh
-bHNlPw0KPj4gVGhpcyBpcyBhIGxvdy1wcm9iYWJpbGl0eSBpc3N1ZSwgYXMgaXQgb25seSBvY2N1
-cnJlZCBvbmNlIGR1cmluZyB0aGUgbW9ua2V5IHRlc3RpbmcuDQo+PiBJIGhhdmVuJ3QgYmVlbiBh
-YmxlIHRvIGZpbmQgdGhlIHJvb3QgY2F1c2UgZWl0aGVyLg0KPg0KPk9LLCB3YXMgdGhlcmUgYW55
-IG5vbi1zdGFuZGFyZCBjb2RlIHJ1bm5pbmcgZHVyaW5nIHRoaXMgdGVzdD8NCj5JbiBhbnkgY2Fz
-ZSBJIGRvIG5vdCBzZWUgaG93IHRoaXMgcGF0Y2ggY291bGQgYmUgY29ycmVjdC4gSWYsIGZvciBz
-b21lIHJlYXNvbiB3ZSBtYW5hZ2VkIHRvIHJlbGVhc2UgdGhlIHNpZ25hbCBzdHJ1Y3R1cmUgb3Ig
-c29tZXRoaW5nIGVsc2UgdGhlbiB3ZSBuZWVkIHRvIHVuZGVyc3RhbmQgd2hldGhlciB0aGlzIGlz
-IGEgbG9ja2luZyBvciByZWZlcmVuY2UgY291bnRpbmcgaXNzdWUuIEkgZG8gbm90IHJlYWxseSBz
-ZWUgaG93IHRoaXMgd291bGQgYmUgcG9zc2libGUuIEJ1dCB0aGlzIGNoZWNrIHJpZ2h0IGhlcmUg
-ZG9lc24ndCByZWFsbHkgbWFrZSBzZW5zZS4NCg0KdGhlcmUgd2FzIG5vIGFueSBub24tc3RhbmRh
-cmQgY29kZSBydW5uaW5nIGR1cmluZyB0aGlzIHRlc3QuDQpUaGUgY2F1c2Ugb2YgdGhlIE9PTSBl
-cnJvciBpcyB0aGUgcHJvY2VzcyBzdXJmYWNlZmxpbmdlciBoYXMgZW5jb3VudGVyZWQgZG1hLWJ1
-ZiBtZW1vcnkgbGVhay4NClRoaXMgcHJvYmxlbSBpcyBsaWtlbHkgY2F1c2VkIGJ5IGNvbmN1cnJl
-bmN5LiBJIHdpbGwgdHJ5IHRvIGNyZWF0ZSBhIGNvbmN1cnJlbnQgc2NlbmFyaW8gb2Ygb29tIG9y
-IGtpbGwgcHJvY2VzcyB0byByZXByb2R1Y2UgdGhlIGlzc3VlLA0KYW5kIGlmIGRpc2NvdmVyIGFu
-eXRoaW5nLCBJIHdpbGwgc2VuZCBpdCBoZXJlLg0KVGhhbmsgeW91LCBNaWNoYWwgYW5kIEFuZHJl
-dywgZm9yIGFuYWx5emluZyBhbmQgZGlzY3Vzc2luZyB0aGUgaXNzdWUuDQoNCj5BbmRyZXcgcGxl
-YXNlIGRyb3AgdGhlIHBhdGNoIGZyb20geW91ciB0cmVlLg0KDQo=
+Hi,
+
+在 2023/11/25 1:36, Song Liu 写道:
+> On Wed, Nov 8, 2023 at 2:07 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Currently rcu is used to protect iterating rdev from submit_flushes():
+>>
+>> submit_flushes                  remove_and_add_spares
+>>                                   synchronize_rcu
+>>                                   pers->hot_remove_disk()
+>>   rcu_read_lock()
+>>   rdev_for_each_rcu
+>>    if (rdev->raid_disk >= 0)
+>>                                   rdev->radi_disk = -1;
+>>     atomic_inc(&rdev->nr_pending)
+>>     rcu_read_unlock()
+>>     bi = bio_alloc_bioset()
+>>     bi->bi_end_io = md_end_flush
+>>     bi->private = rdev
+>>     submit_bio
+>>     // issue io for removed rdev
+>>
+>> Fix this problem by grabbing 'acive_io' before iterating rdev, make sure
+>> that remove_and_add_spares() won't concurrent with submit_flushes().
+>>
+>> Fixes: a2826aa92e2e ("md: support barrier requests on all personalities.")
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> LGTM.
+> 
+>> ---
+>>   drivers/md/md.c | 21 +++++++++++++++------
+>>   1 file changed, 15 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 4ee4593c874a..eb3e455bcbae 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -529,6 +529,9 @@ static void md_end_flush(struct bio *bio)
+>>          rdev_dec_pending(rdev, mddev);
+>>
+>>          if (atomic_dec_and_test(&mddev->flush_pending)) {
+>> +               /* The pair is percpu_ref_tryget() from md_flush_request() */
+>> +               percpu_ref_put(&mddev->active_io);
+>> +
+>>                  /* The pre-request flush has finished */
+>>                  queue_work(md_wq, &mddev->flush_work);
+>>          }
+>> @@ -548,12 +551,8 @@ static void submit_flushes(struct work_struct *ws)
+>>          rdev_for_each_rcu(rdev, mddev)
+>>                  if (rdev->raid_disk >= 0 &&
+>>                      !test_bit(Faulty, &rdev->flags)) {
+>> -                       /* Take two references, one is dropped
+>> -                        * when request finishes, one after
+>> -                        * we reclaim rcu_read_lock
+>> -                        */
+>>                          struct bio *bi;
+>> -                       atomic_inc(&rdev->nr_pending);
+>> +
+>>                          atomic_inc(&rdev->nr_pending);
+>>                          rcu_read_unlock();
+>>                          bi = bio_alloc_bioset(rdev->bdev, 0,
+>> @@ -564,7 +563,6 @@ static void submit_flushes(struct work_struct *ws)
+>>                          atomic_inc(&mddev->flush_pending);
+>>                          submit_bio(bi);
+>>                          rcu_read_lock();
+>> -                       rdev_dec_pending(rdev, mddev);
+>>                  }
+>>          rcu_read_unlock();
+>>          if (atomic_dec_and_test(&mddev->flush_pending))
+>> @@ -617,6 +615,17 @@ bool md_flush_request(struct mddev *mddev, struct bio *bio)
+>>          /* new request after previous flush is completed */
+>>          if (ktime_after(req_start, mddev->prev_flush_start)) {
+>>                  WARN_ON(mddev->flush_bio);
+>> +               /*
+>> +                * Grab a reference to make sure mddev_suspend() will wait for
+>> +                * this flush to be done.
+>> +                *
+>> +                * md_flush_reqeust() is called under md_handle_request() and
+>> +                * 'active_io' is already grabbed, hence percpu_ref_tryget()
+>> +                * won't fail, percpu_ref_tryget_live() can't be used because
+>> +                * percpu_ref_kill() can be called by mddev_suspend()
+>> +                * concurrently.
+>> +                */
+>> +               percpu_ref_tryget(&mddev->active_io);
+> 
+> Probably add an warn_on here to catch any issues in the future.
+
+Will do this in v2.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Song
+> 
+>>                  mddev->flush_bio = bio;
+>>                  bio = NULL;
+>>          }
+>> --
+>> 2.39.2
+>>
+> .
+> 
+
