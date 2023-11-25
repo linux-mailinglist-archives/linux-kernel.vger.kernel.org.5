@@ -2,441 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E237F8A8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A807F8A90
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjKYMIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S231933AbjKYMJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbjKYMHu (ORCPT
+        with ESMTP id S229483AbjKYMJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:07:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2644119A8
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:07:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49DF2C433C7;
-        Sat, 25 Nov 2023 12:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700914072;
-        bh=D4kxke8I3u5kGrzOOHNBlvZ51Ki1vGdPFs5hwb4dDbs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ijLyFy/ZtJRy6r9c6iO9ei8RPEudxWqyIYBBykt5rjPo695Qm5s3h7oxloOtucRfm
-         o+OTQ+rzXrZXtoMhhHDpx9vqjJ6DHz7SuVMCykhGi+/7MmbKrSoNJuEz4vDumxSZel
-         doOZXOpIAwfsVQiXRIls58IY5bDqHAYceYGRP/MpEsBdytonerHnulaTJlwVKVvvbh
-         kEspLTFEdtI4FMSnFZ1T9rblRjDO9NR6Oqu6cDiV92/n0isG65dGb6u3ohAKb/XU3B
-         GxLVvya9b1PFCoM+XyibJ0VyS06XmBEGE57RxysWUgA+1muRcwOntPlD+QCqB1qFlP
-         wBGsWfadxVY0A==
-Date:   Sat, 25 Nov 2023 12:07:44 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Sat, 25 Nov 2023 07:09:18 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98490D7
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:09:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54b07ba599eso1448349a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700914163; x=1701518963; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VgispGlB/Vogj3O2jRA/99ot46yAJSqn7bnbdiR7nmw=;
+        b=lOnznw1Ghyep38crzua4Z9kh2vwjgL2zc/f5Ii9Db7+yRe2c7Z+p9No5U4lBNkf2Hb
+         93WDVBfB5mMdEBfv+WHXWjtD5R8W+rM+ogrf7mIIAHB/s+DIV972DRKklO6pyuJ12Wh7
+         4AawvzdKy3C2jQyQvndMgbGdtP43D1leicXEFwMAq9FNLtABIICnWk9VLt+ZFcuJU8Ga
+         hLrUePE4jZW44ZytIR11pxBvq0j6kmEEFwBDlrt11v/+CP9a+fhOZUTThtujjFh9KHXi
+         1sQLtQ7UeQ+ZIH6tlvnWAutXg9bbaYjTcJyl+oHuKw8lDWRaPSrDi8SdFGzAoxMbFJrL
+         Qegw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700914163; x=1701518963;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VgispGlB/Vogj3O2jRA/99ot46yAJSqn7bnbdiR7nmw=;
+        b=W71MNR3JBpi4MLZDXBixjvfH9TTk341Ocmy1S9fbtX1XGf6QE1vB0KC3wCPuHiKnG5
+         S4HGPIjbYP+Uqfe6i7tKiAPOqYMxrBUWRDdP0Ig/haFfzkEzYhjPt2abnCJF3WMsY0+O
+         EnnJ8Ejgk56Ap0byMP+StklBDKPmni+uQQfhqA6gerWfhnNzI2FhqU9t+HnRJXFp0RtS
+         +tjrCfZIRyhbd4+D5NoOhhjrR1budhMcsd5C90MXCqRG3EHQ5ttT46qD7bB4dqkoj74V
+         bME5Po7j/x9weBuPqFyAImhHfGZJyIZyEZRJwJTKtMRedFTPUHsuuhVjT2hh+hD8JGgl
+         AFnw==
+X-Gm-Message-State: AOJu0Yx4TW5eW5PjwDeuoI+wUv0C1zuFhqwD5Eux6Quuzhzx65DjjXbA
+        uY6ffah2INmF5c10LdihJ0JavA==
+X-Google-Smtp-Source: AGHT+IGEK5umheP6JPfzRi9HgIdCTuo3lZLa9hajwZqnEDRbtozQjh9YQQAf4l7Q4ZpR0YTAUnrzJA==
+X-Received: by 2002:a17:906:2c4d:b0:9d4:84b6:8715 with SMTP id f13-20020a1709062c4d00b009d484b68715mr4095357ejh.52.1700914163075;
+        Sat, 25 Nov 2023 04:09:23 -0800 (PST)
+Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b009e6af2efd77sm3347884ejb.45.2023.11.25.04.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 04:09:22 -0800 (PST)
+Message-ID: <0f7e96c9-de56-415b-bd26-86c7a612dd46@linaro.org>
+Date:   Sat, 25 Nov 2023 13:09:21 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 1/2] Add a compatible for Xiaomi Pad 6.
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Luka Panio <lukapanio@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH 2/2] iio: dac: driver for MCP4821
-Message-ID: <20231125120744.23b0893d@jic23-huawei>
-In-Reply-To: <20231117073040.685860-2-anshulusr@gmail.com>
-References: <20231117073040.685860-1-anshulusr@gmail.com>
-        <20231117073040.685860-2-anshulusr@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20231124212732.731419-1-lukapanio@gmail.com>
+ <2023112529-fetch-unwritten-bdbd@gregkh>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <2023112529-fetch-unwritten-bdbd@gregkh>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 13:00:38 +0530
-Anshul Dalal <anshulusr@gmail.com> wrote:
-
-Hi Anshul,
-
-Comments inline.
-
-> Adds driver for the MCP48xx series of DACs.
+On 25.11.2023 07:53, Greg KH wrote:
+> On Fri, Nov 24, 2023 at 10:27:31PM +0100, Luka Panio wrote:
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> Signed-off-by: Luka Panio <lukapanio@gmail.com>
+>>
+>> ---
+>> v2:
+>> Update commit message
 > 
-> Device uses a simplex SPI channel.
-> To set the value of an output channel, a 16-bit
-> data of following format must be written:
+> What commit message?  I know I can't take patches without any changelog
+> text, maybe other maintainers are more loose?
+It was there the last time around, sounds like whatever was used to
+generate the patch files got a bit drunk
 
-Wrap anything that isn't specifically formatted at 75 chars not this short.  
-I could fix that whilst applying but you are going to be doing a v2 anyway
-so you can tidy it up :)
+https://lore.kernel.org/linux-arm-msm/20231024063740.4975-1-lukapanio@gmail.com/
 
-> 
-> Bit field | Description
-> 15 [MSB]  | Channel selection bit
->             0 -> Channel A
->             1 -> Channel B
-> 13        | Output Gain Selection bit
->             0 -> 2x Gain (Vref = 4.096V)
->             1 -> 1x Gain (Vref = 2.048V)
-> 12        | Output Shutdown Control bit
->             0 -> Shutdown the selected channel
->             1 -> Active mode operation
-> 11-0 [LSB]| DAC Input Data bits
->             Value's big endian representation is
->             taken as input for the selected DAC
->             channel.
->             For devices with a resolution of less
->             than 12-bits, only the x most
->             significant bits are considered where
->             x is the resolution of the device.
-> Reference: Page#22 [MCP48x2 Datasheet]
-> 
-> Supported devices:
->   +---------+--------------+-------------+
->   | Device  |  Resolution  |   Channels  |
->   |---------|--------------|-------------|
->   | MCP4801 |     8-bit    |      1      |
->   | MCP4811 |    10-bit    |      1      |
->   | MCP4821 |    12-bit    |      1      |
->   | MCP4802 |     8-bit    |      2      |
->   | MCP4812 |    10-bit    |      2      |
->   | MCP4822 |    12-bit    |      2      |
->   +---------+--------------+-------------+
-> 
-> Devices tested:
->   MCP4821 [12-bit single channel]
->   MCP4802 [8-bit dual channel]
-> 
-> Tested on Raspberry Pi Zero 2W
-> 
-> Datasheet:
->   [MCP48x1] https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
->   [MCP48x2] https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
-So Datasheet is part of the tag block so no line break between this
-and sign off.  The way to format this is to add two entries and apply comments
-after them.  Don't worry about long lines for this.
-
-> 
-
-Datasheet: https//.... #MCP48x1
-Datasheet: https//.... #MCP48x2
-Signed-off-by: ...
-
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-...
-
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index 93b8be183de6..f5adc364de30 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -400,6 +400,16 @@ config MCP4728
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called mcp4728.
->  
-> +config MCP4821
-> +	tristate "MCP4801/11/21/02/12/22 DAC driver"
-> +	depends on SPI
-> +	help
-> +	  Say yes here to build the driver for the Microchip MCP4801
-> +	  MCP4811, MCP4821, MCP4802, MCP4812 and MCP4822 DAC devices.
-
-Numeric order her as well please.
-
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called mcp4821.
-> +
->  config MCP4922
->  	tristate "MCP4902, MCP4912, MCP4922 DAC driver"
->  	depends on SPI
-
-...
-
-> diff --git a/drivers/iio/dac/mcp4821.c b/drivers/iio/dac/mcp4821.c
-> new file mode 100644
-> index 000000000000..d08acf6b8993
-> --- /dev/null
-> +++ b/drivers/iio/dac/mcp4821.c
-> @@ -0,0 +1,207 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2023 Anshul Dalal <anshulusr@gmail.com>
-> + *
-> + * Driver for Microchip MCP4801, MCP4811, MCP4821, MCP4802, MCP4812 and MCP4822
-> + *
-> + * Based on the work of:
-> + *	Michael Welling (MCP4922 Driver)
-> + *
-> + * Datasheet:
-> + *	MCP48x1: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
-> + *	MCP48x2: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
-> + *
-> + * TODO:
-> + *	- Configurable gain
-> + *	- Regulator control
-> + */
-> +
-> +#include <asm/unaligned.h>
-So in IIO at least header ordering is normally (each block alphabetical)
-
-linux/*.h
-
-linux/iio/*.h (it's an IIO driver so sometimes good to separate these out)
-
-asm/*.h (these are effectively even more specific so we put them in their own block.
-
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/types.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#define MCP4821_ACTIVE_MODE BIT(12)
-> +#define MCP4802_SECOND_CHAN BIT(15)
-> +#define MCP4821_CHAN_NUM    1
-Not used so drop this.
-
-> +
-> +/* DAC uses an internal Voltage reference of 4.096V at a gain of 2x */
-> +#define MCP4821_2X_GAIN_VREF_MV 4096
-> +
-> +enum mcp4821_supported_drvice_ids {
-> +	ID_MCP4801,
-> +	ID_MCP4811,
-> +	ID_MCP4821,
-> +	ID_MCP4802,
-
-Numeric order preferred throughout if we have long lists like this.
-
-> +	ID_MCP4812,
-> +	ID_MCP4822,
-> +};
-> +
-> +static int mcp4821_chan_count(enum mcp4821_supported_drvice_ids device_id)
-> +{
-> +	switch (device_id) {
-> +	case ID_MCP4801:
-> +	case ID_MCP4811:
-> +	case ID_MCP4821:
-> +		return 1;
-> +	default:
-
-I'd rather see this explicit for each device even though it's a few more lines
-of code.
-
-> +		return 2;
-> +	}
-> +}
-> +
-> +struct mcp4821_state {
-> +	struct spi_device *spi;
-> +	struct mutex lock;
-
-All locks need to have a comment describing the scope of data they are protecting.
-
-> +	u16 dac_value[2];
-> +};
-> +
-> +#define MCP4821_CHAN(channel_id, resolution)				\
-> +	{								\
-> +		.type = IIO_VOLTAGE,					\
-> +		.output = 1,						\
-> +		.indexed = 1,						\
-> +		.channel = (channel_id),				\
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
-> +		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
-> +		.scan_type = {						\
-> +			.sign = 'u',					\
-> +			.realbits = (resolution),			\
-> +			.storagebits = 16,				\
-> +			.shift = 12 - (resolution),			\
-> +		},							\
-> +	}
-> +
-> +static const struct iio_chan_spec mcp4821_channels[6][2] = {
-> +	[ID_MCP4801] = { MCP4821_CHAN(0, 8), {} },
-
-C will fill in the second entry with zeros without needing a {} and
-as we don't care about it anyway, just don't bother adding the {} placeholder,
-making it a bit neater.
-
-> +	[ID_MCP4811] = { MCP4821_CHAN(0, 10), {} },
-> +	[ID_MCP4821] = { MCP4821_CHAN(0, 12), {} },
-> +	[ID_MCP4802] = { MCP4821_CHAN(0, 8), MCP4821_CHAN(1, 8) },
-> +	[ID_MCP4812] = { MCP4821_CHAN(0, 10), MCP4821_CHAN(1, 10) },
-> +	[ID_MCP4822] = { MCP4821_CHAN(0, 12), MCP4821_CHAN(1, 12) },
-> +};
-> +
-> +static int mcp4821_read_raw(struct iio_dev *indio_dev,
-> +			    struct iio_chan_spec const *chan, int *val,
-> +			    int *val2, long mask)
-> +{
-> +	struct mcp4821_state *state;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		state = iio_priv(indio_dev);
-> +		mutex_lock(&state->lock);
-
-Can use the new auto cleanup stuff for this to shorten things a tiny bit.
-
-		scoped_guard(mutex, &state->lock)
-			*val = state->dac_channel[chan->channel];
-
-Obviously very minor advantage here so I don't mind either way.
-
-> +		*val = state->dac_value[chan->channel];
-> +		mutex_unlock(&state->lock);
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		*val = MCP4821_2X_GAIN_VREF_MV;
-> +		*val2 = chan->scan_type.realbits;
-> +		return IIO_VAL_FRACTIONAL_LOG2;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int mcp4821_write_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan, int val,
-> +			     int val2, long mask)
-> +{
-> +	struct mcp4821_state *state;
-> +	__be16 write_val;
-> +	u8 write_buffer[2];
-
-type of these two is backwards.  you are build the value in write_val, so that should
-just be a u16, then converting it to be16 so write_buffer should be __be16
-
-> +	int ret;
-> +	bool is_value_valid = val >= 0 && val < BIT(chan->scan_type.realbits) &&
-> +			      val2 == 0;
-> +	if (mask == IIO_CHAN_INFO_RAW && is_value_valid) {
-> +		state = iio_priv(indio_dev);
-> +
-> +		write_val = MCP4821_ACTIVE_MODE | val << chan->scan_type.shift;
-> +		if (chan->channel)
-> +			write_val |= MCP4802_SECOND_CHAN;
-> +		put_unaligned_be16(write_val, write_buffer);
-
-
-
-> +		ret = spi_write(state->spi, write_buffer, sizeof(write_buffer));
-> +		if (ret) {
-> +			dev_err(&state->spi->dev,
-> +				"Failed to write to device: %d", ret);
-> +			return ret;
-> +		}
-> +
-> +		mutex_lock(&state->lock);
-
-As above if you want to.
-
-
-> +		state->dac_value[chan->channel] = val;
-> +		mutex_unlock(&state->lock);
-> +		return 0;
-> +	} else {
-> +		return -EINVAL;
-Flip this and separate the unrelated conditions.
-	if (mask != IIO_CHAN_INFO_RAW)
-		return -EINVAL;
-
-	if (!is_value_valid)
-		return -EINVAL;
-
-	...
-
-reduces unnecessary indent and generally puts the errors 'out of line' which
-is common kernel approach and generally 'what we expect to see' when reviewing.
-
-
-> +	}
-> +}
-> +
-> +static const struct iio_info mcp4821_info = {
-> +	.read_raw = &mcp4821_read_raw,
-> +	.write_raw = &mcp4821_write_raw,
-> +};
-> +
-> +static int mcp4821_probe(struct spi_device *spi)
-> +{
-> +	struct iio_dev *indio_dev;
-> +	struct mcp4821_state *state;
-> +	const struct spi_device_id *id;
-> +
-> +	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*state));
-> +	if (indio_dev == NULL) {
-> +		dev_err(&spi->dev, "Failed to allocate iio device\n");
-> +		return -ENOMEM;
-		return dev_err_probe(&spi->dev, -ENOMEM,
-				     "failed to allocate IIO device\n");
-
-However that's very unlikely to ever happen, so you could just not bother
-with the message.
-
-> +	}
-> +
-> +	state = iio_priv(indio_dev);
-> +	spi_set_drvdata(spi, indio_dev);
-
-Why?
-
-> +	id = spi_get_device_id(spi);
-For dt bindings this relies on the fallback of breaking up the compatible.
-That's fragile, so add the data to the of_table as well + use pointers
-not enum values so that you can then use spi_get_device_match_data()
-which handles other firmware types as well and falls back to what you
-have here.
-
-> +
-> +	state->spi = spi;
-> +	mutex_init(&state->lock);
-> +
-> +	indio_dev->name = id->name;
-
-Also fragile (very weird things happen if you end up with fallback DT compatibles
-in the future).  So embed a string in a device specific structure as described
-below.
-
-> +	indio_dev->info = &mcp4821_info;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->channels = mcp4821_channels[id->driver_data];
-> +	indio_dev->num_channels = mcp4821_chan_count(id->driver_data);
-Combine channels and chan_count as static data in a
-struct mcp4821_info {
-	struct iio_chan_spec channels];
-	int num_channels;
-	const char *name;
-}
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
-> +}
-> +
-> +static const struct spi_device_id mcp4821_id_table[] = {
-> +	{ "mcp4801", ID_MCP4801},
-use &mcp4821_data[ID_MCP4801] etc in here.. (with cast as needed, lots of
-examples in tree...
-> +	{ "mcp4811", ID_MCP4811},
-> +	{ "mcp4821", ID_MCP4821},
-> +	{ "mcp4802", ID_MCP4802},
-> +	{ "mcp4812", ID_MCP4812},
-> +	{ "mcp4822", ID_MCP4822},
-> +	{ /* Sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, mcp4821_id_table);
-> +
-> +static const struct of_device_id mcp4821_of_table[] = {
-> +	{ .compatible = "microchip,mcp4801"},
-and provide the data here as well. 
-> +	{ .compatible = "microchip,mcp4811"},
-> +	{ .compatible = "microchip,mcp4821"},
-...
-
-Thanks,
-
-Jonathan
-
-
+Konrad
