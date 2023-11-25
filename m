@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8537F8730
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 01:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F387F8736
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 01:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjKYAfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 19:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
+        id S231927AbjKYAfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 19:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbjKYAfP (ORCPT
+        with ESMTP id S231616AbjKYAfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 19:35:15 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E2C173D;
-        Fri, 24 Nov 2023 16:35:21 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-332e3ad436cso1232351f8f.3;
-        Fri, 24 Nov 2023 16:35:21 -0800 (PST)
+        Fri, 24 Nov 2023 19:35:20 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E7F19A9;
+        Fri, 24 Nov 2023 16:35:23 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b2fa4ec5eso17076005e9.2;
+        Fri, 24 Nov 2023 16:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700872520; x=1701477320; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700872522; x=1701477322; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=03wonMi6/ThM2gO3QCZn24JsXK7jMYiMUg0Bft7Hcig=;
-        b=QPqCne8jDezXZ7k7Y760MTwPH0y9dgENWHdqMucf/cbM6WyS0ZBZGUdtPLvvTqhapB
-         HonowiaHGmBdE4nYW9RdaV4sINlas0NGpdfhTwbx+T+oE/5xV34nmnIS4SPSmIoykX4O
-         Phek3ytuG+1swrjN3i1/hItieMmhTqYrsDQON7MBmVgb8uBBe0a/L+B4KnZXrXffpA9w
-         VKfGWipRzIfkjpUpf9P46UkjE8VmnbHLzdz70IuROIAJCiN1ef+HbePj+AEZ4TwEmesd
-         ho+ZFj3p4xTUR/l9Q/eFSZygxU1ilozTZKF8hbnVMqpBh47e2WqkqCGHegfewbq7/OwH
-         xV7Q==
+        bh=gQgR2jfnMMv7W0Th4DaHjvErxX4R3n2xwaVlAKSCuVc=;
+        b=hKJaLDcdC/Hchv7KT15V61pOi0vm2qw6+lyhyh93xtWzv2ouLWSv4OU6rAEGRv1Fvr
+         2WJSo5sGuf5gH1nRRj9uawzkHS4nX3JszwXOXcNB1DRoj8LAor89eiEetUbGttJOhZdp
+         tiz2RSe7WOoZRROboS6jO4PI8TykeLmEq+BeAKdKz9is/vbcYe0xe/EnfeMYTgfQXGoQ
+         DVpHvNkfe0By89IphLPwhQI4XkLYiFu0qfRuxhrgf1sYxIux3HlToLHM41LUTDnkrQ6C
+         nzSzBQu9B7EEUd8vg6xvv8bvAFrs4cZFSfbEKx+IpAXwbSjCXIZWtx8ulVU/OlYqH1BR
+         zQgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700872520; x=1701477320;
+        d=1e100.net; s=20230601; t=1700872522; x=1701477322;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=03wonMi6/ThM2gO3QCZn24JsXK7jMYiMUg0Bft7Hcig=;
-        b=ZMWgyG99Sv+vLRN4Vm+Dn4UfjVkdg84B8LuZZslz5vFnCI/7I+KoFx/20W1zb19fZG
-         0IlHF1/9RIuR3HDng6cTRUxk1lQUj6cR3xGsCVfxv2TCxOVV0R9DfKVzImv7YVY2zoni
-         Y5kneEt4rUvM8Cjzh03wfg41KrhsF3qs3SBFB9N8HT51nge3mMWrtLjUzBx3KmVIh1DR
-         AOoMpiGFERjex1yrfRXGr4eaS2Pw/c3xAVvwqGS1s16YjnQLNw13C1Eaok4SNkIRBAYx
-         aQGzsQ3tr63yLmsPooVgVrjYMLyPHDhAZ7fOkyhv7mlnnoj4zS2z62esskSbDNtBL5Ab
-         oqdA==
-X-Gm-Message-State: AOJu0YwvjNbrhWAIW32z8LdxVsO4BcRWhNh+68/ogLkOJW2QcqZYaP1B
-        2Y/xfqnMiqOnQSDCCjfuiwY=
-X-Google-Smtp-Source: AGHT+IHEXCiKhc3oIX7bfHnHDv4+GrDV+EmGNkZQq6BamuJtr7wYxNTmW7a5qF0Rt8heIN6J/MZhxw==
-X-Received: by 2002:a5d:6605:0:b0:332:e31b:1f3 with SMTP id n5-20020a5d6605000000b00332e31b01f3mr3398583wru.31.1700872519970;
-        Fri, 24 Nov 2023 16:35:19 -0800 (PST)
+        bh=gQgR2jfnMMv7W0Th4DaHjvErxX4R3n2xwaVlAKSCuVc=;
+        b=CjnY7sGL575lN+SLLf/bUgvFmi0zJwcCEI++NQ7WcR/Hys29pTCu1LrjamaFYcWcFd
+         EZVy9dWS3OLglH2pLEeyjB/vosLUMTDNt2c8AEti8TsuHXCpFu7Ywp5TUvLiMCmXWe3z
+         Ln6iqdjZwqCDeXRhpp0Z9BhLGm8vr/3q8Pr5zkxpTHIJQdi8DudXz7xTaQ9qrcx8GtIE
+         hpNO/x7h9EF/bhCHgtdSor4qZEoLo5qoy0treEpAyRw4cKhKeiz6eAoKhU2G4xR5pkCl
+         W3F6ChuyqK4FImoytHscee55J/L/5ZV4X5t/Lu1Gi6iZELL0RXW8tOW7cIPtJj3hcVDC
+         xTkg==
+X-Gm-Message-State: AOJu0YwKthP4u0QA4d7Kw0umhdhmw+3ZwcZs8GsSU3Bp7ENKgzC8ZR+v
+        YhwSGvLD1jJ3/AqJS1kOzd4=
+X-Google-Smtp-Source: AGHT+IH3Zuh20XPlulV/zgygp478aT9a7n7dkKQ/OgX1HZ9p0rkGGUQdnV7P6HuGLrzXJMq+ZhH6EA==
+X-Received: by 2002:a05:600c:1ca5:b0:40b:3e7e:af56 with SMTP id k37-20020a05600c1ca500b0040b3e7eaf56mr901531wms.26.1700872521507;
+        Fri, 24 Nov 2023 16:35:21 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id u13-20020a05600c00cd00b00405718cbeadsm4268005wmm.1.2023.11.24.16.35.18
+        by smtp.googlemail.com with ESMTPSA id u13-20020a05600c00cd00b00405718cbeadsm4268005wmm.1.2023.11.24.16.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 16:35:19 -0800 (PST)
+        Fri, 24 Nov 2023 16:35:21 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -83,9 +83,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         linux-arm-msm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [net-next RFC PATCH v2 02/11] dt-bindings: net: document ethernet PHY package nodes
-Date:   Sat, 25 Nov 2023 01:11:18 +0100
-Message-Id: <20231125001127.5674-3-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH v2 03/11] net: phy: add initial support for PHY package in DT
+Date:   Sat, 25 Nov 2023 01:11:19 +0100
+Message-Id: <20231125001127.5674-4-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231125001127.5674-1-ansuelsmth@gmail.com>
 References: <20231125001127.5674-1-ansuelsmth@gmail.com>
@@ -101,96 +101,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document ethernet PHY package nodes used to describe PHY shipped in
-bundle of 4-5 PHY. These particular PHY require specific PHY in the
-package for global onfiguration of the PHY package.
+Add initial support for PHY package in DT.
 
-Example are PHY package that have some regs only in one PHY of the
-package and will affect every other PHY in the package, for example
-related to PHY interface mode calibration or global PHY mode selection.
+Make it easier to define PHY package and describe the global PHY
+directly in DT by refereincing them by phandles instead of custom
+functions in each PHY driver.
 
-The PHY package node MUST declare the base address used by the PHY driver
-for global configuration by calculating the offsets of the global PHY
-based on the base address of the PHY package.
+Each PHY in a package needs to be defined in a dedicated node in the
+mdio node. This dedicated node needs to have the node name with the
+prefix "ethernet-phy-package".
+
+With this defined, the generic PHY probe will join each PHY in this
+dedicated node to the package.
+
+PHY driver MUST set the required global PHY count in
+.phy_package_global_phy_num and define .phy_package_global_phys_offset
+as the table of offset of the required global PHYs for PHY package
+global configuration.
+
+mdio_bus.c and of_mdio.c is updated to now support and parse also
+PHY package subnote by checking if the node name have the prefix
+"ethernet-phy-package".
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- .../bindings/net/ethernet-phy-package.yaml    | 66 +++++++++++++++++++
- 1 file changed, 66 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+ drivers/net/mdio/of_mdio.c   | 68 +++++++++++++++++++++++++-----------
+ drivers/net/phy/mdio_bus.c   | 35 ++++++++++++++-----
+ drivers/net/phy/phy_device.c | 61 ++++++++++++++++++++++++++++++++
+ include/linux/phy.h          |  9 +++++
+ 4 files changed, 144 insertions(+), 29 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-new file mode 100644
-index 000000000000..943952749b40
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-@@ -0,0 +1,66 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+index 64ebcb6d235c..de2ebb59d2d2 100644
+--- a/drivers/net/mdio/of_mdio.c
++++ b/drivers/net/mdio/of_mdio.c
+@@ -139,6 +139,47 @@ bool of_mdiobus_child_is_phy(struct device_node *child)
+ }
+ EXPORT_SYMBOL(of_mdiobus_child_is_phy);
+ 
++static int __of_mdiobus_parse_phys(struct mii_bus *mdio, struct device_node *np,
++				   bool *scanphys)
++{
++	struct device_node *child;
++	int addr, rc = 0;
 +
-+title: Ethernet PHY Package Common Properties
++	/* Loop over the child nodes and register a phy_device for each phy */
++	for_each_available_child_of_node(np, child) {
++		if (of_node_name_prefix(child, "ethernet-phy-package")) {
++			rc = __of_mdiobus_parse_phys(mdio, child, scanphys);
++			if (rc && rc != -ENODEV)
++				goto exit;
 +
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com
++			continue;
++		}
 +
-+select:
-+  properties:
-+    $nodename:
-+      pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
++		addr = of_mdio_parse_addr(&mdio->dev, child);
++		if (addr < 0) {
++			*scanphys = true;
++			continue;
++		}
 +
-+  required:
-+    - $nodename
++		if (of_mdiobus_child_is_phy(child))
++			rc = of_mdiobus_register_phy(mdio, child, addr);
++		else
++			rc = of_mdiobus_register_device(mdio, child, addr);
 +
-+properties:
-+  $nodename:
-+    pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
++		if (rc == -ENODEV)
++			dev_err(&mdio->dev,
++				"MDIO device at address %d is missing.\n",
++				addr);
++		else if (rc)
++			goto exit;
++	}
 +
-+  reg:
-+    minimum: 0
-+    maximum: 31
-+    description:
-+      The ID number for the PHY.
++	return 0;
++exit:
++	of_node_put(child);
++	return rc;
++}
 +
-+  '#address-cells':
-+    const: 1
+ /**
+  * __of_mdiobus_register - Register mii_bus and create PHYs from the device tree
+  * @mdio: pointer to mii_bus structure
+@@ -180,25 +221,9 @@ int __of_mdiobus_register(struct mii_bus *mdio, struct device_node *np,
+ 		return rc;
+ 
+ 	/* Loop over the child nodes and register a phy_device for each phy */
+-	for_each_available_child_of_node(np, child) {
+-		addr = of_mdio_parse_addr(&mdio->dev, child);
+-		if (addr < 0) {
+-			scanphys = true;
+-			continue;
+-		}
+-
+-		if (of_mdiobus_child_is_phy(child))
+-			rc = of_mdiobus_register_phy(mdio, child, addr);
+-		else
+-			rc = of_mdiobus_register_device(mdio, child, addr);
+-
+-		if (rc == -ENODEV)
+-			dev_err(&mdio->dev,
+-				"MDIO device at address %d is missing.\n",
+-				addr);
+-		else if (rc)
+-			goto unregister;
+-	}
++	rc = __of_mdiobus_parse_phys(mdio, np, &scanphys);
++	if (rc)
++		goto unregister;
+ 
+ 	if (!scanphys)
+ 		return 0;
+@@ -227,15 +252,16 @@ int __of_mdiobus_register(struct mii_bus *mdio, struct device_node *np,
+ 				if (!rc)
+ 					break;
+ 				if (rc != -ENODEV)
+-					goto unregister;
++					goto put_unregister;
+ 			}
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-unregister:
++put_unregister:
+ 	of_node_put(child);
++unregister:
+ 	mdiobus_unregister(mdio);
+ 	return rc;
+ }
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 25dcaa49ab8b..5ba43d593c6b 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -455,19 +455,25 @@ EXPORT_SYMBOL(of_mdio_find_bus);
+  * found, set the of_node pointer for the mdio device. This allows
+  * auto-probed phy devices to be supplied with information passed in
+  * via DT.
++ * If a PHY package is found, PHY is searched also there.
+  */
+-static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
+-				    struct mdio_device *mdiodev)
++static int of_mdiobus_find_phy(struct device *dev, struct mdio_device *mdiodev,
++			       struct device_node *np)
+ {
+-	struct device *dev = &mdiodev->dev;
+ 	struct device_node *child;
+ 
+-	if (dev->of_node || !bus->dev.of_node)
+-		return;
+-
+-	for_each_available_child_of_node(bus->dev.of_node, child) {
++	for_each_available_child_of_node(np, child) {
+ 		int addr;
+ 
++		if (of_node_name_prefix(child, "ethernet-phy-package")) {
++			if (!of_mdiobus_find_phy(dev, mdiodev, child)) {
++				of_node_put(child);
++				return 0;
++			}
 +
-+  '#size-cells':
-+    const: 0
++			continue;
++		}
 +
-+patternProperties:
-+  ^ethernet-phy(@[a-f0-9]+)?$:
-+    $ref: /schemas/net/ethernet-phy.yaml#
+ 		addr = of_mdio_parse_addr(dev, child);
+ 		if (addr < 0)
+ 			continue;
+@@ -477,9 +483,22 @@ static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
+ 			/* The refcount on "child" is passed to the mdio
+ 			 * device. Do _not_ use of_node_put(child) here.
+ 			 */
+-			return;
++			return 0;
+ 		}
+ 	}
 +
-+required:
-+  - reg
++	return -ENODEV;
++}
 +
-+additionalProperties: true
++static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
++				    struct mdio_device *mdiodev)
++{
++	struct device *dev = &mdiodev->dev;
 +
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++	if (dev->of_node || !bus->dev.of_node)
++		return;
 +
-+        ethernet-phy-package@0 {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            reg = <0>;
++	of_mdiobus_find_phy(dev, mdiodev, bus->dev.of_node);
+ }
+ #else /* !IS_ENABLED(CONFIG_OF_MDIO) */
+ static inline void of_mdiobus_link_mdiodev(struct mii_bus *mdio,
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index e016dbfb0d27..f25bedb69b90 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -3193,6 +3193,62 @@ static int of_phy_leds(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
++static int of_phy_package(struct phy_device *phydev)
++{
++	struct device_node *node = phydev->mdio.dev.of_node;
++	struct device_node *package_node;
++	const u8 *global_phys_offset;
++	int *global_phys_addr;
++	u8 global_phys_num;
++	u32 base_addr;
++	int i, ret;
 +
-+            ethernet-phy@0 {
-+              compatible = "ethernet-phy-ieee802.3-c22";
-+              reg = <0>;
-+            };
++	if (!node)
++		return 0;
 +
-+            phy4: ethernet-phy@4 {
-+              compatible = "ethernet-phy-ieee802.3-c22";
-+              reg = <4>;
-+            };
-+        };
-+    };
++	package_node = of_get_parent(node);
++	if (!package_node)
++		return 0;
++
++	if (!of_node_name_prefix(package_node, "ethernet-phy-package"))
++		return 0;
++
++	if (of_property_read_u32(package_node, "reg", &base_addr))
++		return -EINVAL;
++
++	global_phys_num = phydev->drv->phy_package_global_phys_num;
++	global_phys_offset = phydev->drv->phy_package_global_phys_offset;
++	if (!global_phys_num || !global_phys_offset)
++		return -EINVAL;
++
++	global_phys_addr = kmalloc_array(global_phys_num, sizeof(*global_phys_addr),
++					 GFP_KERNEL);
++	if (!global_phys_addr)
++		return -ENOMEM;
++
++	for (i = 0; i < global_phys_num; i++) {
++		int addr = base_addr + global_phys_offset[i];
++
++		/* Make sure the calculated address is valid */
++		if (unlikely(addr >= PHY_MAX_ADDR))
++			return -EINVAL;
++
++		global_phys_addr[i] = addr;
++	}
++
++	ret = devm_phy_package_join(&phydev->mdio.dev, phydev, global_phys_addr,
++				    global_phys_num, 0);
++	if (ret)
++		goto exit;
++
++	phydev->shared->np = package_node;
++
++exit:
++	kfree(global_phys_addr);
++
++	return ret;
++}
++
+ /**
+  * fwnode_mdio_find_device - Given a fwnode, find the mdio_device
+  * @fwnode: pointer to the mdio_device's fwnode
+@@ -3301,6 +3357,11 @@ static int phy_probe(struct device *dev)
+ 	if (phydrv->flags & PHY_IS_INTERNAL)
+ 		phydev->is_internal = true;
+ 
++	/* Parse DT to detect PHY package and join them */
++	err = of_phy_package(phydev);
++	if (err)
++		goto out;
++
+ 	/* Deassert the reset signal */
+ 	phy_device_reset(phydev, 0);
+ 
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index c2bb3f0b9dda..3f75ae85b740 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -327,6 +327,7 @@ struct mdio_bus_stats {
+ 
+ /**
+  * struct phy_package_shared - Shared information in PHY packages
++ * @np: Pointer to the Device Node if PHY package defined in DT
+  * @addrs: List of common PHY addresses used to combine PHYs in one package
+  * @addrs_num: Number of common PHY addresses in addrs list
+  * @refcnt: Number of PHYs connected to this shared data
+@@ -339,6 +340,8 @@ struct mdio_bus_stats {
+  * phy_package_leave().
+  */
+ struct phy_package_shared {
++	/* With PHY package defined in DT this points to the PHY package node */
++	struct device_node *np;
+ 	/* addrs list pointer */
+ 	/* note that this pointer is shared between different phydevs.
+ 	 * It is allocated and freed automatically by phy_package_join() and
+@@ -888,6 +891,10 @@ struct phy_led {
+  * @flags: A bitfield defining certain other features this PHY
+  *   supports (like interrupts)
+  * @driver_data: Static driver data
++ * @phy_package_global_phys_offset: Table of offset of the required
++ *  global PHYs for PHY package global configuration.
++ * @phy_package_global_phys_num: Num of the required global PHYs
++ *   for PHY package global configuration.
+  *
+  * All functions are optional. If config_aneg or read_status
+  * are not implemented, the phy core uses the genphy versions.
+@@ -905,6 +912,8 @@ struct phy_driver {
+ 	const unsigned long * const features;
+ 	u32 flags;
+ 	const void *driver_data;
++	const u8 *phy_package_global_phys_offset;
++	const u8 phy_package_global_phys_num;
+ 
+ 	/**
+ 	 * @soft_reset: Called to issue a PHY software reset
 -- 
 2.40.1
 
