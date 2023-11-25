@@ -2,51 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553F37F8DD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E430E7F8DDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjKYTPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S230144AbjKYTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYTPb (ORCPT
+        with ESMTP id S229456AbjKYTTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:15:31 -0500
+        Sat, 25 Nov 2023 14:19:14 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49459C2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:15:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF474C433C8;
-        Sat, 25 Nov 2023 19:15:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA18115
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:19:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDACAC433C7;
+        Sat, 25 Nov 2023 19:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700939737;
-        bh=5U6ilYOb9JOBKF6J2hmo2yKz7KIJBaspaNBWIMEXAHk=;
+        s=k20201202; t=1700939961;
+        bh=GSU+FQRZrnLS3wf0M1GAvOKYYsp/Eq3r/A9qs73Dwvk=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YTzcUKjFn88nrPC276FOv9e7ls8eMT58+rj30j/T4s2A7y3BkJMBbmH7QOYsaopqG
-         LY6qRwSxN5IgfrjsRcrHhFwV6XZt51lQWyev1EXhJUU5t4zIJ/Pti9u3uCujYw1rhG
-         TIRznnqXUt49PChQSzcOKOdbQN1x3kI7b4oBukIdo6d3+HwEVSCf7bCN+PpJc+wUJG
-         JDxpIlCLZM5KbsdJnaCXMS3wFVVxrCj2EU1GHNKd9V/9RnRUUJtGOpe3yUvWuVl6Pu
-         EvDhAVVIBcrRnnknE9+T+3JCPvTMVnpVzCGYZHkgG2Eqz91LFEgQmrtmC7zRKNQuAt
-         F22rScENy/EdA==
-Date:   Sat, 25 Nov 2023 19:15:29 +0000
+        b=DzIp3k/qV7o+Yci5AaeXOAzy6V5srN90uVnRBk0J9EPN/qoMx8iKdo9uLHFCZdfzF
+         pZmevphryCb7ysXJzmV1MuVGKxVwgi7dCqprLh0x38SnZC3ZsYvo+oUPmTThO8DssB
+         hHlV9G5iniaJ5P924uWSMcLMywJ09QasewtbbjTu+NmUCQxeL3paog1CLnX0wNRGTR
+         nx1/bYwOgti//b2v++US11X3wMe9Qb7YRrUhUvQOz0VdCYZJKJmcf4bsU43UUB+WFD
+         tg4EpOii8MvPas4rjjlf/Eo/qgjlnZ11DPBzE5x8C1JsH66IG1i0D/INPRhmjioiUD
+         3kve4Aw1DGapQ==
+Date:   Sat, 25 Nov 2023 19:19:15 +0000
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
         Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 2/2] iio: pressure: driver for Honeywell HSC/SSC series
- pressure sensors
-Message-ID: <20231125191529.2ed1ddfb@jic23-huawei>
-In-Reply-To: <ZV3b5sUrGEj5ZOF0@smile.fi.intel.com>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Message-ID: <20231125191915.7f1f2dc4@jic23-huawei>
+In-Reply-To: <20231117192305.17612-1-petre.rodan@subdimension.ro>
 References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
-        <20231117164232.8474-2-petre.rodan@subdimension.ro>
-        <ZVtSm5f-Qyp8LFFp@smile.fi.intel.com>
-        <ZV2a213oidterHYZ@sunspire>
-        <ZV3b5sUrGEj5ZOF0@smile.fi.intel.com>
+        <20231117192305.17612-1-petre.rodan@subdimension.ro>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -61,30 +55,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> > > > +	ret = devm_regulator_get_enable_optional(dev, "vdd");
-> > > > +	if (ret == -EPROBE_DEFER)
-> > > > +		return -EPROBE_DEFER;  
-> > > 
-> > > Oh, boy, this should check for ENODEV or so, yeah, regulator APIs a bit
-> > > interesting.  
-> > 
-> > since I'm unable to test this I'd rather remove the block altogether.
-> > if I go the ENODEV route my module will never load since I can't see any
-> > vdd-supply support on my devboard.  
-> 
-> No, what I meant is to have something like
-> 
-> 	if (ret) {
-> 		if (ret != -ENODEV)
-> 			return ret;
-> 		...regulator is not present...
-> 	}
-> 
-> This is how it's being used in dozens of places in the kernel. Just utilize
-> `git grep ...` which should be a top-10 tool for the Linux kernel developer.
+On Fri, 17 Nov 2023 21:22:57 +0200
+Petre Rodan <petre.rodan@subdimension.ro> wrote:
 
-As per my very late reply to previous email. Nope. This regulator is never
-not present. It's just a question of whether the firmware tells us what
-it is, or it is supplied with a stub regulator.
+> Adds binding for digital Honeywell TruStability HSC and SSC series pressure 
+> and temperature sensors.
+> 
+> Datasheet:
+>  [HSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+>  [SSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
+> 
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 
+Hi Petre,
+
+Please resend whole series when you do a new version.  I know that some
+areas of the kernel do minor tweaks by reply to an earlier version but
+in IIO we rely heavily on patchwork for tracking and it makes it very
+hard to find the email.
+
+Also, don't make that a reply to earlier version. The nesting of
+remotely complex threads makes that impossible track once we have
+a few versions posted.
+
+Jonathan
