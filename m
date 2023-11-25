@@ -2,193 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7B27F8E0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC997F8E0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjKYTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
+        id S232217AbjKYTgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232277AbjKYTfs (ORCPT
+        with ESMTP id S229456AbjKYTgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:35:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF99133;
-        Sat, 25 Nov 2023 11:35:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E127C433C8;
-        Sat, 25 Nov 2023 19:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700940954;
-        bh=CgC7BlUksevrTrZ5FGtBlt6wUUXeX3J6IePILPKYWNw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rcsR35Lu1pBy/9WWNl9lbohy/2mJGh57DjWsiC5HLUmsLHdknyHAW5plcnS3iEwB+
-         5CyTssgHMqnLeRDL6LU2kuij4sZUNyKEv8i5LQIAN+J8qHLtvradquAiZoFWpA3nYk
-         hQJ1EMdDiZORZrOlnmqTVRbl1is7u9R0EJiLcVCpC6LDSxe9vPpWypKg9Kwstys5Bi
-         olA/b1WLOZOIhkKM5VI264GQeo29ig54iY9OUalzN8Ts8LEJ4wJcG+o4URG8b84ixQ
-         W2d5Y0CDRBz0ycpIpUo37+7prxY2Br7H580RFtoJt+XpgG6dA51PoYbAQwzUsPMicC
-         ynlc4RdCEhZsQ==
-Date:   Sat, 25 Nov 2023 19:35:37 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Jishnu Prakash <quic_jprakash@quicinc.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, andriy.shevchenko@linux.intel.com,
-        quic_subbaram@quicinc.com, quic_collinsd@quicinc.com,
-        quic_amelende@quicinc.com, quic_kamalw@quicinc.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijn.suijten@somainline.org, lars@metafoo.de, luca@z3ntu.xyz,
-        linux-iio@vger.kernel.org, lee@kernel.org, rafael@kernel.org,
-        rui.zhang@intel.com, lukasz.luba@arm.com,
-        cros-qcom-dts-watchers@chromium.org, sboyd@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        kernel@quicinc.com
-Subject: Re: [PATCH V2 0/3] iio: adc: Add support for QCOM SPMI PMIC5 Gen3
- ADC
-Message-ID: <20231125193537.631b098c@jic23-huawei>
-In-Reply-To: <CAA8EJpq+2cu4pyWRGm_DVQe7_6NJAssT=HWD6UieyXkAgncwMA@mail.gmail.com>
-References: <20231116032530.753192-1-quic_jprakash@quicinc.com>
-        <CAA8EJprJuiFq5UXc9weNr1hy2vW_10TaQweN_ZW5XW=3LKrgtA@mail.gmail.com>
-        <5a476b51-5916-74f8-0395-60d94f210aa0@quicinc.com>
-        <CAA8EJpq+2cu4pyWRGm_DVQe7_6NJAssT=HWD6UieyXkAgncwMA@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 25 Nov 2023 14:36:48 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D71511B;
+        Sat, 25 Nov 2023 11:36:54 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cba45eeaf6so746420b3a.1;
+        Sat, 25 Nov 2023 11:36:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700941014; x=1701545814; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7mSy6AtK6hcZt+Drsghr+39VrktzL88A/9JIeiEL+z4=;
+        b=iwaZuJW2GUXS9UDq00Dm13eGfcW9k1x8UmXLOrpQEW+lVHyqS0UXauNZ+8eXMKLv7g
+         2v3LeWfigKgi0Agp7JvV3sQmE/LaB08vceSWbVYl9a3WsYMt87zhPOPh9foIj95wM2ir
+         frCrS5H/a/5W4QjVGtdT3yEgyAKKT6118yYHJbaPZMobKW7qLGQBBPApiWvv2j9PNh7x
+         jKd8PgqTmu+zaDAm5/XSsV7DUi7JNL0wUZ7NY2Ok5+13s5jQk6j3a8w0uOV3GL7aGnF7
+         hDP15D0rdyEsRWjxLfQKYKRPS3bnQGCcO9FQYvoojvHKCNXGjcHk5IrYX0TWlCG3xn8S
+         /jmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700941014; x=1701545814;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7mSy6AtK6hcZt+Drsghr+39VrktzL88A/9JIeiEL+z4=;
+        b=w9p9/18CryGZ3LpfHGSmUsrBJI+l5qHeM3PCjGBv24QaL/uEYUoucbcJkSJd1SFQqG
+         Rujrp1gv/Mq6uVODtQXek6WvjHpnnYtuypZrU6p/BDeEDbg/l68q0y0R5pNLsx15pLdL
+         YSPf1G6trQ05MeJiF/yAA8E9AsXE7mjXMNToFPUuYUDEUD7bMu28Hl1Fq62mNzsH9PBX
+         VCb54N/rjKgGaAeRHYeBKgi6Wx6XcF3kpOIEyFECW+2hkVPghNGHQ05GsP7efJYqeXVM
+         +ku/lWo6Vcq2ZOBdCLkPL4KpP7JwVgojwo64kJLZEQBJEaqYyBfn3/NOiUW3LP0ibVbA
+         25Wg==
+X-Gm-Message-State: AOJu0YwiqnogIh/K23nG28t7Vw9ODlPlL6UsW67QLfPmtWN5odmYxic3
+        qU30ZlE8UIkxFApoldnI5lE=
+X-Google-Smtp-Source: AGHT+IFIYPXLZu1LFRAkgi5+zqXfm64WTV8o7ktHpacr0iImqsrY5DIuF+3qzI3NBYATNESj4FLsUw==
+X-Received: by 2002:a05:6a20:7f8c:b0:18b:8158:dfa4 with SMTP id d12-20020a056a207f8c00b0018b8158dfa4mr9909038pzj.5.1700941013947;
+        Sat, 25 Nov 2023 11:36:53 -0800 (PST)
+Received: from [192.168.0.152] ([103.75.161.210])
+        by smtp.gmail.com with ESMTPSA id x23-20020aa793b7000000b006cb638ba1aasm4610588pff.49.2023.11.25.11.36.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 11:36:53 -0800 (PST)
+Message-ID: <aaf69d6b-55ea-44de-b6c4-0eddd2b0aa0c@gmail.com>
+Date:   Sun, 26 Nov 2023 01:06:48 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver: scsi: Fix warning using plain integer as NULL
+Content-Language: en-US
+To:     oliver@neukum.org, aliakc@web.de, lenehan@twibble.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231109215049.1466431-1-singhabhinav9051571833@gmail.com>
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+In-Reply-To: <20231109215049.1466431-1-singhabhinav9051571833@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 08:58:03 +0200
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
-
-> On Thu, 16 Nov 2023 at 08:30, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > On 11/16/2023 10:52 AM, Dmitry Baryshkov wrote:  
-> > > On Thu, 16 Nov 2023 at 05:26, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:  
-> > >> PMIC5 Gen3 has a similar ADC architecture to that on PMIC5 Gen2,
-> > >> with all SW communication to ADC going through PMK8550 which
-> > >> communicates with other PMICs through PBS. The major difference is
-> > >> that the register interface used here is that of an SDAM present on
-> > >> PMK8550, rather than a dedicated ADC peripheral. There may be more than one
-> > >> SDAM used for ADC5 Gen3. Each ADC SDAM has eight channels, each of which may
-> > >> be used for either immediate reads (same functionality as previous PMIC5 and
-> > >> PMIC5 Gen2 ADC peripherals) or recurring measurements (same as PMIC5 and PMIC5
-> > >> Gen2 ADC_TM functionality). In this case, we have VADC and ADC_TM functionality
-> > >> combined into the same driver.
-> > >>
-> > >> Patches 1 adds bindings for ADC5 Gen3 peripheral.
-> > >>
-> > >> Patches 2 adds driver support for ADC5 Gen3.  
-> > > For some reason I don't see this patch in my inbox. Maybe it will
-> > > arrive later. Immediate response: please add
-> > > devm_thermal_add_hwmon_sysfs().  
-> >
-> >
-> > Yes, I'll check and add this in the next patch series, I'll wait for
-> > some more comments on the existing patches for now.
-> >
-> > I ran into some error after sending the first two mails (cover letter
-> > and patch 1), so I sent patches 2 and 3 separately after it, I think you
-> > may have received them separately.
-> >
-> >  
-> > >  
-> > >> Patch 3 is a cleanup, to move the QCOM ADC dt-bindings files from
-> > >> dt-bindings/iio to dt-bindings/iio/adc folder, as they are
-> > >> specifically for ADC devices. It also fixes all compilation errors
-> > >> with this change in driver and devicetree files and similar errors
-> > >> in documentation for dtbinding check.  
-> > > NAK. The kernel is expected to build and work after each commit.
-> > > Otherwise git-bisecting the kernel becomes impossible.
-> > > So, please rework your series in a way that there are no compilation
-> > > errors after any of the patches. The easiest way would be to rearrange
-> > > your patches in 3-1-2 order.  
-> >
-> >
-> > I think you may have misunderstood the meaning here, I had verified
-> > compilation works each time after applying each of the three patches in
-> > this series. It's not that this last patch fixes compilation errors
-> > caused by the first two, this is a completely separate patch which
-> > affects existing QCOM ADC code (driver and devicetree) including ADC5 Gen3.
-> >
-> >
-> > This patch does two things mainly:
-> >
-> > Move the ADC binding files from dt-bindings/iio folder to
-> > dt-bindings/iio/adc folder (this would naturally cause some errors in
-> > driver and devicetree code due to path update)
-> >
-> > Fix all compilation and dtbinding errors generated by the move
-> >
-> >
-> > I added this change at the end of the series as I was not completely
-> > sure if it could get picked, just wanted to make it easier to drop if
-> > that is the final decision.  
+On 11/10/23 03:20, Abhinav Singh wrote:
+> Sparse static analysis tools generate a warning with this message
+> "Using plain integer as NULL pointer". In this case this warning is
+> being shown because we are trying to initialize  pointer to NULL using
+> integer value 0.
 > 
-> Ah, so patch 1 adds new files to <dt-bindings/iio/adc>, while
-> retaining old files in the old directory. I'd say, this is
-> counterintuitive.
-> Please reorder patches into 3-1-2 order. dt-binding changes anyway
-> should come first.
-
-Absolutely agree.  Refactors, cleanup etc should precede the new stuff
-in a series.  That way they can get picked up by anyone who wants to backport
-without having to first figure out if they want the new stuff.
-
-Jonathan
-
+> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> ---
+>   drivers/scsi/dc395x.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> >
-> >
-> > Thanks,
-> >
-> > Jishnu
-> >
-> >  
-> > >
-> > >  
-> > >> Changes since v1:
-> > >> - Dropped patches 1-5 for changing 'ADC7' peripheral name to 'ADC5 Gen2'.
-> > >> - Addressed reviewer comments for binding and driver patches for ADC5 Gen3.
-> > >> - Combined patches 8-11 into a single patch as requested by reviewers to make
-> > >>    the change clearer and made all fixes required in same patch.
-> > >>
-> > >>   .../iio/{ => adc}/qcom,spmi-adc7-pm8350b.h    |    2 +-
-> > >>   .../iio/{ => adc}/qcom,spmi-adc7-pmk8350.h    |    2 +-
-> > >>   .../iio/{ => adc}/qcom,spmi-adc7-pmr735a.h    |    2 +-
-> > >>   .../iio/{ => adc}/qcom,spmi-adc7-pmr735b.h    |    0
-> > >>   .../iio/{ => adc}/qcom,spmi-vadc.h            |   81 ++
-> > >>   46 files changed, 1725 insertions(+), 61 deletions(-)
-> > >>   create mode 100644 drivers/iio/adc/qcom-spmi-adc5-gen3.c
-> > >>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550.h
-> > >>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550b.h
-> > >>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550vx.h
-> > >>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pmk8550.h
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350.h (98%)
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350b.h (99%)
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmk8350.h (97%)
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735a.h (95%)
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735b.h (100%)
-> > >>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-vadc.h (77%)
-> > >>
-> > >> --
-> > >> 2.25.1
-> > >>  
-> > >
-> > > --
-> > > With best wishes
-> > > Dmitry  
-> 
-> 
-> 
+> diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+> index c8e86f8a631e..d108a86e196e 100644
+> --- a/drivers/scsi/dc395x.c
+> +++ b/drivers/scsi/dc395x.c
+> @@ -1366,7 +1366,7 @@ static u8 start_scsi(struct AdapterCtlBlk* acb, struct DeviceCtlBlk* dcb,
+>   			"command while another command (0x%p) is active.",
+>   			srb->cmd,
+>   			acb->active_dcb->active_srb ?
+> -			    acb->active_dcb->active_srb->cmd : 0);
+> +			    acb->active_dcb->active_srb->cmd : NULL);
+>   		return 1;
+>   	}
+>   	if (DC395x_read16(acb, TRM_S1040_SCSI_STATUS) & SCSIINTERRUPT) {
+Hello maintainers, any reviews or comments on this.
 
+Thank You,
+Abhinav Singh
