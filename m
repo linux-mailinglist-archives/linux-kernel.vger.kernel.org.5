@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7307F8A36
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266487F8A39
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbjKYLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 06:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
+        id S231933AbjKYLhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 06:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYLgR (ORCPT
+        with ESMTP id S229569AbjKYLg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 06:36:17 -0500
+        Sat, 25 Nov 2023 06:36:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F38DD41
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:36:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4989AC433C7;
-        Sat, 25 Nov 2023 11:36:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0926110E2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:37:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BACBCC433C8;
+        Sat, 25 Nov 2023 11:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700912183;
-        bh=aCwCQvlfp9RlSvy/8J0HTVolXv3WTuhEcuknlDUIbko=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pZxw/pfQvVAlZYNi2K0gVG5mHhMKiATOenG9idjwmEqla54ee+Dajv1wLTV7OlNup
-         /KkLSouuwAwxp2jQljbURTM2EDN5gqsZ1Ixi6ewNOF3nogJQZ7mb/IJ3J3aJORex6D
-         /b4Rpg9P6n/FECD4vMXelSwFffToD1cFcqh17e5oMgGGk2uIDNobxnAgBIDWlr32EE
-         EJcGDxM1LHdx6JKOrDJPNqatQaTiOAsspLKCwa6v/9g0SjglExjMgMEa2AMFviF3+F
-         2O4f+3jeTMkRgdyACtsaCJWll3p7rKUXpmKWX2B+hhNittRpNuZdlaq5HKs9hbon6x
-         C0eidqIl4PGow==
-Date:   Sat, 25 Nov 2023 11:36:17 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: dac: add MCP4821
-Message-ID: <20231125113617.4d626bb2@jic23-huawei>
-In-Reply-To: <20231117073040.685860-1-anshulusr@gmail.com>
-References: <20231117073040.685860-1-anshulusr@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        s=k20201202; t=1700912224;
+        bh=GwUm1z7JNGmx9AHHEHp+yhIxEyZUQY11WglFg95CV0A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=W9CyEmT+nhx3j47D4G/aMS5ia8csPuTNw7uriGVZIc7jVTARW7T/r0/3s4NgVlg/k
+         AqtD8DRgrIFAQQYmhj9V19qwLjEql8MmYEM040Sf0yQu8p3idp8aWPcXJDN9sWJbfp
+         5uRfXeRoHP6rILn2XLGZLk+9A2F+1FV6yjReGcXuJJT4AqKA2KKaB4LtyVgcYyCo+/
+         Qn2ZJ3Z/gdPEkwKRS/xjhrSAizw5q4NP6zUClWDt662LBHjjgRZRGHRH2Ja1Ddo/q9
+         0N+CaHgKJnQ6y9reAiSj7dQ58eN2ffs0GtJNf4xqALCBTorTqD0fBrioSeA1KFH0nm
+         ODxvbe09qYAqA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231124095030.24539-1-mstrozek@opensource.cirrus.com>
+References: <20231124095030.24539-1-mstrozek@opensource.cirrus.com>
+Subject: Re: [RESEND] ASoC: cs43130: Allow configuration of bit clock and
+ frame inversion
+Message-Id: <170091222238.2632109.3145285136716343850.b4-ty@kernel.org>
+Date:   Sat, 25 Nov 2023 11:37:02 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,92 +54,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 13:00:37 +0530
-Anshul Dalal <anshulusr@gmail.com> wrote:
-
-> Adds support for MCP48xx series of DACs.
+On Fri, 24 Nov 2023 09:50:30 +0000, Maciej Strozek wrote:
 > 
-> Datasheet:
->   [MCP48x1] https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
->   [MCP48x2] https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-Hi Anshul,
-
-Usually we mark vdd-supply as required given I guess device doesn't work
-without a supply. Obviously we don't actually have to provide it in a binding
-if the supply is always on and we are fine with a stub regulator being
-provided by the regulator subsystem.
-
-There was some discussion about this a while back and conclusion was
-mark them required in bindings anyway.  We haven't yet updated this in all
-the older IIO bindings and it's a minor thing, but given the build warning
-on patch 2 you are going around again so might as well tidy that up!
-
-Jonathan
 
 
-> ---
->  .../bindings/iio/dac/microchip,mcp4821.yaml   | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
-> new file mode 100644
-> index 000000000000..904de15300bd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4821.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip MCP4821 and similar DACs
-> +
-> +description: |
-> +  Supports MCP48x1 (single channel) and MCP48x2 (dual channel) series of DACs.
-> +  Device supports simplex communication over SPI in Mode 0,1 and Mode 1,1.
-> +
-> +  +---------+--------------+-------------+
-> +  | Device  |  Resolution  |   Channels  |
-> +  |---------|--------------|-------------|
-> +  | MCP4801 |     8-bit    |      1      |
-> +  | MCP4811 |    10-bit    |      1      |
-> +  | MCP4821 |    12-bit    |      1      |
-> +  | MCP4802 |     8-bit    |      2      |
-> +  | MCP4812 |    10-bit    |      2      |
-> +  | MCP4822 |    12-bit    |      2      |
-> +  +---------+--------------+-------------+
-> +
-> +  Datasheet:
-> +    MCP48x1: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
-> +    MCP48x2: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
-> +
-> +maintainers:
-> +  - Anshul Dalal <anshulusr@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - microchip,mcp4801
-> +      - microchip,mcp4811
-> +      - microchip,mcp4821
-> +      - microchip,mcp4802
-> +      - microchip,mcp4812
-> +      - microchip,mcp4822
+Applied to
 
-Whilst I understand the reasoning of keeping these grouped by number of channels,
-I'd still rather see them in numeric order here and probably also in the table above.
-Given that grouping by resolution rather than channels would also be a valid choice,
-I don't see a strong reason to keep them out of order.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Also, manufacturers often get creative with numbering (when they run of out of digits
-for example - maybe they'll do a 16 channel variant one day and then be stuck) so
-trying to group things is often a loosing game long term!
+Thanks!
 
-Jonathan
+[1/1] ASoC: cs43130: Allow configuration of bit clock and frame inversion
+      commit: 52be2c4926831f7858c25701950afe9c1879f71f
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
