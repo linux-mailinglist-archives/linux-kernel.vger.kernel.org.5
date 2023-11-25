@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E3F7F8DB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E76C7F8DB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbjKYTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S232349AbjKYTMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjKYTLz (ORCPT
+        with ESMTP id S230286AbjKYTMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:11:55 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3857DF7;
-        Sat, 25 Nov 2023 11:12:02 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cbe7386263so1960912b3a.2;
-        Sat, 25 Nov 2023 11:12:02 -0800 (PST)
+        Sat, 25 Nov 2023 14:12:01 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BA2F3;
+        Sat, 25 Nov 2023 11:12:07 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35b1d57d7dbso9903695ab.3;
+        Sat, 25 Nov 2023 11:12:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700939521; x=1701544321; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700939527; x=1701544327; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3xk3ugOVnpI2pTDfmgiF4q+i5xA4WKTzHI6DOtI3zDs=;
-        b=mlAB4vMy4xTyrA3pmxnwQoCLVqy02baGFi6C19j/y+WoQWS5GuXgfWJv3NiVHVrBRX
-         wRa02zTLJJPLaIax15XT7jp67BJa93qUzmELq3zWzDotupAA1GSoTZg1fuVGWep6ZL79
-         WRyEXFGCkfO8gGgA4aj2MLFXyywukY+fSYkXprLvitt+rVAUIfRquZ0f5pJXBxUidlok
-         WfspgZo+AO6432qjcJTA51A0kjlJBZnFBtjg2O67oDiwzs6FvHkxsLGlmbTH49KU7PLM
-         8CnTLHXwWBhYkW3KPq39QPszUBDJR6MUYHREFhtF+jRJ9wEVcpQRH3eMDtMPr0n6s5+2
-         XGTQ==
+        bh=InO944iGhkpnbZZ89M4jhM8BqOJsrw18SbpUTux2+2c=;
+        b=k+YMqppFCgYM1JhOmczim9wumLqHRSQ5wTsAUydNqfiPkGr8UMorkDPLO9g3PriZDg
+         yjyXFeXAQkeSAtjJHg5NbhXXqXdN/jYoDpLqJHEBcMBf4Tt6cEhN3Lw32QnK14TSpG6V
+         Z39s90+c88e1ebKN5kDObSbRglxvzEJ42mqcWymXJAAKzeVp3+JUqoK3mNvy1c17MRKh
+         k7neeObKGRm0UHSvyvcS6Q3uMbOI/yT4VOOnWIJai3OgiXUuWVtV7dcRpFybG7Jak42Y
+         e3G6eR+3iUQ0ZM5b20/mQnigiezIFYw6Vd/R9mPd8TUpfFlGAu/uY9IPzRcYB6pYCf7k
+         4+pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700939521; x=1701544321;
+        d=1e100.net; s=20230601; t=1700939527; x=1701544327;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3xk3ugOVnpI2pTDfmgiF4q+i5xA4WKTzHI6DOtI3zDs=;
-        b=vtstnL8n12UmopgW1hKBRwnzwyAABiTxWKgzuupVADBAznx0Lt3BapAk5d3NEypU8d
-         WP8vLPjA4nzgQNpUmid3tIA9J7tGRREMY3LQ2oi38oQkXHHBkUnS6APgBpAqNqIjAjUT
-         OeVOw7YttmVKBcWt3loRciC+EoWVTlmYat9WHAjN2Fdb3CQbNwsiv7C0U609RhZPB0ru
-         LknDj23YMVqdLUSmcI25Zb7kTHDZtFbSi9hriJIU8yrq2LJ94l7ilMnxzvoIA94d4cU5
-         94673gVp7X2MKz4p2GZD+mJExlUE5hn2gGlNNovCoALe7Kpd/Lq0sNx7JFFR6RyvTf5U
-         q1ag==
-X-Gm-Message-State: AOJu0YzGRWDEm7nJAlchu7Cmpau5knq0BUG0ySkJ/m91nUyQyvi0n+Bs
-        wjYqixQDuqTKstBZFKgzoNeo0kj1p8M=
-X-Google-Smtp-Source: AGHT+IGD8naTfDUiWPBeJnR+Yo4y/9rpaGtpvxIBDO0LHhCEXLzfOPt6fvX7M1GGBFGomBPiRZcStg==
-X-Received: by 2002:a05:6a21:a59f:b0:18b:558e:9ec7 with SMTP id gd31-20020a056a21a59f00b0018b558e9ec7mr7674598pzc.11.1700939521548;
-        Sat, 25 Nov 2023 11:12:01 -0800 (PST)
+        bh=InO944iGhkpnbZZ89M4jhM8BqOJsrw18SbpUTux2+2c=;
+        b=RM2taXz8zGpVM3rp+ERURd9AMcxEGDibt0OuvvmEmeWsV60cF6NiIzdpr3fzYoADKi
+         R/FwOlBFX9Jy7pH7KWlBI48jAka8YkBaOkQGABLhWdVwsaOg0RwqhezEop6rRmAxkoh2
+         Pz5oaWnjRI8KtA0SuxvOBPP3jJOQWKjRMRQW5FcxA31iINO6p2a0C7s6E97AC2AtgX56
+         CH3Uas4DH3gAvkzxBvmsC6Gzw4XrtghZ2q4bPQ9z1eFkotmAyb4pfIyZIibi2hk086RR
+         BClqKXeoA1SpFCZ2U1ShFeD3uxmD/6Tih8QC24DZ6Ms8Eze5dCfyKMO1CUoK1rXTFqg1
+         5WMg==
+X-Gm-Message-State: AOJu0YzLa+DpLw6h75nn5Fuqym4ypx9DoUVBHk/qUBRYhhl2oYpZ9UhO
+        Qb2M6eufwddcuJx0fOd/BCzTyTtlAYY=
+X-Google-Smtp-Source: AGHT+IFwE/dHHJzHe6umOUV9J8rWksNeOz/QBwxeptGGIiqOaT/t/oac6tTFX63Ey8kBhnkhJUYKeA==
+X-Received: by 2002:a05:6e02:2142:b0:35c:9577:dee with SMTP id d2-20020a056e02214200b0035c95770deemr2672154ilv.1.1700939527119;
+        Sat, 25 Nov 2023 11:12:07 -0800 (PST)
 Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
-        by smtp.gmail.com with ESMTPSA id p27-20020a056a0026db00b006bd26bdc909sm4713314pfw.72.2023.11.25.11.12.00
+        by smtp.gmail.com with ESMTPSA id d25-20020aa78159000000b006cbae51f335sm4817092pfn.144.2023.11.25.11.12.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 11:12:00 -0800 (PST)
+        Sat, 25 Nov 2023 11:12:06 -0800 (PST)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
@@ -64,11 +64,12 @@ Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         Daniel Vetter <daniel@ffwll.ch>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Douglas Anderson <dianders@chromium.org>,
         Bjorn Andersson <andersson@kernel.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/2] drm/msm/a6xx: Add missing BIT(7) to REG_A6XX_UCHE_CLIENT_PF
-Date:   Sat, 25 Nov 2023 11:11:50 -0800
-Message-ID: <20231125191155.5375-1-robdclark@gmail.com>
+Subject: [PATCH v2 2/2] drm/msm/a690: Fix reg values for a690
+Date:   Sat, 25 Nov 2023 11:11:51 -0800
+Message-ID: <20231125191155.5375-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231121162137.60488-1-robdclark@gmail.com>
 References: <20231121162137.60488-1-robdclark@gmail.com>
@@ -86,27 +87,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Danylo Piliaiev <dpiliaiev@igalia.com>
 
-Downstream always set BIT(7)
+KGSL doesn't support a690 so all reg values were the same as
+on a660. Now we know the values and they are different from the
+windows driver.
+
+This fixes hangs on D3D12 games and some CTS tests.
 
 Signed-off-by: Danylo Piliaiev <dpiliaiev@igalia.com>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 8176ea8da7a7..d10b22eeda74 100644
+index d10b22eeda74..7784d7d39192 100644
 --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
 +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1782,7 +1782,7 @@ static int hw_init(struct msm_gpu *gpu)
- 	else
- 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x1fffff);
+@@ -1312,6 +1312,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
  
--	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 1);
-+	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, BIT(7) | 0x1);
+ 	if (adreno_is_a650(adreno_gpu) ||
+ 	    adreno_is_a660(adreno_gpu) ||
++	    adreno_is_a690(adreno_gpu) ||
+ 	    adreno_is_a730(adreno_gpu) ||
+ 	    adreno_is_a740_family(adreno_gpu)) {
+ 		/* TODO: get ddr type from bootloader and use 2 for LPDDR4 */
+@@ -1321,13 +1322,6 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
+ 		uavflagprd_inv = 2;
+ 	}
  
- 	/* Set weights for bicubic filtering */
- 	if (adreno_is_a650_family(adreno_gpu)) {
+-	if (adreno_is_a690(adreno_gpu)) {
+-		hbb_lo = 2;
+-		amsbc = 1;
+-		rgb565_predicator = 1;
+-		uavflagprd_inv = 2;
+-	}
+-
+ 	if (adreno_is_7c3(adreno_gpu)) {
+ 		hbb_lo = 1;
+ 		amsbc = 1;
+@@ -1741,7 +1735,9 @@ static int hw_init(struct msm_gpu *gpu)
+ 	/* Setting the primFifo thresholds default values,
+ 	 * and vccCacheSkipDis=1 bit (0x200) for A640 and newer
+ 	*/
+-	if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu) || adreno_is_a690(adreno_gpu))
++	if (adreno_is_a690(adreno_gpu))
++		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00800200);
++	else if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
+ 	else if (adreno_is_a640_family(adreno_gpu) || adreno_is_7c3(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
+@@ -1775,6 +1771,8 @@ static int hw_init(struct msm_gpu *gpu)
+ 	if (adreno_is_a730(adreno_gpu) ||
+ 	    adreno_is_a740_family(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0xcfffff);
++	else if (adreno_is_a690(adreno_gpu))
++		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x4fffff);
+ 	else if (adreno_is_a619(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x3fffff);
+ 	else if (adreno_is_a610(adreno_gpu))
+@@ -1808,12 +1806,17 @@ static int hw_init(struct msm_gpu *gpu)
+ 	a6xx_set_cp_protect(gpu);
+ 
+ 	if (adreno_is_a660_family(adreno_gpu)) {
+-		gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x1);
++		if (adreno_is_a690(adreno_gpu))
++			gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x00028801);
++		else
++			gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x1);
+ 		gpu_write(gpu, REG_A6XX_RBBM_GBIF_CLIENT_QOS_CNTL, 0x0);
+ 	}
+ 
++	if (adreno_is_a690(adreno_gpu))
++		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG, 0x90);
+ 	/* Set dualQ + disable afull for A660 GPU */
+-	if (adreno_is_a660(adreno_gpu))
++	else if (adreno_is_a660(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG, 0x66906);
+ 	else if (adreno_is_a7xx(adreno_gpu))
+ 		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG,
 -- 
 2.42.0
 
