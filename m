@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E01F07F8937
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4347F8939
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjKYI2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S229569AbjKYI2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKYI2b (ORCPT
+        with ESMTP id S231784AbjKYI2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:28:31 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6BCD7;
-        Sat, 25 Nov 2023 00:28:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LnkUemW/Vw0dvMf2LUd65BmRZrXY7Oum0dFDnN5qya8=; b=KQBYSbI9QZztfFhSHGvAUeRMYZ
-        7jHyQtGiI65lm5ctT6V8610pJW+pqce4qTD1S52beIYZ/U5L66YodxgUPf7qMMJPFuOkJiMi1Sizm
-        KFshsjsAT+DrJPN75J+MwXTx5QHTPT9nr9WC8bv4fp2YvIbUTd75Pg/FDogyN5QHY2QU/78tUWRGW
-        OcX7D4PjeI66CXO55FPOzX+K4+J2EkZ6m/91h7PacciK5Y/17YZuqGRdlLhiF/29i/Kg0koanREF6
-        AqETyop2yBW1YXS8j/rs7CZGwtSxNOoMuWM6C1hwjCP+liE24EjZrEpQmNcaHJWGgZTeZTtvvERx6
-        YQy1SD+Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41546)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r6o1U-0003rI-2A;
-        Sat, 25 Nov 2023 08:28:20 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r6o1U-000875-5m; Sat, 25 Nov 2023 08:28:20 +0000
-Date:   Sat, 25 Nov 2023 08:28:20 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        John Crispin <john@phrozen.org>
-Subject: Re: [PATCH net] net: phylink: set phy_state interface when attaching
- SFP
-Message-ID: <ZWGwJE0aCC/H3O2A@shell.armlinux.org.uk>
-References: <8abed37d01d427bf9d27a157860c54375c994ea1.1700887953.git.daniel@makrotopia.org>
+        Sat, 25 Nov 2023 03:28:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996E4D41
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:28:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1AB4C433C8;
+        Sat, 25 Nov 2023 08:28:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700900925;
+        bh=Ttd2JPImbaXNmJFp7qDlKcqm2O5oVQSU4Y49sjSoDBs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0PMKZlnJ0LjUF/WkotChtMS9ENEkoogCTXi80f3DWkWsXfurS0ZoGk2/laLRrCipP
+         t3lnasxfSuNOifKsLs2pelA7v409D/3AkwvDNz4AyxU3aDKxui11JxIsWElsg5jUKC
+         u2IG4oE3H+GmQwtwMe34Sr5JpgG7Mh/GJiGvFBVY=
+Date:   Sat, 25 Nov 2023 08:28:42 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Cc:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: Re: [PATCH V3] media: stk1160: Fixed high volume of stk1160_dbg
+ messages
+Message-ID: <2023112508-clothing-twirl-fe40@gregkh>
+References: <20231125073738.649948-1-ghanshyam1898@gmail.com>
+ <2023112554-bagginess-banker-089e@gregkh>
+ <CAG-BmocpXo5GY7KSh-nnw7Z6ExkMGKxetoeSdbyNjrqFCGJLQA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8abed37d01d427bf9d27a157860c54375c994ea1.1700887953.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG-BmocpXo5GY7KSh-nnw7Z6ExkMGKxetoeSdbyNjrqFCGJLQA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 04:56:20AM +0000, Daniel Golle wrote:
-> Assume 'usxgmii' being set as initial interface mode in DTS. Now plug
-> a 2.5GBase-T SFP module with exposed PHY. Currently this results in
-> a rather bizare situation:
+On Sat, Nov 25, 2023 at 01:51:35PM +0530, Ghanshyam Agrawal wrote:
+> On Sat, Nov 25, 2023 at 1:18 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sat, Nov 25, 2023 at 01:07:38PM +0530, Ghanshyam Agrawal wrote:
+> > > The function stk1160_dbg gets called too many times, which causes
+> > > the output to get flooded with messages. Since stk1160_dbg uses
+> > > printk, it is now replaced with printk_ratelimited directly.
+> > >
+> > > Suggested-by: Phillip Potter <phil@philpotter.co.uk>
+> > > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+> > > ---
+> > > V3:
+> > > Fixed the issue with my patch needing previous versions being applied
+> > > first.
+> > >
+> > > Used printk_ratelimited instead of dev_warn_ratelimited because
+> > > of compiler error "incompatible pointer type".
+> > >
+> > > V2:
+> > > To add KERN_WARNING in printk_ratelimited, and later as per warning by
+> > > the checkpatch script, replaced  printk_ratelimited with
+> > > dev_warn_ratelimited.
+> > >
+> > > V1:
+> > > The function stk1160_dbg gets called too many times, which causes
+> > > the output to get flooded with messages. Since stk1160_dbg uses
+> > > printk, it is now replaced with dev_warn_ratelimited.
+> > >
+> > >  drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
+> > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+> > > index 4e966f6bf608..98417fa31d70 100644
+> > > --- a/drivers/media/usb/stk1160/stk1160-video.c
+> > > +++ b/drivers/media/usb/stk1160/stk1160-video.c
+> > > @@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+> > >
+> > >       /*
+> > >        * TODO: These stk1160_dbg are very spammy!
+> > > -      * We should 1) check why we are getting them
+> > > -      * and 2) add ratelimit.
+> > > +      * We should check why we are getting them.
+> > >        *
+> > >        * UPDATE: One of the reasons (the only one?) for getting these
+> > >        * is incorrect standard (mismatch between expected and configured).
+> > > @@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+> > >
+> > >       /* Let the bug hunt begin! sanity checks! */
+> > >       if (lencopy < 0) {
+> > > -             stk1160_dbg("copy skipped: negative lencopy\n");
+> > > +             printk_ratelimited(KERN_WARNING "copy skipped: negative lencopy\n");
+> >
+> > You changed a debug message level to a KERN_WARNING level?  That feels
+> > like a step backwards.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> RTL8221B-VB-CG 2.5Gbps PHY (C45) i2c:sfp1-wan:11: rtl822x_c45_get_features: supported=00,00000000,00008000,000080ef
-> mtk_soc_eth 15100000.ethernet eth2: requesting link mode phy/2500base-x with support 00,00000000,00008000,0000e0ef
-> mtk_soc_eth 15100000.ethernet eth2: switched to phy/2500base-x link mode   <<< !!!!!!
-> mtk_soc_eth 15100000.ethernet eth2: major config usxgmii    <<< !!!!!!
-> mtk_soc_eth 15100000.ethernet eth2: phylink_mac_config: mode=phy/usxgmii/none adv=00,00000000,00000000,00000000 pause=00
-> mtk_soc_eth 15100000.ethernet eth2: PHY [i2c:sfp1-wan:11] driver [RTL8221B-VB-CG 2.5Gbps PHY (C45)] (irq=POLL)
-> mtk_soc_eth 15100000.ethernet eth2: phy: 2500base-x setting supported 00,00000000,00008000,0000e0ef advertising 00,00000000,00008000,0000e0ef
+> Hi Greg,
 > 
-> Then the link seemingly comes up (but is dead) because no subsequent
-> call to phylink_major_config actually configured MAC and PCS for
-> 2500base-x mode.
+> Thanks for your response. The log level should indeed be DEBUG
+> as it was earlier.
 > 
-> This is because phylink_mac_initial_config() considers
-> pl->phy_state.interface if in MLO_AN_PHY mode while
-> phylink_sfp_set_config() only sets pl->link_config.interface.
-> 
-> Also set pl->phy_state.interface in phylink_sfp_set_config().
+> I only wanted to add a rate limit there because it was printing too
+> many log messages as mentioned in the todo. Shall I update the
+> log level  to DEBUG and resend the patch? Thank you very much
+> again.
 
-Does it _actually_ matter?
+If it's spamming the logs, why print anything at all as obviously
+everyone is ignoring it?  But I do not really know, the final decision
+should be up to the developer and maintainer of this subsystem.
 
-When the PHY's link comes up, doesn't it get sorted out for the real
-mode that will be used?
+thanks,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+greg k-h
