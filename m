@@ -2,93 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBDD7F8AB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3542A7F8AB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbjKYMVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S232005AbjKYMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjKYMVX (ORCPT
+        with ESMTP id S231838AbjKYMZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:21:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69EBD6
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:21:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FEFDC433C7;
-        Sat, 25 Nov 2023 12:21:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700914889;
-        bh=NokKKbjP7/sQSnXyJk7VS1kmyB9mZyNesxHCciD9GTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WZn1ThndkOxaashwIdkq7g0vJIDCBIrMA6MwUpzzpcR2SEnw0+PJRhbP/Lo128eId
-         EUM5asAXzdU38JeWM1oGUECkoCOzVjIiP+O32x05fHTVuLAPr+Eg2dAHeIGtPrNH8l
-         Fro+ofqk2VSxRF57cijh2a1U9QTzUvs5i0qmzj0hrRKLQ2fWz7xKHMkvURudMokFVd
-         xC55+IbcYeMw8AEVGXiQcRlbeiJc+dzMSI8oM8XBwAXmr67PXGWJ2n3FL35oFo/sEx
-         sSGp08vzujBog9qZ7cllzcegwoz1S9W5fMPxy1DFU/WwYoNnJlgfqJLRZvvtQzufKE
-         1Wb5BZgnf8jGg==
-Date:   Sat, 25 Nov 2023 12:21:24 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc:     paul.cercueil@analog.com, Michael.Hennerich@analog.com,
-        lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] dt-bindings: iio: Add binding documentation for
- AD7091R-8
-Message-ID: <20231125-pennant-untie-90b5f0828258@spud>
-References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
- <8ce972a3708f7789237c86c44e23cdcb23a35103.1700751907.git.marcelo.schmitt1@gmail.com>
+        Sat, 25 Nov 2023 07:25:16 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1ECBF
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:25:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1700914934; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=GQL7ywTel+nzsRDFW4JHygI05M178NNaqHk0W/JKtg5aViV7PwIsfwR9qp5YO9r+lv
+    oJqEGnEJ85+ZfZ5OVB5dIR9GbAxr1LbmDTRFXNFFrAeZ6ivASOlqLE8aIEi4nIM7VRQx
+    bnoOzQMsqtFaluOaQrRPrswJ0igQo7Suhbprs3imppstPdtIlJMdoDIpr2RYZYtQ8PE4
+    2C+vhAEgzXwcchjwtLIbvM89jYHikCrNZItDKsiMl0DKYyVonM9KE8DJ4+zqRgEL5Rp+
+    2kwg3Rqk+zf1AOUWKyMAgU2m04NCd7i800+D5DJ7CzqZMoJEGcv2NU8GrkglCQYLfpbQ
+    KR7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1700914934;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
+    b=MHEBAZHKXrtkbGgi6MVBMJ8J8bERYJZ67qs5+LeWHPdoxEJjOUxVGWKf8YrRsDXvk/
+    8T04yM++QDq99/4DklF8RrjvStkHxN8NCnuxbcNa6kbQbH+cvnjDoPvGjZtfjepgLIVl
+    56l5sztJEq22QfgnuOyhES5JuBtMWgVXro6fMm6mYbC+A1lZ+PAK4qdoSw9VKoZYaNLY
+    tpJZhTdSYpaT7xLi4kweWSOgCOlg5XwldPN1AtwyWyRx+sVrC/FpMW26srlYTAKz8QUi
+    1750dCR8HbC8Y5XGx6+Sz7XmE/TQB4ToF2HmSZkiXajzWzHWdoYqRz+wt6YDtBsqJ7rM
+    YASA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1700914934;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
+    b=Muw2Qz4KzH03Vmzw+LfQB0IxkjgCNpx1aIYqekfuu/ocix4a8OxAQIJLXL4ddCpv+X
+    WXEIDCNBnCLYQINX+PsFbi07EgQdLZpG0F1VZzbytqgne7Zrq4TKnCRXmOYKlDQu2mti
+    b/LE7j4VB4//dpnsTh58mH+AYVFq2LxRW8eog6HjorMMmfIEZcEONedLGgGmZDDfvjHE
+    MNyPufhkm0o87ZcQ8jy2K9MsDdaUZyf6fwEY/pB9jJhR31Pv3kHiHizK4B3V02K0ddsk
+    eIz43cyJL/0QPgmMYSxA9ua6+5W6pmZyLOTegobOXLxwbBlVtXI9EyBRAfJAG0hA0PUK
+    1Zsg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1700914934;
+    s=strato-dkim-0003; d=xenosoft.de;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
+    b=DJFBJkKy1eS1IXVkgAlbM8B2kyxFO7ebFGSWVjrxTaeASXFFWeWgxpbn6/DSyrvxlI
+    ZYzZIbo9bwbrX/riJTAA==
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBfi4XXBswJY0hynIKqjaeYiGT1rE/QhtjOKJAIg=="
+Received: from [IPV6:2a02:8109:8984:5d00:bc44:680c:952a:1673]
+    by smtp.strato.de (RZmta 49.9.1 AUTH)
+    with ESMTPSA id U060a4zAPCMDnqZ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 25 Nov 2023 13:22:13 +0100 (CET)
+Message-ID: <9e8d2abd-94a1-4fb6-b30a-c6e4c52af011@xenosoft.de>
+Date:   Sat, 25 Nov 2023 13:22:13 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PpbYFIjhbA0yHs/g"
-Content-Disposition: inline
-In-Reply-To: <8ce972a3708f7789237c86c44e23cdcb23a35103.1700751907.git.marcelo.schmitt1@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/virtio: Add suppport for non-native buffer formats
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        mad skateman <madskateman@gmail.com>,
+        Christian Zigotzky <info@xenosoft.de>
+References: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
+ <77c6gkquzq4sdtmrlko3lkxvcnipm2zfjem3kvhgslcellkefh@man7pbbzud47>
+ <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
+ <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
+ <37b9e5ab-e170-4071-a912-f3fec0d59d5c@xenosoft.de>
+ <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
+Content-Language: de-DE
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+In-Reply-To: <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25 November 2023 at 12:09 pm, John Paul Adrian Glaubitz wrote:
+> On Sat, 2023-11-25 at 11:06 +0100, Christian Zigotzky wrote:
+>> Could you please revert the v2 patch because of the issue with the
+>> virtio-mouse-pci cursor? I will try to use the v1 patch for the RC3 of
+>> kernel 6.7.
+> I don't understand why the v2 patch should yield any different results as
+> the only change compared to v1 is the fixed patch subject. There are no
+> functional differences, I just diffed the patches against each other:
+>
+> --- geert-patch-v1.patch        2023-11-25 12:09:19.122936658 +0100
+> +++ geert-patch-v2.patch        2023-11-25 12:09:36.313039085 +0100
+> @@ -34,6 +34,9 @@
+>   Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
+>   Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>   ---
+> +v2:
+> +  - Fix truncated one-line summary.
+> +---
+>    drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
+>    drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
+>    2 files changed, 13 insertions(+), 4 deletions(-)
+>
+> Adrian
+>
+Hi Adrian,
 
---PpbYFIjhbA0yHs/g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you for the hint. I think you are right. I use the the following 
+patch.
 
-On Thu, Nov 23, 2023 at 01:42:21PM -0300, Marcelo Schmitt wrote:
+--- a/drivers/gpu/drm/drm_client.c    2023-11-13 01:19:07.000000000 +0100
++++ b/drivers/gpu/drm/drm_client.c    2023-11-14 09:45:44.964199272 +0100
+@@ -400,6 +400,16 @@ static int drm_client_buffer_addfb(struc
 
-> +  spi-max-frequency: true
+      fb_req.width = width;
+      fb_req.height = height;
++           if 
+(client->dev->mode_config.quirk_addfb_prefer_host_byte_order) {
++               if (format == DRM_FORMAT_XRGB8888)
++                       format = DRM_FORMAT_HOST_XRGB8888;
++               if (format == DRM_FORMAT_ARGB8888)
++                       format = DRM_FORMAT_HOST_ARGB8888;
++               if (format == DRM_FORMAT_RGB565)
++                       format = DRM_FORMAT_HOST_RGB565;
++               if (format == DRM_FORMAT_XRGB1555)
++                       format = DRM_FORMAT_HOST_XRGB1555;
++        }
+      fb_req.pixel_format = format;
+      fb_req.handles[0] = handle;
+      fb_req.pitches[0] = buffer->pitch;
 
-This is not needed, since you have unevaluatedProperties: false &
-include the spi periph props.
+This patch solved the issue.
 
-> +  adi,conversion-start-gpios:
-> +    description:
-
-> +      Device tree identifier of the CONVST pin.
-
-"gpio connected to the CONVST pin".
-
-> +      This logic input is used to initiate conversions on the analog
-> +      input channels.
-> +    maxItems: 1
-
-This looks pretty decent to be overall though.
-
---PpbYFIjhbA0yHs/g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWHmxAAKCRB4tDGHoIJi
-0p1xAQCpqjmqfhVCI9G10fGp0R0KaL5NUz2lINY4C7iNmT/CfAEAuBsu2q+bVFVP
-hMsHHj47qNHfR+n8TOZtwwVR460T3Aw=
-=fPlx
------END PGP SIGNATURE-----
-
---PpbYFIjhbA0yHs/g--
+Christian
