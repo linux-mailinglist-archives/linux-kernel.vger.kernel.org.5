@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194077F89FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 11:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4647F8A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 11:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbjKYKgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 05:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S231887AbjKYKhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 05:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231886AbjKYKgS (ORCPT
+        with ESMTP id S231802AbjKYKhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 05:36:18 -0500
+        Sat, 25 Nov 2023 05:37:52 -0500
 Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170CD10E4
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:36:24 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a002562bd8bso515265666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:36:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A73D72
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:37:58 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a06e59384b6so325222566b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 02:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700908582; x=1701513382; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700908677; x=1701513477; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KRgb/nTbG/eaiVktUR9XCrP6VEL68by1SYPl9JF2K38=;
-        b=c5vpa+HEsW/RPmXQVdkwYcpI2zjKdIqjOjIHjGTfk83yEV1nIfeQVWHfTUxFTvQ8q9
-         dB2Et6MU0LUTTzGJrTQNNKPI93zMB2/XNnKmmBdUO54ltTVJk8DTSzxDcxZ/t14u+jHG
-         jBTblxuVFPnpLb+ugFplq9MoD9ZKwo3OW7AnI3yptQQ6Uxsoj6sUhvftNZ/kVSyuGPJp
-         SL53yaAJ7yDE6mNL6Mnk3cTqIb7jcJ1yYrCSetRRo2F7VggyMd1JuONOpSB3inC2eZXD
-         q8E5Oam7RIXPvMWrgPIAhsVZe1B5XxxS1Y7jUxRXzU0M+wc5WPcEu0kgYEliM+3OktuD
-         7kOQ==
+        bh=uL68GlhAcKFhOb/g68gkWx6ePVIYvVItoEiLNHG799M=;
+        b=grIPAevcUTUGPq4vIKuPoDycpb5/co9qsQncKPCW0OeRuGhmc0S8MYd/BbReqXXMWl
+         JI52BRWMkldU40pYWD66Kz1T6qJ/WmKcj5y+rtSy9gTrWAt4ckyd/VrGQttu/NRy/62U
+         sDIPJmAb2p4TDZUZ/LPfBFQfAZyyax3Ab8UTbQnpQY4Wdwjxc6fyUu65E3ZlPwg4v0fB
+         KDhDl63tn0vUraWN3RgElIQ20qEyFsfE7ca4T3QUlspH2S1U27nPMcmkYPZEzIUeXQpX
+         JIzJtcCSgFqt3ROgxd5asqTI6r7NnfsBpj6gwAGKwNfjcEb63/LMpc47sTcg5ZG8HfOn
+         Tagw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700908582; x=1701513382;
+        d=1e100.net; s=20230601; t=1700908677; x=1701513477;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KRgb/nTbG/eaiVktUR9XCrP6VEL68by1SYPl9JF2K38=;
-        b=uvVivkZJUXyVA7XxTz9pW0r09Lfc0aXUwUIvqIgPg9LG5O8VLgWps/1VuLdBtyBI44
-         UCwTaNVpNh3MZK5LhOjAExCurFRACiMwfwCEfpkMbRR8UuVVCkAuSCjXV8o5Iy+J0rZk
-         nqnM75pm49YUzEsWuoQV0Y8achUcmeaNnQ13gdDw9Pd/Z/oc+r2iNrSLGK44ODto3HgS
-         775RKRqclIE7c26j/wkXe+pLLXs/IhNYMvx/824m2hhCj8H3+1gzsgzUJnkGg9SGF2OY
-         00SQ5MVhUjOZPrTW1pdIoc9Bv5X0fy0wqcTromgKnBqB6NlAPj9hX0ou4gxHh71NTBhn
-         F17g==
-X-Gm-Message-State: AOJu0YwUxK82aI4ZymbJqbrS76R+kvIuNXqF9IquiyI/Mr5o79CY/r/T
-        VUDkSdLrg1avqW+TH0mUs3Soz/8ARDiJ9h2cT18=
-X-Google-Smtp-Source: AGHT+IE0df2JG9anhaG01x4J71SGIX43p+a24uSSqmfbZL8NPNb4zN9fSKL9yPDEBGeDtyDxZpsS8g==
-X-Received: by 2002:a17:907:7e94:b0:a04:472b:4912 with SMTP id qb20-20020a1709077e9400b00a04472b4912mr9131510ejc.25.1700908582701;
-        Sat, 25 Nov 2023 02:36:22 -0800 (PST)
+        bh=uL68GlhAcKFhOb/g68gkWx6ePVIYvVItoEiLNHG799M=;
+        b=GswygH7hsqMeesbaYPL0Zbso1dqbV8dPl0q9shiS6AnoE/pQNW8L4vsHccWh6KuaK5
+         3bUHXbLNgwS/NfzfdA8cACw23bN0MJEMyDQpwU7o7LyW/77DbRL1DTErbabVpXt7LxJH
+         HQ4iQHunSRGWHXzetClEvmdgpWEIFdTcVGALvJ4kGm2bmqMfN1O+P4lyNoq4Wo7dm3Xb
+         xLFQ1I62XN9NgzEiS9yN25JkyjP1/OnI7L+LAHS2uptNk5dHWRAcnipZPjZmjhy4Q1gb
+         IvA+nmO/OJR+s1FhLc5yVAxJTp7O5bWj/lPdLkFI8Uqq+KR16YTh1v9hq0an8wLRUQ5w
+         CQYg==
+X-Gm-Message-State: AOJu0Yw2Lso9YK4aoQsanKxDwVm3cdbiHE3HRxF2GDSy7g+MyPVbC+Ms
+        T/R3iG7Gyh/UPc5vswZSFp89gLs5USBcRnia7og=
+X-Google-Smtp-Source: AGHT+IHz7qGIGE4WcmFejKToYecdRR4HXK2mcFzkDtqc028+qTo9Md8j9riiJ2hNb/XGJVurR6sWtA==
+X-Received: by 2002:a17:906:5187:b0:a0a:fdd7:6c2f with SMTP id y7-20020a170906518700b00a0afdd76c2fmr1507489ejk.74.1700908676972;
+        Sat, 25 Nov 2023 02:37:56 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id v5-20020a170906488500b0099cc3c7ace2sm3326153ejq.140.2023.11.25.02.36.21
+        by smtp.gmail.com with ESMTPSA id v5-20020a170906488500b0099cc3c7ace2sm3326153ejq.140.2023.11.25.02.37.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 02:36:22 -0800 (PST)
-Message-ID: <d97c1add-29d2-4e8e-90cd-5b139e82965b@linaro.org>
-Date:   Sat, 25 Nov 2023 11:36:21 +0100
+        Sat, 25 Nov 2023 02:37:56 -0800 (PST)
+Message-ID: <e34c2746-8e93-48b8-9c96-690242fbf6e9@linaro.org>
+Date:   Sat, 25 Nov 2023 11:37:54 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: iio: chemical: add aosong,ags02ma
+Subject: Re: [PATCH 1/2] dt-bindings: phy: mediatek: tphy: add a property for
+ force-mode switch
 Content-Language: en-US
-To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-References: <20231125100139.193584-1-anshulusr@gmail.com>
- <20231125100139.193584-2-anshulusr@gmail.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+References: <20231125012303.760-1-chunfeng.yun@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,7 +114,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231125100139.193584-2-anshulusr@gmail.com>
+In-Reply-To: <20231125012303.760-1-chunfeng.yun@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,38 +127,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/2023 11:01, Anshul Dalal wrote:
-> Add bindings for Aosong AGS02MA TVOC sensor.
+On 25/11/2023 02:23, Chunfeng Yun wrote:
+> Due to some old SoCs with shared t-phy only support force-mode switch, and
+> can't use compatible to distinguish between shared and non-shared t-phy,
+> add a property to supported it.
+> But now prefer to use "mediatek,syscon-type" on new SoC as far as possible.
 > 
-> The sensor communicates over i2c with the default address 0x1a.
-> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/phy/mediatek,tphy.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Datasheet:
->   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
-> Product-Page:
->   http://www.aosong.com/m/en/products-33.html
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> index 2bb91542e984..eedba5b7025e 100644
+> --- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+> @@ -235,6 +235,12 @@ patternProperties:
+>            Specify the flag to enable BC1.2 if support it
+>          type: boolean
+>  
+> +      mediatek,force-mode:
+> +        description:
+> +          Use force mode to switch shared phy mode, perfer to use the bellow
 
+I still do not understand what is the "force mode" you want to use. What
+modes do you have? What are the characteristics of force mode?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+Also, please run spellcheck.
 
 Best regards,
 Krzysztof
