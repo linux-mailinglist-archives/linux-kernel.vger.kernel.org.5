@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07957F893E
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7F37F8941
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbjKYIbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S231778AbjKYId7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:33:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYIa7 (ORCPT
+        with ESMTP id S229458AbjKYId5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:30:59 -0500
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DC0D7
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:31:05 -0800 (PST)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cfa28b5895so16084355ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:31:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700901065; x=1701505865;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jffNxO6EQDJiqySxTcOOWi/xfWWMSTk7iz/1jl6F+R4=;
-        b=HuU8qg9znMaje/yiS1QCHPJFaw6Hd/VRDUEyiP782sk21yeuCpd1MmpDnF7+XHr8bd
-         nJuNHJL6hIDvpz4zRTYvrSJc+dMs4QLrmR/HMxQ/l+9sFLwBC3qmwL2AWcH1QHkCAwv0
-         emi4nMWsFzzMxOI5XdG99WSkk79vobxBM0wHmDvrzMbEt170a9UV98Rs4ccED9usD62y
-         YZfos8sHhmSyKVUZR0kMd0zoeTjCOdvzknBeBkxrRH4sm97kK6cwJFrje/Xh/VooipWF
-         BR5sami/qUnp7Qa9yn+DXWsJ5K8HkNWs2ZinjK9dJVqLP/BBuryWGY7CX4Hq1l277BrW
-         a24Q==
-X-Gm-Message-State: AOJu0YwR+lLTDMhdabo9b/1NAbmPwzncLEqOi+oAw5XGfJqisYYJT9k9
-        K+7azRi5EScWCLDTQAaRFkFnc2FlwsX/jie0YtVK0l28hq2b
-X-Google-Smtp-Source: AGHT+IFJR3Y7OCxHp4Z7dDjTLKWDDogUFm1fHXfkH2mv5WMv3ngwwMk6wAqg7C8zFT3IAQVk1KZdpaQ3eP3lWYh6ekBV3HDZKv04
+        Sat, 25 Nov 2023 03:33:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17693E6
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700901243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gbnARVNy5E0hGES1ua4xRZ6a56me/D63RWZkoJuQ94E=;
+        b=DVU/aB9Lx+xRjUeBUPaiA4D8+hly/PJYRZZ09MataNBVTh/KQvuWbfIK/zQTtla9AF/e0b
+        B/649h8y3xSdFZ5D0zRb5pw6moKGizOdu/udO5xES0RJFbFG8mdf1QIx4Uyq0+0+tqRfvL
+        dy7OXW3jgfc1rbCxtWglJU+6EQuUDNE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-187-P13XO4xENne2rqMu9Rhw2g-1; Sat, 25 Nov 2023 03:34:01 -0500
+X-MC-Unique: P13XO4xENne2rqMu9Rhw2g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E5203811E7B;
+        Sat, 25 Nov 2023 08:34:00 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BEB751121306;
+        Sat, 25 Nov 2023 08:34:00 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, mlevitsk@redhat.com
+Subject: [PATCH v2 0/4] KVM: x86/mmu: small locking cleanups
+Date:   Sat, 25 Nov 2023 03:33:56 -0500
+Message-Id: <20231125083400.1399197-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ecc5:b0:1cf:9e9f:fe6b with SMTP id
- a5-20020a170902ecc500b001cf9e9ffe6bmr1191906plh.7.1700901065012; Sat, 25 Nov
- 2023 00:31:05 -0800 (PST)
-Date:   Sat, 25 Nov 2023 00:31:04 -0800
-In-Reply-To: <tencent_0A75760B67463C59368097E436204B587409@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c73ca3060af5e375@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
-From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Remove "bool shared" argument from functions and iterators that need
+not know if the lock is taken for read or write.  This is common because
+protection is achieved via RCU and tdp_mmu_pages_lock or because the
+argument is only used for assertions that can be written by hand.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Also always take tdp_mmu_pages_lock even if mmu_lock is currently taken
+for write.
 
-fs/ntfs3/index.c:1912:35: error: incompatible types when assigning to type 'struct INDEX_HDR' from type 'void *'
+Paolo Bonzini (4):
+  KVM: x86/mmu: remove unnecessary "bool shared" argument from functions
+  KVM: x86/mmu: remove unnecessary "bool shared" argument from iterators
+  KVM: x86/mmu: always take tdp_mmu_pages_lock
+  KVM: x86/mmu: fix comment about mmu_unsync_pages_lock
 
+ Documentation/virt/kvm/locking.rst |  7 +--
+ arch/x86/include/asm/kvm_host.h    | 11 ++--
+ arch/x86/kvm/mmu/mmu.c             |  6 +-
+ arch/x86/kvm/mmu/tdp_mmu.c         | 90 ++++++++++++++----------------
+ arch/x86/kvm/mmu/tdp_mmu.h         |  3 +-
+ 5 files changed, 54 insertions(+), 63 deletions(-)
 
-Tested on:
-
-commit:         037266a5 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af04b7c4d36966d8
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5b339d16ffa61fd512d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15a151a4e80000
+-- 
+2.39.1
 
