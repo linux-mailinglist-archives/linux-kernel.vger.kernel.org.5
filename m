@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8990B7F8AF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E4F7F8AF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbjKYMyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S232095AbjKYMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjKYMyQ (ORCPT
+        with ESMTP id S232272AbjKYMyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:54:16 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB37B1BDB
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:00 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a002562bd8bso528704366b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:00 -0800 (PST)
+        Sat, 25 Nov 2023 07:54:23 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2319ABC
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:26 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548d60a4d60so3644067a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:54:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700916839; x=1701521639; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g5upvyQLnMuRo1dbMadphRh3m2TM7U1uw9oHbCa8dgk=;
-        b=B7Df0Am3pyoIQYq0xhvtSjOEXvdbWc09hVJo9c4w74x3Vs6KAOLc7zk7fxHJbCxcul
-         OEB1bup/x7272hkXD2UUbwvnCLKFsMg/1FJqzCDqPnAiMDNF2mNW/KvGkP+sowb5l5g7
-         J9TK668r78b+EUAF95D8FiAs8Lo2BYBDq8MvxC3IhftaQAQsCszjk6mZM6FUlidjWLX9
-         aru+YAYraWxpOT8TIJt2GkjoHVWnYeEYC7jZ3FhVMkG/XqoURMjb3leX1N1AFWIGJLYQ
-         fFmMP2sNZu/Wh//Ra9d3mxK+La/yKVWsTPTxLzZsYTBmHoWvxfts5meC4dF0TZU0vjly
-         MFEQ==
+        d=linaro.org; s=google; t=1700916864; x=1701521664; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xwsnRDL1c2UPqNmwiMYiMuvGOKXcoVAjfq7yoygNLK8=;
+        b=v4PimsF3mnqAX8t/f2Ull7F7FZ0GWd9gTt3pAJUMsmvO4OoPLKE8naRvRfwZYFDmtI
+         D9Fu6c99DtiMla+JHDH5Nuvb1pj87dL9EUoqeLNm1y9Mln706UbAOTX2pDWo7LofegsD
+         zyg+1hCVajDEZdD05G9tpaI+oZdIezjlDTFKcQtZdEs9DNnLUBVElEEqd9HOqPHEn8AJ
+         5pE1gGeQHuXj+hFddFWuwqvbJ5NG9eM0rF3m/PXtnzfcok7Lp3am3AXCmb79QeQv94MV
+         yUoqZfS3z3Gj4TKHVlV7SJw97gRSVu88fOfY2kjHFGvs/hs7F/lqbYSU8oMVcbP7Uggo
+         1YKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700916839; x=1701521639;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g5upvyQLnMuRo1dbMadphRh3m2TM7U1uw9oHbCa8dgk=;
-        b=PKMCuKVqF3+Qn6FIa3usinjMVmc79OTkOvo2/w7BWNSeKXhXgesRDjCq5DKPyZ00cP
-         I3FRurVO/nCdo45dT+o6IMQNpdg2tasWEInVup/Uz3uX7igov+arKxzim+H77OtpDyhk
-         9zQGCW3y1I/N8Hc/Bwxhu3o5XYuf4+QwmfJSwl2qtlTSg5KtN/Jruj3610/LhABA8/DI
-         9/I3Zo2ShA+Cwb/dV3ezK6xnZb7StcddohoDH4X+VR4RmMtccyb+SWkSVqak06/RMNkB
-         iB+o75Bk0sDZnd62pj6W8WEtONc33VeEXo5/n6xeJ8ixu5gy40CpJOYNe9SFL3wjWAKR
-         sfSQ==
-X-Gm-Message-State: AOJu0YxCk4AM1VVJTQT7h58nlmy7XetAH8tSLjhKC96396CMQ4bwIjiw
-        +NlUrKl1nlUlIvhnR+VpYb8JGg==
-X-Google-Smtp-Source: AGHT+IGSc5yefHXWkLQTXSaNg4wx9Y+3010q0VXtS0JCv4yg12Ipub8YWCyuolbbylixV9gAb8aohA==
-X-Received: by 2002:a17:907:7da9:b0:9fd:9e54:a4fc with SMTP id oz41-20020a1709077da900b009fd9e54a4fcmr10176305ejc.15.1700916839279;
-        Sat, 25 Nov 2023 04:53:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700916864; x=1701521664;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xwsnRDL1c2UPqNmwiMYiMuvGOKXcoVAjfq7yoygNLK8=;
+        b=KkcDvddLUQ1rTsZrt07YqM3vOOPbo1RsAldrJfgbvgvwyClWJWBP8kcwXOLeEMODSs
+         eIDi3calomzMzZw2Y0EfpP4NGBq2mzJZXqKOyT9+A46eiHdwjCmm0d0bGF586eCVKxyA
+         Z+l8AvPHYStFxjeinof+0e+RaAB9lrnauO+sHQfF4voT68HHrKcSOhgWTEzZGSm+WXBv
+         zI61ZnAVy8+2XL2mvk1gi1pK0pFGi7iOO+WxRyKmf7THpoz3Um/hQvTFQVE64tkZ/5Wg
+         kNNVUdnI4NQ/oocLiYOmMduPo6CO/m8Yo8hVxlZFwPXkDwho8FLay5AD+vd0S/gZkNFm
+         HrxQ==
+X-Gm-Message-State: AOJu0YzLj6zGQ4cX/Bsfh8mR5hdZokTe/Y6ZlbkGBcrtGD2LeiAodcac
+        HA6lYn0s7gUViAxl0O/hFY2TlQ==
+X-Google-Smtp-Source: AGHT+IFE0guTiNzxa6B9t4+k07MBqmi3ApjbPPecevqCqeBKdgV6XBtFgK4hjfYvKY4RhPzCNLz9GQ==
+X-Received: by 2002:a17:906:594c:b0:a04:c787:4117 with SMTP id g12-20020a170906594c00b00a04c7874117mr4721576ejr.19.1700916864595;
+        Sat, 25 Nov 2023 04:54:24 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id uz2-20020a170907118200b00a098348d803sm1983946ejb.141.2023.11.25.04.53.58
+        by smtp.gmail.com with ESMTPSA id uz2-20020a170907118200b00a098348d803sm1983946ejb.141.2023.11.25.04.54.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 04:53:58 -0800 (PST)
-Message-ID: <3b8e6b65-5f37-49e5-b83e-b89726867ed2@linaro.org>
-Date:   Sat, 25 Nov 2023 13:53:57 +0100
+        Sat, 25 Nov 2023 04:54:24 -0800 (PST)
+Message-ID: <6b30c1ba-9740-41f7-95c0-cdb1803fe19a@linaro.org>
+Date:   Sat, 25 Nov 2023 13:54:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v6 4/8] media: qcom: camss: Move VFE power-domain
  specifics into vfe.c
 Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
         Robert Foss <rfoss@kernel.org>,
@@ -69,7 +71,7 @@ Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231123-b4-camss-named-power-domains-v6-0-3ec2fd9e8e36@linaro.org>
  <20231123-b4-camss-named-power-domains-v6-4-3ec2fd9e8e36@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+ <3b8e6b65-5f37-49e5-b83e-b89726867ed2@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
  BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
@@ -105,12 +107,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231123-b4-camss-named-power-domains-v6-4-3ec2fd9e8e36@linaro.org>
+In-Reply-To: <3b8e6b65-5f37-49e5-b83e-b89726867ed2@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,25 +120,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.2023 18:03, Bryan O'Donoghue wrote:
-> Moving the location of the hooks to VFE power domains has several
-> advantages.
-> 
-> 1. Separation of concerns and functional decomposition.
->    vfe.c should be responsible for and know best how manage
->    power-domains for a VFE, excising from camss.c follows this
->    principle.
-> 
-> 2. Embedding a pointer to genpd in struct camss_vfe{} meas that we can
->    dispense with a bunch of kmalloc array inside of camss.c.
-> 
-> 3. Splitting up titan top gdsc from vfe/ife gdsc provides a base for
->    breaking up magic indexes in dtsi.
-> 
-> Suggested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybciolinaro.org>
+On 25.11.2023 13:53, Konrad Dybcio wrote:
+> On 23.11.2023 18:03, Bryan O'Donoghue wrote:
+>> Moving the location of the hooks to VFE power domains has several
+>> advantages.
+>>
+>> 1. Separation of concerns and functional decomposition.
+>>    vfe.c should be responsible for and know best how manage
+>>    power-domains for a VFE, excising from camss.c follows this
+>>    principle.
+>>
+>> 2. Embedding a pointer to genpd in struct camss_vfe{} meas that we can
+>>    dispense with a bunch of kmalloc array inside of camss.c.
+>>
+>> 3. Splitting up titan top gdsc from vfe/ife gdsc provides a base for
+>>    breaking up magic indexes in dtsi.
+>>
+>> Suggested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+>> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> ---
+> Reviewed-by: Konrad Dybcio <konrad.dybciolinaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
