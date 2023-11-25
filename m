@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4C57F8CC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57297F8CC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbjKYR2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 12:28:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        id S231715AbjKYR2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 12:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjKYR17 (ORCPT
+        with ESMTP id S229782AbjKYR2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 12:27:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50334127
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:28:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20319C433C8;
-        Sat, 25 Nov 2023 17:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700933285;
-        bh=SdEIJH9TzgPXfaP1Q2Dpkp+FAEfYhe/GjdmyR7hDB+Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SbQK1jgydoMznxVji1B2PXND/RwJ/X1wxjP/8wICn9krvA2d74vnYLrabHpMu0QjE
-         Rm5m3ybwhM1S+daLt0AqhBj1djVoe8E4wjf+6AvOvNc1eSN8gpLg61hyTIDwxDXUdE
-         Xfc4mqe5jESNPIgeOoKq3vJeRx/T9Zk8rxc86d1gp8LIWGMzyZxxYdAfAZG9w8nh9v
-         RAfM0aUsTPMR5rFn77Tm0AcIT/9KHHcftFqu4pT15XB+PaRuzMye0bsnc4jXMar2UQ
-         N2U/0YS1Bxm4W3uzGLZENfXGmj01l9ev3ZY6QoIqnwev29aR4mArPjcn3xjBJN9F25
-         ATwXeUnNLoCwQ==
-Date:   Sat, 25 Nov 2023 17:27:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Crt Mori <cmo@melexis.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: iio: temperature: add MLX90635 device
- bindings
-Message-ID: <20231125172758.04b0254e@jic23-huawei>
-In-Reply-To: <ea997987-6a84-445c-a806-527d766569b1@kernel.org>
-References: <cover.1700648164.git.cmo@melexis.com>
-        <2e8b4a7d3ef4bc1c53bd0a849e4c31eaf2477f6b.1700648165.git.cmo@melexis.com>
-        <99d1808a-da04-4bc1-a1f7-cbd269adbbf0@kernel.org>
-        <CAKv63uv87srZ3gJxFASuGWV6cULXkN=gYi_L=BCcd3dgOFQEfw@mail.gmail.com>
-        <ea997987-6a84-445c-a806-527d766569b1@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 25 Nov 2023 12:28:22 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6DB12B;
+        Sat, 25 Nov 2023 09:28:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=VcPaglTJNXboIOVIfziLcej/MavQwgea6uWybKAiriA=; b=kp+5QG1EFMcBC/4ZwcOAIs+Cn/
+        XHgPWllgKTp6orzQQEc3ucYuK7UEMRAwv5iNKKTvWilG/oCKXjVL1KBp7/aTx13dDz0r4Df3SmJgO
+        4xqh4pdJvVD2kKqjnSWYgAzubijgqz/neja5zSTt1iwUGk/f/Z1tt9bz+uePf5kIxeqg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6wRq-001CWJ-5v; Sat, 25 Nov 2023 18:28:06 +0100
+Date:   Sat, 25 Nov 2023 18:28:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH v2 00/11] net: phy: Support DT PHY package
+Message-ID: <bf26ba4b-ea21-450d-b2ce-0f68f2d2796a@lunn.ch>
+References: <20231125001127.5674-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125001127.5674-1-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 13:35:19 +0100
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
-
-> On 22/11/2023 13:28, Crt Mori wrote:
-> >>> +  Since measured object emissivity effects Infra Red energy emitted,
-> >>> +  emissivity should be set before requesting the object temperature.
-> >>> +
-> >>> +properties:
-> >>> +  compatible:
-> >>> +    const: melexis,mlx90635  
-> >>
-> >> It's the same as mlx90632. Add it there (as enum).
-> >>  
-> > 
-> > Properties are the same, but then you can't have much differences for
-> > a temperature sensor. It has a bit worse relative measurement error
-> > outside of the human body range and overall different DSP, register
-> > map, even physical size - it's 1.8x1.8 mm compared to 90632 3x3 mm. I
-> > was not sure how it qualifies for adding it as another enum, but I
-> > went with the feeling that if it can reuse the driver, then it is an
-> > enum, otherwise it is a new file. And I could not reuse anything from
-> > 90632.
-> > 
-> > Thanks for quick feedback and best regards,  
+> One example is this:
 > 
-> Driver is independent choice. There is no need for new binding file if
-> everything is the same from bindings point of view.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+>         ethernet-phy-package@0 {
+>             #address-cells = <1>;
+>             #size-cells = <0>;
 
-We got this wrong in the past in IIO and it's a slow effort to merge
-the various very similar bindings.  For now we are mostly keeping
-to within a vendor though unless a driver supports parts from multiple
-vendors.  It potentially gets too confusing to maintain otherwise.
+Please extend this example with a compatible, and include a property
+which is global.
 
-This one is easy case though so definitely merge as Krzystof suggested!
+> (For Andrew, we are looking intro making this in at803x PHY driver and see
+> what functions can be reused, idea is to move the driver to a dedicated
+> directory and create something like at803x-common.c as the at803x PHY
+> driver is too bloated and splitting it it's a better approach)
 
-Jonathan
+This sounds good.
+
+     Andrew
+     
