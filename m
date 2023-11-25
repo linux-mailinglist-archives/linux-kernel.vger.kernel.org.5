@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F417F8A81
+	by mail.lfdr.de (Postfix) with ESMTP id AA2177F8A82
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbjKYMFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
+        id S231967AbjKYMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYMFE (ORCPT
+        with ESMTP id S229483AbjKYMFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:05:04 -0500
-Received: from smtp.smtpout.orange.fr (smtp-18.smtpout.orange.fr [80.12.242.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC13AD72
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:05:09 -0800 (PST)
-Received: from pop-os.home ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id 6rPGrkVZQMoj46rPGrYOrl; Sat, 25 Nov 2023 13:05:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1700913907;
-        bh=D8jRKKW7qYyj5J7AMcOnTnbOZsoLLJ3CuZOXne3T+xE=;
-        h=From:To:Cc:Subject:Date;
-        b=FpZCFyMhyfkRQVTlJ+ul3K9wjaFgrtqzimdWGweVS/sVW5yp047fClM6sgjK4qoLo
-         BFv3hWrTDEW4138OnhsK5IGjpj48AmQGQ5LTTR4pFERCD/ib/XfiNJLBdQuBrDpX2S
-         hV8e4JUq/z/s2hYuYIvhPF5d8OqOgyE2AUbvNv2Mu7j9/WVOzsNy15QeLgLf1P4MKE
-         WmPEigmenEo5j42E04jl2HMYeyq2sguWOPiTmo70ebZzBZoRb2GciK6FSuo1twSShn
-         +gz0Ux5v0TSvc93oqlD20I7ntiK5lD7Dpr6AJJoidrlcCITvFTg4QUji+tv2OPPN4P
-         Aug0puK1mLLrg==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 25 Nov 2023 13:05:07 +0100
-X-ME-IP: 92.140.202.140
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Martin Hicks <mort@sgi.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: [PATCH v2] kdb: Fix a potential buffer overflow in kdb_local()
-Date:   Sat, 25 Nov 2023 13:05:04 +0100
-Message-Id: <dfb1a9a26d7f974371ff1d3e29eba80ef075d465.1700913863.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 25 Nov 2023 07:05:51 -0500
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D883B10F0;
+        Sat, 25 Nov 2023 04:05:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1700913953; bh=zKpVtX7Z5H9TZTsQOclY81dc6bXE/cpnlMLFfUR5Xww=;
+        h=From:Subject:Date:To:Cc;
+        b=UkzJHV65Jci8IOmF/dHv0v4Fn9igrezDyUVbJ/0zsLZ27rH2WgiRJwUOYot+4KRjD
+         IdwFfboMBpfESNcwpUUKSBU1QTimTxszBFgNbvEFDSGYk1Oau823UwLgHAMvjMGBPh
+         zqqIivIxZasutTXoG5L+e9KYTAOVf9pKbFVM2fTY=
+From:   Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH v3 0/3] Add support for HTC One Mini 2 smartphone
+Date:   Sat, 25 Nov 2023 13:05:32 +0100
+Message-Id: <20231125-htc-memul-v3-0-e8f4c5839e23@z3ntu.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAzjYWUC/3WNOw6DMBAFr4Jcx9HuGjBOlXtEKfiYYClAZAPiI
+ +4eg1K4STmrnXkbc9oa7dgt2pjVk3Gm7zyIS8TKJu9empvKMyMggQDEm6HkrW7HN5cx5VmCsqK
+ 4YP7/Y3Vt5rP1eHpujBt6u5zpCY/rr4IYVCbkwJUshUKoM8jVfRXdMF7nZT2i/wyZ6kRmUqCCM
+ jCO3YmCLYpDk7yZKSQVQ5HWKgnNfd+/Dbf2Kg4BAAA=
+To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1728; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=zKpVtX7Z5H9TZTsQOclY81dc6bXE/cpnlMLFfUR5Xww=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlYeMSs+NRmunaLtyaZdFlB/P8KODemXW4chf4i
+ ke2cYTRtwuJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZWHjEgAKCRBy2EO4nU3X
+ VkynEACweUGIoqYRAfsVcS6/bY2w1l4UBb7goLfylbIdLe4Zfbdui2o2BHz0rxMOlFuhqgOEq5s
+ wxadr7DwZcZ3m7SpB9pWSDEyc73CgYLdelZkJLLAiiZ45UEAbta/txgpVu96IUJQH3vxp9HPaBd
+ NgVjo4YNAvrd4cjwysCO6sOO9Q37usbLg7Gr3GveJPHGE4N7CX3OqE14okfe15ho+l4o+14jLn4
+ cVKe/yG/wF5rPW5Eko06fF65WJJ8a1i6hwRdLS3msN9HVfOcdvfVChq54Pl3jiBxOjnNSvHIzIy
+ ffoV9GrUZtEP8a1J2zi/vOJkZYyM4eKvstFAemM7owY5bKKljpoCxMN29cD59KiAqi+sw1l73+D
+ Y0ah3YTNzKVod1epi+uU1IPx5/2OSV66f5Lgj7OkeMV6VV3tpR/N3YApVFyocMHgHh5Hvp1D8wc
+ OMuNDxNkNGVwzRBp0pEkCEVA1WgXCBBDdqE+zGxWiQdLEzwxdFhohYA77fd8DEuWLl9Sxal1Iuv
+ Abxs+QnUxaWO9KZ1zYOkePg6ntYpH7A3BX+Gu1ROF1uxdBw71NX2HR0i0u79urrWTlFKybJBOMb
+ Q5GkK1eqdBVCxnLteit51rjwAIHDZAs0bewlw6srbWwSJTgYpvzOQS7PjWYBg/1TX1xl1UwIf0K
+ 8U4NBCDErC5HDwQ==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When appending "[defcmd]" to 'kdb_prompt_str', the size of the string
-already in the buffer should be taken into account.
+Add support for this smartphone from HTC which is based on the MSM8926
+SoC and codenamed "memul".
 
-An option could be to switch from strncat() to strlcat() which does the
-correct test to avoid such an overflow.
+Depends on, runtime-only, bootloader enables watchdog so we need to pet
+it to stay alive:
+https://lore.kernel.org/linux-arm-msm/20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz/T/
 
-However, this actually looks as dead code, because 'defcmd_in_progress'
-can't be true here.
-See a more detailed explanation at [1].
-
-[1]: https://lore.kernel.org/all/CAD=FV=WSh7wKN7Yp-3wWiDgX4E3isQ8uh0LCzTmd1v9Cg9j+nQ@mail.gmail.com/
-
-Fixes: 5d5314d6795f ("kdb: core for kgdb back end (1 of 2)")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
+Changes in v3:
+- Add regulator-allow-set-load for sdhc_2 vqmmc-supply (Konrad)
+- Pick up tags
+- Link to v2: https://lore.kernel.org/r/20231024-htc-memul-v2-0-8912940b6f95@z3ntu.xyz
+
 Changes in v2:
-   - Delete the strncat() call   [Doug Anderson]
+- Pick up tags
+- Add spaces around regulator nodes
+- Set firmware-name for adsp
+- Expand reserved memory regions to cover everything somehow reserved
+  downstream, leave no gaps. Seems to finally fix also nbd randomly
+  failing
+- Remove internal storage since somehow it has killed itself on my
+  device since last time, maybe by my random memory testing writing some
+  not-so-great commands to it. So let's be safe and remove it.
+- Link to v1: https://lore.kernel.org/r/20231011-htc-memul-v1-0-76e57873190c@z3ntu.xyz
 
-v1: https://lore.kernel.org/all/0b1790ca91b71e3362a6a4c2863bc5787b4d60c9.1698501284.git.christophe.jaillet@wanadoo.fr/
 ---
- kernel/debug/kdb/kdb_main.c | 2 --
- 1 file changed, 2 deletions(-)
+Luca Weiss (3):
+      dt-bindings: vendor-prefixes: document HTC Corporation
+      dt-bindings: arm: qcom: Add HTC One Mini 2
+      ARM: dts: qcom: Add support for HTC One Mini 2
 
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 6b213c8252d6..d05066cb40b2 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -1348,8 +1348,6 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
- 		/* PROMPT can only be set if we have MEM_READ permission. */
- 		snprintf(kdb_prompt_str, CMD_BUFLEN, kdbgetenv("PROMPT"),
- 			 raw_smp_processor_id());
--		if (defcmd_in_progress)
--			strncat(kdb_prompt_str, "[defcmd]", CMD_BUFLEN);
- 
- 		/*
- 		 * Fetch command from keyboard
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/qcom/Makefile                    |   1 +
+ arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts  | 370 +++++++++++++++++++++
+ 4 files changed, 374 insertions(+)
+---
+base-commit: 15bb585707ae9c4e3acd42a81d8eac9f1e9e50cc
+change-id: 20231002-htc-memul-742a8517d24b
+
+Best regards,
 -- 
-2.34.1
+Luca Weiss <luca@z3ntu.xyz>
 
