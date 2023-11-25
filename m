@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB587F8BD9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471C57F8BDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbjKYOsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 09:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        id S232098AbjKYOyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 09:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjKYOso (ORCPT
+        with ESMTP id S231808AbjKYOyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 09:48:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235861BD
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:48:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CDEFC433C7;
-        Sat, 25 Nov 2023 14:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700923729;
-        bh=tS+XD1FVGDo2P6LA3feC8M3YjSB4G+skn0rfq45uNdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v5mRcIDQ6F27z7/oqY8Xb1ZybREwiZ5PAqpxWzHIf/EXMsVjqqSCMZ+dnRtrswOGd
-         2tr+gHbd6GirIGI6Hxb7VIaiXEYX9rv+6qtX6rTGECG6Ws8SsLrvuJKaQ2cgWriEuQ
-         c86kEduv8S8KIKER09womRbefHoPWj0Xo1W7+jFk=
-Date:   Sat, 25 Nov 2023 14:48:46 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: Re: [PATCH v2 3/6] debugfs: add API to allow debugfs operations
- cancellation
-Message-ID: <2023112537-anyhow-bottle-f499@gregkh>
-References: <20231124162522.16344-7-johannes@sipsolutions.net>
- <20231124172522.8c5d739c69e7.If54cd017d5734024e7bee5e4a237e17244050480@changeid>
+        Sat, 25 Nov 2023 09:54:40 -0500
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32675EE;
+        Sat, 25 Nov 2023 06:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1700924083; x=1701183283;
+        bh=m7DRPE1YM1YZPMcaawIPOhHZs97EHiKr03J3c4DSLHc=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=A2Cb5xOl2/tPQFaBVFc5AK6egOaemZUuiqbgpvnaPsx+rLB87UFiYDP7jqOr0UEYa
+         nfp81cuqANtXqjVX1lfynpi02and8F+BPuiIWT+TVsFWjt0qJL0A26pNR4evK05H4h
+         e98FZNASWvD8dbfP4CDQ1KLbKTaPIilTGCZNdKYWo58zRl/R4TIxsm7OSD+Y0V5f6c
+         VNRcXO7y0oSCKKWF//gYvvTFkSflRRRBbzbMsfQnbCzI90WnqJgMut15uOszRyKOyU
+         eNWx9A6w05xbFLa/xp3WuKFhFFeh02pXBYsPFXLZaYacO5y951kUDF6vqgA6/te/vt
+         /PA/2Xe+mmUdA==
+Date:   Sat, 25 Nov 2023 14:54:29 +0000
+To:     Alice Ryhl <alice@ryhl.io>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <walmeida@microsoft.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 3/3] rust: workqueue: add `#[pin_data]` to `Work`
+Message-ID: <FAzxAy7jRUJ6uc-DBqKKJi76s7ddxab9IyXMW5g_SxyxJKCSH8Xarqda9M3-DTDFvlgmNr9S8-X4prDvw57ZLYqR953uK6pd1qGqFpXWWXk=@proton.me>
+In-Reply-To: <45e5de7e-d787-4200-82dc-389cbdad9ee8@ryhl.io>
+References: <20231125125024.1235933-3-benno.lossin@proton.me> <45e5de7e-d787-4200-82dc-389cbdad9ee8@ryhl.io>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231124172522.8c5d739c69e7.If54cd017d5734024e7bee5e4a237e17244050480@changeid>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 05:25:26PM +0100, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> In some cases there might be longer-running hardware accesses
-> in debugfs files, or attempts to acquire locks, and we want
-> to still be able to quickly remove the files.
-> 
-> Introduce a cancellations API to use inside the debugfs handler
-> functions to be able to cancel such operations on a per-file
-> basis.
-> 
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On 25.11.23 15:35, Alice Ryhl wrote:
+> On 11/25/23 13:51, Benno Lossin wrote:
+>> +        pin_init!(Self {
+>> +            work: Opaque::ffi_init(|slot| {
+>=20
+> Surely there should be an <- here instead of the : character?
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+You are absolutely correct. I did this so rustfmt would format it nicely. B=
+ut
+forgot to change it back.
+
+--=20
+Cheers,
+Benno
+
+
