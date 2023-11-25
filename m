@@ -2,246 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9967F8E31
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3557F8E2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbjKYTsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
+        id S229493AbjKYTsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjKYTsD (ORCPT
+        with ESMTP id S229456AbjKYTr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:48:03 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2391B3;
-        Sat, 25 Nov 2023 11:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=4nRmKJdjQImKVKvkDXekyzERU99Y30X50Uk5jPOijCY=; b=bUmqga52u5ZN8KifEwNMhDyiPA
-        /TFQjbAbx8fGQdVoi5rxm3COj3rEclulLj+6FXL2nSiYCSRdIJATu8HKoN1nlR6IkXp7sCExgIBLI
-        hFkayCNKWWXkftJV69lR8n3hiDzcRi5PHnunbIvWKayKCR9g0p4/sDxM6C9tR4lEehPc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r6yd5-001Czk-9T; Sat, 25 Nov 2023 20:47:51 +0100
-Date:   Sat, 25 Nov 2023 20:47:51 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
-Message-ID: <a3b65c90-afc9-4caf-8744-112369a838d2@lunn.ch>
-References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+        Sat, 25 Nov 2023 14:47:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469DFA3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:48:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 155F0C433C9;
+        Sat, 25 Nov 2023 19:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700941684;
+        bh=TG3FLWwBucstw2055o8skcJRkN+mDQJa4/2yE8D+7pI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MjBlglmbDTlUKLPBziVsBLkzEJNbJzuhJ1wrX3RYGh6wTdeJTRcHcVpRgYubQ3WAF
+         XiP/hy8hpRrLGaP7beX7+JtQUDv/5ZfMdSUykTFq20iGV0jLr1ZSSGf4XEnlX70dys
+         HhhzJBTL8fzxHSWnd8KMohWIUPIpmScAoZoUMI2bvAhCBV/OZHRpyT9nE5YVetM/5Y
+         6NzOaXNhWmBtxtDZDrxviwLtJklzcPyiDlmXZblZUq1xubFo5wEbitln4yhNr/d6E7
+         GI8O7xQU/D+5+fBcgv1uAR48U+gIaIhI8LsW53Ib98pIurc7DG+vvt+vgERTzazZdX
+         qixJDWTnwbgYQ==
+Date:   Sat, 25 Nov 2023 19:47:54 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        marius.cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: adding support for
+ PAC193X
+Message-ID: <20231125194754.304523e6@jic23-huawei>
+In-Reply-To: <20231116-channel-variety-cc7c262924ad@squawk>
+References: <20231115134453.6656-1-marius.cristea@microchip.com>
+        <20231115134453.6656-2-marius.cristea@microchip.com>
+        <fedd4bcf-7892-4096-bcca-7ea72d39576f@linaro.org>
+        <20231116-channel-variety-cc7c262924ad@squawk>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +=====================================
-> +Devicetree Sources (DTS) Coding Style
-> +=====================================
-> +
-> +When writing Devicetree Sources (DTS) please observe below guidelines.  They
-> +should be considered complementary to any rules expressed already in Devicetree
-> +Specification and dtc compiler (including W=1 and W=2 builds).
-> +
-> +Individual architectures and sub-architectures can add additional rules, making
-> +the style stricter.
+On Thu, 16 Nov 2023 18:21:33 +0000
+Conor Dooley <conor@kernel.org> wrote:
 
-It would be nice to add a pointer where such rules are documented.
+> On Thu, Nov 16, 2023 at 04:01:43PM +0100, Krzysztof Kozlowski wrote:
+> > On 15/11/2023 14:44, marius.cristea@microchip.com wrote:  
+> > > From: Marius Cristea <marius.cristea@microchip.com>
+> > > 
+> > > This is the device tree schema for iio driver for
+> > > Microchip PAC193X series of Power Monitors with Accumulator.
+> > > 
+> > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+> > > ---
+> > >  .../bindings/iio/adc/microchip,pac1934.yaml   | 137 ++++++++++++++++++
+> > >  1 file changed, 137 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > new file mode 100644
+> > > index 000000000000..2609cb19c377
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > @@ -0,0 +1,137 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Microchip PAC1934 Power Monitors with Accumulator
+> > > +
+> > > +maintainers:
+> > > +  - Marius Cristea <marius.cristea@microchip.com>
+> > > +
+> > > +description: |
+> > > +  This device is part of the Microchip family of Power Monitors with Accumulator.
+> > > +  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found here:
+> > > +    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - microchip,pac1931
+> > > +      - microchip,pac1932
+> > > +      - microchip,pac1933
+> > > +      - microchip,pac1934
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  "#address-cells":
+> > > +    const: 1
+> > > +
+> > > +  "#size-cells":
+> > > +    const: 0
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 1
+> > > +
+> > > +  microchip,slow-io:
+> > > +    type: boolean
+> > > +    description: |
+> > > +      A GPIO used to trigger a change is sampling rate (lowering the chip power consumption).  
+> > 
+> > Use Linux coding style wrapping (as described in Linux Coding style). I
+> > am not going to tell you numbers because I want you to read the document
+> > first.
+> > 
+> > This is boolean, not GPIO. I don't understand. "A GPIO", so any GPIO or
+> > some specific? How is this property related to GPIO?
+> > 
+> >   
+> > > +      If configured in SLOW mode, if this pin is forced high, sampling rate is forced to eight  
+> > 
+> > This pin? This is boolean, not a GPIO. GPIOs are phandles.  
+> 
+> I said it on the previous version, but this really seems like it should
+> be something like "slow-io-gpios". I know Jonathan expressed some
+> concerns about having to deal with it on the operating system side (as
+> the pin is either an input & used for this slow-io control, or an output
+> and used as an interrupt) but that is, in my opinion, a problem for the
+> operating system & the binding should describe how the hardware works,
+> even if that is not convenient. With this sort of property, a GPIO hog
+> would be required to be set up (and the driver for that gpio controller
+> bound etc before the pac driver loads) for correction functionality if
+> this property was in the non-default state.
 
-> +Naming and Valid Characters
-> +---------------------------
-> +
-> +Devicetree specification allows broader range of characters in node and
-> +property names, but for code readability the choice shall be narrowed.
-> +
-> +1. Node and property names are allowed to use only:
-> +
-> +   * lowercase characters: [a-z]
-> +   * digits: [0-9]
-> +   * dash: -
-> +
-> +2. Labels are allowed to use only:
-> +
-> +   * lowercase characters: [a-z]
-> +   * digits: [0-9]
-> +   * underscore: _
-> +
-> +3. Unit addresses shall use lowercase hex, without leading zeros (padding).
-> +
-> +4. Hex values in properties, e.g. "reg", shall use lowercase hex.  The address
-> +   part can be padded with leading zeros.
-> +
-> +Example::
-> +
-> +	gpi_dma2: dma-controller@800000 {
+I'd forgotten the discussion completely ;)
+My main question was why bother with slow?  You can do it without the GPIO
+anyway as there is a register bit for it.
 
-Not the best of example. Upper case 8 does not exist, as far as i
-known. 
+I can conceive of various possible reasons, the evil one being that it's
+actually out of the host processors control. Is that what we care about here?
+If so it's nothing to do with a GPIO in the Linux sense at all and we can
+assume that it's not connected to an interrupt at the same time.
 
-> +		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
-> +		reg = <0x0 0x00800000 0x0 0x60000>;
+We 'might' need a control for that case that says configure the device for
+an external entity to use the slow pin.
 
-Maybe introduce some [a-f] in the example reg?
-
-> +Order of Nodes
-> +--------------
-> +
-> +1. Nodes within any bus, thus using unit addresses for children, shall be
-> +   ordered incrementally by unit address.
-> +   Alternatively for some sub-architectures, nodes of the same type can be
-> +   grouped together (e.g. all I2C controllers one after another even if this
-> +   breaks unit address ordering).
-> +
-> +2. Nodes without unit addresses shall be ordered alpha-numerically by the node
-> +   name.  For a few types of nodes, they can be ordered by the main property
-> +   (e.g. pin configuration states ordered by value of "pins" property).
-> +
-> +3. When extending nodes in the board DTS via &label, the entries shall be
-> +   ordered either alpha-numerically or by keeping the order from DTSI (choice
-> +   depending on sub-architecture).
-
-Are these sub-architecture choices documented somewhere? Can you
-include a hint which they are?
-
-> +Example::
-> +
-> +	/* SoC DTSI */
-> +
-> +	/ {
-
-Dumb question. Does this open { indicate the start of a bus?
-
-> +		cpus {
-> +			/* ... */
-> +		};
-> +
-> +		psci {
-> +			/* ... */
-> +		};
-
-If that does indicate a bus, the nodes above are ordered
-alpha-numerically, according to 2).
-
-> +
-> +		soc@ {
-
-This has a unit address, even if its missing, so should be sorted by
-1).
-
-Should there be something in the coding style that 2) comes before 1)
-on the bus? And if that is true, don't you think it would make sense
-to swap 1) and 2) in the description above?
-
-> +			dma: dma-controller@10000 {
-> +				/* ... */
-> +			};
-> +
-> +			clk: clock-controller@80000 {
-> +				/* ... */
-> +			};
-> +		};
-> +	};
-> +
-> +	/* Board DTS - alphabetical order */
-> +
-> +	&clk {
-> +		/* ... */
-> +	};
-> +
-> +	&dma {
-> +		/* ... */
-> +	};
-> +
-> +	/* Board DTS - alternative order, keep as DTSI */
-> +
-> +	&dma {
-> +		/* ... */
-> +	};
-> +
-> +	&clk {
-> +		/* ... */
-> +	};
-
-Do you imaging there will ever be a checkpatch for DT files? The
-second alternative seems pretty difficult to check for with tools. You
-need to include all the .dtsi files to determine the ordered tree,
-then flatten it to get the properties order. Should we discourage this
-alternative?
-
-> +Indentation
-> +-----------
-> +
-> +1. Use indentation according to :ref:`codingstyle`.
-> +2. For arrays spanning across lines, it is preferred to align the continued
-> +   entries with opening < from the first line.
-> +3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
-> +   shall be enclosed in <>.
-> +
-> +Example::
-> +
-> +	thermal-sensor@c271000 {
-> +		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
-> +		reg = <0x0 0x0c271000 0x0 0x1000>,
-> +		      <0x0 0x0c222000 0x0 0x1000>;
-> +	};
-
-I'm not sure i understand this. Is this example correct?
-
-                gpio-fan,speed-map = <0    0
-                                      3000 1
-                                      6000 2>;
-
-It exists a lot in todays files.
+It wouldn't be the first device to have that sort of thing, but normally they
+are sequencing pins that are wired up to some mechanical device or similar.
 
 
-> +The DTSI and DTS files shall be organized in a way representing the common
-> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
-> +and DTS files into several files:
-> +
-> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
-> +   on the SoC).
+> 
+> > > +      samples/second. When it is forced low, the sampling rate is 1024 samples/second unless
+> > > +      a different sample rate has been programmed.
+> > > +
+> > > +patternProperties:
+> > > +  "^channel@[1-4]+$":
+> > > +    type: object
+> > > +    $ref: adc.yaml
+> > > +    description: Represents the external channels which are connected to the ADC.
+> > > +
+> > > +    properties:
+> > > +      reg:
+> > > +        items:
+> > > +          minimum: 1
+> > > +          maximum: 4
+> > > +
+> > > +      shunt-resistor-micro-ohms:
+> > > +        description: |
+> > > +          Value in micro Ohms of the shunt resistor connected between
+> > > +          the SENSE+ and SENSE- inputs, across which the current is measured. Value
+> > > +          is needed to compute the scaling of the measured current.
+> > > +
+> > > +    required:
+> > > +      - reg
+> > > +      - shunt-resistor-micro-ohms
+> > > +
+> > > +    unevaluatedProperties: false
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - "#address-cells"
+> > > +  - "#size-cells"
+> > > +
+> > > +allOf:
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            const: interrupts  
+> > 
+> > 
+> > I don't understand what do you want to say here. I am also 100% sure you
+> > did not test it on a real case (maybe example passes but nothing more).  
+> 
+> As far as I understand, the same pin on the device is used for both an
+> output or an input depending on the configuration. As an input, it is
+> the "slow-io" control, and as an output it is an interrupt.
+> I think Marius is trying to convey that either this pin can be in
+> exclusively one state or another.
+> 
+> _However_ I am not sure that that is really the right thing to do - they
+> might well be mutually exclusive modes, but I think the decision can be
+> made at runtime, rather than at devicetree creation time. Say for
+> example the GPIO controller this is connected to is capable of acting as
+> an interrupt controller. Unless I am misunderstanding the runtime
+> configurability of this hardware, I think it is possible to actually
+> provide a "slow-io-gpios" and an interrupt property & let the operating
+> system decide at runtime which mode it wants to work in.
 
-Maybe point out that SoC DTSI files can by hierarchical when there is
-a family of SoCs. You often have one .DTSI file for all the common
-parts of a family. And then each member of the family has a .dtsi file
-which includes the core, and then adds properties for that member of
-the family.
+I'll admit I've long forgotten what was going on here, but based just on
+this bit of text I agree. There is nothing 'stopping' us having a pin
+uses as either / or / both interrupt and gpio.
 
-The word 'entire' probably gives the wrong idea about this.
+It'll be a bit messy to support in the driver as IIRC there are some sanity
+checks that limit combinations on IRQs and output GPIOS.  Can't remember
+how bad the dance to navigate it safely is.
 
-    Andrew
+First version I'd just say pick one option if both are provided and
+don't support configuring it at runtime.
+
+Jonathan
+ 
+
+
+> 
+> I'm off travelling at the moment Marius, but I should be back in work on
+> Monday if you want to have a chat about it & explain a bit more to me?
+> 
+> Cheers,
+> Conor.
+> 
+> >   
+> > > +    then:
+> > > +      properties:
+> > > +        microchip,slow-io: false
+> > > +    else:
+> > > +      if:
+> > > +        properties:
+> > > +          compatible:
+> > > +            contains:
+> > > +              const: microchip,slow-io
+> > > +      then:
+> > > +        properties:
+> > > +          interrupts: false  
+> > 
+> > Best regards,
+> > Krzysztof
+> >   
+
