@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD297F87E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9EB7F87EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjKYCqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 21:46:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
+        id S231646AbjKYCvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 21:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKYCqs (ORCPT
+        with ESMTP id S229462AbjKYCvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 21:46:48 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BB41702
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:46:54 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c1bfd086f0so2773198a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:46:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700880413; x=1701485213;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I39ioAM3Aka7GAnl1o2N13zSIx6wGAuQ37kD+RV/0Mg=;
-        b=Mr58Wa1cSiU8x3VuBfH9iKIf5Kw1SUWo89wG2KlkPho9GZb+OFeQsGmcL8iy42lFMT
-         NBi1HChTsAGGGakvcjdBQAICbFqE8MRUU1ll12mr7z5k4/hMdSgNFdaXEdFO6BnP228D
-         esn62Wq7Ms6DpXcZqU5ALksmpQOcVYrnmQKTL/5MoqZuWQfmRtXWeWgnqUV6HufZqstZ
-         cSk+JD0K7+FhFlx+HUtepFImjqk2Ri3LmL06IpPU7UGS1eGv+qWPyBIJ0boGOPx+mm3E
-         gNtrx9a+wF9MoeUt7lEW2WMfWwF4vS7NZ7M7GvZB6ePJftMCz5nYDe+uOLEHkeIm22oV
-         1Fvw==
-X-Gm-Message-State: AOJu0YywblK/cbKZrEKS1Cqn702nwe518x4JNdMf2R5l+fPaLm8jgleA
-        XNvjv3umh8YHz90+8xLovFWLMqIUKZqg8GoBlSWRfF09zNCsqsE=
-X-Google-Smtp-Source: AGHT+IHGRLrpGehUUUQrfXdyPptRj55xovUyoVZXEWM3lGfwQZKVYps0y0PKVv1gxQpvU2omNTyFa0UqZaMNWx7MKiDhczAxW/5t
+        Fri, 24 Nov 2023 21:51:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA6B1702
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:52:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA405C433C8;
+        Sat, 25 Nov 2023 02:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700880720;
+        bh=G7lavvFw0e1K+LDAj1itFIJyfwyENT1UAuWAhJuGE90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=myTtRdyUf1//5T3yASQ1Bcrqb9NxZjyGP/ssOpEGFf8wUIFfMgkoJfBmBudup6CWl
+         BPpBfiIDvCk7Ykf0YaxjEaQ2DOQxs8fi94CCnJPkfw+j6V+GcPiLO4zUgcIqdJTDKp
+         9ArWa+niZLE6lXFueH9UTF3KPJK5KLJZ61EZwvtLS1W4E54EeKnUvQusN0viEIeHpb
+         Y30NBQxBJbEFkS8zUI4gTHD5fefcMuHVqlzf37Vgi1sYU0iI5ce0W2ZF/NsE+2VlRD
+         GxM8x710grHq3OQJNjh3RdcNMIvNL5wJrk/8Ghcp/Y6cUmnyPqAZHgWX8EmcNRisAI
+         zvwA5ijkED9yw==
+Date:   Fri, 24 Nov 2023 21:51:53 -0500
+From:   Guo Ren <guoren@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christoph Muellner <christoph.muellner@vrull.eu>,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Lustig <dlustig@nvidia.com>
+Subject: Re: [RFC PATCH 0/5] RISC-V: Add dynamic TSO support
+Message-ID: <ZWFhSYalMCgTo+SG@gmail.com>
+References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
+ <20231124101519.GP3818@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Received: by 2002:a63:ed03:0:b0:5c2:1816:24c4 with SMTP id
- d3-20020a63ed03000000b005c2181624c4mr716190pgi.10.1700880413701; Fri, 24 Nov
- 2023 18:46:53 -0800 (PST)
-Date:   Fri, 24 Nov 2023 18:46:53 -0800
-In-Reply-To: <000000000000fb2f84060ad4da7f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dd3c09060af11448@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
-From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231124101519.GP3818@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Fri, Nov 24, 2023 at 11:15:19AM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 24, 2023 at 08:21:37AM +0100, Christoph Muellner wrote:
+> > From: Christoph Müllner <christoph.muellner@vrull.eu>
+> > 
+> > The upcoming RISC-V Ssdtso specification introduces a bit in the senvcfg
+> > CSR to switch the memory consistency model at run-time from RVWMO to TSO
+> > (and back). The active consistency model can therefore be switched on a
+> > per-hart base and managed by the kernel on a per-process/thread base.
+> 
+> You guys, computers are hartless, nobody told ya?
+> 
+> > This patch implements basic Ssdtso support and adds a prctl API on top
+> > so that user-space processes can switch to a stronger memory consistency
+> > model (than the kernel was written for) at run-time.
+> > 
+> > I am not sure if other architectures support switching the memory
+> > consistency model at run-time, but designing the prctl API in an
+> > arch-independent way allows reusing it in the future.
+> 
+> IIRC some Sparc chips could do this, but I don't think anybody ever
+> exposed this to userspace (or used it much).
+> 
+> IA64 had planned to do this, except they messed it up and did it the
+> wrong way around (strong first and then relax it later), which lead to
+> the discovery that all existing software broke (d'uh).
+> 
+> I think ARM64 approached this problem by adding the
+> load-acquire/store-release instructions and for TSO based code,
+> translate into those (eg. x86 -> arm64 transpilers).
+Keeping global TSO order is easier and faster than mixing
+acquire/release and regular load/store. That means when ssdtso is
+enabled, the transpiler's load-acquire/store-release becomes regular
+load/store. Some micro-arch hardwares could speed up the performance.
 
-***
+Of course, you may say powerful machines could smooth out the difference
+between ssdtso & load-acquire/store-release, but that's not real life.
+Adding ssdtso is a flexible way to gain more choices on the cost of chip
+design.
 
-Subject: [ntfs3?] WARNING in indx_insert_into_buffer
-Author: eadavis@qq.com
-
-please test WARNING in indx_insert_into_buffer
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 037266a5f723
-
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index cf92b2433f7a..67c27e6ce497 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -1816,6 +1816,9 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	 * - Insert sp into parent buffer (or root)
- 	 * - Make sp a parent for new buffer
- 	 */
-+	printk("l: %d, u1: %d, t: %d, do: %d\n", 
-+		level, le32_to_cpu(hdr1->used), le32_to_cpu(hdr1->total), 
-+		le32_to_cpu(hdr1->de_off));
- 	sp = hdr_find_split(hdr1);
- 	if (!sp)
- 		return -EINVAL;
-@@ -1833,6 +1836,8 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		goto out;
- 	}
- 
-+	printk("l: %d, u1: %d, sps: %d, t: %d, do: %d\n", 
-+		level, used1, sp_size, le32_to_cpu(hdr1->total), le32_to_cpu(hdr1->de_off));
- 	if (!hdr1->flags) {
- 		up_e->flags |= NTFS_IE_HAS_SUBNODES;
- 		up_e->size = cpu_to_le16(sp_size + sizeof(u64));
-@@ -1895,6 +1900,8 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	if (!level) {
- 		/* Insert in root. */
- 		err = indx_insert_into_root(indx, ni, up_e, NULL, ctx, fnd, 0);
-+		//if (err == -ENOMEM)
-+		//	goto out;
- 	} else {
- 		/*
- 		 * The target buffer's parent is another index buffer.
-@@ -1909,6 +1916,8 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		 * Undo critical operations.
- 		 */
- 		indx_mark_free(indx, ni, new_vbn >> indx->idx2vbn_bits);
-+		printk("%d, u1: %d, sps: %d, t: %d, do: %d\n", 
-+		level, used1, sp_size, le32_to_cpu(hdr1->total), le32_to_cpu(hdr1->de_off));
- 		memcpy(hdr1, hdr1_saved, used1);
- 		indx_write(indx, ni, n1, 0);
- 	}
-diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
-index 86aecbb01a92..67d0fd8f5b7d 100644
---- a/fs/ntfs3/ntfs.h
-+++ b/fs/ntfs3/ntfs.h
-@@ -759,7 +759,7 @@ static inline bool hdr_has_subnode(const struct INDEX_HDR *hdr)
- struct INDEX_BUFFER {
- 	struct NTFS_RECORD_HEADER rhdr; // 'INDX'
- 	__le64 vbn; // 0x10: vcn if index >= cluster or vsn id index < cluster
--	struct INDEX_HDR ihdr; // 0x18:
-+	DECLARE_FLEX_ARRAY(struct INDEX_HDR, ihdr); // 0x18:
- };
- 
- static_assert(sizeof(struct INDEX_BUFFER) == 0x28);
-
+> 
+> IIRC Risc-V actually has such instructions as well, so *why* are you
+> doing this?!?!
+> 
