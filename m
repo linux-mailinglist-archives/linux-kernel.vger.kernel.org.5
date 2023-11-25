@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01367F8B1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 14:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A427F8B1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 14:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbjKYNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 08:21:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
+        id S232063AbjKYNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 08:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjKYNVW (ORCPT
+        with ESMTP id S231802AbjKYNV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 08:21:22 -0500
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9D5C0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 05:21:28 -0800 (PST)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1cf8c1aaafcso22335605ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 05:21:28 -0800 (PST)
+        Sat, 25 Nov 2023 08:21:57 -0500
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BC9C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 05:22:04 -0800 (PST)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6cc021f658bso674104b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 05:22:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700918487; x=1701523287;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XSYiGfAAMAcRis1TVQ3Zrz9Kz4BF0k5UJY3eSxQoyKI=;
-        b=Fmqx3M5UMjkoGNMIqO2dsl7WwTdO2krukK0EVEMLYD/+qcMqJJQ9QDtAQRhSiHYbnU
-         Rmt2VLcIBwYo98XuwiCHFoDes5G79s4DYc+iYGaDdKp7LF6vhFcKwyOivkkf4Zva7Hnq
-         uyI3yrs0MzAzPEpxyIeVxPM6SE2Ys2r40Rdlddqnbv0G79akTitsVZzzr2PLfiEv1m9e
-         BKXuQI5xP19X3kKdO6Nxb1aEAHICFndN2+otwkse6BbugQdYa2C/wlRhregCkoFG11h1
-         UNqLaojVNwVvjZz4mhtKUTLtqMtUyybLz/1u7iFGPIre4/ERV79w/YbVcErfJ8wG9Nco
-         8fLw==
-X-Gm-Message-State: AOJu0Yy+NhC5He5PnEhilS/U9bf1wIwnXKP4Q/BTg9amPiNyk76s2ge2
-        FFDwqpT70UnhnBAzdo2BVm0R+JdXzMjBAgcq8tLiNGEnnogT
-X-Google-Smtp-Source: AGHT+IGqp3Y75FgghXsxU/FPfMOoM9MT5kJ+jGpKKk2gh5/Lj1pIzRkeGSpeyOWlDoVcqt5pX1Vju38kom1BdTJz8ul2rZi9aKkP
+        d=1e100.net; s=20230601; t=1700918523; x=1701523323;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2/u0knbZFspBdhoGDx1rtdXXroGcxahRT9I+tbTyqeg=;
+        b=pKySBLFRacy4ZrHyQf5o2e4rvmkyuewUtLmGNbiqgBKSbKw3iaJrZY191LuAyrT28a
+         oyei70QF+rf45zs2lXkrGbfh7yyA2ishMBPr8AcQmBXRsPu3zAuCToC+jXrg+GvT7rAm
+         2oke/PUigrCyDI3SVD/3ZDcP66Acnk3mKwcRQeOBRsyrefVubluvYaxgpbWyxGEy+jsm
+         BfqrMzQMa8keVvPIKvaOornxuolQAK8Rx1/qgs0T0QWNg4VmMVf2Dh8hM+2LczdXV9xK
+         aR30PFDuC0iu7pnNN7X68HfGcQ8zpxPcTyeutIIsKJxcUYZQXSYJz5Wc3WZN1U0pbpep
+         OXyw==
+X-Gm-Message-State: AOJu0YzQ9KDwAt3FFessBu6JNgbelfbDZOcd7i6HbJpiDRs3hJ13opqK
+        UEPeYT+SM0jW7t8qW5MOyBw+2OsLpaMNAuSUDbybW0i16An7
+X-Google-Smtp-Source: AGHT+IFNb4XxaBdx5SpXNKGiq9rn5LpEjL04Tw7dRhvw3mypbMzfB72fhTILAvL/HooMrkyPxFTink+qKXK1bwmqtFyQOHY6OCbz
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e0ca:b0:1cc:2c44:58f4 with SMTP id
- e10-20020a170902e0ca00b001cc2c4458f4mr1575340pla.1.1700918487510; Sat, 25 Nov
- 2023 05:21:27 -0800 (PST)
-Date:   Sat, 25 Nov 2023 05:21:27 -0800
+X-Received: by 2002:a05:6a00:3907:b0:6be:aed:7ad0 with SMTP id
+ fh7-20020a056a00390700b006be0aed7ad0mr1402527pfb.2.1700918523089; Sat, 25 Nov
+ 2023 05:22:03 -0800 (PST)
+Date:   Sat, 25 Nov 2023 05:22:02 -0800
+In-Reply-To: <20231125130757.765-1-hdanton@sina.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003d77e6060af9f233@google.com>
-Subject: [syzbot] [crypto?] INFO: task hung in hwrng_fillfn
-From:   syzbot <syzbot+c52ab18308964d248092@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        olivia@selenic.com, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000005c581d060af9f403@google.com>
+Subject: Re: [syzbot] [net?] possible deadlock in sch_direct_xmit (2)
+From:   syzbot <syzbot+e18ac85757292b7baf96@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -57,178 +57,155 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-syzbot found the following issue on:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING: bad unlock balance in __dev_queue_xmit
 
-HEAD commit:    98b1cc82c4af Linux 6.7-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e89e10e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-dashboard link: https://syzkaller.appspot.com/bug?extid=c52ab18308964d248092
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174f0bd4e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b83b84e80000
+=====================================
+WARNING: bad unlock balance detected!
+6.7.0-rc2-syzkaller-00195-g0f5cc96c367f-dirty #0 Not tainted
+-------------------------------------
+syz-executor.0/5357 is trying to release lock (_xmit_ETHER) at:
+[<ffffffff8854264e>] spin_unlock include/linux/spinlock.h:391 [inline]
+[<ffffffff8854264e>] __netif_tx_unlock include/linux/netdevice.h:4441 [inline]
+[<ffffffff8854264e>] __dev_queue_xmit+0x1dce/0x3940 net/core/dev.c:4353
+but there are no more locks to release!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/39c6cdad13fc/disk-98b1cc82.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5a77b5daef9b/vmlinux-98b1cc82.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5e09ae712e0d/bzImage-98b1cc82.xz
+other info that might help us debug this:
+6 locks held by syz-executor.0/5357:
+ #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x467/0x1360 net/ipv4/ip_output.c:228
+ #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
+ #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:799 [inline]
+ #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x23e/0x3940 net/core/dev.c:4272
+ #2: ffff88814ab86258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:361 [inline]
+ #2: ffff88814ab86258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:194 [inline]
+ #2: ffff88814ab86258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3759 [inline]
+ #2: ffff88814ab86258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x10f4/0x3940 net/core/dev.c:4314
+ #3: ffff8880639ff8d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #3: ffff8880639ff8d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4403 [inline]
+ #3: ffff8880639ff8d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
+ #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x467/0x1360 net/ipv4/ip_output.c:228
+ #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
+ #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:799 [inline]
+ #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x23e/0x3940 net/core/dev.c:4272
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c52ab18308964d248092@syzkaller.appspotmail.com
-
-INFO: task hwrng:749 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc2-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:hwrng           state:D stack:29040 pid:749   tgid:749   ppid:2      flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0xedb/0x5af0 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xe9/0x270 kernel/sched/core.c:6778
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6835
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:747
- hwrng_fillfn+0x145/0x430 drivers/char/hw_random/core.c:504
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8cfabce0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8cfabce0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8cfabce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6613
-2 locks held by kswapd0/86:
-1 lock held by hwrng/749:
- #0: ffffffff8dbafee8 (reading_mutex){+.+.}-{3:3}, at: hwrng_fillfn+0x145/0x430 drivers/char/hw_random/core.c:504
-2 locks held by getty/4824:
- #0: ffff888025fa10a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
-2 locks held by syz-executor391/5105:
-2 locks held by syz-executor391/5106:
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc2-syzkaller #0
+stack backtrace:
+CPU: 1 PID: 5357 Comm: syz-executor.0 Not tainted 6.7.0-rc2-syzkaller-00195-g0f5cc96c367f-dirty #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf87/0x1210 kernel/hung_task.c:379
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 5105 Comm: syz-executor391 Not tainted 6.7.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__lock_acquire+0x30/0x3b10 kernel/locking/lockdep.c:4992
-Code: f6 41 55 41 54 49 89 fc 55 89 d5 53 44 89 cb 48 81 ec f0 00 00 00 48 8b 84 24 28 01 00 00 48 c7 84 24 90 00 00 00 b3 8a b5 41 <44> 89 44 24 08 44 8b ac 24 48 01 00 00 48 c7 84 24 98 00 00 00 1b
-RSP: 0018:ffffc900044271d8 EFLAGS: 00000086
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000002
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff8cfabce0
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8f1934d7 R11: 0000000000000002 R12: ffffffff8cfabce0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f3c785f96c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005565d7bb9be7 CR3: 000000001af30000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5718
- rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- rcu_read_lock include/linux/rcupdate.h:747 [inline]
- get_mem_cgroup_from_mm+0x4b/0x4c0 mm/memcontrol.c:1081
- __mem_cgroup_charge+0x1c/0x140 mm/memcontrol.c:7224
- mem_cgroup_charge include/linux/memcontrol.h:684 [inline]
- __filemap_add_folio+0x88c/0xed0 mm/filemap.c:854
- filemap_add_folio+0xb1/0x1e0 mm/filemap.c:937
- page_cache_ra_unbounded+0x1d0/0x5f0 mm/readahead.c:250
- do_page_cache_ra mm/readahead.c:299 [inline]
- page_cache_ra_order+0x72b/0xa80 mm/readahead.c:546
- do_sync_mmap_readahead mm/filemap.c:3141 [inline]
- filemap_fault+0x16a8/0x3570 mm/filemap.c:3233
- __do_fault+0x107/0x600 mm/memory.c:4265
- do_cow_fault mm/memory.c:4662 [inline]
- do_fault mm/memory.c:4764 [inline]
- do_pte_missing mm/memory.c:3730 [inline]
- handle_pte_fault mm/memory.c:5038 [inline]
- __handle_mm_fault+0x3a8d/0x3d70 mm/memory.c:5179
- handle_mm_fault+0x47a/0xa10 mm/memory.c:5344
- do_user_addr_fault+0x3d1/0x1000 arch/x86/mm/fault.c:1413
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x5d/0xc0 arch/x86/mm/fault.c:1561
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0010:rep_movs_alternative+0x57/0x70 arch/x86/lib/copy_user_64.S:80
-Code: 00 66 90 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 eb 01 c3 48 89 c8 48 c1 e9 03 83 e0 07 <f3> 48 a5 89 c1 85 c9 75 b3 c3 48 8d 0c c8 eb ac 66 0f 1f 84 00 00
-RSP: 0018:ffffc90004427bb0 EFLAGS: 00050246
-RAX: 0000000000000000 RBX: 0000000000000040 RCX: 0000000000000008
-RDX: ffffed1028a4ab48 RSI: ffff888145255a00 RDI: 0000000020019980
-RBP: 0000000020019980 R08: 0000000000000000 R09: ffffed1028a4ab47
-R10: ffff888145255a3f R11: 0000000000000001 R12: ffff888145255a00
-R13: 00000000200199c0 R14: 0000000000000000 R15: dffffc0000000000
- copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
- raw_copy_to_user arch/x86/include/asm/uaccess_64.h:133 [inline]
- _copy_to_user lib/usercopy.c:41 [inline]
- _copy_to_user+0xa8/0xb0 lib/usercopy.c:34
- copy_to_user include/linux/uaccess.h:191 [inline]
- rng_dev_read+0x184/0x580 drivers/char/hw_random/core.c:255
- do_loop_readv_writev fs/read_write.c:755 [inline]
- do_loop_readv_writev fs/read_write.c:743 [inline]
- do_iter_read+0x567/0x830 fs/read_write.c:797
- vfs_readv+0x12d/0x1a0 fs/read_write.c:915
- do_preadv fs/read_write.c:1007 [inline]
- __do_sys_preadv fs/read_write.c:1057 [inline]
- __se_sys_preadv fs/read_write.c:1052 [inline]
- __x64_sys_preadv+0x228/0x300 fs/read_write.c:1052
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_unlock_imbalance_bug+0x252/0x2c0 kernel/locking/lockdep.c:5193
+ lock_release+0x59d/0x9d0 kernel/locking/lockdep.c:5430
+ _raw_spin_unlock+0x16/0x40 include/linux/spinlock_api_smp.h:141
+ spin_unlock include/linux/spinlock.h:391 [inline]
+ __netif_tx_unlock include/linux/netdevice.h:4441 [inline]
+ __dev_queue_xmit+0x1dce/0x3940 net/core/dev.c:4353
+ ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
+ iptunnel_xmit+0x540/0x9b0 net/ipv4/ip_tunnel_core.c:82
+ ip_tunnel_xmit+0x20e4/0x2940 net/ipv4/ip_tunnel.c:831
+ erspan_xmit+0x9c6/0x13e0 net/ipv4/ip_gre.c:717
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3545 [inline]
+ dev_hard_start_xmit+0x241/0x750 net/core/dev.c:3561
+ sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
+ __dev_queue_xmit+0x17f5/0x3940 net/core/dev.c:3772
+ ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
+ ip_send_skb+0x117/0x1b0 include/net/dst.h:451
+ udp_send_skb+0x931/0x1200 net/ipv4/udp.c:963
+ udp_sendmsg+0x1c17/0x2a70 net/ipv4/udp.c:1250
+ udpv6_sendmsg+0x1342/0x3220 net/ipv6/udp.c:1390
+ ____sys_sendmsg+0x592/0x890 net/socket.c:730
+ __sys_sendmmsg+0x3b2/0x730 net/socket.c:2638
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f3c78638b29
-Code: Unable to access opcode bytes at 0x7f3c78638aff.
-RSP: 002b:00007f3c785f9168 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
-RAX: ffffffffffffffda RBX: 00007f3c786c2328 RCX: 00007f3c78638b29
-RDX: 0000000000000001 RSI: 0000000020001880 RDI: 0000000000000003
-RBP: 00007f3c786c2320 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3c786c232c
-R13: 0000000000000000 R14: 00007ffc8a220310 R15: 00007ffc8a2203f8
+RIP: 0033:0x7fc4686798a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc4697f40c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007fc46878bf60 RCX: 00007fc4686798a9
+RDX: 0000000000000001 RSI: 0000000020004d80 RDI: 0000000000000004
+RBP: 00007fc4686d5074 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000004000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fc46878bf60 R15: 00007fff01466ec8
  </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.464 msecs
+------------[ cut here ]------------
+pvqspinlock: lock 0xffff88807a476cc0 has corrupted value 0x0!
+WARNING: CPU: 1 PID: 5357 at kernel/locking/qspinlock_paravirt.h:510 __pv_queued_spin_unlock_slowpath+0x23b/0x2f0 kernel/locking/qspinlock_paravirt.h:508
+Modules linked in:
+CPU: 1 PID: 5357 Comm: syz-executor.0 Not tainted 6.7.0-rc2-syzkaller-00195-g0f5cc96c367f-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:__pv_queued_spin_unlock_slowpath+0x23b/0x2f0 kernel/locking/qspinlock_paravirt.h:508
+Code: e8 0a 70 71 f7 4c 89 f0 48 c1 e8 03 0f b6 04 18 84 c0 0f 85 9a 00 00 00 41 8b 16 48 c7 c7 40 c6 aa 8a 4c 89 f6 e8 45 19 db f6 <0f> 0b eb 95 44 89 f1 80 e1 07 38 c1 0f 8c 2e ff ff ff 4c 89 f7 e8
+RSP: 0018:ffffc900050ce398 EFLAGS: 00010246
+RAX: 3a091d8f59dedc00 RBX: dffffc0000000000 RCX: ffff88807bebbb80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: ffffffff81524a02 R09: 1ffff92000a19c14
+R10: dffffc0000000000 R11: fffff52000a19c15 R12: 1ffff1100f48ed9a
+R13: ffff88807a476cd0 R14: ffff88807a476cc0 R15: ffff88807a476cc0
+FS:  00007fc4697f46c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020004540 CR3: 000000001e0b6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __raw_callee_save___pv_queued_spin_unlock_slowpath+0x15/0x30
+ .slowpath+0x9/0x1a
+ do_raw_spin_unlock+0x13b/0x8b0 arch/x86/include/asm/paravirt.h:591
+ _raw_spin_unlock+0x1e/0x40 include/linux/spinlock_api_smp.h:142
+ spin_unlock include/linux/spinlock.h:391 [inline]
+ __netif_tx_unlock include/linux/netdevice.h:4441 [inline]
+ __dev_queue_xmit+0x1dce/0x3940 net/core/dev.c:4353
+ ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
+ iptunnel_xmit+0x540/0x9b0 net/ipv4/ip_tunnel_core.c:82
+ ip_tunnel_xmit+0x20e4/0x2940 net/ipv4/ip_tunnel.c:831
+ erspan_xmit+0x9c6/0x13e0 net/ipv4/ip_gre.c:717
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3545 [inline]
+ dev_hard_start_xmit+0x241/0x750 net/core/dev.c:3561
+ sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
+ __dev_queue_xmit+0x17f5/0x3940 net/core/dev.c:3772
+ ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
+ ip_send_skb+0x117/0x1b0 include/net/dst.h:451
+ udp_send_skb+0x931/0x1200 net/ipv4/udp.c:963
+ udp_sendmsg+0x1c17/0x2a70 net/ipv4/udp.c:1250
+ udpv6_sendmsg+0x1342/0x3220 net/ipv6/udp.c:1390
+ ____sys_sendmsg+0x592/0x890 net/socket.c:730
+ __sys_sendmmsg+0x3b2/0x730 net/socket.c:2638
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fc4686798a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc4697f40c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007fc46878bf60 RCX: 00007fc4686798a9
+RDX: 0000000000000001 RSI: 0000000020004d80 RDI: 0000000000000004
+RBP: 00007fc4686d5074 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000004000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fc46878bf60 R15: 00007fff01466ec8
+ </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Tested on:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+commit:         0f5cc96c Merge tag 's390-6.7-3' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=128b55af680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3813bb4934ffb745
+dashboard link: https://syzkaller.appspot.com/bug?extid=e18ac85757292b7baf96
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16d18da4e80000
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
