@@ -2,169 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A077F8889
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 06:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52F77F888D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 07:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjKYFpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 00:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
+        id S229584AbjKYGCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 01:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKYFpH (ORCPT
+        with ESMTP id S229458AbjKYGCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 00:45:07 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93A4170B
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 21:45:13 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2f4a5ccebso1637466b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 21:45:13 -0800 (PST)
+        Sat, 25 Nov 2023 01:02:13 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE084170B;
+        Fri, 24 Nov 2023 22:02:19 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1ce3084c2d1so20589835ad.3;
+        Fri, 24 Nov 2023 22:02:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700891113; x=1701495913; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9YtcVT0tO/faU6pBapwW4pF/eOnwAU4GwA3kQ7ou57Q=;
-        b=b9TCGaXjju1T5l/bw/G0ao5bmLuAGtTCuufBms1tk829AJAsNHhVptN7JqtzMIcVRt
-         Tfiy54ej7G739QaaZVNN0omAPCOxpzrITgtDOefZTq4qyiKyxj2z1tESKclSfLr9xL6I
-         X0QydVCe1OExnE7FZpW3nrUtr7NBLtZSRp/og59g8BdoSm/qViqL7koxg44N50opXEVM
-         kATPsj9bFvkJQBntEeBooe0EFqDI7qs+NZHplhDRKbHl71vvP59he0NJiEs/sTcqJGzI
-         qeNdVtwyh1zfQEciyfOR3V6B3nVl9WMdcW1H3bVXW+Yxx2FbHLUmPJYkbyKnMNA0DQ5Q
-         DymA==
+        d=gmail.com; s=20230601; t=1700892139; x=1701496939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FclhQf3qesEshzQHC5UsLSEyaxrJX7Yi4QUTwlsrBzo=;
+        b=SvFpBoa47fRi2Geddtva6RFAc4RXcc1IV0EhDx4gsyJQHdqDBifQD8OxahCSiWySGY
+         PWJD8WG6iUxC7NooIDXVZv4G1oR/RjG1vCoqLiKRTthM68wwQmnO16B9XuvJs6MtLK1c
+         oe7z54rfeMnk5nCllOhxJncpindbAx4LbTI/zA+j3/2+tXto7WNQMBx2K43+aWD6OvTH
+         w6oxqherCJqJBtxreDqkzdEde52sUvF9SRvW0XkJVjKzjr73zXOn+aHfxONptMfJqG9F
+         bJf8J2HYN2MCOHWhIcSgSwyZkL4BdgqmL0J9TxwoWZJ8Bqofbr2jnuzPqd2LVeTeBL2o
+         l7xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700891113; x=1701495913;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9YtcVT0tO/faU6pBapwW4pF/eOnwAU4GwA3kQ7ou57Q=;
-        b=i3DiPVnJM+/FXi+SmiqF1eQQh/ksaWWZI8AiNjJyNfeyGBytndE7QGzbWJGesmjtVP
-         oZ1mTWjI3ctcec3+HKifx1k7b+IAJ9KYvdd249Oa4kw8x2Ha4ThLtHRSA7WlcH0wnkoX
-         jdfwAKT/Qji0ShdsFyC1rrKhYPojNuhSYDpZbCZZ1ol0xv9dOeqKYEAKRY+FHjZ1h4OB
-         Y/tVn942ssvaiY3ws2j3hwFMF0zSiFby2Dy6vSSP6QJW5vzsAxCQSNQ4KTe2639Z6pPO
-         T/wICHZeLF6w6Vvw7UNXoE1Y0sfL6zdY+sd3b71/E36FgQyf0VEZotGx2783WbYmmQCd
-         fjMw==
-X-Gm-Message-State: AOJu0Yz9f2c5wCk2WVDsEu5c2lkQOKO4o9C89+G9Zby263yi/+ep4YER
-        kRjiv2+8UfILxnQrMdOvqU0Ivw==
-X-Google-Smtp-Source: AGHT+IF8hKgzamcS6ks5XPNrfLtxKvTT7kP1+08AKQ7V7ZC2VsynTR7rqVJLUmxGjFzLY3gdcJkZOw==
-X-Received: by 2002:a05:6808:2111:b0:3b8:3826:6dcd with SMTP id r17-20020a056808211100b003b838266dcdmr727299oiw.25.1700891113007;
-        Fri, 24 Nov 2023 21:45:13 -0800 (PST)
-Received: from [192.168.17.16] ([138.84.62.70])
-        by smtp.gmail.com with ESMTPSA id bc10-20020a056808170a00b003b85ad8e75asm163754oib.6.2023.11.24.21.45.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Nov 2023 21:45:12 -0800 (PST)
-Message-ID: <81a11ebe-ea47-4e21-b5eb-536b1a723168@linaro.org>
-Date:   Fri, 24 Nov 2023 23:45:09 -0600
+        d=1e100.net; s=20230601; t=1700892139; x=1701496939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FclhQf3qesEshzQHC5UsLSEyaxrJX7Yi4QUTwlsrBzo=;
+        b=q2jRqWhGCWHcBw/Yl4k/DjCozLZw0st6P07wSrA/rz7ajbagQOhuiC6dhNnY2drwpo
+         g+WCQGUM/+kDR6iwj0eFUKsAZw6zDa8WSf+6WjZ6qDFa8yjD0x4E63Q7pQ48qbJE4IxX
+         n16YyloMXsq7VPZGKJPg1VX4B3jjwmLoVhYS8/+FfmihlB+ZLs1sfGgoFCoVLuInIAnF
+         8osFsxfe3TVzABmtCxYAnYcwkirkxkT3agDDT5O06QRSJnCLjsJWkZqWAaTThZNm91Xa
+         UN2/RJBDnFgPiU+PzkjH5yNf062rPPStw7zqD63rcJp5a+vMEhyj6QSvCCeJLawp9Z5Z
+         Xkmg==
+X-Gm-Message-State: AOJu0YxGGVmqhL5IXhszWWnNbGPxsCDLIfDRW4C/PNEIDNoPGYUt2aqf
+        HS2AqhkfLPfozJTpFPZ78mM=
+X-Google-Smtp-Source: AGHT+IEyIZv6kPKcJuJsdF5mkhJzsr0Y/Z/jY64tcTkX225IcRn/vjh+aCjOupIC+C0YVipqna0Edg==
+X-Received: by 2002:a17:903:2596:b0:1cf:9d88:a0ef with SMTP id jb22-20020a170903259600b001cf9d88a0efmr4177631plb.59.1700892139281;
+        Fri, 24 Nov 2023 22:02:19 -0800 (PST)
+Received: from localhost.localdomain ([74.48.130.204])
+        by smtp.googlemail.com with ESMTPSA id h11-20020a170902f7cb00b001c9c97beb9csm4142059plw.71.2023.11.24.22.02.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 22:02:18 -0800 (PST)
+From:   Furong Xu <0x1207@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>
+Subject: [PATCH net v3] net: stmmac: xgmac: Disable FPE MMC interrupts
+Date:   Sat, 25 Nov 2023 14:01:26 +0800
+Message-Id: <20231125060126.2328690-1-0x1207@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 000/297] 5.15.140-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        jack@suse.cz, chrubis@suse.cz
-References: <20231124172000.087816911@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20231124172000.087816911@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+by default") tries to disable MMC interrupts to avoid a storm of
+unhandled interrupts, but leaves the FPE(Frame Preemption) MMC
+interrupts enabled, FPE MMC interrupts can cause the same problem.
+Now we mask FPE TX and RX interrupts to disable all MMC interrupts.
 
-On 24/11/23 11:50 a. m., Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.140 release.
-> There are 297 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Signed-off-by: Furong Xu <0x1207@gmail.com>
+---
+Changes in v3:
+  - Update commit message, thanks Larysa.
+  - Rename register defines, thanks Serge.
 
-We are noticing a regression with ltp-syscalls' preadv03:
+Changes in v2:
+  - Update commit message, thanks Wojciech and Andrew.
+---
+ drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
------8<-----
-   preadv03 preadv03
-   preadv03_64 preadv03_64
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-   preadv03.c:102: TINFO: Using block size 512
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
------>8-----
-
-This is seen in the following environments:
-* dragonboard-845c
-* juno-64k_page_size
-* qemu-arm64
-* qemu-armv7
-* qemu-i386
-* qemu-x86_64
-* x86_64-clang
-
-and on the following RC's:
-* v5.10.202-rc1
-* v5.15.140-rc1
-* v6.1.64-rc1
-
-(Note that the list might not be complete, because some branches failed to execute completely due to build issues reported elsewhere.)
-
-Bisection in linux-5.15.y pointed to:
-
-   commit db85c7fff122c14bc5755e47b51fbfafae660235
-   Author: Jan Kara <jack@suse.cz>
-   Date:   Fri Oct 13 14:13:50 2023 +0200
-
-       ext4: properly sync file size update after O_SYNC direct IO
-       
-       commit 91562895f8030cb9a0470b1db49de79346a69f91 upstream.
-
-
-Reverting that commit made the test pass.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+index ea4910ae0921..6a7c1d325c46 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+@@ -177,8 +177,10 @@
+ #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
+ #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+ 
++#define MMC_XGMAC_TX_FPE_INTR_MASK	0x204
+ #define MMC_XGMAC_TX_FPE_FRAG		0x208
+ #define MMC_XGMAC_TX_HOLD_REQ		0x20c
++#define MMC_XGMAC_RX_FPE_INTR_MASK	0x224
+ #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
+ #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
+ #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
+@@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+ {
+ 	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
+ 	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
++	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_TX_FPE_INTR_MASK);
++	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_FPE_INTR_MASK);
+ 	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+ }
+ 
+-- 
+2.34.1
 
