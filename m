@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9822D7F8A93
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3297D7F8A96
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjKYMKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        id S231971AbjKYMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbjKYMKC (ORCPT
+        with ESMTP id S229569AbjKYMKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:10:02 -0500
+        Sat, 25 Nov 2023 07:10:53 -0500
 Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41D8DD
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:10:08 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a0064353af8so732634366b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:10:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88CCFB
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:10:59 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so396697166b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:10:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700914207; x=1701519007; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700914258; x=1701519058; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0ne3LFIkmsbmi3RgcTltZ5JX2XL/7yv4bhm1K2gnu5s=;
-        b=e6F8Uy9gbn4cuQS4XMt2T67CERRGdZ3v6mAxLsVbxKQ/BVuodyhTHWrHA3aKymLMoo
-         Oayi6Fkpa8Mtc4gNZ1v4YyQlo2xS0njXjRJd69IxtZPwfE3r/Y27eB48A53FVOAHJhOZ
-         X71Ahluxfg4NfEtUdJKe402MOGVlGukWJeTxUb0QJx0toCzD+rnfhqbvnWzalMXV2pj+
-         tkylgGMcZdDV1cQFfPLh9SUEWxgOE77bZ9YxVyUQwYne3k1bGTaDzg3TI+LaRYG08iiE
-         A/S8PjI1kp8e0UWwlyN+5WQqeB1XyBqSy9mJsKljTYGF4X5iMrufWbhHjbe65G2GYo86
-         dtow==
+        bh=e+Amqg9FHbKoht5Ud+nnZydf3qC2jMGGuvZ/5rRQA5A=;
+        b=FLMtnGvruMkNxm1DOMl9kECUFlYMynUZlc9N73e8mClSmduZylDaoemTxvAyH1lAI6
+         gLrnMxoO1TPvseINrNZHYb9bjS+U22SH/zynFH7GXoJHfvNzuOAMI0nTGUikmKUY2yGL
+         VtyiH3IZNQZX7IP+vdc0vznU7Y7AjdvL5XEO73Amz3rK90B59BV1f+aAzdnStnDcwHNy
+         Ll+dwrIoFrJkzByC+zz0ATJS3HiTf6mieeo7klvytoJp7gUNaeXg4MnRl3SAx3iw/5Nr
+         DI5RkdyD+16RhIA/DsB/OaK86iTHGGIQ/PkG/IoPYkqQKPCKdWGircbVGRhuWUR+3un+
+         j8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700914207; x=1701519007;
+        d=1e100.net; s=20230601; t=1700914258; x=1701519058;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ne3LFIkmsbmi3RgcTltZ5JX2XL/7yv4bhm1K2gnu5s=;
-        b=atS3iFABLvjYzWteXdtH0sIKuZPWTByS8XulUSdoMeoOxpsa/zn9YnFPitNEESC1th
-         /D07V7sshaKNl6YE2ZsbFd+M/ECcyQZHfG+f4oLVeBNkHAAmNkaCL0H4jENdUtBRiMzb
-         odzdvYZDtAjl5roxJ1ChUzn3yklmZYSmt/EILGNKjt8OFfUqHU6EyevW1qarboPjIEli
-         9EClrBRyyGurehFlQZUkfP7jbvuAZ6/6MxAAMU7/mUdBjvF+Nj0JXzGj2GKh6E7/KF7F
-         grrdurrihk1y84h/ekhbPdvZgu2sJehYhpTIs3fV9+ViKT4k5xWVY3pcSn5mJX/bFlDs
-         UQkQ==
-X-Gm-Message-State: AOJu0YxC468mTmlYAL7ElsH+0SPAxaa0mok4eWqmhWEpJV1wxycBq3Qa
-        oy/MVfGdpQ3dk4RfrbWEsPOaFw==
-X-Google-Smtp-Source: AGHT+IFOmnAkGclZmKq8xPureQ/o4yixSNKuEvy2d7uscr4cLd7TAG1kTSku+5gHPxk8QX6KqfHa3g==
-X-Received: by 2002:a17:906:2088:b0:9ef:b466:abe0 with SMTP id 8-20020a170906208800b009efb466abe0mr5195557ejq.8.1700914207016;
-        Sat, 25 Nov 2023 04:10:07 -0800 (PST)
+        bh=e+Amqg9FHbKoht5Ud+nnZydf3qC2jMGGuvZ/5rRQA5A=;
+        b=MjJtM1bagvbVfVyGg3+LNPEP0cgb/WMDhqjiuCKUnRlo5V8H5bfArswDRqqjAAv0Bt
+         Q2c2Hgzgj4875mNBv+bDcxv60HU8g8LLO7RmbjktX7IEYwThUS3wYTdpxiXMItdDmAGw
+         Z0dltHFJYWbVh6BVCOBQqlOuSma6B4F+a6CoyGo19zHZ5mqLFQ24YCnvdMry/ORoiRJP
+         GnIOnVSAC4xTXGPZ2DDkx0Zz7zWEWPhGmpWbh8PTgQhuDJ9dGueglBiGHOfXbcOizIA8
+         HfTfT6uP6prc/0ed28txgK1OXI6UeunT8YVKWce98I4Aow3yztpCZ1IPACoos87xTOIC
+         plpg==
+X-Gm-Message-State: AOJu0Yxv6wM7ma27jDf7WB0ZYHHrSWIn52bWUrQ16evZLPK1K0wygHmR
+        dXyKTHp6XwDyeTpx/mM0jl1MaQ==
+X-Google-Smtp-Source: AGHT+IGDNxqVlq2BQ+aouPmLDKGU4qmcMspBbSDmnzNRwe/+GYmpxv+JRz5sQUlEuIxQh8J6TTLTPw==
+X-Received: by 2002:a17:906:2c4c:b0:a04:bd7c:b7f7 with SMTP id f12-20020a1709062c4c00b00a04bd7cb7f7mr4277848ejh.64.1700914258072;
+        Sat, 25 Nov 2023 04:10:58 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b009e6af2efd77sm3347884ejb.45.2023.11.25.04.10.05
+        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b009e6af2efd77sm3347884ejb.45.2023.11.25.04.10.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 04:10:06 -0800 (PST)
-Message-ID: <332b87ca-56af-4eef-93ba-b8b1b17d3470@linaro.org>
-Date:   Sat, 25 Nov 2023 13:10:05 +0100
+        Sat, 25 Nov 2023 04:10:57 -0800 (PST)
+Message-ID: <a7dd66b3-460e-47c8-a426-a7f9924874ce@linaro.org>
+Date:   Sat, 25 Nov 2023 13:10:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] arm64: dts: qcom: sm8250-xiaomi-elish: Fix typos
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sm8250-xiaomi-elish: Add pm8150b
+ type-c node
 Content-Language: en-US
 To:     Jianhua Lu <lujianhua000@gmail.com>,
         Andy Gross <agross@kernel.org>,
@@ -66,6 +67,7 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
 References: <20231125023343.10939-1-lujianhua000@gmail.com>
+ <20231125023343.10939-2-lujianhua000@gmail.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -102,12 +104,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231125023343.10939-1-lujianhua000@gmail.com>
+In-Reply-To: <20231125023343.10939-2-lujianhua000@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,9 +118,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25.11.2023 03:33, Jianhua Lu wrote:
-> There are two typos in this dtsi, so fix it.
->   classis -> chassis.
->   80700000 -> 80600000
+> Add type-c node to feature otg function.
 > 
 > Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
 > ---
