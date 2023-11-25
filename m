@@ -2,106 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA507F899E
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895097F8986
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjKYJXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 04:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        id S231838AbjKYJVj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Nov 2023 04:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231981AbjKYJX2 (ORCPT
+        with ESMTP id S229503AbjKYJVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 04:23:28 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2068.outbound.protection.outlook.com [40.107.243.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5203010E2;
-        Sat, 25 Nov 2023 01:23:04 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KBtEJ5K/mTzjZ86/+N3Jac05YFYtqONn+bZood2So9wyE3uwIiQnn5v59Q51hjh6zhbYGM38SZM+oNJ8H3z1ik7AU3hG73mJ91WXI3At6zaxMG7iGg3VhTd7B0EWkvfOXQWGB0C/ECFi9XnzF+CrMTmXqh9Z4580RHP1W+UbhkOrQLGrLIM+1ZnL+zx+BpprHQST6QksHPpznkDrrs7XGAWBlQ2WbBhmAbgjPLF5uy8c6lGUsyAzwc2cykhRsyjRdMLyV+0UZxf/BwEV+PmNUO01412dp0IanjpIAzueKkjW4fAWGjgLdV22UMGZZxf+d7aZWDkYUL9Mkg4EsYj/vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uctAgBsWbg4zjYa/iQFFs5zeaRx7Y3UIWC12hEqotVg=;
- b=dqrWEgCWoCWfAaWTLtIiWePuDtZc47j1zmNszRh3tVtQRxWS07IqApcKgNVRzpHgRc3g6oM/2MhEha3/3l2SwHjQs6jiVWiiXLH0LUHTvkWNFgJEPZSOpWmGnUJlulDpzJUtq559k67vL4y896kqJcunU56PxJgdZcwqVp4dnsVEHEqSirNwOuC2dImmdh3FjzhqT62Wv+h3QbQ+jl/brgy/ZpGfISwxgar/O+xbdut5UXdP7Ur+6qJZaHoy7m0/2Iy0wUOgxCw6QGXCSDFmQdxbJ44P53g7+NJtr9XSeVPF69illN8LYVect+HpEFYQmV5rlxio3peb4aIlCMqJtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uctAgBsWbg4zjYa/iQFFs5zeaRx7Y3UIWC12hEqotVg=;
- b=G6tXW1rM0BduUgPpzWata/93Jx0VXfu8EzZza39rVxbPWt7c6KN6mOJyH6jtf36TxfVWZrk8KeQ732XiG0tszQWFfX/Ug2tcAvVOPivNzNwJNoLivbizSGGX9F6Xig+R1TYmfVSWfzMDWZU42KXRbpEjm8fGP47A31Ds1UvkpRI=
-Received: from CY5PR13CA0004.namprd13.prod.outlook.com (2603:10b6:930::27) by
- SA1PR12MB5670.namprd12.prod.outlook.com (2603:10b6:806:239::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.25; Sat, 25 Nov 2023 09:22:58 +0000
-Received: from CY4PEPF0000E9D8.namprd05.prod.outlook.com
- (2603:10b6:930:0:cafe::9) by CY5PR13CA0004.outlook.office365.com
- (2603:10b6:930::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19 via Frontend
- Transport; Sat, 25 Nov 2023 09:22:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000E9D8.mail.protection.outlook.com (10.167.241.83) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 09:22:58 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:22:57 -0600
-Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34
- via Frontend Transport; Sat, 25 Nov 2023 03:22:51 -0600
-From:   Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To:     <broonie@kernel.org>, <tudor.ambarus@linaro.org>,
-        <pratyush@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <sbinding@opensource.cirrus.com>, <lee@kernel.org>,
-        <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-        <rf@opensource.cirrus.com>, <perex@perex.cz>, <tiwai@suse.com>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@tuxon.dev>, <michal.simek@amd.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-sound@vger.kernel.org>, <git@amd.com>,
-        <amitrkcian2002@gmail.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v11 10/10] spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
-Date:   Sat, 25 Nov 2023 14:51:37 +0530
-Message-ID: <20231125092137.2948-11-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+        Sat, 25 Nov 2023 04:21:33 -0500
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADA610CA
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 01:21:40 -0800 (PST)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc41aed6a5so29475415ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 01:21:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700904100; x=1701508900;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wEGqev8W91UlLE+z9Vq14xAa3OdBqUjqhjL3kWN4G7A=;
+        b=DAxqV0adQIx0K7Zp4R0CV5SMouOac1kFzQnwz1aDzZAiRKq14AhCfbsdrlTyr0ncU6
+         s6yGm3tbhfEOqgVjXfwgNCSbVDKbiEjqo68+hY/1NWbIpd0+zw1DjcT5ioAxPP++fk6E
+         AUDypTmhliVhmWmnZpi8SbRzH5yethV0WHwIumucBUFJ2rrshViJSeLZPNHPGwKD+bz1
+         iNTCB1iIh9ErE8LpZEIBqIxa9quOeHV7oV22iPn+v2kpiCauwr0CmPPJzAleuQTjfZfA
+         KAp/2RnY8kImetlrwwTp9lo456J0MfxnsJgyiswnqz5zu6/bRFpD6IhNTs0hUgUOng1c
+         Ul4w==
+X-Gm-Message-State: AOJu0YzY0eYpIUF0Q3/wPtUldJAlrlj2HAYoYQXO41uuND+/0X+aQ34E
+        VbB3Go8MTjLT9sLQCKUvaanAF5V8S28feUgf1TRtNVKHWOe4
+X-Google-Smtp-Source: AGHT+IGPVstb3OhDXZAiIYvNNdhtJBX1C3jCTeiOfdWwIX8+PfsQoQlSvWiiJmnGHUXmFN+KLYsjmuugDSZkVe13jMG/FM1hOsdm
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D8:EE_|SA1PR12MB5670:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4dce4a65-03f5-45f9-4633-08dbed981d3c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9e8KTXIRFeKWvAxAwZp0A5Jhwpaq3ekmlMDjtBJotG4m7ukT6l2sqKx7aYnwLzhpSaXWEcnLNkyEcWPQdNu5v/kYxOTH8+mRN+K1NGSh4RzpcML8qY+wwKatYgbek/cE6P5/O+68OwlQBTVAgIQflof1ctsCFRgJZBE4WHZL8MJ3w9yRi/BXIPvVNLtwqz8vzidq8up+G7Fdbv9zYG6avKv9oh3Co1MWtTeTnAZLjeaMP/mLy9ijF2Jj8LHj8dNfCarcSEy4APpOyjUh5KXcME5uh6xQ4WfO1Ej885LrSoJFa6tIFyUsO9rNFYdWC7cqzU5plWgCbbHwuFCPp3cMIA/e9HgyRmoxXjSoVUwV/8DuSEicPbz0bcVms+3sWV/meGfeokVLnr4ACYfJqjaORHq2yuK+KkRRKUNYnz54a42cjdFIA9AMo+V1ltCHfAZEhnh5HMVGVudOw7mlQXsSkmZsuS6txdO+NVOQi5j8Om8ZY+mj6v5x+o6ZLGqZNQrEG8jn/YX0MNVXgxIs9F5SzyysKjg5ug+ESXwoHxQMlipVpg0SWj5l4dFExkBACyZ2/OcIYVuyANZQO1WFvMt3MIt+KLrJ8swqGbr8tArNotHfjMsljicDxCVdPw0CvhkA/odXJcQFlFYPDJPxmhuRWYLO5o0wRNByVfGx+3aJ5Y8uhuBfuFVAYPnQOQ4Pz7e/lGgGa9CFdKa1FnNUwOtfuiluZ+ELgs2oeNxs6yI6Ori4I5Paw0rHPZZwKgvYTO22fE0GgaZuXYf/iUTOjp+Zmd8hWSFezWuqcw5SlxPxw+c=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(230922051799003)(186009)(82310400011)(64100799003)(451199024)(1800799012)(46966006)(40470700004)(36840700001)(6666004)(54906003)(316002)(70586007)(70206006)(110136005)(478600001)(40460700003)(7416002)(5660300002)(921008)(41300700001)(36756003)(2906002)(4326008)(8676002)(8936002)(86362001)(82740400003)(81166007)(83380400001)(2616005)(26005)(336012)(426003)(1076003)(356005)(47076005)(36860700001)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 09:22:58.3264
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4dce4a65-03f5-45f9-4633-08dbed981d3c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D8.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5670
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-Received: by 2002:a17:902:e88f:b0:1c9:c879:ee82 with SMTP id
+ w15-20020a170902e88f00b001c9c879ee82mr1201359plg.11.1700904099848; Sat, 25
+ Nov 2023 01:21:39 -0800 (PST)
+Date:   Sat, 25 Nov 2023 01:21:39 -0800
+In-Reply-To: <CAOQ4uxj+enOZJiAJaCRnfb1soFS7aonJjHmLXiP3heQAFQoBqg@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ab2787060af698fc@google.com>
+Subject: Re: [syzbot] [overlayfs?] KASAN: invalid-free in ovl_copy_up_one
+From:   syzbot <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com
+Cc:     amir73il@gmail.com, jannh@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,107 +60,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During probe GQSPI driver sets SPI_CONTROLLER_MULTI_CS bit in ctlr->flags
-for notifying SPI core about multi CS capability of the controller.
-In parallel mode the controller can either split the data between both the
-flash or can send the same data to both the flashes, this is determined by
-the STRIPE bit. While sending commands to the flashes the GQSPI driver
-send the same command to both the flashes by resetting the STRIPE bit, but
-while writing/reading data to & from the flash the GQSPI driver splits the
-data evenly between both the flashes by setting the STRIPE bit.
+> On Fri, Nov 24, 2023 at 5:26 PM Jann Horn <jannh@google.com> wrote:
+>>
+>> On Fri, Nov 24, 2023 at 4:11 PM Jann Horn <jannh@google.com> wrote:
+>> >
+>> > On Wed, Sep 27, 2023 at 5:10 PM syzbot
+>> > <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com> wrote:
+>> > > syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+>> > >
+>> > > Reported-and-tested-by: syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com
+>> > >
+>> > > Tested on:
+>> > >
+>> > > commit:         8e9b46c4 ovl: do not encode lower fh with upper sb_wri..
+>> > > git tree:       https://github.com/amir73il/linux.git ovl_want_write
+>> > > console output: https://syzkaller.appspot.com/x/log.txt?x=10d10ffa680000
+>> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bb54ecdfa197f132
+>> > > dashboard link: https://syzkaller.appspot.com/bug?extid=477d8d8901756d1cbba1
+>> > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>> >
+>> > It looks like the fix was submitted without the Reported-by tag, so
+>> > syzkaller doesn't recognize that the fix has landed... I'll tell
+>> > syzkaller now which commit the fix is supposed to be in, please
+>> > correct me if this is wrong:
+>> >
+>> > #syz fix: ovl: do not encode lower fh with upper sb_writers held
+>>
+>> (Ah, and just for the record: I hadn't realized when writing this that
+>> the fix was actually in a newer version of the same patch... "git
+>
+> That is correct.
+> I am very thankful for syzbot with helping me catch bugs during development
+> and I would gladly attribute the bot and its owners, but I don't that
+> Reported-and-tested-by is an adequate tag for a bug that never existed as
+> far as git history.
+>
+> Even Tested-by: syzbot could be misleading to stable kernel bots
+> that may conclude that the patch is a fix that needs to apply to stable.
+>
+> I am open to suggestions.
+>
+> Also maybe
+>
+> #syz correction:
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 39 +++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+unknown command "correction:"
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index c5d12ddd4ab3..61e91d59014b 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -21,6 +21,7 @@
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
- #include <linux/spi/spi-mem.h>
-+#include <linux/mtd/spi-nor.h>
- 
- /* Generic QSPI register offsets */
- #define GQSPI_CONFIG_OFST		0x00000100
-@@ -190,6 +191,7 @@ struct qspi_platform_data {
-  * @op_lock:		Operational lock
-  * @speed_hz:          Current SPI bus clock speed in hz
-  * @has_tapdelay:	Used for tapdelay register available in qspi
-+ * @is_parallel:		Used for multi CS support
-  */
- struct zynqmp_qspi {
- 	struct spi_controller *ctlr;
-@@ -212,8 +214,33 @@ struct zynqmp_qspi {
- 	struct mutex op_lock;
- 	u32 speed_hz;
- 	bool has_tapdelay;
-+	bool is_parallel;
- };
- 
-+/**
-+ * zynqmp_gqspi_update_stripe - For GQSPI controller data stripe capabilities
-+ * @op:	Pointer to mem ops
-+ * Return:      Status of the data stripe
-+ *
-+ * Returns true if data stripe need to be enabled, else returns false
-+ */
-+bool zynqmp_gqspi_update_stripe(const struct spi_mem_op *op)
-+{
-+	if (op->cmd.opcode ==  SPINOR_OP_BE_4K ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K ||
-+	    op->cmd.opcode ==  SPINOR_OP_CHIP_ERASE ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE_4B ||
-+	    op->cmd.opcode == SPINOR_OP_BE_4K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_WRSR ||
-+	    op->cmd.opcode ==  SPINOR_OP_BRWR ||
-+	    (op->cmd.opcode ==  SPINOR_OP_WRSR2 && !op->addr.nbytes))
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * zynqmp_gqspi_read - For GQSPI controller read operation
-  * @xqspi:	Pointer to the zynqmp_qspi structure
-@@ -468,7 +495,14 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
- 
--	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
-+	if ((qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) &&
-+	    (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS)) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_BOTH,
-+					 GQSPI_SELECT_FLASH_BUS_BOTH);
-+		if (!xqspi->is_parallel)
-+			xqspi->is_parallel = true;
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
- 		zynqmp_gqspi_selectslave(xqspi,
- 					 GQSPI_SELECT_FLASH_CS_UPPER,
- 					 GQSPI_SELECT_FLASH_BUS_LOWER);
-@@ -1137,6 +1171,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	}
- 
- 	if (op->data.nbytes) {
-+		if (xqspi->is_parallel && zynqmp_gqspi_update_stripe(op))
-+			genfifoentry |= GQSPI_GENFIFO_STRIPE;
- 		reinit_completion(&xqspi->data_completion);
- 		if (op->data.dir == SPI_MEM_DATA_OUT) {
- 			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -1332,6 +1368,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctlr->dev.of_node = np;
- 	ctlr->auto_runtime_pm = true;
-+	ctlr->flags |= SPI_CONTROLLER_MULTI_CS;
- 
- 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
- 	if (ret) {
--- 
-2.17.1
-
+>
+> To tell syzbot we are not fixing a bug in upstream, but in a previous
+> version of a patch that it had tested.
+>
+>> range-diff 44ef23e481b02df2f17599a24f81cf0045dc5256~1..44ef23e481b02df2f17599a24f81cf0045dc5256
+>> 5b02bfc1e7e3811c5bf7f0fa626a0694d0dbbd77~1..5b02bfc1e7e3811c5bf7f0fa626a0694d0dbbd77"
+>> shows an added "ovl_get_index_name", I guess that's the fix?)
+>
+> No, that added ovl_get_index_name() seems like a fluke of the range-diff tool.
+> All the revisions of this patch always had this same minor change in this line:
+>
+> -               err = ovl_get_index_name(ofs, c->lowerpath.dentry,
+> &c->destname);
+> +               err = ovl_get_index_name(ofs, origin, &c->destname);
+>
+> The fix is obviously in the other part of the range-diff.
+>
+> Thanks,
+> Amir.
+>
+>                 if (err)
+>      -                  return err;
+>     -+                  goto out;
+>     ++                  goto out_free_fh;
+>         } else if (WARN_ON(!c->parent)) {
+>                 /* Disconnected dentry must be copied up to index dir */
+>      -          return -EIO;
+>      +          err = -EIO;
+>     -+          goto out;
+>     ++          goto out_free_fh;
+>         } else {
+>                 /*
+>                  * Mark parent "impure" because it may now contain non-pure
+>     @@ fs/overlayfs/copy_up.c: static int ovl_do_copy_up(struct
+> ovl_copy_up_ctx *c)
+>                 ovl_end_write(c->dentry);
+>                 if (err)
+>      -                  return err;
+>     -+                  goto out;
+>     ++                  goto out_free_fh;
+>         }
+>
+>         /* Should we copyup with O_TMPFILE or with workdir? */
+>     @@ fs/overlayfs/copy_up.c: static int ovl_do_copy_up(struct
+> ovl_copy_up_ctx *c)
+>       out:
+>         if (to_index)
+>                 kfree(c->destname.name);
+>     ++out_free_fh:
+>      +  kfree(fh);
+>         return err;
+>       }
