@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916787F8D72
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 19:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20F17F8D87
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjKYS6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 13:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        id S232148AbjKYTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:02:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYS6f (ORCPT
+        with ESMTP id S229456AbjKYTCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 13:58:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46420EA
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 10:58:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C94C433C8;
-        Sat, 25 Nov 2023 18:58:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700938721;
-        bh=/uJWVRTVhr1xD5gokfNl1KVV9MZJDu4ilncSLnPbO1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d2cwv6fQBofTHtYALVzhGFsR9SmYjGzenekz2r1r8FfwIG/bXnPFnfVDUjphtCLjc
-         YCzxKUJ5NNt2ebl0nuc7UvT2llbRMZ2dN4Oz//qZPoSGXqmkRWbpOsPKM/86FFykjb
-         ZPzzLd3paQnykXEnxR+Sy/0LF1uJtTqgTVIOBGBkTTxqhfG3ww1kea/FKelKcxcR3k
-         5FzHO7wKhecYtUA5JP/EVWjmJ5G8ij8oOohcJHCpk7qAnswBRiMRe3gnNTpweRpy2Z
-         sgOZGXiWf6qLCIFNbB9dayphfHTjZIeyO95AU1DB6PGeaAYQXRGbThoql0yKCRcM5M
-         Wp/WQVnfJ+wmA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 000/293] 5.15.140-rc2 review
-Date:   Sat, 25 Nov 2023 18:58:39 +0000
-Message-Id: <20231125185839.101949-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231125163129.530624368@linuxfoundation.org>
-References: 
+        Sat, 25 Nov 2023 14:02:44 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24118EA;
+        Sat, 25 Nov 2023 11:02:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=DeTdWd/XTowsawKJk8PI2rdL8uwaJxvxyQFH1coInMc=; b=l+5B9Iw4rMpfs+oIP9Jkgxl4WR
+        4mFgWkNXmHfu5hKf+wYzSsMbyleEyb6lfeOvE/SH8TLbiULgFAGFxH1hBuASoyZZsjqzOSh2X+p1D
+        5kNU0hbflmCL1krPgt3tmcdq3gl8vDoiTIa+zzMWQLAVvZsALbLDkVePXv3689RjN+7A=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r6xv7-001Cp0-HX; Sat, 25 Nov 2023 20:02:25 +0100
+Date:   Sat, 25 Nov 2023 20:02:25 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH v2 01/11] net: phy: extend PHY package API
+ to support multiple global address
+Message-ID: <d349163f-dea9-49d5-9018-7c7a8ddbe311@lunn.ch>
+References: <20231125001127.5674-1-ansuelsmth@gmail.com>
+ <20231125001127.5674-2-ansuelsmth@gmail.com>
+ <a8ce4503-c24d-4d6e-91ec-d03624b31fe0@lunn.ch>
+ <656237d6.5d0a0220.2c3da.d832@mx.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <656237d6.5d0a0220.2c3da.d832@mx.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 2023-11-25T16:33:08+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 5.15.140 release.
-> There are 293 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Yes can be detached. Making addr to base_addr would change the thing but
+> can confirm, any user of the API always used the base addr as cookie, so
+> it won't change a thing.
 > 
-> Responses should be made by Mon, 27 Nov 2023 16:30:48 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> Will have to make the separate commit a dependency to this series but i
+> expect this change to be merged before this RFC is completed. Good idea.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+A change like this can be merged quickly. You can keep the DT package
+as an RFC, we don't yet seem to have a clear concept what it is.
 
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] a3664bb04ca3 ("Linux 5.15.140-rc2")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+	Andrew
