@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD467F8927
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C27A7F892C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjKYISw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:18:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S229569AbjKYIUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 03:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKYISs (ORCPT
+        with ESMTP id S229462AbjKYIUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:18:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD523B7
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:18:54 -0800 (PST)
+        Sat, 25 Nov 2023 03:20:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ED8DB
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 00:20:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700900333;
+        s=mimecast20190719; t=1700900456;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=7gWnKow7mmEdO4f39vqBRl04PZThOfmSepuYQVktBy4=;
-        b=C0MYdLZF+lm3vCMOMwZdg4uIBTyMmT6w3ZOWd8xu5aARMbaHrd3kgB5mop4E776U/1WMgR
-        w3XRewCf3AqmFqcd+N/Vqpwu6GzXsUddMiKyz0lGE2TaPHpQDxjF+lsK6zFrTfkZPKqw6V
-        fDvIq8DHz/obDAcNbTMT3awetGh/tHY=
+        bh=zFft4eSCdOMrdpLaXue5iGXf4Itn7tLvD8L9yc/5DXM=;
+        b=IVQH++aSv9q1fmMGwIdDJ5POSUj561IrcpqHNaasqjhQrY5TbFYPtptlRXjNdWgjzmFmCK
+        kqPgtyP7R/mOBIl/vog6RQsaOkR0lCgxd0klQLedJtcfpceBZ3A0X0E3j7Nff7woziKcQk
+        AD/J/ZXACcFUGmWxyhXFNXSJRGKMNI4=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-n9Qe_U-mMWWK-hI_hA54Ug-1; Sat,
- 25 Nov 2023 03:18:51 -0500
-X-MC-Unique: n9Qe_U-mMWWK-hI_hA54Ug-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-561-s8aJHvZZNQuTMHrAnoz3QA-1; Sat,
+ 25 Nov 2023 03:20:55 -0500
+X-MC-Unique: s8aJHvZZNQuTMHrAnoz3QA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 792C43810B33;
-        Sat, 25 Nov 2023 08:18:51 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 251921C05AB2;
+        Sat, 25 Nov 2023 08:20:55 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 603EB1C060B0;
-        Sat, 25 Nov 2023 08:18:51 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C44AC1596F;
+        Sat, 25 Nov 2023 08:20:55 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: remove CONFIG_HAVE_KVM_EVENTFD
-Date:   Sat, 25 Nov 2023 03:18:50 -0500
-Message-Id: <20231125081850.1388059-1-pbonzini@redhat.com>
+Subject: [PATCH] KVM: remove CONFIG_HAVE_KVM_IRQFD
+Date:   Sat, 25 Nov 2023 03:20:54 -0500
+Message-Id: <20231125082054.1388342-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,193 +58,254 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virt/kvm/eventfd.c is compiled unconditionally, meaning that the ioeventfds
-member of struct kvm is accessed unconditionally.  CONFIG_HAVE_KVM_EVENTFD
-therefore must be defined for KVM common code to compile successfully,
-remove it.
+All platforms with a kernel irqchip have support for irqfd.  Unify the
+two configuration items so that userspace can expect to use irqfd to
+inject interrupts into the irqchip.
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/arm64/kvm/Kconfig     |  1 -
- arch/loongarch/kvm/Kconfig |  1 -
- arch/mips/kvm/Kconfig      |  1 -
- arch/powerpc/kvm/Kconfig   |  1 -
- arch/riscv/kvm/Kconfig     |  1 -
- arch/s390/kvm/Kconfig      |  1 -
- arch/x86/kvm/Kconfig       |  1 -
- include/linux/kvm_host.h   | 30 +-----------------------------
- virt/kvm/Kconfig           |  5 +----
- 9 files changed, 2 insertions(+), 40 deletions(-)
+ arch/arm64/kvm/Kconfig     | 1 -
+ arch/powerpc/kvm/Kconfig   | 2 --
+ arch/powerpc/kvm/powerpc.c | 2 +-
+ arch/riscv/kvm/Kconfig     | 1 -
+ arch/s390/kvm/Kconfig      | 1 -
+ arch/x86/kvm/Kconfig       | 1 -
+ include/linux/kvm_host.h   | 9 ++++-----
+ include/trace/events/kvm.h | 8 ++++----
+ virt/kvm/Kconfig           | 3 ---
+ virt/kvm/eventfd.c         | 6 +++---
+ virt/kvm/kvm_main.c        | 4 ++--
+ 11 files changed, 14 insertions(+), 24 deletions(-)
 
 diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 83c1e09be42e..5d9b68b5a0b3 100644
+index 5d9b68b5a0b3..71ebc4dadcfd 100644
 --- a/arch/arm64/kvm/Kconfig
 +++ b/arch/arm64/kvm/Kconfig
 @@ -29,7 +29,6 @@ menuconfig KVM
  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
  	select KVM_XFER_TO_GUEST_WORK
  	select KVM_VFIO
--	select HAVE_KVM_EVENTFD
- 	select HAVE_KVM_IRQFD
+-	select HAVE_KVM_IRQFD
  	select HAVE_KVM_DIRTY_RING_ACQ_REL
  	select NEED_KVM_DIRTY_RING_WITH_BITMAP
-diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
-index fda425babfb2..de19b9d9a444 100644
---- a/arch/loongarch/kvm/Kconfig
-+++ b/arch/loongarch/kvm/Kconfig
-@@ -22,7 +22,6 @@ config KVM
- 	depends on AS_HAS_LVZ_EXTENSION
- 	depends on HAVE_KVM
- 	select HAVE_KVM_DIRTY_RING_ACQ_REL
--	select HAVE_KVM_EVENTFD
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_GENERIC_HARDWARE_ENABLING
-diff --git a/arch/mips/kvm/Kconfig b/arch/mips/kvm/Kconfig
-index a8cdba75f98d..c7fc176fffc3 100644
---- a/arch/mips/kvm/Kconfig
-+++ b/arch/mips/kvm/Kconfig
-@@ -22,7 +22,6 @@ config KVM
- 	select EXPORT_UASM
- 	select PREEMPT_NOTIFIERS
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
--	select HAVE_KVM_EVENTFD
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_MMIO
- 	select MMU_NOTIFIER
+ 	select HAVE_KVM_MSI
 diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-index 902611954200..8a3d08559f11 100644
+index 8a3d08559f11..b24da1c8699b 100644
 --- a/arch/powerpc/kvm/Kconfig
 +++ b/arch/powerpc/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- config KVM
- 	bool
- 	select PREEMPT_NOTIFIERS
--	select HAVE_KVM_EVENTFD
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_VFIO
- 	select IRQ_BYPASS_MANAGER
+@@ -224,7 +224,6 @@ config KVM_MPIC
+ 	bool "KVM in-kernel MPIC emulation"
+ 	depends on KVM && PPC_E500
+ 	select HAVE_KVM_IRQCHIP
+-	select HAVE_KVM_IRQFD
+ 	select HAVE_KVM_IRQ_ROUTING
+ 	select HAVE_KVM_MSI
+ 	help
+@@ -237,7 +236,6 @@ config KVM_XICS
+ 	bool "KVM in-kernel XICS emulation"
+ 	depends on KVM_BOOK3S_64 && !KVM_MPIC
+ 	select HAVE_KVM_IRQCHIP
+-	select HAVE_KVM_IRQFD
+ 	default y
+ 	help
+ 	  Include support for the XICS (eXternal Interrupt Controller
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index f6af752698d0..df0a90b37c17 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -578,7 +578,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		break;
+ #endif
+ 
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ 	case KVM_CAP_IRQFD_RESAMPLE:
+ 		r = !xive_enabled();
+ 		break;
 diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-index dfc237d7875b..642f8d95289b 100644
+index 642f8d95289b..267bbf85c7ea 100644
 --- a/arch/riscv/kvm/Kconfig
 +++ b/arch/riscv/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- config KVM
+@@ -21,7 +21,6 @@ config KVM
  	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
  	depends on RISCV_SBI && MMU
--	select HAVE_KVM_EVENTFD
  	select HAVE_KVM_IRQCHIP
- 	select HAVE_KVM_IRQFD
+-	select HAVE_KVM_IRQFD
  	select HAVE_KVM_IRQ_ROUTING
+ 	select HAVE_KVM_MSI
+ 	select HAVE_KVM_VCPU_ASYNC_IOCTL
 diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
-index 45fdf2a9b2e3..ed567b858535 100644
+index ed567b858535..bb6d90351119 100644
 --- a/arch/s390/kvm/Kconfig
 +++ b/arch/s390/kvm/Kconfig
-@@ -23,7 +23,6 @@ config KVM
- 	select PREEMPT_NOTIFIERS
- 	select HAVE_KVM_CPU_RELAX_INTERCEPT
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
--	select HAVE_KVM_EVENTFD
+@@ -26,7 +26,6 @@ config KVM
  	select KVM_ASYNC_PF
  	select KVM_ASYNC_PF_SYNC
  	select HAVE_KVM_IRQCHIP
+-	select HAVE_KVM_IRQFD
+ 	select HAVE_KVM_IRQ_ROUTING
+ 	select HAVE_KVM_INVALID_WAKEUPS
+ 	select HAVE_KVM_NO_POLL
 diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 950c12868d30..2efda4fc6a21 100644
+index 2efda4fc6a21..7a1280ccb525 100644
 --- a/arch/x86/kvm/Kconfig
 +++ b/arch/x86/kvm/Kconfig
-@@ -33,7 +33,6 @@ config KVM
+@@ -27,7 +27,6 @@ config KVM
+ 	select MMU_NOTIFIER
+ 	select HAVE_KVM_IRQCHIP
+ 	select HAVE_KVM_PFNCACHE
+-	select HAVE_KVM_IRQFD
+ 	select HAVE_KVM_DIRTY_RING_TSO
+ 	select HAVE_KVM_DIRTY_RING_ACQ_REL
  	select IRQ_BYPASS_MANAGER
- 	select HAVE_KVM_IRQ_BYPASS
- 	select HAVE_KVM_IRQ_ROUTING
--	select HAVE_KVM_EVENTFD
- 	select KVM_ASYNC_PF
- 	select USER_RETURN_NOTIFIER
- 	select KVM_MMIO
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 4944136efaa2..b043202dd0b4 100644
+index b043202dd0b4..06c57b02d54e 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -753,7 +753,6 @@ struct kvm {
- 	struct list_head vm_list;
- 	struct mutex lock;
- 	struct kvm_io_bus __rcu *buses[KVM_NR_BUSES];
--#ifdef CONFIG_HAVE_KVM_EVENTFD
- 	struct {
- 		spinlock_t        lock;
- 		struct list_head  items;
-@@ -762,7 +761,6 @@ struct kvm {
- 		struct mutex      resampler_lock;
- 	} irqfds;
- 	struct list_head ioeventfds;
+@@ -776,8 +776,7 @@ struct kvm {
+ 	 * Update side is protected by irq_lock.
+ 	 */
+ 	struct kvm_irq_routing_table __rcu *irq_routing;
 -#endif
- 	struct kvm_vm_stat stat;
- 	struct kvm_arch arch;
- 	refcount_t users_count;
-@@ -2013,8 +2011,6 @@ static inline void kvm_free_irq_routing(struct kvm *kvm) {}
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++
+ 	struct hlist_head irq_ack_notifier_list;
+ #endif
  
- int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi);
+@@ -963,7 +962,7 @@ static inline void kvm_arch_post_irq_routing_update(struct kvm *kvm)
+ }
+ #endif
  
--#ifdef CONFIG_HAVE_KVM_EVENTFD
--
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ int kvm_irqfd_init(void);
+ void kvm_irqfd_exit(void);
+ #else
+@@ -2014,7 +2013,7 @@ int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi);
  void kvm_eventfd_init(struct kvm *kvm);
  int kvm_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args);
  
-@@ -2039,31 +2035,7 @@ static inline bool kvm_notify_irqfd_resampler(struct kvm *kvm,
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ int kvm_irqfd(struct kvm *kvm, struct kvm_irqfd *args);
+ void kvm_irqfd_release(struct kvm *kvm);
+ bool kvm_notify_irqfd_resampler(struct kvm *kvm,
+@@ -2035,7 +2034,7 @@ static inline bool kvm_notify_irqfd_resampler(struct kvm *kvm,
  {
  	return false;
  }
--#endif
--
--#else
--
--static inline void kvm_eventfd_init(struct kvm *kvm) {}
--
--static inline int kvm_irqfd(struct kvm *kvm, struct kvm_irqfd *args)
--{
--	return -EINVAL;
--}
--
--static inline void kvm_irqfd_release(struct kvm *kvm) {}
--
--#ifdef CONFIG_HAVE_KVM_IRQCHIP
--static inline void kvm_irq_routing_update(struct kvm *kvm)
--{
--}
--#endif
--
--static inline int kvm_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
--{
--	return -ENOSYS;
--}
--
--#endif /* CONFIG_HAVE_KVM_EVENTFD */
-+#endif /* CONFIG_HAVE_KVM_IRQFD */
+-#endif /* CONFIG_HAVE_KVM_IRQFD */
++#endif /* CONFIG_HAVE_KVM_IRQCHIP */
  
  void kvm_arch_irq_routing_update(struct kvm *kvm);
  
+diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
+index 3bd31ea23fee..011fba6b5552 100644
+--- a/include/trace/events/kvm.h
++++ b/include/trace/events/kvm.h
+@@ -62,7 +62,7 @@ TRACE_EVENT(kvm_vcpu_wakeup,
+ 		  __entry->valid ? "valid" : "invalid")
+ );
+ 
+-#if defined(CONFIG_HAVE_KVM_IRQFD)
++#if defined(CONFIG_HAVE_KVM_IRQCHIP)
+ TRACE_EVENT(kvm_set_irq,
+ 	TP_PROTO(unsigned int gsi, int level, int irq_source_id),
+ 	TP_ARGS(gsi, level, irq_source_id),
+@@ -82,7 +82,7 @@ TRACE_EVENT(kvm_set_irq,
+ 	TP_printk("gsi %u level %d source %d",
+ 		  __entry->gsi, __entry->level, __entry->irq_source_id)
+ );
+-#endif /* defined(CONFIG_HAVE_KVM_IRQFD) */
++#endif /* defined(CONFIG_HAVE_KVM_IRQCHIP) */
+ 
+ #if defined(__KVM_HAVE_IOAPIC)
+ #define kvm_deliver_mode		\
+@@ -170,7 +170,7 @@ TRACE_EVENT(kvm_msi_set_irq,
+ 
+ #endif /* defined(__KVM_HAVE_IOAPIC) */
+ 
+-#if defined(CONFIG_HAVE_KVM_IRQFD)
++#if defined(CONFIG_HAVE_KVM_IRQCHIP)
+ 
+ #ifdef kvm_irqchips
+ #define kvm_ack_irq_string "irqchip %s pin %u"
+@@ -197,7 +197,7 @@ TRACE_EVENT(kvm_ack_irq,
+ 	TP_printk(kvm_ack_irq_string, kvm_ack_irq_parm)
+ );
+ 
+-#endif /* defined(CONFIG_HAVE_KVM_IRQFD) */
++#endif /* defined(CONFIG_HAVE_KVM_IRQCHIP) */
+ 
+ 
+ 
 diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index 484d0873061c..18b5a8fb491b 100644
+index 18b5a8fb491b..5cb3654b7fd8 100644
 --- a/virt/kvm/Kconfig
 +++ b/virt/kvm/Kconfig
-@@ -3,6 +3,7 @@
- 
- config HAVE_KVM
+@@ -11,9 +11,6 @@ config HAVE_KVM_PFNCACHE
+ config HAVE_KVM_IRQCHIP
         bool
-+       select EVENTFD
  
- config HAVE_KVM_PFNCACHE
-        bool
-@@ -39,10 +40,6 @@ config NEED_KVM_DIRTY_RING_WITH_BITMAP
- 	bool
- 	depends on HAVE_KVM_DIRTY_RING
- 
--config HAVE_KVM_EVENTFD
+-config HAVE_KVM_IRQFD
 -       bool
--       select EVENTFD
 -
- config KVM_MMIO
+ config HAVE_KVM_IRQ_ROUTING
         bool
  
+diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
+index 89912a17f5d5..19534156d48c 100644
+--- a/virt/kvm/eventfd.c
++++ b/virt/kvm/eventfd.c
+@@ -28,7 +28,7 @@
+ 
+ #include <kvm/iodev.h>
+ 
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ 
+ static struct workqueue_struct *irqfd_cleanup_wq;
+ 
+@@ -531,7 +531,7 @@ void kvm_unregister_irq_ack_notifier(struct kvm *kvm,
+ void
+ kvm_eventfd_init(struct kvm *kvm)
+ {
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ 	spin_lock_init(&kvm->irqfds.lock);
+ 	INIT_LIST_HEAD(&kvm->irqfds.items);
+ 	INIT_LIST_HEAD(&kvm->irqfds.resampler_list);
+@@ -540,7 +540,7 @@ kvm_eventfd_init(struct kvm *kvm)
+ 	INIT_LIST_HEAD(&kvm->ioeventfds);
+ }
+ 
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ /*
+  * shutdown any irqfd's that match fd+gsi
+  */
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 486800a7024b..3bd98ff65945 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1227,7 +1227,7 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+ 	if (r)
+ 		goto out_err_no_disable;
+ 
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ 	INIT_HLIST_HEAD(&kvm->irq_ack_notifier_list);
+ #endif
+ 
+@@ -4539,7 +4539,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+ #ifdef CONFIG_HAVE_KVM_MSI
+ 	case KVM_CAP_SIGNAL_MSI:
+ #endif
+-#ifdef CONFIG_HAVE_KVM_IRQFD
++#ifdef CONFIG_HAVE_KVM_IRQCHIP
+ 	case KVM_CAP_IRQFD:
+ #endif
+ 	case KVM_CAP_IOEVENTFD_ANY_LENGTH:
 -- 
 2.39.1
 
