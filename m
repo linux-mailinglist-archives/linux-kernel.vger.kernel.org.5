@@ -2,130 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6057F8FC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:25:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1217F8FCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjKYWYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 17:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        id S230261AbjKYW0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYWYu (ORCPT
+        with ESMTP id S230270AbjKYW0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 17:24:50 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED6C11B
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:24:56 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b0f2c50eeso1498446a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700951095; x=1701555895; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sKAE8m+7ShlD9mU1LCDDUsam3G8dOC6GVtW7kEar8Tc=;
-        b=EqMijSsURen2spKnCQW1poZAicjvumegPbTHTDP6sdEZOJPeXmkbMgCVA+g3YFWxEt
-         OzJ0dZaLli7bkhYiP0NDYAW3zcUBXPoSv+SQWfIunQH3CjHubnnkQvZeFElTROk6ZvlB
-         8gN5wTeSjfr9KqYA/Fq7sSG5hMai67MjLxzbcfZ5NDPHz4pIrNbYrRflhGBjOK8hqaaW
-         6X6L3l2JVOw+LZoyjdiNroQOKdCg+MZp0n6NWrAssb0T5aFO3u3JoLc8pNqeyv+60cIn
-         giUzmyplF6WiyawmJNyY/33/Ue22NbRgH8OZW3xCJ6Y48lmC8DPuazOZQETIRIXjkwMB
-         A0pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700951095; x=1701555895;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sKAE8m+7ShlD9mU1LCDDUsam3G8dOC6GVtW7kEar8Tc=;
-        b=X2uwv78VsMU4V+0eIhbFtOMadYedSVGp8PS0oIlADIVclFliRmvDeG8Y66c6OVu4pX
-         KuUczvnJ7hOsojlWOdX9nC2g5R1LI1sVY0UTjojwOdh7M4Onh1BL4kkcuLK85QLJQBNz
-         +5yv2/dspNN40aOk8AmLkSIS/KrQwQiX2tFFVKX6wGIlL4YPSw+ZihVH4KnWGsshU6Pf
-         qmupARpSzMyXJS18VO/iv0oHjuZ3zZIEQmUu0QI2mXMOi8gVS9W3078tQWRkpTwM7Gut
-         Hw0v8fKYP50sLHlGlWuuLd6Pqr8MfW5V24YiNQDnI2+nhzo+CSGj0gVbnK+MtUWHym1W
-         agyQ==
-X-Gm-Message-State: AOJu0YwutV6BNQqG2dv7R3wxP9GY+/e9zQYAgJW7s3ehuecvYGlsaMix
-        EXK8k0btwWWjY602wkPkuoAJNQ==
-X-Google-Smtp-Source: AGHT+IHuUyOggoOV9rwZMx7Pl9mYiZWI2U1vdaXQZtSxtbz3U2UaIsaZz3GqcbY0MyoGYPyQbjFpNw==
-X-Received: by 2002:a17:906:2246:b0:a0d:35d7:b14c with SMTP id 6-20020a170906224600b00a0d35d7b14cmr705313ejr.6.1700951094765;
-        Sat, 25 Nov 2023 14:24:54 -0800 (PST)
-Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id s7-20020a170906500700b00a0950451affsm2561765ejj.67.2023.11.25.14.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 14:24:54 -0800 (PST)
-Message-ID: <99190f51-59b5-4326-8c02-35529c280c2e@linaro.org>
-Date:   Sat, 25 Nov 2023 23:24:50 +0100
+        Sat, 25 Nov 2023 17:26:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF11189
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:26:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700951209; x=1732487209;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=z2qF1yxkjQxwNjJSlS7e6s6wsk55BfzArxL0w4u/DX8=;
+  b=nD2pWN5ljH9dt+zDf40ZG7gsZx8sNZDfergEga2hitUyziebaWl4MASx
+   Tr/ZWJy2l54eIdOiXm3TdFs326nUtWQtQxGZqDBdZ8PgAgisWqqIA3xlq
+   ir9OizmKwUspKjOVPfh22thUxkBzwYa3DJVqGtm4eD3yQCWJY3P0JOob9
+   nygrtSc8QnX0BpIFp9YJinu91zenE+tA2QKoR23iw5+EIaUwiVs0HqtTo
+   mPeWZJkxpISeezWMpEB0LCVG8Ydst7xnqxfzNaIr+psB4fwpKDMGTJkeq
+   241o6FhzCBPm8+zCn52KSfRWCbSny6VFsoyz0ekECfeWPTJTUh7OsWHLy
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="389691516"
+X-IronPort-AV: E=Sophos;i="6.04,227,1695711600"; 
+   d="scan'208";a="389691516"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2023 14:26:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="767781166"
+X-IronPort-AV: E=Sophos;i="6.04,227,1695711600"; 
+   d="scan'208";a="767781166"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 25 Nov 2023 14:26:44 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r716o-0004Tg-1P;
+        Sat, 25 Nov 2023 22:26:42 +0000
+Date:   Sun, 26 Nov 2023 06:26:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rong Tao <rtoax@foxmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Hildenbrand <david@redhat.com>,
+        Stefan Roesch <shr@devkernel.io>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        rtoax@foxmail.com, rongtao@cestc.cn
+Subject: Re: [PATCH] prctl: Get private anonymous memory region name
+Message-ID: <202311260535.WXAlmfsl-lkp@intel.com>
+References: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
- <20231125193737.GD7486@pendragon.ideasonboard.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231125193737.GD7486@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,21 +79,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
->> +
->> +3. Unit addresses shall use lowercase hex, without leading zeros (padding).
-> 
-> I'm curious, what's the reason for this ? I think it makes the sources
-> less readable. If the rule is "just" because that's how DT sources are
-> written today and it would be too complicated to change that, that's
-> fine with me.
-One more thing not mentioned is "no 0x prefix" (the unit address is *always*
-interpreted as hex).
+Hi Rong,
 
-Lowercase hex seems to be (in my experience?) the consensus for everything
-except preprocessor defines across the spectrum
+kernel test robot noticed the following build errors:
 
-No leading zeroes.. I guess it was just eye-pleasing for people that have
-been doing devicetree to date, myself included.
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.7-rc2 next-20231124]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Konrad
+url:    https://github.com/intel-lab-lkp/linux/commits/Rong-Tao/prctl-Get-private-anonymous-memory-region-name/20231125-220925
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A%40qq.com
+patch subject: [PATCH] prctl: Get private anonymous memory region name
+config: x86_64-randconfig-122-20231126 (https://download.01.org/0day-ci/archive/20231126/202311260535.WXAlmfsl-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311260535.WXAlmfsl-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311260535.WXAlmfsl-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/sys.c: In function 'prctl_get_vma':
+>> kernel/sys.c:2371:3: error: a label can only be part of a statement and a declaration is not a statement
+    2371 |   const struct anon_vma_name *anon_name = NULL;
+         |   ^~~~~
+   kernel/sys.c:2389:21: warning: passing argument 1 of 'anon_vma_name_put' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    2389 |   anon_vma_name_put(anon_name);
+         |                     ^~~~~~~~~
+   In file included from kernel/sys.c:10:
+   include/linux/mm_inline.h:363:60: note: expected 'struct anon_vma_name *' but argument is of type 'const struct anon_vma_name *'
+     363 | static inline void anon_vma_name_put(struct anon_vma_name *anon_name)
+         |                                      ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+
+
+vim +2371 kernel/sys.c
+
+  2361	
+  2362	static int prctl_get_vma(unsigned long opt, unsigned long addr,
+  2363				 unsigned long buf, unsigned long arg)
+  2364	{
+  2365		struct mm_struct *mm = current->mm;
+  2366		const char __user *u_buf;
+  2367		int error;
+  2368	
+  2369		switch (opt) {
+  2370		case PR_GET_VMA_ANON_NAME:
+> 2371			const struct anon_vma_name *anon_name = NULL;
+  2372	
+  2373			u_buf = (const char __user *)buf;
+  2374			error = 0;
+  2375	
+  2376			mmap_read_lock(mm);
+  2377			anon_name = madvise_get_anon_name(mm, addr);
+  2378			if (!anon_name) {
+  2379				mmap_read_unlock(mm);
+  2380				error = -EFAULT;
+  2381				break;
+  2382			}
+  2383	
+  2384			if (copy_to_user((char __user *)u_buf, anon_name->name,
+  2385					 strlen(anon_name->name) + 1))
+  2386				error = -EFAULT;
+  2387	
+  2388			mmap_read_unlock(mm);
+  2389			anon_vma_name_put(anon_name);
+  2390			break;
+  2391		default:
+  2392			error = -EINVAL;
+  2393		}
+  2394		return error;
+  2395	}
+  2396	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
