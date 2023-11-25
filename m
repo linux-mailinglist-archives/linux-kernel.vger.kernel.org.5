@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550907F905C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 00:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D68D7F9065
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 01:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjKYXqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 18:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S229511AbjKYX67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 18:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKYXqJ (ORCPT
+        with ESMTP id S229448AbjKYX65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 18:46:09 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC212F0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 15:46:15 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5cc5988f85eso30326737b3.2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 15:46:15 -0800 (PST)
+        Sat, 25 Nov 2023 18:58:57 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7309127;
+        Sat, 25 Nov 2023 15:59:03 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6be0277c05bso2660416b3a.0;
+        Sat, 25 Nov 2023 15:59:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700955975; x=1701560775; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+hFIt0HmR86o9B8NpKYxKa6/Sz6hTZOcUx/vMSf/X6U=;
-        b=LclWgNdLtUgCrUPOz6lD3ZYZbcpRee6fMR/vU7nM6ALljxSs+nHiAPxhdn0PSNQZ45
-         /NzJnENKNul8QwZ4M1RQ7s0pimQ3Lyorza8qzPmfwh4RidoNcR7x+Y80Ej9GAuRwtAGk
-         /d1OCBYf7mwpEB/V6QDEefCokgH5kAnZhj7uR3EN6fBiHei/FTXD7ItT9NfbkbpEuoC0
-         Vw7trBQZltdFgxdbJhBeHceIL8ZFrdvKP4r3VZYkEuS6dln94oMLpsCAz+mq1iO3YNfr
-         aO0nTRHE+eQghND6Cn6/18oymsAEMKzgBRArZ9Fto2kz0mFMF8DoW2mYPEurvAVC5/bg
-         Q0UA==
+        d=gmail.com; s=20230601; t=1700956743; x=1701561543; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z7yH14cTXqBCnY0/TJsIL1PIRgw/RoBY5Z4zX/qkJYg=;
+        b=eN+2temPAXtwZt5CQ66MKlX1iV0bXatTiyF5fmutRckfy4yZve8qjX9jywV536DlVA
+         el5syoheB4Ze2Y/eYuKPRiD3GnygnF/kxgkIcDa8rSGRuW61+nub64PYBPkxteXDxUKO
+         A2lCuMzNmfZv+TaBaLWvbRSYPYt6nuLcdSi6WzdOvxVSspSsl5BlK8jgXHFKbr3vIERx
+         fCdUQC55qvX/uUAWkjjdPicFNfhqB8oiktLEQ8JGPeeIowvTvRpTtsdv9r01EBZj06Yv
+         u7ZzOCGPqJj7/QNfRY3VzSu/6vgoAu+Rq2DZP1B8+f08za88pHxMXMhK8QBbk9L1pJOs
+         16qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700955975; x=1701560775;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700956743; x=1701561543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+hFIt0HmR86o9B8NpKYxKa6/Sz6hTZOcUx/vMSf/X6U=;
-        b=ncoPRr1uJyqKnmqZZEhLYYySM+n7IL1QtqXm5zrtc+kvod6MTdQpmYe7WD1Wlbzb/a
-         ZTK6+urBwnEDjLXo0dAyU8ykHCTYSVTO8OI5ETnAkH3z8WXmV4GExMFK01c22wYedY9X
-         FR3Hif6AHLn0ah7eo/SWR7o1ztEjH+SzIpqf8TVu76F/b2yewCG2wVVq9vYH3R/RBYfd
-         E6BbwtNn9FZD8dA1CpWKJDdOCQ9/4atphovSeIk9tGiLMak0tbx9nfJrWOnqN5tfGW7H
-         U6kDyEvalo3a9/qxyosGdtOMDLS6KblWj5ZGfXSnODhBvDpK/2c+ZU57EoXHYtB9c0dH
-         azGg==
-X-Gm-Message-State: AOJu0YyzDIqxTdeooueoVTPWQnGqOK57RBegqsC4hs24jC4i8RcCMQJ6
-        yU6K87GQ6pNhCxrb0BNDT7xZ38xSAzW51gf51D4GNg==
-X-Google-Smtp-Source: AGHT+IG60g3mNV47IlwttcnDH+atQvnMLJ1evmHoV/+jZ4ba2ng+5GbfULZhB+H2t82HBju/xWOk1HvQPjPv5o1XktY=
-X-Received: by 2002:a0d:fcc2:0:b0:59f:b0d9:5df2 with SMTP id
- m185-20020a0dfcc2000000b0059fb0d95df2mr8159218ywf.0.1700955974890; Sat, 25
- Nov 2023 15:46:14 -0800 (PST)
+        bh=Z7yH14cTXqBCnY0/TJsIL1PIRgw/RoBY5Z4zX/qkJYg=;
+        b=R/eLhS9QZhQWqr82RvhcMFFgsZF87eDnDr8qRxf8VmscyS2NyhP27EkCLiREVKU+3S
+         gm8Lcgqnv4XaZAUn237sw9IS7bcCRMSRkZSUIYJjcVYiUfOvUu0trGJT4yStLyKJgxUW
+         GAxdX63K52TFoBunwSoOckT21+Mo6CDWneJisHTuR2Rbb9OrjT4JOxM2j8i4hOKYm80B
+         TYnPt4VxcWZPgctEWtjs/4S+9jdzqDinI1O+dq/5n/sVyqbLcEAxaIoJxKQDwZRn8rzl
+         R8pZE5OqqgsjU2pM7L4hE1CZbSg29XmvIL0zejutMrr9JrBsRzMJiJANl9MV/GHvJ22R
+         s01g==
+X-Gm-Message-State: AOJu0YxQUQHczt+SCoos974ZPvtQnfdXo3gGRkrMF9i+lsMvZ27rsFvF
+        qaf115wJJ+kLCbQ0WhVl86Y=
+X-Google-Smtp-Source: AGHT+IF5siBYpnzCbLgFjdJ2fi3qSRSySuKCnjgD16vK+Wb0j3acP76sSk5/RkTEGRngZpV+qTJxAA==
+X-Received: by 2002:a05:6a20:2d14:b0:18b:4a28:6e2d with SMTP id g20-20020a056a202d1400b0018b4a286e2dmr8559366pzl.22.1700956743232;
+        Sat, 25 Nov 2023 15:59:03 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 4-20020a170902c14400b001cfc00d26c7sm650048plj.11.2023.11.25.15.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 15:59:02 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 25 Nov 2023 15:59:01 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Stefan Gloor <code@stefan-gloor.ch>
+Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: sht3x: read out sensor serial number
+Message-ID: <93260e2e-a913-4341-9bc5-ef23ee3b396e@roeck-us.net>
+References: <20231124145519.11599-2-code@stefan-gloor.ch>
+ <52909c46-4699-442b-9303-ec914fba093b@roeck-us.net>
+ <20231124220541.gvyaf7cbtc3kbesr@thinkpad>
 MIME-Version: 1.0
-References: <20231123-mv88e6xxx-leds-v1-1-3c379b3d23fb@linaro.org> <c8c821f8-e170-44b3-a3f9-207cf7cb70e2@lunn.ch>
-In-Reply-To: <c8c821f8-e170-44b3-a3f9-207cf7cb70e2@lunn.ch>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 26 Nov 2023 00:46:03 +0100
-Message-ID: <CACRpkdY+T8Rqg_irkLNvAC+o_QfwO2N+eB9X-y24t34_9Rg3ww@mail.gmail.com>
-Subject: Re: [PATCH RFC] net: dsa: mv88e6xxx: Support LED control
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124220541.gvyaf7cbtc3kbesr@thinkpad>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 5:13=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+On Fri, Nov 24, 2023 at 11:09:31PM +0100, Stefan Gloor wrote:
+> Hi Guenter,
+> 
+> thank you for your comments.
+> 
+> On Fri, Nov 24, 2023 at 09:34:48AM -0800, Guenter Roeck wrote:
+> > I am not going to accept this as sysfs attribute. Please implement
+> > using debugfs.
+> > 
+> I will do this in V2.
+> 
+> > 
+> > Also, the attribute (sysfs or debugfs) should not exist if not supported.
+> > Please only provide if supported.
+> The driver is currently only compatible with "sht3x" and "sts3x". 
+> As only a subset of these support this feature, do you recommend I
+> create new additional device IDs, i.e., sts32, sts33 and sht33?
+> 
 
-> What i would really like to see happen is that the DSA core handles
-> the registration of the LEDs, similar to how phylib does. The DT
-> binding should be identical for all DSA devices, so there is no need
-> for each driver to do its own parsing.
->
-> There are some WIP patches at
->
-> https://github.com/lunn/linux.git leds-offload-support-reduced-auto-netde=
-v
->
-> which implement this. Feel free to make use of them.
+If they have different functionality, they need different IDs.
 
-Oh it's quite a lot of patches, I really cannot drive that because there ar=
-e
-so many things about them that I don't understand the thinking behind...
-But I like what I see!
+Guenter
 
-While I defined the bits a bit differently, some of it looks similar enough=
-.
-
-> > +/* Entries are listed in selector order */
-> > +static const struct mv88e6xxx_led_hwconfig mv88e6xxx_led_hwconfigs[] =
-=3D {
->
-> You need to be careful with naming. These are probably specific to the
-> 6352. Different switches probably have different capabilities. So it
-> would be good to have the names reflect the switch family they are
-> valid for.
-
-OK I'll try to name them like such.
-
-> When we come to add support for other switch families, i wounder how
-> tables like this scale. Is there some things which can be shared, if
-> we break the table up? I need to check the data sheets.
-
-We will see I guess. It falls back to the whole question of whether
-supporting all variants in a single module is even scaling. So far
-it does I guess? One day the MV88E6xxx may need to be broken
-into submodules.
-
-Yours,
-Linus Walleij
+> Best,
+> Stefan
+> -- 
+> 
