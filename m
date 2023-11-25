@@ -2,82 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF317F8E7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7767F8E7C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjKYUKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 15:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S230059AbjKYULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 15:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjKYUKY (ORCPT
+        with ESMTP id S229507AbjKYULm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 15:10:24 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B98191;
-        Sat, 25 Nov 2023 12:10:29 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 78AA91C0071; Sat, 25 Nov 2023 21:10:28 +0100 (CET)
-Date:   Sat, 25 Nov 2023 21:10:27 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
-Message-ID: <ZWJUs9+/4k8Y917w@duo.ucw.cz>
-References: <20231125163059.878143365@linuxfoundation.org>
+        Sat, 25 Nov 2023 15:11:42 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B73E5;
+        Sat, 25 Nov 2023 12:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=BlfFBoYl8WljiWMPq8jOBx3qNB8G8Xt5J/at8Fwypa8=; b=C98y4ItdO5oDpwpMe8vrZrbVbM
+        D2Dz8StOcdo6hcr/bl8o1sdV3YDfp9BBpAdKEa0WG3laJ3mWHsIF+NmNBwlXA08WAeHZWrRZKaMpl
+        HwUwkQ0cIBI0YBtSt9VDa0m3YnfEi+6L/jb75SpkZyfYdZIxf9mbMWbw69p3o6QQZ6ndRhvTpwgEI
+        tEa2B42/xzUHEiBtx9oytcQU6RAOYh+ej2q+mq965dl4/O4H+wqMaesBWMIZSP+v5b0Q4nSbnBKW5
+        00v5nMubhJHMlrbHkp9JL388JjYycImNR3OK1Tx98RhlCrBBiVUO8LYpajLMm1PlFdgfeSf6EojMw
+        ei1spcww==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r6z0F-003A4V-1A;
+        Sat, 25 Nov 2023 20:11:47 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mo Zou <lostzoumo@gmail.com>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/9] reiserfs: Avoid touching renamed directory if parent does not change
+Date:   Sat, 25 Nov 2023 20:11:39 +0000
+Message-Id: <20231125201147.753695-1-viro@zeniv.linux.org.uk>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231125201015.GA38156@ZenIV>
+References: <20231125201015.GA38156@ZenIV>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qIpgssQlnTJDsaW1"
-Content-Disposition: inline
-In-Reply-To: <20231125163059.878143365@linuxfoundation.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jan Kara <jack@suse.cz>
 
---qIpgssQlnTJDsaW1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The VFS will not be locking moved directory if its parent does not
+change. Change reiserfs rename code to avoid touching renamed directory
+if its parent does not change as without locking that can corrupt the
+filesystem.
 
-Hi!
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/reiserfs/namei.c | 54 ++++++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 25 deletions(-)
 
-> This is the start of the stable review cycle for the 4.14.331 release.
-> There are 53 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+diff --git a/fs/reiserfs/namei.c b/fs/reiserfs/namei.c
+index 994d6e6995ab..5996197ba40c 100644
+--- a/fs/reiserfs/namei.c
++++ b/fs/reiserfs/namei.c
+@@ -1324,8 +1324,8 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 	struct inode *old_inode, *new_dentry_inode;
+ 	struct reiserfs_transaction_handle th;
+ 	int jbegin_count;
+-	umode_t old_inode_mode;
+ 	unsigned long savelink = 1;
++	bool update_dir_parent = false;
+ 
+ 	if (flags & ~RENAME_NOREPLACE)
+ 		return -EINVAL;
+@@ -1375,8 +1375,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 		return -ENOENT;
+ 	}
+ 
+-	old_inode_mode = old_inode->i_mode;
+-	if (S_ISDIR(old_inode_mode)) {
++	if (S_ISDIR(old_inode->i_mode)) {
+ 		/*
+ 		 * make sure that directory being renamed has correct ".."
+ 		 * and that its new parent directory has not too many links
+@@ -1389,24 +1388,28 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 			}
+ 		}
+ 
+-		/*
+-		 * directory is renamed, its parent directory will be changed,
+-		 * so find ".." entry
+-		 */
+-		dot_dot_de.de_gen_number_bit_string = NULL;
+-		retval =
+-		    reiserfs_find_entry(old_inode, "..", 2, &dot_dot_entry_path,
++		if (old_dir != new_dir) {
++			/*
++			 * directory is renamed, its parent directory will be
++			 * changed, so find ".." entry
++			 */
++			dot_dot_de.de_gen_number_bit_string = NULL;
++			retval =
++			    reiserfs_find_entry(old_inode, "..", 2,
++					&dot_dot_entry_path,
+ 					&dot_dot_de);
+-		pathrelse(&dot_dot_entry_path);
+-		if (retval != NAME_FOUND) {
+-			reiserfs_write_unlock(old_dir->i_sb);
+-			return -EIO;
+-		}
++			pathrelse(&dot_dot_entry_path);
++			if (retval != NAME_FOUND) {
++				reiserfs_write_unlock(old_dir->i_sb);
++				return -EIO;
++			}
+ 
+-		/* inode number of .. must equal old_dir->i_ino */
+-		if (dot_dot_de.de_objectid != old_dir->i_ino) {
+-			reiserfs_write_unlock(old_dir->i_sb);
+-			return -EIO;
++			/* inode number of .. must equal old_dir->i_ino */
++			if (dot_dot_de.de_objectid != old_dir->i_ino) {
++				reiserfs_write_unlock(old_dir->i_sb);
++				return -EIO;
++			}
++			update_dir_parent = true;
+ 		}
+ 	}
+ 
+@@ -1486,7 +1489,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 
+ 		reiserfs_prepare_for_journal(old_inode->i_sb, new_de.de_bh, 1);
+ 
+-		if (S_ISDIR(old_inode->i_mode)) {
++		if (update_dir_parent) {
+ 			if ((retval =
+ 			     search_by_entry_key(new_dir->i_sb,
+ 						 &dot_dot_de.de_entry_key,
+@@ -1534,14 +1537,14 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 							 new_de.de_bh);
+ 			reiserfs_restore_prepared_buffer(old_inode->i_sb,
+ 							 old_de.de_bh);
+-			if (S_ISDIR(old_inode_mode))
++			if (update_dir_parent)
+ 				reiserfs_restore_prepared_buffer(old_inode->
+ 								 i_sb,
+ 								 dot_dot_de.
+ 								 de_bh);
+ 			continue;
+ 		}
+-		if (S_ISDIR(old_inode_mode)) {
++		if (update_dir_parent) {
+ 			if (item_moved(&dot_dot_ih, &dot_dot_entry_path) ||
+ 			    !entry_points_to_object("..", 2, &dot_dot_de,
+ 						    old_dir)) {
+@@ -1559,7 +1562,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 			}
+ 		}
+ 
+-		RFALSE(S_ISDIR(old_inode_mode) &&
++		RFALSE(update_dir_parent &&
+ 		       !buffer_journal_prepared(dot_dot_de.de_bh), "");
+ 
+ 		break;
+@@ -1592,11 +1595,12 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 		savelink = new_dentry_inode->i_nlink;
+ 	}
+ 
+-	if (S_ISDIR(old_inode_mode)) {
++	if (update_dir_parent) {
+ 		/* adjust ".." of renamed directory */
+ 		set_ino_in_dir_entry(&dot_dot_de, INODE_PKEY(new_dir));
+ 		journal_mark_dirty(&th, dot_dot_de.de_bh);
+-
++	}
++	if (S_ISDIR(old_inode->i_mode)) {
+ 		/*
+ 		 * there (in new_dir) was no directory, so it got new link
+ 		 * (".."  of renamed directory)
+-- 
+2.39.2
 
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.14.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---qIpgssQlnTJDsaW1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZWJUswAKCRAw5/Bqldv6
-8lMgAKCU5yW6LuSzwjX+gnKkz+Lz2cCVmwCeL/fpyPtt6R63MSiqISwQwdohp0A=
-=kS8K
------END PGP SIGNATURE-----
-
---qIpgssQlnTJDsaW1--
