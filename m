@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A23F67F8E4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9E57F8E6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbjKYUAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 15:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        id S232237AbjKYUFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 15:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjKYUAp (ORCPT
+        with ESMTP id S229507AbjKYUFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 15:00:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DD2133
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 12:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700942451; x=1732478451;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mpJPZbnlB++0pfKcK61vyQxNXtYXyj1Pv2g2mZivN6w=;
-  b=Q2cCEwFzV4Y0Ql4knQT69QEVuOaruvr2N/Hk1n1f4nJXuVj0Rpp3GdpI
-   YSKJ5EnmEPOalyqY6sMDpA+NHTB5coc3M0vcl+sxKz5u5eN+SkJ0fVv5d
-   nfb8MJOH9kXYkViMzz0NAQUDQni70Xg8OPmtHOVmDiuD54Q9cXGMdbEXw
-   MK6FDo1SW2sWHPrmMeOS0b4ri4pDZ2FtfW9KnY8JVwa68PaW2i7SlYotX
-   Sq/7eo7yy4hAM/FecbuVkhVza0pWsWHGSNuw6oz8ML36G0rwbs9YCcViD
-   25o8X9mqwQXLZCCI5pBxDaIDKadnjwZgHOv9SoGNgYy97Ofp92WqjCWao
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="391398664"
-X-IronPort-AV: E=Sophos;i="6.04,227,1695711600"; 
-   d="scan'208";a="391398664"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2023 12:00:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="891332352"
-X-IronPort-AV: E=Sophos;i="6.04,227,1695711600"; 
-   d="scan'208";a="891332352"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 25 Nov 2023 12:00:46 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r6ypY-0004Me-0y;
-        Sat, 25 Nov 2023 20:00:44 +0000
-Date:   Sun, 26 Nov 2023 04:00:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Rong Tao <rtoax@foxmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Hildenbrand <david@redhat.com>,
-        Stefan Roesch <shr@devkernel.io>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        rtoax@foxmail.com, rongtao@cestc.cn
-Subject: Re: [PATCH] prctl: Get private anonymous memory region name
-Message-ID: <202311260314.iuUprWJb-lkp@intel.com>
-References: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
+        Sat, 25 Nov 2023 15:05:25 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A746127;
+        Sat, 25 Nov 2023 12:05:30 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 7ED3212000E;
+        Sat, 25 Nov 2023 23:05:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7ED3212000E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700942727;
+        bh=1tkFCVxrpuSx/KtKj+sM5p4E0PBX09OKY9Yjr94V+/I=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=cF5nkyk+9kmo1JDYUKprRbDsuuoVDCvjqQhotffFLwYp9KADidMBjmdZKqF3+XPrR
+         Vk8VkE7EcuRuquDQ6k3tV9E3a8m2sFg5Pr2Q2aSXCp7ZGU6J0FIFrjOK4Ut640ssPd
+         U0Q+Xdn8gTjYlLxyR7lKgTB8VjDFIO6MXoMfqvaNEsriQ3rz3XV+LwBybl5wkJzTaz
+         QuRkXjgzD4vDACglR2Sz2cV7KIotmfuXJ4zRlsrsxDg9qSMftVL07saIlmOCdHxn/b
+         DR4MJlUg4cM/mj89k9CG3TAnW1Fx505TupQA6aU/R5IfFcz9nCJmP68tQjij2j/5Uh
+         MBnoBVpCp6VsA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sat, 25 Nov 2023 23:05:26 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 25 Nov 2023 23:05:26 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>
+CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>,
+        Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v5 00/11] leds: aw200xx: several driver updates
+Date:   Sat, 25 Nov 2023 23:05:08 +0300
+Message-ID: <20231125200519.1750-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181593 [Nov 25 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2;doc.awinic.com:7.1.1;lore.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/25 18:50:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/25 18:50:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/25 18:32:00 #22537065
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,80 +82,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rong,
+The following patch series includes several updates for the AW200XX LED
+driver:
+    - some small fixes and optimizations to the driver implementation:
+      delays, autodimming calculation, disable_locking regmap flag,
+      display_rows calculation in runtime;
+    - fix LED device tree node pattern to accept LED names counting not
+      only from 0 to f;
+    - add missing reg constraints;
+    - support HWEN hardware control, which allows enabling or disabling
+      AW200XX RTL logic from the main SoC using a GPIO pin;
+    - introduce the new AW20108 LED controller, the datasheet for this
+      controller can be found at [1].
 
-kernel test robot noticed the following build warnings:
+Changes v5 since v4 at [5]:
+    - make several lowercase->uppercase renaming suggested by Lee Jones
+    - change aw200xx_probe_get_display_rows() return value type from
+      boolean to integer and propagate error return values to the
+      dev_err_probe()
+    - fix some grammar problems
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.7-rc2 next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Changes v4 since v3 at [4]:
+    - properly handle max_source = 0 situations
+    - fix Rob's dt_binding_check alerts
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Rong-Tao/prctl-Get-private-anonymous-memory-region-name/20231125-220925
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A%40qq.com
-patch subject: [PATCH] prctl: Get private anonymous memory region name
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20231126/202311260314.iuUprWJb-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311260314.iuUprWJb-lkp@intel.com/reproduce)
+Changes v3 since v2 at [3]:
+    - handle all cases during hwen gpio get routine execution
+    - rename 'hwen-gpios' to standard 'enable-gpios'
+    - properly handle aw200xx_probe_get_display_rows() ret values
+    - fix timestamp format in the comments and commit messages
+    - expand LEDS_AW200XX config and dt-bindings description
+    - describe reg constraints for all compatible variants
+    - add Conor's Acked-by tag
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311260314.iuUprWJb-lkp@intel.com/
+Changes v2 since v1 at [2]:
+    - rebase on the latest aw200xx changes from lee/leds git repo
+    - some commit messages rewording
+    - replace legacy gpio_* API with gpiod_* and devm_gpiod_* API
+    - rename dt property awinic,hwen-gpio to hwen-gpios according to
+      gpiod API
+    - use fsleep() instead of usleep_range() per Andy's suggestion
+    - add max_brightness parameter to led cdev to restrict
+      set_brightness() overflow
+    - provide reg constraints as Rob suggested
+    - move hwen-gpios to proper dt node in the bindings example
 
-All warnings (new ones prefixed by >>):
+Links:
+    [1] https://doc.awinic.com/doc/20230609wm/8a9a9ac8-1d8f-4e75-bf7a-67a04465c153.pdf
+    [2] https://lore.kernel.org/all/20231006160437.15627-1-ddrokosov@salutedevices.com/
+    [3] https://lore.kernel.org/all/20231018182943.18700-1-ddrokosov@salutedevices.com/
+    [4] https://lore.kernel.org/all/20231101142445.8753-1-ddrokosov@salutedevices.com/
+    [5] https://lore.kernel.org/all/20231121202835.28152-1-ddrokosov@salutedevices.com/
 
-   kernel/sys.c: In function 'prctl_get_vma':
->> kernel/sys.c:2389:35: warning: passing argument 1 of 'anon_vma_name_put' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2389 |                 anon_vma_name_put(anon_name);
-         |                                   ^~~~~~~~~
-   In file included from kernel/sys.c:10:
-   include/linux/mm_inline.h:363:60: note: expected 'struct anon_vma_name *' but argument is of type 'const struct anon_vma_name *'
-     363 | static inline void anon_vma_name_put(struct anon_vma_name *anon_name)
-         |                                      ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+Dmitry Rokosov (3):
+  leds: aw200xx: support HWEN hardware control
+  dt-bindings: leds: aw200xx: introduce optional enable-gpios property
+  dt-bindings: leds: aw200xx: fix led pattern and add reg constraints
 
+George Stark (7):
+  leds: aw200xx: calculate dts property display_rows in the driver
+  dt-bindings: leds: aw200xx: remove property "awinic,display-rows"
+  leds: aw200xx: add delay after software reset
+  leds: aw200xx: enable disable_locking flag in regmap config
+  leds: aw200xx: improve autodim calculation method
+  leds: aw200xx: add support for aw20108 device
+  dt-bindings: leds: awinic,aw200xx: add AW20108 device
 
-vim +2389 kernel/sys.c
+Martin Kurbanov (1):
+  leds: aw200xx: fix write to DIM parameter
 
-  2361	
-  2362	static int prctl_get_vma(unsigned long opt, unsigned long addr,
-  2363				 unsigned long buf, unsigned long arg)
-  2364	{
-  2365		struct mm_struct *mm = current->mm;
-  2366		const char __user *u_buf;
-  2367		int error;
-  2368	
-  2369		switch (opt) {
-  2370		case PR_GET_VMA_ANON_NAME:
-  2371			const struct anon_vma_name *anon_name = NULL;
-  2372	
-  2373			u_buf = (const char __user *)buf;
-  2374			error = 0;
-  2375	
-  2376			mmap_read_lock(mm);
-  2377			anon_name = madvise_get_anon_name(mm, addr);
-  2378			if (!anon_name) {
-  2379				mmap_read_unlock(mm);
-  2380				error = -EFAULT;
-  2381				break;
-  2382			}
-  2383	
-  2384			if (copy_to_user((char __user *)u_buf, anon_name->name,
-  2385					 strlen(anon_name->name) + 1))
-  2386				error = -EFAULT;
-  2387	
-  2388			mmap_read_unlock(mm);
-> 2389			anon_vma_name_put(anon_name);
-  2390			break;
-  2391		default:
-  2392			error = -EINVAL;
-  2393		}
-  2394		return error;
-  2395	}
-  2396	
+ .../bindings/leds/awinic,aw200xx.yaml         | 95 +++++++++++++-----
+ drivers/leds/Kconfig                          | 14 ++-
+ drivers/leds/leds-aw200xx.c                   | 98 ++++++++++++++++---
+ 3 files changed, 163 insertions(+), 44 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.36.0
+
