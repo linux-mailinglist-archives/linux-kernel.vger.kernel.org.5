@@ -2,133 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B05D7F8ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0BC7F8ADC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjKYMtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:49:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S232023AbjKYMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYMtv (ORCPT
+        with ESMTP id S229483AbjKYMvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:49:51 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D386D3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:49:57 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so2795202a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700916595; x=1701521395; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gpAtV0FS3gS4I5s7lG5X3wgMGcSVSh9Gs8Iqyw/MnO8=;
-        b=AgLGP1CUP6EjPA9rrw2Lu/PA1VN4d7PpyT8GT0aGNSgQHsR0QnrJFHO8JB88b0XaN7
-         hFBKBm+DKr0HfX3K3s1TvGMFc0kknHa6K9bkX8GACbfp4HrOTicEnFqKQ7V9JS77pKK0
-         dCBj8QFFKomtMgXEmEA2UlWU+ophjP3rlEZM9zO6m4gYHGqncyVN2fqfihQEj+YFXqQl
-         nYnpRboKQEqA39XOfaLPARtOKdh0eW4YA/28V4tBFUSO/SRjzRasUH5mATKXMDBCNen3
-         kSyWjBAmKhko8l8BJRJMfR9+Q5bK74WNEGDEYTqSdqPVgOLMd7YkjVgRM9osTu/0X9Q7
-         BBLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700916595; x=1701521395;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gpAtV0FS3gS4I5s7lG5X3wgMGcSVSh9Gs8Iqyw/MnO8=;
-        b=BGJ+ZMn5sO/+coqAuSEIrvXsj/xVUcGOmmqAch+cKob1D+E8/YUHqMVmBfdtUkgwu/
-         ii8CfoklTTu2e09CNLD9s+qDkPjhIuYiAEQpK4YqkW8EjQac7jM3HIqy4fYRs+oQe2F6
-         G89+Zvbzsu7qvKx2Nq6/Y2C1znFhtvW/DKeu1Hkk6gZCkII10WpAncCNMDmvAO/W+shT
-         QOhUjftYjLS7jUNmQlNrospLQ0LobkvN2vuCWQY2FIRp0oWHW3jU+LJZow7ArasWzFV7
-         rYJKRr8VYhnDlV5ktls7vNlPnnLulFEOsAOvX+7SPdeW+ezxIzXJb2p0oonEN497GOrF
-         TSGQ==
-X-Gm-Message-State: AOJu0Ywbq6eMJkmU64plQmJOhASqsRLcmqipQK0X9kQ7U50tZn//a5OC
-        hTd28SrKJRpNPOvyFfGON4wsPQ==
-X-Google-Smtp-Source: AGHT+IH25NLMfB6zeP8SLzWprul/iFntBgIHVCwAHigzP+QC8ru563i6kTL6sxSHOftO02DnXDeY2g==
-X-Received: by 2002:aa7:c608:0:b0:54a:f1db:c2b6 with SMTP id h8-20020aa7c608000000b0054af1dbc2b6mr4675877edq.20.1700916595502;
-        Sat, 25 Nov 2023 04:49:55 -0800 (PST)
-Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id s25-20020a05640217d900b0054b314f8ab1sm240307edy.50.2023.11.25.04.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 04:49:55 -0800 (PST)
-Message-ID: <fd075d7b-1cac-4964-bd97-8f481a385bd7@linaro.org>
-Date:   Sat, 25 Nov 2023 13:49:52 +0100
+        Sat, 25 Nov 2023 07:51:03 -0500
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9964FA5;
+        Sat, 25 Nov 2023 04:51:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=qh2uj6xbbvbxrnxhxti6oxthfi.protonmail; t=1700916665; x=1701175865;
+        bh=bzZvCYsbJgfCiGy9vIa+JkIEYDyc8iF8244zXEcpiHg=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=GVmy2iMxJHq9iElHjyYdipNjbfCH53bjqnSfPZ2DLKxnWqkx31YLNeJnqfZyS8J8m
+         NVhahLyT9M5SMThAzuqRfmfP2bDZOqEjk+2Y2GFixw6EQEybLb0MXr0BA6VqEFcvx8
+         4u3Dd3lW4ytsSuumAoaqYPv1SKcos0yRzUSX0rImOl6uMqG/rN5E6UtJxfK56Q1VaG
+         HivdhnsNJYhlc2lt23xlSeZ70Eequ9oFb56lIckCeLyyae/EtHCBRSJux+ZluYi/9F
+         RLKBfXNg2/XADzqevnu5OKYDqY++zNTndl3KOVeiQ+6HFysYoaDlPnNLmI2F7MEO5C
+         Zju/8HHaNdDTQ==
+Date:   Sat, 25 Nov 2023 12:50:49 +0000
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Asahi Lina <lina@asahilina.net>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] rust: macros: `parse_generics` add `decl_generics`
+Message-ID: <20231125125024.1235933-1-benno.lossin@proton.me>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/8] media: qcom: camss: Flag CSID-lites to support
- more CSIDs
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231123-b4-camss-named-power-domains-v6-0-3ec2fd9e8e36@linaro.org>
- <20231123-b4-camss-named-power-domains-v6-7-3ec2fd9e8e36@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231123-b4-camss-named-power-domains-v6-7-3ec2fd9e8e36@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.2023 18:03, Bryan O'Donoghue wrote:
-> From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> 
-> Some platforms such as SC7280 have 3 CSIDs and 2 CSID-lites but current
-> code has hardcoded 2 as the maximum number of CSIDs. Remove the hardcoded
-> maximum number of VFEs to handle all possible combinations of CSIDs and
-> CSID-lites.
-> 
-> Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+When parsing generics of a type definition, default values can be
+specified. This syntax is however only available on type definitions and
+not e.g. impl blocks.
 
-Konrad
+This patch adds the `decl_generics` which can only be used on type
+defintions, since they contain the default values for generic
+parameters. This patch also changes how `impl_generics` are made up, as
+these should be used with `impl<$impl_generics>`, they will omit the
+default values.
+
+Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+---
+ rust/macros/helpers.rs  | 91 +++++++++++++++++++++++++++--------------
+ rust/macros/pin_data.rs |  1 +
+ rust/macros/zeroable.rs |  1 +
+ 3 files changed, 63 insertions(+), 30 deletions(-)
+
+diff --git a/rust/macros/helpers.rs b/rust/macros/helpers.rs
+index afb0f2e3a36a..36fecdd998d0 100644
+--- a/rust/macros/helpers.rs
++++ b/rust/macros/helpers.rs
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+=20
+-use proc_macro::{token_stream, Group, Punct, Spacing, TokenStream, TokenTr=
+ee};
++use proc_macro::{token_stream, Group, TokenStream, TokenTree};
+=20
+ pub(crate) fn try_ident(it: &mut token_stream::IntoIter) -> Option<String>=
+ {
+     if let Some(TokenTree::Ident(ident)) =3D it.next() {
+@@ -72,6 +72,7 @@ pub(crate) fn expect_end(it: &mut token_stream::IntoIter)=
+ {
+=20
+ pub(crate) struct Generics {
+     pub(crate) impl_generics: Vec<TokenTree>,
++    pub(crate) decl_generics: Vec<TokenTree>,
+     pub(crate) ty_generics: Vec<TokenTree>,
+ }
+=20
+@@ -81,6 +82,8 @@ pub(crate) struct Generics {
+ pub(crate) fn parse_generics(input: TokenStream) -> (Generics, Vec<TokenTr=
+ee>) {
+     // `impl_generics`, the declared generics with their bounds.
+     let mut impl_generics =3D vec![];
++    // The generics with bounds and default values.
++    let mut decl_generics =3D vec![];
+     // Only the names of the generics, without any bounds.
+     let mut ty_generics =3D vec![];
+     // Tokens not related to the generics e.g. the `where` token and defin=
+ition.
+@@ -90,10 +93,17 @@ pub(crate) fn parse_generics(input: TokenStream) -> (Ge=
+nerics, Vec<TokenTree>) {
+     let mut toks =3D input.into_iter();
+     // If we are at the beginning of a generic parameter.
+     let mut at_start =3D true;
+-    for tt in &mut toks {
++    let mut skip_until_comma =3D false;
++    while let Some(tt) =3D toks.next() {
++        if nesting =3D=3D 1 && matches!(&tt, TokenTree::Punct(p) if p.as_c=
+har() =3D=3D '>') {
++            // Found the end of the generics.
++            break;
++        } else if nesting >=3D 1 {
++            decl_generics.push(tt.clone());
++        }
+         match tt.clone() {
+             TokenTree::Punct(p) if p.as_char() =3D=3D '<' =3D> {
+-                if nesting >=3D 1 {
++                if nesting >=3D 1 && !skip_until_comma {
+                     // This is inside of the generics and part of some bou=
+nd.
+                     impl_generics.push(tt);
+                 }
+@@ -105,49 +115,70 @@ pub(crate) fn parse_generics(input: TokenStream) -> (=
+Generics, Vec<TokenTree>) {
+                     break;
+                 } else {
+                     nesting -=3D 1;
+-                    if nesting >=3D 1 {
++                    if nesting >=3D 1 && !skip_until_comma {
+                         // We are still inside of the generics and part of=
+ some bound.
+                         impl_generics.push(tt);
+                     }
+-                    if nesting =3D=3D 0 {
+-                        break;
+-                    }
+                 }
+             }
+-            tt =3D> {
++            TokenTree::Punct(p) if skip_until_comma && p.as_char() =3D=3D =
+',' =3D> {
+                 if nesting =3D=3D 1 {
+-                    // Here depending on the token, it might be a generic =
+variable name.
+-                    match &tt {
+-                        // Ignore const.
+-                        TokenTree::Ident(i) if i.to_string() =3D=3D "const=
+" =3D> {}
+-                        TokenTree::Ident(_) if at_start =3D> {
+-                            ty_generics.push(tt.clone());
+-                            // We also already push the `,` token, this ma=
+kes it easier to append
+-                            // generics.
+-                            ty_generics.push(TokenTree::Punct(Punct::new('=
+,', Spacing::Alone)));
+-                            at_start =3D false;
+-                        }
+-                        TokenTree::Punct(p) if p.as_char() =3D=3D ',' =3D>=
+ at_start =3D true,
+-                        // Lifetimes begin with `'`.
+-                        TokenTree::Punct(p) if p.as_char() =3D=3D '\'' && =
+at_start =3D> {
+-                            ty_generics.push(tt.clone());
+-                        }
+-                        _ =3D> {}
+-                    }
++                    impl_generics.push(TokenTree::Punct(p.clone()));
++                    ty_generics.push(TokenTree::Punct(p));
++                    skip_until_comma =3D false;
+                 }
+-                if nesting >=3D 1 {
+-                    impl_generics.push(tt);
+-                } else if nesting =3D=3D 0 {
++            }
++            tt if !skip_until_comma =3D> {
++                match nesting {
+                     // If we haven't entered the generics yet, we still wa=
+nt to keep these tokens.
+-                    rest.push(tt);
++                    0 =3D> rest.push(tt),
++                    1 =3D> {
++                        // Here depending on the token, it might be a gene=
+ric variable name.
++                        match tt {
++                            TokenTree::Ident(i) if at_start && i.to_string=
+() =3D=3D "const" =3D> {
++                                let Some(name) =3D toks.next() else {
++                                    // Parsing error.
++                                    break;
++                                };
++                                impl_generics.push(TokenTree::Ident(i));
++                                impl_generics.push(name.clone());
++                                ty_generics.push(name.clone());
++                                decl_generics.push(name);
++                                at_start =3D false;
++                            }
++                            tt @ TokenTree::Ident(_) if at_start =3D> {
++                                impl_generics.push(tt.clone());
++                                ty_generics.push(tt);
++                                at_start =3D false;
++                            }
++                            TokenTree::Punct(p) if p.as_char() =3D=3D ',' =
+=3D> {
++                                impl_generics.push(TokenTree::Punct(p.clon=
+e()));
++                                ty_generics.push(TokenTree::Punct(p));
++                                at_start =3D true;
++                            }
++                            // Lifetimes begin with `'`.
++                            TokenTree::Punct(p) if p.as_char() =3D=3D '\''=
+ && at_start =3D> {
++                                ty_generics.push(TokenTree::Punct(p.clone(=
+)));
++                                impl_generics.push(TokenTree::Punct(p));
++                            }
++                            // Generics can have default values, we skip t=
+hese.
++                            TokenTree::Punct(p) if p.as_char() =3D=3D '=3D=
+' =3D> {
++                                skip_until_comma =3D true;
++                            }
++                            tt =3D> impl_generics.push(tt),
++                        }
++                    }
++                    _ =3D> impl_generics.push(tt),
+                 }
+             }
++            _ =3D> {}
+         }
+     }
+     rest.extend(toks);
+     (
+         Generics {
+             impl_generics,
++            decl_generics,
+             ty_generics,
+         },
+         rest,
+diff --git a/rust/macros/pin_data.rs b/rust/macros/pin_data.rs
+index 6d58cfda9872..022e68e9720d 100644
+--- a/rust/macros/pin_data.rs
++++ b/rust/macros/pin_data.rs
+@@ -10,6 +10,7 @@ pub(crate) fn pin_data(args: TokenStream, input: TokenStr=
+eam) -> TokenStream {
+     let (
+         Generics {
+             impl_generics,
++            decl_generics: _,
+             ty_generics,
+         },
+         rest,
+diff --git a/rust/macros/zeroable.rs b/rust/macros/zeroable.rs
+index 0d605c46ab3b..cfee2cec18d5 100644
+--- a/rust/macros/zeroable.rs
++++ b/rust/macros/zeroable.rs
+@@ -7,6 +7,7 @@ pub(crate) fn derive(input: TokenStream) -> TokenStream {
+     let (
+         Generics {
+             impl_generics,
++            decl_generics: _,
+             ty_generics,
+         },
+         mut rest,
+
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+--=20
+2.40.1
+
+
