@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D43547F8E52
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704197F8E6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 21:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbjKYUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 15:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S232389AbjKYUFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 15:05:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjKYUFZ (ORCPT
+        with ESMTP id S229511AbjKYUF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 15:05:25 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2EB119;
-        Sat, 25 Nov 2023 12:05:30 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 847E3120019;
-        Sat, 25 Nov 2023 23:05:29 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 847E3120019
+        Sat, 25 Nov 2023 15:05:26 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D68FE1;
+        Sat, 25 Nov 2023 12:05:31 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 1571C100023;
+        Sat, 25 Nov 2023 23:05:30 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1571C100023
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700942729;
-        bh=BXsUy6knDdfRassvseCqdaHwjejZFvkBLqoOvbLPVsc=;
+        s=mail; t=1700942730;
+        bh=9aZqnQoakoRLfMLYgr2wRgT/Br89mjgKuUHrpHJK25M=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=mq6VVJqwpX8ISnyXUDlWPJHrCHZILiiqQfHI/zeHuCcOV44V37+apPrp2xDSGBqrb
-         VjDPgEzAwT+6nwjVBsS864I22jMrVbHvZdYKedq/rFaULXAOy8mccm8f92UYxAVKJn
-         /cGOab/UDyC4w3K24Y7ADur0mJ5Tjg5gvhL+XQ1xOcA2hR5Bk8/NEnTfMG8M5D1XHY
-         at9enUs0tDBXftrxju/Ms1YaVFRC7mMSHPLJIPBi9oPPGWmY3ARumhZnHPWfpwBMQH
-         JRtdV07cCJkdqXc+4+dWcsxrttGyncE0aTdhzLFkkSZBjKeRVgAoEn1tABfLzsIZFP
-         XHGfbewUorPaA==
+        b=psEyE1K77ho8Ff3+T8aehAYJcwzabNUjOiinlKOp/+9AVHC1n7DFmyTkCF7/Jcfsa
+         d98zxvUQwSvGwMLmO9QTQfb5CEkpYjfYMBvOnhurXS3k0iruB8L2+4mNEi2PdMjXLy
+         vSfDa6ZzwXDKhYpOrdBUGB9lytVLv/03wnF0oZMDvGGli6fpnt0rKWHofOOKqBo79k
+         fc+LOZJl5GTsZcOhEyMpM+uax9OlmPE00eIcdony3Vd6cyDq8sULHUNqLQ3NA6IOFH
+         kwIluOYnVXlhK9KoJTl36dslIZq9DlYo9q5UriYReXYdW2bOAAVydrGZUdUFamU+LT
+         3RHYov8W46WMA==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -46,10 +46,11 @@ CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-leds@vger.kernel.org>,
         George Stark <gnstark@salutedevices.com>,
-        Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v5 04/11] leds: aw200xx: calculate dts property display_rows in the driver
-Date:   Sat, 25 Nov 2023 23:05:12 +0300
-Message-ID: <20231125200519.1750-5-ddrokosov@salutedevices.com>
+        Dmitry Rokosov <ddrokosov@salutedevices.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 05/11] dt-bindings: leds: aw200xx: remove property "awinic,display-rows"
+Date:   Sat, 25 Nov 2023 23:05:13 +0300
+Message-ID: <20231125200519.1750-6-ddrokosov@salutedevices.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20231125200519.1750-1-ddrokosov@salutedevices.com>
 References: <20231125200519.1750-1-ddrokosov@salutedevices.com>
@@ -68,7 +69,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -87,75 +88,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: George Stark <gnstark@salutedevices.com>
 
-Get rid of device tree property "awinic,display-rows". The property
-value actually means number of current switches and depends on how LEDs
-are connected to the device. It should be calculated manually by max
-used LED number. In the same way it is computed automatically now.
-Max used LED is taken from LED definition subnodes.
+Get rid of the property "awinic,display-rows" and calculate it
+in the driver using led definition nodes.
 
 Signed-off-by: George Stark <gnstark@salutedevices.com>
 Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/leds/leds-aw200xx.c | 37 +++++++++++++++++++++++++++----------
- 1 file changed, 27 insertions(+), 10 deletions(-)
+ .../bindings/leds/awinic,aw200xx.yaml         | 28 +++----------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/leds/leds-aw200xx.c b/drivers/leds/leds-aw200xx.c
-index d8f2fe57cbb7..91ba580edf87 100644
---- a/drivers/leds/leds-aw200xx.c
-+++ b/drivers/leds/leds-aw200xx.c
-@@ -379,6 +379,31 @@ static void aw200xx_disable(const struct aw200xx *const chip)
- 	return gpiod_set_value_cansleep(chip->hwen, 0);
- }
+diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+index 3da3633a242c..a6dced59599d 100644
+--- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
++++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+@@ -36,11 +36,6 @@ properties:
+   "#size-cells":
+     const: 0
  
-+static int aw200xx_probe_get_display_rows(struct device *dev,
-+					  struct aw200xx *chip)
-+{
-+	struct fwnode_handle *child;
-+	u32 max_source = 0;
-+
-+	device_for_each_child_node(dev, child) {
-+		u32 source;
-+		int ret;
-+
-+		ret = fwnode_property_read_u32(child, "reg", &source);
-+		if (ret || source >= chip->cdef->channels)
-+			continue;
-+
-+		max_source = max(max_source, source);
-+	}
-+
-+	if (max_source == 0)
-+		return -EINVAL;
-+
-+	chip->display_rows = max_source / chip->cdef->display_size_columns + 1;
-+
-+	return 0;
-+}
-+
- static int aw200xx_probe_fw(struct device *dev, struct aw200xx *chip)
- {
- 	struct fwnode_handle *child;
-@@ -386,18 +411,10 @@ static int aw200xx_probe_fw(struct device *dev, struct aw200xx *chip)
- 	int ret;
- 	int i;
- 
--	ret = device_property_read_u32(dev, "awinic,display-rows",
--				       &chip->display_rows);
-+	ret = aw200xx_probe_get_display_rows(dev, chip);
- 	if (ret)
- 		return dev_err_probe(dev, ret,
--				     "Failed to read 'display-rows' property\n");
+-  awinic,display-rows:
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    description:
+-      Leds matrix size
 -
--	if (!chip->display_rows ||
--	    chip->display_rows > chip->cdef->display_size_rows_max) {
--		return dev_err_probe(dev, ret,
--				     "Invalid leds display size %u\n",
--				     chip->display_rows);
--	}
-+				     "No valid led definitions found\n");
+   enable-gpios:
+     maxItems: 1
  
- 	current_max = aw200xx_imax_from_global(chip, AW200XX_IMAX_MAX_uA);
- 	current_min = aw200xx_imax_from_global(chip, AW200XX_IMAX_MIN_uA);
+@@ -63,31 +58,17 @@ patternProperties:
+           since the chip has a single global setting.
+           The maximum output current of each LED is calculated by the
+           following formula:
+-            IMAXled = 160000 * (592 / 600.5) * (1 / display-rows)
++            IMAXled = 160000 * (592 / 600.5) * (1 / max-current-switch-number)
+           And the minimum output current formula:
+-            IMINled = 3300 * (592 / 600.5) * (1 / display-rows)
++            IMINled = 3300 * (592 / 600.5) * (1 / max-current-switch-number)
++          where max-current-switch-number is determinated by led configuration
++          and depends on how leds are physically connected to the led driver.
+ 
+ required:
+   - compatible
+   - reg
+   - "#address-cells"
+   - "#size-cells"
+-  - awinic,display-rows
+-
+-allOf:
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            const: awinic,aw20036
+-    then:
+-      properties:
+-        awinic,display-rows:
+-          enum: [1, 2, 3]
+-    else:
+-      properties:
+-        awinic,display-rows:
+-          enum: [1, 2, 3, 4, 5, 6, 7]
+ 
+ additionalProperties: false
+ 
+@@ -105,7 +86,6 @@ examples:
+             reg = <0x3a>;
+             #address-cells = <1>;
+             #size-cells = <0>;
+-            awinic,display-rows = <3>;
+             enable-gpios = <&gpio 3 GPIO_ACTIVE_HIGH>;
+ 
+             led@0 {
 -- 
 2.36.0
 
