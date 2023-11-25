@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524447F8B34
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806A27F8B3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbjKYOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 09:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
+        id S231976AbjKYOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 09:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjKYOGp (ORCPT
+        with ESMTP id S231808AbjKYOIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 09:06:45 -0500
+        Sat, 25 Nov 2023 09:08:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F98127
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:06:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2445DC433C8;
-        Sat, 25 Nov 2023 14:06:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC05DF
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:08:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5605DC433C8;
+        Sat, 25 Nov 2023 14:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700921211;
-        bh=xgu5CUNmadqhE0LLhfUEnVwZD/5HyWC4DIhQLmBk+Ms=;
+        s=k20201202; t=1700921303;
+        bh=WmejF+0/IYn6UB83giEkRIDlR14ddDTibp4f7OSCgLg=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ge/cX3qpZukqKrjNaMcG4B03IryQxEg5cNsuCcKS4JH/16IU1Boho/soQKvUiQ4HT
-         ogRevvvwpVuc3lHLxDfixTXzpPNomA29OTaKWMlFDL4jlX+BU0BHUuUyG1rMo+SY/f
-         I5bVWSCxeGRPNoibjDmlcruG7iXTDvGWIhxekepNf5GPHTF5QuW7l7lXFk1uK8lSs+
-         +MFz/JZ2j5mhUYb5LqsqBAGewRKqeEbMAw3B1EXfmj7NzW3pfXMty3bG8xWCcSmYla
-         B5yNNtc3qRGbdbrLPnXtJ2pRwsv1lyxlw5Yn5+bmU5Ggy8PYUhlHhezekXFad69gMr
-         pSb99ATrOvfOg==
-Date:   Sat, 25 Nov 2023 14:06:41 +0000
+        b=IrtffZhBBjElUAZjoj3bOA3fLZQEewxnDhQ29st/4h6BXTFn/YhP7f5r0ayinvtKs
+         B/Q+WxgJ9LaBq+QKRECQVEqE2Vw5tTJVsw8jtLnn7s7KAd9bFQeJ+1DyM9ix761XB5
+         HErIkqvJ+5ye1JPns2kjmIMOa1P1/j71kPiybV5IWrhlKu/F0sK3Twa9gKAk9J/7ih
+         nCFCIkYOKx/ne+RRsT4DN4hoxVQp02jqBRvvRoTuloBEMwKtG3C1cDVe9mlyqpmD7a
+         C0ZfKTKRu654lav7H95wvnHZ0wUm9SkOy0ChKENMMfzJWagjMDQF/mWC0FBC0MVSmw
+         sYvFbqdbLJO3w==
+Date:   Sat, 25 Nov 2023 14:08:12 +0000
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2 2/2] iio: light: driver for Lite-On ltr390
-Message-ID: <20231125140641.08284929@jic23-huawei>
-In-Reply-To: <20231117074554.700970-2-anshulusr@gmail.com>
-References: <20231117074554.700970-1-anshulusr@gmail.com>
-        <20231117074554.700970-2-anshulusr@gmail.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: correct white-spaces in examples
+Message-ID: <20231125140812.607929dc@jic23-huawei>
+In-Reply-To: <20231124092121.16866-1-krzysztof.kozlowski@linaro.org>
+References: <20231124092121.16866-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -56,312 +58,248 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 13:15:53 +0530
-Anshul Dalal <anshulusr@gmail.com> wrote:
+On Fri, 24 Nov 2023 10:21:21 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-> Implements driver for the Ambient/UV Light sensor LTR390.
-> The driver exposes two ways of getting sensor readings:
->   1. Raw UV Counts directly from the sensor
->   2. The computed UV Index value with a percision of 2 decimal places
+> Use only one and exactly one space around '=' in DTS example.
 > 
-> NOTE: Ambient light sensing has not been implemented yet.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> Datasheet:
->   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
-Make this a formal Datasheet tag, just before the Signed-off-by below
-
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #for-iio
+> ---
 > 
-> Driver tested on RPi Zero 2W
+> Merging idea: Rob's DT.
+> Should apply cleanly on Rob's for-next.
+> ---
+>  .../devicetree/bindings/auxdisplay/hit,hd44780.yaml       | 2 +-
+>  .../devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml     | 2 +-
+>  Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml | 6 +++---
+>  .../devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml       | 2 +-
+>  .../devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml      | 2 +-
+>  .../interrupt-controller/st,stih407-irq-syscfg.yaml       | 4 ++--
+>  Documentation/devicetree/bindings/mmc/arm,pl18x.yaml      | 2 +-
+>  Documentation/devicetree/bindings/net/sff,sfp.yaml        | 2 +-
+>  .../devicetree/bindings/pci/toshiba,visconti-pcie.yaml    | 2 +-
+>  .../bindings/pinctrl/renesas,rzg2l-pinctrl.yaml           | 6 +++---
+>  .../devicetree/bindings/power/supply/richtek,rt9455.yaml  | 8 ++++----
+>  .../devicetree/bindings/regulator/mps,mp5416.yaml         | 4 ++--
+>  .../devicetree/bindings/regulator/mps,mpq7920.yaml        | 4 ++--
+>  .../devicetree/bindings/remoteproc/fsl,imx-rproc.yaml     | 8 ++++----
+>  14 files changed, 27 insertions(+), 27 deletions(-)
 > 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-
-Hi Anshul,
-
-Some comments on this one inline.  Some of these overlap with comments on the
-other drivers you've submitted. Normally I'd moan about sending too many drivers
-at a time, but fair enough given you sent them out over a couple of weeks and just
-happened to hit time when I was travelling.
-
-My main question in here is why have the two channels - conversion looks linear
-so you should be fine exposing IIO_CHAN_INFO_RAW + IIO_CHAN_INFO_SCALE on a
-single channel and leaving userspace to do the maths.
-
-Jonathan
-
-> diff --git a/drivers/iio/light/ltr390.c b/drivers/iio/light/ltr390.c
-> new file mode 100644
-> index 000000000000..67ca028ce828
-> --- /dev/null
-> +++ b/drivers/iio/light/ltr390.c
-> @@ -0,0 +1,232 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * IIO driver for Lite-On LTR390 ALS and UV sensor
-> + * (7-bit I2C slave address 0x53)
-> + *
-> + * Based on the work of:
-> + *   Shreeya Patel and Shi Zhigang (LTRF216 Driver)
-> + *
-> + * Copyright (C) 2023 Anshul Dalal <anshulusr@gmail.com>
-> + *
-> + * Datasheet:
-> + *   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
-> + *
-> + * TODO:
-> + *   - Support for configurable gain and resolution
-
-Not using PROCESSED will help with this, so I'd drop that even in this initial
-driver.
-
-> + *   - Sensor suspend/resume support
-> + *   - Add support for reading the ALS
-> + *   - Interrupt support
-
-> + */
-> +
-> +#include <asm/unaligned.h>
-
-Put this in a block of includes after the linux ones.
-
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/math.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/regmap.h>
-> +
-> +#define LTR390_DEVICE_NAME	    "ltr390"
-> +
-> +#define LTR390_MAIN_CTRL	    0x00
-> +#define LTR390_PART_ID		    0x06
-> +#define LTR390_UVS_DATA		    0x10
-> +
-> +#define LTR390_SW_RESET		    BIT(4)
-> +#define LTR390_UVS_MODE		    BIT(3)
-> +#define LTR390_SENSOR_ENABLE	    BIT(1)
-> +
-> +#define LTR390_PART_NUMBER_ID	    0xb
-> +#define LTR390_FRACTIONAL_PERCISION 100
-> +
-> +/*
-> + * At 20-bit resolution (integration time: 400ms) and 18x gain, 2300 counts of
-> + * the sensor are equal to 1 UV Index [Datasheet Page#8].
-> + *
-> + * For the default resolution of 18-bit (integration time: 100ms) and default
-> + * gain of 3x, the counts/uvi are calculated as follows:
-> + * 2300 / ((3/18) * (100/400)) = 95.83
-> + */
-> +#define LTR390_COUNTS_PER_UVI 96
-> +
-> +/*
-> + * Window Factor is needed when the device is under Window glass with coated
-> + * tinted ink. This is to compensate for the light loss due to the lower
-> + * transmission rate of the window glass and helps * in calculating lux.
-> + */
-> +#define LTR390_WINDOW_FACTOR 1
-> +
-> +struct ltr390_data {
-> +	struct regmap *regmap;
-> +	struct i2c_client *client;
-> +	struct mutex lock;
-
-All locks need a comment explaining the scope of data they protect.
-Note that regmap and the i2c bus will have their own locks by default
-so I'm not sure you need one here at all as I'm not seeing read modify write
-cycles or anything like that (I might be missing one though!)
-
-
-> +};
-> +
-> +static const struct regmap_config ltr390_regmap_config = {
-> +	.name = LTR390_DEVICE_NAME,
-> +	.reg_bits = 8,
-> +	.reg_stride = 1,
-> +	.val_bits = 8,
-> +};
-> +
-> +static int ltr390_register_read(struct ltr390_data *data, u8 register_address)
-> +{
-> +	struct device *dev = &data->client->dev;
-> +	int ret;
-> +	u8 recieve_buffer[3];
-> +
-> +	mutex_lock(&data->lock);
-
-guard(mutex)(&data->lock); 
-here then you can just return directly without worrying about manual
-unlocking of the mutex.  This stuff is fairly new in the kernel but very
-useful for cases like this!  I have a set of driver cleanup that I'll send
-out that does this in a few IIO drivers, once I've caught up with reviews etc.
-
-This isn't a critical path where we have to care that we will then unlock
-after the maths to extract value in the final line of the function.
-
-> +
-> +	ret = regmap_bulk_read(data->regmap, register_address, recieve_buffer,
-> +			       sizeof(recieve_buffer));
-> +	if (ret) {
-> +		dev_err(dev, "failed to read measurement data: %d\n", ret);
-> +		mutex_unlock(&data->lock);
-> +		return ret;
-> +	}
-> +
-> +	mutex_unlock(&data->lock);
-> +	return get_unaligned_le24(recieve_buffer);
-> +}
-> +
-> +static int ltr390_get_uv_index(struct ltr390_data *data)
-> +{
-> +	int ret;
-> +	int uv_index;
-> +
-> +	ret = ltr390_register_read(data, LTR390_UVS_DATA);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	uv_index = DIV_ROUND_CLOSEST(ret * LTR390_FRACTIONAL_PERCISION *
-> +					     LTR390_WINDOW_FACTOR,
-> +				     LTR390_COUNTS_PER_UVI);
-
-This looks like a linear conversion.  Perhaps make it a userspace problem
-as division much easier in userspace where floating point is available.
-
-> +
-> +	return uv_index;
-> +}
-> +
-
-> +
-> +static const struct iio_chan_spec ltr390_channels[] = {
-> +	{
-> +		.type = IIO_UVINDEX,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED)
-> +	},
-> +	{
-> +		.type = IIO_INTENSITY,
-> +		.channel2 = IIO_MOD_LIGHT_UV,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW)
-> +	},
-> +};
-> +
-> +static int ltr390_probe(struct i2c_client *client)
-> +{
-> +	struct ltr390_data *data;
-> +	struct iio_dev *indio_dev;
-> +	int ret, part_number;
-> +
-> +	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	data = iio_priv(indio_dev);
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &ltr390_regmap_config);
-> +	if (IS_ERR(data->regmap))
-> +		return dev_err_probe(&client->dev, PTR_ERR(data->regmap),
-There are quite a few &client->dev in here. I'd introduce
-struct device *dev = &client->dev;
-as a local variable then use that to shorten all those lines a little.
-
-> +				     "regmap initialization failed\n");
-> +
-> +	data->client = client;
-> +	i2c_set_clientdata(client, indio_dev);
-
-Why set this? I don' think you are using it.
-
-> +	mutex_init(&data->lock);
-> +
-> +	indio_dev->info = &ltr390_info;
-> +	indio_dev->channels = ltr390_channels;
-> +	indio_dev->num_channels = ARRAY_SIZE(ltr390_channels);
-> +	indio_dev->name = LTR390_DEVICE_NAME;
-
-I prefer to see strings for names like this rather than making a reviewer
-find the define to make sure it's of appropriate format etc.  Just duplicate
-the string in the few places it's used.
-
-> +
-> +	ret = regmap_read(data->regmap, LTR390_PART_ID, &part_number);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to get sensor's part id: %d",
-> +			ret);
-dev_err_probe() for all error prints in probe(). Some of the functionality
-won't matter in cases like this, but its cleaner anyway so use it everywhere
-+ then a reviewer doesn't need to consider what might defer.
-
-> +		return ret;
-> +	}
-> +	/* Lower 4 bits of `part_number` change with hardware revisions */
-> +	if (part_number >> 4 != LTR390_PART_NUMBER_ID) {
-> +		dev_err(&client->dev, "received invalid product id: 0x%x",
-> +			part_number);
-return dev_err_probe()
-
-Also, to enable device tree fallback compatibles (used when a new part is
-released that is completely compatible with a driver for an older one)
-we don't want to error out here.  Fine to print a dev_info() message though
-to indicate we don't know if the driver is compatible or not.  
-Please check your other drivers for this (I may have missed it!)
-
-> +		return -ENODEV;
-> +	}
-> +	dev_dbg(&client->dev, "LTR390, product id: 0x%x\n", part_number);
-> +
-> +	/* reset sensor, chip fails to respond to this, so ignore any errors */
-> +	regmap_set_bits(data->regmap, LTR390_MAIN_CTRL, LTR390_SW_RESET);
-> +
-> +	/* Wait for the registers to reset before proceeding */
-> +	usleep_range(1000, 2000);
-> +
-> +	ret = regmap_set_bits(data->regmap, LTR390_MAIN_CTRL,
-> +			      LTR390_SENSOR_ENABLE | LTR390_UVS_MODE);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to enable the sensor: %d\n", ret);
-return dev_err_probe()
-> +		return ret;
-> +	}
-> +
-> +	return devm_iio_device_register(&client->dev, indio_dev);
-> +}
-> +
-> +static const struct i2c_device_id ltr390_id[] = {
-> +	{ LTR390_DEVICE_NAME, 0 },
-
-That 0 adds nothing useful so drop it.
-
-> +	{ /* Sentinel */ },
-No comma after sentinal.
-> +};
-> +MODULE_DEVICE_TABLE(i2c, ltr390_id);
-> +
-> +static const struct of_device_id ltr390_of_table[] = {
-> +	{ .compatible = "liteon,ltr390"},
-uneven spacing.  Should be one before }
-> +	{ /* Sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ltr390_id_table);
-
-Always build test as a module.  0-day pointed this out - name here is
-wrong.
-
-> +
-> +static struct i2c_driver ltr390_driver = {
-> +	.driver = {
-> +		.name = LTR390_DEVICE_NAME,
-> +		.of_match_table = ltr390_of_table,
-> +	},
-> +	.probe = ltr390_probe,
-> +	.id_table = ltr390_id,
-> +};
-> +
-trivial, but we often don't have a blank line here as the
-structure only exists to pass to module_i2c_driver() macro so
-we might as well group them together.
-> +module_i2c_driver(ltr390_driver);
-> +
-> +MODULE_AUTHOR("Anshul Dalal <anshulusr@gmail.com>");
-> +MODULE_DESCRIPTION("Lite-On LTR390 ALS and UV sensor Driver");
-> +MODULE_LICENSE("GPL");
+> diff --git a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+> index fde07e4b119d..406a922a714e 100644
+> --- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+> +++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+> @@ -113,7 +113,7 @@ examples:
+>      hd44780 {
+>              compatible = "hit,hd44780";
+>              display-height-chars = <2>;
+> -            display-width-chars  = <16>;
+> +            display-width-chars = <16>;
+>              data-gpios = <&pcf8574 4 0>,
+>                           <&pcf8574 5 0>,
+>                           <&pcf8574 6 0>,
+> diff --git a/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml b/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
+> index 624984d51c10..7f8d98226437 100644
+> --- a/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
+> +++ b/Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
+> @@ -125,7 +125,7 @@ examples:
+>      clk25m: clock-oscillator-25m {
+>        compatible = "fixed-clock";
+>        #clock-cells = <0>;
+> -      clock-frequency  = <25000000>;
+> +      clock-frequency = <25000000>;
+>        clock-output-names = "clk25m";
+>      };
+>  ...
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
+> index 5fcc8dd012f1..be2616ff9af6 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7780.yaml
+> @@ -80,9 +80,9 @@ examples:
+>              compatible = "adi,ad7780";
+>              reg = <0>;
+>  
+> -            avdd-supply      = <&vdd_supply>;
+> -            powerdown-gpios  = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+> -            adi,gain-gpios   = <&gpio1  5 GPIO_ACTIVE_LOW>;
+> +            avdd-supply = <&vdd_supply>;
+> +            powerdown-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+> +            adi,gain-gpios = <&gpio1  5 GPIO_ACTIVE_LOW>;
+>              adi,filter-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
+>          };
+>      };
+> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
+> index 73def67fbe01..b6a233cd5f6b 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-iadc.yaml
+> @@ -58,7 +58,7 @@ examples:
+>              reg = <0x3600>;
+>              interrupts = <0x0 0x36 0x0 IRQ_TYPE_EDGE_RISING>;
+>              qcom,external-resistor-micro-ohms = <10000>;
+> -            #io-channel-cells  = <1>;
+> +            #io-channel-cells = <1>;
+>          };
+>      };
+>  ...
+> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
+> index b3a626389870..64abe9a4cd9e 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-rradc.yaml
+> @@ -46,6 +46,6 @@ examples:
+>          pmic_rradc: adc@4500 {
+>              compatible = "qcom,pmi8998-rradc";
+>              reg = <0x4500>;
+> -            #io-channel-cells  = <1>;
+> +            #io-channel-cells = <1>;
+>          };
+>      };
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+> index 2b153d7c5421..e44e4e5708a7 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
+> @@ -55,8 +55,8 @@ examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/irq-st.h>
+>      irq-syscfg {
+> -        compatible    = "st,stih407-irq-syscfg";
+> -        st,syscfg     = <&syscfg_cpu>;
+> +        compatible = "st,stih407-irq-syscfg";
+> +        st,syscfg = <&syscfg_cpu>;
+>          st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
+>                          <ST_IRQ_SYSCFG_PMU_1>;
+>          st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
+> diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+> index 2459a55ed540..940b12688167 100644
+> --- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+> @@ -203,7 +203,7 @@ examples:
+>        bus-width = <4>;
+>        cap-sd-highspeed;
+>        cap-mmc-highspeed;
+> -      cd-gpios  = <&gpio2 31 0x4>;
+> +      cd-gpios = <&gpio2 31 0x4>;
+>        st,sig-dir-dat0;
+>        st,sig-dir-dat2;
+>        st,sig-dir-cmd;
+> diff --git a/Documentation/devicetree/bindings/net/sff,sfp.yaml b/Documentation/devicetree/bindings/net/sff,sfp.yaml
+> index 973e478a399d..bf6cbc7c2ba3 100644
+> --- a/Documentation/devicetree/bindings/net/sff,sfp.yaml
+> +++ b/Documentation/devicetree/bindings/net/sff,sfp.yaml
+> @@ -120,7 +120,7 @@ examples:
+>        pinctrl-names = "default";
+>        pinctrl-0 = <&cps_sfpp0_pins>;
+>        tx-disable-gpios = <&cps_gpio1 29 GPIO_ACTIVE_HIGH>;
+> -      tx-fault-gpios  = <&cps_gpio1 26 GPIO_ACTIVE_HIGH>;
+> +      tx-fault-gpios = <&cps_gpio1 26 GPIO_ACTIVE_HIGH>;
+>      };
+>  
+>      mdio {
+> diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> index 53da2edd7c9a..120e3bb1e545 100644
+> --- a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> @@ -83,7 +83,7 @@ examples:
+>                    <0x0 0x28050000 0x0 0x00010000>,
+>                    <0x0 0x24200000 0x0 0x00002000>,
+>                    <0x0 0x24162000 0x0 0x00001000>;
+> -            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
+> +            reg-names = "dbi", "config", "ulreg", "smu", "mpu";
+>              device_type = "pci";
+>              bus-range = <0x00 0xff>;
+>              num-lanes = <2>;
+> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> index b5ca40d0e251..d476de82e5c3 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> @@ -185,17 +185,17 @@ examples:
+>                      sd1_mux {
+>                              pinmux = <RZG2L_PORT_PINMUX(19, 0, 1)>, /* CD */
+>                                       <RZG2L_PORT_PINMUX(19, 1, 1)>; /* WP */
+> -                            power-source  = <3300>;
+> +                            power-source = <3300>;
+>                      };
+>  
+>                      sd1_data {
+>                              pins = "SD1_DATA0", "SD1_DATA1", "SD1_DATA2", "SD1_DATA3";
+> -                            power-source  = <3300>;
+> +                            power-source = <3300>;
+>                      };
+>  
+>                      sd1_ctrl {
+>                              pins = "SD1_CLK", "SD1_CMD";
+> -                            power-source  = <3300>;
+> +                            power-source = <3300>;
+>                      };
+>              };
+>      };
+> diff --git a/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml b/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
+> index 07e38be39f1b..89f9603499b4 100644
+> --- a/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
+> @@ -79,10 +79,10 @@ examples:
+>          interrupt-parent = <&gpio1>;
+>          interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+>  
+> -        richtek,output-charge-current	    = <500000>;
+> -        richtek,end-of-charge-percentage    = <10>;
+> -        richtek,battery-regulation-voltage  = <4200000>;
+> -        richtek,boost-output-voltage	    = <5050000>;
+> +        richtek,output-charge-current = <500000>;
+> +        richtek,end-of-charge-percentage = <10>;
+> +        richtek,battery-regulation-voltage = <4200000>;
+> +        richtek,boost-output-voltage = <5050000>;
+>  
+>          richtek,min-input-voltage-regulation = <4500000>;
+>          richtek,avg-input-current-regulation = <500000>;
+> diff --git a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
+> index 0221397eb51e..f825ee9efd81 100644
+> --- a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
+> @@ -62,8 +62,8 @@ examples:
+>               regulator-name = "buck1";
+>               regulator-min-microvolt = <600000>;
+>               regulator-max-microvolt = <2187500>;
+> -             regulator-min-microamp  = <3800000>;
+> -             regulator-max-microamp  = <6800000>;
+> +             regulator-min-microamp = <3800000>;
+> +             regulator-max-microamp = <6800000>;
+>               regulator-boot-on;
+>              };
+>  
+> diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
+> index 6de5b027f990..0d34af98403f 100644
+> --- a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
+> @@ -98,8 +98,8 @@ examples:
+>               regulator-name = "buck1";
+>               regulator-min-microvolt = <400000>;
+>               regulator-max-microvolt = <3587500>;
+> -             regulator-min-microamp  = <460000>;
+> -             regulator-max-microamp  = <7600000>;
+> +             regulator-min-microamp = <460000>;
+> +             regulator-max-microamp = <7600000>;
+>               regulator-boot-on;
+>               mps,buck-ovp-disable;
+>               mps,buck-phase-delay = /bits/ 8 <2>;
+> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> index 30632efdad8b..df36e29d974c 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> @@ -113,10 +113,10 @@ examples:
+>      };
+>  
+>      imx7d-cm4 {
+> -      compatible	= "fsl,imx7d-cm4";
+> -      memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
+> -      syscon		= <&src>;
+> -      clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
+> +      compatible = "fsl,imx7d-cm4";
+> +      memory-region = <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
+> +      syscon = <&src>;
+> +      clocks = <&clks IMX7D_ARM_M4_ROOT_CLK>;
+>      };
+>  
+>    - |
 
