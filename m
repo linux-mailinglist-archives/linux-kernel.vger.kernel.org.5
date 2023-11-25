@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B96107F8F8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 22:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FBA7F8F95
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjKYV6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 16:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48050 "EHLO
+        id S229523AbjKYWD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:03:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYV6s (ORCPT
+        with ESMTP id S229456AbjKYWD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 16:58:48 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CE9118;
-        Sat, 25 Nov 2023 13:58:55 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2271112a12.3;
-        Sat, 25 Nov 2023 13:58:55 -0800 (PST)
+        Sat, 25 Nov 2023 17:03:26 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A27111;
+        Sat, 25 Nov 2023 14:03:32 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a00cbb83c80so423367866b.0;
+        Sat, 25 Nov 2023 14:03:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700949534; x=1701554334; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8M/VP62eg7hbxapNodBBoe1Cv8+WsbiOmX76GoBaR0M=;
-        b=gpRjnpoj7kxxtr7NLfLlS8E/niAHw0/4ZcypxCya7ULjR6RXHayWJd5hHEEnLuWOQY
-         DQBmHcywwuMIHgIbP3KUV3UrNtrrIiiFdTp+sEDleYxxN9eo4tzzIbhV9l94mFV3UX08
-         ysw4CNYrg7LbRi6afPLgxnHBxtA1vcY980mBusBXYN29uu/Hj/wltIqC6ujhFSKxttdF
-         cRg6SNV7Ksj4vU2hfHXunDUZN7cyqU7nvYcB9dCDfMXpr4OmWiuE7PgYgCoV7k6ouIsj
-         QSImcCgk7Ezeapr4GSVKtgCVdT7FDsvS5ZOZRtTLE6FK1wCku4fOflwD1m8wmvtTrew5
-         OswA==
+        d=gmail.com; s=20230601; t=1700949811; x=1701554611; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iaSNLjd6qp2TTeM4lQ0nSQjwYYZEfvjgfhn3UAjO2Dc=;
+        b=QfiDuN8uKqiPGC9faoUUMdOx563Qhz6K8URuWInUHZOpD5e6iCo1XzXcjHdr31XT3A
+         apiLx45KCrgcxqejUG5xAao32dkNXHqXmz+IuzyR2wJsb0V8F2yC/PsYslgfPMaNKoE1
+         u7zR2m/f6BkuVaqTbB2wmThDhE7ZL9sp03NylQF2E1imCgIJjt0zhtcWl8B+GLfTRHdB
+         jM1rruf25wwRMOR425Otfw3ZQhXLWRxjC+uNCkGi+/B9pWQV+fa5aZlTasvXgBEfOqQp
+         Y5DjjtOp6u8C0aCwGN02KERR280L1aqTFbi6vs3dubP6hzkMrfVF1K0mp2920FdlTwwY
+         vinA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700949534; x=1701554334;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8M/VP62eg7hbxapNodBBoe1Cv8+WsbiOmX76GoBaR0M=;
-        b=qqB0ucBZYoh1H7is7GMYIiDL/3nMjI46jNxLx5uj/XD+qVGuuTtLtNKMLENF4Cg1lH
-         lFiM8880lwWiQnGanRooW8rkcxDBj4n5ijkWtCpEHMNgZ9Vpo7Ly0EDzK8QbFqgOqJHp
-         Ukr/JUMvtYrVwQZYJA0Y38vVetylqMGfFGD2HLska9vFlICHO8759XXVtfnuBiPBMb21
-         0537AtsK686NETqaMUNw5EBEmqTVP3DRubPL/HFKKcyII91IEFrnLT4dnzfO8uOfLmpg
-         qhX1X9ojswJyKYXOPz/w0fWnXqOzdt5KTiOIb+GOWw4dhzv15KL/mGtNr8PSTTp2wfCZ
-         1o5Q==
-X-Gm-Message-State: AOJu0Yx40HtJsu1DdFSLHOp2Ti2VsdhJ2jj1c7dVFkdKuXRsHiXy3ad1
-        tvagtGR2iLH8eG6Zb0vxEhY=
-X-Google-Smtp-Source: AGHT+IGNHhkaAQybwb9ieFhtNpFJa3uw0ffU74mOTXUrqRW7l65N6NKO6q8sDFbS/xGtGRomuWIEAw==
-X-Received: by 2002:a17:90b:1d09:b0:280:c98f:2090 with SMTP id on9-20020a17090b1d0900b00280c98f2090mr9228270pjb.32.1700949534591;
-        Sat, 25 Nov 2023 13:58:54 -0800 (PST)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id l127-20020a632585000000b005c21d7d1122sm5159578pgl.67.2023.11.25.13.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 13:58:54 -0800 (PST)
-Message-ID: <437bd71d-cf39-41c6-ba45-c5d108b58619@gmail.com>
-Date:   Sat, 25 Nov 2023 13:58:52 -0800
+        d=1e100.net; s=20230601; t=1700949811; x=1701554611;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iaSNLjd6qp2TTeM4lQ0nSQjwYYZEfvjgfhn3UAjO2Dc=;
+        b=In7aG3A7Enc/Se8Z+ER67/6ECZbPiOabFuGlDJe400p5YUKzlDbOQz3Gjc8yC9C3Kz
+         dNqXF1wljFOs8CyCEvrJvq9oFoVOMF/oqrH3eRLFt+kM99ortSFIiNLaeDzZZb8mayQ8
+         g6dXQNVLHbVC3FDqL2wmlfsCdSq1/ofgLoIljWgeYIk9xoU5v2QwAumfPer7LQjswgc0
+         yV2ZH0hD1OOEEpA/TAc3Gy1Oz3oCflj5AJd61d777QRe9JIvOGvvd6kmUJSQW75Ed+3W
+         c5P36bHHv8uBo9WCXrznT8nbe2dWXeQx2iGMUwWg8AdD7nzB4WC4XXX0L48iMk4+pfHz
+         zKrw==
+X-Gm-Message-State: AOJu0Yy3n/Zy5n3an9HSWSvALhcFH+pJO+D3qeFKqTvMy45papqzPJRq
+        LvWIDqkDDY22DSm3TDC5SZ/04ByPP9cOR741
+X-Google-Smtp-Source: AGHT+IEeOqLqN+RKeb41HFX2rR11Y7Z87AtMIyqBSB6RYdVveIEGxvtyiU2EI1tjJpXeaPwXOQ7PkA==
+X-Received: by 2002:a17:906:da:b0:a04:182c:9ea with SMTP id 26-20020a17090600da00b00a04182c09eamr4039459eji.52.1700949810438;
+        Sat, 25 Nov 2023 14:03:30 -0800 (PST)
+Received: from StrangerPC.home.arpa ([2a0d:3344:1730:e300::11a1])
+        by smtp.gmail.com with ESMTPSA id b20-20020a170906195400b009a1dbf55665sm3910731eje.161.2023.11.25.14.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 14:03:30 -0800 (PST)
+From:   Luka Panio <lukapanio@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Cc:     Luka Panio <lukapanio@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v11 1/2] dt-bindings: arm: qcom: Add Xiaomi Pad 6 (xiaomi-pipa)
+Date:   Sat, 25 Nov 2023 23:03:14 +0100
+Message-ID: <20231125220315.118922-1-lukapanio@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.5 000/485] 6.5.13-rc3 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231125194412.892933311@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
- xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
- X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
- AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
- ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
- SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
- nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
- qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz80nRmxvcmlhbiBG
- YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+wmYEExECACYCGyMGCwkIBwMCBBUCCAME
- FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
- 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSDOw00ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
- WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
- pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
- hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
- OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
- Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
- oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
- 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
- BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
- +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
- FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
- 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
- vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
- WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
- HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
- HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
- Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
- kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
- aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
- y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
- X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231125194412.892933311@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -112,30 +79,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a compatible for Xiaomi Pad 6.
 
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Luka Panio <lukapanio@gmail.com>
 
-On 11/25/2023 11:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.13 release.
-> There are 485 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 27 Nov 2023 19:43:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.13-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+---
+v2:
+Update commit message
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels build tested on 
-BMIPS_GENERIC:
+v3:
+Update commit message
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+v4:
+Update commit message
+
+v5:
+Update commit message
+
+v6:
+Update commit message
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index adbfaea32343..1bfae1b237d2 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -965,6 +965,7 @@ properties:
+               - sony,pdx203-generic
+               - sony,pdx206-generic
+               - xiaomi,elish
++              - xiaomi,pipa
+           - const: qcom,sm8250
+ 
+       - items:
 -- 
-Florian
+2.42.0
+
