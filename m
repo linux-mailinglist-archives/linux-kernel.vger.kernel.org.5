@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15C47F8E01
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD8D7F8E06
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbjKYTeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S231877AbjKYTf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjKYTeJ (ORCPT
+        with ESMTP id S229589AbjKYTfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:34:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F357182;
-        Sat, 25 Nov 2023 11:34:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FDBC433C8;
-        Sat, 25 Nov 2023 19:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700940855;
-        bh=ErjCfl4uXkdScmDZgG34jOu3Ae6PwvX0QAhlDCF/QmA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=F0TKJUgqGIaoVdzZLpXtYi8tIvDIWpnmJYL0TIQTb3pnOec5C/I0n4mlLi2URZFzl
-         t3JMaQV1nWYoeI6zKdjRIBAG3mcYHSDw7JT/0l+VdQFxb3w7AULO7hBuUImHhJ2/zP
-         LcJvF6p4cyZHZDVZ8foGDPPCEQSYrTGNaPdGW5NrtDs3GLpvah5mbzNTovZjqHRxTt
-         lbu5Z4czpHy/eb1yD+tk6RUVoVBOkWFIqIhYBiZfU7xvzH1yNTc5a4f0cn6jF/654F
-         O+Ex4IBbZyngjuYmeeNyGZ2pcuj+oVsnNu7Dppk0Zy6Cn/gZmxTmZgIF8W8HFCDO1e
-         pdWjGOgfVbxDw==
-Date:   Sat, 25 Nov 2023 19:34:03 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jishnu Prakash <quic_jprakash@quicinc.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, andriy.shevchenko@linux.intel.com,
-        quic_subbaram@quicinc.com, quic_collinsd@quicinc.com,
-        quic_amelende@quicinc.com, quic_kamalw@quicinc.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijn.suijten@somainline.org, lars@metafoo.de, luca@z3ntu.xyz,
-        linux-iio@vger.kernel.org, lee@kernel.org, rafael@kernel.org,
-        rui.zhang@intel.com, lukasz.luba@arm.com,
-        cros-qcom-dts-watchers@chromium.org, sboyd@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        kernel@quicinc.com
-Subject: Re: [PATCH V2 3/3] dt-bindings: iio/adc: Move QCOM ADC bindings to
- iio/adc folder
-Message-ID: <20231125193403.77400aca@jic23-huawei>
-In-Reply-To: <CAA8EJprn7NfYAPGygus-Yxyu=kCiGYyEksVv9S3QkP5HNwVzVg@mail.gmail.com>
-References: <20231116032644.753370-1-quic_jprakash@quicinc.com>
-        <20231116032644.753370-2-quic_jprakash@quicinc.com>
-        <f7065032-206f-423e-bb03-0b808ff16868@linaro.org>
-        <CAA8EJprn7NfYAPGygus-Yxyu=kCiGYyEksVv9S3QkP5HNwVzVg@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 25 Nov 2023 14:35:25 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D324A3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:35:32 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so2786377b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:35:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700940932; x=1701545732; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fvpRpebtOuuuOLoBCqRcmSoaph+K+iYloqfsNNDdRyQ=;
+        b=MrCbG7bgIiIHtReu1xVLsWFxssogIJPi/3pwRtixHhInyFmXQb/pG1mWjy5PJL28Zo
+         SDjRqjE5kw06Rk23pnwqBcdDfTel41P+SUphySqr07d0btVqyaVrDyAdPXzwH75BJjV4
+         t9VbLslLKfmNYMakVlAEGEXoQRBNRLRoKgrNpzvnvoIndkvPw+QFZ34bBoq20N8LvcKv
+         wxd0z+lALcUwFZ9q4LaCu9eTpqT+9EHwBWwEBx5EJwf3PgKISqaRYQmI6RKNNyKK3gHj
+         z3IJpu0CdlmPmukeLcDo7QdWKJvJTmnspqd6HN2bkUKF9u/dXpd37d2IVSv7XBBmDQZJ
+         l79A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700940932; x=1701545732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fvpRpebtOuuuOLoBCqRcmSoaph+K+iYloqfsNNDdRyQ=;
+        b=d4kXzfWo7nlxRGlvnW6L31x/r/OAczVnEpWr3L8qU0KqXlhSPI0Ri0+tkJJTTLQjsr
+         sv0oEw8KsPifpbe37euzVEGus7/Sf6a2W4pROjLQEnOQnYOxGeKB0GqTzc3+DpXYj1Ec
+         kd42DLOHLypmmeOicvPJYYbuhgCdgtvqQmjG/33c8p0WMLB+Ovs+mFin+5RU9sm5vQ0l
+         cn9CaEdVsM3pxJ7g9DDXAa/CU1rqlLeRppnWbFbRc37n0KRPLftTWnovvyKiI+Mpq66A
+         DHv+6qV54Hx6qhN3TQwoI3aN4W+mJRw8FnMWRX+4FIBabG1XOMSXe/RMEYtv4rVcgb0K
+         fh4w==
+X-Gm-Message-State: AOJu0Yy8R4sYL8bhQqeMAYFi/kAXTRvOafH8W3fScTgacvbXbyPkBJUl
+        x7HCMYjTTWXZHVuVWRlmVlk=
+X-Google-Smtp-Source: AGHT+IGOl0IMu9L1vIoOBpjEuozPEk/UGGwbIbzKGQ48jszuxinMjW8GYSxbsDLpu5JzXTPpmgri9g==
+X-Received: by 2002:a05:6a00:8f0c:b0:6cc:298:eb30 with SMTP id ji12-20020a056a008f0c00b006cc0298eb30mr5011994pfb.29.1700940931799;
+        Sat, 25 Nov 2023 11:35:31 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id p6-20020a056a0026c600b006c3402c5442sm4687663pfw.84.2023.11.25.11.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 11:35:31 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sat, 25 Nov 2023 09:35:34 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Aditya Kali <adityakali@google.com>
+Subject: Re: [RFC PATCH v2 1/1] kernfs: replace deprecated strlcpy() with
+ strscpy()
+Message-ID: <ZWJMhox_E0aBkYE6@mtj.duckdns.org>
+References: <20231122212008.11790-1-mirsad.todorovac@alu.unizg.hr>
+ <ZV5zQ0gRxzGwweYN@slm.duckdns.org>
+ <4a01cd1d-c9c9-4946-add4-1acf6998a24a@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a01cd1d-c9c9-4946-add4-1acf6998a24a@alu.unizg.hr>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 17:27:53 +0200
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+Hello,
 
-> On Thu, 16 Nov 2023 at 13:44, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 16/11/2023 04:26, Jishnu Prakash wrote:  
-> > > There are several files containing QCOM ADC macros for channel names
-> > > right now in the include/dt-bindings/iio folder. Since all of these
-> > > are specifically for adc, move the files to the
-> > > include/dt-bindings/iio/adc folder.
-> > >
-> > > Also update all affected devicetree and driver files to fix compilation
-> > > errors seen with this move and update documentation files to fix
-> > > dtbinding check errors for the same.
-> > >
-> > > Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
-> > > ---
-> > >  .../devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml       | 4 ++--
-> > >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 2 +-
-> > >  .../devicetree/bindings/thermal/qcom-spmi-adc-tm-hc.yaml  | 2 +-
-> > >  .../devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml    | 6 +++---
-> > >  arch/arm64/boot/dts/qcom/pm2250.dtsi                      | 2 +-
-> > >  arch/arm64/boot/dts/qcom/pm6125.dtsi                      | 2 +-  
-> >
-> > NAK, bindings are always separate from the other changes.  
-> 
-> In this case I'd even try to appeal :-)
-> They are doing `git mv` and then fixing the failouts. I think this
-> should be fine.
-Agreed.  The only easy way around this would be to put some dummy headers
-that include the new ones in old locations temporary basis then delete them later.
-I'm fine with that if Kryzsztof prefers it that way.  Not too disruptive.
+On Thu, Nov 23, 2023 at 12:37:03AM +0100, Mirsad Todorovac wrote:
+...
+>  141 static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+>  142                                         struct kernfs_node *kn_from,
+>  143                                         char *buf, size_t buflen)
+...
+>  172         /* Calculate how many bytes we need for the rest */
+>  173         for (i = depth_to - 1; i >= 0; i--) {
+>  174                 for (kn = kn_to, j = 0; j < i; j++)
+>  175                         kn = kn->parent;
+>  176                 len += strscpy(buf + len, "/",
+>  177                                len < buflen ? buflen - len : 0);
+>  178                 len += strscpy(buf + len, kn->name,
+>  179                                len < buflen ? buflen - len : 0);
+>  180         }
+>  181
+>  182         return len;
+>  183 }
+...
+> This is safe, for we see that in case of count == 0 strscpy() just like
+> strlcpy() turns to a virtual NOP.
 
-Jonathan
+The conversion itself isn't dangerous but it changes the return value of the
+function. The comment is not updated and the callers are still assuming that
+the function returns full length when the buffer is too short. e.g. Take a
+look at cgroup_show_path(). All those paths seem safe but the code is more
+more confusing because the conversions are half-way. I'm not necessarily
+against the conversion but the benefit to risk / churn ratio doesn't seem
+too attractive. If you wanna push this through, please make the conversion
+complete including the comments and the callers and include a short summary
+of the changes and why they're safe in the commit message.
 
+Thanks.
 
-> 
-> >
-> > Please run scripts/checkpatch.pl and fix reported warnings. Some
-> > warnings can be ignored, but the code here looks like it needs a fix.
-> > Feel free to get in touch if the warning is not clear.
-> >
-> > Best regards,
-> > Krzysztof
-> >  
-> 
-> 
-
+-- 
+tejun
