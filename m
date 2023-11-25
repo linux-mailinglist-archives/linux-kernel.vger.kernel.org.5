@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6932B7F87CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A427F87CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjKYC3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 21:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        id S231642AbjKYCaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 21:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjKYC3o (ORCPT
+        with ESMTP id S229569AbjKYCaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 21:29:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AA31990
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700879389;
+        Fri, 24 Nov 2023 21:30:13 -0500
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [IPv6:2001:41d0:203:375::ad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BFE1990
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:30:19 -0800 (PST)
+Message-ID: <95052fad-b3ef-4d18-8488-74cf84c50d08@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700879417;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OPID5CjYb2m6MvI+i3cidt4yTGrsfS5NjhuE3IlMXf0=;
-        b=hsnWA2GMXJ9fis9CXpxpI1tdaweyE0rq4luf32s/PIbDToWwa86iBrhvJoAibBSgFUJawe
-        Unw5i0m2c9G1d0KNkbfH3DD4dWeZF0lkES+zwqiP5wL1ej/vqBZWWd1V44GotKqTmVtgjQ
-        llvjNs4AJ35rg2Iowp6lNy3L4PQwtUI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378-Bz5UptqaO1Kx4oL_jq0oKQ-1; Fri, 24 Nov 2023 21:29:46 -0500
-X-MC-Unique: Bz5UptqaO1Kx4oL_jq0oKQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 74094811E7D;
-        Sat, 25 Nov 2023 02:29:45 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C57782026D4C;
-        Sat, 25 Nov 2023 02:29:44 +0000 (UTC)
-Date:   Sat, 25 Nov 2023 10:29:41 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ignat Korchagin <ignat@cloudflare.com>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        eric_devolder@yahoo.com, kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH 2/3] drivers/base/cpu: crash data showing should depends
- on KEXEC_CORE
-Message-ID: <ZWFcFU9PjHl2L09u@MiWiFi-R3L-srv>
-References: <20231123073652.507034-1-bhe@redhat.com>
- <20231123073652.507034-3-bhe@redhat.com>
- <CALrw=nFzy2zq-khLUCXsuf8J5_mka0YPyTosO190OUst2QSjVQ@mail.gmail.com>
- <ZV80X+lf2iOOTboW@MiWiFi-R3L-srv>
- <20231124084441.b913fc404fec53d5d0946c55@linux-foundation.org>
+        bh=u3cVUYf//AUjzXD/mOWnUMGkpU9IOaGIh0uDOAXNfu4=;
+        b=dJeNBz2/AA6j5y2IYu8GgaDMNXpaQz4pNW83nqkQEM+HYMx2n3b6T1p8KN3yHUrncQk9+m
+        cnnLcg43GTDDHsCvLFkRjsatUBaHfknXuMPYev/yzYvmwbscdBF24jVva3Ov9BeQxm93d1
+        2vpdKsZ9SEd1GEweHlHyjMxvWCb6YwA=
+Date:   Sat, 25 Nov 2023 10:30:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231124084441.b913fc404fec53d5d0946c55@linux-foundation.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <79301d04-c0cb-4740-8a6d-27a889b65daf@linux.dev>
+ <CAA8EJpom5kAbDkacOdqp6BR7YPfmCSXaQfDYRVcLf9eGmi64CQ@mail.gmail.com>
+ <121163c9-0d56-47ad-a12e-e67390fef2b4@linux.dev>
+ <CAA8EJpowjhX=LL-9cnQL4pfCei63zNkCGW5wGOeeFxcnFpNCVA@mail.gmail.com>
+ <00ba2245-0e48-4b21-bcd4-29dfb728e408@linux.dev>
+ <CAA8EJpoiehS2wS3ri_DggzxeEfLY4yK7X6c+bCFKvkwSce6r+A@mail.gmail.com>
+ <10c4ae94-525f-4ac1-9d59-80bb4f7d362e@linux.dev>
+ <gghxzhkd3hnry6qloc3axzojps7bv7cf7lmpcweu6ucadhelh6@spjfikjfzt23>
+ <bb328e16-7815-4518-832f-456cf1b7e704@linux.dev>
+ <tkaucp235w3nlydj7ae66g5r75w2rtjhum65cjrahmgeae7zgz@zb77pw2ih6vs>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <tkaucp235w3nlydj7ae66g5r75w2rtjhum65cjrahmgeae7zgz@zb77pw2ih6vs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,25 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/23 at 08:44am, Andrew Morton wrote:
-> On Thu, 23 Nov 2023 19:15:43 +0800 Baoquan He <bhe@redhat.com> wrote:
-> 
-> > > > CONFIG_KEXEC is used to enable kexec_load interface, the
-> > > > crash_notes/crash_notes_size/crash_hotplug showing depends on
-> > > > CONFIG_KEXEC is incorrect. It should depend on KEXEC_CORE instead.
-> > > >
-> > > > Fix it now.
-> > > 
-> > > Can we add Fixes/CC stable, so it gets eventually backported into 6.6?
-> > 
-> > Makes sense. Will add it in v2 since I need respin to add the missing
-> > stuff in patch 1. Thanks.
-> 
-> Please avoid mixing cc:stable patches and this-merge-window fixes in
-> the same series as next-merge-window material.  Because I'll just have
-> to separate them out anyway, causing what-I-merged to unnecessarily
-> differ from what-you-sent.
 
-Got it, will send them separately because the issue that this patch is fixing
-has been there for very long time. Thanks for noticing.
+On 2023/11/24 16:13, Maxime Ripard wrote:
+> On Fri, Nov 24, 2023 at 03:51:00PM +0800, Sui Jingfeng wrote:
+>> Hi,
+>>
+>> On 2023/11/24 15:38, Maxime Ripard wrote:
+>>> On Fri, Nov 24, 2023 at 01:52:26AM +0800, Sui Jingfeng wrote:
+>>>> On 2023/11/23 16:08, Dmitry Baryshkov wrote:
+>>>>>> I'm agree with the idea that drm bridges drivers involved toward to a direction
+>>>>>> that support more complex design, but I think we should also leave a way for the
+>>>>>> most frequent use case. Make it straight-forward as a canonical design.
+>>>>> Not having anything connector-related in the drm_bridge driver is a
+>>>>> canonical design.
+>>>> What you said is just for the more complex uses case. I can't agree, sorry.
+>>>>
+>>>> By choosing the word "canonical design", I means that the most frequently used
+>>>> cases in practice are the canonical design, 95+% motherboards I have seen has
+>>>> only one *onboard* display bridges chip. For my driver, I abstract the internal
+>>>> (inside of the chip) encoder as drm_encoder and abstract the external TX chip as
+>>>> drm_bridge, this design still works very well.
+>>>>
+>>>>
+>>>> Originally, I means that this is a concept of the hardware design.
+>>>> You are wrong even through in the software design context, the
+>>>> transparent simple drm bridge drivers(simple-bridge.c) also *allow*
+>>>> to create drm connector manually. I don't think I need to emulate
+>>>> more example, please read the code by youself.
+>> 'emulate' -> 'enumerate'
+>>
+>>> Ok. That's it. We've been patient long enough. You have been given a
+>>> review and a list of things to fix for your driver to be merged.
+>> This series is not relevant to my driver, can we please *limit* the
+>> discussion to this series?
+> Right, I conflated the two, I meant this series, or the general goal to
+> enable that bridge with your driver. The rest of the driver is of course
+> unaffected.
+>
+>>> Whether you follow them or not is your decision.
+>> I'm not saying that I will not follow, just to make sure what's
+>> solution is you want. I need discussion to figure out.
+> You had direct, repeated, feedback on that already by a maintainer and
+> one of the most experienced dev and reviewer on bridges. If you need
+> more guidance, you can definitely ask questions, but asking questions
+> and telling them they are wrong is very different.
+>
+>>> We won't tolerate insulting comments though.
+>> There is *no* insulting, please don't misunderstanding before
+>> *sufficient* communication, OK? Originally, I thought Dmitry may
+>> ignore(or overlook) what is the current status.
+> Saying to someone maintaining and/or reviewing that code for years now
+> that they are wrong and should go read the code is insulting.
+
+
+Back to that time, I'm focus on kindly technique debating, this is a kind
+of defensive reply for the patch. This is a kind of remind in case of ignores.
+Probably a bit of negative, but please don't misunderstanding as insult anyway.
+
+Dmitry, really thanks a lot for the instructs, I have learned a lot while
+talking with you. I will back to try mentioned method.
 
