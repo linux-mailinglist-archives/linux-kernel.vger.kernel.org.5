@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7356C7F8FBA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6057F8FC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 23:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjKYWUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 17:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        id S230119AbjKYWYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 17:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKYWUs (ORCPT
+        with ESMTP id S229456AbjKYWYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 17:20:48 -0500
+        Sat, 25 Nov 2023 17:24:50 -0500
 Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D4F11D
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:20:53 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b0310f536so2827162a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:20:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED6C11B
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:24:56 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b0f2c50eeso1498446a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 14:24:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700950852; x=1701555652; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700951095; x=1701555895; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pf1n7XsDSax3M30meganwiWWjObIiqG+Mom5DM5JoVo=;
-        b=VTjRL1BIOdBi4sRR7WRviSvVUFS0FGlOO4O8iKtgwZIYIN6ZbN6uIsE7qb/u74E5ms
-         mrdaE1LGbkowB/CwAzDH+7de7Qtr3f7Q6OtYKHjY+xRYKR6tfEOLRHqRhsi2CO2I9b0C
-         Cho24GXbhHdpweJvLRFeIHi18shxn9/vA/rztRvBKktE/OseDcOq8NUnIxxd0KqHgq2X
-         L/7ErULx9DfQWPj5dKwxqcR0HLRr6B1uXemT3+Mgu71hxtLkTblP8UoEA9WNZIbVLQk/
-         BipO/ut7QsjBvM49HaWQzyo9SN5Y89F3uQX7GXqhjTQ7UX3zvqhqnwP2eYWgA0G04uIC
-         sGXQ==
+        bh=sKAE8m+7ShlD9mU1LCDDUsam3G8dOC6GVtW7kEar8Tc=;
+        b=EqMijSsURen2spKnCQW1poZAicjvumegPbTHTDP6sdEZOJPeXmkbMgCVA+g3YFWxEt
+         OzJ0dZaLli7bkhYiP0NDYAW3zcUBXPoSv+SQWfIunQH3CjHubnnkQvZeFElTROk6ZvlB
+         8gN5wTeSjfr9KqYA/Fq7sSG5hMai67MjLxzbcfZ5NDPHz4pIrNbYrRflhGBjOK8hqaaW
+         6X6L3l2JVOw+LZoyjdiNroQOKdCg+MZp0n6NWrAssb0T5aFO3u3JoLc8pNqeyv+60cIn
+         giUzmyplF6WiyawmJNyY/33/Ue22NbRgH8OZW3xCJ6Y48lmC8DPuazOZQETIRIXjkwMB
+         A0pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700950852; x=1701555652;
+        d=1e100.net; s=20230601; t=1700951095; x=1701555895;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pf1n7XsDSax3M30meganwiWWjObIiqG+Mom5DM5JoVo=;
-        b=HoN8KDoEI75Y/RZbC+mkP9I2JxJLwXtt7VpvsMf1bUlxbLn1hkWM/kizibC7T+ryfu
-         ABPBBCoZfp93pBH4+D9lkMjrb+c+G+MucdCYOl88QgsMFTyu7EDWtFImrDH6+0TXIcex
-         Yl/r7qmZtWmsoDyiv4tCjRhLC7uZmJHJ8aMlnTpZWHifO9DLyIBTAeeYIj4BEk07oojc
-         UIbQ5AMqXSCfp+ZWXAC8dDvkwwCLh3fn8xl3Nx+s8G702EQbCFTcFqZO3hbPoNLoHc4v
-         oz/bw4WATHxPZfxfVOUFdCLRQwYLa7jeOQOP7l2/2Hb0mGJcVZpEikL0QQ94hltUELmy
-         ADcw==
-X-Gm-Message-State: AOJu0YxXVuBcb51DwozBfclZ0w24gnW65hnp2kcB1lCNrKxHh7YOIfLm
-        YWBH21ehtSOk4P2jeWyR+GewBQ==
-X-Google-Smtp-Source: AGHT+IE9JK89KqkLkVFP6K5vwybNSSAe1kkdHHznfextHga8I21CzcQtHouaR6yHEqrhGm1TiqespQ==
-X-Received: by 2002:a50:f60c:0:b0:548:af20:1b7e with SMTP id c12-20020a50f60c000000b00548af201b7emr6812586edn.8.1700950852108;
-        Sat, 25 Nov 2023 14:20:52 -0800 (PST)
+        bh=sKAE8m+7ShlD9mU1LCDDUsam3G8dOC6GVtW7kEar8Tc=;
+        b=X2uwv78VsMU4V+0eIhbFtOMadYedSVGp8PS0oIlADIVclFliRmvDeG8Y66c6OVu4pX
+         KuUczvnJ7hOsojlWOdX9nC2g5R1LI1sVY0UTjojwOdh7M4Onh1BL4kkcuLK85QLJQBNz
+         +5yv2/dspNN40aOk8AmLkSIS/KrQwQiX2tFFVKX6wGIlL4YPSw+ZihVH4KnWGsshU6Pf
+         qmupARpSzMyXJS18VO/iv0oHjuZ3zZIEQmUu0QI2mXMOi8gVS9W3078tQWRkpTwM7Gut
+         Hw0v8fKYP50sLHlGlWuuLd6Pqr8MfW5V24YiNQDnI2+nhzo+CSGj0gVbnK+MtUWHym1W
+         agyQ==
+X-Gm-Message-State: AOJu0YwutV6BNQqG2dv7R3wxP9GY+/e9zQYAgJW7s3ehuecvYGlsaMix
+        EXK8k0btwWWjY602wkPkuoAJNQ==
+X-Google-Smtp-Source: AGHT+IHuUyOggoOV9rwZMx7Pl9mYiZWI2U1vdaXQZtSxtbz3U2UaIsaZz3GqcbY0MyoGYPyQbjFpNw==
+X-Received: by 2002:a17:906:2246:b0:a0d:35d7:b14c with SMTP id 6-20020a170906224600b00a0d35d7b14cmr705313ejr.6.1700951094765;
+        Sat, 25 Nov 2023 14:24:54 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id r12-20020aa7cb8c000000b0053deb97e8e6sm3461236edt.28.2023.11.25.14.20.50
+        by smtp.gmail.com with ESMTPSA id s7-20020a170906500700b00a0950451affsm2561765ejj.67.2023.11.25.14.24.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 14:20:51 -0800 (PST)
-Message-ID: <9d294c13-4d59-40a1-ab9f-3a1305395aa3@linaro.org>
-Date:   Sat, 25 Nov 2023 23:20:49 +0100
+        Sat, 25 Nov 2023 14:24:54 -0800 (PST)
+Message-ID: <99190f51-59b5-4326-8c02-35529c280c2e@linaro.org>
+Date:   Sat, 25 Nov 2023 23:24:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] drm/msm/a690: Fix reg values for a690
+Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
 Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Danylo Piliaiev <dpiliaiev@igalia.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>,
-        Douglas Anderson <dianders@chromium.org>,
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
         Bjorn Andersson <andersson@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231121162137.60488-1-robdclark@gmail.com>
- <20231125191155.5375-2-robdclark@gmail.com>
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+ <20231125193737.GD7486@pendragon.ideasonboard.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -108,7 +120,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231125191155.5375-2-robdclark@gmail.com>
+In-Reply-To: <20231125193737.GD7486@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -121,20 +133,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.2023 20:11, Rob Clark wrote:
-> From: Danylo Piliaiev <dpiliaiev@igalia.com>
+[...]
+>> +
+>> +3. Unit addresses shall use lowercase hex, without leading zeros (padding).
 > 
-> KGSL doesn't support a690 so all reg values were the same as
-> on a660. Now we know the values and they are different from the
-> windows driver.
-> 
-> This fixes hangs on D3D12 games and some CTS tests.
-> 
-> Signed-off-by: Danylo Piliaiev <dpiliaiev@igalia.com>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
-Looks sane
+> I'm curious, what's the reason for this ? I think it makes the sources
+> less readable. If the rule is "just" because that's how DT sources are
+> written today and it would be too complicated to change that, that's
+> fine with me.
+One more thing not mentioned is "no 0x prefix" (the unit address is *always*
+interpreted as hex).
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Lowercase hex seems to be (in my experience?) the consensus for everything
+except preprocessor defines across the spectrum
+
+No leading zeroes.. I guess it was just eye-pleasing for people that have
+been doing devicetree to date, myself included.
 
 Konrad
