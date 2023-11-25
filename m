@@ -2,165 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2877D7F8E42
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5BC7F8E45
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjKYT6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        id S229523AbjKYT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYT6J (ORCPT
+        with ESMTP id S229456AbjKYT7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:58:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14604E5
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:58:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B0E0C433C7;
-        Sat, 25 Nov 2023 19:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700942295;
-        bh=g7PIAmnH5nJje+Q1nASw9YQHtkXNa79XrtXt1I9gXXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JaLY3ZWpEQtnaKMuAiMNDNqAFO99WTHGVVPfKslb3BUL1JWwE+wYd99vJPAH0q+sb
-         6xvC/5ed5MNhiK3NJrQW4Ms9SBjjOtISp+Cy18jU8K2EOsvSxIAkH91NhJAqvSPuUd
-         Mp3EjseRzX8SenCbT+oPVGAvNvCGN6DlIjeASJn8=
-Date:   Sat, 25 Nov 2023 19:58:12 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
-Message-ID: <2023112504-cathedral-pulmonary-83ce@gregkh>
-References: <2023112435-dazzler-crisped-04a6@gregkh>
- <20231124163234.GC819414@pengutronix.de>
- <2023112453-flagstick-bullring-8511@gregkh>
- <20231124185725.GA872366@pengutronix.de>
- <2023112520-paper-image-ef5d@gregkh>
- <20231125085038.GA877872@pengutronix.de>
- <2023112506-unselfish-unkind-adcb@gregkh>
- <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
- <2023112541-uptown-tripping-05f3@gregkh>
- <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
+        Sat, 25 Nov 2023 14:59:39 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70370C1;
+        Sat, 25 Nov 2023 11:59:46 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2e4107f47so1962924b6e.2;
+        Sat, 25 Nov 2023 11:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700942385; x=1701547185; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VO2STeGiEdMah3Rs2OqrcrAeByRtw44j2ObgacSxxiE=;
+        b=LgST56Qjx/YIMLqSoJqVxm7x1UXV50JBAtyTWhCiz6WJRtG81EJjSIMCCXLcYPvNY1
+         dmnNypoWAmRiiW1hde5W9KFzIjPSUZ5Zfonxey8nC9SitwMqvcgFyefuJFnthGLlA6vN
+         mnpR/iaEV4BCSViF1SdyTwZQ8+RIAWaPmUiJiM60gBmsk6N3NIeV3ekz1xH1v55DpCxw
+         yIHxy7WrWFRmhdC8YEdJuhwlAtc0HQnLEWO6Ahnl0A3sN51JiDrrrSA8qkCsjrjqduI3
+         qH/YnyBy8TUrr3azmuuGutQcqjQPeDIac7HSBPQshmngX4RjUcisL9I/4e4QtF1WLTsl
+         BGcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700942385; x=1701547185;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VO2STeGiEdMah3Rs2OqrcrAeByRtw44j2ObgacSxxiE=;
+        b=gb8VKhmRT/4EALhWPolmcYd465T7iZ8YwyzqrkG6YAiQRC6Euf78oOb2TJgj+/yjgN
+         u65+tnlvSLPaRo2OivXB8C1Mvqh8gSp/9EmYjq+ofvNROlg+zQZ1RPSqyDOKiwQQGXpl
+         cwPnau5pWj3ymBzQSvDxONnJafRQMwbk+k3W6NFaPXdxirIIXZpcp/knQ/fm0fTf3rio
+         yAPIabBkXILZIbjcDhK4gcGvkiir2NajKDNxJCybGNr0EP0sIWBrm4p7QKmkPdIVBNqR
+         f7Hm0bpHnCB5gL/TkJHKpjgJU8eJRH3sVSwgdpOquDW/A1sHvb0asqnaAiaW/p78siJP
+         DZvg==
+X-Gm-Message-State: AOJu0Yy3haYYMZ2RkEuebDfGj/sRElwvqeTzRoTtme+KtYVnlj6CVxNI
+        DOKrzvcTT/rKyPbZLDU7paU=
+X-Google-Smtp-Source: AGHT+IF+BxyzFQahU6Dxq/44kcsAgGeS2aylZ4ZZxV46S/9sIA9rChJVPx29c5ohIiymo++7u/6c2Q==
+X-Received: by 2002:a05:6808:1a1d:b0:3b5:c587:d9ed with SMTP id bk29-20020a0568081a1d00b003b5c587d9edmr9808829oib.26.1700942385503;
+        Sat, 25 Nov 2023 11:59:45 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id fb2-20020a056a002d8200b006c4d371ef7csm4860212pfb.14.2023.11.25.11.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 11:59:44 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sat, 25 Nov 2023 09:59:43 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <ZWJSL15eCe0aXnZe@mtj.duckdns.org>
+References: <20231111024835.2164816-1-tj@kernel.org>
+ <20231111024835.2164816-13-tj@kernel.org>
+ <ZV8IR/w4IaxJ2vPA@gpd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZV8IR/w4IaxJ2vPA@gpd>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 03:43:02PM +0000, Mark Brown wrote:
-> On Sat, Nov 25, 2023 at 02:35:41PM +0000, Greg Kroah-Hartman wrote:
-> > On Sat, Nov 25, 2023 at 10:30:42AM +0000, Mark Brown wrote:
-> > > On Sat, Nov 25, 2023 at 09:09:01AM +0000, Greg Kroah-Hartman wrote:
+Hello,
+
+On Thu, Nov 23, 2023 at 09:07:35AM +0100, Andrea Righi wrote:
+> On Fri, Nov 10, 2023 at 04:47:38PM -1000, Tejun Heo wrote:
+...
+> > +#ifdef CONFIG_SCHED_CLASS_EXT
+> > +	p->scx.dsq		= NULL;
+> > +	INIT_LIST_HEAD(&p->scx.dsq_node);
+> > +	p->scx.flags		= 0;
+> > +	p->scx.weight		= 0;
+> > +	p->scx.sticky_cpu	= -1;
+> > +	p->scx.holding_cpu	= -1;
+> > +	p->scx.kf_mask		= 0;
+> > +	atomic64_set(&p->scx.ops_state, 0);
 > 
-> > > > So hardware is attempting to rely on software in order to prevent the
-> > > > destruction of that same hardware?  Surely hardware designers aren't
-> > > > that crazy, right?  (rhetorical question, I know...)
+> We probably need atomic_long_set() here or in 32-bit arches (such as
+> armhf) we get this:
 > 
-> > > Surely software people aren't going to make no effort to integrate with
-> > > the notification features that the hardware engineers have so helpfully
-> > > provided us with?
+> kernel/sched/core.c:4564:22: error: passing argument 1 of ‘atomic64_set’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>  4564 |         atomic64_set(&p->scx.ops_state, 0);
+>       |                      ^~~~~~~~~~~~~~~~~
+>       |                      |
+>       |                      atomic_long_t * {aka atomic_t *}
 > 
-> > That would be great, but I don't see that here, do you?  All I see is
-> > the shutdown sequence changing because someone wants it to go "faster"
-> > with the threat of hardware breaking if we don't meet that "faster"
-> > number, yet no knowledge or guarantee that this number can ever be known
-> > or happen.
+...
+> > +static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
+> > +{
+> > +	if (p->scx.flags & SCX_TASK_QUEUED) {
+> > +		WARN_ON_ONCE(atomic64_read(&p->scx.ops_state) != SCX_OPSS_NONE);
 > 
-> The idea was to have somewhere to send notifications when the hardware
-> starts reporting things like power supplies starting to fail.  We do
-> have those from hardware, we just don't do anything terribly useful
-> with them yet.
-
-Ok, but that's not what I recall this patchset doing, or did I missing
-something?  All I saw was a "reorder the shutdown sequence" set of
-changes.  Or at least that's all I remember at this point in time,
-sorry, it's been a few days, but at least that lines up with what the
-Subject line says above :)
-
-> TBH it does seem reasonable that there will be systems that can usefully
-> detect these issues but hasn't got a detailed characterisation of
-> exactly how long you've got before things expire, it's also likely that
-> the actual bound is going to be highly variable depending on what the
-> system is up to at the point of detection.  It's quite likely that we'd
-> only get a worst case bound so it's also likely that we'd have more time
-> in practice than in spec.  I'd expect characterisation that does happen
-> to be very system specific at this point, I don't think we can rely on
-> getting that information.  I'd certainly expect that we have vastly more
-> systems can usefully detect issues than systems where we have firm
-> numbers.
-
-Sure, that all sounds good, but again, I don't think that's what is
-happening here.
-
-> > > > > Same problem was seen not only in automotive devices, but also in
-> > > > > industrial or agricultural. With other words, it is important enough to bring
-> > > > > some kind of solution mainline.
+> Ditto. Even if this line is replaced later by
+> "[PATCH 31/36] sched_ext: Implement core-sched support"
 > 
-> > > > But you are not providing a real solution here, only a "I am going to
-> > > > attempt to shut down a specific type of device before the others, there
-> > > > are no time or ordering guarantees here, so good luck!" solution.
-> 
-> > > I'm not sure there are great solutions here, the system integrators are
-> > > constrained by the what the application appropriate silicon that's on
-> > > the market is capable of, the siicon is constrained by the area costs of
-> > > dealing with corner cases for system robustness and how much of the
-> > > market cares about fixing these issues and software is constrained by
-> > > what hardware ends up being built.  Everyone's just got to try their
-> > > best with the reality they're confronted with, hopefully what's possible
-> > > will improve with time.
+> > +		dispatch_dequeue(&rq->scx, p);
+> > +	}
+> > +
+> > +	p->se.exec_start = rq_clock_task(rq);
+> > +}
 
-Note, if you attempt to mitigate broken hardware with software fixes,
-hardware will never get unbroken as it never needs to change.  Push back
-on this, it's the only real way forward here.  I know it's not always
-possible, but the number of times I have heard hardware engineers say
-"but no one ever told us that was broken/impossible/whatever, we just
-assumed software could handle it" is uncountable.
+Sorry about that. I updated them and will include the changes in the next
+iteration. Will test 32bit build too next time.
 
-> > Agreed, but I don't think this patch is going to actually work properly
-> > over time as there is no time values involved :)
-> 
-> This seems to be more into the area of mitigation than firm solution, I
-> suspect users will be pleased if they can make a noticable dent in the
-> number of failures they're seeing.
+Thanks.
 
-Mitigation is good, but this patch series is just a hack by doing "throw
-this device type at the front of the shutdown list because we have
-hardware that crashes a lot" :)
-
-> > > > And again, how are you going to prevent the in-fighting of all device
-> > > > types to be "first" in the list?
-> 
-> > > It doesn't seem like the most complex integration challenge we've ever
-> > > had to deal with TBH.
-> 
-> > True, but we all know how this grows and thinking about how to handle it
-> > now is key for this to be acceptable.
-> 
-> It feels like if we're concerned about mitigating physical damage during
-> the process of power failure that's a very limited set of devices - the
-> storage case where we're in the middle of writing to flash or whatever
-> is the most obvious case.
-
-Then why isn't userspace handling this?  This is a policy decision that
-it needs to take to properly know what hardware needs to be shut down,
-and what needs to happen in order to do that (i.e. flush, unmount,
-etc.?)  And userspace today should be able to say, "power down this
-device now!" for any device in the system based on the sysfs device
-tree, or at the very least, force it to a specific power state.  So why
-not handle this policy there?
-
-thanks,
-
-greg k-h
+-- 
+tejun
