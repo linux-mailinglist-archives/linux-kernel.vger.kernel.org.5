@@ -2,318 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A62C7F8C7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC707F8C7D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 17:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbjKYQhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 11:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
+        id S232176AbjKYQlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 11:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjKYQhP (ORCPT
+        with ESMTP id S229697AbjKYQlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 11:37:15 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19022102;
-        Sat, 25 Nov 2023 08:37:21 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3APGRR3u000576;
-        Sat, 25 Nov 2023 08:37:14 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=7tmkG0aI1txbuxYrmeLbYXWmRe/JkhuRiN6AadLW224=;
- b=DBSkmMGtevQ+FNQibs9OKXGIjI8s4OxdeupuFYRCX4rtyYWmth5RR39bJ06VV0AwnTT9
- JIWRfPngYchi0NFonMVM/FoQanM0jprONNFNKlswgi1twILHArgqPbC2TYGsdMfbG3Ex
- CtZcJlRwu8duA4SBNtpFQmg3VgaPy2xdYAri388KdImpjVjttUHX45n/C4PfJWckgk/X
- 3Ah4eZilKPvjXPvu5gfC/LHVrBNK+0jcX2Ys5GQQKTYAb3Zu4cDL5tSGGqoKIytVidSd
- E9fyCDJM/3eYs0QJ6dIfhSsp6+XNzXBB1/hDDaFio1I45+XAeJ9L2cLGX2pc/sE8SYof Fg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3ukhaugab5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sat, 25 Nov 2023 08:37:14 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 25 Nov
- 2023 08:37:11 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Sat, 25 Nov 2023 08:37:11 -0800
-Received: from hyd1358.marvell.com (unknown [10.29.37.11])
-        by maili.marvell.com (Postfix) with ESMTP id C6D305C68EA;
-        Sat, 25 Nov 2023 08:37:08 -0800 (PST)
-From:   Subbaraya Sundeep <sbhatta@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: [PATCH net] octeontx2-pf: Restore TC ingress police rules when interface is up
-Date:   Sat, 25 Nov 2023 22:06:57 +0530
-Message-ID: <1700930217-5707-1-git-send-email-sbhatta@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        Sat, 25 Nov 2023 11:41:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9343FB
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 08:41:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CCCEC433CB;
+        Sat, 25 Nov 2023 16:41:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700930501;
+        bh=8kWUnZjbm7K9No0nEtzhH2uxGfoeUsvF3kQYCuYFmfc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j7wLdSlMkpDwJhUWP62XwB52Nijss1jGRl8dt4mqCH0kIByDgjCORVoFkGeZe0j/0
+         pUF1V9+iI7CsGfiaZAfzNn0pqu1br9Ns/MQA/+187qRhkUBEhIf1l0xE70QM2IW+lT
+         3yzwP08eC7qrumYxt3ZOH5EFTZHtKPXw7pJ3R26DOllewg4ZknRsS8klWAjMLu9WpL
+         OGyPc7/9IIhxfsXtJD7QxU0GNRX82dg4SdsMIOpBQfXdCxEzlWuJoezHlV+MHObXlX
+         ff+bEfYE+/bWq4urrnys7O1uadvMI8Qxx8mA9OEP/FhmM0UGEkHykHV2AEqtEDDF3V
+         fRWi9v60jFqWg==
+Date:   Sat, 25 Nov 2023 16:41:31 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc:     <paul.cercueil@analog.com>, <Michael.Hennerich@analog.com>,
+        <lars@metafoo.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 6/7] iio: adc: Add support for AD7091R-8
+Message-ID: <20231125164131.564b79e7@jic23-huawei>
+In-Reply-To: <3513e59ec45663d6ac330adf4523d56335a70801.1700751907.git.marcelo.schmitt1@gmail.com>
+References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
+        <3513e59ec45663d6ac330adf4523d56335a70801.1700751907.git.marcelo.schmitt1@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: BP6lt8wtjnEZ4mbJTMgQmRttvLU0eWyx
-X-Proofpoint-GUID: BP6lt8wtjnEZ4mbJTMgQmRttvLU0eWyx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-25_16,2023-11-22_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TC ingress policer rules depends on interface receive queue
-contexts since the bandwidth profiles are attached to RQ
-contexts. When an interface is brought down all the queue
-contexts are freed. This in turn frees bandwidth profiles in
-hardware causing ingress police rules non-functional after
-the interface is brought up. Fix this by applying all the ingress
-police rules config to hardware in otx2_open. Also allow
-adding ingress rules only when interface is running
-since no contexts exist for the interface when it is down.
+On Thu, 23 Nov 2023 13:42:45 -0300
+Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
 
-Fixes: 68fbff68dbea ("octeontx2-pf: Add police action for TC flower")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c |   3 +
- .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   2 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   2 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c   | 120 ++++++++++++++++-----
- 4 files changed, 102 insertions(+), 25 deletions(-)
+> Add support for Analog Devices AD7091R-2, AD7091R-4, and AD7091R-8
+> low power 12-Bit SAR ADCs.
+> Extend ad7091r-base driver so it can be used by AD7091R-8 drivers.
+> 
+> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Hi Marcelo,
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-index a4a258d..c1c99d7 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-@@ -450,6 +450,9 @@ int cn10k_set_ipolicer_rate(struct otx2_nic *pfvf, u16 profile,
- 	aq->prof.pebs_mantissa = 0;
- 	aq->prof_mask.pebs_mantissa = 0xFF;
+Mostly looks fine, but I'd rather see all the chip specific information
+dragged into one place rather than indexing using a type enum.
+That includes code that does different things based on that enum value.
+
+Doing so will provide a cleaner interface between the different modules.
+The enum thing has gone wrong far too many times as drivers become
+more complex.
+
+Jonathan
+
+> ---
+>  MAINTAINERS                    |   1 +
+>  drivers/iio/adc/Kconfig        |  16 ++
+>  drivers/iio/adc/Makefile       |   4 +-
+>  drivers/iio/adc/ad7091r-base.c |  24 ++-
+>  drivers/iio/adc/ad7091r-base.h |  15 ++
+>  drivers/iio/adc/ad7091r5.c     |   2 +
+>  drivers/iio/adc/ad7091r8.c     | 270 +++++++++++++++++++++++++++++++++
+>  7 files changed, 324 insertions(+), 8 deletions(-)
+>  create mode 100644 drivers/iio/adc/ad7091r8.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6e7c6c866396..54eff6f0c358 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1136,6 +1136,7 @@ F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+>  F:	drivers/iio/adc/drivers/iio/adc/ad7091r-base.c
+>  F:	drivers/iio/adc/drivers/iio/adc/ad7091r-base.h
+>  F:	drivers/iio/adc/drivers/iio/adc/ad7091r5.c
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r8.c
+>  
+>  ANALOG DEVICES INC AD7192 DRIVER
+>  M:	Alexandru Tachici <alexandru.tachici@analog.com>
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 1e2b7a2c67c6..284d898790a2 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -36,13 +36,29 @@ config AD4130
+>  	  To compile this driver as a module, choose M here: the module will be
+>  	  called ad4130.
+>  
+> +config AD7091R
+> +	tristate
+
+It's fairly trivial but ideal patch split would have had the build changes for
+a core module and users of it done in an initial patch and only new stuff in the
+patch adding a driver.
+
+...
+
+> diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
+> index c752cd2283e6..dbc60ea1bafc 100644
+> --- a/drivers/iio/adc/ad7091r-base.c
+> +++ b/drivers/iio/adc/ad7091r-base.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/bitops.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/iio/events.h>
+>  #include <linux/iio/iio.h>
+>  #include <linux/interrupt.h>
+> @@ -16,7 +17,8 @@
+>  #include "ad7091r-base.h"
+>  
+>  /* AD7091R_REG_RESULT */
+> -#define AD7091R_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x3)
+> +#define AD7091R5_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x3)
+> +#define AD7091R8_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x7)
+Hmm. Generally I'd not expect to see registers that only apply on a
+particular device in a generic library.
+
+Normal trick for this is a define or callback as appropriate.
+
+>  #define AD7091R_REG_RESULT_CONV_RESULT(x)   ((x) & 0xfff)
+>  
+>  /* AD7091R_REG_CONF */
+> @@ -66,10 +68,13 @@ static int ad7091r_set_mode(struct ad7091r_state *st, enum ad7091r_mode mode)
+>  		return -EINVAL;
+>  	}
+>  
+> -	ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
+> -				 AD7091R_REG_CONF_MODE_MASK, conf);
+> -	if (ret)
+> -		return ret;
+> +	/* AD7091R-2/4/8 don't set normal, command, autocycle modes in conf reg */
+> +	if (st->chip_info->type == AD7091R5) {
+A type in a chip_info structure often means we are exposing as code something that
+should really be data.
+
+> +		ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
+> +					 AD7091R_REG_CONF_MODE_MASK, conf);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	st->mode = mode;
+>  
+> @@ -109,8 +114,13 @@ static int ad7091r_read_one(struct iio_dev *iio_dev,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (AD7091R_REG_RESULT_CH_ID(val) != channel)
+> -		return -EIO;
+> +	if (st->chip_info->type == AD7091R5) {
+
+Here as well. I'd like to see this done either with data or a callback in the
+chip_info structure.
+
+> +		if (AD7091R5_REG_RESULT_CH_ID(val) != channel)
+> +			return -EIO;
+> +	} else {
+> +		if (AD7091R8_REG_RESULT_CH_ID(val) != channel)
+> +			return -EIO;
+> +	}
+>  
+>  	*read_val = AD7091R_REG_RESULT_CONV_RESULT(val);
+>  
+> diff --git a/drivers/iio/adc/ad7091r-base.h b/drivers/iio/adc/ad7091r-base.h
+> index 6997ea11998b..a42ea79a2893 100644
+> --- a/drivers/iio/adc/ad7091r-base.h
+> +++ b/drivers/iio/adc/ad7091r-base.h
+> @@ -29,6 +29,8 @@
+
+...
+
+> +enum ad7091r_device_type {
+> +	AD7091R2,
+> +	AD7091R4,
+> +	AD7091R5,
+> +	AD7091R8,
+>  };
+>  
+>  struct ad7091r_chip_info {
+> +	const char *name;
+> +	enum ad7091r_device_type type;
+
+This is almost always a design mistake. If we can possibly abstract
+the differences into either some data, or some callbacks (from the appropriate
+child module) that is much preferred to having a type enum and doing that
+in code.
+
+I think it is fairly easy to do, but we need a wrapper structure around irq
+and non irq versions of this structure.  Probably move the name and add
+a regmap_config to that wrapper structure.
+
+>  	unsigned int num_channels;
+>  	const struct iio_chan_spec *channels;
+>  	unsigned int vref_mV;
+
+...
+
+> diff --git a/drivers/iio/adc/ad7091r8.c b/drivers/iio/adc/ad7091r8.c
+> new file mode 100644
+> index 000000000000..f062240873c6
+> --- /dev/null
+> +++ b/drivers/iio/adc/ad7091r8.c
+> @@ -0,0 +1,270 @@
+...
+
+
+> +static const struct regmap_config ad7091r_spi_regmap_config[] = {
+
+As mentioned below, I'd like to see this in the info structure rather
+than a separate array that needs to be indexed.
+
+> +	[AD7091R2] = {
+> +		.reg_bits = 5,
+> +		.pad_bits = 3,
+> +		.val_bits = 16,
+> +		.volatile_reg = ad7091r_volatile_reg,
+> +		.writeable_reg = ad7091r_writeable_reg,
+> +		.max_register = AD7091R_REG_CH_HYSTERESIS(2),
+> +	},
+> +	[AD7091R4] = {
+> +		.reg_bits = 5,
+> +		.pad_bits = 3,
+> +		.val_bits = 16,
+> +		.volatile_reg = ad7091r_volatile_reg,
+> +		.writeable_reg = ad7091r_writeable_reg,
+> +		.max_register = AD7091R_REG_CH_HYSTERESIS(4),
+> +	},
+> +	[AD7091R8] = {
+> +		.reg_bits = 5,
+> +		.pad_bits = 3,
+> +		.write_flag_mask = BIT(2),
+> +		.val_bits = 16,
+> +		.volatile_reg = ad7091r_volatile_reg,
+> +		.writeable_reg = ad7091r_writeable_reg,
+> +		.max_register = AD7091R_REG_CH_HYSTERESIS(8),
+> +	},
+> +};
+> +
+> +static int ad7091r_regmap_bus_reg_read(void *context, unsigned int reg,
+> +				       unsigned int *val)
+> +{
+> +	struct ad7091r_state *st = context;
+> +	struct spi_device *spi = container_of(st->dev, struct spi_device, dev);
+> +	const struct regmap_config *conf = &ad7091r_spi_regmap_config[st->chip_info->type];
+> +	int ret;
+> +
+> +	struct spi_transfer t[] = {
+> +		{
+> +			.tx_buf = &st->tx_buf,
+> +			.len = 2,
+> +			.cs_change = 1,
+> +		}, {
+> +			.rx_buf = &st->rx_buf,
+> +			.len = 2,
+> +		}
+> +	};
+> +
+> +	if (reg == AD7091R_REG_RESULT)
+> +		ad7091r_pulse_convst(st);
+> +
+> +	reg <<= conf->pad_bits;
+> +	st->tx_buf = cpu_to_be16(reg << 8);
+
+That's a bit unusual as a way to write the first of two bytes.
+Perhaps the data type of tx_buf is inappropriate here and it should
+just be u8 x[2]?  I guess maybe it's easier to just keep it this way
+given the very different tx_buf format for writes.
+
+> +
+> +	ret = spi_sync_transfer(spi, t, ARRAY_SIZE(t));
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = be16_to_cpu(st->rx_buf);
+> +	return 0;
+> +}
+
+> +
+> +static int ad7091r8_spi_probe(struct spi_device *spi)
+> +{
+> +	const struct ad7091r_chip_info *chip_info;
+> +	struct ad7091r_state *st;
+> +	struct iio_dev *iio_dev;
+> +	struct regmap *map;
+> +	int ret;
+> +
+> +	chip_info = spi_get_device_match_data(spi);
+> +	if (!chip_info)
+> +		return -EINVAL;
+> +
+> +	iio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> +	if (!iio_dev)
+> +		return -ENOMEM;
+> +
+> +	st = iio_priv(iio_dev);
+> +	st->dev = &spi->dev;
+> +
+> +	map = devm_regmap_init(&spi->dev, &ad7091r8_regmap_bus, st,
+> +			       &ad7091r_spi_regmap_config[chip_info->type]);
+regmap config should be accessed via a pointer in the chip_info structure
+not a separate array.
+
+> +
+Trivial : No blank line generally between function call an it's error handler.
+
+> +	if (IS_ERR(map))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(map),
+> +				     "Error initializing spi regmap\n");
+> +
+> +	ret = ad7091r8_gpio_setup(st);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (spi->irq)
+> +		chip_info = &ad7091r_spi_chip_info_irq[chip_info->type];
+
+This is a little ugly and explains your indirection via a type. I'd put a wrapper
+structure round both chip_info (irq and non irq) and add that to the .data in
+the look up tables that follow.  Thus having a simple tree structure for now we
+get to the appropriate data
+
+struct ad7091r_chip_info_container {
+	struct ad7091r_chip_info irq_info;
+	struct ad7091r_chip_info no_irq_info;
+	struct regmap_config *regmap_config;
+};
+Pointers fine as well if that ends up cleaner.
+
+Then spi_get_device_match_data() provides a pointer to this container struct
+providing all the info for the device, and the stuff we need at runtime is then
+done by picking between the two info structures under it.
  
-+	aq->prof.hl_en = 0;
-+	aq->prof_mask.hl_en = 1;
-+
- 	/* Fill AQ info */
- 	aq->qidx = profile;
- 	aq->ctype = NIX_AQ_CTYPE_BANDPROF;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index e7c69b5..0691030 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -1070,6 +1070,8 @@ int otx2_init_tc(struct otx2_nic *nic);
- void otx2_shutdown_tc(struct otx2_nic *nic);
- int otx2_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- 		  void *type_data);
-+void otx2_tc_apply_ingress_police_rules(struct otx2_nic *nic);
-+
- /* CGX/RPM DMAC filters support */
- int otx2_dmacflt_get_max_cnt(struct otx2_nic *pf);
- int otx2_dmacflt_add(struct otx2_nic *pf, const u8 *mac, u32 bit_pos);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index ba95ac9..d624be6 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1870,6 +1870,8 @@ int otx2_open(struct net_device *netdev)
- 	if (pf->flags & OTX2_FLAG_DMACFLTR_SUPPORT)
- 		otx2_dmacflt_reinstall_flows(pf);
- 
-+	otx2_tc_apply_ingress_police_rules(pf);
-+
- 	err = otx2_rxtx_enable(pf, true);
- 	/* If a mbox communication error happens at this point then interface
- 	 * will end up in a state such that it is in down state but hardware
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 8a5e398..db1e0e0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -47,6 +47,9 @@ struct otx2_tc_flow {
- 	bool				is_act_police;
- 	u32				prio;
- 	struct npc_install_flow_req	req;
-+	u64				rate;
-+	u32				burst;
-+	bool				is_pps;
- };
- 
- static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
-@@ -284,21 +287,10 @@ static int otx2_tc_egress_matchall_delete(struct otx2_nic *nic,
- 	return err;
- }
- 
--static int otx2_tc_act_set_police(struct otx2_nic *nic,
--				  struct otx2_tc_flow *node,
--				  struct flow_cls_offload *f,
--				  u64 rate, u32 burst, u32 mark,
--				  struct npc_install_flow_req *req, bool pps)
-+static int otx2_tc_act_set_hw_police(struct otx2_nic *nic,
-+				     struct otx2_tc_flow *node)
- {
--	struct netlink_ext_ack *extack = f->common.extack;
--	struct otx2_hw *hw = &nic->hw;
--	int rq_idx, rc;
--
--	rq_idx = find_first_zero_bit(&nic->rq_bmap, hw->rx_queues);
--	if (rq_idx >= hw->rx_queues) {
--		NL_SET_ERR_MSG_MOD(extack, "Police action rules exceeded");
--		return -EINVAL;
--	}
-+	int rc;
- 
- 	mutex_lock(&nic->mbox.lock);
- 
-@@ -308,23 +300,17 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
- 		return rc;
- 	}
- 
--	rc = cn10k_set_ipolicer_rate(nic, node->leaf_profile, burst, rate, pps);
-+	rc = cn10k_set_ipolicer_rate(nic, node->leaf_profile,
-+				     node->burst, node->rate, node->is_pps);
- 	if (rc)
- 		goto free_leaf;
- 
--	rc = cn10k_map_unmap_rq_policer(nic, rq_idx, node->leaf_profile, true);
-+	rc = cn10k_map_unmap_rq_policer(nic, node->rq, node->leaf_profile, true);
- 	if (rc)
- 		goto free_leaf;
- 
- 	mutex_unlock(&nic->mbox.lock);
- 
--	req->match_id = mark & 0xFFFFULL;
--	req->index = rq_idx;
--	req->op = NIX_RX_ACTIONOP_UCAST;
--	set_bit(rq_idx, &nic->rq_bmap);
--	node->is_act_police = true;
--	node->rq = rq_idx;
--
- 	return 0;
- 
- free_leaf:
-@@ -336,6 +322,39 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
- 	return rc;
- }
- 
-+static int otx2_tc_act_set_police(struct otx2_nic *nic,
-+				  struct otx2_tc_flow *node,
-+				  struct flow_cls_offload *f,
-+				  u64 rate, u32 burst, u32 mark,
-+				  struct npc_install_flow_req *req, bool pps)
-+{
-+	struct netlink_ext_ack *extack = f->common.extack;
-+	struct otx2_hw *hw = &nic->hw;
-+	int rq_idx, rc;
-+
-+	rq_idx = find_first_zero_bit(&nic->rq_bmap, hw->rx_queues);
-+	if (rq_idx >= hw->rx_queues) {
-+		NL_SET_ERR_MSG_MOD(extack, "Police action rules exceeded");
-+		return -EINVAL;
-+	}
-+
-+	req->match_id = mark & 0xFFFFULL;
-+	req->index = rq_idx;
-+	req->op = NIX_RX_ACTIONOP_UCAST;
-+
-+	node->is_act_police = true;
-+	node->rq = rq_idx;
-+	node->burst = burst;
-+	node->rate = rate;
-+	node->is_pps = pps;
-+
-+	rc = otx2_tc_act_set_hw_police(nic, node);
-+	if (!rc)
-+		set_bit(rq_idx, &nic->rq_bmap);
-+
-+	return rc;
-+}
-+
- static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 				 struct flow_action *flow_action,
- 				 struct npc_install_flow_req *req,
-@@ -1044,6 +1063,11 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 	}
- 
- 	if (flow_node->is_act_police) {
-+		__clear_bit(flow_node->rq, &nic->rq_bmap);
-+
-+		if (nic->flags & OTX2_FLAG_INTF_DOWN)
-+			goto free_mcam_flow;
-+
- 		mutex_lock(&nic->mbox.lock);
- 
- 		err = cn10k_map_unmap_rq_policer(nic, flow_node->rq,
-@@ -1059,11 +1083,10 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 				   "Unable to free leaf bandwidth profile(%d)\n",
- 				   flow_node->leaf_profile);
- 
--		__clear_bit(flow_node->rq, &nic->rq_bmap);
--
- 		mutex_unlock(&nic->mbox.lock);
- 	}
- 
-+free_mcam_flow:
- 	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
- 	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
- 	kfree_rcu(flow_node, rcu);
-@@ -1083,6 +1106,11 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	if (!(nic->flags & OTX2_FLAG_TC_FLOWER_SUPPORT))
- 		return -ENOMEM;
- 
-+	if (nic->flags & OTX2_FLAG_INTF_DOWN) {
-+		NL_SET_ERR_MSG_MOD(extack, "Interface not initialized");
-+		return -EINVAL;
-+	}
-+
- 	if (flow_cfg->nr_flows == flow_cfg->max_flows) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "Free MCAM entry not available to add the flow");
-@@ -1442,3 +1470,45 @@ void otx2_shutdown_tc(struct otx2_nic *nic)
- 	otx2_destroy_tc_flow_list(nic);
- }
- EXPORT_SYMBOL(otx2_shutdown_tc);
-+
-+static void otx2_tc_config_ingress_rule(struct otx2_nic *nic,
-+					struct otx2_tc_flow *node)
-+{
-+	struct npc_install_flow_req *req;
-+
-+	if (otx2_tc_act_set_hw_police(nic, node))
-+		return;
-+
-+	mutex_lock(&nic->mbox.lock);
-+
-+	req = otx2_mbox_alloc_msg_npc_install_flow(&nic->mbox);
-+	if (!req)
-+		goto err;
-+
-+	memcpy(req, &node->req, sizeof(struct npc_install_flow_req));
-+
-+	if (otx2_sync_mbox_msg(&nic->mbox))
-+		netdev_err(nic->netdev,
-+			   "Failed to install MCAM flow entry for ingress rule");
-+err:
-+	mutex_unlock(&nic->mbox.lock);
-+}
-+
-+void otx2_tc_apply_ingress_police_rules(struct otx2_nic *nic)
-+{
-+	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
-+	struct otx2_tc_flow *node;
-+
-+	/* If any ingress policer rules exist for the interface then
-+	 * apply those rules. Ingress policer rules depend on bandwidth
-+	 * profiles linked to the receive queues. Since no receive queues
-+	 * exist when interface is down, ingress policer rules are stored
-+	 * and configured in hardware after all receive queues are allocated
-+	 * in otx2_open.
-+	 */
-+	list_for_each_entry(node, &flow_cfg->flow_list_tc, list) {
-+		if (node->is_act_police)
-+			otx2_tc_config_ingress_rule(nic, node);
-+	}
-+}
-+EXPORT_SYMBOL(otx2_tc_apply_ingress_police_rules);
--- 
-2.7.4
+> +
+> +	return ad7091r_probe(iio_dev, chip_info->name, chip_info, map, spi->irq);
+> +}
+> +
+> +static const struct of_device_id ad7091r8_of_match[] = {
+> +	{ .compatible = "adi,ad7091r2", .data = &ad7091r_spi_chip_info[AD7091R2] },
+> +	{ .compatible = "adi,ad7091r4", .data = &ad7091r_spi_chip_info[AD7091R4] },
+> +	{ .compatible = "adi,ad7091r8", .data = &ad7091r_spi_chip_info[AD7091R8] },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, ad7091r8_of_match);
+> +
+> +static const struct spi_device_id ad7091r8_spi_id[] = {
+> +	{ "ad7091r2", (kernel_ulong_t)&ad7091r_spi_chip_info[AD7091R2] },
+> +	{ "ad7091r4", (kernel_ulong_t)&ad7091r_spi_chip_info[AD7091R4] },
+> +	{ "ad7091r8", (kernel_ulong_t)&ad7091r_spi_chip_info[AD7091R8] },
+> +	{ },
+'Null terminators' like these shouldn't be followed by a ,
+We can't add anything after them in future.
+
+> +};
+> +MODULE_DEVICE_TABLE(spi, ad7091r8_spi_id);
+
 
