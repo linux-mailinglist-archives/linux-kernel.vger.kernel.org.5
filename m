@@ -2,206 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2563D7F897D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AF47F897F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbjKYJLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 04:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S231799AbjKYJNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 04:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYJLT (ORCPT
+        with ESMTP id S229550AbjKYJNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 04:11:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05765D62
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 01:11:25 -0800 (PST)
+        Sat, 25 Nov 2023 04:13:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD15D72;
+        Sat, 25 Nov 2023 01:13:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700903486; x=1732439486;
+  t=1700903621; x=1732439621;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=rNMSaxsjdkaCgXRadXq5vkklr92/6uV1TFJF/OoG9ek=;
-  b=j3gwkt87AALDlUGM8E+qWVgqA0NU1nn0Zb0xQV+x7pPDOkNNwkPvK/af
-   8iE+E2ULWFduIUj+EBgeFtY1Avl3g7a2VmhP2z0DVTQiryj+lqKMuk5RV
-   +wL1HA0l3OI5o1WQqvSIeDeBnZy8noM5IpJxw/NnAjWiMH+72DvHtNAUC
-   dXpy1soe1JiJEtOM7Ed1AiO0ssht+9Xz40+dqZqHkkgvxXBarRO1WBbJX
-   2CWPX/YQ47r4rVYjsgsgaZizze688hMYwZ0abYpY9+hZyMRWuoUPZcLvU
-   MS1fsDjPyz3+ex2dlnPRU1oubfftTvtXlw7J+ofrrkVR6BXjzwKGHRZTY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="5659820"
+  bh=J3Xt5NNBkLMVWOGSutrChD/KMdbnzFiDM72X/z4oXI8=;
+  b=QDRkfiGUl2GprRjxPmZhSv9uEVVzbaKTaLUKnRwULCB88HDYZ9+voXGe
+   nugT1a8I3eLxcFG4ebE8R3QGdZhdrEbD2PtxGdEQNrShEgej1tyXwXmvb
+   z133HmLJEWrZNxwANv+oYzilAmwwFkQEMLJl/eO8cYhooMTFSbsDCrfML
+   v2rJjzPr5BltToxyTiP9dHWHIr2pTn5iXrpGEuhXsQsCcVEqqR62ZN9NC
+   DkafGH8+uVMbRs/SV5vFY0rHt1jpmzM26nzgFRGTPRAVBDaWh+zDyZqb3
+   LvopsU33aC+9M6YdI5BG8/OzVXFyI6I7KMDL1hUhrYdLiMqmK+xcVrvf/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="478709898"
 X-IronPort-AV: E=Sophos;i="6.04,226,1695711600"; 
-   d="scan'208";a="5659820"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2023 01:11:25 -0800
+   d="scan'208";a="478709898"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2023 01:13:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="761167332"
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="833880324"
 X-IronPort-AV: E=Sophos;i="6.04,226,1695711600"; 
-   d="scan'208";a="761167332"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 25 Nov 2023 01:11:22 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r6oh6-0003pP-17;
-        Sat, 25 Nov 2023 09:11:20 +0000
-Date:   Sat, 25 Nov 2023 17:10:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     guoren@kernel.org, mark.rutland@arm.com, peterz@infradead.org,
-        keescook@chromium.org, paulmck@kernel.org, ubizjak@gmail.com,
-        tglx@linutronix.de
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V2] locking/atomic: scripts: Increase template priority
- in order variants
-Message-ID: <202311251711.9SeU47cN-lkp@intel.com>
-References: <20231125013025.3620560-1-guoren@kernel.org>
+   d="scan'208";a="833880324"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Nov 2023 01:13:39 -0800
+Date:   Sat, 25 Nov 2023 17:11:42 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Marco Pagani <marpagan@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/2] fpga: add a module owner field to
+ fpga_manager and fpga_manager_ops
+Message-ID: <ZWG6Tg0egX6Cy9j5@yilunxu-OptiPlex-7050>
+References: <20231124162807.238724-1-marpagan@redhat.com>
+ <20231124162807.238724-2-marpagan@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231125013025.3620560-1-guoren@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231124162807.238724-2-marpagan@redhat.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 24, 2023 at 05:28:06PM +0100, Marco Pagani wrote:
+> Add a module *owner field to the fpga_manager_ops and fpga_manager
+> structs to protect the fpga manager against the unloading of the
+> low-level control module while someone is holding a reference to the
+> manager device. Low-level control modules should statically set the
+> owner field of the fpga_manager_ops struct to THIS_MODULE. Then, when
+> the manager is registered using fpga_mgr_register(), the value is copied
+> into the owner field of the fpga_manager struct (that contains the
+> device context). In this way, the manager can later use it in
+> fpga_mgr_get() to take the low-level module's refcount. To prevent races
+> while unloading the low-level control module, fpga_mgr_get() and part of
+> the fpga_mgr_unregister() methods are protected with a mutex.
+> 
+> Other changes: move put_device() from __fpga_mgr_get() to fpga_mgr_get()
+> and of_fpga_mgr_get() to improve code clarity.
+> 
+> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> ---
+>  drivers/fpga/fpga-mgr.c       | 56 +++++++++++++++++++++++++----------
+>  include/linux/fpga/fpga-mgr.h |  4 +++
+>  2 files changed, 44 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+> index 06651389c592..608605d59860 100644
+> --- a/drivers/fpga/fpga-mgr.c
+> +++ b/drivers/fpga/fpga-mgr.c
+> @@ -21,6 +21,8 @@
+>  static DEFINE_IDA(fpga_mgr_ida);
+>  static const struct class fpga_mgr_class;
+>  
+> +static DEFINE_MUTEX(mgr_lock);
+> +
+>  struct fpga_mgr_devres {
+>  	struct fpga_manager *mgr;
+>  };
+> @@ -667,17 +669,15 @@ ATTRIBUTE_GROUPS(fpga_mgr);
+>  static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+>  {
+>  	struct fpga_manager *mgr;
+> +	struct module *owner;
+>  
+>  	mgr = to_fpga_manager(dev);
+> +	owner = mgr->owner;
+>  
+> -	if (!try_module_get(dev->parent->driver->owner))
+> -		goto err_dev;
+> +	if (owner && !try_module_get(owner))
 
-kernel test robot noticed the following build warnings:
+No need to test owner == NULL, try_module_get() does this.
 
-[auto build test WARNING on kees/for-next/pstore]
-[also build test WARNING on kees/for-next/kspp]
-[cannot apply to linus/master v6.7-rc2 next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> +		mgr = ERR_PTR(-ENODEV);
+>  
+>  	return mgr;
+> -
+> -err_dev:
+> -	put_device(dev);
+> -	return ERR_PTR(-ENODEV);
+>  }
+>  
+>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
+> @@ -693,12 +693,22 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
+>   */
+>  struct fpga_manager *fpga_mgr_get(struct device *dev)
+>  {
+> -	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
+> -						   fpga_mgr_dev_match);
+> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
+> +	struct device *mgr_dev;
+> +
+> +	mutex_lock(&mgr_lock);
+> +
+> +	mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev, fpga_mgr_dev_match);
+>  	if (!mgr_dev)
+> -		return ERR_PTR(-ENODEV);
+> +		goto out;
+> +
+> +	mgr = __fpga_mgr_get(mgr_dev);
+> +	if (IS_ERR(mgr))
+> +		put_device(mgr_dev);
+>  
+> -	return __fpga_mgr_get(mgr_dev);
+> +out:
+> +	mutex_unlock(&mgr_lock);
+> +	return mgr;
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>  
+> @@ -711,13 +721,22 @@ EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>   */
+>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
+>  {
+> -	struct device *dev;
+> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
+> +	struct device *mgr_dev;
+> +
+> +	mutex_lock(&mgr_lock);
+> +
+> +	mgr_dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> +	if (!mgr_dev)
+> +		goto out;
+>  
+> -	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> -	if (!dev)
+> -		return ERR_PTR(-ENODEV);
+> +	mgr = __fpga_mgr_get(mgr_dev);
+> +	if (IS_ERR(mgr))
+> +		put_device(mgr_dev);
+>  
+> -	return __fpga_mgr_get(dev);
+> +out:
+> +	mutex_unlock(&mgr_lock);
+> +	return mgr;
+>  }
+>  EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>  
+> @@ -727,7 +746,7 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>   */
+>  void fpga_mgr_put(struct fpga_manager *mgr)
+>  {
+> -	module_put(mgr->dev.parent->driver->owner);
+> +	module_put(mgr->owner);
+>  	put_device(&mgr->dev);
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
+> @@ -806,6 +825,7 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
+>  
+>  	mgr->name = info->name;
+>  	mgr->mops = info->mops;
+> +	mgr->owner = info->mops->owner;
+>  	mgr->priv = info->priv;
+>  	mgr->compat_id = info->compat_id;
+>  
+> @@ -888,7 +908,11 @@ void fpga_mgr_unregister(struct fpga_manager *mgr)
+>  	 */
+>  	fpga_mgr_fpga_remove(mgr);
+>  
+> +	mutex_lock(&mgr_lock);
+> +
+>  	device_unregister(&mgr->dev);
+> +
+> +	mutex_unlock(&mgr_lock);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/guoren-kernel-org/locking-atomic-scripts-Increase-template-priority-in-order-variants/20231125-093207
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
-patch link:    https://lore.kernel.org/r/20231125013025.3620560-1-guoren%40kernel.org
-patch subject: [PATCH V2] locking/atomic: scripts: Increase template priority in order variants
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20231125/202311251711.9SeU47cN-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231125/202311251711.9SeU47cN-lkp@intel.com/reproduce)
+Why this part should be protected rather than the whole
+fpga_mgr_unregister()?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311251711.9SeU47cN-lkp@intel.com/
+I feel the scope of the protection is unclear to me in this patch. What
+data should be protected from concurrent access by this mutex? From the
+code seems the racing of mgr dev should be protected but apparently it
+doesn't have to.
 
-All warnings (new ones prefixed by >>):
+And with this mutex, the get/put/unregister() for one mgr should be
+exclusive with another mgr, but that also seems not necessary.
 
-   In file included from arch/x86/include/asm/atomic.h:8:0,
-                    from include/linux/atomic.h:7,
-                    from include/linux/cpumask.h:13,
-                    from arch/x86/include/asm/cpumask.h:5,
-                    from arch/x86/include/asm/msr.h:11,
-                    from arch/x86/include/asm/processor.h:23,
-                    from arch/x86/include/asm/timex.h:5,
-                    from include/linux/timex.h:67,
-                    from include/linux/time32.h:13,
-                    from include/linux/time.h:60,
-                    from include/linux/compat.h:10,
-                    from kernel/futex/core.c:34:
-   kernel/futex/core.c: In function 'raw_atomic64_cmpxchg_relaxed':
->> arch/x86/include/asm/cmpxchg.h:130:2: warning: '__ret' is used uninitialized in this function [-Wuninitialized]
-     __ret;        \
-     ^~~~~
-   arch/x86/include/asm/cmpxchg.h:87:21: note: '__ret' was declared here
-     __typeof__(*(ptr)) __ret;     \
-                        ^
-   arch/x86/include/asm/cmpxchg.h:134:2: note: in expansion of macro '__raw_cmpxchg'
-     __raw_cmpxchg((ptr), (old), (new), (size), LOCK_PREFIX)
-     ^~~~~~~~~~~~~
-   arch/x86/include/asm/cmpxchg.h:149:2: note: in expansion of macro '__cmpxchg'
-     __cmpxchg(ptr, old, new, sizeof(*(ptr)))
-     ^~~~~~~~~
-   include/linux/atomic/atomic-arch-fallback.h:91:29: note: in expansion of macro 'arch_cmpxchg'
-    #define raw_cmpxchg_relaxed arch_cmpxchg
-                                ^~~~~~~~~~~~
-   include/linux/atomic/atomic-arch-fallback.h:4107:9: note: in expansion of macro 'raw_cmpxchg_relaxed'
-     return raw_cmpxchg_relaxed(&v->counter, old, new);
-            ^~~~~~~~~~~~~~~~~~~
-   In function 'raw_atomic64_cmpxchg_relaxed',
-       inlined from 'get_inode_sequence_number' at include/linux/atomic/atomic-instrumented.h:2817:9,
-       inlined from 'get_futex_key' at kernel/futex/core.c:387:23:
-   arch/x86/include/asm/cmpxchg.h:128:3: error: call to '__cmpxchg_wrong_size' declared with attribute error: Bad argument size for cmpxchg
-      __cmpxchg_wrong_size();     \
-      ^~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/include/asm/cmpxchg.h:134:2: note: in expansion of macro '__raw_cmpxchg'
-     __raw_cmpxchg((ptr), (old), (new), (size), LOCK_PREFIX)
-     ^~~~~~~~~~~~~
-   arch/x86/include/asm/cmpxchg.h:149:2: note: in expansion of macro '__cmpxchg'
-     __cmpxchg(ptr, old, new, sizeof(*(ptr)))
-     ^~~~~~~~~
-   include/linux/atomic/atomic-arch-fallback.h:91:29: note: in expansion of macro 'arch_cmpxchg'
-    #define raw_cmpxchg_relaxed arch_cmpxchg
-                                ^~~~~~~~~~~~
-   include/linux/atomic/atomic-arch-fallback.h:4107:9: note: in expansion of macro 'raw_cmpxchg_relaxed'
-     return raw_cmpxchg_relaxed(&v->counter, old, new);
-            ^~~~~~~~~~~~~~~~~~~
+I think the mgr->owner & mgr->ops should be protected from concurrent
+access of delete_module & fpga_mgr_get/put(), so how about:
+
+struct fpga_manager_ops {
+	struct module *owner;
+	...
+};
+
+struct fpga_manager {
+	...
+	struct mutex mops_lock;
+	const struct fpga_manager_ops *mops;
+	...
+};
 
 
-vim +/__ret +130 arch/x86/include/asm/cmpxchg.h
+static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+{
+	struct fpga_manager *mgr;
 
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   79  
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   80  /*
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   81   * Atomic compare and exchange.  Compare OLD with MEM, if identical,
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   82   * store NEW in MEM.  Return the initial value in MEM.  Success is
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   83   * indicated by comparing RETURN with OLD.
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   84   */
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   85  #define __raw_cmpxchg(ptr, old, new, size, lock)			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   86  ({									\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   87  	__typeof__(*(ptr)) __ret;					\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   88  	__typeof__(*(ptr)) __old = (old);				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   89  	__typeof__(*(ptr)) __new = (new);				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   90  	switch (size) {							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   91  	case __X86_CASE_B:						\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   92  	{								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   93  		volatile u8 *__ptr = (volatile u8 *)(ptr);		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   94  		asm volatile(lock "cmpxchgb %2,%1"			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   95  			     : "=a" (__ret), "+m" (*__ptr)		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   96  			     : "q" (__new), "0" (__old)			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   97  			     : "memory");				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   98  		break;							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18   99  	}								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  100  	case __X86_CASE_W:						\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  101  	{								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  102  		volatile u16 *__ptr = (volatile u16 *)(ptr);		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  103  		asm volatile(lock "cmpxchgw %2,%1"			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  104  			     : "=a" (__ret), "+m" (*__ptr)		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  105  			     : "r" (__new), "0" (__old)			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  106  			     : "memory");				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  107  		break;							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  108  	}								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  109  	case __X86_CASE_L:						\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  110  	{								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  111  		volatile u32 *__ptr = (volatile u32 *)(ptr);		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  112  		asm volatile(lock "cmpxchgl %2,%1"			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  113  			     : "=a" (__ret), "+m" (*__ptr)		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  114  			     : "r" (__new), "0" (__old)			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  115  			     : "memory");				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  116  		break;							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  117  	}								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  118  	case __X86_CASE_Q:						\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  119  	{								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  120  		volatile u64 *__ptr = (volatile u64 *)(ptr);		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  121  		asm volatile(lock "cmpxchgq %2,%1"			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  122  			     : "=a" (__ret), "+m" (*__ptr)		\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  123  			     : "r" (__new), "0" (__old)			\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  124  			     : "memory");				\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  125  		break;							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  126  	}								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  127  	default:							\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  128  		__cmpxchg_wrong_size();					\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  129  	}								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18 @130  	__ret;								\
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  131  })
-e9826380d83d1b Jeremy Fitzhardinge 2011-08-18  132  
+	mgr = to_fpga_manager(dev);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	mutex_lock(&mgr->mops_lock);
+
+	if (!mgr->mops || !try_module_get(mgr->mops->owner))
+		mgr = ERR_PTR(-ENODEV);
+
+	mutex_unlock(&mgr->mops_lock);
+		
+	return mgr;
+}
+
+void fpga_mgr_unregister(struct fpga_manager *mgr)
+{
+	fpga_mgr_fpga_remove(mgr);	
+
+	mutex_lock(&mgr->ops_lock);
+	mgr->mops = NULL;
+	mutex_unlock(&mgr->ops_lock);
+
+	device_unregister(&mgr->dev);	
+}
+
+Not actually tested.
+
+Thanks,
+Yilun
+
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_unregister);
+>  
+> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+> index 54f63459efd6..eaf6e072dbc0 100644
+> --- a/include/linux/fpga/fpga-mgr.h
+> +++ b/include/linux/fpga/fpga-mgr.h
+> @@ -162,6 +162,7 @@ struct fpga_manager_info {
+>   * @write_complete: set FPGA to operating state after writing is done
+>   * @fpga_remove: optional: Set FPGA into a specific state during driver remove
+>   * @groups: optional attribute groups.
+> + * @owner: owner module.
+>   *
+>   * fpga_manager_ops are the low level functions implemented by a specific
+>   * fpga manager driver.  The optional ones are tested for NULL before being
+> @@ -184,6 +185,7 @@ struct fpga_manager_ops {
+>  			      struct fpga_image_info *info);
+>  	void (*fpga_remove)(struct fpga_manager *mgr);
+>  	const struct attribute_group **groups;
+> +	struct module *owner;
+>  };
+>  
+>  /* FPGA manager status: Partial/Full Reconfiguration errors */
+> @@ -201,6 +203,7 @@ struct fpga_manager_ops {
+>   * @state: state of fpga manager
+>   * @compat_id: FPGA manager id for compatibility check.
+>   * @mops: pointer to struct of fpga manager ops
+> + * @owner: owner module.
+>   * @priv: low level driver private date
+>   */
+>  struct fpga_manager {
+> @@ -210,6 +213,7 @@ struct fpga_manager {
+>  	enum fpga_mgr_states state;
+>  	struct fpga_compat_id *compat_id;
+>  	const struct fpga_manager_ops *mops;
+> +	struct module *owner;
+>  	void *priv;
+>  };
+>  
+> -- 
+> 2.42.0
+> 
+> 
