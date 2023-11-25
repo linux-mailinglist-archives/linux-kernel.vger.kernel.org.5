@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEC07F8CD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077CD7F8CFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 19:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbjKYRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 12:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
+        id S230169AbjKYSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 13:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjKYRfE (ORCPT
+        with ESMTP id S230162AbjKYSHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 12:35:04 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554FB11F;
-        Sat, 25 Nov 2023 09:35:10 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b31232bf0so23027495e9.1;
-        Sat, 25 Nov 2023 09:35:10 -0800 (PST)
+        Sat, 25 Nov 2023 13:07:14 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC05C0;
+        Sat, 25 Nov 2023 10:07:20 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32df66c691dso1878181f8f.3;
+        Sat, 25 Nov 2023 10:07:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700933709; x=1701538509; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700935639; x=1701540439; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=axG3mfbjbz/W134k+YbcMH+7XBFg5Rppc/71KawjxBY=;
-        b=So91xl6x4Lu62YfkdGwdY1a14qvPcZipQrTk7c+tEvLDc8T9tqUJN2HY2nVB6t/IZJ
-         uDmcPyfdgajXR0n1U1K9HqBoISFIfOpEX5aD28CH8OY3GuTBanq+PQKwoam/KUk8C2A4
-         s24RujmGVlxNtMb1Wp1C6HYby72CrLTRzHhk6vXVy8xcf/aDYvb7ocOfM0i0DYCDkWyl
-         wuP97dt6XrmaP6SjGElg2YsgdI9v69gGq6DIdBKb+yYVAQI3xxM39teix5pPytJp+3Kn
-         Gj8UxKtnhN9i8/ri3GfNtnGaWBVzVlFEnR6MT6WTjsEDHHvkKu1d/crI6bBsNFtTxft4
-         8mvw==
+        bh=puQH2pOXfnIbSZCHOkkIa6H+MNcLIGSdWyuSjRQdnv4=;
+        b=cMLL0BjgjCDAMYizwgGmCqFZSUnjof/pRcd9Lu7K+1NtTLXMO9+96AIv+bH4BAkBvt
+         eHrdra9YDwJVSIPWktFCYETb4YSw5h3DdykSkKuEu71o+Jf84KaaYELfBzvZwmshSBuy
+         6IRfc3VleRIZafNUD6PnpetUQ/hplp2uNdmBM0nGYX6zByecBH2uVm99199DWKJh+COU
+         SAH81JE6WzYNGRvFGAYlMf/OqvDw0hkrCI4QKSDcuaBaxPjCy0U6uWnGBURbx3RsFLgJ
+         PriHEAIbzZLFNtx2m6YMIIebj/ofu6rD5dJFFY5ZDSyTvV7ILDELllUl9573gBPTb5Sw
+         +kuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700933709; x=1701538509;
+        d=1e100.net; s=20230601; t=1700935639; x=1701540439;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=axG3mfbjbz/W134k+YbcMH+7XBFg5Rppc/71KawjxBY=;
-        b=VdMJfcJ24FNPNt+Qo/af7Y3oH/823TPLmvfrzgYRfXX6YH41euBN36GZwN+pCnONtz
-         Ap1ND7YI1J6CPStGR1WiCNJZ4Yuf2ElY54MzwP9LUBwhQ+xomY+CdplGwmvrXPEbcahT
-         6JX01KDHK9oF9uOGizoZoXNGKDWDDUah702ClDkQ2QWOxGKpSWot7LI1B4Fdtf7qtQtS
-         cQ/w9wtrkiAOPdCiHmysxf2eekbsRkhV9piKAD07/yqtTEhnvtwqI9Q4wfUe5XAZT6Kv
-         V2NtqBg9saFzjo2nLSh0GnP91f3MyREJxR7c7qktjQUC2Kbr/L+Stv4IcWICaMRDperf
-         Gh2A==
-X-Gm-Message-State: AOJu0YwfOCBlbb/FA2F5x2JUzKpFycU49uEO5ssn8WRTH+jFvALA28nP
-        KZs/F4bF8ngu4/FVK7FPszs=
-X-Google-Smtp-Source: AGHT+IF2k2jTI5R4V86TMAzGvEmeagVATmpSvXj1vel8cBJdrhFvqOUF1JNx7OrJEBc8H5AxuK1DRA==
-X-Received: by 2002:a05:600c:a04:b0:408:3a67:f6f5 with SMTP id z4-20020a05600c0a0400b004083a67f6f5mr5297187wmp.18.1700933708421;
-        Sat, 25 Nov 2023 09:35:08 -0800 (PST)
+        bh=puQH2pOXfnIbSZCHOkkIa6H+MNcLIGSdWyuSjRQdnv4=;
+        b=fDywfTLymz6TVh98oi8/izD09VUP+t9RFFKLbeMh1gGMc7h4wvq2cSo/ZT4NguOM8H
+         2KS15rEGyUytMo01eHI0FJR1ubaghETFZeLGJDNyWnWO35KckOGF5b2qcFgA/gdR2GsT
+         L8aiF5nLzdX00y80MuUZH9SXdn14JrelXnwDKytrCT2KPRDhWiNFBIBLXQV39ZGheXpc
+         yS6b2qGEN8A/k97uhQ7l7sMXh7oouJmtt/XD9kG1ZYCb2X0Xkf2O92e/oBvq7vEBckAN
+         Ot1CiwGxBMVpiJkZWG6sUuGL2E1A/zqEKth007NeU4JpWD8TEUQoE4jPkMjrUxUnbJhj
+         7cmQ==
+X-Gm-Message-State: AOJu0Ywttj9LZtcBg2Tz+sTu3nSeQJX5WhUY3p2+MqNKnjk9aC8ogPIr
+        j0HSrDRj/1fMdMJEB8N8Zjo=
+X-Google-Smtp-Source: AGHT+IE8oqH78KDfOnat9E+eH4edH5VvXMcZEZWP7aUt5DnBsHQUFMDzllU13QYu7RufzNpza3wkvQ==
+X-Received: by 2002:adf:eacd:0:b0:332:d607:a0dd with SMTP id o13-20020adfeacd000000b00332d607a0ddmr5953879wrn.47.1700935639149;
+        Sat, 25 Nov 2023 10:07:19 -0800 (PST)
 Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id t16-20020a05600c199000b0040a44179a88sm9027766wmq.42.2023.11.25.09.35.06
+        by smtp.gmail.com with ESMTPSA id e4-20020a5d5304000000b00332eb16d215sm4100561wrv.23.2023.11.25.10.07.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 09:35:08 -0800 (PST)
-Message-ID: <6562304c.050a0220.44374.e4b3@mx.google.com>
-X-Google-Original-Message-ID: <ZWH7iXQy9SMwbyZz@Ansuel-xps.>
-Date:   Sat, 25 Nov 2023 14:50:01 +0100
+        Sat, 25 Nov 2023 10:07:18 -0800 (PST)
+Message-ID: <656237d6.5d0a0220.2c3da.d832@mx.google.com>
+X-Google-Original-Message-ID: <ZWIDtR9oOu2BoLGt@Ansuel-xps.>
+Date:   Sat, 25 Nov 2023 15:24:53 +0100
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -84,13 +84,15 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         linux-arm-msm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH v2 00/11] net: phy: Support DT PHY package
+Subject: Re: [net-next RFC PATCH v2 01/11] net: phy: extend PHY package API
+ to support multiple global address
 References: <20231125001127.5674-1-ansuelsmth@gmail.com>
- <bf26ba4b-ea21-450d-b2ce-0f68f2d2796a@lunn.ch>
+ <20231125001127.5674-2-ansuelsmth@gmail.com>
+ <a8ce4503-c24d-4d6e-91ec-d03624b31fe0@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bf26ba4b-ea21-450d-b2ce-0f68f2d2796a@lunn.ch>
+In-Reply-To: <a8ce4503-c24d-4d6e-91ec-d03624b31fe0@lunn.ch>
 X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -101,38 +103,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 06:28:06PM +0100, Andrew Lunn wrote:
-> > One example is this:
+On Sat, Nov 25, 2023 at 06:51:54PM +0100, Andrew Lunn wrote:
+> On Sat, Nov 25, 2023 at 01:11:17AM +0100, Christian Marangi wrote:
+> > Current API for PHY package are limited to single address to configure
+> > global settings for the PHY package.
 > > 
-> >         ethernet-phy-package@0 {
-> >             #address-cells = <1>;
-> >             #size-cells = <0>;
+> > It was found that some PHY package (for example the qca807x, a PHY
+> > package that is shipped with a bundle of 5 PHY) require multiple PHY
+> > address to configure global settings. An example scenario is a PHY that
+> > have a dedicated PHY for PSGMII/serdes calibrarion and have a specific
+> > PHY in the package where the global PHY mode is set and affects every
+> > other PHY in the package.
+> > 
+> > Change the API in the following way:
+> > - Make phy_package_join() require a list of address to be passed and the
+> >   number of address in the list
+> > - On shared data init, each address is the list is checked and added to
+> >   the shared struct.
+> > - Make __/phy_package_write/read() require an additional arg that
+> >   select what global PHY address to use in the provided list.
 > 
-> Please extend this example with a compatible, and include a property
-> which is global.
+> I think this is overly complex.
+> 
+> I would rename struct phy_package_shared addr to base_addr.
+> phy_package_join() would then pass the base address of the package,
+> which is the same as your reg property for the package in DT.
+> 
+> I think all current users of devm_phy_package_join() already do pass
+> the lowest address in the package, so this should not cause any
+> problems. Most drivers even call it base address, rather than cookie,
+> which the documentation uses.
+> 
+> I would then extend __phy_package_read() etc to take an offset, which
+> is added to base_addr, and the read is performed on that address. All
+> the existing users would pass 0, and your new driver can pass other
+> values.
+> 
+> I also think you can split this out from the DT binding. Make it two
+> patch sets. One patch set is about extended the package concept to
+> allow access to global registers at addresses other than the base. The
+> DT patch is about properties which are shared by the package. These
+> seems like two mostly orthogonal concepts.
 >
 
-Hi, don't know if you notice the changelog, I now check with the node
-name prefix instead of using compatible ethernet-phy-package. (some
-requested and didn't like using it) (easy to reintroduce, was just a
-small proposal/idea)
+Yes can be detached. Making addr to base_addr would change the thing but
+can confirm, any user of the API always used the base addr as cookie, so
+it won't change a thing.
 
-Also in theory the compatible for specific PHY package can also be
-skipped. (we can use the select way and match for PHY id. Can also be
-introduced easily but shouldn't that be checked in some way? Or it's ok
-to have a compatible that will only be used for documentation?)
-
-> > (For Andrew, we are looking intro making this in at803x PHY driver and see
-> > what functions can be reused, idea is to move the driver to a dedicated
-> > directory and create something like at803x-common.c as the at803x PHY
-> > driver is too bloated and splitting it it's a better approach)
-> 
-> This sounds good.
-> 
-
-Thanks, also for Russell, I forgot to include the PHY mode in the
-qca807x commit, will include that once I will move the code to the
-shared implementation with at803x. (sorry)
+Will have to make the separate commit a dependency to this series but i
+expect this change to be merged before this RFC is completed. Good idea.
 
 -- 
 	Ansuel
