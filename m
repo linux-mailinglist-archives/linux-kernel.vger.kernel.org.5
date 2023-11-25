@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1A17F8A65
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447CC7F8A69
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjKYL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 06:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
+        id S231971AbjKYL47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 06:56:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKYL4x (ORCPT
+        with ESMTP id S229569AbjKYL4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 06:56:53 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1B310E2;
-        Sat, 25 Nov 2023 03:57:00 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a08e4352992so200601766b.1;
-        Sat, 25 Nov 2023 03:57:00 -0800 (PST)
+        Sat, 25 Nov 2023 06:56:55 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8065010EB;
+        Sat, 25 Nov 2023 03:57:01 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a02cc476581so366731466b.2;
+        Sat, 25 Nov 2023 03:57:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700913418; x=1701518218; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ompf+2OoF8BHJ5J3VWaaBr54to0LIdPuwB41zRGN5Ew=;
-        b=DW/8bsSPqYXIE1vUSXQ2ujMIPKAnkH51X06pXrfokRXjo/SP4L+TGsKtJF2LYBUX8w
-         SNDS4llDUSptOj6lkYzR7Fv9ltgFL+EnPxigsbExOYxYaqDcDtG+uX2u/jUS/k/U0Ins
-         eCE24iirtnQooCW6qyqhNngACRfJN896JRzvSzQ3zjvemWpYr5A9PjV3w/ClPd9mEWpf
-         S+DOT7ElSeNE+SApH2D7i7XR4JGlvzPnMypQYLTMCz6zaNc17YGaDy6p5CbofHUaFX08
-         NwfR1UkUXO6F1q9igB2b4NPlqiZ1gN97cImyaQUT6wQru15dzbNaW6nxl9E19S8y6YoO
-         YAjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700913418; x=1701518218;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1700913419; x=1701518219; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ompf+2OoF8BHJ5J3VWaaBr54to0LIdPuwB41zRGN5Ew=;
-        b=gCoCdjbjcYmUxtoX18xvazwQsJ82uczmFni062Lr1SyeZ+VxMrig0HZBUAkE+uSQGF
-         nDANY0sm7AUuNqNRkiTl72pW6ITSq+lU9o5yGeu583j+6Cj3fl8W8dsy6b2F8Qon4Joq
-         P56uI6UAoMmUGL5pZHDPBlARE//TMF1IswPl7aFz/nxif3ptWdfBE/zsHEqJH2U9ignN
-         yJJQWN1iaAinQPz4/2sxOwEpHMgchxXJDO0J+/dde+6vfojFyrjSe5llRwq6q+2OHYyj
-         Cnn814LLj9kKP4Ls3Vdsv16tvKl7uR0ksC9gokh45kQY0Z8F0hdEj+CJNatd5DUuCZVt
-         N02Q==
-X-Gm-Message-State: AOJu0Yx/tvSATVOrbtdpGuGQ5AxiNZ3tvLL4BVXWzxbaoLJAqgsF7TdM
-        VHflDG99CfKQtRGd3UM/7X8ubYttiYLtTg==
-X-Google-Smtp-Source: AGHT+IG8V+U/oUNdhKDvTKV66NneglcSu8tT5u8d4jKdseqIwXPLcV7GP/U9F1EGzlO9ClkIkZXl1w==
-X-Received: by 2002:a17:906:1da:b0:9be:466c:1824 with SMTP id 26-20020a17090601da00b009be466c1824mr4424311ejj.11.1700913418153;
-        Sat, 25 Nov 2023 03:56:58 -0800 (PST)
+        bh=PyJvKifjCksa9ZtBNafx8NGbx/DvHUPSdg3ul1e3Sf4=;
+        b=nhEyZBFS75LTwG5A1CA0WyQ9lpZN69d56raOV4FA9Tajf1+/tBcUEatJiipkJw8pKO
+         +jMvFlBUjiAplXUZEkUEEh4ASBWjxHC4L/w0B52eGNQIRXb/ItbDLRV0R7Me42svmo/M
+         6E8eY3yQfSg45NH+SVruZF9O5AZXgELsR1h7jboElijVtt6tDTtLsy7eALDqDeYGCal+
+         CQlPIH8+stGbBKLXpgd4RkRfgbcW9XObOBpWCTQgPZiZkrph697vfbqljAEcCL+Lt+4A
+         qcUj/LCIUz6+7OKmJQ7syigkDiYc/+VWEAxgg/keCVNuuUyHdebctELnjMEfQgJ/bP6J
+         b7sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700913419; x=1701518219;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PyJvKifjCksa9ZtBNafx8NGbx/DvHUPSdg3ul1e3Sf4=;
+        b=K574I+c9eq8Ij6CPmQWIRoeKXM1LbS9KVIEU+kqM/It1p3CwC8QU38h8lf6twlOwF9
+         wI9Y9avzaI313y6/ePO0Dg5wmGZ9t2PfE2Cv0kgAMV3UNfZv4+ur5tfmUja106KrAl6b
+         eCdUKGZ0eBp1Ie0t8Wq7++c49wBgVuu1vyIT5QbK7AF+YKgy7IOUy4yXhF9uhtcCF0fM
+         UFxG0oC1fEFBYfvlHcmWDbhgmc+b0fF4QVyJGEDMRZmGLhScDJng6YIv0yA4yLKvDbcb
+         Yy4nTyTuu/Cg3Z31MeKbwo4q9HdMbuDqOc0N4EGArMMFEvvy7l6Dnyre01ES5UkZHH/+
+         ZCrw==
+X-Gm-Message-State: AOJu0Ywey7Fsr5L/6Zl8LL3gEisyd68vTl6PRRaxbErokoFMj6oBp/A1
+        /nOqh/szptWDspOZz6UevaLIIeOHcenFhA==
+X-Google-Smtp-Source: AGHT+IG6Dos7XvaZp1QxtaDVXbxvbrQUpf8xoJ/l9hNlCRHIbkDVY5CPpxOcmmPnX+niof183sAakg==
+X-Received: by 2002:a17:906:6711:b0:a01:77ef:e887 with SMTP id a17-20020a170906671100b00a0177efe887mr4026945ejp.64.1700913419355;
+        Sat, 25 Nov 2023 03:56:59 -0800 (PST)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-3176-084d-819d-12bf.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:3176:84d:819d:12bf])
-        by smtp.gmail.com with ESMTPSA id r17-20020a170906a21100b009ae57888718sm3344349ejy.207.2023.11.25.03.56.56
+        by smtp.gmail.com with ESMTPSA id r17-20020a170906a21100b009ae57888718sm3344349ejy.207.2023.11.25.03.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 03:56:57 -0800 (PST)
+        Sat, 25 Nov 2023 03:56:59 -0800 (PST)
 From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH v2 0/3] iio: light: add support for VEML6075 UVA and UVB
- light sensor
-Date:   Sat, 25 Nov 2023 12:56:54 +0100
-Message-Id: <20231110-veml6075-v2-0-d04efbc8bf51@gmail.com>
+Date:   Sat, 25 Nov 2023 12:56:55 +0100
+Subject: [PATCH v2 1/3] iio: add modifiers for A and B ultraviolet light
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAbhYWUC/22NTQ7CIBBGr9KwFsMMRaMr72G6mOLYTkKpASWap
- ncXu3b5Xr6fRWVOwlmdm0UlLpJljhVw1yg/UhxYy62yQoMWAIwuPIWDOTptERyiZ/J0UjXeU2b
- dJ4p+rIX4CqHKR+K7vLf9a1d5lPyc02e7K/Czf5YLaKOta3uLrWNo6TJMJGHv50l167p+AcmuO
- 0S1AAAA
+Message-Id: <20231110-veml6075-v2-1-d04efbc8bf51@gmail.com>
+References: <20231110-veml6075-v2-0-d04efbc8bf51@gmail.com>
+In-Reply-To: <20231110-veml6075-v2-0-d04efbc8bf51@gmail.com>
 To:     Jonathan Cameron <jic23@kernel.org>,
         Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,14 +66,13 @@ To:     Jonathan Cameron <jic23@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
         devicetree@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700913416; l=2267;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700913416; l=3539;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=8qA1rB2jysMdnP4QbGebjf0iuxSJmGaYBpBZjDzcCXg=;
- b=ZxpFNQuv5NQEw1dyG6cIZJCR3thWA32K5ZvNMSMFUXsVPEf2SKydE1nkcGvVrDcugmePHJwut
- 47rjDDhiISPAxksDzOAMM17kYyd9hEWaQGS3ALkAJLH+XT8z522Llmd
+ bh=nymkBqy1zy5W1DkFZRCIlPpGK++jMxfNLk6XrJLr6Js=;
+ b=qTOSDOAdV6ujrNBtJLLo1oxm+L27V6lBQRWNroF8w4wBc/fqjphx/ReyrlCEsOmzQVvnI5c84
+ 7KJI/7mSyODApjQZpWYoM8uVjF85UkNqfvWXu3+D9nUQVz9BbxYWn5A
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -88,55 +85,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the Vishay VEML6075 ultraviolet sensor,
-which offers UVA and UVB measurement channels and I2C communication.
+Currently there are only two modifiers for ultraviolet light: a generic
+one for any ultraviolet light (IIO_MOD_LIGHT_UV) and one for deep
+ultraviolet (IIO_MOD_LIGHT_DUV), which is also referred as ultraviolet
+C (UV-C) band and covers short-wave ultraviolet.
 
-The device bindings and a simple example are also provided.
+There are still no modifiers for the long-wave and medium-wave
+ultraviolet bands. These two bands are the main components used to
+obtain the UV index on the Earth's surface.
 
-This driver has been tested with a Gravity VEML6075 UV Sensor Module in
-open air conditions.
+Add modifiers for the ultraviolet A (UV-A) and ultraviolet B (UV-B)
+bands.
 
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
-Changes in v2:
-- General: swap patch order (bindings first).
-- iio core: add uva and uvb modifiers.
-- veml6075.c: use uva and uvb modifiers instead of extend_name
-- veml6075.c: remove redundant information from the description.
-- veml6075.c: inline device name.
-- veml6075.c: use read_avail() for available attributes.
-- veml6075.c: use guard(mutex) instead of lock/unlock().
-- veml6075.c: use regulator_get_enable() without _optional.
-- veml6075.c: register managed iio device and delete remove().
-- veml6075.c: remove remaining debug messages.
-- veml6075.c: error path cleanup (return type after val assignment).
-- veml6075.c: remove zero from i2c_device_id.
-- MAINTAINERS: fix bindings name.
-- vishay,veml6075.yaml: remove vdd-supply description and mark property
-  as true.
-- Link to v1: https://lore.kernel.org/r/20231110-veml6075-v1-0-354b3245e14a@gmail.com
+ Documentation/ABI/testing/sysfs-bus-iio | 7 +++++--
+ drivers/iio/industrialio-core.c         | 2 ++
+ include/uapi/linux/iio/types.h          | 2 ++
+ tools/iio/iio_event_monitor.c           | 2 ++
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
----
-Javier Carrasco (3):
-      iio: add modifiers for A and B ultraviolet light
-      dt-bindings: iio: light: add support for Vishay VEML6075
-      iio: light: add VEML6075 UVA and UVB light sensor driver
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 19cde14f3869..e2a9937be99c 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -1574,6 +1574,8 @@ What:		/sys/.../iio:deviceX/in_intensityY_raw
+ What:		/sys/.../iio:deviceX/in_intensityY_ir_raw
+ What:		/sys/.../iio:deviceX/in_intensityY_both_raw
+ What:		/sys/.../iio:deviceX/in_intensityY_uv_raw
++What:		/sys/.../iio:deviceX/in_intensityY_uva_raw
++What:		/sys/.../iio:deviceX/in_intensityY_uvb_raw
+ What:		/sys/.../iio:deviceX/in_intensityY_duv_raw
+ KernelVersion:	3.4
+ Contact:	linux-iio@vger.kernel.org
+@@ -1582,8 +1584,9 @@ Description:
+ 		that measurements contain visible and infrared light
+ 		components or just infrared light, respectively. Modifier
+ 		uv indicates that measurements contain ultraviolet light
+-		components. Modifier duv indicates that measurements
+-		contain deep ultraviolet light components.
++		components. Modifiers uva, uvb and duv indicate that
++		measurements contain A, B or deep (C) ultraviolet light
++		components respectively.
+ 
+ What:		/sys/.../iio:deviceX/in_uvindex_input
+ KernelVersion:	4.6
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index c77745b594bd..65f567e4ff2a 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -117,6 +117,8 @@ static const char * const iio_modifier_names[] = {
+ 	[IIO_MOD_LIGHT_GREEN] = "green",
+ 	[IIO_MOD_LIGHT_BLUE] = "blue",
+ 	[IIO_MOD_LIGHT_UV] = "uv",
++	[IIO_MOD_LIGHT_UVA] = "uva",
++	[IIO_MOD_LIGHT_UVB] = "uvb",
+ 	[IIO_MOD_LIGHT_DUV] = "duv",
+ 	[IIO_MOD_QUATERNION] = "quaternion",
+ 	[IIO_MOD_TEMP_AMBIENT] = "ambient",
+diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
+index 9c2ffdcd6623..5060963707b1 100644
+--- a/include/uapi/linux/iio/types.h
++++ b/include/uapi/linux/iio/types.h
+@@ -91,6 +91,8 @@ enum iio_modifier {
+ 	IIO_MOD_CO2,
+ 	IIO_MOD_VOC,
+ 	IIO_MOD_LIGHT_UV,
++	IIO_MOD_LIGHT_UVA,
++	IIO_MOD_LIGHT_UVB,
+ 	IIO_MOD_LIGHT_DUV,
+ 	IIO_MOD_PM1,
+ 	IIO_MOD_PM2P5,
+diff --git a/tools/iio/iio_event_monitor.c b/tools/iio/iio_event_monitor.c
+index 2eaaa7123b04..8073c9e4fe46 100644
+--- a/tools/iio/iio_event_monitor.c
++++ b/tools/iio/iio_event_monitor.c
+@@ -105,6 +105,8 @@ static const char * const iio_modifier_names[] = {
+ 	[IIO_MOD_LIGHT_GREEN] = "green",
+ 	[IIO_MOD_LIGHT_BLUE] = "blue",
+ 	[IIO_MOD_LIGHT_UV] = "uv",
++	[IIO_MOD_LIGHT_UVA] = "uva",
++	[IIO_MOD_LIGHT_UVB] = "uvb",
+ 	[IIO_MOD_LIGHT_DUV] = "duv",
+ 	[IIO_MOD_QUATERNION] = "quaternion",
+ 	[IIO_MOD_TEMP_AMBIENT] = "ambient",
 
- Documentation/ABI/testing/sysfs-bus-iio            |   7 +-
- .../bindings/iio/light/vishay,veml6075.yaml        |  39 ++
- MAINTAINERS                                        |   6 +
- drivers/iio/industrialio-core.c                    |   2 +
- drivers/iio/light/Kconfig                          |  11 +
- drivers/iio/light/Makefile                         |   1 +
- drivers/iio/light/veml6075.c                       | 486 +++++++++++++++++++++
- include/uapi/linux/iio/types.h                     |   2 +
- tools/iio/iio_event_monitor.c                      |   2 +
- 9 files changed, 554 insertions(+), 2 deletions(-)
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20231110-veml6075-321522ceaca9
-
-Best regards,
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.39.2
 
