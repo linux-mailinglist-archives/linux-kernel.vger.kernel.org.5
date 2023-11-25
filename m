@@ -2,52 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3557F8E2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357017F8E3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjKYTsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:48:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
+        id S229589AbjKYTvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYTr7 (ORCPT
+        with ESMTP id S229456AbjKYTvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:47:59 -0500
+        Sat, 25 Nov 2023 14:51:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469DFA3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:48:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 155F0C433C9;
-        Sat, 25 Nov 2023 19:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700941684;
-        bh=TG3FLWwBucstw2055o8skcJRkN+mDQJa4/2yE8D+7pI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MjBlglmbDTlUKLPBziVsBLkzEJNbJzuhJ1wrX3RYGh6wTdeJTRcHcVpRgYubQ3WAF
-         XiP/hy8hpRrLGaP7beX7+JtQUDv/5ZfMdSUykTFq20iGV0jLr1ZSSGf4XEnlX70dys
-         HhhzJBTL8fzxHSWnd8KMohWIUPIpmScAoZoUMI2bvAhCBV/OZHRpyT9nE5YVetM/5Y
-         6NzOaXNhWmBtxtDZDrxviwLtJklzcPyiDlmXZblZUq1xubFo5wEbitln4yhNr/d6E7
-         GI8O7xQU/D+5+fBcgv1uAR48U+gIaIhI8LsW53Ib98pIurc7DG+vvt+vgERTzazZdX
-         qixJDWTnwbgYQ==
-Date:   Sat, 25 Nov 2023 19:47:54 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        marius.cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: adding support for
- PAC193X
-Message-ID: <20231125194754.304523e6@jic23-huawei>
-In-Reply-To: <20231116-channel-variety-cc7c262924ad@squawk>
-References: <20231115134453.6656-1-marius.cristea@microchip.com>
-        <20231115134453.6656-2-marius.cristea@microchip.com>
-        <fedd4bcf-7892-4096-bcca-7ea72d39576f@linaro.org>
-        <20231116-channel-variety-cc7c262924ad@squawk>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D000B3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:51:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4AB0C433C8;
+        Sat, 25 Nov 2023 19:51:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700941885;
+        bh=EZ3qbIzxDN+r4YbwzuYITpWKIFaN0QsTVMvHG7JTcms=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jppHXEuPxF4KJhITemRoOA1zDpqYZ+Mhn8RocVdUGZSCOGqyd9rILITdM4t2zgaE1
+         3KGJZeFJP80VsWuoEOub/bcaoZHvshIl1lFmzTA+sofWyj2O+ypUrZ4bXF79a5ylBw
+         kzzdjYYhVIWntcjw5LGgYTRSiIcKWy5q4W0gfakw=
+Date:   Sat, 25 Nov 2023 19:51:23 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB/PHY/Thunderbolt driver fixes for 6.7-rc3
+Message-ID: <ZWJQOw3VcmTOB62a@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,205 +44,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 18:21:33 +0000
-Conor Dooley <conor@kernel.org> wrote:
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
 
-> On Thu, Nov 16, 2023 at 04:01:43PM +0100, Krzysztof Kozlowski wrote:
-> > On 15/11/2023 14:44, marius.cristea@microchip.com wrote:  
-> > > From: Marius Cristea <marius.cristea@microchip.com>
-> > > 
-> > > This is the device tree schema for iio driver for
-> > > Microchip PAC193X series of Power Monitors with Accumulator.
-> > > 
-> > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> > > ---
-> > >  .../bindings/iio/adc/microchip,pac1934.yaml   | 137 ++++++++++++++++++
-> > >  1 file changed, 137 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
-> > > new file mode 100644
-> > > index 000000000000..2609cb19c377
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
-> > > @@ -0,0 +1,137 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Microchip PAC1934 Power Monitors with Accumulator
-> > > +
-> > > +maintainers:
-> > > +  - Marius Cristea <marius.cristea@microchip.com>
-> > > +
-> > > +description: |
-> > > +  This device is part of the Microchip family of Power Monitors with Accumulator.
-> > > +  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found here:
-> > > +    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - microchip,pac1931
-> > > +      - microchip,pac1932
-> > > +      - microchip,pac1933
-> > > +      - microchip,pac1934
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  "#address-cells":
-> > > +    const: 1
-> > > +
-> > > +  "#size-cells":
-> > > +    const: 0
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  microchip,slow-io:
-> > > +    type: boolean
-> > > +    description: |
-> > > +      A GPIO used to trigger a change is sampling rate (lowering the chip power consumption).  
-> > 
-> > Use Linux coding style wrapping (as described in Linux Coding style). I
-> > am not going to tell you numbers because I want you to read the document
-> > first.
-> > 
-> > This is boolean, not GPIO. I don't understand. "A GPIO", so any GPIO or
-> > some specific? How is this property related to GPIO?
-> > 
-> >   
-> > > +      If configured in SLOW mode, if this pin is forced high, sampling rate is forced to eight  
-> > 
-> > This pin? This is boolean, not a GPIO. GPIOs are phandles.  
-> 
-> I said it on the previous version, but this really seems like it should
-> be something like "slow-io-gpios". I know Jonathan expressed some
-> concerns about having to deal with it on the operating system side (as
-> the pin is either an input & used for this slow-io control, or an output
-> and used as an interrupt) but that is, in my opinion, a problem for the
-> operating system & the binding should describe how the hardware works,
-> even if that is not convenient. With this sort of property, a GPIO hog
-> would be required to be set up (and the driver for that gpio controller
-> bound etc before the pac driver loads) for correction functionality if
-> this property was in the non-default state.
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
 
-I'd forgotten the discussion completely ;)
-My main question was why bother with slow?  You can do it without the GPIO
-anyway as there is a register bit for it.
+are available in the Git repository at:
 
-I can conceive of various possible reasons, the evil one being that it's
-actually out of the host processors control. Is that what we care about here?
-If so it's nothing to do with a GPIO in the Linux sense at all and we can
-assume that it's not connected to an interrupt at the same time.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.7-rc3
 
-We 'might' need a control for that case that says configure the device for
-an external entity to use the slow pin.
+for you to fetch changes up to cb9a830e871779b4f9b8d5f76a2abf24915cd007:
 
-It wouldn't be the first device to have that sort of thing, but normally they
-are sequencing pins that are wired up to some mechanical device or similar.
+  Merge tag 'usb-serial-6.7-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2023-11-24 16:30:38 +0000)
 
+----------------------------------------------------------------
+USB / PHY / Thunderbolt fixes and ids for 6.7-rc3
 
-> 
-> > > +      samples/second. When it is forced low, the sampling rate is 1024 samples/second unless
-> > > +      a different sample rate has been programmed.
-> > > +
-> > > +patternProperties:
-> > > +  "^channel@[1-4]+$":
-> > > +    type: object
-> > > +    $ref: adc.yaml
-> > > +    description: Represents the external channels which are connected to the ADC.
-> > > +
-> > > +    properties:
-> > > +      reg:
-> > > +        items:
-> > > +          minimum: 1
-> > > +          maximum: 4
-> > > +
-> > > +      shunt-resistor-micro-ohms:
-> > > +        description: |
-> > > +          Value in micro Ohms of the shunt resistor connected between
-> > > +          the SENSE+ and SENSE- inputs, across which the current is measured. Value
-> > > +          is needed to compute the scaling of the measured current.
-> > > +
-> > > +    required:
-> > > +      - reg
-> > > +      - shunt-resistor-micro-ohms
-> > > +
-> > > +    unevaluatedProperties: false
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - "#address-cells"
-> > > +  - "#size-cells"
-> > > +
-> > > +allOf:
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: interrupts  
-> > 
-> > 
-> > I don't understand what do you want to say here. I am also 100% sure you
-> > did not test it on a real case (maybe example passes but nothing more).  
-> 
-> As far as I understand, the same pin on the device is used for both an
-> output or an input depending on the configuration. As an input, it is
-> the "slow-io" control, and as an output it is an interrupt.
-> I think Marius is trying to convey that either this pin can be in
-> exclusively one state or another.
-> 
-> _However_ I am not sure that that is really the right thing to do - they
-> might well be mutually exclusive modes, but I think the decision can be
-> made at runtime, rather than at devicetree creation time. Say for
-> example the GPIO controller this is connected to is capable of acting as
-> an interrupt controller. Unless I am misunderstanding the runtime
-> configurability of this hardware, I think it is possible to actually
-> provide a "slow-io-gpios" and an interrupt property & let the operating
-> system decide at runtime which mode it wants to work in.
+Here are a number of reverts, fixes, and new device ids for 6.7-rc3 for
+the USB, PHY, and Thunderbolt driver subsystems.  Include in here are:
+  - reverts of some PHY drivers that went into 6.7-rc1 that shouldn't
+    have been merged yet, the author is reworking them based on review
+    comments as they were using older apis that shouldn't be used
+    anymore for newer drivers
+  - small thunderbolt driver fixes for reported issues
+  - USB driver fixes for a variety of small issues in dwc3, typec, xhci,
+    and other smaller drivers.
+  - new device ids for usb-serial and onboard_usb_hub drivers.
 
-I'll admit I've long forgotten what was going on here, but based just on
-this bit of text I agree. There is nothing 'stopping' us having a pin
-uses as either / or / both interrupt and gpio.
+All of these have been in linux-next with no reported issues.
 
-It'll be a bit messy to support in the driver as IIRC there are some sanity
-checks that limit combinations on IRQs and output GPIOS.  Can't remember
-how bad the dance to navigate it safely is.
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-First version I'd just say pick one option if both are provided and
-don't support configuring it at runtime.
+----------------------------------------------------------------
+Alexander Stein (1):
+      usb: dwc3: Fix default mode initialization
 
-Jonathan
- 
+Asuna Yang (1):
+      USB: serial: option: add Luat Air72*U series products
 
+Badhri Jagan Sridharan (2):
+      usb: typec: tcpm: Skip hard reset when in error recovery
+      usb: typec: tcpm: Fix sink caps op current check
 
-> 
-> I'm off travelling at the moment Marius, but I should be back in work on
-> Monday if you want to have a chat about it & explain a bit more to me?
-> 
-> Cheers,
-> Conor.
-> 
-> >   
-> > > +    then:
-> > > +      properties:
-> > > +        microchip,slow-io: false
-> > > +    else:
-> > > +      if:
-> > > +        properties:
-> > > +          compatible:
-> > > +            contains:
-> > > +              const: microchip,slow-io
-> > > +      then:
-> > > +        properties:
-> > > +          interrupts: false  
-> > 
-> > Best regards,
-> > Krzysztof
-> >   
+Christophe JAILLET (1):
+      USB: typec: tps6598x: Fix a memory leak in an error handling path
 
+Chunfeng Yun (1):
+      usb: xhci-mtk: fix in-ep's start-split check failure
+
+Gil Fine (1):
+      thunderbolt: Set lane bonding bit only for downstream port
+
+Greg Kroah-Hartman (2):
+      Merge tag 'thunderbolt-for-v6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus
+      Merge tag 'usb-serial-6.7-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Hans de Goede (1):
+      usb: misc: ljca: Fix enumeration error on Dell Latitude 9420
+
+Heikki Krogerus (1):
+      usb: typec: tipd: Supply also I2C driver data
+
+Johan Hovold (11):
+      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 3.0 PHY"
+      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 2.0 PHY"
+      Revert "usb: phy: add usb phy notify port status API"
+      dt-bindings: usb: hcd: add missing phy name to example
+      USB: xhci-plat: fix legacy PHY double init
+      dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
+      USB: dwc3: qcom: fix wakeup after probe deferral
+      USB: dwc3: qcom: simplify wakeup interrupt setup
+      USB: dwc3: qcom: fix resource leaks on probe deferral
+      USB: dwc3: qcom: fix software node leak on probe errors
+      USB: dwc3: qcom: fix ACPI platform device leak
+
+Lech Perczak (1):
+      USB: serial: option: don't claim interface 4 for ZTE MF290
+
+Mika Westerberg (2):
+      thunderbolt: Send uevent after asymmetric/symmetric switch
+      thunderbolt: Only add device router DP IN to the head of the DP resource list
+
+Niklas Neronin (1):
+      usb: config: fix iteration issue in 'usb_get_bos_descriptor()'
+
+Oliver Neukum (1):
+      USB: dwc2: write HCINT with INTMASK applied
+
+Pawel Laszczak (1):
+      usb: cdnsp: Fix deadlock issue during using NCM gadget
+
+Puliang Lu (1):
+      USB: serial: option: fix FM101R-GL defines
+
+Ricardo Ribalda (1):
+      usb: dwc3: set the dma max_seg_size
+
+Stanley Chang (1):
+      usb: dwc3: add missing of_node_put and platform_device_put
+
+Stefan Eichenberger (2):
+      dt-bindings: usb: microchip,usb5744: Add second supply
+      usb: misc: onboard-hub: add support for Microchip USB5744
+
+Victor Fragoso (1):
+      USB: serial: option: add Fibocom L7xx modules
+
+Wentong Wu (1):
+      usb: misc: ljca: Drop _ADR support to get ljca children devices
+
+ .../devicetree/bindings/usb/microchip,usb5744.yaml |    7 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml         |    4 +-
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml |    2 +-
+ drivers/phy/Kconfig                                |    1 -
+ drivers/phy/Makefile                               |    1 -
+ drivers/phy/realtek/Kconfig                        |   32 -
+ drivers/phy/realtek/Makefile                       |    3 -
+ drivers/phy/realtek/phy-rtk-usb2.c                 | 1325 --------------------
+ drivers/phy/realtek/phy-rtk-usb3.c                 |  761 -----------
+ drivers/thunderbolt/switch.c                       |    6 +-
+ drivers/thunderbolt/tb.c                           |   12 +-
+ drivers/usb/cdns3/cdnsp-ring.c                     |    3 +
+ drivers/usb/core/config.c                          |    3 +-
+ drivers/usb/core/hub.c                             |   23 -
+ drivers/usb/dwc2/hcd_intr.c                        |   15 +-
+ drivers/usb/dwc3/core.c                            |    2 +
+ drivers/usb/dwc3/drd.c                             |    2 +-
+ drivers/usb/dwc3/dwc3-qcom.c                       |   69 +-
+ drivers/usb/dwc3/dwc3-rtk.c                        |    8 +-
+ drivers/usb/host/xhci-mtk-sch.c                    |   13 +-
+ drivers/usb/host/xhci-mtk.h                        |    2 +
+ drivers/usb/host/xhci-plat.c                       |   50 +-
+ drivers/usb/misc/onboard_usb_hub.c                 |    2 +
+ drivers/usb/misc/onboard_usb_hub.h                 |    7 +
+ drivers/usb/misc/usb-ljca.c                        |   17 +-
+ drivers/usb/serial/option.c                        |   11 +-
+ drivers/usb/typec/tcpm/tcpm.c                      |   12 +-
+ drivers/usb/typec/tipd/core.c                      |   14 +-
+ include/linux/usb/phy.h                            |   13 -
+ 29 files changed, 175 insertions(+), 2245 deletions(-)
+ delete mode 100644 drivers/phy/realtek/Kconfig
+ delete mode 100644 drivers/phy/realtek/Makefile
+ delete mode 100644 drivers/phy/realtek/phy-rtk-usb2.c
+ delete mode 100644 drivers/phy/realtek/phy-rtk-usb3.c
