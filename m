@@ -2,40 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 357017F8E3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70057F8E40
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 20:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjKYTvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 14:51:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
+        id S229523AbjKYT4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 14:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYTvT (ORCPT
+        with ESMTP id S229456AbjKYT4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 14:51:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D000B3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:51:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4AB0C433C8;
-        Sat, 25 Nov 2023 19:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700941885;
-        bh=EZ3qbIzxDN+r4YbwzuYITpWKIFaN0QsTVMvHG7JTcms=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jppHXEuPxF4KJhITemRoOA1zDpqYZ+Mhn8RocVdUGZSCOGqyd9rILITdM4t2zgaE1
-         3KGJZeFJP80VsWuoEOub/bcaoZHvshIl1lFmzTA+sofWyj2O+ypUrZ4bXF79a5ylBw
-         kzzdjYYhVIWntcjw5LGgYTRSiIcKWy5q4W0gfakw=
-Date:   Sat, 25 Nov 2023 19:51:23 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB/PHY/Thunderbolt driver fixes for 6.7-rc3
-Message-ID: <ZWJQOw3VcmTOB62a@kroah.com>
+        Sat, 25 Nov 2023 14:56:19 -0500
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242DAD3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 11:56:25 -0800 (PST)
+Date:   Sat, 25 Nov 2023 14:56:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700942183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yo+m6dTGrzcH0zVhx/EUgCNWh3lQ29xIfd4T/sQd3P0=;
+        b=Nzd82LseHWt2CYxnwyxSxGn1BUyNx/pIL4cFvsZAMp8gLj333tj6FiUJqXdPn2GNnzYP0v
+        Tcl4sV1BGZLWU0bYPHKpAoTvVOx+FYH5nVQQoDfC0QbjSdxoQOhj3bH2EIWalBxjT/Za0G
+        smobkRXnG6VMGemRkjzlIXLHXGiNkRE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Allow gcov to be enabled on the command line
+Message-ID: <20231125195620.rjgkooixugucv2vp@moria.home.lan>
+References: <20231122235527.180507-1-kent.overstreet@linux.dev>
+ <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNASQ+btvNOZ8yU6JLXBHVzPaEwj-7z0_dFouw2EUKd=3uA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,145 +54,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
+On Fri, Nov 24, 2023 at 11:02:00AM +0900, Masahiro Yamada wrote:
+> On Thu, Nov 23, 2023 at 8:55 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > This allows gcov to be enabled for a particular kernel source
+> > subdirectory on the command line, without editing makefiles, like so:
+> >
+> >   make GCOV_PROFILE_fs_bcachefs=y
+> >
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Nathan Chancellor <nathan@kernel.org>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > Cc: Nicolas Schier <nicolas@fjasle.eu>
+> > Cc: linux-kbuild@vger.kernel.org
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  scripts/Kbuild.include | 10 ++++++++++
+> >  scripts/Makefile.lib   |  2 +-
+> >  2 files changed, 11 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+> > index 7778cc97a4e0..5341736f2e30 100644
+> > --- a/scripts/Kbuild.include
+> > +++ b/scripts/Kbuild.include
+> > @@ -277,3 +277,13 @@ ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VER
+> >  else
+> >  .SECONDARY:
+> >  endif
+> > +
+> > + # expand_parents(a/b/c) = a/b/c a/b a
+> > +expand_parents2 = $(if $(subst .,,$(1)),$(call expand_parents,$(1)),)
+> > +expand_parents  = $(1) $(call expand_parents2,$(patsubst %/,%,$(dir $(1))))
+> > +
+> > +# flatten_dirs(a/b/c) = a_b_c a_b a
+> > +flatten_dirs = $(subst /,_,$(call expand_parents,$(1)))
+> > +
+> > +# eval_vars(X_,a/b/c) = $(X_a_b_c) $(X_a_b) $(X_a)
+> > +eval_vars = $(foreach var,$(call flatten_dirs,$(2)),$($(1)$(var)))
+> 
+> 
+> 
+> I do not like tricky code like this.
+> 
+> Also, with "fs_bcachefs", it is unclear which directory
+> is enabled.
 
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
+It's consistent with how we can specify options in makefiles for a
+particular file.
 
-are available in the Git repository at:
+I suppose CONFIG_GCOV_PROFILE_DIRS would be fine, but your patch isn't
+complete so I can't test it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.7-rc3
 
-for you to fetch changes up to cb9a830e871779b4f9b8d5f76a2abf24915cd007:
-
-  Merge tag 'usb-serial-6.7-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2023-11-24 16:30:38 +0000)
-
-----------------------------------------------------------------
-USB / PHY / Thunderbolt fixes and ids for 6.7-rc3
-
-Here are a number of reverts, fixes, and new device ids for 6.7-rc3 for
-the USB, PHY, and Thunderbolt driver subsystems.  Include in here are:
-  - reverts of some PHY drivers that went into 6.7-rc1 that shouldn't
-    have been merged yet, the author is reworking them based on review
-    comments as they were using older apis that shouldn't be used
-    anymore for newer drivers
-  - small thunderbolt driver fixes for reported issues
-  - USB driver fixes for a variety of small issues in dwc3, typec, xhci,
-    and other smaller drivers.
-  - new device ids for usb-serial and onboard_usb_hub drivers.
-
-All of these have been in linux-next with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alexander Stein (1):
-      usb: dwc3: Fix default mode initialization
-
-Asuna Yang (1):
-      USB: serial: option: add Luat Air72*U series products
-
-Badhri Jagan Sridharan (2):
-      usb: typec: tcpm: Skip hard reset when in error recovery
-      usb: typec: tcpm: Fix sink caps op current check
-
-Christophe JAILLET (1):
-      USB: typec: tps6598x: Fix a memory leak in an error handling path
-
-Chunfeng Yun (1):
-      usb: xhci-mtk: fix in-ep's start-split check failure
-
-Gil Fine (1):
-      thunderbolt: Set lane bonding bit only for downstream port
-
-Greg Kroah-Hartman (2):
-      Merge tag 'thunderbolt-for-v6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus
-      Merge tag 'usb-serial-6.7-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
-
-Hans de Goede (1):
-      usb: misc: ljca: Fix enumeration error on Dell Latitude 9420
-
-Heikki Krogerus (1):
-      usb: typec: tipd: Supply also I2C driver data
-
-Johan Hovold (11):
-      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 3.0 PHY"
-      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 2.0 PHY"
-      Revert "usb: phy: add usb phy notify port status API"
-      dt-bindings: usb: hcd: add missing phy name to example
-      USB: xhci-plat: fix legacy PHY double init
-      dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
-      USB: dwc3: qcom: fix wakeup after probe deferral
-      USB: dwc3: qcom: simplify wakeup interrupt setup
-      USB: dwc3: qcom: fix resource leaks on probe deferral
-      USB: dwc3: qcom: fix software node leak on probe errors
-      USB: dwc3: qcom: fix ACPI platform device leak
-
-Lech Perczak (1):
-      USB: serial: option: don't claim interface 4 for ZTE MF290
-
-Mika Westerberg (2):
-      thunderbolt: Send uevent after asymmetric/symmetric switch
-      thunderbolt: Only add device router DP IN to the head of the DP resource list
-
-Niklas Neronin (1):
-      usb: config: fix iteration issue in 'usb_get_bos_descriptor()'
-
-Oliver Neukum (1):
-      USB: dwc2: write HCINT with INTMASK applied
-
-Pawel Laszczak (1):
-      usb: cdnsp: Fix deadlock issue during using NCM gadget
-
-Puliang Lu (1):
-      USB: serial: option: fix FM101R-GL defines
-
-Ricardo Ribalda (1):
-      usb: dwc3: set the dma max_seg_size
-
-Stanley Chang (1):
-      usb: dwc3: add missing of_node_put and platform_device_put
-
-Stefan Eichenberger (2):
-      dt-bindings: usb: microchip,usb5744: Add second supply
-      usb: misc: onboard-hub: add support for Microchip USB5744
-
-Victor Fragoso (1):
-      USB: serial: option: add Fibocom L7xx modules
-
-Wentong Wu (1):
-      usb: misc: ljca: Drop _ADR support to get ljca children devices
-
- .../devicetree/bindings/usb/microchip,usb5744.yaml |    7 +-
- .../devicetree/bindings/usb/qcom,dwc3.yaml         |    4 +-
- Documentation/devicetree/bindings/usb/usb-hcd.yaml |    2 +-
- drivers/phy/Kconfig                                |    1 -
- drivers/phy/Makefile                               |    1 -
- drivers/phy/realtek/Kconfig                        |   32 -
- drivers/phy/realtek/Makefile                       |    3 -
- drivers/phy/realtek/phy-rtk-usb2.c                 | 1325 --------------------
- drivers/phy/realtek/phy-rtk-usb3.c                 |  761 -----------
- drivers/thunderbolt/switch.c                       |    6 +-
- drivers/thunderbolt/tb.c                           |   12 +-
- drivers/usb/cdns3/cdnsp-ring.c                     |    3 +
- drivers/usb/core/config.c                          |    3 +-
- drivers/usb/core/hub.c                             |   23 -
- drivers/usb/dwc2/hcd_intr.c                        |   15 +-
- drivers/usb/dwc3/core.c                            |    2 +
- drivers/usb/dwc3/drd.c                             |    2 +-
- drivers/usb/dwc3/dwc3-qcom.c                       |   69 +-
- drivers/usb/dwc3/dwc3-rtk.c                        |    8 +-
- drivers/usb/host/xhci-mtk-sch.c                    |   13 +-
- drivers/usb/host/xhci-mtk.h                        |    2 +
- drivers/usb/host/xhci-plat.c                       |   50 +-
- drivers/usb/misc/onboard_usb_hub.c                 |    2 +
- drivers/usb/misc/onboard_usb_hub.h                 |    7 +
- drivers/usb/misc/usb-ljca.c                        |   17 +-
- drivers/usb/serial/option.c                        |   11 +-
- drivers/usb/typec/tcpm/tcpm.c                      |   12 +-
- drivers/usb/typec/tipd/core.c                      |   14 +-
- include/linux/usb/phy.h                            |   13 -
- 29 files changed, 175 insertions(+), 2245 deletions(-)
- delete mode 100644 drivers/phy/realtek/Kconfig
- delete mode 100644 drivers/phy/realtek/Makefile
- delete mode 100644 drivers/phy/realtek/phy-rtk-usb2.c
- delete mode 100644 drivers/phy/realtek/phy-rtk-usb3.c
+> 
+> 
+> 
+> 
+> How about this?
+> 
+> 
+> 
+> [1] Specify the list of directories by GCOV_PROFILE_DIRS
+> 
+> 
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 1a965fe68e01..286a569556b3 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -147,8 +147,12 @@ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y)
+> $(CPPFLAGS_$(target-stem).lds)
+>  # (in this order)
+>  #
+>  ifeq ($(CONFIG_GCOV_KERNEL),y)
+> +ifneq ($(filter $(obj),$(GCOV_PROFILE_DIRS)),)
+> +export GCOV_PROFILE_SUBDIR := y
+> +endif
+> +
+>  _c_flags += $(if $(patsubst n%,, \
+> -
+> $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
+> \
+> +
+> $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFIG_GCOV_PROFILE_ALL)),
+> \
+>                 $(CFLAGS_GCOV))
+>  endif
+> 
+> 
+> 
+> Usage:
+> 
+>   $ make GCOV_PROFILE_DIRS=fs/bcachefs
+> 
+>    ->  enable GCOV in fs/bachefs and its subdirectories.
+> 
+> or
+> 
+>   $ make GCOV_PROFILE_DIRS="drivers/gpio drivers/pinctrl"
+> 
+>    -> enable GCOV in drivers/gpio, drivers/pinctrl, and their subdirectories.
+> 
+> 
+> 
+> 
+> [2] Do equivalent, but from a CONFIG option
+> 
+> 
+> config GCOV_PROFILE_DIRS
+>       string "Directories to enable GCOV"
+> 
+> 
+> Then, you can set CONFIG_GCOV_PROFILE_DIRS="fs/bcachefs"
+> 
+> 
+> This might be a more natural approach because we already have
+> CONFIG_GCOV_PROFILE_ALL, although it might eventually go away
+> because CONFIG_GCOV_PROFILE_ALL=y is almost equivalent to
+> CONFIG_GCOV_PROFILE_DIRS="."
+> 
+> 
+> 
+> 
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 1a965fe68e01..286a569556b3 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -147,8 +147,12 @@ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y)
+> $(CPPFLAGS_$(target-stem).lds)
+>  # (in this order)
+>  #
+>  ifeq ($(CONFIG_GCOV_KERNEL),y)
+> +ifneq ($(filter $(obj),$(CONFIG_GCOV_PROFILE_DIRS)),)
+> +export GCOV_PROFILE_SUBDIR := y
+> +endif
+> +
+>  _c_flags += $(if $(patsubst n%,, \
+> -
+> $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)),
+> \
+> +
+> $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(GCOV_PROFILE_SUBDIR)$(CONFIG_GCOV_PROFILE_ALL)),
+> \
+>                 $(CFLAGS_GCOV))
+>  endif
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > index 1a965fe68e01..0b4581a8bc33 100644
+> > --- a/scripts/Makefile.lib
+> > +++ b/scripts/Makefile.lib
+> > @@ -148,7 +148,7 @@ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(target-stem).lds)
+> >  #
+> >  ifeq ($(CONFIG_GCOV_KERNEL),y)
+> >  _c_flags += $(if $(patsubst n%,, \
+> > -               $(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
+> > +               $(GCOV_PROFILE_$(basetarget).o)$(call eval_vars,GCOV_PROFILE_,$(src))$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
+> >                 $(CFLAGS_GCOV))
+> >  endif
+> >
+> > --
+> > 2.42.0
+> >
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
