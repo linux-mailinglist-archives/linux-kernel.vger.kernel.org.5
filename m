@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A397F8A43
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951B37F8A4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbjKYLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 06:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        id S231995AbjKYLpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 06:45:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjKYLkj (ORCPT
+        with ESMTP id S231887AbjKYLpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 06:40:39 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717E3BC
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:40:45 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54b1812ae1fso654351a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:40:45 -0800 (PST)
+        Sat, 25 Nov 2023 06:45:50 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEEC10E4
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:45:57 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507962561adso4116301e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:45:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700912444; x=1701517244; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=PumLW+yDxZ/EbkcbHSkfvm2AU7+9Cl4vHKO664Y9Uss=;
-        b=qoWW1ZibFg2oDfmXXnMi8Q8D6OrueMGF6nWPrR0KMU3IHNOs4dZ6zuFIuIcRL00aFG
-         Nhf3/GHlI1CBpzxS1N2TKmyysqocrX2z5e7D3WtojImDmkyhgCByW2IFpcXo5QoUFOGV
-         Z5fsZY4FZPronrs5mM2BPcVta3qikIrS2xS4eB6RFoYiqGNn3B2LdJc7pzvlsd/CrJeD
-         2XIkO7s/ZjozBc3dhmSP/xkSZbWbVjAR70hJnYd53Crz8Zk5Wpz/7Z26x0f7B4M1Qh/6
-         cXL2Z4ALgTym1ISSyO1Ou9bzjWoMkCKIj8i5VrIusxtj16Xvo1m3Iz+lRhRs1hObyixY
-         +G0A==
+        d=linaro.org; s=google; t=1700912755; x=1701517555; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U8XXLLLt+yMr+MagO6J18KB+cdnCDtrWIM2r5muvOtY=;
+        b=xXBS5GfnkKn9Ddem+LXQltxE82yW6GuDRsMkpAJlvi0DnxxLHPmjzPEUx07f9nzUD9
+         Z2rRl8KbasQvYErG21XTwycEf6sy4OdRZcrftAP11tHUjtVC8itdlZuG73AQmQR7pOo7
+         dP7Wpv39PXishg9E2dqSsir2lnEAlDRaqRhPT4SQdDUj313PXqs3wOIk9aUygjHeqyJb
+         dhrmEf+anQuOqoaPjyQeQCTsQkcYHgQW130T9+JMcwORexz62BNPDa78OK/126iCLfUE
+         sHxseOp98OTNQldra8b6QypmShCr6rlKZbKTk2uG7cCvviDXMc4lg5wZoxmKN9llf/wu
+         TFNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700912444; x=1701517244;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PumLW+yDxZ/EbkcbHSkfvm2AU7+9Cl4vHKO664Y9Uss=;
-        b=gEI9pBiUPaaLCNFgzhN865tCm2K+b4dN/hh7odZdqC0GLixPkoq4Xul1MuwbgOZ+XC
-         cnkxfSFubOsj2vK+bD46J2MdciOompopxyKsFRcnYrkTYPDz04FGYKZSZj4we7ZZVS0G
-         BH3Gz/gAdbf7k+bimgKwje/ybIewBcrYCls9kmv2tFxtanP8XXmuBaX4eCWsWTYf13Ep
-         mVDcEZf8lJ3AfBcBvmpjgob5bz2CSSDPJHKTaszEqTgPED/DxsF2LHx4/4IPg5g5rOWN
-         PZChi2b1F3yT1bV+pM/npY1xdmfke/r3Y/rTEvpTrB5ZDRPEzp8UNHMnD4gGBVHS7JoM
-         8miQ==
-X-Gm-Message-State: AOJu0YwF4nSl487OtRH1yGfZDXhf8qYTD2LaF7fAxRBoh3BFMcfEiDtA
-        40cU1x4tptdRtdjmfl3Tn45zcg==
-X-Google-Smtp-Source: AGHT+IFqBVsdh0o76qmN+wtVD1l8pCKeP6JfU9XIAzHXoVgjey89blL8+iGjRUsvpGsDuu/dMSOTGA==
-X-Received: by 2002:a05:6402:2207:b0:54b:25e8:c007 with SMTP id cq7-20020a056402220700b0054b25e8c007mr867357edb.2.1700912443857;
-        Sat, 25 Nov 2023 03:40:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700912755; x=1701517555;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8XXLLLt+yMr+MagO6J18KB+cdnCDtrWIM2r5muvOtY=;
+        b=Sdxl9RLM/Xk7pfrd+UJ/OnNwdNw+8gTC2bLoNAGgJA9Y3kl+qR2AmM1G8a3CEEb+A2
+         bTIWR2vCINrNy3demKni7aQBwadc1R2RqAa2eqJdG9GWmKguSq3usD17q5qc6igq6Yro
+         BmU29qcL6WaI3FO6DB40rBtfjfF0qJl4FiVFmPBERgpYiV8p6Tb7hGwt8AbjvSDz8F65
+         M09Ws/ZjWNCgCKqqzqgtH3cCiya6O9xnxHp4raBihKAKqZpZ8kctryUZN3Y7/AZwzx2d
+         wUQ5Ypo1FOWtCDVLzt0v52vt68cbeJZGKC8zh73WTimjPFCa5gcrgd0gwiLzB8OPs3Gk
+         MWzQ==
+X-Gm-Message-State: AOJu0YywA8yKyGIUcPhNfrcjjEvbOMI4d07aWwZC8xfIGHgeG97/tNVb
+        LXWrToD4fe15aQiKzkPTvRFqdk1+V2NnCyXLwyc=
+X-Google-Smtp-Source: AGHT+IGVTNmgttNhoFp8fswArHdi91yiqlwGIv4/V5yNPqjvlQZWKKCwuED4EMHugXf3TuK+NrTr/Q==
+X-Received: by 2002:ac2:4c55:0:b0:507:a1b3:2d47 with SMTP id o21-20020ac24c55000000b00507a1b32d47mr4341263lfk.17.1700912755427;
+        Sat, 25 Nov 2023 03:45:55 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id cm26-20020a0564020c9a00b0054ae75dcd6bsm2114552edb.95.2023.11.25.03.40.42
+        by smtp.gmail.com with ESMTPSA id w5-20020a19c505000000b00507a1df9224sm802131lfe.289.2023.11.25.03.45.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 03:40:43 -0800 (PST)
-Message-ID: <844cc2e9-d487-4bf2-aa3a-7e0cc51d722e@linaro.org>
-Date:   Sat, 25 Nov 2023 12:40:41 +0100
+        Sat, 25 Nov 2023 03:45:55 -0800 (PST)
+Message-ID: <2f7f8bde-e194-43e4-b0aa-da58dda4d7b1@linaro.org>
+Date:   Sat, 25 Nov 2023 12:45:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gpucc-sm8150: Update the gpu_cc_pll1 config
-To:     "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231122042814.4158076-1-quic_skakitap@quicinc.com>
- <2b619607-1219-46db-a439-0f087b8b5d3b@linaro.org>
- <a2137dac-9660-53ae-8950-4902c05a3f66@quicinc.com>
+Subject: Re: [PATCH 1/2] ARM: dts: qcom: minor whitespace cleanup around '='
 Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231124095049.58618-1-krzysztof.kozlowski@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -103,11 +101,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <a2137dac-9660-53ae-8950-4902c05a3f66@quicinc.com>
+In-Reply-To: <20231124095049.58618-1-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -116,23 +114,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.2023 12:24, Satya Priya Kakitapalli (Temp) wrote:
+On 24.11.2023 10:50, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
 > 
-> On 11/22/2023 9:32 PM, Konrad Dybcio wrote:
->>
->>
->> On 11/22/23 05:28, Satya Priya Kakitapalli wrote:
->>> Update the test_ctl_hi_val and test_ctl_hi1_val of gpu_cc_pll1
->>> as per latest HW recommendation.
->> IIRC there is SM8150 v2.1 that's there on most devices and v2.2
->> that was used on the Microsoft Duo (or v2.0 and v2.1 respectively,
->> not sure, don't have any device on hand to read it back), do these
->> settings apply to both? Are they different for mobile vs auto?
->>
-> 
-> Yes these settings apply to all v2.x devices, also they are same for auto and mobile.
-Thanks for confirming!
-
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
