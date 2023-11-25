@@ -2,291 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A867F8914
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 09:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F43C7F8974
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 10:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjKYINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 03:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        id S231733AbjKYJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 04:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjKYIMv (ORCPT
+        with ESMTP id S231800AbjKYJDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 03:12:51 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F3B170B;
-        Sat, 25 Nov 2023 00:12:57 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scl2p11f5z4f3mHH;
-        Sat, 25 Nov 2023 16:12:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-        by mail.maildlp.com (Postfix) with ESMTP id 7A47F1A01A1;
-        Sat, 25 Nov 2023 16:12:54 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgCnSkmCrGFlWcLEBw--.36822S10;
-        Sat, 25 Nov 2023 16:12:54 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] ext4: remove unnecessary parameter "needed" in ext4_discard_preallocations
-Date:   Sun, 26 Nov 2023 00:11:43 +0800
-Message-Id: <20231125161143.3945726-9-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
-References: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
+        Sat, 25 Nov 2023 04:03:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BD518B;
+        Sat, 25 Nov 2023 01:03:07 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc9b626a96so19513105ad.2;
+        Sat, 25 Nov 2023 01:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700902987; x=1701507787; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lO9T1f7+xQGxacGqr4UGfolgAcK+nTqINcLwMQXMAsg=;
+        b=cuSaSWpYZKDgP5OZznBQC+hhG5HpKPrbP5shtmLwgz5AMkLuF6ouFTwNuBLxkgr69r
+         lZEu4ScQ+Oyko6jH+WHOr3DBSRVrHbAxOOElT98QCMV8Y8BDmdo2vBeB8jL2quclGMtw
+         WYdP3+syqXKG0GgmhCvn6Apts4Y3mb+MYileTT2JiLvc0L5JTpaeTEvi6ajYlPfi0c2M
+         ycH6T2ZBPtgL2PiZbvXNFElLUQ41Jldr/ttTdYBpeFD+2oDW/npnIe3dRt7Eupy2NQVv
+         ln208jFf9fFoEVdNsRgUxO70reY0J1Qq6ApE629KD3qbyZALate/3Ix66wN0MDhSJ1M4
+         KDrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700902987; x=1701507787;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lO9T1f7+xQGxacGqr4UGfolgAcK+nTqINcLwMQXMAsg=;
+        b=bpbXgo3tw/NoHQbSKT2qtiTTSUvwGrOP0or+mW7jRRbkikSGtUxq6UlIKCoucHIHCM
+         CmcfluoS8IsId5TdJ/8f9V5Xz7jN2io14dlFtEld43piNnZtVn4r5Nntu+aB6/FNMlkX
+         lOL+Vum+DduRVKgie0FK4bRep4g7Cdm9mhswL4OBybuXs3vrAXQFFByXno35Dy1H9YvP
+         1QTaApPIJYVY5X6hCj7+Mkyz+b9JOoZ+FXVUw9mF+uWG2SPrKPcw3nFbVNFvgaTtn5pv
+         VBHwsEJLrxrBnv0PXR0XOpqdj1b+Lv9+G0J3shSr2uWi9udyP9YiHvThWnmJGMPbSwOM
+         NV8A==
+X-Gm-Message-State: AOJu0Yw/QAlyDmjdSTRReziH6+GvWfWXaPId3K2ziuPSWYnGWqrgugOZ
+        x1eCvNFEVVYXdtMUVAqYN98=
+X-Google-Smtp-Source: AGHT+IHzHe+EX24z8BHIjaM3k4H/XwNhsDntn0KLOhQQwYivmHfHFxBAmxTh6FhgpXNa1WfjFYXxJQ==
+X-Received: by 2002:a05:6a20:6a22:b0:18c:346c:d59f with SMTP id p34-20020a056a206a2200b0018c346cd59fmr1985559pzk.62.1700902986672;
+        Sat, 25 Nov 2023 01:03:06 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:716a:b035:7b6d:4b79:e0d7:1a84])
+        by smtp.gmail.com with ESMTPSA id o10-20020a17090a3d4a00b0027dafa55306sm4511646pjf.40.2023.11.25.01.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 01:03:06 -0800 (PST)
+From:   Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+To:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org
+Cc:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH V4] media: stk1160: Fixed high volume of stk1160_dbg messages
+Date:   Sat, 25 Nov 2023 14:32:36 +0530
+Message-Id: <20231125090236.654605-1-ghanshyam1898@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCnSkmCrGFlWcLEBw--.36822S10
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gr4xJw1fWFW3KFW8KFWxZwb_yoWfWFWxpr
-        Z8Aa18Ww13X34kuws2qr4UZr1Yga18Ka1UJrWS9w4qvFZxJrn3KF1DtF1ayF1YqFWkXF4Y
-        vF10kry7Xw1I937anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-        FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3w
-        A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIL05UUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "needed" controls the number of ext4_prealloc_space to discard in
-ext4_discard_preallocations. Function ext4_discard_preallocations is
-supposed to discard all non-used preallocated blocks when "needed"
-is 0 and now ext4_discard_preallocations is always called with "needed"
-= 0. Remove unnecessary parameter "needed" and remove all non-used
-preallocated spaces in ext4_discard_preallocations to simplify the
-code.
+The function stk1160_dbg gets called too many times, which causes
+the output to get flooded with messages. Since stk1160_dbg uses
+printk, it is now replaced with printk_ratelimited.
 
-Note: If count of non-used preallocated spaces could be more than
-UINT_MAX, there was a memory leak as some non-used preallocated
-spaces are left unused and this commit will fix it. Otherwise,
-there is no behavior change.
-
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Suggested-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
 ---
- fs/ext4/ext4.h        |  2 +-
- fs/ext4/extents.c     | 10 +++++-----
- fs/ext4/file.c        |  2 +-
- fs/ext4/indirect.c    |  2 +-
- fs/ext4/inode.c       |  6 +++---
- fs/ext4/ioctl.c       |  2 +-
- fs/ext4/mballoc.c     | 10 +++-------
- fs/ext4/move_extent.c |  4 ++--
- fs/ext4/super.c       |  2 +-
- 9 files changed, 18 insertions(+), 22 deletions(-)
+V4:
+Updated printk_ratelimited to KERN_DEBUG level instead of
+KERN_WARNING level since the original function in use,
+stk1160_dbg, uses KERN_DEBUG level.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index fb35cae16..2fd444034 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2905,7 +2905,7 @@ extern int ext4_mb_init(struct super_block *);
- extern void ext4_mb_release(struct super_block *);
- extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
- 				struct ext4_allocation_request *, int *);
--extern void ext4_discard_preallocations(struct inode *, unsigned int);
-+extern void ext4_discard_preallocations(struct inode *);
- extern int __init ext4_init_mballoc(void);
- extern void ext4_exit_mballoc(void);
- extern ext4_group_t ext4_mb_prefetch(struct super_block *sb,
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 880f383df..fd350889a 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -100,7 +100,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
- 	 * i_rwsem. So we can safely drop the i_data_sem here.
- 	 */
- 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 	up_write(&EXT4_I(inode)->i_data_sem);
- 	*dropped = 1;
- 	return 0;
-@@ -4313,7 +4313,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 			 * not a good idea to call discard here directly,
- 			 * but otherwise we'd need to call it every free().
- 			 */
--			ext4_discard_preallocations(inode, 0);
-+			ext4_discard_preallocations(inode);
- 			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
- 				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
- 			ext4_free_blocks(handle, inode, NULL, newblock,
-@@ -5354,7 +5354,7 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
- 	ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE, handle);
+V3:
+Fixed the issue with my patch needing previous versions being applied
+first.
+
+Used printk_ratelimited instead of dev_warn_ratelimited because
+of compiler error "incompatible pointer type".
+
+V2:
+To add KERN_WARNING in printk_ratelimited, and later as per warning by
+the checkpatch script, replaced  printk_ratelimited with
+dev_warn_ratelimited.
+
+V1:
+The function stk1160_dbg gets called too many times, which causes
+the output to get flooded with messages. Since stk1160_dbg uses
+printk, it is now replaced with dev_warn_ratelimited.
+
+ drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+index 4e966f6bf608..366f0e4a5dc0 100644
+--- a/drivers/media/usb/stk1160/stk1160-video.c
++++ b/drivers/media/usb/stk1160/stk1160-video.c
+@@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
  
- 	down_write(&EXT4_I(inode)->i_data_sem);
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 	ext4_es_remove_extent(inode, punch_start, EXT_MAX_BLOCKS - punch_start);
+ 	/*
+ 	 * TODO: These stk1160_dbg are very spammy!
+-	 * We should 1) check why we are getting them
+-	 * and 2) add ratelimit.
++	 * We should check why we are getting them.
+ 	 *
+ 	 * UPDATE: One of the reasons (the only one?) for getting these
+ 	 * is incorrect standard (mismatch between expected and configured).
+@@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
  
- 	ret = ext4_ext_remove_space(inode, punch_start, punch_stop - 1);
-@@ -5362,7 +5362,7 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
- 		up_write(&EXT4_I(inode)->i_data_sem);
- 		goto out_stop;
- 	}
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 
- 	ret = ext4_ext_shift_extents(inode, handle, punch_stop,
- 				     punch_stop - punch_start, SHIFT_LEFT);
-@@ -5494,7 +5494,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
- 		goto out_stop;
- 
- 	down_write(&EXT4_I(inode)->i_data_sem);
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 
- 	path = ext4_find_extent(inode, offset_lblk, NULL, 0);
- 	if (IS_ERR(path)) {
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 0166bb9ca..89cb28da8 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -174,7 +174,7 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
- 			(atomic_read(&inode->i_writecount) == 1) &&
- 			!EXT4_I(inode)->i_reserved_data_blocks) {
- 		down_write(&EXT4_I(inode)->i_data_sem);
--		ext4_discard_preallocations(inode, 0);
-+		ext4_discard_preallocations(inode);
- 		up_write(&EXT4_I(inode)->i_data_sem);
- 	}
- 	if (is_dx(inode) && filp->private_data)
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index a9f371611..d8ca7f64f 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -714,7 +714,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
- 	 * i_rwsem. So we can safely drop the i_data_sem here.
- 	 */
- 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 	up_write(&EXT4_I(inode)->i_data_sem);
- 	*dropped = 1;
- 	return 0;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d77323204..53ed4a0ad 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -371,7 +371,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
- 	 */
- 	if ((ei->i_reserved_data_blocks == 0) &&
- 	    !inode_is_open_for_write(inode))
--		ext4_discard_preallocations(inode, 0);
-+		ext4_discard_preallocations(inode);
- }
- 
- static int __check_block_validity(struct inode *inode, const char *func,
-@@ -4014,7 +4014,7 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
- 	if (stop_block > first_block) {
- 
- 		down_write(&EXT4_I(inode)->i_data_sem);
--		ext4_discard_preallocations(inode, 0);
-+		ext4_discard_preallocations(inode);
- 
- 		ext4_es_remove_extent(inode, first_block,
- 				      stop_block - first_block);
-@@ -4167,7 +4167,7 @@ int ext4_truncate(struct inode *inode)
- 
- 	down_write(&EXT4_I(inode)->i_data_sem);
- 
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 
- 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
- 		err = ext4_ext_truncate(handle, inode);
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 0bfe2ce58..2e2bcd22b 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -458,7 +458,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
- 	ext4_reset_inode_seed(inode);
- 	ext4_reset_inode_seed(inode_bl);
- 
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 
- 	err = ext4_mark_inode_dirty(handle, inode);
- 	if (err < 0) {
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index e6561a09d..0e6beb3b4 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5469,7 +5469,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
-  *
-  * FIXME!! Make sure it is valid at all the call sites
-  */
--void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
-+void ext4_discard_preallocations(struct inode *inode)
- {
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 	struct super_block *sb = inode->i_sb;
-@@ -5491,15 +5491,12 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
- 	mb_debug(sb, "discard preallocation for inode %lu\n",
- 		 inode->i_ino);
- 	trace_ext4_discard_preallocations(inode,
--			atomic_read(&ei->i_prealloc_active), needed);
--
--	if (needed == 0)
--		needed = UINT_MAX;
-+			atomic_read(&ei->i_prealloc_active), 0);
- 
- repeat:
- 	/* first, collect all pa's in the inode */
- 	write_lock(&ei->i_prealloc_lock);
--	for (iter = rb_first(&ei->i_prealloc_node); iter && needed;
-+	for (iter = rb_first(&ei->i_prealloc_node); iter;
- 	     iter = rb_next(iter)) {
- 		pa = rb_entry(iter, struct ext4_prealloc_space,
- 			      pa_node.inode_node);
-@@ -5523,7 +5520,6 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
- 			spin_unlock(&pa->pa_lock);
- 			rb_erase(&pa->pa_node.inode_node, &ei->i_prealloc_node);
- 			list_add(&pa->u.pa_tmp_list, &list);
--			needed--;
- 			continue;
- 		}
- 
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 18a9e7c47..0abfc104a 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -689,8 +689,8 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
- 
- out:
- 	if (*moved_len) {
--		ext4_discard_preallocations(orig_inode, 0);
--		ext4_discard_preallocations(donor_inode, 0);
-+		ext4_discard_preallocations(orig_inode);
-+		ext4_discard_preallocations(donor_inode);
+ 	/* Let the bug hunt begin! sanity checks! */
+ 	if (lencopy < 0) {
+-		stk1160_dbg("copy skipped: negative lencopy\n");
++		printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
+ 		return;
  	}
  
- 	ext4_free_ext_path(path);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index d062383ea..c0cfc3e46 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1518,7 +1518,7 @@ void ext4_clear_inode(struct inode *inode)
- 	ext4_fc_del(inode);
- 	invalidate_inode_buffers(inode);
- 	clear_inode(inode);
--	ext4_discard_preallocations(inode, 0);
-+	ext4_discard_preallocations(inode);
- 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
- 	dquot_drop(inode);
- 	if (EXT4_I(inode)->jinode) {
 -- 
-2.30.0
+2.25.1
 
