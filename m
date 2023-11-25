@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FF27F87E4
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBB47F87E3
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 03:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjKYCkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 21:40:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        id S231637AbjKYCm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 21:42:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKYCkh (ORCPT
+        with ESMTP id S229462AbjKYCm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 21:40:37 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5553D1990;
-        Fri, 24 Nov 2023 18:40:44 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58d205245feso1100401eaf.0;
-        Fri, 24 Nov 2023 18:40:44 -0800 (PST)
+        Fri, 24 Nov 2023 21:42:27 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F7CE1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:42:34 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cc3dd21b0cso23271447b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 18:42:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700880043; x=1701484843; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dc/0Sqt9JV0jUsEhdk3PHb97PcLJKpbUf0KfZf1VEGA=;
-        b=mCW4awptkF5ZMmpHCdgJtAukI7e/VGpxj4gV9xdxebXdb085NQk/nATcWCeaveIySP
-         kZ+ZdrhkxHI3sUzcQTtGlHHnE8BIy1gAV3hOmPtUU0ABrulgjoHgHLo84hpwyXNy/3NQ
-         XKlclo1vhY0JIEjZot9jd3hXLjA/ROjTEm5HzomLBqw9TVegPhTuSQXGn/FKYOm+Ln/a
-         f2LIFidrPQNYRvO9pvpagQkmQhjzW5K0BnMDsvbHry/5kq9MxYhOT+bWaLt5EIogwVW0
-         2Fd5MOco+6wOlQEyEtjb/1b8wS7M9KU94I/9Knp3c8N+edXha7r9XIMw9Bg0hHqlBBXc
-         SyuA==
+        d=ncf.edu; s=google; t=1700880153; x=1701484953; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:organization:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hyf0Z+cxJ/W3oT7C0OJIc/PCTRVv14uANGjF4ZAEDSw=;
+        b=WbhAdX9dfnA7LrwPupxKGjkvxS7jwE02Cn1jJVfEgAaC1FaJfUahy5FavBIZkDyEZg
+         k5lm1jucMTHd2Pj+vtlZpSmfHs/OOu82NVbX/EoWDDcXQIigreyCpvlmfjhD0t/JSygZ
+         SIU7Kx64/wsg3bAwkuPgh07AitGqqPS2HGs7KzbZ/b7z4/ChGhwN7gZCedS0eJRz1ws7
+         8B/aqQNhzQuQKaXdF0xJpzPFAV3prlLqFid8QNObx0Ct8M146TEig6wZ5b93eRP4TM5U
+         cpzeg1KKYuw3d3pp1Qv+fqINLfVYPa6W7rrxzMZFdV2pZXuu4PxITfLl/z1tSs5JCAPy
+         LibA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700880043; x=1701484843;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1700880153; x=1701484953;
+        h=mime-version:references:in-reply-to:organization:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dc/0Sqt9JV0jUsEhdk3PHb97PcLJKpbUf0KfZf1VEGA=;
-        b=F1PiuaUtkuoDzpO3o4nZNf3+kkfwgYL9IUhtoMsHXVO1OfRH1oGzMnCFqhsrorViwJ
-         o4X/tOWYoKlM8/LXirQ5GwP8dNGj+3iLy5M3GOikC/jOLKSS3ibmggNjvulUdxXVn1b5
-         8STZc3a4QhgpilOaeh5Q/miqKbIW7hSvSqvyY0ttXRap5MgtlFZODYCRbi2MrJhCUegj
-         PHnbH/CBEVCWxTluwuF6MxxNeM9ThQorpAaZ61NXCCX1UNhShFK9brN0KHILwoZ6VBAa
-         85dbnxwGbSqy8oSMudSxOklauNyJCUb4xUK5Ag/ytMVvbD12DoElc+k7vCcJNzJM1l9l
-         DBSQ==
-X-Gm-Message-State: AOJu0YyOkNwfWq0wh39Qm+cGWsYebbSDNapIJFpzk8Lj7/nyNfBcePku
-        aD8yngZNQ+8v004dD92ENWqk27yiiSU=
-X-Google-Smtp-Source: AGHT+IGYEITByIiIyI4lY4CRWP7/PXnR3kDlqhFr3vuUVmfIHb5d+JStjoGIKPenBhgLOHc4Cj7CCQ==
-X-Received: by 2002:a05:6358:4406:b0:16e:12e:e232 with SMTP id z6-20020a056358440600b0016e012ee232mr5768616rwc.6.1700880043384;
-        Fri, 24 Nov 2023 18:40:43 -0800 (PST)
-Received: from rigel ([118.209.207.221])
-        by smtp.gmail.com with ESMTPSA id o13-20020a635a0d000000b005a9b20408a7sm3726840pgb.23.2023.11.24.18.40.40
+        bh=hyf0Z+cxJ/W3oT7C0OJIc/PCTRVv14uANGjF4ZAEDSw=;
+        b=qDFX5AhTHOkyYRfGjlOZi+1uhhbX0MEVQ/QmEyTvzt5KSrtizwV93TWtez+guAqiON
+         wV9RBQ/P7Bxm6oIXYzglvqHQsv2+fx6vW+Q+sPCMN+QNbxEwXdy9/b77s6Cr9ZNrcR3x
+         5z/lqycHFRKEJYQv2jaVKKRv8hp0SBYa4Eryyf0EfFoymw4o+NLPfYYUE2Z9MtnBU2V6
+         8gwmGFAGigaBUkm2tVbB/lNC6tEeS/iQWkoHg0j0W9zYq+DvfoHpXDVg59dnOIstuANm
+         9IbcRYLCENqk5Q4zj8g2GXQ5JNU8lHuhpvPGx23L1IrdTEW39Go5E0g3ZenF5PpICuoh
+         B4kw==
+X-Gm-Message-State: AOJu0YwsKmvtfrEaje8wRi6enqTVd7WvdYiu7jeblEELhqnw6GcBUkp4
+        w9LXTi7leJT4x/LavxQO8DWPoQ==
+X-Google-Smtp-Source: AGHT+IHtZ42ierZtnGi10mXOo6CZvlvjnES3nwJxqf12LEm+cLdiRM+zBhpCVnFUTB+pTVenapmVnA==
+X-Received: by 2002:a0d:d54b:0:b0:5c9:d870:cb18 with SMTP id x72-20020a0dd54b000000b005c9d870cb18mr4916615ywd.21.1700880153184;
+        Fri, 24 Nov 2023 18:42:33 -0800 (PST)
+Received: from lux.localnet ([2601:580:8201:d0::4da5])
+        by smtp.gmail.com with ESMTPSA id d196-20020a0ddbcd000000b005ccf7fc2197sm1371945ywe.24.2023.11.24.18.42.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 18:40:43 -0800 (PST)
-Date:   Sat, 25 Nov 2023 10:40:38 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpiolib: Drop cargo-culted comment
-Message-ID: <ZWFepm7ufLdl115j@rigel>
-References: <20231125-dropcomment-v1-1-15800415aae0@linaro.org>
+        Fri, 24 Nov 2023 18:42:32 -0800 (PST)
+From:   Hunter Chasens <hunter.chasens18@ncf.edu>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] docs: admin-guide: Update bootloader and installation
+ instructions
+Date:   Fri, 24 Nov 2023 21:42:32 -0500
+Message-ID: <6005603.lOV4Wx5bFT@lux>
+Organization: New College of Florida
+In-Reply-To: <87leanw0ms.fsf@meer.lwn.net>
+References: <20231114030208.30479-1-hunter.chasens18@ncf.edu> <4525208.LvFx2qVVIh@lux>
+ <87leanw0ms.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231125-dropcomment-v1-1-15800415aae0@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart4890171.31r3eYUQgx";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 12:25:47AM +0100, Linus Walleij wrote:
-> This comment about the gpio_lock is just completely confusing and
-> misleading. This refers to a gpio_desc that would in 2008 be used
-> to hold the list of gpio_chips, but nowadays gpio_desc refers to
-> descriptors of individual GPIO lines and this comment is completely
-> unparseable. Delete it.
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/gpio/gpiolib.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 95d2a7b2ea3e..1c47af866bf6 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -86,10 +86,6 @@ static struct bus_type gpio_bus_type = {
->   */
->  #define FASTPATH_NGPIO CONFIG_GPIOLIB_FASTPATH_LIMIT
->
-> -/* gpio_lock prevents conflicts during gpio_desc[] table updates.
-> - * While any GPIO is requested, its gpio_chip is not removable;
-> - * each GPIO's "requested" flag serves as a lock and refcount.
-> - */
+--nextPart4890171.31r3eYUQgx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Hunter Chasens <hunter.chasens18@ncf.edu>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 24 Nov 2023 21:42:32 -0500
+Message-ID: <6005603.lOV4Wx5bFT@lux>
+Organization: New College of Florida
+In-Reply-To: <87leanw0ms.fsf@meer.lwn.net>
+MIME-Version: 1.0
 
-Perhaps provide a comment as to what the gpio_lock DOES cover?
+On Friday, November 24, 2023 11:56:43 AM EST you wrote:
 
->  DEFINE_SPINLOCK(gpio_lock);
->
->  static DEFINE_MUTEX(gpio_lookup_lock);
->
-> ---
-> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> change-id: 20231125-dropcomment-89e5b7b4cc3f
->
-> Best regards,
-> --
-> Linus Walleij <linus.walleij@linaro.org>
->
+> But the makefile is looking for "installkernel", right?  Unless I'm
+> missing something, that's the one that will work with "make install". ?
+
+The `make install` calls `/scripts/install.sh`. `/scripts/install.sh` uses 
+a variable called $INSTALLKERNEL to search a few directories. If it can't 
+find what it's looking for it searches for an `install.sh` script in 
+srctree/arch/$arch/. `kernel-install` is part of the systemd stack, and can 
+be invoked as `installkernel`. It gets invoked as installkernel during 
+`make install` through some wizardry I'm not super familiar with. I guess 
+it's more of an install binary than an install script, but there's no 
+`installkernel.sh` on many current distributions. Just programs that 
+pretend to be `installkernel.sh` which might confuse a user looking for 
+such a script.
+
+I suppose it would be more accurate to say something like: "It is also 
+possible to do `make install` if you have lilo installed or if your 
+distribution has an installer compatible with the kernel's makefile."
+
+Thank you for your feedback,
+    Hunter
+
+
+
+
+--nextPart4890171.31r3eYUQgx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEFaTi3I3XEd+IzfdZZz/o+CKADX8FAmVhXxgACgkQZz/o+CKA
+DX8Zigf/eTnaLygqZ016WcuPu9H/SLzLYeVu13uhK630jtWnzObk61wTEo56mqO1
++xHspXMFagC9nXqk+yYAZIYoWzZgJRjTBKvERV1wYjEqKhd9hFeBm2Zb4nj3WYkr
+sN3QuVUfcJTOrhwRKiLV5ukpjkZ2iPbt3A6awVCwXbV3Q6oeXVqR8yRohhewltkw
+k/U+50L9+JvADEMtg5LvVpwdrx8hVce+eU92iAoLRuRpZMaNZJFmARRLISKflitd
+Ylwnd/EJlgtblNx0TcqphRvYWThkx4CZ6ubcZ1u5TCIgkNnrYSP3DuFBBZYnpLTT
+c4MMmcipAHWRgpr8GyQCAlYn9GcrSw==
+=c9Gl
+-----END PGP SIGNATURE-----
+
+--nextPart4890171.31r3eYUQgx--
+
+
+
