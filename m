@@ -2,166 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C147F8A3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A397F8A43
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 12:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjKYLjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 06:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S232082AbjKYLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 06:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjKYLi6 (ORCPT
+        with ESMTP id S231887AbjKYLkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 06:38:58 -0500
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECD2D41
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:39:04 -0800 (PST)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cfb5baa409so4172235ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:39:04 -0800 (PST)
+        Sat, 25 Nov 2023 06:40:39 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717E3BC
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:40:45 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54b1812ae1fso654351a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 03:40:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700912444; x=1701517244; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=PumLW+yDxZ/EbkcbHSkfvm2AU7+9Cl4vHKO664Y9Uss=;
+        b=qoWW1ZibFg2oDfmXXnMi8Q8D6OrueMGF6nWPrR0KMU3IHNOs4dZ6zuFIuIcRL00aFG
+         Nhf3/GHlI1CBpzxS1N2TKmyysqocrX2z5e7D3WtojImDmkyhgCByW2IFpcXo5QoUFOGV
+         Z5fsZY4FZPronrs5mM2BPcVta3qikIrS2xS4eB6RFoYiqGNn3B2LdJc7pzvlsd/CrJeD
+         2XIkO7s/ZjozBc3dhmSP/xkSZbWbVjAR70hJnYd53Crz8Zk5Wpz/7Z26x0f7B4M1Qh/6
+         cXL2Z4ALgTym1ISSyO1Ou9bzjWoMkCKIj8i5VrIusxtj16Xvo1m3Iz+lRhRs1hObyixY
+         +G0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700912344; x=1701517144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vdcWXAdEGtBW0GYdSwVKAN0r/kap7M7FrAzrvajV3Fc=;
-        b=owyw4KwbVJm4IZf3Kyj00dxdD5cVGz0ZpoXfJjBLKxhEIcQJDvAzlEluMkvvPHW5SC
-         9R/5l+Yl/15pbzFsF9uloEeErzh1Z441Wdh2HTUg+C3BNmN5AIIm4vDGQHNZf58uyMkA
-         MMH3bbgNtXu1I+pAAnGFaC/hQrOlbCexWC4s6H+5PSgOHU+ySODJxlr6GBoEgcsByw0m
-         SZ16fTBvXisnFqUF6cbenk+mYOJrdl8ITwVZc/imVMMJgdKpir9dehH8khS2MHGjrGxV
-         ZljSwHwpKSRkXdsJM5E+/kRC6+SVmaZr3OxFoGiO+iCdXW4XnU4dlZg3l8QVC3y1SYTH
-         covA==
-X-Gm-Message-State: AOJu0YxAt8aaGQa4PVRzylbUOsc/awSZp8qHMYoOISpNczRct1TuMbU4
-        21SWFW5ewswX1LtsmU1bWESKY0hJp8X65FyE0KQN0pWfJFxP
-X-Google-Smtp-Source: AGHT+IH1q15M2XkvsROCNoe996gysrCrt6SDNcD2uYGoPnk6DkNZfbX1+tfNaB6h1KbWdD1wmk1b/jZWr7t6ImEo1Ug2KhF6pAG0
+        d=1e100.net; s=20230601; t=1700912444; x=1701517244;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PumLW+yDxZ/EbkcbHSkfvm2AU7+9Cl4vHKO664Y9Uss=;
+        b=gEI9pBiUPaaLCNFgzhN865tCm2K+b4dN/hh7odZdqC0GLixPkoq4Xul1MuwbgOZ+XC
+         cnkxfSFubOsj2vK+bD46J2MdciOompopxyKsFRcnYrkTYPDz04FGYKZSZj4we7ZZVS0G
+         BH3Gz/gAdbf7k+bimgKwje/ybIewBcrYCls9kmv2tFxtanP8XXmuBaX4eCWsWTYf13Ep
+         mVDcEZf8lJ3AfBcBvmpjgob5bz2CSSDPJHKTaszEqTgPED/DxsF2LHx4/4IPg5g5rOWN
+         PZChi2b1F3yT1bV+pM/npY1xdmfke/r3Y/rTEvpTrB5ZDRPEzp8UNHMnD4gGBVHS7JoM
+         8miQ==
+X-Gm-Message-State: AOJu0YwF4nSl487OtRH1yGfZDXhf8qYTD2LaF7fAxRBoh3BFMcfEiDtA
+        40cU1x4tptdRtdjmfl3Tn45zcg==
+X-Google-Smtp-Source: AGHT+IFqBVsdh0o76qmN+wtVD1l8pCKeP6JfU9XIAzHXoVgjey89blL8+iGjRUsvpGsDuu/dMSOTGA==
+X-Received: by 2002:a05:6402:2207:b0:54b:25e8:c007 with SMTP id cq7-20020a056402220700b0054b25e8c007mr867357edb.2.1700912443857;
+        Sat, 25 Nov 2023 03:40:43 -0800 (PST)
+Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id cm26-20020a0564020c9a00b0054ae75dcd6bsm2114552edb.95.2023.11.25.03.40.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 03:40:43 -0800 (PST)
+Message-ID: <844cc2e9-d487-4bf2-aa3a-7e0cc51d722e@linaro.org>
+Date:   Sat, 25 Nov 2023 12:40:41 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:328d:b0:1cc:229a:89f7 with SMTP id
- jh13-20020a170903328d00b001cc229a89f7mr1121840plb.5.1700912344208; Sat, 25
- Nov 2023 03:39:04 -0800 (PST)
-Date:   Sat, 25 Nov 2023 03:39:04 -0800
-In-Reply-To: <20231125110148.694-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000121e19060af884ab@google.com>
-Subject: Re: [syzbot] [net?] possible deadlock in sch_direct_xmit (2)
-From:   syzbot <syzbot+e18ac85757292b7baf96@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: gpucc-sm8150: Update the gpu_cc_pll1 config
+To:     "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231122042814.4158076-1-quic_skakitap@quicinc.com>
+ <2b619607-1219-46db-a439-0f087b8b5d3b@linaro.org>
+ <a2137dac-9660-53ae-8950-4902c05a3f66@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <a2137dac-9660-53ae-8950-4902c05a3f66@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 24.11.2023 12:24, Satya Priya Kakitapalli (Temp) wrote:
+> 
+> On 11/22/2023 9:32 PM, Konrad Dybcio wrote:
+>>
+>>
+>> On 11/22/23 05:28, Satya Priya Kakitapalli wrote:
+>>> Update the test_ctl_hi_val and test_ctl_hi1_val of gpu_cc_pll1
+>>> as per latest HW recommendation.
+>> IIRC there is SM8150 v2.1 that's there on most devices and v2.2
+>> that was used on the Microsoft Duo (or v2.0 and v2.1 respectively,
+>> not sure, don't have any device on hand to read it back), do these
+>> settings apply to both? Are they different for mobile vs auto?
+>>
+> 
+> Yes these settings apply to all v2.x devices, also they are same for auto and mobile.
+Thanks for confirming!
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in __dev_queue_xmit
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-============================================
-WARNING: possible recursive locking detected
-6.7.0-rc2-syzkaller-00195-g0f5cc96c367f-dirty #0 Not tainted
---------------------------------------------
-syz-executor.0/5352 is trying to acquire lock:
-ffff88806adeb8d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-ffff88806adeb8d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4403 [inline]
-ffff88806adeb8d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: __dev_queue_xmit+0x1622/0x38e0 net/core/dev.c:4344
-
-but task is already holding lock:
-ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4403 [inline]
-ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&queue->_xmit_lock);
-  lock(&queue->_xmit_lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-6 locks held by syz-executor.0/5352:
- #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x467/0x1360 net/ipv4/ip_output.c:228
- #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
- #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:799 [inline]
- #1: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x23e/0x38e0 net/core/dev.c:4273
- #2: ffff88807f8e0258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:361 [inline]
- #2: ffff88807f8e0258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:194 [inline]
- #2: ffff88807f8e0258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3761 [inline]
- #2: ffff88807f8e0258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x11d0/0x38e0 net/core/dev.c:4314
- #3: ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- #3: ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4403 [inline]
- #3: ffff8880762430d8 (&queue->_xmit_lock){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
- #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #4: ffffffff8cb25ba0 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x467/0x1360 net/ipv4/ip_output.c:228
- #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
- #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:799 [inline]
- #5: ffffffff8cb25c00 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x23e/0x38e0 net/core/dev.c:4273
-
-stack backtrace:
-CPU: 1 PID: 5352 Comm: syz-executor.0 Not tainted 6.7.0-rc2-syzkaller-00195-g0f5cc96c367f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- __lock_acquire+0x6a81/0x7f70 kernel/locking/lockdep.c:3062
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- __netif_tx_lock include/linux/netdevice.h:4403 [inline]
- __dev_queue_xmit+0x1622/0x38e0 net/core/dev.c:4344
- ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
- iptunnel_xmit+0x540/0x9b0 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0x20e4/0x2940 net/ipv4/ip_tunnel.c:831
- erspan_xmit+0x9c6/0x13e0 net/ipv4/ip_gre.c:717
- __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
- netdev_start_xmit include/linux/netdevice.h:4954 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x241/0x750 net/core/dev.c:3563
- sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
- __dev_queue_xmit+0x187c/0x38e0 net/core/dev.c:3774
- ip_finish_output2+0xe6d/0x1360 include/net/neighbour.h:542
- ip_send_skb+0x117/0x1b0 include/net/dst.h:451
- udp_send_skb+0x931/0x1200 net/ipv4/udp.c:963
- udp_sendmsg+0x1c17/0x2a70 net/ipv4/udp.c:1250
- udpv6_sendmsg+0x1342/0x3220 net/ipv6/udp.c:1390
- ____sys_sendmsg+0x592/0x890 net/socket.c:730
- __sys_sendmmsg+0x3b2/0x730 net/socket.c:2638
- __do_sys_sendmmsg net/socket.c:2753 [inline]
- __se_sys_sendmmsg net/socket.c:2750 [inline]
- __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f25aa8798a9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f25a9ffe0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007f25aa98bf60 RCX: 00007f25aa8798a9
-RDX: 0000000000000001 RSI: 0000000020004d80 RDI: 0000000000000004
-RBP: 00007f25aa8d5074 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000004000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f25aa98bf60 R15: 00007fff36da4898
- </TASK>
-
-
-Tested on:
-
-commit:         0f5cc96c Merge tag 's390-6.7-3' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=117ea4d8e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3813bb4934ffb745
-dashboard link: https://syzkaller.appspot.com/bug?extid=e18ac85757292b7baf96
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=139c7daf680000
-
+Konrad
