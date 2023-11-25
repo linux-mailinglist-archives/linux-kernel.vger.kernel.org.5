@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0487F8AB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBDD7F8AB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbjKYMUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
+        id S232017AbjKYMVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjKYMUE (ORCPT
+        with ESMTP id S231838AbjKYMVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:20:04 -0500
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ECBFE;
-        Sat, 25 Nov 2023 04:20:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1700914777; bh=QTIX2lakcP39cCuE3Qc425XXiB73jdaU3uagPJrvxtI=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc;
-        b=LYGjtIk/DHWDP2NVbhlAr1JcfRKrOtq0X+/OC/suBGJlBNCfAhPuYOEgwiZhpcwPP
-         qVJP94AgVGMphHnKtnE8UXiTZjdEX0kD7lHX0/q9dTNmQUA0SwqiqE2Wd3vRLpA7Pq
-         PxiIV/PU6rBSZlD0GRn0ZpqgUlITBN/Cp+WIftwo=
-From:   Luca Weiss <luca@z3ntu.xyz>
-Date:   Sat, 25 Nov 2023 13:19:28 +0100
-Subject: [PATCH v2 2/2] arm64: dts: qcom: msm8953: Use non-deprecated
- qcom,domain in LPASS
+        Sat, 25 Nov 2023 07:21:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69EBD6
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:21:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FEFDC433C7;
+        Sat, 25 Nov 2023 12:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700914889;
+        bh=NokKKbjP7/sQSnXyJk7VS1kmyB9mZyNesxHCciD9GTM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WZn1ThndkOxaashwIdkq7g0vJIDCBIrMA6MwUpzzpcR2SEnw0+PJRhbP/Lo128eId
+         EUM5asAXzdU38JeWM1oGUECkoCOzVjIiP+O32x05fHTVuLAPr+Eg2dAHeIGtPrNH8l
+         Fro+ofqk2VSxRF57cijh2a1U9QTzUvs5i0qmzj0hrRKLQ2fWz7xKHMkvURudMokFVd
+         xC55+IbcYeMw8AEVGXiQcRlbeiJc+dzMSI8oM8XBwAXmr67PXGWJ2n3FL35oFo/sEx
+         sSGp08vzujBog9qZ7cllzcegwoz1S9W5fMPxy1DFU/WwYoNnJlgfqJLRZvvtQzufKE
+         1Wb5BZgnf8jGg==
+Date:   Sat, 25 Nov 2023 12:21:24 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc:     paul.cercueil@analog.com, Michael.Hennerich@analog.com,
+        lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] dt-bindings: iio: Add binding documentation for
+ AD7091R-8
+Message-ID: <20231125-pennant-untie-90b5f0828258@spud>
+References: <cover.1700751907.git.marcelo.schmitt1@gmail.com>
+ <8ce972a3708f7789237c86c44e23cdcb23a35103.1700751907.git.marcelo.schmitt1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231125-msm8953-misc-fixes-v2-2-df86655841d9@z3ntu.xyz>
-References: <20231125-msm8953-misc-fixes-v2-0-df86655841d9@z3ntu.xyz>
-In-Reply-To: <20231125-msm8953-misc-fixes-v2-0-df86655841d9@z3ntu.xyz>
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=852; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=QTIX2lakcP39cCuE3Qc425XXiB73jdaU3uagPJrvxtI=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlYeZYNkegUK0xhOcT7BhUYYzLbqYRKMGegeNEw
- x/Ke8IHHDmJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZWHmWAAKCRBy2EO4nU3X
- VpLSEADMD22OIhmor6tCMPaYWcyWLLl41rH5EcfMIdY3+pt2r0UxptAswlNHepD7BTx+PZ02oEq
- AQP1q/4k0y/Ml0RX0xCJAQdTwvXaa3SBG6lGaHCROvg6sB3l9LpVBWx31zJdwHfqeL1kbYg1LwT
- SXyJQCAR4qnaoE8EOYnqUxZkfzX2g4fwYnDST9yulIJSnHS6aQJgfltTlg3Y7L2tjdYO94mVjj3
- sWacrcGTfL19sEsgWBJOdDf4s0G6tSQUS6dao84WscV9zkeuXeuXRaHGpHdqfopAJEK84q+gAjw
- cUyhchTg2o0ICwXxT6smrjgrD3pYzxWgSlCSPf7A/m7W6lg9i5PMjasmQkMLNEMZBj2u/Pqd8U7
- WFOyDiuBezmr8ab651rtOOTl+AnrTvaYfdWzrU/t55IKJl+rFmlxopa9IL8prGTZ+owRj18jNyK
- vfM9yntrRGvUtXnSm800wgkJxNZk5MTQaNJjySzTY0zcab4NK6wgxS/HD4SRAIuUUkaZZIPaQz/
- FAmizMnfN1MGLfXYZSTjaf0qM7JtF7NPQHHcNRObozjYNSehWdhKf3Ysp1slLnMg9C5dpGP+yFr
- 933vhgAADWJByuZfu9IUBeV/4cg+g3t4qYW9wFOuAGtYEfzG/qWNOkWL6VxAqYgbSmQfPi6W606
- MKT3xx84Noqf54w==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PpbYFIjhbA0yHs/g"
+Content-Disposition: inline
+In-Reply-To: <8ce972a3708f7789237c86c44e23cdcb23a35103.1700751907.git.marcelo.schmitt1@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the qcom,domain property instead of the deprecated qcom,apr-domain,
-which in turn also fixes a bunch of dtbs_checks warnings.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
- arch/arm64/boot/dts/qcom/msm8953.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--PpbYFIjhbA0yHs/g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-index a3ba24ca599b..8374f9af8273 100644
---- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-@@ -1645,7 +1645,7 @@ smd-edge {
- 				apr {
- 					compatible = "qcom,apr-v2";
- 					qcom,smd-channels = "apr_audio_svc";
--					qcom,apr-domain = <APR_DOMAIN_ADSP>;
-+					qcom,domain = <APR_DOMAIN_ADSP>;
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
+On Thu, Nov 23, 2023 at 01:42:21PM -0300, Marcelo Schmitt wrote:
 
--- 
-2.43.0
+> +  spi-max-frequency: true
 
+This is not needed, since you have unevaluatedProperties: false &
+include the spi periph props.
+
+> +  adi,conversion-start-gpios:
+> +    description:
+
+> +      Device tree identifier of the CONVST pin.
+
+"gpio connected to the CONVST pin".
+
+> +      This logic input is used to initiate conversions on the analog
+> +      input channels.
+> +    maxItems: 1
+
+This looks pretty decent to be overall though.
+
+--PpbYFIjhbA0yHs/g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWHmxAAKCRB4tDGHoIJi
+0p1xAQCpqjmqfhVCI9G10fGp0R0KaL5NUz2lINY4C7iNmT/CfAEAuBsu2q+bVFVP
+hMsHHj47qNHfR+n8TOZtwwVR460T3Aw=
+=fPlx
+-----END PGP SIGNATURE-----
+
+--PpbYFIjhbA0yHs/g--
