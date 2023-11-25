@@ -2,55 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DF67F8787
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 02:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B037F878C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 02:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjKYBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Nov 2023 20:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S231477AbjKYBaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Nov 2023 20:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbjKYBZP (ORCPT
+        with ESMTP id S229665AbjKYBa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Nov 2023 20:25:15 -0500
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056FD19A3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 17:25:20 -0800 (PST)
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 75464C001985;
-        Fri, 24 Nov 2023 17:25:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 75464C001985
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1700875519;
-        bh=dk0LElVXfe0UerCgVqOMx5yOdf/0hE6ae5ICVzpqvEE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=W5JWFd5VpyQCtiV9m2S7n5vxxXmB8fjjGGqhHC4EbvXWDiDsP4srkRV0YDk5G/jIF
-         HXK/yb4iKXXGkpDNcsP0dGUXAXFIhrssFrSuDd/VQrGAOVnfvTbfzeTKGSVSYqZrqY
-         4bfcQXM+s70NDyamGLOSmnlsIEOh22UzMzbAu25k=
-Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 5E22718728D;
-        Fri, 24 Nov 2023 17:25:19 -0800 (PST)
-From:   dregan@broadcom.com
-To:     dregan@broadcom.com, miquel.raynal@bootlin.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
-        JaimeLiao <jaimeliao.tw@gmail.com>,
-        Adam Borowski <kilobyte@angband.pl>
-Subject: [PATCH v5 4/4] mtd: rawnand: brcmnand: exec_op implementation
-Date:   Fri, 24 Nov 2023 17:24:38 -0800
-Message-Id: <20231125012438.15191-4-dregan@broadcom.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20231125012438.15191-1-dregan@broadcom.com>
-References: <20231125012438.15191-1-dregan@broadcom.com>
+        Fri, 24 Nov 2023 20:30:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2838170B
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Nov 2023 17:30:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C45C433C8;
+        Sat, 25 Nov 2023 01:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700875834;
+        bh=qeDXoLzmrhwSilEwE0NvbJIMDl1HECjBmJFRcsC+j+A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SVvJsJCUgMdCHfUpmu0Wv+yIpIRY59srm5xzTZhcSTP9UZnDKhhzkTl652feAlXi5
+         rrAr9asBal/ggna0h57s03wGVny0RL8x42AcNIq4hX9AMGLGo/FyM5Y24u10WMVgXc
+         2ahGcnYjibixl14t7smTacIkQpcbFysVVYtob4ozvtRVfg3sNbf7Q6wRTkKzhraE9R
+         Z0xanuVnfo8B/5ZXImSuKskJgJ3c6NgYifIdwuV4RjDUpbe5FR6B+3iT1DdhR7nSqB
+         fOmITXeQf3/PE9OzfFRheL1E4aczTPvmku0jgk0WBPKaUCXL8FZESUmDhMuCV60rdp
+         fxxGYivjdVjVQ==
+From:   guoren@kernel.org
+To:     mark.rutland@arm.com, peterz@infradead.org, keescook@chromium.org,
+        paulmck@kernel.org, ubizjak@gmail.com, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH V2] locking/atomic: scripts: Increase template priority in order variants
+Date:   Fri, 24 Nov 2023 20:30:25 -0500
+Message-Id: <20231125013025.3620560-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,551 +48,569 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Regan <dregan@broadcom.com>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-exec_op implementation for Broadcom STB, Broadband and iProc SoC
-This adds exec_op and removes the legacy interface. Based on changes
-proposed by Boris Brezillon.
+The definitions of atomic(64)_read(set) are relax version, and using
+them for acquire and release is incorrect. Besides, mapping
+acquire/release/relaxed to Full ops is terrible and should be the last
+choice. So, the final solution is to increase template priority.
 
-https://github.com/bbrezillon/linux/commit/4ec6f8d8d83f5aaca5d1877f02d48da96d41fcba
-https://github.com/bbrezillon/linux/commit/11b4acffd761c4928652d7028d19fcd6f45e4696
-
-Signed-off-by: David Regan <dregan@broadcom.com>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
-Changes in v5:
-- added reset helper function
-- removed exec from function names
-- cosmetic change to assignment exceeding 80 character limit
-- updated comments
-
-Changes in v4: made helper functions static
-
-Changes in v3: moved WAITRDY out of loop
-
-Changes in v2: moved status and reset command detect out of loop
+Changelog:
+v2:
+ - Use gen-atomic-fallback.sh instead of header modification
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 395 ++++++++++-------------
- 1 file changed, 172 insertions(+), 223 deletions(-)
+ include/linux/atomic/atomic-arch-fallback.h | 118 +-------------------
+ scripts/atomic/gen-atomic-fallback.sh       |   2 +-
+ 2 files changed, 2 insertions(+), 118 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 8d429eb3b72a..6f3cdc6af9c9 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -625,6 +625,8 @@ enum {
- /* Only for v7.2 */
- #define	ACC_CONTROL_ECC_EXT_SHIFT		13
- 
-+static u8 brcmnand_status(struct brcmnand_host *host);
-+
- static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
+diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+index 18f5744dfb5d..d3c176123216 100644
+--- a/include/linux/atomic/atomic-arch-fallback.h
++++ b/include/linux/atomic/atomic-arch-fallback.h
+@@ -459,8 +459,6 @@ raw_atomic_read_acquire(const atomic_t *v)
  {
- #if IS_ENABLED(CONFIG_MTD_NAND_BRCMNAND_BCMA)
-@@ -1022,19 +1024,6 @@ static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
- 		return -1;
- }
- 
--static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
--{
--	struct brcmnand_controller *ctrl = host->ctrl;
--	int shift = brcmnand_sector_1k_shift(ctrl);
--	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
--						  BRCMNAND_CS_ACC_CONTROL);
--
--	if (shift < 0)
--		return 0;
--
--	return (nand_readreg(ctrl, acc_control_offs) >> shift) & 0x1;
--}
--
- static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- {
- 	struct brcmnand_controller *ctrl = host->ctrl;
-@@ -1074,6 +1063,9 @@ static int bcmnand_ctrl_poll_status(struct brcmnand_host *host,
- 
- 	limit = jiffies + msecs_to_jiffies(timeout_ms);
- 	do {
-+		if (mask & INTFC_FLASH_STATUS)
-+			brcmnand_status(host);
-+
- 		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
- 		if ((val & mask) == expected_val)
- 			return 0;
-@@ -1085,6 +1077,9 @@ static int bcmnand_ctrl_poll_status(struct brcmnand_host *host,
- 	 * do a final check after time out in case the CPU was busy and the driver
- 	 * did not get enough time to perform the polling to avoid false alarms
- 	 */
-+	if (mask & INTFC_FLASH_STATUS)
-+		brcmnand_status(host);
-+
- 	val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
- 	if ((val & mask) == expected_val)
- 		return 0;
-@@ -1388,7 +1383,8 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
- 			return;
- 
- 		brcmnand_set_wp(ctrl, wp);
--		nand_status_op(chip, NULL);
-+		/* force controller operation to update internal copy of NAND chip status */
-+		brcmnand_status(host);
- 		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
- 		ret = bcmnand_ctrl_poll_status(host,
- 					       NAND_CTRL_RDY |
-@@ -1644,16 +1640,6 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
- 			   cmd << brcmnand_cmd_shift(ctrl));
- }
- 
--/***********************************************************************
-- * NAND MTD API: read/program/erase
-- ***********************************************************************/
--
--static void brcmnand_cmd_ctrl(struct nand_chip *chip, int dat,
--			      unsigned int ctrl)
--{
--	/* intentionally left blank */
--}
--
- static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- {
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
-@@ -1704,6 +1690,26 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 				 INTFC_FLASH_STATUS;
- }
- 
-+static u8 brcmnand_status(struct brcmnand_host *host)
-+{
-+	struct nand_chip *chip = &host->chip;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	brcmnand_set_cmd_addr(mtd, 0);
-+	brcmnand_send_cmd(host, CMD_STATUS_READ);
-+
-+	return brcmnand_waitfunc(chip);
-+}
-+
-+static u8 brcmnand_reset(struct brcmnand_host *host)
-+{
-+	struct nand_chip *chip = &host->chip;
-+
-+	brcmnand_send_cmd(host, CMD_FLASH_RESET);
-+
-+	return brcmnand_waitfunc(chip);
-+}
-+
- enum {
- 	LLOP_RE				= BIT(16),
- 	LLOP_WE				= BIT(17),
-@@ -1753,190 +1759,6 @@ static int brcmnand_low_level_op(struct brcmnand_host *host,
- 	return brcmnand_waitfunc(chip);
- }
- 
--static void brcmnand_cmdfunc(struct nand_chip *chip, unsigned command,
--			     int column, int page_addr)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct brcmnand_host *host = nand_get_controller_data(chip);
--	struct brcmnand_controller *ctrl = host->ctrl;
--	u64 addr = (u64)page_addr << chip->page_shift;
--	int native_cmd = 0;
--
--	if (command == NAND_CMD_READID || command == NAND_CMD_PARAM ||
--			command == NAND_CMD_RNDOUT)
--		addr = (u64)column;
--	/* Avoid propagating a negative, don't-care address */
--	else if (page_addr < 0)
--		addr = 0;
--
--	dev_dbg(ctrl->dev, "cmd 0x%x addr 0x%llx\n", command,
--		(unsigned long long)addr);
--
--	host->last_cmd = command;
--	host->last_byte = 0;
--	host->last_addr = addr;
--
--	switch (command) {
--	case NAND_CMD_RESET:
--		native_cmd = CMD_FLASH_RESET;
--		break;
--	case NAND_CMD_STATUS:
--		native_cmd = CMD_STATUS_READ;
--		break;
--	case NAND_CMD_READID:
--		native_cmd = CMD_DEVICE_ID_READ;
--		break;
--	case NAND_CMD_READOOB:
--		native_cmd = CMD_SPARE_AREA_READ;
--		break;
--	case NAND_CMD_ERASE1:
--		native_cmd = CMD_BLOCK_ERASE;
--		brcmnand_wp(mtd, 0);
--		break;
--	case NAND_CMD_PARAM:
--		native_cmd = CMD_PARAMETER_READ;
--		break;
--	case NAND_CMD_SET_FEATURES:
--	case NAND_CMD_GET_FEATURES:
--		brcmnand_low_level_op(host, LL_OP_CMD, command, false);
--		brcmnand_low_level_op(host, LL_OP_ADDR, column, false);
--		break;
--	case NAND_CMD_RNDOUT:
--		native_cmd = CMD_PARAMETER_CHANGE_COL;
--		addr &= ~((u64)(FC_BYTES - 1));
--		/*
--		 * HW quirk: PARAMETER_CHANGE_COL requires SECTOR_SIZE_1K=0
--		 * NB: hwcfg.sector_size_1k may not be initialized yet
--		 */
--		if (brcmnand_get_sector_size_1k(host)) {
--			host->hwcfg.sector_size_1k =
--				brcmnand_get_sector_size_1k(host);
--			brcmnand_set_sector_size_1k(host, 0);
--		}
--		break;
--	}
--
--	if (!native_cmd)
--		return;
--
--	brcmnand_set_cmd_addr(mtd, addr);
--	brcmnand_send_cmd(host, native_cmd);
--	brcmnand_waitfunc(chip);
--
--	if (native_cmd == CMD_PARAMETER_READ ||
--			native_cmd == CMD_PARAMETER_CHANGE_COL) {
--		/* Copy flash cache word-wise */
--		u32 *flash_cache = (u32 *)ctrl->flash_cache;
--		int i;
--
--		brcmnand_soc_data_bus_prepare(ctrl->soc, true);
--
--		/*
--		 * Must cache the FLASH_CACHE now, since changes in
--		 * SECTOR_SIZE_1K may invalidate it
--		 */
--		for (i = 0; i < FC_WORDS; i++)
--			/*
--			 * Flash cache is big endian for parameter pages, at
--			 * least on STB SoCs
--			 */
--			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
--
--		brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
--
--		/* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
--		if (host->hwcfg.sector_size_1k)
--			brcmnand_set_sector_size_1k(host,
--						    host->hwcfg.sector_size_1k);
--	}
--
--	/* Re-enable protection is necessary only after erase */
--	if (command == NAND_CMD_ERASE1)
--		brcmnand_wp(mtd, 1);
--}
--
--static uint8_t brcmnand_read_byte(struct nand_chip *chip)
--{
--	struct brcmnand_host *host = nand_get_controller_data(chip);
--	struct brcmnand_controller *ctrl = host->ctrl;
--	uint8_t ret = 0;
--	int addr, offs;
--
--	switch (host->last_cmd) {
--	case NAND_CMD_READID:
--		if (host->last_byte < 4)
--			ret = brcmnand_read_reg(ctrl, BRCMNAND_ID) >>
--				(24 - (host->last_byte << 3));
--		else if (host->last_byte < 8)
--			ret = brcmnand_read_reg(ctrl, BRCMNAND_ID_EXT) >>
--				(56 - (host->last_byte << 3));
--		break;
--
--	case NAND_CMD_READOOB:
--		ret = oob_reg_read(ctrl, host->last_byte);
--		break;
--
--	case NAND_CMD_STATUS:
--		ret = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
--					INTFC_FLASH_STATUS;
--		if (wp_on) /* hide WP status */
--			ret |= NAND_STATUS_WP;
--		break;
--
--	case NAND_CMD_PARAM:
--	case NAND_CMD_RNDOUT:
--		addr = host->last_addr + host->last_byte;
--		offs = addr & (FC_BYTES - 1);
--
--		/* At FC_BYTES boundary, switch to next column */
--		if (host->last_byte > 0 && offs == 0)
--			nand_change_read_column_op(chip, addr, NULL, 0, false);
--
--		ret = ctrl->flash_cache[offs];
--		break;
--	case NAND_CMD_GET_FEATURES:
--		if (host->last_byte >= ONFI_SUBFEATURE_PARAM_LEN) {
--			ret = 0;
--		} else {
--			bool last = host->last_byte ==
--				ONFI_SUBFEATURE_PARAM_LEN - 1;
--			brcmnand_low_level_op(host, LL_OP_RD, 0, last);
--			ret = brcmnand_read_reg(ctrl, BRCMNAND_LL_RDATA) & 0xff;
--		}
--	}
--
--	dev_dbg(ctrl->dev, "read byte = 0x%02x\n", ret);
--	host->last_byte++;
--
--	return ret;
--}
--
--static void brcmnand_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
--{
--	int i;
--
--	for (i = 0; i < len; i++, buf++)
--		*buf = brcmnand_read_byte(chip);
--}
--
--static void brcmnand_write_buf(struct nand_chip *chip, const uint8_t *buf,
--			       int len)
--{
--	int i;
--	struct brcmnand_host *host = nand_get_controller_data(chip);
--
--	switch (host->last_cmd) {
--	case NAND_CMD_SET_FEATURES:
--		for (i = 0; i < len; i++)
--			brcmnand_low_level_op(host, LL_OP_WR, buf[i],
--						  (i + 1) == len);
--		break;
--	default:
--		BUG();
--		break;
--	}
--}
--
- /*
-  *  Kick EDU engine
-  */
-@@ -2346,8 +2168,9 @@ static int brcmnand_read_page(struct nand_chip *chip, uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
- 	u8 *oob = oob_required ? (u8 *)chip->oob_poi : NULL;
-+	u64 addr = (u64)page << chip->page_shift;
- 
--	nand_read_page_op(chip, page, 0, NULL, 0);
-+	host->last_addr = addr;
- 
- 	return brcmnand_read(mtd, chip, host->last_addr,
- 			mtd->writesize >> FC_SHIFT, (u32 *)buf, oob);
-@@ -2360,8 +2183,9 @@ static int brcmnand_read_page_raw(struct nand_chip *chip, uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	u8 *oob = oob_required ? (u8 *)chip->oob_poi : NULL;
+ #if defined(arch_atomic_read_acquire)
+ 	return arch_atomic_read_acquire(v);
+-#elif defined(arch_atomic_read)
+-	return arch_atomic_read(v);
+ #else
  	int ret;
-+	u64 addr = (u64)page << chip->page_shift;
  
--	nand_read_page_op(chip, page, 0, NULL, 0);
-+	host->last_addr = addr;
- 
- 	brcmnand_set_ecc_enabled(host, 0);
- 	ret = brcmnand_read(mtd, chip, host->last_addr,
-@@ -2469,11 +2293,11 @@ static int brcmnand_write_page(struct nand_chip *chip, const uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
- 	void *oob = oob_required ? chip->oob_poi : NULL;
-+	u64 addr = (u64)page << chip->page_shift;
- 
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
--	brcmnand_write(mtd, chip, host->last_addr, (const u32 *)buf, oob);
-+	host->last_addr = addr;
- 
--	return nand_prog_page_end_op(chip);
-+	return brcmnand_write(mtd, chip, host->last_addr, (const u32 *)buf, oob);
- }
- 
- static int brcmnand_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
-@@ -2482,13 +2306,15 @@ static int brcmnand_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
- 	void *oob = oob_required ? chip->oob_poi : NULL;
-+	u64 addr = (u64)page << chip->page_shift;
-+	int ret = 0;
- 
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
-+	host->last_addr = addr;
- 	brcmnand_set_ecc_enabled(host, 0);
--	brcmnand_write(mtd, chip, host->last_addr, (const u32 *)buf, oob);
-+	ret = brcmnand_write(mtd, chip, host->last_addr, (const u32 *)buf, oob);
- 	brcmnand_set_ecc_enabled(host, 1);
- 
--	return nand_prog_page_end_op(chip);
-+	return ret;
- }
- 
- static int brcmnand_write_oob(struct nand_chip *chip, int page)
-@@ -2512,6 +2338,134 @@ static int brcmnand_write_oob_raw(struct nand_chip *chip, int page)
+@@ -508,8 +506,6 @@ raw_atomic_set_release(atomic_t *v, int i)
+ {
+ #if defined(arch_atomic_set_release)
+ 	arch_atomic_set_release(v, i);
+-#elif defined(arch_atomic_set)
+-	arch_atomic_set(v, i);
+ #else
+ 	if (__native_word(atomic_t)) {
+ 		smp_store_release(&(v)->counter, i);
+@@ -1031,8 +1027,6 @@ raw_atomic_inc_return_acquire(atomic_t *v)
+ 	int ret = arch_atomic_inc_return_relaxed(v);
+ 	__atomic_acquire_fence();
  	return ret;
+-#elif defined(arch_atomic_inc_return)
+-	return arch_atomic_inc_return(v);
+ #else
+ 	return raw_atomic_add_return_acquire(1, v);
+ #endif
+@@ -1056,8 +1050,6 @@ raw_atomic_inc_return_release(atomic_t *v)
+ #elif defined(arch_atomic_inc_return_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_inc_return_relaxed(v);
+-#elif defined(arch_atomic_inc_return)
+-	return arch_atomic_inc_return(v);
+ #else
+ 	return raw_atomic_add_return_release(1, v);
+ #endif
+@@ -1078,8 +1070,6 @@ raw_atomic_inc_return_relaxed(atomic_t *v)
+ {
+ #if defined(arch_atomic_inc_return_relaxed)
+ 	return arch_atomic_inc_return_relaxed(v);
+-#elif defined(arch_atomic_inc_return)
+-	return arch_atomic_inc_return(v);
+ #else
+ 	return raw_atomic_add_return_relaxed(1, v);
+ #endif
+@@ -1130,8 +1120,6 @@ raw_atomic_fetch_inc_acquire(atomic_t *v)
+ 	int ret = arch_atomic_fetch_inc_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_fetch_inc)
+-	return arch_atomic_fetch_inc(v);
+ #else
+ 	return raw_atomic_fetch_add_acquire(1, v);
+ #endif
+@@ -1155,8 +1143,6 @@ raw_atomic_fetch_inc_release(atomic_t *v)
+ #elif defined(arch_atomic_fetch_inc_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_fetch_inc_relaxed(v);
+-#elif defined(arch_atomic_fetch_inc)
+-	return arch_atomic_fetch_inc(v);
+ #else
+ 	return raw_atomic_fetch_add_release(1, v);
+ #endif
+@@ -1177,8 +1163,6 @@ raw_atomic_fetch_inc_relaxed(atomic_t *v)
+ {
+ #if defined(arch_atomic_fetch_inc_relaxed)
+ 	return arch_atomic_fetch_inc_relaxed(v);
+-#elif defined(arch_atomic_fetch_inc)
+-	return arch_atomic_fetch_inc(v);
+ #else
+ 	return raw_atomic_fetch_add_relaxed(1, v);
+ #endif
+@@ -1249,8 +1233,6 @@ raw_atomic_dec_return_acquire(atomic_t *v)
+ 	int ret = arch_atomic_dec_return_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_dec_return)
+-	return arch_atomic_dec_return(v);
+ #else
+ 	return raw_atomic_sub_return_acquire(1, v);
+ #endif
+@@ -1274,8 +1256,6 @@ raw_atomic_dec_return_release(atomic_t *v)
+ #elif defined(arch_atomic_dec_return_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_dec_return_relaxed(v);
+-#elif defined(arch_atomic_dec_return)
+-	return arch_atomic_dec_return(v);
+ #else
+ 	return raw_atomic_sub_return_release(1, v);
+ #endif
+@@ -1296,8 +1276,6 @@ raw_atomic_dec_return_relaxed(atomic_t *v)
+ {
+ #if defined(arch_atomic_dec_return_relaxed)
+ 	return arch_atomic_dec_return_relaxed(v);
+-#elif defined(arch_atomic_dec_return)
+-	return arch_atomic_dec_return(v);
+ #else
+ 	return raw_atomic_sub_return_relaxed(1, v);
+ #endif
+@@ -1348,8 +1326,6 @@ raw_atomic_fetch_dec_acquire(atomic_t *v)
+ 	int ret = arch_atomic_fetch_dec_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_fetch_dec)
+-	return arch_atomic_fetch_dec(v);
+ #else
+ 	return raw_atomic_fetch_sub_acquire(1, v);
+ #endif
+@@ -1373,8 +1349,6 @@ raw_atomic_fetch_dec_release(atomic_t *v)
+ #elif defined(arch_atomic_fetch_dec_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_fetch_dec_relaxed(v);
+-#elif defined(arch_atomic_fetch_dec)
+-	return arch_atomic_fetch_dec(v);
+ #else
+ 	return raw_atomic_fetch_sub_release(1, v);
+ #endif
+@@ -1395,8 +1369,6 @@ raw_atomic_fetch_dec_relaxed(atomic_t *v)
+ {
+ #if defined(arch_atomic_fetch_dec_relaxed)
+ 	return arch_atomic_fetch_dec_relaxed(v);
+-#elif defined(arch_atomic_fetch_dec)
+-	return arch_atomic_fetch_dec(v);
+ #else
+ 	return raw_atomic_fetch_sub_relaxed(1, v);
+ #endif
+@@ -1590,8 +1562,6 @@ raw_atomic_fetch_andnot_acquire(int i, atomic_t *v)
+ 	int ret = arch_atomic_fetch_andnot_relaxed(i, v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_fetch_andnot)
+-	return arch_atomic_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic_fetch_and_acquire(~i, v);
+ #endif
+@@ -1616,8 +1586,6 @@ raw_atomic_fetch_andnot_release(int i, atomic_t *v)
+ #elif defined(arch_atomic_fetch_andnot_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_fetch_andnot_relaxed(i, v);
+-#elif defined(arch_atomic_fetch_andnot)
+-	return arch_atomic_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic_fetch_and_release(~i, v);
+ #endif
+@@ -1639,8 +1607,6 @@ raw_atomic_fetch_andnot_relaxed(int i, atomic_t *v)
+ {
+ #if defined(arch_atomic_fetch_andnot_relaxed)
+ 	return arch_atomic_fetch_andnot_relaxed(i, v);
+-#elif defined(arch_atomic_fetch_andnot)
+-	return arch_atomic_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic_fetch_and_relaxed(~i, v);
+ #endif
+@@ -1933,8 +1899,6 @@ raw_atomic_xchg_acquire(atomic_t *v, int new)
+ 	int ret = arch_atomic_xchg_relaxed(v, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_xchg)
+-	return arch_atomic_xchg(v, new);
+ #else
+ 	return raw_xchg_acquire(&v->counter, new);
+ #endif
+@@ -1959,8 +1923,6 @@ raw_atomic_xchg_release(atomic_t *v, int new)
+ #elif defined(arch_atomic_xchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_xchg_relaxed(v, new);
+-#elif defined(arch_atomic_xchg)
+-	return arch_atomic_xchg(v, new);
+ #else
+ 	return raw_xchg_release(&v->counter, new);
+ #endif
+@@ -1982,8 +1944,6 @@ raw_atomic_xchg_relaxed(atomic_t *v, int new)
+ {
+ #if defined(arch_atomic_xchg_relaxed)
+ 	return arch_atomic_xchg_relaxed(v, new);
+-#elif defined(arch_atomic_xchg)
+-	return arch_atomic_xchg(v, new);
+ #else
+ 	return raw_xchg_relaxed(&v->counter, new);
+ #endif
+@@ -2038,8 +1998,6 @@ raw_atomic_cmpxchg_acquire(atomic_t *v, int old, int new)
+ 	int ret = arch_atomic_cmpxchg_relaxed(v, old, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_cmpxchg)
+-	return arch_atomic_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_acquire(&v->counter, old, new);
+ #endif
+@@ -2065,8 +2023,6 @@ raw_atomic_cmpxchg_release(atomic_t *v, int old, int new)
+ #elif defined(arch_atomic_cmpxchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic_cmpxchg)
+-	return arch_atomic_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_release(&v->counter, old, new);
+ #endif
+@@ -2089,8 +2045,6 @@ raw_atomic_cmpxchg_relaxed(atomic_t *v, int old, int new)
+ {
+ #if defined(arch_atomic_cmpxchg_relaxed)
+ 	return arch_atomic_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic_cmpxchg)
+-	return arch_atomic_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_relaxed(&v->counter, old, new);
+ #endif
+@@ -2151,8 +2105,6 @@ raw_atomic_try_cmpxchg_acquire(atomic_t *v, int *old, int new)
+ 	bool ret = arch_atomic_try_cmpxchg_relaxed(v, old, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_try_cmpxchg)
+-	return arch_atomic_try_cmpxchg(v, old, new);
+ #else
+ 	int r, o = *old;
+ 	r = raw_atomic_cmpxchg_acquire(v, o, new);
+@@ -2183,8 +2135,6 @@ raw_atomic_try_cmpxchg_release(atomic_t *v, int *old, int new)
+ #elif defined(arch_atomic_try_cmpxchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_try_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic_try_cmpxchg)
+-	return arch_atomic_try_cmpxchg(v, old, new);
+ #else
+ 	int r, o = *old;
+ 	r = raw_atomic_cmpxchg_release(v, o, new);
+@@ -2212,8 +2162,6 @@ raw_atomic_try_cmpxchg_relaxed(atomic_t *v, int *old, int new)
+ {
+ #if defined(arch_atomic_try_cmpxchg_relaxed)
+ 	return arch_atomic_try_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic_try_cmpxchg)
+-	return arch_atomic_try_cmpxchg(v, old, new);
+ #else
+ 	int r, o = *old;
+ 	r = raw_atomic_cmpxchg_relaxed(v, o, new);
+@@ -2331,8 +2279,6 @@ raw_atomic_add_negative_acquire(int i, atomic_t *v)
+ 	bool ret = arch_atomic_add_negative_relaxed(i, v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic_add_negative)
+-	return arch_atomic_add_negative(i, v);
+ #else
+ 	return raw_atomic_add_return_acquire(i, v) < 0;
+ #endif
+@@ -2357,8 +2303,6 @@ raw_atomic_add_negative_release(int i, atomic_t *v)
+ #elif defined(arch_atomic_add_negative_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic_add_negative_relaxed(i, v);
+-#elif defined(arch_atomic_add_negative)
+-	return arch_atomic_add_negative(i, v);
+ #else
+ 	return raw_atomic_add_return_release(i, v) < 0;
+ #endif
+@@ -2380,8 +2324,6 @@ raw_atomic_add_negative_relaxed(int i, atomic_t *v)
+ {
+ #if defined(arch_atomic_add_negative_relaxed)
+ 	return arch_atomic_add_negative_relaxed(i, v);
+-#elif defined(arch_atomic_add_negative)
+-	return arch_atomic_add_negative(i, v);
+ #else
+ 	return raw_atomic_add_return_relaxed(i, v) < 0;
+ #endif
+@@ -2575,8 +2517,6 @@ raw_atomic64_read_acquire(const atomic64_t *v)
+ {
+ #if defined(arch_atomic64_read_acquire)
+ 	return arch_atomic64_read_acquire(v);
+-#elif defined(arch_atomic64_read)
+-	return arch_atomic64_read(v);
+ #else
+ 	s64 ret;
+ 
+@@ -2624,8 +2564,6 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
+ {
+ #if defined(arch_atomic64_set_release)
+ 	arch_atomic64_set_release(v, i);
+-#elif defined(arch_atomic64_set)
+-	arch_atomic64_set(v, i);
+ #else
+ 	if (__native_word(atomic64_t)) {
+ 		smp_store_release(&(v)->counter, i);
+@@ -3147,8 +3085,6 @@ raw_atomic64_inc_return_acquire(atomic64_t *v)
+ 	s64 ret = arch_atomic64_inc_return_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_inc_return)
+-	return arch_atomic64_inc_return(v);
+ #else
+ 	return raw_atomic64_add_return_acquire(1, v);
+ #endif
+@@ -3172,8 +3108,6 @@ raw_atomic64_inc_return_release(atomic64_t *v)
+ #elif defined(arch_atomic64_inc_return_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_inc_return_relaxed(v);
+-#elif defined(arch_atomic64_inc_return)
+-	return arch_atomic64_inc_return(v);
+ #else
+ 	return raw_atomic64_add_return_release(1, v);
+ #endif
+@@ -3194,8 +3128,6 @@ raw_atomic64_inc_return_relaxed(atomic64_t *v)
+ {
+ #if defined(arch_atomic64_inc_return_relaxed)
+ 	return arch_atomic64_inc_return_relaxed(v);
+-#elif defined(arch_atomic64_inc_return)
+-	return arch_atomic64_inc_return(v);
+ #else
+ 	return raw_atomic64_add_return_relaxed(1, v);
+ #endif
+@@ -3246,8 +3178,6 @@ raw_atomic64_fetch_inc_acquire(atomic64_t *v)
+ 	s64 ret = arch_atomic64_fetch_inc_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_fetch_inc)
+-	return arch_atomic64_fetch_inc(v);
+ #else
+ 	return raw_atomic64_fetch_add_acquire(1, v);
+ #endif
+@@ -3271,8 +3201,6 @@ raw_atomic64_fetch_inc_release(atomic64_t *v)
+ #elif defined(arch_atomic64_fetch_inc_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_fetch_inc_relaxed(v);
+-#elif defined(arch_atomic64_fetch_inc)
+-	return arch_atomic64_fetch_inc(v);
+ #else
+ 	return raw_atomic64_fetch_add_release(1, v);
+ #endif
+@@ -3293,8 +3221,6 @@ raw_atomic64_fetch_inc_relaxed(atomic64_t *v)
+ {
+ #if defined(arch_atomic64_fetch_inc_relaxed)
+ 	return arch_atomic64_fetch_inc_relaxed(v);
+-#elif defined(arch_atomic64_fetch_inc)
+-	return arch_atomic64_fetch_inc(v);
+ #else
+ 	return raw_atomic64_fetch_add_relaxed(1, v);
+ #endif
+@@ -3365,8 +3291,6 @@ raw_atomic64_dec_return_acquire(atomic64_t *v)
+ 	s64 ret = arch_atomic64_dec_return_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_dec_return)
+-	return arch_atomic64_dec_return(v);
+ #else
+ 	return raw_atomic64_sub_return_acquire(1, v);
+ #endif
+@@ -3390,8 +3314,6 @@ raw_atomic64_dec_return_release(atomic64_t *v)
+ #elif defined(arch_atomic64_dec_return_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_dec_return_relaxed(v);
+-#elif defined(arch_atomic64_dec_return)
+-	return arch_atomic64_dec_return(v);
+ #else
+ 	return raw_atomic64_sub_return_release(1, v);
+ #endif
+@@ -3412,8 +3334,6 @@ raw_atomic64_dec_return_relaxed(atomic64_t *v)
+ {
+ #if defined(arch_atomic64_dec_return_relaxed)
+ 	return arch_atomic64_dec_return_relaxed(v);
+-#elif defined(arch_atomic64_dec_return)
+-	return arch_atomic64_dec_return(v);
+ #else
+ 	return raw_atomic64_sub_return_relaxed(1, v);
+ #endif
+@@ -3464,8 +3384,6 @@ raw_atomic64_fetch_dec_acquire(atomic64_t *v)
+ 	s64 ret = arch_atomic64_fetch_dec_relaxed(v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_fetch_dec)
+-	return arch_atomic64_fetch_dec(v);
+ #else
+ 	return raw_atomic64_fetch_sub_acquire(1, v);
+ #endif
+@@ -3489,8 +3407,6 @@ raw_atomic64_fetch_dec_release(atomic64_t *v)
+ #elif defined(arch_atomic64_fetch_dec_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_fetch_dec_relaxed(v);
+-#elif defined(arch_atomic64_fetch_dec)
+-	return arch_atomic64_fetch_dec(v);
+ #else
+ 	return raw_atomic64_fetch_sub_release(1, v);
+ #endif
+@@ -3511,8 +3427,6 @@ raw_atomic64_fetch_dec_relaxed(atomic64_t *v)
+ {
+ #if defined(arch_atomic64_fetch_dec_relaxed)
+ 	return arch_atomic64_fetch_dec_relaxed(v);
+-#elif defined(arch_atomic64_fetch_dec)
+-	return arch_atomic64_fetch_dec(v);
+ #else
+ 	return raw_atomic64_fetch_sub_relaxed(1, v);
+ #endif
+@@ -3706,8 +3620,6 @@ raw_atomic64_fetch_andnot_acquire(s64 i, atomic64_t *v)
+ 	s64 ret = arch_atomic64_fetch_andnot_relaxed(i, v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_fetch_andnot)
+-	return arch_atomic64_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic64_fetch_and_acquire(~i, v);
+ #endif
+@@ -3732,8 +3644,6 @@ raw_atomic64_fetch_andnot_release(s64 i, atomic64_t *v)
+ #elif defined(arch_atomic64_fetch_andnot_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_fetch_andnot_relaxed(i, v);
+-#elif defined(arch_atomic64_fetch_andnot)
+-	return arch_atomic64_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic64_fetch_and_release(~i, v);
+ #endif
+@@ -3755,8 +3665,6 @@ raw_atomic64_fetch_andnot_relaxed(s64 i, atomic64_t *v)
+ {
+ #if defined(arch_atomic64_fetch_andnot_relaxed)
+ 	return arch_atomic64_fetch_andnot_relaxed(i, v);
+-#elif defined(arch_atomic64_fetch_andnot)
+-	return arch_atomic64_fetch_andnot(i, v);
+ #else
+ 	return raw_atomic64_fetch_and_relaxed(~i, v);
+ #endif
+@@ -4049,8 +3957,6 @@ raw_atomic64_xchg_acquire(atomic64_t *v, s64 new)
+ 	s64 ret = arch_atomic64_xchg_relaxed(v, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_xchg)
+-	return arch_atomic64_xchg(v, new);
+ #else
+ 	return raw_xchg_acquire(&v->counter, new);
+ #endif
+@@ -4075,8 +3981,6 @@ raw_atomic64_xchg_release(atomic64_t *v, s64 new)
+ #elif defined(arch_atomic64_xchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_xchg_relaxed(v, new);
+-#elif defined(arch_atomic64_xchg)
+-	return arch_atomic64_xchg(v, new);
+ #else
+ 	return raw_xchg_release(&v->counter, new);
+ #endif
+@@ -4098,8 +4002,6 @@ raw_atomic64_xchg_relaxed(atomic64_t *v, s64 new)
+ {
+ #if defined(arch_atomic64_xchg_relaxed)
+ 	return arch_atomic64_xchg_relaxed(v, new);
+-#elif defined(arch_atomic64_xchg)
+-	return arch_atomic64_xchg(v, new);
+ #else
+ 	return raw_xchg_relaxed(&v->counter, new);
+ #endif
+@@ -4154,8 +4056,6 @@ raw_atomic64_cmpxchg_acquire(atomic64_t *v, s64 old, s64 new)
+ 	s64 ret = arch_atomic64_cmpxchg_relaxed(v, old, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_cmpxchg)
+-	return arch_atomic64_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_acquire(&v->counter, old, new);
+ #endif
+@@ -4181,8 +4081,6 @@ raw_atomic64_cmpxchg_release(atomic64_t *v, s64 old, s64 new)
+ #elif defined(arch_atomic64_cmpxchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic64_cmpxchg)
+-	return arch_atomic64_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_release(&v->counter, old, new);
+ #endif
+@@ -4205,8 +4103,6 @@ raw_atomic64_cmpxchg_relaxed(atomic64_t *v, s64 old, s64 new)
+ {
+ #if defined(arch_atomic64_cmpxchg_relaxed)
+ 	return arch_atomic64_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic64_cmpxchg)
+-	return arch_atomic64_cmpxchg(v, old, new);
+ #else
+ 	return raw_cmpxchg_relaxed(&v->counter, old, new);
+ #endif
+@@ -4267,8 +4163,6 @@ raw_atomic64_try_cmpxchg_acquire(atomic64_t *v, s64 *old, s64 new)
+ 	bool ret = arch_atomic64_try_cmpxchg_relaxed(v, old, new);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_try_cmpxchg)
+-	return arch_atomic64_try_cmpxchg(v, old, new);
+ #else
+ 	s64 r, o = *old;
+ 	r = raw_atomic64_cmpxchg_acquire(v, o, new);
+@@ -4299,8 +4193,6 @@ raw_atomic64_try_cmpxchg_release(atomic64_t *v, s64 *old, s64 new)
+ #elif defined(arch_atomic64_try_cmpxchg_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_try_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic64_try_cmpxchg)
+-	return arch_atomic64_try_cmpxchg(v, old, new);
+ #else
+ 	s64 r, o = *old;
+ 	r = raw_atomic64_cmpxchg_release(v, o, new);
+@@ -4328,8 +4220,6 @@ raw_atomic64_try_cmpxchg_relaxed(atomic64_t *v, s64 *old, s64 new)
+ {
+ #if defined(arch_atomic64_try_cmpxchg_relaxed)
+ 	return arch_atomic64_try_cmpxchg_relaxed(v, old, new);
+-#elif defined(arch_atomic64_try_cmpxchg)
+-	return arch_atomic64_try_cmpxchg(v, old, new);
+ #else
+ 	s64 r, o = *old;
+ 	r = raw_atomic64_cmpxchg_relaxed(v, o, new);
+@@ -4447,8 +4337,6 @@ raw_atomic64_add_negative_acquire(s64 i, atomic64_t *v)
+ 	bool ret = arch_atomic64_add_negative_relaxed(i, v);
+ 	__atomic_acquire_fence();
+ 	return ret;
+-#elif defined(arch_atomic64_add_negative)
+-	return arch_atomic64_add_negative(i, v);
+ #else
+ 	return raw_atomic64_add_return_acquire(i, v) < 0;
+ #endif
+@@ -4473,8 +4361,6 @@ raw_atomic64_add_negative_release(s64 i, atomic64_t *v)
+ #elif defined(arch_atomic64_add_negative_relaxed)
+ 	__atomic_release_fence();
+ 	return arch_atomic64_add_negative_relaxed(i, v);
+-#elif defined(arch_atomic64_add_negative)
+-	return arch_atomic64_add_negative(i, v);
+ #else
+ 	return raw_atomic64_add_return_release(i, v) < 0;
+ #endif
+@@ -4496,8 +4382,6 @@ raw_atomic64_add_negative_relaxed(s64 i, atomic64_t *v)
+ {
+ #if defined(arch_atomic64_add_negative_relaxed)
+ 	return arch_atomic64_add_negative_relaxed(i, v);
+-#elif defined(arch_atomic64_add_negative)
+-	return arch_atomic64_add_negative(i, v);
+ #else
+ 	return raw_atomic64_add_return_relaxed(i, v) < 0;
+ #endif
+@@ -4657,4 +4541,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
  }
  
-+static int brcmnand_exec_instr(struct brcmnand_host *host, int i,
-+				const struct nand_operation *op)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	const struct nand_op_instr *instr = &op->instrs[i];
-+	const u8 *out;
-+	u8 *in;
-+	int ret = 0;
-+	bool last_op;
-+
-+	/*
-+	 * The controller needs to be aware of the last command in the operation
-+	 * (WAITRDY excepted).
-+	 */
-+	last_op = ((i == (op->ninstrs - 1)) && (instr->type != NAND_OP_WAITRDY_INSTR)) ||
-+		  ((i == (op->ninstrs - 2)) && (op->instrs[i+1].type == NAND_OP_WAITRDY_INSTR));
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		brcmnand_low_level_op(host, LL_OP_CMD,
-+				      instr->ctx.cmd.opcode, last_op);
-+		break;
-+
-+	case NAND_OP_ADDR_INSTR:
-+		for (i = 0; i < instr->ctx.addr.naddrs; i++)
-+			brcmnand_low_level_op(host, LL_OP_ADDR,
-+					      instr->ctx.addr.addrs[i],
-+					      last_op &&
-+						  (i == (instr->ctx.addr.naddrs - 1)));
-+		break;
-+
-+	case NAND_OP_DATA_IN_INSTR:
-+		in = instr->ctx.data.buf.in;
-+		for (i = 0; i < instr->ctx.data.len; i++) {
-+			brcmnand_low_level_op(host, LL_OP_RD, 0, last_op &&
-+						  (i == (instr->ctx.data.len - 1)));
-+			in[i] = brcmnand_read_reg(host->ctrl,
-+						  BRCMNAND_LL_RDATA);
-+		}
-+		break;
-+
-+	case NAND_OP_DATA_OUT_INSTR:
-+		out = instr->ctx.data.buf.out;
-+		for (i = 0; i < instr->ctx.data.len; i++)
-+			brcmnand_low_level_op(host, LL_OP_WR, out[i], last_op &&
-+						  (i == (instr->ctx.data.len - 1)));
-+		break;
-+
-+	case NAND_OP_WAITRDY_INSTR:
-+		ret = bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
-+		break;
-+
-+	default:
-+		dev_err(ctrl->dev, "unsupported instruction type: %d\n",
-+			instr->type);
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int brcmnand_op_is_status(const struct nand_operation *op)
-+{
-+	if ((op->ninstrs == 2) &&
-+		(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
-+		(op->instrs[0].ctx.cmd.opcode == NAND_CMD_STATUS) &&
-+		(op->instrs[1].type == NAND_OP_DATA_IN_INSTR))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int brcmnand_op_is_reset(const struct nand_operation *op)
-+{
-+	if ((op->ninstrs == 2) &&
-+		(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
-+		(op->instrs[0].ctx.cmd.opcode == NAND_CMD_RESET) &&
-+		(op->instrs[1].type == NAND_OP_WAITRDY_INSTR))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int brcmnand_exec_op(struct nand_chip *chip,
-+			    const struct nand_operation *op,
-+			    bool check_only)
-+{
-+	struct brcmnand_host *host = nand_get_controller_data(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	u8 *status;
-+	unsigned int i;
-+	int ret = 0;
-+
-+	if (check_only)
-+		return 0;
-+
-+	if (brcmnand_op_is_status(op)) {
-+		status = op->instrs[1].ctx.data.buf.in;
-+		*status = brcmnand_status(host);
-+
-+		return 0;
-+	}
-+	else if (brcmnand_op_is_reset(op)) {
-+		ret = brcmnand_reset(host);
-+		if (ret < 0)
-+			return ret;
-+
-+		brcmnand_wp(mtd, 1);
-+
-+		return 0;
-+	}
-+
-+	if (op->deassert_wp)
-+		brcmnand_wp(mtd, 0);
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = brcmnand_exec_instr(host, i, op);
-+		if (ret)
-+			break;
-+	}
-+
-+	if (op->deassert_wp)
-+		brcmnand_wp(mtd, 1);
-+
-+	return ret;
-+}
-+
- /***********************************************************************
-  * Per-CS setup (1 NAND device)
-  ***********************************************************************/
-@@ -2822,6 +2776,7 @@ static int brcmnand_attach_chip(struct nand_chip *chip)
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
++// 9cae73fa68c7c3b6b36a4ec7ee88c81edaa1cb1f
+diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+index c0c8a85d7c81..d313c4bf91c4 100755
+--- a/scripts/atomic/gen-atomic-fallback.sh
++++ b/scripts/atomic/gen-atomic-fallback.sh
+@@ -102,7 +102,7 @@ gen_proto_order_variant()
+ 	fi
  
- static const struct nand_controller_ops brcmnand_controller_ops = {
- 	.attach_chip = brcmnand_attach_chip,
-+	.exec_op = brcmnand_exec_op,
- };
- 
- static int brcmnand_init_cs(struct brcmnand_host *host,
-@@ -2846,13 +2801,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host,
- 	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = dev;
- 
--	chip->legacy.cmd_ctrl = brcmnand_cmd_ctrl;
--	chip->legacy.cmdfunc = brcmnand_cmdfunc;
--	chip->legacy.waitfunc = brcmnand_waitfunc;
--	chip->legacy.read_byte = brcmnand_read_byte;
--	chip->legacy.read_buf = brcmnand_read_buf;
--	chip->legacy.write_buf = brcmnand_write_buf;
--
- 	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
- 	chip->ecc.read_page = brcmnand_read_page;
- 	chip->ecc.write_page = brcmnand_write_page;
-@@ -2864,6 +2812,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host,
- 	chip->ecc.write_oob = brcmnand_write_oob;
- 
- 	chip->controller = &ctrl->controller;
-+	ctrl->controller.controller_wp = 1;
- 
- 	/*
- 	 * The bootloader might have configured 16bit mode but
+ 	# Allow ACQUIRE/RELEASE/RELAXED ops to be defined in terms of FULL ops
+-	if [ ! -z "${order}" ]; then
++	if [ ! -z "${order}" ] && [ -z "${template}" ]; then
+ 		printf "#elif defined(arch_${basename})\n"
+ 		printf "\t${retstmt}arch_${basename}(${args});\n"
+ 	fi
 -- 
-2.37.3
+2.36.1
 
