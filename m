@@ -2,159 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3542A7F8AB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F6F7F8ABD
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjKYMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S232050AbjKYMZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjKYMZQ (ORCPT
+        with ESMTP id S231838AbjKYMZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:25:16 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1ECBF
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:25:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1700914934; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=GQL7ywTel+nzsRDFW4JHygI05M178NNaqHk0W/JKtg5aViV7PwIsfwR9qp5YO9r+lv
-    oJqEGnEJ85+ZfZ5OVB5dIR9GbAxr1LbmDTRFXNFFrAeZ6ivASOlqLE8aIEi4nIM7VRQx
-    bnoOzQMsqtFaluOaQrRPrswJ0igQo7Suhbprs3imppstPdtIlJMdoDIpr2RYZYtQ8PE4
-    2C+vhAEgzXwcchjwtLIbvM89jYHikCrNZItDKsiMl0DKYyVonM9KE8DJ4+zqRgEL5Rp+
-    2kwg3Rqk+zf1AOUWKyMAgU2m04NCd7i800+D5DJ7CzqZMoJEGcv2NU8GrkglCQYLfpbQ
-    KR7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1700914934;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
-    b=MHEBAZHKXrtkbGgi6MVBMJ8J8bERYJZ67qs5+LeWHPdoxEJjOUxVGWKf8YrRsDXvk/
-    8T04yM++QDq99/4DklF8RrjvStkHxN8NCnuxbcNa6kbQbH+cvnjDoPvGjZtfjepgLIVl
-    56l5sztJEq22QfgnuOyhES5JuBtMWgVXro6fMm6mYbC+A1lZ+PAK4qdoSw9VKoZYaNLY
-    tpJZhTdSYpaT7xLi4kweWSOgCOlg5XwldPN1AtwyWyRx+sVrC/FpMW26srlYTAKz8QUi
-    1750dCR8HbC8Y5XGx6+Sz7XmE/TQB4ToF2HmSZkiXajzWzHWdoYqRz+wt6YDtBsqJ7rM
-    YASA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1700914934;
-    s=strato-dkim-0002; d=xenosoft.de;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
-    b=Muw2Qz4KzH03Vmzw+LfQB0IxkjgCNpx1aIYqekfuu/ocix4a8OxAQIJLXL4ddCpv+X
-    WXEIDCNBnCLYQINX+PsFbi07EgQdLZpG0F1VZzbytqgne7Zrq4TKnCRXmOYKlDQu2mti
-    b/LE7j4VB4//dpnsTh58mH+AYVFq2LxRW8eog6HjorMMmfIEZcEONedLGgGmZDDfvjHE
-    MNyPufhkm0o87ZcQ8jy2K9MsDdaUZyf6fwEY/pB9jJhR31Pv3kHiHizK4B3V02K0ddsk
-    eIz43cyJL/0QPgmMYSxA9ua6+5W6pmZyLOTegobOXLxwbBlVtXI9EyBRAfJAG0hA0PUK
-    1Zsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1700914934;
-    s=strato-dkim-0003; d=xenosoft.de;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=3fZtsTQSV8kT7cZkiE/joYbwN8JR/QKtTngzzR42yPo=;
-    b=DJFBJkKy1eS1IXVkgAlbM8B2kyxFO7ebFGSWVjrxTaeASXFFWeWgxpbn6/DSyrvxlI
-    ZYzZIbo9bwbrX/riJTAA==
-X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBfi4XXBswJY0hynIKqjaeYiGT1rE/QhtjOKJAIg=="
-Received: from [IPV6:2a02:8109:8984:5d00:bc44:680c:952a:1673]
-    by smtp.strato.de (RZmta 49.9.1 AUTH)
-    with ESMTPSA id U060a4zAPCMDnqZ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 25 Nov 2023 13:22:13 +0100 (CET)
-Message-ID: <9e8d2abd-94a1-4fb6-b30a-c6e4c52af011@xenosoft.de>
-Date:   Sat, 25 Nov 2023 13:22:13 +0100
+        Sat, 25 Nov 2023 07:25:20 -0500
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162CBBB;
+        Sat, 25 Nov 2023 04:25:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1700915123; bh=/neb3ai8t+JZrai5HMokEXT4feRyamGmrHQtOs/DwgY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=b3JDi/QHwcg4Y2Gx9dp9m8udMhODcQr0cSVQQ4mfzARcHgUVwIyHP8dDL0uuVnNvC
+         cnB8MFiKKDYpPQApdqCko/NBmsLOipd5yNgAZyywRw8lqGDRAXX/tnjycOTV2s7ynU
+         A5xGSRLZKUahHpD7z2gQKIZUDYl0+MjSvCa31xyw=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Loic Poulain <loic.poulain@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: remoteproc: qcom: wcnss: Add WCN3680B compatible
+Date:   Sat, 25 Nov 2023 13:25:22 +0100
+Message-ID: <1868698.tdWV9SEqCh@z3ntu.xyz>
+In-Reply-To: <ZS1MTAHq6GLW6RAK@gerhold.net>
+References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
+ <CAMZdPi-S2_UQO-rD38-thwta-YgH3W78Ecd1Du7Q_US=J7k0ew@mail.gmail.com>
+ <ZS1MTAHq6GLW6RAK@gerhold.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/virtio: Add suppport for non-native buffer formats
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        mad skateman <madskateman@gmail.com>,
-        Christian Zigotzky <info@xenosoft.de>
-References: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
- <77c6gkquzq4sdtmrlko3lkxvcnipm2zfjem3kvhgslcellkefh@man7pbbzud47>
- <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
- <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
- <37b9e5ab-e170-4071-a912-f3fec0d59d5c@xenosoft.de>
- <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
-Content-Language: de-DE
-From:   Christian Zigotzky <chzigotzky@xenosoft.de>
-In-Reply-To: <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 November 2023 at 12:09 pm, John Paul Adrian Glaubitz wrote:
-> On Sat, 2023-11-25 at 11:06 +0100, Christian Zigotzky wrote:
->> Could you please revert the v2 patch because of the issue with the
->> virtio-mouse-pci cursor? I will try to use the v1 patch for the RC3 of
->> kernel 6.7.
-> I don't understand why the v2 patch should yield any different results as
-> the only change compared to v1 is the fixed patch subject. There are no
-> functional differences, I just diffed the patches against each other:
->
-> --- geert-patch-v1.patch        2023-11-25 12:09:19.122936658 +0100
-> +++ geert-patch-v2.patch        2023-11-25 12:09:36.313039085 +0100
-> @@ -34,6 +34,9 @@
->   Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
->   Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->   ---
-> +v2:
-> +  - Fix truncated one-line summary.
-> +---
->    drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
->    drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
->    2 files changed, 13 insertions(+), 4 deletions(-)
->
-> Adrian
->
-Hi Adrian,
+On Montag, 16. Oktober 2023 16:44:28 CET Stephan Gerhold wrote:
+> On Mon, Oct 16, 2023 at 03:16:14PM +0200, Loic Poulain wrote:
+> > On Mon, 16 Oct 2023 at 07:35, Krzysztof Kozlowski
+> > 
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> > > On 15/10/2023 22:03, Luca Weiss wrote:
+> > > > Add a compatible for the iris subnode in the WCNSS PIL.
+> > > > 
+> > > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > > > ---
+> > > > 
+> > > >  Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml | 1
+> > > >  +
+> > > >  1 file changed, 1 insertion(+)
+> > > > 
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > index 45eb42bd3c2c..0e5e0b7a0610 100644
+> > > > --- a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > 
+> > > > @@ -111,6 +111,7 @@ properties:
+> > > >            - qcom,wcn3660
+> > > >            - qcom,wcn3660b
+> > > >            - qcom,wcn3680
+> > > > 
+> > > > +          - qcom,wcn3680b
+> > > 
+> > > Looks like this should be made as compatible with qcom,wcn3680 (so with
+> > > fallback).
+> > 
+> > Yes, agree, let's do a regular fallback as there is nothing 'b'
+> > specific in the driver:
+> > `compatible = "qcom,wcn3680b", "qcom,wcn3680";`
+> > 
+> > And yes, we should also have done that for qcom,wcn3660b...
+> 
+> I don't think this would have worked properly for qcom,wcn3660b:
+> 
+>  - It's not compatible with "qcom,wcn3660", because they have different
+>    regulator voltage requirements. wcn3660(a?) needs vddpa with
+>    2.9-3.0V, but wcn3660b needs 3.3V. That's why wcn3660b uses the
+>    wcn3680_data in qcom_wcnss.iris.c. Otherwise if you would run an
+>    older kernel that knows "qcom,wcn3660" but not "qcom,wcn3660b" it
+>    would apply the wrong voltage.
+> 
+>  - It's not compatible with "qcom,wcn3680" either because that is used
+>    as indication if 802.11ac is supported (wcn3660b doesn't).
+> 
+> The main question here is: What does the current "qcom,wcn3680"
+> compatible actually represent? It's defined with vddpa = 3.3V in the
+> driver, which would suggest that:
+> 
+>  1. It's actually meant to represent WCN3680B, which needs 3.3V vddpa
+>     like WCN3660B, or
+> 
+>  2. WCN3680(A?) has different requirements than WCN3660(A?) and also
+>     needs 3.3V vddpa. But then what is the difference between
+>     WCN3680(A?) and WCN3680B? Is there even a variant without ...B?
+> 
+> There is public documentation for WCN3660B and WCN3680B but the non-B
+> variants are shrouded in mystery.
 
-Thank you for the hint. I think you are right. I use the the following 
-patch.
+Hi Stephan (and everyone),
 
---- a/drivers/gpu/drm/drm_client.c    2023-11-13 01:19:07.000000000 +0100
-+++ b/drivers/gpu/drm/drm_client.c    2023-11-14 09:45:44.964199272 +0100
-@@ -400,6 +400,16 @@ static int drm_client_buffer_addfb(struc
+Do you have a suggestion how to move this patchset forward? Is the fallback 
+compatible that was suggested okay for the wcn3680b situation?
 
-      fb_req.width = width;
-      fb_req.height = height;
-+           if 
-(client->dev->mode_config.quirk_addfb_prefer_host_byte_order) {
-+               if (format == DRM_FORMAT_XRGB8888)
-+                       format = DRM_FORMAT_HOST_XRGB8888;
-+               if (format == DRM_FORMAT_ARGB8888)
-+                       format = DRM_FORMAT_HOST_ARGB8888;
-+               if (format == DRM_FORMAT_RGB565)
-+                       format = DRM_FORMAT_HOST_RGB565;
-+               if (format == DRM_FORMAT_XRGB1555)
-+                       format = DRM_FORMAT_HOST_XRGB1555;
-+        }
-      fb_req.pixel_format = format;
-      fb_req.handles[0] = handle;
-      fb_req.pitches[0] = buffer->pitch;
+  compatible = "qcom,wcn3680b", "qcom,wcn3680";
 
-This patch solved the issue.
+If so, I'll make v2 with that implemented.
 
-Christian
+Regards
+Luca
+
+> 
+> Thanks,
+> Stephan
+
+
+
+
