@@ -2,95 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB977F8866
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 06:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F467F887F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 06:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjKYFB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 00:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
+        id S229641AbjKYF21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 00:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKYFB5 (ORCPT
+        with ESMTP id S229458AbjKYF2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 00:01:57 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B6BE0;
-        Fri, 24 Nov 2023 21:02:02 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28041176e77so1957000a91.0;
-        Fri, 24 Nov 2023 21:02:02 -0800 (PST)
+        Sat, 25 Nov 2023 00:28:24 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46E01B5;
+        Fri, 24 Nov 2023 21:28:26 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5cd0af4a7d3so25080907b3.0;
+        Fri, 24 Nov 2023 21:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700888522; x=1701493322; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1zU4LUKVhSEBAEyImAqsIdHza582cUZbQQkgImwexMQ=;
-        b=ejhKSaZDKY23TXQ7SSUVMm2FOyURMI5nhwa0G1Y8QDgM5G3DMxtIzBSuLw8AGEDpXG
-         dODzlfdjwklAlKM3fZzhPgfxLLhaRRlZ8MH6AJdyjIqql+aw/bchYBEn5UDYEcr8mSYM
-         kuJ6Y4nTX2DTzcf2Nj0YvbrnLe/TLuWR/QLmrIlDCAOPKyI3MfBC6HLmebgqd2LAzLpz
-         4HHGiKrhNrfQRX/WGyQlV+6KmaSZ5M7i5cyo6yWJzKwZ5G91gjVoXJlPw4TMkGmJ6Q99
-         /Vo5iBNbFbkGmoTH6utj9cPjtVzWwfctp2JAWTPeCAZK9kmmPMbPFh0/9fzTxMt5owO7
-         8dPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700888522; x=1701493322;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700890106; x=1701494906; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1zU4LUKVhSEBAEyImAqsIdHza582cUZbQQkgImwexMQ=;
-        b=Ol4kHlI0uLBPERGMd7SNOWSIxi6xXSuLZi5hkUvZRa8TzKMo2Ia/sU8O+pIY0zrUG7
-         erVkthRhqUzOgXeSU6O5WmJC00aFh8zlaFUdG8FqJYkArtwJF/nuvjoaI/0bvZO98Jr8
-         tKO+ru1jYyIZ7hNZckhj+5/2xSN+VRSAqSlm26x4SsSrBWC9NLUijzj5Gd6buIcCRAMQ
-         gk230Gzc++jwbju43xDRaYrh3jIfzvg1R4rWeXfSVp5MocF/nK1Pv1FfZ2JBh3XP8l/n
-         85GxqYiynuYOujCYdlHIgqTJSlb1Jwj+JzhAQYFpx+FksqzK6xNAjVN0mRoNMTfH2iRp
-         rmbw==
-X-Gm-Message-State: AOJu0YyX1jbOqTNUTCiaRL3uUB4uHfZLf0i6ga4OTqi78f8cW3hkNDz7
-        uI3OtMA3GYStgTWhsixgPNkI6eOX53M=
-X-Google-Smtp-Source: AGHT+IG1IDjtyfsrrILxO18zuVqQT7XqP8yMv76aZUE10M3VFt0iss8rhyKJKH/e41UIHwf3Slp0HQ==
-X-Received: by 2002:a17:903:228c:b0:1cc:ec21:9a64 with SMTP id b12-20020a170903228c00b001ccec219a64mr5277780plh.17.1700888521800;
-        Fri, 24 Nov 2023 21:02:01 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:8b5c:82d0:578f:d0])
-        by smtp.gmail.com with ESMTPSA id ba8-20020a170902720800b001c7443d0890sm4029794plb.102.2023.11.24.21.02.00
+        bh=00zNmrmz8VCMGnwTQFhbmVp+ehsjjW8N/XcmWDXSbx8=;
+        b=Z0kufec5qdA/5YN2gF5lJRWU8dZ7KwchLYf4Yfr0F7VMCxW7n87mm3g6m+Prx06XLL
+         0UBuHAIjWtNSAFvabqBAqzhoMcPKvYF+Z87kWnRwThPKaaSkf/RID+YpBxhKzvVoQJCx
+         vXnK86nNPcYaeOqqosxoL6iPaEZCg/e2i08eN+Xja+bLDH1W10H97B7M6xU48N6Way+5
+         NUALEEY6omo6/+hnh9KUSt39oalITAIoN1EILkUGYOeMrez9qBp4XpZDYrrl8ZKHEO5S
+         h0MVKqwIOm05Y6I2/Uvh62dwhszzHmc3AbqOxvBiisAFDiEVw2n1yvGCBUCJ6+a4G8Ct
+         OCHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700890106; x=1701494906;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=00zNmrmz8VCMGnwTQFhbmVp+ehsjjW8N/XcmWDXSbx8=;
+        b=GrVrUyANU8MLoKbs0wHTKHN+RoLroA9Zu4fWsrfXXl8fOp1UTpgsTdKwS204ZitPqj
+         xBFxCFSxnPmTn07m9XXEWmcM8mGMsn/7mACcQk5zLzA4k1nB6ZiFAd9jsVgfh1y3aAeV
+         4+T8myNk6zeaT+jpQEDs1jilgd2Wsjz2dcOoB8Mb6feHD3xkrMJF9B+ALfuypfN76aDC
+         9WwJfUcJDV5+DyIFt+NrI7Ya4SrWZ+durOn82eK7rZbZ3nlbl2EYKeJ7Wb/45byQF/hq
+         MCSs1/8ZNjBH44QEOWBHoOzY9ztAn/eTvrDhcYeGJ+EkGQSrAokvu++ymoH+UUMNBZ1x
+         4+Mw==
+X-Gm-Message-State: AOJu0Yx8Ri/NmcB0pXAcYfclGKYpjNUZmSCs8uoi7HpLBU1rvbjPNKU3
+        Z32S9NubYt5KzIorkYU4PHg=
+X-Google-Smtp-Source: AGHT+IEBqW2rZ9W4gTax6+1ZGLMqaSNMwq7hQ9LOiEHY5GwRTDONyL78C07sKevDT9PmhnHjh/SXVw==
+X-Received: by 2002:a0d:f2c7:0:b0:5cd:3d82:1ac6 with SMTP id b190-20020a0df2c7000000b005cd3d821ac6mr4837287ywf.42.1700890105921;
+        Fri, 24 Nov 2023 21:28:25 -0800 (PST)
+Received: from localhost ([74.48.130.204])
+        by smtp.gmail.com with ESMTPSA id i7-20020a81d507000000b005cbc182523esm1441160ywj.49.2023.11.24.21.28.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 21:02:01 -0800 (PST)
-Date:   Fri, 24 Nov 2023 21:01:58 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-        hpa@zytor.com, x86@kernel.org, dave.hansen@linux.intel.co,
-        bp@alien8.d, mingo@redhat.com, tglx@linutronix.de,
-        zackr@vmware.com, timothym@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, netdev@vger.kernel.org,
-        richardcochran@gmail.com, linux-input@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
-        namit@vmware.com, akaher@vmware.com, jsipek@vmware.com
-Subject: Re: [PATCH 4/6] input/vmmouse: Use vmware_hypercall API
-Message-ID: <ZWF_xnotegtBElA5@google.com>
-References: <20231122233058.185601-1-amakhalov@vmware.com>
- <20231122233058.185601-5-amakhalov@vmware.com>
+        Fri, 24 Nov 2023 21:28:25 -0800 (PST)
+Date:   Sat, 25 Nov 2023 13:28:14 +0800
+From:   Furong Xu <0x1207@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com
+Subject: Re: [PATCH net v2 1/1] net: stmmac: xgmac: Disable FPE MMC
+ interrupts
+Message-ID: <20231125132814.00001482@gmail.com>
+In-Reply-To: <b5f6l7oovk67efxeo4pyxg5kx3we4jcemmrakat5dypec4rav2@l3bvlos5rred>
+References: <20231124015433.2223696-1-0x1207@gmail.com>
+        <b5f6l7oovk67efxeo4pyxg5kx3we4jcemmrakat5dypec4rav2@l3bvlos5rred>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122233058.185601-5-amakhalov@vmware.com>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 03:30:49PM -0800, Alexey Makhalov wrote:
-> Switch from VMWARE_HYPERCALL macro to vmware_hypercall API.
-> Eliminate arch specific code. No functional changes intended.
+On Fri, 24 Nov 2023 20:03:43 +0300
+Serge Semin <fancer.lancer@gmail.com> wrote:
+
+> On Fri, Nov 24, 2023 at 09:54:33AM +0800, Furong Xu wrote:
+> > Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+> > by default") tries to disable MMC interrupts to avoid a storm of
+> > unhandled interrupts, but leaves the FPE(Frame Preemption) MMC
+> > interrupts enabled.
+> > Now we mask FPE TX and RX interrupts to disable all MMC interrupts.
+> > 
+> > Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+> > Signed-off-by: Furong Xu <0x1207@gmail.com>
+> > ---
+> > Changes in v2:
+> >   - Update commit message, thanks Wojciech and Andrew.
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > index ea4910ae0921..cdd7fbde2bfa 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> > @@ -177,8 +177,10 @@
+> >  #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
+> >  #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+> >    
 > 
-> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+> > +#define MMC_XGMAC_FPE_TX_INTR_MASK	0x204
+> >  #define MMC_XGMAC_TX_FPE_FRAG		0x208
+> >  #define MMC_XGMAC_TX_HOLD_REQ		0x20c
+> > +#define MMC_XGMAC_FPE_RX_INTR_MASK	0x224  
+> 
+> Could you please preserve the local implicit naming convention of
+> having the Tx_ and RX_ prefixes being placed before the rest of
+> CSR-specific name part:
+> #define MMC_XGMAC_TX_FPE_INTR_MASK
+> instead of
+> #define MMC_XGMAC_FPE_TX_INTR_MASK
+> and
+> #define MMC_XGMAC_RX_FPE_INTR_MASK
+> instead of
+> #define MMC_XGMAC_FPE_RX_INTR_MASK
+> 
+> Your macros will then look similar to MMC_XGMAC_TX_*, MMC_XGMAC_RX_*
+> and finally MMC_XGMAC_RX_IPC_INTR_MASK macros.
+> 
+> -Serge(y)
+> 
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Hi Serge,
 
-Please feel free to merge with the rest of the series.
+Thanks for your advice, I copied these register names from Synopsys Databook, and
+forgot to preserve the local implicit naming convention, I will send a new patch.
 
-Thanks.
+> >  #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
+> >  #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
+> >  #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
+> > @@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+> >  {
+> >  	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
+> >  	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
+> > +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_TX_INTR_MASK);
+> > +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_FPE_RX_INTR_MASK);
+> >  	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+> >  }
+> >  
+> > -- 
+> > 2.34.1
+> > 
+> >   
 
--- 
-Dmitry
