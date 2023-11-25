@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B4B7F8C33
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E465F7F8C34
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbjKYP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 10:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        id S232266AbjKYP7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 10:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbjKYP6A (ORCPT
+        with ESMTP id S232168AbjKYP73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 10:58:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E34EA
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:58:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700927886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QUDe/htmzQcjOjFQ655hGBsTMxov6jQj5H0/eizQxuY=;
-        b=I68NXCmDHfFk8Jns+8UUaiF+HGSLDiJS/4OfQT0H2QvAO2PMV/Vvo96NLs4gKMlJljHqeS
-        KVzhRkypvqw2kmk1WBXyINuwuIQrvCe/FsHMmlnrv2uL+9tIgtOh2lEPYpKNJjtUsUzCsx
-        TxkxU0H7AxzDrDyTJNNdsD+xVJK2gHs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-622-PcsJqFGmNXWiUc_k0Z90Xg-1; Sat,
- 25 Nov 2023 10:58:02 -0500
-X-MC-Unique: PcsJqFGmNXWiUc_k0Z90Xg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD59A1C04B4C;
-        Sat, 25 Nov 2023 15:58:01 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.14])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AE6B35028;
-        Sat, 25 Nov 2023 15:57:57 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat, 25 Nov 2023 16:56:56 +0100 (CET)
-Date:   Sat, 25 Nov 2023 16:56:51 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Hildenbrand <david@redhat.com>,
-        Stefan Roesch <shr@devkernel.io>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>, rongtao@cestc.cn
-Subject: Re: [PATCH] prctl: Get private anonymous memory region name
-Message-ID: <20231125155651.GA23245@redhat.com>
-References: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
+        Sat, 25 Nov 2023 10:59:29 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56910F3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:59:34 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5098e423ba2so4051677e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700927972; x=1701532772; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2iB89YTPF/qEg+1UoN4/CBmby4obiZNm4Lhj2XaG9FI=;
+        b=YQyt0ZsnIpmBSr8NA/PJVmk/ejiRK7Lkjs5/PuXlRBqxQfRHjEZBNmJQqxTLadfWit
+         N7zF2jzoOSs966KMXEGFIF9LELpd2L2D5vc1mMwRJgxlFrpGcHfr5iqHX+FddCbzo/vB
+         MLzvi7pgXsm3i6B9AMdCK6+qb9Z7iEulGPBtPfY4TLcmTmvGLlJacYZsMUIjkyJ5F33G
+         xxOuyTlVuD/ZksuaSfOCmZ/1lNdib4txjjjS0u6rTZ1Uu6AnaP+X0OlvCxkmK92PP+m0
+         z14AgGr7shfTWLudfl4xNl9uLDfB/yGawbfuJYpyIf0VPHUDCFCkFT+X+N0b1UMuWyGq
+         0Nyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700927972; x=1701532772;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2iB89YTPF/qEg+1UoN4/CBmby4obiZNm4Lhj2XaG9FI=;
+        b=iNIN35qjRGEqjfOGW3KG6Dx1ELxUrrIn9gO1TUieUTeAm99Bnci0shVH7Vr/L/70ai
+         lPKh39YQnplX4l8eFD2x6+m8fpBE0ZIR8FJr2EPqPiJKy9rRLfSiQRDf7qT/Pd+qqGkC
+         vz/qji88OEcyvA0L3TWQAmcUhs911zjGjwheJtBJXSX0RzcV3I1rS3g05SWP7W8wEn6c
+         R+SwGhwNpCMuS2yddvqjEmdvjuUgYWRDsCSY+BqcZq5IX8Jaq/8owmwTkCagSnt5hL4V
+         Ue3HvyY50U3KWm5HEPVDpedGANNcVp99ChDgQBQN5ClxstfYFYJ/5HGiMa31OWqSzvXp
+         LpcA==
+X-Gm-Message-State: AOJu0YwqLZgsfaLCQCdfrqdYBL9CEUP5AoPcNivl09oBaEHnCOHuzj7O
+        MqlAkmGNntzJ02VoFQOH6Go68w==
+X-Google-Smtp-Source: AGHT+IG3jaaZVBgM3Hqa4iYcCnw5wxK7UKFeh9UCBZXihUA7e6fKCddpCaWXrBVJHuoQd1FRwWKfEQ==
+X-Received: by 2002:a05:6512:3e0b:b0:500:b5db:990b with SMTP id i11-20020a0565123e0b00b00500b5db990bmr5367910lfv.47.1700927972557;
+        Sat, 25 Nov 2023 07:59:32 -0800 (PST)
+Received: from [10.167.154.1] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id g22-20020aa7c856000000b005489e55d95esm3185813edt.22.2023.11.25.07.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 07:59:32 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/2] SM6115 interconnect
+Date:   Sat, 25 Nov 2023 16:59:25 +0100
+Message-Id: <20231125-topic-6115icc-v1-0-fa51c0b556c9@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAN0ZYmUC/x2NQQqDQAwAvyI5N9Bs2ar9SukhptkakFV2rQji3
+ xt6nIFhDqhaTCs8mgOKblZtzg50aUBGzh9FeztDuIYbUYi4zosJ3omiiSBT16bYdz2nFrwZuCo
+ OhbOMXuXvNLlciibb/5Pn6zx/P55W+nQAAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700927971; l=854;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=Nl3DWqDUUcrIjWHIlwNbTG+HmHnE55GLQ2aePjPqqWg=;
+ b=rUtgk8krejWo39AXRWB3ZMxuG+T+FjvIv8+dm3dozPkQFFFim2GkXZg3/yGO6AJKuPkVz8nyD
+ V84Ql7kxKcJB+OeiOld/D9MxNQNiuuh8x82xfWhbpLaF3PbSJ8WoJjU
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25, Rong Tao wrote:
->
-> +static int prctl_get_vma(unsigned long opt, unsigned long addr,
-> +			 unsigned long buf, unsigned long arg)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	const char __user *u_buf;
-> +	int error;
-> +
-> +	switch (opt) {
-> +	case PR_GET_VMA_ANON_NAME:
-> +		const struct anon_vma_name *anon_name = NULL;
-> +
-> +		u_buf = (const char __user *)buf;
-> +		error = 0;
-> +
-> +		mmap_read_lock(mm);
-> +		anon_name = madvise_get_anon_name(mm, addr);
-> +		if (!anon_name) {
-> +			mmap_read_unlock(mm);
-> +			error = -EFAULT;
+As it says on the can.
 
-may be another error code makes sense to distinguish this case from
-the copy_to_user() failure?
+Georgi, Bjorn, can we please set up an immutable branch with the bindings?
 
-> +			break;
-> +		}
-> +
-> +		if (copy_to_user((char __user *)u_buf, anon_name->name,
-> +				 strlen(anon_name->name) + 1))
-> +			error = -EFAULT;
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (2):
+      dt-bindings: interconnect: Add Qualcomm SM6115 NoC
+      interconnect: qcom: Add SM6115 interconnect provider driver
 
-and I guess you can simplify this code a bit,
+ .../bindings/interconnect/qcom,sm6115.yaml         |  128 ++
+ drivers/interconnect/qcom/Kconfig                  |    9 +
+ drivers/interconnect/qcom/Makefile                 |    2 +
+ drivers/interconnect/qcom/sm6115.c                 | 1427 ++++++++++++++++++++
+ include/dt-bindings/interconnect/qcom,sm6115.h     |  111 ++
+ 5 files changed, 1677 insertions(+)
+---
+base-commit: 8c9660f6515396aba78d1168d2e17951d653ebf2
+change-id: 20231125-topic-6115icc-a187f5989af7
 
-		anon_name = madvise_get_anon_name(...);
-		if (!anon_name || copy_to_user(...))
-			error = -EFAULT;
-		
-		mmap_read_unlock(mm);
-		anon_vma_name_put(anon_name); // safe if anon_name == NULL;
-
-> +const struct anon_vma_name *madvise_get_anon_name(struct mm_struct *mm,
-> +						  unsigned long start)
-> +{
-> +	struct vm_area_struct *vma;
-> +	struct anon_vma_name *anon_name;
-> +
-> +	vma = find_vma(mm, start);
-> +	if (vma) {
-> +		anon_name = anon_vma_name(vma);
-> +		if (anon_name) {
-> +			anon_vma_name_get(anon_name);
-> +			return anon_name;
-> +		}
-> +	}
-> +
-> +	return NULL;
-
-Again, afaics this can be simplified,
-
-	struct anon_vma_name *anon_name = NULL;
-
-	vma = find_vma(mm, start);
-	if (vma) {
-		anon_name = anon_vma_name(vma);
-		anon_vma_name_get(anon_name);
-	}
-
-	return anon_name;
-
-Oleg.
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
