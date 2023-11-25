@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7939C7F8D62
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 19:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDCF7F8D67
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 19:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjKYS4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 13:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
+        id S232148AbjKYS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 13:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKYS4K (ORCPT
+        with ESMTP id S231336AbjKYS5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 13:56:10 -0500
+        Sat, 25 Nov 2023 13:57:15 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C4CEA
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 10:56:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50A46C433C7;
-        Sat, 25 Nov 2023 18:56:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4652AF0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 10:57:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89B06C433C8;
+        Sat, 25 Nov 2023 18:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700938576;
-        bh=Q+pQsQANF/GvNP4szyLVlYxuscLcNAFEbM+mAKHFYRU=;
+        s=k20201202; t=1700938641;
+        bh=1e3lItmGl7QALbHmuTALy1POedUS0sS6dveT2ccnvM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qvzMVuzHUJU+MYATzI92gL6Vr6nnrfEPUtlF8vEKKIcdk5p8nD5gJmXKQZ0GCOlgA
-         QSrQHhNXxArxIv7yO/R4fJblNTf1A2O3ANjiyQFgh4Me1/qbLFaE4ZsVSgYQfAtv46
-         A/OsXbBozR+Pzb2GEIBBOOHBi2FKJwRlTGRg88o0lD3N4AfzqtoJSjbC4Fk6IFQdnU
-         lJzkzb/2wZ6JVM3ZDo5jsdEGFtEYBK+XWlKCX3jOyu/BL7QFGGkemmljgND7VEZZYw
-         nk1kkjqo73jo91e5cIixxXtDd2gfEoCcnVjUWkq3D68Ss7fR0c1klZ0e10AHlMwiyD
-         KWqfGrq5nDBXQ==
+        b=pB48UIkP8amsaIM3EkGVde1AO2es35LPNdnYuEG8uFeHtNWgUyXgIg/IOdoTBAC5m
+         SbJQZPxEuT46A31F8TX2XFnnBMqh6CMa+/NdbUPTd4rvk9CghPAPCR188vJdpcvVCX
+         S1hfX82oN57m7b6mRWJWqvi+mS3w2j3v2nlQIFNRzGUDl6P38V8pFgskdL0XY3IzxD
+         l6fkY/ygekrC3F+1HFNzjS+UMRxHGxs2K7YdzdrQkNWGN/qnUl4cYAFyCTEbLDPr+3
+         Mj46DdSzGKSIP2NtYOPq30kW1NX+LTP3kqpkBV1KlP095OMgGiwB8s+0XLzQ6hEL8f
+         yi98XncO+oJKg==
 From:   SeongJae Park <sj@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -37,11 +37,11 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
         SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 000/486] 6.5.13-rc2 review
-Date:   Sat, 25 Nov 2023 18:56:13 +0000
-Message-Id: <20231125185613.101789-1-sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/528] 6.6.3-rc2 review
+Date:   Sat, 25 Nov 2023 18:57:19 +0000
+Message-Id: <20231125185719.101869-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231125163154.024751781@linuxfoundation.org>
+In-Reply-To: <20231125163158.249616313@linuxfoundation.org>
 References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,10 +57,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On 2023-11-25T16:33:25+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On 2023-11-25T16:33:18+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.5.13 release.
-> There are 486 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.3 release.
+> There are 528 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -68,9 +68,9 @@ On 2023-11-25T16:33:25+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wro
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.13-rc2.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.3-rc2.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -80,7 +80,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 3109b925f714 ("Linux 6.5.13-rc2")
+[2] 6ad7ad14f1d6 ("Linux 6.6.3-rc2")
 
 Thanks,
 SJ
