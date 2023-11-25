@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DC57F8CC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD4C7F8CCB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbjKYR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 12:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S229999AbjKYRdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 12:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjKYR3R (ORCPT
+        with ESMTP id S229511AbjKYRdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 12:29:17 -0500
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B7A127
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:29:22 -0800 (PST)
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: festevam@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 8002787158;
-        Sat, 25 Nov 2023 18:29:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1700933360;
-        bh=RlwM36/Eve0Vl6Dwjb1bhH2vCr+F58ntQbNm9SP0wRQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T+Z5s3EsjXnkrcqyyXeMRs5SJPqrMV+Yk2O1t5ddOGH5wYVyeGhPksXqBdS+35Fzs
-         EJ8qPthUyrBQKgUkds5B4HZSM1GbbXKsJP3N/J0YD+nC9W3yy6GObARlVv3g4gLqi4
-         yQJFGD89fVdpO/Etr4Z4e0Ny8D5S5vJ5to6juXuYkgwIYoKfquA0ptsTvCZXqix1z5
-         bGBamaAANiQTfEpuHA8+SoERdeqRYp44sZtUfRm1CX1aJEuTAO6LnOjygi+m3D/wRd
-         pXY42uenJnkBx38bpmvArqBGEOOhxRPNgsCZ9n1CUUISGoH5WfeOQ1VRWU1Kn/bgTJ
-         F9zSpcMSXpLHQ==
+        Sat, 25 Nov 2023 12:33:03 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A4F11F
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:33:09 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5b8d4a559ddso3968020a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:33:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700933589; x=1701538389;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KJ/lJwJ9V8LGwXeSxUY6Bh74FRjOczfLYNMObLeTU0s=;
+        b=ifc667NbU38Ftvy3vOt/ta8I2QiSjLiptBIC/fQFKEgdXZuf0grJplfPRHwqEup4FB
+         KjHtcsDwEyYmIFkH8Zb64iy15UaS9Xe2v1IIQBOWM364gfCpyePitJBi0aPMmFrtKsgO
+         jDH7jgMh5i0//hq4BOMftBqc8qOhKh6hmkX1ywSXHgVybDdKnRhOUk78+W49eJx50kiQ
+         avoxETUSGY9TsAlsiQheEs8pkcjlM/v2ZgYWsV0p3uLWFozsV/58sXYbwePgDMmrhHOB
+         6cJTVG+00F8QhovrmC+dDcP3ABfYbAvhslUdLueRmvwDco7yIrPJwZrfwTx1qn1Md/Ud
+         DrNA==
+X-Gm-Message-State: AOJu0YzvE1Ov7M+LRRUN+sc1ZenVAQU6kk/dHUSsBbxpvnYLYpWu2eHT
+        mxAPcl2DKE0gIR3UP8XQBlTVywIqVJwcTiptuDwgwuff6VvJ
+X-Google-Smtp-Source: AGHT+IH9QCmG5am2wMlm0N4WzERSxGZC1RohWc0XXc1spCdVI1M0xOx2QZAXMQ54cAgwrTQweshwGy6HaPJAwsnxgG7O75zGNYJ4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 25 Nov 2023 14:29:20 -0300
-From:   Fabio Estevam <festevam@denx.de>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     pratyush@kernel.org, michael@walle.cc,
-        linux-mtd@lists.infradead.org, takahiro.kuwano@infineon.com,
-        bacem.daassi@infineon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
-In-Reply-To: <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
-References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
- <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
-Message-ID: <6156a51f7eadc9594404bb0eacabe1a6@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a63:1049:0:b0:5bd:3a19:e5ab with SMTP id
+ 9-20020a631049000000b005bd3a19e5abmr1004663pgq.7.1700933588924; Sat, 25 Nov
+ 2023 09:33:08 -0800 (PST)
+Date:   Sat, 25 Nov 2023 09:33:08 -0800
+In-Reply-To: <8aa60891-cd52-42c0-b9a2-594d69b133fd@siddh.me>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005abf1f060afd76bd@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     code@siddh.me, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,15 +55,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+Hello,
 
-On 25/11/2023 09:37, Tudor Ambarus wrote:
-> I made a typo on Fabio's email address. Now added correctly.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: sleeping function called from invalid context in nfc_llcp_socket_release
 
-It looks like the Subject of patch 3/5 is not complete:
+BUG: sleeping function called from invalid context at kernel/locking/mutex.c:580
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5478, name: syz-executor.0
+preempt_count: 2, expected: 0
+RCU nest depth: 0, expected: 0
+2 locks held by syz-executor.0/5478:
+ #0: ffff88806cd22468 (&local->sockets.lock){++++}-{2:2}, at: nfc_llcp_socket_release+0x56/0xb90 net/nfc/llcp_core.c:90
+ #1: ffff88806cd5c0b0 (slock-AF_NFC){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #1: ffff88806cd5c0b0 (slock-AF_NFC){+.+.}-{2:2}, at: nfc_llcp_socket_release+0xcb/0xb90 net/nfc/llcp_core.c:95
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 5478 Comm: syz-executor.0 Not tainted 6.7.0-rc2-syzkaller-00198-g7ac1c88a5daa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ __might_resched+0x5cf/0x780 kernel/sched/core.c:10151
+ __mutex_lock_common kernel/locking/mutex.c:580 [inline]
+ __mutex_lock+0xc1/0xd60 kernel/locking/mutex.c:747
+ nfc_llcp_sock_close net/nfc/llcp_core.c:33 [inline]
+ nfc_llcp_socket_release+0x498/0xb90 net/nfc/llcp_core.c:120
+ local_cleanup+0x28/0xe0 net/nfc/llcp_core.c:161
+ nfc_llcp_unregister_device+0x160/0x240 net/nfc/llcp_core.c:1655
+ nfc_unregister_device+0x167/0x2a0 net/nfc/core.c:1179
+ virtual_ncidev_close+0x59/0x90 drivers/nfc/virtual_ncidev.c:163
+ __fput+0x3cc/0xa10 fs/file_table.c:394
+ __do_sys_close fs/open.c:1590 [inline]
+ __se_sys_close+0x15f/0x220 fs/open.c:1575
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fe8ddc7b9da
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
+RSP: 002b:00007fffdaf3d080 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe8ddc7b9da
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007fe8ddd9d980 R08: 0000001b2e060000 R09: 00007fffdaf810b0
+R10: 00007fffdaf81080 R11: 0000000000000293 R12: 00000000000151df
+R13: ffffffffffffffff R14: 00007fe8dd800000 R15: 0000000000014e9e
+ </TASK>
 
-[PATCH v3 3/5] mtd: spi-nor: micron-st: "
+=============================
+[ BUG: Invalid wait context ]
+6.7.0-rc2-syzkaller-00198-g7ac1c88a5daa #0 Tainted: G        W         
+-----------------------------
+syz-executor.0/5478 is trying to lock:
+ffff88806cd5c590 (&llcp_sock->lock){+.+.}-{3:3}, at: nfc_llcp_sock_close net/nfc/llcp_core.c:33 [inline]
+ffff88806cd5c590 (&llcp_sock->lock){+.+.}-{3:3}, at: nfc_llcp_socket_release+0x498/0xb90 net/nfc/llcp_core.c:120
+other info that might help us debug this:
+context-{4:4}
+2 locks held by syz-executor.0/5478:
+ #0: ffff88806cd22468 (&local->sockets.lock){++++}-{2:2}, at: nfc_llcp_socket_release+0x56/0xb90 net/nfc/llcp_core.c:90
+ #1: ffff88806cd5c0b0 (slock-AF_NFC){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #1: ffff88806cd5c0b0 (slock-AF_NFC){+.+.}-{2:2}, at: nfc_llcp_socket_release+0xcb/0xb90 net/nfc/llcp_core.c:95
+stack backtrace:
+CPU: 0 PID: 5478 Comm: syz-executor.0 Tainted: G        W          6.7.0-rc2-syzkaller-00198-g7ac1c88a5daa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4750 [inline]
+ check_wait_context kernel/locking/lockdep.c:4820 [inline]
+ __lock_acquire+0x1825/0x7f70 kernel/locking/lockdep.c:5086
+ lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
+ __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+ __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
+ nfc_llcp_sock_close net/nfc/llcp_core.c:33 [inline]
+ nfc_llcp_socket_release+0x498/0xb90 net/nfc/llcp_core.c:120
+ local_cleanup+0x28/0xe0 net/nfc/llcp_core.c:161
+ nfc_llcp_unregister_device+0x160/0x240 net/nfc/llcp_core.c:1655
+ nfc_unregister_device+0x167/0x2a0 net/nfc/core.c:1179
+ virtual_ncidev_close+0x59/0x90 drivers/nfc/virtual_ncidev.c:163
+ __fput+0x3cc/0xa10 fs/file_table.c:394
+ __do_sys_close fs/open.c:1590 [inline]
+ __se_sys_close+0x15f/0x220 fs/open.c:1575
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fe8ddc7b9da
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
+RSP: 002b:00007fffdaf3d080 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe8ddc7b9da
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007fe8ddd9d980 R08: 0000001b2e060000 R09: 00007fffdaf810b0
+R10: 00007fffdaf81080 R11: 0000000000000293 R12: 00000000000151df
+R13: ffffffffffffffff R14: 00007fe8dd800000 R15: 0000000000014e9e
+ </TASK>
 
-Feel free to add to this series:
 
-Tested-by: Fabio Estevam <festevam@denx.de>
+Tested on:
+
+commit:         7ac1c88a lock
+git tree:       https://github.com/siddhpant/linux.git lock
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f333af680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6a76f6c7029ca2
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
