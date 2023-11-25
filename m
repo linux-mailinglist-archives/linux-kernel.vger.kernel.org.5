@@ -2,118 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 002777F8C1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96977F8C21
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 16:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbjKYPlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 10:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        id S232230AbjKYPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 10:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbjKYPlU (ORCPT
+        with ESMTP id S231808AbjKYPnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 10:41:20 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996B710D
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:41:26 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so3737384a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700926885; x=1701531685; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DZPM3fc1sKx4Gg4S7hWUKEhn04fj5QKwM/8vpdwmNFU=;
-        b=pYXm/QspGRx6QRVsuDtOx03EY+AjkRqwAfwRQEK5XxP8ALmm+u4vEn3jHHdMvalMbK
-         fwr+h03WXG03hk9I0BWruk4JgaWinRx29nnvA0FvCpmpR1Geo3ylQeF1KTx4C0Lc4qAz
-         JroU3gVnEIXCHmrngcL7Hl+BK1WgSS+0Oxxatl+8nKiKQ1ND92ca6TQwDyr7izQ/FTDk
-         VmwLqu7HM+l4CuSiPAcjR1Ve/Z60CvttaFPyMgiavV4kRfM9cKAMPfXLYiibFAPM6y8z
-         8JCCnCifHT8gsiRn/S0X2BlmPWbIO9Bi5ng7SMay/3mB7wwmNOKjU1QN3jWVHvJj9E72
-         WTnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700926885; x=1701531685;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DZPM3fc1sKx4Gg4S7hWUKEhn04fj5QKwM/8vpdwmNFU=;
-        b=wlzflnRQFCg4qo4ZIyBnu0irKn85MsS/Jn4G/2gX4DVAKbQO82+qGlaHp0MgEPt320
-         es1kL6g8VqO6uFdWDdVeZEdevw2dL91reTa7m4K/HKKU0xcMCNC4YF1sc3NQoJ7xOg78
-         EZmUFfybN9cUXDPKzBF2yjrnansNvaqd+6zJ5DDoD0UuTM5imu+yOyWYlQm4TEnm1whE
-         c0jy0x+9LFRC9nUc3MOxy+9ANyJ2UCIB+l+DGHgK7H/ZE2fFmdvoupDXxsXhhMrYOI6z
-         GkMPwx1FRo1sqY99qqtMv8PKDV1rVh8LyzOgTsXYAuNWdT45RehOI0Tt8DiBUqmRbO1f
-         6qOw==
-X-Gm-Message-State: AOJu0YymUw4Jf0oaASjCtbiS7lA507V6G70t7BxLDoCGQ0ID99WdGHYk
-        EhJ9AuJo2G32fgUWD8KGb5XvCQ==
-X-Google-Smtp-Source: AGHT+IGv0MEH8sNlUhtqfKhYJ9Upqi2F+eqUc2Kl8ESIWnUn9KzDFJ0am9U2dyiRdjKXNzSoe+0JMA==
-X-Received: by 2002:a50:aac3:0:b0:544:a153:cd19 with SMTP id r3-20020a50aac3000000b00544a153cd19mr3594225edc.41.1700926884918;
-        Sat, 25 Nov 2023 07:41:24 -0800 (PST)
-Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id j26-20020aa7ca5a000000b00548aeeb1a9esm3148429edt.89.2023.11.25.07.41.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 07:41:24 -0800 (PST)
-Message-ID: <1a3d840d-50d3-474f-89a6-e36a1cb8f5de@linaro.org>
-Date:   Sat, 25 Nov 2023 16:41:22 +0100
+        Sat, 25 Nov 2023 10:43:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94252FD
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 07:43:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A61DDC433C7;
+        Sat, 25 Nov 2023 15:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700926986;
+        bh=BLaPjvfeCQEtXj+kiHkZzzFkV7XfGVeJkjLyuxF4lIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vux9YSoMMru/ZUHMUX8QTeTGSasuvd3Q2Ht1tZttoq8UkrDjOzpmTYs0w6wwkYHB/
+         ZzBFkyJGAiBEPKmS4fMS/CTBO6Cbm+0Nwx7PSWfuv+dEx162Dh4PJfAdr/3F/zmJel
+         r0LxkmflrFHaX2FC6Lr/6DxVzsedp82WUizP1YLIOyfmRjNJb3kMOfUkyJlxWD7qfG
+         SpbF8yS2KIv4MH1k2KafAWP3/C0l6HB7CtBCi89iTQgbe41qfpBzvHG1Yzeuez/Kyz
+         hEJristCVSs6MKW8fipy4oGaRxMWtR6bKQC3yRdQY3S7tI90FXr/XFNTR3i41sulbQ
+         Mh/bj5n3dEd0g==
+Date:   Sat, 25 Nov 2023 15:43:02 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
+References: <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
+ <2023112435-dazzler-crisped-04a6@gregkh>
+ <20231124163234.GC819414@pengutronix.de>
+ <2023112453-flagstick-bullring-8511@gregkh>
+ <20231124185725.GA872366@pengutronix.de>
+ <2023112520-paper-image-ef5d@gregkh>
+ <20231125085038.GA877872@pengutronix.de>
+ <2023112506-unselfish-unkind-adcb@gregkh>
+ <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
+ <2023112541-uptown-tripping-05f3@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/2] irqchip: irq-qcom-mpm: Support passing a slice of
- SRAM as reg space
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230328-topic-msgram_mpm-v6-0-682e4855b7e2@linaro.org>
- <20230328-topic-msgram_mpm-v6-2-682e4855b7e2@linaro.org>
- <44a2b30a-7f8c-44a9-8a74-b09fee2b61b7@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <44a2b30a-7f8c-44a9-8a74-b09fee2b61b7@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Z8Jjdq+GPR6QIRdJ"
+Content-Disposition: inline
+In-Reply-To: <2023112541-uptown-tripping-05f3@gregkh>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,73 +64,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.2023 16:17, Bryan O'Donoghue wrote:
-> On 25/11/2023 14:27, Konrad Dybcio wrote:
->> The MPM hardware is accessible to us from the ARM CPUs through a shared
->> memory region (RPM MSG RAM) that's also concurrently accessed by other
->> kinds of cores on the system (like modem, ADSP etc.). Modeling this
->> relation in a (somewhat) sane manner in the device tree basically
->> requires us to either present the MPM as a child of said memory region
->> (which makes little sense, as a mapped memory carveout is not a bus),
->> define nodes which bleed their register spaces into one another, or
->> passing their slice of the MSG RAM through some kind of a property.
->>
->> Go with the third option and add a way to map a region passed through
->> the "qcom,rpm-msg-ram" property as our register space.
->>
->> The current way of using 'reg' is preserved for ABI reasons.
->>
->> Acked-by: Shawn Guo <shawn.guo@linaro.org>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   drivers/irqchip/irq-qcom-mpm.c | 21 ++++++++++++++++++---
->>   1 file changed, 18 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-qcom-mpm.c b/drivers/irqchip/irq-qcom-mpm.c
->> index 7124565234a5..7115e3056aa5 100644
->> --- a/drivers/irqchip/irq-qcom-mpm.c
->> +++ b/drivers/irqchip/irq-qcom-mpm.c
->> @@ -14,6 +14,7 @@
->>   #include <linux/mailbox_client.h>
->>   #include <linux/module.h>
->>   #include <linux/of.h>
->> +#include <linux/of_address.h>
->>   #include <linux/of_platform.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/pm_domain.h>
->> @@ -322,8 +323,10 @@ static int qcom_mpm_init(struct device_node *np, struct device_node *parent)
->>       struct device *dev = &pdev->dev;
->>       struct irq_domain *parent_domain;
->>       struct generic_pm_domain *genpd;
->> +    struct device_node *msgram_np;
->>       struct qcom_mpm_priv *priv;
->>       unsigned int pin_cnt;
->> +    struct resource res;
->>       int i, irq;
->>       int ret;
->>   @@ -374,9 +377,21 @@ static int qcom_mpm_init(struct device_node *np, struct device_node *parent)
->>         raw_spin_lock_init(&priv->lock);
->>   -    priv->base = devm_platform_ioremap_resource(pdev, 0);
->> -    if (IS_ERR(priv->base))
->> -        return PTR_ERR(priv->base);
->> +    /* If we have a handle to an RPM message ram partition, use it. */
->> +    msgram_np = of_parse_phandle(np, "qcom,rpm-msg-ram", 0);
->> +    if (msgram_np) {
->> +        ret = of_address_to_resource(msgram_np, 0, &res);
-> 
-> You are capturing the return value but doing nothing with it.
-Oops you're right
-> 
-> One of
-> 
-> if (ret) {
->     of_node_put(msgram_np);
->     return ret;
-> }
-> 
-> or just drop the ret =
-> 
-> if you are sure of_address_to_resource() can never return an error for your use-case.
-Never say never!
 
-Konrad
+--Z8Jjdq+GPR6QIRdJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Nov 25, 2023 at 02:35:41PM +0000, Greg Kroah-Hartman wrote:
+> On Sat, Nov 25, 2023 at 10:30:42AM +0000, Mark Brown wrote:
+> > On Sat, Nov 25, 2023 at 09:09:01AM +0000, Greg Kroah-Hartman wrote:
+
+> > > So hardware is attempting to rely on software in order to prevent the
+> > > destruction of that same hardware?  Surely hardware designers aren't
+> > > that crazy, right?  (rhetorical question, I know...)
+
+> > Surely software people aren't going to make no effort to integrate with
+> > the notification features that the hardware engineers have so helpfully
+> > provided us with?
+
+> That would be great, but I don't see that here, do you?  All I see is
+> the shutdown sequence changing because someone wants it to go "faster"
+> with the threat of hardware breaking if we don't meet that "faster"
+> number, yet no knowledge or guarantee that this number can ever be known
+> or happen.
+
+The idea was to have somewhere to send notifications when the hardware
+starts reporting things like power supplies starting to fail.  We do
+have those from hardware, we just don't do anything terribly useful
+with them yet.
+
+TBH it does seem reasonable that there will be systems that can usefully
+detect these issues but hasn't got a detailed characterisation of
+exactly how long you've got before things expire, it's also likely that
+the actual bound is going to be highly variable depending on what the
+system is up to at the point of detection.  It's quite likely that we'd
+only get a worst case bound so it's also likely that we'd have more time
+in practice than in spec.  I'd expect characterisation that does happen
+to be very system specific at this point, I don't think we can rely on
+getting that information.  I'd certainly expect that we have vastly more
+systems can usefully detect issues than systems where we have firm
+numbers.
+
+> > > > Same problem was seen not only in automotive devices, but also in
+> > > > industrial or agricultural. With other words, it is important enough to bring
+> > > > some kind of solution mainline.
+
+> > > But you are not providing a real solution here, only a "I am going to
+> > > attempt to shut down a specific type of device before the others, there
+> > > are no time or ordering guarantees here, so good luck!" solution.
+
+> > I'm not sure there are great solutions here, the system integrators are
+> > constrained by the what the application appropriate silicon that's on
+> > the market is capable of, the siicon is constrained by the area costs of
+> > dealing with corner cases for system robustness and how much of the
+> > market cares about fixing these issues and software is constrained by
+> > what hardware ends up being built.  Everyone's just got to try their
+> > best with the reality they're confronted with, hopefully what's possible
+> > will improve with time.
+
+> Agreed, but I don't think this patch is going to actually work properly
+> over time as there is no time values involved :)
+
+This seems to be more into the area of mitigation than firm solution, I
+suspect users will be pleased if they can make a noticable dent in the
+number of failures they're seeing.
+
+> > > And again, how are you going to prevent the in-fighting of all device
+> > > types to be "first" in the list?
+
+> > It doesn't seem like the most complex integration challenge we've ever
+> > had to deal with TBH.
+
+> True, but we all know how this grows and thinking about how to handle it
+> now is key for this to be acceptable.
+
+It feels like if we're concerned about mitigating physical damage during
+the process of power failure that's a very limited set of devices - the
+storage case where we're in the middle of writing to flash or whatever
+is the most obvious case.
+
+--Z8Jjdq+GPR6QIRdJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmViFgEACgkQJNaLcl1U
+h9DE8Af+No3v2LuzUEGLnrgZN0ntwjrvTuBs9ai6qr/Qp3ypgRSge5RoCTT85w+u
+jqsHcnbg4DPk98rloqJMDx7RDdval38skmuTv02sfWeJLBfAaKCDE0afY2OkCVC5
+zzgFREKJZzqLkwtcnmBkWd8l5CrEj4sx86pdHZcImMWZuDj9kU6SOYpXkmAlfHsF
+4EC7ORkIZRSpDGX7PjzA5EckbjRxtS0IhFB5EoaH7EoYWCKJyMmajf6t/A8PD7Rf
+WM6uRKY56XVevUxpGZXhtIysC0uExUleU4p/v8a7ibc8MqrJtuN1yxuA5noGtuE8
+wMQzhVaGADD44NzzpPaQiV2TlZ9XEw==
+=GsyE
+-----END PGP SIGNATURE-----
+
+--Z8Jjdq+GPR6QIRdJ--
