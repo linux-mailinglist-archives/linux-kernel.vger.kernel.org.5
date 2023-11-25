@@ -2,74 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0B47F8BCF
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DD57F8BD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 15:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbjKYOrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 09:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        id S232151AbjKYOsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 09:48:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbjKYOrU (ORCPT
+        with ESMTP id S232128AbjKYOsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 09:47:20 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C888C6
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:47:26 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-daf4f0e3a0fso2600102276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700923645; x=1701528445; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MbBDsUYFRBbpaPGcvLn4ZOnFdI0AYXZ3B/wevF5TUtg=;
-        b=C7fevQaKpfPHGnPqXI6umr9h8FIA2PwoLCLMhZ0keu6Zd9i1n+Pmw1gz9F9QB8Nu1S
-         S2ozkK3ozg1Wlv2yqslIOCPPYu+JZaL7O0gNmJ9bZErzJmwQFHy3fbEZi999H4Cwn9+0
-         z/Bdz2KveDUeVtLEV8yXqQgeq+b8YROpjStqpQGy5h+0MfX38M8hqh8vKto4afKXAFxl
-         8wKVpNFTAUViVGb4t2lRUhl8OsWv9PNIJ3DkCjfByYQgiWNQwzYaXqMPAmcNvSEljNWk
-         nTz5HI5LcumNFtPgU3OTs0m2bKUiuItSHrgcPZLOg5TN/lF5ayaKAonocL5aaBWdVwil
-         Aiow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700923645; x=1701528445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MbBDsUYFRBbpaPGcvLn4ZOnFdI0AYXZ3B/wevF5TUtg=;
-        b=r36YLbGMEV0LhUf/a0OYuVnzMDVV0xnmHXuPlN9fYrQnp8ifLUngEDvECqXJ+xmC2R
-         pkjfvw6nCtBLdQ8s7RPiAJfuK2PcopYXFQDxPjjTd7YTI0ZLRuPZFpy1urkrk8eazy4z
-         /BThMwWcLDR2V7PqyXpwnzFOH3kTAYyY6eAYvJVSRoGohcmKz+ziiSrcnLRt9+TJo1tj
-         SqZaWkiiHYnXwr/56fnFLB+i7x8fx4is5Q9rAQ/rf3m0M+e46TMMfW7liZx53XDbaqiS
-         Sm4xliGF/SCI1I3Gz63opes62DIVe7GHddlWhad2p6Wr1gWVaFIYlYzj0M/Mz2bsNlbg
-         Z+rA==
-X-Gm-Message-State: AOJu0YwJ5z3kNh4lWNDznP6ZhKlmu7GBB8xxaiMSVO8jZTHpM6M9ek46
-        q10A+vWikAiyVmFZ04xmAcaiK72Zf2JrEZjWHbSd
-X-Google-Smtp-Source: AGHT+IEdYo7torc3WD8zzpy2vPVUODcvVvdvOHPOf8VVQ1q+Lx6kGrInycI6vKwkUYmT5ZwmLxh62dX5f0eEi7ztDnA=
-X-Received: by 2002:a25:bf8b:0:b0:daf:76da:fe2b with SMTP id
- l11-20020a25bf8b000000b00daf76dafe2bmr5842914ybk.10.1700923645597; Sat, 25
- Nov 2023 06:47:25 -0800 (PST)
+        Sat, 25 Nov 2023 09:48:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32CBAF
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 06:48:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE4AC433C8;
+        Sat, 25 Nov 2023 14:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700923709;
+        bh=lVV3TZ7xcw4MBjj6Q/YGZ61+1phxV7dz1wIibObBG6I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WUVq03uzYfCozEemk6AIUEc5HiJWqS4DNi7YWjLHAphQrHSfjJ69gnqlVebPkG5lv
+         GkVXql+9UtRCwzeVk/H9e9vGDsEy7fy676YwOq6tlS0OGxnRhIBtXAreoFEs2FUijw
+         dzsRASy5mL4q39c2xTqypGpnqhi69eNctWaE24pk=
+Date:   Sat, 25 Nov 2023 14:48:26 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: Re: [PATCH v2 1/6] debugfs: fix automount d_fsdata usage
+Message-ID: <2023112519-reprocess-backtrack-0732@gregkh>
+References: <20231124162522.16344-7-johannes@sipsolutions.net>
+ <20231124172522.01928f127e73.I64fe5615568e87f9ae2d7fb2ac4e5fa96924cb50@changeid>
 MIME-Version: 1.0
-References: <20231123092314.91299-1-Ilia.Gavrilov@infotecs.ru>
-In-Reply-To: <20231123092314.91299-1-Ilia.Gavrilov@infotecs.ru>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sat, 25 Nov 2023 09:47:14 -0500
-Message-ID: <CAHC9VhQGX_22WTdZG4+K8WYQK-G21j8NM9Wy0TodgPAZk57TCQ@mail.gmail.com>
-Subject: Re: [PATCH net v2] calipso: Fix memory leak in netlbl_calipso_add_pass()
-To:     Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Huw Davies <huw@codeweavers.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124172522.01928f127e73.I64fe5615568e87f9ae2d7fb2ac4e5fa96924cb50@changeid>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,71 +48,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 4:25=E2=80=AFAM Gavrilov Ilia <Ilia.Gavrilov@infote=
-cs.ru> wrote:
->
-> If IPv6 support is disabled at boot (ipv6.disable=3D1),
-> the calipso_init() -> netlbl_calipso_ops_register() function isn't called=
-,
-> and the netlbl_calipso_ops_get() function always returns NULL.
-> In this case, the netlbl_calipso_add_pass() function allocates memory
-> for the doi_def variable but doesn't free it with the calipso_doi_free().
->
-> BUG: memory leak
-> unreferenced object 0xffff888011d68180 (size 64):
->   comm "syz-executor.1", pid 10746, jiffies 4295410986 (age 17.928s)
->   hex dump (first 32 bytes):
->     00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000730d8770>] kmalloc include/linux/slab.h:552 [inline]
->     [<00000000730d8770>] netlbl_calipso_add_pass net/netlabel/netlabel_ca=
-lipso.c:76 [inline]
->     [<00000000730d8770>] netlbl_calipso_add+0x22e/0x4f0 net/netlabel/netl=
-abel_calipso.c:111
->     [<0000000002e662c0>] genl_family_rcv_msg_doit+0x22f/0x330 net/netlink=
-/genetlink.c:739
->     [<00000000a08d6d74>] genl_family_rcv_msg net/netlink/genetlink.c:783 =
-[inline]
->     [<00000000a08d6d74>] genl_rcv_msg+0x341/0x5a0 net/netlink/genetlink.c=
-:800
->     [<0000000098399a97>] netlink_rcv_skb+0x14d/0x440 net/netlink/af_netli=
-nk.c:2515
->     [<00000000ff7db83b>] genl_rcv+0x29/0x40 net/netlink/genetlink.c:811
->     [<000000000cf53b8c>] netlink_unicast_kernel net/netlink/af_netlink.c:=
-1313 [inline]
->     [<000000000cf53b8c>] netlink_unicast+0x54b/0x800 net/netlink/af_netli=
-nk.c:1339
->     [<00000000d78cd38b>] netlink_sendmsg+0x90a/0xdf0 net/netlink/af_netli=
-nk.c:1934
->     [<000000008328a57f>] sock_sendmsg_nosec net/socket.c:651 [inline]
->     [<000000008328a57f>] sock_sendmsg+0x157/0x190 net/socket.c:671
->     [<000000007b65a1b5>] ____sys_sendmsg+0x712/0x870 net/socket.c:2342
->     [<0000000083da800e>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2396
->     [<000000004a9b827f>] __sys_sendmsg+0xea/0x1b0 net/socket.c:2429
->     [<0000000061b64d3a>] do_syscall_64+0x30/0x40 arch/x86/entry/common.c:=
-46
->     [<00000000a1265347>] entry_SYSCALL_64_after_hwframe+0x61/0xc6
->
-> Found by InfoTeCS on behalf of Linux Verification Center
-> (linuxtesting.org) with Syzkaller
->
-> Fixes: cb72d38211ea ("netlabel: Initial support for the CALIPSO netlink p=
-rotocol.")
-> Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+On Fri, Nov 24, 2023 at 05:25:24PM +0100, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> debugfs_create_automount() stores a function pointer in d_fsdata,
+> but since commit 7c8d469877b1 ("debugfs: add support for more
+> elaborate ->d_fsdata") debugfs_release_dentry() will free it, now
+> conditionally on DEBUGFS_FSDATA_IS_REAL_FOPS_BIT, but that's not
+> set for the function pointer in automount. As a result, removing
+> an automount dentry would attempt to free the function pointer.
+> Luckily, the only user of this (tracing) never removes it.
+> 
+> Nevertheless, it's safer if we just handle the fsdata in one way,
+> namely either DEBUGFS_FSDATA_IS_REAL_FOPS_BIT or allocated. Thus,
+> change the automount to allocate it, and use the real_fops in the
+> data to indicate whether or not automount is filled, rather than
+> adding a type tag. At least for now this isn't actually needed,
+> but the next changes will require it.
+> 
+> Also check in debugfs_file_get() that it gets only called
+> on regular files, just to make things clearer.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 > ---
-> v2:
->   - return the error code in netlbl_calipso_add() if the variable calipso=
-_hops is NULL
-> v1: https://lore.kernel.org/all/20231122135242.2779058-1-Ilia.Gavrilov@in=
-fotecs.ru/
->
->  net/netlabel/netlabel_calipso.c | 49 +++++++++++++++++----------------
->  1 file changed, 26 insertions(+), 23 deletions(-)
+> v2: add missing kfree() pointed out by smatch
 
-This looks good to me, thanks!
-
-Acked-by: Paul Moore <paul@paul-moore.com>
-
---=20
-paul-moore.com
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
