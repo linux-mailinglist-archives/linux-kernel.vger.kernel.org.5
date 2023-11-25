@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077CD7F8CFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 19:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB537F8C96
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 18:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjKYSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 13:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
+        id S232014AbjKYRFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 12:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjKYSHO (ORCPT
+        with ESMTP id S229697AbjKYRFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 13:07:14 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC05C0;
-        Sat, 25 Nov 2023 10:07:20 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32df66c691dso1878181f8f.3;
-        Sat, 25 Nov 2023 10:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700935639; x=1701540439; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=puQH2pOXfnIbSZCHOkkIa6H+MNcLIGSdWyuSjRQdnv4=;
-        b=cMLL0BjgjCDAMYizwgGmCqFZSUnjof/pRcd9Lu7K+1NtTLXMO9+96AIv+bH4BAkBvt
-         eHrdra9YDwJVSIPWktFCYETb4YSw5h3DdykSkKuEu71o+Jf84KaaYELfBzvZwmshSBuy
-         6IRfc3VleRIZafNUD6PnpetUQ/hplp2uNdmBM0nGYX6zByecBH2uVm99199DWKJh+COU
-         SAH81JE6WzYNGRvFGAYlMf/OqvDw0hkrCI4QKSDcuaBaxPjCy0U6uWnGBURbx3RsFLgJ
-         PriHEAIbzZLFNtx2m6YMIIebj/ofu6rD5dJFFY5ZDSyTvV7ILDELllUl9573gBPTb5Sw
-         +kuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700935639; x=1701540439;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=puQH2pOXfnIbSZCHOkkIa6H+MNcLIGSdWyuSjRQdnv4=;
-        b=fDywfTLymz6TVh98oi8/izD09VUP+t9RFFKLbeMh1gGMc7h4wvq2cSo/ZT4NguOM8H
-         2KS15rEGyUytMo01eHI0FJR1ubaghETFZeLGJDNyWnWO35KckOGF5b2qcFgA/gdR2GsT
-         L8aiF5nLzdX00y80MuUZH9SXdn14JrelXnwDKytrCT2KPRDhWiNFBIBLXQV39ZGheXpc
-         yS6b2qGEN8A/k97uhQ7l7sMXh7oouJmtt/XD9kG1ZYCb2X0Xkf2O92e/oBvq7vEBckAN
-         Ot1CiwGxBMVpiJkZWG6sUuGL2E1A/zqEKth007NeU4JpWD8TEUQoE4jPkMjrUxUnbJhj
-         7cmQ==
-X-Gm-Message-State: AOJu0Ywttj9LZtcBg2Tz+sTu3nSeQJX5WhUY3p2+MqNKnjk9aC8ogPIr
-        j0HSrDRj/1fMdMJEB8N8Zjo=
-X-Google-Smtp-Source: AGHT+IE8oqH78KDfOnat9E+eH4edH5VvXMcZEZWP7aUt5DnBsHQUFMDzllU13QYu7RufzNpza3wkvQ==
-X-Received: by 2002:adf:eacd:0:b0:332:d607:a0dd with SMTP id o13-20020adfeacd000000b00332d607a0ddmr5953879wrn.47.1700935639149;
-        Sat, 25 Nov 2023 10:07:19 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id e4-20020a5d5304000000b00332eb16d215sm4100561wrv.23.2023.11.25.10.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 10:07:18 -0800 (PST)
-Message-ID: <656237d6.5d0a0220.2c3da.d832@mx.google.com>
-X-Google-Original-Message-ID: <ZWIDtR9oOu2BoLGt@Ansuel-xps.>
-Date:   Sat, 25 Nov 2023 15:24:53 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH v2 01/11] net: phy: extend PHY package API
- to support multiple global address
-References: <20231125001127.5674-1-ansuelsmth@gmail.com>
- <20231125001127.5674-2-ansuelsmth@gmail.com>
- <a8ce4503-c24d-4d6e-91ec-d03624b31fe0@lunn.ch>
+        Sat, 25 Nov 2023 12:05:19 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA61F129
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 09:05:25 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1r6w5W-0000xM-ND; Sat, 25 Nov 2023 18:05:02 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1r6w5U-00BWxZ-3K; Sat, 25 Nov 2023 18:05:00 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9834E2538FD;
+        Sat, 25 Nov 2023 17:04:59 +0000 (UTC)
+Date:   Sat, 25 Nov 2023 18:04:59 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Srinivas Goud <srinivas.goud@amd.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, git@amd.com, michal.simek@xilinx.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, appana.durga.rao@xilinx.com,
+        naga.sureshkumar.relli@xilinx.com
+Subject: Re: [PATCH v6 3/3] can: xilinx_can: Add ethtool stats interface for
+ ECC errors
+Message-ID: <20231125-distract-upstage-a18902149a63-mkl@pengutronix.de>
+References: <1700910933-23868-1-git-send-email-srinivas.goud@amd.com>
+ <1700910933-23868-4-git-send-email-srinivas.goud@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4jgdzz4e4cfbadnp"
 Content-Disposition: inline
-In-Reply-To: <a8ce4503-c24d-4d6e-91ec-d03624b31fe0@lunn.ch>
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <1700910933-23868-4-git-send-email-srinivas.goud@amd.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 06:51:54PM +0100, Andrew Lunn wrote:
-> On Sat, Nov 25, 2023 at 01:11:17AM +0100, Christian Marangi wrote:
-> > Current API for PHY package are limited to single address to configure
-> > global settings for the PHY package.
-> > 
-> > It was found that some PHY package (for example the qca807x, a PHY
-> > package that is shipped with a bundle of 5 PHY) require multiple PHY
-> > address to configure global settings. An example scenario is a PHY that
-> > have a dedicated PHY for PSGMII/serdes calibrarion and have a specific
-> > PHY in the package where the global PHY mode is set and affects every
-> > other PHY in the package.
-> > 
-> > Change the API in the following way:
-> > - Make phy_package_join() require a list of address to be passed and the
-> >   number of address in the list
-> > - On shared data init, each address is the list is checked and added to
-> >   the shared struct.
-> > - Make __/phy_package_write/read() require an additional arg that
-> >   select what global PHY address to use in the provided list.
-> 
-> I think this is overly complex.
-> 
-> I would rename struct phy_package_shared addr to base_addr.
-> phy_package_join() would then pass the base address of the package,
-> which is the same as your reg property for the package in DT.
-> 
-> I think all current users of devm_phy_package_join() already do pass
-> the lowest address in the package, so this should not cause any
-> problems. Most drivers even call it base address, rather than cookie,
-> which the documentation uses.
-> 
-> I would then extend __phy_package_read() etc to take an offset, which
-> is added to base_addr, and the read is performed on that address. All
-> the existing users would pass 0, and your new driver can pass other
-> values.
-> 
-> I also think you can split this out from the DT binding. Make it two
-> patch sets. One patch set is about extended the package concept to
-> allow access to global registers at addresses other than the base. The
-> DT patch is about properties which are shared by the package. These
-> seems like two mostly orthogonal concepts.
->
 
-Yes can be detached. Making addr to base_addr would change the thing but
-can confirm, any user of the API always used the base addr as cookie, so
-it won't change a thing.
+--4jgdzz4e4cfbadnp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will have to make the separate commit a dependency to this series but i
-expect this change to be merged before this RFC is completed. Good idea.
+On 25.11.2023 16:45:33, Srinivas Goud wrote:
+> Add ethtool stats interface for reading FIFO 1bit/2bit ECC errors informa=
+tion.
+>=20
+> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
+> ---
+> Changes in v6:
+> None
+>=20
+> Changes in v5:
+> Address review comments
+> Add get_strings and get_sset_count stats interface
+> Use u64 stats helper function
+>=20
+> Changes in v4:
+> None
+>=20
+> Changes in v3:
+> None
+>=20
+> Changes in v2:
+> Add ethtool stats interface
+>=20
+>  drivers/net/can/xilinx_can.c | 54 ++++++++++++++++++++++++++++++++++++++=
+++++++
+>  1 file changed, 54 insertions(+)
+>=20
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+> index c8691a1..40c912b 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -228,6 +228,7 @@ struct xcan_devtype_data {
+>   * @transceiver:		Optional pointer to associated CAN transceiver
+>   * @rstc:			Pointer to reset control
+>   * @ecc_enable:			ECC enable flag
+> + * @stats_lock:			Lock for synchronizing ECC errors stats
+>   * @ecc_2bit_rxfifo_cnt:	RXFIFO 2bit ECC count
+>   * @ecc_1bit_rxfifo_cnt:	RXFIFO 1bit ECC count
+>   * @ecc_2bit_txolfifo_cnt:	TXOLFIFO 2bit ECC count
+> @@ -254,6 +255,7 @@ struct xcan_priv {
+>  	struct phy *transceiver;
+>  	struct reset_control *rstc;
+>  	bool ecc_enable;
+> +	spinlock_t stats_lock; /* Lock for synchronizing ECC errors stats */
+>  	u64_stats_t ecc_2bit_rxfifo_cnt;
+>  	u64_stats_t ecc_1bit_rxfifo_cnt;
+>  	u64_stats_t ecc_2bit_txolfifo_cnt;
+> @@ -347,6 +349,12 @@ static const struct can_tdc_const xcan_tdc_const_can=
+fd2 =3D {
+>  	.tdcf_max =3D 0,
+>  };
+> =20
+> +static const char xcan_priv_flags_strings[][ETH_GSTRING_LEN] =3D {
+> +	"err-ecc-rx-2-bit", "err-ecc-rx-1-bit",
+> +	"err-ecc-txol-2-bit", "err-ecc-txol-1-bit",
+> +	"err-ecc-txtl-2-bit", "err-ecc-txtl-1-bit",
+> +};
+> +
+>  /**
+>   * xcan_write_reg_le - Write a value to the device register little endian
+>   * @priv:	Driver private data structure
+> @@ -1171,6 +1179,9 @@ static void xcan_err_interrupt(struct net_device *n=
+dev, u32 isr)
+> =20
+>  	if (priv->ecc_enable && isr & XCAN_IXR_ECC_MASK) {
+>  		u32 reg_rx_ecc, reg_txol_ecc, reg_txtl_ecc;
+> +		unsigned long flags;
+> +
+> +		spin_lock_irqsave(&priv->stats_lock, flags);
 
--- 
-	Ansuel
+The register access doesn't have to be protected by the spinlock, only
+when you touch priv->ecc_*cnt.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--4jgdzz4e4cfbadnp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmViKTgACgkQvlAcSiqK
+BOiREQgAtl7uFO/XnkgoCkRiMxHvAtvcVrUswBxeFAW76mVjE9V/Hg3V4LQ3vcPV
+Tzt+wM53Wd7FDXJMj6P8qaUrzC2PVrBeqqGb8RoPrEr6pSY/qf2Rj85OJG/xs8RT
+Z0zB4U87ccavRZ4ozzCiVDQ+3eAfQp8RbeUnBFKIQKCnZfVInzvUMG2l+gFTvLjg
+MtXCmOEIhlrFFWSDG1JeeIhXKXBBhGsUqe+sTDOytMlFPnR7h2SLZOsZ5NxgGqGX
+PNYkIMjfiiK57iJmPEo+/opqh7nTw4FFSRrGr9g9RmuveF3uCVLjqOHBLMf0lZTE
+14Pn5JTlqvNMrSOK/jZzgMFmsgCvxA==
+=5s7P
+-----END PGP SIGNATURE-----
+
+--4jgdzz4e4cfbadnp--
