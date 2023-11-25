@@ -2,134 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AC17F8AFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E7B7F8AFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Nov 2023 13:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjKYM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 07:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
+        id S232112AbjKYM6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 07:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjKYM4z (ORCPT
+        with ESMTP id S229635AbjKYM56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 07:56:55 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36744F0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:57:02 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so2801932a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700917020; x=1701521820; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i5gl/nXIgYuM3bQJzL5EaxLbrSUouceBBofJzTtiq+I=;
-        b=yy99Ztixu7Jf7w9ED7PmD5CYuSibHuMTvXiB2HcyhKJZLaSj0dZV3TbcXlI1Mcej+e
-         Q8jbWudTTkz+AFIAz9g0CfS5zvf9FxjV9eBfJMfNfrNYyGmcqwwk87PPcdEUIA8CVr3H
-         Rf56jYSFrYaA7Ag504xlrA+DILMP/Bl0wwyafl3a1fx1alXgUqoIz043AMPn6bayVv5C
-         rpaBQZhm+yxU3sH/4Bu8yPnqzDMCt7h0tleNZyHu0Z0shLmCTt7XGxD8pSCOUnHfESQK
-         Q1c0NCXasNR8PXpaQhdYE+HRYOoUWOjFdAp/TfclL2yjJd8r64mBiONpodKi5jwKNaW0
-         CzIA==
+        Sat, 25 Nov 2023 07:57:58 -0500
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5A9BC
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:58:05 -0800 (PST)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6b496e1e53bso3863722b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 04:58:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700917020; x=1701521820;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700917084; x=1701521884;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5gl/nXIgYuM3bQJzL5EaxLbrSUouceBBofJzTtiq+I=;
-        b=gjChKXqRphjpmXHQ7HNTVRExQA35vCAU5mNzRgqdseyfqVI8n3LU6er21bJsb0CbX3
-         G7f4dhO2Yn7nTld6iOCNqF7q7B6TtBNVrZJTdXbTlyg1l44kUFqseaCh6aP7gQdVvOwL
-         S69pCF+YwcSVyEEy2dh3CW6CN2rXG4gt5CdG7JOzIFLPfllPQDLlG6M7Iie0fOEruL3X
-         eMbUZJKNCOX24YvlPkCrNQIhBN7FGxCoARs0Ak7QuKUkQx74/OqOsopem1nVDi/o3qzj
-         ylx5okRNSq//u+TIOscR156bxMB3uaRKabKYt0r++RCHuOA6RsOMkUUjm/JzloF+ceGE
-         Hjhg==
-X-Gm-Message-State: AOJu0Yw4RjlcC9KgCMhTUM62spjfqkixI1wa+Z+emAwaeQInzVgAVVXk
-        mfa8P/SNOhERJXN0eRsxDnM5nw==
-X-Google-Smtp-Source: AGHT+IFKMwLpeI7ZldtmzgpAZWRh8sMl2DKnAgiEBSMA4cr++zBARDqFYRb2qgAO9T0VjPl0M6+JAA==
-X-Received: by 2002:aa7:d3c7:0:b0:54a:ff0f:78d6 with SMTP id o7-20020aa7d3c7000000b0054aff0f78d6mr4737398edr.0.1700917020736;
-        Sat, 25 Nov 2023 04:57:00 -0800 (PST)
-Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id eh9-20020a0564020f8900b005486f7f654dsm3008547edb.7.2023.11.25.04.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 04:57:00 -0800 (PST)
-Message-ID: <5722a51c-2202-422c-a06b-f4532c95fdb3@linaro.org>
-Date:   Sat, 25 Nov 2023 13:56:59 +0100
+        bh=MKb4HtaG93ZmDUP2kAxRHHZ9QJcU0NShPtIVas47Kyc=;
+        b=e5oJ418Wh9Qshdq9HYxdN/dbkKnGk9lnuDLWtAafez8nIhXpuRKGTXz0JKoAOPpD05
+         a6x13paic95mneMsvmmH/bVhSLPTqxzWYoMqaxkDuy1uZrCzU7HAihKWT47yil5t9n4a
+         4IWFXLIqpagVBDEPtGBIaNVacv5aSW0QPZFmo2A5O/Tq4jla7rZ4kbClO0TGvwiFzs/N
+         vzg99lX8Vf2nBO0iEJqR1wlGJVOmB+AmjciDBnSxDmtDc9+Y5KB3UhLKO65aAlOGV4pV
+         +teLvWqWu81zztab7Ifd6nERCCCj2zVIxNej2Xr0y0K9070WnDHxBvEYozkUpYB/gEaS
+         bQ1Q==
+X-Gm-Message-State: AOJu0YzzmRT7hnibBb/uKOjFfd5tDVsT5uKniZzieW2YsonXijTk/Bxh
+        Uj9d8dqxe1emPMrAY4Mr6mGUSuoWq0wHtnQ86iqSU9riBwZE
+X-Google-Smtp-Source: AGHT+IHeJ1oXIUtYNWkVvMmCgFzvAARFdnmRsnuAoZ3o53Fv8fz5eAVTPDqdK8j6R5TLALaU2pI2ni/M86bT6YvbgQC7THuJ8L3+
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 8/8] arm64: dts: qcom: sm8650-qrd: add interconnect
- dependent device nodes
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231124-topic-sm8650-upstream-dt-v4-0-e402e73cc5f0@linaro.org>
- <20231124-topic-sm8650-upstream-dt-v4-8-e402e73cc5f0@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231124-topic-sm8650-upstream-dt-v4-8-e402e73cc5f0@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:10c5:b0:68f:cb69:8e76 with SMTP id
+ d5-20020a056a0010c500b0068fcb698e76mr1429662pfu.2.1700917084585; Sat, 25 Nov
+ 2023 04:58:04 -0800 (PST)
+Date:   Sat, 25 Nov 2023 04:58:04 -0800
+In-Reply-To: <tencent_18F764177706CB137F63662968E3A6645A05@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e8563060af99e5c@google.com>
+Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
+From:   syzbot <syzbot+c5b339d16ffa61fd512d@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.2023 10:20, Neil Armstrong wrote:
-> Now interconnect dependent devices are added in sm8650 DTSI,
-> now enable more devices for the Qualcomm SM8650 QRD board:
-> - PCIe
-> - Display
-> - DSPs
-> - SDCard
-> - UFS
-> - USB role switch with PMIC Glink
-> - Bluetooth
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hello,
 
-Konrad
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: invalid-free in indx_insert_into_buffer
+
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007f1a99f9bf80 R15: 00007ffdd50705e8
+ </TASK>
+==================================================================
+BUG: KASAN: invalid-free in indx_insert_into_buffer.isra.0+0xec4/0x11f0 fs/ntfs3/index.c:1912
+Free of addr ffff88801c22c018 by task syz-executor.0/5511
+
+CPU: 0 PID: 5511 Comm: syz-executor.0 Not tainted 6.7.0-rc1-syzkaller-00344-g037266a5f723-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report_invalid_free+0xab/0xd0 mm/kasan/report.c:550
+ ____kasan_slab_free+0x17d/0x190 mm/kasan/common.c:216
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ __cache_free mm/slab.c:3370 [inline]
+ __do_kmem_cache_free mm/slab.c:3557 [inline]
+ __kmem_cache_free+0xcc/0x3d0 mm/slab.c:3564
+ indx_insert_into_buffer.isra.0+0xec4/0x11f0 fs/ntfs3/index.c:1912
+ indx_insert_entry+0x1a5/0x460 fs/ntfs3/index.c:1984
+ ni_add_name+0x4d9/0x820 fs/ntfs3/frecord.c:3055
+ ni_rename+0xa1/0x1a0 fs/ntfs3/frecord.c:3087
+ ntfs_rename+0x91f/0xec0 fs/ntfs3/namei.c:322
+ vfs_rename+0x13e0/0x1c30 fs/namei.c:4844
+ do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+ __do_sys_rename fs/namei.c:5042 [inline]
+ __se_sys_rename fs/namei.c:5040 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f1a99e7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1a9ab210c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007f1a99f9bf80 RCX: 00007f1a99e7cae9
+RDX: 0000000000000000 RSI: 0000000020000a40 RDI: 0000000020000300
+RBP: 00007f1a9ab21120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007f1a99f9bf80 R15: 00007ffdd50705e8
+ </TASK>
+
+Allocated by task 5511:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa3/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc+0x59/0x90 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ indx_read+0x4f1/0xcd0 fs/ntfs3/index.c:1059
+ indx_find+0x4a9/0x980 fs/ntfs3/index.c:1181
+ indx_insert_entry+0x376/0x460 fs/ntfs3/index.c:1961
+ ni_add_name+0x4d9/0x820 fs/ntfs3/frecord.c:3055
+ ni_rename+0xa1/0x1a0 fs/ntfs3/frecord.c:3087
+ ntfs_rename+0x91f/0xec0 fs/ntfs3/namei.c:322
+ vfs_rename+0x13e0/0x1c30 fs/namei.c:4844
+ do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+ __do_sys_rename fs/namei.c:5042 [inline]
+ __se_sys_rename fs/namei.c:5040 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+The buggy address belongs to the object at ffff88801c22c000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 24 bytes inside of
+ 4096-byte region [ffff88801c22c000, ffff88801c22d000)
+
+The buggy address belongs to the physical page:
+page:ffffea0000708b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1c22c
+head:ffffea0000708b00 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0x1()
+raw: 00fff00000000840 ffff888013040900 ffffea0000b89390 ffffea0000701e90
+raw: 0000000000000000 ffff88801c22c000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Unmovable, gfp_mask 0x342040(__GFP_IO|__GFP_NOWARN|__GFP_COMP|__GFP_HARDWALL|__GFP_THISNODE), pid 5318, tgid 5318 (dhcpcd-run-hook), ts 63150203847, free_ts 63102034837
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1544 [inline]
+ get_page_from_freelist+0xa25/0x36d0 mm/page_alloc.c:3312
+ __alloc_pages+0x22e/0x2420 mm/page_alloc.c:4568
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ kmem_getpages mm/slab.c:1356 [inline]
+ cache_grow_begin+0x99/0x3a0 mm/slab.c:2550
+ cache_alloc_refill+0x295/0x3b0 mm/slab.c:2923
+ ____cache_alloc mm/slab.c:2999 [inline]
+ ____cache_alloc mm/slab.c:2982 [inline]
+ __do_cache_alloc mm/slab.c:3182 [inline]
+ slab_alloc_node mm/slab.c:3230 [inline]
+ __kmem_cache_alloc_node+0x3ba/0x460 mm/slab.c:3521
+ kmalloc_trace+0x25/0x60 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ tomoyo_environ security/tomoyo/domain.c:633 [inline]
+ tomoyo_find_next_domain+0xc08/0x2020 security/tomoyo/domain.c:878
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x12b/0x1d0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x6a/0xe0 security/security.c:1103
+ search_binary_handler fs/exec.c:1725 [inline]
+ exec_binprm fs/exec.c:1779 [inline]
+ bprm_execve fs/exec.c:1854 [inline]
+ bprm_execve+0x73a/0x1a90 fs/exec.c:1810
+ do_execveat_common.isra.0+0x5d3/0x740 fs/exec.c:1962
+ do_execve fs/exec.c:2036 [inline]
+ __do_sys_execve fs/exec.c:2112 [inline]
+ __se_sys_execve fs/exec.c:2107 [inline]
+ __x64_sys_execve+0x8c/0xb0 fs/exec.c:2107
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1137 [inline]
+ free_unref_page_prepare+0x4fa/0xaa0 mm/page_alloc.c:2347
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2487
+ slab_destroy mm/slab.c:1608 [inline]
+ slabs_destroy+0x85/0xc0 mm/slab.c:1628
+ cache_flusharray mm/slab.c:3341 [inline]
+ ___cache_free+0x2b7/0x420 mm/slab.c:3404
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x4c/0x1b0 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:763 [inline]
+ slab_alloc_node mm/slab.c:3237 [inline]
+ slab_alloc mm/slab.c:3246 [inline]
+ __kmem_cache_alloc_lru mm/slab.c:3423 [inline]
+ kmem_cache_alloc+0x159/0x360 mm/slab.c:3432
+ getname_flags.part.0+0x50/0x4e0 fs/namei.c:140
+ getname_flags+0x9c/0xf0 include/linux/audit.h:321
+ vfs_fstatat+0x9a/0x140 fs/stat.c:294
+ __do_sys_newfstatat+0x98/0x110 fs/stat.c:459
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Memory state around the buggy address:
+ ffff88801c22bf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801c22bf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88801c22c000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            ^
+ ffff88801c22c080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801c22c100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+Tested on:
+
+commit:         037266a5 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12120b44e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af04b7c4d36966d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5b339d16ffa61fd512d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=106773cce80000
 
