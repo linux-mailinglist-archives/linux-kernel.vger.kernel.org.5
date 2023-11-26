@@ -2,178 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33987F90F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 03:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FE17F911A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 04:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbjKZC3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 21:29:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S229608AbjKZC5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 21:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjKZC27 (ORCPT
+        with ESMTP id S229456AbjKZC5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 21:28:59 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D362127;
-        Sat, 25 Nov 2023 18:29:06 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so3019888b3a.3;
-        Sat, 25 Nov 2023 18:29:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700965745; x=1701570545; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P1u8RnYufqQNrSSEpBJB5j2w/wLYGiG0sRTQz3GvAHk=;
-        b=h4bWSvjjYER/qXlYgrb3P+sCiDWumsBL1lbT0He1DoxdLi1TcZls5FjAlUJ/eorPIz
-         ux90/fWqdJxDyFWvH013QLdxr9ebzrc7JhHFePkBCrFyZu5xGSeTizBsw4JGWAoFPxr5
-         674SlGfOCoaHup5wPCGuT1/zkFcOHVA1lKPTvZOAk5DVOCxEmwiw0KL/zzrGvMrr7YVd
-         10azQLKQIW1OzDzbhAg7/d3fSqYxnBnQG6qtnbAgLHFA+yDIB+KO3VG/TijZoBzalVa7
-         PXeQXwg9N2N5ehTAjP1017/pgk0yi8PtmOzGm3oCw9hUSRSwfJWHW3LO/KtLpn6/Ija+
-         ftTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700965745; x=1701570545;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P1u8RnYufqQNrSSEpBJB5j2w/wLYGiG0sRTQz3GvAHk=;
-        b=M2SuSqmFCZsZsIFnBClKZx2H0B5xd3JxHT5VpsgvAiK9CJI46iBFJS8YDqfwYe2b58
-         tSXRZWLRO56ah4YDOilPXUW3bZe8OBOGMPzXCbl0QbIC1Nkt0SKPG0ZnDA8sPznXf0mx
-         7LeObcEmnmprdMHLFLltnih3dXjPtFY+Pc9awRE3y56biMQ6D8pPFnETaDjCiT3IizGp
-         v3SqLMLp8WQzEn63CeXIWKlZpaGlEj+OoYHeJdHn+VgRXRJ8/qr1PQbbFu7uyS2HNPaz
-         RNe3/4oseRl/wm0/sb3xqi3yPIP2CNi9Pu7iUAB+I/LQIxnOISqkQijt1GSt/66eudWD
-         7k8Q==
-X-Gm-Message-State: AOJu0YzUVZg1lIVyvhwYJdxa2kPmeBlN6umCvGPHv6Kc4fHbqCIS/ohR
-        Gec46/JtrZdI4huc9BzvCCs=
-X-Google-Smtp-Source: AGHT+IGv6qQUhlwklgkmfzLhvCVpf3TXWWtE2sCfhPyVABtBpSAdcQMopN9XevGjmBaGO05EyoXonQ==
-X-Received: by 2002:a05:6a00:1d83:b0:6cb:8d97:3df3 with SMTP id z3-20020a056a001d8300b006cb8d973df3mr9496862pfw.5.1700965745448;
-        Sat, 25 Nov 2023 18:29:05 -0800 (PST)
-Received: from localhost.localdomain ([192.166.114.90])
-        by smtp.gmail.com with ESMTPSA id x18-20020aa793b2000000b00688435a9915sm4961821pff.189.2023.11.25.18.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 18:29:05 -0800 (PST)
-From:   Jianhua Lu <lujianhua000@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Jianhua Lu <lujianhua000@gmail.com>
-Subject: [PATCH v3 2/2] arm64: dts: qcom: sm8250-xiaomi-elish: Add pm8150b type-c node and enable usb otg
-Date:   Sun, 26 Nov 2023 10:28:49 +0800
-Message-ID: <20231126022849.14273-2-lujianhua000@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231126022849.14273-1-lujianhua000@gmail.com>
-References: <20231126022849.14273-1-lujianhua000@gmail.com>
+        Sat, 25 Nov 2023 21:57:09 -0500
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF160127
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 18:57:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1700967423;
+        bh=hciWXMie+hlfZgYrTGD3Ah6URKpNDGVm3+uON23ySYY=;
+        h=From:To:Cc:Subject:Date;
+        b=ZqTuYxCE+encs7HL0xIEZUNQsmaskGiy6owzCnqDpM9hi91YVxL4/NUO2PcVoMHul
+         cIK7Kt8N6UbaP2Bv/jDz0Of1T09shQ9oXEZygijpCKp9nznkJ0BDpwb4cH4bxVUttM
+         to5bFcCoP1AT1sDgvbX6p2I6v/YQPs2bI3HcA/sg=
+Received: from rtoax.lan ([120.245.114.155])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id E3B1D45D; Sun, 26 Nov 2023 10:56:59 +0800
+X-QQ-mid: xmsmtpt1700967419td0f4czeq
+Message-ID: <tencent_77E0BC1E8E9A21CA1B9009DD66555C72A90A@qq.com>
+X-QQ-XMAILINFO: MFdGPHhuqhNodgBRTfRMcMMgwHvb2slM+/IRLpRJ6+WO9p5PwdrznpirQgIr/u
+         ClaaUazvNLGG3aVQD4U7uPfOoq1sh60kOf693Xr2Zia9DAQE99Q2aBqOoeekXWyQZenBFa4oM5oC
+         7cPmoEOp+LYacf8zwx9nN53m2UwJOHqQ9+hqS4a8awKatSOQtrZ8hkUjYhHfM6mbPO9dIBkA5dLK
+         /TlPp7XdUZUlQQkupXeDGPi/jwNRIAu3XPSCp6K7TzXzOnoPZHYAlwg3QjdbBb4OlKsBiE5ku176
+         qhajxJBQ5e/A9FSZcUdIG/+2dgEHHGERV9CYfqd/Hwi0NlOYd72ysndU8zi1YZRlz9DOmzXRpdYS
+         8Si+0OIFC0drdGCYXpEcE+vi26MpIv0L3mOemFNLdA6mewqhacRrjrnPNM+8NZWBNMjOFJ0d2p9k
+         1kU21qRo177pHjjy8DdcpkdHOsNQjGP8TIlerJx4EpouRXXuuSAYnkNngB9b+4k7TppUivjtA/yC
+         QacMmILDUHOlxIdqKixwlQ30tzFOQJ12gUENdcv/6uYDK3eMtmEoAJ0WGUfzHDGzGf1IWqnOl/kz
+         2WwtC/0Yjl1InOoeFdG0mSo8lS1Tonv3ijlw3aHbQb7gRwCEhL23VH2+N9IliRWhLBA5+3lAOQut
+         S/67lI5vxrxWqAxOwVgaLbYjzPPMZXO9HYKKhODeigyA6hf9K6k+APHZdOFtJJaxI3+pzWWujXW2
+         C+9rKssl+aVQfeCEC1JSQ9tjlfCldhOhDyazgORBEY/GjbcsVXs1YK07N674Zhpf6WqH8vf7sTzc
+         hAYLRuHHrJkFISUmVbbAv1dyN2YVrs97sSSqKaqExi59pJCPqaI0Lk1vOKDPWIo2CjcNbuiC0VIo
+         7KS3VFKyubzBsf/qbz9wlvD9AxBkAIqny5ZJExQArPtjXp8G14n5h2SQFG0A0+djp20zY0Aal3gE
+         l3dD3dGjmIsM6UD8+9qC6I1YsaZWAEdLEgUyV5zLzZGDL7vJDgeXLlX/SL8EBmN+APIl65yZTCiz
+         y1Y9agZA==
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        David Hildenbrand <david@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stefan Roesch <shr@devkernel.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     rtoax@foxmail.com, rongtao@cestc.cn
+Subject: [PATCH v2] prctl: Get private anonymous memory region name
+Date:   Sun, 26 Nov 2023 10:56:53 +0800
+X-OQ-MSGID: <20231126025657.10784-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add type-c node to feature otg function and set usb-role-switch property
-for usb_1_dwc3 to enable usb otg.
+From: Rong Tao <rongtao@cestc.cn>
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
+In commit 9a10064f5625 ("mm: add a field to store names for private anony-
+mous memory") add PR_SET_VMA options and PR_SET_VMA_ANON_NAME for the prctl
+system call, then the PR_GET_VMA interface should be provided accordingly,
+which is necessary, as the userspace program usually wants to know what
+VMA name it has configured for the anonymous page.
+
+Userspace can set the name for a region of memory by calling:
+
+    prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned long)name);
+
+Then, Userspace can get the name of a memory region by calling:
+
+    char buf[80];
+    prctl(PR_GET_VMA, PR_GET_VMA_ANON_NAME, start, buf, 0);
+
+Changes for prctl(2) manual page (in the options section):
+
+PR_GET_VMA
+        Gets an attribute specified in arg2 for virtual memory areas
+        starting from the address specified in arg3 and spanning the
+        size specified in arg4. arg5 specifies the value of the attribute
+        to be set.
+
+        Currently, arg2 must be one of:
+
+        PR_GET_VMA_ANON_NAME
+                Get name of anonymous virtual memory areas. arg4 should be
+                a buffer in the user's program, and the size of the buffer
+                should not be less than 80 bytes, otherwise it is possible
+                that the prctl return will fail due to a copy failure
+                (unless you know the length of the name you set through
+                the PR_SET_VMA_ANON_NAME).
+
+                This feature is available only if the kernel is built with
+                the CONFIG_ANON_VMA_NAME option enabled.
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
-Changes in v3:
-  1. squash patch[3/3].
-  2. update commit message.
-  3. add pm8150b_vbus node.
+v2: Simplify code implementation.
+v1: https://lore.kernel.org/all/tencent_977CBF8E8CA6234A1B740A35655D5D7EAA0A@qq.com/
+---
+ include/linux/mm.h         |  7 +++++++
+ include/uapi/linux/prctl.h |  3 +++
+ kernel/sys.c               | 39 ++++++++++++++++++++++++++++++++++++++
+ mm/madvise.c               | 15 +++++++++++++++
+ 4 files changed, 64 insertions(+)
 
-No changes in v2:
-
- .../dts/qcom/sm8250-xiaomi-elish-common.dtsi  | 43 ++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-index 3d4ea428e4cb..946365f15a59 100644
---- a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-@@ -6,6 +6,7 @@
- #include <dt-bindings/arm/qcom,ids.h>
- #include <dt-bindings/phy/phy.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/usb/pd.h>
- #include "sm8250.dtsi"
- #include "pm8150.dtsi"
- #include "pm8150b.dtsi"
-@@ -627,6 +628,41 @@ vol_up_n: vol-up-n-state {
- 	};
- };
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 418d26608ece..f7c242f1bceb 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -4106,6 +4106,8 @@ static inline int seal_check_write(int seals, struct vm_area_struct *vma)
+ }
  
-+&pm8150b_typec {
-+	vdd-pdphy-supply = <&vreg_l2a_3p1>;
-+	status = "okay";
-+
-+	connector {
-+		compatible = "usb-c-connector";
-+
-+		power-role = "source";
-+		data-role = "dual";
-+		self-powered;
-+
-+		source-pdos = <PDO_FIXED(5000, 3000,
-+					 PDO_FIXED_DUAL_ROLE |
-+					 PDO_FIXED_USB_COMM |
-+					 PDO_FIXED_DATA_SWAP)>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				pm8150b_role_switch_in: endpoint {
-+					remote-endpoint = <&usb_1_role_switch_out>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&pm8150b_vbus {
-+	status = "okay";
-+};
-+
- &pon_pwrkey {
- 	status = "okay";
- };
-@@ -664,11 +700,12 @@ &usb_1 {
- };
+ #ifdef CONFIG_ANON_VMA_NAME
++struct anon_vma_name *madvise_get_anon_name(struct mm_struct *mm,
++					    unsigned long start);
+ int madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
+ 			  unsigned long len_in,
+ 			  struct anon_vma_name *anon_name);
+@@ -4115,6 +4117,11 @@ madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
+ 		      unsigned long len_in, struct anon_vma_name *anon_name) {
+ 	return 0;
+ }
++static inline
++struct anon_vma_name *madvise_get_anon_name(struct mm_struct *mm,
++					    unsigned long start) {
++	return NULL;
++}
+ #endif
  
- &usb_1_dwc3 {
--	dr_mode = "peripheral";
-+	dr_mode = "otg";
- 	maximum-speed = "high-speed";
- 	/* Remove USB3 phy */
- 	phys = <&usb_1_hsphy>;
- 	phy-names = "usb2-phy";
-+	usb-role-switch;
- };
+ #ifdef CONFIG_UNACCEPTED_MEMORY
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 370ed14b1ae0..8ba0016d77de 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -291,6 +291,9 @@ struct prctl_mm_map {
+ #define PR_SET_VMA		0x53564d41
+ # define PR_SET_VMA_ANON_NAME		0
  
- &usb_1_hsphy {
-@@ -678,6 +715,10 @@ &usb_1_hsphy {
- 	status = "okay";
- };
- 
-+&usb_1_role_switch_out {
-+	remote-endpoint = <&pm8150b_role_switch_in>;
-+};
++#define PR_GET_VMA		0x53564d42
++# define PR_GET_VMA_ANON_NAME		0
 +
- &ufs_mem_hc {
- 	vcc-supply = <&vreg_l17a_3p0>;
- 	vcc-max-microamp = <800000>;
+ #define PR_GET_AUXV			0x41555856
+ 
+ #define PR_SET_MEMORY_MERGE		67
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..b1cbcb276e1a 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2359,12 +2359,48 @@ static int prctl_set_vma(unsigned long opt, unsigned long addr,
+ 	return error;
+ }
+ 
++static int prctl_get_vma(unsigned long opt, unsigned long addr,
++			 unsigned long buf, unsigned long arg)
++{
++	struct mm_struct *mm = current->mm;
++	char __user *u_buf;
++	int error;
++
++	switch (opt) {
++	case PR_GET_VMA_ANON_NAME:
++		struct anon_vma_name *anon_name = NULL;
++
++		u_buf = (char __user *)buf;
++		error = 0;
++
++		mmap_read_lock(mm);
++		anon_name = madvise_get_anon_name(mm, addr);
++
++		if (!anon_name || copy_to_user(u_buf, anon_name->name,
++					       strlen(anon_name->name) + 1))
++			error = -EFAULT;
++
++		mmap_read_unlock(mm);
++		anon_vma_name_put(anon_name);
++		break;
++	default:
++		error = -EINVAL;
++	}
++	return error;
++}
++
+ #else /* CONFIG_ANON_VMA_NAME */
+ static int prctl_set_vma(unsigned long opt, unsigned long start,
+ 			 unsigned long size, unsigned long arg)
+ {
+ 	return -EINVAL;
+ }
++
++static int prctl_get_vma(unsigned long opt, unsigned long start,
++			 unsigned long u_buf, unsigned long arg)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_ANON_VMA_NAME */
+ 
+ static inline unsigned long get_current_mdwe(void)
+@@ -2712,6 +2748,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_SET_VMA:
+ 		error = prctl_set_vma(arg2, arg3, arg4, arg5);
+ 		break;
++	case PR_GET_VMA:
++		error = prctl_get_vma(arg2, arg3, arg4, arg5);
++		break;
+ 	case PR_GET_AUXV:
+ 		if (arg4 || arg5)
+ 			return -EINVAL;
+diff --git a/mm/madvise.c b/mm/madvise.c
+index cf4d694280e9..bad7b4167d2c 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1287,6 +1287,21 @@ static int madvise_vma_anon_name(struct vm_area_struct *vma,
+ 	return error;
+ }
+ 
++struct anon_vma_name *madvise_get_anon_name(struct mm_struct *mm,
++						  unsigned long start)
++{
++	struct vm_area_struct *vma;
++	struct anon_vma_name *anon_name = NULL;
++
++	vma = find_vma(mm, start);
++	if (vma) {
++		anon_name = anon_vma_name(vma);
++		anon_vma_name_get(anon_name);
++	}
++
++	return anon_name;
++}
++
+ int madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
+ 			  unsigned long len_in, struct anon_vma_name *anon_name)
+ {
 -- 
-2.41.0
+2.43.0
 
