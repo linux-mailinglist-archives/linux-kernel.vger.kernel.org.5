@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005EB7F9211
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 453017F921B
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjKZKBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 05:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S229549AbjKZKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 05:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjKZKBH (ORCPT
+        with ESMTP id S229437AbjKZKMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 05:01:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0A910A;
-        Sun, 26 Nov 2023 02:01:12 -0800 (PST)
-Date:   Sun, 26 Nov 2023 10:01:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700992871;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R638rDDj10jzdeR+s3rY0BIqraXp1U3EJ/HJcfq1tsM=;
-        b=Rvbqc851odlCR7sQ03AFS3TwyMsKpUtuu93PRzgG9J3Zbbep8WQYvbx4i2jKfAfMLBM1ZN
-        4I6Jvm+igqHA+NQPUVkhKKMpHcHU5Togm2ksbj1luAwpiYW2iHz4XpbA1raPIA9/SYZveh
-        QlXyBDrLpPDduMUwbIRW+oU236WvO3VhrSeA+OIt/RmesdNa4XFV0pGcT0LaEXly5xn8cj
-        rYqG26g/H4GxsMG1uVCBM93z5i2QCb75qGEJvFi2r3aKhrRZ++xf3CJF1pfIOF5GGqzeFV
-        KyVlQTRxUZJZfFvigTlNt6fABPS4D2jkpNiNSVSll2RhpBa6UEPrq+8HYqMqWQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700992871;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R638rDDj10jzdeR+s3rY0BIqraXp1U3EJ/HJcfq1tsM=;
-        b=Ay17crmMt02D9ycWqdJ+8xSFd91MOFvT7nCoqcZfBJFiFXucR2YNQdFZXoWbgRFaYdYa64
-        cqs4r+9Ty/y4pbAQ==
-From:   "tip-bot2 for Christophe JAILLET" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] MAINTAINERS: Add include/linux/lockdep*.h
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        Sun, 26 Nov 2023 05:12:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CAFE3;
+        Sun, 26 Nov 2023 02:12:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700993535; x=1732529535;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=h/LLhdSvEk/cgSco2Zse5iLa8y9W4V/6wPojyS/oJBU=;
+  b=eRLlMIep3WmGXgcSw9W3mgU6/uVhxAevhQtlWv8Kpo9TAG97j5ht1vtc
+   UwmC3tAz7DHRu4Zug7tPb+fzoEq6ADN2KYikg5yWJ4HozCmALmQLhfEs6
+   LU0apDJUOTzdPt1jSW+x35JuzO9xIoWS6JEWDDTnqQUjjbpHjl24hL5Rm
+   lLd0axI1ae10uBC+DDI931YAlcvuAheybtKev3brsWALY+DgwJbT3X8GD
+   11R+T0XrC1PnmJOUHmToUbeX2JVmwT0U2AEtsJ9jWlW3f/S61kgLTyq9U
+   lvAi7RTkODnIP3AxZlDhv4wikiY3K74jlgLGMfRz85J6PS1JjJ1/S89Rt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="5805302"
+X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
+   d="scan'208";a="5805302"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 02:12:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="941294053"
+X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
+   d="scan'208";a="941294053"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2023 02:12:11 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7C7V-00051W-05;
+        Sun, 26 Nov 2023 10:12:09 +0000
+Date:   Sun, 26 Nov 2023 18:12:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Ce722abd043e5de64d2acd28d581e4a952994a94e=2E17009?=
- =?utf-8?q?89248=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
-References: =?utf-8?q?=3Ce722abd043e5de64d2acd28d581e4a952994a94e=2E170098?=
- =?utf-8?q?9248=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
+Subject: Re: [PATCH] export.h: remove include/asm-generic/export.h
+Message-ID: <202311261737.dQEkPNHF-lkp@intel.com>
+References: <20231126054917.930324-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Message-ID: <170099286957.398.270163389762223415.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231126054917.930324-1-masahiroy@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,36 +68,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Hi Masahiro,
 
-Commit-ID:     a0c8711b1da5cb62ba50b96b4e7991f03073f477
-Gitweb:        https://git.kernel.org/tip/a0c8711b1da5cb62ba50b96b4e7991f03073f477
-Author:        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-AuthorDate:    Sun, 26 Nov 2023 10:00:59 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 26 Nov 2023 10:53:29 +01:00
+kernel test robot noticed the following build errors:
 
-MAINTAINERS: Add include/linux/lockdep*.h
+[auto build test ERROR on v6.7-rc2]
+[also build test ERROR on linus/master next-20231124]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Have lockdep_api.h and lockdep_types.h match as well.
+url:    https://github.com/intel-lab-lkp/linux/commits/Masahiro-Yamada/export-h-remove-include-asm-generic-export-h/20231126-135120
+base:   v6.7-rc2
+patch link:    https://lore.kernel.org/r/20231126054917.930324-1-masahiroy%40kernel.org
+patch subject: [PATCH] export.h: remove include/asm-generic/export.h
+config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20231126/202311261737.dQEkPNHF-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311261737.dQEkPNHF-lkp@intel.com/reproduce)
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/e722abd043e5de64d2acd28d581e4a952994a94e.1700989248.git.christophe.jaillet@wanadoo.fr
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311261737.dQEkPNHF-lkp@intel.com/
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 97f51d5..9834adc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12458,7 +12458,7 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
- F:	Documentation/locking/
- F:	arch/*/include/asm/spinlock*.h
--F:	include/linux/lockdep.h
-+F:	include/linux/lockdep*.h
- F:	include/linux/mutex*.h
- F:	include/linux/rwlock*.h
- F:	include/linux/rwsem*.h
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm64/kernel/vdso/note.S:15:
+>> arch/arm64/include/asm/assembler.h:15:10: fatal error: asm-generic/export.h: No such file or directory
+      15 | #include <asm-generic/export.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
+   In file included from arch/arm64/include/asm/linkage.h:5,
+                    from include/linux/linkage.h:8,
+                    from arch/arm64/kernel/vdso/sigreturn.S:15:
+>> arch/arm64/include/asm/assembler.h:15:10: fatal error: asm-generic/export.h: No such file or directory
+      15 | #include <asm-generic/export.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
+   make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/vdso/note.o] Error 1
+   make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/vdso/sigreturn.o] Error 1
+   make[3]: Target 'include/generated/vdso-offsets.h' not remade because of errors.
+   make[3]: Target 'arch/arm64/kernel/vdso/vdso.so' not remade because of errors.
+   make[2]: *** [arch/arm64/Makefile:194: vdso_prepare] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
+
+
+vim +15 arch/arm64/include/asm/assembler.h
+
+f3e39273e0a9a5 Marc Zyngier 2015-02-20  14  
+386b3c7bdafcc6 Mark Rutland 2018-12-07 @15  #include <asm-generic/export.h>
+386b3c7bdafcc6 Mark Rutland 2018-12-07  16  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
