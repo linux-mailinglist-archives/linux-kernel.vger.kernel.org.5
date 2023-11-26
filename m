@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21677F93B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841097F93B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjKZQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 11:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
+        id S230136AbjKZQUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 11:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKZQRZ (ORCPT
+        with ESMTP id S229456AbjKZQUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 11:17:25 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244A9D3;
-        Sun, 26 Nov 2023 08:17:32 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701015450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KA0lDoV5G5Peuw5aoWsAKffieXWD7sSMsne9MKzdxaY=;
-        b=zqKWyY/nAZnzrOIpYqQo3Mwy8WSs9c7+XOPgm2+o1WwBNEC67xa83d4yMbyVK6czzKZPQ2
-        Skaao1godL5ZD2rPS+mt8k+vEPW0BnSYU8btf+x8lEA1gX4DakjWm21JUHI15v0IZdAiTS
-        zXMSBZKB15Fz06rwapGAutBGxIpiu5Keu6kdOBDP5jxILlStTTUk/wmy9EepSyGzpfjgnF
-        SRIjUuWekFbmHiKMEzkTQpM07geuA+Wr29seaX4HkMRfKiwUPlQc61whaUdRobZifFW/Tc
-        1ef7o1Uvj46KeWbgVOJ9uWh+zGSL3fQoJ2HlYJB0mKryTdyyzP+ujlgH1vutpw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701015450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KA0lDoV5G5Peuw5aoWsAKffieXWD7sSMsne9MKzdxaY=;
-        b=BwrXFy+skkl94ocXW+NpEpjC6YMKz11ciAZNDycQ9gm9LG7BWdgEs+Jsa0S/DJdy9favH/
-        BGxy2msUs7eRYeAg==
-To:     Xuewen Yan <xuewen.yan@unisoc.com>, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
-        tony@atomide.com
-Cc:     tglx@linutronix.de, andriy.shevchenko@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        ke.wang@unisoc.com, xuewen.yan94@gmail.com,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH] serial: core: Use pm_runtime_get_sync() in
- uart_start()
-In-Reply-To: <20231124122258.1050-1-xuewen.yan@unisoc.com>
-References: <20231124122258.1050-1-xuewen.yan@unisoc.com>
-Date:   Sun, 26 Nov 2023 17:23:26 +0106
-Message-ID: <87il5o32w9.fsf@jogness.linutronix.de>
+        Sun, 26 Nov 2023 11:20:15 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D36ED3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 08:20:22 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 093F35C0162;
+        Sun, 26 Nov 2023 11:20:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sun, 26 Nov 2023 11:20:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1701015619; x=1701102019; bh=Qy
+        P8UlmkQUxctXvsLY+u2IDuION9oeAKPUhsirOlXLA=; b=mz9yoPopTnP5Pp9VMl
+        d2z+GxcdEHJ0tmL5X3c0HKcOBIgBBPogGES9smTlQf/Y7YpXCFNuyR/cbd4eblDR
+        U6itJOlmN29E0epnkGmKfcmml1kGtIIC8knv6lWDBXqAyizfMmZZ8uixkEfL9s0l
+        gz64qKje4FM0BruZ0MVm/5QhsyanRTIhxhKBvMRD0t46o+qW88VhK6tOT1V8nhgi
+        NLeR2JdE2uT0WNdG6vPoFqDD+9uRIQTDDM19javDpLi8/BW3yD9a35v/LmdOCh+s
+        GmtmzU+bP2ys02U4p/7K2B8wDTEsX3PfdUs0GrgusNVLm+cGbN0qyt8614odS95O
+        qWqA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701015619; x=1701102019; bh=QyP8UlmkQUxct
+        XvsLY+u2IDuION9oeAKPUhsirOlXLA=; b=pYW6R4XCzRWd0vTqOJWtxZ77G2Xa0
+        tiANXLIVKppJ2E10z+/38o4klXtIPbKRjbPZi0unsaPsdbWSkXKDPre2IDOZMDca
+        3fMLyDSrRIdACt1SgcX6EPjR0nfz6GpRo0+KhEsos1aOIq+mwzrrF1IfPsMgU/Il
+        Yl8JMJPkrG/dBGxFcUjkinRSPBoW+jCImanE7oeCzAwFjNv2KAgh7Cx44BwZ9/3Z
+        ufgv2gtu5LCLod4X9+evU0B0azE0ziOhagcQNvM+MbNC/hxFh1X3IB5qZWRU/EUW
+        dKzARYnqNs7VRYa86/mEFocyApbgQik8UTYqlJu27PmINuvmOk6wIaHQQ==
+X-ME-Sender: <xms:QnBjZV5cDDVJbvYPtkQ9ryzJUBGmbD2Swxwsv6tnrPl-J-IJ84LjAQ>
+    <xme:QnBjZS7k3aPMObtfVzaI_FLh7lerL1ppTkFc_zxCsNTVROm982brmjmpy70tFUk1b
+    EwBe4F6TzWiM3VkB74>
+X-ME-Received: <xmr:QnBjZcfTQ1ZYM3ZMwgmcFK02dJPttc8k5NWhdDdABE61PbtFU-gOoh70BYyH6DhOJBXz0cFJsFZn5rRrzkmDXqlVzYtDyXF7Qa_v-IC8OhLGXEZ4HMHvyGM_Y-ls3uw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehledgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
+    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
+    hnpeeludffieehueevtdffvedtueelleejuddugfettdevhfefffdvgffhjeehgfelleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnh
+    esshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:QnBjZeJhfb2l1cvB8aiiCBBqvgCMwubJsyjh2Xg_Ow7bx5LS9IHGFw>
+    <xmx:QnBjZZJ978hMrfxgmqD292uDOHG4gqeCceuXFraHAFZ8EMgsLww9MQ>
+    <xmx:QnBjZXw_SJi0LXt1FRu8hOt0eZVit57-2ptaaCBAQ4rFAkl2M1B0uw>
+    <xmx:Q3BjZQ88uzyYXxa_Wgbci8FNl3bKjHQRDhLuFwi9nEQcCcUWFenojA>
+Feedback-ID: i51094778:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 26 Nov 2023 11:20:16 -0500 (EST)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu: dart: Use readl instead of readl_relaxed for consistency
+Date:   Sun, 26 Nov 2023 17:20:09 +0100
+Message-Id: <20231126162009.17934-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Added printk maintainers CC.]
+While the readl_relaxed in apple_dart_suspend is correct the rest of the
+driver uses the non-relaxed variants everywhere and the single
+readl_relaxed is inconsistent and possibly confusing.
 
-On 2023-11-24, Xuewen Yan <xuewen.yan@unisoc.com> wrote:
-> The commit 84a9582fd203("serial: core: Start managing serial
-> controllers to enable runtime PM") use the pm_runtime_get() after
-> uart_port_lock() which would close the irq and disable preement.  At
-> this time, pm_runtime_get may cause the following two problems:
->
-> (1) deadlock in try_to_wake_up:
->
-> uart_write()
-> uart_port_lock() <<< get lock
-> __uart_start
-> __pm_runtime_resume
-> rpm_resume
-> queue_work_on
-> try_to_wake_up
-> _printk
-> uart_console_write
-> ...
-> uart_port_lock() <<< wait forever
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+ drivers/iommu/apple-dart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I suppose you got this because of the lockdep message generated by
-#2. It probably would make sense to call __printk_safe_enter() inside
-uart_port_lock(). This would allow printk() to automatically defer the
-printing for that CPU until the port lock is released.
+diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+index 59cf256bf40f..c7f047ce0a7a 100644
+--- a/drivers/iommu/apple-dart.c
++++ b/drivers/iommu/apple-dart.c
+@@ -1272,7 +1272,7 @@ static __maybe_unused int apple_dart_suspend(struct device *dev)
+ 	unsigned int sid, idx;
+ 
+ 	for (sid = 0; sid < dart->num_streams; sid++) {
+-		dart->save_tcr[sid] = readl_relaxed(dart->regs + DART_TCR(dart, sid));
++		dart->save_tcr[sid] = readl(dart->regs + DART_TCR(dart, sid));
+ 		for (idx = 0; idx < dart->hw->ttbr_count; idx++)
+ 			dart->save_ttbr[sid][idx] =
+ 				readl(dart->regs + DART_TTBR(dart, sid, idx));
+-- 
+2.34.1
 
-> (2) scheduling while atomic:
-> uart_write()
-> uart_port_lock() <<< get lock
-> __uart_start
-> __pm_runtime_resume
-> rpm_resume
-> schedule() << sleep
-
-rpm_resume() is a fascinating function. It requires the caller to hold a
-spin_lock (dev->power.lock) with interrupts disabled. But it seems to
-believe that this is the *only* spin_lock held so that it can
-temporarily spin_unlock and call might_sleep() functions. In the case of
-uart_write(), it certainly is not the only spin_lock held.
-
-I do not know enough about the internals of RPM to suggest a proper
-solution. But it looks like rpm_resume() cannot assume dev->power.lock
-is the only spin_lock held by the caller.
-
-John Ogness
