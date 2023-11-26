@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FF57F9398
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 16:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9797F9399
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 16:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbjKZPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 10:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
+        id S230085AbjKZPyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 10:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjKZPqk (ORCPT
+        with ESMTP id S231128AbjKZPqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 10:46:40 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B521A5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:46:44 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a08e4352992so278697566b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:46:44 -0800 (PST)
+        Sun, 26 Nov 2023 10:46:42 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6186D60
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:46:47 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a0bdf4eeb46so121768666b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:46:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1701013603; x=1701618403; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1701013605; x=1701618405; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Frvwetq2uP6wtxuP9UX1ctUqElygA7huby/aEqYEpm0=;
-        b=bDRBqyHTyF+fHdoboWSuZZQfp6AcYc1IJ8ii28CCzvKa2krnfgE91PhZCo2OK3ioMV
-         tXy08MhS8+Ds69186bFuAKpBtuk93ANCQDwJ/QtDwUlRKKGH88zXFnnGxQicUOsSnd+F
-         rOungMdmME4OOyHxXtoy5IDaWATP2q/JtCAUY=
+        bh=lH7aqPIDP5zDMXKB9fcIq0eCdhqCYxRoC/nv219ztfM=;
+        b=fxVBJV/LoFEyIVCYKfwtM6n7n2PdpqN1VMuA8ECs0e/yISmIsE+nfzisIPKLc8thxr
+         b/1WA/oHUeGnb/s8IXyZfyhafi5npVH+LX1cq3bNWOjF9v2Pts71EStJDMjz5TIzvq2s
+         xvbsW3ixBzHpzi3szyu10+QJh+WoOy2vly6Jc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701013603; x=1701618403;
+        d=1e100.net; s=20230601; t=1701013605; x=1701618405;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Frvwetq2uP6wtxuP9UX1ctUqElygA7huby/aEqYEpm0=;
-        b=GxpFrZ99BhggkcZKh3qnV44rlnuQApy0RVg2ctccaXfzjEhcYRSruqCU2wOjVV0mDk
-         t8zHjqTIRsCvm/+BD80kOodft1u8m7INVRFwH9Qd8n9lG66iCAPkGMsDuO8BDkL2of/I
-         romnMjM4HrBw1+6kqzRPTa0y2IpUnkqCKNTBof8gQ1tqiCKNw3ITu156tbXexnYfbdQY
-         zNSl09HSZQGOAZfmDbLsdZQDulRl/iOJtwQTvtkJFOYD7Kg+iu5wHDHGrJOoYcshzT0k
-         MkjWUOzLXe8mH7fqjdsrEOSYXS/hKahjv20DNXunJhhy55IWiceglF2xPfyU2afQSphD
-         ZQFA==
-X-Gm-Message-State: AOJu0YwSbzCjJZRVLXbRwnhqWWiwQhJ5KrrRG77U7IfFVIJrkBvYF07U
-        QCKEveuwnpIniDC/YMWYil/asXrEUdTzTE2g48BWrg==
-X-Google-Smtp-Source: AGHT+IEDqopibIRdY4CT9KM9oqdSMtz/RcmEiz+/nh5esAfdhe2suG5tPBnyv8lcQHoHyXYw6DmKvA==
-X-Received: by 2002:a17:906:25e:b0:a0d:35b:89a9 with SMTP id 30-20020a170906025e00b00a0d035b89a9mr1819881ejl.46.1701013603021;
-        Sun, 26 Nov 2023 07:46:43 -0800 (PST)
+        bh=lH7aqPIDP5zDMXKB9fcIq0eCdhqCYxRoC/nv219ztfM=;
+        b=fddLPAbNQ+LOkM2g+7Od/1IJZyKIjfw9KX6fPGPZA3tIRUOMGamP21KPHFYSILP0BT
+         nLHPeM4eCjr2LWISaqG+i7IKcmLUNhwaclvhOyXs4TLVWzMGOgv9lv4auIBnMlhaHvJ/
+         SixuHlAJy/Ptiz31UXRn/5gXby3Wju1n0NkxYDWIv0uz/ZLlg57Y2wBQaYTJpbNVs0ih
+         yC1V51alfXv2O5LUsJ9mGp7FhbBDoZ4o0tTzjwZjHi337OS0c/TIrwsS5dvZmjCwVvIj
+         805B7CI2UVkG18vBSbntIArBdIw59tPgzU+1EOyIrUeIgp4SPhSW5xvFkX0Zm1DczTJy
+         rUGg==
+X-Gm-Message-State: AOJu0YyCE3IRrF8cvNbvuGkpP/14xdeWuLBxn2ZFfdNC+bQwGJBU+aDd
+        e8+i7l2hxSZrpttsNH8BMdutQOqkek5h/HBY2WI4qg==
+X-Google-Smtp-Source: AGHT+IFGjyPefy3qUCIckY94nu278KPo6arcbb0FbHr4msqDfJB29m5Zb9k76MVfQi0M0rApKumbVQ==
+X-Received: by 2002:a17:907:d92:b0:a01:de07:5926 with SMTP id go18-20020a1709070d9200b00a01de075926mr7488722ejc.45.1701013605262;
+        Sun, 26 Nov 2023 07:46:45 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-95-244-100-54.retail.telecomitalia.it. [95.244.100.54])
-        by smtp.gmail.com with ESMTPSA id h24-20020a170906591800b009fdc684a79esm4656158ejq.124.2023.11.26.07.46.39
+        by smtp.gmail.com with ESMTPSA id h24-20020a170906591800b009fdc684a79esm4656158ejq.124.2023.11.26.07.46.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 07:46:41 -0800 (PST)
+        Sun, 26 Nov 2023 07:46:44 -0800 (PST)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
@@ -67,9 +67,9 @@ Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Robert Foss <rfoss@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 03/11] drm: bridge: samsung-dsim: enter display mode in the enable() callback
-Date:   Sun, 26 Nov 2023 16:44:55 +0100
-Message-ID: <20231126154605.15767-4-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v2 04/11] drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
+Date:   Sun, 26 Nov 2023 16:44:56 +0100
+Message-ID: <20231126154605.15767-5-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231126154605.15767-1-dario.binacchi@amarulasolutions.com>
 References: <20231126154605.15767-1-dario.binacchi@amarulasolutions.com>
@@ -85,24 +85,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The synaptics-r63353 (panel-bridge) can only be configured in command mode.
-So, samsung-dsim (bridge) must not be in display mode during the
-prepare()/unprepare() of the panel-bridge. Setting the
-"pre_enable_prev_first" flag to true allows the prepare() of the
-panel-bridge to be called between the pre_enabled() and enabled() of the
-bridge. So, the bridge can enter display mode only in the enabled().
-The unprepare() of the panel-bridge is instead called between the disable()
-and post_disable() of the bridge. So, the disable() must exit the display
-mode (i .e. enter command mode) to allow the panel-bridge to receive DSI
-commands.
-
-samsung_dsim_atomic_pre_enable   -> command mode
-r63353_panel_prepare             -> send DSI commands
-samsung_dsim_atomic_enable       -> enter display mode
-
-samsung_dsim_atomic_disable      -> exit display mode (command mode)
-r63353_panel_unprepare           -> send DSI commands
-samsung_dsim_atomic_post_disable
+The patch completes the setting of CLKLANE_STOP for the imx8mn and imx8mp
+platforms (i. e. not exynos).
 
 Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
@@ -111,48 +95,35 @@ Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
 (no changes since v1)
 
- drivers/gpu/drm/bridge/samsung-dsim.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/samsung-dsim.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index be5914caa17d..15bf05b2bbe4 100644
+index 15bf05b2bbe4..13f181c99d7e 100644
 --- a/drivers/gpu/drm/bridge/samsung-dsim.c
 +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -1494,7 +1494,6 @@ static void samsung_dsim_atomic_pre_enable(struct drm_bridge *bridge,
- 			return;
+@@ -96,6 +96,7 @@
+ #define DSIM_MFLUSH_VS			BIT(29)
+ /* This flag is valid only for exynos3250/3472/5260/5430 */
+ #define DSIM_CLKLANE_STOP		BIT(30)
++#define DSIM_NON_CONTINUOUS_CLKLANE	BIT(31)
  
- 		samsung_dsim_set_display_mode(dsi);
--		samsung_dsim_set_display_enable(dsi, true);
- 	}
- }
- 
-@@ -1507,6 +1506,7 @@ static void samsung_dsim_atomic_enable(struct drm_bridge *bridge,
- 		samsung_dsim_set_display_mode(dsi);
- 		samsung_dsim_set_display_enable(dsi, true);
- 	} else {
-+		samsung_dsim_set_display_enable(dsi, true);
- 		samsung_dsim_set_stop_state(dsi, false);
- 	}
- 
-@@ -1524,6 +1524,8 @@ static void samsung_dsim_atomic_disable(struct drm_bridge *bridge,
- 	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
- 		samsung_dsim_set_stop_state(dsi, true);
- 
-+	samsung_dsim_set_display_enable(dsi, false);
+ /* DSIM_ESCMODE */
+ #define DSIM_TX_TRIGGER_RST		BIT(4)
+@@ -945,8 +946,12 @@ static int samsung_dsim_init_link(struct samsung_dsim *dsi)
+ 	 * power consumption.
+ 	 */
+ 	if (driver_data->has_clklane_stop &&
+-	    dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
++	    dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) {
++		if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
++			reg |= DSIM_NON_CONTINUOUS_CLKLANE;
 +
- 	dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
- }
+ 		reg |= DSIM_CLKLANE_STOP;
++	}
+ 	samsung_dsim_write(dsi, DSIM_CONFIG_REG, reg);
  
-@@ -1532,7 +1534,8 @@ static void samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
- {
- 	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
- 
--	samsung_dsim_set_display_enable(dsi, false);
-+	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-+		samsung_dsim_set_stop_state(dsi, true);
- 
- 	dsi->state &= ~DSIM_STATE_ENABLED;
- 	pm_runtime_put_sync(dsi->dev);
+ 	lanes_mask = BIT(dsi->lanes) - 1;
 -- 
 2.42.0
 
