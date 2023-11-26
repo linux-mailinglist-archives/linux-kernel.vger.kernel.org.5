@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0097F9133
+	by mail.lfdr.de (Postfix) with ESMTP id 986417F9132
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 05:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjKZEFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 23:05:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
+        id S230229AbjKZEGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 23:06:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjKZEFk (ORCPT
+        with ESMTP id S229507AbjKZEGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 23:05:40 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4D6B3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 20:05:47 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5b99999614bso3351743a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 20:05:47 -0800 (PST)
+        Sat, 25 Nov 2023 23:06:34 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0098A119
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 20:06:40 -0800 (PST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc41aed6a5so35005775ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 20:06:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700971546; x=1701576346;
+        d=1e100.net; s=20230601; t=1700971600; x=1701576400;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bAXGZdQTHSEp68vg5xcT08FTpMfyr9oJm+bNgy+U+7U=;
-        b=O2lg2SnBRtK8okRr3sus5PHFkVPiySIB8FKrC6CNKg7qZUv7VI1M/HxmvEsB1vnpcY
-         0SoiC10Q8snlzZkLpzwyo8+p7zMBaf0rV4aqsO2/IsN8yaP3TqJjC/452W19aO0JeEHI
-         YCd+lhgIm4kxPHECOKC9JmhktC306HGIs+Xhr7eUXcGVpUkDJde9O2RvSS3ZKeJHWneN
-         MOWDnV/bIP1VTI2JdASLG7oM0FXBa/O7lVcd3AZ9s0EfyYl3tmQmyvjXEx1WrWe7hL6f
-         VA3WvvdWJEYREcgjBlWkj58m5YcaWdhEj5ncbbShtYhEwJIN1H9OXXd4HvrtDg+lLiI0
-         snqg==
-X-Gm-Message-State: AOJu0YzyHKv2JwmtFHuqR+ozyfNo76IxikEYaFNzUi2/OYvuFdg6aUeD
-        v5weSrnaoAm2zcIJgHj1kfPWfUa5XIblHw5epBTRKE8Wa5coJrc=
-X-Google-Smtp-Source: AGHT+IHIX4YF3LDtL4CFzc2Br/cZMAKb1mUtNMFwEEFBWvn4GP1crhIGWextCZmbog4X+4Qw85fwNArmTf7mbUSU9u01E6V/QOGx
+        bh=IMzzzrHQcZNtfEipT/FghEZuPLoklrOQYabnOYQ35gw=;
+        b=rCTrEUjlpw0O3E6ExzGBoitE7zCxScKjyxwFQWfN4MpkeViqzCG/m4BG/saONyDzHP
+         /CE03YpbBgiLmOsUud64zdxdm+Jn+Nsrco/fxqA0rhkXw8Qiq+1YVrAvEIpEYfQSebW2
+         5rlDo/CVvlFtEKVicdOEjHqbsCyW2jYjVsfDu0U57rTrkgoTj+q74NvN6W3YCF4HPonM
+         IDSwdO7HCQq6gzhmarCMGLdhI87Ssepj/tIQWdtG7LE16tJg7zrC0ZqxF3+PZsx+iV8Z
+         toTbPBoYkOLd3PA+c6t1xCluABHzHUFLEYYKIIVbKaMr7Wv/LwjAzN4xtZbmbo6bitwH
+         5v6w==
+X-Gm-Message-State: AOJu0Yy9MNzlLOuCn9rghpPG45ZuK8pojBMLR5h4tl7VBLmaqi2y+wNS
+        Yl8Tc+R4AVXFzv5JfVeZmdz4IBDXjYGCChnJvYaGRtB/FvSYluE=
+X-Google-Smtp-Source: AGHT+IG2IHumVHisiAK6hCFvXONYk5doA4dXNVPUvWveZstJkVj2FF4PY4GQpkwFL/d8sZvhes0zQKROmkhqA2Mjix2v8c7vx17s
 MIME-Version: 1.0
-X-Received: by 2002:a63:211f:0:b0:5bd:4149:a123 with SMTP id
- h31-20020a63211f000000b005bd4149a123mr1273990pgh.7.1700971546681; Sat, 25 Nov
- 2023 20:05:46 -0800 (PST)
-Date:   Sat, 25 Nov 2023 20:05:46 -0800
+X-Received: by 2002:a17:902:db10:b0:1cf:c19e:5be7 with SMTP id
+ m16-20020a170902db1000b001cfc19e5be7mr429772plx.12.1700971600482; Sat, 25 Nov
+ 2023 20:06:40 -0800 (PST)
+Date:   Sat, 25 Nov 2023 20:06:40 -0800
 In-Reply-To: <0000000000003d77e6060af9f233@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d02d4b060b064cd3@google.com>
+Message-ID: <000000000000051b7b060b0650d4@google.com>
 Subject: Re: [syzbot] [crypto?] INFO: task hung in hwrng_fillfn
 From:   syzbot <syzbot+c52ab18308964d248092@syzkaller.appspotmail.com>
 To:     linux-kernel@vger.kernel.org
@@ -135,7 +135,7 @@ index 420f155d251f..883412bbf9f2 100644
 -		mutex_lock(&reading_mutex);
 +		if (mutex_lock_interruptible(&reading_mutex)) {
 +			put_rng(rng);
-+			return = -ERESTARTSYS;
++			return -ERESTARTSYS;
 +		}
  		rc = rng_get_data(rng, rng_fillbuf,
  				  rng_buffer_size(), 1);
