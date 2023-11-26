@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90317F9320
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 15:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84677F9325
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 15:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbjKZOaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 09:30:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
+        id S229890AbjKZOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 09:40:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZOaN (ORCPT
+        with ESMTP id S229437AbjKZOkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 09:30:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16DCDD
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 06:30:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19BCC433C7;
-        Sun, 26 Nov 2023 14:30:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701009019;
-        bh=TLLNQA2VXYNSg4iw436Him1x6VjVGm1YWNWyuFM/u4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hbzMyO0YssbdHB/JPvPVODgrCt0suqRszKTI/l7lRIJYgZAwm52GvFBEGG2/D8TET
-         6SCHkDSxn33BTdpXCFyGpLV4WX1UQpzH/EDdQ66e6A0ZSuP8kfDHcxIFa3v0QUEcJJ
-         MtQQLH8AVsEjySbTo79MCGxHy3budSA3FrdEM6O8BlBKliESGn2TvndXNWBdHX/Xl/
-         zdEG5DGJwriJgu4Ac0G9+vC8c3sJshnEniuc1MDnU+jCkWXmhkWKUVf3Ev0C91e+17
-         IBPBXUOFXbsy6g6VBUuoolLi2HRV8LhCmAApLMjM6kwETgeJqgAiBOCPtOCH1oregS
-         Pke7V/Fbb+V8A==
-Date:   Sun, 26 Nov 2023 15:30:14 +0100
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Jim Cromie <jim.cromie@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] i2c: scx200_acb: Don't let i2c adapters declare
- I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
-Message-ID: <20231126143014.sz4jjwuqcl5biz5p@zenone.zhora.eu>
-References: <20231124101619.6470-1-hkallweit1@gmail.com>
- <20231124101619.6470-11-hkallweit1@gmail.com>
+        Sun, 26 Nov 2023 09:40:19 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FCF9B
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 06:40:25 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r7GJ4-0001v2-7I; Sun, 26 Nov 2023 15:40:22 +0100
+Message-ID: <a1d74498-9c71-4e46-9db3-58baac89dc36@leemhuis.info>
+Date:   Sun, 26 Nov 2023 15:40:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231124101619.6470-11-hkallweit1@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
+ flashing bar with a picture of the desktop background on white screen
+Content-Language: en-US, de-DE
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Lee, Alvin" <Alvin.Lee2@amd.com>
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
+        "Wu, Hersen" <hersenxs.wu@amd.com>,
+        "Mahfooz, Hamza" <Hamza.Mahfooz@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
+ <CABXGCsOqbLRHSkiz79NkVQ-wUtR7y-ZFHvhMw0+JJ_cY2AZmSw@mail.gmail.com>
+ <CABXGCsPE9=Qp3Jg5hkRsTQoNgODnS_cXFU1d+hg3Baob40AaAA@mail.gmail.com>
+ <edc5b75b-c08d-4c62-ae5e-089ffac27772@amd.com>
+ <CABXGCsO=pdxorK9pO7qBPJM-xvgPPtpZqxLvQO4t2AK5qW3vcA@mail.gmail.com>
+ <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
+ <CABXGCsNpEh7GjFPvx=rz6ZeB7Kx4iqV-e8HyFKyhNau2S5gENw@mail.gmail.com>
+ <99ef9596-d4f8-49e2-acbe-ed7486310f84@amd.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <99ef9596-d4f8-49e2-acbe-ed7486310f84@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701009626;8b9eb646;
+X-HE-SMSGID: 1r7GJ4-0001v2-7I
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiner,
-
-in this last patch I will add a couple of minor comments valid
-for the previous, as well.
-
-On Fri, Nov 24, 2023 at 11:16:19AM +0100, Heiner Kallweit wrote:
-> After removal of the legacy eeprom driver the only remaining I2C
-> client device driver supporting I2C_CLASS_SPD is jc42. Because this
-> driver also supports I2C_CLASS_HWMON, adapters don't have to
-> declare support for I2C_CLASS_SPD if they support I2C_CLASS_HWMON.
-> It's one step towards getting rid of I2C_CLASS_SPD mid-term.
+On 16.11.23 11:46, Christian König wrote:
+> Am 15.11.23 um 21:08 schrieb Mikhail Gavrilov:
+>> On Wed, Nov 15, 2023 at 11:39 PM Lee, Alvin <Alvin.Lee2@amd.com> wrote:
+>>> This change has a DMCUB dependency - are you able to update your
+>>> DMCUB version as well?
+>>>
+>> I can confirm this issue was gone after updating firmware.
+>>
+>> ❯ dmesg | grep DMUB
+>> [   11.496679] [drm] Loading DMUB firmware via PSP: version=0x07002300
+>> [   12.000314] [drm] DMUB hardware initialized: version=0x07002300
 > 
-> Series was created supported by Coccinelle and its splitpatch.
-
-this sentence is grammatically incorrect, I guess you meant:
-
-"The series was created with support from Coccinelle and its
-splitpatch feature."
-
-Please fix it if you are going to resend it.
-
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> Mhm, that's a quite ugly problem.
 > 
+> The driver is supposed to work with older firmware as well or at least
+> issue a warning and provide a reasonable fallback.
+> 
+> How are we going to handle this?
 
-Just for you to know, all your patches have a blank line after
-your SoB, it doesn't really matter as I guess git removes it.
+What happened to this regression? This thread looks stalled and from a
+quick search on lore and the amdgpu issue tracker it seems the issue
+wasn't discussed anywhere else during the last 10 days, but I might have
+missed something.
 
-In any case, as before:
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Acked-by: Andi Shyti <andi.shyti@kernel.org>                     
-                                                                 
-and I believe:                                                   
-                                                                 
-Acked-by: Jim Cromie <jim.cromie@gmail.com>                      
-                                                                 
-so that patchwork takes it.
-
-Thanks,
-Andi
+#regzbot poke
