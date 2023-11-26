@@ -2,73 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821287F906F
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0F17F906E
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 01:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjKZAOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 19:14:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        id S229784AbjKZAQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 19:16:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKZAN7 (ORCPT
+        with ESMTP id S229448AbjKZAQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 19:13:59 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A62E4;
-        Sat, 25 Nov 2023 16:14:06 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cfc34b6890so1047595ad.1;
-        Sat, 25 Nov 2023 16:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700957645; x=1701562445; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FL56cXoUtmBrEdcA0tYY4TzRDBeIrF1a5avi6GDovCo=;
-        b=kSNlldhu2tfVHBZm2/lPfA1X9Cd+OV6vtDS3NDVA3nYQCMH6gRctHcyQLYNKhPghUt
-         ypU8VdjwDmm4556CmoFWZAK3p03goZcvc6+99UOXwR50QZoVtP8MddZcOGEbF6jyD7dp
-         vUtA/y1l4+Y/FnRwz6d7ujYrkO9aHGMwCi0kfSH3xAq4tizt/PWda5GIm2hMbBy37hOm
-         iXl1F5bF1vPFcaiV8G5+lUnHIowi4Z4ea/hcfExSbAFfLehfio4Z+X+pCQ26wLHyh4ic
-         M5EaTXLTm3pewV2TR7m5XON4W5i16rM8Q8b+xrP4ffrrHHbQ574jvT85IqL1WdF83Ev6
-         kipw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700957645; x=1701562445;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FL56cXoUtmBrEdcA0tYY4TzRDBeIrF1a5avi6GDovCo=;
-        b=R8LbE+Dl6fCyg+V8iRQnkd2+zfL6Rbkthv08qd5O+9UtawBFUz2Y33exIhaaVpr0oq
-         YVk6XV+3FCEViHce9uAXHBhppNfrCKrBJ6p7duq2I2/Ggx/xyeRsm06Gpg/29zOUuh/C
-         qgK2xcCq6YYJkAgWzZc/kuYOfJeVSllZVa0U2MmmG24uxbtUQE5KV/g7gm1yB5nFR1Tm
-         KPMEAi3XCZafoPcdE5cmWD0uRZsjTG6CKJ35Wt53SPrd0wvsgIWHT/v07mu0RgbL/RLn
-         elwcYiKjpnC/lzylHbqenN/Vv+zBQAQbyg86wRA7yOE8REL+HrG6HMlFeXvkZbWZ0/rt
-         OiaA==
-X-Gm-Message-State: AOJu0YwNRsDujcBipmHE1VOO/7IuPYC2lqKXAUQQN0EdHr8MNdn7UwPb
-        +hyJZOh/a1Xnyi2DTvAlds9O3OlyN0E=
-X-Google-Smtp-Source: AGHT+IE6hIyrn7SuOB+PtaBBbmfSGH6N8PVhToqZf8dodFhLNxYBGDFIwRXxXXAYpvglB1NhL968xQ==
-X-Received: by 2002:a17:902:eccd:b0:1cc:52b5:8df8 with SMTP id a13-20020a170902eccd00b001cc52b58df8mr15199466plh.26.1700957645533;
-        Sat, 25 Nov 2023 16:14:05 -0800 (PST)
-Received: from rigel ([118.209.207.221])
-        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001cfba9dac6esm1233886plb.115.2023.11.25.16.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 16:14:05 -0800 (PST)
-Date:   Sun, 26 Nov 2023 08:14:00 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        Sat, 25 Nov 2023 19:16:02 -0500
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12324133;
+        Sat, 25 Nov 2023 16:16:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+        s=protonmail3; t=1700957767; x=1701216967;
+        bh=P1pnzMB33pcjyYnWs1uOpWPQE6zW15EcToOjweNN8qU=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=YFIGQbOZGbogg9ojHIfruFn7qEDtyi7Sb3c8jwg8ulDZiC28C6w9MLBVeCemhVFZT
+         diOT6Cb/nnUsL+wNTiLuVTdO+51ijhS6amaQLM2EpMY+jXbFAaR7tF0wUHb+GJ2EsZ
+         QqaCTRhV+2DjtDTDmt/osTdl8FEfKzZW4q6VyoYnWkp6TkC/nKP1Y7hpfuzYtOMmf9
+         pphoOBMmWUb1yJ2Slkd9i1z4elzTqd78G5+gXzyMJLnhhhSqqaX6Un/lxiJzGo8I4p
+         myDQfXY1ANJZ1/PRcNEcCnSWk5rHZ9/E29P5JQhpDmZJ84YXDaDzM+JxsukjaQs4wO
+         T+PT2GBJasRTw==
+Date:   Sun, 26 Nov 2023 00:15:49 +0000
+To:     roderick.colenbrander@sony.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpiolib: Drop cargo-culted comment
-Message-ID: <ZWKNyFOU65IHND1k@rigel>
-References: <20231125-dropcomment-v1-1-15800415aae0@linaro.org>
- <ZWFepm7ufLdl115j@rigel>
- <CACRpkdZvwePEaRVQLafD8KmiOENgEGFFDBXGPqS5_WLzNi2_yA@mail.gmail.com>
+From:   Alexander Koskovich <AKoskovich@pm.me>
+Cc:     Alexander Koskovich <akoskovich@pm.me>
+Subject: [PATCH 1/1] hid-playstation: Fix button maps for the DualSense Edge controller
+Message-ID: <20231126001544.747151-1-akoskovich@pm.me>
+Feedback-ID: 37836894:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZvwePEaRVQLafD8KmiOENgEGFFDBXGPqS5_WLzNi2_yA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,28 +48,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 12:05:08AM +0100, Linus Walleij wrote:
-> On Sat, Nov 25, 2023 at 3:40 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Sat, Nov 25, 2023 at 12:25:47AM +0100, Linus Walleij wrote:
->
-> > > -/* gpio_lock prevents conflicts during gpio_desc[] table updates.
-> > > - * While any GPIO is requested, its gpio_chip is not removable;
-> > > - * each GPIO's "requested" flag serves as a lock and refcount.
-> > > - */
-> >
-> > Perhaps provide a comment as to what the gpio_lock DOES cover?
->
-> Normally yes, but Bartosz just said he is going to replace this spinlock
-> with a mutex so it's better if he adds it then.
->
+This brings functionality of the DualSense Edge controller inline
+with the stock PS5 controller.
 
-If that is happening soon then leave it to Bart to change both the
-comment and lock.
+Signed-off-by: Alexander Koskovich <akoskovich@pm.me>
+---
+ drivers/hid/hid-playstation.c | 60 ++++++++++++++++++++++++++++-------
+ 1 file changed, 49 insertions(+), 11 deletions(-)
 
-If not, then we now have an undocumented lock.  If the coverage of the
-spinlock and proposed mutex are the same why not describe what the lock
-covers now?  Then Bart wont have to update the comment.
+diff --git a/drivers/hid/hid-playstation.c b/drivers/hid/hid-playstation.c
+index 8ac8f7b8e317..fc42003cc0eb 100644
+--- a/drivers/hid/hid-playstation.c
++++ b/drivers/hid/hid-playstation.c
+@@ -1344,10 +1344,18 @@ static int dualsense_parse_report(struct ps_device =
+*ps_dev, struct hid_report *r
+=20
+ =09input_report_abs(ds->gamepad, ABS_X,  ds_report->x);
+ =09input_report_abs(ds->gamepad, ABS_Y,  ds_report->y);
+-=09input_report_abs(ds->gamepad, ABS_RX, ds_report->rx);
+-=09input_report_abs(ds->gamepad, ABS_RY, ds_report->ry);
+-=09input_report_abs(ds->gamepad, ABS_Z,  ds_report->z);
+-=09input_report_abs(ds->gamepad, ABS_RZ, ds_report->rz);
++
++=09if (hdev->product =3D=3D USB_DEVICE_ID_SONY_PS5_CONTROLLER_2) {
++=09=09input_report_abs(ds->gamepad, ABS_RX, ds_report->z);
++=09=09input_report_abs(ds->gamepad, ABS_RY, ds_report->rz);
++=09=09input_report_abs(ds->gamepad, ABS_Z,  ds_report->rx);
++=09=09input_report_abs(ds->gamepad, ABS_RZ, ds_report->ry);
++=09} else {
++=09=09input_report_abs(ds->gamepad, ABS_RX, ds_report->rx);
++=09=09input_report_abs(ds->gamepad, ABS_RY, ds_report->ry);
++=09=09input_report_abs(ds->gamepad, ABS_Z,  ds_report->z);
++=09=09input_report_abs(ds->gamepad, ABS_RZ, ds_report->rz);
++=09}
+=20
+ =09value =3D ds_report->buttons[0] & DS_BUTTONS0_HAT_SWITCH;
+ =09if (value >=3D ARRAY_SIZE(ps_gamepad_hat_mapping))
+@@ -1355,19 +1363,49 @@ static int dualsense_parse_report(struct ps_device =
+*ps_dev, struct hid_report *r
+ =09input_report_abs(ds->gamepad, ABS_HAT0X, ps_gamepad_hat_mapping[value].=
+x);
+ =09input_report_abs(ds->gamepad, ABS_HAT0Y, ps_gamepad_hat_mapping[value].=
+y);
+=20
+-=09input_report_key(ds->gamepad, BTN_WEST,   ds_report->buttons[0] & DS_BU=
+TTONS0_SQUARE);
+-=09input_report_key(ds->gamepad, BTN_SOUTH,  ds_report->buttons[0] & DS_BU=
+TTONS0_CROSS);
+-=09input_report_key(ds->gamepad, BTN_EAST,   ds_report->buttons[0] & DS_BU=
+TTONS0_CIRCLE);
+-=09input_report_key(ds->gamepad, BTN_NORTH,  ds_report->buttons[0] & DS_BU=
+TTONS0_TRIANGLE);
++=09if (hdev->product =3D=3D USB_DEVICE_ID_SONY_PS5_CONTROLLER_2) {
++=09=09input_report_key(ds->gamepad, BTN_WEST,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_TRIANGLE);
++=09=09input_report_key(ds->gamepad, BTN_SOUTH,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_SQUARE);
++=09=09input_report_key(ds->gamepad, BTN_EAST,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_CROSS);
++=09=09input_report_key(ds->gamepad, BTN_NORTH,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_CIRCLE);
++=09} else {
++=09=09input_report_key(ds->gamepad, BTN_WEST,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_SQUARE);
++=09=09input_report_key(ds->gamepad, BTN_SOUTH,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_CROSS);
++=09=09input_report_key(ds->gamepad, BTN_EAST,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_CIRCLE);
++=09=09input_report_key(ds->gamepad, BTN_NORTH,
++=09=09=09=09ds_report->buttons[0] & DS_BUTTONS0_TRIANGLE);
++=09}
++
+ =09input_report_key(ds->gamepad, BTN_TL,     ds_report->buttons[1] & DS_BU=
+TTONS1_L1);
+ =09input_report_key(ds->gamepad, BTN_TR,     ds_report->buttons[1] & DS_BU=
+TTONS1_R1);
+ =09input_report_key(ds->gamepad, BTN_TL2,    ds_report->buttons[1] & DS_BU=
+TTONS1_L2);
+ =09input_report_key(ds->gamepad, BTN_TR2,    ds_report->buttons[1] & DS_BU=
+TTONS1_R2);
+ =09input_report_key(ds->gamepad, BTN_SELECT, ds_report->buttons[1] & DS_BU=
+TTONS1_CREATE);
+ =09input_report_key(ds->gamepad, BTN_START,  ds_report->buttons[1] & DS_BU=
+TTONS1_OPTIONS);
+-=09input_report_key(ds->gamepad, BTN_THUMBL, ds_report->buttons[1] & DS_BU=
+TTONS1_L3);
+-=09input_report_key(ds->gamepad, BTN_THUMBR, ds_report->buttons[1] & DS_BU=
+TTONS1_R3);
+-=09input_report_key(ds->gamepad, BTN_MODE,   ds_report->buttons[2] & DS_BU=
+TTONS2_PS_HOME);
++
++=09if (hdev->product =3D=3D USB_DEVICE_ID_SONY_PS5_CONTROLLER_2) {
++=09=09input_report_key(ds->gamepad, BTN_THUMBL,
++=09=09=09=09ds_report->buttons[1] & DS_BUTTONS1_R3);
++=09=09input_report_key(ds->gamepad, BTN_THUMBR,
++=09=09=09=09ds_report->buttons[2] & DS_BUTTONS2_PS_HOME);
++=09=09input_report_key(ds->gamepad, BTN_MODE,
++=09=09=09=09ds_report->buttons[1] & DS_BUTTONS1_L3);
++=09} else {
++=09=09input_report_key(ds->gamepad, BTN_THUMBL,
++=09=09=09=09ds_report->buttons[1] & DS_BUTTONS1_L3);
++=09=09input_report_key(ds->gamepad, BTN_THUMBR,
++=09=09=09=09ds_report->buttons[1] & DS_BUTTONS1_R3);
++=09=09input_report_key(ds->gamepad, BTN_MODE,
++=09=09=09=09ds_report->buttons[2] & DS_BUTTONS2_PS_HOME);
++=09}
++
+ =09input_sync(ds->gamepad);
+=20
+ =09/*
+--=20
+2.43.0
 
-Cheers,
-Kent.
 
