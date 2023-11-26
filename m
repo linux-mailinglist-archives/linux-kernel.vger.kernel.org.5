@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EE17F9183
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 07:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBE17F91AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 07:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjKZGIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 01:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S229692AbjKZGpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 01:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKZGH7 (ORCPT
+        with ESMTP id S229447AbjKZGo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 01:07:59 -0500
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C43610D
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 22:08:05 -0800 (PST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-285b68ba797so517592a91.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 22:08:05 -0800 (PST)
+        Sun, 26 Nov 2023 01:44:58 -0500
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D93C7
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 22:45:04 -0800 (PST)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4acf9dd3d35so1022572e0c.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 22:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700981103; x=1701585903; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WgZXutmXX9uYtq4WDYC/LHkmx24eIdlcQOf4F4S1Usc=;
+        b=Wf6OAh766lS+xXjRJd47nwS3Bd/nRQJt+6f1Xr8ixZeJs0svGLvHKXQMnyqn7LL9Gm
+         /RNFCCDfMiOHUjs0d+yYQ9Nwl7HCuFXZi6XlpJ5LD6UvmcBjBhqXNaxnNxf5oURM3gkR
+         s/Akm/ZjC8QARi11ArgqetP7xayFcj2Q5ivgZ04Zhk9aKiNbKSQz4Ca7oVpRvT3GMFhe
+         5wVv2hKl3IcIoL1qf4Fygy6xX8XPx4HoZZuyrGfiUp0J01GsZ5DiYggtezYWIOYVuPlI
+         2f9ofl4jFz0hkLHnPZ1uNSyd98GINwfMc9n5XnVA7EMgPN559+AlMNXrkjVrgGh4rj/+
+         RVQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700978885; x=1701583685;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eaZ5PSKK/hT5zEcM7h3BHMOyNNWSq+NRByhLaX3TyTU=;
-        b=NfNQNoBxKTmMad/sxhi8ppR5bFFfK1zZIRSOEGB9X9KTPnc+aL2ZeLdenA3KtDOQr9
-         s3zVy48gQ4sgntSRUBZ6C8Iy25v/6mGDVsoAhFhp2eITMkG5fqAN1fIbDwqMJU6tFl5S
-         8XFWr+WTNqMNwH/iaVuar/Qw/Ac0rCJbuwfjdPZAiKEKFPAcpDosn3MLkbdHedru+lLN
-         cckekXRe3uF/OP+m+t11aMSW2jf0QxqDiRBUhituUP8MUzsc4Y6YoO1w9eITHXoQp2L6
-         xHaV+sZnS3X04nOK3dKUIzQ/31vR5d50jhRMY7SYJxpi4E9GxvJU+kKrp5gSxcMx5tgE
-         J4cQ==
-X-Gm-Message-State: AOJu0YyAHNzPsuFEo62ebrbSYXiPay4HVvqfjKWpuN0YQuP5w66FCiFm
-        hnDnxnXSxVglHdQLoPTIKDukaYY7IlUVktnn3nQJ94DkqPba
-X-Google-Smtp-Source: AGHT+IFvMesqT0WcrGICmXFbyIdf7K5ju+nmC20pPFCP4P32hUPyiVgrev6YfWKoev0hc1C2+erVwDdpS8NhJFoyiT/SMN1wxhgI
+        d=1e100.net; s=20230601; t=1700981103; x=1701585903;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WgZXutmXX9uYtq4WDYC/LHkmx24eIdlcQOf4F4S1Usc=;
+        b=Zjco6QsHpDYQjvs3L4yi4Nk7cvoM6ffx5utiHu1IZ2VcDgYrSOoyKqweBGl+6h932x
+         IrIxJ7WzbhCAnV0MbSlsYHGhHTYqK+YAn4NJTfm1BjJ3VSYtB6zyICMEghTRiv/eCfIR
+         zobJ7GxaW7J4Kw4TQrcpIWwHwNIWvzXl6aawfmk0l8tS3dV0dDa5Pc3hC/t/P6uIEhEN
+         r6I1onia4ctJad/WZ6UQyl0AX29He05DPcIl7ZXrYlLiSwCwA5fngO01Onou9Tq/GTX+
+         viqs4VEVJ5JTrE7Axo9EZJBlAWtV5YyshGs0nr5gYTaU6EvPO/8fl4PdXXjnVDr0dVTL
+         Rskw==
+X-Gm-Message-State: AOJu0Yx2rhCBIed9gnmBrpAoWnP38qb2Mg9E6LCAozD2z4r7izy9V2Qc
+        ti2wGA6sJWS+b4qPrdnvaHht+PefNMs5VqfdkcLuAgpn
+X-Google-Smtp-Source: AGHT+IFrIwgyly0619dlGbmXTblvtHQwc9fmV9F+k1/5ZpauWJhwG/r7/i9no+/gs8u5gWzSIK/lT92tDm/hU0arR0A=
+X-Received: by 2002:a67:ec17:0:b0:462:8944:f6ea with SMTP id
+ d23-20020a67ec17000000b004628944f6eamr7758982vso.16.1700981103076; Sat, 25
+ Nov 2023 22:45:03 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:7808:b0:285:b687:b836 with SMTP id
- w8-20020a17090a780800b00285b687b836mr456119pjk.3.1700978885110; Sat, 25 Nov
- 2023 22:08:05 -0800 (PST)
-Date:   Sat, 25 Nov 2023 22:08:04 -0800
-In-Reply-To: <tencent_0C6106DF136B0364296703BF044A977D1705@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000037b3e3060b08020f@google.com>
-Subject: Re: [syzbot] [crypto?] INFO: task hung in hwrng_fillfn
-From:   syzbot <syzbot+c52ab18308964d248092@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231116224318.124209-1-jim.cromie@gmail.com> <20231116224318.124209-3-jim.cromie@gmail.com>
+ <ZVj2CRI7452gm6lH@arm.com>
+In-Reply-To: <ZVj2CRI7452gm6lH@arm.com>
+From:   jim.cromie@gmail.com
+Date:   Sat, 25 Nov 2023 23:44:36 -0700
+Message-ID: <CAJfuBxw_RKv0PJR+vQs-fbg-+hNQOx6wVm2aUm=EPPa+z9nT2w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kmemleak: add checksum to backtrace report
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Nov 18, 2023 at 10:36=E2=80=AFAM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Thu, Nov 16, 2023 at 03:43:18PM -0700, Jim Cromie wrote:
+> > Change /sys/kernel/debug/kmemleak report format slightly, adding
+> > "(extra info)" to the backtrace header:
+> >
+> > from: "  backtrace:"
+> > to:   "  backtrace (crc <cksum>):"
+> >
+> > The <cksum> allows a user to see recurring backtraces without
+> > detailed/careful reading of multiline stacks.  So after cycling
+> > kmemleak-test a few times, I know some leaks are repeating.
+> >
+> >   bash-5.2# grep backtrace /sys/kernel/debug/kmemleak | wc
+> >      62     186    1792
+> >   bash-5.2# grep backtrace /sys/kernel/debug/kmemleak | sort -u | wc
+> >      37     111    1067
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+So, speculating from here,
+what else could be done with <crc: deadbeef> ?
 
-Reported-and-tested-by: syzbot+c52ab18308964d248092@syzkaller.appspotmail.com
+1 - (optionally) collapsing backtraces, replacing the stack with
+   "seen previously, at <mumble>"
+    of some clear / succinct flavor (maybe several ?)
 
-Tested on:
+2 - stack specific instructions from user
 
-commit:         98b1cc82 Linux 6.7-rc2
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=161857af680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-dashboard link: https://syzkaller.appspot.com/bug?extid=c52ab18308964d248092
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16732694e80000
+echo drop/ignore/histogram/<mumble>  deadbeef \
+     > /sys/kernel/debug/kmemleak
 
-Note: testing is done by a robot and is best-effort only.
+this crc-specific instruction could control the optionality of 1.
+on a trace-by-trace basis even.
+
+The "seen previously" would be an obvious place to look
+for a root cause of a detected leak.
+tools beyond drop/ignore/histogram/<mumble>
+are worth some consideration ?
+
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
