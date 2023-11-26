@@ -2,49 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACBE7F947C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5AA7F9480
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjKZRP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 12:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
+        id S230497AbjKZRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 12:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbjKZRPX (ORCPT
+        with ESMTP id S230356AbjKZRQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 12:15:23 -0500
+        Sun, 26 Nov 2023 12:16:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10BFA
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:15:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6218C433C7;
-        Sun, 26 Nov 2023 17:15:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C90107
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:16:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CDE1EC433CA;
+        Sun, 26 Nov 2023 17:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701018929;
-        bh=T3tr+hLuaiAbAzHg5OjXxW17a2L51y5IVFHudfq0BvI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JyRItgBN/+GFwCqoVrr9iCU7AlyucFijiJMAH9t6lx8aoJFIc2FCGp7wHXGdSCiLI
-         jyo7VhFmjmaBjlqx0ipSFqj/WspfaAXks3/WaORVCmbP3bEXUCp9txxq+JjEMEulS7
-         JAnx8sDOBb8MFBEY0Idssqe70x7JKILBKixEpD89F4o/fevxYPMHpjBb37dWg0iE0+
-         Q3Ry3b4F/WTuXKeNaFp07222xdUaTMUWKRw0mOCi1qSMdThUKs1r+2H3EdXrSn1rud
-         B4fOXXcFH1bya0+yclX2SxCODEL+IcjdaTHJGUw6sMamiHvdfZHnvbBkzyxjsr2Vg/
-         MQqm26mnix5mg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 000/292] 5.15.140-rc3 review
-Date:   Sun, 26 Nov 2023 17:15:24 +0000
-Message-Id: <20231126171524.109141-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231126154348.824037389@linuxfoundation.org>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1701018979;
+        bh=Cxn3Q0JlrJh/kyq5+xNXvV1qqi+HDvRsSxLiYNFjALg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=JXdWME6aN8SlbJvZXaEi+3yn3+ej+v6sO9+bncw8RFfjyZh/zbyTcORPXYZNXxzYp
+         PkPse/dLv/TsLkW1h+x7bVY83+uYnnw3++jQfGsI5yNyC1pU9a7nEADvEicZ9KCK3m
+         J1iHthtF+Y2yb3DdmpYbYQ4Fv5aAc5DU/QyFH2aijxHwui5xe1pUy+IryiU44g+0Um
+         tSgwtg4WseTB1T1F4LoqgLV8wFR6d1XW3soo182cA0GVbLXRczTWGejaG3qOXqgKno
+         VlBnUt10oHiA6GR2HL1DmmFBd0Q2wBF0azhAQ+G3RCwTnUG2sxROI4Mjx/kCs2q6JN
+         qq5gxFslgp88w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7565E29F40;
+        Sun, 26 Nov 2023 17:16:19 +0000 (UTC)
+Subject: Re: [GIT PULL] x86 fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZWMVJCJdugia9YIL@gmail.com>
+References: <ZWMVJCJdugia9YIL@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZWMVJCJdugia9YIL@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-11-26
+X-PR-Tracked-Commit-Id: 080990aa3344123673f686cda2df0d1b0deee046
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4892711acee0915a8a4ae02e1af3dc70ce000024
+Message-Id: <170101897974.23229.18306333190052899797.pr-tracker-bot@kernel.org>
+Date:   Sun, 26 Nov 2023 17:16:19 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,54 +61,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The pull request you sent on Sun, 26 Nov 2023 10:51:32 +0100:
 
-On 2023-11-26T15:46:45+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-11-26
 
-> This is the start of the stable review cycle for the 5.15.140 release.
-> There are 292 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4892711acee0915a8a4ae02e1af3dc70ce000024
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+Thank you!
 
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 0dd3c4f0979f ("Linux 5.15.140-rc3")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
