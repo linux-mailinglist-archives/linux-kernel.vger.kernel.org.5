@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9157F9485
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB837F9487
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjKZRR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 12:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S230313AbjKZRTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 12:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjKZRRy (ORCPT
+        with ESMTP id S229489AbjKZRTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 12:17:54 -0500
+        Sun, 26 Nov 2023 12:19:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6992AFA
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:18:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3E4AC43397;
-        Sun, 26 Nov 2023 17:17:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34772FA
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:19:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36305C433C8;
+        Sun, 26 Nov 2023 17:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701019081;
-        bh=S1rxjj0ESxUQzaZf4mvKvtonM50f7ppBicV8LL1QEoM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJ4ABdhBo2AWdaOhMojW/g2ZYtsaM3uUhOi6JKlQsQ+X28mVz1zqZ1XRU3CKhqKZ+
-         hcziyev+KzCeIHB48Kt/hRwb7NJRCGjbDhqWqW/azPbuUX0komscHQj3sNe8l0vnD6
-         1V9o8TuN/vwP0P1NsrsR++qe8OGxOOOS5eVz/vB42sGoEjjGOwBlIeLcT0GjjKAFGl
-         Yx7Q0mbPbTWXPZKs1/nNwpDh5TsdBXyDaeVLnkPhPnSlOMOkyPDDJOLQg+8pCtVj9v
-         3rgfqIRAzmibaNerpsi4cPC87bkjQGIijRF5uIidrA1YLM5CZjkexWgMR0j8BhWmGI
-         lInwAGI71sojg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.6 000/525] 6.6.3-rc4 review
-Date:   Sun, 26 Nov 2023 17:17:58 +0000
-Message-Id: <20231126171758.109371-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231126154418.032283745@linuxfoundation.org>
-References: 
+        s=k20201202; t=1701019156;
+        bh=Hc0XtjIV2+pEzTvuPqxkkSiwVO4rqkQkLmDydqT5wbk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uCqUu2dFFj0kqIw2+vUkyftTbMLI1Yns0j6jXIdjSKpPBNSNZRE2eoZeMDFRZEDU1
+         I0WlY2swyXPMPAN9/2QK8Qq5ZYasOOrTdohcu+3qlltyAZEYtCjOOIRJoJbuowE/kw
+         WTa6olXc9v8WUQG4R6ZX6v12aA7wSHvHSOJBIKuLbd0TZakLMbtLQNr+RSjsDUsnDj
+         j4yyNnodNHxgwXMw2wluWqs6y8+uzCQQYZ+HOh7EwSRulcr2cIdnVmEzJfM6Id703u
+         G6jNQ0dtwOI0pYoKwXI+s4UpCxrBHnOjexIJIjgbvENpRWCdMiv/qHAVqzcwc73p2D
+         N0G2xTr8t61rg==
+Date:   Sun, 26 Nov 2023 17:19:10 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: triggered-buffer: prevent possible freeing of
+ wrong buffer
+Message-ID: <20231126171910.72124e81@jic23-huawei>
+In-Reply-To: <CAMknhBEDp1baTDPrAfAv_gZ5o6LxNSt8bgS8wcGUmXdaCHq_Jw@mail.gmail.com>
+References: <20231031210521.1661552-1-dlechner@baylibre.com>
+        <3ea3d92db5c4c077a76b29dc5a89c4d491695752.camel@gmail.com>
+        <CAMknhBEDp1baTDPrAfAv_gZ5o6LxNSt8bgS8wcGUmXdaCHq_Jw@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,64 +53,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 2 Nov 2023 09:53:13 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-On 2023-11-26T15:46:18+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> On Thu, Nov 2, 2023 at 3:59=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.co=
+m> wrote:
+> >
+> > On Tue, 2023-10-31 at 16:05 -0500, David Lechner wrote: =20
+> > > Commit ee708e6baacd ("iio: buffer: introduce support for attaching mo=
+re
+> > > IIO buffers") introduced support for multiple buffers per indio_dev b=
+ut
+> > > left indio_dev->buffer for a few legacy use cases.
+> > >
+> > > In the case of the triggered buffer, iio_triggered_buffer_cleanup()
+> > > still assumes that indio_dev->buffer points to the buffer allocated by
+> > > iio_triggered_buffer_setup_ext(). However, since
+> > > iio_triggered_buffer_setup_ext() now calls iio_device_attach_buffer()
+> > > to attach the buffer, indio_dev->buffer will only point to the buffer
+> > > allocated by iio_device_attach_buffer() if it the first buffer attach=
+ed.
+> > >
+> > > This adds a check to make sure that no other buffer has been attached
+> > > yet to ensure that indio_dev->buffer will be assigned when
+> > > iio_device_attach_buffer() is called.
+> > >
+> > > Fixes: ee708e6baacd ("iio: buffer: introduce support for attaching mo=
+re IIO
+> > > buffers")
+> > > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > > ---
+> > >  drivers/iio/buffer/industrialio-triggered-buffer.c | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > >
+> > > diff --git a/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > > b/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > > index c7671b1f5ead..c06515987e7a 100644
+> > > --- a/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > > +++ b/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > > @@ -46,6 +46,16 @@ int iio_triggered_buffer_setup_ext(struct iio_dev
+> > > *indio_dev,
+> > >       struct iio_buffer *buffer;
+> > >       int ret;
+> > >
+> > > +     /*
+> > > +      * iio_triggered_buffer_cleanup() assumes that the buffer alloc=
+ated
+> > > here
+> > > +      * is assigned to indio_dev->buffer but this is only the case i=
+f this
+> > > +      * function is the first caller to iio_device_attach_buffer(). =
+If
+> > > +      * indio_dev->buffer is already set then we can't proceed other=
+wise
+> > > the
+> > > +      * cleanup function will try to free a buffer that was not allo=
+cated
+> > > here.
+> > > +      */
+> > > +     if (indio_dev->buffer)
+> > > +             return -EADDRINUSE;
+> > > + =20
+> >
+> > Hmmm, good catch! But I think this is just workarounding the real probl=
+em =20
+>=20
+> Yes, I could have done a better job explaining my reason for this fix.
+> It seemed like the simplest fix that could be easily backported to
+> stable kernels. And then we can look at removing the legacy field
+> completely in the future.
+>=20
+> > because like this, you can only have a triggered buffer by device. This=
+ should
+> > be fine as we don't really have any multi buffer user so far but ideall=
+y it
+> > should be possible.
 
-> This is the start of the stable review cycle for the 6.6.3 release.
-> There are 525 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.3-rc4.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+So far multibufferred devices have always been for cases where triggers don=
+'t make
+sense (devices with multiple hardware fifos that run out of step or where a=
+ single
+fifo is filled unevenly from different sensors, or big complex dma based de=
+vices
+where the trigger concept doesn't map at all.)
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+I agree that it sort of make sense to make the trigger per buffer, but in p=
+ractice
+I'm not sure on what sort of device will need it. Mind you, I guess you hit=
+ this
+in practice which rather implies something does!
 
-Tested-by: SeongJae Park <sj@kernel.org>
+> >
+> > Long term we might want to think about moving 'pollfunc' to be a per bu=
+ffer
+> > thing. Not sure how much trouble that would be given that a trigger is =
+also per
+> > device and I don't know if it would make sense to have a trigger per bu=
+ffer?!
+> > Ideally, given the multi buffer concept, I would say it makes sense but=
+ it might
+> > be difficult to accomplish. So better to think about it only if there's=
+ a real
+> > usecase for it.
+> >
+> > On thing that I guess it could be done is to change the triggered API s=
+o it
+> > returns a buffer and so iio_triggered_buffer_cleanup() would also get a=
+ pointer
+> > to the buffer it allocated (similar to what DMA buffer's are doing). Bu=
+t that's
+> > indeed also bigger change... Bahh, I'm likely over complicating things =
+for now. =20
+>=20
+> This sounds very much like the work I am doing on SPI Engine offload
+> support - having a trigger associated with a buffer. So maybe
+> something will come out of that. =C2=AF\_(=E3=83=84)_/=C2=AF
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 0f3bc3a11114 ("Linux 6.6.3-rc4")
+Ah. I guess if the trigger is being used to route things out of sight of so=
+ftware that
+might be a case where we do need multiple triggers per device...
+
+Doesn't sound 'too' hard to make work and we'll end up with similar case to=
+ buffers
+where
+iio_deviceX/current_trigger maps to the one for buffer0 so no ABI breakage,=
+ just new
+toys to play with.
+>=20
+> > Fell free to:
+> >
+> > Acked-by: Nuno Sa <nuno.sa@analog.com>
+> >
+> > =20
+Applied with a note that we may revisit adding multiple triggers support in=
+ future
+but that is unlikely to be suitable for a backport as it's a new feature.
+
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
 Thanks,
-SJ
 
-[...]
+Jonathan
 
----
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
