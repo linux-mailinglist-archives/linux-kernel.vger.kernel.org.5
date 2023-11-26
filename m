@@ -2,50 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3297F932E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 15:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC657F9330
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 15:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjKZOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 09:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S229890AbjKZOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 09:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZOtk (ORCPT
+        with ESMTP id S229437AbjKZOvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 09:49:40 -0500
-Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B658192
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 06:49:45 -0800 (PST)
-Received: from pop-os.home ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id 7GS6rtIcCmTW57GS7rbvab; Sun, 26 Nov 2023 15:49:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1701010183;
-        bh=iCucAYF477kNI1im5xQ/khbymwoZZ8iwxk7MzQbavyc=;
-        h=From:To:Cc:Subject:Date;
-        b=NxlB7LRXIS360L+bGzATYs/jW1KNTT9Ejfv1fOlGUtvMipDIyLZnHUiKaypxBGKjp
-         ivYgt/TkCjScIRNrB0Y9ajojgTnXQl/Qd+cZOS2yfXU2qeiH7/+KRaVilbuFEab3Fh
-         AY1tGJNy2fXokJw2ONntvG5YtnY2jinFx16/y9zYMF2wK6roTVf8H2Ex62muzMemIB
-         +zQWetqIvqUJ7h7FEOdzJ3dugib0FmvNMxcB9uDgDs4X7o7tPyMXSSgytFQ2XThI/H
-         6FFJYNk58uU2mZ7QmoYETKlKvinsKbPZVVog6vE0/Ke6BCrmDb7KSjbA7iwRp6Ln5f
-         GIoAZm5TY767w==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 26 Nov 2023 15:49:43 +0100
-X-ME-IP: 92.140.202.140
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] kernfs:  reorder 'struct kernfs_node' to save some memory
-Date:   Sun, 26 Nov 2023 15:49:37 +0100
-Message-Id: <465890c56c6f5ad702a091a1ecd3c70bd4a3a74c.1701010150.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 26 Nov 2023 09:51:32 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C72C92;
+        Sun, 26 Nov 2023 06:51:39 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5aa481d53e5so2264856a12.1;
+        Sun, 26 Nov 2023 06:51:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701010299; x=1701615099; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VXhDuz/8Ck1SbDSn8m2Zz8T6Djo4LTnE5DIdLUDgM+I=;
+        b=GRO67tQObqYTlMlr91bWIYHK3QclirjCGlIpGwnnyB0q4OoKdQ7ixXYyeYghDwgzNl
+         /iSiA9vwQ+CZvTqaI6nh2XwCvHtgm9+Hm/mL8Y95f4m4YVqXOJiHwTc7yYMEwF0ZtWhD
+         rbrBrguEJ+WKHGFRIj6WEiun0BdGKIdlgtV9Kqtz56fGEZgTew0LHKaOuZoDr7MZ362i
+         EnOanD0DCqXaK/XU9b9kUYxgnN4VprbJAdrkxqABf4DSpt/7R1Dg3bxiViVo7hrZg+Zr
+         UvsyQFpnKH/IaRz5sgwePdr6s/XGMYUqPcgEkGhxDxN4Zk7dCXU7q0WUSkO5sqSVlXMh
+         gYMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701010299; x=1701615099;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VXhDuz/8Ck1SbDSn8m2Zz8T6Djo4LTnE5DIdLUDgM+I=;
+        b=novSK+We4grHn69z5CAwMq4Bb0cuhuqClm8Yd4Kr2ydoBjmC2sKnO76jkCOblVWKwj
+         FkeCLAdSfMVCYZktbnrapmL7p2VVn9ymsj/Rw/4vgtAWxeNDrWmvOrrr8JWQcqeuaIK+
+         LXToYmCReRHxTcp6TNGA2We/GyWTbb10OKnwO+33hSQ+Nj7Iwrodb9mgiH4Dso5cL5d/
+         Lq/RVLHGJgBzXWRSg+cC2421aKpZjUhb75BAKskd29As6mfzKVrDA3Bd66DPzn0f9njR
+         7v+t+VADY2ImxFfoLoO0ahHwPPLrGn1+EVq0bDpvHthm4wUdI3uRJQHc/TfF1Upo0BTh
+         NNbA==
+X-Gm-Message-State: AOJu0YxDHyhr66otmR+a7SguP2/IQN9oxlWbzhXs3tjI02hyAoXsjrpe
+        1Dk0cGNKf3iu7LIDgNxU/7w=
+X-Google-Smtp-Source: AGHT+IEpYvlmT5972piVTAR7DuqSKYsJ4nMGG01b+ZGp1T99G3j+XcRI2OEUOv7lb0JPSY386Jj/RA==
+X-Received: by 2002:a17:90b:4c91:b0:285:bd52:32df with SMTP id my17-20020a17090b4c9100b00285bd5232dfmr658222pjb.30.1701010298508;
+        Sun, 26 Nov 2023 06:51:38 -0800 (PST)
+Received: from linux-8mug (1-162-45-22.dynamic-ip.hinet.net. [1.162.45.22])
+        by smtp.gmail.com with ESMTPSA id hg18-20020a17090b301200b002836c720713sm5770319pjb.24.2023.11.26.06.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 06:51:38 -0800 (PST)
+Date:   Sun, 26 Nov 2023 22:51:24 +0800
+From:   Chester Lin <chester62515@gmail.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, NXP S32 Linux Team <s32@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH] dt-bindings: serial: fsl-linflexuart: change the
+ maintainer email address
+Message-ID: <ZWNbOPIs2DjFbipH@linux-8mug>
+References: <20231115235732.13633-1-clin@suse.com>
+ <b4342c49-e1c4-459e-bbd0-fd63108a6754@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4342c49-e1c4-459e-bbd0-fd63108a6754@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,115 +77,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'struct kernfs_node' uses a dedicated cache, so shrinking its size is
-always a good idea.
+Hi Jiri,
 
-On my system, each entry is 128 bytes and their are 32 entries per pages.
-After the re-ordering, the struct is 120 bytes and 34 entries are stored
-in each page.
+On Mon, Nov 20, 2023 at 08:28:47AM +0100, Jiri Slaby wrote:
+> On 16. 11. 23, 0:57, Chester Lin wrote:
+> > I am leaving SUSE so the current email address <clin@suse.com> will be
+> > disabled soon. <chester62515@gmail.com> will be my new address for handling
+> > emails, patches and pull requests from upstream and communities.
+> 
+> Maybe add an entry to /.mailmap too?
+> 
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-The numbers below are with a allmodconfig configuration. The delta is
-related to CONFIG_DEBUG_LOCK_ALLOC and struct lockdep_map	dep_map.
+Yes, it has been updated as well.
 
-When I checked on my system, it would have saved 372kb of RAM:
-  sudo less /proc/slabinfo | grep kernf
-  kernfs_node_cache  49397  49504    128   32    1 : tunables    0    0    0 : slabdata   1547   1547      0
+Chester
 
-I have left flags close to the union, I *think* that they are related.
-I don't if having 'mode' here is logical or not.
-
-Before:
-======
-struct kernfs_node {
-        atomic_t                   count;                /*     0     4 */
-        atomic_t                   active;               /*     4     4 */
-        struct lockdep_map         dep_map;              /*     8    48 */
-        struct kernfs_node *       parent;               /*    56     8 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        const char  *              name;                 /*    64     8 */
-        struct rb_node             rb __attribute__((__aligned__(8))); /*    72    24 */
-        const void  *              ns;                   /*    96     8 */
-        unsigned int               hash;                 /*   104     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        union {
-                struct kernfs_elem_dir dir;              /*   112    32 */
-                struct kernfs_elem_symlink symlink;      /*   112     8 */
-                struct kernfs_elem_attr attr;            /*   112    32 */
-        };                                               /*   112    32 */
-        /* --- cacheline 2 boundary (128 bytes) was 16 bytes ago --- */
-        void *                     priv;                 /*   144     8 */
-        u64                        id;                   /*   152     8 */
-        short unsigned int         flags;                /*   160     2 */
-        umode_t                    mode;                 /*   162     2 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        struct kernfs_iattrs *     iattr;                /*   168     8 */
-
-        /* size: 176, cachelines: 3, members: 14 */
-        /* sum members: 168, holes: 2, sum holes: 8 */
-        /* forced alignments: 1 */
-        /* last cacheline: 48 bytes */
-} __attribute__((__aligned__(8)));
-
-After:
-=====
-struct kernfs_node {
-        atomic_t                   count;                /*     0     4 */
-        atomic_t                   active;               /*     4     4 */
-        struct lockdep_map         dep_map;              /*     8    48 */
-        struct kernfs_node *       parent;               /*    56     8 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        const char  *              name;                 /*    64     8 */
-        struct rb_node             rb __attribute__((__aligned__(8))); /*    72    24 */
-        const void  *              ns;                   /*    96     8 */
-        unsigned int               hash;                 /*   104     4 */
-        umode_t                    mode;                 /*   108     2 */
-        short unsigned int         flags;                /*   110     2 */
-        union {
-                struct kernfs_elem_dir dir;              /*   112    32 */
-                struct kernfs_elem_symlink symlink;      /*   112     8 */
-                struct kernfs_elem_attr attr;            /*   112    32 */
-        };                                               /*   112    32 */
-        /* --- cacheline 2 boundary (128 bytes) was 16 bytes ago --- */
-        void *                     priv;                 /*   144     8 */
-        u64                        id;                   /*   152     8 */
-        struct kernfs_iattrs *     iattr;                /*   160     8 */
-
-        /* size: 168, cachelines: 3, members: 14 */
-        /* forced alignments: 1 */
-        /* last cacheline: 40 bytes */
-} __attribute__((__aligned__(8)));
----
- include/linux/kernfs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 99aaa050ccb7..b7cd6e793286 100644
---- a/include/linux/kernfs.h
-+++ b/include/linux/kernfs.h
-@@ -206,6 +206,8 @@ struct kernfs_node {
- 
- 	const void		*ns;	/* namespace tag */
- 	unsigned int		hash;	/* ns + name hash */
-+	umode_t			mode;
-+	unsigned short		flags;
- 	union {
- 		struct kernfs_elem_dir		dir;
- 		struct kernfs_elem_symlink	symlink;
-@@ -220,8 +222,6 @@ struct kernfs_node {
- 	 */
- 	u64			id;
- 
--	unsigned short		flags;
--	umode_t			mode;
- 	struct kernfs_iattrs	*iattr;
- };
- 
--- 
-2.34.1
-
+> -- 
+> js
+> suse labs
+> 
