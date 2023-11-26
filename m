@@ -2,173 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D7C7F928A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 13:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBA87F928B
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 13:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjKZLzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 06:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54928 "EHLO
+        id S229573AbjKZMKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 07:10:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjKZLzq (ORCPT
+        with ESMTP id S229437AbjKZMKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 06:55:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827E510F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 03:55:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700999750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=10f/Bul9KbIaMsjeanbNOmm62BHIxQH0eftSF3zeoHA=;
-        b=IXiDeKM6E1pRz0aHXANjgB3J97HfSg2MI8kj1Qbv7ixMTk5kvOshWSH+1nfBzG9StVSS4L
-        rx26h/szJb9S2etl8A60o5/n/QXs0LxaRslobBpTAlxWyK/mw1rNSIvbUJchrJKmPWu9F9
-        CKfipjWZa3Nlz54iZdbEKhyDw31CuCw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-76-n79wBA5hOnSAQHO1OAsXyg-1; Sun,
- 26 Nov 2023 06:55:45 -0500
-X-MC-Unique: n79wBA5hOnSAQHO1OAsXyg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 90DF23C0C88A;
-        Sun, 26 Nov 2023 11:55:44 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C8B1340C6EB9;
-        Sun, 26 Nov 2023 11:55:43 +0000 (UTC)
-Date:   Sun, 26 Nov 2023 19:55:40 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, kexec@lists.infradead.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-        joe@perches.com, nathan@kernel.org, yujie.liu@intel.com
-Subject: Re: [PATCH v2 4/7] kexec_file, arm64: print out debugging message if
- required
-Message-ID: <ZWMyPB6HjxAczLzZ@MiWiFi-R3L-srv>
-References: <20231124033642.520686-5-bhe@redhat.com>
- <202311260548.1HaxcDnE-lkp@intel.com>
+        Sun, 26 Nov 2023 07:10:09 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADE45B6
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 04:10:13 -0800 (PST)
+Received: from loongson.cn (unknown [111.9.175.10])
+        by gateway (Coremail) with SMTP id _____8AxXOqjNWNlnNs8AA--.28074S3;
+        Sun, 26 Nov 2023 20:10:11 +0800 (CST)
+Received: from localhost.localdomain (unknown [111.9.175.10])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxvi+hNWNlqdlMAA--.38908S2;
+        Sun, 26 Nov 2023 20:10:10 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Set unwind stack type to unknown rather than set error flag
+Date:   Sun, 26 Nov 2023 20:10:02 +0800
+Message-Id: <20231126121002.22568-1-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202311260548.1HaxcDnE-lkp@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dxvi+hNWNlqdlMAA--.38908S2
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WF4xWw1UGrWrKrW8AFW7KFX_yoW5JF1kpr
+        ZxA3Z3Wr4YgF92q3srtry8uryDXwnrCw13Wa4qyFyrCFnrXry2vw4Fva4DZF4qq3s5G34F
+        vFn5G3s0ga1UJacCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/23 at 05:26am, kernel test robot wrote:
-> Hi Baoquan,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on arm64/for-next/core]
-> [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc2 next-20231124]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231124-113942
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> patch link:    https://lore.kernel.org/r/20231124033642.520686-5-bhe%40redhat.com
-> patch subject: [PATCH v2 4/7] kexec_file, arm64: print out debugging message if required
-> config: arm64-randconfig-001-20231126 (https://download.01.org/0day-ci/archive/20231126/202311260548.1HaxcDnE-lkp@intel.com/config)
-> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311260548.1HaxcDnE-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311260548.1HaxcDnE-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> arch/arm64/kernel/machine_kexec.c:35:2: error: implicit declaration of function 'kexec_dprintk' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
->            kexec_dprintk("%s:%d:\n", func, line);
->            ^
->    1 error generated.
+During the unwinding, unwind_done() is used as an end condition. Normally
+it unwind to the user stack and then set the stack type to unknown, which
+is a normal exit. When something unexpected happens in unwind process and
+we cannot unwind anymore, we should set the error flag, and also set the
+stack type to unknown to indicate that the unwind process cannot continue.
+The error flag emphasizes that the unwind process produce an unexpected
+error. There is no unexpected things when we unwind the PT_REGS in the
+top of IRQ stack and find out that is an user mode PT_REGS. Thus, we
+should not set error flag and just set stack type to unknown.
 
-Thanks for reporting. It has below kexec related config items, whereas
-the kexec_drpintk() is only defined in CONFIG_KEXEC_FILE ifdeffery
-scope, moving it to CONFIG_KEXEC_CORE iddeffery scope in <linux/kexec.h>
-can fix it as below draft code. Will update patch 1 to include the code
-change.
+Reported-by: Hengqi Chen <hengqi.chen@gmail.com>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+---
+ arch/loongarch/kernel/stacktrace.c      | 2 +-
+ arch/loongarch/kernel/unwind.c          | 1 -
+ arch/loongarch/kernel/unwind_prologue.c | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-===
-CONFIG_CRASH_CORE=y
-CONFIG_KEXEC_CORE=y
-CONFIG_KEXEC=y
-# CONFIG_KEXEC_FILE is not set
-CONFIG_CRASH_DUMP=y
-===
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 66997efe36f1..b457b0d70f3f 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -265,13 +265,6 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
+diff --git a/arch/loongarch/kernel/stacktrace.c b/arch/loongarch/kernel/stacktrace.c
+index 92270f14db94..f623feb2129f 100644
+--- a/arch/loongarch/kernel/stacktrace.c
++++ b/arch/loongarch/kernel/stacktrace.c
+@@ -32,7 +32,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+ 	}
+ 
+ 	for (unwind_start(&state, task, regs);
+-	     !unwind_done(&state) && !unwind_error(&state); unwind_next_frame(&state)) {
++	     !unwind_done(&state); unwind_next_frame(&state)) {
+ 		addr = unwind_get_return_address(&state);
+ 		if (!addr || !consume_entry(cookie, addr))
+ 			break;
+diff --git a/arch/loongarch/kernel/unwind.c b/arch/loongarch/kernel/unwind.c
+index ba324ba76fa1..a463d6961344 100644
+--- a/arch/loongarch/kernel/unwind.c
++++ b/arch/loongarch/kernel/unwind.c
+@@ -28,6 +28,5 @@ bool default_next_frame(struct unwind_state *state)
+ 
+ 	} while (!get_stack_info(state->sp, state->task, info));
+ 
+-	state->error = true;
+ 	return false;
  }
- #endif
+diff --git a/arch/loongarch/kernel/unwind_prologue.c b/arch/loongarch/kernel/unwind_prologue.c
+index 55afc27320e1..929ae240280a 100644
+--- a/arch/loongarch/kernel/unwind_prologue.c
++++ b/arch/loongarch/kernel/unwind_prologue.c
+@@ -227,7 +227,7 @@ static bool next_frame(struct unwind_state *state)
+ 	} while (!get_stack_info(state->sp, state->task, info));
  
--extern bool kexec_file_dbg_print;
--
--#define kexec_dprintk(fmt, ...)					\
--	printk("%s" fmt,					\
--	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
--	       ##__VA_ARGS__)
--
- #endif /* CONFIG_KEXEC_FILE */
- 
- #ifdef CONFIG_KEXEC_ELF
-@@ -508,6 +501,13 @@ static inline int crash_hotplug_memory_support(void) { return 0; }
- static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
- #endif
- 
-+extern bool kexec_file_dbg_print;
-+
-+#define kexec_dprintk(fmt, ...)					\
-+	printk("%s" fmt,					\
-+	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-+	       ##__VA_ARGS__)
-+
- #else /* !CONFIG_KEXEC_CORE */
- struct pt_regs;
- struct task_struct;
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index be5642a4ec49..bddba29a1557 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -52,6 +52,8 @@ atomic_t __kexec_lock = ATOMIC_INIT(0);
- /* Flag to indicate we are going to kexec a new kernel */
- bool kexec_in_progress = false;
- 
-+bool kexec_file_dbg_print;
-+
- int kexec_should_crash(struct task_struct *p)
- {
- 	/*
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 7ae1b0901aa4..8f87644b4eec 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -38,8 +38,6 @@ void set_kexec_sig_enforced(void)
+ out:
+-	state->error = true;
++	state->stack_info.type = STACK_TYPE_UNKNOWN;
+ 	return false;
  }
- #endif
  
--bool kexec_file_dbg_print;
--
- static int kexec_calculate_store_digests(struct kimage *image);
- 
- /* Maximum size in bytes for kernel/initrd files. */
+-- 
+2.42.0
 
