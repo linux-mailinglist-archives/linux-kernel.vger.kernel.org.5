@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265BF7F922B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45D47F922D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjKZK1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 05:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S229607AbjKZK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 05:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZK1T (ORCPT
+        with ESMTP id S229437AbjKZK2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 05:27:19 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9D1F0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:27:25 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54b07ba599fso2160591a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:27:24 -0800 (PST)
+        Sun, 26 Nov 2023 05:28:20 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56E9102
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:28:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-543c3756521so4453834a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:28:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700994443; x=1701599243; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVGCdugKR2zaTd8xqnCBNZ6lxlpm/j0K5fW0qicxgT4=;
-        b=ipmwFh3Y6CzosQE/myPb4FxCTouhr8T8HGKRqjTLuCLUpNmrC+r38mnSw5IVjPbUiY
-         ADP2xCmIhs9R4Sg3TqtcqFc0hmUHCWy39jYkVWwHQIvtFkeLNshAycewoPQNKl/kW5nl
-         7vm0tgQ0oqmqJvDzsIYmo1ZxEmlmhf45NKYJVWtSEKMz2ERZJbyTBe2F7lPmfGcv1CB0
-         raKiLWTMpeIYpO+5WNpZbzo0Z5GKc4+1UmJcdPgkiJCC37Tvtmnho6PU891rdQT/usGO
-         vCfrWBTRYkdS18++uOpjnit6j2Es3B/+pSNEYSualnXstpLbQ08JkK4oykCw7pH2VHbf
-         kMbw==
+        d=linaro.org; s=google; t=1700994503; x=1701599303; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=49k7+kJobmrIfqIAdNepyVBVcWl/U7alKaqBrd/hZk4=;
+        b=ophDthmH5a4KcFd1g0wnZSkragMt4rLf3btQ+3K693kGp4wc8gL/PL5KWqbZsMC+iM
+         eN8SV0I48aErMoRyJjHQCSbOyCVr0upNsNyAIcr2p1clb9o4LVVReGA14fWerVStZM6V
+         SjTinnoj39y44Vx7g7Ylxj4wipgraWW+NwQrrKqgOKzyinaAZ0PdFVopNGk5nbOiGJ98
+         4ZIEwM4ZQVGsbK6nBqHthaJ7usXMbKvLt/Gv4nmTCb5Hoa3wrVoD8RcXlM5XSQORdCPA
+         jlx2QncNnAfyhQu9dcS3OkgtUEW2lPPYqc8RWZelLuoJzGraRKayTk0ApfdFQP/bpTiD
+         FLAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700994443; x=1701599243;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pVGCdugKR2zaTd8xqnCBNZ6lxlpm/j0K5fW0qicxgT4=;
-        b=mNoHJpFZATe9B6akNfwZIXrktVi06RSOkHF2CqBa+POBYV0x8SUCCTFH7NbV9mFmQd
-         KBGIT4nC1o83SVwasggM1tMR2Xxa6V7pssigPGkzPECuG+3vwq3pW5lq1qhBjbWOVwVJ
-         TUfO9uDUW+HzW62pxvX9Lsx9DxAg6C8woZ6rgKW9y1HToTCoRMNFQ4khd7NfZJJaelrF
-         oaBhqTXmb+wOL9qwUJWckIJvoaqTw8L/VkS40xxB0/rMLQMfXjjcci9o+XZo2vzdenjF
-         BFnv/zuXmKnOk1OQATcJA9Sfy4r4Mo7keFWBRPsDKu25AvzZ8Ya3DnXZ/Tcz2ny4NPZa
-         UwZg==
-X-Gm-Message-State: AOJu0YyGhTs4oUIOWsNKfol/a9q5yanDWtcJ4LGtSOsZ+94u5C0Z/kPJ
-        y8/me1O7tq5bBJWAuTHfoyo5Z+e8DHALadPxeQE=
-X-Google-Smtp-Source: AGHT+IFlyfACKSOXgfPCa0POOqv0Lf0fSeJPvWIaX7QOWDlGpFb982/4lklA15JVP2cNkGVCOuiTlQ==
-X-Received: by 2002:a17:906:290:b0:9e6:18fe:7447 with SMTP id 16-20020a170906029000b009e618fe7447mr5737574ejf.9.1700994443065;
-        Sun, 26 Nov 2023 02:27:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700994503; x=1701599303;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=49k7+kJobmrIfqIAdNepyVBVcWl/U7alKaqBrd/hZk4=;
+        b=CEcvG6JB8ii4xwI1Op4Th4tZWbk6OLXDmWEyHnVvyg2wHnMn/ZNUkMDAAxrXNri5RH
+         G6SSOLOdNDVphNqivUSsp/wyYUEasOcYWbBBo2n7fVzGgFzv/+9YqxmOIhiFe+lkP+XX
+         ZpQHXl0oGr65k/12tls4L1C1GkKmGsBLevn7eLm3z1+B7U9B1ErKpNkvJk1Qw4dJch6f
+         IQ8vRYl0QNtInPOv9RI8lebECt+od2BvC067KlyBSwCij4a9PxJzcBVLRVzCbWopDbhf
+         BSuvLlwfib1IvGLTguBNKZy8Hj5StN8uJ+lSJh14cMq3cFH3OBfMf/J4OpbTWGT85Tfd
+         4Bmg==
+X-Gm-Message-State: AOJu0Yy4T5JJJL5AVfe3p+Y9iudqi7TZEMYtoIcfO58i1S/Jtf2l3lEm
+        UxSJQttRp2XXFK+UfDcjGb9KEw==
+X-Google-Smtp-Source: AGHT+IEtQHKaVDEOTEWG0ZZSwfUFEL6Cj+Fz1Rdjfx5mEGuPJe49CLE7099H72vuMsr336iC+7QCFg==
+X-Received: by 2002:a17:906:2409:b0:9fd:4bed:72af with SMTP id z9-20020a170906240900b009fd4bed72afmr5875918eja.72.1700994502983;
+        Sun, 26 Nov 2023 02:28:22 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b009a168ab6ee2sm4381068ejc.164.2023.11.26.02.27.21
+        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b009a168ab6ee2sm4381068ejc.164.2023.11.26.02.28.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 02:27:22 -0800 (PST)
-Message-ID: <ef4eda2a-4be5-4992-a315-d02e1a36b656@linaro.org>
-Date:   Sun, 26 Nov 2023 11:27:20 +0100
+        Sun, 26 Nov 2023 02:28:22 -0800 (PST)
+Message-ID: <a442af6f-09b1-42b6-994e-3ac763853456@linaro.org>
+Date:   Sun, 26 Nov 2023 11:28:18 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: dts: starfive: add Milkv Mars board device tree
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
+Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
+Content-Language: en-US
+To:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231126100055.1595-1-jszhang@kernel.org>
-Content-Language: en-US
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Andrew Davis <afd@ti.com>, Andrew Lunn <andrew@lunn.ch>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+ <87v89p1vc4.fsf@meer.lwn.net>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,12 +128,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231126100055.1595-1-jszhang@kernel.org>
+In-Reply-To: <87v89p1vc4.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,114 +141,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2023 11:00, Jisheng Zhang wrote:
-> The Milkv Mars is a development board based on the Starfive JH7110 SoC.
-> The board features:
+On 25/11/2023 20:33, Jonathan Corbet wrote:
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 > 
-> - JH7110 SoC
-> - 1/2/4/8 GiB LPDDR4 DRAM
-> - AXP15060 PMIC
-> - 40 pin GPIO header
-> - 3x USB 3.0 host port
-> - 1x USB 2.0 host port
-> - 1x M.2 E-Key
-> - 1x eMMC slot
-> - 1x MicroSD slot
-> - 1x QSPI Flash
-> - 1x 1Gbps Ethernet port
-> - 1x HDMI port
-> - 1x 2-lane DSI and 1x 4-lane DSI
-> - 1x 2-lane CSI
+>> Document preferred coding style for Devicetree sources (DTS and DTSI),
+>> to bring consistency among all (sub)architectures and ease in reviews.
 > 
-> Add the devicetree file describing the currently supported features,
-> namely PMIC, UART, SD card, QSPI Flash, eMMC and Ethernet.
+> One little nit:
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/boot/dts/starfive/Makefile         |   2 +
->  .../boot/dts/starfive/jh7110-milkv-mars.dts   | 634 ++++++++++++++++++
->  2 files changed, 636 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
+>> diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+>> new file mode 100644
+>> index 000000000000..e374bec0f555
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+>> @@ -0,0 +1,194 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +.. _dtscodingstyle:
 > 
-> diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
-> index 0141504c0f5c..fe0a62cc4759 100644
-> --- a/arch/riscv/boot/dts/starfive/Makefile
-> +++ b/arch/riscv/boot/dts/starfive/Makefile
-> @@ -10,3 +10,5 @@ dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-starfive-visionfive-v1.dtb
->  
->  dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.2a.dtb
->  dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.3b.dtb
-> +
-> +dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-milkv-mars.dtb
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts b/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
-> new file mode 100644
-> index 000000000000..41cc67f53bbe
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
-> @@ -0,0 +1,634 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/*
-> + * Copyright (C) 2022 StarFive Technology Co., Ltd.
-> + * Copyright (C) 2022 Emil Renner Berthing <kernel@esmil.dk>
-> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + */
-> +
-> +/dts-v1/;
-> +#include "jh7110.dtsi"
-> +#include "jh7110-pinfunc.h"
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	aliases {
-> +		ethernet0 = &gmac0;
-> +		ethernet1 = &gmac1;
-> +		i2c0 = &i2c0;
-> +		i2c2 = &i2c2;
-> +		i2c5 = &i2c5;
-> +		i2c6 = &i2c6;
-> +		mmc0 = &mmc0;
-> +		mmc1 = &mmc1;
-> +		serial0 = &uart0;
-> +	};
-> +
+> There is no need to put a label at the top of a document like that, I'd
+> just take it out.
 
-You miss board compatible and bindings.
-
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	cpus {
-
-Board should not bring new CPU nodes. Override by label instead.
-
-
-> +		timebase-frequency = <4000000>;
-> +	};
-> +
-> +	memory@40000000 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x40000000 0x1 0x0>;
-> +	};
-> +
-> +	gpio-restart {
-> +		compatible = "gpio-restart";
-> +		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
-> +		priority = <224>;
-> +	};
-> +
-> +	pwmdac_codec: pwmdac-codec {
-
-audio-codec
-
-> +		compatible = "linux,spdif-dit";
-> +		#sound-dai-cells = <0>;
-> +	};
-> +
-> +	sound-pwmdac {
-
-sound
-
+OK
 
 Best regards,
 Krzysztof
