@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1117F7F9349
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 16:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134A97F934A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 16:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjKZPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 10:10:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        id S230136AbjKZPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 10:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjKZPKp (ORCPT
+        with ESMTP id S229997AbjKZPMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 10:10:45 -0500
+        Sun, 26 Nov 2023 10:12:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B63EA
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:10:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85594C433C8;
-        Sun, 26 Nov 2023 15:10:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FBDEA
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 07:12:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC3BC433C7;
+        Sun, 26 Nov 2023 15:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701011451;
-        bh=zFafLRdl6qo7jyo7XWh2Lf4k9/OTBqXF1Ey4sdDtHdQ=;
+        s=k20201202; t=1701011550;
+        bh=/kFpAA4DUTJCxXMcp6g5f0QDobgBKxMX1n83qyntQm0=;
         h=From:To:Cc:Subject:Date:From;
-        b=KElSrhwJ0cF1uR1kj8k0FIt+P2aZkiJy/2xMDJYn7f8OLp8LimYv4lWDkPQpSun5y
-         EnHLCI8D1XjKFHUbm9l4O58qhVhSKYvW6OhZNUBQeBxrr6XMgn2RLY3A69Z3R0Tsob
-         PiXxwfl6DJ2p1uNILDuAyiTV9ClqbQW3iQvMlde5nVVfTvduoWe6P4DrCQNSmJPg8w
-         UNDfZm9mJj53TiHcVCbmAXEnpCMpOZKeQCM1YDoKBRJpO6iUqgubj+41OYRkPeSRKH
-         N2BloO6f64b1chGKeT7/hZDhpnkBL6NYH22O05EeIYzxQCEa+MEYcVMQW1b9UCQPgr
-         WxGryhXctiAdA==
+        b=aMiPZx2aFPvR9GMRXMo4guJnEJys6Thmjt/rCfhgCQGRSkGWzYrjzaXMqA5+/vaaF
+         tJz34r9Z3e3+BRB1V0MyeHEtFd2eLhgO5HNAr7BXYHbclnDNJT5Ew6hzPeP0O/WqmP
+         2nOt7FzLoxUAkHmAMMYWD6qganLAQvWY+dKA+t1x/xk6B4UoaeoHtR4FoaYOwfdkU6
+         jmjue/ozhWylaA0pTpX0GdAy12/7FQBQVyAhMJkLMbu3daExwfLazLt188fEo+LHvE
+         nq+uPPgoHN1og8pmnSyYsMP5Iln/gZacAbnIk9JHwlZ+hqAU49Pn2ruglUYDvIY/q3
+         bjxiYM9htqFgw==
 From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
+To:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: replace <asm-generic/export.h> with <linux/export.h>
-Date:   Mon, 27 Nov 2023 00:10:45 +0900
-Message-Id: <20231126151045.1556686-1-masahiroy@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] xtensa: replace <asm-generic/export.h> with <linux/export.h>
+Date:   Mon, 27 Nov 2023 00:12:22 +0900
+Message-Id: <20231126151222.1556761-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,22 +56,22 @@ Replace #include <asm-generic/export.h> with #include <linux/export.h>.
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/arm64/include/asm/assembler.h | 2 +-
+ arch/xtensa/include/asm/asmmacro.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 376a980f2bad..7b1975bf4b90 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -12,7 +12,7 @@
- #ifndef __ASM_ASSEMBLER_H
- #define __ASM_ASSEMBLER_H
+diff --git a/arch/xtensa/include/asm/asmmacro.h b/arch/xtensa/include/asm/asmmacro.h
+index 01bf7d9dbb19..a52d49a16ce7 100644
+--- a/arch/xtensa/include/asm/asmmacro.h
++++ b/arch/xtensa/include/asm/asmmacro.h
+@@ -11,7 +11,7 @@
+ #ifndef _XTENSA_ASMMACRO_H
+ #define _XTENSA_ASMMACRO_H
  
 -#include <asm-generic/export.h>
 +#include <linux/export.h>
+ #include <asm/core.h>
  
- #include <asm/alternative.h>
- #include <asm/asm-bug.h>
+ /*
 -- 
 2.40.1
 
