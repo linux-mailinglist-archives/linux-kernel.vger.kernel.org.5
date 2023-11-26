@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3747F941A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A253D7F945C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbjKZQpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 11:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S230247AbjKZRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 12:00:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZQpg (ORCPT
+        with ESMTP id S229447AbjKZRA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 11:45:36 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EF39C;
-        Sun, 26 Nov 2023 08:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=j2jPT/9rr9kXvPsTQ11nJwwxmOX/0wSB95nubK+OrHc=; b=56
-        ++GXxvk0aycH3l+IA1TCnmFUQtlOctVh1L+hFZhIePl6+oxXNV8sbIcBwNipOqqaKfHBNfQ6Gj3vU
-        IPDQFgHwbRIKCY9CJ1v5t5qUWDqmphWDvf7a8S/F+S+8Gpre76Q/+TBabmvea6DcgqU0t7w06ebRq
-        eVm5PwlyUY8u2tU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r7IGB-001G8A-Mb; Sun, 26 Nov 2023 17:45:31 +0100
-Date:   Sun, 26 Nov 2023 17:45:31 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH RFC] net: dsa: mv88e6xxx: Support LED control
-Message-ID: <4bd8642c-988f-4b99-944a-da573d0ef2c3@lunn.ch>
-References: <20231123-mv88e6xxx-leds-v1-1-3c379b3d23fb@linaro.org>
- <c8c821f8-e170-44b3-a3f9-207cf7cb70e2@lunn.ch>
- <CACRpkdY+T8Rqg_irkLNvAC+o_QfwO2N+eB9X-y24t34_9Rg3ww@mail.gmail.com>
+        Sun, 26 Nov 2023 12:00:26 -0500
+X-Greylist: delayed 366 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 26 Nov 2023 09:00:31 PST
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [IPv6:2001:41d0:203:375::ac])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA85CFC
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:00:31 -0800 (PST)
+Date:   Sun, 26 Nov 2023 12:54:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosenzweig.io;
+        s=key1; t=1701017661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZAmJjrTeu7RdpM+b+JpbyW5DOb3ge7UnfELqR9X21vo=;
+        b=wtKzHquY9kuLOewD37q4BwVrha6NkJj6WgOHRMW2fatDWrh95MB18j0uarel5fLWSUlwzm
+        qMFnbyvDB/aofTADTJ/nlhFvUuQllx8s/wZampc23S0zO6pAPeakTYc2B72HvYNGO0ViZj
+        ZmTQ56CtscqX2ywNCKwpNtBVW1BgBeWIle2yzRtaYZKzXdq24efeXVX9GmJhOG2xoixOzh
+        DimbDLLlpYvGnSBjMNL0rSQqoGv07vao0UMgEopo43J6LvDeCyvYPBrp7gTcbarL4bdbDN
+        TgHm6XFBme6tpkYZ9h6dMbGtwAGPEDCLLWRg4CxtmbklMpqA5AXPGobkAlsKRw==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Hector Martin <marcan@marcan.st>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu: dart: Use readl instead of readl_relaxed for
+ consistency
+Message-ID: <ZWN4OHtr-c4XzOFL@blossom>
+References: <20231126162009.17934-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdY+T8Rqg_irkLNvAC+o_QfwO2N+eB9X-y24t34_9Rg3ww@mail.gmail.com>
+In-Reply-To: <20231126162009.17934-1-sven@svenpeter.dev>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,26 +55,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 12:46:03AM +0100, Linus Walleij wrote:
-> On Thu, Nov 23, 2023 at 5:13 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> > What i would really like to see happen is that the DSA core handles
-> > the registration of the LEDs, similar to how phylib does. The DT
-> > binding should be identical for all DSA devices, so there is no need
-> > for each driver to do its own parsing.
-> >
-> > There are some WIP patches at
-> >
-> > https://github.com/lunn/linux.git leds-offload-support-reduced-auto-netdev
-> >
-> > which implement this. Feel free to make use of them.
-> 
-> Oh it's quite a lot of patches, I really cannot drive that because there are
-> so many things about them that I don't understand the thinking behind...
-> But I like what I see!
+r-b
 
-O.K. Let me dust them off, rebase them on net-next and see what is
-missing. You have some fibre things i don't have. I don't have a
-machine with fibre so i cannot test that.
-
-	Andrew
+On Sun, Nov 26, 2023 at 05:20:09PM +0100, Sven Peter wrote:
+> While the readl_relaxed in apple_dart_suspend is correct the rest of the
+> driver uses the non-relaxed variants everywhere and the single
+> readl_relaxed is inconsistent and possibly confusing.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  drivers/iommu/apple-dart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+> index 59cf256bf40f..c7f047ce0a7a 100644
+> --- a/drivers/iommu/apple-dart.c
+> +++ b/drivers/iommu/apple-dart.c
+> @@ -1272,7 +1272,7 @@ static __maybe_unused int apple_dart_suspend(struct device *dev)
+>  	unsigned int sid, idx;
+>  
+>  	for (sid = 0; sid < dart->num_streams; sid++) {
+> -		dart->save_tcr[sid] = readl_relaxed(dart->regs + DART_TCR(dart, sid));
+> +		dart->save_tcr[sid] = readl(dart->regs + DART_TCR(dart, sid));
+>  		for (idx = 0; idx < dart->hw->ttbr_count; idx++)
+>  			dart->save_ttbr[sid][idx] =
+>  				readl(dart->regs + DART_TTBR(dart, sid, idx));
+> -- 
+> 2.34.1
+> 
