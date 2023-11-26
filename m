@@ -2,54 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFF47F9477
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACBE7F947C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjKZRPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 12:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        id S230296AbjKZRP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 12:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjKZRPF (ORCPT
+        with ESMTP id S230360AbjKZRPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 12:15:05 -0500
+        Sun, 26 Nov 2023 12:15:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B96FA
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:15:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 042C9C433C8;
-        Sun, 26 Nov 2023 17:15:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10BFA
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:15:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6218C433C7;
+        Sun, 26 Nov 2023 17:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701018911;
-        bh=guVv+SEh7voPe2lgiNwr2YxQ6n/2ttB7Jl8kD59Z9ns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n+aU8f2Idan4hvme0PSqL3UB30oSCZAmsROFTkYB/x0oz55+PioQdveGhsSpyB+Gg
-         Ao02FxaGghJ3KJ9k6uMouBvIG+e6m5I9yhuCU6LuLmWqcADv4G8U8eL4aJkNDC+YIQ
-         XTdpCGoRdeH4I8wO8UqaqbCwhVMaWBYwsOawfO8tEhgNcuMfGhJg/uhgMqpa8yrtzh
-         ZhwqGJa8nuLGjvB2npGydeEeoFvI7a4ppFq1Bcimv+M0bu6Ha+Qc4etfv5GmVwf+4a
-         RySa2qmCM4qyuWUPqwNhsyDGpZsf/s6mepEecEp6iJr8e1PdDanUDJI/K1kawrvGQW
-         4xrhLrBAWJLZw==
-Date:   Sun, 26 Nov 2023 17:15:04 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     longli@linuxonhyperv.com
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: Re: [Patch v1 2/4] RDMA/mana_ib: create and process EQ events
-Message-ID: <20231126171504.GC84723@kernel.org>
-References: <1700709010-22042-1-git-send-email-longli@linuxonhyperv.com>
- <1700709010-22042-3-git-send-email-longli@linuxonhyperv.com>
+        s=k20201202; t=1701018929;
+        bh=T3tr+hLuaiAbAzHg5OjXxW17a2L51y5IVFHudfq0BvI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JyRItgBN/+GFwCqoVrr9iCU7AlyucFijiJMAH9t6lx8aoJFIc2FCGp7wHXGdSCiLI
+         jyo7VhFmjmaBjlqx0ipSFqj/WspfaAXks3/WaORVCmbP3bEXUCp9txxq+JjEMEulS7
+         JAnx8sDOBb8MFBEY0Idssqe70x7JKILBKixEpD89F4o/fevxYPMHpjBb37dWg0iE0+
+         Q3Ry3b4F/WTuXKeNaFp07222xdUaTMUWKRw0mOCi1qSMdThUKs1r+2H3EdXrSn1rud
+         B4fOXXcFH1bya0+yclX2SxCODEL+IcjdaTHJGUw6sMamiHvdfZHnvbBkzyxjsr2Vg/
+         MQqm26mnix5mg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 5.15 000/292] 5.15.140-rc3 review
+Date:   Sun, 26 Nov 2023 17:15:24 +0000
+Message-Id: <20231126171524.109141-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231126154348.824037389@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1700709010-22042-3-git-send-email-longli@linuxonhyperv.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -60,81 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 07:10:08PM -0800, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+Hello,
+
+On 2023-11-26T15:46:45+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 5.15.140 release.
+> There are 292 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Before the software can create an RDMA adapter handle with SoC, it needs to
-> create EQs for processing SoC events from RDMA device. Because MSI-X
-> vectors are shared between MANA Ethernet device and RDMA device, this
-> patch adds support to share EQs on MSI-X vectors and creates management
-> EQ for RDMA device.
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Long Li <longli@microsoft.com>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 
-...
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+Tested-by: SeongJae Park <sj@kernel.org>
 
-...
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 0dd3c4f0979f ("Linux 5.15.140-rc3")
 
-> -static void mana_gd_deregiser_irq(struct gdma_queue *queue)
-> +static void mana_gd_deregister_irq(struct gdma_queue *queue)
->  {
->  	struct gdma_dev *gd = queue->gdma_dev;
->  	struct gdma_irq_context *gic;
->  	struct gdma_context *gc;
->  	struct gdma_resource *r;
->  	unsigned int msix_index;
-> +	struct gdma_queue *eq;
->  	unsigned long flags;
-> +	struct list_head *p;
->  
->  	gc = gd->gdma_context;
->  	r = &gc->msix_resource;
-> @@ -505,14 +507,24 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
->  	if (WARN_ON(msix_index >= gc->num_msix_usable))
->  		return;
->  
-> +	spin_lock_irqsave(&r->lock, flags);
-> +
->  	gic = &gc->irq_contexts[msix_index];
-> -	gic->handler = NULL;
-> -	gic->arg = NULL;
-> +	list_for_each_rcu(p, &gic->eq_list) {
-> +		eq = list_entry(p, struct gdma_queue, entry);
+Thanks,
+SJ
 
-Hi Long Li,
+[...]
 
-Sparse complains a bit about this construction:
+---
 
- .../gdma_main.c:513:9: error: incompatible types in comparison expression (different address spaces):
- .../gdma_main.c:513:9:    struct list_head [noderef] __rcu *
- .../gdma_main.c:513:9:    struct list_head *
- .../gdma_main.c:513:9: error: incompatible types in comparison expression (different address spaces):
- .../gdma_main.c:513:9:    struct list_head [noderef] __rcu *
- .../gdma_main.c:513:9:    struct list_head *
-
-Perhaps using list_for_each_entry_rcu() is appropriate here.
-
-
-> +		if (queue == eq) {
-> +			list_del(&eq->entry);
-> +			synchronize_rcu();
-> +			break;
-> +		}
-> +	}
->  
-> -	spin_lock_irqsave(&r->lock, flags);
-> -	bitmap_clear(r->map, msix_index, 1);
-> -	spin_unlock_irqrestore(&r->lock, flags);
-> +	if (list_empty(&gic->eq_list)) {
-> +		gic->handler = NULL;
-> +		bitmap_clear(r->map, msix_index, 1);
-> +	}
->  
-> +	spin_unlock_irqrestore(&r->lock, flags);
->  	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
->  }
->  
-
-...
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_i386_idle_flag.sh
+ok 13 selftests: damon-tests: build_i386_highpte.sh
+ok 14 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
