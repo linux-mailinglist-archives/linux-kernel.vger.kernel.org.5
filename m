@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E047F9463
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438567F9468
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjKZRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 12:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        id S230221AbjKZRHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 12:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjKZREy (ORCPT
+        with ESMTP id S229456AbjKZRHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 12:04:54 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA68A110
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:04:57 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6cd8b5b2d04so590295b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:04:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701018297; x=1701623097;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XA/pgEiCXt+qQYAtZPP2dxIIZG+qdoHDuaqYLQj3xCI=;
-        b=CCcI/q9mppy5cB/PZf60YXlGvguae/hrXB1vLqHBgwnYGgDTvXyP6NV2MVb/ps7YJK
-         F85IhViGrTPrVZpNJ5z0uBO+QH9ySD/d/NYlC4dLVwKjCc53KMJ+XG4XYM5Kc12BV1P5
-         /rmEpxA+Gr3v8n7JZRpy+K2fzBlRt85yo1QxBRDaiblKYgwZv4n5IIr4+ZagksY5L+kC
-         Hp6LdMVXLlxDIcED9/2FxUmYaUoL0WhGYYlc8tLA1E3XEo5zjJ1e7bxEYl+99L+hSqFa
-         emnpALluPBMT6AFnlbi3/6pv9URNY2FI378Up9cPce6ioerb81SZGIXu/2k5dZ5xsFbB
-         T2cw==
-X-Gm-Message-State: AOJu0Yy7SItmlEl4LzkxkA4iJ5Rdb1uqXa0c8OsFFSO7nEIz32lwwLuD
-        DVhu8fRH+X6+JwyWp2FVmZWbpiB1fEiCYxfs2ABryyLhwFBf
-X-Google-Smtp-Source: AGHT+IG9mm6C0gpUp9CtgHeB75bblkoI7PLGyr/WLpbO8bd82b5J1aunFGd/vzgXPYye+7Zwza/V3QyybIsYy1v+Y2cTYJn7XNxh
+        Sun, 26 Nov 2023 12:07:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DABEFA
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:07:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A08C433C7;
+        Sun, 26 Nov 2023 17:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701018428;
+        bh=XUM7qw4H5Ny7dZR+MIodYJqjaaevZ0Fq9kn1EHutWXc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LRTmJQ3xoY1hLDtcHRx+zh0vqin88ikJAaqkKXbeQBPgdpdMb7EN9II+FYQWLCxKN
+         x1fY/MjjzXIbFiFikjMXSjppbLfeEzTWcyLudo4O+CnVfWRx5I6KvFArjkT7qSmMpD
+         CyapR6bScFuplZRJOSSwOFqsxWTwW11PWMlNtPZllln7CSZMpa8vk7ghopfSLZSvdY
+         8Xp2M7TjfAI8sPpupBhPDJpOZyaSqg8v+tDmbtDRQZCkUIKAHS0Zdedjslwb7/17u0
+         9gD++jL+iZtGHHwF6z+8xvzJsZPdcmS6EA0AHIFwxOA3LMZQrizz1hnWdOlESxu74E
+         ma4FxdS0A3xjA==
+Date:   Sun, 26 Nov 2023 17:07:00 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     lars@metafoo.de, jean-baptiste.maneyrol@tdk.com, chenhuiz@axis.com,
+        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] iio: imu: inv_mpu6050: return callee's error code
+ rather than -EINVAL
+Message-ID: <20231126170700.550d20e7@jic23-huawei>
+In-Reply-To: <20231030020752.67630-1-suhui@nfschina.com>
+References: <20231030020752.67630-1-suhui@nfschina.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:10c5:b0:68f:cb69:8e76 with SMTP id
- d5-20020a056a0010c500b0068fcb698e76mr2353555pfu.2.1701018297283; Sun, 26 Nov
- 2023 09:04:57 -0800 (PST)
-Date:   Sun, 26 Nov 2023 09:04:57 -0800
-In-Reply-To: <CAJjsb4oOYb1Ykzen74TutDcsw+smQ6kU9w7uqbUt-E4p_dThkQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005dbe10060b112f9d@google.com>
-Subject: Re: Test
-From:   syzbot <syzbot+298932bae5cf3522b729@syzkaller.appspotmail.com>
-To:     tintinm2017@gmail.com
-Cc:     tintinm2017@gmail.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz test:
+On Mon, 30 Oct 2023 10:07:53 +0800
+Su Hui <suhui@nfschina.com> wrote:
 
-This crash does not have a reproducer. I cannot test it.
+> regmap_bulk_write()/regmap_bulk_read() return zero or negative error
+> code, return the callee's error code is better than '-EINVAL'.
+Thanks and fully agree - though one small tweak I made whilst applying is mentioned
+below.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to see if we missed anything.
+
+> 
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  drivers/iio/imu/inv_mpu6050/inv_mpu_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
+> index a9a5fb266ef1..5ded0781797c 100644
+> --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
+> +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
+> @@ -572,7 +572,7 @@ static int inv_mpu6050_sensor_set(struct inv_mpu6050_state  *st, int reg,
+>  	ind = (axis - IIO_MOD_X) * 2;
+>  	result = regmap_bulk_write(st->map, reg + ind, &d, sizeof(d));
+>  	if (result)
+> -		return -EINVAL;
+> +		return result;
+>  
+>  	return 0;
+I tweaked this to go further
+
+	return regmap_bulk_write();
+
+>  }
+> @@ -586,7 +586,7 @@ static int inv_mpu6050_sensor_show(struct inv_mpu6050_state  *st, int reg,
+>  	ind = (axis - IIO_MOD_X) * 2;
+>  	result = regmap_bulk_read(st->map, reg + ind, &d, sizeof(d));
+>  	if (result)
+> -		return -EINVAL;
+> +		return result;
+>  	*val = (short)be16_to_cpup(&d);
+>  
+>  	return IIO_VAL_INT;
+
