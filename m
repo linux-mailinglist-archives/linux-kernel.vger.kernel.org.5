@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7464A7F9267
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BEA7F9276
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 12:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbjKZK4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 05:56:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S229533AbjKZLPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 06:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjKZK4v (ORCPT
+        with ESMTP id S229437AbjKZLO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 05:56:51 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D860EDE
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:56:57 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a03a9009572so445186966b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:56:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700996216; x=1701601016; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ea1jLeAmnQSy9N/+din3DyjLsbvTIXpsAIcN3X7QL+4=;
-        b=njbt1USnhnvjDjHCQUSIY04J9Z/CuapK+l6mL4QDPaCWZbSDDU05KrhQv0te4MBfJ1
-         LobvaWn4rfKlyWpJIv2jpkvnA7AXbz9N/ldzqhZtr8V74l7CiT4eEKnnegnMBqFz+cyf
-         nt/hjbEtxd50rI9th8sjNFFLore5MpOhmi15oIQ2yRy4eeyI8UmOz9Zpu24VeiuW4FMw
-         +6Q8A9CRd7Lw1LeHuBTtKk9ygh/MF3DQAePh6Vq7srA1MyU3jqKze89i7fIt4gDqoelr
-         oygUyVmXJC2XGlReRuCKz1AxqJtGZWQMLlSX2AHNyyR2CTmBo7T1DcrM/2vz/YFd2KL6
-         CuDQ==
+        Sun, 26 Nov 2023 06:14:59 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14F0101
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 03:15:05 -0800 (PST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cf904825c2so47807155ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 03:15:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700996216; x=1701601016;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700997305; x=1701602105;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ea1jLeAmnQSy9N/+din3DyjLsbvTIXpsAIcN3X7QL+4=;
-        b=uDFYWvO3NuBUw0VkUiNsYRnuYFRcXlRA6ZQZ0Nn1JtY3katlyiFMveFRazpIoThUjW
-         +jG2GGnJeaAtVuMVJA0lycy9N75ezSX/JNUW53UxW90V68GBmrXrsG85alJVEw7wEGDq
-         LueiLtjupMiWG7XI52g1k4TQ6XV5tCLA8Lewfl2NEi+En+T1CNxIASBYpON93hmHCqmw
-         DJGd2UMuMcPfhVk27ZWFYzbi2LoXDlN1GmKv7euJbheU4GvUS8XwqYKiFyXzHhdyMX6e
-         nbGGq0y7FFoJef8FBNHYmTkkyA487vqPiuhR9KtPPoFS9HLugWWV115jvC2ArvqiXswC
-         KvSw==
-X-Gm-Message-State: AOJu0YwaopIa5oBDtTaPn4en6GwHNq+UQZ6cOj9uSI5gkz5RmtY9USKt
-        EZ+8uROEEmoGVXzlQLIKOrc=
-X-Google-Smtp-Source: AGHT+IG+GOdWj/VLVzcj/3gp7NPqtTAhePXdP862ib2/pBvG9jdmpQQQJ8+1VOz5rXcM4Gp99vR+SA==
-X-Received: by 2002:a17:906:4557:b0:9e6:38f2:8439 with SMTP id s23-20020a170906455700b009e638f28439mr6350967ejq.60.1700996215660;
-        Sun, 26 Nov 2023 02:56:55 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q17-20020a170906145100b00a0949d4f66fsm3083431ejc.54.2023.11.26.02.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 02:56:55 -0800 (PST)
-Message-ID: <a32406eb-1a3b-f8ce-9b74-1f5f09bb5f1e@gmail.com>
-Date:   Sun, 26 Nov 2023 11:56:54 +0100
+        bh=yHaxLzHaMrVuEynKFwAXmqb1IBUV1cZFLGQCi6lgPdg=;
+        b=F+gTf1SfnjtY9tG9c+FeKSW8kAt5BKK48nHyuMcJD4IuCLsBn3AEzOdod8Kbzm9GX1
+         vhsOU2O1AkjJSACWgTUlTCyq0w501BzkIIYdI7yHZDFiCrGSweHH4MXjIWS+uBwuiKcp
+         G8JoAq02O5vY09k93s/twlxdn8MMrmmxXwK3c6Ig54FRU6tWnAYop/Cgh4YVcYsOHsS3
+         3DL/9eLGFjA0f8xd2OBgyD6s1FQubHFfj/vuM35b6VytOs4gJSHgtXMx+M/blOgLQw0x
+         98G4sC6Mvx3ZJUjizzbHftjcCpKw3R9SAUidIkq7jvBD0YgPJcpEoNEbCaQRHqJZgGBe
+         NQhw==
+X-Gm-Message-State: AOJu0YxuvQ1NqQpzlEE2d8vAWnJheU7Su0V9QpaGgKzOp0HT77Q9Wlir
+        reY6sKA1qH8Gi0iCfXBNMHyLxzk12y9aeQr0ZOLr/kveJZY8
+X-Google-Smtp-Source: AGHT+IE0WR/9nta+zaUgKm7UCxRX3Ot8aDCrNULWGKAS247az7Z4XU/pN/NfDGZq7w8qAr1qX/4xDp1eaWge8tvxtmAFd5e2n1Vh
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v1 3/3] drm/rockchip: inno_hdmi: Remove unused drm device
- pointer
-To:     hjc@rock-chips.com, heiko@sntech.de
-Cc:     airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mripard@kernel.org
-References: <2601b669-c570-f39d-8cf9-bff56c939912@gmail.com>
-Content-Language: en-US
-In-Reply-To: <2601b669-c570-f39d-8cf9-bff56c939912@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:9883:b0:1cf:9f36:d983 with SMTP id
+ s3-20020a170902988300b001cf9f36d983mr1599271plp.8.1700997305280; Sun, 26 Nov
+ 2023 03:15:05 -0800 (PST)
+Date:   Sun, 26 Nov 2023 03:15:05 -0800
+In-Reply-To: <000000000000a135c0060a2260b3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000252e5e060b0c4ccc@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: null-ptr-deref Read in ida_free (4)
+From:   syzbot <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        luiz.von.dentz@intel.com, marcel@holtmann.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, william.xuanziyang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The drm_dev field in the inno_hdmi struct stores a pointer to the DRM
-device but is never used anywhere in the driver. Let's remove it.
+syzbot has bisected this issue to:
 
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- drivers/gpu/drm/rockchip/inno_hdmi.c | 2 --
- 1 file changed, 2 deletions(-)
+commit 181a42edddf51d5d9697ecdf365d72ebeab5afb0
+Author: Ziyang Xuan <william.xuanziyang@huawei.com>
+Date:   Wed Oct 11 09:57:31 2023 +0000
 
-diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 535cca30c256..ff7fa11dbc61 100644
---- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -48,7 +48,6 @@ struct inno_hdmi_i2c {
+    Bluetooth: Make handle of hci_conn be unique
 
- struct inno_hdmi {
- 	struct device *dev;
--	struct drm_device *drm_dev;
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1345177ce80000
+start commit:   8c9660f65153 Add linux-next specific files for 20231124
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10c5177ce80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1745177ce80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ca1e8655505e280
+dashboard link: https://syzkaller.appspot.com/bug?extid=51baee846ddab52d5230
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d54c08e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160ef1a4e80000
 
- 	int irq;
- 	struct clk *pclk;
-@@ -821,7 +820,6 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
- 		return -ENOMEM;
+Reported-by: syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com
+Fixes: 181a42edddf5 ("Bluetooth: Make handle of hci_conn be unique")
 
- 	hdmi->dev = dev;
--	hdmi->drm_dev = drm;
-
- 	hdmi->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(hdmi->regs))
---
-2.39.2
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
