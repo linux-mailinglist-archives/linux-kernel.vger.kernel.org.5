@@ -2,115 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66197F93CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758527F93DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjKZQcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 11:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        id S230085AbjKZQea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 11:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZQcP (ORCPT
+        with ESMTP id S229437AbjKZQe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 11:32:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC20FE3;
-        Sun, 26 Nov 2023 08:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701016341; x=1732552341;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=C1szmEvCxxp64F0iuaAQ1E2knC5KLnUYXFCFe3nV1KE=;
-  b=Af+UlocVkTSShDLcOqH+0uPkMMSYGUT7uX1irolSvU5z9rp6qUjSh3Ae
-   4yRFA1Yy/tfC2BsN4cK8xmdfWmmbwJeIzy8jVH1OoJ+sQH7jjVR+JG909
-   I2zt80PmbKi8orFeCdGoneMAfRMEic5RLjvV08dgkZPmjv+qcUhXETwsQ
-   t1ehA+QUQ61tGWQPtR3SaQB7fU33VqqwI8ZtGCn00gW+T58hepUOf1mZ1
-   x4fcz5zGmTp/mYIghGQXhkTCAXFfQwT/R9ixJMITyXNulM19XgfzITaf3
-   DM0kpI2SRtEwrhFa5dqpSSXNkCjoTIO75t6dHRPJFpHUktlq+2mbgwM4+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="377624607"
-X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
-   d="scan'208";a="377624607"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 08:32:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
-   d="scan'208";a="9407085"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.124.112.56])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Nov 2023 08:32:16 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "tj@kernel.org" <tj@kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mkoutny@suse.com" <mkoutny@suse.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc:     "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-5-haitao.huang@linux.intel.com>
- <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
- <op.2dz4d5b2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <34a337b96a5a917612c4ec4eff2b5a378c21879b.camel@intel.com>
- <op.2d0ltsxxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <op.2d0n8tjtwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <d9ad4bac3ac51fe2e8d14931054f681a8264622c.camel@intel.com>
- <op.2e0xhigjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date:   Mon, 27 Nov 2023 00:32:14 +0800
+        Sun, 26 Nov 2023 11:34:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC8ADE
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 08:34:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E1E8C433C7;
+        Sun, 26 Nov 2023 16:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701016474;
+        bh=sXPwwX2+rpN+bhkF3PyDlCMa5Y9XQMft6HodtNwnGQs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PqIvg3f+vr6MzJP6RqXravJ2rXNaSYgjzcfzPANcdIWTR2Vz5kRqXwHlWdCgm8Y0f
+         UiTxz18pdM67vti67Esdy95oqKQKcJlaRuRw5kNoUcbXUo7Mrs2tyeRcJpLYBq51l/
+         6MKi8g7r1/mflvdCFCB/Fhl+dx8S1/DJxZpRfW+m2BTPgcn9hRdvGxMJ0FXGOnEwLd
+         U/0tZKwemqj+orfUQO/0aEb2VOzQtuOFvuOESAH2VY1ZwIcVtUDpvGgmyheHFrtATM
+         WYRY8e8ucEpzTsOyA5H8mHGNwat97b8q8BQgw0ESNmlcPNco+ZotqJq4sH+4E10Wy3
+         a+Haa3pdkJJcA==
+Date:   Sun, 26 Nov 2023 16:34:26 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alisa-Dariana Roman <alisa.roman@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 4/4] iio: adc: ad7192: Add AD7194 support
+Message-ID: <20231126163426.66e51114@jic23-huawei>
+In-Reply-To: <20231114200533.137995-5-alisa.roman@analog.com>
+References: <20231114200533.137995-1-alisa.roman@analog.com>
+        <20231114200533.137995-5-alisa.roman@analog.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2e0yv0bnwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2e0xhigjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 00:01:56 +0800, Haitao Huang  
-<haitao.huang@linux.intel.com> wrote:
->>> > > > > Then here we can have something like:
->>> > > > >
->>> > > > > 	void sgx_reclaim_pages(struct sgx_epc_cg *epc_cg)
->>> > > > > 	{
->>> > > > > 		struct sgx_epc_lru_list *lru =			epc_cg ? &epc_cg->lru :
->>> > > > > &sgx_global_lru;
->>> > > > >
->>> > > > > 		sgx_reclaim_pages_lru(lru);
->>> > > > > 	}
->>> > > > >
->>> > > > > Makes sense?
->>> > > > >
->
-> The reason we 'isolate' first then do real 'reclaim' is that the actual  
-> reclaim is expensive and especially for eblock, etrack, etc.
-Sorry this is out of context. It was meant to be in the other response for  
-patch 9/12.
+On Tue, 14 Nov 2023 22:05:33 +0200
+Alisa-Dariana Roman <alisadariana@gmail.com> wrote:
 
-Also FYI I'm traveling for a vacation and email access may be sporadic.
+> Unlike the other AD719Xs, AD7194 has configurable differential
+> channels. The default configuration for these channels can be changed
+> from the devicetree.
+> 
+> The default configuration is hardcoded in order to have a stable number
+> of channels.
+> 
+> Also modify config AD7192 description for better scaling.
+> 
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 
-BR
-Haitao
+Not directly related to this patch (which looks fine to me)
+but any idea why 3db_frequency_available is not using read_avail?
+
+Seems sensible to convert it over given all the other cases are using that
+and it will allow dropping at least some of the attributes infrastructure
+for some devices.
+
+Random aside on the fact that we should be able to do cleanup.h magic
+to deal with the fwnode_handle_put() in error paths. +CC Peter Z, Andy S and Rafael,
+mostly so they can shout if someone has already done it. That would avoid one
+of our more common bugs with property handling and drop a bunch of lines in
+every driver looping over fwnodes.
+(my lore search foo isn't finding anything).
+
+I have a bunch of other cleanup.h stuff to send out, but if no one points
+out a nasty flaw, I'll circle back to this one in a week or two.
+
+Jonathan
+
+> ---
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 48e0357564af..0532678ad665 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+...
+
+> +static int ad7192_parse_channels(struct iio_dev *indio_dev)
+> +{
+> +	struct ad7192_state *st = iio_priv(indio_dev);
+> +	struct device *dev = &st->sd.spi->dev;
+> +	struct fwnode_handle *child;
+
+Not specific to this driver, but someone (maybe me if I ever get
+time) should look at a cleanup.h class for fwnode_handle.  Should be easy to do
+and would get rid of all the manual fwnode_handle_put calls once and for all!
+
+Would look something like (completely untested)
+	DEFINE_FREE(fwnode_handle_put, struct fwnode_handle, if (_T) fwnode_handle_put(_T));
+
+	struct fwnode_handle __free(fwnode_handle_put) *child = NULL;
+
+minor benefit in this driver, but much larger in others that are parsing lots
+of attributes under the fwnode.
+
+> +	int ret;
+> +
+> +	device_for_each_child_node(dev, child) {
+> +		ret = ad7192_parse_channel(indio_dev, child);
+> +		if (ret) {
+> +			fwnode_handle_put(child);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ad7192_probe(struct spi_device *spi)
+>  {
+>  	struct ad7192_state *st;
+> @@ -1150,6 +1282,12 @@ static int ad7192_probe(struct spi_device *spi)
+>  		}
+>  	}
+>  
+> +	if (st->chip_info->chip_id == CHIPID_AD7194) {
+
+You match on 7194, then call a function named ad7192_xxx
+which with that name we'd expect to apply to either the
+ad7192 or to all parts in this driver.
+So that function is not well named- it's find to rename it
+to ad7194_parse_channels().  However...
+
+> +		ret = ad7192_parse_channels(indio_dev);
+I'd prefer to see this done via a callback in chip_info
+
+	if (st->chip_info->channel_parse) {
+		ret = st->chip_info->channel_parse(indio_dev);
+		...
+
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	ret = ad7192_setup(indio_dev);
+>  	if (ret)
+>  		return ret;
+> @@ -1161,6 +1299,7 @@ static const struct of_device_id ad7192_of_match[] = {
+>  	{ .compatible = "adi,ad7190", .data = &ad7192_chip_info_tbl[ID_AD7190] },
+>  	{ .compatible = "adi,ad7192", .data = &ad7192_chip_info_tbl[ID_AD7192] },
+>  	{ .compatible = "adi,ad7193", .data = &ad7192_chip_info_tbl[ID_AD7193] },
+> +	{ .compatible = "adi,ad7194", .data = &ad7192_chip_info_tbl[ID_AD7194] },
+>  	{ .compatible = "adi,ad7195", .data = &ad7192_chip_info_tbl[ID_AD7195] },
+>  	{}
+>  };
+> @@ -1170,6 +1309,7 @@ static const struct spi_device_id ad7192_ids[] = {
+>  	{ "ad7190", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7190] },
+>  	{ "ad7192", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7192] },
+>  	{ "ad7193", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7193] },
+> +	{ "ad7194", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7194] },
+>  	{ "ad7195", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7195] },
+>  	{}
+>  };
+> @@ -1186,6 +1326,6 @@ static struct spi_driver ad7192_driver = {
+>  module_spi_driver(ad7192_driver);
+>  
+>  MODULE_AUTHOR("Michael Hennerich <michael.hennerich@analog.com>");
+> -MODULE_DESCRIPTION("Analog Devices AD7190, AD7192, AD7193, AD7195 ADC");
+> +MODULE_DESCRIPTION("Analog Devices AD7190, AD7192, AD7193, AD7194, AD7195 ADC");
+
+Maybe time to switch to 'and similar' here.
+
+Thanks,
+
+Jonathan
+
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_IMPORT_NS(IIO_AD_SIGMA_DELTA);
+
