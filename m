@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE247F9499
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E087F949E
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 18:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbjKZRbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 12:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S230417AbjKZRbv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 26 Nov 2023 12:31:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKZRbN (ORCPT
+        with ESMTP id S229436AbjKZRbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 12:31:13 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B432CB;
-        Sun, 26 Nov 2023 09:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=lFwfHbim/2vFGOOUw2BBRulKU/qvSJ7bd4ioRytIvOY=; b=bZphnMMwRL8NoGO7bP7d7ax2wZ
-        39ZLwMO0xqqwvJB4VZzKNVLoSRiSD9LN5xvEtGv/U7+uo3ddQVIDtiF6RAel4mQmwhFnHqzVYegJS
-        bTeyvumF24hZ01lft/xCi0Ov3rtke8QOnerGyscp7EteXScPN9Y1lh5arTKF2SPbjKkM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r7IyK-001GHE-3q; Sun, 26 Nov 2023 18:31:08 +0100
-Date:   Sun, 26 Nov 2023 18:31:08 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 3/6] net: phy: at803x: add QCA8084 ethernet phy support
-Message-ID: <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
-References: <20231126060732.31764-1-quic_luoj@quicinc.com>
- <20231126060732.31764-4-quic_luoj@quicinc.com>
+        Sun, 26 Nov 2023 12:31:49 -0500
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA88CB
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:31:55 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so45588391fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:31:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701019913; x=1701624713;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VmBLcu5qy11F4jhHivQd10kXFKmqA7ke47zHNPeSxzo=;
+        b=IvSggtJYzVbrEjqAXRiaFN1d0pU6JQRMz7b2jzcYB/By5/4+7Zv+HGTu5KvzKGajGg
+         IsA94TYcSfw0nIlSeS/evmrjmIVc7D0+AA8ekQO7FlJJPbtfnCxywv/w3Hio/f9m164A
+         Fp2zHFaIyAKR6RLhjH++X+zsF4LhmNqpMkwiPSFWFWtcldrVYzsuK8Ypjs4neQMpsL4N
+         4NVyAImbvTaTtYoyLLRbXtAC1iJE5VO7jpPbJEqJg1wljQ4WHTbabgJvJb0SYPHzAkLX
+         PkKiAjeV0chw/8a6HkDwPDP+/QvEsmMKMFwvjxS//JGGPzabK7it1pLfr1vyP2PWtavc
+         vngA==
+X-Gm-Message-State: AOJu0Yyqb0bOm9StF+2GqevOVY3BEgJAIyshHFjvZHmHgAMaOBibYdoV
+        2PPR4Sv/XoGlYsWt/1BiycIodzg6CSsF721i
+X-Google-Smtp-Source: AGHT+IHsjQbxWgSaMmxrUiSJwx1j8w1DJ4tFJhT7v4d05lCFaX99qM8YZrGO+EWVqTfjUoeKpf4XlA==
+X-Received: by 2002:a19:ca0f:0:b0:50b:ad16:38f9 with SMTP id a15-20020a19ca0f000000b0050bad1638f9mr1509187lfg.68.1701019913299;
+        Sun, 26 Nov 2023 09:31:53 -0800 (PST)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170906c40900b009dd98089a48sm4726926ejz.43.2023.11.26.09.31.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Nov 2023 09:31:52 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54af4f2838dso2915478a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 09:31:52 -0800 (PST)
+X-Received: by 2002:a05:6402:31e5:b0:54a:f8e9:a9a8 with SMTP id
+ dy5-20020a05640231e500b0054af8e9a9a8mr6153886edb.20.1701019912624; Sun, 26
+ Nov 2023 09:31:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126060732.31764-4-quic_luoj@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231126162009.17934-1-sven@svenpeter.dev>
+In-Reply-To: <20231126162009.17934-1-sven@svenpeter.dev>
+From:   Neal Gompa <neal@gompa.dev>
+Date:   Sun, 26 Nov 2023 12:31:15 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je_v78nLMYwH4RzZPE__HDc3T9=uu4hVw4wRDDM7A+RFCw@mail.gmail.com>
+Message-ID: <CAEg-Je_v78nLMYwH4RzZPE__HDc3T9=uu4hVw4wRDDM7A+RFCw@mail.gmail.com>
+Subject: Re: [PATCH] iommu: dart: Use readl instead of readl_relaxed for consistency
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Hector Martin <marcan@marcan.st>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,27 +72,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +		/* There are two PCSs available for QCA8084, which support the
-> +		 * following interface modes.
-> +		 *
-> +		 * 1. PHY_INTERFACE_MODE_10G_QXGMII utilizes PCS1 for all
-> +		 * available 4 ports, which is for all link speeds.
-> +		 *
-> +		 * 2. PHY_INTERFACE_MODE_2500BASEX utilizes PCS0 for the
-> +		 * fourth port, which is only for the link speed 2500M same
-> +		 * as QCA8081.
-> +		 *
-> +		 * 3. PHY_INTERFACE_MODE_SGMII utilizes PCS0 for the fourth
-> +		 * port, which is for the link speed 10M, 100M and 1000M same
-> +		 * as QCA8081.
-> +		 */
+On Sun, Nov 26, 2023 at 11:20 AM Sven Peter <sven@svenpeter.dev> wrote:
+>
+> While the readl_relaxed in apple_dart_suspend is correct the rest of the
+> driver uses the non-relaxed variants everywhere and the single
+> readl_relaxed is inconsistent and possibly confusing.
+>
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  drivers/iommu/apple-dart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+> index 59cf256bf40f..c7f047ce0a7a 100644
+> --- a/drivers/iommu/apple-dart.c
+> +++ b/drivers/iommu/apple-dart.c
+> @@ -1272,7 +1272,7 @@ static __maybe_unused int apple_dart_suspend(struct device *dev)
+>         unsigned int sid, idx;
+>
+>         for (sid = 0; sid < dart->num_streams; sid++) {
+> -               dart->save_tcr[sid] = readl_relaxed(dart->regs + DART_TCR(dart, sid));
+> +               dart->save_tcr[sid] = readl(dart->regs + DART_TCR(dart, sid));
+>                 for (idx = 0; idx < dart->hw->ttbr_count; idx++)
+>                         dart->save_ttbr[sid][idx] =
+>                                 readl(dart->regs + DART_TTBR(dart, sid, idx));
+> --
+> 2.34.1
+>
+>
 
-How are these 3 modes configured? I don't see any software
-configuration of this in these drivers. Can it only by configured by
-strapping?
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
-I think there should be some validation of the phydev->interface
-mode. Are ports 1-3 set to PHY_INTERFACE_MODE_10G_QXGMII? Is port 4
-interface mode consistent with the strapping?
 
-	  Andrew
+-- 
+真実はいつも一つ！/ Always, there's only one truth!
