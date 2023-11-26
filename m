@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986447F93BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8727F93EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjKZQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 11:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S230136AbjKZQht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 11:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKZQYx (ORCPT
+        with ESMTP id S229437AbjKZQhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 11:24:53 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586C3D3;
-        Sun, 26 Nov 2023 08:25:00 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c239897895so2144062a12.2;
-        Sun, 26 Nov 2023 08:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701015900; x=1701620700; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=WvIB/yJLUMiZHfcnxTO1H2RtJsdrVkNpq1xmHlG3eDc=;
-        b=mqcmXnlg6kTMwju6TnnOjyUNzzZP6Nw/OfjUaDZky2Tp2re2kdkgvb4grPCo1Q3d78
-         TOVl6K8BgAs1Styqfr8rzbsypTDh+C9UgeUNY1dQqIjK5O1Is623OQ3e8YvSnYWB4orV
-         RDM7L7vaxYekmh4DXhi/ieen8zXoLnRqdowS8LSY5k9SsFFl1b2Y5vULLpgfz1vtjBwA
-         83oa9RoOpNTGiREqABM5TNDqpP5BklbeRxTClbAEdIHYLygEiWVqRHKNklELcEDvCW8u
-         tiPJ3lTbCIqosMBMDOfTxfYI6NVtBVs4dPzIaiciksPaFu3yyZaoCN64mwKKaNhkPn9L
-         HroA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701015900; x=1701620700;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WvIB/yJLUMiZHfcnxTO1H2RtJsdrVkNpq1xmHlG3eDc=;
-        b=UsXWc4eUky8KJowyOUoBN1qzCMkjP7TVK8eRnPG0BLONxmUH0FZfm0VlFI2upykE19
-         ahiz2MmlJN/eyQqhVnenLXR4heltOmTDuH8ark9yoEpfJikJX6aUtgdaGmskkpU8W6a8
-         TI2kt7xIayZ8bxLOx3djkV3vqSmV05JrbtUbgneoCL7S+6SUpNIkM5C3T6DgAP2M5080
-         py5pe9sphCmkNdCXD7sXKs7Q6fJeWjeEd3uUMf1WWwiUkUF9h+vbuRVBX7qFcJkVMNEK
-         Fk77T1heiYxoO9gMaAnYjydMu9BKzEPCrvNGe1jugqlYaJHoYWdwk+2N+O54fSeTfG7m
-         HehQ==
-X-Gm-Message-State: AOJu0YwZHcGMAt8d6AZWa5jY/hLiaoN2wABsfeRdhYR+qL+rHOGSEMRR
-        SC1dhhJKXbigyzfL5Vz/7X8=
-X-Google-Smtp-Source: AGHT+IFB5U7VBdn+zI8TQ4OJYTxGteSOogbzCF58dGy2wBrqg3tjKc694SWa2sL7+CjWeUWZskX/hw==
-X-Received: by 2002:a05:6a20:8403:b0:18b:a011:f955 with SMTP id c3-20020a056a20840300b0018ba011f955mr9563141pzd.60.1701015899688;
-        Sun, 26 Nov 2023 08:24:59 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a22-20020a63d216000000b005bdd8dcfe19sm6232427pgg.10.2023.11.26.08.24.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 08:24:59 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <3632c7da-24ba-4259-a590-5c46f899d43f@roeck-us.net>
-Date:   Sun, 26 Nov 2023 08:24:57 -0800
+        Sun, 26 Nov 2023 11:37:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BB0D7
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 08:37:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2236C433C7;
+        Sun, 26 Nov 2023 16:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701016674;
+        bh=14LKXLMt/+5p7qNVS51zb2f8quhJJfzs+4w5ju16qQE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mt7oHGf9eqanTX1nkP81wW4zCU1I2igViCVsXynMsPOkiJ6FEJmGV3NY3UUTdBhbj
+         1Pj5QIjP6KqCyvS7c2o5SObZ73Os35SJblEnA86rrUC2Pq/Q6cRqf/pLj2r8cvXTKI
+         J9ojaEZvebtfR1eAn00K/dtPAx6ldxX9WhHRCOP7ZYJ4D5xWD/dd2sk0MTqLmpR2sf
+         y0FH0hkb9xRAWaNDFq91uV+HkipxIhLnGdQGEZe4pCGvxQaVoyrhPSsE07JFRUwqTa
+         icYlYgsGQWf5zPKFq/5j2XdxddlL7yX5q4BjVli5kdSgsECw7Dtbrwfta+pHqpCYXi
+         yfPhtdRPfHtjw==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: mm: still create swiotlb buffer for kmalloc() bouncing if required
+Date:   Mon, 27 Nov 2023 00:25:28 +0800
+Message-Id: <20231126162528.2411-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 000/292] 5.15.140-rc3 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-References: <20231126154348.824037389@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231126154348.824037389@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/23 07:46, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.140 release.
-> There are 292 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
-> 
+After commit f51f7a0fc2f4 ("riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC
+for !dma_coherent"), for non-coherent platforms with less than 4GB
+memory, we rely on users to pass "swiotlb=mmnn,force" kernel parameters
+to enable DMA bouncing for unaligned kmalloc() buffers. Now let's go
+further: If no bouncing needed for ZONE_DMA, let kernel automatically
+allocate 1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing on
+non-coherent platforms, so that no need to pass "swiotlb=mmnn,force"
+any more.
 
-For v5.15.139-293-g0dd3c4f0979f (-rc3), powerpc:defconfig:
+The math of "1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing"
+is taken from arm64. Users can still force smaller swiotlb buffer by
+passing "swiotlb=mmnn".
 
-arch/powerpc/platforms/pseries/iommu.c: In function 'find_existing_ddw':
-arch/powerpc/platforms/pseries/iommu.c:908:49: error: 'struct dma_win' has no member named 'direct'
-   908 |                         *direct_mapping = window->direct;
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/mm/init.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-
-git blame points to commit 19bed3228b3aa ("powerpc/pseries/iommu: enable_ddw
-incorrectly returns direct mapping for SR-IOV device").
-
-Guenter
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 2e011cbddf3a..cbcb9918f721 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -162,11 +162,25 @@ static void print_vm_layout(void) { }
+ 
+ void __init mem_init(void)
+ {
++	bool swiotlb = max_pfn > PFN_DOWN(dma32_phys_limit);
+ #ifdef CONFIG_FLATMEM
+ 	BUG_ON(!mem_map);
+ #endif /* CONFIG_FLATMEM */
+ 
+-	swiotlb_init(max_pfn > PFN_DOWN(dma32_phys_limit), SWIOTLB_VERBOSE);
++	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) && !swiotlb &&
++	    dma_cache_alignment != 1) {
++		/*
++		 * If no bouncing needed for ZONE_DMA, allocate 1MB swiotlb
++		 * buffer per 1GB of RAM for kmalloc() bouncing on
++		 * non-coherent platforms.
++		 */
++		unsigned long size =
++			DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
++		swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
++		swiotlb = true;
++	}
++
++	swiotlb_init(swiotlb, SWIOTLB_VERBOSE);
+ 	memblock_free_all();
+ 
+ 	print_vm_layout();
+-- 
+2.42.0
 
