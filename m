@@ -2,224 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9A07F921C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DAB7F9218
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjKZKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 05:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S229618AbjKZKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 05:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZKPF (ORCPT
+        with ESMTP id S229437AbjKZKOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 05:15:05 -0500
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1B0118;
-        Sun, 26 Nov 2023 02:15:10 -0800 (PST)
-Received: from localhost.localdomain (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id 0017C28EE6F;
-        Sun, 26 Nov 2023 10:15:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1700993708;
-        bh=X1if6+dXyS4IOu9VJ6YZavnsWFjbh6L8Mr4n8bVqe0s=;
-        h=From:To:Cc:Subject:Date;
-        b=RFpK01v5J+7E48GWNUmJ0MOfGERXNkEfcB2+TG72WmLHDg/nRBPY11jExsQP/sdv8
-         JrUOZUnWZDeK/mzmq+e9lCeN2Jh6deUyBloVZUGBmGGY7ZdMIgB3s1F07DAG6jSUle
-         mMMJsWHt3ovYzUOlQ0TbHpuV1DIah5sk8KTJNhf8=
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH v3 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-Date:   Sun, 26 Nov 2023 12:14:38 +0200
-Message-ID: <20231126101443.13880-1-petre.rodan@subdimension.ro>
-X-Mailer: git-send-email 2.41.0
+        Sun, 26 Nov 2023 05:14:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3FB8F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 02:14:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE7B0C433C7;
+        Sun, 26 Nov 2023 10:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700993688;
+        bh=PPedvbS5DQ2FZTOoN4M0bKSN7HSiJdPxPxYv6Vn4nvw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b8IFm4+NrJH4sB0Nj6RYRs0zluBsf4CoYd+dcuFwR7zrU2bfptNXzP6VOXbpX3k6l
+         vi8OiK7zbvwXw56T4TAZSJUF94UTu4quFzAWMVwBaXWkj2HKBE2Vgm6wRHx8xdI3YC
+         cP0RUqEZrjlt97PutC4aEkt6LD7HJZbQ0IFQxvfnUT+w/74MGJU0jOzkuLd+0wrGyL
+         A/mvwCDlnvYI86VbYAQxO3EGjDSUYsR0QUxgUTZ/5+gOKX0l/lwRwOp7oSjG5yyl5e
+         bCsWee2otzBbM9REISsAnPZ9xe9iirohBrbOM4vev7+ZFZ8ZTxncxB5JJcuRRHTuik
+         9CQbRR/9HZ+Nw==
+Date:   Sun, 26 Nov 2023 10:14:45 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Message-ID: <ZWMaMIGUo9DeyEH+@finisterre.sirena.org.uk>
+References: <20231124163234.GC819414@pengutronix.de>
+ <2023112453-flagstick-bullring-8511@gregkh>
+ <20231124185725.GA872366@pengutronix.de>
+ <2023112520-paper-image-ef5d@gregkh>
+ <20231125085038.GA877872@pengutronix.de>
+ <2023112506-unselfish-unkind-adcb@gregkh>
+ <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
+ <2023112541-uptown-tripping-05f3@gregkh>
+ <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
+ <2023112504-cathedral-pulmonary-83ce@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uQh9ua/qwEbUZunq"
+Content-Disposition: inline
+In-Reply-To: <2023112504-cathedral-pulmonary-83ce@gregkh>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds binding for digital Honeywell TruStability HSC and SSC series
-pressure and temperature sensors. 
-Communication is one way. The sensor only requires 4 bytes worth of
-clock signals on both i2c and spi in order to push the data out.
-The i2c address is hardcoded and depends on the part number.
-There is no additional GPIO control.
 
-Datasheet:
-https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
-Datasheet:
-https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
-Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
----
-V2: - fix yaml struct
-    - cleanup based on Krzysztof's review
-V3: - rename range_str -> honeywell,pressure-triplet to define the string
-       containing the pressure range, measurement unit and type
-    - honeywell,pmax-pascal becomes uint32 (Krzysztof)
-    - pmin-pascal still needs type change to int32 
-       for kpascal in the schema.
-       be so kind and add 'pascal' as well since there are sensors with 
-       a full scale span of mere 320 pascals with 14bits of precision.
----
- .../iio/pressure/honeywell,hsc030pa.yaml      | 133 ++++++++++++++++++
- 1 file changed, 133 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+--uQh9ua/qwEbUZunq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-new file mode 100644
-index 000000000000..47f7a8202847
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-@@ -0,0 +1,133 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Honeywell TruStability HSC and SSC pressure sensor series
-+
-+description: |
-+  support for Honeywell TruStability HSC and SSC digital pressure sensor
-+  series.
-+
-+  These sensors have either an I2C, an SPI or an analog interface. Only the
-+  digital versions are supported by this driver.
-+
-+  There are 118 models with different pressure ranges available in each family.
-+  The vendor calls them "HSC series" and "SSC series". All of them have an
-+  identical programming model but differ in pressure range, unit and transfer
-+  function.
-+
-+  To support different models one needs to specify the pressure range as well
-+  as the transfer function. Pressure range can either be provided via
-+  pressure-triplet (directly extracted from the part number) or in case it's
-+  a custom chip via numerical range limits converted to pascals.
-+
-+  The transfer function defines the ranges of raw conversion values delivered
-+  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
-+  maximum pressure that can be measured.
-+
-+  Please note that in case of an SPI-based sensor, the clock signal should not
-+  exceed 800kHz and the MOSI signal is not required.
-+
-+  Specifications about the devices can be found at:
-+  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
-+  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
-+
-+maintainers:
-+  - Petre Rodan <petre.rodan@subdimension.ro>
-+
-+properties:
-+  compatible:
-+    const: honeywell,hsc030pa
-+
-+  reg:
-+    maxItems: 1
-+
-+  honeywell,transfer-function:
-+    description: |
-+      Transfer function which defines the range of valid values delivered by
-+      the sensor.
-+      0 - A, 10% to 90% of 2^14
-+      1 - B, 5% to 95% of 2^14
-+      2 - C, 5% to 85% of 2^14
-+      3 - F, 4% to 94% of 2^14
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  honeywell,pressure-triplet:
-+    description: |
-+      Case-sensitive five character string that defines pressure range, unit
-+      and type as part of the device nomenclature. In the unlikely case of a
-+      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
-+    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
-+           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
-+           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
-+           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
-+           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
-+           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
-+           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
-+           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
-+           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
-+           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
-+           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
-+           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
-+           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
-+           150PG, NA]
-+    $ref: /schemas/types.yaml#/definitions/string
-+
-+  honeywell,pmin-pascal:
-+    description: |
-+      Minimum pressure value the sensor can measure in pascal.
-+      To be specified only if honeywell,pressure-triplet is set to "NA".
-+    $ref: /schemas/types.yaml#/definitions/int32
-+
-+  honeywell,pmax-pascal:
-+    description: |
-+      Maximum pressure value the sensor can measure in pascal.
-+      To be specified only if honeywell,pressure-triplet is set to "NA".
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  vdd-supply:
-+    description:
-+      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
-+
-+  spi-max-frequency:
-+    maximum: 800000
-+
-+required:
-+  - compatible
-+  - reg
-+  - honeywell,transfer-function
-+  - honeywell,pressure-triplet
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pressure@28 {
-+            compatible = "honeywell,hsc030pa";
-+            reg = <0x28>;
-+            honeywell,transfer-function = <0>;
-+            honeywell,pressure-triplet = "030PA";
-+        };
-+    };
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pressure@0 {
-+            compatible = "honeywell,hsc030pa";
-+            reg = <0>;
-+            spi-max-frequency = <800000>;
-+            honeywell,transfer-function = <0>;
-+            honeywell,pressure-triplet = "NA";
-+            honeywell,pmin-pascal = <0>;
-+            honeywell,pmax-pascal = <200000>;
-+        };
-+    };
-+...
--- 
-2.41.0
+On Sat, Nov 25, 2023 at 07:58:12PM +0000, Greg Kroah-Hartman wrote:
+> On Sat, Nov 25, 2023 at 03:43:02PM +0000, Mark Brown wrote:
+> > On Sat, Nov 25, 2023 at 02:35:41PM +0000, Greg Kroah-Hartman wrote:
 
+> > > That would be great, but I don't see that here, do you?  All I see is
+> > > the shutdown sequence changing because someone wants it to go "faster"
+> > > with the threat of hardware breaking if we don't meet that "faster"
+> > > number, yet no knowledge or guarantee that this number can ever be known
+> > > or happen.
+
+> > The idea was to have somewhere to send notifications when the hardware
+> > starts reporting things like power supplies starting to fail.  We do
+> > have those from hardware, we just don't do anything terribly useful
+> > with them yet.
+
+> Ok, but that's not what I recall this patchset doing, or did I missing
+> something?  All I saw was a "reorder the shutdown sequence" set of
+> changes.  Or at least that's all I remember at this point in time,
+> sorry, it's been a few days, but at least that lines up with what the
+> Subject line says above :)
+
+That's not in the series, a bunch of it is merged in some form (eg, see
+hw_protection_shutdown()) and more of it would need to be built on top
+if this were merged.
+
+> > > Agreed, but I don't think this patch is going to actually work properly
+> > > over time as there is no time values involved :)
+
+> > This seems to be more into the area of mitigation than firm solution, I
+> > suspect users will be pleased if they can make a noticable dent in the
+> > number of failures they're seeing.
+
+> Mitigation is good, but this patch series is just a hack by doing "throw
+> this device type at the front of the shutdown list because we have
+> hardware that crashes a lot" :)
+
+Sounds like a mitigation to me.
+
+> > It feels like if we're concerned about mitigating physical damage during
+> > the process of power failure that's a very limited set of devices - the
+> > storage case where we're in the middle of writing to flash or whatever
+> > is the most obvious case.
+
+> Then why isn't userspace handling this?  This is a policy decision that
+> it needs to take to properly know what hardware needs to be shut down,
+> and what needs to happen in order to do that (i.e. flush, unmount,
+> etc.?)  And userspace today should be able to say, "power down this
+> device now!" for any device in the system based on the sysfs device
+> tree, or at the very least, force it to a specific power state.  So why
+> not handle this policy there?
+
+Given the tight timelines it does seem reasonable to have some of this
+in the kernel - the specific decisions about how to handle these events
+can always be controlled from userspace (eg, with a sysfs file like we
+do for autosuspend delay times which seem to be in a similar ballpark).
+
+--uQh9ua/qwEbUZunq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVjGpQACgkQJNaLcl1U
+h9BAygf+Ovn6WFycjg4a428ShoS3nCtM+10pRkpPcJaruElrjkeYHpktjeD/z29s
+VUpUoBIcyJJGDj/Y2CVGz4huMhvjay3x4Ai1UntNQ3E6Kbeqo/cPH21D8kWodRGc
+QPjtzbiM8KMpQVR+lECGLwqdwoRFyC7nZu2BAPlp/1LXHzRwzIjDEgUZIXFJ9px8
+fYm2d/DDiWCv6/dYDSFrGdul84kRblCGKfojhMtjAbFuZvxNJQIhEpdsXR41idj4
+7srmRb9V0dTEcSrNMIZDfMCjfuZvZ90I+ai4PWjaswBfPYPXMMbEEH7UI0WWX/jR
+hUMm+k8kdNq/4RpjQyA1PNGQoJwYeA==
+=Qq3L
+-----END PGP SIGNATURE-----
+
+--uQh9ua/qwEbUZunq--
