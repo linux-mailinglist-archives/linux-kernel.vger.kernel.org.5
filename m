@@ -2,169 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7C77F94E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 19:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0254E7F94E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 19:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbjKZSdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 13:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        id S231124AbjKZSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 13:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjKZSdM (ORCPT
+        with ESMTP id S230458AbjKZSdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 13:33:12 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A4DE8;
-        Sun, 26 Nov 2023 10:33:19 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cbe716b511so2316834b3a.3;
-        Sun, 26 Nov 2023 10:33:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701023599; x=1701628399; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVmDhjOXqhvKgFkEdvXLesWKtT+5+6HRJ1ntux/QoPo=;
-        b=m5rFI7UOXdCb/J8g3yEhJ7kQ6TNy0isN5N0uc6Mb3huKy41uk6v3u6E44/yr2CK5oL
-         sg1wBgW6YFw8JB92QKm84SNsOzZcvoS9HPhNUdK29jIMTNMBipbGL0/3lAc5JRvzfz5v
-         7b6XdGrRpUjsXtTcuPOkoNZ4431+Bb2eP1l8acQfkM6Nz49E7rxHtSnlnNWhino9U8Vx
-         2oew9QDWesSrHXy0HO+VlPw8t8tZlsrI1p1q2yFwPcfX5slbTLRAmxvFubOUM2WWOne0
-         FxpOEffhj4fi8NHhzeoAqidF4PXG+lDn3n4CTsOwlAjdk3U7Gm2S0MCrI0MyPHGhcVTe
-         IMGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701023599; x=1701628399;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZVmDhjOXqhvKgFkEdvXLesWKtT+5+6HRJ1ntux/QoPo=;
-        b=Lypi59ydxfl9WjYx96od9/fuv2lKFfHVQ4mXG4OtNObirdoogYiVl8Rheqy2t2G1p9
-         GeRd2tlb88cJqJOeFYVpmo1MGZE2szL+UqQN1JcUhH9GaejFy+45y72malO+6CgWxHGk
-         0QFGEX8mqSLkFoWBlEeaNiEczjNkgkSDlgpuzqNsEQ1VrirRcyTL+vXeH/mkIbMoCyuy
-         yL1RZVdTGNBLNCftJSppMuPd4QSPqIWf5d7LGNFH0Ijeza3A3yFvbZvaiHJXaVo0o8jt
-         Wmia69Da1NCpoYLBfkSTT1K/5Mu36RufCeRofb07Q5FZzfnhacz6Sl23KB8fEdzwT2b/
-         G8ow==
-X-Gm-Message-State: AOJu0YwkqPy+sNBRSTNTQBhqAmKQ0HVnhVsSU0ZckZhkroZKpBC0ecEo
-        kmq+/cEo68QdO3Qe6swT5Z8=
-X-Google-Smtp-Source: AGHT+IEdVS1JbMFlp6ZZQNruwQlaMMngzWg7HnKoKlQvgn+RUYQwxgW3PasscTn0Hqru5nfHWniQhA==
-X-Received: by 2002:a05:6a20:d70a:b0:18a:e7cf:7be with SMTP id iz10-20020a056a20d70a00b0018ae7cf07bemr8470281pzb.52.1701023598811;
-        Sun, 26 Nov 2023 10:33:18 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a7-20020a656407000000b005b83bc255fbsm5484576pgv.71.2023.11.26.10.33.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 10:33:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <09f33739-9bf6-4ff8-895d-92d3567c3cb9@roeck-us.net>
-Date:   Sun, 26 Nov 2023 10:33:16 -0800
+        Sun, 26 Nov 2023 13:33:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AC218B
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 10:33:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05232C433C7;
+        Sun, 26 Nov 2023 18:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701023623;
+        bh=zrU4gLxxf5YEYb6jb9tmW8AYMw7MJgKNjGe8Z4YJh4I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gU8fpAydMRMa3H8g6OtUjK0Z7iadrdtC5vXaP8+dbR+dwKrFbnaXhf9M2aqdNPaS5
+         NEljrgkGkgXQUTBF/FEHGF1Tt3YOegFMhQdnQvGeE2icE/pUWk54yK6l1VTV5j6h/W
+         OBkTCeLeH1P0894AyC6gA0z3Zy7iKi4txk1FgjWjPYvavXIVYGjBaPkMBOFcWokzwB
+         7qT7ZERLDwCOAVS4IKv9MONtetBHeBCEMzQ5c6uGsn273GKFasWpt3VBCHoXgE9yKQ
+         a4umEnvQlFBSE5gTNZhMO7sTzt49k+mPe+LY03JOBO/sTWypSmgaJkU5PKcdBny24O
+         zV95iU3yTP9vA==
+Date:   Sun, 26 Nov 2023 18:33:34 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC
+ series pressure sensors
+Message-ID: <20231126183334.625d2d8b@jic23-huawei>
+In-Reply-To: <20231126102721.15322-1-petre.rodan@subdimension.ro>
+References: <20231126102721.15322-1-petre.rodan@subdimension.ro>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, Helge Deller <deller@gmx.de>
-References: <20231125163059.878143365@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231125163059.878143365@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/23 08:32, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.331 release.
-> There are 53 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sun, 26 Nov 2023 12:27:17 +0200
+Petre Rodan <petre.rodan@subdimension.ro> wrote:
+
+> Adds driver for digital Honeywell TruStability HSC and SSC series
+> pressure and temperature sensors. 
+> Communication is one way. The sensor only requires 4 bytes worth of
+> clock signals on both i2c and spi in order to push the data out.
+> The i2c address is hardcoded and depends on the part number.
+> There is no additional GPIO control.
 > 
-> Responses should be made by Mon, 27 Nov 2023 16:30:48 +0000.
-> Anything received after that time might be too late.
-> 
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 
-Building parisc64:generic-64bit_defconfig ... failed
---------------
-Error log:
-hppa64-linux-ld: arch/parisc/kernel/head.o: in function `$iodc_panic':
-(.head.text+0x64): undefined reference to `init_stack'
-hppa64-linux-ld: (.head.text+0x68): undefined reference to `init_stack'
-make[1]: *** [Makefile:1049: vmlinux] Error 1
-make: *** [Makefile:153: sub-make] Error 2
+Hi Petre
 
-Bisect log:
+A quick end of day review.
 
-# bad: [39ca2c4cec46e5ef545815f62be91cba998b8927] Linux 4.14.331-rc2
-# good: [bfa43eeca4797e58975ba8c54057c1f29bf20534] Linux 4.14.330
-git bisect start 'HEAD' 'v4.14.330'
-# good: [5bc5bf29b42fb16faa4407f9c01f05dadb397f2f] media: venus: hfi: add checks to perform sanity on queue pointers
-git bisect good 5bc5bf29b42fb16faa4407f9c01f05dadb397f2f
-# good: [2e1d20a37188fbca246de24800f3fb0e9ab8d233] mcb: fix error handling for different scenarios when parsing
-git bisect good 2e1d20a37188fbca246de24800f3fb0e9ab8d233
-# bad: [6c59b6c8a0be15fa1db3d07ffcad481aa507f8be] media: venus: hfi: fix the check to handle session buffer requirement
-git bisect bad 6c59b6c8a0be15fa1db3d07ffcad481aa507f8be
-# bad: [581615c5d0e31e0033e3458e248c6e3646b5ab13] ALSA: info: Fix potential deadlock at disconnection
-git bisect bad 581615c5d0e31e0033e3458e248c6e3646b5ab13
-# bad: [af3526c44f86f56af5963e8ed6dc77fc1e76ccc5] parisc/pgtable: Do not drop upper 5 address bits of physical address
-git bisect bad af3526c44f86f56af5963e8ed6dc77fc1e76ccc5
-# bad: [6eddd5699c407a706d8e914e0c88934c4e1b6e27] parisc: Prevent booting 64-bit kernels on PA1.x machines
-git bisect bad 6eddd5699c407a706d8e914e0c88934c4e1b6e27
-# first bad commit: [6eddd5699c407a706d8e914e0c88934c4e1b6e27] parisc: Prevent booting 64-bit kernels on PA1.x machines
+Jonathan
 
-FWIW, the offending patch is tagged "Cc:  <stable@vger.kernel.org> # v6.0+"
+> diff --git a/drivers/iio/pressure/hsc030pa.c b/drivers/iio/pressure/hsc030pa.c
+> new file mode 100644
+> index 000000000000..a118d27e4342
+> --- /dev/null
+> +++ b/drivers/iio/pressure/hsc030pa.c
+> @@ -0,0 +1,414 @@
+...
 
-Guenter
+> +
+> +#include "hsc030pa.h"
+> +
+> +#define     HSC_PRESSURE_TRIPLET_LEN  6
+
+Can you make this length based on something like a structure length, or number
+of registers?  That would make it self documenting which is always nice to have.
+
+> +#define              HSC_STATUS_MASK  GENMASK(7, 6)
+> +#define         HSC_TEMPERATURE_MASK  GENMASK(15, 5)
+> +#define            HSC_PRESSURE_MASK  GENMASK(29, 16)
+
+Unusual indenting.  Don't do this.  Just use a single space
+as it's much less noise as a driver gets modified over time.
+
+> +
+> +struct hsc_func_spec {
+> +	u32 output_min;
+> +	u32 output_max;
+> +};
+> +
+> +/**
+> + * function A: 10% - 90% of 2^14
+> + * function B:  5% - 95% of 2^14
+> + * function C:  5% - 85% of 2^14
+> + * function F:  4% - 94% of 2^14
+> + */
+> +static const struct hsc_func_spec hsc_func_spec[] = {
+> +	[HSC_FUNCTION_A] = {.output_min = 1638, .output_max = 14746},
+> +	[HSC_FUNCTION_B] = {.output_min =  819, .output_max = 15565},
+> +	[HSC_FUNCTION_C] = {.output_min =  819, .output_max = 13926},
+> +	[HSC_FUNCTION_F] = {.output_min =  655, .output_max = 15401},
+Space after { and before }
+We need a consistent style, and that's my preferred one for IIO.
+
+> +};
+
+> +/* all min max limits have been converted to pascals */
+> +static const struct hsc_range_config hsc_range_config[] = {
+> +	{.name = "001BA", .pmin =       0, .pmax =  100000 },
+
+space after { in all these.
+
+
+> +};
+>
+> +static int hsc_read_raw(struct iio_dev *indio_dev,
+> +			struct iio_chan_spec const *channel, int *val,
+> +			int *val2, long mask)
+> +{
+> +	struct hsc_data *data = iio_priv(indio_dev);
+> +	int ret;
+> +	u32 xfer;
+> +	int raw;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = hsc_get_measurement(data);
+> +		if (ret)
+> +			return ret;
+> +
+> +		xfer = get_unaligned_be32(data->buffer);
+> +		switch (channel->type) {
+> +		case IIO_PRESSURE:
+> +			raw = FIELD_GET(HSC_PRESSURE_MASK, xfer);
+> +			*val = raw;
+> +			return IIO_VAL_INT;
+> +		case IIO_TEMP:
+> +			raw = FIELD_GET(HSC_TEMPERATURE_MASK, xfer);
+> +			*val = raw;
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +/**
+Not kernel-doc so /* only.
+
+> + * IIO ABI expects
+> + * value = (conv + offset) * scale
+> + *
+> + * datasheet provides the following formula for determining the temperature
+> + * temp[C] = conv * a + b
+> + *   where a = 200/2047; b = -50
+> + *
+> + *  temp[C] = (conv + (b/a)) * a * (1000)
+> + *  =>
+> + *  scale = a * 1000 = .097703957 * 1000 = 97.703957
+> + *  offset = b/a = -50 / .097703957 = -50000000 / 97704
+> + *
+> + *  based on the datasheet
+> + *  pressure = (conv - Omin) * Q + Pmin =
+> + *          ((conv - Omin) + Pmin/Q) * Q
+> + *  =>
+> + *  scale = Q = (Pmax - Pmin) / (Omax - Omin)
+> + *  offset = Pmin/Q - Omin = Pmin * (Omax - Omin) / (Pmax - Pmin) - Omin
+> + */
+> +
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (channel->type) {
+> +		case IIO_TEMP:
+> +			*val = 97;
+> +			*val2 = 703957;
+> +			return IIO_VAL_INT_PLUS_MICRO;
+> +		case IIO_PRESSURE:
+> +			*val = data->p_scale;
+> +			*val2 = data->p_scale_dec;
+> +			return IIO_VAL_INT_PLUS_NANO;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		switch (channel->type) {
+> +		case IIO_TEMP:
+> +			*val = -50000000;
+> +			*val2 = 97704;
+> +			return IIO_VAL_FRACTIONAL;
+> +		case IIO_PRESSURE:
+> +			*val = data->p_offset;
+> +			*val2 = data->p_offset_dec;
+> +			return IIO_VAL_INT_PLUS_MICRO;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return -EINVAL;
+If you can get to a final return after a case statement you are doing
+it wrong. Add a default in the switch - makes it explicit that other
+cases are errors rather than having to look down here.
+
+
+> +}
+
+> +
+> +static const struct iio_chan_spec hsc_channels[] = {
+> +	{.type = IIO_PRESSURE, .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET) },
+> +	{.type = IIO_TEMP, .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET) },
+Format this like every other driver does it.
+
+	{
+		.type = IIO_TEMP,
+		.info_mask_....
+	},
+	{
+		...
+	},
+
+etc
+> +};
+
+> +
+> +int hsc_probe(struct iio_dev *indio_dev, struct device *dev,
+> +	      const char *name, int type)
+> +{
+> +	struct hsc_data *hsc;
+> +	const char *triplet;
+> +	u64 tmp;
+> +	int index;
+> +	int found = 0;
+> +	int ret;
+> +
+> +	hsc = iio_priv(indio_dev);
+> +	hsc->chip = &hsc_chip;
+> +
+> +	ret = device_property_read_u32(dev,
+> +				       "honeywell,transfer-function",
+> +				       &hsc->function);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +			    "honeywell,transfer-function could not be read\n");
+> +	if (hsc->function > HSC_FUNCTION_F)
+> +		return dev_err_probe(dev, -EINVAL,
+> +				     "honeywell,transfer-function %d invalid\n",
+> +				     hsc->function);
+> +
+> +	ret = device_property_read_string(dev,
+> +		"honeywell,pressure-triplet", &triplet);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +			"honeywell,pressure-triplet could not be read\n");
+> +
+> +	if (strncmp(triplet, "NA", 2) == 0) {
+> +		// "not available" in the nomenclature
+> +		// we got a custom-range chip so extract pmin, pmax from dt
+> +		ret = device_property_read_u32(dev,
+> +					       "honeywell,pmin-pascal",
+> +					       &hsc->pmin);
+> +		if (ret)
+> +			return dev_err_probe(dev, ret,
+> +				"honeywell,pmin-pascal could not be read\n");
+> +		ret = device_property_read_u32(dev,
+> +					       "honeywell,pmax-pascal",
+> +					       &hsc->pmax);
+> +		if (ret)
+> +			return dev_err_probe(dev, ret,
+> +				"honeywell,pmax-pascal could not be read\n");
+> +	} else {
+> +		// chip should be defined in the nomenclature
+
+All comments in IIO use /* */ syntax.
+
+> +		for (index = 0; index < ARRAY_SIZE(hsc_range_config); index++) {
+> +			if (strncmp(hsc_range_config[index].name,
+> +					triplet,
+> +					HSC_PRESSURE_TRIPLET_LEN - 1) == 0) {
+> +				hsc->pmin = hsc_range_config[index].pmin;
+> +				hsc->pmax = hsc_range_config[index].pmax;
+> +				found = 1;
+> +				break;
+> +			}
+> +		}
+> +		if (hsc->pmin == hsc->pmax || !found)
+> +			return dev_err_probe(dev, -EINVAL,
+> +				"honeywell,pressure-triplet is invalid\n");
+> +	}
+
+> diff --git a/drivers/iio/pressure/hsc030pa.h b/drivers/iio/pressure/hsc030pa.h
+> new file mode 100644
+> index 000000000000..cf1674d36485
+> --- /dev/null
+> +++ b/drivers/iio/pressure/hsc030pa.h
+> @@ -0,0 +1,78 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Honeywell TruStability HSC Series pressure/temperature sensor
+> + *
+> + * Copyright (c) 2023 Petre Rodan <petre.rodan@subdimension.ro>
+> + */
+> +
+> +#ifndef _HSC030PA_H
+> +#define _HSC030PA_H
+> +
+> +#include <linux/property.h>
+> +#include <linux/types.h>
+> +
+> +/**
+> + * get all conversions (4 bytes) in one go
+> + * since transfers are not address-based
+> +*/
+> +#define  HSC_REG_MEASUREMENT_RD_SIZE  4
+> +
+> +struct device;
+> +
+> +struct iio_chan_spec;
+> +struct iio_dev;
+> +
+> +struct hsc_chip_data;
+> +
+> +/**
+> + * struct hsc_data
+> + * @client: either i2c or spi kernel interface struct for current dev
+Docs don't match structure
+
+> + * @lock: lock protecting chip reads
+> + * @xfer: function that implements the chip reads
+> + * @is_valid: false if last transfer has failed
+> + * @buffer: raw conversion data
+> + * @pmin: minimum measurable pressure limit
+> + * @pmax: maximum measurable pressure limit
+> + * @outmin: minimum raw pressure in counts (based on transfer function)
+> + * @outmax: maximum raw pressure in counts (based on transfer function)
+> + * @function: transfer function
+> + * @p_scale: pressure scale
+> + * @p_scale_dec: pressure scale, decimal places
+> + * @p_offset: pressure offset
+> + * @p_offset_dec: pressure offset, decimal places
+> + */
+> +struct hsc_data {
+> +	void *client;
+> +	const struct hsc_chip_data *chip;
+> +	struct mutex lock;
+> +	int (*xfer)(struct hsc_data *data);
+> +	bool is_valid;
+> +	u8 buffer[HSC_REG_MEASUREMENT_RD_SIZE];
+
+This is used for SPI transfers so should be DMA safe. It's not currently.
+Look at how IIO_DMA_MINALIGN is used in other drivers to ensure there is
+no unsafe sharing of cachelines.
+
+On some architectures this is fixed by the stuff that bounces all small transfers
+but I don't think that is universal yet.  If you want more info find the talk
+by Wolfram Sang from a few years ago an ELCE on I2C DMA safe buffers.
+
+> +	s32 pmin;
+> +	s32 pmax;
+> +	u32 outmin;
+> +	u32 outmax;
+> +	u32 function;
+> +	s64 p_scale;
+> +	s32 p_scale_dec;
+> +	s64 p_offset;
+> +	s32 p_offset_dec;
+> +};
+
+> diff --git a/drivers/iio/pressure/hsc030pa_i2c.c b/drivers/iio/pressure/hsc030pa_i2c.c
+> new file mode 100644
+> index 000000000000..4132db4e356a
+> --- /dev/null
+> +++ b/drivers/iio/pressure/hsc030pa_i2c.c
+> @@ -0,0 +1,81 @@
+
+Very similar comments to spi file, so I haven't repeated them.
+
+> diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure/hsc030pa_spi.c
+> new file mode 100644
+> index 000000000000..d99688a65f04
+> --- /dev/null
+> +++ b/drivers/iio/pressure/hsc030pa_spi.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Honeywell TruStability HSC Series pressure/temperature sensor
+> + *
+> + * Copyright (c) 2023 Petre Rodan <petre.rodan@subdimension.ro>
+> + *
+> + * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include <linux/iio/iio.h>
+> +
+> +#include "hsc030pa.h"
+> +
+> +static int hsc_spi_xfer(struct hsc_data *data)
+> +{
+> +	struct spi_transfer xfer = {
+> +		.tx_buf = NULL,
+> +		.rx_buf = (char *)&data->buffer,
+> +		.len = HSC_REG_MEASUREMENT_RD_SIZE,
+> +	};
+> +
+> +	return spi_sync_transfer(data->client, &xfer, 1);
+> +}
+> +
+> +static int hsc_spi_probe(struct spi_device *spi)
+> +{
+> +	struct iio_dev *indio_dev;
+> +	struct hsc_data *hsc;
+> +	struct device *dev = &spi->dev;
+> +
+> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	hsc = iio_priv(indio_dev);
+> +	hsc->xfer = hsc_spi_xfer;
+
+If it's read only I'd name it to reflect that rather than xfer which
+implies both ways.
+
+Also, pass the callback and spi->dev into hsc probe. Easy to use
+a container_of() to get back to the struct spi_device *spi
+
+That should let you do the iio_dev allocation etc all inside the generic code
+and keep this bus driver to just the bits that are bus specific.
+
+> +	hsc->client = spi;
+> +
+> +	return hsc_probe(indio_dev, &spi->dev, spi_get_device_id(spi)->name,
+> +			 spi_get_device_id(spi)->driver_data);
+Don't use anything form spi_get_device_id()
+
+Name is a fixed string currently so pass that directly.
+For driver data, there isn't any yet but if there were use
+spi_get_device_match_data() and make sure to provide the data in all the
+id tables.  That function will search the firmware ones first then call
+back to the spi specific varient.
+
+> +}
+> +
+
+> +static struct spi_driver hsc_spi_driver = {
+> +	.driver = {
+> +		.name = "hsc030pa",
+> +		.of_match_table = hsc_spi_match,
+> +		},
+
+alignment unusual here.
+	.driver = {
+		.name = "..",
+		.of_match_table = ...
+	},
+is most common form.
+
+> +	.probe = hsc_spi_probe,
+> +	.id_table = hsc_spi_id,
+> +};
+> +module_spi_driver(hsc_spi_driver);
+> +
+> +MODULE_AUTHOR("Petre Rodan <petre.rodan@subdimension.ro>");
+> +MODULE_DESCRIPTION("Honeywell HSC and SSC pressure sensor spi driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(IIO_HONEYWELL_HSC030PA);
 
