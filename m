@@ -2,127 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 453017F921B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9A07F921C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 11:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbjKZKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 05:12:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S229661AbjKZKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 05:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZKMI (ORCPT
+        with ESMTP id S229437AbjKZKPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 05:12:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CAFE3;
-        Sun, 26 Nov 2023 02:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700993535; x=1732529535;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h/LLhdSvEk/cgSco2Zse5iLa8y9W4V/6wPojyS/oJBU=;
-  b=eRLlMIep3WmGXgcSw9W3mgU6/uVhxAevhQtlWv8Kpo9TAG97j5ht1vtc
-   UwmC3tAz7DHRu4Zug7tPb+fzoEq6ADN2KYikg5yWJ4HozCmALmQLhfEs6
-   LU0apDJUOTzdPt1jSW+x35JuzO9xIoWS6JEWDDTnqQUjjbpHjl24hL5Rm
-   lLd0axI1ae10uBC+DDI931YAlcvuAheybtKev3brsWALY+DgwJbT3X8GD
-   11R+T0XrC1PnmJOUHmToUbeX2JVmwT0U2AEtsJ9jWlW3f/S61kgLTyq9U
-   lvAi7RTkODnIP3AxZlDhv4wikiY3K74jlgLGMfRz85J6PS1JjJ1/S89Rt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="5805302"
-X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
-   d="scan'208";a="5805302"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 02:12:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10905"; a="941294053"
-X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
-   d="scan'208";a="941294053"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2023 02:12:11 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r7C7V-00051W-05;
-        Sun, 26 Nov 2023 10:12:09 +0000
-Date:   Sun, 26 Nov 2023 18:12:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] export.h: remove include/asm-generic/export.h
-Message-ID: <202311261737.dQEkPNHF-lkp@intel.com>
-References: <20231126054917.930324-1-masahiroy@kernel.org>
+        Sun, 26 Nov 2023 05:15:05 -0500
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1B0118;
+        Sun, 26 Nov 2023 02:15:10 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 0017C28EE6F;
+        Sun, 26 Nov 2023 10:15:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1700993708;
+        bh=X1if6+dXyS4IOu9VJ6YZavnsWFjbh6L8Mr4n8bVqe0s=;
+        h=From:To:Cc:Subject:Date;
+        b=RFpK01v5J+7E48GWNUmJ0MOfGERXNkEfcB2+TG72WmLHDg/nRBPY11jExsQP/sdv8
+         JrUOZUnWZDeK/mzmq+e9lCeN2Jh6deUyBloVZUGBmGGY7ZdMIgB3s1F07DAG6jSUle
+         mMMJsWHt3ovYzUOlQ0TbHpuV1DIah5sk8KTJNhf8=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Sun, 26 Nov 2023 12:14:38 +0200
+Message-ID: <20231126101443.13880-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126054917.930324-1-masahiroy@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+Adds binding for digital Honeywell TruStability HSC and SSC series
+pressure and temperature sensors. 
+Communication is one way. The sensor only requires 4 bytes worth of
+clock signals on both i2c and spi in order to push the data out.
+The i2c address is hardcoded and depends on the part number.
+There is no additional GPIO control.
 
-kernel test robot noticed the following build errors:
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+V2: - fix yaml struct
+    - cleanup based on Krzysztof's review
+V3: - rename range_str -> honeywell,pressure-triplet to define the string
+       containing the pressure range, measurement unit and type
+    - honeywell,pmax-pascal becomes uint32 (Krzysztof)
+    - pmin-pascal still needs type change to int32 
+       for kpascal in the schema.
+       be so kind and add 'pascal' as well since there are sensors with 
+       a full scale span of mere 320 pascals with 14bits of precision.
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml      | 133 ++++++++++++++++++
+ 1 file changed, 133 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
 
-[auto build test ERROR on v6.7-rc2]
-[also build test ERROR on linus/master next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Masahiro-Yamada/export-h-remove-include-asm-generic-export-h/20231126-135120
-base:   v6.7-rc2
-patch link:    https://lore.kernel.org/r/20231126054917.930324-1-masahiroy%40kernel.org
-patch subject: [PATCH] export.h: remove include/asm-generic/export.h
-config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20231126/202311261737.dQEkPNHF-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311261737.dQEkPNHF-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311261737.dQEkPNHF-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/arm64/kernel/vdso/note.S:15:
->> arch/arm64/include/asm/assembler.h:15:10: fatal error: asm-generic/export.h: No such file or directory
-      15 | #include <asm-generic/export.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-   In file included from arch/arm64/include/asm/linkage.h:5,
-                    from include/linux/linkage.h:8,
-                    from arch/arm64/kernel/vdso/sigreturn.S:15:
->> arch/arm64/include/asm/assembler.h:15:10: fatal error: asm-generic/export.h: No such file or directory
-      15 | #include <asm-generic/export.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-   make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/vdso/note.o] Error 1
-   make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/vdso/sigreturn.o] Error 1
-   make[3]: Target 'include/generated/vdso-offsets.h' not remade because of errors.
-   make[3]: Target 'arch/arm64/kernel/vdso/vdso.so' not remade because of errors.
-   make[2]: *** [arch/arm64/Makefile:194: vdso_prepare] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:234: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +15 arch/arm64/include/asm/assembler.h
-
-f3e39273e0a9a5 Marc Zyngier 2015-02-20  14  
-386b3c7bdafcc6 Mark Rutland 2018-12-07 @15  #include <asm-generic/export.h>
-386b3c7bdafcc6 Mark Rutland 2018-12-07  16  
-
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..47f7a8202847
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,133 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor series
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  series.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one needs to specify the pressure range as well
++  as the transfer function. Pressure range can either be provided via
++  pressure-triplet (directly extracted from the part number) or in case it's
++  a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Please note that in case of an SPI-based sensor, the clock signal should not
++  exceed 800kHz and the MOSI signal is not required.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++properties:
++  compatible:
++    const: honeywell,hsc030pa
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,pressure-triplet:
++    description: |
++      Case-sensitive five character string that defines pressure range, unit
++      and type as part of the device nomenclature. In the unlikely case of a
++      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
++    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
++           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
++           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
++           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
++           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
++           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
++           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
++           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
++           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
++           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
++           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
++           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
++           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
++           150PG, NA]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  vdd-supply:
++    description:
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
++
++  spi-max-frequency:
++    maximum: 800000
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,pressure-triplet
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@28 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0x28>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "030PA";
++        };
++    };
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@0 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0>;
++            spi-max-frequency = <800000>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "NA";
++            honeywell,pmin-pascal = <0>;
++            honeywell,pmax-pascal = <200000>;
++        };
++    };
++...
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
