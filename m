@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363857F9090
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 01:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C80F7F9092
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 01:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjKZAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 19:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S230170AbjKZAyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 19:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjKZAyd (ORCPT
+        with ESMTP id S230270AbjKZAyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 19:54:33 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4B4DB;
-        Sat, 25 Nov 2023 16:54:40 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32faea0fa1fso1704294f8f.1;
-        Sat, 25 Nov 2023 16:54:40 -0800 (PST)
+        Sat, 25 Nov 2023 19:54:53 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4475218C;
+        Sat, 25 Nov 2023 16:54:59 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b427507b7so2726985e9.2;
+        Sat, 25 Nov 2023 16:54:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700960079; x=1701564879; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltQclqkFj/xMu+b5r26yFK5pByVqHfoEcMFbjZo3yyo=;
-        b=jmRFj+VF6EEwKk/TBQbY0YwlDC+T6ru+aoU9/dzVGcV2A43P6S09e1Z0bmdlvZTyua
-         3r4l7S/PKKNa0UMNEBGKo5mvAN3VY+g+507z2PWxtP9kKVlIFLNxchs2r+S1BFLIx4iV
-         GgTCyxC3L+fXgGA8n4OcXSNydNWVX+LVVZu0lLjmqCzmuKpqmv7kMGi+6zfNa6F0rGUP
-         qRh9qG+8OG6H15LsFk6UbZscclkRi7SsEOrw/cpFzumARkBeuQX0kIK8wWhDtUT8CZBQ
-         w3o8dWu5xXQfSQ0PE+4+2QNFf6Jzvm3wSJvmMrgkgOtYmbkaNWGbY18NoxxkixgUyINW
-         hvZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700960079; x=1701564879;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700960098; x=1701564898; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ltQclqkFj/xMu+b5r26yFK5pByVqHfoEcMFbjZo3yyo=;
-        b=vrITdbEAJrjUTodEXPZuo64uZQYp3h+TPj0c4NuzNMHmXEaXaKmHIRmFsZS8qGOpqZ
-         f21bPWCVPZ751J4R7FTXO5jQG4pKy8fzlAeIA8jXk1m9USkeuLKO1QVpDgRdPQMEABnu
-         ke5y3z52Fg6MgMcokkN+5kkNDgHsszZDJphUzOQ0XOQ34XbhSEs5F3ZMC2Q9nm8o32rm
-         WjSavQ6/kX5Lmr5uoP+REp50fz+Y/6srTC2FPnRawMRbawPVx7uknqT3JwVB5B6fBPn9
-         0dUDsvx24fpDjIQZ3AbUWipT67lgC98LBXuvsevzMd3h/V5RDBVOcvvDJQ/8uvhzXiF+
-         oVUg==
-X-Gm-Message-State: AOJu0YzX8D0jSlZr1EjKGp9UT9wfVjTN9qXZpL8it+Iz1wO5Kj9C6uFu
-        scu8rkA0cPyKD2pkAZKXHLk=
-X-Google-Smtp-Source: AGHT+IF6snv08s8f4PF01FYyHM35UwJIJcI1gHOezRjJ0Gt00iosgCCUSDl8L8jpLsuCa7fHPwHxNg==
-X-Received: by 2002:a05:6000:1001:b0:332:f9e8:ce15 with SMTP id a1-20020a056000100100b00332f9e8ce15mr736780wrx.4.1700960078599;
-        Sat, 25 Nov 2023 16:54:38 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id j7-20020adfb307000000b00332e7f9e2a8sm5894567wrd.68.2023.11.25.16.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 16:54:38 -0800 (PST)
-Message-ID: <6562974e.df0a0220.242f6.337e@mx.google.com>
-X-Google-Original-Message-ID: <ZWKXS_NZePy80ytW@Ansuel-xps.>
-Date:   Sun, 26 Nov 2023 01:54:35 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 3/3] net: phy: add support for PHY package MMD
- read/write
-References: <20231126003748.9600-1-ansuelsmth@gmail.com>
- <20231126003748.9600-3-ansuelsmth@gmail.com>
- <637891aa-19fa-4f13-9ed2-f2e14a4b1ee2@gmail.com>
+        bh=pm7530G9R5pfBVSHYb/dMQNQOiOAcGaPuFGYV7ZlkY4=;
+        b=JO0XbUDa7+8Q04cgweiWXtN1WiPF/yS/Z7UGRxGlPNQgJGQujHbEhllqg6jve1JVYk
+         iNN1raYRoh7pcTx61qdEqmoQw5GECQNStygGB+z/MmGjgIZ1nGscjtXxIOpS4jR/mEiS
+         1ZRVTaNhYl0dvhM/lov4kHPtDKO4Lycuagh5xS8lTG44GumwyBdn060I7B1vldef49jF
+         7mMLbtWlKPtr4GgCpIkqQMVGlE6WRd1RUAoOYIIABxC+kTnd0Ihe7AJ2d4pqDyNOCLzO
+         riKEeN14gAVnNeH+sd6jRM3yRXR7OgWOyclFc58x1KouK2a6H3ebtdlKjl6ALsoR24Ga
+         07CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700960098; x=1701564898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pm7530G9R5pfBVSHYb/dMQNQOiOAcGaPuFGYV7ZlkY4=;
+        b=QVibthDLSpbzfToBMBLxqQjsgC+nvyvIlWLEvJy8002oMzv6SHiV1vqWBhOPyiUCQZ
+         iF15moqt4ieviebSSRwBT1KfRJRb1FYoa5Of2yAC5S+xJT66pjHoMlNkf7n5zHgVM5C+
+         uQmyn26/kaQk0zqd7sWsQ90SjQHQ8gh4UIA6GFoesKNNwQacA68CnjMNT5TyY31QWuUH
+         IzHNQGSm4zBPaNJT37SFd33/ksFg2BqmebEs4JFP+uBJCQ8ik6RhKys5Cy6px44Nx1ls
+         gacc3Rn5HZ+J6hF7JfQS0awyDuPuuqu6z/3Mv7/lB0SP80AWT+QFWMzqQaqpzaNp13Ku
+         jlBA==
+X-Gm-Message-State: AOJu0YwMpPskqarsNh/coFI+MV4CYYUeHmrmtDkeJ9A6obqtMJpYPJ+f
+        QPiPqpxrA9/7UlD91xCGCd1bqUjfvPKJj3nOllU=
+X-Google-Smtp-Source: AGHT+IH++JIbUbFM43WMSEWN2z1o9IPTwtGX0GlAeWCk3ZQguHRZjShL2HsLBUhg/r1xzUXzw9CBivZkeuEjlKugMt4=
+X-Received: by 2002:a05:600c:1546:b0:405:3a3b:2aa2 with SMTP id
+ f6-20020a05600c154600b004053a3b2aa2mr5697695wmg.37.1700960097336; Sat, 25 Nov
+ 2023 16:54:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <637891aa-19fa-4f13-9ed2-f2e14a4b1ee2@gmail.com>
+References: <cover.1700676682.git.dxu@dxuuu.xyz> <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+In-Reply-To: <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 25 Nov 2023 16:54:45 -0800
+Message-ID: <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+To:     Yonghong Song <yonghong.song@linux.dev>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Eddy Z <eddyz87@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -87,45 +87,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 04:52:19PM -0800, Florian Fainelli wrote:
-> 
-> 
-> On 11/25/2023 4:37 PM, Christian Marangi wrote:
-> > Some PHY in PHY package may require to read/write MMD regs to correctly
-> > configure the PHY package.
-> > 
-> > Add support for these additional required function in both lock and no
-> > lock variant.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >   include/linux/phy.h | 74 +++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 74 insertions(+)
-> > 
-> > diff --git a/include/linux/phy.h b/include/linux/phy.h
-> > index 984bca9a82f4..1799133c8387 100644
-> > --- a/include/linux/phy.h
-> > +++ b/include/linux/phy.h
-> > @@ -2067,6 +2067,80 @@ static inline int __phy_package_write(struct phy_device *phydev,
-> >   	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
-> >   }
-> > +static inline int phy_package_read_mmd(struct phy_device *phydev,
-> > +				       unsigned int addr_offset, int devad,
-> > +				       u32 regnum)
-> > +{
-> > +	struct phy_package_shared *shared = phydev->shared;
-> > +	struct mii_bus *bus = phydev->mdio.bus;
-> > +	int addr, val;
-> > +
-> > +	if (!shared || shared->base_addr + addr_offset > PHY_MAX_ADDR)
-> > +		return -EIO;
-> 
-> You might be off by one here, should not that >= PHY_MAX_ADDR here and
-> below?
+On Sat, Nov 25, 2023 at 4:52=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/too=
+ls/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > index 3065a716544d..ec7e04e012ae 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > @@ -6,6 +6,7 @@
+> >    * modify it under the terms of version 2 of the GNU General Public
+> >    * License as published by the Free Software Foundation.
+> >    */
+> > +#define BPF_NO_PRESERVE_ACCESS_INDEX
+>
+> This is a temporary workaround and hopefully we can lift it in the
+> near future. Please add a comment here with prefix 'Workaround' to
+> explain why this is needed and later on we can earliy search the
+> keyword and remember to tackle this.
 
-Thanks for the review. Yes PHY_MAX_ADDR is 32 so I should use >=.
-
-(interesting choice to use 32 instead of 31 as MAX, guess an old mistake)
-
--- 
-	Ansuel
+I suspect we will forget to remove this "workaround" and people
+will start copy pasting it.
+Let's change the test instead to avoid bitfield access.
