@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558B97F92E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 14:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77E07F92EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 15:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjKZN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 08:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S229874AbjKZOAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 09:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKZN6v (ORCPT
+        with ESMTP id S229437AbjKZOAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 08:58:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0676EE4;
-        Sun, 26 Nov 2023 05:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701007138; x=1732543138;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SN94Lks4ftl2se1ieiieBfV6GGIAHmqi015IwlWk5JI=;
-  b=AuOfy3uMNI4WoYfYQNj2c9jg5owiMmVEYkFbsv/6ZujQQpPxxHHbJCBv
-   Ih6eujDhu5ab9QOnNm1FB969Q0id5ASpQYeaO3TUVsNjtlgoGoXy3hYB1
-   0oNX8zHJl2movZrb68ISUTC6MkGdGTLHozUHFzfBnnNbPfaAjX5pHy58Q
-   qmX68LG37qXKdt7ukC8K8ArIrA5iEbHbD36Sic+kpm6TqkIT37guPsmde
-   rC8LIejPCHBFjz5XRuR4b+6qdKi25pbADtNLXl4/9wABLDEXVrCqUAaQv
-   TVoj/gonkoCK3ikTeZsZemNl6rDKxeBHTNOfvMKefWWWWWiMnOJvmbLLk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="11264544"
-X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
-   d="scan'208";a="11264544"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 05:58:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="834091873"
-X-IronPort-AV: E=Sophos;i="6.04,228,1695711600"; 
-   d="scan'208";a="834091873"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Nov 2023 05:58:53 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r7Fet-0005DL-2Y;
-        Sun, 26 Nov 2023 13:58:51 +0000
-Date:   Sun, 26 Nov 2023 21:58:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Petre Rodan <petre.rodan@subdimension.ro>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Petre Rodan <petre.rodan@subdimension.ro>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC
- series pressure sensors
-Message-ID: <202311262123.aVuN3lZS-lkp@intel.com>
-References: <20231126102721.15322-1-petre.rodan@subdimension.ro>
+        Sun, 26 Nov 2023 09:00:04 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2076.outbound.protection.outlook.com [40.92.99.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5EDFC;
+        Sun, 26 Nov 2023 06:00:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m23pFYmO7USYkTzqMOlr3nbT891uo7pcJL3LCrUfC6jKtIRQk8q8E7sFNEOIi2DboWD4bublGppstDWVv+0cgWjABsGTKx+/sr1ajHM4l7U+pLPQ5AfFWZ7iJiQhbUsGLU1y0f/eo0174zhniwzyrWKW4P6cR+lgMrkZMIzvdy8NIVqxI046gciGqq6kOuJ3EePXR+FAs1KjQzfsiuDxNqS+aVbgPL9GzcMvsApoHYoW6+LXa27eVcqu1SeZJ7M/o19Af/30Hm+pOPPNh4eLzZMbHGQYU+cqWVKhoSFD+FqPeVw/bD1AX9H7Ck9wso8dsKS9InwKZ95fAeEaar3W3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LQuQIQSi4fdfjdG1mPI5nQAv1bsCQvkrIvzZUt3OfyY=;
+ b=HbvWrtDehaLwOz5+wOkNoSsjHrDf9NE6bzzVdP++uoBPpE05QKTM/sHtnFwfmaGeDHgLFghnPAb4Jim0vutjZ+S1RqM9jjtLo9AeXNy780TVL6iFRbnude0VMEe0eel01U2USnKDcpv/OS46Wo74jyoX7KhSgqxg26jXvUOejYjFXXTeNTRUt5lCuFhDUdyIg8CyVd+zyR0fHmFxWGSWDQMMDOrST6Te+LWT+vMiV4bsX8noWmU6Xn3BbfCc7e84Hlv7xVrGSgRm/g/1pTRw3qP3UNrr9oGMi/WBydLlgYUXfRt9zcxoq30em2a1N5ASWEOMz25yahLeTkNsuNXgmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LQuQIQSi4fdfjdG1mPI5nQAv1bsCQvkrIvzZUt3OfyY=;
+ b=O7SctXCcLK4cQ1M65w0PP3b+MCPm5ZdQiyI2xboP0LH7z8i1OQ0d55q+ByI5DxyIrGh/4E20VYnLpvmfgq5ksVFflSc/FHzPpcSKp9/kUOOBNLF2wxQ2ek8L5djsjcRTWlhDJ1eZ8jPC5fuQW+b1KcnowvYa0qWmuPQrz6/NE8YG8rix43s0YsD2bECJApzIgrMveYt0porRMcZ0byqx3+9ahIoSACR2YCG4Lbx+gXTKOznONOHTDxPlIq7BVcD5NeAuuv2RW5J4xKEnqYKbeafj5oyclHs+68vwX0qssjP+/t60Z7qA9DlLha5VyQZF3X5boBmVlZGKucbb1hb65A==
+Received: from OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:175::7)
+ by TY3P286MB3761.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:40b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Sun, 26 Nov
+ 2023 14:00:06 +0000
+Received: from OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3264:1deb:5bc:df48]) by OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3264:1deb:5bc:df48%5]) with mapi id 15.20.7025.022; Sun, 26 Nov 2023
+ 14:00:06 +0000
+From:   Yuluo Qiu <qyl27@outlook.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuluo Qiu <qyl27@outlook.com>,
+        Celeste Liu <CoelacanthusHex@gmail.com>
+Subject: [PATCH] acpi/video: Add quirk for the Colorful X15 AT 23 Laptop
+Date:   Sun, 26 Nov 2023 21:59:13 +0800
+Message-ID: <OS3P286MB1951B46E88AB4A91E47A2696BDBEA@OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [edH36FDc4LLzyz3Ir6rgMOuz6ConkrDB]
+X-ClientProxiedBy: TYCP301CA0082.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:405:7b::20) To OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:175::7)
+X-Microsoft-Original-Message-ID: <20231126135914.47279-1-qyl27@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126102721.15322-1-petre.rodan@subdimension.ro>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3P286MB1951:EE_|TY3P286MB3761:EE_
+X-MS-Office365-Filtering-Correlation-Id: 563cf157-a409-4f72-2536-08dbee87fec1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A7PPjXqFxAHbC/kmluE3Y5UF7CTxD5PBx7aKfuOBFGNTl5CImW71JiExeghISn0M6pAPzGtaOkCbvDId9WMsrRjIdP/MTFIMFU23/aYKARXfpXCMhoHA6RhqP0boYEr6x8hGpRvoorVI8810LWG6hRhjFwKg0LrHOPbq3Eofmkte9+/OAEWw+z6Qp86vEePTJ8OA7fwxlY51gBihlBAinv6PRx+GG+3QWMO83sdUtBOcPgRRY0mUrrBJXWSYDHPKNzdCwn2IrOyoqcYIAngrk0EKAY2yDODxYVphR5YFLwqGzQQ7/8eo9+RIdJnh7tMhthAo29HpqxuC+ISU5oj7Nwh+7tzRg6in3HB6W/fzItoBGQv/+i2SyMi4JfmU1lA8+hOIv8NbKszdKom0wmokQrY9zVxkhza3c9ZjtfTi1MxqLiM79CyPN5gfvWbM9ONEvVRldGgBV0giIsMUKqB+GecBUlpdgEO6qXDxCS0sKtmShRcOg4GyC7KIunyCuziZlhiQLiNvroNNSygnq1t7ORCXHV2St7WNEuhdd2N7JaalZiobQiNIT9KKPUxzmVg4gGZCrNCITV4Ky+tUhrNRNWmtS7EWeSDaa9uOSlcS5sldZwbyHXI73R3Ggz/NdOb9
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b5NpekuyGPHR1y5lV4p0WkclO4crZeO9YAOU0Rl6ZSTTgxlvilLY6jsee8PT?=
+ =?us-ascii?Q?r7bN3FjKg6UhsKA9+gpJjD0yI2/+rWs8NF9u3kfT0EAIBpw044fU1zAA8lqq?=
+ =?us-ascii?Q?IIPKEfT0RXf1sF1ySCULhAOkpAxumxICvwG4ToTUM/P9PecvT5BW7f0pyNFb?=
+ =?us-ascii?Q?TZtZ8BzQlCmfYtZ44AZFhEqexyfxnr+1CF3QA5HcmI8ABCVQzzpf0Maa67gV?=
+ =?us-ascii?Q?SX+BiQ399BpDkoBBAXDiI/CKzKkMfwIP8+AJrY+tx2ptJHQbnBV1NqyVSnjF?=
+ =?us-ascii?Q?C17ZAfvVM9O3NHfKEWfXgp077jiDK1XF84K500EIZIxVekpgySryPLUV66wY?=
+ =?us-ascii?Q?zfucedVSon6s7fn8RX9m70mBZwN+8bkFbHv4b785sEOo3IFVTfX5R9oYSluj?=
+ =?us-ascii?Q?ieKuhQ/mqRAmhdw0glWzrCWZc5ubo9FZWVBNh2CRD7s1igMEFti1rBRegVtt?=
+ =?us-ascii?Q?r4464hjMEFaaPmLIbnbNlPqh4fIskqKzr0l175Exj/G8cw7Odt5mAOq7N46d?=
+ =?us-ascii?Q?dbr9DCvqKV/y3Xp4RkcpQ5+QUtHhVvCGEyukk9zyIOyqGCCR5UQhhC/54UMw?=
+ =?us-ascii?Q?uBKUx6+qwLAUXRjgQl7pDPTsQm4+A3UktgwOdS/T9oynPrpCb7jmUVoRNDZk?=
+ =?us-ascii?Q?eMUrdPv7wc/EHgwhfPldBqSh18vV+Il10i8UP1GuAZYMQEzZWl3qQFRBdshf?=
+ =?us-ascii?Q?f0guuj4JgenFIAivBBwGRRZtcLIPEm1LlutSLAr9JPl2hqc2a+hKhqn7WHcV?=
+ =?us-ascii?Q?COV9V+jiRSZmf6NZFvvhInEJy4SIK9040xNKeNToZDGXvvpraebC1E6WjTLM?=
+ =?us-ascii?Q?boOwMtyIuiDUPemMHf4EqO0tRK9diNpI41iCcOtOLBkLJODOABn8gmb/qYeH?=
+ =?us-ascii?Q?N1IBrhTEhW5eFpfXAmezatFnzJ0WYsr+XdgRgh6wtpRVaNJv39iyLSsaYudM?=
+ =?us-ascii?Q?gPRRCKtXPq3TGHwKkpl+fhSFOMo6ymuS6PMdj9Up4+CII7NBtp6Y3GHeEndK?=
+ =?us-ascii?Q?4ykCiNB842qVzn79IekamRyhSzQR2itG2GapI4b1HNJGnt6x1vjdTJVlqFSn?=
+ =?us-ascii?Q?8dDA8xKHj8XOaIXu5FiBTv90ZexwgBVCjbv4v1eE6FmskuGWywpqhcT/BzyP?=
+ =?us-ascii?Q?iY5foz9iBoAf/A8BuZCX9vovNnfwVCKZE/T6lxXQtZCde9eMx2dv3Z6db9Rh?=
+ =?us-ascii?Q?Wk8LtOFC7bol4eu8ToOFXTXCj++n+2h2Ov5tViQro4mvbeDqrNORkNgnWEE?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 563cf157-a409-4f72-2536-08dbee87fec1
+X-MS-Exchange-CrossTenant-AuthSource: OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2023 14:00:06.8459
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB3761
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,53 +106,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petre,
+The Colorful X15 AT 23 ACIP video-bus device report spurious
+ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
+events being reported to userspace (and causing trouble there) when
+an external screen plugged in.
 
-kernel test robot noticed the following build warnings:
+Add a quirk setting the report_key_events mask to
+REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
+events will be ignored, while still reporting brightness up/down
+hotkey-presses to userspace normally.
 
-[auto build test WARNING on jic23-iio/togreg]
-[also build test WARNING on robh/for-next linus/master v6.7-rc2 next-20231124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Yuluo Qiu <qyl27@outlook.com>
+Co-developed-by: Celeste Liu <CoelacanthusHex@gmail.com>
+Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+---
+ drivers/acpi/acpi_video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Petre-Rodan/iio-pressure-driver-for-Honeywell-HSC-SSC-series-pressure-sensors/20231126-182901
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20231126102721.15322-1-petre.rodan%40subdimension.ro
-patch subject: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC series pressure sensors
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20231126/202311262123.aVuN3lZS-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231126/202311262123.aVuN3lZS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311262123.aVuN3lZS-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/iio/pressure/hsc030pa.c:48: warning: cannot understand function prototype: 'const struct hsc_func_spec hsc_func_spec[] = '
->> drivers/iio/pressure/hsc030pa.c:253: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * IIO ABI expects
-
-
-vim +48 drivers/iio/pressure/hsc030pa.c
-
-    41	
-    42	/**
-    43	 * function A: 10% - 90% of 2^14
-    44	 * function B:  5% - 95% of 2^14
-    45	 * function C:  5% - 85% of 2^14
-    46	 * function F:  4% - 94% of 2^14
-    47	 */
-  > 48	static const struct hsc_func_spec hsc_func_spec[] = {
-    49		[HSC_FUNCTION_A] = {.output_min = 1638, .output_max = 14746},
-    50		[HSC_FUNCTION_B] = {.output_min =  819, .output_max = 15565},
-    51		[HSC_FUNCTION_C] = {.output_min =  819, .output_max = 13926},
-    52		[HSC_FUNCTION_F] = {.output_min =  655, .output_max = 15401},
-    53	};
-    54	
-
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index d321ca7160d9..c54a364ffff3 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -503,6 +503,15 @@ static const struct dmi_system_id video_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
+ 		},
+ 	},
++	{
++	 .callback = video_set_report_key_events,
++	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
++	 .ident = "COLORFUL X15 AT 23",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "COLORFUL"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "X15 AT 23"),
++		},
++	},
+ 	/*
+ 	 * Some machines change the brightness themselves when a brightness
+ 	 * hotkey gets pressed, despite us telling them not to. In this case
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
