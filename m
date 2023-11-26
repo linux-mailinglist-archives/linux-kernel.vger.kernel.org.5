@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AE27F93B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 986447F93BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 17:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbjKZQWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 11:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        id S230209AbjKZQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 11:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKZQWC (ORCPT
+        with ESMTP id S229456AbjKZQYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 11:22:02 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C485D9;
-        Sun, 26 Nov 2023 08:22:09 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cfbce92362so4682645ad.1;
-        Sun, 26 Nov 2023 08:22:09 -0800 (PST)
+        Sun, 26 Nov 2023 11:24:53 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586C3D3;
+        Sun, 26 Nov 2023 08:25:00 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c239897895so2144062a12.2;
+        Sun, 26 Nov 2023 08:25:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701015729; x=1701620529; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701015900; x=1701620700; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=bKssKqbCvmwkXHRPOYKhiZ3Dh4+rJ6NK+z9DXZeYZ3Y=;
-        b=WTNxxlA3InWjZqyf8Lyhp3Pvqp1b67npAs2CI0aDGlajrXhugCUZrJ5go5HypjNFe7
-         YMpEcHRzOJLiOVxMYgJFPy08iIjIvmMUQYo48/4Fvi9AqSZwHh833a8nvpO+8cKbHh+k
-         nsvDK16QWuc+MXxr/ZXZhkIt/6ap+PgoqUbyG9TBw9KLXeE8xwgDEaS2YuxO0Sbq8V8S
-         maV+PqClsst7hNvpGd2xuiF89kNZJXGokaixnSEKD1z0Grueb96sm0ewCaFXyDyDVdv5
-         VWaUSFOu6Z5I54OiUHM8YG/HDW7QMLyOWifc/EWmYZDVGAI4nopecisjtZQxZwBWIoHg
-         qgVQ==
+        bh=WvIB/yJLUMiZHfcnxTO1H2RtJsdrVkNpq1xmHlG3eDc=;
+        b=mqcmXnlg6kTMwju6TnnOjyUNzzZP6Nw/OfjUaDZky2Tp2re2kdkgvb4grPCo1Q3d78
+         TOVl6K8BgAs1Styqfr8rzbsypTDh+C9UgeUNY1dQqIjK5O1Is623OQ3e8YvSnYWB4orV
+         RDM7L7vaxYekmh4DXhi/ieen8zXoLnRqdowS8LSY5k9SsFFl1b2Y5vULLpgfz1vtjBwA
+         83oa9RoOpNTGiREqABM5TNDqpP5BklbeRxTClbAEdIHYLygEiWVqRHKNklELcEDvCW8u
+         tiPJ3lTbCIqosMBMDOfTxfYI6NVtBVs4dPzIaiciksPaFu3yyZaoCN64mwKKaNhkPn9L
+         HroA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701015729; x=1701620529;
+        d=1e100.net; s=20230601; t=1701015900; x=1701620700;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bKssKqbCvmwkXHRPOYKhiZ3Dh4+rJ6NK+z9DXZeYZ3Y=;
-        b=U6qpTao1EOX7GQNRvPxclLgY/OodG4lvVjF2ViUGmE33SHrf1/hzCN1Z9OyGwpxG1z
-         Bnbk+3ltxiFGEriJB2tz52XIbE3QKX9dt27O4+vqIvgXj+75zIy8aVo514lH5XA1sKjD
-         joCbMBhmCyHXB4lPasOJvxSVigvgxLvS7bgIn8l9hpIWIjIFonimKfy2/HDlbAIZBtjP
-         /LkFwUmcVD4aK7tOUfm0l4dDrSKYe6Xa5ZYlGOddPnRxlDrvHPBAZs9No/kGyDY6r+n5
-         FjDJpkmGkPKAVlaPmXEz9WdCUq8sWuCbPUBqoGv+UZXr//JY0EP+5KZjF9PL/hwxI7dL
-         Mcfw==
-X-Gm-Message-State: AOJu0YyTUvZqiZoSvB9BgfFL+g3Mzu0LuIRY64kvFcJ7r9ZcdXpaPUME
-        yPIIQvh7szeMJCTWl4ykoHw=
-X-Google-Smtp-Source: AGHT+IEp0e4hGVMDRODcZodH/GXW9x88GFfE7wswD2oTgLnJg5UXDbMa6Dy/dVeLxHhcOh0HlkkKlg==
-X-Received: by 2002:a17:902:c40d:b0:1cf:59ad:9637 with SMTP id k13-20020a170902c40d00b001cf59ad9637mr18179954plk.22.1701015728607;
-        Sun, 26 Nov 2023 08:22:08 -0800 (PST)
+        bh=WvIB/yJLUMiZHfcnxTO1H2RtJsdrVkNpq1xmHlG3eDc=;
+        b=UsXWc4eUky8KJowyOUoBN1qzCMkjP7TVK8eRnPG0BLONxmUH0FZfm0VlFI2upykE19
+         ahiz2MmlJN/eyQqhVnenLXR4heltOmTDuH8ark9yoEpfJikJX6aUtgdaGmskkpU8W6a8
+         TI2kt7xIayZ8bxLOx3djkV3vqSmV05JrbtUbgneoCL7S+6SUpNIkM5C3T6DgAP2M5080
+         py5pe9sphCmkNdCXD7sXKs7Q6fJeWjeEd3uUMf1WWwiUkUF9h+vbuRVBX7qFcJkVMNEK
+         Fk77T1heiYxoO9gMaAnYjydMu9BKzEPCrvNGe1jugqlYaJHoYWdwk+2N+O54fSeTfG7m
+         HehQ==
+X-Gm-Message-State: AOJu0YwZHcGMAt8d6AZWa5jY/hLiaoN2wABsfeRdhYR+qL+rHOGSEMRR
+        SC1dhhJKXbigyzfL5Vz/7X8=
+X-Google-Smtp-Source: AGHT+IFB5U7VBdn+zI8TQ4OJYTxGteSOogbzCF58dGy2wBrqg3tjKc694SWa2sL7+CjWeUWZskX/hw==
+X-Received: by 2002:a05:6a20:8403:b0:18b:a011:f955 with SMTP id c3-20020a056a20840300b0018ba011f955mr9563141pzd.60.1701015899688;
+        Sun, 26 Nov 2023 08:24:59 -0800 (PST)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b001cf838dadbesm6563024plk.56.2023.11.26.08.22.06
+        by smtp.gmail.com with ESMTPSA id a22-20020a63d216000000b005bdd8dcfe19sm6232427pgg.10.2023.11.26.08.24.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 08:22:07 -0800 (PST)
+        Sun, 26 Nov 2023 08:24:59 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <05678c48-bac1-4f17-99f8-21b566c17a6e@roeck-us.net>
-Date:   Sun, 26 Nov 2023 08:22:06 -0800
+Message-ID: <3632c7da-24ba-4259-a590-5c46f899d43f@roeck-us.net>
+Date:   Sun, 26 Nov 2023 08:24:57 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 000/187] 5.10.202-rc3 review
+Subject: Re: [PATCH 5.15 000/292] 5.15.140-rc3 review
 Content-Language: en-US
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org
@@ -67,7 +67,7 @@ Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
         f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
         srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
         allen.lkml@gmail.com
-References: <20231126154335.643804657@linuxfoundation.org>
+References: <20231126154348.824037389@linuxfoundation.org>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -112,7 +112,7 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231126154335.643804657@linuxfoundation.org>
+In-Reply-To: <20231126154348.824037389@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -127,8 +127,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/26/23 07:46, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.202 release.
-> There are 187 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.15.140 release.
+> There are 292 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -136,15 +136,15 @@ On 11/26/23 07:46, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 
-A quick check with -rc3 shows for arm:allmodconfig and arm64:allmodconfig:
+For v5.15.139-293-g0dd3c4f0979f (-rc3), powerpc:defconfig:
 
-   CC [M]  drivers/interconnect/qcom/sc7180.o
-drivers/interconnect/qcom/sc7180.c:158:10: error: 'struct qcom_icc_bcm' has no member named 'enable_mask'
-   158 |         .enable_mask = BIT(3),
-       |          ^~~~~~~~~~~
+arch/powerpc/platforms/pseries/iommu.c: In function 'find_existing_ddw':
+arch/powerpc/platforms/pseries/iommu.c:908:49: error: 'struct dma_win' has no member named 'direct'
+   908 |                         *direct_mapping = window->direct;
 
-Inherited from the previous release. Introduced with commit 362f0241dbe9
-("interconnect: qcom: sc7180: Set ACV enable_mask").
+
+git blame points to commit 19bed3228b3aa ("powerpc/pseries/iommu: enable_ddw
+incorrectly returns direct mapping for SR-IOV device").
 
 Guenter
 
