@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0E77F91B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 07:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109587F91C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 09:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjKZG6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 01:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        id S229470AbjKZIBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 03:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKZG6G (ORCPT
+        with ESMTP id S229447AbjKZIBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 01:58:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0185EFB
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 22:58:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AAD6C433C8;
-        Sun, 26 Nov 2023 06:58:10 +0000 (UTC)
-Date:   Sun, 26 Nov 2023 07:58:08 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [GIT PULL] fbdev fixes and updates for v6.7-rc3
-Message-ID: <ZWLsgGku7j_7_eVE@ls3530>
+        Sun, 26 Nov 2023 03:01:20 -0500
+X-Greylist: delayed 7076 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 26 Nov 2023 00:01:26 PST
+Received: from torald.torald.de (torald.torald.de [217.160.42.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2B4E9
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 00:01:26 -0800 (PST)
+Received: by torald.torald.de (Postfix, from userid 10008)
+        id 57FB5A17F3; Sun, 26 Nov 2023 05:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=psychotherapie-weihs-godenrath.de; s=default; t=1700977564;
+        bh=E7RaeQ2wARmN4/9yM+Mfwfzmb+AJHUzmc4ZJQ5OQKRI=; h=To:Subject:From;
+        b=OzkdJHMAEaELL7nPLfI1SZQBc3nzxdY/v3mPWOJ8E4oQdMFcJaTxzXQFrIV5nFNm1
+         Qtx0Xa5XjhZXjtLP9UjS3Y3c/X8Huf03D8Z9AN0Zk/TfsfgJNOnUK3CvC6uEmhflBo
+         VmrnPARwVXqlOLb8Nf4c+WpgVi7zOTsgfbneRO/w=
+To:     linux-kernel@vger.kernel.org
+Subject: Business proposal
+Date:   Sun, 26 Nov 2023 05:46:04 +0000
+From:   Musab Mohammed Salem Al-Nisf 
+        <business@psychotherapie-weihs-godenrath.de>
+Reply-To: mohammedalnisfmusabsalem@gmail.com
+Message-ID: <05bd560279cfe77aba92d89158b90251@psychotherapie-weihs-godenrath.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_99,BAYES_999,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FORGED_REPLYTO,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
+        *      [score: 1.0000]
+        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
+        *      [score: 1.0000]
+        *  0.0 RCVD_IN_MSPIKE_L3 RBL: Low reputation (-3)
+        *      [217.160.42.121 listed in bl.mailspike.net]
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blocklisted
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Good day
 
-please pull some small fbdev fixes for 6.7-rc3.
+I found your email address in the Google database,
 
-A left margin fix and code cleanups in imxfb, and one 
-sparse warning fix in fsl-diu-fb.
+Is your email address still valid? I have a good business proposal for you,
 
-Thanks,
-Helge
+If you are interested, please contact me for more information at: mohammedalnisfmusabsalem@gmail.com
+Regards,
 
----
+Musab Mohammed Salem Al-Nisf
 
-The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbebfa:
-
-  Linux 6.6 (2023-10-29 16:31:08 -1000)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.7-rc3
-
-for you to fetch changes up to 64a1aed0aa07698d12deca9b7821ea77762ff328:
-
-  fbdev: mmp: Fix typo and wording in code comment (2023-11-25 09:54:41 +0100)
-
-----------------------------------------------------------------
-fbdev fixes and cleanups for 6.7-rc3:
-
-- fix left margin settings in imxfb
-- sparse warning fix in fsl-diu-fb
-- lots of code cleanups in imxfb
-
-----------------------------------------------------------------
-Dario Binacchi (11):
-      fbdev: imxfb: fix left margin setting
-      fbdev: imxfb: move PCR bitfields near their offset
-      fbdev: imxfb: use BIT, FIELD_{GET,PREP} and GENMASK macros
-      fbdev: imxfb: replace some magic numbers with constants
-      fbdev: imxfb: add missing SPDX tag
-      fbdev: imxfb: drop ftrace-like logging
-      fbdev: imxfb: add missing spaces after ','
-      fbdev: imxfb: Fix style warnings relating to printk()
-      fbdev: imxfb: use __func__ for function name
-      fbdev: imxfb: add '*/' on a separate line in block comment
-      fbdev: mmp: Fix typo and wording in code comment
-
-Stanislav Kinsburskii (1):
-      fbdev: fsl-diu-fb: Fix sparse warning due to virt_to_phys() prototype change
-
- drivers/video/fbdev/fsl-diu-fb.c     |   2 +-
- drivers/video/fbdev/imxfb.c          | 179 ++++++++++++++++++++---------------
- drivers/video/fbdev/mmp/hw/mmp_spi.c |   2 +-
- 3 files changed, 104 insertions(+), 79 deletions(-)
