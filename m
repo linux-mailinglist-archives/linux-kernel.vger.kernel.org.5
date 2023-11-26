@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0505E7F90F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 03:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D347F7F90F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Nov 2023 03:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjKZCUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Nov 2023 21:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        id S230003AbjKZC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Nov 2023 21:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKZCT6 (ORCPT
+        with ESMTP id S230170AbjKZC2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Nov 2023 21:19:58 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497A011B
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 18:20:05 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cfb21853faso10930285ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 18:20:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700965205; x=1701570005;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UhW0rd9+s2eAc7n2R8fuPsPsb3CTfE3Ob4lN/nPwpm4=;
-        b=gwjJAm9dX2e/r7IwNBFK69SuadEuTrX7aqUL2oPu8NUEDlSVLNySlaTAHWjAgi8y8Z
-         iZoYymWWbsvFe+1c0bURKlhxKiFY3TQqkCj+rXkY7kSQVGWccahG8yW0/DrMgVS4vj/I
-         l9Xd4U3dwY9RdQty2tjBigDIRLHIEprOdUaL5KiktMMu8VhHUJatn1pKu7lgkZJXjW0+
-         iEgFV0GfRTlu9peWbbX5mAkGMoiYgin+upIj5+DeNMyKlstPPzoXDaIjgETwhUpeUJUR
-         eeIRQp2Nus2WGQgnpqFpjn+B9E0NiOufI2xtVo/wtN0t0WVpcTPhYGRAovM4QXLlUAdY
-         5qmQ==
-X-Gm-Message-State: AOJu0YzuOY7I9gH8+8ruZJPWca+qo4/wWKiFw0VkUZhVRiJta+lMclTF
-        og7XFVYYZLY2TqTPhKkBcnHqBoYhTLcgGxwJcf0V01ndB6OY
-X-Google-Smtp-Source: AGHT+IH3MKPTCzcdATtY7G6ADgda3QJXCZ2bXG49+8r4gCnVl2yY4lJDqIpKldGfSHEis8V6Rzz99sN7OtHDxnVtLP8EC+sCvPb/
-MIME-Version: 1.0
-X-Received: by 2002:a17:903:183:b0:1cc:2bd6:b54a with SMTP id
- z3-20020a170903018300b001cc2bd6b54amr1786448plg.10.1700965204845; Sat, 25 Nov
- 2023 18:20:04 -0800 (PST)
-Date:   Sat, 25 Nov 2023 18:20:04 -0800
-In-Reply-To: <20231126015722.882-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf6dd1060b04d2d3@google.com>
-Subject: Re: [syzbot] [crypto?] INFO: task hung in hwrng_fillfn
-From:   syzbot <syzbot+c52ab18308964d248092@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Sat, 25 Nov 2023 21:28:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23270133
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Nov 2023 18:28:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C0AE2C433C7;
+        Sun, 26 Nov 2023 02:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700965705;
+        bh=u61T+JQ8kZ7n3lD3cBPLroWyDJeD5T1giCodUv0LMRM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=HiyYk3u6J5SinV5bz/CpdXNhuqdaWilzJjhzjf0eXF8WSC7ZPUtDmtwBgtf8RbvBZ
+         ViIKuuooSwwtK1gKL1c20JXDp/XAVBlmOgh7MrIOH4vGYkoYGGzfWoSSHMy01yCYQG
+         Mw81+lNIHQNX2LDgYVZEl/nGK3S8aquo+5E3OPjk3szJ67T0erIiVqALix/M59EXzw
+         Zk5WEc03ENz5VWC2Zh5L99NV7b4u0Ffr2AsBSb0JVpSqXovHvlCIhv9QGAIUKcxnDR
+         LIs6HphPl6yAw4j+UtIocg9YTCYL+J1sQK61NPugiombnMP68JlrWXggJ8LsJHfSF9
+         SQbZ6U+GshMTA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AEC2CEAA958;
+        Sun, 26 Nov 2023 02:28:25 +0000 (UTC)
+Subject: Re: [GIT PULL] USB/PHY/Thunderbolt driver fixes for 6.7-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZWJQOw3VcmTOB62a@kroah.com>
+References: <ZWJQOw3VcmTOB62a@kroah.com>
+X-PR-Tracked-List-Id: <linux-usb.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZWJQOw3VcmTOB62a@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.7-rc3
+X-PR-Tracked-Commit-Id: cb9a830e871779b4f9b8d5f76a2abf24915cd007
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 090472ed9c922e699dc61dd601a9b376a64f4390
+Message-Id: <170096570570.17835.11926136154771545086.pr-tracker-bot@kernel.org>
+Date:   Sun, 26 Nov 2023 02:28:25 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The pull request you sent on Sat, 25 Nov 2023 19:51:23 +0000:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.7-rc3
 
-Reported-and-tested-by: syzbot+c52ab18308964d248092@syzkaller.appspotmail.com
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/090472ed9c922e699dc61dd601a9b376a64f4390
 
-Tested on:
+Thank you!
 
-commit:         b46ae77f Merge tag 'xfs-6.7-fixes-3' of git://git.kern..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=129d420ce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-dashboard link: https://syzkaller.appspot.com/bug?extid=c52ab18308964d248092
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11f9fd9f680000
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
