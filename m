@@ -2,55 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036317F9E7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCAC7F9E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjK0LYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
+        id S233133AbjK0LXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjK0LYc (ORCPT
+        with ESMTP id S233118AbjK0LXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:24:32 -0500
-Received: from mail.fris.de (mail.fris.de [116.203.77.234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D651D1FC8;
-        Mon, 27 Nov 2023 03:24:06 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D6F82C0159;
-        Mon, 27 Nov 2023 12:24:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-        t=1701084244; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding:in-reply-to:references;
-        bh=n4MWxKLJ2mEngVhhcucO0tz7IR393NcgZWJ1yY5pvlM=;
-        b=ViqeLKiVxM44tFzNHhpFOKGDdOwjEuYgCpRUR6BBRf6vb7UrwZDIOnfJJ7/tOSTYAQQk+L
-        aiAIPCE1vpycaeAXizSS2ecd1y0lZfX9r9YNrfT2MiH5uPo5Y/PIKtYZW9GPAKKXoxiYaf
-        tRGkxPb8hPiusbdtM55l6JMpD8BJlBCPZ/0SU8itJzpneKtCaZr/9qtr6A67xZvvpKdRJ/
-        rjcNNxXtInDMlVqQkq7a7tPJmiQrECB1LnXiXZM+V3DLBOt+hgtU3ZjqokduWqCjgrbvLA
-        Erd+6sEUADQmPGofYUcYt3Pi2GlrqzppsqakbSnRqUdneiNap+Hy9Ef4xkRmgQ==
-From:   Frieder Schrempf <frieder@fris.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [RESEND PATCH v2 3/3] usb: misc: onboard_usb_hub: Add support for Cypress CY7C6563x
-Date:   Mon, 27 Nov 2023 12:22:26 +0100
-Message-ID: <20231127112234.109073-3-frieder@fris.de>
-In-Reply-To: <20231127112234.109073-1-frieder@fris.de>
-References: <20231127112234.109073-1-frieder@fris.de>
+        Mon, 27 Nov 2023 06:23:30 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B7E187
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:23:35 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00cbb83c80so565198766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:23:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701084214; x=1701689014; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d44z1h1bT1bhQtd4WwAauevoCZ3Q5jye8G6Ah/Qs6jI=;
+        b=nYPy/wW4mu1Y16kYLAUM/le0OpLS9XN9EaPcVGAFxpCsQbPa3VGmSPAchPX66t5tSA
+         x3GWw5K+wV0PKOAFlJdZstbckWZg1W0yYizGmsUAur32IYztXEEgD5JC7hPiBRlj2GtG
+         LxV0DoW20H6BHjEw0ZKjQAntPbeUNp108+4Sn5hqtreuxs/DJSfZStPxvpb73fhZv1pj
+         3B/+EAjmz7PTh2n8GNN+8937SVUiyfZNsRX8ecYjmSo+5z4qZC5f914XhnmLCESJI3sh
+         FKq1wvj1bW7it/Wv+/Pd5X3i16zkpdLh6HOYX36oUw0wg/miojbsbNCCCxN9hXOEJsmc
+         Ufug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701084214; x=1701689014;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d44z1h1bT1bhQtd4WwAauevoCZ3Q5jye8G6Ah/Qs6jI=;
+        b=NNFc5QsKQPCeE1qSafd0IRMqemakrTDrhSH8l7VAdwfJbjefJSbFWk3W8cC2L2PKrV
+         mvLQMj6+ePJV51bGunLexf7c6pPR85d07T9GWu8fAONRczUfdjTn0d9EjveMs6foYYlT
+         vvgdn2odcdof5Twbw8Y9wRRFQs0/kKTmUgACvdRJbYN9IFJg2dNwtk6m8zRMxcR3h1c+
+         IB8SMlT+5GkI2qq+Or8dGQCNxMTBUtoOSy1RrJGT3hd6nH2FtK7dfbQa5n2X2ArB+oTL
+         7Hw+W7RFPmin+4nS8w/TJu7dDSCwiWjDd195Q8g8mCCNiZZi/zIjXPpKExr3fBcv1Nt0
+         9xcw==
+X-Gm-Message-State: AOJu0YzD2nXCd856znBw6nr9pD2bTlX4Jjss3FzaRYN2/YqY7z6MFZFd
+        SySXg6ijt32JCmYisySa3QvCxg==
+X-Google-Smtp-Source: AGHT+IEW6wH0NXZPQk0NoWl3zNMjHId/m3KldKL87Hy84mY208B+/iWk0nOF803bg9ww6toPLn+UbQ==
+X-Received: by 2002:a17:906:eb17:b0:a01:fc1b:8197 with SMTP id mb23-20020a170906eb1700b00a01fc1b8197mr8471966ejb.62.1701084214110;
+        Mon, 27 Nov 2023 03:23:34 -0800 (PST)
+Received: from [10.167.154.1] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id oy9-20020a170907104900b00a0db5da857esm1804866ejb.217.2023.11.27.03.23.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 03:23:33 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/2] RB2 bluetooth
+Date:   Mon, 27 Nov 2023 12:23:26 +0100
+Message-Id: <20231120-topic-rb2_bt-v2-0-4bbf266258ef@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC58ZGUC/3WNQQqDMBBFryJZNyWZVrRdeY8iJRNHHZBEJlZax
+ Ls3dd/le/D/21QiYUrqXmxKaOXEMWSAU6H86MJAmrvMCgxcrAWjlziz14LwxEW77oq1Q1+Vpld
+ 5gi6RRnHBj3kUXtOU5SzU8/toPNrMI6clyudIrvZn/7yvVhtdmluHQFBTZZqJg5N4jjKodt/3L
+ /uTXnq+AAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701084212; l=856;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=oI0K5ZfATIrWRqPu/SFkGRDYdYA7+Hkr/7BgSVvWH7A=;
+ b=rQy+D3F0dcbRbnZeWe7VPkImWt+4EtIm9q2+CzSbdDf25k3mHmInbJvoWU1jZ3WmFqypJ5fVj
+ JCssj2pi/dtCLTe3FiwTQW70QZZc5InLLJzLdOX74tjkG43UlRDaWFE
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,61 +88,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+The bluetooth module on RB2 seems to work ootb with the WCN3988 setup.
+Enable it.
 
-The Cypress CY7C6563x is a 2/4-port USB 2.0 hub. Add support for
-this hub in the driver in order to bring up reset, supply or clock
-dependencies.
+Scanning for devices works, couldn't test pairing on a remote board.
 
-There is no reset pulse width given in the datasheet so we expect
-a minimal value of 1us to be enough. This hasn't been tested though
-due to lack of hardware which has the reset connected to a GPIO.
-
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
 Changes in v2:
-* none
----
- drivers/usb/misc/onboard_usb_hub.c | 1 +
- drivers/usb/misc/onboard_usb_hub.h | 6 ++++++
- 2 files changed, 7 insertions(+)
+- Set drive-strength on pin configs
+- Link to v1: https://lore.kernel.org/r/20231120-topic-rb2_bt-v1-0-509db2e28e70@linaro.org
 
-diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
-index 0d84b16deab50..0c0b698f008b9 100644
---- a/drivers/usb/misc/onboard_usb_hub.c
-+++ b/drivers/usb/misc/onboard_usb_hub.c
-@@ -441,6 +441,7 @@ static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
- static const struct usb_device_id onboard_hub_id_table[] = {
- 	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6504) }, /* CYUSB33{0,1,2}x/CYUSB230x 3.0 */
- 	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6506) }, /* CYUSB33{0,1,2}x/CYUSB230x 2.0 */
-+	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6570) }, /* CY7C6563x 2.0 */
- 	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0608) }, /* Genesys Logic GL850G USB 2.0 */
- 	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0610) }, /* Genesys Logic GL852G USB 2.0 */
- 	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0620) }, /* Genesys Logic GL3523 USB 3.1 */
-diff --git a/drivers/usb/misc/onboard_usb_hub.h b/drivers/usb/misc/onboard_usb_hub.h
-index c4e24a7b92904..67b2cc1e15e67 100644
---- a/drivers/usb/misc/onboard_usb_hub.h
-+++ b/drivers/usb/misc/onboard_usb_hub.h
-@@ -31,6 +31,11 @@ static const struct onboard_hub_pdata cypress_hx3_data = {
- 	.num_supplies = 2,
- };
- 
-+static const struct onboard_hub_pdata cypress_hx2vl_data = {
-+	.reset_us = 1,
-+	.num_supplies = 1,
-+};
-+
- static const struct onboard_hub_pdata genesys_gl850g_data = {
- 	.reset_us = 3,
- 	.num_supplies = 1,
-@@ -54,6 +59,7 @@ static const struct of_device_id onboard_hub_match[] = {
- 	{ .compatible = "usb451,8142", .data = &ti_tusb8041_data, },
- 	{ .compatible = "usb4b4,6504", .data = &cypress_hx3_data, },
- 	{ .compatible = "usb4b4,6506", .data = &cypress_hx3_data, },
-+	{ .compatible = "usb4b4,6570", .data = &cypress_hx2vl_data, },
- 	{ .compatible = "usb5e3,608", .data = &genesys_gl850g_data, },
- 	{ .compatible = "usb5e3,610", .data = &genesys_gl852g_data, },
- 	{ .compatible = "usb5e3,620", .data = &genesys_gl852g_data, },
+---
+Konrad Dybcio (2):
+      arm64: dts: qcom: sm6115: Add UART3
+      arm64: dts: qcom: qrb4210-rb2: Enable bluetooth
+
+ arch/arm64/boot/dts/qcom/qrb4210-rb2.dts | 87 +++++++++++++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sm6115.dtsi     | 30 +++++++++++
+ 2 files changed, 116 insertions(+), 1 deletion(-)
+---
+base-commit: 8c9660f6515396aba78d1168d2e17951d653ebf2
+change-id: 20231120-topic-rb2_bt-ad4b8abc750f
+
+Best regards,
 -- 
-2.42.1
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
