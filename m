@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777C77FA4CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFFB7FA4D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbjK0Pej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        id S234023AbjK0PfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233987AbjK0Peh (ORCPT
+        with ESMTP id S233986AbjK0PfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:34:37 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7112C187
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:34:41 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-548ce28fd23so5757662a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:34:41 -0800 (PST)
+        Mon, 27 Nov 2023 10:35:10 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A543F187
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:35:16 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54917ef6c05so5884524a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:35:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701099280; x=1701704080; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701099315; x=1701704115; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QisU+sGRQtSRKQO4WVRt1/5HsESylrqy0n02GS4nlIQ=;
-        b=Jy9fVLwFLEhP3SVWjOpJbceDRV50YEwHrP/cLjVE1MS0KbAcos0SnK9+aKyhoqxjMo
-         PXQ8Mp9o9ZJHCLdDU81AUuYfPeg+ov7Rdwqqk3/Xa2ito3jC2V8zZACcpXoRdPp30aJ0
-         0J+5v7Du4p/kQ28X15V2DkAZvKykdd+6XmAqLm/Ck7rhy/8GOQVBen2Vg9orXrKvGLt3
-         zV9WqP5I3NpngLIJ/XRVNtvEpCqYZVmHb7Hbl21qx+KgoSvss88lH4wcPR+vWFRcw0++
-         yfpfDhna8pA70Ur+1HwU1K9YPh22pZJKIeYRMpvKg5D984rlOuAd8/eMTwtm2mI6PvrM
-         kUUA==
+        bh=5BeRSQ2NgtW3CkQnVCOjk3/1p7m2vsB5QkdRb/jJ4L0=;
+        b=A0hTYSHeruUv+N7EBseMCwPBRzYqq7imTey1wS8oqS9jesEbO6z5NwSJZEMoQFKsoU
+         kEwpc7MUGwM85dT2oz3bSbPbyPPg9S6MNXEjL5055oLOZPvM2FoKrnoINGBUWdiDZ980
+         pQCxJVUEsSHz8yXGvWJJ8p1qJf54G1B9AKF8Ay+ZRt/XNrXIoWQzUfeeSrqM1aA8JGrM
+         2Awkyu0+ZPynZHLW2+a2c42aRv9iTI+efuimIJvXQyyYndPWHcWRrRdCXrBwoXqnqhow
+         Ab9fbjdj3YZ/85a8VSDsNenZVnZXOzhYzaItrmcrbuTvUMc3MrB2NuiZaLE79Muu/5CA
+         PYTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701099280; x=1701704080;
+        d=1e100.net; s=20230601; t=1701099315; x=1701704115;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QisU+sGRQtSRKQO4WVRt1/5HsESylrqy0n02GS4nlIQ=;
-        b=RT7oBNZWAQFxuR4L55m7FoWx5T6Z/iXE0Xg5n+A88m8wOq8gJR/qV2041IubxyVexF
-         9smkedjQTPZhd8MC6VcSifGttYGknQ39WYko/56tXRx1buCRuaRCTulHcw4nFUp9lDbW
-         yMwWNH7tJU/G0+CqfSmjaJYP5v3NLiE06HlDDdFaOB/ii6rQFeyXI7uf0YLKQonE7BUq
-         o4oeNTeP3JKnVELRP6QvLFZLZ16IjoUFutTQnRnii1OaKwYd+C8IIs40R7V39vvPv70O
-         Iyif082VN/2XfRw/hQJuhICtY4UGdQDq3gDZj2liYhxuCFVwijV0Z8UrbTnGcjOoR3x4
-         VWrA==
-X-Gm-Message-State: AOJu0Yxo2/K7epwWckgkOu/kvI8jgLX6dA+4zhWhDEMXZEXAKz0H6btp
-        AqorznwG614RdIZWanWm31wfEg==
-X-Google-Smtp-Source: AGHT+IENlBVBkPbodSNFhC8gFnnNVtDggi2yCL+4ztHlU9SMlu0NcFmq+ogo/nggmf+u7Ru5xN53yQ==
-X-Received: by 2002:a05:6402:3458:b0:54b:1ca8:8539 with SMTP id l24-20020a056402345800b0054b1ca88539mr5528279edc.5.1701099279875;
-        Mon, 27 Nov 2023 07:34:39 -0800 (PST)
+        bh=5BeRSQ2NgtW3CkQnVCOjk3/1p7m2vsB5QkdRb/jJ4L0=;
+        b=a2OPHCj4U5l4uBZA6RI7dW4FQRnlF0nluoXOC7qp5LPUDqJjEFmz61aSn02XVkvgl0
+         5WQ50QUCM4pvoOwJYvVB4kxMOhlzV9RJCh0CY+it5jLTWhQZZRs6/NnEq09lBlcPBBT2
+         SjcDGLsSMgg/IoguPA0G4F/OGaX99E8c146UWjC912+kaMRI4axrd7+Io9zNEmgDOHdS
+         DMUbLOrji73z+WisIt3L5JpNWM6X3nZVHrknSpomC1vgqdWdTdjwvABv2xuR1yJWRiP1
+         CzSlAdzI30wRGsI7QNVUx13C4pnJUGSC6N/EbVuiC1x5kreAegf7vR8CJzJ8+qQ89HTc
+         Yyng==
+X-Gm-Message-State: AOJu0YydAtCrTR2ci6NdaledSgiufx+dw0uwUTXbaNdGYmJ/P0N32Uj9
+        kudDu70J0MOc4rr42M4xsP8e9g==
+X-Google-Smtp-Source: AGHT+IHOX/xkrK1RJFK21Ya6CH7VkQg6wVP1hQ5nJKlX8lT4H9axnaQBUp5u5Co0kTJ/p5w37pduug==
+X-Received: by 2002:a05:6402:78e:b0:54a:f8d9:8026 with SMTP id d14-20020a056402078e00b0054af8d98026mr7906465edy.12.1701099315088;
+        Mon, 27 Nov 2023 07:35:15 -0800 (PST)
 Received: from [192.168.201.100] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
-        by smtp.gmail.com with ESMTPSA id h9-20020a056402280900b0054aeece37cesm4370406ede.52.2023.11.27.07.34.37
+        by smtp.gmail.com with ESMTPSA id h9-20020a056402280900b0054aeece37cesm4370406ede.52.2023.11.27.07.35.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 07:34:39 -0800 (PST)
-Message-ID: <dcadb98e-8e54-4517-a4ec-c31731787bbe@linaro.org>
-Date:   Mon, 27 Nov 2023 16:34:37 +0100
+        Mon, 27 Nov 2023 07:35:14 -0800 (PST)
+Message-ID: <ec4b7dfa-6fcf-4ccc-8857-d99573349599@linaro.org>
+Date:   Mon, 27 Nov 2023 16:35:12 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] iommu/arm-smmu: add ACTLR data and support for
- SM8550
+Subject: Re: [PATCH v3 3/4] iommu/arm-smmu: add ACTLR data and support for
+ SC7280
 Content-Language: en-US
 To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
         robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
@@ -68,7 +68,7 @@ Cc:     linux-arm-msm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
 References: <20231127145412.3981-1-quic_bibekkum@quicinc.com>
- <20231127145412.3981-3-quic_bibekkum@quicinc.com>
+ <20231127145412.3981-4-quic_bibekkum@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -105,7 +105,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231127145412.3981-3-quic_bibekkum@quicinc.com>
+In-Reply-To: <20231127145412.3981-4-quic_bibekkum@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -119,11 +119,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27.11.2023 15:54, Bibek Kumar Patro wrote:
-> Add ACTLR data table for SM8550 along with support for
-> same including SM8550 specific implementation operations.
+> Add ACTLR data table for SC7280 along with support for
+> same including SC7280 specific implementation operations.
 > 
 > Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 > ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 +++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 247eaa194129..f0ad09f9a974 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -27,6 +27,20 @@ struct actlr_config {
+>  #define CPRE			BIT(1)		/* Enable context caching in the prefetch buffer */
+>  #define CMTLB			BIT(0)		/* Enable context caching in the macro TLB */
+> 
+> +static const struct actlr_config sc7280_apps_actlr_cfg[] = {
+> +	{ 0x0800, 0x24E1, PREFETCH_DISABLE | CMTLB },
+hex should be lowercase
+
+> +	{ 0x2000, 0x0163, PREFETCH_DISABLE | CMTLB },
+> +	{ 0x2080, 0x0461, PREFETCH_DISABLE | CMTLB },
+> +	{ 0x2100, 0x0161, PREFETCH_DISABLE | CMTLB },
+> +	{ 0x0900, 0x0407, PREFETCH_SHALLOW | CPRE | CMTLB },
+> +	{ 0x2180, 0x0027, PREFETCH_SHALLOW | CPRE | CMTLB },
+> +	{ 0x1000, 0x07ff, PREFETCH_DEEP | CPRE | CMTLB },
+> +};
+Any reason this list is so much smaller than 8550's? Is it complete?
 
 Konrad
