@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDDA7FA7CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27417FA7CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233197AbjK0ROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        id S234655AbjK0ROv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjK0ROn (ORCPT
+        with ESMTP id S232649AbjK0ROh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:14:43 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B25189;
-        Mon, 27 Nov 2023 09:14:49 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9C47640E014B;
-        Mon, 27 Nov 2023 17:14:47 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TjHxyBW3GjS7; Mon, 27 Nov 2023 17:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701105285; bh=1XsCHVs3G1AK8quCu6PRq/dRGJyYh/0vS/L9fgr5Dsk=;
+        Mon, 27 Nov 2023 12:14:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926D019D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:14:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BE1C433C7;
+        Mon, 27 Nov 2023 17:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701105284;
+        bh=94eA5a3oVs1VTguMTV9OICnFtDjCrfp2/1bumD9OBZQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BYnUBMxlUm/TeOHT5vbel+mUEYciMKpvvy+i3YEyhxclh1vMaMbB9Wdcrfgn0+Cr+
-         GIKWaOh16XC0T5xDMYAyjF10xt41gjmE4hMY6xzxao5+KbzngfJUuXQzobZDxr0SS3
-         R7YIYl8jGA+haI1u/73qjzSrfRQm+PCqOKnmwGrmZdCYpkENE/by7jpVjJYBqAeUlz
-         QtIs88mTZvYi7uE/oMoM/8xaZmCf4Nk2KzokmUhX7kCQOqD2P43jNGEtNV/MsWy4qA
-         EOyYJhLmgKNgvzl86irhK8LEDW1xi0f84Q3huE5tSN4WZhbKrH1Zi05fyhOoFva0L6
-         y7vGf2RDhrV2SRxhVPTmnMFI/235COquRZeyX/piq3v/ughSaGrvViR0oX/gO+dKE1
-         wQgt8I9CZADCeSsv+1gCPT1zxQErPcA0nsfqD+Wl94yxknBrBl/rnkhCE+Tz/3xoTf
-         +qJ27ibC2ldTHPbR1NckGyOSile12D0Dxx38HipK+75l14qJ2CxFVTy0bAXTaMiyn4
-         qKJswJarSLRRalEwOjHZs1cgHBzKcOI1MBSe3/lWorYuVnRf2J6Nj1KdGUphYMxs2M
-         mpv0w9U4kgcVFHtNfsSJqOzcSqSSW2a1rADflw2Go9zmbIqORCExdBVhXXytbJjRn5
-         87FeZVC+5BF6ZSqdTDwErw68=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9BC740E0031;
-        Mon, 27 Nov 2023 17:14:36 +0000 (UTC)
-Date:   Mon, 27 Nov 2023 18:14:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
-Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, james.morse@arm.com,
-        mchehab@kernel.org, rric@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] driver : edac : Fix warning using plain integer as NULL
-Message-ID: <20231127171435.GCZWTOe+DQSy4kkuKO@fat_crate.local>
-References: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
+        b=Fa/wQuX929+5dckPfYpUstS/A0PYi6ycn5TAH8wdbjF3R0MA8NWtU2JDzQKolgyvt
+         LIdAMaLbIwy2Zu22qZ4AiKrl8xoGIPudfiWX3PEkYFK+QtJlKtkfzTYluMf0QWdGOV
+         rRTYnLkT4j+kxALg0gAOSgRNdV+e0XLBSwO3fFds8seHEL31R3+4wLr/nnS1QEkDFF
+         EnLkTCojnQeygYnmU1SUSfHV50HWG3zRY+jFN0sYWexHhR1217i5PnnTN5KT3Urdo4
+         Ua+TSAMOSCqB4LApFdAHQX6MJDa5+Mr46b8GfdKndENulAzNbrtsz1vXe+k9m+NNO1
+         1ybXs76rFt0fA==
+Date:   Mon, 27 Nov 2023 17:14:36 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Roland Hieber <rhi@pengutronix.de>
+Cc:     Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 1/2] dt-bindings: display: bridge: samsung-dsim: Add
+ i.MX7D support
+Message-ID: <20231127-sessions-publisher-d15b28966646@spud>
+References: <20231127-b4-imx7-mipi-dsi-v1-0-7d22eee70c67@pengutronix.de>
+ <20231127-b4-imx7-mipi-dsi-v1-1-7d22eee70c67@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eEkdIYeTY4jIHAux"
 Content-Disposition: inline
-In-Reply-To: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231127-b4-imx7-mipi-dsi-v1-1-7d22eee70c67@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 02:51:57AM +0530, Abhinav Singh wrote:
-> Sparse static analysis tools generate a warning with this message
-> "Using plain integer as NULL pointer". In this case this warning is
-> being shown because we are trying to initialize  pointer to NULL using
-> integer value 0.
 
-And that is a problem because?
+--eEkdIYeTY4jIHAux
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards/Gruss,
-    Boris.
+On Mon, Nov 27, 2023 at 05:12:28PM +0100, Roland Hieber wrote:
+> From: Philipp Zabel <p.zabel@pengutronix.de>
+>=20
+> Add support for the "fsl,imx7d-mipi-dsim" compatible used on i.MX7D.
+>=20
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Roland Hieber <rhi@pengutronix.de>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  .../devicetree/bindings/display/bridge/samsung,mipi-dsim.yaml         | =
+4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/bridge/samsung,mip=
+i-dsim.yaml b/Documentation/devicetree/bindings/display/bridge/samsung,mipi=
+-dsim.yaml
+> index 4ed7a799ba26..e43fec560941 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/samsung,mipi-dsim.=
+yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/samsung,mipi-dsim.=
+yaml
+> @@ -27,7 +27,9 @@ properties:
+>            - fsl,imx8mm-mipi-dsim
+>            - fsl,imx8mp-mipi-dsim
+>        - items:
+> -          - const: fsl,imx8mn-mipi-dsim
+> +          - enum:
+> +              - fsl,imx7d-mipi-dsim
+> +              - fsl,imx8mn-mipi-dsim
+>            - const: fsl,imx8mm-mipi-dsim
+> =20
+>    reg:
+>=20
+> --=20
+> 2.39.2
+>=20
+
+--eEkdIYeTY4jIHAux
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWTOfAAKCRB4tDGHoIJi
+0gR3AQC/uU0C6yQnjFTOi3VAkiumHD8Z665Xqv9I+8g62eUrFgEAyZ2kzmH3FFHh
+D1CWuyb+hcb2UhlGWyV3b4HuLNpq8QQ=
+=ysHQ
+-----END PGP SIGNATURE-----
+
+--eEkdIYeTY4jIHAux--
