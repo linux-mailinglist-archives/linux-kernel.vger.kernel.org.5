@@ -2,153 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3163E7F99F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200C77F9A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbjK0GfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
+        id S231464AbjK0GgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:36:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbjK0Gei (ORCPT
+        with ESMTP id S231658AbjK0GgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:34:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869AE134;
-        Sun, 26 Nov 2023 22:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701066884; x=1732602884;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=B5xzEcpuIinwDW3kyMTLhid13bUB/51PdRBylLP/hwc=;
-  b=WMOc+SeDd+1A6HWtc6+V1lp0gAvZKiZ/ANs8nkA52qW1fFPdLr7t1Mkn
-   cu/uDDkRUuv2thULCkiN4TqNA0P5BIY7qzK1A/VsPC2YFVIBMWTCI59jF
-   FeSu/hMrWw1WcmUtzvU9zj//R6bNmFoGbvzCi7K1dcB3K9iSuT09CkzZs
-   zbqHs9Oja5XyoUUbFEo5hJXiLGSz3nRX+9cLg8PHtzV/wUI3HkQJEbn8R
-   IFuBkrytzP3d6zul3chVlKZ8AqWfiTEi8Y8ac59XEANG9aYJcjrGj44l1
-   eJ9xwYr58kPzDQym1jpFo5o3QGZmYJ58owAktYF2fSa/NWnmgMGQybl9y
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391518220"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="391518220"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 22:34:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="838608958"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="838608958"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2023 22:34:43 -0800
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: [PATCH 8/8] iommu/vt-d: Add set_dev_pasid callback for nested domain
-Date:   Sun, 26 Nov 2023 22:34:28 -0800
-Message-Id: <20231127063428.127436-9-yi.l.liu@intel.com>
+        Mon, 27 Nov 2023 01:36:05 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F571A3;
+        Sun, 26 Nov 2023 22:36:01 -0800 (PST)
+X-UUID: f5e64f129679413891f4ef926f41a2d5-20231127
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:87602af9-271c-4a35-b31d-9ad5ad5bf2f6,IP:15,
+        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-5
+X-CID-INFO: VERSION:1.1.33,REQID:87602af9-271c-4a35-b31d-9ad5ad5bf2f6,IP:15,UR
+        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-5
+X-CID-META: VersionHash:364b77b,CLOUDID:f47afcfc-4a48-46e2-b946-12f04f20af8c,B
+        ulkID:231127143550DH1I147D,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,
+        TF_CID_SPAM_FAS
+X-UUID: f5e64f129679413891f4ef926f41a2d5-20231127
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2006990806; Mon, 27 Nov 2023 14:35:47 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+        vadimp@nvidia.com, jiri@resnulli.us, shravankr@nvidia.com
+Cc:     kunwu.chan@hotmail.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] platform/mellanox: Add a null pointer check in mlxbf_pmc_create_groups
+Date:   Mon, 27 Nov 2023 14:34:33 +0800
+Message-Id: <20231127063433.1549064-1-chentao@kylinos.cn>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127063428.127436-1-yi.l.liu@intel.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
 
-This allows the upper layers to set a nested type domain to a PASID of a
-device if the PASID feature is supported by the IOMMU hardware.
-
-The set_dev_pasid callback for non-nest domain has already be there, so
-this only needs to add it for nested domains.
-
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 ---
- drivers/iommu/intel/nested.c | 47 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index 44ad48db7ea0..f6f687750104 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -68,6 +68,52 @@ static int intel_nested_attach_dev(struct iommu_domain *domain,
- 	return 0;
- }
- 
-+static int intel_nested_set_dev_pasid(struct iommu_domain *domain,
-+				      struct device *dev, ioasid_t pasid)
-+{
-+	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct intel_iommu *iommu = info->iommu;
-+	struct dev_pasid_info *dev_pasid;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	if (!pasid_supported(iommu))
-+		return -EOPNOTSUPP;
-+
-+	if (iommu->agaw < dmar_domain->s2_domain->agaw)
-+		return -EINVAL;
-+
-+	ret = prepare_domain_attach_device(&dmar_domain->s2_domain->domain, dev);
-+	if (ret)
-+		return ret;
-+
-+	dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
-+	if (!dev_pasid)
+diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+index 0b427fc24a96..59bbe5e13f6b 100644
+--- a/drivers/platform/mellanox/mlxbf-pmc.c
++++ b/drivers/platform/mellanox/mlxbf-pmc.c
+@@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device *dev, int blk_num)
+ 	pmc->block[blk_num].block_attr_grp.attrs = pmc->block[blk_num].block_attr;
+ 	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
+ 		dev, GFP_KERNEL, pmc->block_name[blk_num]);
++	if (!pmc->block[blk_num].block_attr_grp.name)
 +		return -ENOMEM;
-+
-+	ret = domain_attach_iommu(dmar_domain, iommu);
-+	if (ret)
-+		goto err_free;
-+
-+	ret = intel_pasid_setup_nested(iommu, dev, pasid, dmar_domain);
-+	if (ret)
-+		goto err_detach_iommu;
-+
-+	dev_pasid->dev = dev;
-+	dev_pasid->pasid = pasid;
-+	spin_lock_irqsave(&dmar_domain->lock, flags);
-+	list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
-+	spin_unlock_irqrestore(&dmar_domain->lock, flags);
-+
-+	return 0;
-+err_detach_iommu:
-+	domain_detach_iommu(dmar_domain, iommu);
-+err_free:
-+	kfree(dev_pasid);
-+	return ret;
-+}
-+
- static void intel_nested_domain_free(struct iommu_domain *domain)
- {
- 	kfree(to_dmar_domain(domain));
-@@ -128,6 +174,7 @@ static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
+ 	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
+ 	pmc->group_num++;
  
- static const struct iommu_domain_ops intel_nested_domain_ops = {
- 	.attach_dev		= intel_nested_attach_dev,
-+	.set_dev_pasid		= intel_nested_set_dev_pasid,
- 	.free			= intel_nested_domain_free,
- 	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
- };
 -- 
 2.34.1
 
