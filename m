@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC0D7F9C7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CC37F9C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjK0JS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S232776AbjK0JSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbjK0JRO (ORCPT
+        with ESMTP id S232596AbjK0JRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:17:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D671FDC
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:14:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041C3C433C9;
-        Mon, 27 Nov 2023 09:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701076449;
-        bh=DHYCKu65cSstrrIdF03A4jEuXB7unahDVkMh4BL9CKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iN6sC3MpQfNv1EpyQZFoONrjp7xB5wX6a+Sw/vFi7bp4VixpXh+W7T+K/LJN368B8
-         vkCRmVZK29aFqSS5l0/xLkmSZPLZjziFso+Y2B+TA8gWzd2SgXs8MJ8i12YJdl2gG+
-         wCqJ/FoXjxUh0shL+N0HFe3IsWd7tojKz3xJtFMQQTOWd2gKZjg7QVOVawgRP34u3L
-         5M79xYmtT2661AW36XyfZn2Nx4nGOLQ1egjMfdGA97EaT8132TY9EgmnCK287O5p1T
-         d02Sp7ll+uCOdd/qwnIKE3wc7wB9uWpm4IbmxYxAZmiEkz2Y3E5rIrvfvjh6KvA1VG
-         0+RL+lmVV/56Q==
-Date:   Mon, 27 Nov 2023 09:14:03 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     pavel@ucw.cz, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andy.shevchenko@gmail.com, kernel@sberdevices.ru,
-        rockosov@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        George Stark <gnstark@salutedevices.com>
-Subject: Re: [PATCH v4 06/11] leds: aw200xx: add delay after software reset
-Message-ID: <20231127091403.GF1470173@google.com>
-References: <20231121202835.28152-1-ddrokosov@salutedevices.com>
- <20231121202835.28152-7-ddrokosov@salutedevices.com>
- <20231123163816.GG1354538@google.com>
- <20231124093722.picykrqaewxlxa7h@CAB-WSD-L081021>
+        Mon, 27 Nov 2023 04:17:49 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E95222101
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:15:09 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E9832F4;
+        Mon, 27 Nov 2023 01:15:56 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 996353F6C4;
+        Mon, 27 Nov 2023 01:15:05 -0800 (PST)
+Message-ID: <234021ba-73c2-474a-82f9-91e1604d5bb5@arm.com>
+Date:   Mon, 27 Nov 2023 09:15:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231124093722.picykrqaewxlxa7h@CAB-WSD-L081021>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231127031813.5576-1-v-songbaohua@oppo.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231127031813.5576-1-v-songbaohua@oppo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,59 +53,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023, Dmitry Rokosov wrote:
-
-> Hello Lee,
+On 27/11/2023 03:18, Barry Song wrote:
+>> Ryan Roberts (14):
+>>   mm: Batch-copy PTE ranges during fork()
+>>   arm64/mm: set_pte(): New layer to manage contig bit
+>>   arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
+>>   arm64/mm: pte_clear(): New layer to manage contig bit
+>>   arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
+>>   arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
+>>   arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
+>>   arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
+>>   arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
+>>   arm64/mm: ptep_get(): New layer to manage contig bit
+>>   arm64/mm: Split __flush_tlb_range() to elide trailing DSB
+>>   arm64/mm: Wire up PTE_CONT for user mappings
+>>   arm64/mm: Implement ptep_set_wrprotects() to optimize fork()
+>>   arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
 > 
-> Thank you for the detailed review!
-> 
-> Please find my answer below.
-> 
-> On Thu, Nov 23, 2023 at 04:38:16PM +0000, Lee Jones wrote:
-> > On Tue, 21 Nov 2023, Dmitry Rokosov wrote:
-> > 
-> > > From: George Stark <gnstark@salutedevices.com>
-> > > 
-> > > According to datasheets of aw200xx devices software reset takes at
-> > > least 1ms so add delay after reset before issuing commands to device.
-> > 
-> > Are you able to use an auto-correct tool to sharpen the grammar a little?
-> > 
-> > > Signed-off-by: George Stark <gnstark@salutedevices.com>
-> > > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > ---
-> > >  drivers/leds/leds-aw200xx.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/leds/leds-aw200xx.c b/drivers/leds/leds-aw200xx.c
-> > > index 4bce5e7381c0..bb17e48b3e2a 100644
-> > > --- a/drivers/leds/leds-aw200xx.c
-> > > +++ b/drivers/leds/leds-aw200xx.c
-> > > @@ -321,6 +321,9 @@ static int aw200xx_chip_reset(const struct aw200xx *const chip)
-> > >  	if (ret)
-> > >  		return ret;
-> > >  
-> > > +	/* according to datasheet software reset takes at least 1ms */
-> > 
-> > Please start sentences with an uppercase char.
-> > 
-> > "According to the datasheet, software resets take at least 1ms"
-> >               ^                            ^     ^
-> > 
-> 
-> Here it's only one 'software reset' mentioned.
+> Hi Ryan,
+> Not quite sure if I missed something, are we splitting/unfolding CONTPTES
+> in the below cases
 
-That's okay.  The English is still 100% valid, since this describes them
-happening more than once; say per week, per year, per lifetime of the
-H/W or some such.  If you *really* want to describe one reset happening
-once, ever, then you can say "a software reset takes".
+The general idea is that the core-mm sets the individual ptes (one at a time if
+it likes with set_pte_at(), or in a block with set_ptes()), modifies its
+permissions (ptep_set_wrprotect(), ptep_set_access_flags()) and clears them
+(ptep_clear(), etc); This is exactly the same interface as previously.
 
-> > > +	fsleep(1000);
-> > > +
-> > >  	regcache_mark_dirty(chip->regmap);
-> > >  	return regmap_write(chip->regmap, AW200XX_REG_FCD, AW200XX_FCD_CLEAR);
-> > >  }
+BUT, the arm64 implementation of those interfaces will now detect when a set of
+adjacent PTEs (a contpte block - so 16 naturally aligned entries when using 4K
+base pages) are all appropriate for having the CONT_PTE bit set; in this case
+the block is "folded". And it will detect when the first PTE in the block
+changes such that the CONT_PTE bit must now be unset ("unfolded"). One of the
+requirements for folding a contpte block is that all the pages must belong to
+the *same* folio (that means its safe to only track access/dirty for thecontpte
+block as a whole rather than for each individual pte).
 
--- 
-Lee Jones [李琼斯]
+(there are a couple of optimizations that make the reality slightly more
+complicated than what I've just explained, but you get the idea).
+
+On that basis, I believe all the specific cases you describe below are all
+covered and safe - please let me know if you think there is a hole here!
+
+> 
+> 1. madvise(MADV_DONTNEED) on a part of basepages on a CONTPTE large folio
+
+The page will first be unmapped (e.g. ptep_clear() or ptep_get_and_clear(), or
+whatever). The implementation of that will cause an unfold and the CONT_PTE bit
+is removed from the whole contpte block. If there is then a subsequent
+set_pte_at() to set a swap entry, the implementation will see that its not
+appropriate to re-fold, so the range will remain unfolded.
+
+> 
+> 2. vma split in a large folio due to various reasons such as mprotect,
+> munmap, mlock etc.
+
+I'm not sure if PTEs are explicitly unmapped/remapped when splitting a VMA? I
+suspect not, so if the VMA is split in the middle of a currently folded contpte
+block, it will remain folded. But this is safe and continues to work correctly.
+The VMA arrangement is not important; it is just important that a single folio
+is mapped contiguously across the whole block.
+
+> 
+> 3. try_to_unmap_one() to reclaim a folio, ptes are scanned one by one
+> rather than being as a whole.
+
+Yes, as per 1; the arm64 implementation will notice when the first entry is
+cleared and unfold the contpte block.
+
+> 
+> In hardware, we need to make sure CONTPTE follow the rule - always 16
+> contiguous physical address with CONTPTE set. if one of them run away
+> from the 16 ptes group and PTEs become unconsistent, some terrible
+> errors/faults can happen in HW. for example
+
+Yes, the implementation obeys all these rules; see contpte_try_fold() and
+contpte_try_unfold(). the fold/unfold operation is only done when all
+requirements are met, and we perform it in a manner that is conformant to the
+architecture requirements (see contpte_fold() - being renamed to
+contpte_convert() in the next version).
+
+Thanks for the review!
+
+Thanks,
+Ryan
+
+> 
+> case0:
+> addr0 PTE - has no CONTPE
+> addr0+4kb PTE - has CONTPTE
+> ....
+> addr0+60kb PTE - has CONTPTE
+> 
+> case 1:
+> addr0 PTE - has no CONTPE
+> addr0+4kb PTE - has CONTPTE
+> ....
+> addr0+60kb PTE - has swap
+> 
+> Unconsistent 16 PTEs will lead to crash even in the firmware based on
+> our observation.
+> 
+> Thanks
+> Barry
+> 
+> 
+
