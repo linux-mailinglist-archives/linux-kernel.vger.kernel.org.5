@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5943E7F9EBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A0E7F9EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbjK0Lhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        id S233294AbjK0LjD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 06:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233250AbjK0Lhg (ORCPT
+        with ESMTP id S233295AbjK0Lix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:37:36 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC73B8;
-        Mon, 27 Nov 2023 03:37:41 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 431C112001E;
-        Mon, 27 Nov 2023 14:37:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 431C112001E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701085060;
-        bh=ngPthKNSbqBvX4ng8JZc0JixK0jI2zKMbqB/abEZ/Dw=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=Iivz9lHnTMGoUYPpuaaH+uCenvSk6ZN7gGLPHlEfsNNTD9i4jG3Cf9DvOrx7rPnR7
-         yho9zRRXiavy62iqJJAfLYqZv75wmeaSTGApDPshJLzsqoYccKdI4hwzbLHdswwle8
-         mlEdOXPNg2E7ScsXJMCosaOFVtsIj4sukfa9OmwH6lZiLR5dVMrI1dDHj6QvQUioqc
-         DUl4Qog8CDbfp2bjCypesUlDUOrsWTOBl5J+Q04ofy7SbMVPWTo1yDMaWnBtDlM/4Y
-         sOqoeu0yQI7zeSSbMkNngUMEoABArZV8uITDSG7QuUTxGN6aBGWTTFN4tlPEm4o6gI
-         VpwoYaeOCIQ+g==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 27 Nov 2023 14:37:40 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 14:37:39 +0300
-Date:   Mon, 27 Nov 2023 14:37:39 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     <shakeelb@google.com>, <rostedt@goodmis.org>,
-        <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
-        <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
-        <akpm@linux-foundation.org>, <kernel@sberdevices.ru>,
-        <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <20231127113739.djqzy2p2ofstjmm3@CAB-WSD-L081021>
-References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
- <20231122100156.6568-3-ddrokosov@salutedevices.com>
- <ZV3WnIJMzxT-Zkt4@tiehlicka>
- <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
- <ZV4BK0wbUAZBIhmA@tiehlicka>
- <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
- <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
- <ZWRgeAMxQ580-Fgd@tiehlicka>
+        Mon, 27 Nov 2023 06:38:53 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643EEB8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:39:00 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7Zwb-0002vG-1v; Mon, 27 Nov 2023 12:38:29 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7ZwY-00Bvkh-VA; Mon, 27 Nov 2023 12:38:26 +0100
+Received: from pza by lupine with local (Exim 4.96)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7ZwT-000AAH-2o;
+        Mon, 27 Nov 2023 12:38:21 +0100
+Message-ID: <ba856a09de62a6ddbf1c19d5fd502de1cbc3e273.camel@pengutronix.de>
+Subject: Re: [PATCH v8 3/5] media: stm32-dcmipp: STM32 DCMIPP camera
+ interface driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Alain Volmat <alain.volmat@foss.st.com>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Mon, 27 Nov 2023 12:38:21 +0100
+In-Reply-To: <20231122073927.788810-4-alain.volmat@foss.st.com>
+References: <20231122073927.788810-1-alain.volmat@foss.st.com>
+         <20231122073927.788810-4-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZWRgeAMxQ580-Fgd@tiehlicka>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181606 [Nov 27 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/27 09:57:00 #22553179
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,27 +69,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal,
-
-On Mon, Nov 27, 2023 at 10:25:12AM +0100, Michal Hocko wrote:
-> On Thu 23-11-23 14:26:29, Dmitry Rokosov wrote:
-> > Michal, Shakeel,
-> > 
-> > Sorry for pinging you here, but I don't quite understand your decision
-> > on this patchset.
-> > 
-> > Is it a NAK or not? If it's not, should I consider redesigning
-> > something? For instance, introducing stub functions to
-> > remove ifdefs from shrink_node_memcgs().
-> > 
-> > Thank you for taking the time to look into this!
+On Mi, 2023-11-22 at 08:39 +0100, Alain Volmat wrote:
+> From: Hugues Fruchet <hugues.fruchet@foss.st.com>
 > 
-> Sorry for a late reply. I have noticed you have posted a new version.
-> Let me have a look and comment there.
+> This V4L2 subdev driver enables Digital Camera Memory Interface
+> Pixel Processor(DCMIPP) of STMicroelectronics STM32 SoC series.
+> 
+> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> ---
+[...]
+> diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> new file mode 100644
+> index 000000000000..28ddb26314c3
+> --- /dev/null
+> +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> @@ -0,0 +1,604 @@
+[...]
+> +struct dcmipp_device {
+> +	/* The platform device */
+> +	struct platform_device		pdev;
+> +	struct device			*dev;
+> +
+> +	/* Hardware resources */
+> +	struct reset_control		*rstc;
 
-No problem! Thanks a lot for your time and attention! Let's continue in
-the next version thread.
+As long as rstc is only used in dcmipp_probe(), there is no need to
+carry it around in struct dcmipp_device.
 
--- 
-Thank you,
-Dmitry
+[...]
+> +static int dcmipp_probe(struct platform_device *pdev)
+> +{
+> +	struct dcmipp_device *dcmipp;
+> +	struct clk *kclk;
+
+rstc could be a local variable here.
+
+[...]
+
+> +	/* Get hardware resources from devicetree */
+> +	dcmipp->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +	if (IS_ERR(dcmipp->rstc))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(dcmipp->rstc),
+> +				     "Could not get reset control\n");
+[...]
+> +	/* Reset device */
+> +	ret = reset_control_assert(dcmipp->rstc);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to assert the reset line\n");
+> +		return ret;
+> +	}
+> +
+> +	usleep_range(3000, 5000);
+> +
+> +	ret = reset_control_deassert(dcmipp->rstc);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to deassert the reset line\n");
+> +		return ret;
+> +	}
+
+regards
+Philipp
