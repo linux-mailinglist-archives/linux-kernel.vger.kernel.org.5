@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879337FAE71
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5F77FAE68
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233800AbjK0XgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S233687AbjK0XgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjK0XgM (ORCPT
+        with ESMTP id S230260AbjK0XgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:36:12 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C2AD64;
-        Mon, 27 Nov 2023 15:36:17 -0800 (PST)
-Received: from notapiano.myfiosgateway.com (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2B1A766022D1;
-        Mon, 27 Nov 2023 23:36:11 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701128175;
-        bh=xYJ3In0iFK7Rcw0FOkP/TEyWe5yZLvjkyvqOPva+JBc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ix3kpH7jTiBVkuKQ1dmDso9tRjXE28w//G9DdXw/6B7Uw2wTROqGkt2dX89n3o4W7
-         yCLpsBmIkqRNenY4BP4WqGT48QWEj9a2aV4ARC8o83Oi8QGCfiafcYg0QYcLMgHpXy
-         09Pb4beislAGqv4qWguMm1UYEBGWZgosZcJdJDPFlqCmMyjKabWgpVHuCEn9oCYq0b
-         atwJYBeuVlkbAn16I+k5ogfZmftDZeWvu859AAmytcalrcCGLJzlRXQdo3S0Uj/e/G
-         8JuujBR67bpOg1x/zDxGKW+GrSnXePPvdGHIbM/d9cPtbg56t9ftdnqDX/cl9/QzgO
-         mVT1qIS06Squg==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>, kernelci@lists.linux.dev,
-        David Gow <davidgow@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-usb@vger.kernel.org,
-        kernel@collabora.com, Dan Carpenter <dan.carpenter@linaro.org>,
-        Tim Bird <Tim.Bird@sony.com>, linux-pci@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for google,spherion
-Date:   Mon, 27 Nov 2023 18:34:07 -0500
-Message-ID: <20231127233558.868365-3-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231127233558.868365-1-nfraprado@collabora.com>
-References: <20231127233558.868365-1-nfraprado@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 27 Nov 2023 18:36:03 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984D61B5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:09 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285d331c6f7so2002361a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701128169; x=1701732969; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2m9WeXChb3IZcdkKWz2g1bAMA6uELaN8nkmuyBZmHQ=;
+        b=JJ51m+5wRnTP7vn03VCHFIfTvAw0xvgRojQ6u5JK931ViOOx9HO8zWPrCjvp1Ou7t6
+         hc6vBHZ8Ob95+Tx49Yoxrx43E+duJ1T45hzXkEY4laEQfreEoDvJZSTdhtGL2bUlw2nx
+         ZIqcfGRr5rDdBdJJB1q4akp2y4t9ZVkfadWwVDODx8BBFWXXCFWPz2UW20exsOG1HmtN
+         7Op7jaJGXIzgL+yIcnruHcNn2jy+BISi1if2XFnTbaxj593IZ1PT5H8alRSVpoG+UwF2
+         YnICVbQ5CsDms0b5RGUzqbvqaq1ixWv4vjooSsZxJqMrDNygV1jMuoc50hnan9p53kFr
+         7ZOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701128169; x=1701732969;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2m9WeXChb3IZcdkKWz2g1bAMA6uELaN8nkmuyBZmHQ=;
+        b=lt8YfPmSGj73vyMFyIZncG9orSDH7ny8gMoFBXqN1ZuWOzns3tc6Dys/BcvZ6aSuW8
+         caDSAo6wx4KNRNMMGdrNIg1OOgLoPh/9YWUb1O/NZavdAehnJcBdf53/GbK3CYBoGBgT
+         zJ0jTFs4S2PMF+UGJGVD0IsfH0xho1ZcTUEaZSD0AqZijPpqY3Woy1WfEShTOyNvAIMV
+         HG3vBc1PC4N+Ob8VRBJFej3GiOFpQCnxmIPvpankZR0NVM9n/y8r6vRSy+3dxh3S9NoB
+         aTgPmDRiihf9OuakhVeykk/jo2t8KIalHhSqNYlAL2vXZie0XAyeiZOsAC1AGrDWReg9
+         gRRA==
+X-Gm-Message-State: AOJu0Yxx4vxPYiTpPcrL+DE/pRDkK231Qz4A/L+Kp2L5uRbKV5B6FKFK
+        tI2twzYsRKNaCMgQHPaOCyGiQIcftaI=
+X-Google-Smtp-Source: AGHT+IEl4S0gbL0JXiTGTFFkSpfut1kGjfX9yALNxNMX7MfX3x5UbA+DNYzB4IO60o0GRmpObK+5rcrVVuk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:88:b0:285:860c:3359 with SMTP id
+ bb8-20020a17090b008800b00285860c3359mr2734111pjb.4.1701128169103; Mon, 27 Nov
+ 2023 15:36:09 -0800 (PST)
+Date:   Mon, 27 Nov 2023 15:36:07 -0800
+In-Reply-To: <a1ebd80f87229fe513f9c2256982ef6c1d0cca2a.camel@infradead.org>
+Mime-Version: 1.0
+References: <20231121180223.12484-1-paul@xen.org> <20231121180223.12484-6-paul@xen.org>
+ <a1ebd80f87229fe513f9c2256982ef6c1d0cca2a.camel@infradead.org>
+Message-ID: <ZWUn50A5vxiTd-ZT@google.com>
+Subject: Re: [PATCH v8 05/15] KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a sample board file describing the file's format and with the list
-of devices expected to be probed on the google,spherion machine as an
-example.
+On Tue, Nov 21, 2023, David Woodhouse wrote:
+> On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
+> > From: Paul Durrant <pdurrant@amazon.com>
+> > 
+> > As noted in [1] the KVM_GUEST_USES_PFN usage flag is never set by any
+> > callers of kvm_gpc_init(), which also makes the 'vcpu' argument redundant.
+> > Moreover, all existing callers specify KVM_HOST_USES_PFN so the usage
+> > check in hva_to_pfn_retry() and hence the 'usage' argument to
+> > kvm_gpc_init() are also redundant.
+> > Remove the pfn_cache_usage enumeration and remove the redundant arguments,
+> > fields of struct gfn_to_hva_cache, and all the related code.
+> > 
+> > [1] https://lore.kernel.org/all/ZQiR8IpqOZrOpzHC@google.com/
+> > 
+> > Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> 
+> I think it's https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
+Yeah, that's the more important link.
 
-(no changes since v1)
+> which is the key reference. I'm not sure I'm 100% on board, but I never
+> got round to replying to Sean's email because it was one of those "put
+> up or shut up situations" and I didn't have the bandwidth to actually
+> write the code to prove my point.
+> 
+> I think it *is* important to support non-pinned pages. There's a reason
+> we even made the vapic page migratable. We want to support memory
+> hotplug, we want to cope with machine checks telling us to move certain
+> pages (which I suppose is memory hotplug). See commit 38b9917350cb
+> ("kvm: vmx: Implement set_apic_access_page_addr") for example.
 
- .../testing/selftests/devices/boards/google,spherion | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 tools/testing/selftests/devices/boards/google,spherion
+The vAPIC page is slightly different in that it effectively never opened a window
+for page migration, i.e. once a vCPU was created that page was stuck.  For nested
+virtualization pages, the probability of being able to migrate a page at any given
+time might be relatively low, but it's extremely unlikely for a page to be pinned
+for the entire lifetime of a (L1) VM.
 
-diff --git a/tools/testing/selftests/devices/boards/google,spherion b/tools/testing/selftests/devices/boards/google,spherion
-new file mode 100644
-index 000000000000..db9a17cccd03
---- /dev/null
-+++ b/tools/testing/selftests/devices/boards/google,spherion
-@@ -0,0 +1,12 @@
-+# Example test definition for Google Spherion Chromebook
-+#
-+# Format:
-+#   usb|pci test_name number_of_matches field=value [ field=value ... ]
-+#
-+# The available match fields vary by bus. The field-value match pairs for a
-+# device can be retrieved from the device's modalias attribute in sysfs. A
-+# subset of the fields may be used to make the match more generic so it can work
-+# with the different hardware variants of a device on the machine.
-+usb camera 1 ic=0e isc=01 ip=00
-+usb bluetooth 1 ic=e0 isc=01 ip=01 in=00
-+pci wifi 1 v=14c3 d=7961
--- 
-2.42.1
+> I agree that in the first round of the nVMX code there were bugs. And
+> sure, of *course* it isn't sufficient to wire up the invalidation
+> without either a KVM_REQ_SOMETHIMG to put it back, or just a *check* on
+> the corresponding gpc on the way back into the guest. We'd have worked
+> that out.
 
+Maybe.  I spent most of a day, maybe longer, hacking at the nVMX code and was
+unable to get line of sight to an end result that I felt would be worth pursuing.
+
+I'm definitely not saying it's impossible, and I'm not dead set against
+re-introducing KVM_GUEST_USES_PFN or similar, but a complete solution crosses the
+threshold where it's unreasonable to ask/expect someone to pick up the work in
+order to get their code/series merged.
+
+Which is effectively what you said below, I just wanted to explain why I'm pushing
+to remove KVM_GUEST_USES_PFN, and to say that if you or someone else were to write
+the code it wouldn't be an automatic nak.
+
+> And yes, the gpc has had bugs as we implemented it, but the point was
+> that we got to something which *is* working, and forms a usable
+> building block.
+>
+> So I'm not really sold on the idea of ditching KVM_GUEST_USES_PFN. I
+> think we could get it working, and I think it's worth it. But my
+> opinion is worth very little unless I express it in 'diff -up' form
+> instead of prose, and reverting this particular patch is the least of
+> my barriers to doing so, so reluctantly...
