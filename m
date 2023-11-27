@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D207F9B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ED47F9B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjK0ISr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        id S232483AbjK0ITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:19:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjK0ISp (ORCPT
+        with ESMTP id S230062AbjK0IS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:18:45 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA113D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:18:50 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-332c0c32d19so2687689f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:18:50 -0800 (PST)
+        Mon, 27 Nov 2023 03:18:57 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65202184
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:19:03 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c9947f488fso22560621fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:19:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701073129; x=1701677929; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701073141; x=1701677941; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h89GXbFD81NDzhGTriqWBEbkzw5Rvdu8mS0nXlRxJHI=;
-        b=CaSiCn5qhOnoOALpWTS59DvjrLEBzZBlsOylL1HSIcQBzKknZ5WNruQCAjRCWwQrN9
-         lhIb4Eafhug8JZG2FeXrf/ApjFphiBxtKjY/X3oy2R+UQxCfq6MVK5nED2q5xRzwENAC
-         Im7Tkf3vXvGtVcoX+piiLA71x7A2sw4958rTuejghM+LUQflpN7xyahVr6E5j/zU+yC6
-         r2P3IPMiMGDfHfFngIux4wVUnVjyxAlQi25vp+BH7b6wCMYxZH/jMAgf4emuzBCgGTcd
-         jke+1hvKtD7VilhGKmelTLmmYVqdgGNJXHelhE5qf5g1nskAVhO/+yrZ6G+uAyXnJdm8
-         GngA==
+        bh=y2uKGv73n9zPoCLwWnUxIRJtwy7BLdOeRGasRuwlLaI=;
+        b=uE4A3wjMo4CkVq103Rlpv7zNjK9hI+Pn3XTN6sxwxdVjZywhlMvFiJB6zCqt1ywf5L
+         opZqbGY1r7GTU3UlNPymHDtyW1lBOy7DS+cw+caJFlaOtTDKLY2LKLhm5Fr523d/hkHV
+         eiVhgaPEkbKFuUHjR+dEI001nmcAIx7gUshpKnK3RQpnczryRhcDGzVX6iaKhYy9yLk+
+         kwQAEopheE9qHtDZE3HmtwnC0XpQnl7puWz9hLQDQw6gUQ0nYAVdlGKcyDjZZZK6SqDU
+         i3roQYHBDUum7kjiJZhUlcEJdmp6OCaMTZ6+Z5E6aZwe2FX8iBiYXVIVr7eiDp4OUGOU
+         qv7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701073129; x=1701677929;
+        d=1e100.net; s=20230601; t=1701073141; x=1701677941;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h89GXbFD81NDzhGTriqWBEbkzw5Rvdu8mS0nXlRxJHI=;
-        b=p9XWOh6wWQTKp2UkjdenTPmMiD8G3mhqTpdLTyy0BUtVaZFnLmMB9+LzoWOGUkcoP6
-         QtVOd91LuLog0FxSx3hIRCF9X8eWs12k3EUCo6kOz/eSLwCHzkKSZVS+MGOc3stx9ObJ
-         Aoki2f8E1SP4KdCkginy7iAnD15ICA1A8/HIpPvXGfjoOmwpu/e1YeHztxv6XJZv9PEb
-         tTz3sJGm1fI1KZ45lxwC+/XzfRxWXqt6lLOt3uC/mU39HQAIIJjT/7MBmWvWSb0vja0x
-         mvRIAI3o6zy5OHZ9rZttM14PcZ8WdiG2zMIqPPFV1ZPrWV0bIIGM8Z3tbeVOCetfv9VO
-         MfOw==
-X-Gm-Message-State: AOJu0YzeeP7H3hpo976cr4chI/ybmGTqtEUEpv2ZXlaz3qKEr7xs3caG
-        MawaJ5spVCP4MQz1PfgNblTyXA==
-X-Google-Smtp-Source: AGHT+IE122eG2RYM0HV+QgTktY0OcgpWuFBem0h1klzynMJY5BA3qL25KkkwogUqQew3t81Osn/r/g==
-X-Received: by 2002:adf:fa85:0:b0:32d:8eda:ba65 with SMTP id h5-20020adffa85000000b0032d8edaba65mr7922595wrr.66.1701073129284;
-        Mon, 27 Nov 2023 00:18:49 -0800 (PST)
+        bh=y2uKGv73n9zPoCLwWnUxIRJtwy7BLdOeRGasRuwlLaI=;
+        b=D52doXxyI4jWYXlnQYrlPK3bjkUQH4zpRThALKlC3NjuGUiLdI9yhuFn1voDYY8dTt
+         o/3eKiSDifOYrrrHaUICKI1o8hpKpWMnjt3uDrM1qGGIEdp4pJbMxvmSZXt738Is5YF2
+         PhZQBVoehaVQi1gopkPP21epUFJFu57VsrrKYnFGv1ISkEELos7c4cOEhC1vc539ei8u
+         /RA2sUwO/pdLyub7ijOlusi4juBhgqHpsDRo/fpm9udzis7fwx6T6zkvsisWKwbQyvdY
+         SLhzkxeSRjpCFj+EQOGVdq7VduB5LqbFae3sUAuY+jQ//ckfms93/ryM33r0VYplOHug
+         Z3Pg==
+X-Gm-Message-State: AOJu0Yz/B1+KHS9xyF74JotGrhvTN1CBppQ+5d3YnAuyBi8XIkZR0JmH
+        +OJLsIuKVtJ1tUZn4NKE2p0Dpw==
+X-Google-Smtp-Source: AGHT+IF1gTyhMEF3F7i1LRqkM6Hdwo5CzhiNmHsO3on2+Ni4UBjAsOeQokHh2iH61R/I1gEzM9biJw==
+X-Received: by 2002:a2e:b5d3:0:b0:2c9:a05c:547d with SMTP id g19-20020a2eb5d3000000b002c9a05c547dmr1718714ljn.34.1701073141585;
+        Mon, 27 Nov 2023 00:19:01 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id w12-20020adfee4c000000b00332f82265b7sm4992855wro.20.2023.11.27.00.18.48
+        by smtp.gmail.com with ESMTPSA id be7-20020a05600c1e8700b00405442edc69sm13516568wmb.14.2023.11.27.00.19.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 00:18:48 -0800 (PST)
+        Mon, 27 Nov 2023 00:19:01 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Dmitry Rokosov <ddrokosov@sberdevices.ru>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Alexey Romanov <avromanov@salutedevices.com>,
-        Evgeny Bachinin <EABachinin@salutedevices.com>
-Cc:     kernel@sberdevices.ru, evgen89bachinin@gmail.com,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231108125604.162383-1-EABachinin@salutedevices.com>
-References: <20231108125604.162383-1-EABachinin@salutedevices.com>
-Subject: Re: [PATCH v1 0/2] firmware: meson_sm: cleanup error paths inside
- probe()
-Message-Id: <170107312844.1083555.11730115434079674375.b4-ty@linaro.org>
-Date:   Mon, 27 Nov 2023 09:18:48 +0100
+        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+        Rob Herring <robh@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        "Lukas F. Hartmann" <lukas@mntre.com>
+In-Reply-To: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
+References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
+Subject: Re: (subset) [PATCH v9 00/12] drm/meson: add support for MIPI DSI
+ Display
+Message-Id: <170107314034.1083800.1585049254380328915.b4-ty@linaro.org>
+Date:   Mon, 27 Nov 2023 09:19:00 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -83,26 +99,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Wed, 08 Nov 2023 15:56:02 +0300, Evgeny Bachinin wrote:
-> At first, patches series refactors sysfs node creation to avoid extra code
-> paths. After that, the resource leak in probe error path is fixed.
+On Fri, 24 Nov 2023 09:41:11 +0100, Neil Armstrong wrote:
+> The Amlogic G12A, G12B & SM1 SoCs embeds a Synopsys DW-MIPI-DSI transceiver (ver 1.21a),
+> with a custom glue managing the IP resets, clock and data input similar to the DW-HDMI
+> glue on the same Amlogic SoCs.
 > 
-> Evgeny Bachinin (2):
->   firmware: meson_sm: refactor serial sysfs entry via dev_groups attrs
->   firmware: meson-sm: unmap out_base shmem in error path
+> This is a follow-up of v5  now the DRM patches are applied, the clk & DT changes
+> remains for a full DSI support on G12A & SM1 platforms.
 > 
 > [...]
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.8/drivers)
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.8/arm64-dt)
 
-[1/2] firmware: meson_sm: refactor serial sysfs entry via dev_groups attrs
-      https://git.kernel.org/amlogic/c/d397965e584e0f2c6193b927c1e7693d514a6738
-[2/2] firmware: meson-sm: unmap out_base shmem in error path
-      https://git.kernel.org/amlogic/c/d8385d7433f9c7d718448465e30d6b8c1207b59f
+[02/12] dt-bindings: soc: amlogic,meson-gx-hhi-sysctrl: add example covering meson-axg-hhi-sysctrl
+        https://git.kernel.org/amlogic/c/beb9c30ba4188e481991d91124c554f61a7ec121
 
 These changes has been applied on the intermediate git tree [1].
 
-The v6.8/drivers branch will then be sent via a formal Pull Request to the Linux SoC maintainers
+The v6.8/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
 for inclusion in their intermediate git branches in order to be sent to Linus during
 the next merge window, or sooner if it's a set of fixes.
 
