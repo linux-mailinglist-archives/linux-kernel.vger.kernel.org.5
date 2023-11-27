@@ -2,253 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2677FA40C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933687FA410
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233711AbjK0PGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        id S233697AbjK0PHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjK0PGJ (ORCPT
+        with ESMTP id S233485AbjK0PHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:06:09 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A98AA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:06:15 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1275821ADA;
-        Mon, 27 Nov 2023 15:06:14 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC18E1367B;
-        Mon, 27 Nov 2023 15:06:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id m35BLGWwZGVCPAAAD6G6ig
-        (envelope-from <jgross@suse.com>); Mon, 27 Nov 2023 15:06:13 +0000
-Message-ID: <b56bed44-6c53-4c5b-9fb7-724c53d41287@suse.com>
-Date:   Mon, 27 Nov 2023 16:06:13 +0100
+        Mon, 27 Nov 2023 10:07:17 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0682C2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:07:22 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1fa0885e1c2so1680628fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701097642; x=1701702442; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=617F3nRFGfW3UqBuyZB3u1rDTGABWEPSTQud8GzjBzk=;
+        b=i9DzzgJSUp2niGRwrO651n74vzXzf86V82602pm/5MocItfgrNilo6nW8W/PfNBjDR
+         oCs42y2lDkG+ehceaONvJeYjPvMmIeCuwaZ9FoPlm7gRtCOFXDhMAC8uSJNnwZog9KF5
+         w8vzVZtfzBfGvkA70WsPKTgwiwHXDgu4niw9W67wQlvkSDWcjG3T8uWPrtkGjJR8B1Pr
+         LQLvgWIK04/8tLgF3n/hYyRSr4rE9itZrtH4zkW3p8TmoiLBMGXemzcSJ2nbN9qU73IT
+         hxkUZSi17Z8i3cGNTxp+XxXa0hyfxZUa9N+prdtaakxuUU8wOYc6on3bsvt3GiPchRAH
+         0r1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701097642; x=1701702442;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=617F3nRFGfW3UqBuyZB3u1rDTGABWEPSTQud8GzjBzk=;
+        b=qQ3dAIn5rwEXsEJOfQX+VtkgHgWFnS/JDDXazGgZUg/G3GdDSTnvxhbGKTkWBpKcFZ
+         HYCoXKGQ6IkkQ+ppVXOBSvC4H0s5QuHyumCLM/1pkku2S6r+THa0jTxGRZYA+2tDyUZH
+         l9H8SoaR6nIBZAjZ27ybGOUb6ap8C3tNMoIGDagFlEmcP+NICTK9r+If2Js7vCSk3VhK
+         VPkZ6bth4fgKVEkbL93jd+ZE0RdPCaCwNSTF8NakItf0H6wvFQbfLLr4Zxcj4VdDtBi+
+         Ewa1uImx+0SaVOuqMWLrMn3ycyubGTX4IvtyUYjwXKhEVPWt8UFVyPOCgl33Fm4m3nKB
+         LZbQ==
+X-Gm-Message-State: AOJu0YzpTl8j/J82vAEnSU73J+rzxRTX+0Qe4jiCs1Xsa7na7RGmpl5Y
+        qSm6L+KFn9S/FHuFyEs/kyOJhA4P8cEt/bV44AET9w==
+X-Google-Smtp-Source: AGHT+IFvZrl7BIb5d3tTlFoJOASc2MpvQcgnwFTo1ywhOZENB3Nr/odyqW/Ttj/Xz/CbqfiMCY08+s467BmGTWxl2z8=
+X-Received: by 2002:a05:6358:9194:b0:16e:292:2af2 with SMTP id
+ j20-20020a056358919400b0016e02922af2mr11695350rwa.21.1701097635756; Mon, 27
+ Nov 2023 07:07:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/xen: fix percpu vcpu_info allocation
-Content-Language: en-US
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-References: <20231124074852.25161-1-jgross@suse.com>
- <69ba2a99-90f7-4d39-afc6-971b0867a1c8@oracle.com>
- <1b2da249-254d-4879-aa16-9ea7f39d1259@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <1b2da249-254d-4879-aa16-9ea7f39d1259@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------XdrODNnIQ0utYjMdAAU3P5Wx"
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out1.suse.de: domain of jgross@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=jgross@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-0.01)[48.79%];
-         HAS_ATTACHMENT(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         ARC_NA(0.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         MX_GOOD(-0.01)[];
-         MIME_BASE64_TEXT(0.10)[];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 1275821ADA
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231126154413.975493975@linuxfoundation.org>
+In-Reply-To: <20231126154413.975493975@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 27 Nov 2023 20:37:03 +0530
+Message-ID: <CA+G9fYsUXnx4HWyBOGMi3Ko_jT6Y_ejp5ZhcsU+8+_8NUsd=vA@mail.gmail.com>
+Subject: Re: [PATCH 6.5 000/483] 6.5.13-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------XdrODNnIQ0utYjMdAAU3P5Wx
-Content-Type: multipart/mixed; boundary="------------0hmfHqVASUx9LCqKULP0yYEz";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>, x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Message-ID: <b56bed44-6c53-4c5b-9fb7-724c53d41287@suse.com>
-Subject: Re: [PATCH] x86/xen: fix percpu vcpu_info allocation
-References: <20231124074852.25161-1-jgross@suse.com>
- <69ba2a99-90f7-4d39-afc6-971b0867a1c8@oracle.com>
- <1b2da249-254d-4879-aa16-9ea7f39d1259@suse.com>
-In-Reply-To: <1b2da249-254d-4879-aa16-9ea7f39d1259@suse.com>
+On Sun, 26 Nov 2023 at 21:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.5.13 release.
+> There are 483 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.13-rc4.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---------------0hmfHqVASUx9LCqKULP0yYEz
-Content-Type: multipart/mixed; boundary="------------iV3YD9swX4Zfdz9PKrwAOpIr"
 
---------------iV3YD9swX4Zfdz9PKrwAOpIr
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Results from Linaro's test farm.
+The following regressions found on all arm64 devices.
+Both the regressions are also seen on stable-rc linux-6.1.y.
 
-T24gMjcuMTEuMjMgMTY6MDAsIEphbiBCZXVsaWNoIHdyb3RlOg0KPiBPbiAyNy4xMS4yMDIz
-IDE1OjU3LCBCb3JpcyBPc3Ryb3Zza3kgd3JvdGU6DQo+Pg0KPj4NCj4+IE9uIDExLzI0LzIz
-IDI6NDggQU0sIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+Pj4gVG9kYXkgdGhlIHBlcmNwdSBz
-dHJ1Y3QgdmNwdV9pbmZvIGlzIGFsbG9jYXRlZCB2aWEgREVGSU5FX1BFUl9DUFUoKSwNCj4+
-PiBtZWFuaW5nIHRoYXQgaXQgY291bGQgY3Jvc3MgYSBwYWdlIGJvdW5kYXJ5LiBJbiB0aGlz
-IGNhc2UgcmVnaXN0ZXJpbmcNCj4+PiBpdCB3aXRoIHRoZSBoeXBlcnZpc29yIHdpbGwgZmFp
-bCwgcmVzdWx0aW5nIGluIGEgcGFuaWMoKS4NCj4+Pg0KPj4+IFRoaXMgY2FuIGVhc2lseSBi
-ZSBmaXhlZCBieSB1c2luZyBERUZJTkVfUEVSX0NQVV9BTElHTkVEKCkgaW5zdGVhZCwNCj4+
-PiBhcyBzdHJ1Y3QgdmNwdV9pbmZvIGlzIGd1YXJhbnRlZWQgdG8gaGF2ZSBhIHNpemUgb2Yg
-NjQgYnl0ZXMsIG1hdGNoaW5nDQo+Pj4gdGhlIGNhY2hlIGxpbmUgc2l6ZSBvZiB4ODYgNjQt
-Yml0IHByb2Nlc3NvcnMgKFhlbiBkb2Vzbid0IHN1cHBvcnQNCj4+PiAzMi1iaXQgcHJvY2Vz
-c29ycykuDQo+Pj4NCj4+PiBGaXhlczogNWVhZDk3Yzg0ZmE3ICgieGVuOiBDb3JlIFhlbiBp
-bXBsZW1lbnRhdGlvbiIpDQo+Pj4gU2lnbmVkLW9mZi1ieTogSnVlcmdlbiBHcm9zcyA8amdy
-b3NzQHN1c2UuY29tPg0KPj4NCj4+IFJldmlld2VkLWJ5OiBCb3JpcyBPc3Ryb3Zza3kgPGJv
-cmlzLm9zdHJvdnNreUBvcmFjbGUuY29uPg0KPj4NCj4+IGFsdGhvdWdoIEkgYW0gbm90IHN1
-cmUgaW4gdXNlZnVsbmVzcyBvZiBCVUlMRF9CVUdfT04gLS0tIDY0IGJ5dGVzIGlzIHBhcnQg
-b2YgQUJJIGFuZCBoeXBlcnZpc29yIGFscmVhZHkgaGFzIGl0cyBvd24gQlVJTERfQlVHX09O
-IGZvciB0aGlzLg0KPiANCj4gSSB1bmRlcnN0b29kIHRoZSBjaGVjayB0byBndWFyZCBhZ2Fp
-bnN0IFNNUF9DQUNIRV9CWVRFUyA8IDY0Lg0KDQpZZXMsIHRoYXQgd2FzIHRoZSBpZGVhLiBC
-ZXR0ZXIgc2FmZSB0aGFuIHNvcnJ5Lg0KDQoNCkp1ZXJnZW4NCg==
---------------iV3YD9swX4Zfdz9PKrwAOpIr
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+1) selftests: seccomp: seccomp_bpf - fails on all arm64 devices.
+2) Perf: PMU_events_subtest_1 / 2  - fails on all qemu-armv7 and TI x15.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Test log:
+--------
+1)
+# selftests: seccomp: seccomp_bpf
+<>
+# #  RUN           global.user_notification_sync ...
+# # seccomp_bpf.c:4294:user_notification_sync:Expected
 
-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
-kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
-=3DeeAB
------END PGP PUBLIC KEY BLOCK-----
+ioctl(listener, SECCOMP_IOCTL_NOTIF_SET_FLAGS,
+               SECCOMP_USER_NOTIF_FD_SYNC_WAKE_UP, 0) (-1) == 0 (0)
 
---------------iV3YD9swX4Zfdz9PKrwAOpIr--
+# # user_notification_sync: Test terminated by assertion
+# #          FAIL  global.user_notification_sync
+# not ok 51 global.user_notification_sync
+<>
+# # FAILED: 95 / 96 tests passed.
+# # Totals: pass:95 fail:1 xfail:0 xpass:0 skip:0 error:0
+not ok 1 selftests: seccomp: seccomp_bpf # exit=1
 
---------------0hmfHqVASUx9LCqKULP0yYEz--
+Links:
+ - https://lkft.validation.linaro.org/scheduler/job/7056513#L2725
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33/testrun/21318788/suite/kselftest-seccomp/test/seccomp_seccomp_bpf/details/
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33/testrun/21318263/suite/kselftest-seccomp/test/seccomp_seccomp_bpf/history/
 
---------------XdrODNnIQ0utYjMdAAU3P5Wx
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
------BEGIN PGP SIGNATURE-----
+2)
+perf
+  - PMU_events_subtest_1
+  - PMU_events_subtest_2
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVksGUFAwAAAAAACgkQsN6d1ii/Ey+/
-UwgAlFNFS1VXA0AUsh5ZQUX011sd7nFPanyX76Owp8ZFEHmShxHRpAlZQLKsVtY7m0G22+b7pT8p
-VlpLHRMRW95pAhEUm8WaHJV7DvTcKVvZmDFr2v53CvbLq+HT1wogQ7o+vtRdzDc4HaIWfkoVB3zC
-7eZy0VjcIbj22ZW21B163OCnGUXCRTWlgS1hZUSeLDXlXVoYPlIi2z1YV+eE0umzEgOgkryvD8g2
-JVzBtDm3Xn6zEYuPjAGIlv6ddq+LDu3M9MMqqbWphbHqBsNaaPYBJ3aIr8eA4nbmHnqVWI0kW7XW
-lDKPWvGmYCy6OvUMTIz/YNgF+rs2CyGENWj2LpiTxg==
-=qARG
------END PGP SIGNATURE-----
+ 10.1: PMU event table sanity                           :
+--- start ---
+test child forked, pid 339
+perf: Segmentation fault
+Obtained 1 stack frames.
+perf(+0xdfcd9) [0x571cd9]
+test child interrupted
+---- end ----
+PMU events subtest 1: FAILED!
+ 10.2: PMU event map aliases                            :
+--- start ---
+test child forked, pid 340
+perf: Segmentation fault
+Obtained 1 stack frames.
+perf(+0xdfcd9) [0x571cd9]
+test child interrupted
+---- end ----
+PMU events subtest 2: FAILED!
 
---------------XdrODNnIQ0utYjMdAAU3P5Wx--
+Links:
+ - https://lkft.validation.linaro.org/scheduler/job/7059997#L2905
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-486-g1c613200bbe4/testrun/21344368/suite/perf/test/PMU_events_subtest_1/details/
+
+## Build
+* kernel: 6.5.13-rc4
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.5.y
+* git commit: ecc37a3a8d335716260debdf063a278ea74379a4
+* git describe: v6.5.12-484-gecc37a3a8d33
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33
+
+## Test Regressions (compared to v6.5.12)
+
+* bcm2711-rpi-4-b, kselftest-seccomp
+  - seccomp_seccomp_bpf
+
+* juno-r2, kselftest-seccomp
+  - seccomp_seccomp_bpf
+
+* dragonboard-410c, kselftest-seccomp
+  - seccomp_seccomp_bpf
+
+* qemu-armv7, perf
+  - PMU_events_subtest_1
+  - PMU_events_subtest_2
+
+* x15, perf
+  - PMU_events_subtest_1
+  - PMU_events_subtest_2
+
+## Metric Regressions (compared to v6.5.12)
+
+## Test Fixes (compared to v6.5.12)
+
+## Metric Fixes (compared to v6.5.12)
+
+## Test result summary
+total: 150231, pass: 128862, fail: 2428, skip: 18810, xfail: 131
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 146 total, 146 passed, 0 failed
+* arm64: 53 total, 51 passed, 2 failed
+* i386: 42 total, 42 passed, 0 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 25 total, 25 passed, 0 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 47 total, 47 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
