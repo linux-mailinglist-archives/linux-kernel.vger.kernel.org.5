@@ -2,224 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0CC7FAB99
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD18B7FAB9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjK0Ubj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:31:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        id S232971AbjK0Ud1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjK0UbY (ORCPT
+        with ESMTP id S231704AbjK0Ud0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:31:24 -0500
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A95D1706
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:31:25 -0800 (PST)
-Received: (wp-smtpd smtp.tlen.pl 29066 invoked from network); 27 Nov 2023 21:31:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1701117080; bh=AVLfSEKQHabLjQ2op4Bnsbc4bMus8YV3MiHTkOWOTvE=;
-          h=Subject:To:Cc:From;
-          b=U+iHv3Hd+CuZ2OKDVmzz+RgPnHjEqi2CladEWxSy3bln6TX+CIMBzlyEq/5AXSfvb
-           0OJI8B/RtbP54v2PcX07GE4wSZxLJMZhwEFnkomcm2o+46bsy6mgTIdcF1DVPEXhDN
-           OYWq5WcfH9vXlaKhKUBgJUgcMPCP68EI+rjxpagY=
-Received: from aaez25.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.129.25])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <mario.limonciello@amd.com>; 27 Nov 2023 21:31:20 +0100
-Message-ID: <c179a0cb-1b98-4a4f-a3c6-cad7b980a337@o2.pl>
-Date:   Mon, 27 Nov 2023 21:31:16 +0100
+        Mon, 27 Nov 2023 15:33:26 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA47593;
+        Mon, 27 Nov 2023 12:33:32 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJgXKV030196;
+        Mon, 27 Nov 2023 20:33:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Lkh3ZB0fmtu8u/GH3a6JEmF9T4HRnls2lJwdbACwm3Y=;
+ b=bXs4CsZ0zaxLPQdnLC/UmozDkO67bfZDxQt+9gwGdxiXOPvN7GyUbDRWvmgKaTgr2aQ3
+ zQ9rR45lGVR+pienIPQ++UwKkOIUn1DfHkaP3RskZt9O+nWLLtie+A2feFmS7F+ldwVv
+ 4fVrSad32GenFdXf+GiLKpC0c0D4BbjQo44zNSRgSa1MQl+5MjeXlB0zxMjeg2++tZl4
+ 3GaCj7kNjRezC/iged+3sMcOp2Fkwi3Xlhv4+KNJ87+0w9mAqkpS1uzIq83PxZ9ytpO3
+ 9hUP6oSaaZQp+RE7Ns72y6zXaTvMnMVry8G8eS0GuIGGYjj5IRIhYVBmwoE8K5lBMSnT VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un1gesdc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:33:28 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARJgtXA031165;
+        Mon, 27 Nov 2023 20:33:28 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un1gesdat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:33:28 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJchNe018544;
+        Mon, 27 Nov 2023 20:33:26 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwfjtttd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:33:26 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARKXP1w24707596
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 20:33:25 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C94B958050;
+        Mon, 27 Nov 2023 20:33:25 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2CFF58045;
+        Mon, 27 Nov 2023 20:33:24 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 20:33:24 +0000 (GMT)
+Message-ID: <94a6c269-7086-4a20-8396-07521cf1c220@linux.ibm.com>
+Date:   Mon, 27 Nov 2023 15:33:23 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] rtc: Add support for configuring the UIP timeout
- for RTC reads
-Content-Language: en-GB
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org, tobrohl@gmail.com, aalsing@gmail.com,
-        Dhaval.Giani@amd.com, xmb8dsv4@gmail.com, x86@kernel.org,
-        dhaval.giani@gmail.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20231127192553.9734-1-mario.limonciello@amd.com>
- <20231127192553.9734-4-mario.limonciello@amd.com>
-From:   =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <20231127192553.9734-4-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 1a138dafb272c999ed76f246b5ecae23
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [sYMB]                               
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v6 1/8] tpm: Remove unused tpm_buf_tag()
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        William Roberts <bill.c.roberts@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-2-jarkko@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20231124020237.27116-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _B7MXcilXN4EqENafQe1mmccsN1fD6ej
+X-Proofpoint-GUID: G__qMkKK_WvxFx9nFrabSns5lrHjioxA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=714 phishscore=0 malwarescore=0 spamscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270143
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 27.11.2023 o 20:25, Mario Limonciello pisze:
-> The UIP timeout is hardcoded to 10ms for all RTC reads, but in some
-> contexts this might not be enough time. Add a timeout parameter to
-> mc146818_get_time() and mc146818_get_time_callback().
->
-> If UIP timeout is configured by caller to be >=100 ms and a call
-> takes this long, log a warning.
->
-> Make all callers use 10ms to ensure no functional changes.
->
-> Cc: stable@vger.kernel.org # 6.1.y
-> Fixes: ec5895c0f2d8 ("rtc: mc146818-lib: extract mc146818_avoid_UIP")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+
+
+On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> The helper function has no call sites. Thus, remove it.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+
 > ---
-> v2->v3:
->  * Logic adjustments
->  * Clarify warning message
-> v1->v2:
->  * Add a warning if 100ms or more
->  * Add stable and fixes tags
-[snip]
-> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
-> index 43a28e82674e..ab077dde397b 100644
-> --- a/drivers/rtc/rtc-mc146818-lib.c
-> +++ b/drivers/rtc/rtc-mc146818-lib.c
-> @@ -8,26 +8,31 @@
->  #include <linux/acpi.h>
->  #endif
->  
-> +#define UIP_RECHECK_DELAY		100	/* usec */
-> +#define UIP_RECHECK_DELAY_MS		(USEC_PER_MSEC / UIP_RECHECK_DELAY)
-> +#define UIP_RECHECK_TIMEOUT_MS(x)	(x / UIP_RECHECK_DELAY_MS)
-> +
->  /*
->   * Execute a function while the UIP (Update-in-progress) bit of the RTC is
-> - * unset.
-> + * unset. The timeout is configurable by the caller in ms.
->   *
->   * Warning: callback may be executed more then once.
->   */
->  bool mc146818_avoid_UIP(void (*callback)(unsigned char seconds, void *param),
-> +			int timeout,
->  			void *param)
->  {
->  	int i;
->  	unsigned long flags;
->  	unsigned char seconds;
->  
-> -	for (i = 0; i < 100; i++) {
-> +	for (i = 0; i < UIP_RECHECK_TIMEOUT_MS(timeout); i++) {
-
-Sorry, this will not work. UIP_RECHECK_DELAY_MS is 10, so
-UIP_RECHECK_TIMEOUT_MS(timeout) will be 1 for timeout=10. Should be
-
-      for (i = 0; UIP_RECHECK_TIMEOUT_MS(i) < timeout; i++) {
-
-With this, for i == 99, UIP_RECHECK_TIMEOUT_MS(i) = 9
-for i == 100, UIP_RECHECK_TIMEOUT_MS(i) = 10 and the loop correctly terminates.
-
-The macro should probably be renamed UIP_RECHECK_LOOPS_MS as it converts
-loop count to ms.
-
->  		spin_lock_irqsave(&rtc_lock, flags);
->  
->  		/*
->  		 * Check whether there is an update in progress during which the
->  		 * readout is unspecified. The maximum update time is ~2ms. Poll
-> -		 * every 100 usec for completion.
-> +		 * for completion.
->  		 *
->  		 * Store the second value before checking UIP so a long lasting
->  		 * NMI which happens to hit after the UIP check cannot make
-> @@ -37,7 +42,7 @@ bool mc146818_avoid_UIP(void (*callback)(unsigned char seconds, void *param),
->  
->  		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
->  			spin_unlock_irqrestore(&rtc_lock, flags);
-> -			udelay(100);
-> +			udelay(UIP_RECHECK_DELAY);
->  			continue;
->  		}
->  
-> @@ -56,7 +61,7 @@ bool mc146818_avoid_UIP(void (*callback)(unsigned char seconds, void *param),
->  		 */
->  		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
->  			spin_unlock_irqrestore(&rtc_lock, flags);
-> -			udelay(100);
-> +			udelay(UIP_RECHECK_DELAY);
->  			continue;
->  		}
->  
-> @@ -72,6 +77,10 @@ bool mc146818_avoid_UIP(void (*callback)(unsigned char seconds, void *param),
->  		}
->  		spin_unlock_irqrestore(&rtc_lock, flags);
->  
-> +		if (i >= UIP_RECHECK_TIMEOUT_MS(100))
-
-Same, should be:
-
-          if (UIP_RECHECK_TIMEOUT_MS(i) >= 100)
-
-> +			pr_warn("Reading current time from RTC took around %d ms\n",
-> +				UIP_RECHECK_TIMEOUT_MS(i));
-> +
->  		return true;
->  	}
->  	return false;
-
-[snip]
-
-Greetings,
-
-Mateusz
-
-
+> v1 [2023-11-21]: A new patch.
+> ---
+>   include/linux/tpm.h | 7 -------
+>   1 file changed, 7 deletions(-)
+> 
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 4ee9d13749ad..6588ca87cf93 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -358,13 +358,6 @@ static inline u32 tpm_buf_length(struct tpm_buf *buf)
+>   	return be32_to_cpu(head->length);
+>   }
+>   
+> -static inline u16 tpm_buf_tag(struct tpm_buf *buf)
+> -{
+> -	struct tpm_header *head = (struct tpm_header *)buf->data;
+> -
+> -	return be16_to_cpu(head->tag);
+> -}
+> -
+>   static inline void tpm_buf_append(struct tpm_buf *buf,
+>   				  const unsigned char *new_data,
+>   				  unsigned int new_len)
