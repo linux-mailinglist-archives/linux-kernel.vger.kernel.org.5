@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DE57F9CAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1DC7F9CB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbjK0Jdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S232827AbjK0JeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbjK0Jdp (ORCPT
+        with ESMTP id S232797AbjK0JeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:33:45 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643E110F;
-        Mon, 27 Nov 2023 01:33:51 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0652B21B08;
-        Mon, 27 Nov 2023 09:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701077630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wT+MufMGEB0ufjSt00Zd8HTGo5TcuBRHX37P346pxcM=;
-        b=ZnzujSEbax23GqstRnJMfugfRQIVcnioLid6dLybj07wx9hjP/41wInCr4eFCaA0ysgQ2u
-        2+m4YnrwfxksKjvo8a/WrfxC+BfgIIHHf8qZ00cON1a9Wr9jnRxDYseMou3Vy+3CjQhEoS
-        J7kFa8LNWBSIXVkHPqSh0ulE+SrFXak=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7ED51379A;
-        Mon, 27 Nov 2023 09:33:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 7kaON31iZGX6QgAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 09:33:49 +0000
-Date:   Mon, 27 Nov 2023 10:33:49 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <ZWRifQgRR0570oDY@tiehlicka>
-References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
- <20231123193937.11628-3-ddrokosov@salutedevices.com>
+        Mon, 27 Nov 2023 04:34:18 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624EEF5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:24 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a02d91ab199so541137366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701077663; x=1701682463; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xxjZg22ov6gQx8JLukqacT0gU0Tul8TKlesYhtgUQmM=;
+        b=uRnFLI3Gf/3DWA6OhALjPc5CUCU0+HiFjvWK/ut47OrInttTGZjde0NZecte5GP+cU
+         gBD7rWD89o1bSNzxwy8SVWAzlrYz9VdyJmsag4q37vESytMcVrCvNKuVoZ3/wxwOVEq3
+         CS2w7GnrSIGlCuy2blrLIjrkMQc7SOADbZu3tmJ8Jf3FlmO1vbhKk3Di4/DYk4Nl45+j
+         rSAEVA7wHM480BkmtW4Yg2Bd+FaefR2dk1qzYbmQZOkYItOYZz7LoPYuWAE7qq66cInR
+         VhCFt2fkKSUQw4/ODHWv2SNEhg/HKzcWIxjgpEdFDzoc2qBZxvZnYjqQxCr9BIYuky4N
+         C4hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701077663; x=1701682463;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xxjZg22ov6gQx8JLukqacT0gU0Tul8TKlesYhtgUQmM=;
+        b=X2I2Y4TZJFfnORHOTsc3Ys7sPqnIJkOLn1qhINi9/dfpvms2txSd1dHi4Zq/oGk3s+
+         Y+PhYP/cWv8lTbnWjaOrFbMX/+66Stf5jrXUduJ9CgMw7kTqSaqoV0czAFv3B9c3QhdV
+         XZvT1vR3k+jacLQsGoSdLJ5kd+sXZoITutESDLLi4uBzgSIbBNmgUjr1Uh5pzaymTtGS
+         JvSswDOtocx4WD+0zp5YMx/KZ+4s+SzFsgI3DsykSwZPbe9sivrknpLnjPcVDZfGKwVI
+         1r6fQmBb0ZMy95DMpqyBewywNaM1bBMItoKU+VM6zAN0VUn7WGDUZtGXTxkCupv2SYxT
+         GLwA==
+X-Gm-Message-State: AOJu0YzqMP3uitOEBhICt6mYuS+Mqsblat00njQReNiy2LblHaHUxyvf
+        Pff0mG/fNpSSWhbPwPmD2Ibr+Q==
+X-Google-Smtp-Source: AGHT+IHwjo3iCYneHAx17+3mDf/thozieQyTXj1EWQg79jKTCz1jo/XMchH7SbSIGHpMDbSOO2DORA==
+X-Received: by 2002:a17:906:109b:b0:a0c:fe2f:c445 with SMTP id u27-20020a170906109b00b00a0cfe2fc445mr3149996eju.69.1701077662724;
+        Mon, 27 Nov 2023 01:34:22 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id s20-20020a1709066c9400b009fd585a2155sm5452587ejr.0.2023.11.27.01.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 01:34:22 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2] ARM: dts: stm32: minor whitespace cleanup around '='
+Date:   Mon, 27 Nov 2023 10:34:20 +0100
+Message-Id: <20231127093420.20473-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123193937.11628-3-ddrokosov@salutedevices.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 4.32
-X-Spamd-Result: default: False [4.32 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.18)[-0.925];
-         RCPT_COUNT_TWELVE(0.00)[14];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
-         RCVD_TLS_ALL(0.00)[]
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,35 +75,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
-> The shrink_memcg flow plays a crucial role in memcg reclamation.
-> Currently, it is not possible to trace this point from non-direct
-> reclaim paths. However, direct reclaim has its own tracepoint, so there
-> is no issue there. In certain cases, when debugging memcg pressure,
-> developers may need to identify all potential requests for memcg
-> reclamation including kswapd(). The patchset introduces the tracepoints
-> mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
-> 
-> Example of output in the kswapd context (non-direct reclaim):
->     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
->     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
->     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
->     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
->     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
->     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
->     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+The DTS code coding style expects exactly one space before and after '='
+sign.
 
-In the previous version I have asked why do we need this specific
-tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
-which already give you a very good insight. That includes the number of
-reclaimed pages but also more. I do see that we do not include memcg id
-of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+---
+
+Changes in v2:
+1. Split previous commit touching entire 'st' directory.
+---
+ arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts | 2 +-
+ arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts | 2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts | 2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
+index afcd6285890c..69d693ae26dd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
+@@ -59,7 +59,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
+index 39358d902000..89bfb4143ba7 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
+@@ -65,7 +65,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
+index 07ea765a4553..ca7a3a0f16af 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
+@@ -64,7 +64,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
+index 813086ec2489..f6510b93f912 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
+@@ -70,7 +70,7 @@ &m4_rproc {
+ 	/delete-property/ st,syscfg-holdboot;
+ 	resets = <&scmi_reset RST_SCMI_MCU>,
+ 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-	reset-names =  "mcu_rst", "hold_boot";
++	reset-names = "mcu_rst", "hold_boot";
+ };
+ 
+ &rcc {
 -- 
-Michal Hocko
-SUSE Labs
+2.34.1
+
