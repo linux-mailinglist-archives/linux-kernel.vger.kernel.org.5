@@ -2,187 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB5A7F9A0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691127F9A2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbjK0GjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S229963AbjK0Gs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbjK0GjJ (ORCPT
+        with ESMTP id S229527AbjK0Gs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:39:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD8F136;
-        Sun, 26 Nov 2023 22:39:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701067156; x=1732603156;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VAys2T6SYXa/EbFErLKF/Vbg/PfRt/6DnDP8hziF19c=;
-  b=OOSCoSZTdDSPEWC49nnn90Ol1aQymW75sry2QEoTTGpXoj/WfGsmwQod
-   ulSGvt9qTHqo7Op5GOEeFzpFqVVtqpXkqPPnj3n1be4RGeYVWYYIJLcSw
-   tKmYTizdgbD72mkWfI51Fw/YKqd+hFFPa8s1y1YjebXik49pX7RhDZJPM
-   IHLT4/vxNzw3pXqnybmwOSAqFVDHkloRDZkP4UwT9evLfER6EU6lJTI8e
-   Xb6nOZ4afzfFL6e8U+d6IUPok+RpgFe6ZhzBhKjc7wCYI2z5EOEXVSMwU
-   KkN3pUQ0nljO4wTo2R5ovSOTNYtjYpQ2NtC+u2tNOwLvDH4YrsnHXbDnB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="392397770"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="392397770"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 22:39:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="717940819"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="717940819"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2023 22:39:12 -0800
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: [PATCH 3/3] vfio: Report PASID capability via VFIO_DEVICE_FEATURE ioctl
-Date:   Sun, 26 Nov 2023 22:39:09 -0800
-Message-Id: <20231127063909.129153-4-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127063909.129153-1-yi.l.liu@intel.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
+        Mon, 27 Nov 2023 01:48:27 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA800133;
+        Sun, 26 Nov 2023 22:48:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PRdjsHwBJnTnCFJ6KWMNGkw3R1XwKUQdbL+BMJT0K70=; b=X33IAizBXxOu44K+tKNOQcX6aN
+        L3R58WnMzMuH49yXIvG7omqQGa3O2DELuiG9T0RDZfJfL9RxoTFv7kUL42tZGssHxvodfBhu53zAl
+        oziCAbD1I4rfcGgYF7+pmO1j4z7VlfcJSt54k/bu5RznWMw8UGAKzI85OeNE+/rj2cbLblF4OE6VJ
+        eTO7WwvbpkhSAH2j8YC9xxeFsHPww+97YyGIXXbr6H0E8B8/2bjSezQMUryHuqSaucYpxVB9Oms42
+        fJOuOXLDq1bOpbdO9PADT2+G/2FCegqrb+HsEfhKX3cA8yGKyYkW0zp9+6loKz3FcpZ/JElMbJsDK
+        wQbg0j1Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r7VP7-003r7k-26;
+        Mon, 27 Nov 2023 06:47:37 +0000
+Date:   Mon, 27 Nov 2023 06:47:37 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
+        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, dchinner@redhat.com,
+        linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
+        dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+        hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH block/for-next v2 00/16] block: remove field 'bd_inode'
+ from block_device
+Message-ID: <20231127064737.GH38156@ZenIV>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reports the PASID capability data to userspace via VFIO_DEVICE_FEATURE,
-hence userspace could probe PASID capability by it. This is a bit different
-with other capabilities which are reported to userspace when the user reads
-the device's PCI configuration space. There are two reasons for this.
+On Mon, Nov 27, 2023 at 02:21:00PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Changes in v2:
+>  - split different portions into different patches, as greg k-h
+>  suggested.
+>  - use container_of() instead of "bdev + 1" to get the address of
+>  bd_inode in the new helper, as grep k-h suggested.
 
- - First, Qemu by default exposes all available PCI capabilities in vfio-pci
-   config space to the guest as read-only, so adding PASID capability in the
-   vfio-pci config space will make it exposed to the guest automatically while
-   an old Qemu doesn't really support it.
-
- - Second, PASID capability does not exit on VFs (instead shares the cap of
-   the PF). Creating a virtual PASID capability in vfio-pci config space needs
-   to find a hole to place it, but doing so may require device specific
-   knowledge to avoid potential conflict with device specific registers like
-   hiden bits in VF config space. It's simpler by moving this burden to the
-   VMM instead of maintaining a quirk system in the kernel.
-
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 47 ++++++++++++++++++++++++++++++++
- include/uapi/linux/vfio.h        | 13 +++++++++
- 2 files changed, 60 insertions(+)
-
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 1929103ee59a..8038aa45500e 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -1495,6 +1495,51 @@ static int vfio_pci_core_feature_token(struct vfio_device *device, u32 flags,
- 	return 0;
- }
- 
-+static int vfio_pci_core_feature_pasid(struct vfio_device *device, u32 flags,
-+				       struct vfio_device_feature_pasid __user *arg,
-+				       size_t argsz)
-+{
-+	struct vfio_pci_core_device *vdev =
-+		container_of(device, struct vfio_pci_core_device, vdev);
-+	struct vfio_device_feature_pasid pasid = { 0 };
-+	struct pci_dev *pdev = vdev->pdev;
-+	u32 capabilities = 0;
-+	int ret;
-+
-+	/* We do not support SET of the PASID capability */
-+	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_GET,
-+				 sizeof(pasid));
-+	if (ret != 1)
-+		return ret;
-+
-+	/*
-+	 * Needs go to PF if the device is VF as VF shares its PF's
-+	 * PASID Capability.
-+	 */
-+	if (pdev->is_virtfn)
-+		pdev = pci_physfn(pdev);
-+
-+	if (!pdev->pasid_enabled)
-+		goto out;
-+
-+#ifdef CONFIG_PCI_PASID
-+	pci_read_config_dword(pdev, pdev->pasid_cap + PCI_PASID_CAP,
-+			      &capabilities);
-+#endif
-+
-+	if (capabilities & PCI_PASID_CAP_EXEC)
-+		pasid.capabilities |= VFIO_DEVICE_PASID_CAP_EXEC;
-+	if (capabilities & PCI_PASID_CAP_PRIV)
-+		pasid.capabilities |= VFIO_DEVICE_PASID_CAP_PRIV;
-+
-+	pasid.width = (capabilities >> 8) & 0x1f;
-+
-+out:
-+	if (copy_to_user(arg, &pasid, sizeof(pasid)))
-+		return -EFAULT;
-+	return 0;
-+}
-+
- int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
- 				void __user *arg, size_t argsz)
- {
-@@ -1508,6 +1553,8 @@ int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
- 		return vfio_pci_core_pm_exit(device, flags, arg, argsz);
- 	case VFIO_DEVICE_FEATURE_PCI_VF_TOKEN:
- 		return vfio_pci_core_feature_token(device, flags, arg, argsz);
-+	case VFIO_DEVICE_FEATURE_PASID:
-+		return vfio_pci_core_feature_pasid(device, flags, arg, argsz);
- 	default:
- 		return -ENOTTY;
- 	}
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 495193629029..8326faf8622b 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -1512,6 +1512,19 @@ struct vfio_device_feature_bus_master {
- };
- #define VFIO_DEVICE_FEATURE_BUS_MASTER 10
- 
-+/**
-+ * Upon VFIO_DEVICE_FEATURE_GET, return the PASID capability for the device.
-+ * Zero width means no support for PASID.
-+ */
-+struct vfio_device_feature_pasid {
-+	__u16 capabilities;
-+#define VFIO_DEVICE_PASID_CAP_EXEC	(1 << 0)
-+#define VFIO_DEVICE_PASID_CAP_PRIV	(1 << 1)
-+	__u8 width;
-+	__u8 __reserved;
-+};
-+#define VFIO_DEVICE_FEATURE_PASID 11
-+
- /* -------- API for Type1 VFIO IOMMU -------- */
- 
- /**
--- 
-2.34.1
-
+You might have misinterpreted gregkh - in your place I would rather
+do a one-patch never-rebased branch (introduction of bdev_inode() in
+form that returns bdev->bd_inode), with followup in your branch that
+switches it to your variant.  Then conversions of ->bd_inode users,
+to be either picked by individual filesystems of staying in your branch.
+Any filesystem tree could merge from your never-rebased branch, after
+which they could switch their ->bd_inode uses to the new helper, without
+introducing any bisection hazards or interdependencies.
+After the next -rc1, once all ->bd_inode users are gone from the tree -
+remove the field.
