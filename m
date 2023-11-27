@@ -2,204 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1A67FA24A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6F67FA29D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjK0OQu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 09:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S233612AbjK0O2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbjK0OQ1 (ORCPT
+        with ESMTP id S233630AbjK0O2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:16:27 -0500
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F86D53;
-        Mon, 27 Nov 2023 06:05:27 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso4099961276.3;
-        Mon, 27 Nov 2023 06:05:27 -0800 (PST)
+        Mon, 27 Nov 2023 09:28:09 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B46E3268;
+        Mon, 27 Nov 2023 06:07:19 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-db40898721fso3933932276.3;
+        Mon, 27 Nov 2023 06:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701094038; x=1701698838; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z8oeFhCs7kIEK8abIOdKBsPggO+UU8nmR04lsK3QyLs=;
+        b=BFJifH+M3YypRNQI2tSO/osf5/IfaELJVE7grWsnctEzXOZhGSzZrhGa198EXbpZy7
+         D4zCD0SV9aIcIx85qQ8mcVl6jxpVvHF8DuxwAQphZ3Buk+e3tohlJ5lohDn9+uSL+YxG
+         VNkzqYjxsA3UtiyoVvxQsE0doho4M6wQQIWkp7TCUZKvcuzsj4P0YK7WTgExf5TuVCh4
+         NDjbExRvogiElsmQTwdRkc40od1ZYLrzwySVtr9DgdCPsk95EOaJUIw6CGDie7RzZFcW
+         QwXnXgbk0gGPiyc1ceuw/3nwoP1MwASz81NEb35ceHWcL/mbq0uveQ31GQKIbKOj8P+V
+         tvIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701093926; x=1701698726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6aTj1qOn2URWkEUmhUQIMd0foeBHpt1BN+DxS+Iel4g=;
-        b=WjaF6+0g2TDIYFBd8Z4tP2qCqGZFFNjsGFLA5wQZBjb1GZXlFTYkIwp8UbiCk1/Uxw
-         jgYvlNaWXXJEec1nm76SShzTq/Jype405bcBUicuKNKOtrvgwVEVW3QepQWGP2ZCvmVD
-         4bqK+pgddP6bHu4BSZVTrjr7fpl48ERoTcMkhG2sQTEbbPIIv8rGOQ5hurkDZj2rk3Cc
-         1hbbJKxXXwnbVMN2LJLGT9cMwEIVl0JXki81HN3qKuAPS4YFuC4gheToKKv8VEx7F7v4
-         v406mKlTsvXs8U9IDa0BdZyHYS4Z24N/+4rt2gHoXfcLFuLplEahdHeuJwLyulf5qBu0
-         QmAA==
-X-Gm-Message-State: AOJu0Yy/QyzLDB1GKo/XGn5JV18PqfISZDRfNnbNEGpHmMR3W2pFA3FS
-        ZgrZrJHbT5avd2bT37aasWbz05d0DCs4sg==
-X-Google-Smtp-Source: AGHT+IGgKi1Ar5OehazzazaT0YVsN+pl2Hak3plw8cleutWivO/CWf5oyGH8dT05jgR1u2whyMZhyA==
-X-Received: by 2002:a25:69d2:0:b0:db4:47e1:4081 with SMTP id e201-20020a2569d2000000b00db447e14081mr10722099ybc.7.1701093926422;
-        Mon, 27 Nov 2023 06:05:26 -0800 (PST)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id f188-20020a25cfc5000000b00da10d9e96cesm3072889ybg.35.2023.11.27.06.05.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 06:05:25 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5cc55b82ee5so39374177b3.2;
-        Mon, 27 Nov 2023 06:05:25 -0800 (PST)
-X-Received: by 2002:a81:ac5b:0:b0:5d0:b0e7:929e with SMTP id
- z27-20020a81ac5b000000b005d0b0e7929emr1798621ywj.42.1701093925277; Mon, 27
- Nov 2023 06:05:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701094038; x=1701698838;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z8oeFhCs7kIEK8abIOdKBsPggO+UU8nmR04lsK3QyLs=;
+        b=NWz0CYeGjgrlV2bh2765gp+b2saRb+Tx55hYltiadtxW7oSlLf6HyOKPhIONzSI/BB
+         u6k+lB4wVJPpgqIz7PMG6RZU8/akUe87eh6eh5WshtRQ9lCeHz1KKWQ2dfvNasoqJSiZ
+         MSxYTN4EDRpRZVMyyAhk1wvXsgJFoe81h8fsOJf6ssMfKBVi2+hGI0RAGkO3+O6pfnGr
+         cN48yHkvAMvE98EsFOoyYhnkAiEX4xjcqJfT3BBZuTK1GyxrQAj/PrlEnvyJzEPQMDcE
+         vYcKX/3dLz81oVe/77Ldw2o7CbzeaxFtTedsiEze4Qu+23/M4HsyntHjmj0fEMrFybkE
+         T2mg==
+X-Gm-Message-State: AOJu0Yyj7bHwlelO936DKlXEQkdgqkve3SiR+DFxcnZzMGGiaCGXBlOI
+        zUPiTtsWYMU5ZUDJTgslybb7NR85/DLm00BQe9ypZ9GjBw==
+X-Google-Smtp-Source: AGHT+IGVZIL/uQ8SCfn15D9a6GMSq6qYaiV2lp0Yk6fvYWVJCeiSK9GCYfnkwschuaDxOJ5Nn/nPv/bRHk7RpB8Es5U=
+X-Received: by 2002:a25:25cd:0:b0:da3:b87b:5b75 with SMTP id
+ l196-20020a2525cd000000b00da3b87b5b75mr11682722ybl.64.1701094038084; Mon, 27
+ Nov 2023 06:07:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-14-claudiu.beznea.uj@bp.renesas.com>
- <04cb07fe-cccc-774a-f14d-763ce7ae7b07@omp.ru> <b3456a4d-336c-434d-9fd5-4c87582443cb@tuxon.dev>
- <9af21eb9-6fe1-de3a-f2eb-4493778ebb32@omp.ru> <e35882ea-c325-4039-bb84-c18b0244dbe0@tuxon.dev>
-In-Reply-To: <e35882ea-c325-4039-bb84-c18b0244dbe0@tuxon.dev>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Nov 2023 15:05:13 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVCRXYKtcwaC=v-HhJW-PLV-zhj_3GmeU6Vu1JOK_eu0Q@mail.gmail.com>
-Message-ID: <CAMuHMdVCRXYKtcwaC=v-HhJW-PLV-zhj_3GmeU6Vu1JOK_eu0Q@mail.gmail.com>
-Subject: Re: [PATCH 13/13] net: ravb: Add runtime PM support
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
-        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        sergei.shtylyov@cogentembedded.com,
-        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 27 Nov 2023 15:07:07 +0100
+Message-ID: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
+Subject: [Bug Report] bpf: zero access_size of stack causes array indix oob in check_stack_range_initialized()
+To:     Andrei Matei <andreimatei1@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+Hi,
 
-On Sat, Nov 25, 2023 at 12:00 AM claudiu beznea
-<claudiu.beznea@tuxon.dev> wrote:
-> On 23.11.2023 21:19, Sergey Shtylyov wrote:
-> > On 11/23/23 8:04 PM, claudiu beznea wrote:
-> >>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>>
-> >>>> RZ/G3S supports enabling/disabling clocks for its modules (including
-> >>>> Ethernet module). For this commit adds runtime PM support which
-> >>>> relies on PM domain to enable/disable Ethernet clocks.
-> >>>
-> >>>    That's not exactly something new in RZ/G3S. The ravb driver has unconditional
-> >>> RPM calls already in the probe() and remove() methods...
-> >>> And the sh_eth driver
-> >>> has RPM support since 2009...
-> >>>
-> >>>> At the end of probe ravb_pm_runtime_put() is called which will turn
-> >>>
-> >>>    I'd suggest a shorter name, like ravb_rpm_put() but (looking at this function)
-> >>>> off the Ethernet clocks (if no other request arrives at the driver).
-> >>>> After that if the interface is brought up (though ravb_open()) then
-> >>>> the clocks remain enabled until interface is brought down (operation
-> >>>> done though ravb_close()).
-> >>>>
-> >>>> If any request arrives to the driver while the interface is down the
-> >>>> clocks are enabled to serve the request and then disabled.
-> >>>>
-> >>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+The following program (reduced) can cause array OOB during verifying time.
 
-> >>>> --- a/drivers/net/ethernet/renesas/ravb.h
-> >>>> +++ b/drivers/net/ethernet/renesas/ravb.h
-> >>>> @@ -1044,6 +1044,7 @@ struct ravb_hw_info {
-> >>>>    unsigned magic_pkt:1;           /* E-MAC supports magic packet detection */
-> >>>>    unsigned half_duplex:1;         /* E-MAC supports half duplex mode */
-> >>>>    unsigned refclk_in_pd:1;        /* Reference clock is part of a power domain. */
-> >>>> +  unsigned rpm:1;                 /* Runtime PM available. */
-> >>>
-> >>>    No, I don't think this flag makes any sense. We should support RPM
-> >>> unconditionally...
-> >
-> >    If RPM calls work in the probe()/remove() methods, they should work
-> > in the ndo_{open|stop}() methods, right?
->
-> It might depend on hardware support... E.g.
->
-> I debugged it further the issue I had with this implementation on other
-> SoCs and it seems we cannot do RPM for those w/o reworking way the driver
-> is configured.
->
-> I wiped out the RPM code from this patch and just called:
->
-> pm_runtime_put_sync();          // [1]
-> usleep_range(300000, 400000);   // [2]
-> pm_runtime_get_sync();          // [3]
->
-> at the end of ravb_probe(); with this the interfaces fails to work. I
-> continue debugging it and interrogated CSR and this returns RESET after
-> [3]. I tried to switched it back to configuration mode after [3] but fails
-> to restore to a proper working state.
->
-> Then continued to debug it further to see what happens on the clock driver.
-> The clk enable/disable reaches function at [4] which sets control_regs[reg]
-> which is one of the System module stop control registers. Setting this
-> activates module standby (AFICT). Switch to reset state on Ethernet IP
-> might be backed by note (2) on "Operating Mode Transitions Due to Hardware"
-> chapter of the G1H HW manual (which I don't fully understand).
+What happening is that we pass a stack pointer
+fp(smin=smin32=-7,smax=smax32=248), and a size reg whose min value
+could be zero, to a helper. In check_mem_size_reg(), we have:
 
-You mean 37A.3.1.3 (2) "Transition during power-off by module standby"?
+     if (reg->umin_value == 0) {
+         err = check_helper_mem_access(env, regno - 1, 0,
+                           zero_size_allowed,
+                           meta);
+         if (err)
+             return err;
+     }
 
-    The AVB-DMAC completes the bus master access in progress,
-    and then shifts to reset mode. At this time, the operating mode
-    configuration bits in the AVB-DMAC mode register (CCC.OPC) are
-    set to B'00.
+The stack pointer with smax=248 should be rejected, but it's not
+because in check_stack_access_within_bound():
 
-"reset mode" could be interpreted as "register contents are reset (lost)".
-However, the R-Car Gen3 documentation contains the same paragraph,
-and register contents are known not to be lost...
+         if (access_size > 0)
+             max_off = reg->smax_value + off + access_size - 1;
+         else
+             max_off = min_off;
 
-37.7.2 for Ether ("sh-eth") states:
+The max_off is set to min_off because access_size is zero. In
+check_stack_range_initialized(), the slot could be -1 when `i` is 0:
+     for (i = min_off; i < max_off + access_size; i++) {
+         u8 *stype;
 
-    After returning from the standby state, the ether should be reset
-and initialized.
+         slot = -i - 1;
+         spi = slot / BPF_REG_SIZE;
 
-Sergey: does sh_eth.c really reinitialize the hardware completely after
-pm_runtime_get_sync()?
+Andrei, sorry to email you again, but this is introduced in
+`01f810ace9ed3`. Should we handle zero access_size correctly in
+check_stack_access_within_bound()?
 
-> Also, the manual of G1H states from some IPs that register state is
-> preserved in standby mode but not for AVB.
+Here are the reduced program, the verifier log after removing the
+guilty instruction, and the kernel config I used:
 
-Indeed, AFAIK all modules on SH/R-Mobile, R-Car, and RZ/G SoCs keep
-their register contents when in standby-mode (module standby enabled).
-On modules in a (not always-on) power area (e.g. SH/R-Mobile), register
-contents are lost when the power area is powered down.
-So I'd be surprised if EtherAVB behaves differently.  Of course that
-is still possible, there are big difference between EtherAVB in R-Car
-Gen2 and RZ/G1, and the revision found in later SoC families.
+C repro: https://pastebin.com/raw/Dx653LrQ
+Verifier log: https://pastebin.com/raw/q19gaMdr
+Build config: https://pastebin.com/raw/41uDYmYr
 
-> >> The reasons I've limited only to RZ/G3S are:
-> >> 1/ I don't have all the platforms to test it
-> >
-> >    That's a usual problem with the kernel development...
-> >
-> >> 2/ on G1H this doesn't work. I tried to debugged it but I don't have a
-> >>    platform at hand, only remotely, and is hardly to debug once the
-> >>    ethernet fails to work: probe is working(), open is executed, PHY is
-> >>    initialized and then TX/RX is not working... don't know why ATM.
-> >
-> >    That's why we have the long bug fixing period after -rc1...
->
-> I prefer to not introduce any bug by intention.
-
-Iff register contents are lost on RZ/G1H, I'd rather add
-an extra clk_prepare_enable(priv->clk) to ravb_probe() on
-"renesas,etheravb-rcar-gen2"....
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+================================================================================
+UBSAN: array-index-out-of-bounds in kernel/bpf/verifier.c:7051:39
+index -1 is out of range for type 'u8 [8]'
+CPU: 0 PID: 8339 Comm: poc Not tainted 6.7.0-rc2-g727d3a2bd1b6 #34
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0xa0/0xe0 lib/ubsan.c:348
+ check_stack_range_initialized+0xb06/0x1080 kernel/bpf/verifier.c:7051
+ check_helper_mem_access+0x139/0x960 kernel/bpf/verifier.c:7156
+ check_mem_size_reg+0x11d/0x1e0 kernel/bpf/verifier.c:7230
+ check_func_arg kernel/bpf/verifier.c:8633 [inline]
+ check_helper_call.isra.0+0xfc9/0x8530 kernel/bpf/verifier.c:9972
+ do_check kernel/bpf/verifier.c:17356 [inline]
+ do_check_common+0x4991/0xddb0 kernel/bpf/verifier.c:19899
+ do_check_main kernel/bpf/verifier.c:19990 [inline]
+ bpf_check+0x3f02/0xa6a0 kernel/bpf/verifier.c:20627
+ bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+ __sys_bpf+0xfc8/0x4400 kernel/bpf/syscall.c:5384
+ __do_sys_bpf kernel/bpf/syscall.c:5488 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5486 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5486
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
