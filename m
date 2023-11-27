@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89A77F9F3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7DC7F9F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbjK0MFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:05:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S233052AbjK0MKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbjK0MFP (ORCPT
+        with ESMTP id S233109AbjK0MKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:05:15 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76716E6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:05:22 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 12C5021AB8;
-        Mon, 27 Nov 2023 12:05:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701086721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kjDfbqtxJd4B7b6GnzfJoMeJiKNkrI+WFMXjJWpclGc=;
-        b=0D1wdA2Yhe8Y6Men9zk8WwEFEUPs9PHa6OJmUgl4g4HV5DcVj7/q0TbnmbP7MryCtROVnT
-        hJYrgsVxAd2mXHRuQz3zr862AhCVv7aBLcqXlXG9o9FXiJcaCatC0w4lm4mkHqXzZJU5CE
-        YHxkTWk4OZW4OP1C9WEGGy4f40J6VlU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701086721;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kjDfbqtxJd4B7b6GnzfJoMeJiKNkrI+WFMXjJWpclGc=;
-        b=OJMQoSpIp/rvkObCjNgBSJE4U7dkGfmC8Ag+kjFUYlCvcnqDEchO1pdUc2fsGqJe8Us1/l
-        CG3CKYRSxoaAHHAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F2BA313440;
-        Mon, 27 Nov 2023 12:05:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id 2kfPOQCGZGW5GQAAn2gu4w
-        (envelope-from <dwagner@suse.de>); Mon, 27 Nov 2023 12:05:20 +0000
-Date:   Mon, 27 Nov 2023 13:07:32 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
-Message-ID: <mwen6fl5yszmk5nh2hbsqtu5pu76ir6rh6jpdfppbczsov7qfz@vivqeew6y7wk>
-References: <20231127103208.25748-1-dwagner@suse.de>
- <ZWRy-4Bhqw0Gxo4c@kbusch-mbp.dhcp.thefacebook.com>
+        Mon, 27 Nov 2023 07:10:01 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AF2BEA;
+        Mon, 27 Nov 2023 04:10:07 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA2DA2F4;
+        Mon, 27 Nov 2023 04:10:54 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39E373F73F;
+        Mon, 27 Nov 2023 04:10:02 -0800 (PST)
+Date:   Mon, 27 Nov 2023 12:09:59 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
+ prep_new_page() to fail
+Message-ID: <ZWSHF2hVOPTBIQLY@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-6-alexandru.elisei@arm.com>
+ <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWRy-4Bhqw0Gxo4c@kbusch-mbp.dhcp.thefacebook.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 3.36
-X-Spamd-Result: default: False [3.36 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_SPAM_SHORT(2.96)[0.987];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[21.05%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:44:11AM -0700, Keith Busch wrote:
-> On Mon, Nov 27, 2023 at 11:32:08AM +0100, Daniel Wagner wrote:
-> > libnvme is using the sysfs for enumarating the nvme resources. Though
-> > there are few missing attritbutes in the sysfs. For these libnvme issues
-> > commands during discovering.
-> > 
-> > As the kernel already knows all these attributes and we would like to
-> > avoid libnvme to issue commands all the time, expose these missing
-> > attributes.
+Hi,
+
+Thank you so much for your comments, there are genuinely useful.
+
+On Fri, Nov 24, 2023 at 08:35:47PM +0100, David Hildenbrand wrote:
+> On 19.11.23 17:56, Alexandru Elisei wrote:
+> > Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
+> > storage for an allocated page. Reserving tag storage can fail, for example,
+> > if the tag storage page has a short pin on it, so allow prep_new_page() ->
+> > arch_prep_new_page() to similarly fail.
 > 
-> The id namespace 'nuse' field can be quite volatile: it can change on
-> any write or discard command, so caching it may quickly get out of sync
-> with the actual value.
+> But what are the side-effects of this? How does the calling code recover?
+> 
+> E.g., what if we need to populate a page into user space, but that
+> particular page we allocated fails to be prepared? So we inject a signal
+> into that poor process?
 
-libnvme itself is also cashing this value and exposes it via the
-nvme_ns_get_lba_util() getter. I'd say libnvme shouldn't cache it
-either. Instead the function should just issue the ns command to report
-the current nuse value.
+When the page fails to be prepared, it is put back to the tail of the
+freelist with __free_one_page(.., FPI_TO_TAIL). If all the allocation paths
+are exhausted and no page has been found for which tag storage has been
+reserved, then that's treated like an OOM situation.
 
-I'll drop the nuse sysfs entry.
+I have been thinking about this, and I think I can simplify the code by
+making tag reservation a best effort approach. The page can be allocated
+even if reserving tag storage fails, but the page is marked as invalid in
+set_pte_at() (PAGE_NONE + an extra bit to tell arm64 that it needs tag
+storage) and next time it is accessed, arm64 will reserve tag storage in
+the fault handling code (the mechanism for that is implemented in patch #19
+of the series, "mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS for
+mprotect(PROT_MTE)").
 
-Unfortunately, 'nvme list' is using the 'nuse' field for showing the
-currently used space. I was hoping to get 'nvme list' working without
-issuing any commands.
+With this new approach, prep_new_page() stays the way it is, and no further
+changes are required for the page allocator, as there are already arch
+callbacks that can be used for that, for example tag_clear_highpage() and
+arch_alloc_page(). The downside is extra page faults, which might impact
+performance.
+
+What do you think?
+
+Thanks,
+Alex
+
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
