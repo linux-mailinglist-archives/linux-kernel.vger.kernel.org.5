@@ -2,92 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147437F9BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AF57F9BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjK0IkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S232531AbjK0Img (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232440AbjK0IkQ (ORCPT
+        with ESMTP id S232397AbjK0Ime (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:40:16 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D13E18E;
-        Mon, 27 Nov 2023 00:40:20 -0800 (PST)
-Received: from [100.98.85.67] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B2ADA66022D0;
-        Mon, 27 Nov 2023 08:40:13 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701074418;
-        bh=rZXsF737DimmD6akpQH1k64WG7vCDa/yrvr/Hhcm6dQ=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=Snz5MQ2OHBon5UJH+98mdDbgTrFRKjLtGTX5KRDipqlr95JztPXgEMEhEl7fdNZfy
-         K1pHJorNBvh8Y7mSbjXC9MIgzJ3jGm7YSs6SxNLTsG+NvGXBSbifiplJZPGt8LaxJx
-         qYAtbVmdbZRrvWnJwfFDRH3p8tAtvWeLbf33iGk9PNyWoTo9qJluOSofDzJAQDEycD
-         sxtkv3tlLlN6WSfY5LFv3kXoNEALMVKgd8ZqAUirOS4Wptzrl4GblpaqnNj50tTIOn
-         l7/eMnPlFHQLOG0Q1zRxQYHNRSV5AHsHvD3srWytZfUhSVAlbaEbVqOjv3G0/AAl1Q
-         ks7Y75il3qS/g==
-Message-ID: <ce4b8316-1529-48d2-aadf-2ea25670edcf@collabora.com>
-Date:   Mon, 27 Nov 2023 13:40:13 +0500
+        Mon, 27 Nov 2023 03:42:34 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A85B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:42:40 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cfafe3d46bso16997625ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701074560; x=1701679360; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v7ud2f7/LRWS8b7jsTlmNHZSCAPClBeQfNhzDqsVBoE=;
+        b=BjI9HlXSXYW68RCUj8t97pWOIQT4m5Vwfm97/oy4jzUMWoJ5UlccYkKuwbaMaBWDYs
+         1/TwMbjXe/CBTox7i8MPtFE8a22y7Gh6Ocwuh1+EFXHnINk3uFfcvEhGhj976w5JMXhp
+         owiccDhIBEFJYdpEUOTMxrlkFONkNcN+aXk2Zse67HRNr3ktMM7Fd2/NohcxPefzcHyC
+         VhlgS3trRWyEKCden6r2PA57lnY6P36QmCcz4h36WAPYwFf+4FrwVKiVVTdsl+43w1Rs
+         uI1fposNt1XST00KZwbmPS7gJ9eDcTkOM9tiCl8MNcsQTdIm7lAQHXVl01S8M4FcMU1/
+         yyHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701074560; x=1701679360;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v7ud2f7/LRWS8b7jsTlmNHZSCAPClBeQfNhzDqsVBoE=;
+        b=HH0/V7wB+oeiw18rUVI0HeAPeJRo7UdqlSy0N+48km7xrKm5NlfxSdSINcmC4PCjEs
+         AoQxS+LLq/E7VqiKawYXWKBpqirGlojCHsjQtebEwHMIVGQeh10Mfk+hIA/pNxF8yLao
+         CRUg+M6EixrZPoheHPPQZU50uIfmmWUCQxiUjFowvIWUBxqN2qJu7AD3NcHP5rOrx2Dk
+         ouYBoSC+MuaZjGi9biM3sV4g7OSqLvS6zxW08fDOEsEDAHH1JI+48hsaAhe82ZEHntp5
+         AygvFFrVBClEAQqr8KhinAI1/YhrlJPvEHXioF+oQ1DsKhEBrMbCBCnEAI0NA3wlrfzp
+         5PTg==
+X-Gm-Message-State: AOJu0YwFR8afzdQwO+htmo2rqHBFjiE0l5ynkgwG5Fm34WpsZt3qxUJU
+        ciMHUDF6GjQxjxOyzX0IOeA=
+X-Google-Smtp-Source: AGHT+IGrwraFKHVCYi3flUo0orxhlZuJgUKXarA9T/+/eeDuqCOql6b/utXko+5LzdDUaLcbfwdK8g==
+X-Received: by 2002:a17:90a:195e:b0:285:2d62:84c4 with SMTP id 30-20020a17090a195e00b002852d6284c4mr12413569pjh.29.1701074559970;
+        Mon, 27 Nov 2023 00:42:39 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:19a0:3eee:b37f:15f2])
+        by smtp.gmail.com with ESMTPSA id mp21-20020a17090b191500b002801ca4fad2sm7276883pjb.10.2023.11.27.00.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 00:42:39 -0800 (PST)
+From:   Barry Song <21cnbao@gmail.com>
+X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
+To:     david@redhat.com
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
+        james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        ryan.roberts@arm.com, suzuki.poulose@arm.com,
+        vincenzo.frascino@arm.com, wangkefeng.wang@huawei.com,
+        will@kernel.org, willy@infradead.org, yuzenghui@huawei.com,
+        yuzhao@google.com, ziy@nvidia.com
+Subject: Re: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Date:   Mon, 27 Nov 2023 21:42:17 +1300
+Message-Id: <20231127084217.13110-1-v-songbaohua@oppo.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
+References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Re: [v5.15] WARNING in kvm_arch_vcpu_ioctl_run
-Content-Language: en-US
-To:     syzbot <syzbot+412c9ae97b4338c5187e@syzkaller.appspotmail.com>,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        seanjc@google.com, syzkaller-lts-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-References: <0000000000001bfd01060b0fc7dc@google.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <0000000000001bfd01060b0fc7dc@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/23 8:24 PM, syzbot wrote:
-> This bug is marked as fixed by commit:
-> KVM: x86: Remove WARN sanity check on hypervisor timer vs. UNINITIALIZED vCPU
+>> +		for (i = 0; i < nr; i++, page++) {
+>> +			if (anon) {
+>> +				/*
+>> +				 * If this page may have been pinned by the
+>> +				 * parent process, copy the page immediately for
+>> +				 * the child so that we'll always guarantee the
+>> +				 * pinned page won't be randomly replaced in the
+>> +				 * future.
+>> +				 */
+>> +				if (unlikely(page_try_dup_anon_rmap(
+>> +						page, false, src_vma))) {
+>> +					if (i != 0)
+>> +						break;
+>> +					/* Page may be pinned, we have to copy. */
+>> +					return copy_present_page(
+>> +						dst_vma, src_vma, dst_pte,
+>> +						src_pte, addr, rss, prealloc,
+>> +						page);
+>> +				}
+>> +				rss[MM_ANONPAGES]++;
+>> +				VM_BUG_ON(PageAnonExclusive(page));
+>> +			} else {
+>> +				page_dup_file_rmap(page, false);
+>> +				rss[mm_counter_file(page)]++;
+>> +			}
+>>   		}
+>> -		rss[MM_ANONPAGES]++;
+>> -	} else if (page) {
+>> -		folio_get(folio);
+>> -		page_dup_file_rmap(page, false);
+>> -		rss[mm_counter_file(page)]++;
+>> +
+>> +		nr = i;
+>> +		folio_ref_add(folio, nr);
 > 
-> But I can't find it in the tested trees[1] for more than 90 days.
-The commit is already in 6.7-rc3:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b0151caf73a656b75b550e361648430233455a0
+> You're changing the order of mapcount vs. refcount increment. Don't. 
+> Make sure your refcount >= mapcount.
+> 
+> You can do that easily by doing the folio_ref_add(folio, nr) first and 
+> then decrementing in case of error accordingly. Errors due to pinned 
+> pages are the corner case.
+> 
+> I'll note that it will make a lot of sense to have batch variants of 
+> page_try_dup_anon_rmap() and page_dup_file_rmap().
+> 
 
-> Is it a correct commit? Please update it by replying:
-> 
-> #syz fix: exact-commit-title
-The title is already correct.
+i still don't understand why it is not a entire map+1, but an increment
+in each basepage.
 
-> 
-> Until then the bug is still considered open and new crashes with
-> the same signature are ignored.
-> 
-> Kernel: Linux 5.15
-> Dashboard link: https://syzkaller.appspot.com/bug?extid=412c9ae97b4338c5187e
-> 
-> ---
-> [1] I expect the commit to be present in:
-> 
-> 1. linux-5.15.y branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+as long as it is a CONTPTE large folio, there is no much difference with
+PMD-mapped large folio. it has all the chance to be DoubleMap and need
+split.
 
--- 
-BR,
-Muhammad Usama Anjum
+When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
+similar things on a part of the large folio in process A,
+
+this large folio will have partially mapped subpage in A (all CONTPE bits
+in all subpages need to be removed though we only unmap a part of the
+large folioas HW requires consistent CONTPTEs); and it has entire map in
+process B(all PTEs are still CONPTES in process B).
+
+isn't it more sensible for this large folios to have entire_map = 0(for
+process B), and subpages which are still mapped in process A has map_count
+=0? (start from -1).
+
+> Especially, the batch variant of page_try_dup_anon_rmap() would only 
+> check once if the folio maybe pinned, and in that case, you can simply 
+> drop all references again. So you either have all or no ptes to process, 
+> which makes that code easier.
+> 
+> But that can be added on top, and I'll happily do that.
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+
+Thanks
+Barry
+
