@@ -2,427 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5308D7FA389
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDB67FA38E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbjK0OwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S233595AbjK0Owl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:52:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjK0OwL (ORCPT
+        with ESMTP id S233569AbjK0Owf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:52:11 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 797C9B7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:52:16 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D40272F4;
-        Mon, 27 Nov 2023 06:53:03 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BF223F6C4;
-        Mon, 27 Nov 2023 06:52:13 -0800 (PST)
-Message-ID: <74596ea2-e7e5-4161-9600-ad1a69b6a6fe@arm.com>
-Date:   Mon, 27 Nov 2023 14:52:11 +0000
-MIME-Version: 1.0
+        Mon, 27 Nov 2023 09:52:35 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2068.outbound.protection.outlook.com [40.107.237.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11782183;
+        Mon, 27 Nov 2023 06:52:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gmT+HAA5M0yElNJJ7IStnskTPYGD3OKqU2xiWNMYHqP43jGwv+yHfxpc97UTRlpTsf3sMJ/jGZMT6uaO6I5fvomjscJ7dfgvA5oSVbcFZzutyulHTkqVKaliX0UwK67jgDBRjy0j3av+ZjE6DUoKP6pLbgjX/25Tiw0LW8ZDDNokoG4gZjPUyeef5NdT9dC1RUKnJr9vcHvGYvpuDPScryRyJ+z2Qmk+YeRwZcswRJA9CqPwahn6syMD58fRUY46CyLEmeCs01zDXispDI6JdAeyi/Z3cHHZJ6s+OvFnw5uEYJqqAPKzJRGLmG2m9pBfF1TGTqnA/x1MUrIJSoVhXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZER9Z0tcWpIX0qkq+HA4Rl/z+Bb3rNJf1SAxvGul1wQ=;
+ b=J8iUr9gbz/yQSrv4pw0dkQiWCGd8Sn9+3LsEMW0XIYwur0HENATUT5P6qVOzGyGyG6KeqQc7+OrUbtkHGyN+xOPV4d6wvwK7D3sH5ZDTk404C/lcihIiTiekJzLnkvrh2OVOSSjn32vNavaVRzslnLk+QHvjEeIcULy+OdjAeBuakRLJOW8zi4DfrMI/zXyR0yFbsLfUtvN5N5kCgV41bR9wtNUkhRigy+w0P+EYQ9n00EzwznG+tEwLhxSnun32Ru3gIlIV6TPzIGYn1wy1+qo3oEI57xfAYJqEqcvAxuW+J82B7d1WR9O/3LB4vpkVEw4hSdTPX7hL73mfkYzEwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZER9Z0tcWpIX0qkq+HA4Rl/z+Bb3rNJf1SAxvGul1wQ=;
+ b=qlryvvezaTd3DuN0FQPoukhcsaSi9NHXLz1Hlri3Qx1EZNHjmXM0q0nD3ZER+cNeiI7phyuJUNMZGcruU2Sb4bx7Flat2KvzqSyC2CNFapsoEXHDAv/U2JraCdb7stPEnvk0YWV5yjbfjjQz/nFSMRnzQFC4KDoLOc74A9b2e0M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by MW4PR12MB6900.namprd12.prod.outlook.com (2603:10b6:303:20e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
+ 2023 14:52:37 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::a9cf:f8b8:27bd:74d0]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::a9cf:f8b8:27bd:74d0%3]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
+ 14:52:37 +0000
+Message-ID: <c822cc63-3ff4-4edd-9416-015c52f9fb5b@amd.com>
+Date:   Mon, 27 Nov 2023 09:52:35 -0500
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Steven Price <steven.price@arm.com>
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-References: <20231114014313.67232-1-v-songbaohua@oppo.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
- <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com>
- <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
- <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
- <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
- <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com>
- <bab848b8-edd3-4c57-9a96-f17a33e030d0@arm.com>
- <71c4b8b2-512a-4e50-9160-6ee77a5ec0a4@arm.com>
- <CAGsJ_4yoYowJLm+cC8i-HujLcNJKGut+G-NnjRhg2eGkYvXz8Q@mail.gmail.com>
- <679a144a-db47-4d05-bbf7-b6a0514f5ed0@arm.com>
- <c5c82611-3153-4d56-b799-a1df3c953efe@redhat.com>
- <8aa8f095-1840-4a2e-ad06-3f375282ab6a@arm.com>
- <7065bbd3-64b3-4cd6-a2cd-146c556aac66@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <7065bbd3-64b3-4cd6-a2cd-146c556aac66@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     yazen.ghannam@amd.com, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tony.luck@intel.com, x86@kernel.org,
+        Avadhut.Naik@amd.com, Smita.KoralahalliChannabasappa@amd.com,
+        amd-gfx@lists.freedesktop.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/20] x86/mce: Define mce_setup() helpers for global and
+ per-CPU fields
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+References: <20231118193248.1296798-1-yazen.ghannam@amd.com>
+ <20231118193248.1296798-3-yazen.ghannam@amd.com>
+ <20231122182451.GHZV5Hc/49OYomyejc@fat_crate.local>
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <20231122182451.GHZV5Hc/49OYomyejc@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0510.namprd03.prod.outlook.com
+ (2603:10b6:408:130::35) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|MW4PR12MB6900:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe0d7d63-a0cd-4059-8534-08dbef587f4d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GahDYae8tx+xZIut7Dt2YERVTwsO4nO6Jc5xaI4XFKKp5RfzB2KWLQwOK5kPwpHeoYeVOCj7SU1Eg6f8FwjLsvv6gS/+W9xUpTQc4b6vJzAWwHtR+MEJr2QvqvdcWxNRgxU5LSlTE0lGI8goUWQbCn72IAgLZctxnLCy28uG6o1rFDTiJCLv+VWooDu1Dxu1FTelV/uRqbcqvApJg3HLFB3vx2/lGaI+zm1BRURLQpmnER/bjCQaCUieTxtZD0ILP3Gm8YSfOgdDO01UyPaloO/qr2p72rdqQrmFHyyVhiw9FFtRg7LsjHlSpGrh2KupCT1CwPrEp/W6WYpWjcyCUJFyYLbqcgUVtv+vtqV1Sqbr3rkF9wSFvGikJsEd1VVg9T5I/qsqxN1GJ0d/q5Q3V6sB60aZGj4e3UqypzbtrSOAP16ym063I1sdnmt7t3B/kzU9gpVwyKK+henCT50QgA2QRy2N7jQtTa7zKuDg4Zm0jwlSu4rmqnw7EOduqqcfrhAK+czx5N7qIFRa630/KZWqE8BLq5DWRzXhjKehuxtlD8AsYe1OdTnynwDuEpLHvv1eWuiYfeAdsP2KeOTENZOP9DPSs9UfzzinMjFsq+5HkglnK3MrvCAKUe1sSbSBR0+cKySRzAa7VbQo5gwNOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(396003)(346002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(8936002)(8676002)(4326008)(6512007)(6506007)(53546011)(66476007)(66556008)(66946007)(6916009)(316002)(6486002)(478600001)(2906002)(36756003)(38100700002)(41300700001)(31686004)(86362001)(26005)(44832011)(31696002)(2616005)(83380400001)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TEI5M0M2amk5MERpbW5OcmJlNG9xa2owSldBYzFKZGQ1Vkd4M0FHV3BqVlNw?=
+ =?utf-8?B?bnlwbEhlZWZGQ281Q1E3eWtNZWdaWnY5MWJaL2ZpUFdCVU1iUzdjeUV1elAz?=
+ =?utf-8?B?aWdmODFjbUxNQXFtUWUvYkMzU2pUV3ZNMjhZaDg3dnRpeTBEZmlPU0dZM1FT?=
+ =?utf-8?B?a1VOUmxSOXJEQjk5MXhnemRJZnAwSXh6elRvcU40TmxrVExzRlhkR3hRaDQw?=
+ =?utf-8?B?cStKcDBtMG11STN3cjdpdVVLY2x0d2FGalZJWEpVWjdIRXMySTh4U0w5UlN2?=
+ =?utf-8?B?WldVTUg4MVlyMFdiWkZKMVZUVjBFbllleW03VWtpTkxXOW5aeWxMc2RIbklW?=
+ =?utf-8?B?ajJhc2tucUowOGJwejFuWDZ4ZHZiWThqOHhlVlNYSnJyait2ekpIb29OYjlp?=
+ =?utf-8?B?REp4OXVsQU40dm83bnZIblRkZG5wOGN5aWdSTDVsMHlIMXl2MzlVYkFaOE9Y?=
+ =?utf-8?B?M2JrQXNjSDJpRjNwZTFYcWxnaThRVVI0ZWN2bW1ISWJqTFM1YlJIS1FBZHY0?=
+ =?utf-8?B?M1dOa3lqd3AxZFF1am9td3E1c0VUbFNJdGNDdXNweitrNnphTEsxNTE3U2tu?=
+ =?utf-8?B?bXB6dXQzSldEd251MHAvS09UT01JN2VielFDRTJreU5qSm41S1NudTAzMExR?=
+ =?utf-8?B?RWgvWUZjMW0zWm1kcldKSGZYdnFvcVdxVGp4am1Jb1ZXMGxuWDl1SWxMVDN2?=
+ =?utf-8?B?UkZGTkRXSzBrNjRrdFBUcDZTcC83ZW40UEpzczhrQTZWd055QjQzdDhCZ2Nh?=
+ =?utf-8?B?Y2hzSlpZWEdNTHdoMWhpdEt0YkhZdU1xTmtJREl2R0dSMmRoekFLOEcvZkFX?=
+ =?utf-8?B?eVk0STY0NGFyaWZQdE9mOEZKTzNEVGVZdXFsOTEwcGNCS2dJV1ZicGFVQUJP?=
+ =?utf-8?B?dHEzMzUvcEpuSFMvQS8zTkY5SlRRTTVEcnZBQ2I2NGxwQk1xWC9sLzZFV3ZR?=
+ =?utf-8?B?S0I4L1lzcnRMMHp2VEN3Sjk2TnpGU0w5V2V1SVBUb3JTU2lUaWg2cDNyNnh1?=
+ =?utf-8?B?SC9WWFgxWlIwbzhodjhEc3JpTXBuRGgxOTZ2TDA3VzllNVkvcURzTEJWRncy?=
+ =?utf-8?B?dFlTV0dwM1RSN0QxSktEVmpVTWpSUm9Sd1YzZzZ6T2ExemcvRUlma1VRV0I4?=
+ =?utf-8?B?WXZhejVtTTdHU1BtU3ljQmhOQWR0TWhxNUhtV2w2OUgrYWdmbEloZk9CdGVL?=
+ =?utf-8?B?ZE4rWnlLNUNXaE1mTWFQNmdwK0ZNbng5cGpLUHgvNFk1TW9aOWo4U0JTT0J0?=
+ =?utf-8?B?eUVGQ0JUMFNFd1FJZHI4eS95UmJlZlU4aXlzdEw5aGFRU0xuZENOTmo5QXA2?=
+ =?utf-8?B?dWo4YjBlbnVxK3JLZythY2pzb0lReDR1QjhjdUZpU0NObXhBc2tNUFlWNkRK?=
+ =?utf-8?B?aTNHNHZlU1M4VHlYTlU5SU5Ob0RWTzk0MnoxTjJrdFpZYzJSdThlRWx3S0Z5?=
+ =?utf-8?B?UU0xYnA4cTVMTUUyQWViOWozb1ZaV2VWWEpUdDBqdGFxUThxNWNOOUhNcFow?=
+ =?utf-8?B?SERZblJTN0JFZ3RrMjZudVNPM056SEZCTElMcGpwempvWkRkRklLSVVLRlph?=
+ =?utf-8?B?dWNpWE52WEF6OENtVTAvdWpYY1o4MVI4dHRMa1h1b2xFQ21rb3U1L2lPY05Z?=
+ =?utf-8?B?YWE5K2lxWC9DYkowRG1NTW94dmZnRHl5RHQ1bGcyZlo1NVQ0THZUc0NEMEhB?=
+ =?utf-8?B?UkZhb0kwRFVqQjlQWU5UK3lEc2V0VmZGanBiSWVTRFZuMVhMbTF5TEx5UlJX?=
+ =?utf-8?B?VWVzem95Rk8rNVBROWxVWDBWVU1WWkYzTFZCZWVoQWtYcXFrTE5IOUNEVDhF?=
+ =?utf-8?B?QVFpQVJGbll0dmVsS2JpZ1FlZHdkaTdDVXNQOGtvdXBlUGFCZ3FJUUhIOVc1?=
+ =?utf-8?B?OGhITlF1by9FVzVwUWFXWGpUYzg0ZHd1RCtFaitmSm5jbVFWM0pyZXIyMkZZ?=
+ =?utf-8?B?cmNvcDlDOXU0d2pSLytpNDZzcHRySFNBR1RPR2h1K1FKeWZ2REpXdW5nWTFt?=
+ =?utf-8?B?ekJEN3JVd3d6bFJ6cHBoRjA3bnFKU3JvSk41alp3ZHpWUHkvR0pCR0didmZL?=
+ =?utf-8?B?MG1ScEZJdGM1dU5jdk9QSzZPOEZoVmNWSTlLZEoxQXRBWjVlZWNjTndOY1hr?=
+ =?utf-8?Q?OjKUFsZ+UVkKZNAzSxvbyoBHN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe0d7d63-a0cd-4059-8534-08dbef587f4d
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 14:52:37.6519
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0JSZ96L0EN8nhhCXsuYNbagUl8V9OqbsCHW6K/ONk/Y+yl23ap47DcVmmj06mFlxeXcPatUlLi1Q/+8mDZ1BrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6900
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 14:16, David Hildenbrand wrote:
-> On 27.11.23 13:14, Ryan Roberts wrote:
->> On 27/11/2023 12:01, David Hildenbrand wrote:
->>> On 27.11.23 12:56, Ryan Roberts wrote:
->>>> On 24/11/2023 18:14, Barry Song wrote:
->>>>> On Fri, Nov 24, 2023 at 10:55 PM Steven Price <steven.price@arm.com> wrote:
->>>>>>
->>>>>> On 24/11/2023 09:01, Ryan Roberts wrote:
->>>>>>> On 24/11/2023 08:55, David Hildenbrand wrote:
->>>>>>>> On 24.11.23 02:35, Barry Song wrote:
->>>>>>>>> On Mon, Nov 20, 2023 at 11:57 PM Ryan Roberts <ryan.roberts@arm.com>
->>>>>>>>> wrote:
->>>>>>>>>>
->>>>>>>>>> On 20/11/2023 09:11, David Hildenbrand wrote:
->>>>>>>>>>> On 17.11.23 19:41, Barry Song wrote:
->>>>>>>>>>>> On Fri, Nov 17, 2023 at 7:28 PM David Hildenbrand <david@redhat.com>
->>>>>>>>>>>> wrote:
->>>>>>>>>>>>>
->>>>>>>>>>>>> On 17.11.23 01:15, Barry Song wrote:
->>>>>>>>>>>>>> On Fri, Nov 17, 2023 at 7:47 AM Barry Song <21cnbao@gmail.com> wrote:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> On Thu, Nov 16, 2023 at 5:36 PM David Hildenbrand
->>>>>>>>>>>>>>> <david@redhat.com> wrote:
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> On 15.11.23 21:49, Barry Song wrote:
->>>>>>>>>>>>>>>>> On Wed, Nov 15, 2023 at 11:16 PM David Hildenbrand
->>>>>>>>>>>>>>>>> <david@redhat.com>
->>>>>>>>>>>>>>>>> wrote:
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> On 14.11.23 02:43, Barry Song wrote:
->>>>>>>>>>>>>>>>>>> This patch makes MTE tags saving and restoring support large
->>>>>>>>>>>>>>>>>>> folios,
->>>>>>>>>>>>>>>>>>> then we don't need to split them into base pages for swapping
->>>>>>>>>>>>>>>>>>> out
->>>>>>>>>>>>>>>>>>> on ARM64 SoCs with MTE.
->>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>> arch_prepare_to_swap() should take folio rather than page as
->>>>>>>>>>>>>>>>>>> parameter
->>>>>>>>>>>>>>>>>>> because we support THP swap-out as a whole.
->>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather
->>>>>>>>>>>>>>>>>>> than
->>>>>>>>>>>>>>>>>>> folio as swap-in always works at the granularity of base pages
->>>>>>>>>>>>>>>>>>> right
->>>>>>>>>>>>>>>>>>> now.
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> ... but then we always have order-0 folios and can pass a folio,
->>>>>>>>>>>>>>>>>> or what
->>>>>>>>>>>>>>>>>> am I missing?
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> Hi David,
->>>>>>>>>>>>>>>>> you missed the discussion here:
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68MkhjMDw@mail.gmail.com/
->>>>>>>>>>>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com/
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Okay, so you want to handle the refault-from-swapcache case
->>>>>>>>>>>>>>>> where you
->>>>>>>>>>>>>>>> get a
->>>>>>>>>>>>>>>> large folio.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> I was mislead by your "folio as swap-in always works at the
->>>>>>>>>>>>>>>> granularity of
->>>>>>>>>>>>>>>> base pages right now" comment.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> What you actually wanted to say is "While we always swap in small
->>>>>>>>>>>>>>>> folios, we
->>>>>>>>>>>>>>>> might refault large folios from the swapcache, and we only want to
->>>>>>>>>>>>>>>> restore
->>>>>>>>>>>>>>>> the tags for the page of the large folio we are faulting on."
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> But, I do if we can't simply restore the tags for the whole thing
->>>>>>>>>>>>>>>> at once
->>>>>>>>>>>>>>>> at make the interface page-free?
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Let me elaborate:
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> IIRC, if we have a large folio in the swapcache, the swap
->>>>>>>>>>>>>>>> entries/offset are
->>>>>>>>>>>>>>>> contiguous. If you know you are faulting on page[1] of the folio
->>>>>>>>>>>>>>>> with a
->>>>>>>>>>>>>>>> given swap offset, you can calculate the swap offset for page[0]
->>>>>>>>>>>>>>>> simply by
->>>>>>>>>>>>>>>> subtracting from the offset.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> See page_swap_entry() on how we perform this calculation.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> So you can simply pass the large folio and the swap entry
->>>>>>>>>>>>>>>> corresponding
->>>>>>>>>>>>>>>> to the first page of the large folio, and restore all tags at once.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> So the interface would be
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> arch_prepare_to_swap(struct folio *folio);
->>>>>>>>>>>>>>>> void arch_swap_restore(struct page *folio, swp_entry_t
->>>>>>>>>>>>>>>> start_entry);
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> I'm sorry if that was also already discussed.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> This has been discussed. Steven, Ryan and I all don't think this is
->>>>>>>>>>>>>>> a good
->>>>>>>>>>>>>>> option. in case we have a large folio with 16 basepages, as
->>>>>>>>>>>>>>> do_swap_page
->>>>>>>>>>>>>>> can only map one base page for each page fault, that means we have
->>>>>>>>>>>>>>> to restore 16(tags we restore in each page fault) * 16(the times of
->>>>>>>>>>>>>>> page
->>>>>>>>>>>>>>> faults)
->>>>>>>>>>>>>>> for this large folio.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> and still the worst thing is the page fault in the Nth PTE of large
->>>>>>>>>>>>>>> folio
->>>>>>>>>>>>>>> might free swap entry as that swap has been in.
->>>>>>>>>>>>>>> do_swap_page()
->>>>>>>>>>>>>>> {
->>>>>>>>>>>>>>>         /*
->>>>>>>>>>>>>>>          * Remove the swap entry and conditionally try to free up
->>>>>>>>>>>>>>> the
->>>>>>>>>>>>>>> swapcache.
->>>>>>>>>>>>>>>          * We're already holding a reference on the page but haven't
->>>>>>>>>>>>>>> mapped it
->>>>>>>>>>>>>>>          * yet.
->>>>>>>>>>>>>>>          */
->>>>>>>>>>>>>>>          swap_free(entry);
->>>>>>>>>>>>>>> }
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you
->>>>>>>>>>>>>>> might
->>>>>>>>>>>>>>> access
->>>>>>>>>>>>>>> a freed tag.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> And David, one more information is that to keep the parameter of
->>>>>>>>>>>>>> arch_swap_restore() unchanged as folio,
->>>>>>>>>>>>>> i actually tried an ugly approach in rfc v2:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
->>>>>>>>>>>>>> +{
->>>>>>>>>>>>>> + if (system_supports_mte()) {
->>>>>>>>>>>>>> +      /*
->>>>>>>>>>>>>> +       * We don't support large folios swap in as whole yet, but
->>>>>>>>>>>>>> +       * we can hit a large folio which is still in swapcache
->>>>>>>>>>>>>> +       * after those related processes' PTEs have been unmapped
->>>>>>>>>>>>>> +       * but before the swapcache folio  is dropped, in this case,
->>>>>>>>>>>>>> +       * we need to find the exact page which "entry" is mapping
->>>>>>>>>>>>>> +       * to. If we are not hitting swapcache, this folio won't be
->>>>>>>>>>>>>> +       * large
->>>>>>>>>>>>>> +     */
->>>>>>>>>>>>>> + struct page *page = folio_file_page(folio, swp_offset(entry));
->>>>>>>>>>>>>> + mte_restore_tags(entry, page);
->>>>>>>>>>>>>> + }
->>>>>>>>>>>>>> +}
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> And obviously everybody in the discussion hated it :-)
->>>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> I can relate :D
->>>>>>>>>>>>>
->>>>>>>>>>>>>> i feel the only way to keep API unchanged using folio is that we
->>>>>>>>>>>>>> support restoring PTEs
->>>>>>>>>>>>>> all together for the whole large folio and we support the swap-in of
->>>>>>>>>>>>>> large folios. This is
->>>>>>>>>>>>>> in my list to do, I will send a patchset based on Ryan's large anon
->>>>>>>>>>>>>> folios series after a
->>>>>>>>>>>>>> while. till that is really done, it seems using page rather than
->>>>>>>>>>>>>> folio
->>>>>>>>>>>>>> is a better choice.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I think just restoring all tags and remembering for a large folio that
->>>>>>>>>>>>> they have been restored might be the low hanging fruit. But as always,
->>>>>>>>>>>>> devil is in the detail :)
->>>>>>>>>>>>
->>>>>>>>>>>> Hi David,
->>>>>>>>>>>> thanks for all your suggestions though my feeling is this is too
->>>>>>>>>>>> complex and
->>>>>>>>>>>> is not worth it for at least  three reasons.
->>>>>>>>>>>
->>>>>>>>>>> Fair enough.
->>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> 1. In multi-thread and particularly multi-processes, we need some
->>>>>>>>>>>> locks to
->>>>>>>>>>>> protect and help know if one process is the first one to restore tags
->>>>>>>>>>>> and if
->>>>>>>>>>>> someone else is restoring tags when one process wants to restore. there
->>>>>>>>>>>> is not this kind of fine-grained lock at all.
->>>>>>>>>>>
->>>>>>>>>>> We surely always hold the folio lock on swapin/swapout, no? So when
->>>>>>>>>>> these
->>>>>>>>>>> functions are called.
->>>>>>>>>>>
->>>>>>>>>>> So that might just work already -- unless I am missing something
->>>>>>>>>>> important.
->>>>>>>>>>
->>>>>>>>>> We already have a page flag that we use to mark the page as having had
->>>>>>>>>> its mte
->>>>>>>>>> state associated; PG_mte_tagged. This is currently per-page (and IIUC,
->>>>>>>>>> Matthew
->>>>>>>>>> has been working to remove as many per-page flags as possible). Couldn't
->>>>>>>>>> we just
->>>>>>>>>> make arch_swap_restore() take a folio, restore the tags for *all* the
->>>>>>>>>> pages and
->>>>>>>>>> repurpose that flag to be per-folio (so head page only)? It looks like
->>>>>>>>>> the the
->>>>>>>>>> mte code already manages all the serialization requirements too. Then
->>>>>>>>>> arch_swap_restore() can just exit early if it sees the flag is already
->>>>>>>>>> set on
->>>>>>>>>> the folio.
->>>>>>>>>>
->>>>>>>>>> One (probably nonsense) concern that just sprung to mind about having
->>>>>>>>>> MTE work
->>>>>>>>>> with large folios in general; is it possible that user space could cause
->>>>>>>>>> a large
->>>>>>>>>> anon folio to be allocated (THP), then later mark *part* of it to be
->>>>>>>>>> tagged with
->>>>>>>>>> MTE? In this case you would need to apply tags to part of the folio only.
->>>>>>>>>> Although I have a vague recollection that any MTE areas have to be
->>>>>>>>>> marked at
->>>>>>>>>> mmap time and therefore this type of thing is impossible?
->>>>>>>>>
->>>>>>>>> right, we might need to consider only a part of folio needs to be
->>>>>>>>> mapped and restored MTE tags.
->>>>>>>>> do_swap_page() can have a chance to hit a large folio but it only
->>>>>>>>> needs to fault-in a page.
->>>>>>>>>
->>>>>>>>> A case can be quite simple as below,
->>>>>>>>>
->>>>>>>>> 1. anon folio shared by process A and B
->>>>>>>>> 2. add_to_swap() as a large folio;
->>>>>>>>> 3. try to unmap A and B;
->>>>>>>>> 4. after A is unmapped(ptes become swap entries), we do a
->>>>>>>>> MADV_DONTNEED on a part of the folio. this can
->>>>>>>>> happen very easily as userspace is still working in 4KB level;
->>>>>>>>> userspace heap management can free an
->>>>>>>>> basepage area by MADV_DONTNEED;
->>>>>>>>> madvise(address, MADV_DONTNEED, 4KB);
->>>>>>>>> 5. A refault on address + 8KB, we will hit large folio in
->>>>>>>>> do_swap_page() but we will only need to map
->>>>>>>>> one basepage, we will never need this DONTNEEDed in process A.
->>>>>>>>>
->>>>>>>>> another more complicated case can be mprotect and munmap a part of
->>>>>>>>> large folios. since userspace
->>>>>>>>> has no idea of large folios in their mind, they can do all strange
->>>>>>>>> things. are we sure in all cases,
->>>>>>>>> large folios have been splitted into small folios?
->>>>>>>
->>>>>>> I don;'t think these examples you cite are problematic. Although user space
->>>>>>> thinks about things in 4K pages, the kernel does things in units of folios.
->>>>>>> So a
->>>>>>> folio is either fully swapped out or not swapped out at all. MTE tags can be
->>>>>>> saved/restored per folio, even if only part of that folio ends up being
->>>>>>> mapped
->>>>>>> back into user space.
->>>>>
->>>>> I am not so optimistic :-)
->>>>>
->>>>> but zap_pte_range() due to DONTNEED on a part of swapped-out folio can
->>>>> free a part of swap
->>>>> entries? thus, free a part of MTE tags in a folio?
->>>>> after process's large folios are swapped out, all PTEs in a large
->>>>> folio become swap
->>>>> entries, but DONTNEED on a part of this area will only set a part of
->>>>> swap entries to
->>>>> PTE_NONE, thus decrease the swapcount of this part?
->>>>>
->>>>> zap_pte_range
->>>>>       ->
->>>>>             entry = pte_to_swp_entry
->>>>>                     -> free_swap_and_cache(entry)
->>>>>                         -> mte tags invalidate
->>>>
->>>> OK I see what you mean.
->>>>
->>>> Just trying to summarize this, I think there are 2 questions behind all this:
->>>>
->>>> 1) Can we save/restore MTE tags on at the granularity of a folio?
->>>>
->>>> I think the answer is no; we can enable MTE on a individual pages within a
->>>> folio
->>>> with mprotect, and we can throw away tags on individual pages as you describe
->>>> above. So we have to continue to handle tags per-page.
->>>
->>> Can you enlighten me why the scheme proposed by Steven doesn't work?
->>
->> Are you referring to Steven's suggestion of reading the tag to see if it's
->> zeros? I think that demonstrates my point that this has to be done per-page and
+On 11/22/2023 1:24 PM, Borislav Petkov wrote:
+> On Sat, Nov 18, 2023 at 01:32:30PM -0600, Yazen Ghannam wrote:
+>> +void mce_setup_global(struct mce *m)
 > 
-> Yes.
-
-OK I'm obviously being thick, because checking a page's tag to see if its zero
-seems logically equivalent to checking the existing per-page flag, just more
-expensive. Yes we could make that change but I don't see how it helps solve the
-real problem at hand. Unless you are also deliberately trying to remove the
-per-page flag at the same time, as per Matthew's master plan?
-
+> We usually call those things "common":
 > 
->> not per-folio? I'm also not sure what it buys us - instead of reading a per-page
->> flag we now have to read 128 bytes of tag for each page and check its zero.
+> mce_setup_common().
 > 
-> My point is, if that is the corner case, we might not care about that.
+>> +{
+>> +	memset(m, 0, sizeof(struct mce));
+>> +
+>> +	m->cpuid	= cpuid_eax(1);
+>> +	m->cpuvendor	= boot_cpu_data.x86_vendor;
+>> +	m->mcgcap	= __rdmsr(MSR_IA32_MCG_CAP);
+>> +	/* need the internal __ version to avoid deadlocks */
+>> +	m->time		= __ktime_get_real_seconds();
+>> +}
+>> +
+>> +void mce_setup_per_cpu(struct mce *m)
 > 
->>
->>>
->>> I mean, having a mixture of tagged vs. untagged is assumed to be the corner
->>> case, right?
->>
->> Yes. But I'm not sure how we exploit that; I guess we could have a per-folio
->> flag; when set it means the whole folio is tagged and when clear it means fall
->> back to checking the per-page flag?
+> And call this
 > 
-> Let me think this through. We have the following states:
+> 	mce_setup_for_cpu(unsigned int cpu, struct mce *m);
 > 
-> 1) Any subpage is possibly logically tagged and all relevant tags are
->    applied/restored.
-> 2) Any subpage is possibly logically tagged, and all relevant tags are
->    not applied but stored in the datastructure.
-> 3) No subpage is logically tagged.
+> so that it doesn't look like some per_cpu helper.
 > 
-> We can identify in 1) the subpages by reading the tag from HW, 
-
-I don't think this actually works; I'm pretty sure the optimization to clear the
-tag at the same time as the page clearing only happens for small pages. I don't
-think this will be done when allocating a THP today. Obviously that could change.
-
-> and on 2) by
-> checking the datastructure. For 3), there is nothing to check.
-> 
-> On swapout of a large folio:
-> 
-> * For 3) we don't do anything
-> * For 2) we don't do anything
-> * For 1) we store all tags that are non-zero (reading all tags) and
->   transition to 2).
-
-Given a tag architecturally exists for every page even when unused, and we think
-a folio being partially mte-tagged is the corner case, could you simplify this
-further and just write out all the tags for the folio and not care if some are
-not in use?
-
-> 
-> On swapin of a large folio
-> 
-> A) Old folio (swapcache)
-> 
-> If in 1) or 3) already, nothing to do.
-> 
-> If in 2), restore all tags that are in the datastructure and move to 1). Nothing
-> to do for 1
-> 
-> b) Fresh folio (we lost any MTE marker)
-> 
-> Currently always order-0, so nothing to do. We'd have to check the datastructure
-> for any tag part of the folio and set the state accordingly.
+> And yes, you should supply the CPU number as an argument. Because
+> otherwise, when you look at your next change:
 > 
 > 
-> Of course, that means that on swapout, you read all tags. But if the common case
-> is that all subpages have tags, we don't really care.
+> +       mce_setup_global(&m);
+> +       m.cpu = m.extcpu = cpu;
+> +       mce_setup_per_cpu(&m);
 > 
-> I'm sure I made a mistake somewhere, but where? :)
+> This contains the "hidden" requirement that m.extcpu happens *always*
+> *before* the mce_setup_per_cpu() call and that is flaky and error prone.
+> 
+> So make that:
+> 
+> 	mce_setup_common(&m);
+> 	mce_setup_for_cpu(m.extcpu, &m);
+> 
+> and do m.cpu = m.extcpu = cpu inside the second function.
+> 
+> And then it JustWorks(tm) and you can't "forget" assigning m.extcpu and
+> there's no subtlety.
+> 
+> Ok?
 > 
 
+Yep, understood. Thanks!
+
+-Yazen
