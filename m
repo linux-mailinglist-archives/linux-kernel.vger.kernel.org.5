@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA7B7F9F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BF27F9F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbjK0MOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S233220AbjK0MUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbjK0MOq (ORCPT
+        with ESMTP id S233277AbjK0MUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:14:46 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEC810CA;
-        Mon, 27 Nov 2023 04:14:46 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARBuci5022349;
-        Mon, 27 Nov 2023 12:14:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=Mwt/tc7oxaZVaxbhV5hYKe81nZekUp6gxT1uZJu+xF4=;
- b=Lm8MSf934ZNE1T3gS9kaDm8MdqdqdflC1ym9U2ttfAUjTzCkKJelpDkc0j1fwWjxvLJA
- VzelAuhJDeZaVHMYaefPprKy7Qf+5dttH2ez5//PmjyqGiSVcSoX+LEuysy0GUqsDl6K
- gRTHTFyGYyZb+c53nqCqhGXPr8Y0h3aas5uIMstJDzPv9wY+DsmXQv+3DLzgTk0ZjQby
- 3En75hSuR2r5z7PtDLFS/2xbhJQREYUIa+D+hjQKpKsirpCTojlDQE048KoG1+CbWyh0
- 80UJgSf/PoU4HSDE29MIgJn0fFxuMHPmyX1/avQE72+Cvl/GGUR2qKLkXqxK+BtRfEoN hw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk9adm2un-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 12:14:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARCEdAM014936
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 12:14:39 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 27 Nov 2023 04:14:33 -0800
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date:   Mon, 27 Nov 2023 17:43:51 +0530
-Subject: [PATCH v3 3/3] phy: qcom-qmp-pcie: Add support for keeping refclk
- always on
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231127-refclk_always_on-v3-3-26d969fa8f1d@quicinc.com>
-References: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
-In-Reply-To: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Mon, 27 Nov 2023 07:20:42 -0500
+X-Greylist: delayed 317 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Nov 2023 04:20:45 PST
+Received: from mx3.securetransport.de (mx3.securetransport.de [116.203.31.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70300191;
+        Mon, 27 Nov 2023 04:20:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+        s=dhelectronicscom; t=1701087257;
+        bh=vz9BHoBHoO5ZtSpjTwYyjwqn8UMnay1tmwhleAtdPwQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=U8Fz3CBfHGyXeGr8oZhNEWkdI7MP7LUWEoa5SUw6PBbGdUfwlfX6N9uifzkc/1zHh
+         CzH8r4IHFuX8hKlil2VZSfjSyLpVuNKtOydtuNsl+9v+fVQTgQhbnsVx5VmSIdtKqD
+         7x9manomwQYqJcIdrTrzeI18/mp4n97NbOLTm/up4czoTRMKwtrwgfZZ5Cy4pl3wl1
+         vwABEVfk/P8P8LQikfvIVTHgtUPLDk6GiJdjnHiYY5bMvWKXvTjGbRX+gYmklzcYgx
+         u+GuQHVF9I4biYRb94PKcpKuS0AOmRlfjpgUKdhbcYLsAlNI/UDC+MLYQYfgGEWp8w
+         IjqucM2B1s2TQ==
+X-secureTransport-forwarded: yes
+From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Complaints-To: abuse@cubewerk.de
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Lukas Wunner <lukas@wunner.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701087256; l=2385;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=w21FU3eA0VG4vGK0aaYA0Nrf7F5/HCavLA1e1RaBndc=;
- b=HCVVnv8YB0O2ZOyoGkIuHDninTGdT9FJjAmNErVSYkGZsmuBLpiW7GdMH4pg7zioo4aXFmRUl
- vJfZecH13gLBl6gud4nA0Cv9qODw0DVkOuLTOm8BhBJyVj5bQ01oxnl
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6a_EMSw5V3MRyOLGPyw_vUQEdbw9RpdM
-X-Proofpoint-GUID: 6a_EMSw5V3MRyOLGPyw_vUQEdbw9RpdM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_09,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270083
+        Conor Dooley <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        =?utf-8?B?SWxwbyBKw6RydmluZW4=?= <ilpo.jarvinen@linux.intel.com>,
+        "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        "Tomas Paukrt" <tomaspaukrt@email.cz>
+Subject: RE: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Thread-Topic: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Thread-Index: AQHaH/jBESSZN4JU2UOxi81YCMKNnLCN1MYg
+Date:   Mon, 27 Nov 2023 12:14:06 +0000
+Message-ID: <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+In-Reply-To: <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -97,69 +74,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In PCIe low power states like L1.1 or L1.2 the phy will stop
-supplying refclk to endpoint. If endpoint asserts clkreq to bring
-back link L0, then RC needs to provide refclk to endpoint.
-
-Some platforms with pcie switch fail to drive the clkreq signal to
-the host from the endpoints because of the switch board design.
-Due to that refclk needs to supplied to the endpoint always.
-
-Add a flag to keep refclk always supplied to endpoint.
-
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-index 7fdf9b2596b6..e95f677817f7 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-@@ -43,6 +43,8 @@
- /* QPHY_PCS_STATUS bit */
- #define PHYSTATUS				BIT(6)
- #define PHYSTATUS_4_20				BIT(7)
-+/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
-+#define EPCLK_ALWAYS_ON_EN			BIT(6)
- 
- #define PHY_INIT_COMPLETE_TIMEOUT		10000
- 
-@@ -2264,6 +2266,8 @@ struct qmp_pcie {
- 	struct phy *phy;
- 	int mode;
- 
-+	bool refclk_always_on;
-+
- 	struct clk_fixed_rate pipe_clk_fixed;
- };
- 
-@@ -3179,6 +3183,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
- 	qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
- 	qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
- 
-+	if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
-+		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
-+			     EPCLK_ALWAYS_ON_EN);
-+
- 	if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
- 		qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
- 		qmp_pcie_init_port_b(qmp, tbls);
-@@ -3701,6 +3709,12 @@ static int qmp_pcie_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_node_put;
- 
-+	qmp->refclk_always_on = of_property_read_bool(dev->of_node, "qcom,refclk-always-on");
-+	if (qmp->refclk_always_on && !qmp->cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]) {
-+		dev_err(dev, "refclk is always on is present but refclk cntrl offset is not present\n");
-+		goto err_node_put;
-+	}
-+
- 	ret = phy_pipe_clk_register(qmp, np);
- 	if (ret)
- 		goto err_node_put;
-
--- 
-2.42.0
-
+RnJvbTogTGlubyBTYW5maWxpcHBvIFttYWlsdG86TGlub1NhbmZpbGlwcG9AZ214LmRlXQ0KU2Vu
+dDogU3VuZGF5LCBOb3ZlbWJlciAyNiwgMjAyMyAxMjo0MCBBTQ0KDQpIaSwgDQoNCj4gT24gMjIu
+MTEuMjMgYXQgMTU6NTMsIEx1a2FzIFd1bm5lciB3cm90ZToNCj4+IE9uIE1vbiwgTm92IDIwLCAy
+MDIzIGF0IDA0OjEwOjU0UE0gKzAxMDAsIFJhc211cyBWaWxsZW1vZXMgd3JvdGU6DQo+Pj4gU29t
+ZSBib2FyZHMgYXJlIGNhcGFibGUgb2YgYm90aCByczIzMiBhbmQgcnM0ODUsIGFuZCBjb250cm9s
+IHdoaWNoDQo+Pj4gZXh0ZXJuYWwgdGVybWluYWxzIGFyZSBhY3RpdmUgdmlhIGEgZ3Bpby1jb250
+cm9sbGVkIG11eC4gQWxsb3cNCj4+PiBkZXNjcmliaW5nIHRoYXQgZ3BpbyBpbiBEVCBzbyB0aGF0
+IHRoZSBrZXJuZWwgY2FuIHRyYW5zcGFyZW50bHkgaGFuZGxlDQo+Pj4gdGhlIHByb3BlciBzZXR0
+aW5nIHdoZW4gdGhlIHVhcnQgaXMgc3dpdGNoZWQgYmV0d2VlbiByczIzMiBhbmQgcnM0ODUNCj4+
+PiBtb2Rlcy4NCj4+DQo+PiBDcmVzY2VudCBDWSBIc2llaCAoK2NjKSBpcyBpbiBwYXJhbGxlbCB0
+cnlpbmcgdG8gYWRkIGFuIFJTLTQyMiBtb2RlIGJpdA0KPj4gdG8gc3RydWN0IHNlcmlhbF9yczQ4
+NToNCj4+DQo+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzExMjEwOTUxMjIuMTU5
+NDgtMS1jcmVzY2VudGN5LmhzaWVoQG1veGEuY29tLw0KPj4NCj4gDQo+IFRoYXQgbmV3IGZsYWcg
+d2FzIHN1Z2dlc3RlZCBieSBtZSBpbnN0ZWFkIG9mIHVzaW5nIFNFUl9SUzQyMl9FTkFCTEVELCB3
+aGljaA0KPiB3b3VsZCBtb3N0bHkgYmUgcmVkdW5kYW50IHRvIFNFUl9SUzQ4NV9FTkFCTEVELg0K
+PiBJIGRvbnQga25vdyBpZiBpdCBpcyBhIGdvb2QgY2hvaWNlIGluIHRoZSBsb25nIHRlcm0gdG8g
+aGFuZGxlIGJvdGggbW9kZXMgd2l0aGluDQo+IHRoZSBSUzQ4NSBjb25maWd1cmF0aW9uLiBJdCB3
+b3VsZCBiZSBjbGVhbmVyIHRvIGhhdmUgYW4gb3duIFJTNDIyIHN0cnVjdHVyZSB3aXRoDQo+IGl0
+cyBvd24gZmxhZ3MgYW5kIHByb3BlcnRpZXMuIEFuZCB1bnRpbCBub3cgdGhlIG9ubHkgZmxhZyB0
+aGF0IHNlZW1zIHRvIG1ha2Ugc2Vuc2UNCj4gZm9yIGJvdGggUlM0MjIgYW5kIFJTNDg1IGlzIEFG
+QUlDUyBTRVJfUlM0ODVfVEVSTUlOQVRFX0JVUy4NCj4gDQo+IE9uIHRoZSBvdGhlciBoYW5kIHRo
+ZSBidXMgdGVybWluYXRpb24gaXMgYXQgbGVhc3QgYSBwcm9wZXJ0eSB0aGF0IGJvdGggbW9kZXMg
+aGF2ZQ0KPiBpbiBjb21tb24uIEFuZCBoYW5kbGluZyBSUzQyMiBpbiBpdHMgb3duIHN0cnVjdHVy
+ZSB3b3VsZCByZXF1aXJlIGFub3RoZXIgaW9jdGwNCj4gdG8gc2V0IGFuZCBnZXQgdGhlIHRoZSBS
+UzQyMiBzZXR0aW5ncy4NCj4gDQo+IEJ1dCBtYXliZSB0aGVyZSBhcmUgbW9yZSBvciBiZXR0ZXIg
+cG9zc2liaWxpdGllcyB0byBoYW5kbGUgUlM0ODIyIHN1cHBvcnQuIEkgd291bGQgbGlrZSB0bw0K
+PiBoZWFyIG90aGVyIGlkZWFzLg0KPiANCj4gDQo+IA0KPj4gSSBkb24ndCBrbm93IHdoZXRoZXIg
+dGhhdCBtYWtlcyBzZW5zZSBhdCBhbGwgKEkgaGFkIHRob3VnaHQgUlMtNDIyIGlzDQo+PiB0aGUg
+c2FtZSBhcyBSUy00ODUgd2l0aCBmdWxsLWR1cGxleCwgaS5lLiBTRVJfUlM0ODVfRU5BQkxFRCBw
+bHVzDQo+PiBTRVJfUlM0ODVfUlhfRFVSSU5HX1RYKQ0KDQpXaXRoIFJTLTQ4NSBmdWxsIGR1cGxl
+eCwgU0VSX1JTNDg1X1JYX0RVUklOR19UWCBtYWtlcyBubyBzZW5zZSB0byBtZS4NClNlZSBiZWxv
+dy4NCg0KPj4NCj4+IEJ1dCBpZiB0aGF0IHBhdGNoIGdldHMgYWNjZXB0ZWQsIHdlJ2QgaGF2ZSAq
+dGhyZWUqIGRpZmZlcmVudCBtb2RlczoNCj4+IFJTLTIzMiwgUlMtNDg1LCBSUy00MjIuDQo+IA0K
+PiBBY3R1YWxseSB3ZSB3b3VsZCBoYXZlIGZvdXIgKGFzIEJyZW5kYSBhbHJlYWR5IHdyb3RlLA0K
+PiBzZWUgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL2M2ZWE5MTJmLWQ1YWItNDc2MS04MTNk
+LTNiNmI2YmUxNDFjYkBuaS5jb20vKSwNCj4gYW5kIHdpdGggdGhlIHByb3Bvc2UgU0VSX1JTNDg1
+X01PREVfUlM0MjIgZmxhZyB0aGVzZSBtb2RlcyB3b3VsZCBiZSB1c2VkIGxpa2UNCj4gDQo+IFJT
+LTIzMjogICAgICAgICAgICAgICAgICAgICAgIHJzNDg1LT5mbGFncyA9IDANCj4gUlMtNDIyOiAg
+ICAgICAgICAgICAgICAgICAgICAgcnM0ODUtPmZsYWdzID0gU0VSX1JTNDg1X0VOQUJMRUR8U0VS
+X1JTNDg1X01PREVfUlM0MjINCj4gUlMtNDg1ICgyLXdpcmUgaGFsZi1kdXBsZXgpOiAgcnM0ODUt
+PmZsYWdzID0gU0VSX1JTNDg1X0VOQUJMRUQNCj4gUlMtNDg1ICg0LXdpcmUgZnVsbC1kdXBsZXgp
+OiAgcnM0ODUtPmZsYWdzID0gU0VSX1JTNDg1X0VOQUJMRUR8U0VSX1JTNDg1X1JYX0RVUklOR19U
+WA0KDQpJbiBteSBwb2ludCBvZiB2aWV3IHRoZXJlIGFyZSBhbHNvIHR3byBkaWZmZXJlbnQgbW9k
+ZXMgZm9yIHRoZSBSUy00ODUgMi13aXJlDQpoYWxmLWR1cGxleCBidXMgZGVwZW5kaW5nIG9uIHRo
+ZSBmbGFnIFNFUl9SUzQ4NV9SWF9EVVJJTkdfVFguDQotIFNFUl9SUzQ4NV9SWF9EVVJJTkdfVFgg
+aXMgbm90IHNldDogVGhlIGRldmljZSBkb2Vzbid0IHNlZSB0aGUgYnVzIGR1cmluZyBzZW5kaW5n
+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKFJYIGlzIG9mZiBkdXJpbmcg
+c2VuZGluZykuIA0KLSBTRVJfUlM0ODVfUlhfRFVSSU5HX1RYIGlzIHNldDogICAgIFRoZSBkZXZp
+Y2Ugc2VlIHdhbnQgaXMgb24gYnVzIGR1cmluZyBzZW5kaW5nDQogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKFJYIGlzIGFsc28gb24gZHVyaW5nIHNlbmRpbmcpLCBzbyB5b3Ug
+Y2FuDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VlIHlvdXIgdHJhbnNt
+aXNzaW9uIGFuZCBhbHNvIGlmIGFub3RoZXIgYnVzDQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgZGV2aWNlIGlzIHRyYW5zbWl0dGluZyBhdCB0aGUgc2FtZSB0aW1lLg0KDQpP
+biBSUy00ODUgNC13aXJlIFRYIGFuZCBSWCBhcmUgc2VwYXJhdGVkIGJ5IHdpcmVzLiBTbyB0aGUg
+ZGVmaW5pdGlvbiBvZg0KU0VSX1JTNDg1X1JYX0RVUklOR19UWCBhYm92ZSBtYWtlcyBubyBzZW5z
+ZSwgYmVjYXVzZSB5b3UgY2FuIHJlY2VpdmUgYWxsIHRoZSB0aW1lDQp3aXRob3V0IHdvcnJ5aW5n
+IGFib3V0IFRYLiBPbiB0aGUgc29mdHdhcmUgc2lkZSBSUy00ODUgNC13aXJlIGZ1bGwgZHVwbGV4
+IGl0IGJlaGF2ZXMNCmxpa2UgUlMtMjMyLiBTbyB3ZSBkb24ndCBuZWVkIHRyYW5zY2VpdmVyIGNv
+bnRyb2xsaW5nIGJ5IHRoZSBSVFMgcGluLg0KDQpCYXNpY2FsbHkgZm9yIG1lIHRoZSBTRVJfUlM0
+ODVfRU5BQkxFRCBmbGFnIGlzIHRvIGVuYWJsZSB0aGUgUlRTIGNvbnRyb2wgZm9yIHRoZQ0KdHJh
+bnNjZWl2ZXIuIE1heWJlIG9uIHNvZnR3YXJlIHNpZGUgd2UgY2FuIGRpc3Rpbmd1aXNoIGJldHdl
+ZW4gaGFsZiBhbmQgZnVsbCBkdXBsZXgNCm1vZGUgYW5kIHdoZXRoZXIgUlggaXMgZW5hYmxlZCBk
+dXJpbmcgc2VuZGluZyBieSB0aGUgZmxhZyBTRVJfUlM0ODVfUlhfRFVSSU5HX1RYOg0KUlMtMjMy
+OiAgICAgICAgICAgICAgICAgICAgICAgICAgcnM0ODUtPmZsYWdzID0gMA0KUlMtNDIyIC8gUlMt
+NDg1ICg0LXdpcmUpOiAgICAgICAgcnM0ODUtPmZsYWdzID0gU0VSX1JTNDg1X0VOQUJMRUR8U0VS
+X1JTNDg1X01PREVfRlVMTF9EVVBMRVgNClJTLTQ4NSAoMi13aXJlIE5PIFJYX0RVUklOR19UWCk6
+IHJzNDg1LT5mbGFncyA9IFNFUl9SUzQ4NV9FTkFCTEVEfFNFUl9SUzQ4NV9NT0RFX0hBTEZfRFVQ
+TEVYDQpSUy00ODUgKDItd2lyZSBSWF9EVVJJTkdfVFgpOiAgICByczQ4NS0+ZmxhZ3MgPSBTRVJf
+UlM0ODVfRU5BQkxFRHxTRVJfUlM0ODVfTU9ERV9IQUxGX0RVUExFWHxTRVJfUlM0ODVfUlhfRFVS
+SU5HX1RYDQoNClNFUl9SUzQ4NV9NT0RFX0ZVTExfRFVQTEVYIGFuZCBTRVJfUlM0ODVfTU9ERV9I
+QUxGX0RVUExFWCBjYW4gYmUgZGVmaW5lZCBhdCB0aGUNCnNhbWUgYml0LiBJZiBTRVJfUlM0ODVf
+TU9ERV9IQUxGX0RVUExFWCB3aWxsIGJlIGRlZmluZWQgYXMgMCBpdCBicmVha3Mgbm90aGluZy4N
+CldpdGggU0VSX1JTNDg1X01PREVfRlVMTF9EVVBMRVgsIHRoZSBSVFMgcGluIGRvZXMgbm90IG5l
+ZWQgdG8gYmUgY29udHJvbGxlZC4NCg0KPiANCj4+ICBBIHNpbmdsZSBHUElPIHNlZW1zIGluc3Vm
+ZmljaWVudCB0byBoYW5kbGUgdGhhdC4NCj4gDQo+IEdQSU9zIGZvciBSUzQ4NSBpcyBhbm90aGVy
+IHRoaW5nLg0KPiANCj4gSSBtZWFuLCBjdXJyZW50bHkgd2UgaGF2ZSBhIEdQSU8gZm9yIFJTNDg1
+IHRlcm1pbmF0aW9uIChJIGludHJvZHVjZWQgaXQgd2l0aCBjb21taXQNCj4gNDRiMjdhZWM5ZDk2
+ODA4NzUpLg0KPiBDaHJpc3RvcGggaW50cm9kdWNlZCBzdXBwb3J0IGZvciBhIHJ4LWR1cmluZy10
+eCBHUElPIChzZWUgY29tbWl0IDE2M2YwODBlYjcxNykuIFRvbWFzDQo+IGludGVuZHMNCj4gdG8g
+YWRkIGEgR1BJTyB3aGljaCBlbmFibGVzIFJTNDg1IGlmIGFzc2VydGVkDQo+IChzZWUgaHR0cHM6
+Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzNaYS5aWnMlN0QubmRYSThDTWVlNC4xYk42ZVFAc2V6bmFt
+LmN6LykgYW5kIHdpdGggUmFzbXVzDQo+IHBhdGNoZXMNCj4gd2UgYXJlIGFib3V0IHRvIGFkZCBh
+IE1VWC1HUElPIHdoaWNoIGlzIHRvIGJlIGFzc2VydGVkIGlmIFJTNDg1IGlzIGVuYWJsZWQuDQo+
+IA0KPiBJIHdvbmRlciB3aGVyZSB0aGlzIHdpbGwgZW5kIGFuZCBpZiB3ZSByZWFsbHkgaGF2ZSB0
+byBzdXBwb3J0IGV2ZXJ5IHBvc3NpYmxlIEdQSU8NCj4gaW4gdGhlIHNlcmlhbCBjb3JlLg0KDQpJ
+IHRoaW5rIHRoZSBHUElPcyByZWZsZWN0IHRoZSBmbGFnIHN0YXRlcyBhbmQgYXJlIG1lYW5pbmdm
+dWw6DQotIFNFUl9SUzQ4NV9URVJNSU5BVEVfQlVTOiBTd2l0Y2ggYnVzIHRlcm1pbmF0aW9uIG9u
+L29mZiBieSBHUElPDQotIFNFUl9SUzQ4NV9SWF9EVVJJTkdfVFg6ICBVc2VkIHRvIHN0b3AgUlgg
+ZHVyaW5nIFRYIGluIGhhcmR3YXJlIGJ5IEdQSU8gKGZvciAyLXdpcmUpDQotIFNFUl9SUzQ4NV9F
+TkFCTEVEOiAgICAgICBNdXhpbmcgYmV0d2VlbiBSUy0yMzIgYW5kIFJTLTQ4NSBieSBHUElPDQoN
+ClN3aXRjaGluZyBSUy00ODUgb24gZHVyaW5nIGJvb3QgY291bGQgYWxzbyBiZSBoYW5kbGVkIGJ5
+IGEgZGV2aWNldHJlZSBvdmVybGF5LiBFdmFsdWF0ZSB0aGUNCkdQSU8gYW5kIGxvYWQgYSBEVE8g
+YWNjb3JkaW5nbHkgYmVmb3JlIGJvb3RpbmcuDQoNCg0KUmVnYXJkcw0KQ2hyaXN0b3BoDQo=
