@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 317357FA132
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B5B7FA131
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbjK0Nho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
+        id S233120AbjK0Nhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbjK0Nhm (ORCPT
+        with ESMTP id S233121AbjK0Nhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:37:42 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F90B8;
-        Mon, 27 Nov 2023 05:37:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=dCgnYA2BHI8R6kOuu4v1Rr1eB4wzNkIiBg2MOXwz+BY=; b=JRzzzBURcil9rlFybupVTuue/j
-        mpbF6lr8Dcw5ofoEFFGxD5Qh9rXJY8GaHgh5vRr2xC8FrVhiZfvcKPIi+W76VSd0plT6ieKlZwQnK
-        QF7ihjEeC42ugiVrnAQ2E5G3JcsJrx9A7KCqcmU58xyTbzoI6JgCab42kz8g1eaZAKTU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r7bnx-001LUS-N5; Mon, 27 Nov 2023 14:37:41 +0100
-Date:   Mon, 27 Nov 2023 14:37:41 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?Ram=F3n_N=2ERodriguez?= 
-        <ramon.nordin.rodriguez@ferroamp.se>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] net: microchip_t1s: add support for LAN867x Rev.C1
-Message-ID: <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
-References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
- <20231127104045.96722-3-ramon.nordin.rodriguez@ferroamp.se>
+        Mon, 27 Nov 2023 08:37:50 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62744182;
+        Mon, 27 Nov 2023 05:37:56 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0144D660716E;
+        Mon, 27 Nov 2023 13:37:53 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701092275;
+        bh=HWTWeZczkKPebiHhuo5BZO805K/Z7hkRFhrXyPuPjTA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=O4vVdIowbsdyovhSATp87/gj9HKXh6j9UJSHTbH31aSq12FPYr/dn7P0zBiDFOyjv
+         V3iwiYBZjbpOt26uzfHwybMZkW6ursKUy4tVVUVa8fBhcHMnNAenrMuqbOqjK1Iq9W
+         A+EOJVsocw7IPAvQ/Ofs+htd4g20OknlOv0kj1WMTRXH/GL39DM2hHCMjwF7IXj2IZ
+         zJ9XOr0Q2w99UPgbon9Rk5R74FA9Bhowpr0vOmEgjZr1o1sN9bjxrM7HQqpUtP30pi
+         f9eNbiezuDiF/RxrT3MhUwYXKoBLDU7RJfOdlgJlMfqdtsnS5VUgvVjnSPMhr5GyQ5
+         V2UQTO83VeVug==
+Message-ID: <efc64b77-e454-4b9e-9508-311f00d2db83@collabora.com>
+Date:   Mon, 27 Nov 2023 14:37:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127104045.96722-3-ramon.nordin.rodriguez@ferroamp.se>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: phy: mediatek: tphy: add a property for
+ force-mode switch
+Content-Language: en-US
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Bear.Wang" <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20231125012303.760-1-chunfeng.yun@mediatek.com>
+ <e34c2746-8e93-48b8-9c96-690242fbf6e9@linaro.org>
+ <239def9b-437b-9211-7844-af4332651df0@mediatek.com>
+ <0dc24d82-e09d-45bc-98ae-1dfb6318cb96@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <0dc24d82-e09d-45bc-98ae-1dfb6318cb96@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  #define PHY_ID_LAN867X_REVB1 0x0007C162
-> +#define PHY_ID_LAN867X_REVC1 0x0007C164
+Il 27/11/23 08:21, Krzysztof Kozlowski ha scritto:
+> On 27/11/2023 08:09, Macpaul Lin wrote:
+>> On 11/25/23 18:37, Krzysztof Kozlowski and Chunfeng Yun wrote:
+>>> 	
+>>>
+>>> External email : Please do not click links or open attachments until you
+>>> have verified the sender or the content.
+>>>
+>>> On 25/11/2023 02:23, Chunfeng Yun wrote:
+>>>> Due to some old SoCs with shared t-phy only support force-mode switch, and
+>>>> can't use compatible to distinguish between shared and non-shared t-phy,
+>>>> add a property to supported it.
+>>>> But now prefer to use "mediatek,syscon-type" on new SoC as far as possible.
 
-So there is a gap in the revisions. Maybe a B2 exists?
+Two questions:
+1. Why is it *not* possible to use the compatible string to distinguish between
+    shared and non-shared T-PHYs?
+2. If we really can't use compatibles, what's the reason why we can't use the
+    "mediatek,syscon-type" property?
 
-> +static int lan867x_revc1_read_fixup_value(struct phy_device *phydev, u16 addr)
-> +{
-> +	int regval;
-> +	/* The AN pretty much just states 'trust us' regarding these magic vals */
-> +	const u16 magic_or = 0xE0;
-> +	const u16 magic_reg_mask = 0x1F;
-> +	const u16 magic_check_mask = 0x10;
+Regards,
+Angelo
 
-Reverse christmass tree please. Longest first, shorted last.
+>>>>
+>>>> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+>>>> ---
+>>>>   Documentation/devicetree/bindings/phy/mediatek,tphy.yaml | 6 ++++++
+>>>>   1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+>>>> index 2bb91542e984..eedba5b7025e 100644
+>>>> --- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+>>>> +++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+>>>> @@ -235,6 +235,12 @@ patternProperties:
+>>>>             Specify the flag to enable BC1.2 if support it
+>>>>           type: boolean
+>>>>   
+>>>> +      mediatek,force-mode:
+>>>> +        description:
+>>>> +          Use force mode to switch shared phy mode, perfer to use the bellow
+>>>
 
-> +	regval = lan865x_revb0_indirect_read(phydev, addr);
-> +	if (regval < 0)
-> +		return regval;
-> +
-> +	regval &= magic_reg_mask;
-> +
-> +	return (regval & magic_check_mask) ? regval | magic_or : regval;
-> +}
-> +
-> +static int lan867x_revc1_config_init(struct phy_device *phydev)
-> +{
-> +	int err;
-> +	int regval;
-> +	u16 override0;
-> +	u16 override1;
-> +	const u16 override_addr0 = 0x4;
-> +	const u16 override_addr1 = 0x8;
-> +	const u8 index_to_override0 = 2;
-> +	const u8 index_to_override1 = 3;
-
-Same here.
-
-> +
-> +	err = lan867x_wait_for_reset_complete(phydev);
-> +	if (err)
-> +		return err;
-> +
-> +	/* The application note specifies a super convenient process
-> +	 * where 2 of the fixup regs needs a write with a value that is
-> +	 * a modified result of another reg read.
-> +	 * Enjoy the magic show.
-> +	 */
-
-I really do hope that by revision D1 they get the firmware sorted out
-so none of this undocumented magic is needed.
-
-	Andrew
