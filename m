@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05CE7F98FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3015F7F9900
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjK0F6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        id S229854AbjK0F7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjK0F6n (ORCPT
+        with ESMTP id S229774AbjK0F7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:58:43 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C34139;
-        Sun, 26 Nov 2023 21:58:49 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR5NX6R018172;
-        Mon, 27 Nov 2023 05:58:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ljPu8Ir6MQffxqmkEQGJhg2zUpHKipO7TJg8/9VOwgw=;
- b=QFcOeOvBmw2ZRzWArU4vrLzAFD262nZpkD8K4tq9wz2T1TdaGwN7PBXNG4nUBTzJ+1ZA
- K1Omx5mSINDfUHrqFUJ6JOShNEAkhhvAqRhnIWzeAiJ81fFN79ck3Kvdb5ZlSIKigV7u
- ap0sjDSgtkaH1X5+pr4KE7RyS36TBnDgZzU51xaHRYcrExTAO02EDbiCvgfQ1edjFDjy
- Ku9I2s1jb7er14iPj2gmEVaw053Iur70HhIpOq1ib+j+2cpwWuTMoE+VM5dOqwaX5s7G
- BFAdWpn0bRQXd4ozdK9JZvPDvIswaG2lrmO9Nzo5ZMaDleRD2lVOd4dNjp7ihEP94ond jw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk95cbbnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 05:58:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR5wSWs019690
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 05:58:28 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
- 2023 21:58:20 -0800
-Message-ID: <ef0f23fa-03b2-45f3-b803-4bd319d91ee7@quicinc.com>
-Date:   Mon, 27 Nov 2023 13:58:18 +0800
+        Mon, 27 Nov 2023 00:59:17 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF1135;
+        Sun, 26 Nov 2023 21:59:23 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5bd33a450fdso2740616a12.0;
+        Sun, 26 Nov 2023 21:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701064763; x=1701669563; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T+lkPxpcGV4ulENWtL8UIKN/+j2CNZhdMfJlWPRbNbU=;
+        b=duYudwbbeqcH+XWtSQ8mUZK/37sVW4InUWrAVTGMKUMECoWmFOIgn7JMyOOuX4qQ7z
+         gEiCRMqBKJr9Ed3FTU+cmLvsvoS2ycl50RlFEyNqniiI42I7jX+lBQKirLvmbgI6XD4X
+         5qd5x4rq3gM7GkRK0ItmNzGL2Nc9dWIi8nSP5igxtU0kUeN9gpK2/PndnY+WRd4HGxBA
+         fwX+7xIe5GNb6Agpj4x1nk1iuwf3VxWYESxOWJsoFGRlyyAaOiYLp7gfwDd+5ybx7fsJ
+         hGBqSgj64cTi648BzCd1RgpDMN3x5WFVTADLTFVSIhWOHCQcTnXaRX3N9T5EaDXHOLOz
+         r7XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701064763; x=1701669563;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T+lkPxpcGV4ulENWtL8UIKN/+j2CNZhdMfJlWPRbNbU=;
+        b=hCbmxNGxKbjOC5FDxNcHBfoaVLv2X8em1o0PWCGWGThlAwN8kuJ8eSmcj6CtojXDrA
+         rWS1RwlagHkIC1pJWMu6dUE+GA91D9NTQfBpV5gHGCcLowaAeEkak8/a9+9pQAb7eOvJ
+         m+M3iUid3IiLUuxShrfUcnm2vsEZj/cUvEsh2jh2H6DQSvv/BhH1dQ1RwEjit8wpdeya
+         0Uk5wWpCU4geR777peRCWr/VIsmbHmMlKodN958L8j+EZFEXXods9d59S8nN3+FjbpOf
+         FVtEnD7dVOeUzbMxsppxuO1mdA9KDEDsJbj5HGeqtT1do6RYXg6JTRbeHVmTxmj8uGIL
+         /6RA==
+X-Gm-Message-State: AOJu0Yw8BYT7Vp2vVD/ChZ/D5EXPxK816/vEoTUaPLa+h8nC0ee2PGrT
+        zdNH2a+cF178UHgXeAca5tlWTdCzIfY=
+X-Google-Smtp-Source: AGHT+IGHtZK0Vns6BWzZHgVZD1B5+jmOlfvtT8e9meE4tDaoDr2RuIg/boyy2Iqn/QGqgmbdATfAiA==
+X-Received: by 2002:a17:90a:1904:b0:27d:1f9f:a57f with SMTP id 4-20020a17090a190400b0027d1f9fa57fmr13232816pjg.32.1701064763065;
+        Sun, 26 Nov 2023 21:59:23 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id gm3-20020a17090b100300b0026f39c90111sm6599692pjb.20.2023.11.26.21.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 21:59:22 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] ACPICA: Remove unused struct field and incorrect comments
+Date:   Mon, 27 Nov 2023 13:58:58 +0800
+Message-ID: <20231127055858.41004-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm4450-qrd: mark QRD4450
- reserved gpios
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
-        <neil.armstrong@linaro.org>, <dmitry.baryshkov@linaro.org>,
-        <nfraprado@collabora.com>, <m.szyprowski@samsung.com>,
-        <u-kumar1@ti.com>, <peng.fan@nxp.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
-        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
-        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
-References: <20231031075004.3850-1-quic_tengfan@quicinc.com>
- <20231031075004.3850-6-quic_tengfan@quicinc.com>
- <6a799fc7-8d7d-4035-8e7e-458f9a61bf4e@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <6a799fc7-8d7d-4035-8e7e-458f9a61bf4e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xKm7vNjxWLIcxq4QGvXGr7YxCjvlGFae
-X-Proofpoint-ORIG-GUID: xKm7vNjxWLIcxq4QGvXGr7YxCjvlGFae
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=911 spamscore=0
- lowpriorityscore=0 phishscore=0 mlxscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270040
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The return_object_type field in `struct acpi_evaluate_info` is unused,
+so remove it.
 
+There are also some issues in the comments of acpi_ps_execute_method().
+First, the parameter_type field has already been removed from
+`struct acpi_evaluate_info`, so the corresponding field description in
+the comments should also be removed. Second, the return_object field
+description in the comments is duplicated. Remove these incorrect comments.
 
-在 11/18/2023 8:45 AM, Konrad Dybcio 写道:
-> On 31.10.2023 08:50, Tengfei Fan wrote:
->> Some gpios are reserved for other subsystems, so mark these reserved
->> gpios.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->> index bb8c58fb4267..e354bad57a9e 100644
->> --- a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->> @@ -23,6 +23,11 @@
->>   	status = "okay";
->>   };
->>   
->> +&tlmm {
->> +	/* Reserved for other subsystems */
-> that much we can guess :D
-> 
-> it would be very appreciated if you could do e.g.
-> 
-> <0 4>, /* fingerprint scanner */
-> <136 1>; /* coffee machine trigger */
-> 
-> Konrad
-Hi Konrad,
-Thank you for reviewing this patch series, I will update new patch 
-series according to your suggestion.
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ drivers/acpi/acpica/acstruct.h | 1 -
+ drivers/acpi/acpica/psxface.c  | 3 ---
+ 2 files changed, 4 deletions(-)
 
-
+diff --git a/drivers/acpi/acpica/acstruct.h b/drivers/acpi/acpica/acstruct.h
+index f8fee94ba708..fe57c3a16e59 100644
+--- a/drivers/acpi/acpica/acstruct.h
++++ b/drivers/acpi/acpica/acstruct.h
+@@ -169,7 +169,6 @@ struct acpi_evaluate_info {
+ 	u16 param_count;	/* Count of the input argument list */
+ 	u16 node_flags;		/* Same as Node->Flags */
+ 	u8 pass_number;		/* Parser pass number */
+-	u8 return_object_type;	/* Object type of the returned object */
+ 	u8 flags;		/* General flags */
+ };
+ 
+diff --git a/drivers/acpi/acpica/psxface.c b/drivers/acpi/acpica/psxface.c
+index 6f4eace0ba69..df5679bbc510 100644
+--- a/drivers/acpi/acpica/psxface.c
++++ b/drivers/acpi/acpica/psxface.c
+@@ -70,9 +70,6 @@ acpi_debug_trace(const char *name, u32 debug_level, u32 debug_layer, u32 flags)
+  *                                    NULL if no parameters are being passed.
+  *                  return_object   - Where to put method's return value (if
+  *                                    any). If NULL, no value is returned.
+- *                  parameter_type  - Type of Parameter list
+- *                  return_object   - Where to put method's return value (if
+- *                                    any). If NULL, no value is returned.
+  *                  pass_number     - Parse or execute pass
+  *
+  * RETURN:      Status
 -- 
-Thx and BRs,
-Tengfei Fan
+2.43.0
+
