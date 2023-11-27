@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7133C7FA914
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4559F7FA92E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbjK0SkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 13:40:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        id S230403AbjK0Sod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 13:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjK0SkL (ORCPT
+        with ESMTP id S229531AbjK0Soc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 13:40:11 -0500
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA702D5A;
-        Mon, 27 Nov 2023 10:40:16 -0800 (PST)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58d533268e6so1414394eaf.1;
-        Mon, 27 Nov 2023 10:40:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701110416; x=1701715216;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NK5WhS88OI6KCb7Lk1NPWEaX1+G+RAfAiUrHgwT/t+E=;
-        b=vZjCOECpu/iw+T0jO6YOhcNYO5h94CcSWdd4VU883AA+37Z77P7nMTIl1qVMqvq1jp
-         ONoZCUab4FDg4QDYM1Um6ulJVsUrxQF+txrKMQuCldRm4LA/6iXGP/3Lkrqpa7DxdrNd
-         xnKhYWGn2tfaZPZjptWt+hXLmeUjGlmFy2Nam28jjuMLTicpgCL+TwUAYsPQWhbEVdtg
-         H0Sx7z1GDRspMT0RsFeg5L6l+0rRV+/RLs+FfKrdhQllRmfU6m0pBjqbXiYB/zuWINul
-         VYzs/f1BMAKnMAlFKMv+MaNWiJOdRi6XHJfVOmJ7hA922+D+bKtutQzp1kip1347fMP9
-         Qw8A==
-X-Gm-Message-State: AOJu0YwslvZq6baeiF5pzf9QPRjIMctYB9OegPF2gjRPUtxKbgY5ZuxZ
-        Ytp94JdpiEd4Tn5pTCftuaXVxcvMCw==
-X-Google-Smtp-Source: AGHT+IFryMql4axrRLjSO6lgZP7+RrOYihlOCdtksjZ7JOF1OJch6kZaFVxi0oP2Hqvh20Dhi6avdA==
-X-Received: by 2002:a05:6820:16aa:b0:58d:981e:bc5c with SMTP id bc42-20020a05682016aa00b0058d981ebc5cmr2953014oob.7.1701110415941;
-        Mon, 27 Nov 2023 10:40:15 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id e4-20020a056820060400b00573a0631d98sm381569oow.34.2023.11.27.10.40.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 10:40:14 -0800 (PST)
-Received: (nullmailer pid 2283499 invoked by uid 1000);
-        Mon, 27 Nov 2023 18:40:13 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Mon, 27 Nov 2023 13:44:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF59B1A1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 10:44:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12C84C433C7;
+        Mon, 27 Nov 2023 18:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701110678;
+        bh=YX/z4BlRTU3n39F3XQDmoocqrUTZvvJZizRdM7PZwAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q5GaAlfzCiqFGp7FWT1u0WNKsIFL4M4+STpbSk0vZnVAZ9/FC8f3YG8gl+GmSlWaS
+         kuePSmdXlC6qbVfkD/nhF9oq3ESqqHeNHAnfgpbkbhMTFj3hEf6csEPGJ2BUfvITho
+         99XJwZDi7rZhZ3mj+9q2/ZsFqf+mXZE6ZMWpdX+jkETGG/aHBHJ9N0Fk+NimZpHxv4
+         ts3ROle+WHyvmU1VjDGghdXP8+esf4tln/GkODq7VB1Or86qbF9XE0W14G2C3zW3yK
+         Wrkm+X9YeeeD68W2S7xC6JYrQqhxCFPkKD1KqvEZPTvf12jr90yyOPD8mXGGtS8dC0
+         zMnYgU9wEmNfg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7919B40094; Mon, 27 Nov 2023 15:44:35 -0300 (-03)
+Date:   Mon, 27 Nov 2023 15:44:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
+Subject: Re: [PATCH v1] perf vendor events: Add skx, clx, icx and spr upi
+ bandwidth metric
+Message-ID: <ZWTjk7YdIsQkmJJ8@kernel.org>
+References: <20231109232732.2973015-1-irogers@google.com>
+ <CAP-5=fV50dXzK47WyqT-MEX1TfTrEJdGNhuBLSQ3nLE0+F3_Uw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Andy Gross <agross@kernel.org>, Will Deacon <will@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Georgi Djakov <djakov@kernel.org>, Sean Paul <sean@poorly.run>,
-        linux-kernel@vger.kernel.org,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Das Srinagesh <quic_gurus@quicinc.com>
-In-Reply-To: <20231125-topic-rb1_feat-v1-3-11d71b12b058@linaro.org>
-References: <20231125-topic-rb1_feat-v1-0-11d71b12b058@linaro.org>
- <20231125-topic-rb1_feat-v1-3-11d71b12b058@linaro.org>
-Message-Id: <170111041242.2283353.8776249687864558738.robh@kernel.org>
-Subject: Re: [PATCH 03/12] dt-bindings: display: msm: qcm2290-mdss: Allow 2
- interconnects
-Date:   Mon, 27 Nov 2023 12:40:13 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fV50dXzK47WyqT-MEX1TfTrEJdGNhuBLSQ3nLE0+F3_Uw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Sat, 25 Nov 2023 15:17:31 +0100, Konrad Dybcio wrote:
-> In addition to MDP0, the cpu-cfg interconnect is also necessary.
-> Allow it.
+Em Mon, Nov 27, 2023 at 10:17:48AM -0800, Ian Rogers escreveu:
+> On Thu, Nov 9, 2023 at 3:28 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > Add upi_data_receive_bw metric for skylakex, cascadelakex, icelakex
+> > and sapphirerapids. The metric was added to perfmon metrics in:
+> > https://github.com/intel/perfmon/pull/119
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  Documentation/devicetree/bindings/display/msm/qcom,qcm2290-mdss.yaml | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+> Ping.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+No Acked-by from Intel people, please consider providing it in the
+future.
 
-yamllint warnings/errors:
+Thanks, applied.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/msm/qcom,qcm2290-mdss.example.dtb: display-subsystem@5e00000: interconnects: [[4294967295, 1, 4294967295, 6]] is too short
-	from schema $id: http://devicetree.org/schemas/display/msm/qcom,qcm2290-mdss.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/msm/qcom,qcm2290-mdss.example.dtb: display-subsystem@5e00000: interconnect-names: ['mdp0-mem'] is too short
-	from schema $id: http://devicetree.org/schemas/display/msm/qcom,qcm2290-mdss.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231125-topic-rb1_feat-v1-3-11d71b12b058@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+- Arnaldo
