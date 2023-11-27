@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C932B7F9E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF317F9E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbjK0LP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:15:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
+        id S233057AbjK0LRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbjK0LPV (ORCPT
+        with ESMTP id S232996AbjK0LRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:15:21 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEFA138;
-        Mon, 27 Nov 2023 03:15:27 -0800 (PST)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ARAOo5T003615;
-        Mon, 27 Nov 2023 12:14:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=selector1; bh=8Vbivb9VqhvIy3KkCjS2N
-        dwe7AeBFgkC6zhQeVlfu7A=; b=zSxWfPZc1DeG2lKUspz0geU/YXF2Uy06NM25C
-        hgu0n+a3RjupMrtlYC5OyZCtwmAkzTubyeXmTu3eaGfFF8FsnbhzdOoUTp6reSob
-        poW1EFUGgxy4y1/bW/dWHu56JxagYJtUQjOSvWdqm5zPmLJTuF/+Y3yN64DdRpbl
-        BWM3+Sxo6e+ElQIc85PY5Lhr93x/Vec1EyeUKjm3jouGbheFraKCScpSrV0M+ZMu
-        U99IMCDAfbmAY8nk2TJ8X7AIAUTKFb0txXo9HZNbyPPrDteNoiJFss3y2jAsfl87
-        Sgu82Z55S57+po++JodlZAQz5OGENTxdBB1GotsAFJ+yluYgw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk951qb3d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 12:14:58 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 90A1710004B;
-        Mon, 27 Nov 2023 12:14:55 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A7111217B73;
-        Mon, 27 Nov 2023 12:14:55 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 27 Nov
- 2023 12:14:55 +0100
-Date:   Mon, 27 Nov 2023 12:14:46 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 0/5] Add support for DCMIPP camera interface of
- STMicroelectronics STM32 SoC series
-Message-ID: <20231127111446.GA1421638@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122073927.788810-1-alain.volmat@foss.st.com>
- <ZWRwa2ImfkZMI8Xz@kekkonen.localdomain>
+        Mon, 27 Nov 2023 06:17:16 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515AB136;
+        Mon, 27 Nov 2023 03:17:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=cAMYRwVtTk4t4CFVybTFSaosFfl7UAZUdZLXZwoFExo=; b=ATqUzkBAXvyJcu5VDkL3MVJVfz
+        M/w2F2dpijW6LxyJLlqXBnQ0lCixTGvRKNlSoSiX09wPSklZT/HtWrEsqMUIdkq93s+4dAO9uWxTV
+        zMJVEfgI4+fLLB/BspixOggT0/648mr9X8rGlX6pT0ysMRuueX9ZH2SJCHA6yABLLJ3WdeVUQ9nkx
+        7hkUh0jav76aCSftSKzOTTuPr4TusyFps7ll+zKj+RPzbY6WUbwHRxY8UE9/5HR6OBjEBqv0sRGhO
+        1hHs7A0mYGz4bDCYmyPGoVMW2Gwqq/97kzONjxkB6w/6NX7lo3vhxYcv3rFdjOgVRN8vrcTve873R
+        d3HFyzHg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r7ZbZ-00G258-25;
+        Mon, 27 Nov 2023 11:16:46 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 17B3A3002F1; Mon, 27 Nov 2023 12:16:44 +0100 (CET)
+Date:   Mon, 27 Nov 2023 12:16:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph Muellner <christoph.muellner@vrull.eu>,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Lustig <dlustig@nvidia.com>
+Subject: Re: [RFC PATCH 0/5] RISC-V: Add dynamic TSO support
+Message-ID: <20231127111643.GV3818@noisy.programming.kicks-ass.net>
+References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
+ <20231124101519.GP3818@noisy.programming.kicks-ass.net>
+ <ZWFhSYalMCgTo+SG@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZWRwa2ImfkZMI8Xz@kekkonen.localdomain>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_09,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWFhSYalMCgTo+SG@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-
-On Mon, Nov 27, 2023 at 10:33:15AM +0000, Sakari Ailus wrote:
-> Hi Alain,
-> 
-> On Wed, Nov 22, 2023 at 08:39:14AM +0100, Alain Volmat wrote:
-> > This patchset introduces support for Digital Camera Memory Interface
-> > Pixel Processor (DCMIPP) of STMicroelectronics STM32 SoC series.
+On Fri, Nov 24, 2023 at 09:51:53PM -0500, Guo Ren wrote:
+> On Fri, Nov 24, 2023 at 11:15:19AM +0100, Peter Zijlstra wrote:
+> > On Fri, Nov 24, 2023 at 08:21:37AM +0100, Christoph Muellner wrote:
+> > > From: Christoph Müllner <christoph.muellner@vrull.eu>
+> > > 
+> > > The upcoming RISC-V Ssdtso specification introduces a bit in the senvcfg
+> > > CSR to switch the memory consistency model at run-time from RVWMO to TSO
+> > > (and back). The active consistency model can therefore be switched on a
+> > > per-hart base and managed by the kernel on a per-process/thread base.
 > > 
-> > This initial support implements a single capture pipe
-> > allowing RGB565, YUV, Y, RAW8 and JPEG capture with
-> > frame skipping, prescaling and cropping.
+> > You guys, computers are hartless, nobody told ya?
 > > 
-> > DCMIPP is exposed through 3 subdevices:
-> > - dcmipp_dump_parallel: parallel interface handling
-> > - dcmipp_dump_postproc: frame skipping, prescaling and cropping control
-> > - dcmipp_dump_capture: video device capture node
-> 
-> The DTS changes will presumably be merged via a different tree, right?
+> > > This patch implements basic Ssdtso support and adds a prctl API on top
+> > > so that user-space processes can switch to a stronger memory consistency
+> > > model (than the kernel was written for) at run-time.
+> > > 
+> > > I am not sure if other architectures support switching the memory
+> > > consistency model at run-time, but designing the prctl API in an
+> > > arch-independent way allows reusing it in the future.
+> > 
+> > IIRC some Sparc chips could do this, but I don't think anybody ever
+> > exposed this to userspace (or used it much).
+> > 
+> > IA64 had planned to do this, except they messed it up and did it the
+> > wrong way around (strong first and then relax it later), which lead to
+> > the discovery that all existing software broke (d'uh).
+> > 
+> > I think ARM64 approached this problem by adding the
+> > load-acquire/store-release instructions and for TSO based code,
+> > translate into those (eg. x86 -> arm64 transpilers).
 
-Yes, Alexandre will take care of the DTS changes via the linux-stm32 tree.
+> Keeping global TSO order is easier and faster than mixing
+> acquire/release and regular load/store. That means when ssdtso is
+> enabled, the transpiler's load-acquire/store-release becomes regular
+> load/store. Some micro-arch hardwares could speed up the performance.
 
-Regards,
-Alain
+Why is it faster? Because the release+acquire thing becomes RcSC instead
+of RcTSO? Surely that can be fixed with a weaker store-release variant
+ot something?
 
-> 
-> -- 
-> Sakari Ailus
-> 
+The problem I have with all of this is that you need to context switch
+this state and that you need to deal with exceptions, which must be
+written for the weak model but then end up running in the tso model --
+possibly slower than desired.
+
+If OTOH you only have a single model, everything becomes so much
+simpler. You just need to be able to express exactly what you want.
+
+
