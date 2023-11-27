@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B267FACCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7C87FACD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbjK0VxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        id S233348AbjK0VyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0VxP (ORCPT
+        with ESMTP id S231437AbjK0VyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:53:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D788BD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:53:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08F98C433C7;
-        Mon, 27 Nov 2023 21:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701122002;
-        bh=HeDiF2jwasV0GP+dtz+9Y1Dd+DYvHNFxhjLYvyamAFA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OUvpcyLGrzjY+THGjy5pypahwuW47YkS6ybPWEQZEoIlIF1NahoVSiF5udEasg+4x
-         ItrolP9+i5SKZUXjFtqm8o9iXMTM9rpXjqId1ZHu4o5FLXulZebxzb9Ut0/1q+ADP8
-         hoNQPwBqj0qapVVahubDIoXd8zAerxRT7jvKeoOKAsgYD76EAUATrcmKyXZndsxX24
-         eKF/PHLeffa+eM4jKKveodshh3xHGa02xJWcI2bp8hE9r6UBDjzye0iL5c2xvWGOj0
-         z2NOQd+2gkMTgqnrXZTJQKLMhHUgaHoztyOHlfMeA713T/Gkjbg8QM/1pAC8knQO2q
-         WvSPXtuSudmwg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3929D40094; Mon, 27 Nov 2023 18:53:19 -0300 (-03)
-Date:   Mon, 27 Nov 2023 18:53:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v4 01/53] perf comm: Use regular mutex
-Message-ID: <ZWUPz6ETFEBsrDkZ@kernel.org>
-References: <20231102175735.2272696-1-irogers@google.com>
- <20231102175735.2272696-2-irogers@google.com>
- <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
+        Mon, 27 Nov 2023 16:54:21 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E317AC1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:54:27 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so822a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701122066; x=1701726866; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i5GFJDUW3MHlNrfhyC5VB4ESUR3+JVE/rcjBTTcA06g=;
+        b=uey2PQoqD4VqWR8DtFOJQMKnRAkh4NFPlOJ3yMXBQmMtS9eqfTKTaY8QyL1tfVAnUu
+         mPBZSZvZ8boQx9NASvxQKy2fsIBX2jUiEFiURbV40NQsVowO65V7qhBeWjhQ/OQ29S/Q
+         J0qjgPfBPiMsgYY8RNMykYngpX/Ls5cA5pGvFTC6if3jIfNHxCFvOV/Aw7P8g5EpVwV+
+         R+CV+PviWjPc4H76jaYqvMR+FIjZTotb5MkD+k5ADWS68ZaTwchqv8se44BS64VP9Q94
+         DM4sP5BOyocPYpyBiJEdTArDxmdjV17fpkalTPSLeJmFqtSBz2L2VZ5Tt1QxjnH5aCZ5
+         UbCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701122066; x=1701726866;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i5GFJDUW3MHlNrfhyC5VB4ESUR3+JVE/rcjBTTcA06g=;
+        b=mgWVFgoKupTnsGL3EC3iS9XkSdqD3sZBofIMNW8YmG4Xr/IgZ37fLSciy83UeN3Xvu
+         zxTaiwlluR+h8SfX35CUoxET5o+V0fLkrQpteipKxfryQJp+Ld3jf/jNLtrc5oBuy+6h
+         155KfiSIYbW7WUHtNVMfNA57ixUjRk6/HCWE+JVVOz70UySde9Ocyp/N2K7+bVukv1AG
+         kS696kt1VFIE1XkrySQUXhjTQ40+fP4a8jilv1qcHCRZg5HSy/V/GwjaT0d5V8Fk0m2f
+         PiMxkfLbU2lCvYMWBFSabQK1TSPZ5RZNLO1jBfZLJxSR0TEkwZi2h4lHWjBkSaawuKyr
+         EpmQ==
+X-Gm-Message-State: AOJu0Yw1Lc/iZ3PwY2BqFGjBRwCRXWBubqO5sViIA9RHIJQhTITVXMG5
+        KAhFeVlAtFaTIIctonj5QCthpL0ZMQJ2kN/bM8q2EKXT3jmG6ovtNWaROBqB
+X-Google-Smtp-Source: AGHT+IG7xZ4KRyQfbbBd9eQ/dnxxRH3eLZSxxvhqaJC/Su/40gRFks8qp3gsssLJI7cZhsC77GdZ4vin2Uj+daxlTvI=
+X-Received: by 2002:a05:6402:3510:b0:54b:2abd:ad70 with SMTP id
+ b16-20020a056402351000b0054b2abdad70mr280820edd.7.1701122066260; Mon, 27 Nov
+ 2023 13:54:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 27 Nov 2023 22:53:48 +0100
+Message-ID: <CAG48ez1htVSO3TqmrF8QcX2WFuYTRM-VZ_N10i-VZgbtg=NNqw@mail.gmail.com>
+Subject: io_uring: risky use of task work, especially wrt fdget()
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,32 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Nov 05, 2023 at 09:31:47AM -0800, Namhyung Kim escreveu:
-> Hi Ian,
-> 
-> On Thu, Nov 2, 2023 at 10:58 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > The rwsem is only after used for writing so switch to a mutex that has
-> > better error checking.
-> 
-> Hmm.. ok.  It doesn't make sense to use rwsem without readers.
+Hi!
 
-Well, the only reader is a findnew method, that will primarily read,
-but possibly write if it doesn't find it there, so converting to a
-regular mutex seems sensible.
+I noticed something that I think does not currently cause any
+significant security issues, but could be problematic in the future:
 
-- Arnaldo
- 
-> > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex")
-> 
-> But I'm not sure this is a fix.  Other than that,
+io_uring sometimes processes task work in the middle of syscalls,
+including between fdget() and fdput(). My understanding of task work
+is that it is expected to run in a context similar to directly at
+syscall entry/exit: task context, no locks held, sleeping is okay, and
+it doesn't execute in the middle of some syscall that expects private
+state of the task_struct to stay the same.
 
-Yeah, agreed, will remove the fixes.
- 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+An example of another user of task work is the keyring subsystem,
+which does task_work_add() in keyctl_session_to_parent() to change the
+cred pointers of another task.
 
-Thanks,
+Several places in io_uring process task work while holding an fdget()
+reference to some file descriptor. For example, the io_uring_enter
+syscall handler calls io_iopoll_check() while the io_ring_ctx is only
+referenced via fdget(). This means that if there were another kernel
+subsystem that uses task work to close file descriptors, io_uring
+would become unsafe. And io_uring does _almost_ that itself, I think:
+io_queue_worker_create() can be run on a workqueue, and uses task work
+to launch a worker thread from the context of a userspace thread; and
+this worker thread can then accept commands to close file descriptors.
+Except it doesn't accept commands to close io_uring file descriptors.
 
-- Arnaldo
+A closer miss might be io_sync_cancel(), which holds a reference to
+some normal file with fdget()/fdput() while calling into
+io_run_task_work_sig(). However, from what I can tell, the only things
+that are actually done with this file pointer are pointer comparisons,
+so this also shouldn't have significant security impact.
+
+Would it make sense to use fget()/fput() instead of fdget()/fdput() in
+io_sync_cancel(), io_uring_enter and io_uring_register? These
+functions probably usually run in multithreaded environments anyway
+(thanks to the io_uring worker threads), so I would think fdget()
+shouldn't bring significant performance savings here?
