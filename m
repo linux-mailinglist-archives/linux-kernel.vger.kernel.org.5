@@ -2,261 +2,493 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EFC7F9E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE797F9E28
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjK0LHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        id S232749AbjK0LJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232695AbjK0LHq (ORCPT
+        with ESMTP id S232651AbjK0LJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:07:46 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E00F184
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:07:51 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A94E42F4;
-        Mon, 27 Nov 2023 03:08:38 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C69C63F73F;
-        Mon, 27 Nov 2023 03:07:47 -0800 (PST)
-Message-ID: <d55e534d-c822-448e-92e0-a4e43122ce88@arm.com>
-Date:   Mon, 27 Nov 2023 11:07:46 +0000
+        Mon, 27 Nov 2023 06:09:30 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD21D93;
+        Mon, 27 Nov 2023 03:09:35 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR8svw0023879;
+        Mon, 27 Nov 2023 11:09:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=6sZRNWx/QRFK0yvAB+my3UFm2i0wT82/M5HZPw2JLTQ=;
+ b=iuBOzggdKhwwn4eChbNr9cr4bejD9yWICkZsLz1XVPGa69P2/dZRWUmVPdUNBLKrnUyo
+ iRvixo//kvd5SIZkEjVrOEd8IFg3t8VLZb5nfIZ5PXcL5T3AaNf8pJCEeEas6XQgMBaJ
+ rJjz1qgalhaPSzQKlo/EnSouBfZ1+JsR+WDW4eOW6UOtVlq+ZdpuBjFdanK93+nZLLE2
+ uF9zXtUqQ9d/HQ6Bw7jwRYmEpiGvu8UX2TXFBX4SBuhhe+owZ58T7cz6+rEeZLBrjTYG
+ 7X4GtIBwDMrg0F270vWSui5zL5c3ako7DX8RVaEP3A85nKDq0mHrZWmYflh/yP3NtYTO 3Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk88rm0wj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 11:09:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARB9PNb021190
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 11:09:25 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 27 Nov 2023 03:09:21 -0800
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date:   Mon, 27 Nov 2023 16:39:12 +0530
+Subject: [PATCH v5] bus: mhi: host: Add tracing support
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     david@redhat.com, akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
-        james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
- <20231127084217.13110-1-v-songbaohua@oppo.com>
- <bfebd80b-b60d-48e2-b350-7c0ac0299cda@arm.com>
- <CAGsJ_4zMwxNw76bweq-23x5ibpWnERCCwg_kz3zn1pjzeY0qXw@mail.gmail.com>
- <c359a8a6-8221-4d83-a945-580039042056@arm.com>
- <CAGsJ_4zbB5QHu=x9U2-QNFi7SPJkw0hTE+jQoLPcq2rCMC9ArA@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4zbB5QHu=x9U2-QNFi7SPJkw0hTE+jQoLPcq2rCMC9ArA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIANl4ZGUC/33MwQ7CIAyA4VcxnMVQCjg8+R7GGGSgHNwmzEVj9
+ u5WL2oW7e1v0+/OSsgpFLaa3VkOQyqpbSj0fMb80TWHwFNNzaSQCEJoHvvsfNiVS9e1ueemMrZ
+ WoA2gZfTU5RDT9QVuttTHVPo2317+AM/tT2oADlyikxGtik7Z9fmSfGr8wrcn9sQG+QEATgBJg
+ AmVRR8EiL2eAvgGaCYAEhBRV7W0AG6ppoD6DygCfIWG7tYqA9/AOI4PPBGQaHEBAAA=
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
+        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701083361; l=12663;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=xcslEcLKXWC7SjCw7Oevn90eI6gnnqUdDjghDwqxzOQ=;
+ b=iK9hYIsbFPyBJ3e+q62T1VOaDuiVueX6UGTArfPrmyfxP8w6Ex69xI1xu8JnONf2jNrxJ4gjt
+ sXA7aqIan+SDR/6G/PZp48D0WEE5ThX6QOfql8qXY9I1qv2rEPmOV/z
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sD2KfbxEHo9nmceMvcPb_BUVgnDyX4yM
+X-Proofpoint-ORIG-GUID: sD2KfbxEHo9nmceMvcPb_BUVgnDyX4yM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_09,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270076
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 10:28, Barry Song wrote:
-> On Mon, Nov 27, 2023 at 11:11 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 27/11/2023 09:59, Barry Song wrote:
->>> On Mon, Nov 27, 2023 at 10:35 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 27/11/2023 08:42, Barry Song wrote:
->>>>>>> +           for (i = 0; i < nr; i++, page++) {
->>>>>>> +                   if (anon) {
->>>>>>> +                           /*
->>>>>>> +                            * If this page may have been pinned by the
->>>>>>> +                            * parent process, copy the page immediately for
->>>>>>> +                            * the child so that we'll always guarantee the
->>>>>>> +                            * pinned page won't be randomly replaced in the
->>>>>>> +                            * future.
->>>>>>> +                            */
->>>>>>> +                           if (unlikely(page_try_dup_anon_rmap(
->>>>>>> +                                           page, false, src_vma))) {
->>>>>>> +                                   if (i != 0)
->>>>>>> +                                           break;
->>>>>>> +                                   /* Page may be pinned, we have to copy. */
->>>>>>> +                                   return copy_present_page(
->>>>>>> +                                           dst_vma, src_vma, dst_pte,
->>>>>>> +                                           src_pte, addr, rss, prealloc,
->>>>>>> +                                           page);
->>>>>>> +                           }
->>>>>>> +                           rss[MM_ANONPAGES]++;
->>>>>>> +                           VM_BUG_ON(PageAnonExclusive(page));
->>>>>>> +                   } else {
->>>>>>> +                           page_dup_file_rmap(page, false);
->>>>>>> +                           rss[mm_counter_file(page)]++;
->>>>>>> +                   }
->>>>>>>             }
->>>>>>> -           rss[MM_ANONPAGES]++;
->>>>>>> -   } else if (page) {
->>>>>>> -           folio_get(folio);
->>>>>>> -           page_dup_file_rmap(page, false);
->>>>>>> -           rss[mm_counter_file(page)]++;
->>>>>>> +
->>>>>>> +           nr = i;
->>>>>>> +           folio_ref_add(folio, nr);
->>>>>>
->>>>>> You're changing the order of mapcount vs. refcount increment. Don't.
->>>>>> Make sure your refcount >= mapcount.
->>>>>>
->>>>>> You can do that easily by doing the folio_ref_add(folio, nr) first and
->>>>>> then decrementing in case of error accordingly. Errors due to pinned
->>>>>> pages are the corner case.
->>>>>>
->>>>>> I'll note that it will make a lot of sense to have batch variants of
->>>>>> page_try_dup_anon_rmap() and page_dup_file_rmap().
->>>>>>
->>>>>
->>>>> i still don't understand why it is not a entire map+1, but an increment
->>>>> in each basepage.
->>>>
->>>> Because we are PTE-mapping the folio, we have to account each individual page.
->>>> If we accounted the entire folio, where would we unaccount it? Each page can be
->>>> unmapped individually (e.g. munmap() part of the folio) so need to account each
->>>> page. When PMD mapping, the whole thing is either mapped or unmapped, and its
->>>> atomic, so we can account the entire thing.
->>>
->>> Hi Ryan,
->>>
->>> There is no problem. for example, a large folio is entirely mapped in
->>> process A with CONPTE,
->>> and only page2 is mapped in process B.
->>> then we will have
->>>
->>> entire_map = 0
->>> page0.map = -1
->>> page1.map = -1
->>> page2.map = 0
->>> page3.map = -1
->>> ....
->>>
->>>>
->>>>>
->>>>> as long as it is a CONTPTE large folio, there is no much difference with
->>>>> PMD-mapped large folio. it has all the chance to be DoubleMap and need
->>>>> split.
->>>>>
->>>>> When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
->>>>> similar things on a part of the large folio in process A,
->>>>>
->>>>> this large folio will have partially mapped subpage in A (all CONTPE bits
->>>>> in all subpages need to be removed though we only unmap a part of the
->>>>> large folioas HW requires consistent CONTPTEs); and it has entire map in
->>>>> process B(all PTEs are still CONPTES in process B).
->>>>>
->>>>> isn't it more sensible for this large folios to have entire_map = 0(for
->>>>> process B), and subpages which are still mapped in process A has map_count
->>>>> =0? (start from -1).
->>>>>
->>>>>> Especially, the batch variant of page_try_dup_anon_rmap() would only
->>>>>> check once if the folio maybe pinned, and in that case, you can simply
->>>>>> drop all references again. So you either have all or no ptes to process,
->>>>>> which makes that code easier.
->>>>
->>>> I'm afraid this doesn't make sense to me. Perhaps I've misunderstood. But
->>>> fundamentally you can only use entire_mapcount if its only possible to map and
->>>> unmap the whole folio atomically.
->>>
->>>
->>>
->>> My point is that CONTPEs should either all-set in all 16 PTEs or all are dropped
->>> in 16 PTEs. if all PTEs have CONT, it is entirely mapped; otherwise,
->>> it is partially
->>> mapped. if a large folio is mapped in one processes with all CONTPTEs
->>> and meanwhile in another process with partial mapping(w/o CONTPTE), it is
->>> DoubleMapped.
->>
->> There are 2 problems with your proposal, as I see it;
->>
->> 1) the core-mm is not enlightened for CONTPTE mappings. As far as it is
->> concerned, its just mapping a bunch of PTEs. So it has no hook to inc/dec
->> entire_mapcount. The arch code is opportunistically and *transparently* managing
->> the CONT_PTE bit.
->>
->> 2) There is nothing to say a folio isn't *bigger* than the contpte block; it may
->> be 128K and be mapped with 2 contpte blocks. Or even a PTE-mapped THP (2M) and
->> be mapped with 32 contpte blocks. So you can't say it is entirely mapped
->> unless/until ALL of those blocks are set up. And then of course each block could
->> be unmapped unatomically.
->>
->> For the PMD case there are actually 2 properties that allow using the
->> entire_mapcount optimization; It's atomically mapped/unmapped through the PMD
->> and we know that the folio is exactly PMD sized (since it must be at least PMD
->> sized to be able to map it with the PMD, and we don't allocate THPs any bigger
->> than PMD size). So one PMD map or unmap operation corresponds to exactly one
->> *entire* map or unmap. That is not true when we are PTE mapping.
-> 
-> well. Thanks for clarification. based on the above description, i agree the
-> current code might make more sense by always using mapcount in subpage.
-> 
-> I gave my proposals as  I thought we were always CONTPTE size for small-THP
-> then we could drop the loop to iterate 16 times rmap. if we do it
-> entirely, we only
-> need to do dup rmap once for all 16 PTEs by increasing entire_map.
+This change adds ftrace support for following functions which
+helps in debugging the issues when there is Channel state & MHI
+state change and also when we receive data and control events:
+1. mhi_intvec_mhi_states
+2. mhi_process_data_event_ring
+3. mhi_process_ctrl_ev_ring
+4. mhi_gen_tre
+5. mhi_update_channel_state
+6. mhi_tryset_pm_state
+7. mhi_pm_st_worker
 
-Well its always good to have the discussion - so thanks for the ideas. I think
-there is a bigger question lurking here; should we be exposing the concept of
-contpte mappings to the core-mm rather than burying it in the arm64 arch code?
-I'm confident that would be a huge amount of effort and the end result would be
-similar performace to what this approach gives. One potential benefit of letting
-core-mm control it is that it would also give control to core-mm over the
-granularity of access/dirty reporting (my approach implicitly ties it to the
-folio). Having sub-folio access tracking _could_ potentially help with future
-work to make THP size selection automatic, but we are not there yet, and I think
-there are other (simpler) ways to achieve the same thing. So my view is that
-_not_ exposing it to core-mm is the right way for now.
+Where ever the trace events are added, debug messages are removed.
 
-> 
-> BTW, I have concerns that a variable small-THP size will really work
-> as userspace
-> is probably friendly to only one fixed size. for example, userspace
-> heap management
-> might be optimized to a size for freeing memory to the kernel. it is
-> very difficult
-> for the heap to adapt to various sizes at the same time. frequent unmap/free
-> size not equal with, and particularly smaller than small-THP size will
-> defeat all
-> efforts to use small-THP.
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+Changes in v5:
+- Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
+- Instead of converting to u64 to print address, use %px to print the address to avoid
+- warnings in some platforms.
+- Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
 
-I'll admit to not knowing a huge amount about user space allocators. But I will
-say that as currently defined, the small-sized THP interface to user space
-allows a sysadmin to specifically enable the set of sizes that they want; so a
-single size can be enabled. I'm diliberately punting that decision away from the
-kernel for now.
+Changes in v4:
+- Fix compilation issues in previous patch which happended due to rebasing.
+- In the defconfig FTRACE config is not enabled due to that the compilation issue is not
+- seen in my workspace.
+- Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
 
-FWIW, My experience with the Speedometer/JavaScript use case is that performance
-is a little bit better when enabling 64+32+16K vs just 64K THP.
+Changes in v3:
+- move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
+- we can include driver header files.
+- Use macros directly in the trace events as suggested Jeffrey Hugo.
+- Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
+- removed the mhi_to_physical function as this can give security issues.
+- removed macros to define strings as we can get those from driver headers.
+- Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
 
-Functionally, it will not matter if the allocator is not enlightened for the THP
-size; it can continue to free, and if a partial folio is unmapped it is put on
-the deferred split list, then under memory pressure it is split and the unused
-pages are reclaimed. I guess this is the bit you are concerned about having a
-performance impact?
+Changes in v2:
+- Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
+- Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+- Fixed the kernel test rebot issues.
+- Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
+---
+ drivers/bus/mhi/host/init.c     |   3 +
+ drivers/bus/mhi/host/internal.h |   1 +
+ drivers/bus/mhi/host/main.c     |  23 +++--
+ drivers/bus/mhi/host/pm.c       |   6 +-
+ drivers/bus/mhi/host/trace.h    | 208 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 228 insertions(+), 13 deletions(-)
 
-Regardless, it would be good to move this conversation to the small-sized THP
-patch series since this is all independent of contpte mappings.
+diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+index f78aefd2d7a3..6acb85f4c5f8 100644
+--- a/drivers/bus/mhi/host/init.c
++++ b/drivers/bus/mhi/host/init.c
+@@ -20,6 +20,9 @@
+ #include <linux/wait.h>
+ #include "internal.h"
+ 
++#define CREATE_TRACE_POINTS
++#include "trace.h"
++
+ static DEFINE_IDA(mhi_controller_ida);
+ 
+ const char * const mhi_ee_str[MHI_EE_MAX] = {
+diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
+index 2e139e76de4c..a02a71605907 100644
+--- a/drivers/bus/mhi/host/internal.h
++++ b/drivers/bus/mhi/host/internal.h
+@@ -7,6 +7,7 @@
+ #ifndef _MHI_INT_H
+ #define _MHI_INT_H
+ 
++#include "trace.h"
+ #include "../common.h"
+ 
+ extern struct bus_type mhi_bus_type;
+diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+index dcf627b36e82..0d7e068e713a 100644
+--- a/drivers/bus/mhi/host/main.c
++++ b/drivers/bus/mhi/host/main.c
+@@ -491,11 +491,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+ 
+ 	state = mhi_get_mhi_state(mhi_cntrl);
+ 	ee = mhi_get_exec_env(mhi_cntrl);
+-	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+-		TO_MHI_EXEC_STR(mhi_cntrl->ee),
+-		mhi_state_str(mhi_cntrl->dev_state),
+-		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+ 
++	trace_mhi_intvec_states(mhi_cntrl->mhi_dev->name, mhi_cntrl->ee,
++				mhi_cntrl->dev_state, ee, state);
+ 	if (state == MHI_STATE_SYS_ERR) {
+ 		dev_dbg(dev, "System error detected\n");
+ 		pm_state = mhi_tryset_pm_state(mhi_cntrl,
+@@ -832,6 +830,10 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 	while (dev_rp != local_rp) {
+ 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+ 
++		trace_mhi_ctrl_event(mhi_cntrl->mhi_dev->name, local_rp,
++				     local_rp->ptr, local_rp->dword[0],
++				     local_rp->dword[1]);
++
+ 		switch (type) {
+ 		case MHI_PKT_TYPE_BW_REQ_EVENT:
+ 		{
+@@ -997,6 +999,9 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+ 	while (dev_rp != local_rp && event_quota > 0) {
+ 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+ 
++		trace_mhi_data_event(mhi_cntrl->mhi_dev->name, local_rp, local_rp->ptr,
++				     local_rp->dword[0], local_rp->dword[1]);
++
+ 		chan = MHI_TRE_GET_EV_CHID(local_rp);
+ 
+ 		WARN_ON(chan >= mhi_cntrl->max_chan);
+@@ -1235,6 +1240,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+ 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
+ 	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
+ 
++	trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, mhi_tre,
++			  mhi_tre->ptr, mhi_tre->dword[0], mhi_tre->dword[1]);
+ 	/* increment WP */
+ 	mhi_add_ring_element(mhi_cntrl, tre_ring);
+ 	mhi_add_ring_element(mhi_cntrl, buf_ring);
+@@ -1327,9 +1334,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+ 	int ret;
+ 
+-	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
+-		TO_CH_STATE_TYPE_STR(to_state));
+-
++	trace_mhi_channel_command_start(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
+ 	switch (to_state) {
+ 	case MHI_CH_STATE_TYPE_RESET:
+ 		write_lock_irq(&mhi_chan->lock);
+@@ -1396,9 +1401,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 		write_unlock_irq(&mhi_chan->lock);
+ 	}
+ 
+-	dev_dbg(dev, "%d: Channel state change to %s successful\n",
+-		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+-
++	trace_mhi_channel_command_end(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
+ exit_channel_update:
+ 	mhi_cntrl->runtime_put(mhi_cntrl);
+ 	mhi_device_put(mhi_cntrl->mhi_dev);
+diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+index 8a4362d75fc4..e32afdc92fde 100644
+--- a/drivers/bus/mhi/host/pm.c
++++ b/drivers/bus/mhi/host/pm.c
+@@ -123,6 +123,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
+ 	if (unlikely(!(dev_state_transitions[index].to_states & state)))
+ 		return cur_state;
+ 
++	trace_mhi_tryset_pm_state(mhi_cntrl->mhi_dev->name, state);
+ 	mhi_cntrl->pm_state = state;
+ 	return mhi_cntrl->pm_state;
+ }
+@@ -753,7 +754,6 @@ void mhi_pm_st_worker(struct work_struct *work)
+ 	struct mhi_controller *mhi_cntrl = container_of(work,
+ 							struct mhi_controller,
+ 							st_worker);
+-	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 
+ 	spin_lock_irq(&mhi_cntrl->transition_lock);
+ 	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
+@@ -761,8 +761,8 @@ void mhi_pm_st_worker(struct work_struct *work)
+ 
+ 	list_for_each_entry_safe(itr, tmp, &head, node) {
+ 		list_del(&itr->node);
+-		dev_dbg(dev, "Handling state transition: %s\n",
+-			TO_DEV_STATE_TRANS_STR(itr->state));
++
++		trace_mhi_pm_st_transition(mhi_cntrl->mhi_dev->name, itr->state);
+ 
+ 		switch (itr->state) {
+ 		case DEV_ST_TRANSITION_PBL:
+diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+new file mode 100644
+index 000000000000..3bfac529c6b7
+--- /dev/null
++++ b/drivers/bus/mhi/host/trace.h
+@@ -0,0 +1,208 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM mhi_host
++
++#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_EVENT_MHI_HOST_H
++
++#include <linux/tracepoint.h>
++#include <linux/trace_seq.h>
++#include "../common.h"
++#include "internal.h"
++
++TRACE_EVENT(mhi_gen_tre,
++
++	TP_PROTO(const char *name, int ch_num, void *wp, __le64 tre_ptr,
++		 __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, ch_num)
++		__field(void *, wp)
++		__field(__le64, tre_ptr)
++		__field(__le32, dword0)
++		__field(__le32, dword1)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ch_num = ch_num;
++		__entry->wp = wp;
++		__entry->tre_ptr = tre_ptr;
++		__entry->dword0 = dword0;
++		__entry->dword1 = dword1;
++	),
++
++	TP_printk("%s: Chan: %d WP: 0x%p TRE: 0x%llx 0x%08x 0x%08x\n",
++		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
++		  __entry->dword0, __entry->dword1)
++);
++
++TRACE_EVENT(mhi_intvec_states,
++
++	TP_PROTO(const char *name, int local_ee, int state, int dev_ee, int dev_state),
++
++	TP_ARGS(name, local_ee, state, dev_ee, dev_state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, local_ee)
++		__field(int, state)
++		__field(int, dev_ee)
++		__field(int, dev_state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->local_ee = local_ee;
++		__entry->state = state;
++		__entry->dev_ee = dev_ee;
++		__entry->dev_state = dev_state;
++	),
++
++	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
++		  __get_str(name),
++		  TO_MHI_EXEC_STR(__entry->local_ee),
++		  mhi_state_str(__entry->state),
++		  TO_MHI_EXEC_STR(__entry->dev_ee),
++		  mhi_state_str(__entry->dev_state))
++);
++
++TRACE_EVENT(mhi_tryset_pm_state,
++
++	TP_PROTO(const char *name, int pm_state),
++
++	TP_ARGS(name, pm_state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, pm_state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		if (pm_state)
++			pm_state = __fls(pm_state);
++		__entry->pm_state = pm_state;
++	),
++
++	TP_printk("%s: PM state: %s\n", __get_str(name),
++		  to_mhi_pm_state_str(__entry->pm_state))
++);
++
++DECLARE_EVENT_CLASS(mhi_process_event_ring,
++
++	TP_PROTO(const char *name, void *rp, __le64 ptr,
++		 __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, rp, ptr, dword0, dword1),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(__le32, dword0)
++		__field(__le32, dword1)
++		__field(int, state)
++		__field(__le64, ptr)
++		__field(void *, rp)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->rp = rp;
++		__entry->ptr = ptr;
++		__entry->dword0 = dword0;
++		__entry->dword1 = dword1;
++		__entry->state = MHI_TRE_GET_EV_STATE((struct mhi_ring_element *)entry->rp);
++	),
++
++	TP_printk("%s: RP:0x%p Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
++		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
++		  __entry->dword1, mhi_state_str(__entry->state))
++);
++
++DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
++
++	TP_PROTO(const char *name, void *rp, __le64 ptr,
++		 __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, rp, ptr, dword0, dword1)
++);
++
++DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
++
++	TP_PROTO(const char *name, void *rp, __le64 ptr,
++		 __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, rp, ptr, dword0, dword1)
++);
++
++DECLARE_EVENT_CLASS(mhi_update_channel_state,
++
++	TP_PROTO(const char *name, int ch_num, int state),
++
++	TP_ARGS(name, ch_num, state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, ch_num)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ch_num = ch_num;
++		__entry->state = state;
++	),
++
++	TP_printk("%s: ch%d: Updating state to: %s\n",
++		  __get_str(name), __entry->ch_num,
++		  TO_CH_STATE_TYPE_STR(__entry->state))
++);
++
++DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
++
++	TP_PROTO(const char *name, int ch_num, int state),
++
++	TP_ARGS(name, ch_num, state)
++);
++
++DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
++
++	TP_PROTO(const char *name, int ch_num, int state),
++
++	TP_ARGS(name, ch_num, state)
++);
++
++TRACE_EVENT(mhi_pm_st_transition,
++
++	TP_PROTO(const char *name, int state),
++
++	TP_ARGS(name, state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->state = state;
++	),
++
++	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
++		  TO_DEV_STATE_TRANS_STR(__entry->state))
++);
++
++#endif
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE trace
++
++#include <trace/define_trace.h>
 
-> 
->>
->>>
->>> Since we always hold ptl to set or drop CONTPTE bits, set/drop is
->>> still atomic in a
->>> spinlock area.
->>>
->>>>
->>>>>>
->>>>>> But that can be added on top, and I'll happily do that.
->>>>>>
->>>>>> --
->>>>>> Cheers,
->>>>>>
->>>>>> David / dhildenb
->>>>>
->>>
-> 
-> Thanks
-> Barry
+---
+base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
+change-id: 20231005-ftrace_support-6869d4156139
+
+Best regards,
+-- 
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
