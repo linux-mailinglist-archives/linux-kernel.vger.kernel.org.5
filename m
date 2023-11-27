@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07C37FAAFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4459F7FAAFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbjK0UHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        id S233062AbjK0UIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0UHw (ORCPT
+        with ESMTP id S229527AbjK0UIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:07:52 -0500
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AA5C2;
-        Mon, 27 Nov 2023 12:07:56 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701115655; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=j9Dnl2feQikME50AveMe2VIAx+6WIxyk5Llq+7xwrjbq9aMuX3z7kdJAXfMxwW1KtC
-    CAVylr5ngDTnNNO2xjhpt79kSn6boZ/0dUHzRMWC31behifoXmSJyjGgoLtyQ0gCyvcs
-    Vv+5Bn2ealkVw+E9A121ocxqwwsOYPI0at8y+S26ookxj5w1WHW3wCQv+iKgdi/I7rF4
-    fNH2loc48rcDq2gM9wv7TDO/GqGCsQcZqBCzTztGZC+mPPHg/NbD8oM/slg6hTGGd9Pe
-    QXuaLTsjdAFi2jxtd/+gRAjcIKYBB7tfTl8X1hkNFVjVK6FLLCtUw9BTxOJHUqruwyhd
-    j91w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701115655;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
-    b=ZUgtJtWVyz1PjQtKX6lm0GUT9hBwESh1E5gah98jsmbEc7ehf0xhPVP1G19nLczlBF
-    3jPVGJYJJF1NDEizh8WNKW06potRqC4tw1XH4UzPs28c709Ed9DO8RBdlypTtWP+e4yP
-    X8oeacDrZoiZ0hZWRpJIG54WuKI7/M3wUirPstf4s1m5K9j3R7E5gRRjjUd/QfXzoSMO
-    At7X/39SC+s9mVikv39qV7LmILmvqpZRi46brLanKwlc0BYh25SszAjD8pD5ma1MYI67
-    2BbnTl0m1TfTEn4HTXn2LT18a9rwqvFU3KyH3X7CWWZCmPRAD6oeA9s14roqpOU0quJQ
-    IR2A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701115655;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
-    b=dRxXjHWOUI2KreqKJg9Mf2I/iqUZv7koheEFKJpWNrOs7lAldQgkxmEXgXLSJBlJbL
-    cYsWaSoPlQpU4yQl0adBeOr7TcaKFL3qUjJ7LTw7LX80tr4o0ak3HBUtJIr/JDKpTAM2
-    a0oCh563ChFQHR+f/yV8iUrYBen9q/2DPbIUwtRUrT0j8aQT6WLjsJINGtOr35Y4NwtR
-    0843PRDOC9GGb4brb4XmP0NkbNAGgXqBP6j8fWh/clczSOhNLGxdioh4tu44NSRCI4Bv
-    h7+YHuHM73gsEt+HToEejFcWMx7a1hpBNxYhxDiCaxJWxKSj3oAGzz79TjFZ8aU2HV55
-    8Xqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701115655;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
-    b=wMD+7x0VImS6FeN3bgL/Mo5n0Z4sHlIqS2YxbdSBRy6fgGL2ul2mfpAM10fSiQvVGr
-    6mQoRDwJA0e0TXX+TgDw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id t3efe7zARK7XjVD
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 27 Nov 2023 21:07:33 +0100 (CET)
-Date:   Mon, 27 Nov 2023 21:07:28 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Mon, 27 Nov 2023 15:08:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294E8D62
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701115702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3O4ZRmciR+wHsAJ9W5qRG6w9TB013g8G4slV+9aIPT0=;
+        b=JACWPN+4ACEM0y0YKqcNHfKoROvQAZ/1MIm7dDpPIK3ZD69hH2IV4BwoB9sk/iQxms+ucA
+        BVgg5J7P2QK3uIzo7LiQ/hq8j0hIBIciET7jZc5l0Z3vnXeUVAG50+QXag1wc5oE3OCJL9
+        7KK65N/e6e6B4AvGq+TsTmW3Avm0Nhc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-136-qg9vcIXWN_CFEARSZwzMoQ-1; Mon, 27 Nov 2023 15:08:21 -0500
+X-MC-Unique: qg9vcIXWN_CFEARSZwzMoQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77d85c600d6so343240785a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:08:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701115700; x=1701720500;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3O4ZRmciR+wHsAJ9W5qRG6w9TB013g8G4slV+9aIPT0=;
+        b=j67st5Fj7SqAJoQafWZplJTF4CIov22wEAEFDX7x+4CuItovRmp34gEMA8N69JqLQg
+         jQnB/9QIkae7XqqQ2LF+ZhUFEfTT6rhrUdiQfGRBWpIwE3QU4grbawKbuxQSkRjg8zz7
+         Tdz7KAshX2RkRU1mAocuYRzg8u1MSkN/EBAE4sMSkwpiXLWMAEEnvERMO2ecPUETYYR1
+         peJIMga2+tk6SXX+AZTh4QHT8bCzeRkkQmzyOV7VcQhYf9dBorERD1lIHGyb8qUDrIuF
+         zPLx/IzdcGKzWNMHZmyfmexK1rlBiBFJmseH3bNm3tsXakCqXb7mFyUuU4NtjCbXviIy
+         4w0g==
+X-Gm-Message-State: AOJu0Yw8ZGx5dE6BlekmUS/zK0onQQRxWb8CLtgqJ1Nf2+hH28Bmfk5H
+        Q8r+hY2ca2ySsM5P3CoxB/P83giR6iIqOaXrJxcCEj6Zy5GnWAzE5+PwDZTddgB05ndjee9j12Q
+        LJ/5mT7IBNSXt+zeximcp4gUJ
+X-Received: by 2002:a05:620a:4547:b0:77d:98a6:6482 with SMTP id u7-20020a05620a454700b0077d98a66482mr10312277qkp.5.1701115700630;
+        Mon, 27 Nov 2023 12:08:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFAOj5nW/hCUU/lQPFtlhep37vZxkbLPRtbKtgaPSf8NAsZmu5Q9f59kSPzVGwrfLyJ8/zyKQ==
+X-Received: by 2002:a05:620a:4547:b0:77d:98a6:6482 with SMTP id u7-20020a05620a454700b0077d98a66482mr10312228qkp.5.1701115700263;
+        Mon, 27 Nov 2023 12:08:20 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id dt32-20020a05620a47a000b0077d71d46887sm3926285qkb.112.2023.11.27.12.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 12:08:19 -0800 (PST)
+Date:   Mon, 27 Nov 2023 14:08:16 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Suraj Jaiswal <quic_jsuraj@quicinc.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: remoteproc: qcom: wcnss: Add WCN3680B
- compatible
-Message-ID: <ZWT3APJlNQaKVyJU@gerhold.net>
-References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
- <CAMZdPi-S2_UQO-rD38-thwta-YgH3W78Ecd1Du7Q_US=J7k0ew@mail.gmail.com>
- <ZS1MTAHq6GLW6RAK@gerhold.net>
- <1868698.tdWV9SEqCh@z3ntu.xyz>
+        linux-stm32@st-md-mailman.stormreply.com,
+        Prasad Sodagudi <psodagud@quicinc.com>, kernel@quicinc.com
+Subject: Re: [PATCH net-next v3 3/3] net: stmmac: Add driver support for
+ DWMAC5 fault IRQ Support
+Message-ID: <v45vmnfab7a2p5kikwz3stjvphddyxkxrtcnipcsptvcwohqrl@hzyz3hzddxnv>
+References: <cover.1700737841.git.quic_jsuraj@quicinc.com>
+ <62eaaace3713751cb1ecac3163e857737107ca0e.1700737841.git.quic_jsuraj@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1868698.tdWV9SEqCh@z3ntu.xyz>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+In-Reply-To: <62eaaace3713751cb1ecac3163e857737107ca0e.1700737841.git.quic_jsuraj@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,95 +95,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 01:25:22PM +0100, Luca Weiss wrote:
-> On Montag, 16. Oktober 2023 16:44:28 CET Stephan Gerhold wrote:
-> > On Mon, Oct 16, 2023 at 03:16:14PM +0200, Loic Poulain wrote:
-> > > On Mon, 16 Oct 2023 at 07:35, Krzysztof Kozlowski
-> > > 
-> > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > > On 15/10/2023 22:03, Luca Weiss wrote:
-> > > > > Add a compatible for the iris subnode in the WCNSS PIL.
-> > > > > 
-> > > > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> > > > > ---
-> > > > > 
-> > > > >  Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml | 1
-> > > > >  +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > > 
-> > > > > diff --git
-> > > > > a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
-> > > > > b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
-> > > > > index 45eb42bd3c2c..0e5e0b7a0610 100644
-> > > > > --- a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
-> > > > > 
-> > > > > @@ -111,6 +111,7 @@ properties:
-> > > > >            - qcom,wcn3660
-> > > > >            - qcom,wcn3660b
-> > > > >            - qcom,wcn3680
-> > > > > 
-> > > > > +          - qcom,wcn3680b
-> > > > 
-> > > > Looks like this should be made as compatible with qcom,wcn3680 (so with
-> > > > fallback).
-> > > 
-> > > Yes, agree, let's do a regular fallback as there is nothing 'b'
-> > > specific in the driver:
-> > > `compatible = "qcom,wcn3680b", "qcom,wcn3680";`
-> > > 
-> > > And yes, we should also have done that for qcom,wcn3660b...
-> > 
-> > I don't think this would have worked properly for qcom,wcn3660b:
-> > 
-> >  - It's not compatible with "qcom,wcn3660", because they have different
-> >    regulator voltage requirements. wcn3660(a?) needs vddpa with
-> >    2.9-3.0V, but wcn3660b needs 3.3V. That's why wcn3660b uses the
-> >    wcn3680_data in qcom_wcnss.iris.c. Otherwise if you would run an
-> >    older kernel that knows "qcom,wcn3660" but not "qcom,wcn3660b" it
-> >    would apply the wrong voltage.
-> > 
-> >  - It's not compatible with "qcom,wcn3680" either because that is used
-> >    as indication if 802.11ac is supported (wcn3660b doesn't).
-> > 
-> > The main question here is: What does the current "qcom,wcn3680"
-> > compatible actually represent? It's defined with vddpa = 3.3V in the
-> > driver, which would suggest that:
-> > 
-> >  1. It's actually meant to represent WCN3680B, which needs 3.3V vddpa
-> >     like WCN3660B, or
-> > 
-> >  2. WCN3680(A?) has different requirements than WCN3660(A?) and also
-> >     needs 3.3V vddpa. But then what is the difference between
-> >     WCN3680(A?) and WCN3680B? Is there even a variant without ...B?
-> > 
-> > There is public documentation for WCN3660B and WCN3680B but the non-B
-> > variants are shrouded in mystery.
+On Thu, Nov 23, 2023 at 05:08:15PM +0530, Suraj Jaiswal wrote:
+> Add IRQ support to listen HW fault like ECC,DPP,FSM
+> fault and print the fault information in the kernel
+> log.
 > 
-> Hi Stephan (and everyone),
+> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
+>  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 ++
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 18 +++++++++++++++++
+>  .../ethernet/stmicro/stmmac/stmmac_platform.c | 20 +++++++++++++++++++
+>  4 files changed, 41 insertions(+)
 > 
-> Do you have a suggestion how to move this patchset forward? Is the fallback 
-> compatible that was suggested okay for the wcn3680b situation?
-> 
->   compatible = "qcom,wcn3680b", "qcom,wcn3680";
-> 
-> If so, I'll make v2 with that implemented.
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+> index 6b935922054d..c4821c7ab674 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+> @@ -347,6 +347,7 @@ enum request_irq_err {
+>  	REQ_IRQ_ERR_SFTY_UE,
+>  	REQ_IRQ_ERR_SFTY_CE,
+>  	REQ_IRQ_ERR_LPI,
+> +	REQ_IRQ_ERR_SAFETY,
+>  	REQ_IRQ_ERR_WOL,
+>  	REQ_IRQ_ERR_MAC,
+>  	REQ_IRQ_ERR_NO,
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> index cd7a9768de5f..8893d4b7fa38 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> @@ -33,6 +33,7 @@ struct stmmac_resources {
+>  	int irq;
+>  	int sfty_ce_irq;
+>  	int sfty_ue_irq;
+> +	int safety_common_intr;
+>  	int rx_irq[MTL_MAX_RX_QUEUES];
+>  	int tx_irq[MTL_MAX_TX_QUEUES];
+>  };
+> @@ -331,6 +332,7 @@ struct stmmac_priv {
+>  	/* XDP BPF Program */
+>  	unsigned long *af_xdp_zc_qps;
+>  	struct bpf_prog *xdp_prog;
+> +	int safety_common_intr;
+>  };
+>  
+>  enum stmmac_state {
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 8964fc8a955f..2ae4f34444de 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -3530,6 +3530,10 @@ static void stmmac_free_irq(struct net_device *dev,
+>  		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
+>  			free_irq(priv->wol_irq, dev);
+>  		fallthrough;
+> +	case REQ_IRQ_ERR_SAFETY:
+> +		if (priv->safety_common_intr > 0 && priv->safety_common_intr != dev->irq)
+> +			free_irq(priv->safety_common_intr, dev);
+> +		fallthrough;
+>  	case REQ_IRQ_ERR_WOL:
+>  		free_irq(dev->irq, dev);
+>  		fallthrough;
+> @@ -3736,6 +3740,18 @@ static int stmmac_request_irq_single(struct net_device *dev)
+>  		}
+>  	}
+>  
+> +	if (priv->safety_common_intr > 0 && priv->safety_common_intr != dev->irq) {
+> +		ret = request_irq(priv->safety_common_intr, stmmac_safety_interrupt,
+> +				  0, "safety", dev);
+> +		if (unlikely(ret < 0)) {
+> +			netdev_err(priv->dev,
+> +				   "%s: alloc safety failed %d (error: %d)\n",
+> +				   __func__, priv->safety_common_intr, ret);
+> +			irq_err = REQ_IRQ_ERR_SAFETY;
+> +			goto irq_error;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  
+>  irq_error:
+> @@ -7398,6 +7414,8 @@ int stmmac_dvr_probe(struct device *device,
+>  	priv->lpi_irq = res->lpi_irq;
+>  	priv->sfty_ce_irq = res->sfty_ce_irq;
+>  	priv->sfty_ue_irq = res->sfty_ue_irq;
+> +	priv->safety_common_intr = res->safety_common_intr;
+> +
+>  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
+>  		priv->rx_irq[i] = res->rx_irq[i];
+>  	for (i = 0; i < MTL_MAX_TX_QUEUES; i++)
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> index 1ffde555da47..bae1704d5f4b 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> @@ -690,9 +690,25 @@ devm_stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+>  #endif /* CONFIG_OF */
+>  EXPORT_SYMBOL_GPL(devm_stmmac_probe_config_dt);
+>  
+> +int stmmac_get_fault_intr_config(struct platform_device *pdev, struct stmmac_resources *res)
+> +{
+> +	int ret = 0;
+> +
+> +	res->safety_common_intr = platform_get_irq_byname(pdev, "safety");
+> +
+> +	if (res->safety_common_intr < 0) {
+> +		if (res->safety_common_intr != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "safety IRQ configuration information not found\n");
+> +		ret = 1;
+> +	}
+> +
+> +	return ret;
+> +}
+
+I think other reviewers have covered most of what I want to say, but
+I think this doesn't deserve its own function and should just be done
+directly, as is done for eth_lpi for example. I think it also should be
+considered an optional interrupt based on my understanding of its
+purpose (just like eth_lpi).
+
+> +
+>  int stmmac_get_platform_resources(struct platform_device *pdev,
+>  				  struct stmmac_resources *stmmac_res)
+>  {
+> +	int ret = 0;
+>  	memset(stmmac_res, 0, sizeof(*stmmac_res));
+>  
+>  	/* Get IRQ information early to have an ability to ask for deferred
+> @@ -702,6 +718,10 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
+>  	if (stmmac_res->irq < 0)
+>  		return stmmac_res->irq;
+>  
+> +	ret = stmmac_get_fault_intr_config(pdev, stmmac_res);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "Fault interrupt not present\n");
+> +
+>  	/* On some platforms e.g. SPEAr the wake up irq differs from the mac irq
+>  	 * The external wake up irq can be passed through the platform code
+>  	 * named as "eth_wake_irq"
+> -- 
+> 2.25.1
 > 
 
-Personally, I would just go with what exists already and use the
-existing "qcom,wcn3680" compatible as-is. No one has provided evidence
-that there is actually something like a WCN3680(A), without a 'B' at the
-end. Also, all existing users of the "qcom,wcn3680" compatible upstream
-actually seem to refer to WCN3680B (I'm quite sure apq8039-t2 has
-WCN3680B, MSM8974 isn't entirely clear but iirc you mentioned there was
-some schematic of a MSM8974 device which says WCN3680B as well).
-
-It would be nice to have the compatible perfectly correct and complete,
-but I see no point to extend it with additional information that we
-can't properly verify.
-
-Or do you actually need a different compatible to customize something in
-the driver?
-
-Thanks,
-Stephan
