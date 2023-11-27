@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E747FA905
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3DA7FA90A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjK0Sij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 13:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S232521AbjK0Sjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 13:39:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjK0Sih (ORCPT
+        with ESMTP id S229531AbjK0Sju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 13:38:37 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E83A1;
-        Mon, 27 Nov 2023 10:38:44 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARIPxdY011556;
-        Mon, 27 Nov 2023 18:38:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=rYybWgokpVv90qBdPZiA3EOFqVOw/Kv9mBFSMTnnoE0=;
- b=JJLNC+ISB0x0FWeA4eViD10ZH3IkY/3cPuB/fhMFCbFS0o2RJX04zlpd6N3k833qZFc0
- rbIjTtFm054fXB+yC7V0Jkg5wdr1Lbub2D28xp3fLZ5mlNDO/F750LF91q88lehf9bDr
- SNi8RE9xf9Ljo89J585s9+H8Nr9u7TgB8+U5yjTPXI4lO6Iv8GdvbCrDB2eOTYXwXc2j
- NuGdaWOsN0eokPcbqMdusZhh7iJQHIduW59Ox5afA2kI7SXlDvs3RByI80yPIi8P5d5H
- 8txNRPfIUUnDIwfRi5ukvtUfND5ulPL2iCz3bLX4Lh0EN21BEvsQJO8wFynAgxNShk29 Jg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umwn5rkxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 18:38:25 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARIcPlG005701
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 18:38:25 GMT
-Received: from [10.110.63.243] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 10:38:24 -0800
-Message-ID: <bdcdbd06-e9bd-4a92-b27b-d94b2d8fb52d@quicinc.com>
-Date:   Mon, 27 Nov 2023 10:38:24 -0800
+        Mon, 27 Nov 2023 13:39:50 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9EC198;
+        Mon, 27 Nov 2023 10:39:56 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5F9DD40E01A5;
+        Mon, 27 Nov 2023 18:39:54 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id oFSSdf7Hu-bc; Mon, 27 Nov 2023 18:39:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701110391; bh=0q2n0tc3kXV9vWzdDmVxky0SQ9EQ+gjJnqD2au8hEUo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FhyIroyyhiKWoClkCs8L/YRrESKzuGAQyU3KcodlxHkIShp5hhJQstiazv8MG/Dv1
+         xzseEtSkVD/1+3pY7PIx7NlvxyfHJBhKGQsl6Su7TaDiPHDyFCN4aD/LCl5I/lloZO
+         FqE4UI/Gkv1NLb2iTvqMUkDc02wfSSScdoA/idLd2uek9qRw/Hw4IRCnnpazyid+eI
+         T95YxoWb3+zNoWjKLfg9mXCo8rS5gdU7Tf62pLAr2B4xAcIxCytQHAHCFXScLXvwKw
+         QrwWDnUZhUve42Ux68KrWeMctZD5I1gFML1y+SR5K7ILm4XLbalMZ3kf1F/VBK8uB5
+         cRp5iPO0YgwKMoARtxDpNGpvUw0+T+muhvrLw/87XlsrFRau9bU7oxGP2cTom3mGW3
+         OmKfM+gN1L2inoHtjJlEpVUXue827X/krkmlPE5zzAzfOixP0ao9bLPZpMLO7nra7e
+         Y2Eke7/nBAf9nsVXZuA/9mH0slPzkpCSLUodKY17kTvkzxZQMPkxUrKJlFqYh2vzUj
+         ZGR+Ex/M2kYD+rFlZL5z2Y95ZoOApvxJAFJNybHDiQHnLCjyMhKBqlBDxxZIghNsQZ
+         6Yd9lHag+28dLKmxbfkR93swNpSNOf2LjJ4/gS3mPz0yhdXtybeCIiurApK45nanbl
+         7AoqCgUSlRCyCbZ7G1rlaWIs=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8E68A40E014B;
+        Mon, 27 Nov 2023 18:39:42 +0000 (UTC)
+Date:   Mon, 27 Nov 2023 19:39:41 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, james.morse@arm.com,
+        mchehab@kernel.org, rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] driver : edac : Fix warning using plain integer as NULL
+Message-ID: <20231127183941.GGZWTibScFM4lgbqkG@fat_crate.local>
+References: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
+ <20231127171435.GCZWTOe+DQSy4kkuKO@fat_crate.local>
+ <dfb5b4cd-935c-445b-aaa7-bcce962a143d@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath11k: fix layout of scan_flags in struct
- scan_req_params
-Content-Language: en-US
-To:     Nicolas Escande <nico.escande@gmail.com>,
-        Kalle Valo <kvalo@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ath11k@lists.infradead.org>
-References: <20231127180559.1696041-1-nico.escande@gmail.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231127180559.1696041-1-nico.escande@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RXxqDYP-mVAtsxhbjw4eJ6K8kykjEYWV
-X-Proofpoint-GUID: RXxqDYP-mVAtsxhbjw4eJ6K8kykjEYWV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_16,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=892 adultscore=0
- spamscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
- suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311270129
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <dfb5b4cd-935c-445b-aaa7-bcce962a143d@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/2023 10:05 AM, Nicolas Escande wrote:
-> The is a layout mismatch between the bitfield representing scan_flags in
-> struct scan_req_params & the bits as defined in the WMI_SCAN_XXX macros.
-> Lets fix it by making the struct match the #defines.
-> 
-> I tried to correct it by making the struct match the #define and it 
-> worked for WMI_SCAN_FLAG_FORCE_ACTIVE_ON_DFS / scan_f_force_active_dfs_chn
-> so I'm assuming this is the right thing to do.
-> 
-> Tested-on: QCN9074 hw1.0 PCI WLAN.HK.2.7.0.1-01744-QCAHKSWPL_SILICONZ-1
-> 
-> Signed-off-by: Nicolas Escande <nico.escande@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath11k/wmi.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/ath/ath11k/wmi.h
-> index 100bb816b592..0b4e6c2f7860 100644
-> --- a/drivers/net/wireless/ath/ath11k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath11k/wmi.h
-> @@ -3348,17 +3348,17 @@ struct scan_req_params {
->  			    scan_f_filter_prb_req:1,
->  			    scan_f_bypass_dfs_chn:1,
->  			    scan_f_continue_on_err:1,
-> +			    scan_f_promisc_mode:1,
-> +			    scan_f_force_active_dfs_chn:1,
-> +			    scan_f_add_tpc_ie_in_probe:1,
-> +			    scan_f_add_ds_ie_in_probe:1,
-> +			    scan_f_add_spoofed_mac_in_probe:1,
->  			    scan_f_offchan_mgmt_tx:1,
->  			    scan_f_offchan_data_tx:1,
-> -			    scan_f_promisc_mode:1,
->  			    scan_f_capture_phy_err:1,
->  			    scan_f_strict_passive_pch:1,
->  			    scan_f_half_rate:1,
->  			    scan_f_quarter_rate:1,
-> -			    scan_f_force_active_dfs_chn:1,
-> -			    scan_f_add_tpc_ie_in_probe:1,
-> -			    scan_f_add_ds_ie_in_probe:1,
-> -			    scan_f_add_spoofed_mac_in_probe:1,
->  			    scan_f_add_rand_seq_in_probe:1,
->  			    scan_f_en_ie_whitelist_in_probe:1,
->  			    scan_f_forced:1,
+On Mon, Nov 27, 2023 at 11:53:02PM +0530, Abhinav Singh wrote:
+> Hello, thanks for reviewing this. As of now this is only a warning issue in
+> kernel. I saw this post by linus
+> https://www.spinics.net/lists/linux-sparse/msg10066.html and thought of
+> submitting a patch. Also a similar patch of mine got accepted
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2560740.html,
+> so thought about opening this one as well.
 
-You are convoluting two different data structures.
+Lemme try to understand what you're saying: just because someone
+accepted a patch of yours, then others should not ask you to improve
+your commit message so that it explains *why* a change should be done.
 
-struct scan_req_params is used to represent a scan request within the
-host driver. This does not use the WMI_SCAN_XXX macros.
+How about you put the gist of what Linus is saying in your commit
+message? Don't you think it would be a much better commit message then?
 
-struct wmi_start_scan_cmd is used to represent the scan request command
-sent to firmware. This struct uses the WMI_SCAN_XXX macros to fill some
-members of this struct in ath11k_wmi_copy_scan_event_cntrl_flags().
+Especially if it explains why, even if it is the case that 0 == NULL, we
+don't want those in the kernel.
 
-So your change has no effect on the driver operation and incorrectly
-tries to foist the firmware definition upon the host internal
-representation.
+Hmmm?
 
-So NAK to this patch.
+-- 
+Regards/Gruss,
+    Boris.
 
-/jeff
+https://people.kernel.org/tglx/notes-about-netiquette
