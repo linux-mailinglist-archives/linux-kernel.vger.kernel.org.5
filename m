@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5217FAC4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771C17FAC4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjK0VJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        id S233062AbjK0VJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjK0VJL (ORCPT
+        with ESMTP id S231880AbjK0VJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:09:11 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F6BD5B
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:09:18 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35cd93add9fso1618275ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:09:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701119357; x=1701724157; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KSTA5AxGidSyTaTLg4RSb2BlNCyrBOixWgjNXj4yZ5I=;
-        b=hipEVxjpW8Zu4xcO9ZQhNa7vPJQI6D/hEAcqCnkJEf2W3jm/I7CRSHFXvKtiulIrmX
-         oNEVVA9nvFaLVh+Yb4NlI9XxnFUxDG5eEfYAVntuwbhURlTEC7+5H0WaSIoARmvN00iA
-         k899Ft6gnyocbIX6c1mboD7E/T2/tG5gGEATc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701119357; x=1701724157;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KSTA5AxGidSyTaTLg4RSb2BlNCyrBOixWgjNXj4yZ5I=;
-        b=oewrR+WMPrRHg+RfruqnKJBx48pRMcplPF65gkCxnCoVH57GE7BV9L9johDT87rwHf
-         lBebLbaWT3rqX1UYPtekdXPG8wsmqlx2jr/i6YcPqLpCKN44ROzTIgrGTc5u1JoFnB31
-         Vt3hktLcEtstxfEJ2K6+FCrWlMuAUSOzRxl5EqBaDTPb0Dug3jEqntwTCvM+U+R8NDWx
-         GbziHX1OPjBFEt71TdS6eT6KPNdhHqStlPWswlK8xDxLdTuqr76aZw03WY++ERJ4XUR/
-         AAB2t54NmSZjupfgOuYUUW7vbC/h0uPxP08PhUQ+wanWf7vKOJtSiEJVACNAPX4q3XhB
-         s35g==
-X-Gm-Message-State: AOJu0Ywd/QjRbUBP8+PYUzAnj5peJQD7V6MpztrSvO668j1XQUjhQx2T
-        tSzCGZrXJDmMWv8sza3nTXqt6w==
-X-Google-Smtp-Source: AGHT+IEDfv//1mMXVgo9PqXe+/pr1A5gpV6QqcsMlT5ROeF3Ctnhg1wy+WAJgRG0QNmfDlm+EQnbgg==
-X-Received: by 2002:a05:6602:2e0f:b0:792:6068:dcc8 with SMTP id o15-20020a0566022e0f00b007926068dcc8mr16208973iow.2.1701119357620;
-        Mon, 27 Nov 2023 13:09:17 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id b20-20020a05663801b400b00463f8b3e34asm2613346jaq.23.2023.11.27.13.09.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 13:09:17 -0800 (PST)
-Message-ID: <42bcba90-f32a-4b99-a68d-b4e8e37c202c@linuxfoundation.org>
-Date:   Mon, 27 Nov 2023 14:09:16 -0700
+        Mon, 27 Nov 2023 16:09:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CBC1B1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701119383; x=1732655383;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=10W0PaqCPrznnGcNMkRCZKFtSsqKmFSoUVQNEMqT+QM=;
+  b=eu2JitOyNneSwDuhqF7aXoldqWZ3oUAJhiBKUrs/oIM6jSzTY30mSLDV
+   4cM/pjzfr2agi0rMp8XCeeDtglRaAKi/ddvTLYlJ8n/JGeewxbuawAFpj
+   gXGlguO+1QOiZULK6A9nIVKz6eijGG78xaxpKXoQmLJ4GYngZogLYHHqx
+   vhZvm6ZuLRsKoH6EBWHGOIJBg2U0I/YXiasUP8t+PWn/g/W2rukoTLill
+   24xMDBJtQf9AjaJXkub7qIKJnKjxtCXZAO64Rk7qV1QP57qhfCTvTEi4y
+   3nz/pwuAzsnqx88tiND7RVxd29FXjBW9yScccmqKrkkOZZazsmuukCYhp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="423939907"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="423939907"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:09:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="886176561"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="886176561"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:09:43 -0800
+Received: from [10.209.158.65] (kliang2-mobl1.ccr.corp.intel.com [10.209.158.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1FC32580AA7;
+        Mon, 27 Nov 2023 13:09:42 -0800 (PST)
+Message-ID: <04967d96-cc03-4751-91f2-9f1ff80c6860@linux.intel.com>
+Date:   Mon, 27 Nov 2023 16:09:40 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tools cpupower bench: Override CFLAGS assignments
+Subject: Re: [PATCH v2 0/2] Fix NULL pointer dereference issue during
+ discovering UPI topology
 Content-Language: en-US
-To:     Stanley Chan <schan@cloudflare.com>, linux-pm@vger.kernel.org
-Cc:     kernel-team <kernel-team@cloudflare.com>,
-        Thomas Renninger <trenn@suse.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231124185042.315148-1-schan@cloudflare.com>
- <CX79UGJ80EBU.34DF47O8X8C7V@cloudflare.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CX79UGJ80EBU.34DF47O8X8C7V@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     alexander.antonov@linux.intel.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     kyle.meyer@hpe.com, alexey.v.bayduraev@linux.intel.com
+References: <20231127185246.2371939-1-alexander.antonov@linux.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231127185246.2371939-1-alexander.antonov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/23 11:59, Stanley Chan wrote:
-> Apologies, this is my first patch so I'm still learning.
-> Meant to add
+
+
+On 2023-11-27 1:52 p.m., alexander.antonov@linux.intel.com wrote:
+> From: Alexander Antonov <alexander.antonov@linux.intel.com>
 > 
-> Fixes: dbc4ca339c8d ("tools cpupower: Override CFLAGS assignments")
+> The NULL dereference happens inside upi_fill_topology() procedure in
+> case of disabling one of the sockets on the system.
 > 
+> For example, if you disable the 2nd socket on a 4-socket system then
+> uncore_max_dies() returns 3 and inside pmu_alloc_topology() memory will
+> be allocated only for 3 sockets and stored in type->topology.
+> In discover_upi_topology() memory is accessed by socket id from CPUNODEID
+> registers which contain physical ids (from 0 to 3) and on the line:
+> 
+>     upi = &type->topology[nid][idx];
+> 
+> out-of-bound access will happen and the 'upi' pointer will be passed to
+> upi_fill_topology() where it will be dereferenced.
+> 
+> To avoid this issue update the code to convert physical socket id to
+> logical socket id in discover_upi_topology() before accessing memory.
+> 
+> Changed in v2:
+>  1. Factor out topology_gidnid_map() with common code for GIDNIDMAP procedure
+> 
+> Alexander Antonov (2):
+>   perf/x86/intel/uncore: Fix NULL pointer dereference issue in
+>     upi_fill_topology()
+>   perf/x86/intel/uncore: Factor out topology_gidnid_map()
 
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
-Thank you for the fix. Please send me v2 with this fixes tag.
+Thanks,
+Kan
 
-thanks,
--- Shuah
-
-
+> 
+>  arch/x86/events/intel/uncore_snbep.c | 71 ++++++++++++++++------------
+>  1 file changed, 40 insertions(+), 31 deletions(-)
+> 
