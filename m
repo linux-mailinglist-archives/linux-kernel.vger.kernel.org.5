@@ -2,51 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C60D7FA6BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E9E7FA6C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbjK0Qqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
+        id S231452AbjK0QrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:47:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjK0Qqj (ORCPT
+        with ESMTP id S232495AbjK0QrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:46:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BDF1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:46:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E395C433C9;
-        Mon, 27 Nov 2023 16:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701103605;
-        bh=n0YJy9MtG9wS5bcesamH5c9LR2unSin2xWzNq/0Yo4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BEMiwoqnqPHfKIey/prxi1QaKY8T63v3GV4yMmaOKw6+Ow9Fp5n4NcB89LKyYsZiO
-         RS7uZjnGEngBxUWC9Lknj0vzG6clJFRSuiMj5R73QjJpDUqboTUCZtTjTORPDveakD
-         YIP7Jy7HjqCjysVz80BBbrg74/JnBEJMMV/KjAeFyX3BbT3NClyXtZh0iaDeo0QUFs
-         mJcuVnVvXgzY+EAx05oT9hppzbF/yD+igPNvt/eGYP9bxjRDnUboB6aR4YE3IgVSEJ
-         DAZlYzPHtxizr5CwGr01yCY3hPMJeoH8AQGGmx3AmKkmidck9gMV7CvzMh0jCrm3H7
-         0p2jueQpkajxQ==
-Date:   Mon, 27 Nov 2023 09:46:43 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
-Message-ID: <ZWTH85bmw0cdePXf@kbusch-mbp.dhcp.thefacebook.com>
-References: <20231127103208.25748-1-dwagner@suse.de>
- <20231127141857.GA25833@lst.de>
- <ZWS5dM5FzTMr5ftO@kbusch-mbp.dhcp.thefacebook.com>
- <20231127155649.GA1403@lst.de>
- <ZWTEFvYbI1bFTXyZ@kbusch-mbp.dhcp.thefacebook.com>
- <20231127163333.GA2273@lst.de>
+        Mon, 27 Nov 2023 11:47:10 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E065D60;
+        Mon, 27 Nov 2023 08:47:16 -0800 (PST)
+Received: from [192.168.1.103] (178.176.78.85) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 27 Nov
+ 2023 19:47:12 +0300
+Subject: Re: [PATCH 2/6] net: ravb: Use pm_runtime_resume_and_get()
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+        <yoshihiro.shimoda.uh@renesas.com>, <geert+renesas@glider.be>,
+        <wsa+renesas@sang-engineering.com>, <robh@kernel.org>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231127090426.3761729-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231127090426.3761729-3-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <de5891bc-63ab-aa57-01de-510e5d53eb1b@omp.ru>
+Date:   Mon, 27 Nov 2023 19:47:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127163333.GA2273@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231127090426.3761729-3-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.78.85]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/27/2023 16:34:05
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 181625 [Nov 27 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.85
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/27/2023 16:37:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/27/2023 3:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,25 +84,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 05:33:33PM +0100, Christoph Hellwig wrote:
-> On Mon, Nov 27, 2023 at 09:30:14AM -0700, Keith Busch wrote:
-> > > > Should this even be an nvme specific attribute? I thought we should have
-> > > > blk-integrity.c report its 'tuple_size' attribute instead. That should
-> > > > work as long as we're not dealing with extended metadata at least, but
-> > > > that's kind of a special format that doesn't have block layer support.
-> > > 
-> > > Reporting the tuple size is a good idea.  But is that enough for
-> > > the existing nvme-cli use case?
-> > 
-> > nvme-cli currently queries with admin passthrough identify command, so
-> > adding a new attribute won't break that. I assume Daniel would have it
-> > fallback to that same command for backward compatibilty if a desired
-> > sysfs attribute doesn't exist.
+On 11/27/23 12:04 PM, Claudiu wrote:
+
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> Yes.  But does it care about the tuple size, or the actual size of the
-> metadata field even if is bigger than the PI tuple?
+> pm_runtime_get_sync() may return an error. In case it returns with an error
+> dev->power.usage_count needs to be decremented. pm_runtime_resume_and_get()
+> takes care of this. Thus use it.
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-tuple_size is the same value as metadata size regardless of PI usage.
-See nvme_init_integrity() for how this driver sets it:
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-	integrity.tuple_size = ns->ms;
+[...]
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 50c4c79be035..cd3474168452 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+[...]
+> @@ -2876,6 +2878,7 @@ static int ravb_probe(struct platform_device *pdev)
+>  	clk_disable_unprepare(priv->refclk);
+>  out_release:
+>  	pm_runtime_put(&pdev->dev);
+> +out_runtime_disable:
+
+   I'd suggest a shorter name, like out_rpm_disable...
+
+>  	pm_runtime_disable(&pdev->dev);
+>  	reset_control_assert(rstc);
+>  out_free_netdev:
+> 
+
+[...]
+
+MBR, Sergey
