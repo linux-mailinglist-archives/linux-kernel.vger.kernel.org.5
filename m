@@ -2,204 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E94C7FA368
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324107FA376
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbjK0Ott (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S233282AbjK0Ouu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:50:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjK0Otr (ORCPT
+        with ESMTP id S231735AbjK0Our (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:49:47 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7FFA1;
-        Mon, 27 Nov 2023 06:49:52 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507e85ebf50so5811186e87.1;
-        Mon, 27 Nov 2023 06:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701096591; x=1701701391; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FOQKvfpY0DGJC1g0BayKPczKP7ZYbRdjmTgXJyhyTVw=;
-        b=X0MXHjx63VXfqlmdDiQGnjkOJMt19dD2LVzJZ2DTR9+0znst2hAJ8gGz+AzZlPjae+
-         h0DT1AmCAHkODEcEmxetIF94iWTfHl3O8QPMaXFxITUt6jGNq8GJ0Y7XfLgBuGg4vQtw
-         uzdmcYdMq7QR2E1UqdVLr8T5Yezj0uV4Wu4xaVJII0Gf3Rp7HrxsdJoS2DSXK6kfO8D3
-         B8ijRV8eoHWb21F06QrigkLf3H37ndK26U40xi2F2m1a3GpHdRMjv/5Msr/LfZm9pk5M
-         c0mnyDj89iVpUIscHc0s/9b7LwxNisHpqMC4tE/onS1N27Zex+znst9MzDm9VMxbmJ8h
-         Zp1w==
+        Mon, 27 Nov 2023 09:50:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD5FA3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:50:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701096653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=73FvtKggjoyMfKbC/ZYzZT6bKl1Kg/bdJcdhd9AKrNs=;
+        b=auwrZTu+cb0pd4Qv2iaaXJ3cTWYdbXk+JuHFvcu7CvqKs+4kuw1bW/dFw+yAzT+vWpSp+p
+        tQuF0Aa4u15tInta+uiCtoAAlBDY9WuNbttZcWvyDZOpTcc0nJt8htxBeOnmcCFtUZRbtR
+        agc4916oZyq3Hbtzz7GRV1zhzYvqFZE=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-207-IeCNHBFxM9my8mWA9Stu-Q-1; Mon, 27 Nov 2023 09:50:51 -0500
+X-MC-Unique: IeCNHBFxM9my8mWA9Stu-Q-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-50ba80696b3so2287222e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:50:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701096591; x=1701701391;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FOQKvfpY0DGJC1g0BayKPczKP7ZYbRdjmTgXJyhyTVw=;
-        b=EE0trt/0vI3UEvXLneIChtNc+slIvC8n7msnR+D/2K8Al5aFKYtwbh1kr+5otqaNVl
-         xF+xpkscvqwhEedwLh5d0Hr+tn2Wnb9w3rEkFmTQNWxNNp5PdFaez6Jw3HUCmMEOzcOU
-         VLxFRY/A1Yjk/QVzXasZUZIjh2j7GnrP06/udGbGzYe2fvT2YYLH45nxQ+wkiuZHRvc1
-         zgBAPBGSW9HVYmSkx8EbpwUVsCMiXQJZG8Pl9zGuJR3dibtexJZxaNo8zpzOZvKzQ6Dg
-         ADEzQxoduCYlg+I+3QEUfv9mdnJAPulxI+0A9nSl/3UMtu+G0YSFRddxMugJLD8rMjym
-         JHVQ==
-X-Gm-Message-State: AOJu0YzapirctpnZ2za/aYHFj1mnUEEN5e5tRUzVhXaKL/EKBgHXhEgg
-        j7im+2sKl73/a3Xzu/F22uw=
-X-Google-Smtp-Source: AGHT+IH5ZtFQb+fTKiO1c2V4yiAk0AuFn6zOfh5DtBZIP1YXWsY4BKdIZp1XDBMm4gnOzqs7kQt4Gw==
-X-Received: by 2002:a05:6512:ac2:b0:50b:a720:8ae4 with SMTP id n2-20020a0565120ac200b0050ba7208ae4mr7146108lfu.36.1701096590794;
-        Mon, 27 Nov 2023 06:49:50 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16f8:1500::2? (dc78bmyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::2])
-        by smtp.gmail.com with ESMTPSA id w4-20020ac24424000000b004fb7848bacbsm1484770lfl.46.2023.11.27.06.49.49
+        d=1e100.net; s=20230601; t=1701096649; x=1701701449;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=73FvtKggjoyMfKbC/ZYzZT6bKl1Kg/bdJcdhd9AKrNs=;
+        b=xIavopx3lEvY9lKfwbmsNhcLux2Ge5Zp66EMR8v2fn2qaRqREMe8oFYmhvS3WnnyWz
+         xu/3PbV8NCtakpCy67EvldDpiQgugK3obUFIm01PTLIo9wDaBn0Vf4LmsVOyt+y3XqTL
+         pSI/pi8c4LGVXEp//t/HGuEiYNK2yVngbiVS0Zpx8CEVGPV09byxwmXQnTC9mpf3jfVs
+         w7AzvB+mrf8+aBx7zfwmnvugNCe9A/AfbYckdBpuPboffj3+AIlI/uL2zZ5XpBNW+OPN
+         y3EHPhBNCQPR/P992J/wArfQvjpqexMxPzCXqokl7VCGJLenny7aFuT0yta6TBgMkQHG
+         Enag==
+X-Gm-Message-State: AOJu0YxcmD5y3VfYiqXS9/KXzr7ky5NlAtdH2i6ty67TEbQdkf4irD5a
+        U8UUe8Awds0mYTjpym3bKqeg7Z/R7D0qVjUfh8e9RWl8bcHLxOReYgNvNFURncP1kLEQ5rqPZRc
+        D6zqKpHDNVdeAKPq7nwohH192
+X-Received: by 2002:ac2:4346:0:b0:50a:93f9:d09f with SMTP id o6-20020ac24346000000b0050a93f9d09fmr7046869lfl.62.1701096649546;
+        Mon, 27 Nov 2023 06:50:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGaEPDDSC6UEFhTnN/EmILYfQnxYUKO7/scqotzhaeDU1Eagj8lom90aNnSOn6VPZA6pZhdzA==
+X-Received: by 2002:ac2:4346:0:b0:50a:93f9:d09f with SMTP id o6-20020ac24346000000b0050a93f9d09fmr7046841lfl.62.1701096649123;
+        Mon, 27 Nov 2023 06:50:49 -0800 (PST)
+Received: from ?IPV6:2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3? (p200300cbc7452a00d74aa8c520b63ec3.dip0.t-ipconnect.de. [2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3])
+        by smtp.gmail.com with ESMTPSA id i16-20020a056512341000b00507cf5f9299sm1518485lfr.125.2023.11.27.06.50.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 06:49:50 -0800 (PST)
-Message-ID: <bb332c07-6cf6-4f38-99f5-657a48c332d9@gmail.com>
-Date:   Mon, 27 Nov 2023 16:49:49 +0200
+        Mon, 27 Nov 2023 06:50:48 -0800 (PST)
+Message-ID: <13a2ce75-b1c0-4930-8911-36ded0b428a7@redhat.com>
+Date:   Mon, 27 Nov 2023 15:50:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
-Content-Language: en-US, en-GB
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
-References: <20231124145338.3112416-1-o.rempel@pengutronix.de>
- <2023112403-laxative-lustiness-6a7f@gregkh>
- <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
- <2023112458-stature-commuting-c66f@gregkh>
- <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
- <2023112435-dazzler-crisped-04a6@gregkh>
- <20231124163234.GC819414@pengutronix.de>
- <2023112453-flagstick-bullring-8511@gregkh>
- <CANhJrGPop=tL8y+chvPwMpSZYF1pkeWeRp3xL+7JsuY=U0fyag@mail.gmail.com>
- <2023112722-headdress-kissing-8c9f@gregkh>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <2023112722-headdress-kissing-8c9f@gregkh>
+Subject: Re: [RESEND PATCH v7 10/10] selftests/mm/cow: Add tests for anonymous
+ small-sized THP
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-11-ryan.roberts@arm.com>
+ <8dd0f52c-d261-4541-930f-bd4e5921be5b@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <8dd0f52c-d261-4541-930f-bd4e5921be5b@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 15:08, Greg Kroah-Hartman wrote:
-> On Mon, Nov 27, 2023 at 02:54:21PM +0200, Matti Vaittinen wrote:
->> pe 24. marrask. 2023 klo 19.26 Greg Kroah-Hartman
->> (gregkh@linuxfoundation.org) kirjoitti:
->>>
->>> On Fri, Nov 24, 2023 at 05:32:34PM +0100, Oleksij Rempel wrote:
->>>> On Fri, Nov 24, 2023 at 03:56:19PM +0000, Greg Kroah-Hartman wrote:
->>>>> On Fri, Nov 24, 2023 at 03:49:46PM +0000, Mark Brown wrote:
->>>>>> On Fri, Nov 24, 2023 at 03:27:48PM +0000, Greg Kroah-Hartman wrote:
->>>>>>> On Fri, Nov 24, 2023 at 03:21:40PM +0000, Mark Brown wrote:
->>>>>>
->>>>>>>> This came out of some discussions about trying to handle emergency power
->>>>>>>> failure notifications.
->>>>>>
->>>>>>> I'm sorry, but I don't know what that means.  Are you saying that the
->>>>>>> kernel is now going to try to provide a hard guarantee that some devices
->>>>>>> are going to be shut down in X number of seconds when asked?  If so, why
->>>>>>> not do this in userspace?
->>>>>>
->>>>>> No, it was initially (or when I initially saw it anyway) handling of
->>>>>> notifications from regulators that they're in trouble and we have some
->>>>>> small amount of time to do anything we might want to do about it before
->>>>>> we expire.
->>>>>
->>>>> So we are going to guarantee a "time" in which we are going to do
->>>>> something?  Again, if that's required, why not do it in userspace using
->>>>> a RT kernel?
->>>>
->>>> For the HW in question I have only 100ms time before power loss. By
->>>> doing it over use space some we will have even less time to react.
->>>
->>> Why can't userspace react that fast?  Why will the kernel be somehow
->>> faster?  Speed should be the same, just get the "power is cut" signal
->>> and have userspace flush and unmount the disk before power is gone.  Why
->>> can the kernel do this any differently?
->>>
->>>> In fact, this is not a new requirement. It exist on different flavors of
->>>> automotive Linux for about 10 years. Linux in cars should be able to
->>>> handle voltage drops for example on ignition and so on. The only new thing is
->>>> the attempt to mainline it.
->>>
->>> But your patch is not guaranteeing anything, it's just doing a "I want
->>> this done before the other devices are handled", that's it.  There is no
->>> chance that 100ms is going to be a requirement, or that some other
->>> device type is not going to come along and demand to be ahead of your
->>> device in the list.
->>>
->>> So you are going to have a constant fight among device types over the
->>> years, and people complaining that the kernel is now somehow going to
->>> guarantee that a device is shutdown in a set amount of time, which
->>> again, the kernel can not guarantee here.
->>>
->>> This might work as a one-off for a specific hardware platform, which is
->>> odd, but not anything you really should be adding for anyone else to use
->>> here as your reasoning for it does not reflect what the code does.
+On 27.11.23 15:02, Ryan Roberts wrote:
+> On 22/11/2023 16:29, Ryan Roberts wrote:
+>> Add tests similar to the existing PMD-sized THP tests, but which operate
+>> on memory backed by (PTE-mapped) small-sized THP. This reuses all the
+>> existing infrastructure. If the test suite detects that small-sized THP
+>> is not supported by the kernel, the new tests are skipped.
 >>
->> I was (am) interested in knowing how/where the regulator error
->> notifications are utilized - hence I asked this in ELCE last summer.
->> Replies indeed mostly pointed to automotive and handling the under
->> voltage events.
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   tools/testing/selftests/mm/cow.c | 71 +++++++++++++++++++++++++++++++-
+>>   1 file changed, 70 insertions(+), 1 deletion(-)
 >>
->> As to what has changed (I think this was asked in another mail on this
->> topic) - I understood from the discussions that the demand of running
->> systems with as low power as possible is even more
->> important/desirable. Hence, the under-voltage events are more usual
->> than they were when cars used to be working by burning flammable
->> liquids :)
+>> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
+>> index d03c453cfd5c..3efc395c7077 100644
+>> --- a/tools/testing/selftests/mm/cow.c
+>> +++ b/tools/testing/selftests/mm/cow.c
+>> @@ -29,15 +29,49 @@
+>>   #include "../../../../mm/gup_test.h"
+>>   #include "../kselftest.h"
+>>   #include "vm_util.h"
+>> +#include "thp_settings.h"
 >>
->> Anyways, what I thought I'd comment on is that the severity of the
->> regulator error notifications can be given from device-tree. Rationale
->> behind this is that figuring out whether a certain detected problem is
->> fatal or not (in embedded systems) should be done by the board
->> designers, per board. Maybe the understanding which hardware should
->> react first is also a property of hardware and could come from the
->> device-tree? Eg, instead of having a "DEVICE_SHUTDOWN_PRIO_STORAGE"
->> set unconditionally for EMMC, systems could set shutdown priority per
->> board and per device explicitly using device-tree?
+>>   static size_t pagesize;
+>>   static int pagemap_fd;
+>>   static size_t pmdsize;
+>> +static int nr_thpsmallsizes;
+>> +static size_t thpsmallsizes[20];
 > 
-> Yes, using device tree would be good, but now you have created something
-> that is device-tree-specific and not all the world is device tree :(
+> Off the back of some comments David made againt the previous patch [1], I'm
+> proposing to rework this a bit so that ALL thp sizes are stored in this array,
+> not just the non-PMD-sized sizes. This makes the changes overall a bit smaller
+> and easier to understand, I think...
+> 
+>>   static int nr_hugetlbsizes;
+>>   static size_t hugetlbsizes[10];
+>>   static int gup_fd;
+>>   static bool has_huge_zeropage;
+>>
+>> +static int sz2ord(size_t size)
+>> +{
+>> +	return __builtin_ctzll(size / pagesize);
+>> +}
+>> +
+>> +static int detect_smallthp_sizes(size_t sizes[], int max)
+> 
+> This changes to detect_thp_sizes() and deposits all sizes in sizes[]
 
-True. However, my understanding is that the regulator subsystem is 
-largely written to work with DT-based systems. Hence supporting the 
-DT-based solution would probably fit to this specific use-case as source 
-of problem notifications is the regulator subsystem.
-
-> Also, many devices are finally moving out to non-device-tree busses,
-> like PCI and USB, so how would you handle them in this type of scheme?
-
-I do readily admit I don't have [all ;) ] the answers. I also think that 
-if we add support for prioritized shutdown on device-tree-based systems, 
-people may eventually want to use this on non device-tree setups too. 
-There may also be other use-cases for prioritized shutdown (Don't know 
-what they would be though).
-
-For now I would leave that to be the problem of the folks who need non 
-device-tree systems when (if) this needs realizes. Assuming there was 
-the handling of priorities in place, the missing piece would then be to 
-find out the place to store this hardware specific priority information. 
-If this is solved for the non DT cases, then the DT-based and non 
-DT-based solutions can co-exist.
-
-Just a suggestion though. I am not working on under-voltage "stuff" 
-right now.
-
-Yours,
-	-- Matti
+Just what I wanted to propose :) Makes it simpler by removing the 
+"small" terminology and just detecting thp sizes.
 
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+Cheers,
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+David / dhildenb
 
