@@ -2,167 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 564367FAE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6526E7FAE66
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjK0XdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
+        id S233580AbjK0XgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:36:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjK0XdG (ORCPT
+        with ESMTP id S229821AbjK0XgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:33:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3508F1A5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:33:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D138FC433CC;
-        Mon, 27 Nov 2023 23:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701127992;
-        bh=NryLZbe6Lp7RD7isdki+30wx/vixOOf5cwgMUYqIx2c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E1VvX+o4MBGKqx+f+qkKVpL+f42O3k/P1cw0pwpefp1TjPbf79swyB2/x4/ByBax/
-         jXRFJR2VCVgmwWjBS6fJy45OVU7fy2tnbDrcgvNbC1p6CEbQYThe8n5YFQUCdpDxOc
-         068/StBFqd8JVivfGp8opXxu1YLYNjjJ4TRMX420Y8DX7aP+q/mtWhcgVAODZkjuoR
-         A58Lf89A53c5sF594AGRBYyk8suSMewOKyWpFcyMT3e/Aj/c5uPLvL7y7YuFdJzvm0
-         qGIMdxWlVLJz3XD8zqMznw5A4hBvMiWxRomMuWEKNUCizVW1BSe5+rI4dVuK6vaZIu
-         id5WlPWdZUmoQ==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-507a29c7eefso6322221e87.1;
-        Mon, 27 Nov 2023 15:33:12 -0800 (PST)
-X-Gm-Message-State: AOJu0YwcGSIZyWAiWWMfdZWeTboVokT9vrM0lqAfb2+xrwHTi5Q46ItU
-        OQCE/nL2YiFtXwK+h7Fb/ghw3XWKU6T9keuuW/0=
-X-Google-Smtp-Source: AGHT+IEg7ZPD0hlvY9kurliQ3PMPlplc/M6deVVXCXmfZmSannuI+3zJ7xZoPOMVKAT2kAdjpB7TLvWmEEgNEC97FFw=
-X-Received: by 2002:ac2:5dd5:0:b0:503:28cb:c087 with SMTP id
- x21-20020ac25dd5000000b0050328cbc087mr5091467lfq.29.1701127990996; Mon, 27
- Nov 2023 15:33:10 -0800 (PST)
+        Mon, 27 Nov 2023 18:36:02 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEF81AD;
+        Mon, 27 Nov 2023 15:36:08 -0800 (PST)
+Received: from notapiano.myfiosgateway.com (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1075566022D1;
+        Mon, 27 Nov 2023 23:36:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701128167;
+        bh=YEe8v7wDFFs3gQgZ9RcTV5I1wDd3U2Sg4ahCaTkprQo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H9emDfZbsGRiS+F7o/zTjCwpKOs9ATigOjvWWhy0SbmNQ69YCARc1007iQcAPpPaJ
+         d68ud9ABQ5h4isZTQstZd7TVlnqHPX+5aKqTnST515c8vuv+CdsdgBAmIu2PRQ1o6J
+         KHiWC5kJd7I4I0SWI99sgftn5KTtNDda51pfVjMR/5HjQAbu2WG3eegfZxZQSDEHBg
+         kZ8kQDTJOOkQrAGLZQgsBlcTnAYqgwoEJxwEdYGzT7sispRNN7BzmSS8D9wQbZhQW9
+         HeRoF10/cE7rO/VNqgF7DVIO74rsHEBCma2H6cqN+If86xm+TY7TP7x8AYbEHmH/Pq
+         IWg9QJj2qfGZQ==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>, kernelci@lists.linux.dev,
+        David Gow <davidgow@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-usb@vger.kernel.org,
+        kernel@collabora.com, Dan Carpenter <dan.carpenter@linaro.org>,
+        Tim Bird <Tim.Bird@sony.com>, linux-pci@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 0/2] Add test to verify probe of devices from discoverable busses
+Date:   Mon, 27 Nov 2023 18:34:05 -0500
+Message-ID: <20231127233558.868365-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <20231125065419.3518254-1-yukuai1@huaweicloud.com> <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
-In-Reply-To: <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 27 Nov 2023 15:32:59 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW57SuytxCY-fV74qx6B8AYb65nFC_t2VVeTN34Pamp=gQ@mail.gmail.com>
-Message-ID: <CAPhsuW57SuytxCY-fV74qx6B8AYb65nFC_t2VVeTN34Pamp=gQ@mail.gmail.com>
-Subject: Re: [PATCH -next v2] md: synchronize flush io with array reconfiguration
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     maan@systemlinux.org, neilb@suse.de, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 2:16=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Nov 24, 2023 at 10:54=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com=
-> wrote:
-> >
-> > From: Yu Kuai <yukuai3@huawei.com>
-> >
-> > Currently rcu is used to protect iterating rdev from submit_flushes():
-> >
-> > submit_flushes                  remove_and_add_spares
-> >                                 synchronize_rcu
-> >                                 pers->hot_remove_disk()
-> >  rcu_read_lock()
-> >  rdev_for_each_rcu
-> >   if (rdev->raid_disk >=3D 0)
-> >                                 rdev->radi_disk =3D -1;
-> >    atomic_inc(&rdev->nr_pending)
-> >    rcu_read_unlock()
-> >    bi =3D bio_alloc_bioset()
-> >    bi->bi_end_io =3D md_end_flush
-> >    bi->private =3D rdev
-> >    submit_bio
-> >    // issue io for removed rdev
-> >
-> > Fix this problem by grabbing 'acive_io' before iterating rdev, make sur=
-e
-> > that remove_and_add_spares() won't concurrent with submit_flushes().
-> >
-> > Fixes: a2826aa92e2e ("md: support barrier requests on all personalities=
-.")
-> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > ---
-> > Changes v2:
-> >  - Add WARN_ON in case md_flush_request() is not called from
-> >  md_handle_request() in future.
-> >
-> >  drivers/md/md.c | 22 ++++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > index 86efc9c2ae56..2ffedc39edd6 100644
-> > --- a/drivers/md/md.c
-> > +++ b/drivers/md/md.c
-> > @@ -538,6 +538,9 @@ static void md_end_flush(struct bio *bio)
-> >         rdev_dec_pending(rdev, mddev);
-> >
-> >         if (atomic_dec_and_test(&mddev->flush_pending)) {
-> > +               /* The pair is percpu_ref_tryget() from md_flush_reques=
-t() */
-> > +               percpu_ref_put(&mddev->active_io);
-> > +
-> >                 /* The pre-request flush has finished */
-> >                 queue_work(md_wq, &mddev->flush_work);
-> >         }
-> > @@ -557,12 +560,8 @@ static void submit_flushes(struct work_struct *ws)
-> >         rdev_for_each_rcu(rdev, mddev)
-> >                 if (rdev->raid_disk >=3D 0 &&
-> >                     !test_bit(Faulty, &rdev->flags)) {
-> > -                       /* Take two references, one is dropped
-> > -                        * when request finishes, one after
-> > -                        * we reclaim rcu_read_lock
-> > -                        */
-> >                         struct bio *bi;
-> > -                       atomic_inc(&rdev->nr_pending);
-> > +
-> >                         atomic_inc(&rdev->nr_pending);
-> >                         rcu_read_unlock();
-> >                         bi =3D bio_alloc_bioset(rdev->bdev, 0,
-> > @@ -573,7 +572,6 @@ static void submit_flushes(struct work_struct *ws)
-> >                         atomic_inc(&mddev->flush_pending);
-> >                         submit_bio(bi);
-> >                         rcu_read_lock();
-> > -                       rdev_dec_pending(rdev, mddev);
-> >                 }
-> >         rcu_read_unlock();
-> >         if (atomic_dec_and_test(&mddev->flush_pending))
-> > @@ -626,6 +624,18 @@ bool md_flush_request(struct mddev *mddev, struct =
-bio *bio)
-> >         /* new request after previous flush is completed */
-> >         if (ktime_after(req_start, mddev->prev_flush_start)) {
-> >                 WARN_ON(mddev->flush_bio);
-> > +               /*
-> > +                * Grab a reference to make sure mddev_suspend() will w=
-ait for
-> > +                * this flush to be done.
-> > +                *
-> > +                * md_flush_reqeust() is called under md_handle_request=
-() and
-> > +                * 'active_io' is already grabbed, hence percpu_ref_try=
-get()
-> > +                * won't fail, percpu_ref_tryget_live() can't be used b=
-ecause
-> > +                * percpu_ref_kill() can be called by mddev_suspend()
-> > +                * concurrently.
-> > +                */
-> > +               if (WARN_ON(percpu_ref_tryget(&mddev->active_io)))
->
-> This should be "if (!WARN_ON(..))", right?
->
-> Song
->
-> > +                       percpu_ref_get(&mddev->active_io);
 
-Actually, we can just use percpu_ref_get(), no?
+Hi,
+
+v1 [1] was discussed during Plumbers [2], where a lot of feedback was given. I
+hope to justify the changes in v2 and address the feedback here.
+
+One feedback from Shuah was that keeping per-platform files with the USB/PCI
+devices to test as part of the kselftest tree wasn't maintainable. One proposed
+alternative was to generate a list of probed devices on a known-good kernel and
+use that as a reference. However you need someone to look at that generated
+reference to be able to say it is a good one, and you need to save it to ensure
+it will be reproducible later anyway, so that wouldn't actually solve the
+problem. It is a matter of hand-crafting vs generating the test definitions, but
+they will need to be vouched by someone and stored somewhere in both cases.
+
+So for this v2, in patch 2 I just have a sample test definition, and the
+per-platform test definitions would be added to a separate repository.
+
+The other feedback received was that the BIOS might reconfigure the PCI
+topology (at least on x86), meaning that relying on a sequence of device and
+function numbers (eg 1d.0/02.0/0.0) as a stable description of a device on the
+platform is not possible. I couldn't verify whether this is really the case (if
+you have any more insight into this, please let me know), but with that in mind,
+here in v2 I have taken a different approach. Here I'm using the device's
+properties which are used for driver matching (the same that show on modalias)
+to identify a device in a stable way.
+
+This approach has some drawbacks compared to the one on v1. For one it doesn't
+uniquely identify a device, so if there are multiple of the same device on a
+platform they have to be checked as a group. Also the test definition isn't as
+human-readable.
+
+I'm adding in CC the people I recognized at the Plumbers session that were
+interested in this work. Feel free to add anyone missing.
 
 Thanks,
-Song
+Nícolas
+
+[1] https://lore.kernel.org/all/20231024211818.365844-1-nfraprado@collabora.com
+[2] https://www.youtube.com/watch?v=oE73eVSyFXQ&t=9377s
+
+Original cover letter:
+
+This is part of an effort to improve detection of regressions impacting
+device probe on all platforms. The recently merged DT kselftest [3]
+detects probe issues for all devices described statically in the DT.
+That leaves out devices discovered at run-time from discoverable busses.
+
+This is where this test comes in. All of the devices that are connected
+through discoverable busses (ie USB and PCI), and which are internal and
+therefore always present, can be described in a per-platform file so
+they can be checked for. The test will check that the device has been
+instantiated and bound to a driver.
+
+Patch 1 introduces the test. Patch 2 adds the test definitions for the
+google,spherion machine (Acer Chromebook 514) as an example.
+
+This is the sample output from the test running on Spherion:
+
+TAP version 13
+ Using board file:  boards/google,spherion
+1..3
+ok 1 usb.camera
+ok 2 usb.bluetooth
+ok 3 pci.wifi
+ Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+[3] https://lore.kernel.org/all/20230828211424.2964562-1-nfraprado@collabora.com/
+
+Changes in v2:
+- Changed approach of encoding stable device reference in test file from
+  HW topology to device match fields (the ones from modalias)
+- Better documented test format
+
+Nícolas F. R. A. Prado (2):
+  kselftest: Add test to verify probe of devices from discoverable
+    busses
+  kselftest: devices: Add sample board file for google,spherion
+
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/devices/.gitignore    |   1 +
+ tools/testing/selftests/devices/Makefile      |   8 +
+ .../selftests/devices/boards/google,spherion  |  12 ++
+ .../devices/test_discoverable_devices.sh      | 160 ++++++++++++++++++
+ 5 files changed, 182 insertions(+)
+ create mode 100644 tools/testing/selftests/devices/.gitignore
+ create mode 100644 tools/testing/selftests/devices/Makefile
+ create mode 100644 tools/testing/selftests/devices/boards/google,spherion
+ create mode 100755 tools/testing/selftests/devices/test_discoverable_devices.sh
+
+-- 
+2.42.1
+
