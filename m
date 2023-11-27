@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5F77FAE68
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F067FAE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjK0XgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S233933AbjK0Xga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjK0XgD (ORCPT
+        with ESMTP id S233841AbjK0XgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:36:03 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984D61B5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:09 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285d331c6f7so2002361a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:09 -0800 (PST)
+        Mon, 27 Nov 2023 18:36:25 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B57D10FB
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:28 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5c85e8fdd2dso45517437b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:36:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701128169; x=1701732969; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l2m9WeXChb3IZcdkKWz2g1bAMA6uELaN8nkmuyBZmHQ=;
-        b=JJ51m+5wRnTP7vn03VCHFIfTvAw0xvgRojQ6u5JK931ViOOx9HO8zWPrCjvp1Ou7t6
-         hc6vBHZ8Ob95+Tx49Yoxrx43E+duJ1T45hzXkEY4laEQfreEoDvJZSTdhtGL2bUlw2nx
-         ZIqcfGRr5rDdBdJJB1q4akp2y4t9ZVkfadWwVDODx8BBFWXXCFWPz2UW20exsOG1HmtN
-         7Op7jaJGXIzgL+yIcnruHcNn2jy+BISi1if2XFnTbaxj593IZ1PT5H8alRSVpoG+UwF2
-         YnICVbQ5CsDms0b5RGUzqbvqaq1ixWv4vjooSsZxJqMrDNygV1jMuoc50hnan9p53kFr
-         7ZOQ==
+        d=linaro.org; s=google; t=1701128187; x=1701732987; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AxfDgaFC4m6dvQrI/xxwWv1ne3cvruiJUHEQ9EmXeMY=;
+        b=mOwCj1Dbip2p1zIGRpj+HqkCyi9NhMnS1y3/7RRHJiohcJJ2bI87n2JVEW6TQW7COs
+         H2wc0j+q2zRdVyj9N8rov2/Az1AqWlXy+7Uf6OICJQFMTQI0qV6Rd8u8Kl04TmjV6QJH
+         VPPXgvfLFs/mEmHok+KqiyV/DyK7RBVVmn9w25ub/cvbx+KGq95KN55RVh1lIBMBMA/v
+         cDvWvGsrAS5cfj9V/Fh1GO8Xfnv3jVnwXCBC4egDfl+EhJupM3skOLgfhhel0wJS5Vvn
+         mjCeY9bCC5AChI26ySP77By6GF9R+vI9mSmGgPpl8wPvOPfC6bpsIZkdRlQwuhOcUN4p
+         8Xag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701128169; x=1701732969;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l2m9WeXChb3IZcdkKWz2g1bAMA6uELaN8nkmuyBZmHQ=;
-        b=lt8YfPmSGj73vyMFyIZncG9orSDH7ny8gMoFBXqN1ZuWOzns3tc6Dys/BcvZ6aSuW8
-         caDSAo6wx4KNRNMMGdrNIg1OOgLoPh/9YWUb1O/NZavdAehnJcBdf53/GbK3CYBoGBgT
-         zJ0jTFs4S2PMF+UGJGVD0IsfH0xho1ZcTUEaZSD0AqZijPpqY3Woy1WfEShTOyNvAIMV
-         HG3vBc1PC4N+Ob8VRBJFej3GiOFpQCnxmIPvpankZR0NVM9n/y8r6vRSy+3dxh3S9NoB
-         aTgPmDRiihf9OuakhVeykk/jo2t8KIalHhSqNYlAL2vXZie0XAyeiZOsAC1AGrDWReg9
-         gRRA==
-X-Gm-Message-State: AOJu0Yxx4vxPYiTpPcrL+DE/pRDkK231Qz4A/L+Kp2L5uRbKV5B6FKFK
-        tI2twzYsRKNaCMgQHPaOCyGiQIcftaI=
-X-Google-Smtp-Source: AGHT+IEl4S0gbL0JXiTGTFFkSpfut1kGjfX9yALNxNMX7MfX3x5UbA+DNYzB4IO60o0GRmpObK+5rcrVVuk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:88:b0:285:860c:3359 with SMTP id
- bb8-20020a17090b008800b00285860c3359mr2734111pjb.4.1701128169103; Mon, 27 Nov
- 2023 15:36:09 -0800 (PST)
-Date:   Mon, 27 Nov 2023 15:36:07 -0800
-In-Reply-To: <a1ebd80f87229fe513f9c2256982ef6c1d0cca2a.camel@infradead.org>
-Mime-Version: 1.0
-References: <20231121180223.12484-1-paul@xen.org> <20231121180223.12484-6-paul@xen.org>
- <a1ebd80f87229fe513f9c2256982ef6c1d0cca2a.camel@infradead.org>
-Message-ID: <ZWUn50A5vxiTd-ZT@google.com>
-Subject: Re: [PATCH v8 05/15] KVM: pfncache: remove KVM_GUEST_USES_PFN usage
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1701128187; x=1701732987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AxfDgaFC4m6dvQrI/xxwWv1ne3cvruiJUHEQ9EmXeMY=;
+        b=f8+DSrM0/CvKI8WocAK13Gzu/cBkQ14eMOHrgPNLT7RCq+D4hFOhyzEqw4HJ1Tr3FP
+         umK/xN3boFtGjhx+ZOeoTCyU3Lk9qG5IhhccT4qqZnQ4DJGQK11pChubsg052e1DoMLE
+         5cKquPJz2wGcm8VqC0/sZxb8AJ2Q197cigUqSnQ+nbuzphrKvUaCJ2RWTwPJZljmw+S5
+         BF9LNBwB79Wf49TASXGC5tPJzA72sfuTd1kyaN4Zs90SNWl+lk8QbTKdikB4kfi34xBt
+         itTeA2g/Sb/kHrTcjsNX+QGbz1T4dxTHbyst4p2yhzmdh6K+sMp/wi2CmCof458t7uWu
+         YAJQ==
+X-Gm-Message-State: AOJu0YzxZ0GIkQTCwyNJSLFa6yWEYe7Szk05iIdZT6lO/NhgcjGnM4Wu
+        H5+6CksZRP4Zgh/g3Gi7Q1QFUvVCrfsDO1YZqtIDgA==
+X-Google-Smtp-Source: AGHT+IGfr0I9La4Kr//PgkPIyvm3aD+su31rYz/shnFc17Jv2+3LBLLPhjJe+M3dYscwj691DO6cbenHSGUKNV0HBVI=
+X-Received: by 2002:a81:ae68:0:b0:5d0:4199:de09 with SMTP id
+ g40-20020a81ae68000000b005d04199de09mr5390153ywk.35.1701128187543; Mon, 27
+ Nov 2023 15:36:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org> <20231127232542.GB25590@pendragon.ideasonboard.com>
+In-Reply-To: <20231127232542.GB25590@pendragon.ideasonboard.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 28 Nov 2023 00:36:15 +0100
+Message-ID: <CACRpkdYWjHbgWQc46hGM3bg+5nf4NiveEZJmHrnx0X-=XsUDLA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Revert panel fixes and original buggy patch
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Liu Ying <victor.liu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023, David Woodhouse wrote:
-> On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
-> > From: Paul Durrant <pdurrant@amazon.com>
-> > 
-> > As noted in [1] the KVM_GUEST_USES_PFN usage flag is never set by any
-> > callers of kvm_gpc_init(), which also makes the 'vcpu' argument redundant.
-> > Moreover, all existing callers specify KVM_HOST_USES_PFN so the usage
-> > check in hva_to_pfn_retry() and hence the 'usage' argument to
-> > kvm_gpc_init() are also redundant.
-> > Remove the pfn_cache_usage enumeration and remove the redundant arguments,
-> > fields of struct gfn_to_hva_cache, and all the related code.
-> > 
-> > [1] https://lore.kernel.org/all/ZQiR8IpqOZrOpzHC@google.com/
-> > 
-> > Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> 
-> I think it's https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
-
-Yeah, that's the more important link.
-
-> which is the key reference. I'm not sure I'm 100% on board, but I never
-> got round to replying to Sean's email because it was one of those "put
-> up or shut up situations" and I didn't have the bandwidth to actually
-> write the code to prove my point.
-> 
-> I think it *is* important to support non-pinned pages. There's a reason
-> we even made the vapic page migratable. We want to support memory
-> hotplug, we want to cope with machine checks telling us to move certain
-> pages (which I suppose is memory hotplug). See commit 38b9917350cb
-> ("kvm: vmx: Implement set_apic_access_page_addr") for example.
-
-The vAPIC page is slightly different in that it effectively never opened a window
-for page migration, i.e. once a vCPU was created that page was stuck.  For nested
-virtualization pages, the probability of being able to migrate a page at any given
-time might be relatively low, but it's extremely unlikely for a page to be pinned
-for the entire lifetime of a (L1) VM.
-
-> I agree that in the first round of the nVMX code there were bugs. And
-> sure, of *course* it isn't sufficient to wire up the invalidation
-> without either a KVM_REQ_SOMETHIMG to put it back, or just a *check* on
-> the corresponding gpc on the way back into the guest. We'd have worked
-> that out.
-
-Maybe.  I spent most of a day, maybe longer, hacking at the nVMX code and was
-unable to get line of sight to an end result that I felt would be worth pursuing.
-
-I'm definitely not saying it's impossible, and I'm not dead set against
-re-introducing KVM_GUEST_USES_PFN or similar, but a complete solution crosses the
-threshold where it's unreasonable to ask/expect someone to pick up the work in
-order to get their code/series merged.
-
-Which is effectively what you said below, I just wanted to explain why I'm pushing
-to remove KVM_GUEST_USES_PFN, and to say that if you or someone else were to write
-the code it wouldn't be an automatic nak.
-
-> And yes, the gpc has had bugs as we implemented it, but the point was
-> that we got to something which *is* working, and forms a usable
-> building block.
+On Tue, Nov 28, 2023 at 12:25=E2=80=AFAM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Tue, Nov 28, 2023 at 12:10:18AM +0100, Linus Walleij wrote:
+> > This series reverts the attempts to fix the bug that went
+> > into v6.7-rc1 in commit 199cf07ebd2b
+> > "drm/bridge: panel: Add a device link between drm device and panel devi=
+ce"
+> > and then it reverts that patch as well.
+> >
+> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > ---
+> > Linus Walleij (3):
+> >       Revert "driver core: Export device_is_dependent() to modules"
+> >       Revert "drm/bridge: panel: Check device dependency before managin=
+g device link"
+> >       Revert "drm/bridge: panel: Add a device link between drm device a=
+nd panel device"
 >
-> So I'm not really sold on the idea of ditching KVM_GUEST_USES_PFN. I
-> think we could get it working, and I think it's worth it. But my
-> opinion is worth very little unless I express it in 'diff -up' form
-> instead of prose, and reverting this particular patch is the least of
-> my barriers to doing so, so reluctantly...
+> To preserve bisectability, you should revert in the opposite order.
+
+You mean apply patch 2, then 1, then 3 so the kernel builds after each
+revert?
+
+Yeah that's a good idea, I don't know if I should apply these though, bette=
+r
+someone else do it since I screwed up too much.
+
+Another option is to just squash the reverts into one, that bisects too :/
+
+Yours,
+Linus Walleij
