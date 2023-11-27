@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E33827FA878
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FD57FA879
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjK0R6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+        id S231160AbjK0R6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbjK0R6G (ORCPT
+        with ESMTP id S230173AbjK0R6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Nov 2023 12:58:06 -0500
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF1C19A;
-        Mon, 27 Nov 2023 09:58:08 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ARHviO931479199, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ARHviO931479199
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A5D1A5;
+        Mon, 27 Nov 2023 09:58:09 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ARHvmApB1479202, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ARHvmApB1479202
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 01:57:44 +0800
+        Tue, 28 Nov 2023 01:57:48 +0800
 Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 28 Nov 2023 01:57:44 +0800
+ 15.1.2507.17; Tue, 28 Nov 2023 01:57:49 +0800
 Received: from Test06-PC.realtek.com.tw (172.22.228.55) by
  RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 28 Nov 2023 01:57:43 +0800
+ 15.1.2375.7; Tue, 28 Nov 2023 01:57:48 +0800
 From:   ChunHao Lin <hau@realtek.com>
 To:     <hkallweit1@gmail.com>
 CC:     <nic_swsd@realtek.com>, <davem@davemloft.net>,
         <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <grundler@chromium.org>, ChunHao Lin <hau@realtek.com>
-Subject: [PATCH net 0/2] r8169: fix PAUSE frames blasting issue
-Date:   Tue, 28 Nov 2023 01:57:34 +0800
-Message-ID: <20231127175736.5738-1-hau@realtek.com>
+        <grundler@chromium.org>, ChunHao Lin <hau@realtek.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH net 1/2] r8169: enable rtl8125b pause slot
+Date:   Tue, 28 Nov 2023 01:57:35 +0800
+Message-ID: <20231127175736.5738-2-hau@realtek.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231127175736.5738-1-hau@realtek.com>
+References: <20231127175736.5738-1-hau@realtek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -45,10 +48,6 @@ X-Originating-IP: [172.22.228.55]
 X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
  RTEXMBS04.realtek.com.tw (172.21.6.97)
 X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
 X-KSE-AntiSpam-Interceptor-Info: fallback
 X-KSE-Antivirus-Interceptor-Info: fallback
 X-KSE-AntiSpam-Interceptor-Info: fallback
@@ -61,15 +60,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series of patches are used to fix PAUSE frames blasting issue.
+When FIFO reach near full state, device will issue pause frame.
+If pause slot is enabled(set to 1), in this time, device will issue
+pause frame once. But if pause slot is disabled(set to 0), device
+will keep sending pause frames until FIFO reach near empty state.
 
-ChunHao Lin (2):
-  r8169: enable rtl8125b pause slot
-  r8169: fix deadlock in "r8169_phylink_handler"
+When pause slot is disabled, if there is no one to handle receive
+packets (ex. unexpected shutdown), device FIFO will reach near full
+state and keep sending pause frames. That will impact entire local
+area network.
 
- drivers/net/ethernet/realtek/r8169_main.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+In this patch default enable pause slot to prevent this kind of
+situation.
 
+Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
+Cc: stable@vger.kernel.org
+Signed-off-by: ChunHao Lin <hau@realtek.com>
+---
+ drivers/net/ethernet/realtek/r8169_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 295366a85c63..473b3245754f 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -196,6 +196,7 @@ enum rtl_registers {
+ 					/* No threshold before first PCI xfer */
+ #define	RX_FIFO_THRESH			(7 << RXCFG_FIFO_SHIFT)
+ #define	RX_EARLY_OFF			(1 << 11)
++#define	RX_PAUSE_SLOT_ON		(1 << 11)
+ #define	RXCFG_DMA_SHIFT			8
+ 					/* Unlimited maximum PCI burst. */
+ #define	RX_DMA_BURST			(7 << RXCFG_DMA_SHIFT)
+@@ -2305,9 +2306,13 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
+ 	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+ 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+ 		break;
+-	case RTL_GIGA_MAC_VER_61 ... RTL_GIGA_MAC_VER_63:
++	case RTL_GIGA_MAC_VER_61:
+ 		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST);
+ 		break;
++	case RTL_GIGA_MAC_VER_63:
++		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST |
++			RX_PAUSE_SLOT_ON);
++		break;
+ 	default:
+ 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
+ 		break;
 -- 
 2.39.2
 
