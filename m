@@ -2,143 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A587F97F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC487F97F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjK0D3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 22:29:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S231542AbjK0DfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 22:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjK0D3h (ORCPT
+        with ESMTP id S229480AbjK0DfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 22:29:37 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E6E126
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:29:43 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c997467747so16904431fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:29:43 -0800 (PST)
+        Sun, 26 Nov 2023 22:35:13 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F9EEB;
+        Sun, 26 Nov 2023 19:35:20 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cfc9c4acb6so3175845ad.0;
+        Sun, 26 Nov 2023 19:35:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701055781; x=1701660581; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sV1CXf/5vgCh5mOFnUCAA7ihYHRFt1CuTIjPFpsOHiU=;
-        b=Zyd21S7UkMxmG+5u5MatnqKT84rAeTpNvinObDpWoZzz+J5SoGtFI8WdhtIarsYv/S
-         SBNSFGgvH9XsiY24lnkt4ArumrMrwfBeL/KdkryGpXN+M4xa6AEWnhQPi8LjgU7HKANZ
-         O3TWLmvLReR2sIXEwHxbbHaSB+PopnAYQQorS9EKJQgko9E5GMTqfv5FFbkColqwOqtl
-         9FXC2PYx6mbVjxUc4Sz0cMSRof55aRBHqcEF6jJZIZnKB3r2yakFGqgDJ6Y8YMu6+6Io
-         kxOaT1lqVqSq5OrLZIlF6v7Z8JbHUP9vzrvM74lKSf35XXZRU2+3ao7nf/7oPtqfs+47
-         QFLw==
+        d=gmail.com; s=20230601; t=1701056119; x=1701660919; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ssk5Abzwo4ytex3sYQ2U++2wbQ07TVIErdEorqQPuwU=;
+        b=UACw++3VZqlc2lLnmKMJOkbTc53MyTURcJuu4/RYYJ+Cx1De3mZqZDHAFAfTsTVn2G
+         vgt3eu0z4+oGdh0oc5fPOTw262VmEsCJuFzlyz1mvii3EZP5Mf1Hh0/fAto6U+U/jyZC
+         i00sByMlV+9Q5W2aXx0GCodVTGlTsOlj5OtDWMI3K83dswjIY0RaliyGZEw5teyjTT0v
+         FR44SP/KCSmDwxMsFR5+jqAcR1lff0wxj8uNo1qUhbm/yI1WWoCf25xDJs0dCfqeKQEf
+         HsR5kjDlEYHAay4O6sNYczXDgFbzVyEaGKahccvT9bFO62cv20k1rtISTrGt+1QSY/kP
+         EdGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701055781; x=1701660581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sV1CXf/5vgCh5mOFnUCAA7ihYHRFt1CuTIjPFpsOHiU=;
-        b=RsQYNiT1X8/gETPj3OrKl207aWheZNl/l1/ulNsM0xeoD04Il6dhE35dGnDr0rJAQD
-         484/A/6XYbhYbWrP9ly19pTFoHssCgLfumybFto+2ZV7lQRlbNT/syt4UHMMRHiDQdVG
-         a1sE1TbJCmvWjVOceBPKJPYQM9DQacE0UzOBc8/yQ+VPatZ7jw13sZPGtGY/bHIYV08+
-         HqEpSPR92KlRVPcB/flXRgjiVivsT9D84qaGsgFfibCju/ZgYERnANy+dYjvqvZn7l8F
-         ezHp9+VCvYyP603gBjIjr2S0kcOqbASBr0UnCNbYkaIRoJUsFbO5QcYR99tWl6T9XqkF
-         IuCg==
-X-Gm-Message-State: AOJu0Ywnu0zwPv+N5yQ4WhlNyEp1jj1rs5LtEpTspvzOWiQQa1OUeHlv
-        s3vAHL+gUQFr9FIX+WF9QQ2tNuswyD2KlSUSCeE=
-X-Google-Smtp-Source: AGHT+IGOf4mC0tblJt+CsMkIa+mju8Wanx4dOjJ4UGZAvNfOvuBltgSZ2ncd12yqTeq8/VhiG5zFlfwlz54C/8ofkhQ=
-X-Received: by 2002:a2e:3c15:0:b0:2bc:b9c7:7ba8 with SMTP id
- j21-20020a2e3c15000000b002bcb9c77ba8mr3854903lja.43.1701055781092; Sun, 26
- Nov 2023 19:29:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701056119; x=1701660919;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ssk5Abzwo4ytex3sYQ2U++2wbQ07TVIErdEorqQPuwU=;
+        b=kIbS0U7s5IAvbHjsbkbn4yZKx+/jwE3x4g4/k/LEozuK7Bv8kf5GG1xYqo8YAPSeBM
+         EvhuP0YNKF8uJLAyyo7CheYO8xrsI8MWQbfy/C18wFb0Q+afW937Ni3Ul+f33Ntm/eqL
+         MI0L7nBe87YrNol0/EnyAdlHCEcw8d9eULlwVqC8hHujSnFfDjU9Z1haRqsoRgaQkr+l
+         zAlky0bDgS+/NxuhfxtV6zWfKxQ9ruU8JEr6jIgd6xDbEBKT/Hgr90W4nALhjTdFDF8W
+         etZWSIzCtuHzVz7iNwMLS2gjdS9yVp7BMtiM5T2nkY3KtaS/NEioiHdfFKFj7TUgT9Iz
+         rIig==
+X-Gm-Message-State: AOJu0Yw1JHV2eG7bStvyO2ZYpx49CrHVx/X54tzExtGxU6Pfxugtz06a
+        DxAHhAVZBSzorTp7dXDgOG7ZLy+zerk=
+X-Google-Smtp-Source: AGHT+IG0ZAHM4c3weK45UF0baXzlRNh53yI/FPkX9NZXIpdAVkdKniCV4fQbQ+srFZ4MdD/NEUyCOg==
+X-Received: by 2002:a17:903:1250:b0:1cc:5378:6a56 with SMTP id u16-20020a170903125000b001cc53786a56mr11115598plh.48.1701056119572;
+        Sun, 26 Nov 2023 19:35:19 -0800 (PST)
+Received: from localhost.localdomain ([156.240.117.4])
+        by smtp.gmail.com with ESMTPSA id q8-20020a17090311c800b001cf57ea953csm7078684plh.290.2023.11.26.19.35.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 19:35:19 -0800 (PST)
+From:   Yusong Gao <a869920004@gmail.com>
+To:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
+        dwmw2@infradead.org, juergh@proton.me, zohar@linux.ibm.com,
+        herbert@gondor.apana.org.au, lists@sapience.com,
+        dimitri.ledkov@canonical.com
+Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v5] sign-file: Fix incorrect return values check
+Date:   Mon, 27 Nov 2023 03:34:56 +0000
+Message-Id: <20231127033456.452151-1-a869920004@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com>
-In-Reply-To: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Mon, 27 Nov 2023 11:29:29 +0800
-Message-ID: <CAGWkznGz-Q_gC6EnuTgO3boZY9mSMpMWPRHt-ajo=VDUTHMMEw@mail.gmail.com>
-Subject: Re: [PATCH] kernel: dma: let dma use vmalloc area
-To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch arose from a real problem where the driver failed to use
-dma_map_single(dev, ptr). The ptr is a vmalloc va which is mapped over
-the reserve memory by dma_init_coherent_memory.
+There are some wrong return values check in sign-file when call OpenSSL
+API. The ERR() check cond is wrong because of the program only check the
+return value is < 0 which ignored the return val is 0. For example:
+1. CMS_final() return 1 for success or 0 for failure.
+2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
+3. i2d_TYPEbio() return 1 for success and 0 for failure.
+4. BIO_free() return 1 for success and 0 for failure.
 
-On Mon, Nov 27, 2023 at 11:09=E2=80=AFAM zhaoyang.huang
-<zhaoyang.huang@unisoc.com> wrote:
->
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> memremap within dma_init_coherent_memory will map the given phys_addr
-> into vmalloc area if the pa is not found during iterating iomem_resources=
-,
-> which conflict the rejection of vmalloc area in dma_map_single_attrs.
-> IMO, it is find to let all valid virtual address be valid for DMA as the
-> user will keep corresponding RAM safe for transfer.
->
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
->  include/linux/dma-mapping.h | 12 +++++++-----
->  kernel/dma/debug.c          |  4 ----
->  2 files changed, 7 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index f0ccca16a0ac..7a7b87289d55 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -328,12 +328,14 @@ static inline void dma_free_noncoherent(struct devi=
-ce *dev, size_t size,
->  static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *=
-ptr,
->                 size_t size, enum dma_data_direction dir, unsigned long a=
-ttrs)
->  {
-> -       /* DMA must never operate on areas that might be remapped. */
-> -       if (dev_WARN_ONCE(dev, is_vmalloc_addr(ptr),
-> -                         "rejecting DMA map of vmalloc memory\n"))
-> -               return DMA_MAPPING_ERROR;
-> +       struct page *page;
-> +
->         debug_dma_map_single(dev, ptr, size);
-> -       return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(=
-ptr),
-> +       if (is_vmalloc_addr(ptr))
-> +               page =3D vmalloc_to_page(ptr);
-> +       else
-> +               page =3D virt_to_page(ptr);
-> +       return dma_map_page_attrs(dev, page, offset_in_page(ptr),
->                         size, dir, attrs);
->  }
->
-> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-> index 06366acd27b0..51e1fe9a70aa 100644
-> --- a/kernel/dma/debug.c
-> +++ b/kernel/dma/debug.c
-> @@ -1198,10 +1198,6 @@ void debug_dma_map_single(struct device *dev, cons=
-t void *addr,
->         if (!virt_addr_valid(addr))
->                 err_printk(dev, NULL, "device driver maps memory from inv=
-alid area [addr=3D%p] [len=3D%lu]\n",
->                            addr, len);
-> -
-> -       if (is_vmalloc_addr(addr))
-> -               err_printk(dev, NULL, "device driver maps memory from vma=
-lloc area [addr=3D%p] [len=3D%lu]\n",
-> -                          addr, len);
->  }
->  EXPORT_SYMBOL(debug_dma_map_single);
->
-> --
-> 2.25.1
->
+Link: https://www.openssl.org/docs/manmaster/man3/
+Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing with a raw signature")
+Signed-off-by: Yusong Gao <a869920004@gmail.com>
+---
+V1, V2: Clarify the description of git message.
+V3: Removed redundant empty line.
+V4: Change to more strict check mode.
+---
+ scripts/sign-file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/scripts/sign-file.c b/scripts/sign-file.c
+index 598ef5465f82..3edb156ae52c 100644
+--- a/scripts/sign-file.c
++++ b/scripts/sign-file.c
+@@ -322,7 +322,7 @@ int main(int argc, char **argv)
+ 				     CMS_NOSMIMECAP | use_keyid |
+ 				     use_signed_attrs),
+ 		    "CMS_add1_signer");
+-		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
++		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) != 1,
+ 		    "CMS_final");
+ 
+ #else
+@@ -341,10 +341,10 @@ int main(int argc, char **argv)
+ 			b = BIO_new_file(sig_file_name, "wb");
+ 			ERR(!b, "%s", sig_file_name);
+ #ifndef USE_PKCS7
+-			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
++			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) != 1,
+ 			    "%s", sig_file_name);
+ #else
+-			ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
++			ERR(i2d_PKCS7_bio(b, pkcs7) != 1,
+ 			    "%s", sig_file_name);
+ #endif
+ 			BIO_free(b);
+@@ -374,9 +374,9 @@ int main(int argc, char **argv)
+ 
+ 	if (!raw_sig) {
+ #ifndef USE_PKCS7
+-		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
++		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) != 1, "%s", dest_name);
+ #else
+-		ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
++		ERR(i2d_PKCS7_bio(bd, pkcs7) != 1, "%s", dest_name);
+ #endif
+ 	} else {
+ 		BIO *b;
+@@ -396,7 +396,7 @@ int main(int argc, char **argv)
+ 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
+ 	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
+ 
+-	ERR(BIO_free(bd) < 0, "%s", dest_name);
++	ERR(BIO_free(bd) != 1, "%s", dest_name);
+ 
+ 	/* Finally, if we're signing in place, replace the original. */
+ 	if (replace_orig)
+-- 
+2.34.1
+
