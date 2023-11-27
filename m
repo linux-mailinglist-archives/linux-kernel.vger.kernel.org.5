@@ -2,46 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 001807FA711
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C2A7FA725
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbjK0Qzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S234477AbjK0Q5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234214AbjK0Qz1 (ORCPT
+        with ESMTP id S234369AbjK0Qza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:55:27 -0500
+        Mon, 27 Nov 2023 11:55:30 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76868D6D;
-        Mon, 27 Nov 2023 08:55:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D710FB;
+        Mon, 27 Nov 2023 08:55:19 -0800 (PST)
 Received: from benjamin-XPS-13-9310.. (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B5A7B6607285;
-        Mon, 27 Nov 2023 16:55:16 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7D8A1660734C;
+        Mon, 27 Nov 2023 16:55:17 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701104117;
-        bh=OM1rMpAHnewxMwYLehpH3RhyuQD/KBKxUNIY9psBF1U=;
+        s=mail; t=1701104118;
+        bh=8LPqvsmi32imvr5cq2qE0KlaUGmcLFqSO7T1NPpNe9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jwt0rlRF5iVZMWkF95dc1OcXj7QgqBO+VsnS6mYiSFfym4uFTTI8NqV4IKo9OAOi2
-         BgLUy2d833QU1yJIuPlXwlS4MBFA0HY55MFYS6lgkk3bHxkhwEx+xErqkm4ur/A1lQ
-         ZQFyRw31dlwXCcpKi+xdvQu3FQ1q7jvp75h4mNw1JddQy/KM4X0qyiRy6krj/vCFiz
-         qV+PnfSpf2z4ZGk2VYpG3gfqTTPxvbLCmsOlvjdqs+HmfiFd2UdukfBxHHAusTxRxt
-         fC/ha/eaO4+z4Xh8XOtXPNbX9co2oTScIZl2imvhFlFYOZapLYuvQovGEXbJeQTMVC
-         ria//pNugEYag==
+        b=BP2Op9YS0D8zLzDXZkBB+NgHH/TGXZ9MorD82JkaLJ8ymyq/aAeU1PGiVadVfOBiA
+         1+WGnqLY2BHPT7t4KhKldiPUXMfophLaLmMPAChEVA/ei9A651k94l9phh08tA3SOh
+         qAJxS/c3gArbOcmxMyTvvx1Obrx7zye7CwIqzmiYYEx26zMeywQWaDAhYb3C//Hn8C
+         SuDCPunz4rsbACg5kCbGwGDKMBQftENynMkA8e+5hY35H0nLMy+chzScrgXvoZ38w6
+         p9Ayl4MAGbt6lN16Nvtgxxa+3Y9MWta+UDsJnpouNuY3QKxQ6aNf4qiHQRpMEV06G8
+         WTXTL8vHf24Dg==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
         m.szyprowski@samsung.com, matt.ranostay@konsulko.com
 Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-staging@lists.linux.dev, kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Ming Qian <ming.qian@nxp.com>, Zhou Peng <eagle.zhou@nxp.com>
-Subject: [PATCH 15/55] media: amphion: Stop abusing of min_buffers_needed field
-Date:   Mon, 27 Nov 2023 17:54:14 +0100
-Message-Id: <20231127165454.166373-16-benjamin.gaignard@collabora.com>
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH 16/55] media: qcom: venus: Stop abusing of min_buffers_needed field
+Date:   Mon, 27 Nov 2023 17:54:15 +0100
+Message-Id: <20231127165454.166373-17-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
 References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
@@ -59,39 +65,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 'min_buffers_needed' is suppose to be used to indicate the number
 of buffers needed by DMA engine to start streaming.
-amphion driver doesn't use DMA engine and just want to specify
+venus driver doesn't use DMA engine and just want to specify
 the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
 That 'min_reqbufs_allocation' field purpose so use it.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Ming Qian <ming.qian@nxp.com>
-CC: Zhou Peng <eagle.zhou@nxp.com>
+CC: Stanimir Varbanov <stanimir.k.varbanov@gmail.com> (maintainer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
+CC: Vikash Garodia <quic_vgarodia@quicinc.com> (maintainer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
+CC: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org> (reviewer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
+CC: Andy Gross <agross@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+CC: Bjorn Andersson <andersson@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+CC: Konrad Dybcio <konrad.dybcio@linaro.org> (maintainer:ARM/QUALCOMM SUPPORT)
+CC: linux-arm-msm@vger.kernel.org
 ---
- drivers/media/platform/amphion/vpu_v4l2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/qcom/venus/vdec.c | 4 ++--
+ drivers/media/platform/qcom/venus/venc.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/amphion/vpu_v4l2.c b/drivers/media/platform/amphion/vpu_v4l2.c
-index 87afb4a18d5d..1e4c76032d2b 100644
---- a/drivers/media/platform/amphion/vpu_v4l2.c
-+++ b/drivers/media/platform/amphion/vpu_v4l2.c
-@@ -649,7 +649,7 @@ static int vpu_m2m_queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_q
- 		src_vq->mem_ops = &vb2_vmalloc_memops;
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index dbf305cec120..16b8d0dde10d 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1641,7 +1641,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
  	src_vq->drv_priv = inst;
- 	src_vq->buf_struct_size = sizeof(struct vpu_vb2_buffer);
+ 	src_vq->buf_struct_size = sizeof(struct venus_buffer);
+ 	src_vq->allow_zero_bytesused = 1;
+-	src_vq->min_buffers_needed = 0;
++	src_vq->min_reqbufs_allocation = 0;
+ 	src_vq->dev = inst->core->dev;
+ 	src_vq->lock = &inst->ctx_q_lock;
+ 	ret = vb2_queue_init(src_vq);
+@@ -1656,7 +1656,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+ 	dst_vq->drv_priv = inst;
+ 	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+ 	dst_vq->allow_zero_bytesused = 1;
+-	dst_vq->min_buffers_needed = 0;
++	dst_vq->min_reqbufs_allocation = 0;
+ 	dst_vq->dev = inst->core->dev;
+ 	dst_vq->lock = &inst->ctx_q_lock;
+ 	return vb2_queue_init(dst_vq);
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 44b13696cf82..e399d01c208c 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -1398,7 +1398,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+ 	src_vq->drv_priv = inst;
+ 	src_vq->buf_struct_size = sizeof(struct venus_buffer);
+ 	src_vq->allow_zero_bytesused = 1;
 -	src_vq->min_buffers_needed = 1;
 +	src_vq->min_reqbufs_allocation = 1;
- 	src_vq->dev = inst->vpu->dev;
- 	src_vq->lock = &inst->lock;
- 	ret = vb2_queue_init(src_vq);
-@@ -666,7 +666,7 @@ static int vpu_m2m_queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_q
- 		dst_vq->mem_ops = &vb2_vmalloc_memops;
+ 	src_vq->dev = inst->core->dev;
+ 	src_vq->lock = &inst->ctx_q_lock;
+ 	if (inst->core->res->hfi_version == HFI_VERSION_1XX)
+@@ -1415,7 +1415,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
  	dst_vq->drv_priv = inst;
- 	dst_vq->buf_struct_size = sizeof(struct vpu_vb2_buffer);
+ 	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+ 	dst_vq->allow_zero_bytesused = 1;
 -	dst_vq->min_buffers_needed = 1;
 +	dst_vq->min_reqbufs_allocation = 1;
- 	dst_vq->dev = inst->vpu->dev;
- 	dst_vq->lock = &inst->lock;
- 	ret = vb2_queue_init(dst_vq);
+ 	dst_vq->dev = inst->core->dev;
+ 	dst_vq->lock = &inst->ctx_q_lock;
+ 	return vb2_queue_init(dst_vq);
 -- 
 2.39.2
 
