@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8A17F9C0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC797F9C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjK0Ir6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S232785AbjK0IsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbjK0Irq (ORCPT
+        with ESMTP id S232809AbjK0IsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:47:46 -0500
+        Mon, 27 Nov 2023 03:48:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB6618E
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:47:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC1CC433C7;
-        Mon, 27 Nov 2023 08:47:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31B8185
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:48:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C5B4C433C8;
+        Mon, 27 Nov 2023 08:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701074872;
-        bh=9SPoNsqqop7JgphLq5L+r/FsiTID/lOWvVhQE+bZxJU=;
+        s=k20201202; t=1701074883;
+        bh=mPfQHiSyeafmOoCu5E2CVE/evN3n1UwH9M2EYfXNTdE=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AfH04c60MRUBKmUXUwl/aknpJUm8CS5qvTQv9CBkHkY9YMTbFobUeAovJsTkfrj3w
-         2eudFp1A2m5ZlHd88uwhUe4APm3lC4Iw4jAMV/q8Olu2I0q5AmjpVdOmDOlYV39+64
-         YKoA/REQyxeKLOVBm6KWD3TTEubMshkqXFG/z1iJFmh8AatM1cT1frFbwdwPL3ehiC
-         nPux4MFTCZqc5fJlSEeYIL0TOmys2j3dleGkyWehOOZZgIzCFL8Pv/8aIEE9aDtNj8
-         9DNk7LX924wmEWdSphkjJamEYcgoVag0kr3ZDcFLV+F9RK8RwSmsEwvTBmA2HZDpHv
-         yQdswN3eakAXQ==
-Message-ID: <62af9220-8ca9-4f84-96aa-90257894a7bf@kernel.org>
-Date:   Mon, 27 Nov 2023 09:47:46 +0100
+        b=SMSgXfJ8ooqY7Z+Y/XV3LbMoBzI/Df0dPYWk8AsCph+CYihUARgql4tWXqNd8Z6FI
+         9lyepujCrakUs15p/xG3+Tc84rVbxKNBRhpL/WVjoOomg7NKaTMCzo8h6kkUVT+ltX
+         HPCoqdI9v/GcgigMbFgGlt4IxCjoMsoQECfic2GRqysT/oFWaLTG88MmnPLvPyMlSc
+         9rRffK88zQibVqL5N5dpRArYg6t/CVMEkeQe+iuU8Y7c7aH5VKIlGg4ZwW76/pO8hN
+         9Rmh0PLb3znQKPZgQmMi+NMONK/bo+JUkWhE36hcIo9YsH3CL56mn4LDDszNEuzu74
+         S2VS85HG5XaxQ==
+Message-ID: <93526583-ab8f-4ddb-9846-41e4d1834847@kernel.org>
+Date:   Mon, 27 Nov 2023 09:47:58 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] dt-bindings: riscv: Add StarFive Dubhe compatibles
+Subject: Re: [PATCH 3/7] dt-bindings: timer: Add StarFive JH8100 clint
 Content-Language: en-US
 To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>,
         paul.walmsley@sifive.com, palmer@dabbelt.com,
@@ -40,7 +40,7 @@ To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>,
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         leyfoon.tan@starfivetech.com
 References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-2-jeeheng.sia@starfivetech.com>
+ <20231127013602.253835-4-jeeheng.sia@starfivetech.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -85,7 +85,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231127013602.253835-2-jeeheng.sia@starfivetech.com>
+In-Reply-To: <20231127013602.253835-4-jeeheng.sia@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -99,10 +99,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27/11/2023 02:35, Sia Jee Heng wrote:
-> Dubhe-80 and Dubhe-90 are RISC-V cpu core from StarFive Technology.
+> Add compatible string for the StarFive JH8100 clint
 > 
 > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> ---
 
 Please use scripts/get_maintainers.pl to get a list of necessary people
 and lists to CC. It might happen, that command when run on an older
