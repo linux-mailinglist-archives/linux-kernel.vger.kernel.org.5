@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583BF7FA294
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469D37FA226
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbjK0OYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S233522AbjK0OOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233749AbjK0OYS (ORCPT
+        with ESMTP id S233652AbjK0OMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:24:18 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D564230
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:43 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507ad511315so5892921e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1701093762; x=1701698562; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uh8MG/fcScS4zGx1w1Y666LV3WqtJtCJW99b8yZPGeU=;
-        b=lvw+6FxYVAJcVDXhAwCe/s9ZxNHS8sF1SM/r+F8nmyCxt6kggKelzzoVhdrYZypeGh
-         ZUrPlACn2bhGk/rchjr6SSV5u5KgvbkMR5AVxEk2vG8YmK6qc460vKxl5jxXdZRQg2yq
-         VzOO+lmVMmU7F2py/GETYiesAsPCKaXiA2FdQoPr3Mp2zJKOtGx4dLxDaC4ZPV7R2X9y
-         x3zy0X+wPtx9H7N986+Ie20LJDu3lX2AVrxtBi4l2xOHeG9M/nKyEvsU5BDT2Nl223J+
-         HT2YcZ5m1KC6818QSROQFoDBaBgTy+BRGInPT0bEDNXR9/YBiC6/0yUD84abdeDn2nrK
-         L5bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701093762; x=1701698562;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uh8MG/fcScS4zGx1w1Y666LV3WqtJtCJW99b8yZPGeU=;
-        b=oggHzDtfq2O2yVlM+wRHkSjFleaVnd26wkqIQWFVlEItJ8rezO2uihFhjkvaxEMwQ6
-         GjpDNc1bwv3u/MYZTyAA3VDP1qEldxOF3kVNOzb5DCvEkdDxUI5cUG4RI5bimlykvKmp
-         LX2l0vWIMyy6v6u36WRJgipsv3/oh0zJ5QWCdWkG7Pmvt0J6CeE3/VGlDHCejdwvlo5N
-         hV04tYVhn53WSua7dbTolFonMFM+YlAEZ1dmmT32ErQH22tsITGPTUw3ju2CfmAofDyz
-         XSVsxuwShVGY/aEJwdO9P/Fk+VIqEc0zqUhLOqzuKoLr9WW9w0j7Cv5iif8XUuu2feW4
-         ta4w==
-X-Gm-Message-State: AOJu0Yz5ktf2p1GroLW+PSf6RaQHzuIGw4khfE7iKoH/EuRGxyYNsxZW
-        HZnmBdjHDSIlXLY8XbDZVani5A==
-X-Google-Smtp-Source: AGHT+IFj52P0DIEx0c9vj7QT0YARpPDlM/qFv1+NoeWnzCQ9HCNWjkCgkmNnLJMpwF9gtUU6vrpmNA==
-X-Received: by 2002:a05:6512:2389:b0:506:899d:1994 with SMTP id c9-20020a056512238900b00506899d1994mr7071586lfv.52.1701093761408;
-        Mon, 27 Nov 2023 06:02:41 -0800 (PST)
-Received: from debian ([185.117.107.42])
-        by smtp.gmail.com with ESMTPSA id u4-20020a056512128400b0050ab696bfaasm1486122lfs.3.2023.11.27.06.02.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 06:02:40 -0800 (PST)
-Date:   Mon, 27 Nov 2023 15:02:39 +0100
-From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
-        <ramon.nordin.rodriguez@ferroamp.se>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] net: microchip_t1s: add support for LAN867x Rev.C1
-Message-ID: <ZWShfwyqO-JkqVgI@debian>
-References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
- <20231127104045.96722-3-ramon.nordin.rodriguez@ferroamp.se>
- <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
+        Mon, 27 Nov 2023 09:12:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B5B2D5E
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:03:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A12D1C4AF73;
+        Mon, 27 Nov 2023 14:03:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701093816;
+        bh=KCZKisXR1n78+RfI83KrbOl2Cm27WXfa6iz/K1QPJPo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a2aOf09I75DdKUvvNJhSkD9GQ6WGBE1jrWs9pDpOCpwNhS0TbxHWoRRSn9ck5Mhc+
+         gZca7EfxNyQp1inBZAfRqD47gcVR/2j2P6kSPCkih7i49cwEZ7pOo/irs5zW0XlMiF
+         9t3wBImUkMRmLnPX2jf+oEXtdtP3HdA2v5iDopicDPaZiELC/QCHIid2KwS9yeW8Yk
+         sDtIdNfLMQ2+8k4BxzPSCP/qhcQirHg9eszKNpXUSGX6VzAN3kehB6MI8Qj+xuPUcx
+         pQuQyJsiwfL3/G2Nx7qvojox0+j3lTPPcUWpxZDJzU/NZmi7fMpyxZ2ILAb/+cKK1F
+         d3or7UmfDwFkA==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso5863772e87.2;
+        Mon, 27 Nov 2023 06:03:36 -0800 (PST)
+X-Gm-Message-State: AOJu0YzKhEgsCPjAFuBPAKg2p3Slb4kxARX4ofB65cuZ1KNRZXMMxL6X
+        cxHKF5Lr8XxvaH6WIGu5pOTim5HmUO/Pp39UpA==
+X-Google-Smtp-Source: AGHT+IHHn/0tbob/Zvt/F/xavRxwGiGH47uaym2qWQ3/Wvw2D2ahyijP+Gg34c/5ffttsPErtLGmPrZcuMVpkTAoeU0=
+X-Received: by 2002:a19:7514:0:b0:4fb:9168:1fce with SMTP id
+ y20-20020a197514000000b004fb91681fcemr7182211lfe.59.1701093814870; Mon, 27
+ Nov 2023 06:03:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+References: <20231122-dtc-warnings-v2-0-bd4087325392@kernel.org> <CAK7LNASVMjVg4dr=KdSDHwGww_47H78H7rMXA=wf+ncugesDSA@mail.gmail.com>
+In-Reply-To: <CAK7LNASVMjVg4dr=KdSDHwGww_47H78H7rMXA=wf+ncugesDSA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 27 Nov 2023 08:03:22 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+N0GxwZ2YmspEzfiuGOw7M+DmYkyhLgaYtk+Ov2ycY_A@mail.gmail.com>
+Message-ID: <CAL_Jsq+N0GxwZ2YmspEzfiuGOw7M+DmYkyhLgaYtk+Ov2ycY_A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] kbuild: Per arch/platform dtc warning levels
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Conor Dooley <conor@kernel.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 02:37:41PM +0100, Andrew Lunn wrote:
-> >  #define PHY_ID_LAN867X_REVB1 0x0007C162
-> > +#define PHY_ID_LAN867X_REVC1 0x0007C164
-> 
-> So there is a gap in the revisions. Maybe a B2 exists?
+On Thu, Nov 23, 2023 at 1:39=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Thu, Nov 23, 2023 at 7:12=E2=80=AFAM Rob Herring <robh@kernel.org> wro=
+te:
+> >
+> > This series adds support to set the dtc extra warning level on a per
+> > arch or per platform (directory really) basis.
+> >
+> > The first version of this was just a simple per directory override for
+> > Samsung platforms, but Conor asked to be able to do this for all of
+> > riscv.
+> >
+> > For merging, either I can take the whole thing or the riscv and samsung
+> > patches can go via their normal trees. The added variable will have no
+> > effect until merged with patch 2.
+> >
+> > v1:
+> >  - https://lore.kernel.org/all/20231116211739.3228239-1-robh@kernel.org=
+/
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+>
+>
+> There were some attempts in the past to enable W=3D1 in particular subsys=
+tems,
+> so here is a similar comment.
+>
+> Adding a new warning flag to W=3D1 is always safe without doing any compi=
+le test.
+>
+> With this series, it would not be true any more because a new warning in =
+W=3D1
+> would potentially break riscv/samsung platforms.
 
-The datasheet lists A0, B1 and C1, seems like Microchip removes the
-application notes for old revisions, so no way that I can see to add the
-init-fixup for A0.
+The difference here is the people potentially adding warnings are also
+the ones ensuring no warnings.
 
-I'm guessing there is a rev.c0 that was never released to the public.
+> Linus requires a clean build (i.e. zero warning) when W=3D option is not =
+given.
 
-> > +	const u16 magic_or = 0xE0;
-> > +	const u16 magic_reg_mask = 0x1F;
-> > +	const u16 magic_check_mask = 0x10;
-> 
-> Reverse christmass tree please. Longest first, shorted last.
+Linus doesn't build any of this AFAICT. We are not always warning free
+for W=3D0 with dtbs.
 
-My bad, I was just thinking 'christmas tree' forgot about the reverse.
-I'll fix that.
-
-> > +	int err;
-> > +	int regval;
-> > +	u16 override0;
-> > +	u16 override1;
-> > +	const u16 override_addr0 = 0x4;
-> > +	const u16 override_addr1 = 0x8;
-> > +	const u8 index_to_override0 = 2;
-> > +	const u8 index_to_override1 = 3;
-> 
-> Same here.
-I'll fix this.
-
-> 
-> > +
-> > +	err = lan867x_wait_for_reset_complete(phydev);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	/* The application note specifies a super convenient process
-> > +	 * where 2 of the fixup regs needs a write with a value that is
-> > +	 * a modified result of another reg read.
-> > +	 * Enjoy the magic show.
-> > +	 */
-> 
-> I really do hope that by revision D1 they get the firmware sorted out
-> so none of this undocumented magic is needed.
-> 
-> 	Andrew
-
-Really do hope so.. 
+Rob
