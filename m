@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0799E7F9AB7
+	by mail.lfdr.de (Postfix) with ESMTP id A875A7F9AB9
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 08:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbjK0HI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 02:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S229480AbjK0HJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 02:09:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjK0HIV (ORCPT
+        with ESMTP id S232410AbjK0HIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 02:08:21 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5881BF8
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:07:53 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cb55001124so3316572b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:07:53 -0800 (PST)
+        Mon, 27 Nov 2023 02:08:54 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5ED10E6
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:08:11 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so547796766b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:08:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701068872; x=1701673672; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=65aClSoG7Vvogs/9DSpZCzSUcof37h/9Wvainxt/D1s=;
-        b=H7+h9Bh00LE8XR7Jr/vBNO2taq3FUyH8g0iUjXm7Os3QHcR0RlIrXXGT61SP8IPi28
-         xrY09NcEU+fW6ayTRmLyGCJrvcLbkeVikGZuT5wpd+/Ix0zyPktUU+M3HVBu5tyE1hGj
-         WOnAdPluO5L2nejsKOjdsFMPIPutyS+ZoomZUHR0HcyoG/f/J+OXfDE0berae91+ntjl
-         SygPY0Zipe/WL15rg0R9crrcR4EeUzODaJfz9crQJF+EwFWYezDs4Q3kBPBz/oRYKDMT
-         hfu5Oic44rutV8jgym3/FiHaF1Gb+zKZs8KjKXOcBio1zeFIqCjZA2a2VgEDIYcihec3
-         oOCg==
+        d=linaro.org; s=google; t=1701068890; x=1701673690; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XQ1qy9BZ1qyfzs89N8Lb4GIR3Gihkdl8F0LLaK//4UY=;
+        b=gOPQnOrevzuHg7eZNx1QNko64SZIxRNsay6+K0unnZpZGfjTF4CGVjCfrd0Q392RlW
+         eqbksCMu3ajcZE72a3UxvqJxL7/LSU0IqhnWLs0D2TxLuGJrGxuYzC0Y3AG5IaEd6bq4
+         rjUY6XOTYg74fss3aCWdWMJdK10SozNss/mWa3z6PyTk7uPXOIV+30JyhV0LDZA5I3Vf
+         39BojEzT1iGrmUj/+BXxmSOG7PwgrIkMKBxQ8QmSfQpmNvFnPKkov6AzZnEmicVy7vgf
+         LbLyq1Df3zSeIPR7+w0QWMw38YTsFkFw5TOVYJ6HVzlnSH1ztS/5LvofVrqf41/yRBMi
+         owSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701068872; x=1701673672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=65aClSoG7Vvogs/9DSpZCzSUcof37h/9Wvainxt/D1s=;
-        b=foftH0ZPb2B2TM+BrNMJLnKVFDg0WCuEo+owcsjfxNgTlgwZuHMByy/9QbCsKJr1ms
-         /JcyiARmQ4XCq+OAgBYpT+ehjR1U5f1kw6q+vWnjmrzKZcsOL780koPaoR0Fud/4mhSA
-         1lssM93ElNidf0Qbr03fKfyWZYNzNOmLNRzF6k0DX/pnGTVKfQpV0V7F94U+NMgBYnjv
-         +/lALD7Q39kTILqVIQNMVR0hZgBXO7RsDDc/CQwudkuKsv1/KsODp8O3jOck3YdzaMrj
-         jWnZsoGzrYbLUlw3bCahg3YLXBVWG7tOMGafhTxqnKYdckZHB5RnbYCOf/NNWJV3/412
-         tp3Q==
-X-Gm-Message-State: AOJu0YxFfPJoUVwFz/+4id9FlgNfeMjrBEK4t/arlJnNpNtZd9mg6OHY
-        tAoOI+71HL96AP5ekh1rPvxZ4A==
-X-Google-Smtp-Source: AGHT+IHcnauxtqQExXlH4Csib1LUNoeakDZRIE0yrXb2DtrTMmRFI7ZHKdBCpbiQLIdAZt7kTNKppQ==
-X-Received: by 2002:a17:902:c942:b0:1cd:f823:456d with SMTP id i2-20020a170902c94200b001cdf823456dmr14867788pla.20.1701068872601;
-        Sun, 26 Nov 2023 23:07:52 -0800 (PST)
-Received: from localhost.localdomain ([101.10.45.230])
-        by smtp.gmail.com with ESMTPSA id jh15-20020a170903328f00b001cfcd3a764esm1340134plb.77.2023.11.26.23.07.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Nov 2023 23:07:52 -0800 (PST)
-From:   Jerry Shih <jerry.shih@sifive.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com,
-        ebiggers@kernel.org, ardb@kernel.org
-Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v2 13/13] RISC-V: crypto: add Zvkb accelerated ChaCha20 implementation
-Date:   Mon, 27 Nov 2023 15:07:03 +0800
-Message-Id: <20231127070703.1697-14-jerry.shih@sifive.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20231127070703.1697-1-jerry.shih@sifive.com>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
+        d=1e100.net; s=20230601; t=1701068890; x=1701673690;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XQ1qy9BZ1qyfzs89N8Lb4GIR3Gihkdl8F0LLaK//4UY=;
+        b=ZkXV6RuBDvsfmXtpWk4/fliV6XhYKVRSNeTKxBuOj6TsDHQpFfnME2FvQD87Q61Zvz
+         f5dtP8ZyxnkZObKyBmzpFRqgpEbU6jZh3Pvuwm/ATBQN+/3oNzTsoVV2hJtc06p7NwZl
+         dQWEgkFwdAQpNcG+dJgMCgigK5E1tQYL0JkVmZQHwVYHDNpT0bNuDtVpcKIkjGEaN8zo
+         uPWaZ/+yp/vaL0G8D6zsmkr7qYWiV53G8qIz6fqoE6MCO4rrdaz7j7+RPLtkK/8zW4G1
+         Tw3Lixi2a5WtpYwIjNfwQK7jhW+kUpS8PX6ZB5NE0/R8TZbU8Xbt43d3b/PxdSvkpHpC
+         1mow==
+X-Gm-Message-State: AOJu0Yyqs+Zu+EgXQ8DAVctp3M1OU0SWj3gzn6iOUkWgALyR6nFP43Si
+        3EBI67xkyelwV/c5KPdy+ljQ4w==
+X-Google-Smtp-Source: AGHT+IGH7O+miI+brl+xKCrg1b8t98lW5NTcL9cIQCtR5/gZdcYoYLc3+Erif3+bYvGTSzPOxIqK1g==
+X-Received: by 2002:a17:906:207:b0:a0b:6873:45b1 with SMTP id 7-20020a170906020700b00a0b687345b1mr4941856ejd.39.1701068889899;
+        Sun, 26 Nov 2023 23:08:09 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id b10-20020a1709063f8a00b009f8af454d0dsm5350041ejj.112.2023.11.26.23.08.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Nov 2023 23:08:09 -0800 (PST)
+Message-ID: <e74740c2-7d61-4dfe-ae88-4ead6d72ea5a@linaro.org>
+Date:   Mon, 27 Nov 2023 08:08:06 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] dt-bindings: clock: sophgo: Add SG2042 bindings
+Content-Language: en-US
+To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     Chen Wang <unicorn_wang@outlook.com>
+References: <cover.1701044106.git.unicorn_wang@outlook.com>
+ <aea19fcddcb0aec54b2779fc99b5ac6c1e465fe0.1701044106.git.unicorn_wang@outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <aea19fcddcb0aec54b2779fc99b5ac6c1e465fe0.1701044106.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,537 +127,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a ChaCha20 vector implementation from OpenSSL(openssl/openssl#21923).
+On 27/11/2023 01:58, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+> 
+> Add bindings for the clock generator on the SG2042 RISC-V SoC.
+> 
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> ---
+>  .../clock/sophgo/sophgo,sg2042-clkgen.yaml    |  42 +++++
+>  include/dt-bindings/clock/sophgo-sg2042-clk.h | 169 ++++++++++++++++++
+>  2 files changed, 211 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml
+>  create mode 100644 include/dt-bindings/clock/sophgo-sg2042-clk.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml b/Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml
+> new file mode 100644
+> index 000000000000..6c0d0461e489
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/sophgo/sophgo,sg2042-clkgen.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sophgo SG2042 Clock Generator
+> +
+> +maintainers:
+> +  - Chen Wang <unicorn_wang@outlook.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: sophgo,sg2042-clkgen
+> +
+> +  clocks:
+> +    items:
+> +      - description: Clock Generation IC (25 MHz)
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +    description:
+> +      See <dt-bindings/clock/sophgo-sg2042-clk.h> for valid indices.
+> +
+> +  assigned-clocks: true
 
-Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
----
-Changelog v2:
- - Do not turn on kconfig `CHACHA20_RISCV64` option by default.
- - Use simd skcipher interface.
- - Add `asmlinkage` qualifier for crypto asm function.
- - Reorder structure riscv64_chacha_alg_zvkb members initialization in
-   the order declared.
- - Use smaller iv buffer instead of whole state matrix as chacha20's
-   input.
----
- arch/riscv/crypto/Kconfig                |  12 +
- arch/riscv/crypto/Makefile               |   7 +
- arch/riscv/crypto/chacha-riscv64-glue.c  | 122 +++++++++
- arch/riscv/crypto/chacha-riscv64-zvkb.pl | 321 +++++++++++++++++++++++
- 4 files changed, 462 insertions(+)
- create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.pl
+Drop
 
-diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index 7415fb303785..1932297a1e73 100644
---- a/arch/riscv/crypto/Kconfig
-+++ b/arch/riscv/crypto/Kconfig
-@@ -34,6 +34,18 @@ config CRYPTO_AES_BLOCK_RISCV64
- 	  - Zvkb vector crypto extension (CTR/XTS)
- 	  - Zvkg vector crypto extension (XTS)
- 
-+config CRYPTO_CHACHA20_RISCV64
-+	tristate "Ciphers: ChaCha20"
-+	depends on 64BIT && RISCV_ISA_V
-+	select CRYPTO_SIMD
-+	select CRYPTO_SKCIPHER
-+	select CRYPTO_LIB_CHACHA_GENERIC
-+	help
-+	  Length-preserving ciphers: ChaCha20 stream cipher algorithm
-+
-+	  Architecture: riscv64 using:
-+	  - Zvkb vector crypto extension
-+
- config CRYPTO_GHASH_RISCV64
- 	tristate "Hash functions: GHASH"
- 	depends on 64BIT && RISCV_ISA_V
-diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index b1f857695c1c..748c53aa38dc 100644
---- a/arch/riscv/crypto/Makefile
-+++ b/arch/riscv/crypto/Makefile
-@@ -9,6 +9,9 @@ aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o
- obj-$(CONFIG_CRYPTO_AES_BLOCK_RISCV64) += aes-block-riscv64.o
- aes-block-riscv64-y := aes-riscv64-block-mode-glue.o aes-riscv64-zvkned-zvbb-zvkg.o aes-riscv64-zvkned-zvkb.o
- 
-+obj-$(CONFIG_CRYPTO_CHACHA20_RISCV64) += chacha-riscv64.o
-+chacha-riscv64-y := chacha-riscv64-glue.o chacha-riscv64-zvkb.o
-+
- obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
- ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
- 
-@@ -36,6 +39,9 @@ $(obj)/aes-riscv64-zvkned-zvbb-zvkg.S: $(src)/aes-riscv64-zvkned-zvbb-zvkg.pl
- $(obj)/aes-riscv64-zvkned-zvkb.S: $(src)/aes-riscv64-zvkned-zvkb.pl
- 	$(call cmd,perlasm)
- 
-+$(obj)/chacha-riscv64-zvkb.S: $(src)/chacha-riscv64-zvkb.pl
-+	$(call cmd,perlasm)
-+
- $(obj)/ghash-riscv64-zvkg.S: $(src)/ghash-riscv64-zvkg.pl
- 	$(call cmd,perlasm)
- 
-@@ -54,6 +60,7 @@ $(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
- clean-files += aes-riscv64-zvkned.S
- clean-files += aes-riscv64-zvkned-zvbb-zvkg.S
- clean-files += aes-riscv64-zvkned-zvkb.S
-+clean-files += chacha-riscv64-zvkb.S
- clean-files += ghash-riscv64-zvkg.S
- clean-files += sha256-riscv64-zvknha_or_zvknhb-zvkb.S
- clean-files += sha512-riscv64-zvknhb-zvkb.S
-diff --git a/arch/riscv/crypto/chacha-riscv64-glue.c b/arch/riscv/crypto/chacha-riscv64-glue.c
-new file mode 100644
-index 000000000000..96047cb75222
---- /dev/null
-+++ b/arch/riscv/crypto/chacha-riscv64-glue.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Port of the OpenSSL ChaCha20 implementation for RISC-V 64
-+ *
-+ * Copyright (C) 2023 SiFive, Inc.
-+ * Author: Jerry Shih <jerry.shih@sifive.com>
-+ */
-+
-+#include <asm/simd.h>
-+#include <asm/vector.h>
-+#include <crypto/internal/chacha.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/internal/skcipher.h>
-+#include <linux/crypto.h>
-+#include <linux/linkage.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+
-+/* chacha20 using zvkb vector crypto extension */
-+asmlinkage void ChaCha20_ctr32_zvkb(u8 *out, const u8 *input, size_t len,
-+				    const u32 *key, const u32 *counter);
-+
-+static int chacha20_encrypt(struct skcipher_request *req)
-+{
-+	u32 iv[CHACHA_IV_SIZE / sizeof(u32)];
-+	u8 block_buffer[CHACHA_BLOCK_SIZE];
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	const struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct skcipher_walk walk;
-+	unsigned int nbytes;
-+	unsigned int tail_bytes;
-+	int err;
-+
-+	iv[0] = get_unaligned_le32(req->iv);
-+	iv[1] = get_unaligned_le32(req->iv + 4);
-+	iv[2] = get_unaligned_le32(req->iv + 8);
-+	iv[3] = get_unaligned_le32(req->iv + 12);
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+	while (walk.nbytes) {
-+		nbytes = walk.nbytes & (~(CHACHA_BLOCK_SIZE - 1));
-+		tail_bytes = walk.nbytes & (CHACHA_BLOCK_SIZE - 1);
-+		kernel_vector_begin();
-+		if (nbytes) {
-+			ChaCha20_ctr32_zvkb(walk.dst.virt.addr,
-+					    walk.src.virt.addr, nbytes,
-+					    ctx->key, iv);
-+			iv[0] += nbytes / CHACHA_BLOCK_SIZE;
-+		}
-+		if (walk.nbytes == walk.total && tail_bytes > 0) {
-+			memcpy(block_buffer, walk.src.virt.addr + nbytes,
-+			       tail_bytes);
-+			ChaCha20_ctr32_zvkb(block_buffer, block_buffer,
-+					    CHACHA_BLOCK_SIZE, ctx->key, iv);
-+			memcpy(walk.dst.virt.addr + nbytes, block_buffer,
-+			       tail_bytes);
-+			tail_bytes = 0;
-+		}
-+		kernel_vector_end();
-+
-+		err = skcipher_walk_done(&walk, tail_bytes);
-+	}
-+
-+	return err;
-+}
-+
-+static struct skcipher_alg riscv64_chacha_alg_zvkb[] = {
-+	{
-+		.setkey = chacha20_setkey,
-+		.encrypt = chacha20_encrypt,
-+		.decrypt = chacha20_encrypt,
-+		.min_keysize = CHACHA_KEY_SIZE,
-+		.max_keysize = CHACHA_KEY_SIZE,
-+		.ivsize = CHACHA_IV_SIZE,
-+		.chunksize = CHACHA_BLOCK_SIZE,
-+		.walksize = CHACHA_BLOCK_SIZE * 4,
-+		.base = {
-+			.cra_flags = CRYPTO_ALG_INTERNAL,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct chacha_ctx),
-+			.cra_priority = 300,
-+			.cra_name = "__chacha20",
-+			.cra_driver_name = "__chacha20-riscv64-zvkb",
-+			.cra_module = THIS_MODULE,
-+		},
-+	}
-+};
-+
-+static struct simd_skcipher_alg
-+	*riscv64_chacha_simd_alg_zvkb[ARRAY_SIZE(riscv64_chacha_alg_zvkb)];
-+
-+static inline bool check_chacha20_ext(void)
-+{
-+	return riscv_isa_extension_available(NULL, ZVKB) &&
-+	       riscv_vector_vlen() >= 128;
-+}
-+
-+static int __init riscv64_chacha_mod_init(void)
-+{
-+	if (check_chacha20_ext())
-+		return simd_register_skciphers_compat(
-+			riscv64_chacha_alg_zvkb,
-+			ARRAY_SIZE(riscv64_chacha_alg_zvkb),
-+			riscv64_chacha_simd_alg_zvkb);
-+
-+	return -ENODEV;
-+}
-+
-+static void __exit riscv64_chacha_mod_fini(void)
-+{
-+	simd_unregister_skciphers(riscv64_chacha_alg_zvkb,
-+				  ARRAY_SIZE(riscv64_chacha_alg_zvkb),
-+				  riscv64_chacha_simd_alg_zvkb);
-+}
-+
-+module_init(riscv64_chacha_mod_init);
-+module_exit(riscv64_chacha_mod_fini);
-+
-+MODULE_DESCRIPTION("ChaCha20 (RISC-V accelerated)");
-+MODULE_AUTHOR("Jerry Shih <jerry.shih@sifive.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("chacha20");
-diff --git a/arch/riscv/crypto/chacha-riscv64-zvkb.pl b/arch/riscv/crypto/chacha-riscv64-zvkb.pl
-new file mode 100644
-index 000000000000..6602ef79452f
---- /dev/null
-+++ b/arch/riscv/crypto/chacha-riscv64-zvkb.pl
-@@ -0,0 +1,321 @@
-+#! /usr/bin/env perl
-+# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
-+#
-+# This file is dual-licensed, meaning that you can use it under your
-+# choice of either of the following two licenses:
-+#
-+# Copyright 2023-2023 The OpenSSL Project Authors. All Rights Reserved.
-+#
-+# Licensed under the Apache License 2.0 (the "License").  You may not use
-+# this file except in compliance with the License.  You can obtain a copy
-+# in the file LICENSE in the source distribution or at
-+# https://www.openssl.org/source/license.html
-+#
-+# or
-+#
-+# Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
-+# All rights reserved.
-+#
-+# Redistribution and use in source and binary forms, with or without
-+# modification, are permitted provided that the following conditions
-+# are met:
-+# 1. Redistributions of source code must retain the above copyright
-+#    notice, this list of conditions and the following disclaimer.
-+# 2. Redistributions in binary form must reproduce the above copyright
-+#    notice, this list of conditions and the following disclaimer in the
-+#    documentation and/or other materials provided with the distribution.
-+#
-+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-+
-+# - RV64I
-+# - RISC-V Vector ('V') with VLEN >= 128
-+# - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
-+
-+use strict;
-+use warnings;
-+
-+use FindBin qw($Bin);
-+use lib "$Bin";
-+use lib "$Bin/../../perlasm";
-+use riscv;
-+
-+# $output is the last argument if it looks like a file (it has an extension)
-+# $flavour is the first argument if it doesn't look like a file
-+my $output  = $#ARGV >= 0 && $ARGV[$#ARGV] =~ m|\.\w+$| ? pop   : undef;
-+my $flavour = $#ARGV >= 0 && $ARGV[0] !~ m|\.|          ? shift : undef;
-+
-+$output and open STDOUT, ">$output";
-+
-+my $code = <<___;
-+.text
-+___
-+
-+# void ChaCha20_ctr32_zvkb(unsigned char *out, const unsigned char *inp,
-+#                          size_t len, const unsigned int key[8],
-+#                          const unsigned int counter[4]);
-+################################################################################
-+my ( $OUTPUT, $INPUT, $LEN, $KEY, $COUNTER ) = ( "a0", "a1", "a2", "a3", "a4" );
-+my ( $T0 ) = ( "t0" );
-+my ( $CONST_DATA0, $CONST_DATA1, $CONST_DATA2, $CONST_DATA3 ) =
-+  ( "a5", "a6", "a7", "t1" );
-+my ( $KEY0, $KEY1, $KEY2,$KEY3, $KEY4, $KEY5, $KEY6, $KEY7,
-+     $COUNTER0, $COUNTER1, $NONCE0, $NONCE1
-+) = ( "s0", "s1", "s2", "s3", "s4", "s5", "s6",
-+    "s7", "s8", "s9", "s10", "s11" );
-+my ( $VL, $STRIDE, $CHACHA_LOOP_COUNT ) = ( "t2", "t3", "t4" );
-+my (
-+    $V0,  $V1,  $V2,  $V3,  $V4,  $V5,  $V6,  $V7,  $V8,  $V9,  $V10,
-+    $V11, $V12, $V13, $V14, $V15, $V16, $V17, $V18, $V19, $V20, $V21,
-+    $V22, $V23, $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
-+) = map( "v$_", ( 0 .. 31 ) );
-+
-+sub chacha_quad_round_group {
-+    my (
-+        $A0, $B0, $C0, $D0, $A1, $B1, $C1, $D1,
-+        $A2, $B2, $C2, $D2, $A3, $B3, $C3, $D3
-+    ) = @_;
-+
-+    my $code = <<___;
-+    # a += b; d ^= a; d <<<= 16;
-+    @{[vadd_vv $A0, $A0, $B0]}
-+    @{[vadd_vv $A1, $A1, $B1]}
-+    @{[vadd_vv $A2, $A2, $B2]}
-+    @{[vadd_vv $A3, $A3, $B3]}
-+    @{[vxor_vv $D0, $D0, $A0]}
-+    @{[vxor_vv $D1, $D1, $A1]}
-+    @{[vxor_vv $D2, $D2, $A2]}
-+    @{[vxor_vv $D3, $D3, $A3]}
-+    @{[vror_vi $D0, $D0, 32 - 16]}
-+    @{[vror_vi $D1, $D1, 32 - 16]}
-+    @{[vror_vi $D2, $D2, 32 - 16]}
-+    @{[vror_vi $D3, $D3, 32 - 16]}
-+    # c += d; b ^= c; b <<<= 12;
-+    @{[vadd_vv $C0, $C0, $D0]}
-+    @{[vadd_vv $C1, $C1, $D1]}
-+    @{[vadd_vv $C2, $C2, $D2]}
-+    @{[vadd_vv $C3, $C3, $D3]}
-+    @{[vxor_vv $B0, $B0, $C0]}
-+    @{[vxor_vv $B1, $B1, $C1]}
-+    @{[vxor_vv $B2, $B2, $C2]}
-+    @{[vxor_vv $B3, $B3, $C3]}
-+    @{[vror_vi $B0, $B0, 32 - 12]}
-+    @{[vror_vi $B1, $B1, 32 - 12]}
-+    @{[vror_vi $B2, $B2, 32 - 12]}
-+    @{[vror_vi $B3, $B3, 32 - 12]}
-+    # a += b; d ^= a; d <<<= 8;
-+    @{[vadd_vv $A0, $A0, $B0]}
-+    @{[vadd_vv $A1, $A1, $B1]}
-+    @{[vadd_vv $A2, $A2, $B2]}
-+    @{[vadd_vv $A3, $A3, $B3]}
-+    @{[vxor_vv $D0, $D0, $A0]}
-+    @{[vxor_vv $D1, $D1, $A1]}
-+    @{[vxor_vv $D2, $D2, $A2]}
-+    @{[vxor_vv $D3, $D3, $A3]}
-+    @{[vror_vi $D0, $D0, 32 - 8]}
-+    @{[vror_vi $D1, $D1, 32 - 8]}
-+    @{[vror_vi $D2, $D2, 32 - 8]}
-+    @{[vror_vi $D3, $D3, 32 - 8]}
-+    # c += d; b ^= c; b <<<= 7;
-+    @{[vadd_vv $C0, $C0, $D0]}
-+    @{[vadd_vv $C1, $C1, $D1]}
-+    @{[vadd_vv $C2, $C2, $D2]}
-+    @{[vadd_vv $C3, $C3, $D3]}
-+    @{[vxor_vv $B0, $B0, $C0]}
-+    @{[vxor_vv $B1, $B1, $C1]}
-+    @{[vxor_vv $B2, $B2, $C2]}
-+    @{[vxor_vv $B3, $B3, $C3]}
-+    @{[vror_vi $B0, $B0, 32 - 7]}
-+    @{[vror_vi $B1, $B1, 32 - 7]}
-+    @{[vror_vi $B2, $B2, 32 - 7]}
-+    @{[vror_vi $B3, $B3, 32 - 7]}
-+___
-+
-+    return $code;
-+}
-+
-+$code .= <<___;
-+.p2align 3
-+.globl ChaCha20_ctr32_zvkb
-+.type ChaCha20_ctr32_zvkb,\@function
-+ChaCha20_ctr32_zvkb:
-+    srli $LEN, $LEN, 6
-+    beqz $LEN, .Lend
-+
-+    addi sp, sp, -96
-+    sd s0, 0(sp)
-+    sd s1, 8(sp)
-+    sd s2, 16(sp)
-+    sd s3, 24(sp)
-+    sd s4, 32(sp)
-+    sd s5, 40(sp)
-+    sd s6, 48(sp)
-+    sd s7, 56(sp)
-+    sd s8, 64(sp)
-+    sd s9, 72(sp)
-+    sd s10, 80(sp)
-+    sd s11, 88(sp)
-+
-+    li $STRIDE, 64
-+
-+    #### chacha block data
-+    # "expa" little endian
-+    li $CONST_DATA0, 0x61707865
-+    # "nd 3" little endian
-+    li $CONST_DATA1, 0x3320646e
-+    # "2-by" little endian
-+    li $CONST_DATA2, 0x79622d32
-+    # "te k" little endian
-+    li $CONST_DATA3, 0x6b206574
-+
-+    lw $KEY0, 0($KEY)
-+    lw $KEY1, 4($KEY)
-+    lw $KEY2, 8($KEY)
-+    lw $KEY3, 12($KEY)
-+    lw $KEY4, 16($KEY)
-+    lw $KEY5, 20($KEY)
-+    lw $KEY6, 24($KEY)
-+    lw $KEY7, 28($KEY)
-+
-+    lw $COUNTER0, 0($COUNTER)
-+    lw $COUNTER1, 4($COUNTER)
-+    lw $NONCE0, 8($COUNTER)
-+    lw $NONCE1, 12($COUNTER)
-+
-+.Lblock_loop:
-+    @{[vsetvli $VL, $LEN, "e32", "m1", "ta", "ma"]}
-+
-+    # init chacha const states
-+    @{[vmv_v_x $V0, $CONST_DATA0]}
-+    @{[vmv_v_x $V1, $CONST_DATA1]}
-+    @{[vmv_v_x $V2, $CONST_DATA2]}
-+    @{[vmv_v_x $V3, $CONST_DATA3]}
-+
-+    # init chacha key states
-+    @{[vmv_v_x $V4, $KEY0]}
-+    @{[vmv_v_x $V5, $KEY1]}
-+    @{[vmv_v_x $V6, $KEY2]}
-+    @{[vmv_v_x $V7, $KEY3]}
-+    @{[vmv_v_x $V8, $KEY4]}
-+    @{[vmv_v_x $V9, $KEY5]}
-+    @{[vmv_v_x $V10, $KEY6]}
-+    @{[vmv_v_x $V11, $KEY7]}
-+
-+    # init chacha key states
-+    @{[vid_v $V12]}
-+    @{[vadd_vx $V12, $V12, $COUNTER0]}
-+    @{[vmv_v_x $V13, $COUNTER1]}
-+
-+    # init chacha nonce states
-+    @{[vmv_v_x $V14, $NONCE0]}
-+    @{[vmv_v_x $V15, $NONCE1]}
-+
-+    # load the top-half of input data
-+    @{[vlsseg_nf_e32_v 8, $V16, $INPUT, $STRIDE]}
-+
-+    li $CHACHA_LOOP_COUNT, 10
-+.Lround_loop:
-+    addi $CHACHA_LOOP_COUNT, $CHACHA_LOOP_COUNT, -1
-+    @{[chacha_quad_round_group
-+      $V0, $V4, $V8, $V12,
-+      $V1, $V5, $V9, $V13,
-+      $V2, $V6, $V10, $V14,
-+      $V3, $V7, $V11, $V15]}
-+    @{[chacha_quad_round_group
-+      $V0, $V5, $V10, $V15,
-+      $V1, $V6, $V11, $V12,
-+      $V2, $V7, $V8, $V13,
-+      $V3, $V4, $V9, $V14]}
-+    bnez $CHACHA_LOOP_COUNT, .Lround_loop
-+
-+    # load the bottom-half of input data
-+    addi $T0, $INPUT, 32
-+    @{[vlsseg_nf_e32_v 8, $V24, $T0, $STRIDE]}
-+
-+    # add chacha top-half initial block states
-+    @{[vadd_vx $V0, $V0, $CONST_DATA0]}
-+    @{[vadd_vx $V1, $V1, $CONST_DATA1]}
-+    @{[vadd_vx $V2, $V2, $CONST_DATA2]}
-+    @{[vadd_vx $V3, $V3, $CONST_DATA3]}
-+    @{[vadd_vx $V4, $V4, $KEY0]}
-+    @{[vadd_vx $V5, $V5, $KEY1]}
-+    @{[vadd_vx $V6, $V6, $KEY2]}
-+    @{[vadd_vx $V7, $V7, $KEY3]}
-+    # xor with the top-half input
-+    @{[vxor_vv $V16, $V16, $V0]}
-+    @{[vxor_vv $V17, $V17, $V1]}
-+    @{[vxor_vv $V18, $V18, $V2]}
-+    @{[vxor_vv $V19, $V19, $V3]}
-+    @{[vxor_vv $V20, $V20, $V4]}
-+    @{[vxor_vv $V21, $V21, $V5]}
-+    @{[vxor_vv $V22, $V22, $V6]}
-+    @{[vxor_vv $V23, $V23, $V7]}
-+
-+    # save the top-half of output
-+    @{[vssseg_nf_e32_v 8, $V16, $OUTPUT, $STRIDE]}
-+
-+    # add chacha bottom-half initial block states
-+    @{[vadd_vx $V8, $V8, $KEY4]}
-+    @{[vadd_vx $V9, $V9, $KEY5]}
-+    @{[vadd_vx $V10, $V10, $KEY6]}
-+    @{[vadd_vx $V11, $V11, $KEY7]}
-+    @{[vid_v $V0]}
-+    @{[vadd_vx $V12, $V12, $COUNTER0]}
-+    @{[vadd_vx $V13, $V13, $COUNTER1]}
-+    @{[vadd_vx $V14, $V14, $NONCE0]}
-+    @{[vadd_vx $V15, $V15, $NONCE1]}
-+    @{[vadd_vv $V12, $V12, $V0]}
-+    # xor with the bottom-half input
-+    @{[vxor_vv $V24, $V24, $V8]}
-+    @{[vxor_vv $V25, $V25, $V9]}
-+    @{[vxor_vv $V26, $V26, $V10]}
-+    @{[vxor_vv $V27, $V27, $V11]}
-+    @{[vxor_vv $V29, $V29, $V13]}
-+    @{[vxor_vv $V28, $V28, $V12]}
-+    @{[vxor_vv $V30, $V30, $V14]}
-+    @{[vxor_vv $V31, $V31, $V15]}
-+
-+    # save the bottom-half of output
-+    addi $T0, $OUTPUT, 32
-+    @{[vssseg_nf_e32_v 8, $V24, $T0, $STRIDE]}
-+
-+    # update counter
-+    add $COUNTER0, $COUNTER0, $VL
-+    sub $LEN, $LEN, $VL
-+    # increase offset for `4 * 16 * VL = 64 * VL`
-+    slli $T0, $VL, 6
-+    add $INPUT, $INPUT, $T0
-+    add $OUTPUT, $OUTPUT, $T0
-+    bnez $LEN, .Lblock_loop
-+
-+    ld s0, 0(sp)
-+    ld s1, 8(sp)
-+    ld s2, 16(sp)
-+    ld s3, 24(sp)
-+    ld s4, 32(sp)
-+    ld s5, 40(sp)
-+    ld s6, 48(sp)
-+    ld s7, 56(sp)
-+    ld s8, 64(sp)
-+    ld s9, 72(sp)
-+    ld s10, 80(sp)
-+    ld s11, 88(sp)
-+    addi sp, sp, 96
-+
-+.Lend:
-+    ret
-+.size ChaCha20_ctr32_zvkb,.-ChaCha20_ctr32_zvkb
-+___
-+
-+print $code;
-+
-+close STDOUT or die "error closing STDOUT: $!";
--- 
-2.28.0
+> +
+> +  assigned-clock-rates: true
+
+Drop
+
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    clock-controller {
+> +            compatible = "sophgo,sg2042-clkgen";
+
+Use 4 spaces for example indentation.
+
+> +            clocks = <&cgi>;
+> +            #clock-cells = <1>;
+> +    };
+> diff --git a/include/dt-bindings/clock/sophgo-sg2042-clk.h b/include/dt-bindings/clock/sophgo-sg2042-clk.h
+> new file mode 100644
+> index 000000000000..a8e05c00c3bf
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/sophgo-sg2042-clk.h
+
+The same filename as binding.
+
+> @@ -0,0 +1,169 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+
+Any particular reason for a bit different license than the bindings? How
+is your DTS licensed?
+
+> +/*
+> + * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_CLOCK_SOPHGO_SG2042_H__
+> +#define __DT_BINDINGS_CLOCK_SOPHGO_SG2042_H__
+> +
+> +/* Divider clocks */
+> +#define DIV_CLK_MPLL_RP_CPU_NORMAL_0 0
+
+Missing tabs before each value.
+
+
+
+Best regards,
+Krzysztof
 
