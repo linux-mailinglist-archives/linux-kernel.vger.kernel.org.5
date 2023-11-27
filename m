@@ -2,200 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCA17FAE60
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564367FAE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbjK0Xbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
+        id S233380AbjK0XdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjK0Xbe (ORCPT
+        with ESMTP id S229821AbjK0XdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:31:34 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FA71A5;
-        Mon, 27 Nov 2023 15:31:40 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 0AB502D7;
-        Mon, 27 Nov 2023 23:31:39 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0AB502D7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1701127900; bh=+kymv6NlmVJD365hUtu4hnnqtG6MQtlbOvYps8pKjzc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lZfLHTJCBU2+2HDvTaU1iTTSzqG5Lm0Q9KXvnRop3GbCXsuT/ZP56pFAydIZ9WsYE
-         QqpwdcuRBN15iiVplSdFGVbLnIYLJHj5kxTKtnWBb9xWp1xRpWhCpSEc0ZcwvZ+MQo
-         7eZeDTI2p9MqrVW4G1WzXJIXBXUqZKfA1lmo/9D7bxR+WMPND6BhX+5r6KySEFw3sY
-         z6PhnANBFG00LScSavTF0W2V6GGRbs0rqLDM7aZ9rB/FsY3xnKtG2a3mNV5TnMD3ml
-         FtlxDiC2Fwe6g2atizFUnBA/i+jM/gYlnoEw5AAiyfY619clAH6PaG1K6AREYKnC/i
-         PJgrvcT/6WHQQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
-Date:   Mon, 27 Nov 2023 16:31:39 -0700
-Message-ID: <87sf4qvkmc.fsf@meer.lwn.net>
+        Mon, 27 Nov 2023 18:33:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3508F1A5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:33:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D138FC433CC;
+        Mon, 27 Nov 2023 23:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701127992;
+        bh=NryLZbe6Lp7RD7isdki+30wx/vixOOf5cwgMUYqIx2c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E1VvX+o4MBGKqx+f+qkKVpL+f42O3k/P1cw0pwpefp1TjPbf79swyB2/x4/ByBax/
+         jXRFJR2VCVgmwWjBS6fJy45OVU7fy2tnbDrcgvNbC1p6CEbQYThe8n5YFQUCdpDxOc
+         068/StBFqd8JVivfGp8opXxu1YLYNjjJ4TRMX420Y8DX7aP+q/mtWhcgVAODZkjuoR
+         A58Lf89A53c5sF594AGRBYyk8suSMewOKyWpFcyMT3e/Aj/c5uPLvL7y7YuFdJzvm0
+         qGIMdxWlVLJz3XD8zqMznw5A4hBvMiWxRomMuWEKNUCizVW1BSe5+rI4dVuK6vaZIu
+         id5WlPWdZUmoQ==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-507a29c7eefso6322221e87.1;
+        Mon, 27 Nov 2023 15:33:12 -0800 (PST)
+X-Gm-Message-State: AOJu0YwcGSIZyWAiWWMfdZWeTboVokT9vrM0lqAfb2+xrwHTi5Q46ItU
+        OQCE/nL2YiFtXwK+h7Fb/ghw3XWKU6T9keuuW/0=
+X-Google-Smtp-Source: AGHT+IEg7ZPD0hlvY9kurliQ3PMPlplc/M6deVVXCXmfZmSannuI+3zJ7xZoPOMVKAT2kAdjpB7TLvWmEEgNEC97FFw=
+X-Received: by 2002:ac2:5dd5:0:b0:503:28cb:c087 with SMTP id
+ x21-20020ac25dd5000000b0050328cbc087mr5091467lfq.29.1701127990996; Mon, 27
+ Nov 2023 15:33:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231125065419.3518254-1-yukuai1@huaweicloud.com> <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
+In-Reply-To: <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Nov 2023 15:32:59 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW57SuytxCY-fV74qx6B8AYb65nFC_t2VVeTN34Pamp=gQ@mail.gmail.com>
+Message-ID: <CAPhsuW57SuytxCY-fV74qx6B8AYb65nFC_t2VVeTN34Pamp=gQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] md: synchronize flush io with array reconfiguration
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     maan@systemlinux.org, neilb@suse.de, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 31abfdda6527 (docs: Deprecate use of Sphinx < 2.4.x) in 6.2 added a
-warning that support for older versions of Sphinx would be going away.
-There have been no complaints, so the time has come.  Raise the minimum
-Sphinx version to 2.4.4 and clean out some compatibility code that we no
-longer need.
+On Mon, Nov 27, 2023 at 2:16=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Fri, Nov 24, 2023 at 10:54=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com=
+> wrote:
+> >
+> > From: Yu Kuai <yukuai3@huawei.com>
+> >
+> > Currently rcu is used to protect iterating rdev from submit_flushes():
+> >
+> > submit_flushes                  remove_and_add_spares
+> >                                 synchronize_rcu
+> >                                 pers->hot_remove_disk()
+> >  rcu_read_lock()
+> >  rdev_for_each_rcu
+> >   if (rdev->raid_disk >=3D 0)
+> >                                 rdev->radi_disk =3D -1;
+> >    atomic_inc(&rdev->nr_pending)
+> >    rcu_read_unlock()
+> >    bi =3D bio_alloc_bioset()
+> >    bi->bi_end_io =3D md_end_flush
+> >    bi->private =3D rdev
+> >    submit_bio
+> >    // issue io for removed rdev
+> >
+> > Fix this problem by grabbing 'acive_io' before iterating rdev, make sur=
+e
+> > that remove_and_add_spares() won't concurrent with submit_flushes().
+> >
+> > Fixes: a2826aa92e2e ("md: support barrier requests on all personalities=
+.")
+> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > ---
+> > Changes v2:
+> >  - Add WARN_ON in case md_flush_request() is not called from
+> >  md_handle_request() in future.
+> >
+> >  drivers/md/md.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/md/md.c b/drivers/md/md.c
+> > index 86efc9c2ae56..2ffedc39edd6 100644
+> > --- a/drivers/md/md.c
+> > +++ b/drivers/md/md.c
+> > @@ -538,6 +538,9 @@ static void md_end_flush(struct bio *bio)
+> >         rdev_dec_pending(rdev, mddev);
+> >
+> >         if (atomic_dec_and_test(&mddev->flush_pending)) {
+> > +               /* The pair is percpu_ref_tryget() from md_flush_reques=
+t() */
+> > +               percpu_ref_put(&mddev->active_io);
+> > +
+> >                 /* The pre-request flush has finished */
+> >                 queue_work(md_wq, &mddev->flush_work);
+> >         }
+> > @@ -557,12 +560,8 @@ static void submit_flushes(struct work_struct *ws)
+> >         rdev_for_each_rcu(rdev, mddev)
+> >                 if (rdev->raid_disk >=3D 0 &&
+> >                     !test_bit(Faulty, &rdev->flags)) {
+> > -                       /* Take two references, one is dropped
+> > -                        * when request finishes, one after
+> > -                        * we reclaim rcu_read_lock
+> > -                        */
+> >                         struct bio *bi;
+> > -                       atomic_inc(&rdev->nr_pending);
+> > +
+> >                         atomic_inc(&rdev->nr_pending);
+> >                         rcu_read_unlock();
+> >                         bi =3D bio_alloc_bioset(rdev->bdev, 0,
+> > @@ -573,7 +572,6 @@ static void submit_flushes(struct work_struct *ws)
+> >                         atomic_inc(&mddev->flush_pending);
+> >                         submit_bio(bi);
+> >                         rcu_read_lock();
+> > -                       rdev_dec_pending(rdev, mddev);
+> >                 }
+> >         rcu_read_unlock();
+> >         if (atomic_dec_and_test(&mddev->flush_pending))
+> > @@ -626,6 +624,18 @@ bool md_flush_request(struct mddev *mddev, struct =
+bio *bio)
+> >         /* new request after previous flush is completed */
+> >         if (ktime_after(req_start, mddev->prev_flush_start)) {
+> >                 WARN_ON(mddev->flush_bio);
+> > +               /*
+> > +                * Grab a reference to make sure mddev_suspend() will w=
+ait for
+> > +                * this flush to be done.
+> > +                *
+> > +                * md_flush_reqeust() is called under md_handle_request=
+() and
+> > +                * 'active_io' is already grabbed, hence percpu_ref_try=
+get()
+> > +                * won't fail, percpu_ref_tryget_live() can't be used b=
+ecause
+> > +                * percpu_ref_kill() can be called by mddev_suspend()
+> > +                * concurrently.
+> > +                */
+> > +               if (WARN_ON(percpu_ref_tryget(&mddev->active_io)))
+>
+> This should be "if (!WARN_ON(..))", right?
+>
+> Song
+>
+> > +                       percpu_ref_get(&mddev->active_io);
 
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Akira Yokosawa <akiyks@gmail.com>
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/conf.py              |  2 +-
- Documentation/doc-guide/sphinx.rst |  2 +-
- Documentation/process/changes.rst  |  2 +-
- Documentation/sphinx/automarkup.py |  6 +-----
- Documentation/sphinx/cdomain.py    |  6 +-----
- Documentation/sphinx/kfigure.py    |  8 +-------
- scripts/sphinx-pre-install         | 10 +---------
- 7 files changed, 7 insertions(+), 29 deletions(-)
+Actually, we can just use percpu_ref_get(), no?
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 20bd74edcca9..3a1a804c3a13 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -47,7 +47,7 @@ from load_config import loadConfig
- # -- General configuration ------------------------------------------------
- 
- # If your documentation needs a minimal Sphinx version, state it here.
--needs_sphinx = '1.7'
-+needs_sphinx = '2.4.4'
- 
- # Add any Sphinx extension module names here, as strings. They can be
- # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
-index bb7971643fcf..3d125fb4139d 100644
---- a/Documentation/doc-guide/sphinx.rst
-+++ b/Documentation/doc-guide/sphinx.rst
-@@ -28,7 +28,7 @@ Sphinx Install
- ==============
- 
- The ReST markups currently used by the Documentation/ files are meant to be
--built with ``Sphinx`` version 1.7 or higher.
-+built with ``Sphinx`` version 2.4.4 or higher.
- 
- There's a script that checks for the Sphinx requirements. Please see
- :ref:`sphinx-pre-install` for further details.
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index bb96ca0f774b..559587a89974 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -58,7 +58,7 @@ mcelog                 0.6              mcelog --version
- iptables               1.4.2            iptables -V
- openssl & libcrypto    1.0.0            openssl version
- bc                     1.06.95          bc --version
--Sphinx\ [#f1]_         1.7              sphinx-build --version
-+Sphinx\ [#f1]_         2.4.4            sphinx-build --version
- cpio                   any              cpio --version
- GNU tar                1.28             tar --version
- gtags (optional)       6.6.5            gtags --version
-diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/automarkup.py
-index acc6d55718bd..a413f8dd5115 100644
---- a/Documentation/sphinx/automarkup.py
-+++ b/Documentation/sphinx/automarkup.py
-@@ -7,11 +7,7 @@
- from docutils import nodes
- import sphinx
- from sphinx import addnodes
--if sphinx.version_info[0] < 2 or \
--   sphinx.version_info[0] == 2 and sphinx.version_info[1] < 1:
--    from sphinx.environment import NoUri
--else:
--    from sphinx.errors import NoUri
-+from sphinx.errors import NoUri
- import re
- from itertools import chain
- 
-diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-index 4eb150bf509c..e6959af25402 100644
---- a/Documentation/sphinx/cdomain.py
-+++ b/Documentation/sphinx/cdomain.py
-@@ -127,11 +127,7 @@ def setup(app):
- 
-     # Handle easy Sphinx 3.1+ simple new tags: :c:expr and .. c:namespace::
-     app.connect('source-read', c_markups)
--
--    if (major == 1 and minor < 8):
--        app.override_domain(CDomain)
--    else:
--        app.add_domain(CDomain, override=True)
-+    app.add_domain(CDomain, override=True)
- 
-     return dict(
-         version = __version__,
-diff --git a/Documentation/sphinx/kfigure.py b/Documentation/sphinx/kfigure.py
-index 13e885bbd499..97166333b727 100644
---- a/Documentation/sphinx/kfigure.py
-+++ b/Documentation/sphinx/kfigure.py
-@@ -61,13 +61,7 @@ import sphinx
- from sphinx.util.nodes import clean_astext
- import kernellog
- 
--# Get Sphinx version
--major, minor, patch = sphinx.version_info[:3]
--if major == 1 and minor > 3:
--    # patches.Figure only landed in Sphinx 1.4
--    from sphinx.directives.patches import Figure  # pylint: disable=C0413
--else:
--    Figure = images.Figure
-+Figure = images.Figure
- 
- __version__  = '1.0.0'
- 
-diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 1fb88fdceec3..db75b1b86086 100755
---- a/scripts/sphinx-pre-install
-+++ b/scripts/sphinx-pre-install
-@@ -32,8 +32,7 @@ my $python_cmd = "";
- my $activate_cmd;
- my $min_version;
- my $cur_version;
--my $rec_version = "1.7.9";	# PDF won't build here
--my $min_pdf_version = "2.4.4";	# Min version where pdf builds
-+my $rec_version = "3.0";
- my $latest_avail_ver;
- 
- #
-@@ -791,9 +790,6 @@ sub recommend_sphinx_version($)
- 
- 	# Version is OK. Nothing to do.
- 	if ($cur_version && ($cur_version ge $rec_version)) {
--		if ($cur_version lt $min_pdf_version) {
--			print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
--		}
- 		return;
- 	};
- 
-@@ -842,10 +838,6 @@ sub recommend_sphinx_version($)
- 			printf "\t. $activate_cmd\n";
- 			deactivate_help();
- 
--			if ($latest_avail_ver lt $min_pdf_version) {
--				print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
--			}
--
- 			return;
- 		}
- 
--- 
-2.42.0
-
+Thanks,
+Song
