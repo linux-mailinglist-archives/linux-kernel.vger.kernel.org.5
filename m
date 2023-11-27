@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF79A7FAAAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BED7FAAB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbjK0Tzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        id S231601AbjK0T5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbjK0Tzf (ORCPT
+        with ESMTP id S229527AbjK0T5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:55:35 -0500
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731D6194
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:55:41 -0800 (PST)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-462ed02a7ceso736822137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701114940; x=1701719740; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/TMOaAh1xttulN4HpcJfcDREcNIucjhookb0crER2fo=;
-        b=bctYYrULkwIGuGGOhefgCRTJieRsmaWF5hPkUm3+B7MT0lkGIjZaJyQ7JZXHcSy+HU
-         810s9QFvec057/58mxiqa3ml7TQNktfdQ/AAitSRb58V5X4UamrWJW1s2R6Kwax/zfBs
-         ysaSaP8EagmcZl4m0T9drpHNksHBzc+jls3/CwUicZxYflf6XoN5SORjH3Q/XPzUvClp
-         o/FRpyBpgpJ4dgYiO6Y5QtAU5bOrBbeQJ15vF8z2oGMKW9UsG8LdT8rs+q23OThHEX8t
-         jsEVw5nDOT9O4aYfq/OWT38hfymrDYnETNr+dMed4D4n/NkfxK7dQD096BobzNB9ds5P
-         5wYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701114940; x=1701719740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/TMOaAh1xttulN4HpcJfcDREcNIucjhookb0crER2fo=;
-        b=Cq5aD4JuGTB+ynISV2Kn8G7P9WTv9BqGFjJmbI9WWVtt00RF8qV3aB5aGnY3CfDuQO
-         Plcx1zuKTM1UXejn4QV+RZNobqrphBXEYkP+azMIC+NkGOoz9b7kngW5BUSroeFAslDw
-         25fpHITUafbtlMlGgBu2yGmvScacrPZ+zxc7P1Eq0rX81ZZKqWEk+/xeb2/DTG+tXX2+
-         Nt0i3Y+esxBagapoakERBpFL+Nq9H88REd8ODB7mqR8lAYgomC9yW4+ay1tcuvLiyRuC
-         Xmv3BL45kYc1bdKNScWQJp8N0R553QcxJ+M6yJ2SEwQN4m6ASeH72D2ApVF5Caoq1NAb
-         afmg==
-X-Gm-Message-State: AOJu0Yw9slvqV050T0tAtUAG4JYRbU+61XJKmVgHo1ePzDY8viHkH7Pc
-        F1mV1YNZjo9XWYiWBOEhbzl9Dienmnw0f9qSk12GkQ==
-X-Google-Smtp-Source: AGHT+IF1mAFvOGAvsDg4pZ0R8M8hiRKSHtJN0pBMxbewTkFnpMlzKn4GXJ7+GoqmrN8fTu0r7ShP9hBxdVV81qBlWn8=
-X-Received: by 2002:a67:fb03:0:b0:462:d592:b078 with SMTP id
- d3-20020a67fb03000000b00462d592b078mr12137866vsr.32.1701114940428; Mon, 27
- Nov 2023 11:55:40 -0800 (PST)
+        Mon, 27 Nov 2023 14:57:42 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E49FB8;
+        Mon, 27 Nov 2023 11:57:46 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id ee40771b95509fa8; Mon, 27 Nov 2023 20:57:44 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id C11986684FB;
+        Mon, 27 Nov 2023 20:57:43 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [RFT][PATCH v1] ACPI: OSL: Use a threaded interrupt handler for SCI
+Date:   Mon, 27 Nov 2023 20:57:43 +0100
+Message-ID: <5745568.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-References: <20231126154329.848261327@linuxfoundation.org>
-In-Reply-To: <20231126154329.848261327@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 28 Nov 2023 01:25:29 +0530
-Message-ID: <CA+G9fYudTmZ+t84YLfe2wTXxORpTFBp8p9S=NYVOMretu-VSyg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/152] 5.4.262-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiuddgudefvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtgho
+ mhdprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehinhhtvghlrdgtohhmpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Nov 2023 at 21:16, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.262 release.
-> There are 152 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.262-rc4.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[my two cents]
-[May not be a great idea to test latest clang on older kernels]
+In the current arrangement, all of the acpi_ev_sci_xrupt_handler() code
+is run as an interrupt handler for the SCI, in interrupt context.  Among
+other things, this causes it to run with local interrupts off which
+can be problematic if many GPEs are enabled and they are located in the
+I/O address space, for example (because in that case local interrupts
+will be off for the duration of all of the GPE hardware accesses carried
+out while handling an SCI combined and that may be quite a bit of time
+in extreme scenarios).
 
-Following kernel warning noticed on stable-rc linux-5.4.y with
-clang-17 for arm64 defconfig.
+However, there is no particular reason why the code in question really
+needs to run in interrupt context and in particular, it has no specific
+reason to run with local interrupts off.  The only real requirement is
+to prevent multiple instences of it from running in parallel with each
+other, but that can be achieved regardless.
 
-> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
->     PCI: keystone: Don't discard .probe() callback
->
-> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
->     PCI: keystone: Don't discard .remove() callback
+For this reason, use request_threaded_irq() instead of request_irq() for
+the ACPI SCI and pass IRQF_ONESHOT to it in flags to indicate that the
+interrupt needs to be masked while its handling thread is running so as
+to prevent it from re-triggering while it is being handled (and in
+particular until the final handled/not handled outcome is determined).
 
-WARNING: vmlinux.o(.text+0x4e2a80): Section mismatch in reference from the
- function ks_pcie_probe() to the function .init.text:ks_pcie_add_pcie_port(=
-)
-The function ks_pcie_probe() references
-the function __init ks_pcie_add_pcie_port().
-This is often because ks_pcie_probe lacks a __init
-annotation or the annotation of ks_pcie_add_pcie_port is wrong.
+While at it, drop a redundant local variable from acpi_irq().
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Link:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2YlCuygCpZ8wNd4DS=
-0txeyTovV4/
+The code inspection and (necessarily limited) testing carried out by me
+are good indications that this should just always work, but there may
+be still some really odd platform configurations I'm overlooking, so if
+you have a way to give it a go, please do so.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+---
+ drivers/acpi/osl.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+Index: linux-pm/drivers/acpi/osl.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/osl.c
++++ linux-pm/drivers/acpi/osl.c
+@@ -544,11 +544,7 @@ acpi_os_predefined_override(const struct
+ 
+ static irqreturn_t acpi_irq(int irq, void *dev_id)
+ {
+-	u32 handled;
+-
+-	handled = (*acpi_irq_handler) (acpi_irq_context);
+-
+-	if (handled) {
++	if ((*acpi_irq_handler)(acpi_irq_context)) {
+ 		acpi_irq_handled++;
+ 		return IRQ_HANDLED;
+ 	} else {
+@@ -582,7 +578,8 @@ acpi_os_install_interrupt_handler(u32 gs
+ 
+ 	acpi_irq_handler = handler;
+ 	acpi_irq_context = context;
+-	if (request_irq(irq, acpi_irq, IRQF_SHARED, "acpi", acpi_irq)) {
++	if (request_threaded_irq(irq, NULL, acpi_irq, IRQF_SHARED | IRQF_ONESHOT,
++			         "acpi", acpi_irq)) {
+ 		pr_err("SCI (IRQ%d) allocation failed\n", irq);
+ 		acpi_irq_handler = NULL;
+ 		return AE_NOT_ACQUIRED;
+
+
+
