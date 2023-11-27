@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B1F7F9D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80777F9D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjK0KbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
+        id S232944AbjK0KaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbjK0KbB (ORCPT
+        with ESMTP id S232919AbjK0K36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:31:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB4F7EA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:31:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF9692F4;
-        Mon, 27 Nov 2023 02:31:53 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E6A23F73F;
-        Mon, 27 Nov 2023 02:31:03 -0800 (PST)
-Message-ID: <51e6c9f1-e863-464b-b5f3-d7f60a7ebed6@arm.com>
-Date:   Mon, 27 Nov 2023 10:31:02 +0000
+        Mon, 27 Nov 2023 05:29:58 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54A3EA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:30:04 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 20A1F202AC;
+        Mon, 27 Nov 2023 10:30:03 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CB66132A6;
+        Mon, 27 Nov 2023 10:30:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id N8CeAatvZGXgfwAAn2gu4w
+        (envelope-from <dwagner@suse.de>); Mon, 27 Nov 2023 10:30:03 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
+Subject: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
+Date:   Mon, 27 Nov 2023 11:32:08 +0100
+Message-ID: <20231127103208.25748-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-GB
-To:     Alistair Popple <apopple@nvidia.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
- <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
- <ZWC9lwDAjMZsNzoG@casper.infradead.org>
- <9c8f6d2a-7ed8-45d2-9684-d77489bd99b8@redhat.com>
- <ZWDG6BYqmZVpyTLL@casper.infradead.org>
- <26c361bc-6d87-4a57-9fae-ef635c9039c7@redhat.com>
- <87sf4rppuc.fsf@nvdebian.thelocal>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87sf4rppuc.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++++
+X-Spam-Score: 8.27
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: 20A1F202AC
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
+X-Spamd-Result: default: False [8.27 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         NEURAL_HAM_LONG(-0.32)[-0.317];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-0.998];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,123 +85,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 08:20, Alistair Popple wrote:
-> 
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> On 24.11.23 16:53, Matthew Wilcox wrote:
->>> On Fri, Nov 24, 2023 at 04:25:38PM +0100, David Hildenbrand wrote:
->>>> On 24.11.23 16:13, Matthew Wilcox wrote:
->>>>> On Fri, Nov 24, 2023 at 09:56:37AM +0000, Ryan Roberts wrote:
->>>>>> On 23/11/2023 15:59, Matthew Wilcox wrote:
->>>>>>> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
->>>>>>>> This is v7 of a series to implement small-sized THP for anonymous memory
->>>>>>>> (previously called "large anonymous folios"). The objective of this is to
->>>>>>>
->>>>>>> I'm still against small-sized THP.  We've now got people asking whether
->>>>>>> the THP counters should be updated when dealing with large folios that
->>>>>>> are smaller than PMD sized.  It's sowing confusion, and we should go
->>>>>>> back to large anon folios as a name.
->>>>>>
->>>>>> I suspect I'm labouring the point here, but I'd like to drill into exactly what
->>>>>> you are objecting to. Is it:
->>>>>>
->>>>>> A) Using the name "small-sized THP" (which is currently only used in the commit
->>>>>> logs and a couple of times in the documentation).
->>>>>
->>>>> Yes, this is what I'm objecting to.
->>>>
->>>> I'll just repeat that "large anon folio" is misleading, because
->>>> * we already have "large anon folios" in hugetlb
->>> We do?  Where?
->>
->> MAP_PRIVATE of hugetlb. hugepage_add_anon_rmap() instantiates them.
->>
->> Hugetlb is likely one of the oldest user of compund pages aka large folios.
-> 
-> I don't like "large anon folios" because it seems to confuse collegaues
-> when explaining that large anon folios are actually smaller than the
-> existing Hugetlb/THP size. I suspect this is because they already assume
-> large folios are used for THP. I guess this wouldn't be an issue if
-> everyone assumed THP was implemented with huge folios, but that doesn't
-> seem to be the case for me at least. Likely because the default THP size
-> is often 2MB, which is hardly huge.
-> 
->>>
->>>> * we already have PMD-sized "large anon folios" in THP
->>> Right, those are already accounted as THP, and that's what users
->>> expect.
->>> If we're allocating 1024 x 64kB chunks of memory, the user won't be able
->>> to distinguish that from 32 x 2MB chunks of memory, and yet the
->>> performance profile for some applications will be very different.
->>
->> Very right, and because there will be a difference between 1024 x
->> 64kB, 2048 x 32 kB and so forth, we need new memory stats either way.
->>
->> Ryan had some ideas on that, but currently, that's considered future
->> work, just like it likely is for the pagecache as well and needs much
->> more thoughts.
->>
->> Initially, the admin will have to enable all that for anon either
->> way. It all boils down to one memory statistic for anon memory
->> (AnonHugePages) that's messed-up already.
->>
->>>
->>>> But inn the end, I don't care how we will call this in a commit message.
->>>>
->>>> Just sticking to what we have right now makes most sense to me.
->>>>
->>>> I know, as the creator of the term "folio" you have to object :P Sorry ;)
->>> I don't care if it's called something to do with folios or not.  I
->>
->> Good!
->>
->>> am objecting to the use of the term "small THP" on the grounds of
->>> confusion and linguistic nonsense.
->>
->> Maybe that's the reason why FreeBSD calls them "medium-sized
->> superpages", because "Medium-sized" seems to be more appropriate to
->> express something "in between".
-> 
-> Transparent Medium Pages?
+libnvme is using the sysfs for enumarating the nvme resources. Though
+there are few missing attritbutes in the sysfs. For these libnvme issues
+commands during discovering.
 
-I don't think this is future proof; If we are going to invent a new term, it
-needs to be indpendent of size to include all sizes including PMD-size and
-perhaps in future, bigger-than-PMD-size. I think generalizing the meaning of
-"huge" in THP to mean "bigger than the base page" is the best way to do this.
-Then as David says, over time people will qualify it with a specific size when
-appropriate.
+As the kernel already knows all these attributes and we would like to
+avoid libnvme to issue commands all the time, expose these missing
+attributes.
 
-> 
->> So far I thought the reason was because they focused on 64k only.
->>
->> Never trust a German guy on naming suggestions. John has so far been
->> my naming expert, so I'm hoping he can help.
-> 
-> Likewise :-)
-> 
->> "Sub-pmd-sized THP" is just mouthful. But then, again, this is would
->> just be a temporary name, and in the future THP will just naturally
->> come in multiple sizes (and others here seem to agree on that).
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
 
-I actually don't mind "sub-pmd-sized THP" given the few locations its actually
-going to live.
+As discussed during ALPPS, these here are the missing attribures which libnvme
+is still looking up via commands. I've tested this with a modified libnvme and
+didn't observe any ioctls anymore.
 
->>
->>
->> But just to repeat: I don't think there is need to come up with new
->> terminology and that there will be mass-confusion. So far I've not
->> heard a compelling argument besides "one memory counter could confuse
->> an admin that explicitly enables that new behavior.".
->>
->> Side note: I'm, happy that we've reached a stage where we're
->> nitpicking on names :)
-> 
+I'm pretty sure the naming is a bit off for the variables. Not really sure if we
+want to stick to the spec naming sceme or have our own one, e.g. 'nsze' vs
+'capacity'.
 
-Agreed. We are bikeshedding here. But if we really can't swallow "small-sized
-THP" then perhaps the most efficient way to move this forwards is to review the
-documentation (where "small-sized THP" appears twice in order to differentiate
-from PMD-sized THP) - its in patch 3. Perhaps it will be easier to come up with
-a good description in the context of those prose? Then once we have that,
-hopefully a term will fall out that I'll update the commit logs with.
+Also getting a pointer to the nvme_ns data structure is a bit strange
+(dev_to_nvme_ns). This stip is necessary as many of the ns attributes are in
+nvme_ns. Shouldn't these per path values not all be the same and thus couldn't
+these be in nvme_ns_head? Anyway, just not sure who to deal with this. So any
+pointers highly welcomed!
+
+Cheers,
+Daniel
+
+ drivers/nvme/host/core.c  |  2 ++
+ drivers/nvme/host/nvme.h  |  2 ++
+ drivers/nvme/host/sysfs.c | 72 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 76 insertions(+)
+
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 80673ea63fea..f100ee241bd7 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2029,6 +2029,8 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
+ 	blk_mq_freeze_queue(ns->disk->queue);
+ 	lbaf = nvme_lbaf_index(id->flbas);
+ 	ns->lba_shift = id->lbaf[lbaf].ds;
++	ns->nsze = le64_to_cpu(id->nsze);
++	ns->nuse = le64_to_cpu(id->nuse);
+ 	nvme_set_queue_limits(ns->ctrl, ns->queue);
+ 
+ 	nvme_configure_metadata(ns, id);
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index f35647c470af..97652bf2c787 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -487,6 +487,8 @@ struct nvme_ns {
+ 	struct nvme_ns_head *head;
+ 
+ 	int lba_shift;
++	u64 nsze;
++	u64 nuse;
+ 	u16 ms;
+ 	u16 pi_size;
+ 	u16 sgs;
+diff --git a/drivers/nvme/host/sysfs.c b/drivers/nvme/host/sysfs.c
+index 212e1b05d298..b46faee50361 100644
+--- a/drivers/nvme/host/sysfs.c
++++ b/drivers/nvme/host/sysfs.c
+@@ -114,12 +114,84 @@ static ssize_t nsid_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(nsid);
+ 
++static struct nvme_ns *dev_to_nvme_ns(struct device *dev)
++{
++	struct gendisk *disk = dev_to_disk(dev);
++
++	if (disk->fops == &nvme_bdev_ops)
++		return nvme_get_ns_from_dev(dev);
++	else {
++		struct nvme_ns_head *head = disk->private_data;
++		struct nvme_subsystem *subsys = head->subsys;
++		struct nvme_ctrl *ctrl;
++		struct nvme_ns *ns, *ret = NULL;
++
++		list_for_each_entry(ctrl, &subsys->ctrls, subsys_entry) {
++			down_read(&ctrl->namespaces_rwsem);
++			list_for_each_entry(ns, &ctrl->namespaces, list) {
++				ret = ns;
++				break;
++			}
++			up_read(&ctrl->namespaces_rwsem);
++		}
++		return ret;
++	}
++}
++
++static ssize_t csi_show(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	return sysfs_emit(buf, "%d\n", dev_to_ns_head(dev)->ids.csi);
++}
++static DEVICE_ATTR_RO(csi);
++
++static ssize_t lba_ds_show(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	struct nvme_ns *ns = dev_to_nvme_ns(dev);
++
++	return sysfs_emit(buf, "%d\n", ns->lba_shift);
++}
++static DEVICE_ATTR_RO(lba_ds);
++
++static ssize_t lba_ms_show(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	struct nvme_ns *ns = dev_to_nvme_ns(dev);
++
++	return sysfs_emit(buf, "%d\n", ns->ms);
++}
++static DEVICE_ATTR_RO(lba_ms);
++
++static ssize_t nsze_show(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	struct nvme_ns *ns = dev_to_nvme_ns(dev);
++
++	return sysfs_emit(buf, "%llu\n", ns->nsze);
++}
++static DEVICE_ATTR_RO(nsze);
++
++static ssize_t nuse_show(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	struct nvme_ns *ns = dev_to_nvme_ns(dev);
++
++	return sysfs_emit(buf, "%llu\n", ns->nuse);
++}
++static DEVICE_ATTR_RO(nuse);
++
+ static struct attribute *nvme_ns_id_attrs[] = {
+ 	&dev_attr_wwid.attr,
+ 	&dev_attr_uuid.attr,
+ 	&dev_attr_nguid.attr,
+ 	&dev_attr_eui.attr,
++	&dev_attr_csi.attr,
+ 	&dev_attr_nsid.attr,
++	&dev_attr_lba_ds.attr,
++	&dev_attr_lba_ms.attr,
++	&dev_attr_nsze.attr,
++	&dev_attr_nuse.attr,
+ #ifdef CONFIG_NVME_MULTIPATH
+ 	&dev_attr_ana_grpid.attr,
+ 	&dev_attr_ana_state.attr,
+-- 
+2.43.0
 
