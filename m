@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4152B7FA35D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C024D7FA360
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbjK0OsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        id S233775AbjK0Osr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:48:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjK0OsY (ORCPT
+        with ESMTP id S233687AbjK0Oso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:48:24 -0500
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE70EA1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1701096506; x=1701355706;
-        bh=D/QuZySFquClyUZrQJgv8cSRnLgGNnUBKw6R0N8ml+U=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=mHotoFtdZMlM86rf05GjVS1hIQHVGY+QJJ+vZsRtNxlQMSVF6bRHUQs78ePz/GSpj
-         MYvHi9oLhJY/cpGRXenwuB8oFtKcgId3R94o7KuiShWIZSoWa3soKNwyWMu0GEpx7o
-         V8KRmAFJTBk6ZmRYIAfEtRFgnCh7VvB9IKBC6P9cSSpk/QR75H+snlm7ZzDmjHDzfy
-         RoJwaOBBFIyB8J2ukHKpKQRo9OANqZpgHm3Fipl9/HKbYVyI9cuKjPCv2z5OdP8Ffy
-         fq7qu4peIO7trxACKzIOROwltpmnM7X8kGGa/RZY2Yq0VGh2Jpxom0XxnVScrDFFIC
-         k1UxmCaEo7dig==
-Date:   Mon, 27 Nov 2023 14:48:08 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-From:   cristian_ci <cristian_ci@protonmail.com>
-Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>
-Subject: Re: [BUG] wireless: mt7601u: probe failed with error -110
-Message-ID: <TW5Bad4rqn0eV1xH7glJEAQsf333rfPxAYZJ9hMIkaGJrAbMihh-AefdxZx0LtYiK5UUavBSBgOt9x75YgCyPR0cflycw5mNjGqsb7qPebk=@protonmail.com>
-In-Reply-To: <20231126142634.3a100e2c@kernel.org>
-References: <Bnwq2et4CBU1_MS8X3rFeejMDmKf2dr_BNq60IzBcGKbjTxHG1CjJ0zB_wZjn8_iLJsi7fCx6_Eh01ozYBqPA-cEZXMZE_X98E0b7yotXCg=@protonmail.com> <20231126142634.3a100e2c@kernel.org>
-Feedback-ID: 27475468:user:proton
+        Mon, 27 Nov 2023 09:48:44 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DDBA1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:48:50 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35cc155a467so4195595ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:48:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701096530; x=1701701330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E3FLX3YynhvX8mGBDXZEVUPH4OcHBZ2EUZ4Lk2rEt1c=;
+        b=a7pYE2aWifuoFRXSQ6zcnLuYt2Sy2I9bDprPt9EY4fq6088lhrMaYlFdNbO7UdURf7
+         svn+etxDHXIcX71dsZOmAVmFQI/zR8dEtVudgIu2SSouRSASnqUJKdMkyh1gVruPU4xV
+         NyEX8r06w72PHkJnYM5wZ7EvMOsMlpmXH2KN0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701096530; x=1701701330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E3FLX3YynhvX8mGBDXZEVUPH4OcHBZ2EUZ4Lk2rEt1c=;
+        b=W0afg9hjD+ZWQAB6ZAZMPSJbeiswLNlAALlbIUApK/zBVEsY8mtg9FkxEjkh+uwmo8
+         d7D4Q1nrkEqF/4zLEEE7/WNol2AlytWkug7OSRRMF8V/tDNz0aXjUhFek/XFF5XwCUto
+         mfUirwjaUAlQ0T1zY0UNfpxQFyJjM4z/2vjfnmQddfhEXsyWoj5QLAtp8i7oy4OQD1I7
+         4lJD/lf4OsHxFu2Q4jwfGTgfWJtRGlVYIG/6mwNLznIbA7iCqExKF/UpJClipC016XJ6
+         Z/d+uej37bHM3RaY6Fb3fRefm3Q0nrJT2aZIR0FnDBc6sYG22fF22+nDUB3en9jKC/tL
+         xubw==
+X-Gm-Message-State: AOJu0YyYM7/7yiBHJ/AQhq3eP5s4jpC+rIWHOpvWJhQL849Xr2Vf1CVk
+        D0NpZQk1g2ndBtdI/kn2uTd8lDix4s+GA4Qj7gi4oA==
+X-Google-Smtp-Source: AGHT+IGcnqezwlGNDh2RQ7YHJ0GhpoAmyujmyGpF9m9aXpMS1mAWqIijhV4vdV0EDPLxT8+wxU+ENK4jUdVRZpXfG9I=
+X-Received: by 2002:a05:6e02:20eb:b0:35c:7b32:2425 with SMTP id
+ q11-20020a056e0220eb00b0035c7b322425mr11231186ilv.8.1701096530125; Mon, 27
+ Nov 2023 06:48:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231117095531.1693753-1-treapking@chromium.org> <CAPDyKFqjcP2pAH8uo61Yc7wU76NM1aCMN6P1TaAoafCFfZSeWw@mail.gmail.com>
+In-Reply-To: <CAPDyKFqjcP2pAH8uo61Yc7wU76NM1aCMN6P1TaAoafCFfZSeWw@mail.gmail.com>
+From:   Pin-yen Lin <treapking@chromium.org>
+Date:   Mon, 27 Nov 2023 22:48:39 +0800
+Message-ID: <CAEXTbpd7qD4qzY0p3rDD92eTMVCeu+ZsOWBMwJA8cOYe8=JvgA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mtk-sd: Increase the verbosity of msdc_track_cmd_data
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        ot_shunxi.zhang@mediatek.corp-partner.google.com,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Ulf,
 
-On Sunday, November 26th, 2023 at 23:26, Jakub Kicinski <kuba@kernel.org> w=
-rote:
+On Fri, Nov 24, 2023 at 1:13=E2=80=AFAM Ulf Hansson <ulf.hansson@linaro.org=
+> wrote:
+>
+> On Fri, 17 Nov 2023 at 10:55, Pin-yen Lin <treapking@chromium.org> wrote:
+> >
+> > This log message is necessary for debugging, so enable it by default to
+> > debug issues that are hard to reproduce locally.
+> >
+> > Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> >
+> > ---
+> >
+> >  drivers/mmc/host/mtk-sd.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> > index 97f7c3d4be6e..4469003f571e 100644
+> > --- a/drivers/mmc/host/mtk-sd.c
+> > +++ b/drivers/mmc/host/mtk-sd.c
+> > @@ -1150,7 +1150,7 @@ static void msdc_recheck_sdio_irq(struct msdc_hos=
+t *host)
+> >  static void msdc_track_cmd_data(struct msdc_host *host, struct mmc_com=
+mand *cmd)
+> >  {
+> >         if (host->error)
+> > -               dev_dbg(host->dev, "%s: cmd=3D%d arg=3D%08X; host->erro=
+r=3D0x%08X\n",
+> > +               dev_err(host->dev, "%s: cmd=3D%d arg=3D%08X; host->erro=
+r=3D0x%08X\n",
+> >                         __func__, cmd->opcode, cmd->arg, host->error);
+>
+> How critical is this? Should we perhaps use a dev_warn instead?
 
-> Does it work with the vendor driver? The upstream driver is just
-> a rewrite of the vendor driver, I don't know much about the device
-> internals.
->=20
+After rechecking the driver, I agree that dev_warn() is probably
+enough as the driver tries to reset the hardware to recover from the
+bad state when this error happens.
 
-I remember I tried the device with the vendor driver [1] (which is not comp=
-atible with mainline) and it should work in that case. I noticed there is a=
- datasheet somewhere out around, BTW I've also found information here [2] a=
-nd here [3] about the driver and devices shipping this chip under several b=
-rands.
+I'll wait a few days before sending out v2 to see if Mediatek people
+can confirm this.
 
-> Maybe Lorenzo or Felix have some ideas.
-Indeed, I dared to fw and cc them in order to join this discussion.
-
-Regards,
-
-Cristian.
-
-[1] https://www.mediatek.com/products/broadband-wifi/mt7601u
-[2] http://en.techinfodepot.shoutwiki.com/wiki/Mt7601u
-[3] http://en.techinfodepot.shoutwiki.com/wiki/MediaTek_MT7601U
+Thanks and regards,
+Pin-yen
+>
+> >  }
+> >
+>
+> Kind regards
+> Uffe
