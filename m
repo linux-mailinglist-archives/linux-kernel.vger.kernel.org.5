@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1EC7FA017
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F3B7FA01B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbjK0M4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:56:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        id S233453AbjK0M5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233453AbjK0M4b (ORCPT
+        with ESMTP id S233449AbjK0M46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:56:31 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF421B5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:56:37 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b473d3debso5080115e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:56:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701089796; x=1701694596; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OIYOB2eU2H+bluz3T89WDZtEixLUpIjEWJSjNBKPfQM=;
-        b=rUGcXBq4iWK8F4iT3UXDeOE+1d7jzILvB4lK63tR0pE5q/4YF+ZjKUujXhzk+WzjKv
-         idBY7rjdQOprsQMkXwkwcGvCHWTrJk12RcyMKWQckCJge8Gqdj+66rRR9nOm7cHSCTA+
-         6tx4tMguBvzBS/x8dHKppM/e7AJ0Vgl9zJp+V/kVhgQ8icgshehTgYrztwG+GLjKhYFp
-         pBy9fzYeDf5VgLcHyBF4y5s8aJlPXib5RcX327uwNDiIlnMJGrnDFkBrFnTkNrXG9isd
-         b2eneETAf5NvesTrJFcfXfeV4TMzR5Eku2lTNEWrba7UhA55nu+oG3I4KXipafw+7Mga
-         Jigg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701089796; x=1701694596;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OIYOB2eU2H+bluz3T89WDZtEixLUpIjEWJSjNBKPfQM=;
-        b=so4NtKuz/uHYomd5Q6liIZknKzVCqbNnipg6fT0n3pOKrmuotK9yla9cKok/mNpQzO
-         mCnYU1hVRwc8CD97Rdvi72TxoUhBLGPuxUH4n/4bv/eLTH3QiHQZaAqlG9d/o6C59yms
-         3lrXtYiAm3kvr21l3mMX8rMqwmWy/rZw97yIy7lEvo7Fbd33cKkslHRTwCj9CtDhTDQS
-         ppxuiVtyhrJWWSNHU0Vfjb6kEdSTYZsAe3KtcEk9KMAheySc1uIB+51EnAhY8E/94u4X
-         lHyFXiGLC+qAj3XoX3urAwREaL8VUwfe+LBCudfOjrS+sabwqPiPBPWM4aBv5vcubH5m
-         5xqw==
-X-Gm-Message-State: AOJu0YwtPXJ2PXAj2q3Q/fUJZ4IiCdGSGifPhXhiAo6k8hfKi9TLE9lo
-        X3k8z6Kjja3u2QM8YFxretyiFw==
-X-Google-Smtp-Source: AGHT+IFPPTGfLzqzJNgYs1IpQL1hsJuI8oapdRcXNEpwBLbJewMCagBAP3dI7Z2zilUHv4TqflpLPA==
-X-Received: by 2002:a05:600c:45cf:b0:3f6:58ad:ed85 with SMTP id s15-20020a05600c45cf00b003f658aded85mr8311151wmo.10.1701089796257;
-        Mon, 27 Nov 2023 04:56:36 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id z15-20020a05600c220f00b003fe1fe56202sm13576241wml.33.2023.11.27.04.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 04:56:36 -0800 (PST)
-Date:   Mon, 27 Nov 2023 15:56:33 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] nouveau/gsp/r535: remove a stray unlock in
- r535_gsp_rpc_send()
-Message-ID: <a0293812-c05d-45f0-a535-3f24fe582c02@moroto.mountain>
+        Mon, 27 Nov 2023 07:56:58 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1334137;
+        Mon, 27 Nov 2023 04:57:04 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D6FA166057B6;
+        Mon, 27 Nov 2023 12:57:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701089823;
+        bh=FySumCrnHCkLNmJr8XJVzT+Zu5nrGGp8D2JVx0dI6Zo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=czRxqj4tLuvWQ5UN0mnq/93x90RSVWFH35tTAHbAW0OSwJVBHmH1X2MrmkWHwaICV
+         bUtG8Jf5AIoa0pmZJV6J5FP9ep6l46xRsB3zFdZFGxdtEwzu2jQS4Yp8iAn4Z5aj6/
+         VWMv9pOz+yCjc6nfvFOZKzvXSoCcahu85stn8cr2qUv0Up8YMLdY7e0Zi8gDOgA5CU
+         LLEMq8VotLORUfZY8pYGpaAAeeqpVnJMu4dCTAZeJUIMBHHNgsr/hFlzkJAvykPIIq
+         kP3IX81JYE/rpiTQOe1PIvKjuz7ki4C4z1cNvMm+R7q5YAUayolMzQVbwHddH5F7B1
+         7oMhPCh6e1kOQ==
+Message-ID: <12601252-5a90-40cf-b634-493219cebf38@collabora.com>
+Date:   Mon, 27 Nov 2023 13:57:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] arm64: dts: mediatek: mt6358: Merge ldo_vcn33_*
+ regulators
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230913084457.1638690-1-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230913084457.1638690-1-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -74,31 +59,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unlock doesn't belong here and it leads to a double unlock in
-the caller, r535_gsp_rpc_push().
+On Wed, 13 Sep 2023 16:44:56 +0800, Chen-Yu Tsai wrote:
+ > The ldo_vcn33_bt and ldo_vcn33_wifi regulators are actually the same
+ > regulator, having the same voltage setting and output pin. There are
+ > simply two enable bits that are ORed together to enable the regulator.
+ >
+ > Having two regulators representing the same output pin is misleading
+ > from a design matching standpoint, and also error-prone in driver
+ > implementations.
+ >
+ > [...]
 
-Fixes: 176fdcbddfd2 ("drm/nouveau/gsp/r535: add support for booting GSP-RM")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Applied, thanks!
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-index dc44f5c7833f..818e5c73b7a6 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-@@ -365,10 +365,8 @@ r535_gsp_rpc_send(struct nvkm_gsp *gsp, void *argv, bool wait, u32 repc)
- 	}
- 
- 	ret = r535_gsp_cmdq_push(gsp, rpc);
--	if (ret) {
--		mutex_unlock(&gsp->cmdq.mutex);
-+	if (ret)
- 		return ERR_PTR(ret);
--	}
- 
- 	if (wait) {
- 		msg = r535_gsp_msg_recv(gsp, fn, repc);
--- 
-2.42.0
+[1/1] arm64: dts: mediatek: mt6358: Merge ldo_vcn33_* regulators
+       commit: 2a19d6609722b40d0f44337d56ee75a69a69aeab
 
+Regards,
+Angelo
