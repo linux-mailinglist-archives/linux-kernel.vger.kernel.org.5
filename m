@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5537FAC31
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EBB7FAC37
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbjK0VD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
+        id S232732AbjK0VGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjK0VDy (ORCPT
+        with ESMTP id S229527AbjK0VGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:03:54 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839EC19D;
-        Mon, 27 Nov 2023 13:04:00 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARIqhBF003778;
-        Mon, 27 Nov 2023 21:03:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zOZbd6Tjx5IqpV15IyxKo0encBbYOCBSBIdNBMzfpec=;
- b=Dba7yW9u+4XRwMfD4OalQmn1/50PeP+xt51OT/M087lSeEIDJJCWI0Ns8fDRzFZH7+ls
- OUSos0Y3z56xYgtH5ZL8bowozXvgSpbSMtN+sMdiyEzITZPtbaUnqN2tBSYxDjJBSNUS
- Ant3r/JunxJqxIx3aZV/YkjZS6fdyD/ktSpl8o5CJ5xPbckA6IXiwg+XJoTXEdq7xnAC
- Rgma1Lb/BsN7GcgeCLlTAMYHqpp1ApwiOrDunKTqrelfztneOjvJkllHTzEJy4xkTiw4
- a9sVxn2Qjc/adqnumt++9akOHCgoVMv7f64lHw+i5WW+9v6hN9uvYWAGzPasq1mreKfJ 0A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0s1u6te-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:03:56 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKicf7009940;
-        Mon, 27 Nov 2023 21:03:55 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0s1u6sk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:03:55 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJP6hO009565;
-        Mon, 27 Nov 2023 21:03:54 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8nbbex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:03:54 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARL3rwY37814664
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 21:03:53 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55AFE58056;
-        Mon, 27 Nov 2023 21:03:53 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66C995806B;
-        Mon, 27 Nov 2023 21:03:52 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 21:03:52 +0000 (GMT)
-Message-ID: <eb15a5a2-f783-43f1-a91d-1de52d755861@linux.ibm.com>
-Date:   Mon, 27 Nov 2023 16:03:51 -0500
+        Mon, 27 Nov 2023 16:06:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4386191;
+        Mon, 27 Nov 2023 13:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701119175; x=1732655175;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to;
+  bh=4n1yDLJtP711vsPZEFcMsExwQVwTZZH0PXUUX5LbydM=;
+  b=bDxuXEUjGndciDnDQ3zd9uvuQSH9aVlLz9/lGF9eIyr9hWtc3QLr6HQu
+   GcyaNc5nJr+3HWEXPfDwD4DBJ7KZvlQMYP1gmXcGXYLqg3PSXvrq5TWDK
+   tqBTpGDY21OxggC/T7v+j2Lbr5ueJdlu69ctHGHuCy7MpIDnc0NwFsx0z
+   utqltQTIsB7OY4qo67d2UVKgZPWksFW0Ys120ynAbj5H9mXufga6zFAwc
+   6XML/WdM7LhcfNd1PRmxM3I/fY+F/asMDqJnk5uwbmtKAo1VTnBDOMcNq
+   wjF5KHHm8P76vJ0KPo45MkXRwN2wCAgDe2jsLUoJFIpPkZm1US35OvwMw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="377821109"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="377821109"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:06:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="9903684"
+Received: from jdmart2-mobl1.amr.corp.intel.com (HELO [10.212.214.63]) ([10.212.214.63])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:06:13 -0800
+Content-Type: multipart/mixed; boundary="------------5f0unhrBacraNETDx1LSn9t4"
+Message-ID: <20266111-2f25-49c1-8cda-69eac40ad9f0@intel.com>
+Date:   Mon, 27 Nov 2023 13:06:12 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/8] tpm: Store the length of the tpm_buf data
- separately.
+Subject: Re: [PATCH v15 17/23] x86/kexec: Flush cache of TDX private memory
 Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-6-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-6-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: w58gYfXAFxHCJsCCMQXdoTm90YJP30g2
-X-Proofpoint-GUID: 2zeToWxDBkkTdsaJIq6sjOwqzi21QK3f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=798 phishscore=0
- bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270147
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "sagis@google.com" <sagis@google.com>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>, "Brown, Len" <len.brown@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Gao, Chao" <chao.gao@intel.com>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <2151c68079c1cb837d07bd8015e4ff1f662e1a6e.1699527082.git.kai.huang@intel.com>
+ <cfea7192-4b29-46f9-a500-149121f493c8@intel.com>
+ <e8fd4bff8244e9e709c997da309e73a932567959.camel@intel.com>
+ <4ca2f6c1-97a7-4992-b01f-60341f6749ff@intel.com>
+ <f74375b44d86f11843901a909e60bed228809677.camel@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <f74375b44d86f11843901a909e60bed228809677.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,230 +132,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------5f0unhrBacraNETDx1LSn9t4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> TPM2B buffers, or sized buffers, have a two byte header, which contains the
-> length of the payload as a 16-bit big-endian number, without counting in
-> the space taken by the header. This differs from encoding in the TPM header
-> where the length includes also the bytes taken by the header.
-> 
-> Unbound the length of a tpm_buf from the value stored to the TPM command
-> header. A separate encoding and decoding step so that different buffer
-> types can be supported, with variant header format and length encoding.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
-> ---
-> v3 [2023-11-21]: Removed spurious memset() (albeit not harmful). Expand
-> tag invariant in tpm_buf_reset() to be allowed to be zero.
-> v2 [2023-11-21]: Squashed together with the following patch, as the API
-> of tpm_buf_init() is no longer changed.
-> ---
->   drivers/char/tpm/tpm-buf.c                | 48 +++++++++++++++++------
->   drivers/char/tpm/tpm-interface.c          |  1 +
->   include/keys/trusted_tpm.h                |  2 -
->   include/linux/tpm.h                       |  6 +--
->   security/keys/trusted-keys/trusted_tpm1.c |  9 +++--
->   5 files changed, 46 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-> index 96cee41d5b9c..3f39893f3bb1 100644
-> --- a/drivers/char/tpm/tpm-buf.c
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -3,25 +3,44 @@
->    * Handling of TPM command and other buffers.
->    */
->   
-> +#include <linux/tpm_command.h>
->   #include <linux/module.h>
->   #include <linux/tpm.h>
->   
-> +/**
-> + * tpm_buf_init() - Allocate and initialize a TPM command
-> + * @buf:	A &tpm_buf
-> + * @tag:	TPM_TAG_RQU_COMMAND, TPM2_ST_NO_SESSIONS or TPM2_ST_SESSIONS
-> + * @ordinal:	A command ordinal
-> + *
-> + * Return: 0 or -ENOMEM
-> + */
->   int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
->   {
->   	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
->   	if (!buf->data)
->   		return -ENOMEM;
->   
-> -	buf->flags = 0;
->   	tpm_buf_reset(buf, tag, ordinal);
->   	return 0;
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_init);
->   
-> +/**
-> + * tpm_buf_reset() - Initialize a TPM command
-> + * @buf:	A &tpm_buf
-> + * @tag:	TPM_TAG_RQU_COMMAND, TPM2_ST_NO_SESSIONS or TPM2_ST_SESSIONS
-> + * @ordinal:	A command ordinal
-> + */
->   void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
->   {
->   	struct tpm_header *head = (struct tpm_header *)buf->data;
->   
-> +	WARN_ON(tag != TPM_TAG_RQU_COMMAND && tag != TPM2_ST_NO_SESSIONS &&
-> +		tag != TPM2_ST_SESSIONS && tag != 0);
-> +
-> +	buf->flags = 0;
-> +	buf->length = sizeof(*head);
->   	head->tag = cpu_to_be16(tag);
->   	head->length = cpu_to_be32(sizeof(*head));
->   	head->ordinal = cpu_to_be32(ordinal);
-> @@ -34,33 +53,40 @@ void tpm_buf_destroy(struct tpm_buf *buf)
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_destroy);
->   
-> +/**
-> + * tpm_buf_length() - Return the number of bytes consumed by the data
-> + *
-> + * Return: The number of bytes consumed by the buffer
-> + */
->   u32 tpm_buf_length(struct tpm_buf *buf)
->   {
-> -	struct tpm_header *head = (struct tpm_header *)buf->data;
+On 11/27/23 12:52, Huang, Kai wrote:
+> --- a/arch/x86/kernel/machine_kexec_64.c
+> +++ b/arch/x86/kernel/machine_kexec_64.c
+> @@ -377,7 +377,8 @@ void machine_kexec(struct kimage *image)
+>                                        (unsigned long)page_list,
+>                                        image->start,
+>                                        image->preserve_context,
 > -
-> -	return be32_to_cpu(head->length);
-> +	return buf->length;
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_length);
->   
-> -void tpm_buf_append(struct tpm_buf *buf,
-> -		    const unsigned char *new_data,
-> -		    unsigned int new_len)
-> +/**
-> + * tpm_buf_append() - Append data to an initialized buffer
-> + * @buf:	A &tpm_buf
-> + * @new_data:	A data blob
-> + * @new_length:	Size of the appended data
-> + */
-> +void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
->   {
->   	struct tpm_header *head = (struct tpm_header *)buf->data;
-> -	u32 len = tpm_buf_length(buf);
->   
->   	/* Return silently if overflow has already happened. */
->   	if (buf->flags & TPM_BUF_OVERFLOW)
->   		return;
->   
-> -	if ((len + new_len) > PAGE_SIZE) {
-> +	if ((buf->length + new_length) > PAGE_SIZE) {
->   		WARN(1, "tpm_buf: overflow\n");
->   		buf->flags |= TPM_BUF_OVERFLOW;
->   		return;
->   	}
->   
-> -	memcpy(&buf->data[len], new_data, new_len);
-> -	head->length = cpu_to_be32(len + new_len);
-> +	memcpy(&buf->data[buf->length], new_data, new_length);
-> +	buf->length += new_length;
-> +	head->length = cpu_to_be32(buf->length);
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_append);
->   
-> diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
-> index 163ae247bff2..ea75f2776c2f 100644
-> --- a/drivers/char/tpm/tpm-interface.c
-> +++ b/drivers/char/tpm/tpm-interface.c
-> @@ -232,6 +232,7 @@ ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
->   	if (len < min_rsp_body_length + TPM_HEADER_SIZE)
->   		return -EFAULT;
->   
-> +	buf->length = len;
->   	return 0;
->   }
->   EXPORT_SYMBOL_GPL(tpm_transmit_cmd);
-> diff --git a/include/keys/trusted_tpm.h b/include/keys/trusted_tpm.h
-> index 7769b726863a..a088b33fd0e3 100644
-> --- a/include/keys/trusted_tpm.h
-> +++ b/include/keys/trusted_tpm.h
-> @@ -6,8 +6,6 @@
->   #include <linux/tpm_command.h>
->   
->   /* implementation specific TPM constants */
-> -#define MAX_BUF_SIZE			1024
-> -#define TPM_GETRANDOM_SIZE		14
->   #define TPM_SIZE_OFFSET			2
->   #define TPM_RETURN_OFFSET		6
->   #define TPM_DATA_OFFSET			10
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index 0a8c1351adc2..1d7b39b5c383 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -306,7 +306,8 @@ enum tpm_buf_flags {
->    * A string buffer type for constructing TPM commands.
->    */
->   struct tpm_buf {
-> -	unsigned int flags;
-> +	u32 flags;
-> +	u32 length;
->   	u8 *data;
->   };
->   
-> @@ -329,8 +330,7 @@ int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal);
->   void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal);
->   void tpm_buf_destroy(struct tpm_buf *buf);
->   u32 tpm_buf_length(struct tpm_buf *buf);
-> -void tpm_buf_append(struct tpm_buf *buf, const unsigned char *new_data,
-> -		    unsigned int new_len);
-> +void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
->   void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
->   void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
->   void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
-> diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-> index 37bce84eef99..89c9798d1800 100644
-> --- a/security/keys/trusted-keys/trusted_tpm1.c
-> +++ b/security/keys/trusted-keys/trusted_tpm1.c
-> @@ -367,6 +367,7 @@ int trusted_tpm_send(unsigned char *cmd, size_t buflen)
->   		return rc;
->   
->   	buf.flags = 0;
-> +	buf.length = buflen;
->   	buf.data = cmd;
->   	dump_tpm_buf(cmd);
->   	rc = tpm_transmit_cmd(chip, &buf, 4, "sending data");
-> @@ -417,7 +418,7 @@ static int osap(struct tpm_buf *tb, struct osapsess *s,
->   	tpm_buf_append_u32(tb, handle);
->   	tpm_buf_append(tb, ononce, TPM_NONCE_SIZE);
->   
-> -	ret = trusted_tpm_send(tb->data, MAX_BUF_SIZE);
-> +	ret = trusted_tpm_send(tb->data, tb->length);
->   	if (ret < 0)
->   		return ret;
->   
-> @@ -441,7 +442,7 @@ int oiap(struct tpm_buf *tb, uint32_t *handle, unsigned char *nonce)
->   		return -ENODEV;
->   
->   	tpm_buf_reset(tb, TPM_TAG_RQU_COMMAND, TPM_ORD_OIAP);
-> -	ret = trusted_tpm_send(tb->data, MAX_BUF_SIZE);
-> +	ret = trusted_tpm_send(tb->data, tb->length);
->   	if (ret < 0)
->   		return ret;
->   
-> @@ -553,7 +554,7 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
->   	tpm_buf_append_u8(tb, cont);
->   	tpm_buf_append(tb, td->pubauth, SHA1_DIGEST_SIZE);
->   
-> -	ret = trusted_tpm_send(tb->data, MAX_BUF_SIZE);
-> +	ret = trusted_tpm_send(tb->data, tb->length);
->   	if (ret < 0)
->   		goto out;
->   
-> @@ -644,7 +645,7 @@ static int tpm_unseal(struct tpm_buf *tb,
->   	tpm_buf_append_u8(tb, cont);
->   	tpm_buf_append(tb, authdata2, SHA1_DIGEST_SIZE);
->   
-> -	ret = trusted_tpm_send(tb->data, MAX_BUF_SIZE);
-> +	ret = trusted_tpm_send(tb->data, tb->length);
->   	if (ret < 0) {
->   		pr_info("authhmac failed (%d)\n", ret);
->   		return ret;
+> cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT));
+> +                                      cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)
+> ||
+> +                                      platform_tdx_enabled());
+
+Well, something more like the attached would be preferable, but you've
+got the right idea logically.
+--------------5f0unhrBacraNETDx1LSn9t4
+Content-Type: text/x-patch; charset=UTF-8; name="cc-host-mem-incoherent.patch"
+Content-Disposition: attachment; filename="cc-host-mem-incoherent.patch"
+Content-Transfer-Encoding: base64
+
+CgotLS0KCiBiL2FyY2gveDg2L2NvY28vY29yZS5jICAgICAgICAgICAgICAgfCAgICAxICsK
+IGIvYXJjaC94ODYva2VybmVsL21hY2hpbmVfa2V4ZWNfNjQuYyB8ICAgIDIgKy0KIGIvaW5j
+bHVkZS9saW51eC9jY19wbGF0Zm9ybS5oICAgICAgICB8ICAgMTYgKysrKysrKysrKysrKysr
+KwogMyBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpk
+aWZmIC1wdU4gaW5jbHVkZS9saW51eC9jY19wbGF0Zm9ybS5ofmNjLWhvc3QtbWVtLWluY29o
+ZXJlbnQgaW5jbHVkZS9saW51eC9jY19wbGF0Zm9ybS5oCi0tLSBhL2luY2x1ZGUvbGludXgv
+Y2NfcGxhdGZvcm0uaH5jYy1ob3N0LW1lbS1pbmNvaGVyZW50CTIwMjMtMTEtMjcgMTI6MjA6
+NDQuMjE3MzgxMDA4IC0wODAwCisrKyBiL2luY2x1ZGUvbGludXgvY2NfcGxhdGZvcm0uaAky
+MDIzLTExLTI3IDEyOjI1OjA1Ljc3MTA3MzE5MyAtMDgwMApAQCAtNDMsNiArNDMsMjIgQEAg
+ZW51bSBjY19hdHRyIHsKIAlDQ19BVFRSX0hPU1RfTUVNX0VOQ1JZUFQsCiAKIAkvKioKKwkg
+KiBAQ0NfQVRUUl9IT1NUX01FTV9JTkNPSEVSRU5UOiBIb3N0IG1lbW9yeSBlbmNyeXB0aW9u
+IGNhbiBiZQorCSAqIGluY29oZXJlbnQKKwkgKgorCSAqIFRoZSBwbGF0Zm9ybS9PUyBpcyBy
+dW5uaW5nIGFzIGEgYmFyZS1tZXRhbCBzeXN0ZW0gb3IgYSBoeXBlcnZpc29yLgorCSAqIFRo
+ZSBtZW1vcnkgZW5jcnlwdGlvbiBlbmdpbmUgbWlnaHQgaGF2ZSBsZWZ0IG5vbi1jYWNoZS1j
+b2hlcmVudAorCSAqIGRhdGEgaW4gdGhlIGNhY2hlcyB0aGF0IG5lZWRzIHRvIGJlIGZsdXNo
+ZWQuCisJICoKKwkgKiBVc2UgdGhpcyBpbiBwbGFjZXMgd2hlcmUgdGhlIGNhY2hlIGNvaGVy
+ZW5jeSBvZiB0aGUgbWVtb3J5IG1hdHRlcnMKKwkgKiBidXQgdGhlIGVuY3J5cHRpb24gc3Rh
+dHVzIGRvZXMgbm90LgorCSAqCisJICogSW5jbHVkZXMgYWxsIHN5c3RlbXMgdGhhdCBzZXQg
+Q0NfQVRUUl9IT1NUX01FTV9FTkNSWVBULCBidXQKKwkgKiBhZGl0aW9uYWxseSBhZGRzIFRE
+WCBob3N0cy4KKwkgKi8KKwlDQ19BVFRSX0hPU1RfTUVNX0lOQ09IRVJFTlQsCisKKwkvKioK
+IAkgKiBAQ0NfQVRUUl9HVUVTVF9NRU1fRU5DUllQVDogR3Vlc3QgbWVtb3J5IGVuY3J5cHRp
+b24gaXMgYWN0aXZlCiAJICoKIAkgKiBUaGUgcGxhdGZvcm0vT1MgaXMgcnVubmluZyBhcyBh
+IGd1ZXN0L3ZpcnR1YWwgbWFjaGluZSBhbmQgYWN0aXZlbHkKZGlmZiAtcHVOIGFyY2gveDg2
+L2tlcm5lbC9tYWNoaW5lX2tleGVjXzY0LmN+Y2MtaG9zdC1tZW0taW5jb2hlcmVudCBhcmNo
+L3g4Ni9rZXJuZWwvbWFjaGluZV9rZXhlY182NC5jCi0tLSBhL2FyY2gveDg2L2tlcm5lbC9t
+YWNoaW5lX2tleGVjXzY0LmN+Y2MtaG9zdC1tZW0taW5jb2hlcmVudAkyMDIzLTExLTI3IDEy
+OjI1OjEzLjUyNzExNTI2MCAtMDgwMAorKysgYi9hcmNoL3g4Ni9rZXJuZWwvbWFjaGluZV9r
+ZXhlY182NC5jCTIwMjMtMTEtMjcgMTM6MDQ6MTkuNzMyOTU5MDAxIC0wODAwCkBAIC0zNjEs
+NyArMzYxLDcgQEAgdm9pZCBtYWNoaW5lX2tleGVjKHN0cnVjdCBraW1hZ2UgKmltYWdlKQog
+CQkJCSAgICAgICAodW5zaWduZWQgbG9uZylwYWdlX2xpc3QsCiAJCQkJICAgICAgIGltYWdl
+LT5zdGFydCwKIAkJCQkgICAgICAgaW1hZ2UtPnByZXNlcnZlX2NvbnRleHQsCi0JCQkJICAg
+ICAgIGNjX3BsYXRmb3JtX2hhcyhDQ19BVFRSX0hPU1RfTUVNX0VOQ1JZUFQpKTsKKwkJCQkg
+ICAgICAgY2NfcGxhdGZvcm1faGFzKENDX0FUVFJfSE9TVF9NRU1fSU5DT0hFUkVOVCkpOwog
+CiAjaWZkZWYgQ09ORklHX0tFWEVDX0pVTVAKIAlpZiAoaW1hZ2UtPnByZXNlcnZlX2NvbnRl
+eHQpCmRpZmYgLXB1TiBhcmNoL3g4Ni9jb2NvL2NvcmUuY35jYy1ob3N0LW1lbS1pbmNvaGVy
+ZW50IGFyY2gveDg2L2NvY28vY29yZS5jCi0tLSBhL2FyY2gveDg2L2NvY28vY29yZS5jfmNj
+LWhvc3QtbWVtLWluY29oZXJlbnQJMjAyMy0xMS0yNyAxMjoyNjowMi41MzUzNzIzNzcgLTA4
+MDAKKysrIGIvYXJjaC94ODYvY29jby9jb3JlLmMJMjAyMy0xMS0yNyAxMjoyNjoxMi4zNzE0
+MjIyNDEgLTA4MDAKQEAgLTcwLDYgKzcwLDcgQEAgc3RhdGljIGJvb2wgbm9pbnN0ciBhbWRf
+Y2NfcGxhdGZvcm1faGFzKAogCQlyZXR1cm4gc21lX21lX21hc2s7CiAKIAljYXNlIENDX0FU
+VFJfSE9TVF9NRU1fRU5DUllQVDoKKwljYXNlIENDX0FUVFJfSE9TVF9NRU1fSU5DT0hFUkVO
+VDoKIAkJcmV0dXJuIHNtZV9tZV9tYXNrICYmICEoc2V2X3N0YXR1cyAmIE1TUl9BTUQ2NF9T
+RVZfRU5BQkxFRCk7CiAKIAljYXNlIENDX0FUVFJfR1VFU1RfTUVNX0VOQ1JZUFQ6Cl8K
+
+--------------5f0unhrBacraNETDx1LSn9t4--
