@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A89187F9C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAA47F9C1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbjK0Iug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        id S232743AbjK0Iur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjK0Iud (ORCPT
+        with ESMTP id S232763AbjK0Iun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:50:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E27E111
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:50:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4E98C433C8;
-        Mon, 27 Nov 2023 08:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701075039;
-        bh=ilpVrx2lHKKTQNuvgJmypNWXQgnQKlvWSQsuY3U/UTg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PE3lnzQpIVT05vo9v+kSzdp6jhE9E943kvhIAqMlWUN58mLjykwPMqHJ5hh7Qoqos
-         c2TjZlmJDu+V+oHYlXxbkjbxFHAvsK7aCHoM47A2HcwwDUbRoZo6KorvWj4vdXf32k
-         WHmxYadMogvb6ZN6ERKiTL0xhxAOjEAzW/GFKyCsgv7uaz482cza69Aqp5wtH4HJ8Y
-         lpsq9PlQYs43izJEhluq2jQXS30Wf8TJ4K8gBMiRZAFtdNGwfrkzt90IrzLXNHkvfn
-         QZH3SnFBZ5rvIpJyDJMA67247BPl4QiX5hbXu7s5ZEiYvvPE7OGzHfAtar2nbZEiV0
-         alKlAFmJIMwxg==
-Message-ID: <20b13322-3cd1-47b1-bb39-2710ddc59a11@kernel.org>
-Date:   Mon, 27 Nov 2023 09:50:35 +0100
+        Mon, 27 Nov 2023 03:50:43 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD47188
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:50:48 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9283D2027A;
+        Mon, 27 Nov 2023 08:50:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701075046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LRi9ngSxggQud/fxmQYL6ll8RoVr5MrBgBUE8mAhwc8=;
+        b=bC/rzYW0p69DtNQ9EhPXDxwhoOXYLaA0FIwA1DhE1yPE06UiXrAd26ZocYd/ZozXD9cDxM
+        MYO9z66qvyp1McAmidq2m3TuEXiAOvUo+HnI68oVbm4HHA7K1ZHflxi5YMV9/xCHt1Z9cF
+        tQ9YnC+5k2KPUEJZHIazYl8qZjuvUMU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8958D1367B;
+        Mon, 27 Nov 2023 08:50:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id doDqHGZYZGWVMQAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 08:50:46 +0000
+Date:   Mon, 27 Nov 2023 09:50:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dmytro Maluka <dmaluka@chromium.org>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kemi Wang <kemi.wang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH -next v2] mm, proc: collect percpu free pages into the
+ free pages
+Message-ID: <ZWRYZmulV0B-Jv3k@tiehlicka>
+References: <20220822023311.909316-1-liushixin2@huawei.com>
+ <20220822033354.952849-1-liushixin2@huawei.com>
+ <20220822141207.24ff7252913a62f80ea55e90@linux-foundation.org>
+ <YwSGqtEICW5AlhWr@dhcp22.suse.cz>
+ <6b2977fc-1e4a-f3d4-db24-7c4699e0773f@huawei.com>
+ <YwTYMGtcS4/F/xQO@dhcp22.suse.cz>
+ <ZWDjbrHx6XNzAtl_@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] riscv: dts: starfive: Add initial StarFive JH8100
- device tree
-Content-Language: en-US
-To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, conor@kernel.org, kernel@esmil.dk,
-        robh+dt@kernel.org, emil.renner.berthing@canonical.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        leyfoon.tan@starfivetech.com
-References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-8-jeeheng.sia@starfivetech.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231127013602.253835-8-jeeheng.sia@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWDjbrHx6XNzAtl_@google.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 0.70
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.70 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-0.00)[35.72%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[huawei.com,linux-foundation.org,linuxfoundation.org,gmail.com,intel.com,redhat.com,suse.cz,vger.kernel.org,kvack.org];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -99,91 +103,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 02:36, Sia Jee Heng wrote:
-> Add initial device tree for the StarFive JH8100 RISC-V SoC
+On Fri 24-11-23 18:54:54, Dmytro Maluka wrote:
+[...]
+> But looking at the code in __alloc_pages() and around, I see you are
+> right: we don't try draining other CPUs' PCP lists *before* resorting to
+> direct reclaim, compaction etc.
 > 
-> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> ---
->  arch/riscv/boot/dts/starfive/Makefile       |   1 +
->  arch/riscv/boot/dts/starfive/jh8100-evb.dts |  42 +++
->  arch/riscv/boot/dts/starfive/jh8100.dtsi    | 365 ++++++++++++++++++++
->  3 files changed, 408 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/starfive/jh8100-evb.dts
->  create mode 100644 arch/riscv/boot/dts/starfive/jh8100.dtsi
-> 
-> diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
-> index 0141504c0f5c..fbb0dc619102 100644
-> --- a/arch/riscv/boot/dts/starfive/Makefile
-> +++ b/arch/riscv/boot/dts/starfive/Makefile
-> @@ -10,3 +10,4 @@ dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-starfive-visionfive-v1.dtb
->  
->  dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.2a.dtb
->  dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.3b.dtb
-> +dtb-$(CONFIG_ARCH_STARFIVE) += jh8100-evb.dtb
-> diff --git a/arch/riscv/boot/dts/starfive/jh8100-evb.dts b/arch/riscv/boot/dts/starfive/jh8100-evb.dts
-> new file mode 100644
-> index 000000000000..67c4964a8773
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/starfive/jh8100-evb.dts
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/*
-> + * Copyright (c) 2021-2023 StarFive Technology Co., Ltd.
-> + */
-> +
-> +#include "jh8100.dtsi"
-> +
-> +/ {
-> +	model = "StarFive JH8100 EVB";
-> +	compatible = "starfive,jh8100-evb", "starfive,jh8100";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	cpus {
-> +		timebase-frequency = <4000000>;
+> BTW, why not? Shouldn't draining PCP lists be cheaper than pageout() in
+> any case?
 
-This was fixed recently on the mailing lists.
+My guess would be that draining remote pcp caches is quite expensive on
+its own. This requires IPIs, preempting whatever is running there and
+wait for the all the cpus with pcp caches to be done. On the other hand
+reclaiming a mostly clean page cache could be much less expensive. 
 
+Also consider that refilling those pcp caches is not free either (you
+might hit zone lock contetion and who knows what else).
 
-> +
-> +	};
-> +
-> +	memory {
-> +		device_type = "memory";
-> +		reg = <0x0 0x40000000 0x2 0x00000000>; /* 8GB */
-> +	};
-> +
-> +	soc {
-> +		clk_uart: clk_uart {
+Last but not least also consider that many systems could be just on the
+edge of low/min watermark with a lot of cached data. If we drained all
+pcp caches whenever we reclaim this could just make the cache pointless.
 
-Undercores are not allowed in node names. Use hyphen.
-
-Also, boards must not add nodes to the soc. This is board, not SoC DTS.
-
-...
-
-> +
-> +		uart6: serial@127e0000  {
-> +			compatible = "starfive,jh8100-uart";
-> +			reg = <0x0 0x127e0000 0x0 0x10000>;
-> +			clock-names = "uart_clk", "pclk";
-> +			interrupts = <73>;
-> +			status = "disabled";
-> +		};
-> +
-
-Stray blank line. In other places as well.
-
-> +	};
-> +};
-
-Best regards,
-Krzysztof
-
+All that being said, I do not remember any actual numbers or research
+about this.
+-- 
+Michal Hocko
+SUSE Labs
