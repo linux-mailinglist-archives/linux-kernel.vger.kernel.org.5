@@ -2,118 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D83B7FAC1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D95357FAC23
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjK0U7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S231880AbjK0VAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjK0U7o (ORCPT
+        with ESMTP id S229531AbjK0VAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:59:44 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7E9C0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:59:51 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d64c1155a8so3163610a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701118790; x=1701723590; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X3yo837GDz7kubNtzjO6WNlCk3oHXeJlohNg0iLQ45k=;
-        b=CvC/iO+Y7QCjxOEWQAHJxONR7ZmESQRn75AgGPzE8i8GW/Q+x+nandEGyVWgZ1bbkE
-         i9SM3fTNkFIzag0w1k0T6qAs+FQUidhNeT1gBrDuNtiRmiwDeE8JSIrqzhOdNd0ZTJGI
-         ly7VBrYphtqifo1NKoytadumaO5wnxCOpWNsXR47wrDEk6vjXZ3kWkex2W/WlGPLTuRE
-         Tdfm1N4Vt1MejrVIPKNj4jsh5C1w9mFTP6KhDwmQoBAmU/m+rWgs0Kw0x4boy0SCpE1M
-         Amch7BYAf2qbWbZCLnoRKm33EfN4cKqAinMQIuDrMKp1k6GKHpeS8RIGlmIFXsktXJf0
-         kGLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701118790; x=1701723590;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X3yo837GDz7kubNtzjO6WNlCk3oHXeJlohNg0iLQ45k=;
-        b=f3hq7O/N0QGu7bL8OWyO2Huz6m1y9k5XWALutrzY8peHIIFwT1IQ0lpcsCcynwoL7N
-         fmUNeOqYNgOOGps580D02Uh/AuntQIdm1vUGQrW1i1jGgnPNFIklIgiWC+coC0JV43fO
-         KSO3biDMveyhHUiQeU0iZ58y7+gXoKH4Q9FqFFYwH8P7i2oByZ7cSLX22NLwgULc4byD
-         +7aYjcWHaLQHkoAaFfIp7ZjnlWDfvcnqmENzIYoMD0T0W3ZNFFlpcgPY5shFED5a4Ccc
-         XUR9mHTsiuYYN0RJZ2ZZEnTYo3JMLTACWlF/qXZ0Bgv7J+h8JOdxlrAWGhLkKBpWkhrn
-         T8kg==
-X-Gm-Message-State: AOJu0Yx9mihqLemgIIL46bxt/8L24eQMFudQlc0VDkfnHTYCXbUxlWfN
-        71cPEWQr6qV7s286/OnxEqLH+83r0GBMqvtWnnY=
-X-Google-Smtp-Source: AGHT+IFKyeIS5VTJZrANfRdevBMLW1f91RM2J5bRYY04tGsN7SGb+1O8Y1sezDSrVrT/0EFaAr+CWYML8gUnwK6S5CU=
-X-Received: by 2002:a05:6870:3c8b:b0:1f9:dc5a:b8fc with SMTP id
- gl11-20020a0568703c8b00b001f9dc5ab8fcmr17780453oab.56.1701118790494; Mon, 27
- Nov 2023 12:59:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20231123073325.16843-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20231123073325.16843-1-dinghao.liu@zju.edu.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 27 Nov 2023 15:59:39 -0500
-Message-ID: <CADnq5_Mm_LtYXAqGp0O0gk4YF-bM3_cBq6RZ-dBrZkSOQMo3qw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: fix a memleak in aldebaran_tables_init
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Yifan Zhang <yifan1.zhang@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Yang Wang <kevinyang.wang@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, Le Ma <le.ma@amd.com>,
-        "Stanley.Yang" <Stanley.Yang@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Darren Powell <darren.powell@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 27 Nov 2023 16:00:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E91AC0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:00:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E8DC433C9;
+        Mon, 27 Nov 2023 21:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1701118857;
+        bh=d0FagZci1PXFMezi/BonwyYv+7yV34Dht6vxRLQOKK8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yzDbR+kT8L1Ms6G8xL0TrV5ITh7u9pHV2Tf3NB55xhtilyqokg+gTeQDHkcIheVm8
+         DFA9Di1naDUQ7+V1qm6//jzz5SoG4oQI202ZHvMMcRWO/D2v+XJx6r6wBn7BU8ic6i
+         nNpDcKvEsu+FmI1qaMNFFOqckiGwHehyfX1VN2tA=
+Date:   Mon, 27 Nov 2023 13:00:55 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v6 6/6] zswap: shrinks zswap pool based on memory
+ pressure
+Message-Id: <20231127130055.30c455906d912e09dcb7e79b@linux-foundation.org>
+In-Reply-To: <20231127193703.1980089-7-nphamcs@gmail.com>
+References: <20231127193703.1980089-1-nphamcs@gmail.com>
+        <20231127193703.1980089-7-nphamcs@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Mon, 27 Nov 2023 11:37:03 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
 
-On Thu, Nov 23, 2023 at 3:08=E2=80=AFAM Dinghao Liu <dinghao.liu@zju.edu.cn=
-> wrote:
+> Currently, we only shrink the zswap pool when the user-defined limit is
+> hit. This means that if we set the limit too high, cold data that are
+> unlikely to be used again will reside in the pool, wasting precious
+> memory. It is hard to predict how much zswap space will be needed ahead
+> of time, as this depends on the workload (specifically, on factors such
+> as memory access patterns and compressibility of the memory pages).
+> 
+> This patch implements a memcg- and NUMA-aware shrinker for zswap, that
+> is initiated when there is memory pressure. The shrinker does not
+> have any parameter that must be tuned by the user, and can be opted in
+> or out on a per-memcg basis.
+> 
+> Furthermore, to make it more robust for many workloads and prevent
+> overshrinking (i.e evicting warm pages that might be refaulted into
+> memory), we build in the following heuristics:
+> 
+> * Estimate the number of warm pages residing in zswap, and attempt to
+>   protect this region of the zswap LRU.
+> * Scale the number of freeable objects by an estimate of the memory
+>   saving factor. The better zswap compresses the data, the fewer pages
+>   we will evict to swap (as we will otherwise incur IO for relatively
+>   small memory saving).
+> * During reclaim, if the shrinker encounters a page that is also being
+>   brought into memory, the shrinker will cautiously terminate its
+>   shrinking action, as this is a sign that it is touching the warmer
+>   region of the zswap LRU.
+> 
+> As a proof of concept, we ran the following synthetic benchmark:
+> build the linux kernel in a memory-limited cgroup, and allocate some
+> cold data in tmpfs to see if the shrinker could write them out and
+> improved the overall performance. Depending on the amount of cold data
+> generated, we observe from 14% to 35% reduction in kernel CPU time used
+> in the kernel builds.
+> 
+> ...
 >
-> When kzalloc() for smu_table->ecc_table fails, we should free
-> the previously allocated resources to prevent memleak.
->
-> Fixes: edd794208555 ("drm/amd/pm: add message smu to get ecc_table v2")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers=
-/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> index 1a6675d70a4b..f1440869d1ce 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> @@ -257,8 +257,11 @@ static int aldebaran_tables_init(struct smu_context =
-*smu)
->         }
->
->         smu_table->ecc_table =3D kzalloc(tables[SMU_TABLE_ECCINFO].size, =
-GFP_KERNEL);
-> -       if (!smu_table->ecc_table)
-> +       if (!smu_table->ecc_table) {
-> +               kfree(smu_table->metrics_table);
-> +               kfree(smu_table->gpu_metrics_table);
->                 return -ENOMEM;
-> +       }
->
->         return 0;
->  }
-> --
-> 2.17.1
->
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -22,6 +22,7 @@
+>  #include <linux/mm_types.h>
+>  #include <linux/page-flags.h>
+>  #include <linux/local_lock.h>
+> +#include <linux/zswap.h>
+>  #include <asm/page.h>
+>  
+>  /* Free memory management - zoned buddy allocator.  */
+> @@ -641,6 +642,7 @@ struct lruvec {
+>  #ifdef CONFIG_MEMCG
+>  	struct pglist_data *pgdat;
+>  #endif
+> +	struct zswap_lruvec_state zswap_lruvec_state;
+
+Normally we'd put this in #ifdef CONFIG_ZSWAP.
+
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -5,20 +5,40 @@
+>  #include <linux/types.h>
+>  #include <linux/mm_types.h>
+>  
+> +struct lruvec;
+> +
+>  extern u64 zswap_pool_total_size;
+>  extern atomic_t zswap_stored_pages;
+>  
+>  #ifdef CONFIG_ZSWAP
+>  
+> +struct zswap_lruvec_state {
+> +	/*
+> +	 * Number of pages in zswap that should be protected from the shrinker.
+> +	 * This number is an estimate of the following counts:
+> +	 *
+> +	 * a) Recent page faults.
+> +	 * b) Recent insertion to the zswap LRU. This includes new zswap stores,
+> +	 *    as well as recent zswap LRU rotations.
+> +	 *
+> +	 * These pages are likely to be warm, and might incur IO if the are written
+> +	 * to swap.
+> +	 */
+> +	atomic_long_t nr_zswap_protected;
+> +};
+> +
+>  bool zswap_store(struct folio *folio);
+>  bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+>  void zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+>  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+> -
+> +void zswap_lruvec_state_init(struct lruvec *lruvec);
+> +void zswap_lruvec_swapin(struct page *page);
+>  #else
+>  
+> +struct zswap_lruvec_state {};
+
+But instead you made it an empty struct in this case.
+
+That's a bit funky, but I guess OK.  It does send a careful reader of
+struct lruvec over to look at the zswap_lruvec_state definition to
+understand what's going on.
+
+>  static inline bool zswap_store(struct folio *folio)
+>  {
+>  	return false;
+> @@ -33,7 +53,8 @@ static inline void zswap_invalidate(int type, pgoff_t offset) {}
+>  static inline void zswap_swapon(int type) {}
+>  static inline void zswap_swapoff(int type) {}
+>  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+> -
+> +static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
+> +static inline void zswap_lruvec_swapin(struct page *page) {}
+
+Needed this build fix:
+
+--- a/include/linux/zswap.h~zswap-shrinks-zswap-pool-based-on-memory-pressure-fix
++++ a/include/linux/zswap.h
+@@ -54,6 +54,7 @@ static inline void zswap_swapon(int type
+ static inline void zswap_swapoff(int type) {}
+ static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+ static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
++static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
+ static inline void zswap_lruvec_swapin(struct page *page) {}
+ #endif
+ 
+_
+
