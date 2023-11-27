@@ -2,118 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035747F9910
+	by mail.lfdr.de (Postfix) with ESMTP id 58FB07F9911
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjK0GFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
+        id S229583AbjK0GEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjK0GEx (ORCPT
+        with ESMTP id S229450AbjK0GEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:04:53 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD657134
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 22:04:45 -0800 (PST)
-X-UUID: 50653da09a4049dabfe9bd44e81faa93-20231127
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:a18912e7-1bc6-4131-9ae6-0bcf38ce7786,IP:5,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-10
-X-CID-INFO: VERSION:1.1.33,REQID:a18912e7-1bc6-4131-9ae6-0bcf38ce7786,IP:5,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:-10
-X-CID-META: VersionHash:364b77b,CLOUDID:7390d895-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:231124231739FMC8SLUD,BulkQuantity:3,Recheck:0,SF:19|44|64|66|38|24|1
-        7|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,
-        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
-        TF_CID_SPAM_FSD
-X-UUID: 50653da09a4049dabfe9bd44e81faa93-20231127
-X-User: chentao@kylinos.cn
-Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1917675565; Mon, 27 Nov 2023 14:04:31 +0800
-Message-ID: <9d871364-7baa-4daf-8b0c-3fbfbede6fdb@kylinos.cn>
-Date:   Mon, 27 Nov 2023 14:04:24 +0800
+        Mon, 27 Nov 2023 01:04:39 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2A4131
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 22:04:44 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cb9dd2ab56so3188858b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 22:04:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701065084; x=1701669884; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+OTyuBSj00HpTGxowPCMZHFCFh0gtzlFv4DUNhcakBU=;
+        b=NcDNmv5RGkJuCuAWvYueIFED9469qfyC/NZK0KmFMqrQDUZi3hRp+mFhJ4uzUMCr7z
+         um3dSPQ/v9UKdVYsOqA/wz3stagQlmVU3ts66q8IXjeaS2RE9kFSE7iL89g2S2XBWgZN
+         tl4EAqZ2c+aRbr6HJSgpqrce8S87s45kIpx+qQswiDMa/Kh5JWc2nEnldBJ6zo60C7l6
+         sq/wINj3X7Aim9r6bxDGGAoheeW9CSpeRQAbzsSImuAOVisEoT8Edh3akqC4AgImpcTV
+         DgCaQCAspD+BlgUQocpSEgYDyufrzpsjZYL0/hm0R5KZVw1PQD5QbH2iDPS9cfpK3qOX
+         q5aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701065084; x=1701669884;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+OTyuBSj00HpTGxowPCMZHFCFh0gtzlFv4DUNhcakBU=;
+        b=qfykBd+vjijeOhEKiW+f/AVO0gw2sP0KiA83LRcDFDhvgM+OZ1Y0b/sC7LtlyB7beT
+         R0fJJ3nXZvHX3iucbvSa5lGyeZY9CAUwkIBozHPSMeVuw8oGhvhwoVIGSsfEfDfOMbYP
+         eknv6xeotpl6ITE+hq8pp8eCMmiB8+5a7wmoSAybSfLTnIlRKGxs+brDoiRbBnW5ay0T
+         MvKmqvkeX3A05/HJRhJYttfERlJdp94ufbErTA+EYNJulCZ81tdqAv8eGkoZhvcYUzhS
+         5i+X7KVbAYOvfNHsBlampdBHPWPpU3uVTXZn1XxGsQwIzlKhE7A1IbWmozxuogYYXgU6
+         7LFg==
+X-Gm-Message-State: AOJu0YzGRDr7oiHYylbNcLIWTZJlPAHnHGY4k+IkF8DXKPUfXzpuUF8j
+        AsQ3PVSwOLGAerfiEQnhVdK+
+X-Google-Smtp-Source: AGHT+IG/i+PnOVkzEH5tF9cNXhmaOkhMuwMasrzxUa0Df7G1z+bvbR/u7fIVg0ojsgJH6yM2ZEehSA==
+X-Received: by 2002:aa7:88ce:0:b0:6cb:6ab1:564c with SMTP id k14-20020aa788ce000000b006cb6ab1564cmr10324719pff.10.1701065084286;
+        Sun, 26 Nov 2023 22:04:44 -0800 (PST)
+Received: from thinkpad ([103.28.246.157])
+        by smtp.gmail.com with ESMTPSA id c16-20020aa78c10000000b006905f6bfc37sm6460850pfd.31.2023.11.26.22.04.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 22:04:43 -0800 (PST)
+Date:   Mon, 27 Nov 2023 11:34:39 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v2 0/2] Add MHI Endpoint network driver
+Message-ID: <20231127060439.GA2505@thinkpad>
+References: <20230607152427.108607-1-manivannan.sadhasivam@linaro.org>
+ <20230607094922.43106896@kernel.org>
+ <20230607171153.GA109456@thinkpad>
+ <20230607104350.03a51711@kernel.org>
+ <20230608123720.GC5672@thinkpad>
+ <20231117070602.GA10361@thinkpad>
+ <20231117162638.7cdb3e7d@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc/mm: Fix null-pointer dereference in
- pgtable_cache_add
-Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>
-Cc:     "kunwu.chan@hotmail.com" <kunwu.chan@hotmail.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231122090026.11728-1-chentao@kylinos.cn>
- <32077b74-7335-4f4d-8858-c53c820150d0@csgroup.eu>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <32077b74-7335-4f4d-8858-c53c820150d0@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231117162638.7cdb3e7d@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Fri, Nov 17, 2023 at 04:26:38PM -0800, Jakub Kicinski wrote:
+> On Fri, 17 Nov 2023 12:36:02 +0530 Manivannan Sadhasivam wrote:
+> > Sorry to revive this old thread, this discussion seems to have fell through the
+> > cracks...
+> 
+> It did not fall thru the cracks, you got a nack. Here it is in a more
+> official form:
+> 
+> Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Please make sure you keep this tag and CC me if you ever post any form
+> of these patches again.
 
-Thanks for your reply.
-It's my bad. According your reply, i read the code in 
-sysfs_do_create_link_sd.There is a null pointer check indeed.
+Thanks for the NACK. Could you please respond to my reply justifying this driver
+(the part you just snipped)? I'm posting it below:
 
-My intention was to check null pointer after memory allocation.
-Whether we can add a comment here for someone like me, the null pointer 
-check is no need here?
+> As I explained above, other interfaces also expose this kind of functionality
+> between host and the device. One of the credible usecase with this driver is
+> sharing the network connectivity available in either host or the device with the
+> other end.
+>
+> To make it clear, we have 2 kind of channels exposed by MHI for networking.
+>
+> 1. IP_SW0
+> 2. IP_HW0
+>
+> IP_SW0 is useful in scenarios I explained above and IP_HW0 is purely used to
+> provide data connectivity to the host machines with the help of modem IP in the
+> device. And the host side stack is already well supported in mainline. With the
+> proposed driver, Linux can run on the device itself and it will give Qcom a
+> chance to get rid of their proprietary firmware used on the PCIe endpoint
+> devices like modems, etc...
 
-Thanks,
-Kunwu
+I think you made up your mind that this driver is exposing the network interface
+to the firmware on the device. I ought to clearify that the device running this
+driver doesn't necessarily be a modem but a PCIe endpoint instance that uses the
+netdev exposed by this driver to share data connectivity with another device.
 
-On 2023/11/24 23:17, Christophe Leroy wrote:
-> 
-> 
-> Le 22/11/2023 à 10:00, Kunwu Chan a écrit :
->> [Vous ne recevez pas souvent de courriers de chentao@kylinos.cn. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
->>
->> kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure. Ensure the allocation was successful
->> by checking the pointer validity.
-> 
-> Are you sure this is needed ? Did you check what happens what name is NULL ?
-> 
-> If I followed stuff correctly, I end up in function
-> sysfs_do_create_link_sd() which already handles the NULL name case which
-> a big hammer warning.
-> 
->>
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>    arch/powerpc/mm/init-common.c | 2 ++
->>    1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/powerpc/mm/init-common.c b/arch/powerpc/mm/init-common.c
->> index 119ef491f797..0884fc601c46 100644
->> --- a/arch/powerpc/mm/init-common.c
->> +++ b/arch/powerpc/mm/init-common.c
->> @@ -139,6 +139,8 @@ void pgtable_cache_add(unsigned int shift)
->>
->>           align = max_t(unsigned long, align, minalign);
->>           name = kasprintf(GFP_KERNEL, "pgtable-2^%d", shift);
->> +       if (!name)
->> +               return;
->>           new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
->>           if (!new)
->>                   panic("Could not allocate pgtable cache for order %d", shift);
->> --
->> 2.34.1
->>
+This concept is not new and being supported by other protocols such as Virtio
+etc...
+
+- Mani
+-- 
+மணிவண்ணன் சதாசிவம்
