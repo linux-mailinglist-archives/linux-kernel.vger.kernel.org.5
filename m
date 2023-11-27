@@ -2,260 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9D87F9754
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 02:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834127F9757
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 03:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbjK0B4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 20:56:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        id S229620AbjK0CCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 21:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjK0B4H (ORCPT
+        with ESMTP id S229379AbjK0CCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 20:56:07 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF128B5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 17:56:13 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so2272306a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 17:56:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701050173; x=1701654973; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HrpW/mblbGR2zQK+f0lTXDIxL2r3yJ0KWZHVyIahz68=;
-        b=OqMsPhZZk1+if8UIVbmfU3Ixk+CTv+r9+N6NDxeKYwxR8e518NxP5J1o8kT380ScPh
-         YFsyXcEU21DUsVw46w63wWBMf53tlSC6D5iRzdmskPc35RLyiiXg0QWCVMuJ5+9O17uf
-         a0qAjlPHiNTilvdGA9CIywdrIzsGOZDUwWDebON+Rtcu9j7/421OybUFGIsjcNnV8mKC
-         ffwBhskLlcL+JJ/EZMs9N8zJsVz7vV8QYjDReQbknvNZGfZr5vbbDP8BphMUBh/2dhLh
-         LwGkql3BeZftKdBrj6kfRIBzkHB+RZCkVHSFUoMvDKnTcGWgw+a84W7Xg+ZDJpATRdG5
-         ooTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701050173; x=1701654973;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HrpW/mblbGR2zQK+f0lTXDIxL2r3yJ0KWZHVyIahz68=;
-        b=eF/d/3F/PXt1TK+yu/sUDbdeGyWblL1aitYZixrfjdUgZeoYo9gtiQQO4oBH+SZfbA
-         O71miurS4XvXxsLclIG7BeAHkYenxxASo/fAgOtJ8o6gcq9rGD/ZhrvHNtIG/YOon4Zn
-         vyKjg6mZTfEHttCzdXPRkcADBT00eLCFB0bN+U7MnGOdYNlwH3U5F2+I/4EjPpiKBXcK
-         LxNBc3VQzkMg87vLPrqD97kyzUEy3R3a64kdZwLlUKayzPFEC/X1p7gLiPQtwD9/sfTy
-         XFQDepRUAm4YdXrw94V2TsG07LriKo3ptlsF951l5N1yb86rl6Dpde+EzqJzKaIlAHHa
-         24Gw==
-X-Gm-Message-State: AOJu0YwmK5YE67w5K4tRwUX4wPerLbr4KP0yV8lxyjcSlr7U4bo6RE5b
-        N6hKfSfIPmm8WSeJyKLFu8JWV5fuunHa6L/gzVE=
-X-Google-Smtp-Source: AGHT+IEk6sJdDgU6g1f/Ck/0lU0GQOvzP07U9F9fYjYzbAIe+E2hDk+CHfC3QmPvYQ5bgONzgjHPUZ3/jT/kh24OIsY=
-X-Received: by 2002:a17:90b:4a45:b0:285:9d40:192e with SMTP id
- lb5-20020a17090b4a4500b002859d40192emr5611260pjb.6.1701050172992; Sun, 26 Nov
- 2023 17:56:12 -0800 (PST)
+        Sun, 26 Nov 2023 21:02:07 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BFC11B
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 18:02:12 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CD3642C063F;
+        Mon, 27 Nov 2023 15:02:07 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1701050527;
+        bh=ZSTdkZZURbRM+Nxl0z+tOQNJUfxCm0iXKsDfdZd8K5Y=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=MTeZh8LJv9EFnRNkfggelqMf2ig+b7E451TMsF7+7Zxbt64nzCqd0HxVIdc1h941Y
+         TPv3se9x41VUD++2l0A/5sXzunQNLJYaRYVPeYINM9SibHNis+jHo+GyHSoE8agHTH
+         dC4TcQZoWXSC62jG5diFW8oIKOCfnjoTlfiwsNF+shzQsL72uqaVEsau2ArgxJzj4m
+         bmS+SBLnyrm/ofxJzc2/m+QYNTRoqnFmg3sJPp5GzHNYLI6NSXbQ/4Yy9SVrWK8epz
+         5ho/B7qqQguUAd/Y1hnBGvdd/t3IslbCmSZwbVaxX28CHeIHr/8pHiT87ELvLXA7Me
+         Xms6iNK2jze4A==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6563f89f0001>; Mon, 27 Nov 2023 15:02:07 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 27 Nov 2023 15:02:07 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Mon, 27 Nov 2023 15:02:07 +1300
+From:   Angga <Hermin.Anggawijaya@alliedtelesis.co.nz>
+To:     Stefan Berger <stefanb@linux.ibm.com>,
+        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm: Start the tpm2 before running a self test.
+Thread-Topic: [PATCH] tpm: Start the tpm2 before running a self test.
+Thread-Index: AQHaHREnjIixcvoKIE+Z7DUtybpc5rCFbG2AgAcq9YA=
+Date:   Mon, 27 Nov 2023 02:02:07 +0000
+Message-ID: <b1d29d38-2d9c-4147-a53d-e240d8a436ae@alliedtelesis.co.nz>
+References: <20231122065528.1049819-1-hermin.anggawijaya@alliedtelesis.co.nz>
+ <85154bfe-6bd5-440a-acc1-f01497d59af5@linux.ibm.com>
+In-Reply-To: <85154bfe-6bd5-440a-acc1-f01497d59af5@linux.ibm.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <73F3465A8AD98640885D983DE3D3DC45@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Mon, 27 Nov 2023 09:56:02 +0800
-Message-ID: <CABOYnLz3Keyn-bvwRcng_z3_-9zj3zXUAU7e7Vz3V4xACsqSVA@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] possible deadlock in stack_depot_put
-To:     syzbot+186b55175d8360728234@syzkaller.appspotmail.com
-Cc:     frederic@kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=AZXP4EfG c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=-PW-BjYxrnlZlFBXaDUA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for containing HTML subpart, I'll repeat this mail.
-Hi, I reproduce this bug with repro.c and repro.txt and confirmed crash.
-
-repro.txt
-r0 = socket$alg(0x26, 0x5, 0x0)
-bind$alg(r0, &(0x7f0000000440)={0x26, 'skcipher\x00', 0x0, 0x0,
-'ecb-cipher_null\x00'}, 0x58)
-r1 = accept$alg(r0, 0x0, 0x0)
-r2 = dup(r1)
-open(&(0x7f0000000140)='./file1\x00', 0x10f0c2, 0x0)
-r3 = dup(r1)
-mount$9p_fd(0x0, &(0x7f0000000000)='./file1\x00', &(0x7f0000000040),
-0x0, &(0x7f0000000a40)=ANY=[@ANYBLOB='trans=fd,rfdno=', @ANYRESHEX=r3,
-@ANYBLOB=',wfdno=', @ANYRESHEX=r2])
-
-repro.c
-
-#define _GNU_SOURCE
-
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-static void sleep_ms(uint64_t ms)
-{
-usleep(ms * 1000);
-}
-
-static uint64_t current_time_ms(void)
-{
-struct timespec ts;
-if (clock_gettime(CLOCK_MONOTONIC, &ts))
-exit(1);
-return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...)
-{
-char buf[1024];
-va_list args;
-va_start(args, what);
-vsnprintf(buf, sizeof(buf), what, args);
-va_end(args);
-buf[sizeof(buf) - 1] = 0;
-int len = strlen(buf);
-int fd = open(file, O_WRONLY | O_CLOEXEC);
-if (fd == -1)
-return false;
-if (write(fd, buf, len) != len) {
-int err = errno;
-close(fd);
-errno = err;
-return false;
-}
-close(fd);
-return true;
-}
-
-static void kill_and_wait(int pid, int* status)
-{
-kill(-pid, SIGKILL);
-kill(pid, SIGKILL);
-for (int i = 0; i < 100; i++) {
-if (waitpid(-1, status, WNOHANG | __WALL) == pid)
-return;
-usleep(1000);
-}
-DIR* dir = opendir("/sys/fs/fuse/connections");
-if (dir) {
-for (;;) {
-struct dirent* ent = readdir(dir);
-if (!ent)
-break;
-if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-continue;
-char abort[300];
-snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-ent->d_name);
-int fd = open(abort, O_WRONLY);
-if (fd == -1) {
-continue;
-}
-if (write(fd, abort, 1) < 0) {
-}
-close(fd);
-}
-closedir(dir);
-} else {
-}
-while (waitpid(-1, status, __WALL) != pid) {
-}
-}
-
-static void setup_test()
-{
-prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-setpgrp();
-write_file("/proc/self/oom_score_adj", "1000");
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void)
-{
-int iter = 0;
-for (;; iter++) {
-int pid = fork();
-if (pid < 0)
-exit(1);
-if (pid == 0) {
-setup_test();
-execute_one();
-exit(0);
-}
-int status = 0;
-uint64_t start = current_time_ms();
-for (;;) {
-if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
-break;
-sleep_ms(1);
-if (current_time_ms() - start < 5000)
-continue;
-kill_and_wait(pid, &status);
-break;
-}
-}
-}
-
-uint64_t r[4] = {0xffffffffffffffff, 0xffffffffffffffff,
-0xffffffffffffffff, 0xffffffffffffffff};
-
-void execute_one(void)
-{
-intptr_t res = 0;
-res = syscall(__NR_socket, /*domain=*/0x26ul, /*type=*/5ul, /*proto=*/0);
-if (res != -1)
-r[0] = res;
-*(uint16_t*)0x20000440 = 0x26;
-memcpy((void*)0x20000442, "skcipher\000\000\000\000\000\000", 14);
-*(uint32_t*)0x20000450 = 0;
-*(uint32_t*)0x20000454 = 0;
-memcpy((void*)0x20000458,
-"ecb-cipher_null\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
-64);
-syscall(__NR_bind, /*fd=*/r[0], /*addr=*/0x20000440ul, /*addrlen=*/0x58ul);
-res = syscall(__NR_accept, /*fd=*/r[0], /*peer=*/0ul, /*peerlen=*/0ul);
-if (res != -1)
-r[1] = res;
-res = syscall(__NR_dup, /*oldfd=*/r[1]);
-if (res != -1)
-r[2] = res;
-memcpy((void*)0x20000140, "./file1\000", 8);
-syscall(__NR_open, /*file=*/0x20000140ul, /*flags=*/0x10f0c2ul, /*mode=*/0ul);
-res = syscall(__NR_dup, /*oldfd=*/r[1]);
-if (res != -1)
-r[3] = res;
-memcpy((void*)0x20000000, "./file1\000", 8);
-memcpy((void*)0x20000040, "9p\000", 3);
-memcpy((void*)0x20000a40, "trans=fd,rfdno=", 15);
-sprintf((char*)0x20000a4f, "0x%016llx", (long long)r[3]);
-memcpy((void*)0x20000a61, ",wfdno=", 7);
-sprintf((char*)0x20000a68, "0x%016llx", (long long)r[2]);
-syscall(__NR_mount, /*src=*/0ul, /*dst=*/0x20000000ul,
-/*type=*/0x20000040ul, /*flags=*/0ul, /*opts=*/0x20000a40ul);
-
-}
-int main(void)
-{
-syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul,
-/*prot=*/0ul, /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul,
-/*prot=*/7ul, /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul,
-/*prot=*/0ul, /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-loop();
-return 0;
-}
+T24gMjMvMTEvMjAyMyAxOjM0IGFtLCBTdGVmYW4gQmVyZ2VyIHdyb3RlOg0KPg0KPg0KPiBPbiAx
+MS8yMi8yMyAwMTo1NSwgSGVybWluIEFuZ2dhd2lqYXlhIHdyb3RlOg0KPj4gQmVmb3JlIHNlbmRp
+bmcgYSBjb21tYW5kIHRvIGF0dGVtcHQgdGhlIHNlbGYgdGVzdCwgdGhlIFRQTQ0KPj4gbWF5IG5l
+ZWQgdG8gYmUgc3RhcnRlZCwgb3RoZXJ3aXNlIHRoZSBzZWxmIHRlc3QgcmV0dXJucw0KPj4gVFBN
+Ml9SQ19JTklUSUFMSVpFIHZhbHVlIGNhdXNpbmcgYSBsb2cgYXMgZm9sbG93czoNCj4+ICJ0cG0g
+dHBtMDogQSBUUE0gZXJyb3IgKDI1Nikgb2NjdXJyZWQgYXR0ZW1wdGluZyB0aGUgc2VsZiB0ZXN0
+Ii4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBIZXJtaW4gQW5nZ2F3aWpheWEgDQo+PiA8aGVybWlu
+LmFuZ2dhd2lqYXlhQGFsbGllZHRlbGVzaXMuY28ubno+DQo+PiAtLS0NCj4+IMKgIGRyaXZlcnMv
+Y2hhci90cG0vdHBtMi1jbWQuYyB8IDggKysrKy0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA0
+IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvY2hhci90cG0vdHBtMi1jbWQuYyBiL2RyaXZlcnMvY2hhci90cG0vdHBtMi1jbWQuYw0KPj4g
+aW5kZXggOTM1NDViZTE5MGE1Li4wNTMwZjNiNWY4NmEgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJz
+L2NoYXIvdHBtL3RwbTItY21kLmMNCj4+ICsrKyBiL2RyaXZlcnMvY2hhci90cG0vdHBtMi1jbWQu
+Yw0KPj4gQEAgLTczNywxNSArNzM3LDE1IEBAIGludCB0cG0yX2F1dG9fc3RhcnR1cChzdHJ1Y3Qg
+dHBtX2NoaXAgKmNoaXApDQo+PiDCoMKgwqDCoMKgIGlmIChyYykNCj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoCBnb3RvIG91dDsNCj4+IMKgICvCoMKgwqAgcmMgPSB0cG0yX3N0YXJ0dXAoY2hpcCk7DQo+
+PiArwqDCoMKgIGlmIChyYyAmJiByYyAhPSBUUE0yX1JDX0lOSVRJQUxJWkUpDQo+PiArwqDCoMKg
+wqDCoMKgwqAgZ290byBvdXQ7DQo+PiArDQo+DQo+IE1vc3QgcGxhdGZvcm1zIHNob3VsZCBoYXZl
+IGZpcm13YXJlIGluaXRpYWxpemUgdGhlIFRQTSAyIHRoZXNlIGRheXMuIA0KPiBUaGVyZWZvcmUs
+IGEgc2VsZnRlc3Qgc2hvdWxkIHdvcmsgYW5kIGluIGNhc2UgaXQgZG9lc24ndCB3b3JrIHlvdSBm
+YWxsIA0KPiBiYWNrIHRvIHRoZSB0cG0yX3N0YXJ0dXAgYmVsb3cgYW5kIGlmIHlvdSBnZXQgYW4g
+ZXJyb3IgbWVzc2FnZSBpbiB0aGUgDQo+IGxvZyB5b3UgYXQgbGVhc3Qga25vdyB0aGF0IHlvdSBm
+aXJtd2FyZSBpcyBub3QgdXAtdG8tZGF0ZS4NCj4NCj4+IMKgwqDCoMKgwqAgcmMgPSB0cG0yX2Rv
+X3NlbGZ0ZXN0KGNoaXApOw0KPj4gwqDCoMKgwqDCoCBpZiAocmMgJiYgcmMgIT0gVFBNMl9SQ19J
+TklUSUFMSVpFKQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4gwqAgwqDCoMKg
+wqDCoCBpZiAocmMgPT0gVFBNMl9SQ19JTklUSUFMSVpFKSB7DQo+PiAtwqDCoMKgwqDCoMKgwqAg
+cmMgPSB0cG0yX3N0YXJ0dXAoY2hpcCk7DQo+PiAtwqDCoMKgwqDCoMKgwqAgaWYgKHJjKQ0KPj4g
+LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBvdXQ7DQo+PiAtDQo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmMgPSB0cG0yX2RvX3NlbGZ0ZXN0KGNoaXApOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
+IGlmIChyYykNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KDQpIZWxs
+byBTdGVmYW4NCg0KVGhhbmsgeW91IGZvciB5b3VyIGNvbW1lbnRzLg0KDQpVbmZvcnR1bmF0ZWx5
+IG91ciBwbGF0Zm9ybXMgKGN1c3RvbSBoYXJkd2FyZSBkZXNpZ24pIGFyZSB0aGUgb25lcyB3aGlj
+aCANCmRvIG5vdCBpbml0aWFsaXplL3N0YXJ0IHRoZSBUUE0yIGZyb20gYm9vdCBsb2FkZXIgeWV0
+LCBhbmQgYmVjYXVzZSBvZiANCnRoYXQgdGhlDQpzZWxmIHRlc3QgaW4gdHBtMl9hdXRvX3N0YXJ0
+dXAgYWx3YXlzIHByb2R1Y2UgYSBsb2cgZXJyb3IgbWVzc2FnZSBvbiB0aGUgDQpwbGF0Zm9ybSBz
+dGFydCB1cC4NCg0KV2hpbGUgSSB1bmRlcnN0YW5kIHlvdXIgcG9pbnQgYWJvdXQgdGhlIGxvZyBi
+ZWluZyB1c2VmdWwgZm9yICJwb2ludGluZyANCm91dCBub3QgdXAtdG8tZGF0ZSBmaXJtd2FyZSIs
+IGJ1dCBpdCBtaWdodCBhbHNvIGdlbmVyYXRlIHVubmVjZXNzYXJ5IHN1cHBvcnQNCnF1ZXJpZXMg
+ZnJvbSBzb21lIHVzZXJzIG9uIHN1Y2ggcGxhdGZvcm1zID8gQW5kIG1heWJlIHRoZSBrZXJuZWwg
+YmVpbmcgDQphYmxlIHRvIGRlYWwgd2l0aCBUUE0gYmVpbmcgc3RhcnRlZCBtb3JlIHRoYW4gb25j
+ZSBpcyBiZXR0ZXIgPw0KDQpJZiB3YW50ZWQsIEkgaGF2ZSB0aGUgc2Vjb25kIHZlcnNpb24gb2Yg
+dGhlIHBhdGNoIHdoaWNoIGNvbnNpc3Qgb2YgY29kZSANCmNoYW5nZXMgYXMgaW4gdjEsIHBsdXMg
+YWJpbGl0eSBmb3IgdHBtMl90cmFuc21pdF9jbWQgdG8gaGFuZGxlIG11bHRpcGxlDQphdHRlbXB0
+cyB0byBzdGFydCB1cCB0aGUgVFBNIHNpbGVudGx5LCBmb3IgZXhhbXBsZSwgb25jZSBieSB0aGUg
+ZmlybXdhcmUgDQphbmQgYW5vdGhlciBieSB0aGUga2VybmVsIGR1cmluZyB0cG0yIGF1dG8tc3Rh
+cnR1cC4NCg0KS2luZCByZWdhcmRzDQoNCkhlcm1pbiBBbmdnYXdpamF5YQ0KDQo=
