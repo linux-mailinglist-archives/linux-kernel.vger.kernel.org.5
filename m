@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1DF7FA6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A037FA6E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234225AbjK0QvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S233993AbjK0QvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbjK0QvC (ORCPT
+        with ESMTP id S234224AbjK0QvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:51:02 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFAED2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:51:08 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b2fa4ec5eso33247715e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:51:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701103867; x=1701708667; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:to:from:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8AgEC5hl9xTiJhztF4t3qyhaDyaWPbhPKGmUnOdojk8=;
-        b=gx+wa8Dt5O4Jt133x+JgCZuD5AtWbzxDJd4/TPZnT2ouNa9t2TB0g2nZs9y0sWCmSG
-         rKCwSbkTmhOa/+T2hE7R+7WJP31wvyBdtbjO3vZ9f1AyFXmjF6BH0D4OPHjy99NTRtSS
-         MxkXSdyEEUMCT3/c1YvjRZSdPdNkDGzArAszRqrqfUB2WvyquTZKS4WOWmxtxhBRm6Bs
-         /mVoW3XK+sqWW1MxT7Eff5TwDAKRRFdS953vmKugxPEz0h9/WDqsVlD0IzaWCpmc3Jj7
-         Gh9bTAy0/gI0YPsTPJauNGr+rxiOeMY5qinT2zJcxUQP20N5pA8h5ltbtEoBWLufMpeH
-         NALQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701103867; x=1701708667;
-        h=content-transfer-encoding:subject:to:from:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8AgEC5hl9xTiJhztF4t3qyhaDyaWPbhPKGmUnOdojk8=;
-        b=WBU+jfZnVlzQG5beQKhESxUk0VWLB+U7WObxo90ZzMFJGtZFo9YonbpvA0pSeTxlOK
-         43Uu1g+Pr4t2CkldRbj73l7d27QVGBsmnyoQUAk12onFREDpsaMiCxxlJtPUmmLXnJJv
-         x40Xq/wCq6YUHrmWj5L3LyblZZQHK8UEzllc1vHknbvq4s62uzTKNI4f/TLy88FlJqmM
-         /mr3dnQwtKhFcPJoWsNGW3cgljw86SNqPMNF0nFIzR/x8Kj/3GkQ3JLhHzD6n4w8xb34
-         9/zKHErqtsCOPcZm2PCcOwwd91q+KR4QYmykrKE6PW2i2Jy6noXWd7Ve4S04KE/kNet+
-         deFw==
-X-Gm-Message-State: AOJu0Ywx9D1BngQV2G3EoP5zTGBR+xe8p+71NzFlyK+pIqJoNH0hR0uo
-        0uiEFKxAnfnaIpdHccCk6G9/J5kBclc=
-X-Google-Smtp-Source: AGHT+IGHHAAh/ydDP4ntX/SoJqHQvLDh94zs+GaWmVI/m2yvkEdRIIFjW+79ckjjNvZ93n4cVv1sqw==
-X-Received: by 2002:a05:600c:a46:b0:40b:26d6:f538 with SMTP id c6-20020a05600c0a4600b0040b26d6f538mr10284876wmq.41.1701103866992;
-        Mon, 27 Nov 2023 08:51:06 -0800 (PST)
-Received: from DESKTOP-6F6Q0LF (static-host119-30-85-97.link.net.pk. [119.30.85.97])
-        by smtp.gmail.com with ESMTPSA id m8-20020a05600c4f4800b0040b347d90d0sm15131887wmq.12.2023.11.27.08.51.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 27 Nov 2023 08:51:06 -0800 (PST)
-Message-ID: <6564c8fa.050a0220.fd479.2035@mx.google.com>
-Date:   Mon, 27 Nov 2023 08:51:06 -0800 (PST)
-X-Google-Original-Date: 27 Nov 2023 11:51:04 -0500
+        Mon, 27 Nov 2023 11:51:16 -0500
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 2105F1AB
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:51:22 -0800 (PST)
+Received: (qmail 131349 invoked by uid 1000); 27 Nov 2023 11:51:21 -0500
+Date:   Mon, 27 Nov 2023 11:51:21 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Hamza Mahfooz <someguy@effective-light.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew <travneff@gmail.com>,
+        Ferry Toth <ferry.toth@elsinga.info>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        iommu@lists.linux.dev,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        USB mailing list <linux-usb@vger.kernel.org>
+Subject: Re: Bug in add_dma_entry()'s debugging code
+Message-ID: <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
+References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
+ <20231127160759.GA1668@lst.de>
 MIME-Version: 1.0
-From:   callahanbryson63@gmail.com
-To:     linux-kernel@vger.kernel.org
-Subject: Building Estimates
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+Content-Disposition: inline
+In-Reply-To: <20231127160759.GA1668@lst.de>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=0D=0A=0D=0AWe provide estimation & quantities takeoff service=
-s. We are providing 98-100 accuracy in our estimates and take-off=
-s. Please tell us if you need any estimating services regarding y=
-our projects.=0D=0A=0D=0ASend over the plans and mention the exac=
-t scope of work and shortly we will get back with a proposal on w=
-hich our charges and turnaround time will be mentioned=0D=0A=0D=0A=
-You may ask for sample estimates and take-offs. Thanks.=0D=0A=0D=0A=
-Kind Regards=0D=0ACallahan Bryson		=0D=0ADreamland Estimation, LL=
-C
+On Mon, Nov 27, 2023 at 05:07:59PM +0100, Christoph Hellwig wrote:
+> On Mon, Nov 27, 2023 at 11:02:20AM -0500, Alan Stern wrote:
+> > All it looks for is mappings that start on the same cache line.  However 
+> > on architectures that have cache-coherent DMA (such as x86), touching 
+> > the same cache line does not mean that two DMA mappings will interfere 
+> > with each other.  To truly overlap, they would have to touch the same 
+> > _bytes_.
+> 
+> But that is a special case that does not matter.  Linux drivers need
+> to be written in a portable way, and that means we have to care about
+> platforms that are not DMA coherent.
 
+The buffers in the bug report were allocated by kmalloc().  Doesn't 
+kmalloc() guarantee that on architectures with non-cache-coherent DMA, 
+allocations will be aligned on cache-line boundaries (or larger)?  Isn't 
+this what ARCH_DMA_MINALIGN and ARCH_KMALLOC_MINALIGN are supposed to 
+take care of in include/linux/slab.h?
+
+> > How should this be fixed?  Since the check done in add_dma_entry() is 
+> > completely invalid for x86 and similar architectures, should it simply 
+> > be removed for them?  Or should the check be enhanced to look for 
+> > byte-granularity overlap?
+> 
+> The patch is every but "completely invalid".  It points out that you
+> violate the Linux DMA API requirements.
+
+Since when does the DMA API require that mappings on x86 must be to 
+separate cache lines?  Is this documented anywhere?
+
+For that matter, Documentation/core-api/dma-api-howto.rst explicitly 
+says:
+
+	If you acquired your memory via the page allocator
+	(i.e. __get_free_page*()) or the generic memory allocators
+	(i.e. kmalloc() or kmem_cache_alloc()) then you may DMA to/from
+	that memory using the addresses returned from those routines.
+
+It also says:
+
+	Architectures must ensure that kmalloc'ed buffer is
+	DMA-safe. Drivers and subsystems depend on it. If an architecture
+	isn't fully DMA-coherent (i.e. hardware doesn't ensure that data in
+	the CPU cache is identical to data in main memory),
+	ARCH_DMA_MINALIGN must be set so that the memory allocator
+	makes sure that kmalloc'ed buffer doesn't share a cache line with
+	the others. See arch/arm/include/asm/cache.h as an example.
+
+It says nothing about avoiding more than one DMA operation at a time to 
+prevent overlap.  Is the documentation wrong?
+
+>  This might not have an
+> effect on the particular plaform you are currently running on, but it
+> is still wrong.
+
+Who decides what is right and what is wrong in this area?  Clearly you 
+have a different opinion from David S. Miller, Richard Henderson, and 
+Jakub Jelinek (the authors of that documentation file).
+
+>  Note that there have been various mumblings about
+> using nosnoop dma on x86, in which case you'll have the issue there
+> as well.
+
+Unless the people who implement nosnoop DMA also modify kmalloc() or 
+ARCH_DMA_MINALIGN.
+
+I guess the real question boils down to where the responsiblity should 
+lie.  Should kmalloc() guarantee that the memory regions it provides 
+will always be suitable for DMA, with no overlap issues?  Or should all 
+the innumerable users of kmalloc() be responsible for jumping through 
+hoops to request arch-specific minimum alignment for their DMA buffers?
+
+Alan Stern
